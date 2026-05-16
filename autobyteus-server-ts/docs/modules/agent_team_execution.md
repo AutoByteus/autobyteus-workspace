@@ -11,9 +11,9 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 - `TeamRunService` builds a recursive topology plan before launch:
   - every member receives a stable `memberPath` array and slash-delimited
     `memberRouteKey`
-  - launch configs for nested leaf agents are matched by `memberRouteKey`;
-    bare member names are accepted only when they are not ambiguous in the
-    nested leaf set
+  - launch configs for nested leaf agents are matched by `memberRouteKey`
+    or `memberPath`; no bare member-name fallback is defined for nested
+    launch config matching
   - definitions containing any nested `agent_team` member select `MIXED`, even
     when all leaf agents use the same member runtime
   - non-nested single-runtime teams stay on `AUTOBYTEUS`, `CODEX_APP_SERVER`,
@@ -35,10 +35,11 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 - `TeamMemberSelector` is the domain/backend command identity:
   - `{ kind: "path", memberPath: [...] }`
   - `{ kind: "route_key", memberRouteKey: "subteam/leaf" }`
-- `memberPath` / `memberRouteKey` are canonical for nested members. Raw
-  transport strings such as `target_member_name`, `target_agent_name`, and
-  `agent_name` are not command selectors and are rejected at public command
-  boundaries.
+- `memberPath` / `memberRouteKey` are canonical for nested members.
+  Transport/GraphQL command inputs must provide explicit path or route-key
+  selector fields. Scalar target aliases such as `target_member_name`,
+  `target_agent_name`, command-side `agent_name`, command-side `agent_id`, and
+  camelCase equivalents are rejected at the edge instead of normalized.
 - Top-level executable handles may be derived only from an already accepted
   `memberPath[0]` or first route-key segment. Bare names are never an
   authoritative public command selector.
@@ -46,10 +47,11 @@ Manages running team runs, selecting the authoritative team backend, restoring p
   `TeamRun` and posts to that child team's default/coordinator target. The
   parent runtime does not choose an arbitrary flattened child leaf.
 - Tool approval targets must resolve to an agent member. A request aimed only
-  at a subteam member is rejected; approval clients should use the
-  `source_path` / `source_route_key` emitted with the approval request event.
-- Team events carry canonical `sourcePath`. `subTeamNodeName` is retained only
-  as a deprecated one-segment transport/display alias.
+  at a subteam member is rejected; approval clients must use the
+  `source_path` / `source_route_key` or member path/route emitted with the
+  approval request event.
+- Team events carry canonical `sourcePath`. Any display aliases are derived
+  transport metadata only and are not accepted as command target inputs.
 
 ## Mixed-Team Communication Contract
 

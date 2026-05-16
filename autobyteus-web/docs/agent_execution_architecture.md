@@ -79,7 +79,10 @@ or interrupted approval attempts remain backend-rejected control outcomes. A
 visible tool row is not itself approval authority: approval buttons should be
 shown only for `awaiting-approval` rows, and backend rejection remains
 authoritative when a stale client attempts to approve an active-but-not-pending
-tool invocation.
+tool invocation. For team streams, approval dispatch must use the structured
+`ToolApprovalTarget` captured from the backend approval event, such as a member
+route key/path. The frontend must not rebuild approval targets from the current
+focused member, scalar aliases, or invocation-id fallbacks after focus changes.
 
 Interrupt dispatch is intentionally not a local completion event. The frontend must
 keep the affected single run or focused team member in its current sending

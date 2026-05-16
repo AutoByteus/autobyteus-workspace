@@ -10,16 +10,7 @@ import {
   getTeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
 import { selectorToRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
-import {
-  TeamRunEventSourceType,
-  type TeamRunEvent,
-  type TeamRunAgentEventPayload,
-  type TeamRunCommunicationEventPayload,
-  type TeamRunMemberInputEventPayload,
-  type TeamRunStatusUpdateData,
-  type TeamRunTaskPlanEventPayload,
-  getTeamRunEventSourceRouteKey,
-} from "../../agent-team-execution/domain/team-run-event.js";
+import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 import { TeamStreamBroadcaster, getTeamStreamBroadcaster } from "./team-stream-broadcaster.js";
 import { AgentSession } from "./agent-session.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
@@ -33,9 +24,6 @@ import {
   ServerMessage,
   ServerMessageType,
 } from "./models.js";
-import { serializePayload } from "./payload-serialization.js";
-import { buildTeamCommunicationMessagePayload } from "./team-communication-message-payload.js";
-import { buildTeamMemberInputMessagePayload } from "./team-member-input-message-payload.js";
 import {
   INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE,
   INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE,
@@ -53,6 +41,7 @@ import {
   TeamRuntimeStatusSnapshotService,
   getTeamRuntimeStatusSnapshotService,
 } from "./team-runtime-status-snapshot-service.js";
+import { convertTeamRunEventToServerMessage } from "./team-run-event-websocket-message-mapper.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -501,72 +490,10 @@ export class AgentTeamStreamHandler {
   }
 
   convertTeamEvent(event: TeamRunEvent): ServerMessage {
-    const sourceRouteKey = getTeamRunEventSourceRouteKey(event);
-    const sourcePath = Array.isArray(event.sourcePath) ? event.sourcePath : [];
-    const sourcePayload = {
-      source_path: sourcePath,
-      ...(sourceRouteKey ? { source_route_key: sourceRouteKey } : {}),
-      ...(event.subTeamNodeName ? { sub_team_node_name: event.subTeamNodeName } : {}),
-    };
-    if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
-      const payload = event.data as TeamRunAgentEventPayload;
-      const message = this.agentRunEventMessageMapper.map(payload.agentEvent);
-      const basePayload =
-        message.payload && typeof message.payload === "object" ? message.payload : {};
-      return new ServerMessage(message.type, {
-        ...basePayload,
-        agent_name: payload.memberName,
-        agent_id: payload.memberRunId,
-        member_route_key: payload.memberRouteKey,
-        member_path: payload.memberPath,
-        ...sourcePayload,
-      });
-    }
-
-    if (event.eventSourceType === TeamRunEventSourceType.TEAM) {
-      return new ServerMessage(
-        ServerMessageType.TEAM_STATUS,
-        {
-          ...serializePayload(event.data as TeamRunStatusUpdateData),
-          ...sourcePayload,
-        },
-      );
-    }
-
-    if (event.eventSourceType === TeamRunEventSourceType.TASK_PLAN) {
-      const payload = serializePayload(event.data as TeamRunTaskPlanEventPayload);
-      let eventType = "TASK_PLAN_EVENT";
-      if (Array.isArray(payload.tasks)) {
-        eventType = "TASKS_CREATED";
-      } else if (typeof payload.task_id === "string") {
-        eventType = "TASK_STATUS_UPDATED";
-      }
-      return new ServerMessage(ServerMessageType.TASK_PLAN_EVENT, {
-        event_type: eventType,
-        ...payload,
-        ...sourcePayload,
-      });
-    }
-
-    if (event.eventSourceType === TeamRunEventSourceType.COMMUNICATION) {
-      return new ServerMessage(ServerMessageType.TEAM_COMMUNICATION_MESSAGE, {
-        ...buildTeamCommunicationMessagePayload(event.data as TeamRunCommunicationEventPayload),
-        ...sourcePayload,
-      });
-    }
-
-    if (event.eventSourceType === TeamRunEventSourceType.MEMBER_INPUT) {
-      return new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
-        ...buildTeamMemberInputMessagePayload({
-          eventPayload: event.data as TeamRunMemberInputEventPayload,
-          sourceRouteKey,
-          sourcePath,
-        }),
-        ...sourcePayload,
-      });
-    }
-
-    return createErrorMessage("UNKNOWN_TEAM_EVENT", "Unmapped team event");
+    return convertTeamRunEventToServerMessage(
+      event,
+      this.agentRunEventMessageMapper,
+    );
   }
 
   static parseMessage(raw: string): ClientMessage {

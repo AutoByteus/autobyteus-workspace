@@ -5,15 +5,16 @@
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Command API Design Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
 - Upward Reporting Design Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`
 - Round 5 Projection/Presentation Design Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/review-report.md`
-- Current Validation Round: 8
-- Trigger: Code review Round 15 pass after Architecture Round 12 roster-manifest refinement.
-- Prior Round Reviewed: Round 7 pass plus post-delivery Architecture Round 12/Round 15 roster-manifest changes.
-- Latest Authoritative Round: Round 8
+- Current Validation Round: 12
+- Trigger: User-requested browser relaunch/full-stack smoke after Round 11 API/E2E pass for commit `bc2cb3c3 fix(team): enforce structured live command identity`.
+- Prior Round Reviewed: Round 11 API/E2E pass after code review Round 22.
+- Latest Authoritative Round: Round 12 (Pass)
 
 ## Round History
 
@@ -25,189 +26,178 @@
 | 4 | Code review Round 7 pass after frontend nested-team rework | Round 3 nested UI flattening | Live frontend communication store/panel did not ingest parent-to-subteam `TEAM_COMMUNICATION_MESSAGE` even though backend projection was correct and child Codex response arrived | Fail | No | Nested UI and subteam routing worked; live communication display was blocked. See `fullstack-nested-team-communication-validation-failure.md`. |
 | 5 | Code review Round 8 pass after live communication event flattening fix and user browser recheck | `E2E-NESTED-009` | Live child coordinator transcript omitted inbound inter-agent message; active/history nested member labels were inconsistent; opened child projection duplicated timestamp/null messages | Fail | No | Previous parent/subteam Team Messages blocker was resolved, but delivery remained blocked. See `fullstack-nested-team-live-child-transcript-validation-failure.md`. |
 | 6 | Code review Round 10 pass after live transcript/projection/presentation fixes | `E2E-NESTED-011`, `E2E-NESTED-012`, `E2E-NESTED-013` | None | Pass | No | Real full-stack nested mixed-runtime validation passed for parent-to-subteam message, child inbound transcript, restore dedupe, labels, subteam perspective, history exclusion, and terminate cleanup. |
-| 7 | Code review Round 14 pass after upward reporting/representative-addressing fixes | User-observed top-down-only limitation; Round 14 review focus on parent-to-representative routing, child-internal root identity, upward reporting, represented-subteam display, restore/metadata, terminate cascade | None | Pass | No | Real full-stack nested mixed-runtime validation passed for `program_manager -> review_lead` representative routing, `BuildSquad/review_lead -> program_manager` upward reporting, child-internal communication, represented-subteam UI/projection, restore, history exclusion, durable live E2E, and termination. |
-| 8 | Code review Round 15 pass after Architecture Round 12 roster-manifest refinement | Round 15 residual risk: real Codex/Claude sessions must see a clean named team roster and use exact allowed `recipient_name` values; `allowedRecipientNames` must remain derived while descriptors route | None | Pass | Yes | Focused roster/composer/tool-gating regressions passed; a temporary live Codex/Claude roster harness proved clean roster text and exact recipient use; the durable live nested mixed-runtime E2E still passed. |
+| 7 | Code review Round 14 pass after upward reporting/representative-addressing fixes | User-observed top-down-only limitation; Round 14 focus on parent-to-representative routing, child-internal root identity, upward reporting, represented-subteam display, restore/metadata, terminate cascade | None | Pass | No | Real full-stack nested mixed-runtime validation passed for `program_manager -> review_lead` representative routing, `BuildSquad/review_lead -> program_manager` upward reporting, child-internal communication, represented-subteam UI/projection, restore, history exclusion, durable live E2E, and termination. |
+| 8 | Code review Round 15 pass after Architecture Round 12 roster-manifest refinement | Round 15 residual risk: real Codex/Claude sessions must see a clean named team roster and use exact allowed `recipient_name` values | None | Pass | No | Focused roster/composer/tool-gating regressions passed; a temporary live Codex/Claude roster harness proved clean roster text and exact recipient use; durable live nested mixed-runtime E2E still passed. |
+| 9 | Code review Round 18 pass after latest-base integration and structured approval-target/status local fixes | `CR-ROUND8-INTEGRATION-001`, `CR-ROUND8-INTEGRATION-002`, and prior integrated-state evidence freshness | None | Pass | No | Superseded by code review Round 19. Latest integrated state `9ae1ab54` had passed focused frontend approval/status suites, localization, backend typecheck, no-legacy active-source scan, static checks, and durable live nested mixed-runtime E2E. |
+| 10 | Code review Round 19 fail after broader no-legacy review | Prior Round 9 validation was superseded; `CR-ROUND8-INTEGRATION-003` and `CR-ROUND8-INTEGRATION-004` were open | None from API/E2E; validation intentionally paused | Blocked | No | API/E2E/full-stack validation paused until implementation removed legacy WebSocket command aliases and old frontend status-token normalization, then code review passed. |
+| 11 | Code review Round 22 pass after structured live command identity fixes | Round 10 pause, code-review findings `CR-ROUND8-INTEGRATION-003`/`004`, and Round 21 findings `CR-ROUND21-001`/`002`/`003` | None | Pass | No | Current source at `bc2cb3c3` passed focused command/status/streaming suites, no-legacy command-authority scan, static checks, and durable real nested mixed-runtime GraphQL/WebSocket E2E. |
+| 12 | User-requested worktree browser relaunch/full-stack smoke | Round 3/4/5 browser UI and communication failures; post-Round 6 upward-reporting concern; Round 15 exact recipient-name risk | None | Pass | Yes | Started the worktree backend and Nuxt frontend, seeded the nested team, relaunched it from the browser UI, verified recursive `BuildSquad` team/leaf rows, confirmed abstract `BuildSquad` tool recipient is rejected in favor of the exact representative `review_lead`, then proved browser-visible `program_manager -> review_lead` and `review_lead -> program_manager` communication with Team Messages and leaf transcripts. |
 
 ## Validation Basis
 
-Round 8 validated the reviewed roster-manifest refinement at the LLM/session boundary, not only at source-review level:
+Round 12 validates the code-review-passed current source state at commit `bc2cb3c3 fix(team): enforce structured live command identity`.
 
-- `member-team-roster-manifest.ts` and `MemberRunInstructionComposer` now present a named team membership roster instead of the old flat `Teammates:` text.
-- Codex and Claude runtime instruction paths receive full `MemberTeamContext` and expose `send_message_to` with `recipient_name` constrained by derived `allowedRecipientNames`.
-- Runtime routing remains descriptor-owned through `communicationRecipients`; the validation did not treat `allowedRecipientNames` as routing authority.
-- Real Codex and Claude sessions were exercised through a nested mixed team so the models had to read the roster and choose the correct exact recipient names.
+Round 12 keeps the Round 11 command/status/API/E2E evidence and adds a user-requested live browser/full-stack smoke against the worktree-owned backend/frontend, not an Electron backend. This browser pass used the seeded `Nested Mixed Runtime Delivery Team`, launched a new team run from the Nuxt UI, and exercised the current representative-recipient contract visible to real Codex sessions.
+
+The validation focus came from code review Round 22 and the no-backward-compatibility design rule:
+
+- Structured WebSocket team command identity is route/path only.
+- `SEND_MESSAGE` accepts structured snake_case and camelCase target selectors.
+- Tool approval/denial accepts structured snake_case and camelCase source/member/target selectors.
+- Scalar name/id command target aliases are not accepted and return stable WebSocket `ERROR` payloads with code `INVALID_TARGET`.
+- Missing approval targets also return `INVALID_TARGET` rather than falling back to focused member state.
+- External-channel live `EXTERNAL_USER_MESSAGE` payloads carry canonical member/source route/path identity.
+- Existing nested mixed-team launch, communication, recursive metadata, restore, and cleanup flows remain healthy with real AutoByteus/LM Studio, Codex App Server, and Claude Agent SDK runtimes.
 
 ## Compatibility / Legacy Scope Check
 
 - Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
 - Compatibility-only or legacy-retention behavior observed in implementation: `No`
 - Durable validation added or retained only for compatibility-only behavior: `No`
+- Active-source no-legacy command-authority scan result: `Pass`
+- Scan note: display/correlation payload fields such as `agent_name`/`agent_id` still exist for event/read-model payloads; those are not command authority. The command parser keeps scalar alias names only in an explicit invalid-target guard list that rejects them with `INVALID_TARGET`.
 - If compatibility-related invalid scope was observed, reroute classification used: N/A
 - Upstream recipient notified: N/A
 
 ## Validation Surfaces / Modes
 
-- Focused backend regression suites for roster-manifest rendering, member-team context display metadata, Codex bootstrap dynamic tool schema, and Claude tool-gating/turn-input prompt composition.
-- Temporary live runtime harness using in-process GraphQL/schema plus team WebSocket, with real AutoByteus/LM Studio parent, real Codex App Server child coordinator, and real Claude Agent SDK child teammate.
+- Backend build typecheck.
+- Backend focused unit/integration suites for team command selector parsing, team WebSocket handling, live message publication, external-channel team facade, nested mixed-team backend restore/metadata, and event/message bridge behavior.
+- Frontend focused suites for runtime status normalization, active-run recovery, run-history team rows, and team streaming service command routing.
+- Frontend localization literal audit.
+- Active-source no-legacy scan for command-authority helpers and scalar target acceptance paths.
 - Durable live runtime E2E: `tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts` with `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1`.
-- Static/type checks: server source build typecheck and `git diff --check`.
+- Live browser/full-stack smoke: worktree backend on `127.0.0.1:8000`, worktree Nuxt frontend on `127.0.0.1:3020`, seeded fixtures, manual/browser-automated launch and messaging from the frontend.
+- Static whitespace checks: `git diff --check` and `git diff --cached --check`.
 
 ## Platform / Runtime Targets
 
 - Host: macOS/Darwin arm64 worktree environment.
-- Live runtime harness: in-process GraphQL + in-process Fastify team WebSocket from the backend test runtime.
-- Parent runtime/model: AutoByteus/LM Studio, preferred `qwen/qwen3.5-35b-a3b` fragment from available LM Studio models.
-- Child coordinator runtime/model: Codex App Server, preferred `gpt-5.4-mini`.
-- Child sibling runtime/model: Claude Agent SDK, preferred `haiku`.
+- Validated commit: `bc2cb3c3`.
+- Commands executed from: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`.
+- Live durable E2E: in-process GraphQL + in-process Fastify team WebSocket from the backend test runtime.
+- Parent runtime/model: AutoByteus/LM Studio discovered from `http://127.0.0.1:1234`.
+- Child coordinator runtime/model: Codex App Server.
+- Child sibling runtime/model: Claude Agent SDK.
+- Round 12 browser smoke backend/frontend:
+  - Backend: `node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 8000` from the worktree code with `APP_ENV=production`, worktree `AUTOBYTEUS_DATA_DIR`, copied/main-repo SQLite and memory env values, and Darwin Prisma engine overrides.
+  - Frontend: `pnpm -C autobyteus-web exec nuxi dev --host 127.0.0.1 --port 3020` with backend REST/GraphQL/WebSocket endpoints pointing at `127.0.0.1:8000`.
+  - Seeding: `python3 scripts/seed-personal-test-fixtures.py --graphql-url http://127.0.0.1:8000/graphql`.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
-- Vitest live runtime runs used fresh temporary app data directories and reset the SQLite test database before each run.
-- Temporary agent/team definitions and workspace roots were cleaned up by test teardown.
-- Temporary live roster validation file `autobyteus-server-ts/tests/e2e/runtime/round15-roster-live.tmp.e2e.test.ts` was removed after execution; no temporary repository scaffolding remains.
-- Durable live nested mixed-runtime E2E terminated/restored/terminated its team run successfully.
+- Vitest live runtime run reset the SQLite test database and used a fresh temporary app data directory.
+- Durable live nested mixed-runtime E2E created a nested team run, exercised parent/subteam/child communication, closed the WebSocket session, restored the same run from recursive metadata, reopened a team WebSocket, and cleaned up definitions/app-data/workspace roots through test teardown.
+- Round 11 did not start an external browser/frontend process; frontend behavior was validated through focused store/service tests, while the real backend/live-runtime boundary was validated through in-process GraphQL/WebSocket E2E.
+- Round 12 did start external full-stack processes from the worktree, relaunched the seeded nested team from the browser UI, exercised both parent-to-representative and upward-reporting communication, and cleaned temporary local log files afterward.
 
 ## Coverage Matrix
 
 | Scenario ID | Scenario | Surface | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| E2E-NESTED-020 | Durable live nested mixed-runtime GraphQL E2E still passes after roster-manifest refinement | Vitest + live external runtimes | Pass | `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts --reporter=dot` passed: 1 file / 1 test, duration 67.33s. |
-| E2E-NESTED-021 | Real Codex child coordinator sees a clean named team roster | Temporary live roster harness + team WebSocket | Pass | Codex `BuildSquad/review_lead` answered a roster prompt containing token `ROSTER_CODEX_619f2374_6602_46b6_8ea4_ae153577fc97`; the asserted text included allowed recipients `qa_specialist` and `program_manager` and excluded raw scope labels `local_agent` / `parent_boundary_agent`. |
-| E2E-NESTED-022 | Real Codex child coordinator uses exact allowed recipient name for local QA teammate | Temporary live roster harness + team WebSocket | Pass | When asked to message the QA specialist without being given raw `recipient_name`, Codex emitted a `TEAM_COMMUNICATION_MESSAGE` from `BuildSquad/review_lead` to receiver path `BuildSquad/qa_specialist` with the validation tokens. |
-| E2E-NESTED-023 | Real Claude child teammate uses exact allowed recipient name for coordinator and surfaces clean roster value | Temporary live roster harness + team WebSocket | Pass | Claude received the Codex-delivered roster request, chose coordinator recipient `review_lead`, and emitted a `TEAM_COMMUNICATION_MESSAGE` from `BuildSquad/qa_specialist` to `BuildSquad/review_lead` containing token `CLAUDE_ROSTER_TOOL_619f2374_6602_46b6_8ea4_ae153577fc97`, the cross-token `CODEX_ROSTER_TOOL_619f2374_6602_46b6_8ea4_ae153577fc97`, and roster value `review_lead`; raw scope labels were excluded. |
-| INT-NESTED-005 | Roster manifest/composer/context/Codex/Claude focused regressions | Vitest | Pass | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts --reporter=dot` passed: 4 files / 15 tests. |
-| TYPE-NESTED-002 | Server source build typecheck after validation | `tsc -p tsconfig.build.json --noEmit` | Pass | Command completed successfully before and after live validation. |
-| STATIC-NESTED-002 | Whitespace/diff check | Git | Pass | `git diff --check` passed before and after validation-report update. |
+| E2E-NESTED-020 | Durable real nested mixed-runtime GraphQL/WebSocket E2E still passes on current code-review-passed state | Vitest + real external runtimes | Pass | `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts --reporter=dot` passed: 1 file / 1 test, duration 63.77s. |
+| E2E-NESTED-027 | Team WebSocket `SEND_MESSAGE` accepts structured route/path selectors in snake_case and camelCase | Backend focused WebSocket/selector suites | Pass | Backend focused suite passed: 4 files / 32 tests. Integration coverage includes structured command selector variants. |
+| E2E-NESTED-028 | Scalar send/approval aliases and missing approval target are rejected with stable `INVALID_TARGET` errors | Backend focused WebSocket/selector suites | Pass | Backend focused suite passed: 4 files / 32 tests. Expected negative-path `INVALID_TARGET` logs were observed. |
+| E2E-NESTED-029 | External-channel live `EXTERNAL_USER_MESSAGE` carries canonical member/source route/path identity and does not depend on focused member fallback | Backend publisher/facade tests + frontend streaming tests | Pass | Backend focused suite passed: 4 files / 32 tests; frontend focused suite passed: 4 files / 19 tests. |
+| E2E-NESTED-030 | Existing nested mixed-team backend restore/metadata and event/message bridge behavior remain valid after command API clean cut | Backend focused nested suites | Pass | `team-run`, `mixed-sub-team-member-handle`, `mixed-team-manager`, `agent-team-stream-handler` suite passed: 4 files / 25 tests; backend mixed-team-run integration passed: 1 file / 3 tests. |
+| E2E-NESTED-031 | Frontend runtime status normalization, active recovery, history rows, and streaming command routing remain valid after removal of legacy status/target fallbacks | Frontend focused Vitest | Pass | `runtimeStatusNormalization`, `activeRunRecoveryCoordinator`, `runHistoryTeamRows`, and `TeamStreamingService` passed: 4 files / 19 tests. |
+| E2E-NESTED-032 | Browser relaunch uses the worktree backend/frontend and seeded nested team definition | Live browser/full-stack smoke | Pass | Backend health returned `{"status":"ok","message":"Server is running"}`; Nuxt served `http://127.0.0.1:3020/workspace`; seed script reported the existing nested definitions; browser launch UI and new run showed `Nested Mixed Runtime Delivery Team` with `BuildSquad` team row plus `review_lead`/`qa_specialist` child rows. Screenshot: `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961430398.png`. |
+| E2E-NESTED-033 | LLM-facing roster enforces exact representative recipient names instead of abstract subteam names | Live browser/full-stack smoke with real Codex program manager | Pass | Browser prompt using `send_message_to({ "recipient_name": "BuildSquad", ... })` was rejected by the real runtime with `Cannot send: recipient_name must be review_lead.`, matching the approved representative-recipient contract. Screenshot: `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961536502.png`. |
+| E2E-NESTED-034 | Browser-visible parent-to-subteam representative communication works end-to-end | Live browser/full-stack smoke with real Codex parent and child coordinator | Pass | Browser prompt using exact `recipient_name: "review_lead"` delivered `BROWSER_PARENT_TO_REVIEW_LEAD_R12_1778961579817`; Team Messages count became `1`; focusing `BuildSquad/review_lead` showed the inbound `You received...program_manager` prompt and the child reply token. Screenshot: `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961625090.png`. |
+| E2E-NESTED-035 | Browser-visible upward report from subteam representative to parent works end-to-end | Live browser/full-stack smoke with real Codex child coordinator and parent | Pass | Browser prompt from `BuildSquad/review_lead` using exact `recipient_name: "program_manager"` delivered `BROWSER_UPWARD_REPORT_R12_1778961664444`; backend inserted the communication projection; Team Messages count became `2`; focusing `program_manager` showed inbound sender `review_lead` with represented `BuildSquad` badge and the token. Screenshot: `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961687972.png`. |
+| LEGACY-NESTED-002 | Active streaming source has no scalar command-authority fallback/helper acceptance path | Refined source scan | Pass | No `nameKeys`, `idKeys`, `selectorFromMemberName`, `selectorFromOptionalTargetName`, `allowedScalar`, or legacy target acceptance helpers found under active backend/frontend streaming source. Scalar names in `team-command-selector-parser.ts` are only in the invalid-target guard list. |
+| LOC-NESTED-003 | Frontend localization literal audit | `pnpm -C autobyteus-web audit:localization-literals` | Pass | Audit passed with zero unresolved findings. |
+| TYPE-NESTED-004 | Server source build typecheck on current state | `tsc -p tsconfig.build.json --noEmit` | Pass | Command completed successfully. |
+| STATIC-NESTED-004 | Whitespace/diff checks | Git | Pass | `git diff --check` and `git diff --cached --check` passed before report update. |
 
 ## Test Scope
 
-Round 8 live validation used a temporary nested mixed team equivalent to the seeded/user flow:
+Round 11 deliberately rechecked the newest command/status integration deltas and the durable live nested runtime boundary:
 
-- Parent team: `DeliveryLeadership-<uuid>` with `program_manager` parent coordinator.
-- Child team: `BuildSquad-<uuid>` represented in the parent as `BuildSquad`.
-- Child coordinator/representative: `BuildSquad/review_lead` on Codex App Server.
-- Child sibling: `BuildSquad/qa_specialist` on Claude Agent SDK.
+- Backend command protocol behavior: structured selectors, invalid scalar aliases, missing-target errors, external-channel canonical identity, and no focused-member fallback.
+- Frontend streaming service behavior: structured command target emission and canonical route/path ingestion.
+- Status/read-model regressions from the previous pause: runtime status normalization, active recovery, and run-history team rows.
+- Existing nested mixed-team runtime behavior: real parent AutoByteus/LM Studio member, nested Codex coordinator, nested Claude teammate, parent-to-subteam communication, child-internal communication, recursive metadata, restore, and cleanup.
 
-The live harness intentionally asked the models to use roster semantics rather than giving exact raw recipient names in user prompts:
+Round 12 additionally rechecked the browser/full-stack surface the user requested:
 
-- Codex had to list allowed recipient names from its runtime roster and choose the local QA teammate recipient.
-- Claude had to respond to a coordinator-directed request and choose the coordinator recipient from its own runtime roster.
+- Worktree backend/frontend relaunch without relying on Electron.
+- Seeded nested team visibility in the UI.
+- Browser-launched nested team tree with the `BuildSquad` subteam node and `review_lead`/`qa_specialist` child leaves.
+- Real Codex LLM-facing roster behavior: abstract `BuildSquad` is not an allowed `send_message_to.recipient_name`; exact representative `review_lead` is allowed.
+- Browser-visible parent-to-representative delivery, child coordinator inbound transcript and reply, and parent Team Messages projection.
+- Browser-visible upward report from `BuildSquad/review_lead` to `program_manager`, including represented-subteam display in the communication panel.
 
 ## Validation Setup / Environment
 
-Commands run from `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`.
+State confirmation:
 
-Focused checks:
+```bash
+git rev-parse --short=8 HEAD
+# bc2cb3c3
+```
+
+Focused command/status/frontend checks:
 
 ```bash
 pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false
+
 pnpm -C autobyteus-server-ts exec vitest run \
-  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts \
-  tests/unit/agent-team-execution/member-team-context-builder.test.ts \
-  tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts \
-  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts \
+  tests/unit/services/agent-streaming/team-command-selector-parser.test.ts \
+  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts \
+  tests/integration/agent/agent-team-websocket.integration.test.ts \
+  tests/unit/services/agent-streaming/team-live-message-publisher.test.ts \
+  tests/unit/external-channel/runtime/channel-team-run-facade.test.ts \
+  tests/unit/services/agent-streaming/external-user-message-server-message.test.ts \
   --reporter=dot
+# Result: 4 files passed, 32 tests passed
+
+pnpm -C autobyteus-web exec vitest run \
+  services/runHydration/__tests__/runtimeStatusNormalization.spec.ts \
+  services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts \
+  stores/__tests__/runHistoryTeamRows.spec.ts \
+  services/agentStreaming/__tests__/TeamStreamingService.spec.ts \
+  --reporter=dot
+# Result: 4 files passed, 19 tests passed
+
+pnpm -C autobyteus-web audit:localization-literals
+# Result: passed with zero unresolved findings
+
 git diff --check
+# Result: passed
 ```
 
-Temporary live roster harness:
-
-```bash
-RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 \
-pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/round15-roster-live.tmp.e2e.test.ts --reporter=dot
-# Result after final harness prompt design: 1 file passed, 1 test passed, duration 44.10s
-# Temporary file removed after execution.
-```
-
-Durable live nested E2E:
-
-```bash
-RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 \
-pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts --reporter=dot
-# Result: 1 file passed, 1 test passed, duration 67.33s
-```
-
-Known non-blocking environment messages: Ollama discovery reported no server at `127.0.0.1:11434`, while LM Studio discovery succeeded and supplied the model used for the live AutoByteus parent runtime.
-
-## Tests Implemented Or Updated
-
-Round 8 added no repository-resident durable validation code. It updated this validation report only.
-
-A temporary runtime-validation file was created to exercise the real Codex/Claude roster behavior and was deleted before handoff:
-
-- Removed temporary file: `autobyteus-server-ts/tests/e2e/runtime/round15-roster-live.tmp.e2e.test.ts`
-
-Durable validation already reviewed by code review Round 15 was executed unchanged.
-
-## Durable Validation Added To The Codebase
-
-- Repository-resident durable validation added or updated in Round 8 by API/E2E: `No`
-- Validation/report artifacts updated in Round 8:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
-- If `Yes`, returned through `code_reviewer` before delivery: N/A
-- Post-validation code review artifact: Code review Round 15 already passed the implementation-owned durable validation before this API/E2E round resumed.
-
-## Other Validation Artifacts
-
-- Round 3 failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-ui-validation-failure.md`
-- Round 4 communication failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-communication-validation-failure.md`
-- Round 5 child transcript/display failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
-- Upward reporting design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`
-- Prior Round 7 screenshots remain relevant for frontend full-stack validation:
-  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700588753.png`
-  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700597733.png`
-  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700608779.png`
-  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700671227.png`
-
-## Temporary Validation Methods / Scaffolding
-
-Temporary Vitest live harness, in-process GraphQL, in-process WebSocket, and real external runtimes were used for Round 8. The temporary test file was removed. No temporary repository scaffolding remains.
-
-## Dependencies Mocked Or Emulated
-
-- Round 8 temporary and durable live validations: no mocked Codex or Claude sessions.
-- Focused Vitest suites: existing unit/component mocks only.
-
-## Prior Failure Resolution Check (Mandatory On Round >1)
-
-| Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Round 3 | Full-stack UI flattened nested `BuildSquad` child team and omitted subteam node | Design/implementation reset | Still resolved | Durable live E2E still launched and restored recursive nested metadata. | No UI retest required for roster-only backend instruction change. |
-| Round 4 | `E2E-NESTED-009`: live frontend communication store/panel did not ingest parent-to-subteam `TEAM_COMMUNICATION_MESSAGE` | `Local Fix` | Still resolved | Durable live E2E observed parent/child communication events over team WebSocket. | No live communication ingestion regression observed. |
-| Round 5 | `E2E-NESTED-011`/`012`/`013`: child transcript, labels, restore duplicates | `Local Fix` after design rework | Still resolved | Durable live E2E preserved recursive metadata and restore behavior after roster-manifest changes. | No projection/display regression observed in backend live path. |
-| Post-Round 6 user validation | Child coordinator could not report back to parent; communication appeared top-down only | Requirement/design gap | Still resolved | Durable live E2E and Round 8 roster harness retained child/parent/local communication descriptor routing. | Round 8 specifically revalidated descriptor-owned routing while `allowedRecipientNames` remained derived. |
-| Round 15 residual risk | Real Codex/Claude sessions might see unclear roster text or choose invalid recipient names | API/E2E validation focus | Resolved | `E2E-NESTED-021` through `E2E-NESTED-023` passed with real Codex and Claude sessions. | No product failure found. |
-
-## Scenarios Checked
-
-- Roster manifest text generation and old `Teammates:` prompt removal.
-- Display of local team, parent-boundary team, current role, self/coordinator/representative badges, and allowed recipient list.
-- Codex dynamic `send_message_to` schema enum derived from `allowedRecipientNames`.
-- Claude prompt composition and MCP/tool gating for `send_message_to`.
-- Real Codex roster awareness and exact local recipient selection.
-- Real Claude roster awareness and exact coordinator/upward recipient selection.
-- Durable mixed-runtime parent/subteam/child communication, recursive metadata, restore, and cleanup.
-
-## Passed
-
-Focused Round 15 backend validation:
+Backend nested/restore focused checks:
 
 ```bash
 pnpm -C autobyteus-server-ts exec vitest run \
-  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts \
-  tests/unit/agent-team-execution/member-team-context-builder.test.ts \
-  tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts \
-  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts \
+  tests/unit/agent-team-execution/team-run.test.ts \
+  tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts \
+  tests/unit/agent-team-execution/mixed-team-manager.test.ts \
+  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts \
   --reporter=dot
-# Result: 4 files passed, 15 tests passed
+# Result: 4 files passed, 25 tests passed
+
+pnpm -C autobyteus-server-ts exec vitest run \
+  tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts \
+  --reporter=dot
+# Result: 1 file passed, 3 tests passed
+
+git diff --cached --check
+# Result: passed
 ```
 
-Temporary live roster validation:
+Refined no-legacy command-authority scan:
 
 ```bash
-RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 \
-pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/round15-roster-live.tmp.e2e.test.ts --reporter=dot
-# Result: 1 file passed, 1 test passed
+rg -n "nameKeys|idKeys|selectorFromMemberName|selectorFromOptionalTargetName|allowedScalar|legacy.*target|target_member_name.*resolve|targetAgentName.*resolve" \
+  autobyteus-server-ts/src/services/agent-streaming autobyteus-web/services/agentStreaming \
+  --glob '!**/__tests__/**' --glob '!**/*.spec.ts' --glob '!**/*.test.ts'
+# Result: no matches.
+
+rg -n "target_member_name|targetMemberName|target_agent_name|targetAgentName|agent_name|agentName|member_name|memberName" \
+  autobyteus-server-ts/src/services/agent-streaming/team-command-selector-parser.ts
+# Result: scalar names appear only in COMMAND_SCALAR_SELECTOR_KEYS, the invalid-target rejection guard.
 ```
 
 Durable live nested mixed-runtime E2E:
@@ -215,43 +205,174 @@ Durable live nested mixed-runtime E2E:
 ```bash
 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 \
 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts --reporter=dot
-# Result: 1 file passed, 1 test passed
+# Result: 1 file passed, 1 test passed, duration 63.77s
 ```
 
-Server source build typecheck and static check:
+Round 12 browser/full-stack relaunch:
 
 ```bash
-pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false
-# Result: passed
+# Backend, from repository root
+DARWIN_QUERY="$(pwd)/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node"
+DARWIN_SCHEMA="$(pwd)/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64"
+APP_ENV=production \
+AUTOBYTEUS_DATA_DIR="$(pwd)/autobyteus-server-ts" \
+AUTOBYTEUS_SERVER_HOST=http://localhost:8000 \
+AUTOBYTEUS_INTERNAL_SERVER_BASE_URL=http://localhost:8000 \
+DATABASE_URL=file:/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/db/production.db \
+AUTOBYTEUS_MEMORY_DIR=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/memory \
+PRISMA_QUERY_ENGINE_LIBRARY="$DARWIN_QUERY" \
+PRISMA_SCHEMA_ENGINE_BINARY="$DARWIN_SCHEMA" \
+node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 8000
 
-git diff --check
-# Result: passed
+# Frontend, from repository root
+PORT=3020 NUXT_HOST=127.0.0.1 \
+BACKEND_GRAPHQL_BASE_URL=http://localhost:8000/graphql \
+BACKEND_REST_BASE_URL=http://localhost:8000/rest \
+BACKEND_GRAPHQL_WS_ENDPOINT=ws://localhost:8000/graphql \
+BACKEND_TRANSCRIPTION_WS_ENDPOINT=ws://localhost:8000/ws/transcribe \
+BACKEND_TERMINAL_WS_ENDPOINT=ws://localhost:8000/ws/terminal \
+pnpm -C autobyteus-web exec nuxi dev --host 127.0.0.1 --port 3020
+
+python3 scripts/seed-personal-test-fixtures.py --graphql-url http://127.0.0.1:8000/graphql
+curl -sf http://127.0.0.1:8000/rest/health
+# Result: {"status":"ok","message":"Server is running"}
 ```
+
+Known non-blocking environment messages:
+
+- SQLite experimental warning from Node/Vitest.
+- Ollama discovery failed because no Ollama server was running at `127.0.0.1:11434`; LM Studio discovery succeeded and registered models for the live AutoByteus parent runtime.
+- Local Autobyteus model discovery emitted SSL verification warnings because `AUTOBYTEUS_SSL_CERT_FILE` was not set.
+- Negative-path WebSocket tests logged expected `INVALID_TARGET` rejection warnings.
+
+## Tests Implemented Or Updated
+
+Round 11 added no repository-resident durable validation code. It updated this validation report only.
+
+Round 12 added no repository-resident durable validation code. It appended live browser/full-stack smoke evidence to this validation report only.
+
+Durable validation already reviewed by code review Round 22 was executed unchanged.
+
+## Durable Validation Added To The Codebase
+
+- Repository-resident durable validation added or updated this round by API/E2E: `No`
+- Paths added or updated: N/A
+- Validation/report artifact updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- If `Yes`, returned through `code_reviewer` before delivery: N/A
+- Post-validation code review artifact: N/A; no durable validation code was changed after code review Round 22.
+
+## Other Validation Artifacts
+
+- Historical full-stack UI failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-ui-validation-failure.md`
+- Historical frontend rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/frontend-nested-team-ui-design-rework-note.md`
+- Historical communication failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-communication-validation-failure.md`
+- Historical child transcript/display failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
+- Delivery Round 8 integration blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round8-integration-blocker.md`
+- Delivery Round 19 pause note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round19-pause-note.md`
+- Prior Round 7 screenshots remain relevant for historical full-stack frontend evidence:
+  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700588753.png`
+  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700597733.png`
+  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700608779.png`
+  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700671227.png`
+- Round 12 browser/full-stack screenshots:
+  - Launch/new run with nested rows: `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961430398.png`
+  - Exact-recipient rejection for abstract `BuildSquad`: `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961536502.png`
+  - Parent-to-representative delivery and child reply: `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961625090.png`
+  - Upward report and represented-subteam communication panel: `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961687972.png`
+
+## Temporary Validation Methods / Scaffolding
+
+No temporary repository scripts or test files were created in Round 11. Existing focused tests, source scans, and the durable live E2E were run directly.
+
+No temporary repository scripts or test files were created in Round 12. Temporary full-stack backend/frontend processes were started for browser validation and temporary log files from failed startup attempts were removed afterward.
+
+## Dependencies Mocked Or Emulated
+
+- Round 11 durable live validation: no mocked AutoByteus/LM Studio, Codex, or Claude runtimes.
+- Focused frontend/backend Vitest suites: existing unit/component/integration test doubles only.
+
+## Prior Failure Resolution Check (Mandatory On Round >1)
+
+| Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Round 3 | Full-stack UI flattened nested `BuildSquad` child team and omitted subteam node | Design/implementation reset | Still resolved | Durable live E2E launched/restored recursive nested metadata; backend nested focused suites passed; Round 12 browser relaunch displayed `BuildSquad` as a team row with `review_lead`/`qa_specialist` children. | Browser UI was relaunched in Round 12. |
+| Round 4 | `E2E-NESTED-009`: live frontend communication store/panel did not ingest parent-to-subteam `TEAM_COMMUNICATION_MESSAGE` | `Local Fix` | Still resolved | `TeamStreamingService.spec.ts` passed; durable live E2E observed communication projection inserts over team WebSocket; Round 12 browser Team Messages panel updated from 0 to 1 to 2 messages for parent/child communication. | No communication ingestion regression found. |
+| Round 5 | `E2E-NESTED-011`/`012`/`013`: child transcript, labels, restore duplicates | `Local Fix` after design rework | Still resolved | Durable live E2E preserved recursive metadata and restored the same nested run on commit `bc2cb3c3`; Round 12 browser focus on `BuildSquad/review_lead` showed the inbound `You received...program_manager` prompt before the child reply. | No projection/restore regression observed in browser smoke. |
+| Post-Round 6 user validation | Child coordinator could not report back to parent; communication appeared top-down only | Requirement/design gap | Still resolved | Durable live E2E retained parent/subteam/child communication descriptor routing; backend nested focused suites passed; Round 12 browser smoke delivered `review_lead -> program_manager` upward report and displayed it in the parent transcript and Team Messages panel with represented `BuildSquad` badge. | No routing regression found. |
+| Round 15 residual risk | Real Codex/Claude sessions might see unclear roster text or choose invalid recipient names | API/E2E validation focus | Still resolved by prior Round 8 plus Round 12 browser smoke | Round 12 real Codex program manager rejected abstract `BuildSquad` with `recipient_name must be review_lead`, then accepted exact `review_lead` and delivered the message. | Exact allowed recipient names are enforced in the browser-launched runtime. |
+| Code review Round 18 | `CR-ROUND8-INTEGRATION-001`: stale removed status enum in active source | Local fix | Still resolved | Frontend focused suite passed `runtimeStatusNormalization`, `activeRunRecoveryCoordinator`, and `runHistoryTeamRows`: 4 files / 19 tests. | No action. |
+| Code review Round 18 | `CR-ROUND8-INTEGRATION-002`: team approval stream service accepted scalar string target alias | Local fix | Still resolved | `TeamStreamingService.spec.ts` passed in 4-file frontend focused suite. | No focused-member fallback regression found. |
+| Code review Round 19 | `CR-ROUND8-INTEGRATION-003`: WebSocket command protocol accepted legacy scalar member-name target aliases | Local fix | Resolved | Backend focused WebSocket/selector suite passed: 4 files / 32 tests. Refined active-source command-authority scan found no scalar target acceptance helpers; scalar alias names are invalid-target guard keys only. | Round 10 pause is lifted by Round 22 code review and Round 11 validation. |
+| Code review Round 19 | `CR-ROUND8-INTEGRATION-004`: frontend status normalization/tests preserved removed lifecycle status tokens | Local fix | Resolved | Frontend focused suite passed: 4 files / 19 tests, including runtime status normalization and recovery/history rows. | Round 10 pause is lifted by Round 22 code review and Round 11 validation. |
+| Code review Round 21 | `CR-ROUND21-001`: structured camelCase route/path command selectors needed acceptance without scalar aliases | Local fix | Resolved | Backend focused WebSocket/selector suite passed: 4 files / 32 tests. | Snake_case and camelCase structured selector paths validated. |
+| Code review Round 21 | `CR-ROUND21-002`: scalar command aliases and missing approval target needed stable `INVALID_TARGET` errors | Local fix | Resolved | Backend focused WebSocket/selector suite passed with expected negative-path `INVALID_TARGET` logs. | No compatibility path observed. |
+| Code review Round 21 | `CR-ROUND21-003`: frontend live routing must not fall back to focused member; external-channel live messages need canonical route/path identity | Local fix | Resolved | Backend publisher/facade suite and frontend `TeamStreamingService.spec.ts` passed; external route/path identity covered. | No focused-member fallback observed. |
+
+## Scenarios Checked
+
+- Current commit identity (`bc2cb3c3`).
+- Backend source typecheck.
+- Structured send-message target selectors in snake_case and camelCase.
+- Structured tool approval/denial target selectors through member/source/target route/path fields.
+- Stable `INVALID_TARGET` WebSocket errors for scalar send target aliases, scalar approval target aliases, and missing approval target.
+- External-channel live `EXTERNAL_USER_MESSAGE` route/path identity.
+- No focused-member fallback in frontend streaming command paths.
+- Runtime status normalization and active run recovery/history projections after removal of old lifecycle status tokens.
+- Nested mixed-team backend restore/metadata and event bridge behavior.
+- Real nested mixed-runtime parent/subteam/child communication, recursive metadata restore, and cleanup.
+- Worktree browser relaunch and frontend launch of seeded `Nested Mixed Runtime Delivery Team`.
+- Browser-recursive nested row rendering for `BuildSquad`, `review_lead`, and `qa_specialist`.
+- Browser-visible exact recipient-name enforcement (`BuildSquad` rejected; `review_lead` accepted).
+- Browser-visible parent-to-representative delivery, child inbound transcript, child reply, Team Messages update.
+- Browser-visible upward report from `review_lead` to `program_manager`, parent inbound transcript, represented-subteam Team Messages update.
+- Frontend localization audit.
+- Static whitespace checks.
+
+## Passed
+
+All Round 11 validation commands and Round 12 browser/full-stack smoke checks passed:
+
+- Server build typecheck: passed.
+- Backend focused command/external-channel/WebSocket suite: 4 files / 32 tests passed.
+- Backend focused nested/streaming suite: 4 files / 25 tests passed.
+- Backend mixed-team-run integration suite: 1 file / 3 tests passed.
+- Frontend focused status/recovery/history/streaming suite: 4 files / 19 tests passed.
+- Frontend localization audit: passed with zero unresolved findings.
+- Refined no-legacy active-source command-authority scan: passed.
+- `git diff --check`: passed.
+- `git diff --cached --check`: passed.
+- Durable live nested mixed-runtime E2E: 1 file / 1 test passed, duration 63.77s.
+- Round 12 browser/full-stack smoke: passed.
+  - Worktree backend/frontend health: passed.
+  - Seeded nested team browser launch: passed.
+  - Exact representative recipient-name enforcement: passed.
+  - Parent-to-representative message and child transcript/reply: passed.
+  - Upward reporting and represented-subteam communication display: passed.
 
 ## Failed
 
-None in Round 8.
+None in Round 12.
 
 ## Not Tested / Out Of Scope
 
-- Browser UI was not relaunched in Round 8 because the change is backend runtime-instruction/roster-manifest behavior; Round 7 already covered full-stack frontend presentation of nested communication.
+- Round 12 browser smoke exercised the key seeded nested-team browser launch and parent/child communication paths, but it did not rerun every focused negative WebSocket command-path case from the browser. Those latest-base command protocol deltas remain covered by Round 11 backend/frontend focused suites and durable GraphQL/WebSocket E2E.
 - Production multi-node/distributed deployment behavior was not exercised.
-- Release packaging/deployment is out of API/E2E scope.
+- Release packaging/deployment remains out of API/E2E scope and should resume in delivery.
 
 ## Blocked
 
-None.
+None in Round 12.
 
 ## Cleanup Performed
 
-- Temporary live harness team runs were terminated by test teardown.
-- Temporary agent definitions, team definitions, app data directories, and workspace roots were deleted by test teardown.
-- Temporary test file `autobyteus-server-ts/tests/e2e/runtime/round15-roster-live.tmp.e2e.test.ts` was removed.
-- No external backend/frontend validation services were left running by Round 8; the live checks used in-process test servers.
+- Durable live E2E closed WebSocket sessions, removed temporary agent/team definitions, restored/terminated the run, and cleaned up temporary app data/workspace roots through test teardown.
+- Round 12 temporary browser-startup log files were removed from `autobyteus-server-ts/logs` and `autobyteus-web/logs`.
+- No temporary repository validation scaffolding was created.
 
 ## Classification
 
-`Pass`.
+`Pass` for Round 12. No API/E2E-discovered Local Fix, Design Impact, Requirement Gap, or Unclear issue remains open.
 
 ## Recommended Recipient
 
@@ -259,23 +380,39 @@ None.
 
 ## Evidence / Notes
 
-Primary Round 8 live roster harness pass:
+Primary Round 11 durable live E2E run:
 
-- Parent team run: `team_deliveryleadership-619f2374-6602-46b6-8e_c093b4f2`
-- Codex child coordinator run: `buildsquad_review_lead_3be4f780f4476589`
-- Claude child teammate run: `buildsquad_qa_specialist_a7d92077ccc2fcc5`
-- Codex roster token: `ROSTER_CODEX_619f2374_6602_46b6_8ea4_ae153577fc97`
-- Codex tool token: `CODEX_ROSTER_TOOL_619f2374_6602_46b6_8ea4_ae153577fc97`
-- Claude roster/tool token: `CLAUDE_ROSTER_TOOL_619f2374_6602_46b6_8ea4_ae153577fc97`
+- Parent team run: `team_nested-parent-delivery-team-75b32780-2f3_c440e4d2`
+- Parent member run: `program_manager_683ce4985cf40555`
+- Child coordinator run: `buildsquad_review_lead_8183f3fa22eee233`
+- Child sibling run: `buildsquad_qa_specialist_5e99c2c7ec502533`
+- Initial team WebSocket session: `86e03745-4951-4d60-ad62-39b53c789444`
+- Restored team WebSocket session: `1df1a5b8-cb07-4b1e-9b3e-5a3972e12466`
+- Communication projections observed:
+  - `program_manager_683ce4985cf40555 -> buildsquad_review_lead_8183f3fa22eee233`
+  - `buildsquad_review_lead_8183f3fa22eee233 -> buildsquad_qa_specialist_5e99c2c7ec502533`
+- Result: 1 file / 1 test passed, duration 63.77s.
 
-Key evidence:
+Round 12 browser/full-stack run:
 
-- Codex roster response contained `qa_specialist` and `program_manager` and did not expose raw descriptor scopes.
-- Codex selected `qa_specialist` when asked to message the QA specialist without being handed a raw `recipient_name` value.
-- Claude selected `review_lead` when asked to message its coordinator without being handed a raw `recipient_name` value, and its message content surfaced `review_lead` as the exact allowed roster value.
+- Browser tab: `http://127.0.0.1:3020/workspace`
+- Worktree backend: `http://127.0.0.1:8000`
+- Browser-launched parent team run: `team_nested-mixed-runtime-delivery-team_2f756965`
+- Parent member run: `program_manager_4c0d0540be066609`
+- Child coordinator run: `buildsquad_review_lead_a5aebc972e441a30`
+- Parent-to-representative token: `BROWSER_PARENT_TO_REVIEW_LEAD_R12_1778961579817`
+- Upward-report token: `BROWSER_UPWARD_REPORT_R12_1778961664444`
+- Communication projections observed in backend logs:
+  - `program_manager_4c0d0540be066609 -> buildsquad_review_lead_a5aebc972e441a30`
+  - `buildsquad_review_lead_a5aebc972e441a30 -> program_manager_4c0d0540be066609`
+- Browser screenshots:
+  - `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961430398.png`
+  - `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961536502.png`
+  - `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961625090.png`
+  - `/Users/normy/.autobyteus/browser-artifacts/dc37b3-1778961687972.png`
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Round 8 validates the roster-manifest refinement through focused tests and real Codex/Claude runtime sessions. The LLM-facing roster is clean and named, models use exact allowed `recipient_name` values, and existing nested mixed-runtime behavior remains intact.
+- Notes: Round 12 supersedes the prior Round 11 report by adding the user-requested browser/full-stack relaunch evidence. Current code-review-passed state `bc2cb3c3` satisfies the API/E2E validation focus for structured live command identity, invalid-target rejection, external-channel route/path identity, no focused-member fallback, and existing nested mixed-runtime restore/communication behavior. The browser smoke also confirms seeded nested-team UI launch, exact representative recipient-name enforcement, parent-to-representative communication, child inbound transcript/reply, upward reporting, and represented-subteam communication display. No repository-resident durable validation code was changed by API/E2E after code review Round 22, so the package can proceed to delivery.

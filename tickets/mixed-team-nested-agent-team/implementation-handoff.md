@@ -754,3 +754,50 @@ Passed:
   - Result: `7` changed/untracked implementation source files checked; no file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 21 local fix.
+
+## Delivery Round 12 Latest-Base Integration Local Fix Update
+
+Integrated the ticket branch with the latest tracked base and preserved the Round 21 clean-cut command identity behavior.
+
+Integration work:
+
+- Fetched and merged `origin/personal @ 29c872bbae3f20a492701443b62a0e13a8924966` into `codex/mixed-team-nested-agent-team`.
+- Resolved backend runtime, WebSocket command, frontend streaming, docs, and focused-interrupt test conflicts from the focused-member interrupt routing release.
+- Kept public/team WebSocket command authority route/path-only:
+  - `SEND_MESSAGE`, tool approval, and team interrupt commands accept explicit route/path selector fields only.
+  - Team interrupt uses `target_member_route_key` / `targetMemberRouteKey` or `target_member_path` / `targetMemberPath`, with optional `target_member_run_id` / `targetMemberRunId` as a guard.
+  - Scalar command aliases such as `target_member_name`, `target_agent_name`, command-side `agent_name`, and command-side `agent_id` remain invalid-target inputs, not compatibility paths.
+- Preserved latest-base active focused-member interrupt semantics by translating the frontend focused route key to canonical route-key command payloads, not bare member names or agent IDs.
+- Updated mixed nested interrupt routing so `MixedTeamMemberHandle.interrupt(...)` receives the accepted selector and optional run-id guard, delegates through active subteam handles, and does not fall back to aggregate/team-wide interrupt behavior.
+- Extracted team-run event WebSocket message mapping into `team-run-event-websocket-message-mapper.ts` to keep `AgentTeamStreamHandler` below the source-size guardrail after the integration.
+- Restored pre-merge delivery/ticket artifacts from the protected stash and resolved documentation conflicts to describe route/path-only command identity plus latest focused-interrupt behavior.
+
+No-legacy audit notes:
+
+- Removed command selector helpers/variants remain absent from active command paths: `top_level_name`, `selectorFromMemberName`, `selectorFromOptionalTargetName`, and `nameKeys:` are not present.
+- Frontend scalar tool-approval target compatibility remains absent: no `ToolApprovalTarget | string` or `typeof target === 'string'` branch.
+- Legacy scalar command alias strings appear only in the explicit invalid-target rejection-key owner and negative tests.
+- Outbound/display `agent_name` / `agent_id` metadata is preserved only as display/correlation data, not command target authority.
+
+## Delivery Round 12 Latest-Base Integration Local Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/integration/agent/agent-team-websocket.integration.test.ts tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts --reporter=dot`
+  - Result: `3` files passed, `35` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts --reporter=dot`
+  - Result: `4` files passed, `32` tests passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- Targeted no-legacy command selector scan across active streaming/selector/frontend command source.
+  - Result: passed with only explicit invalid-target rejection-key hits in `team-command-selector-parser.ts` and expected negative-test/display-metadata findings.
+- Conflict marker scan for `<<<<<<<` / `>>>>>>>` outside generated dependency/build directories.
+  - Result: passed.
+- Custom changed/untracked non-test `.ts` / `.vue` source size audit.
+  - Result: `137` changed/untracked non-test TS/Vue source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this latest-base integrated state.

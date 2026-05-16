@@ -4,203 +4,233 @@
 
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
-- Current Review Round: `15`
-- Trigger: Architecture Round 12 roster-manifest refinement implementation for LLM-facing team membership presentation and exact `send_message_to` recipient naming.
-- Prior Review Round Reviewed: `14`
-- Latest Authoritative Round: `15`
+- Current Review Round: `22`
+- Trigger: Round 21 local fix commit `bc2cb3c3 fix(team): enforce structured live command identity`, returning after Round 21 code-review findings `CR-ROUND21-001`, `CR-ROUND21-002`, and `CR-ROUND21-003`.
+- Prior Review Round Reviewed: `21`
+- Latest Authoritative Round: `22`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`; Round 11 rework note `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`; Round 5 rework note `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`; prior full-stack failure notes as cumulative context.
-- API / E2E Validation Started Yet: `No` for this Architecture Round 12 roster-manifest implementation; API/E2E/full-stack validation remains paused until this review passes.
-- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No` by API/E2E. This implementation pass updated implementation-owned source and unit tests before API/E2E resumes.
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`; prior full-stack failure notes and delivery integration blocker notes as cumulative context.
+- API / E2E Validation Started Yet: `Yes` historically, but current implementation delta is pre-validation and should now return to API/E2E/full-stack validation.
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No` for this handoff. Current source changes are implementation-owned.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial backend nested mixed-team implementation review | N/A | `CR-NESTED-001`, `CR-NESTED-002` | Fail | No | Routed to implementation for local fixes. |
-| 2 | Backend nested mixed-team local-fix re-review | `CR-NESTED-001`, `CR-NESTED-002` | None | Pass | No | Routed to API/E2E. |
-| 3 | Post-validation durable-validation re-review | N/A | `CR-VALIDATION-001` | Fail | No | Routed to API/E2E for validation-only fixture correction. |
-| 4 | Validation-only durable-validation local-fix re-review | `CR-VALIDATION-001` | None | Pass | No | Earlier validation-code review passed. |
-| 5 | Round 9 frontend topology/full-stack rework review | Historical findings remained resolved | `CR-ROUND9-001` through `CR-ROUND9-005` | Fail | No | Routed to implementation for bounded local fixes. |
-| 6 | Round 5 local-fix re-review | `CR-ROUND9-001` through `CR-ROUND9-005` | None | Fail | No | `CR-ROUND9-004` remained open. |
-| 7 | Round 6 communication selector local-fix re-review | `CR-ROUND9-004` | None | Pass | No | Routed to API/E2E. |
-| 8 | API/E2E Round 4 local fix for live Team Communication ingestion | `E2E-NESTED-009` plus prior communication architecture | None | Pass | No | Routed to API/E2E. |
-| 9 | Round 5 live transcript/projection/presentation source fix | Prior findings and `E2E-NESTED-009` rechecked as context | `CR-ROUND9-006` | Fail | No | Projection dedupe over-collapsed legitimate repeated null-timestamp messages. |
-| 10 | Local fix for `CR-ROUND9-006` | `CR-ROUND9-006` | None | Pass | No | Conservative backend/frontend dedupe rule and regression coverage preserve repeated no-ID/no-timestamp rows. |
-| 11 | Delivery Round 6 localization source fix for Electron packaged-build audit blocker | All prior findings rechecked for regression by scope | None | Pass | No | Delivery localization blocker was resolved. |
-| 12 | Round 11 communication-roster / representative-routing refactor | All prior source findings and Round 11 design pass rechecked | `CR-ROUND11-001`, `CR-ROUND11-002`, `CR-ROUND11-003` | Fail | No | Bounded implementation/test fixes required before API/E2E/full-stack validation resumes. |
-| 13 | Round 12 local-fix re-review | `CR-ROUND11-001`, `CR-ROUND11-002`, `CR-ROUND11-003` | None | Fail | No | `CR-ROUND11-001` and `CR-ROUND11-003` resolved; `CR-ROUND11-002` remained partially unresolved for bridged `sourcePath` prefixing. |
-| 14 | Round 13 narrow event-bridge sourcePath local-fix re-review | `CR-ROUND11-002` | None | Pass | No | Root-aware bridged outer `sourcePath` prefixing was implemented and covered by regression. |
-| 15 | Architecture Round 12 roster-manifest implementation review | Historical findings and Round 14 pass state rechecked for regression by scope | None | Pass | Yes | `TeamMembershipRosterManifest` is a presentation/read-model boundary derived from `communicationRecipients`; runtime routing authority remains unchanged. |
+| 1-15 | Earlier nested mixed-team implementation, validation, frontend, communication, roster, and delivery-localization rounds | See prior report history | Multiple historical findings | Mixed, then passed | No | Historical context. |
+| 16 | Delivery Round 8 latest-base merge conflict local fix | Historical findings and status/interrupt merge concerns | `CR-ROUND8-INTEGRATION-001` | Fail | No | Removed status enum in active component source. |
+| 17 | Superseding no-legacy follow-up | `CR-ROUND8-INTEGRATION-001` | `CR-ROUND8-INTEGRATION-002` | Fail | No | TeamStreamingService scalar approval-target alias. |
+| 18 | Structured approval target local fix | `CR-ROUND8-INTEGRATION-001`, `CR-ROUND8-INTEGRATION-002` | None | Pass | No | Pass was routed to API/E2E. |
+| 19 | Extra independent integrated-state no-legacy review | `CR-ROUND8-INTEGRATION-001`, `CR-ROUND8-INTEGRATION-002` | `CR-ROUND8-INTEGRATION-003`, `CR-ROUND8-INTEGRATION-004` | Fail | No | Initially over-classified API edge aliases without enough contract reconciliation. |
+| 20 | Contract-verification correction after user challenge | `CR-ROUND8-INTEGRATION-003`, `CR-ROUND8-INTEGRATION-004` | `CR-ROUND8-INTEGRATION-005` | Fail / Design Impact | No | Confirmed prior docs allowed aliases; routed to design for an explicit no-legacy API decision. |
+| 21 | Round 19 / Architecture Round 14 implementation commit `7fba0073` after design clarified clean-cut command API | All prior unresolved findings | `CR-ROUND21-001`, `CR-ROUND21-002`, `CR-ROUND21-003` | Fail / Local Fix | No | Design direction was clear; implementation missed structured camelCase command inputs, invalid-target responses, and one live routing fallback. |
+| 22 | Round 21 local fix commit `bc2cb3c3` | `CR-ROUND21-001`, `CR-ROUND21-002`, `CR-ROUND21-003` | None | Pass | Yes | Prior findings are resolved. Ready for API/E2E/full-stack validation to resume. |
 
 ## Review Scope
 
-Fresh implementation review of the Architecture Round 12 roster-manifest refinement, with focus on REQ-040 / AC-032 and the shared design-principle boundaries:
+Fresh re-review covered implementation commit `bc2cb3c3 fix(team): enforce structured live command identity` on branch `codex/mixed-team-nested-agent-team`, against the strict no-legacy command/live identity design.
 
-- `autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts`
-- `autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts`
-- `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts`
-- `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts`
-- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts`
-- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-context.ts`
-- `autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts`
-- `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-turn-input-builder.ts`
-- Focused tests in `member-run-instruction-composer.test.ts`, `member-team-context-builder.test.ts`, Codex bootstrap tests, and Claude session tool-gating tests.
+Reviewed files and behaviors:
 
-Primary spine reviewed:
+- WebSocket command selector parsing and invalid-target response behavior:
+  - `autobyteus-server-ts/src/services/agent-streaming/team-command-selector-parser.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts`
+- Team live external-user message identity:
+  - `autobyteus-server-ts/src/services/agent-streaming/external-user-message-server-message.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/team-live-message-publisher.ts`
+  - `autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts`
+- Frontend team live stream routing and protocol types:
+  - `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
+  - `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
+- Regression coverage:
+  - `autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
+  - `autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts`
+  - `autobyteus-server-ts/tests/unit/services/agent-streaming/team-live-message-publisher.test.ts`
+  - `autobyteus-server-ts/tests/unit/external-channel/runtime/channel-team-run-facade.test.ts`
+  - `autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts`
 
-`MemberTeamContext.communicationRecipients + team/team-boundary display metadata -> TeamMembershipRosterManifest -> MemberRunInstructionComposer -> Codex/Claude runtime instructions -> LLM sees organization-style roster + exact allowed recipient_name list -> tool schemas/runtime delivery still resolve through communicationRecipients descriptors`
+Current worktree note:
+
+- Source commit `bc2cb3c3` is checked in.
+- The worktree still contains pre-existing uncommitted docs/ticket artifacts from delivery/review/API-E2E activity. They were not reviewed as implementation source changes except where they remain authoritative context.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1-14 | Historical findings `CR-NESTED-*`, `CR-VALIDATION-001`, `CR-ROUND9-*`, delivery localization blocker | Mixed | Resolved / not reopened | The roster-manifest change does not alter nested runtime routing, durable validation code, frontend projection behavior, localization source strings, or prior sourcePath bridge logic. Focused source inspection found no regression in those areas. | No action. |
-| 12 | `CR-ROUND11-001` | High | Resolved / not reopened | The current change is prompt-presentation-only; participant/address invariant owners and parent-boundary normalization are unchanged in this round. | No action. |
-| 12 / 13 | `CR-ROUND11-002` | High | Resolved / not reopened | The roster-manifest change does not modify `mixed-team-event-bridge.ts`; the prior root-aware sourcePath fix remains intact by inspection. | No action. |
-| 12 | `CR-ROUND11-003` | Medium | Resolved / not reopened | The current change does not restore obsolete nested WebSocket payload assertions or receiver-object contracts. | No action. |
+| 16 | `CR-ROUND8-INTEGRATION-001` | High | Resolved | `TeamMemberMonitorTile.vue` uses canonical `AgentStatus.Offline`; removed active enum-member grep remains clean. | No remaining action. |
+| 17 | `CR-ROUND8-INTEGRATION-002` | High | Resolved | `TeamStreamingService.approveTool` / `denyTool` use structured `ToolApprovalTarget`; no scalar target branch remains. | No remaining action. |
+| 19 | `CR-ROUND8-INTEGRATION-003` | High | Superseded by design decision | Round 14 design makes scalar command aliases invalid. | Historical correction retained. |
+| 19 | `CR-ROUND8-INTEGRATION-004` | High | Resolved | `runtimeStatusNormalization.ts` rejects removed lifecycle tokens; focused frontend suite passed. | Current persisted `ACTIVE` / `TERMINATED` mappings remain intentional. |
+| 20 | `CR-ROUND8-INTEGRATION-005` | High / Design Impact | Resolved | Requirements, design, protocol docs, and architecture review now align on clean-cut path/route command identity. | No design blocker remains. |
+| 21 | `CR-ROUND21-001` | High | Resolved | `team-command-selector-parser.ts` accepts documented structured camelCase fields (`targetMemberRouteKey`, `targetMemberPath`, `sourceRouteKey`, `sourcePath`, `memberRouteKey`, `memberPath`) alongside snake_case path/route fields. Unit and integration tests cover representative camelCase send and approval selectors. | No scalar/name/id alias support was reintroduced. |
+| 21 | `CR-ROUND21-002` | High | Resolved | `AgentTeamStreamHandler` now sends WebSocket `ERROR` messages with stable code `INVALID_TARGET` for scalar command aliases and missing approval targets. Unit/integration tests assert client-visible `ERROR` payloads. | Missing `invocation_id` still logs only, but that was outside the target-selector finding and existing command contract. |
+| 21 | `CR-ROUND21-003` | High | Resolved | `TeamStreamingService.getMemberContext(...)` no longer falls back to focused member; unmatched identity returns `null` and dispatch skips. `TeamLiveMessagePublisher` and `ChannelTeamRunFacade` publish canonical `member_*` and `source_*` route/path identity for external-channel live team messages. Tests prove no-route payloads do not attach to focus and canonical payloads route correctly. | `agent_name` / `agent_id` remain display/correlation metadata only. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-Changed/untracked non-test `.ts` / `.vue` source files only; unit, integration, API, and E2E test files are excluded from the hard limit.
+Changed non-test `.ts` / `.vue` implementation source files in commit `bc2cb3c3` were audited by non-empty lines. No file exceeds the 500-line hard limit. `AgentTeamStreamHandler` remains close to the limit, but the new command parser extraction keeps it below the guardrail and improves concern ownership.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-turn-input-builder.ts` | 51 | Pass | Pass | Pass: Claude turn prompt assembly delegates team prompt composition to `MemberRunInstructionComposer`. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts` | 76 | Pass | Pass | Pass: Codex bootstrap passes full `MemberTeamContext` to the composer and keeps dynamic tool registration descriptor-driven. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts` | 165 | Pass | Pass | Pass: parent-boundary setup passes parent definition metadata without moving routing authority. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-context.ts` | 96 | Pass | Pass | Pass: context shape carries parent team display metadata for child prompt presentation only. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts` | 120 | Pass | Pass | Pass: domain context now holds team display/presentation metadata beside existing descriptor authority. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts` | 58 | Pass | Pass | Pass: composer owns runtime instruction text and delegates roster rendering to a specific presentation owner. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts` | 197 | Pass | Pass | Pass: builder remains the owner for deriving descriptors, allowed names, and team display metadata from team definitions/boundaries. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts` | 161 | Pass | Pass | Pass: new file has a concrete prompt-presentation/read-model concern and does not perform delivery resolution. | Pass | Pass | None. |
-
-Summary: `8` changed/untracked non-test source files checked; hard-limit violations: `0`.
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts` | 218 | Pass | Pass | Pass | Pass | None | None. |
+| `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts` | 487 | Pass, close to limit | Watch | Pass | Pass | Residual watch | Avoid future growth; further command policy additions should remain in parser/helper files. |
+| `autobyteus-server-ts/src/services/agent-streaming/external-user-message-server-message.ts` | 129 | Pass | Pass | Pass | Pass | None | None. |
+| `autobyteus-server-ts/src/services/agent-streaming/team-command-selector-parser.ts` | 58 | Pass | Pass | Pass | Pass | None | None. |
+| `autobyteus-server-ts/src/services/agent-streaming/team-live-message-publisher.ts` | 45 | Pass | Pass | Pass | Pass | None | None. |
+| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` | 407 | Pass | Watch | Pass | Pass | None | None. |
+| `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` | 464 | Pass | Watch | Pass | Pass | None | None. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | REQ-040 / AC-032 and DS-023 require a prompt-presentation manifest while keeping `communicationRecipients` as routing authority; implementation follows that posture. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | The reviewed spine stays one-way: descriptors/display metadata -> manifest -> instruction text; tool registration/delivery still use descriptor-owned allowed names and request builders. | None. |
-| Ownership boundary preservation and clarity | Pass | `member-team-roster-manifest.ts` owns only rendering/building of the prompt read-model; `MemberTeamContextBuilder` owns descriptor/display derivation; runtime adapters do not resolve from manifest text. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | The roster manifest is an off-spine presentation concern attached to member-run instruction composition, not a routing or delivery owner. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | New manifest file is placed under agent-team execution services beside the existing instruction/context services; no duplicate prompt renderer was added per runtime. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Codex and Claude paths both call `composeMemberRunInstructions`; roster formatting is centralized in `member-team-roster-manifest.ts`. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | `TeamMembershipRosterManifest` has presentation fields only: current member, teams, member rows, badges, and exact allowed names. It does not add duplicate selectors or route-delivery fields. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Team display name resolution and `allowedRecipientNames` derivation remain in `MemberTeamContextBuilder`; roster display grouping is in the manifest builder. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | The manifest builder performs real grouping and rendering decisions; it is not a no-op wrapper. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Composer now contains prompt-control lines only and delegates roster rows/formatting; runtime adapters pass context rather than constructing prompt-specific teammate lists. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Adapters depend on `MemberRunInstructionComposer` and descriptor-based tool registration, not on lower-level roster internals or delivery internals in parallel. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Codex/Claude instruction callers use the composer as the instruction boundary; send-message handlers/tool specs use `MemberTeamContext.communicationRecipients`/`allowedRecipientNames`, not rendered manifest output. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Source files are under agent-team execution services/domain and backend-specific runtime entrypoints matching their concerns. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | A single new manifest file is justified because it removes duplicated flat prompt formatting without creating a broad module tree. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `composeMemberRunInstructions` now accepts `MemberTeamContext` rather than separate `currentMemberName` + `teammates`, preserving a single source of prompt truth. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `TeamMembershipRosterManifest`, `buildTeamMembershipRosterManifest`, and `renderTeamMembershipRosterManifest` are explicit and responsibility-aligned. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicate Codex/Claude roster text remains; old flat `Teammates:` path is removed from the composer. | None. |
-| Patch-on-patch complexity control | Pass | The implementation replaces the old prompt section rather than layering compatibility text over it. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Removed old `teammates` input/formatter helpers from `MemberRunInstructionComposer`; source grep found no `Teammates:` prompt path in implementation source. | None. |
-| Test quality is acceptable for the changed behavior | Pass | Tests exercise AC-032 manifest text, exact recipient list, absence of technical headings, context-builder derived allowed names, Codex path, and Claude tool gating path. | None. |
-| Test maintainability is acceptable for the changed behavior | Pass | Tests are focused on prompt contract and descriptor derivation. Some fixtures still construct `MemberTeamContext` directly, but production construction is via builder; no blocker. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | Focused tsc, unit tests, whitespace, and source-size audit pass; API/E2E/full-stack validation can resume. | None. |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | The old flat `Teammates:` prompt is replaced, not retained as a fallback. | None. |
-| No legacy code retention for old behavior | Pass | No source prompt path exposes `local_agent`, `parent_boundary_agent`, `local child-team recipients`, or `parent-boundary recipients` as LLM grouping labels. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The no-legacy clean-cut design is implemented at the command edge and live identity path. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Command spine is now: WebSocket payload -> `team-command-selector-parser` -> path/route `TeamMemberSelector` -> `TeamRun` command. Invalid aliases return edge `ERROR` before domain calls. | None. |
+| Ownership boundary preservation and clarity | Pass | WebSocket edge owns transport parsing/rejection; domain/backend command chain owns path/route selectors only; frontend routing owns canonical source/member identity only. | None. |
+| Off-spine concern clarity | Pass | Parser, publisher, and frontend router serve clear owners and do not become alternate authorities. | None. |
+| Existing capability/subsystem reuse check | Pass | Existing streaming/external-channel/team-run subsystems were extended rather than bypassed. | None. |
+| Reusable owned structures check | Pass | `team-command-selector-parser.ts` centralizes command scalar-rejection and structured selector key policy. | None. |
+| Shared-structure/data-model tightness check | Pass | `TeamMemberSelector` remains path/route only; outbound display aliases are not accepted as command authority. | None. |
+| Repeated coordination ownership check | Pass | Command selector policy is centralized; live identity normalization is owned by publisher/facade path. | None. |
+| Empty indirection check | Pass | New parser owns real validation/translation policy. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Extraction kept handler under size limit and placed selector policy in a focused file. | None. |
+| Ownership-driven dependency check | Pass | No caller bypasses the TeamRun/domain selector boundary with raw command strings. | None. |
+| Authoritative Boundary Rule check | Pass | WebSocket clients receive authoritative edge errors; frontend no longer uses current focus as event identity authority. | None. |
+| File placement check | Pass | Files are placed in streaming/external-channel/frontend streaming owners. | None. |
+| Flat-vs-over-split layout judgment | Pass | Layout remains readable and appropriately scoped. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Structured snake/camel path/route fields are accepted; scalar name/id aliases are rejected with `INVALID_TARGET`; command payload types expose structured selectors only. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | New parser and identity fields are named by concrete responsibility. Residual app/external-channel `targetMemberName` naming remains outside this approved command-edge scope. | None for this review. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated command selector policy found in changed scope. | None. |
+| Patch-on-patch complexity control | Pass | Local fix addresses exactly the three prior findings and extracts parser policy instead of growing the handler. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No scalar command alias authority or focused-member live routing fallback remains in active command/live routing code. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Tests cover structured camelCase positives, scalar alias `ERROR` negatives, missing approval target, canonical live identity, and no-focused-fallback behavior. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests assert externally visible behavior and domain non-call behavior where relevant. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Focused server/frontend checks, typecheck, localization audit, diff check, and no-legacy scans passed. | API/E2E/full-stack validation should resume. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | Scalar command alias parsing remains removed; old live focus fallback removed. | None. |
+| No legacy code retention for old behavior | Pass | Scalar aliases remain only as explicit rejection keys and negative-test fixtures; display aliases are non-authoritative metadata. | None. |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `9.4`
-- Overall score (`/100`): `94`
-- Score calculation note: Simple average for trend visibility only; pass decision is based on all mandatory checks passing and no open findings.
+- Overall score (`/10`): `9.3`
+- Overall score (`/100`): `93`
+- Score calculation note: Simple average for trend visibility only. The review decision is pass because no blocking findings remain and all mandatory categories meet the clean-pass threshold.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
-| --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | The prompt-presentation spine is clear and descriptor-derived. | Full provider/full-stack validation has not yet rerun after this prompt change. | API/E2E should confirm live Codex/Claude instruction behavior. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Manifest presentation, context derivation, and runtime delivery remain separated. | Direct test construction of `MemberTeamContext` can bypass builder invariants in fixtures. | Keep future fixtures aligned with descriptor-derived contexts or add fixture builders. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Composer input is now the full `MemberTeamContext`; tool schemas still expose exact `recipient_name` values. | `allowedRecipientNames` remains a derived field carried on the context for tool specs. | Continue treating it as derived only; do not make it independently authoritative. |
-| `4` | `Separation of Concerns and File Placement` | 9.5 | New manifest file owns one concrete read-model/rendering concern; adapters remain thin. | None material in reviewed source. | None. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Manifest shape avoids delivery selectors and keeps prompt data tight. | Row display currently uses limited member presentation metadata; richer role/display labels may need future enhancement if product requires it. | Add explicit display fields only if required by user-facing prompt tests. |
-| `6` | `Naming Quality and Local Readability` | 9.5 | Names are readable and domain-aligned; prompt language is organization-oriented. | `canMessage`/`recipientName` appear in a presentation type, which is acceptable but must stay presentation-only. | Keep routing resolution out of this type. |
-| `7` | `Validation Readiness` | 9.2 | Focused checks pass and AC-032 unit coverage is present. | Live API/E2E/full-stack validation remains downstream. | API/E2E should include instruction prompt capture or equivalent evidence. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Parent-boundary representative prompt path and exact recipient names are covered for the seeded nested scenario. | Single-member/no-local-recipient child teams are not directly covered by this focused AC test. | Downstream or future unit coverage can add that edge if it becomes product-significant. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Old flat prompt wording is removed; technical scope labels remain internal only. | Edge alias fields elsewhere in transport/projection remain by prior design convention, outside this prompt scope. | Do not reintroduce alias-driven prompt/routing authority. |
-| `10` | `Cleanup Completeness` | 9.5 | No size/whitespace issues, no obsolete prompt helpers left. | Worktree contains unrelated delivery/documentation edits outside this source review scope. | Delivery should continue owning final docs/report/log cleanup. |
+| --- | ---: | --- | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | Command and live event spines are now explicit and edge-owned. | Large historical branch makes full-system reasoning still validation-sensitive. | API/E2E should exercise real nested flows. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | WebSocket parsing/rejection, TeamRun selectors, and frontend routing authorities are separated cleanly. | `AgentTeamStreamHandler` remains close to size limit. | Keep future command policy out of the handler. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.3 | Structured snake/camel path/route fields are accepted; scalar aliases are rejected with stable error. | Missing `invocation_id` still has log-only behavior, outside reviewed target identity scope. | Consider a future generic command-error pass if desired. |
+| `4` | `Separation of Concerns and File Placement` | 9.2 | Parser extraction and publisher/facade identity ownership are appropriate. | Some adjacent external-channel naming remains name-oriented by historical API. | Separate design scope if that public API should be renamed. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | `TeamMemberSelector` stays tight; parser policy is focused and not kitchen-sink. | None blocking. | None. |
+| `6` | `Naming Quality and Local Readability` | 9.1 | New names reflect command selector and live identity responsibilities. | Residual `targetMemberName` naming exists in adjacent app/external-channel contracts outside this scope. | Track only if no-legacy scope expands. |
+| `7` | `Validation Readiness` | 9.3 | Focused checks and regression coverage are strong enough to move to API/E2E. | Full live runtime/browser coverage still has to run downstream. | API/E2E should cover nested command, approval, external live message, and restore paths. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Prior edge cases now covered: camelCase structured inputs, invalid aliases, missing approval target, no focused fallback. | Null-valued scalar alias presence is treated as absent; not blocking because scalar target use is rejected. | Downstream validation can add negative null-presence coverage if product wants stricter field-presence rejection. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.2 | No scalar command alias authority or focus fallback remains in active reviewed paths. | Scalar alias strings remain as rejection keys and negative tests only. | Maintain this boundary during future merges. |
+| `10` | `Cleanup Completeness` | 9.3 | Prior findings are fully closed with tests and source cleanup. | Branch still has uncommitted docs/ticket artifacts outside implementation source. | Delivery should own artifact cleanup/finalization. |
 
 ## Findings
 
-No open findings in the latest authoritative round.
+### `CR-ROUND21-001` — Valid structured camelCase command selector fields are documented but not accepted
+
+- Status: `Resolved`
+- Evidence:
+  - `team-command-selector-parser.ts` accepts both snake_case and camelCase structured selector keys for send and approval/denial.
+  - Unit tests cover `targetMemberRouteKey`, `targetMemberPath`, `sourcePath`, and `memberRouteKey`.
+  - Integration tests cover camelCase `SEND_MESSAGE` and camelCase approval targeting.
+
+### `CR-ROUND21-002` — Invalid scalar command aliases are only logged, not returned as clear invalid-target responses
+
+- Status: `Resolved`
+- Evidence:
+  - `AgentTeamStreamHandler.sendInvalidTarget(...)` sends `ERROR` payloads with code `INVALID_TARGET`.
+  - Scalar alias send/approval requests and missing approval target are covered by unit and integration tests that assert `ERROR` responses.
+
+### `CR-ROUND21-003` — Live team event routing still has an old `agent_name`/focused-member fallback path
+
+- Status: `Resolved`
+- Evidence:
+  - `TeamStreamingService.getMemberContext(...)` returns `null` when no canonical source/member route/path match exists; dispatch skips instead of using focused member.
+  - `TeamLiveMessagePublisher` and `ChannelTeamRunFacade` propagate canonical `member_route_key`, `member_path`, `source_route_key`, and `source_path` for external-channel live team messages.
+  - Frontend tests prove `agent_name`-only payloads do not route through focus.
+
+No new findings were found in Round 22.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E/full-stack validation to resume. |
-| Tests | Test quality is acceptable | Pass | AC-032 prompt content, forbidden technical labels, exact recipient list, builder derivation, Codex bootstrap, and Claude gating are covered. |
-| Tests | Test maintainability is acceptable | Pass | Focused tests remain readable. Future tests should prefer shared context fixture builders where possible to avoid invalid hand-built contexts. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open findings remain; downstream validation can proceed from the current implementation handoff. |
+| Validation Readiness | Ready for the next workflow stage (`API / E2E`) | Pass | API/E2E/full-stack validation should resume from this source state. |
+| Tests | Test quality is acceptable | Pass | Positive and negative tests assert externally visible command behavior and live routing behavior. |
+| Tests | Test maintainability is acceptable | Pass | New parser tests are focused through handler/integration behavior; no fragile implementation-only assertion is the sole evidence. |
+| Tests | Review findings are clear enough for the next owner before API / E2E resumes | Pass | No blocking findings remain. |
 
-## Verification Commands Run By Code Review
+## Verification Evidence
 
-Passed:
+Commands/checks run during this review:
 
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
-  - Result: passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts --reporter=dot`
-  - Result: `4` files passed, `15` tests passed.
-- `git diff --check`
-  - Result: passed.
-- Changed/untracked non-test `.ts` / `.vue` source-size audit
-  - Result: `8` files checked; hard-limit violations `0`.
-- Source/prompt grep for obsolete LLM-facing labels
-  - Result: no implementation prompt path containing `Teammates:`, `local child-team recipients`, or `parent-boundary recipients`; technical scope enum strings remain internal source/test fixture values only.
-
-Expected non-blocking logs observed: SQLite experimental warning and backend test fixture initialization logs.
-
-Not run by code review:
-
-- Live provider E2E/full-stack browser validation. This is the next workflow stage and remains owned by `api_e2e_engineer`.
+- Criteria/artifact reads:
+  - Read `code-reviewer` skill and canonical `design-principles.md`.
+  - Reviewed `requirements-doc.md`, `design-spec.md`, `command-api-clean-cut-design-rework-note.md`, `design-review-report.md`, and latest `implementation-handoff.md` context.
+- Git/source inspection:
+  - `git status --short`
+  - `git log --oneline -8`
+  - `git show --name-only --format='%h %s' bc2cb3c3`
+  - Targeted source inspection of command parser, stream handler, external live publisher/facade, frontend stream router, protocol types, and tests.
+  - No-legacy scans for removed selector helpers/variants, scalar command authority, scalar approval-target compatibility, and focused-member live routing fallback.
+  - Changed non-test source size audit over `bc2cb3c3^..bc2cb3c3`: 7 implementation files checked, no file over 500 non-empty lines.
+- Static/check commands:
+  - `git diff --check` — passed.
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+  - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings.
+- Focused server verification:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/agent-streaming/team-live-message-publisher.test.ts tests/unit/external-channel/runtime/channel-team-run-facade.test.ts tests/integration/agent/agent-team-websocket.integration.test.ts --reporter=dot` — passed, 4 files / 32 tests.
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-manager.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts --reporter=dot` — passed, 4 files / 25 tests.
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts --reporter=dot` — passed, 1 file / 3 tests.
+- Focused frontend verification:
+  - `pnpm -C autobyteus-web exec vitest run services/runHydration/__tests__/runtimeStatusNormalization.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --reporter=dot` — passed, 4 files / 19 tests.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Old flat `Teammates:` prompt section is removed, not retained as a compatibility fallback. |
-| No legacy old-behavior retention in changed scope | Pass | Runtime instructions now render a team membership roster when `send_message_to` is available. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete teammate formatter/input shape removed from `MemberRunInstructionComposer`; no obsolete source prompt path identified. |
+| No backward-compatibility mechanisms in changed scope | Pass | Scalar command aliases are not normalized or accepted; they are rejection keys only. |
+| No legacy old-behavior retention in changed scope | Pass | Focused-member live routing fallback is removed; `agent_name` / `agent_id` are non-authoritative display/correlation metadata only. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Prior obsolete paths are removed or converted to explicit negative-test coverage. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
 | Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| None identified in latest authoritative round | N/A | N/A | N/A | N/A |
+| None in current reviewed scope | N/A | No active reviewed command/live route path retains the old behavior. | N/A | None. |
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`
-- Why: LLM-facing team communication prompt presentation changed from a flat teammate list to a named team membership roster. Requirements/design artifacts already record REQ-040 / AC-032 and DS-023; delivery should keep final durable docs synchronized after validation.
-- Files or areas likely affected: team communication / nested mixed team runtime instructions, agent team execution docs, and downstream handoff/validation reports.
+- Docs impact: `No` for this local fix.
+- Why: Requirements/design/protocol docs already define the clean-cut path/route command contract. The local fix now matches that contract.
+- Files or areas likely affected: None required before API/E2E. Downstream delivery may still need normal docs synchronization/final artifact cleanup after validation.
 
 ## Classification
 
-- Latest round passes. No failure classification applies.
+- Classification: N/A — review passed.
 
 ## Recommended Recipient
 
 - `api_e2e_engineer`
 
-Routing note: pass from implementation review. API/E2E/full-stack validation should resume with the cumulative package.
+Routing note: This is a pass from the implementation-review entry point. API/E2E/full-stack validation should resume with the cumulative package.
 
 ## Residual Risks
 
-- Live provider E2E and full-stack browser validation remain required, especially whether Codex/Claude instructions in real sessions present the roster cleanly and whether agents choose exact `recipient_name` values.
-- `allowedRecipientNames` remains a derived edge/tool-schema list on `MemberTeamContext`; it must not become a second routing authority or drift from `communicationRecipients` descriptors.
-- Direct unit-test construction of `MemberTeamContext` is acceptable for focused fixtures but should not normalize mismatched `allowedRecipientNames` / `communicationRecipients` states.
-- Worktree contains unrelated delivery/documentation/log edits outside this source review scope; delivery remains responsible for final integrated-state documentation and artifact cleanup.
+- Public application/external-channel APIs still contain historical names such as `targetMemberName` and `targetNodeName`. They are not blocking this review because the approved Round 14 command API scope targets WebSocket/GraphQL/tool approval runtime command selectors. If the no-legacy policy should extend to application SDK/external-channel public API naming, that needs a separate scoped design/implementation cycle.
+- `AgentTeamStreamHandler` remains close to the 500-line guardrail at 487 effective non-empty lines. Keep future command policy in parser/helper files rather than growing the handler.
+- Full API/E2E/live runtime validation still needs to verify real nested mixed-team behavior after the latest-base merge and the clean-cut command API changes.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Score Summary: `9.4/10` (`94/100`); all mandatory checks pass and no open findings remain.
-- Notes: Route to `api_e2e_engineer` with cumulative artifacts so API/E2E/full-stack validation can resume for the roster-manifest refinement.
+- Score Summary: `9.3 / 10` (`93 / 100`)
+- Notes: All Round 21 findings are resolved. The implementation is ready for API/E2E/full-stack validation to resume.

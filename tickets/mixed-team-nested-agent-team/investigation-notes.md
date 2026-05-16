@@ -183,7 +183,7 @@ Design-owner decisions after recheck:
 2. Child team runs should be parent-owned internal member handles, persisted recursively in parent metadata, not registered/listed as separate top-level runs unless explicitly launched by the user.
 3. Canonical recursive `TeamRunMetadata` is authoritative. Do not introduce a version-suffixed metadata type or `runVersion`; legacy flat metadata is rejected with an explicit unsupported legacy-metadata/topology-lost error and is never guessed into nested topology.
 4. `sourcePath` is the only canonical domain event-source identity. Route keys and legacy/display fields are derived at edges.
-5. GraphQL/WebSocket/tool approval must carry path/route selectors for nested operations and reject ambiguous bare-name approvals.
+5. GraphQL/WebSocket/tool approval must carry path/route selectors for nested operations and reject bare-name/agent-id command targets unconditionally.
 
 
 ## No-Backward-Compatibility Storage Clarification (2026-05-12)
@@ -281,7 +281,7 @@ Additional current-code evidence:
 | 2026-05-13 | Code | `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts` | Inspect agent-visible team context. | Context has structural `members` and derived `allowedRecipientNames`, but no scoped communication-recipient descriptors or represented-subteam identity. | Yes: structural topology and communication-visible roster need separate owned projections. |
 | 2026-05-13 | Code | `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts` | Inspect recipient exposure. | `allowedRecipientNames` is derived only from current team `members`, excluding the current member. Parent members see `BuildSquad`; child coordinator sees only child-local teammates. | Yes: parent communication should expose `review_lead` as `BuildSquad` representative, and child coordinator should see `program_manager`. |
 | 2026-05-13 | Code | `autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts` | Inspect runtime instruction prompt. | Instructions say `recipient_name` must exactly match a teammate from one flat list. | Yes: runtime prompt must group scoped communication recipients and not present parent recipients as fake local teammates. |
-| 2026-05-13 | Code | `autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts`, `autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts`, `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-team-communication-context-builder.ts` | Inspect send_message_to resolution. | Tool handlers find recipients only in `memberTeamContext.members`, then fall back to a bare name selector inside the current team run. | Yes: handlers need `communicationRecipients` descriptors with target team-run, selector, scope, actual member identity, and represented-subteam metadata. |
+| 2026-05-13 | Code | `autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts`, `autobyteus-server-ts/src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.ts`, `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-team-communication-context-builder.ts` | Inspect send_message_to resolution. | Tool handlers find recipients only in `memberTeamContext.members`, then previously fell back to a bare name selector inside the current team run. | Yes: handlers need `communicationRecipients` descriptors with target team-run, selector, scope, actual member identity, and represented-subteam metadata. |
 | 2026-05-13 | Code | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts` | Inspect delivery owner. | `deliverInterAgentMessage()` resolves both sender and recipient inside the manager's current `runtimeContext.memberContexts`; nested upward sender is not a top-level parent context and parent-to-representative requires nested recipient identity. | Yes: parent delivery must accept normalized nested sender/receiver identity instead of falling back to empty source path or abstract subteam receiver. |
 | 2026-05-13 | Code | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts`, `mixed-sub-team-run-factory.ts` | Inspect child run creation/delivery. | Child runs are created internally by the parent subteam handle; inter-member delivery currently posts to child default/coordinator with `null`, which works for abstract subteam target but loses explicit representative target identity. | Yes: subteam handle should strip nested target selectors and pass explicit child coordinator selectors for representative delivery; bridge should be parent-owned/internal, not global run lookup. |
 
@@ -339,3 +339,31 @@ Design conclusion:
 - Render instructions as named team contexts such as `BuildSquad` and `Delivery Leadership Team`, including current member role, self row, represented-team context, team members, and exact allowed `recipient_name` values.
 - Do not expose implementation labels like `local_agent`, `parent_boundary_agent`, `local child-team recipients`, or `parent-boundary recipients` as primary LLM-facing headings.
 - No change to `MixedTeamManager`, `ParentBoundaryBridge`, child team ownership, metadata, or communication event routing is intended by this refinement.
+
+
+## Command API Clean-Cut Decision (2026-05-16)
+
+Code review Round 20 identified a design contract conflict: previous requirements/protocol docs allowed scalar command edge aliases (`target_member_name`, `target_agent_name`, command-side `agent_name`, command-side `agent_id`) while current no-legacy implementation direction was removing/rejecting them.
+
+Decision: choose the strict no-legacy command API. Team command and approval payloads must use explicit path/route selectors only. Transport and GraphQL edges reject scalar alias target fields with clear invalid-target errors instead of normalizing them. `send_message_to.recipient_name` remains valid because it is an LLM tool roster input resolved through `communicationRecipients`, not a public runtime command target alias. Outbound event/display aliases, if emitted, remain non-authoritative and must not be accepted back as command targets.
+
+Required downstream implementation/doc alignment:
+
+- Update WebSocket/GraphQL handler/adapters and frontend protocol types to require `target_member_path`/`target_member_route_key` or approval `source_path`/`source_route_key`/`member_path`/`member_route_key`.
+- Remove accepted command fields `target_member_name`, `target_agent_name`, command-side `agent_name`, command-side `agent_id`, and camelCase equivalents.
+- Update runtime E2E helpers and tests to send structured route/path selectors.
+- Keep `TeamMemberSelector` as explicit path/route identity at command boundaries.
+
+
+## Architecture Review Round 13 Design-Impact Response (2026-05-16)
+
+Architecture review Round 13 failed the command API rework because stale authoritative wording could still be interpreted as allowing public/domain command targeting by unambiguous bare names, top-level names, transport strings, or name/id aliases.
+
+Revision response:
+
+- Rechecked `requirements-doc.md`, `design-spec.md`, `command-api-clean-cut-design-rework-note.md`, and the server protocol/module docs for command-target wording.
+- Confirmed the target contract is path/route-only for public/domain `TeamMemberSelector`; no `top_level_name` selector variant remains in the target design.
+- Clarified that internal mixed dispatch may derive the executable top-level handle segment from `memberPath[0]` or the first route-key segment, but that derivation is not a public/domain selector variant.
+- Confirmed `selectorFromMemberName` and `selectorFromOptionalTargetName` must be deleted or replaced for public/domain command paths rather than preserved as adapters.
+- Clarified that any authoring-time launch-config convenience is outside runtime command/approval APIs and cannot reintroduce runtime command aliases.
+- Preserved only `send_message_to.recipient_name` as a scoped LLM roster label, not a command selector.

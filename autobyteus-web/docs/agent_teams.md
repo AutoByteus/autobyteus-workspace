@@ -216,8 +216,11 @@ represented-subteam metadata, so parent-to-representative and upward-report
 rows display the responsible subteam badge/breadcrumb while still targeting the
 actual leaf participant path. Display labels use the membership label at the
 current boundary (`BuildSquad`, `review_lead`, `qa_specialist`) rather than
-stale flattened route copies. Internal child team runs are opened through their
-parent subteam node and should not appear as separate top-level history rows.
+stale flattened route copies. A subteam/group tile that has no leaf runtime
+context uses the canonical offline status fallback rather than reintroducing
+removed initialization-only statuses. Internal child team runs are opened
+through their parent subteam node and should not appear as separate top-level
+history rows.
 
 ## Store Ownership
 

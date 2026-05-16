@@ -20,12 +20,15 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
 - Successful single-agent termination emits a terminal `AGENT_STATUS { status: "offline", can_interrupt: false, agent_id }` to existing subscribers before the run stream is torn down, so live clients do not have to infer termination only from socket close or a later history refresh.
 - `SEND_MESSAGE` is the recoverable chat command. Before posting, stream handlers resolve the session run again, rebind event subscription to the restored runtime subject when needed, and then record the run/team as active after the message is accepted. This keeps follow-up chat working after local stop/termination or process restart when persisted metadata is still available.
 - Team `SEND_MESSAGE` payloads are normalized to `TeamMemberSelector` at the
-  WebSocket edge. Prefer `target_member_path` or `target_member_route_key` for
-  nested members; scalar name/id aliases are rejected rather than normalized.
+  WebSocket edge from `target_member_path` or `target_member_route_key` only.
+  Scalar target aliases such as `target_member_name`, `target_agent_name`,
+  command-side `agent_name`, command-side `agent_id`, and camelCase equivalents
+  are rejected with invalid-target errors.
 - Non-send control commands (`INTERRUPT_GENERATION`, `APPROVE_TOOL`, and `DENY_TOOL`) stay active-only. They use the current in-memory runtime lookup and do not restore stopped runs as a side effect, so stale control commands cannot accidentally resurrect a stopped run.
-- Team tool approvals should target the emitted `source_path` /
+- Team tool approvals must target the emitted `source_path` /
   `source_route_key` or `member_path` / `member_route_key` for the requesting
-  agent. Scalar name/id target aliases are rejected at the WebSocket edge.
+  agent. Scalar name/id aliases, including command-side `agent_name` and
+  `agent_id`, are rejected instead of being mapped back to member paths.
 - Team `INTERRUPT_GENERATION` is member-targeted. The team payload must include `target_member_path` / `targetMemberPath` or `target_member_route_key` / `targetMemberRouteKey` and may include `target_member_run_id` / `targetMemberRunId` as an optional stale-target guard. Missing targets and route-key/run-id mismatches are rejected; team interrupt must not fall back to an aggregate/team-wide stop. Single-agent interrupt remains the separate no-payload `INTERRUPT_GENERATION` command on `/ws/agent/:runId`.
 - Tool approval commands route through the active runtime's public approval boundary. Single-agent AutoByteus approval uses `Agent.postToolExecutionApproval(...)`; team approval resolves the member and calls that member agent's public approval API through the async team event path. Approval status/projection events remain stream output only: stale/no-active/no-pending/interrupted approvals must not be queued as runtime input, start a new turn, restore a stopped run, or bypass member runtime state. Native approval requires an actual pending-approval marker; active auto-executing tool-batch membership alone is not enough authority for `APPROVE_TOOL` / `DENY_TOOL`.
 - Team member input is emitted as `EXTERNAL_USER_MESSAGE` from backend
@@ -40,6 +43,6 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
 - Missing or unrestorable runs close the socket with the subject-specific not-found error (`AGENT_NOT_FOUND` or `TEAM_NOT_FOUND`) and close code `4004`. A resolved run whose event stream cannot be subscribed closes with `*_STREAM_UNAVAILABLE` and close code `1011`.
 - Team websocket fanout for team runs is handled in `src/services/agent-streaming/agent-team-stream-handler.ts`.
 - Nested team events expose `source_path` / `source_route_key`; agent events
-  also expose `member_path` / `member_route_key`. `sub_team_node_name` is a
-  display-only compatibility alias and not routing identity.
+  also expose `member_path` / `member_route_key`. Display-only aliases, if
+  present, are not routing identity and are not accepted as command targets.
 - Team metadata refresh work is intentionally coalesced there rather than executed on every streamed event so long workflow/team runs do not add one metadata write per event to the hot path. Accepted team follow-up messages still record run activity immediately through `TeamRunService.recordRunActivity(...)` so run history reflects the resumed active state.

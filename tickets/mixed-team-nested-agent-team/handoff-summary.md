@@ -1,27 +1,37 @@
 # Handoff Summary
 
+## Delivery Round 12 Latest-Base Blocker
+
+- Current delivery status: `Blocked`
+- Reason: after API/E2E Round 12 passed at `bc2cb3c3`, delivery refreshed `origin/personal` and found it advanced to `29c872bbae3f20a492701443b62a0e13a8924966`; the ticket branch is now `behind 4`, `ahead 13`.
+- Merge preview result: source/docs/test content conflicts; no real merge was applied by delivery.
+- Blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round12-integration-blocker.md`
+- Routed owner: `implementation_engineer` for local integration conflict resolution, then code review and API/E2E before delivery rebuilds Electron and resumes final handoff.
+- The prior Round 11 Electron build remains available for ad hoc inspection only; it is not a final current-base verification candidate.
+
 ## Summary Meta
 
 - Ticket: `mixed-team-nested-agent-team`
-- Date: `2026-05-13`
-- Current status: `Ready for user verification; finalization is blocked until explicit user completion/verification`
+- Date: `2026-05-16`
+- Current status: `Blocked by latest-base integration conflicts; implementation local fix required`
 - Task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`
 - Ticket branch: `codex/mixed-team-nested-agent-team`
 - Tracked base/finalization target: `origin/personal` / local `personal`
 - Bootstrap base reference: `origin/personal @ be56cab9b41b850c92690d79a8dfa70c52c369a0`
-- Current integrated base reference: `origin/personal @ b056b5f809dacb27524e492f3acef16630969e1b`
-- Latest local checkpoint before integration: `fd8c0b4cd68a6e1b44f8799bdd0b309f2b564ae3 chore(ticket): checkpoint nested mixed team round 7 candidate`
-- Latest integrated ticket branch commit before delivery docs/build-log edits: `d76f8ee803904bde51609cfefe9ea42aeb04e646`
-- Current branch state against tracked base: `ahead 6`, `behind 0`
-- Latest authoritative code review result: `Pass` (`review-report.md`, Round 14 after upward reporting / representative-addressing fixes)
-- Latest authoritative API/E2E result: `Pass` (`api-e2e-validation-report.md`, Round 7)
-- Local Electron packaged build result: `Pass` (`electron-build-report.md`, version `1.3.7`)
+- Current integrated base reference: `origin/personal @ a51d3abd8bb620bb984c9c9f24209e4d32eb167b`; latest tracked base `origin/personal @ 29c872bbae3f20a492701443b62a0e13a8924966` is not integrated due to conflicts
+- Current ticket branch HEAD: `bc2cb3c3fdff7eb89157d43fa0018bf0caf89ea4 fix(team): enforce structured live command identity`
+- Current branch state against tracked base: `ahead 13`, `behind 4`
+- Latest authoritative code review result: `Pass` (`review-report.md`, Round 22)
+- Latest authoritative API/E2E result: `Pass` (`api-e2e-validation-report.md`, Round 12 supplemental browser/full-stack smoke at `bc2cb3c3`; delivery now blocked by newer base conflicts)
+- Local Electron packaged build result: `Pass` (`electron-build-report.md`, version `1.3.13`; superseded for final delivery by latest-base blocker)
+- Prior Round 19 delivery pause: `Resolved / historical` (`delivery-round19-pause-note.md`)
 
 ## Cumulative Artifact Package
 
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Command API design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
 - Upward nested-team reporting design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`
 - Architecture pause note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/architecture-review-pause-note.md`
 - Design-owner recheck note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-owner-recheck-note.md`
@@ -30,147 +40,112 @@
 - Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
 - Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/review-report.md`
 - API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
-- Round 3 UI failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-ui-validation-failure.md`
-- Frontend rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/frontend-nested-team-ui-design-rework-note.md`
-- Round 4 communication failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-communication-validation-failure.md`
-- Round 5 live child transcript/display failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
-- Delivery Round 6 resolved Electron build blocker note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round6-electron-build-blocker.md`
-- Round 7 post-integration check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round7-post-integration-checks.log`
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/docs-sync-report.md`
 - Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/electron-build-report.md`
 - Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/electron-build.log`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/release-deployment-report.md`
-- This handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/handoff-summary.md`
-- Round 7 screenshots:
-  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700588753.png`
-  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700597733.png`
-  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700608779.png`
-  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700671227.png`
+- Delivery Round 11 checks log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round11-post-refresh-checks.log`
+- Delivery Round 19 pause/resolution note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round19-pause-note.md`
+- Delivery Round 8 integration blocker note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round8-integration-blocker.md`
+- Historical full-stack UI failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-ui-validation-failure.md`
+- Historical frontend rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/frontend-nested-team-ui-design-rework-note.md`
+- Historical communication failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-communication-validation-failure.md`
+- Historical child transcript/projection failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
 
-## Delivered Change
+## Integrated-State Refresh
 
-- Added recursive team topology planning for nested `agent_team` members, including stable `memberPath` and normalized slash-delimited `memberRouteKey` identity.
-- New nested team definitions launch through `TeamBackendKind.MIXED`, even when every leaf member uses the same runtime; non-nested single-runtime teams continue to use their runtime-specific team backend.
-- Added `TeamMemberSelector` as the command identity across `TeamRun`, `TeamRunBackend`, managers, mixed runtime, WebSocket/channel/application adapters, and tool approval routing.
-- Kept raw `target_member_name`/`target_agent_name`/`agent_name` strings as transport edge aliases only; nested duplicate leaf targets require path or route-key selectors.
-- Reworked mixed-team runtime ownership into top-level member handles: agent handles own `AgentRun`s, subteam handles own child `TeamRun`s through `MixedSubTeamRunFactory`.
-- Preserved the structural subteam composer route: selecting a top-level subteam member creates/restores the child team run and lets that child team's default/coordinator handle the input.
-- Added scoped representative communication rosters: parent agents see subteam coordinators/representatives, and represented child coordinators see local child teammates plus allowed immediate parent-boundary recipients.
-- Added parent-to-representative delivery, for example `program_manager -> review_lead` resolving to `BuildSquad/review_lead`, with execution routed through the structural `BuildSquad` subteam handle and child-local selector stripping after entering the child boundary.
-- Added bounded upward reporting, for example `BuildSquad/review_lead -> program_manager`, without hidden `reply_to_sender` aliases or arbitrary cross-level messaging.
-- Added `representedSubTeam` metadata through backend communication participants/events/projections, GraphQL/WebSocket DTOs, and frontend Team Messages display so representative rows preserve both the responsible subteam and the actual leaf participant path.
-- Added path-aware event attribution (`sourcePath`, `memberPath`, `memberRouteKey`) and child event prefixing for nested mixed teams; `subTeamNodeName` is only a deprecated display alias.
-- Added recursive `TeamRunMetadata.memberTree` persistence/restore with subteam nodes recording child team run id, child team definition id, coordinator route key, and child member tree.
-- Added metadata flatteners/projection adapters for consumers that need leaf-agent views while preserving recursive metadata as restore truth.
-- Added member-input/external-user-message projection so parent-to-subteam input appears in focused child transcripts without stale timestamp/null duplicates while preserving repeated no-ID/no-timestamp rows.
-- Updated application/channel/runtime launch paths to use route-keyed member descriptors for nested team launch and restore.
-- Updated frontend recursive team context, focus/opened labels, subteam views, Team Messages represented-subteam display, and localization for nested team UI literals.
-- Added durable integration/unit/E2E validation for nested mixed backend launch, duplicate leaf identity, subteam dispatch, representative delivery, upward reporting, restore, event source paths, selector command handling, Team Communication projections, and live provider-backed nested mixed runtime behavior.
-- Updated long-lived docs for nested launch/routing/restore, selector command identity, stream source paths, member input projection, representative/upward communication, frontend recursive focus state, and Team Communication projections.
+- `git fetch origin --prune` completed before delivery checks/build.
+- Latest tracked base checked: `origin/personal @ a51d3abd8bb620bb984c9c9f24209e4d32eb167b`.
+- Branch already contained the latest tracked base; no merge/rebase was needed in this delivery pass.
+- No local integration checkpoint was needed because the reviewed/API-E2E-passed source state is committed at `HEAD` and the branch was not behind the tracked base.
+- Branch state: `git rev-list --left-right --count origin/personal...HEAD` => `0 13`.
+- Delivery edits and Electron packaging were performed only after confirming the current tracked-base state.
 
-## Integration Refresh Record
+## Verification Evidence
 
-- Delivery refresh command: `git fetch origin --prune`
-- Bootstrap base reference from investigation: `origin/personal @ be56cab9b41b850c92690d79a8dfa70c52c369a0`
-- Previous delivery integrated base: `origin/personal @ aed54f77d0fbe10eea8ff67201375337b94ce362`
-- Latest tracked remote base checked: `origin/personal @ b056b5f809dacb27524e492f3acef16630969e1b`
-- Base advanced since previous delivery state: `Yes` (`13` commits)
-- Local checkpoint commit before latest integration: `Completed` (`fd8c0b4cd68a6e1b44f8799bdd0b309f2b564ae3 chore(ticket): checkpoint nested mixed team round 7 candidate`)
-- Integration method: `Merge` (`git merge --no-edit origin/personal`)
-- Integration result: `Completed` (`d76f8ee803904bde51609cfefe9ea42aeb04e646`)
-- Current branch state: `ahead 6`, `behind 0` relative to `origin/personal`
-- Delivery-owned docs/report/build-log edits started only after merging latest tracked base and running post-integration verification: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`
+Latest authoritative API/E2E Round 11 passed before delivery resumed:
 
-## API/E2E Round 7 Validation Accepted
+- Backend source build typecheck passed.
+- Backend focused command/external-channel/WebSocket suite passed: `4` files / `32` tests.
+- Backend focused nested/streaming suite passed: `4` files / `25` tests.
+- Backend mixed-team-run integration suite passed: `1` file / `3` tests.
+- Frontend focused status/recovery/history/streaming suite passed: `4` files / `19` tests.
+- Frontend localization literal audit passed with zero unresolved findings.
+- No-legacy command-authority scan passed.
+- Durable live nested mixed-runtime GraphQL/WebSocket E2E passed with real AutoByteus/LM Studio, Codex App Server, and Claude Agent SDK runtimes.
 
-API/E2E Round 7 passed on the real worktree backend/frontend setup after code review Round 14. Highlights:
+Delivery post-refresh checks rerun from the integrated state:
 
-- Seeded nested mixed team with parent AutoByteus/LM Studio `program_manager`, child `BuildSquad`, Codex `review_lead` representative/coordinator, and Claude `qa_specialist` sibling.
-- Parent-to-representative routing: `program_manager -> review_lead` resolved to `BuildSquad/review_lead` with `receiverRepresentedSubTeam=BuildSquad`.
-- Upward reporting: `BuildSquad/review_lead -> program_manager` delivered `UPWARD_REPORT_R14_1778700487004` with `senderRepresentedSubTeam=BuildSquad`; the parent transcript received the inbound `You received...review_lead` message.
-- Child-internal communication: `BuildSquad/review_lead -> BuildSquad/qa_specialist` used parent-root route/path identity and QA replied exactly `CHILD_INTERNAL_R14_1778700560503`.
-- Verified represented-subteam Team Messages display/projection, restore/open dedupe, child top-level history exclusion, and terminate cascade.
-- Durable live nested mixed-runtime GraphQL E2E passed with `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1`.
-- Cleanup verified: live team run `team_nested-mixed-runtime-delivery-team_85ea164c` was terminated and resume config returned `isActive=false`; validation services stopped and ports `3020` / `8000` were clear.
-
-## Post-Integration Verification
-
-Commands run from `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team` after merging latest `origin/personal` unless noted otherwise:
-
-- `git diff --check origin/personal...HEAD` — Passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-manager.test.ts tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/team-communication/team-communication-service.test.ts --reporter=dot` — Passed (`8` files, `36` tests).
-- `pnpm -C autobyteus-web exec vitest run stores/__tests__/teamCommunicationStore.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --reporter=dot` — Passed (`3` files, `27` tests).
+- `git diff --check` — Passed.
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — Passed.
+- Backend focused command/external-channel/WebSocket suite — Passed.
+- Backend focused nested/streaming suite — Passed.
+- Backend mixed-team-run integration suite — Passed.
+- Frontend focused status/recovery/history/streaming suite — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings.
-- Check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round7-post-integration-checks.log`.
+- Refined no-legacy command-authority scan — Passed.
+- `git diff --cached --check` — Passed.
+- Check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round11-post-refresh-checks.log`.
 
-## Documentation Sync Summary
+## Docs Sync
 
+- Docs sync result: `Updated`
 - Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/docs-sync-report.md`
-- Docs result: `Updated`
 - Long-lived docs updated:
-  - `autobyteus-server-ts/docs/modules/agent_team_execution.md`
-  - `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
-  - `autobyteus-server-ts/docs/modules/agent_streaming.md`
-  - `autobyteus-server-ts/docs/modules/run_history.md`
-  - `autobyteus-server-ts/docs/design/streaming_parsing_architecture.md`
-  - `autobyteus-server-ts/docs/features/artifact_file_serving_design.md`
-  - `autobyteus-web/docs/agent_teams.md`
-  - `autobyteus-web/docs/agent_execution_architecture.md`
-- Long-lived docs reviewed with no change:
-  - `autobyteus-server-ts/docs/modules/agent_team_definition.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/docs/modules/agent_streaming.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/docs/modules/agent_team_execution.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/docs/agent_execution_architecture.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/docs/agent_teams.md`
+- Docs now record structured route/path-only team command identity, scalar alias invalid-target behavior, structured approval target authority, coarse runtime status contract, and prior nested mixed-team communication/restore/display contracts.
 
 ## Local Electron Build For User Testing
 
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/electron-build-report.md`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/electron-build.log`
-- README-selected command: `pnpm build:electron:mac` from `autobyteus-web/`; run with local no-signing/no-notarization env and `AUTOBYTEUS_BUILD_FLAVOR=personal`.
+- README files read: root `README.md` and `autobyteus-web/README.md`.
+- Command run from `autobyteus-web`:
+
+```bash
+NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac
+```
+
 - Result: `Pass`
-- Direct app path: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.zip`
-- App version: `1.3.7`; bundle id: `com.autobyteus.app`.
-- ZIP integrity: Passed (`zip -T`).
-- DMG checksum verification: Passed (`hdiutil verify`).
-- Note: This local build is unsigned; macOS may require right-click / Control-click -> Open. Quit any existing AutoByteus app before testing to avoid embedded backend port conflicts.
+- App version: `1.3.13`
+- Bundle id: `com.autobyteus.app`
+- App size: `1.2G`
+- DMG size: `368M`
+- ZIP size: `369M`
+- ZIP integrity: `OK` (`zip -T`)
+- DMG checksum verification: `VALID` (`hdiutil verify`)
+- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/electron-build-report.md`
 
-## User Verification Hold
+Testable artifacts:
 
-Delivery is intentionally paused here. Per workflow, the following actions are **not** done until explicit user completion/verification is received:
+- App: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip`
 
-- moving `tickets/mixed-team-nested-agent-team/` to `tickets/done/mixed-team-nested-agent-team/`
-- committing delivery-owned docs/report/handoff/build-log edits
-- pushing the ticket branch
-- refreshing and merging into local `personal`
-- pushing `origin/personal`
-- release/publication/deployment work
-- ticket worktree or branch cleanup
+## Suggested User Verification Path
 
-## Suggested User Verification Focus
-
-1. Launch or restore a nested team definition that contains at least one top-level `agent_team` member.
-2. Confirm the backend selects the mixed team path and the team remains routable after stop/restore.
-3. Send a structural composer message to a top-level subteam member and confirm it reaches the child team default/coordinator.
-4. From a parent member, use `send_message_to` with the exposed representative name such as `review_lead`; confirm it routes to `BuildSquad/review_lead` and shows represented-subteam metadata.
-5. From the represented coordinator, send an upward report to an exposed parent-boundary member such as `program_manager`; confirm the parent transcript and Team Messages show the inbound report.
-6. Send child-internal communication such as `BuildSquad/review_lead -> BuildSquad/qa_specialist`; confirm parent-root route/path identity remains stable.
-7. Reopen run history for the team and confirm represented-subteam Team Messages, member replay/projection, and child top-level history exclusion remain correct.
+1. Quit any currently running AutoByteus desktop app to avoid embedded backend port conflicts.
+2. Open the unsigned app bundle directly or install from the DMG; macOS may require right-click / Control-click -> Open.
+3. Launch a nested mixed team with a parent AutoByteus/LM Studio member and a Codex/Claude child subteam if your local providers are available.
+4. Confirm model-facing rosters show clean recipient names, not descriptor labels.
+5. Confirm parent-to-representative, child-internal, and child-to-parent messages route through the expected represented-subteam paths.
+6. Trigger or inspect team tool approval behavior and confirm approval is tied to the original route/path target even after focus changes.
+7. Reopen run history and confirm recursive member focus, Team Messages, child top-level history exclusion, and restore/projection behavior remain correct.
 
 ## Residual Risks / Constraints
 
-- Manual approval/denial UI was not re-exercised in API/E2E Round 7; focused changed-area tests cover route/path approval source propagation from prior rounds, and live validation used deterministic nested communication paths.
+- Browser UI was not relaunched in API/E2E Round 11; latest frontend behavior was covered by focused Vitest, and real backend/live-runtime behavior was covered by in-process GraphQL/WebSocket E2E. Historical full-stack browser evidence remains in earlier validation rounds.
 - Production multi-node/distributed deployment behavior was not exercised.
-- Existing WebSocket/GraphQL transport compatibility aliases remain for top-level/unambiguous names; clients that need duplicate nested leaf targeting must adopt path/route-key fields.
-- Historical flat team metadata is intentionally unsupported under the approved no-compatibility policy; old flat team runs without `memberTree` will fail restore rather than be inferred.
+- Historical flat team metadata is intentionally unsupported under the approved no-compatibility policy.
 - The local Electron package is unsigned and not notarized; this is expected for the user-verification build.
-- Release/publication/deployment has not been requested and remains not applicable unless the user asks for it after verification.
+- Release/publication/deployment has not been requested and remains not applicable unless the user asks after verification.
 
 ## Finalization Status
 
 - User verification received: `No`
 - Ticket archived to `tickets/done`: `No`
-- Final ticket branch commit for delivery-owned docs/report/handoff/build-log edits: `Pending user verification`
+- Final ticket branch commit for delivery-owned docs/report/handoff/build-log edits: `Blocked pending latest-base integration fix and renewed verification`
 - Ticket branch push: `Not started`
 - Merge into `personal`: `Not started`
 - Push target branch: `Not started`

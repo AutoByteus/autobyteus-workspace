@@ -1,86 +1,82 @@
 # Docs Sync Report
 
+## Delivery Round 12 Latest-Base Blocker
+
+- Current docs-sync status: `Blocked / needs recheck after integration`
+- Reason: supplemental API/E2E Round 12 passed at `bc2cb3c3`, but delivery's latest-base refresh found `origin/personal @ 29c872bbae3f20a492701443b62a0e13a8924966` ahead of the ticket branch with source/docs/test merge conflicts.
+- The docs sync content below records the pre-refresh Round 11/12 candidate. It must be rechecked after implementation resolves the conflicts and the integrated branch passes review/validation.
+- Blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round12-integration-blocker.md`
+
 ## Scope
 
 - Ticket: `mixed-team-nested-agent-team`
-- Trigger: Delivery docs sync after API/E2E Round 7 and code review Round 14 for upward nested-team reporting, representative participant addressing, bridge source-path/source-root corrections, and represented-subteam projection/display.
+- Trigger: Delivery docs sync after code review Round 22 and API/E2E Round 11 for the current structured live command identity implementation.
 - Bootstrap base reference: `origin/personal @ be56cab9b41b850c92690d79a8dfa70c52c369a0`
-- Integrated base reference used for current docs sync: `origin/personal @ b056b5f809dacb27524e492f3acef16630969e1b`
-- Current integrated ticket-branch reference: `d76f8ee803904bde51609cfefe9ea42aeb04e646`
-- Handoff state current with latest tracked remote base: `Yes` (`git rev-list --left-right --count origin/personal...HEAD` => `0 6`).
+- Integrated base reference used for docs sync: `origin/personal @ a51d3abd8bb620bb984c9c9f24209e4d32eb167b`
+- Current integrated ticket-branch reference: `bc2cb3c3fdff7eb89157d43fa0018bf0caf89ea4`
+- Handoff state current with latest tracked remote base: `Yes` (`git rev-list --left-right --count origin/personal...HEAD` => `0 13`).
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round11-post-refresh-checks.log`
 
 ## Why Docs Were Updated
 
-- Summary: Long-lived server and frontend docs now describe recursive nested-team topology, path/route-key member identity, selector-based team commands, nested event source paths, recursive restore metadata, member input/external user message projection, scoped representative communication rosters, upward child-to-parent reporting, represented-subteam Team Communication metadata, and frontend recursive focus/opened-label state.
-- Why this should live in long-lived project docs: These behaviors define durable runtime, transport, restore, and UI contracts. Keeping them only in ticket artifacts would leave future command/API/projection changes anchored to obsolete flat-member and top-down-only communication assumptions.
+- Summary: Long-lived docs now match the final integrated no-legacy command API: team command targets are explicit route/path selectors only, scalar member-name/member-id aliases are invalid command targets, team approvals must round-trip the structured source/member route/path emitted by the backend, and frontend status/approval behavior remains coarse/structured. Prior nested mixed-team docs for recursive topology, clean rosters, representative communication, restore, projections, and UI focus remain current.
+- Why this should live in long-lived project docs: These route/path-only command and approval contracts are durable API boundaries. Keeping them only in ticket artifacts would risk future clients or UI code reintroducing scalar command aliases, focused-member approval fallbacks, or removed lifecycle status assumptions.
 
 ## Long-Lived Docs Reviewed
 
 | Doc Path | Why It Was Reviewed | Result | Notes |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Primary backend team-run orchestration, mixed manager, command, communication, restore, and history-listing module doc. | Updated | Added nested topology backend selection, `TeamMemberSelector`, subteam routing, member-input event behavior, representative communication rosters, upward reporting, represented-subteam metadata, recursive restore metadata, internal child team run history-listing rules, and source ownership. |
-| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | WebSocket command and event protocol doc needed path-aware Team Communication, member input, and represented-subteam transport semantics. | Updated | Documented target/source path and route-key payloads, approval target resolution, emitted member input/external user messages, message/dedupe identity, child transcript input origin, and `representedSubTeam`/`represented_sub_team` metadata. |
-| `autobyteus-server-ts/docs/modules/agent_streaming.md` | Module summary for stream commands and emitted team event payloads. | Updated | Added selector normalization, nested approval targeting, source/member path fields, and member-input stream notes. |
-| `autobyteus-server-ts/docs/modules/run_history.md` | Run-history persistence/restore doc needed recursive metadata and projection truth. | Updated | Added `memberTree`, `memberKind`, path/route identity, subteam restore data, internal child team run listing rules, projection dedupe behavior, represented-subteam communication projection, and no flat-metadata inference policy. |
-| `autobyteus-server-ts/docs/design/streaming_parsing_architecture.md` | Processing/projection doc needed nested source-path attribution and representative communication identity. | Updated | Added child event source-path prefixing and path-aware/representative-aware Team Communication projections. |
-| `autobyteus-server-ts/docs/features/artifact_file_serving_design.md` | Artifact vs Team Communication reference doc needed nested participant identity clarification. | Updated | Added path-aware and representative-aware participant metadata plus mixed nested event bridge ownership. |
-| `autobyteus-web/docs/agent_teams.md` | Frontend team launch/reopen doc needed route-keyed nested launch, representative communication, and stream identity notes. | Updated | Added recursive member override tree, route-keyed leaf config, nested backend `MIXED` launch, subteam target behavior, representative/upward communication, restored/opened labels, represented-subteam Team Messages display, and metadata/source path identity. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | Frontend stream handler architecture needed the new external user/member input message handler entry. | Updated | Added `EXTERNAL_USER_MESSAGE` handler mapping. |
-| `autobyteus-server-ts/docs/modules/agent_team_definition.md` | Definition model doc already covered nested refs and same-bundle integrity; execution semantics belong in execution docs. | No change | No stale execution/restore command wording found in this doc. |
+| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | Authoritative WebSocket command/status protocol for team stream clients. | Updated | Documents path/route-only command selectors, scalar alias invalid-target behavior, and approval route/path requirements. |
+| `autobyteus-server-ts/docs/modules/agent_streaming.md` | Module summary for WebSocket fanout, command parsing, approval routing, and emitted member-input events. | Updated | Records scalar command rejection, no name/id approval mapping, and display aliases as non-routing metadata. |
+| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Backend execution and command identity module doc. | Updated | Records `TeamMemberSelector` path/route-only semantics, nested launch config route/path matching, and no bare-name fallback. |
+| `autobyteus-web/docs/agent_execution_architecture.md` | Frontend stream/status/approval architecture. | Updated | Records structured `ToolApprovalTarget` authority and the ban on focus/scalar/invocation fallback target reconstruction. |
+| `autobyteus-web/docs/agent_teams.md` | Frontend nested team launch/reopen/display contract. | Updated | Records canonical offline fallback for subteam/group tiles without leaf runtime context. |
+| `autobyteus-server-ts/docs/modules/run_history.md` | Recursive restore/projection doc. | No change | Prior docs already cover recursive `memberTree`, projection dedupe, represented-subteam communication, and child top-level history exclusion. |
+| `autobyteus-server-ts/docs/design/streaming_parsing_architecture.md` | Event processing/projection doc. | No change | Prior docs already cover nested source-path prefixing and representative-aware Team Communication projection. |
+| `autobyteus-server-ts/docs/features/artifact_file_serving_design.md` | Artifact vs Team Communication reference doc. | No change | Prior docs already cover message-owned, path-aware, representative-aware Team Communication reference projection. |
 
 ## Docs Updated
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Runtime architecture / command / communication contract | Documented recursive topology planning, nested definitions selecting `MIXED`, `TeamMemberSelector`, structural subteam posting, scoped representative rosters, parent-to-representative routing, upward child-to-parent reporting, represented-subteam communication metadata, approval constraints, recursive restore, internal child-team history suppression, and new source files. | Future execution and communication changes need the authoritative backend contract instead of the old flat/top-down-only mixed-team model. |
-| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | Transport protocol | Replaced bare-name team routing language with preferred path/route-key payloads, legacy alias limits, approval source identity, emitted source/member path fields, member-input/external user message projection behavior, and represented-subteam metadata in Team Communication payloads. | Client and handler work must target stable nested and representative identity. |
-| `autobyteus-server-ts/docs/modules/agent_streaming.md` | Module summary | Added concise selector, approval, emitted nested path identity, and member-input stream notes. | Keeps the module index aligned with the detailed protocol doc. |
-| `autobyteus-server-ts/docs/modules/run_history.md` | Persistence / restore / projection contract | Added recursive `memberTree`, `memberKind`, path/route identity, subteam metadata, child team listing rules, dedupe behavior, flattener guidance, represented-subteam Team Communication participant identity, and legacy flat-metadata rejection. | Restore/projection must not regress to flat metadata inference, stale duplicate display, or top-down-only communication assumptions. |
-| `autobyteus-server-ts/docs/design/streaming_parsing_architecture.md` | Event processing / projection | Added mixed child event source-path prefixing and path-aware/representative-aware Team Communication projection details. | Event processors/projections need canonical source attribution and representative display metadata. |
-| `autobyteus-server-ts/docs/features/artifact_file_serving_design.md` | Artifact/reference boundary | Added nested and representative participant identity and mixed event bridge ownership; clarified message-owned, path-aware Team Communication projection. | Prevents future Artifacts/Team Communication boundary regressions. |
-| `autobyteus-web/docs/agent_teams.md` | Frontend launch/reopen/display contract | Added recursive member override tree, route-keyed nested leaf config, backend mixed nested launch, top-level subteam target routing, representative/upward communication behavior, recursive metadata, restored/opened labels, represented-subteam Team Messages display, and stream source/member path notes. | Frontend launch/history/team-message work must preserve backend route/path and representative identity. |
-| `autobyteus-web/docs/agent_execution_architecture.md` | Frontend stream processing map | Added `EXTERNAL_USER_MESSAGE` handler entry. | Keeps the documented frontend event handler map aligned with member-input projection. |
+| `autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` | Backend protocol contract | Replaced scalar alias fallback wording with explicit `target_member_path` / `target_member_route_key` selector authority and invalid-target scalar alias rejection; approvals likewise reject scalar name/id fields. | Aligns protocol docs with Round 22 clean-cut command identity implementation and Round 11 validation. |
+| `autobyteus-server-ts/docs/modules/agent_streaming.md` | Backend streaming module contract | Clarified team `SEND_MESSAGE` selector parsing from path/route only, rejected scalar aliases, and route/path-only approval targets. | Prevents stream-edge command parsing regressions. |
+| `autobyteus-server-ts/docs/modules/agent_team_execution.md` | Backend team execution contract | Removed bare-name selector/fallback description; documented route/path launch-config matching and path/route-only `TeamMemberSelector` command identity. | Keeps domain/backend command truth aligned with implemented no-compatibility selector policy. |
+| `autobyteus-web/docs/agent_execution_architecture.md` | Frontend approval/status contract | Documented structured `ToolApprovalTarget` authority and no focus/scalar/invocation fallback target reconstruction. | Prevents regression of structured-only team approval dispatch. |
+| `autobyteus-web/docs/agent_teams.md` | Frontend recursive display contract | Documented canonical offline fallback for subteam/group tiles without leaf runtime context. | Prevents regression to removed initialization-only statuses. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
 | Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
 | --- | --- | --- | --- |
-| Nested team backend selection | Any definition containing an `agent_team` member launches through `TeamBackendKind.MIXED`, even if all leaves share a runtime. | `requirements-doc.md`, `design-spec.md`, `implementation-handoff.md` | `agent_team_execution.md`, `autobyteus-web/docs/agent_teams.md` |
-| Path/route member identity | `memberPath` and `memberRouteKey` are canonical for nested members; bare names are top-level/unambiguous aliases only. | `requirements-doc.md`, `design-spec.md`, `review-report.md` | `agent_team_execution.md`, `agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `run_history.md` |
-| Selector-based commands | `TeamMemberSelector` is the domain/backend command shape; transport strings are normalized at edges. | `design-spec.md`, `implementation-handoff.md`, `api-e2e-validation-report.md` | `agent_team_execution.md`, `agent_websocket_streaming_protocol.md`, `agent_streaming.md` |
-| Structural subteam runtime boundary | User/composer messages targeted to a structural top-level subteam create/restore the child team and let its configured default/coordinator handle the input. | `design-spec.md`, `implementation-handoff.md`, `api-e2e-validation-report.md` | `agent_team_execution.md`, `autobyteus-web/docs/agent_teams.md` |
-| Representative communication rosters | Normal `send_message_to` visibility exposes subteam coordinators/representatives as scoped recipients, not abstract subteam nodes or hidden reply aliases. | `requirements-doc.md`, `upward-nested-team-reporting-design-rework-note.md`, `design-spec.md`, `implementation-handoff.md`, `api-e2e-validation-report.md` | `agent_team_execution.md`, `autobyteus-web/docs/agent_teams.md` |
-| Upward child-to-parent reporting | A represented child coordinator can send to exposed immediate parent-boundary recipients, with the sender preserved as the child representative path and represented subteam. | `requirements-doc.md`, `upward-nested-team-reporting-design-rework-note.md`, `api-e2e-validation-report.md` | `agent_team_execution.md`, `run_history.md`, `streaming_parsing_architecture.md`, `autobyteus-web/docs/agent_teams.md` |
-| Event source paths | Nested child events are prefixed into `TeamRunEvent.sourcePath`; `sub_team_node_name` is only a display alias. | `design-spec.md`, `implementation-handoff.md`, `api-e2e-validation-report.md` | `agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `streaming_parsing_architecture.md` |
-| Recursive team restore metadata | `TeamRunMetadata.memberTree` is canonical; flat leaf projections are derived and unsupported flat historical metadata is not inferred. | `requirements-doc.md`, `design-spec.md`, `implementation-handoff.md` | `run_history.md`, `agent_team_execution.md`, `autobyteus-web/docs/agent_teams.md` |
-| Team Communication path-aware participants | Communication projection stores sender/receiver kind, path, route key, and represented-subteam metadata for representative cases. | `implementation-handoff.md`, `api-e2e-validation-report.md` | `streaming_parsing_architecture.md`, `artifact_file_serving_design.md`, `run_history.md`, `agent_team_execution.md` |
-| Child transcript member input display | Parent/user input to a focused child/subteam appears as explicit member input/external user message rows with stable dedupe identity. | `api-e2e-validation-report.md`, `round5-live-transcript-projection-presentation-design-rework-note.md` | `agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `run_history.md`, `autobyteus-web/docs/agent_execution_architecture.md` |
-| Recursive frontend focus/open state | Frontend state uses route-keyed nested member context and stable membership labels, including represented-subteam Team Messages display. | `api-e2e-validation-report.md`, `frontend-nested-team-ui-design-rework-note.md` | `autobyteus-web/docs/agent_teams.md` |
+| Clean-cut team command identity | Team commands are addressed by explicit member path or route key. Scalar command target aliases such as `target_member_name`, `target_agent_name`, command-side `agent_name`, and command-side `agent_id` are rejected with invalid-target errors. | `command-api-clean-cut-design-rework-note.md`, `review-report.md`, `api-e2e-validation-report.md` | `agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `agent_team_execution.md` |
+| Structured approval authority | Team tool approval/denial must use backend-emitted source/member route/path identity and cannot be reconstructed from focused member state, scalar names, or invocation id fallbacks. | `review-report.md`, `api-e2e-validation-report.md` | `agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `agent_execution_architecture.md` |
+| Canonical live external-message identity | `EXTERNAL_USER_MESSAGE` for team streams carries canonical member/source path/route identity; display/correlation aliases are not command authority. | `api-e2e-validation-report.md`, `implementation-handoff.md` | `agent_streaming.md`, `agent_websocket_streaming_protocol.md`, `autobyteus-web/docs/agent_execution_architecture.md` |
+| Runtime status clean cut | Frontend/server stream statuses are coarse (`offline`, `idle`, `running`, `error`); removed lifecycle tokens are not status API values. | `review-report.md`, `api-e2e-validation-report.md` | `agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `agent_execution_architecture.md`, `agent_teams.md` |
+| Nested team backend selection and recursive context | Definitions containing an `agent_team` member launch through the mixed/nested path, preserve recursive member-tree metadata, and reopen with route-keyed context. | `requirements-doc.md`, `design-spec.md`, `implementation-handoff.md`, `api-e2e-validation-report.md` | `agent_team_execution.md`, `autobyteus-web/docs/agent_teams.md` |
+| Representative communication rosters | Parent-to-representative, child-internal, and child-to-parent communication use clean model-facing recipient names and represented-subteam metadata, not hidden reply aliases. | `upward-nested-team-reporting-design-rework-note.md`, `round5-live-transcript-projection-presentation-design-rework-note.md`, `api-e2e-validation-report.md` | `agent_team_execution.md`, `autobyteus-web/docs/agent_teams.md` |
 
 ## Removed / Replaced Components Recorded
 
 | Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
 | --- | --- | --- |
-| Flat mixed-team execution over only per-member `AgentRun`s | Mixed top-level member handles where agent members own `AgentRun`s and subteam members own child `TeamRun`s. | `autobyteus-server-ts/docs/modules/agent_team_execution.md` |
-| Bare `target_member_name` / `target_agent_name` as team command identity | `TeamMemberSelector` normalized from `target_member_path`, `target_member_route_key`, or limited bare-name aliases. | `agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `agent_team_execution.md` |
-| Top-down-only nested communication | Scoped communication rosters with parent-to-representative delivery and bounded child-to-parent upward reports. | `agent_team_execution.md`, `autobyteus-web/docs/agent_teams.md` |
-| Abstract subteam node as normal `send_message_to` recipient | Representative leaf recipients with optional `representedSubTeam` metadata; structural subteam composer target remains separate. | `agent_team_execution.md`, `streaming_parsing_architecture.md`, `run_history.md`, `autobyteus-web/docs/agent_teams.md` |
-| Hidden reply alias / stateful reply target | Explicit visible parent-boundary recipient descriptors. | `agent_team_execution.md`, `autobyteus-web/docs/agent_teams.md` |
-| `subTeamNodeName` as nested event identity | Canonical `sourcePath` / derived `source_route_key`; `sub_team_node_name` remains display-only compatibility data. | `agent_websocket_streaming_protocol.md`, `streaming_parsing_architecture.md`, `agent_streaming.md` |
-| Flat team metadata as restore truth | Recursive `TeamRunMetadata.memberTree`; flat leaf projections only for projection/search consumers. | `run_history.md`, `agent_team_execution.md` |
-| Receiver-run-scoped Team Communication reference assumptions | Message-owned Team Communication projection with sender/receiver kind/path/route/represented-subteam metadata. | `artifact_file_serving_design.md`, `streaming_parsing_architecture.md`, `run_history.md` |
-| Top-level-only frontend team context | Recursive route-keyed member context and `MemberOverrideTree.vue`. | `autobyteus-web/docs/agent_teams.md` |
+| `target_member_name` / `target_agent_name` / command-side `agent_name` / command-side `agent_id` as command target authority | Path/route selector fields (`target_member_path`, `target_member_route_key`, and camelCase equivalents); scalar aliases are invalid-target guards only. | `agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `agent_team_execution.md` |
+| Approval target reconstruction from focused member, scalar names, `agent_id`, or invocation-id fallback | Backend-emitted structured `ToolApprovalTarget` / source-member path or route key. | `agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `autobyteus-web/docs/agent_execution_architecture.md` |
+| Detailed/legacy runtime lifecycle statuses in frontend status API (`uninitialized`, `bootstrapping`, `awaiting_llm_response`, `tool_denied`, `shutdown_complete`, etc.) | Coarse status enum: `offline`, `idle`, `running`, `error`; subteam/group no-context tiles use `offline`. | `agent_websocket_streaming_protocol.md`, `agent_streaming.md`, `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/agent_teams.md` |
+| Flat mixed-team execution over only per-member `AgentRun`s | Mixed top-level member handles where agent members own `AgentRun`s and subteam members own child `TeamRun`s. | `agent_team_execution.md` |
+| Hidden reply alias / raw descriptor labels in model-facing roster text/schema | Explicit clean allowed recipient names and represented-subteam metadata while descriptors remain routing authority. | `agent_team_execution.md`, `autobyteus-web/docs/agent_teams.md` |
+| Flat team metadata as restore truth | Recursive `TeamRunMetadata.memberTree`; flat leaf projections only for projection/search consumers. | `run_history.md`, `agent_team_execution.md`, `autobyteus-web/docs/agent_teams.md` |
 
 ## No-Impact Decision
 
 - Docs impact: `N/A — docs updated`
-- Rationale: The reviewed implementation changed durable runtime, transport, restore, communication, and frontend presentation contracts, so long-lived docs required updates.
+- Rationale: Round 11 confirmed durable API/UX contracts that required explicit long-lived documentation.
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs were synchronized after integrating latest `origin/personal` and passing post-integration verification. Delivery remains on user-verification hold before archiving, final commit, push, merge, cleanup, or release/deployment work.
+- Notes: Docs were synchronized after confirming `origin/personal` was current for the ticket branch and passing delivery post-refresh checks. Delivery remains on user-verification hold before archiving, final commit, push, merge, cleanup, release, or deployment work.
 
 ## Blocked Or Escalated Follow-Up
 
