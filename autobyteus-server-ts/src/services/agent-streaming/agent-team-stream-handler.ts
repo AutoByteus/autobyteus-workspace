@@ -5,7 +5,6 @@ import {
   ContextFileType,
 } from "autobyteus-ts";
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
-import { resolveRuntimeMemberContext } from "../../agent-team-execution/domain/team-run-context.js";
 import {
   TeamRunService,
   getTeamRunService,
@@ -20,11 +19,7 @@ import {
   type TeamRunTaskPlanEventPayload,
   getTeamRunEventSourceRouteKey,
 } from "../../agent-team-execution/domain/team-run-event.js";
-import {
-  selectorFromMemberName,
-  selectorFromMemberPath,
-  type TeamMemberSelector,
-} from "../../agent-team-execution/domain/team-run-member-identity.js";
+import type { TeamMemberSelector } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import { TeamStreamBroadcaster, getTeamStreamBroadcaster } from "./team-stream-broadcaster.js";
 import { AgentSession } from "./agent-session.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
@@ -64,6 +59,28 @@ const logger = {
 };
 
 const TEAM_METADATA_REFRESH_DEBOUNCE_MS = 2000;
+
+const COMMAND_LEGACY_SELECTOR_KEYS = [
+  "agent_id",
+  "agent_name",
+  "agentId",
+  "agentName",
+  "member_id",
+  "member_name",
+  "memberId",
+  "memberName",
+  "target_agent_id",
+  "target_agent_name",
+  "target_member_id",
+  "target_member_name",
+  "targetAgentId",
+  "targetAgentName",
+  "targetMemberId",
+  "targetMemberName",
+];
+
+const hasPayloadKey = (payload: Record<string, unknown>, keys: readonly string[]): boolean =>
+  keys.some((key) => payload[key] !== undefined && payload[key] !== null);
 
 class AgentTeamSession extends AgentSession {
   get teamRunId(): string {
@@ -294,10 +311,13 @@ export class AgentTeamStreamHandler {
     const teamRunId = teamRun.runId;
     const content = typeof payload.content === "string" ? payload.content : "";
     const targetSelector = resolveTeamMemberSelectorFromPayload(payload, {
-      pathKeys: ["target_member_path", "targetMemberPath"],
-      routeKeyKeys: ["target_member_route_key", "targetMemberRouteKey"],
-      nameKeys: ["target_member_name", "target_agent_name", "targetMemberName", "targetAgentName"],
+      pathKeys: ["target_member_path"],
+      routeKeyKeys: ["target_member_route_key"],
     });
+    if (hasPayloadKey(payload, COMMAND_LEGACY_SELECTOR_KEYS)) {
+      logger.warn(`SEND_MESSAGE rejected for team run ${teamRunId}: legacy member-name target fields are not supported.`);
+      return;
+    }
 
     const contextFilePaths =
       (payload.context_file_paths as unknown[]) ?? (payload.contextFilePaths as unknown[]) ?? [];
@@ -375,15 +395,15 @@ export class AgentTeamStreamHandler {
       return;
     }
 
-    const approvalTargetRunId =
-      typeof payload.agent_id === "string" && payload.agent_id ? payload.agent_id : null;
     const reason = typeof payload.reason === "string" ? payload.reason : null;
-    const approvalTarget =
-      resolveTeamMemberSelectorFromPayload(payload, {
-        pathKeys: ["source_path", "member_path", "target_member_path", "sourcePath", "memberPath", "targetMemberPath"],
-        routeKeyKeys: ["source_route_key", "member_route_key", "target_member_route_key", "sourceRouteKey", "memberRouteKey", "targetMemberRouteKey"],
-        nameKeys: ["agent_name", "target_member_name", "target_agent_name", "member_name", "agentName", "targetMemberName"],
-      }) ?? this.resolveApprovalTargetSelector(activeRun, approvalTargetRunId);
+    if (hasPayloadKey(payload, COMMAND_LEGACY_SELECTOR_KEYS)) {
+      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: legacy member-name target fields are not supported.`);
+      return;
+    }
+    const approvalTarget = resolveTeamMemberSelectorFromPayload(payload, {
+      pathKeys: ["source_path", "member_path", "target_member_path"],
+      routeKeyKeys: ["source_route_key", "member_route_key", "target_member_route_key"],
+    });
 
     if (!approvalTarget) {
       logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: approval target missing.`);
@@ -401,32 +421,6 @@ export class AgentTeamStreamHandler {
         `TOOL_APPROVAL rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
     }
-  }
-
-  private resolveApprovalTargetSelector(
-    teamRun: TeamRun,
-    memberRunId: string | null,
-  ): TeamMemberSelector | null {
-    if (typeof memberRunId !== "string" || memberRunId.trim().length === 0) {
-      return null;
-    }
-    const runtimeMember = resolveRuntimeMemberContext(teamRun.context, memberRunId);
-    if (runtimeMember?.memberPath?.length) {
-      return selectorFromMemberPath(runtimeMember.memberPath);
-    }
-    if (runtimeMember?.memberName?.trim()) {
-      return selectorFromMemberName(runtimeMember.memberName.trim());
-    }
-
-    const configuredMember = teamRun.config?.memberConfigs.find(
-      (candidate) => candidate.memberRunId === memberRunId,
-    );
-    if (configuredMember?.memberPath?.length) {
-      return selectorFromMemberPath(configuredMember.memberPath);
-    }
-    return configuredMember?.memberName?.trim()
-      ? selectorFromMemberName(configuredMember.memberName.trim())
-      : null;
   }
 
   private resolveCommandRun(

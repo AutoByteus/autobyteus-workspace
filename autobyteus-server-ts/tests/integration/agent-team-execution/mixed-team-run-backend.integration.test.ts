@@ -83,6 +83,8 @@ const createManager = () => {
 
   return {
     hasActiveMembers: vi.fn(() => active),
+    getStatusSnapshot: vi.fn(() => ({ status: "idle" })),
+    getMemberStatusSnapshots: vi.fn(() => []),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
@@ -123,13 +125,13 @@ describe("MixedTeamRunBackend integration", () => {
 
     const userMessage = new AgentInputUserMessage("coordinate the mixed task");
     await expect(
-      backend.postMessage(userMessage, { kind: "top_level_name", memberName: "Coordinator" }),
+      backend.postMessage(userMessage, { kind: "route_key", memberRouteKey: "coord-route" }),
     ).resolves.toEqual({
       accepted: true,
     });
     expect(manager.postMessage).toHaveBeenCalledWith(userMessage, {
-      kind: "top_level_name",
-      memberName: "Coordinator",
+      kind: "route_key",
+      memberRouteKey: "coord-route",
     });
 
     await expect(
@@ -165,14 +167,14 @@ describe("MixedTeamRunBackend integration", () => {
 
     await expect(
       backend.approveToolInvocation(
-        { kind: "top_level_name", memberName: "Reviewer" },
+        { kind: "route_key", memberRouteKey: "reviewer-route" },
         "inv-1",
         true,
         "approved",
       ),
     ).resolves.toEqual({ accepted: true });
     expect(manager.approveToolInvocation).toHaveBeenCalledWith(
-      { kind: "top_level_name", memberName: "Reviewer" },
+      { kind: "route_key", memberRouteKey: "reviewer-route" },
       "inv-1",
       true,
       "approved",
@@ -202,7 +204,7 @@ describe("MixedTeamRunBackend integration", () => {
     await expect(
       backend.postMessage(
         new AgentInputUserMessage("hello"),
-        { kind: "top_level_name", memberName: "Coordinator" },
+        { kind: "route_key", memberRouteKey: "coord-route" },
       ),
     ).resolves.toMatchObject({
       accepted: false,
@@ -228,7 +230,7 @@ describe("MixedTeamRunBackend integration", () => {
     });
     await expect(
       backend.approveToolInvocation(
-        { kind: "top_level_name", memberName: "Reviewer" },
+        { kind: "route_key", memberRouteKey: "reviewer-route" },
         "inv-1",
         true,
       ),

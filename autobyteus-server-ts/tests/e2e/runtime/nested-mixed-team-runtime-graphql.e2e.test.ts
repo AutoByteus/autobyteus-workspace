@@ -165,7 +165,7 @@ const sendTeamMessageOverSocket = (
   socket: WebSocket,
   input: {
     content: string;
-    targetMemberName?: string | null;
+    targetMemberRouteKey?: string | null;
     targetMemberPath?: string[] | null;
   },
 ): void => {
@@ -175,7 +175,7 @@ const sendTeamMessageOverSocket = (
       payload: {
         content: input.content,
         ...(input.targetMemberPath ? { target_member_path: input.targetMemberPath } : {}),
-        target_member_name: input.targetMemberName ?? null,
+        ...(input.targetMemberRouteKey ? { target_member_route_key: input.targetMemberRouteKey } : {}),
         context_file_paths: [],
         image_urls: [],
       },
@@ -600,7 +600,7 @@ Rules:
           message_type: "nested_parent_to_subteam",
         });
         sendTeamMessageOverSocket(firstConnection.socket, {
-          targetMemberName: "program_manager",
+          targetMemberRouteKey: "program_manager",
           content: `Call send_message_to exactly once now with these exact JSON arguments: ${parentDelegationArgs}. Do not call any other tool.`,
         });
 
@@ -646,7 +646,7 @@ Rules:
           message_type: "nested_child_codex_to_claude",
         });
         sendTeamMessageOverSocket(firstConnection.socket, {
-          targetMemberName: "BuildSquad",
+          targetMemberRouteKey: "BuildSquad",
           content: `Call send_message_to exactly once now with these exact JSON arguments: ${childDelegationArgs}. Do not call any other tool.`,
         });
 
@@ -757,7 +757,7 @@ Rules:
       try {
         const postRestoreStartIndex = restoredConnection.messages.length;
         sendTeamMessageOverSocket(restoredConnection.socket, {
-          targetMemberName: "BuildSquad",
+          targetMemberRouteKey: "BuildSquad",
           content: `Reply with exactly ${postRestoreToken} and nothing else.`,
         });
         await waitForMessageAfter(

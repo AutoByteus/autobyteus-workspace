@@ -328,7 +328,7 @@ describe("AgentTeamStreamHandler", () => {
         type: ClientMessageType.SEND_MESSAGE,
         payload: {
           content: "hello team",
-          target_member_name: "worker-a",
+          target_member_route_key: "worker-a",
           context_file_paths: ["/tmp/info.txt"],
         },
       }),
@@ -336,8 +336,8 @@ describe("AgentTeamStreamHandler", () => {
 
     expect(teamRun.postMessage).toHaveBeenCalledTimes(1);
     expect(teamRun.postMessage.mock.calls[0]?.[1]).toEqual({
-      kind: "top_level_name",
-      memberName: "worker-a",
+      kind: "route_key",
+      memberRouteKey: "worker-a",
     });
     expect(teamRunService.recordRunActivity).toHaveBeenCalledWith(
       teamRun,
@@ -346,6 +346,53 @@ describe("AgentTeamStreamHandler", () => {
         lastKnownStatus: "ACTIVE",
       }),
     );
+  });
+
+  it("rejects every legacy scalar SEND_MESSAGE target alias", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+    for (const legacyKey of [
+      "target_member_name",
+      "target_member_id",
+      "target_agent_name",
+      "target_agent_id",
+      "targetMemberName",
+      "targetMemberId",
+      "targetAgentName",
+      "targetAgentId",
+      "agent_name",
+      "agent_id",
+      "agentName",
+      "agentId",
+      "member_name",
+      "member_id",
+      "memberName",
+      "memberId",
+    ]) {
+      await handler.handleMessage(
+        sessionId as string,
+        JSON.stringify({
+          type: ClientMessageType.SEND_MESSAGE,
+          payload: {
+            content: `legacy target via ${legacyKey}`,
+            [legacyKey]: "worker-a",
+          },
+        }),
+      );
+    }
+
+    expect(teamRun.postMessage).not.toHaveBeenCalled();
+    expect(teamRunService.recordRunActivity).not.toHaveBeenCalled();
   });
 
   it("restores and rebinds a team run before SEND_MESSAGE when the active subject was removed", async () => {
@@ -379,7 +426,7 @@ describe("AgentTeamStreamHandler", () => {
         type: ClientMessageType.SEND_MESSAGE,
         payload: {
           content: "resume team",
-          target_member_name: "worker-a",
+          target_member_route_key: "worker-a",
         },
       }),
     );
@@ -423,7 +470,7 @@ describe("AgentTeamStreamHandler", () => {
     expect(teamRun.interrupt).not.toHaveBeenCalled();
   });
 
-  it("resolves approval target names from TeamRun member context instead of manager state", async () => {
+  it("routes approval commands with explicit member path selectors", async () => {
     const teamRun = createTeamRun();
     const teamRunService = createTeamRunService(teamRun);
     const handler = new AgentTeamStreamHandler(
@@ -443,7 +490,7 @@ describe("AgentTeamStreamHandler", () => {
         type: ClientMessageType.APPROVE_TOOL,
         payload: {
           invocation_id: "inv-1",
-          agent_id: "member-42",
+          member_path: ["worker-a"],
         },
       }),
     );
@@ -457,6 +504,52 @@ describe("AgentTeamStreamHandler", () => {
       true,
       null,
     );
+  });
+
+  it("rejects every legacy scalar tool approval target alias", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+    for (const legacyKey of [
+      "target_member_name",
+      "target_member_id",
+      "target_agent_name",
+      "target_agent_id",
+      "targetMemberName",
+      "targetMemberId",
+      "targetAgentName",
+      "targetAgentId",
+      "agent_name",
+      "agent_id",
+      "agentName",
+      "agentId",
+      "member_name",
+      "member_id",
+      "memberName",
+      "memberId",
+    ]) {
+      await handler.handleMessage(
+        sessionId as string,
+        JSON.stringify({
+          type: ClientMessageType.APPROVE_TOOL,
+          payload: {
+            invocation_id: `inv-legacy-${legacyKey}`,
+            [legacyKey]: "worker-a",
+          },
+        }),
+      );
+    }
+
+    expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
   });
 
   it("registers the websocket connection for team-scoped live message broadcasts", async () => {

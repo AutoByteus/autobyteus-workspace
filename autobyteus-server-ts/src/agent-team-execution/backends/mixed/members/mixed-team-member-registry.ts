@@ -4,6 +4,8 @@ import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
 import {
   getSelectorTopLevelName,
   resolveTeamMemberSelector,
+  selectorFromMemberPath,
+  selectorFromMemberRouteKey,
   type TeamMemberSelector,
 } from "../../../domain/team-run-member-identity.js";
 import type { MixedTeamRunContext, MixedTeamMemberContext } from "../mixed-team-run-context.js";
@@ -36,8 +38,11 @@ export class MixedTeamMemberRegistry {
 
     const topLevelName = getSelectorTopLevelName(selector);
     if (topLevelName) {
+      const topLevelSelector = selector.kind === "path"
+        ? selectorFromMemberPath([topLevelName])
+        : selectorFromMemberRouteKey(topLevelName);
       const topLevelResolution = resolveTeamMemberSelector(
-        { kind: "top_level_name", memberName: topLevelName },
+        topLevelSelector,
         this.options.teamContext.runtimeContext.memberContexts,
       );
       if (topLevelResolution.ok && topLevelResolution.member.memberKind === "agent_team") {

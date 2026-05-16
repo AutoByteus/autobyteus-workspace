@@ -357,12 +357,12 @@ describe('runHistoryStore', () => {
         members: new Map([
           ['super_agent', {
             config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
-            state: { runId: 'member-run-live-1', conversation: { messages: [] }, currentStatus: 'uninitialized' },
+            state: { runId: 'member-run-live-1', conversation: { messages: [] }, currentStatus: 'offline' },
           }],
         ]),
         historicalHydration: null,
         focusedMemberName: 'super_agent',
-        currentStatus: 'uninitialized',
+        currentStatus: 'offline',
         isSubscribed: false,
         taskPlan: null,
         taskStatuses: null,
@@ -1380,7 +1380,7 @@ describe('runHistoryStore', () => {
         agentDefinitionName: 'SuperAgent',
       },
       state: {
-        currentStatus: 'uninitialized',
+        currentStatus: 'offline',
         conversation: {
           id: 'temp-1',
           messages: [],
@@ -1451,7 +1451,7 @@ describe('runHistoryStore', () => {
         agentDefinitionName: 'SuperAgent',
       },
       state: {
-        currentStatus: 'bootstrapping',
+        currentStatus: 'running',
         conversation: {
           id: 'run-b',
           messages: [],
@@ -1771,7 +1771,7 @@ describe('runHistoryStore', () => {
           config: { workspaceId: 'ws-1', agentDefinitionName: 'Coordinator' },
           state: {
             runId: 'member-run-1',
-            currentStatus: 'awaiting_llm_response',
+            currentStatus: 'running',
             conversation: {
               id: 'member-run-1',
               messages: [
@@ -1786,7 +1786,7 @@ describe('runHistoryStore', () => {
           config: { workspaceId: 'ws-1', agentDefinitionName: 'Worker' },
           state: {
             runId: 'member-run-2',
-            currentStatus: 'awaiting_llm_response',
+            currentStatus: 'running',
             conversation: {
               id: 'member-run-2',
               messages: [
@@ -1876,7 +1876,7 @@ describe('runHistoryStore', () => {
           config: { workspaceId: 'ws-1', agentDefinitionName: 'Professor' },
           state: {
             runId: 'member-professor-1',
-            currentStatus: 'awaiting_llm_response',
+            currentStatus: 'running',
             conversation: {
               id: 'member-professor-1',
               messages: [],

@@ -509,8 +509,8 @@ const createClaudeTeamWebSocketHarness = async (input: {
   });
   const fakeTeamManager: TeamManager = {
     hasActiveMembers: () => true,
-    postMessage: async (message, targetMemberName) => {
-      expect(targetMemberName).toBe(input.memberName);
+    postMessage: async (message, targetMemberRouteKey) => {
+      expect(targetMemberRouteKey).toBe(input.memberName);
       const result = await agentRun.postUserMessage(message);
       memberContext.sessionId = agentRun.getPlatformAgentRunId() ?? memberContext.sessionId;
       return {
@@ -738,7 +738,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
           type: "SEND_MESSAGE",
           payload: {
             content: "start team member work",
-            target_member_name: memberName,
+            target_member_route_key: memberName,
           },
         }),
       );
@@ -764,7 +764,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
           type: "SEND_MESSAGE",
           payload: {
             content: "continue team member work",
-            target_member_name: memberName,
+            target_member_route_key: memberName,
           },
         }),
       );

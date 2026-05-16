@@ -9,7 +9,6 @@ import {
   type TeamRunContext,
 } from "./team-run-context.js";
 import {
-  selectorFromMemberName,
   selectorFromMemberRouteKey,
   type TeamMemberSelector,
 } from "./team-run-member-identity.js";
@@ -122,23 +121,11 @@ export class TeamRun {
       return selectorFromMemberRouteKey(coordinatorMemberRouteKey);
     }
 
-    const coordinatorMemberName =
-      typeof this.context?.coordinatorMemberName === "string" &&
-      this.context.coordinatorMemberName.trim().length > 0
-        ? this.context.coordinatorMemberName.trim()
-        : typeof this.configValue?.coordinatorMemberName === "string" &&
-            this.configValue.coordinatorMemberName.trim().length > 0
-          ? this.configValue.coordinatorMemberName.trim()
-          : null;
-    if (coordinatorMemberName) {
-      return selectorFromMemberName(coordinatorMemberName);
-    }
-
     const memberContexts = getRuntimeMemberContexts(this.context?.runtimeContext ?? null);
     if (memberContexts.length === 1) {
-      const soleMemberName = memberContexts[0]?.memberName;
-      return typeof soleMemberName === "string" && soleMemberName.trim().length > 0
-        ? selectorFromMemberName(soleMemberName.trim())
+      const soleMemberRouteKey = memberContexts[0]?.memberRouteKey;
+      return typeof soleMemberRouteKey === "string" && soleMemberRouteKey.trim().length > 0
+        ? selectorFromMemberRouteKey(soleMemberRouteKey.trim())
         : null;
     }
 

@@ -2,7 +2,8 @@
  * TeamStreamingService - Facade for agent team WebSocket streaming.
  *
  * Connects to team endpoint and routes events to appropriate team members
- * based on runtime member run IDs (`agent_id`) in the message payload.
+ * by canonical nested source route/path identity, with run IDs used only
+ * after route resolution for runtime correlation.
  */
 
 import type { AgentContext } from '~/types/agent/AgentContext';
@@ -308,13 +309,12 @@ export class TeamStreamingService {
   }
 
   /**
-   * Route message to the appropriate team member based on agent_id.
+   * Route message to the appropriate team member using canonical source route/path identity.
    */
   private getMemberContext(message: ServerMessage): AgentContext | null {
     if (!this.teamContext) return null;
 
-    // Extract agent_id from the message payload if present
-    // Use type assertion since not all message types have agent_id
+    // Use type assertion since route/source metadata is present only on team-scoped payloads.
     const payload = 'payload' in message ? message.payload as {
       agent_id?: string;
       agent_name?: string;
@@ -330,7 +330,6 @@ export class TeamStreamingService {
         ? payload.member_path
         : null;
     const routeKeyFromPath = sourcePath?.map((segment) => String(segment).trim()).filter(Boolean).join('/') || '';
-    const agentName = payload?.agent_name;
     const memberRunId = payload?.agent_id;
 
     const routedMatch = (sourceRouteKey || routeKeyFromPath)
@@ -343,24 +342,6 @@ export class TeamStreamingService {
       return routedMatch;
     }
 
-    if (agentName) {
-      const directMatch = this.teamContext.leafAgentContextsByRouteKey.get(agentName);
-      if (directMatch) {
-        if (memberRunId && directMatch.state.runId !== memberRunId) {
-          directMatch.state.runId = memberRunId;
-        }
-        return directMatch;
-      }
-    }
-
-    if (memberRunId) {
-      // Find member by checking their runtime run id.
-      for (const [memberName, memberContext] of this.teamContext.leafAgentContextsByRouteKey) {
-        if (memberContext.state.runId === memberRunId || memberName === memberRunId) {
-          return memberContext;
-        }
-      }
-    }
 
     // Fall back to focused member
     return this.teamContext.leafAgentContextsByRouteKey.get(this.teamContext.focusedMemberRouteKey) || null;

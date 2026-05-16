@@ -1,5 +1,4 @@
 import {
-  selectorFromMemberName,
   selectorFromMemberPath,
   selectorFromMemberRouteKey,
   type TeamMemberSelector,
@@ -8,7 +7,6 @@ import {
 export type TeamMemberSelectorPayloadKeys = {
   pathKeys: string[];
   routeKeyKeys: string[];
-  nameKeys: string[];
 };
 
 export const resolveTeamMemberSelectorFromPayload = (
@@ -28,12 +26,6 @@ export const resolveTeamMemberSelectorFromPayload = (
     const value = payload[key];
     if (typeof value === "string" && value.trim().length > 0) {
       return selectorFromMemberRouteKey(value);
-    }
-  }
-  for (const key of keys.nameKeys) {
-    const value = payload[key];
-    if (typeof value === "string" && value.trim().length > 0) {
-      return selectorFromMemberName(value);
     }
   }
   return null;

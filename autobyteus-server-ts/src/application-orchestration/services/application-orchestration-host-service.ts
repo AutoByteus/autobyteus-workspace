@@ -36,7 +36,7 @@ import {
   getTeamRunMetadataService,
 } from "../../run-history/services/team-run-metadata-service.js";
 import { getTeamRunLeafAgentMetadata } from "../../run-history/services/team-run-metadata-flattener.js";
-import { selectorFromMemberName } from "../../agent-team-execution/domain/team-run-member-identity.js";
+import { selectorFromMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 
 const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBindingSummary => structuredClone(binding);
 
@@ -388,7 +388,7 @@ export class ApplicationOrchestrationHostService {
     const targetMemberName = input.targetMemberName?.trim() || null;
     const result = await run.postMessage(
       message,
-      targetMemberName ? selectorFromMemberName(targetMemberName) : null,
+      targetMemberName ? selectorFromMemberRouteKey(targetMemberName) : null,
     );
     if (!result.accepted) {
       throw new Error(result.message ?? "Application runtime rejected the input.");

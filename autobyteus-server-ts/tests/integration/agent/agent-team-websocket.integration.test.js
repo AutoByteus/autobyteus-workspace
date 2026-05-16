@@ -58,8 +58,8 @@ class FakeTeam {
     constructor(teamId) {
         this.teamId = teamId;
     }
-    async postMessage(message, targetAgentName) {
-        this.lastTarget = targetAgentName ?? null;
+    async postMessage(message, targetMemberRouteKey) {
+        this.lastTarget = targetMemberRouteKey ?? null;
         this.messages.push(message);
     }
     async postToolExecutionApproval(agentName, toolInvocationId, isApproved, reason) {
@@ -139,7 +139,7 @@ describe("Agent team websocket integration", () => {
             type: "SEND_MESSAGE",
             payload: {
                 content: "hello team",
-                target_member_name: "alpha",
+                target_member_route_key: "alpha",
                 context_file_paths: ["/tmp/info.txt"],
                 image_urls: ["https://example.com/dog.png"],
             },

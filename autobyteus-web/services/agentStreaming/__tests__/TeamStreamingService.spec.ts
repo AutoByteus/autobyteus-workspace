@@ -288,6 +288,10 @@ describe('TeamStreamingService', () => {
           received_at: '2026-03-10T20:15:00.000Z',
           agent_name: 'Professor',
           agent_id: 'prof-run-2',
+          member_route_key: 'Professor',
+          member_path: ['Professor'],
+          source_route_key: 'Professor',
+          source_path: ['Professor'],
         },
       }),
     );
@@ -661,6 +665,10 @@ describe('TeamStreamingService', () => {
           compacted_block_count: 2,
           agent_name: 'Professor',
           agent_id: 'prof-run-2',
+          member_route_key: 'Professor',
+          member_path: ['Professor'],
+          source_route_key: 'Professor',
+          source_path: ['Professor'],
         },
       }),
     );

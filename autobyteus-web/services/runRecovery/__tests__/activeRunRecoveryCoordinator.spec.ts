@@ -120,7 +120,7 @@ describe('recoverActiveRunsFromHistory', () => {
         }],
         ['code_reviewer', {
           config: { isLocked: false },
-          state: { runId: 'member-run-review', currentStatus: 'uninitialized', canInterrupt: false },
+          state: { runId: 'member-run-review', currentStatus: 'offline', canInterrupt: false },
         }],
       ]),
       coordinatorMemberRouteKey: 'solution_designer',

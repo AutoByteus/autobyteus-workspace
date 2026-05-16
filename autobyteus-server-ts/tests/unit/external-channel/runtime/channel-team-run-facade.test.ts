@@ -112,8 +112,8 @@ describe("ChannelTeamRunFacade", () => {
         }),
       }),
       {
-        kind: "top_level_name",
-        memberName: "support-node",
+        kind: "route_key",
+      memberRouteKey: "support-node",
       },
     );
     expect(publishExternalUserMessage).toHaveBeenCalledWith({

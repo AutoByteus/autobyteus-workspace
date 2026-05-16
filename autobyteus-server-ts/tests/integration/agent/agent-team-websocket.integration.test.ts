@@ -73,8 +73,8 @@ class FakeTeam {
     this.teamRunId = teamRunId;
   }
 
-  async postMessage(message: AgentInputUserMessage, targetAgentName?: string | null): Promise<void> {
-    this.lastTarget = targetAgentName ?? null;
+  async postMessage(message: AgentInputUserMessage, targetMemberRouteKey?: string | null): Promise<void> {
+    this.lastTarget = targetMemberRouteKey ?? null;
     this.messages.push(message);
   }
 
@@ -100,6 +100,20 @@ class FakeTeam {
     this.interruptCalls += 1;
   }
 }
+
+const selectorRouteKey = (selector: unknown): string | null => {
+  if (!selector || typeof selector !== "object") {
+    return null;
+  }
+  const typed = selector as { kind?: string; memberRouteKey?: string; memberPath?: string[] };
+  if (typed.kind === "route_key" && typeof typed.memberRouteKey === "string") {
+    return typed.memberRouteKey;
+  }
+  if (typed.kind === "path" && Array.isArray(typed.memberPath)) {
+    return typed.memberPath.join("/");
+  }
+  return null;
+};
 
 class FakeTeamRun {
   readonly runId: string;
@@ -151,19 +165,19 @@ class FakeTeamRun {
     };
   }
 
-  async postMessage(message: AgentInputUserMessage, targetMemberName?: string | null): Promise<{ accepted: true }> {
-    await this.team.postMessage(message, targetMemberName);
+  async postMessage(message: AgentInputUserMessage, target: unknown): Promise<{ accepted: true }> {
+    await this.team.postMessage(message, selectorRouteKey(target));
     return { accepted: true };
   }
 
   async approveToolInvocation(
-    targetMemberName: string,
+    target: unknown,
     invocationId: string,
     approved: boolean,
     reason?: string | null,
   ): Promise<{ accepted: true }> {
     await this.team.postToolExecutionApproval(
-      targetMemberName,
+      selectorRouteKey(target) ?? "",
       invocationId,
       approved,
       reason,
@@ -287,7 +301,7 @@ describe("Agent team websocket integration", () => {
         type: "SEND_MESSAGE",
         payload: {
           content: "hello team",
-          target_member_name: "alpha",
+          target_member_route_key: "alpha",
           context_file_paths: ["/tmp/info.txt"],
           image_urls: ["https://example.com/dog.png"],
         },
@@ -402,7 +416,7 @@ describe("Agent team websocket integration", () => {
         type: "SEND_MESSAGE",
         payload: {
           content: "resume team member after stop",
-          target_member_name: "alpha",
+          target_member_route_key: "alpha",
         },
       }),
     );
@@ -541,7 +555,7 @@ describe("Agent team websocket integration", () => {
     socket.send(
       JSON.stringify({
         type: "SEND_MESSAGE",
-        payload: { content: "still there?", target_member_name: "alpha" },
+        payload: { content: "still there?", target_member_route_key: "alpha" },
       }),
     );
 
@@ -721,7 +735,7 @@ describe("Agent team websocket integration", () => {
     await app.close();
   });
 
-  it("routes approval commands with all personal target identity fields", async () => {
+  it("routes approval commands only with explicit route selector fields", async () => {
     const team = new FakeTeam("team-approvals");
     const stream = new FakeTeamStream();
     const teamRunService = new FakeTeamRunService(team, stream);
@@ -754,7 +768,7 @@ describe("Agent team websocket integration", () => {
     socket.send(
       JSON.stringify({
         type: "APPROVE_TOOL",
-        payload: { invocation_id: "inv-1", agent_name: "alpha" },
+        payload: { invocation_id: "inv-1", member_route_key: "alpha" },
       }),
     );
     await waitForCondition(() => team.approvals.length === 1);
@@ -770,7 +784,7 @@ describe("Agent team websocket integration", () => {
         type: "DENY_TOOL",
         payload: {
           invocation_id: "inv-2",
-          target_member_name: "beta",
+          target_member_route_key: "beta",
           reason: "deny",
         },
       }),
@@ -786,7 +800,7 @@ describe("Agent team websocket integration", () => {
     socket.send(
       JSON.stringify({
         type: "APPROVE_TOOL",
-        payload: { invocation_id: "inv-3", agent_id: "member-42" },
+        payload: { invocation_id: "inv-3", member_route_key: "alpha" },
       }),
     );
     await waitForCondition(() => team.approvals.length === 3);

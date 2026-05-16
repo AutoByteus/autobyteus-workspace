@@ -260,7 +260,7 @@ Focused tests updated/added:
 - `memberRouteKey` is the stable frontend route identity for nested members; `TeamRunEvent.sourcePath` / `memberPath` remain the canonical path shapes where domain/source identity is required.
 - Parent team communication records and recipient leaf transcript records are intentionally separate: `COMMUNICATION` feeds Team Messages, while `MEMBER_INPUT` feeds the resolved leaf conversation.
 - Subteam focus is a valid UI focus state but has no leaf `AgentContext`; leaf hydration and optimistic conversation updates are skipped when the focused node is a subteam.
-- Legacy `agent_name` / `target_member_name` fields remain edge aliases for transport compatibility only; new frontend sends route-key fields for team messages and approval actions.
+- Outbound `agent_name` / `agent_id` fields remain display/correlation metadata only; command-side scalar target aliases such as `target_member_name`, `target_agent_name`, `agent_name`, `agent_id`, `member_name`, and camelCase equivalents are rejected. Frontend team commands send route/path selector fields only.
 
 ## Known Risks
 
@@ -283,7 +283,7 @@ Focused tests updated/added:
 
 - Backward-compatibility mechanisms introduced: `None` for nested topology authority.
 - Legacy old-behavior retained in scope: `No`; legacy flat metadata authority is rejected, grid/spotlight/config override surfaces now render recursive route-key presentation, and flat UI lists are derived projections only.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` within changed nested-team UI/runtime paths; legacy edge alias fields remain only as transport aliases.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` within changed nested-team UI/runtime paths; legacy command target aliases are removed/rejected, while outbound `agent_name` / `agent_id` display metadata remains non-authoritative.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; member structures are discriminated by `agent` vs `agent_team` and indexes are keyed by route identity.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`; implementation resumed only after the Round 5 rework note supplied explicit data-flow spines for the live transcript/projection/presentation defects.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`; `runHistoryTeamRows.ts` was split out of `runHistoryTeamHelpers.ts`, and the final audit found no changed non-test TS/Vue source file over 500 effective non-empty lines.
@@ -652,3 +652,51 @@ Passed:
   - Result: `2` changed TS/Vue files checked; no changed non-test implementation source file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this no-legacy source state again.
+
+## Code Review Round 19 / Architecture Round 14 Command API Clean-Cut Update
+
+Addressed the superseding no-legacy integrated-state findings from Round 19 code review and the Round 14 architecture-approved command API correction. This pass intentionally removes cleanly instead of preserving compatibility aliases.
+
+Implementation updates:
+
+- `TeamMemberSelector` is now path/route-only. The `top_level_name` selector variant, `selectorFromMemberName(...)`, and `selectorFromOptionalTargetName(...)` were removed from the domain command identity model.
+- Mixed dispatch derives the executable top-level subteam handle only from an already accepted `memberPath[0]` or first route-key segment; it no longer creates or resolves a bare-name selector.
+- `team-member-selector-payload-adapter.ts` parses only explicit path and route-key fields. The old configurable `nameKeys` branch was deleted.
+- Team WebSocket commands now reject scalar/name/id command target aliases (`target_member_name`, `target_agent_name`, `target_member_id`, `target_agent_id`, `agent_name`, `agent_id`, `member_name`, `member_id`, and camelCase equivalents). `SEND_MESSAGE` accepts only `target_member_path` / `target_member_route_key`; `APPROVE_TOOL` / `DENY_TOOL` accept only source/member/target path or route-key selector fields.
+- Frontend team command payload types expose only route/path selector fields. `SendMessagePayload` no longer has `target_member_name`, and `ToolActionPayload` no longer has command-side `agent_name` / `agent_id`.
+- Frontend live team-event routing no longer treats `agent_name` as a route fallback. It routes by canonical `source_*` / `member_*` route/path identity and uses `agent_id` only after route resolution to update runtime run-id correlation.
+- Runtime status normalization now accepts only canonical active UI statuses (`offline`, `idle`, `running`, `error`) plus current persisted run-history statuses (`ACTIVE`, `TERMINATED`). Removed lifecycle tokens (`uninitialized`, `bootstrapping`, `awaiting_llm_response`, `awaiting_tool_approval`, `executing_tool`, `tool_denied`, `shutdown_complete`) fall back instead of being preserved.
+- Existing status fixtures touched by the integrated-state review were updated away from removed lifecycle tokens. A focused normalization regression now proves removed lifecycle tokens are not accepted as valid current statuses.
+
+No-legacy audit results:
+
+- No active server source/test matches for `top_level_name`, `selectorFromMemberName`, `selectorFromOptionalTargetName`, or `nameKeys:` outside generated JavaScript.
+- Command scalar target aliases only remain in `AgentTeamStreamHandler` as explicit rejection keys and in unit tests as negative-rejection fixtures.
+- Client command payload types show route/path selector fields only.
+- Active web source has no removed runtime lifecycle status-token matches; the only remaining removed-token strings are negative normalization tests. The `bootstrapping-*` matches in `VoiceInputExtensionCard.vue` are unrelated voice-extension install phases, not agent/team runtime statuses.
+
+## Code Review Round 19 / Architecture Round 14 Local Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/integration/agent/agent-team-websocket.integration.test.ts tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts tests/unit/external-channel/runtime/channel-team-run-facade.test.ts --reporter=dot`
+  - Result: `4` files passed, `31` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-manager.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts --reporter=dot`
+  - Result: `4` files passed, `22` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent/agent-team-websocket.integration.test.ts tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts tests/unit/external-channel/runtime/channel-team-run-facade.test.ts --reporter=dot`
+  - Result: `3` files passed, `18` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-web exec vitest run services/runHydration/__tests__/runtimeStatusNormalization.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --reporter=dot`
+  - Result: `4` files passed, `18` tests passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- No-legacy scans for removed selector helpers/variants, WebSocket command scalar aliases, and removed active runtime lifecycle statuses.
+  - Result: passed with only expected rejection-key/negative-test/display-metadata findings described above.
+- Custom changed non-test `.ts` / `.vue` source size audit.
+  - Result: `10` changed non-test TS/Vue source files checked; no changed implementation file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this no-legacy integrated source state again.
+

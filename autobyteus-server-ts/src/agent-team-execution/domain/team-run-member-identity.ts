@@ -2,8 +2,7 @@ import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run
 
 export type TeamMemberSelector =
   | { kind: "path"; memberPath: string[] }
-  | { kind: "route_key"; memberRouteKey: string }
-  | { kind: "top_level_name"; memberName: string };
+  | { kind: "route_key"; memberRouteKey: string };
 
 export type TeamMemberIdentity = {
   memberName: string;
@@ -37,11 +36,6 @@ export const buildMemberPath = (
   memberName: string,
 ): string[] => [...(parentPath ?? []), normalizeRequiredString(memberName, "memberName")];
 
-export const selectorFromMemberName = (memberName: string): TeamMemberSelector => ({
-  kind: "top_level_name",
-  memberName: normalizeRequiredString(memberName, "memberName"),
-});
-
 export const selectorFromMemberRouteKey = (memberRouteKey: string): TeamMemberSelector => ({
   kind: "route_key",
   memberRouteKey: normalizeMemberRouteKey(memberRouteKey),
@@ -52,49 +46,28 @@ export const selectorFromMemberPath = (memberPath: readonly string[]): TeamMembe
   memberPath: normalizeMemberPath(memberPath),
 });
 
-export const selectorFromOptionalTargetName = (
-  targetMemberName: string | null | undefined,
-): TeamMemberSelector | null => {
-  if (typeof targetMemberName !== "string" || targetMemberName.trim().length === 0) {
-    return null;
-  }
-  return selectorFromMemberName(targetMemberName);
-};
-
-export const selectorToRouteKey = (selector: TeamMemberSelector): string | null => {
+export const selectorToRouteKey = (selector: TeamMemberSelector): string => {
   if (selector.kind === "path") {
     return buildMemberRouteKeyFromPath(selector.memberPath);
   }
-  if (selector.kind === "route_key") {
-    return normalizeMemberRouteKey(selector.memberRouteKey);
-  }
-  return null;
+  return normalizeMemberRouteKey(selector.memberRouteKey);
 };
 
 export const selectorToDisplayString = (selector: TeamMemberSelector): string => {
   if (selector.kind === "path") {
     return normalizeMemberPath(selector.memberPath).join("/");
   }
-  if (selector.kind === "route_key") {
-    return normalizeMemberRouteKey(selector.memberRouteKey);
-  }
-  return normalizeRequiredString(selector.memberName, "memberName");
+  return normalizeMemberRouteKey(selector.memberRouteKey);
 };
 
 export const isNestedSelector = (selector: TeamMemberSelector): boolean => {
   if (selector.kind === "path") {
     return normalizeMemberPath(selector.memberPath).length > 1;
   }
-  if (selector.kind === "route_key") {
-    return normalizeMemberRouteKey(selector.memberRouteKey).includes("/");
-  }
-  return false;
+  return normalizeMemberRouteKey(selector.memberRouteKey).includes("/");
 };
 
 export const getSelectorTopLevelName = (selector: TeamMemberSelector): string | null => {
-  if (selector.kind === "top_level_name") {
-    return normalizeRequiredString(selector.memberName, "memberName");
-  }
   if (selector.kind === "path") {
     return normalizeMemberPath(selector.memberPath)[0] ?? null;
   }
@@ -103,9 +76,6 @@ export const getSelectorTopLevelName = (selector: TeamMemberSelector): string | 
 };
 
 export const stripSelectorTopLevel = (selector: TeamMemberSelector): TeamMemberSelector | null => {
-  if (selector.kind === "top_level_name") {
-    return null;
-  }
   if (selector.kind === "path") {
     const [, ...rest] = normalizeMemberPath(selector.memberPath);
     return rest.length > 0 ? selectorFromMemberPath(rest) : null;
@@ -116,7 +86,7 @@ export const stripSelectorTopLevel = (selector: TeamMemberSelector): TeamMemberS
 
 export type TeamMemberSelectorResolution<TMember> =
   | { ok: true; member: TMember }
-  | { ok: false; code: "TARGET_MEMBER_NOT_FOUND" | "AMBIGUOUS_MEMBER_SELECTOR"; message: string };
+  | { ok: false; code: "TARGET_MEMBER_NOT_FOUND"; message: string };
 
 export const resolveTeamMemberSelector = <TMember extends TeamMemberIdentity>(
   selector: TeamMemberSelector,
@@ -134,33 +104,13 @@ export const resolveTeamMemberSelector = <TMember extends TeamMemberIdentity>(
         };
   }
 
-  if (selector.kind === "route_key") {
-    const routeKey = normalizeMemberRouteKey(selector.memberRouteKey);
-    const matched = members.find((member) => normalizeMemberRouteKey(member.memberRouteKey) === routeKey) ?? null;
-    return matched
-      ? { ok: true, member: matched }
-      : {
-          ok: false,
-          code: "TARGET_MEMBER_NOT_FOUND",
-          message: `Team member route '${routeKey}' was not found.`,
-        };
-  }
-
-  const memberName = normalizeRequiredString(selector.memberName, "memberName");
-  const matches = members.filter((member) => member.memberName === memberName);
-  if (matches.length === 1) {
-    return { ok: true, member: matches[0]! };
-  }
-  if (matches.length > 1) {
-    return {
-      ok: false,
-      code: "AMBIGUOUS_MEMBER_SELECTOR",
-      message: `Team member name '${memberName}' is ambiguous; use memberPath or memberRouteKey.`,
-    };
-  }
-  return {
-    ok: false,
-    code: "TARGET_MEMBER_NOT_FOUND",
-    message: `Team member '${memberName}' was not found.`,
-  };
+  const routeKey = normalizeMemberRouteKey(selector.memberRouteKey);
+  const matched = members.find((member) => normalizeMemberRouteKey(member.memberRouteKey) === routeKey) ?? null;
+  return matched
+    ? { ok: true, member: matched }
+    : {
+        ok: false,
+        code: "TARGET_MEMBER_NOT_FOUND",
+        message: `Team member route '${routeKey}' was not found.`,
+      };
 };

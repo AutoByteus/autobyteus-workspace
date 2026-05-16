@@ -153,8 +153,6 @@ export interface ExternalUserMessagePayload {
   thread_id?: string | null;
   external_message_id?: string | null;
   context_file_paths?: ExternalUserMessageContextFilePathPayload[];
-  agent_name?: string;
-  agent_id?: string;
   member_route_key?: string;
   member_path?: string[];
   source_route_key?: string;
@@ -212,7 +210,6 @@ export interface ToolApprovalTokenPayload {
   teamRunId: string;
   invocationId: string;
   invocationVersion: number;
-  targetMemberName?: string;
   targetMemberRouteKey?: string;
   targetMemberPath?: string[];
 }
@@ -476,7 +473,6 @@ export interface SendMessagePayload {
   content: string;
   context_file_paths?: string[];
   image_urls?: string[];
-  target_member_name?: string;
   target_member_route_key?: string;
   target_member_path?: string[];
   message_id?: string;
@@ -485,8 +481,6 @@ export interface SendMessagePayload {
 
 export interface ToolActionPayload {
   invocation_id: string;
-  agent_name?: string;
-  agent_id?: string;
   member_route_key?: string;
   member_path?: string[];
   source_route_key?: string;

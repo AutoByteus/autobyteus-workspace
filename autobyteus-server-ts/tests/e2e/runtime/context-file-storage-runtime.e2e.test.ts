@@ -747,7 +747,7 @@ runLiveContextFileRuntimeE2e(
             JSON.stringify({
               type: "SEND_MESSAGE",
               payload: {
-                target_member_name: "worker",
+                target_member_route_key: "worker",
                 content:
                   "What is the dominant color in the attached image? Reply with exactly one lowercase word.",
                 context_file_paths: [finalized.locator],
