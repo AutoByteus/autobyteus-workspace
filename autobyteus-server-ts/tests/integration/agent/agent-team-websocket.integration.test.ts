@@ -314,6 +314,39 @@ describe("Agent team websocket integration", () => {
     expect(team.messages[0].contextFiles?.length).toBe(2);
     expect(team.lastTarget).toBe("alpha");
 
+    socket.send(
+      JSON.stringify({
+        type: "SEND_MESSAGE",
+        payload: {
+          content: "hello camel",
+          targetMemberPath: ["BuildSquad", "review_lead"],
+        },
+      }),
+    );
+    await waitForCondition(() => team.messages.length === 2);
+    expect(team.messages[1].content).toBe("hello camel");
+    expect(team.lastTarget).toBe("BuildSquad/review_lead");
+
+    const invalidSendErrorPromise = waitForMessage(socket);
+    socket.send(
+      JSON.stringify({
+        type: "SEND_MESSAGE",
+        payload: {
+          content: "invalid scalar alias",
+          target_member_name: "alpha",
+        },
+      }),
+    );
+    const invalidSendError = JSON.parse(await invalidSendErrorPromise) as {
+      type: string;
+      payload: { code?: string };
+    };
+    expect(invalidSendError).toMatchObject({
+      type: "ERROR",
+      payload: { code: "INVALID_TARGET" },
+    });
+    expect(team.messages).toHaveLength(2);
+
     socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
     await waitForCondition(() => team.interruptCalls === 1);
     expect(team.interruptCalls).toBe(1);
@@ -666,6 +699,11 @@ describe("Agent team websocket integration", () => {
             payload: {
               content: "hello from telegram",
               agent_name: "Professor",
+              agent_id: "prof-run-1",
+              member_route_key: "Professor",
+              member_path: ["Professor"],
+              source_route_key: "Professor",
+              source_path: ["Professor"],
               received_at: "2026-03-10T20:10:00.000Z",
             },
           }),
@@ -677,6 +715,11 @@ describe("Agent team websocket integration", () => {
       payload: {
         content?: string;
         agent_name?: string;
+        agent_id?: string;
+        member_route_key?: string;
+        member_path?: string[];
+        source_route_key?: string;
+        source_path?: string[];
         received_at?: string;
       };
     };
@@ -686,6 +729,11 @@ describe("Agent team websocket integration", () => {
       payload: {
         content: "hello from telegram",
         agent_name: "Professor",
+        agent_id: "prof-run-1",
+        member_route_key: "Professor",
+        member_path: ["Professor"],
+        source_route_key: "Professor",
+        source_path: ["Professor"],
         received_at: "2026-03-10T20:10:00.000Z",
       },
     });
@@ -813,12 +861,54 @@ describe("Agent team websocket integration", () => {
 
     socket.send(
       JSON.stringify({
-        type: "APPROVE_TOOL",
-        payload: { invocation_id: "inv-4" },
+        type: "DENY_TOOL",
+        payload: {
+          invocation_id: "inv-4",
+          targetMemberRouteKey: "BuildSquad/review_lead",
+          reason: "camel",
+        },
       }),
     );
-    await new Promise((resolve) => setTimeout(resolve, 80));
-    expect(team.approvals).toHaveLength(3);
+    await waitForCondition(() => team.approvals.length === 4);
+    expect(team.approvals[3]).toEqual({
+      agentName: "BuildSquad/review_lead",
+      invocationId: "inv-4",
+      approved: false,
+      reason: "camel",
+    });
+
+    const missingTargetErrorPromise = waitForMessage(socket);
+    socket.send(
+      JSON.stringify({
+        type: "APPROVE_TOOL",
+        payload: { invocation_id: "inv-5" },
+      }),
+    );
+    const missingTargetError = JSON.parse(await missingTargetErrorPromise) as {
+      type: string;
+      payload: { code?: string };
+    };
+    expect(missingTargetError).toMatchObject({
+      type: "ERROR",
+      payload: { code: "INVALID_TARGET" },
+    });
+
+    const scalarAliasErrorPromise = waitForMessage(socket);
+    socket.send(
+      JSON.stringify({
+        type: "APPROVE_TOOL",
+        payload: { invocation_id: "inv-6", target_member_name: "alpha" },
+      }),
+    );
+    const scalarAliasError = JSON.parse(await scalarAliasErrorPromise) as {
+      type: string;
+      payload: { code?: string };
+    };
+    expect(scalarAliasError).toMatchObject({
+      type: "ERROR",
+      payload: { code: "INVALID_TARGET" },
+    });
+    expect(team.approvals).toHaveLength(4);
 
     socket.close();
     await app.close();

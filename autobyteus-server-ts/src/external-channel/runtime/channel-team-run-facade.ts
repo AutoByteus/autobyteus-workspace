@@ -15,7 +15,15 @@ import {
   ChannelDispatchLockRegistry,
   getChannelDispatchLockRegistry,
 } from "./channel-dispatch-lock-registry.js";
-import { selectorFromMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
+import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import {
+  getRuntimeMemberContexts,
+  type TeamMemberRuntimeContext,
+} from "../../agent-team-execution/domain/team-run-context.js";
+import {
+  buildMemberRouteKeyFromPath,
+  selectorFromMemberRouteKey,
+} from "../../agent-team-execution/domain/team-run-member-identity.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -108,11 +116,18 @@ export class ChannelTeamRunFacade {
           lastActivityAt: new Date().toISOString(),
         });
         try {
+          const targetMemberRouteKey = normalizeOptionalString(binding.targetNodeName ?? null);
           this.teamLiveMessagePublisher.publishExternalUserMessage({
             teamRunId,
             envelope,
-            agentName: binding.targetNodeName ?? null,
-            agentId: null,
+            ...resolveExternalDispatchMemberIdentity(teamRun, {
+              memberRunId,
+              targetMemberRouteKey,
+              memberName:
+                normalizeOptionalString(capturedTurn?.memberName ?? null) ??
+                normalizeOptionalString(result.memberName ?? null) ??
+                targetMemberRouteKey,
+            }),
           });
         } catch (error) {
           logger.warn(
@@ -144,3 +159,73 @@ const normalizeOptionalString = (value: string | null): string | null => {
   const normalized = value.trim();
   return normalized.length > 0 ? normalized : null;
 };
+
+const resolveExternalDispatchMemberIdentity = (
+  teamRun: TeamRun,
+  input: {
+    memberRunId: string | null;
+    targetMemberRouteKey: string | null;
+    memberName: string | null;
+  },
+): {
+  agentName: string | null;
+  agentId: string | null;
+  memberRouteKey: string | null;
+  memberPath: string[] | null;
+  sourceRouteKey: string | null;
+  sourcePath: string[] | null;
+} => {
+  const runtimeContext = findRuntimeMemberContext(teamRun, input);
+  const routeKey =
+    runtimeContext?.memberRouteKey ??
+    normalizeRouteKey(input.targetMemberRouteKey);
+  const path = runtimeContext?.memberPath ?? routeKeyToMemberPath(routeKey);
+
+  return {
+    agentName: runtimeContext?.memberName ?? input.memberName,
+    agentId: runtimeContext?.memberRunId ?? input.memberRunId,
+    memberRouteKey: routeKey,
+    memberPath: path,
+    sourceRouteKey: routeKey,
+    sourcePath: path,
+  };
+};
+
+const findRuntimeMemberContext = (
+  teamRun: TeamRun,
+  input: {
+    memberRunId: string | null;
+    targetMemberRouteKey: string | null;
+  },
+): TeamMemberRuntimeContext | null => {
+  const contexts = getRuntimeMemberContexts(teamRun.getRuntimeContext());
+  if (input.memberRunId) {
+    const byRunId = contexts.find(
+      (context) => context.memberRunId === input.memberRunId,
+    );
+    if (byRunId) {
+      return byRunId;
+    }
+  }
+
+  const targetMemberRouteKey = normalizeRouteKey(input.targetMemberRouteKey);
+  if (!targetMemberRouteKey) {
+    return null;
+  }
+  return contexts.find((context) => context.memberRouteKey === targetMemberRouteKey) ?? null;
+};
+
+const normalizeRouteKey = (routeKey: string | null): string | null => {
+  if (!routeKey) {
+    return null;
+  }
+  try {
+    const selector = selectorFromMemberRouteKey(routeKey);
+    return selector.kind === "route_key" ? selector.memberRouteKey : null;
+  } catch {
+    return null;
+  }
+};
+
+const routeKeyToMemberPath = (routeKey: string | null): string[] | null =>
+  routeKey ? buildMemberRouteKeyFromPath(routeKey.split("/")).split("/") : null;

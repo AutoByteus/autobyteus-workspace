@@ -58,6 +58,18 @@ const createTeamBinding = (): ChannelBinding => ({
 
 const createTeamRun = () => ({
   runId: "team-1",
+  getRuntimeContext: vi.fn().mockReturnValue({
+    memberContexts: [
+      {
+        memberKind: "agent",
+        memberName: "support-node",
+        memberPath: ["support-node"],
+        memberRouteKey: "support-node",
+        memberRunId: "member-1",
+        getPlatformAgentRunId: () => null,
+      },
+    ],
+  }),
   subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
   postMessage: vi.fn().mockResolvedValue({
     accepted: true,
@@ -120,7 +132,11 @@ describe("ChannelTeamRunFacade", () => {
       teamRunId: "team-1",
       envelope,
       agentName: "support-node",
-      agentId: null,
+      agentId: "member-1",
+      memberRouteKey: "support-node",
+      memberPath: ["support-node"],
+      sourceRouteKey: "support-node",
+      sourcePath: ["support-node"],
     });
   });
 

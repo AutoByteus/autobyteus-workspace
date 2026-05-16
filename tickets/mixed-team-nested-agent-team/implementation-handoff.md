@@ -700,3 +700,57 @@ Passed:
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this no-legacy integrated source state again.
 
+
+## Code Review Round 21 Local Fix Update
+
+Addressed all three Round 21 no-legacy command API review findings with clean-cut route/path behavior only.
+
+Implementation updates:
+
+- Added structured camelCase command selector support at the WebSocket command boundary without reintroducing scalar aliases:
+  - `SEND_MESSAGE` now accepts `targetMemberRouteKey` / `targetMemberPath` alongside the documented snake_case route/path fields.
+  - `APPROVE_TOOL` / `DENY_TOOL` now accept `sourceRouteKey` / `sourcePath`, `memberRouteKey` / `memberPath`, and `targetMemberRouteKey` / `targetMemberPath` alongside documented snake_case fields.
+- Extracted command selector parsing/rejection policy into `team-command-selector-parser.ts` so `AgentTeamStreamHandler` remains below the source-size guardrail while the command boundary stays explicit and centralized.
+- Scalar command target aliases now produce a WebSocket `ERROR` with stable code `INVALID_TARGET` instead of log-only rejection. Missing tool approval target identity also returns `INVALID_TARGET`.
+- External-channel team live messages now publish canonical `member_route_key` / `member_path` and `source_route_key` / `source_path` derived from the accepted team dispatch target/runtime member correlation. `agent_name` / `agent_id` remain display/correlation metadata only.
+- Frontend team live stream routing no longer falls back to `focusedMemberRouteKey` when canonical source/member route/path identity is absent. Member-scoped events without canonical route/path identity are skipped instead of being attributed to the focused member.
+- `TeamStreamingService` protocol payload types now include documented structured camelCase command selector fields and external user message display metadata while keeping command authority route/path-only.
+
+Regression coverage added/updated:
+
+- Backend unit tests cover camelCase send and approval selectors, `INVALID_TARGET` responses for all scalar send/approval aliases, and missing approval-target rejection.
+- Backend integration tests cover camelCase `SEND_MESSAGE`, camelCase approval targeting, and `INVALID_TARGET` WebSocket errors for scalar send/approval aliases plus missing approval target.
+- External-channel facade/publisher tests cover live external team message publication with canonical route/path identity.
+- Frontend streaming tests cover route/path-only member event routing and prove old no-route live payloads do not route through the focused member.
+
+No-legacy audit results:
+
+- Removed selector helpers/variants remain absent: no matches for `top_level_name`, `selectorFromMemberName`, `selectorFromOptionalTargetName`, or `nameKeys:` in active source/tests.
+- Frontend scalar approval-target compatibility remains absent: no matches for `ToolApprovalTarget | string`, `typeof target === 'string'`, or scalar `approveTool(..., 'member')` / `denyTool(..., 'member')` patterns. The only grep hit is `approveTool('inv-nested')`, which has no scalar target argument.
+- Scalar command alias strings remain only in the explicit invalid-target rejection-key owner and negative tests.
+- `TeamStreamingService` active code has no `focusedMemberRouteKey` event-routing fallback; `agent_name` is not used as route authority.
+
+## Code Review Round 21 Local Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/agent-streaming/team-live-message-publisher.test.ts tests/unit/external-channel/runtime/channel-team-run-facade.test.ts tests/integration/agent/agent-team-websocket.integration.test.ts --reporter=dot`
+  - Result: `4` files passed, `32` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-manager.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts --reporter=dot`
+  - Result: `4` files passed, `25` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts --reporter=dot`
+  - Result: `1` file passed, `3` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-web exec vitest run services/runHydration/__tests__/runtimeStatusNormalization.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --reporter=dot`
+  - Result: `4` files passed, `19` tests passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- No-legacy scans for removed selector helpers/variants, scalar approval-target compatibility, active command alias authority, and focused-member live routing fallback.
+  - Result: passed with only expected invalid-target rejection-key / negative-test / display-metadata findings described above.
+- Custom changed/untracked non-test `.ts` / `.vue` source size audit.
+  - Result: `7` changed/untracked implementation source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 21 local fix.

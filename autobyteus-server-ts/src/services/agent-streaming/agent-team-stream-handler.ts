@@ -19,7 +19,6 @@ import {
   type TeamRunTaskPlanEventPayload,
   getTeamRunEventSourceRouteKey,
 } from "../../agent-team-execution/domain/team-run-event.js";
-import type { TeamMemberSelector } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import { TeamStreamBroadcaster, getTeamStreamBroadcaster } from "./team-stream-broadcaster.js";
 import { AgentSession } from "./agent-session.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
@@ -36,7 +35,15 @@ import {
 import { serializePayload } from "./payload-serialization.js";
 import { buildTeamCommunicationMessagePayload } from "./team-communication-message-payload.js";
 import { buildTeamMemberInputMessagePayload } from "./team-member-input-message-payload.js";
-import { resolveTeamMemberSelectorFromPayload } from "./team-member-selector-payload-adapter.js";
+import {
+  SEND_MESSAGE_INVALID_TARGET_MESSAGE,
+  TEAM_COMMAND_INVALID_TARGET_CODE,
+  TOOL_APPROVAL_INVALID_TARGET_MESSAGE,
+  TOOL_APPROVAL_MISSING_TARGET_MESSAGE,
+  hasInvalidCommandSelectorFields,
+  resolveSendMessageTargetSelector,
+  resolveToolApprovalTargetSelector,
+} from "./team-command-selector-parser.js";
 import {
   TeamRuntimeStatusSnapshotService,
   getTeamRuntimeStatusSnapshotService,
@@ -59,28 +66,6 @@ const logger = {
 };
 
 const TEAM_METADATA_REFRESH_DEBOUNCE_MS = 2000;
-
-const COMMAND_LEGACY_SELECTOR_KEYS = [
-  "agent_id",
-  "agent_name",
-  "agentId",
-  "agentName",
-  "member_id",
-  "member_name",
-  "memberId",
-  "memberName",
-  "target_agent_id",
-  "target_agent_name",
-  "target_member_id",
-  "target_member_name",
-  "targetAgentId",
-  "targetAgentName",
-  "targetMemberId",
-  "targetMemberName",
-];
-
-const hasPayloadKey = (payload: Record<string, unknown>, keys: readonly string[]): boolean =>
-  keys.some((key) => payload[key] !== undefined && payload[key] !== null);
 
 class AgentTeamSession extends AgentSession {
   get teamRunId(): string {
@@ -172,12 +157,14 @@ export class AgentTeamStreamHandler {
       const payload = data.payload ?? {};
       const teamRunId = session.runId;
 
+      const connection = this.sessionConnections.get(sessionId);
+
       if (msgType === ClientMessageType.SEND_MESSAGE) {
         const teamRun = await this.resolveSessionTeamRun(sessionId, teamRunId);
         if (!teamRun) {
           return;
         }
-        await this.handleSendMessage(teamRun, payload);
+        await this.handleSendMessage(teamRun, payload, connection ?? null);
         return;
       }
 
@@ -189,9 +176,9 @@ export class AgentTeamStreamHandler {
       if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
         await this.handleInterruptGeneration(teamRunId);
       } else if (msgType === ClientMessageType.APPROVE_TOOL) {
-        await this.handleToolApproval(teamRunId, payload, true);
+        await this.handleToolApproval(teamRunId, payload, true, connection ?? null);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
-        await this.handleToolApproval(teamRunId, payload, false);
+        await this.handleToolApproval(teamRunId, payload, false, connection ?? null);
       } else {
         logger.warn(`Unknown message type: ${String(msgType)}`);
       }
@@ -307,15 +294,14 @@ export class AgentTeamStreamHandler {
   private async handleSendMessage(
     teamRun: TeamRun,
     payload: Record<string, unknown>,
+    connection: WebSocketConnection | null,
   ): Promise<void> {
     const teamRunId = teamRun.runId;
     const content = typeof payload.content === "string" ? payload.content : "";
-    const targetSelector = resolveTeamMemberSelectorFromPayload(payload, {
-      pathKeys: ["target_member_path"],
-      routeKeyKeys: ["target_member_route_key"],
-    });
-    if (hasPayloadKey(payload, COMMAND_LEGACY_SELECTOR_KEYS)) {
-      logger.warn(`SEND_MESSAGE rejected for team run ${teamRunId}: legacy member-name target fields are not supported.`);
+    const targetSelector = resolveSendMessageTargetSelector(payload);
+    if (hasInvalidCommandSelectorFields(payload)) {
+      logger.warn(`SEND_MESSAGE rejected for team run ${teamRunId}: ${SEND_MESSAGE_INVALID_TARGET_MESSAGE}`);
+      this.sendInvalidTarget(connection, SEND_MESSAGE_INVALID_TARGET_MESSAGE);
       return;
     }
 
@@ -382,6 +368,7 @@ export class AgentTeamStreamHandler {
     teamRunId: string,
     payload: Record<string, unknown>,
     approved: boolean,
+    connection: WebSocketConnection | null,
   ): Promise<void> {
     const invocationId = payload.invocation_id;
     if (typeof invocationId !== "string" || invocationId.length === 0) {
@@ -396,17 +383,16 @@ export class AgentTeamStreamHandler {
     }
 
     const reason = typeof payload.reason === "string" ? payload.reason : null;
-    if (hasPayloadKey(payload, COMMAND_LEGACY_SELECTOR_KEYS)) {
-      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: legacy member-name target fields are not supported.`);
+    if (hasInvalidCommandSelectorFields(payload)) {
+      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: ${TOOL_APPROVAL_INVALID_TARGET_MESSAGE}`);
+      this.sendInvalidTarget(connection, TOOL_APPROVAL_INVALID_TARGET_MESSAGE);
       return;
     }
-    const approvalTarget = resolveTeamMemberSelectorFromPayload(payload, {
-      pathKeys: ["source_path", "member_path", "target_member_path"],
-      routeKeyKeys: ["source_route_key", "member_route_key", "target_member_route_key"],
-    });
+    const approvalTarget = resolveToolApprovalTargetSelector(payload);
 
     if (!approvalTarget) {
-      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: approval target missing.`);
+      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: ${TOOL_APPROVAL_MISSING_TARGET_MESSAGE}`);
+      this.sendInvalidTarget(connection, TOOL_APPROVAL_MISSING_TARGET_MESSAGE);
       return;
     }
 
@@ -441,6 +427,15 @@ export class AgentTeamStreamHandler {
     const errorMsg = createErrorMessage("TEAM_NOT_FOUND", `Team run '${teamRunId}' not found`);
     connection.send(errorMsg.toJson());
     connection.close(4004);
+  }
+
+  private sendInvalidTarget(
+    connection: WebSocketConnection | null,
+    message: string,
+  ): void {
+    connection?.send(
+      createErrorMessage(TEAM_COMMAND_INVALID_TARGET_CODE, message).toJson(),
+    );
   }
 
   private scheduleMetadataRefresh(teamRunId: string, teamRun: TeamRun): void {

@@ -69,6 +69,14 @@ describe("AgentTeamStreamHandler", () => {
     refreshRunMetadata: vi.fn().mockResolvedValue(undefined),
   });
 
+  const getSentMessages = (connection: { send: ReturnType<typeof vi.fn> }) =>
+    connection.send.mock.calls.map(([raw]) => JSON.parse(raw as string));
+
+  const getSentErrors = (connection: { send: ReturnType<typeof vi.fn> }) =>
+    getSentMessages(connection).filter(
+      (message) => message.type === ServerMessageType.ERROR,
+    );
+
   it("rebroadcasts agent lifecycle events with member context", () => {
     const handler = new AgentTeamStreamHandler(
       undefined,
@@ -348,7 +356,60 @@ describe("AgentTeamStreamHandler", () => {
     );
   });
 
-  it("rejects every legacy scalar SEND_MESSAGE target alias", async () => {
+  it("handles SEND_MESSAGE with structured camelCase route and path selectors", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.SEND_MESSAGE,
+        payload: {
+          content: "hello route",
+          targetMemberRouteKey: "BuildSquad/review_lead",
+        },
+      }),
+    );
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.SEND_MESSAGE,
+        payload: {
+          content: "hello path",
+          targetMemberPath: ["BuildSquad", "qa_specialist"],
+        },
+      }),
+    );
+
+    expect(teamRun.postMessage).toHaveBeenNthCalledWith(
+      1,
+      expect.anything(),
+      {
+        kind: "route_key",
+        memberRouteKey: "BuildSquad/review_lead",
+      },
+    );
+    expect(teamRun.postMessage).toHaveBeenNthCalledWith(
+      2,
+      expect.anything(),
+      {
+        kind: "path",
+        memberPath: ["BuildSquad", "qa_specialist"],
+      },
+    );
+  });
+
+  it("rejects every scalar SEND_MESSAGE target alias with invalid-target errors", async () => {
     const teamRun = createTeamRun();
     const teamRunService = createTeamRunService(teamRun);
     const handler = new AgentTeamStreamHandler(
@@ -393,6 +454,13 @@ describe("AgentTeamStreamHandler", () => {
 
     expect(teamRun.postMessage).not.toHaveBeenCalled();
     expect(teamRunService.recordRunActivity).not.toHaveBeenCalled();
+    const errorMessages = getSentErrors(connection);
+    expect(errorMessages).toHaveLength(16);
+    expect(
+      errorMessages.every(
+        (message) => message.payload?.code === "INVALID_TARGET",
+      ),
+    ).toBe(true);
   });
 
   it("restores and rebinds a team run before SEND_MESSAGE when the active subject was removed", async () => {
@@ -506,7 +574,65 @@ describe("AgentTeamStreamHandler", () => {
     );
   });
 
-  it("rejects every legacy scalar tool approval target alias", async () => {
+  it("routes approval commands with structured camelCase selector fields", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.APPROVE_TOOL,
+        payload: {
+          invocation_id: "inv-camel-path",
+          sourcePath: ["BuildSquad", "review_lead"],
+        },
+      }),
+    );
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.DENY_TOOL,
+        payload: {
+          invocation_id: "inv-camel-route",
+          memberRouteKey: "BuildSquad/qa_specialist",
+          reason: "not allowed",
+        },
+      }),
+    );
+
+    expect(teamRun.approveToolInvocation).toHaveBeenNthCalledWith(
+      1,
+      {
+        kind: "path",
+        memberPath: ["BuildSquad", "review_lead"],
+      },
+      "inv-camel-path",
+      true,
+      null,
+    );
+    expect(teamRun.approveToolInvocation).toHaveBeenNthCalledWith(
+      2,
+      {
+        kind: "route_key",
+        memberRouteKey: "BuildSquad/qa_specialist",
+      },
+      "inv-camel-route",
+      false,
+      "not allowed",
+    );
+  });
+
+  it("rejects every scalar tool approval target alias with invalid-target errors", async () => {
     const teamRun = createTeamRun();
     const teamRunService = createTeamRunService(teamRun);
     const handler = new AgentTeamStreamHandler(
@@ -550,6 +676,44 @@ describe("AgentTeamStreamHandler", () => {
     }
 
     expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
+    const errorMessages = getSentErrors(connection);
+    expect(errorMessages).toHaveLength(16);
+    expect(
+      errorMessages.every(
+        (message) => message.payload?.code === "INVALID_TARGET",
+      ),
+    ).toBe(true);
+  });
+
+  it("rejects tool approvals without structured target identity with invalid-target errors", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.APPROVE_TOOL,
+        payload: {
+          invocation_id: "inv-missing-target",
+        },
+      }),
+    );
+
+    expect(teamRun.approveToolInvocation).not.toHaveBeenCalled();
+    expect(getSentErrors(connection).at(-1)).toMatchObject({
+      payload: {
+        code: "INVALID_TARGET",
+      },
+    });
   });
 
   it("registers the websocket connection for team-scoped live message broadcasts", async () => {
@@ -578,6 +742,11 @@ describe("AgentTeamStreamHandler", () => {
               payload: {
                 content: "hello from telegram",
                 agent_name: "Professor",
+                agent_id: "prof-run-1",
+                member_route_key: "Professor",
+                member_path: ["Professor"],
+                source_route_key: "Professor",
+                source_path: ["Professor"],
               },
             }),
         } as any,
@@ -591,6 +760,11 @@ describe("AgentTeamStreamHandler", () => {
       payload: {
         content: "hello from telegram",
         agent_name: "Professor",
+        agent_id: "prof-run-1",
+        member_route_key: "Professor",
+        member_path: ["Professor"],
+        source_route_key: "Professor",
+        source_path: ["Professor"],
       },
     });
   });

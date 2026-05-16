@@ -342,9 +342,7 @@ export class TeamStreamingService {
       return routedMatch;
     }
 
-
-    // Fall back to focused member
-    return this.teamContext.leafAgentContextsByRouteKey.get(this.teamContext.focusedMemberRouteKey) || null;
+    return null;
   }
 
   private dispatchMessage(message: ServerMessage, teamContext: AgentTeamContext): void {

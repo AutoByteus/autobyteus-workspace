@@ -61,6 +61,10 @@ describe('TeamStreamingService', () => {
           tool_name: 'run_bash',
           arguments: { command: 'pwd' },
           agent_name: 'worker-a',
+          member_route_key: 'worker-a',
+          member_path: ['worker-a'],
+          source_route_key: 'worker-a',
+          source_path: ['worker-a'],
           approval_token: {
             teamRunId: 'run-1',
             invocationId: 'inv-1',
@@ -307,6 +311,65 @@ describe('TeamStreamingService', () => {
     expect(studentConversation.messages).toHaveLength(0);
   });
 
+  it('does not route live member events through the focused member when canonical identity is absent', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+    try {
+      const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+      const professorConversation: { messages: any[]; updatedAt: string } = { messages: [], updatedAt: '' };
+      const studentConversation: { messages: any[]; updatedAt: string } = { messages: [], updatedAt: '' };
+      const teamContext = {
+        focusedMemberRouteKey: 'Student',
+        leafAgentContextsByRouteKey: new Map([
+          [
+            'Professor',
+            {
+              state: { runId: 'prof-run-1', compactionStatus: null },
+              conversation: professorConversation,
+            },
+          ],
+          [
+            'Student',
+            {
+              state: { runId: 'student-run-1', compactionStatus: null },
+              conversation: studentConversation,
+            },
+          ],
+        ]),
+      } as any;
+
+      service.connect('team-1', teamContext);
+      callbacks.get('onMessage')?.(
+        JSON.stringify({
+          type: 'EXTERNAL_USER_MESSAGE',
+          payload: {
+            content: 'old payload without route identity',
+            received_at: '2026-03-10T20:15:00.000Z',
+            agent_name: 'Professor',
+            agent_id: 'prof-run-2',
+          },
+        }),
+      );
+
+      expect(professorConversation.messages).toHaveLength(0);
+      expect(studentConversation.messages).toHaveLength(0);
+      expect(warnSpy).toHaveBeenCalledWith('No member context found for message, skipping');
+    } finally {
+      warnSpy.mockRestore();
+    }
+  });
+
   it('routes successful tool execution through the browser-owned post-success handler', () => {
     const callbacks = new Map<string, (payload?: any) => void>();
     const wsClient = {
@@ -348,11 +411,15 @@ describe('TeamStreamingService', () => {
             title: 'Example',
           },
           agent_name: 'worker-a',
+          member_route_key: 'worker-a',
+          member_path: ['worker-a'],
+          source_route_key: 'worker-a',
+          source_path: ['worker-a'],
         },
       }),
     );
 
-    expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith({
+    expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith(expect.objectContaining({
       invocation_id: 'call-1',
       tool_name: 'open_tab',
       result: {
@@ -362,7 +429,7 @@ describe('TeamStreamingService', () => {
         title: 'Example',
       },
       agent_name: 'worker-a',
-    });
+    }));
   });
 
   it('routes raw inter-agent messages only to the targeted member conversation', () => {
@@ -406,6 +473,10 @@ describe('TeamStreamingService', () => {
       reference_file_entries: [{ referenceId: 'ref-1', path: '/tmp/report.md', type: 'file' }],
       agent_name: 'worker-a',
       agent_id: 'receiver-run-1',
+      member_route_key: 'worker-a',
+      member_path: ['worker-a'],
+      source_route_key: 'worker-a',
+      source_path: ['worker-a'],
     };
 
     service.connect('team-1', teamContext);
