@@ -509,6 +509,16 @@ const createClaudeTeamWebSocketHarness = async (input: {
   });
   const fakeTeamManager: TeamManager = {
     hasActiveMembers: () => true,
+    getStatusSnapshot: () => ({
+      status: agentRun.getStatusSnapshot().status,
+    }),
+    getMemberStatusSnapshots: () => [
+      {
+        ...agentRun.getStatusSnapshot(),
+        agent_id: input.memberRunId,
+        agent_name: input.memberName,
+      },
+    ],
     postMessage: async (message, targetMemberName) => {
       expect(targetMemberName).toBe(input.memberName);
       const result = await agentRun.postUserMessage(message);
@@ -521,7 +531,11 @@ const createClaudeTeamWebSocketHarness = async (input: {
     },
     deliverInterAgentMessage: async () => ({ accepted: true }),
     approveToolInvocation: async () => ({ accepted: true }),
-    interrupt: async () => agentRun.interrupt(),
+    interruptMember: async (targetMemberRouteKey, targetMemberRunId) => {
+      expect(targetMemberRouteKey).toBe(input.memberName);
+      expect(targetMemberRunId).toBe(input.memberRunId);
+      return agentRun.interrupt();
+    },
     terminate: async () => agentRun.terminate(),
     subscribeToEvents: (_listener: TeamRunEventListener) => () => {},
   };
@@ -751,7 +765,15 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       );
       expect(harness.sdkCalls[0]?.options?.resume).toBeUndefined();
 
-      harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+      harness.socket.send(
+        JSON.stringify({
+          type: "INTERRUPT_GENERATION",
+          payload: {
+            target_member_name: memberName,
+            agent_id: memberRunId,
+          },
+        }),
+      );
       await waitForCondition(
         () =>
           firstQuery.close.mock.calls.length === 1 &&

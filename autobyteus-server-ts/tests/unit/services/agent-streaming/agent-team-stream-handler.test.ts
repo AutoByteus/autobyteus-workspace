@@ -24,7 +24,7 @@ describe("AgentTeamStreamHandler", () => {
     subscribeToEvents: vi.fn().mockReturnValue(() => {}),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-    interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
     context: {
       runtimeContext: {
         memberContexts: [
@@ -272,11 +272,68 @@ describe("AgentTeamStreamHandler", () => {
       sessionId as string,
       JSON.stringify({
         type: ClientMessageType.INTERRUPT_GENERATION,
+        payload: {
+          target_member_name: "worker-a",
+          agent_id: "member-42",
+        },
       }),
     );
 
     expect(teamRunService.resolveTeamRun).not.toHaveBeenCalled();
-    expect(teamRun.interrupt).not.toHaveBeenCalled();
+    expect(teamRun.interruptMember).not.toHaveBeenCalled();
+  });
+
+  it("routes interrupt-generation to the explicit member route key with run-id as guard", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.INTERRUPT_GENERATION,
+        payload: {
+          target_member_name: "worker-a",
+          agent_id: "member-42",
+        },
+      }),
+    );
+
+    expect(teamRun.interruptMember).toHaveBeenCalledWith("worker-a", "member-42");
+  });
+
+  it("rejects interrupt-generation without a target instead of falling back to team-wide interrupt", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.INTERRUPT_GENERATION,
+        payload: {},
+      }),
+    );
+
+    expect(teamRun.interruptMember).not.toHaveBeenCalled();
   });
 
   it("resolves approval target names from TeamRun member context instead of manager state", async () => {

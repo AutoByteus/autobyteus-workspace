@@ -5,7 +5,7 @@
  * and type validation without any business logic.
  */
 
-import type { ServerMessage, ClientMessage } from './messageTypes';
+import type { ServerMessage, SerializableClientMessage } from './messageTypes';
 
 /**
  * Parse a raw JSON string from the WebSocket into a typed ServerMessage.
@@ -39,11 +39,11 @@ export function parseServerMessage(raw: string): ServerMessage {
 }
 
 /**
- * Serialize a ClientMessage to JSON string for sending over WebSocket.
+ * Serialize a client message to JSON string for sending over WebSocket.
  * 
  * @param message - Typed client message
  * @returns JSON string
  */
-export function serializeClientMessage(message: ClientMessage): string {
+export function serializeClientMessage(message: SerializableClientMessage): string {
   return JSON.stringify(message);
 }

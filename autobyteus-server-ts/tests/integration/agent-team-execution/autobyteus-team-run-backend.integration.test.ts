@@ -184,11 +184,12 @@ afterEach(() => {
 
 describe("AutoByteusTeamRunBackend integration", () => {
   it("routes direct team commands and inter-agent delivery through the native team", async () => {
-    const { backend, team } = createBackend();
+    const runtimeContext = createRuntimeContext();
+    const { backend, team } = createBackend({}, { runtimeContext });
 
     expect(backend.runId).toBe("team-auto-1");
     expect(backend.teamBackendKind).toBe(TeamBackendKind.AUTOBYTEUS);
-    expect(backend.getRuntimeContext()).toBeNull();
+    expect(backend.getRuntimeContext()).toBe(runtimeContext);
     expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
 
     const userMessage = new AgentInputUserMessage("hello team");
@@ -234,15 +235,31 @@ describe("AutoByteusTeamRunBackend integration", () => {
       "approved",
     );
 
-    await expect(backend.interrupt()).resolves.toEqual({
+    await expect(backend.interruptMember("student", "student-run")).resolves.toEqual({
       accepted: true,
       code: "accepted",
       message: undefined,
     });
-    expect(team.interrupt).toHaveBeenCalledWith({ reason: "user_interrupt" });
+    expect(team.interrupt).toHaveBeenCalledWith({
+      reason: "user_interrupt",
+      targetMemberName: "Student",
+    });
     expect(team.stop).not.toHaveBeenCalled();
 
     await expect(backend.terminate()).resolves.toEqual({ accepted: true });
+  });
+
+  it("rejects member interrupt run-id mismatches without retargeting by run id", async () => {
+    const runtimeContext = createRuntimeContext();
+    const { backend, team } = createBackend({}, { runtimeContext });
+
+    await expect(backend.interruptMember("student", "professor-run")).resolves.toMatchObject({
+      accepted: false,
+      code: "TARGET_MEMBER_RUN_MISMATCH",
+    });
+
+    expect(team.interrupt).not.toHaveBeenCalled();
+    expect(team.stop).not.toHaveBeenCalled();
   });
 
   it("returns RUN_NOT_FOUND when the team is inactive", async () => {
@@ -263,7 +280,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
     await expect(
       backend.approveToolInvocation("WorkerA", "inv-1", true),
     ).resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
-    await expect(backend.interrupt()).resolves.toMatchObject({
+    await expect(backend.interruptMember("student", "student-run")).resolves.toMatchObject({
       accepted: false,
       code: "RUN_NOT_FOUND",
     });

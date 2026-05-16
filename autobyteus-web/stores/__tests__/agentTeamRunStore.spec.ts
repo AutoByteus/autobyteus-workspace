@@ -435,7 +435,7 @@ describe('agentTeamRunStore', () => {
     expect(typeof replacementTeamContext.unsubscribe).toBe('function');
   });
 
-  it('interruptGeneration should send INTERRUPT_GENERATION without clearing sending state optimistically', () => {
+  it('interruptFocusedMemberGeneration should send member target without clearing sending state optimistically', () => {
     const focusedMember = {
       isSending: true,
       state: {
@@ -467,11 +467,41 @@ describe('agentTeamRunStore', () => {
 
     const store = useAgentTeamRunStore();
     store.connectToTeamStream('team-1');
-    const result = store.interruptGeneration('team-1');
+    const result = store.interruptFocusedMemberGeneration({
+      teamRunId: 'team-1',
+      targetMemberRouteKey: 'professor',
+      targetAgentRunId: 'member-1',
+    });
 
     expect(result).toBe(true);
-    expect(mockInterruptGeneration).toHaveBeenCalledTimes(1);
+    expect(mockInterruptGeneration).toHaveBeenCalledWith({
+      targetMemberRouteKey: 'professor',
+      targetAgentRunId: 'member-1',
+    });
     expect(focusedMember.isSending).toBe(true);
+  });
+
+  it('interruptFocusedMemberGeneration rejects missing member target without using active-team fallback', () => {
+    const teamContext = {
+      teamRunId: 'team-1',
+      focusedMemberName: 'professor',
+      isSubscribed: false,
+      members: new Map(),
+    };
+
+    teamContextsStoreMock.activeTeamContext = teamContext;
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
+
+    const store = useAgentTeamRunStore();
+    store.connectToTeamStream('team-1');
+    const result = store.interruptFocusedMemberGeneration({
+      teamRunId: 'team-1',
+      targetMemberRouteKey: '   ',
+      targetAgentRunId: 'member-1',
+    });
+
+    expect(result).toBe(false);
+    expect(mockInterruptGeneration).not.toHaveBeenCalled();
   });
 
   it('fans out mixed member runtimes when launching a temporary team', async () => {

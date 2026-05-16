@@ -16,7 +16,7 @@ const createTeamManagerStub = () => ({
   postMessage: vi.fn().mockResolvedValue({ accepted: true }),
   deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
   approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-  interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+  interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
   terminate: vi.fn().mockResolvedValue({ accepted: true }),
   subscribeToEvents: vi.fn(() => () => {}),
 });
