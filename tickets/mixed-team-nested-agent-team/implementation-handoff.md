@@ -546,3 +546,29 @@ Passed:
   - Result: `216` changed files checked; no changed non-test implementation source file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until this integrated source state passes code review again.
+
+## Code Review Round 16 Local Fix Update
+
+Addressed `CR-ROUND8-INTEGRATION-001`, the stale canonical-status merge issue found in the active frontend team monitor tile source:
+
+- `TeamMemberMonitorTile.vue` now falls back to canonical `AgentStatus.Offline` when rendering a structural subteam/no-`memberContext` tile, instead of the removed `AgentStatus.Uninitialized` enum member.
+- `TeamMemberMonitorTile.spec.ts` adds focused regression coverage for a focused `agent_team` tile with no `memberContext`, verifying the header renders `Offline`, keeps the subteam display/badge, and does not require a leaf agent context.
+
+## Code Review Round 16 Local Checks
+
+Passed:
+
+- `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts components/workspace/team/__tests__/TeamGridView.spec.ts components/workspace/team/__tests__/TeamSpotlightView.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts --reporter=dot`
+  - Result: `9` files passed, `43` tests passed.
+  - Notes: output includes existing KaTeX quirks-mode warnings from Markdown renderer tests and the expected negative termination log in `agentTeamRunStore.spec.ts`.
+- Active-source removed status grep:
+  - Command: `grep -R "AgentStatus\.\(Uninitialized\|ShutdownComplete\|ProcessingUserInput\|AwaitingToolApproval\|ExecutingTool\|ToolDenied\)" -n autobyteus-web --include='*.ts' --include='*.vue' --exclude-dir=node_modules --exclude-dir=.nuxt --exclude-dir=dist --exclude-dir=electron-dist --exclude-dir=tickets --exclude-dir=docs`
+  - Result: no matches.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- Custom changed `.ts` / `.vue` source size audit against `origin/personal`.
+  - Result: `217` changed files checked; no changed non-test implementation source file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes again.
