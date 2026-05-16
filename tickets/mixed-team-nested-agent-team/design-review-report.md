@@ -5,12 +5,12 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Additional Context Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`, prior validation failure notes, prior implementation/review artifacts, and the prior Round 10 review report state in this canonical file path.
-- Current Review Round: 11
-- Trigger: Revised communication-roster / representative-routing package after Round 10 `Fail / Design Impact` findings `ARCH-COMM-001` and `ARCH-COMM-002`.
-- Prior Review Round Reviewed: Round 10 in this same canonical file path.
-- Latest Authoritative Round: 11
-- Current-State Evidence Basis: Re-read the architecture-reviewer workflow, shared design principles, report template, revised requirements, revised investigation notes, revised design spec, the revised upward nested-team reporting rework note, prior validation failure notes, and current implementation seams named by the design: `member-team-context.ts`, `member-team-context-builder.ts`, `inter-agent-message-delivery.ts`, `mixed-team-manager.ts`, `mixed-team-member-registry.ts`, `mixed-sub-team-member-handle.ts`, `team-run-event.ts`, and `team-communication-types.ts`. Also ran `git diff --check` on the revised requirements, investigation, design, and rework-note artifacts with no output.
+- Additional Context Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`, prior validation failure notes, prior implementation/review artifacts, and prior review rounds in this canonical report.
+- Current Review Round: 12
+- Trigger: Small latest refinement after user clarified the LLM-facing `send_message_to` roster should read as an organization/team-membership manifest rather than technical routing-scope sections.
+- Prior Review Round Reviewed: Round 11 in this same canonical file path.
+- Latest Authoritative Round: 12
+- Current-State Evidence Basis: Re-read the architecture-reviewer workflow, shared design principles, report template, revised requirements, revised investigation notes, revised design spec, revised upward nested-team reporting rework note, and current implementation seams relevant to this refinement: `member-run-instruction-composer.ts`, `member-team-context.ts`, `member-team-context-builder.ts`, `member-communication-roster-builder.ts`, Codex/Claude/AutoByteus `send_message_to` adapters, and `inter-agent-message-delivery.ts`. Also ran `git diff --check` on the updated ticket artifacts.
 
 ## Round History
 
@@ -26,31 +26,31 @@
 | 8 | Revised package after Round 7 design-impact rework | `ARCH-NESTED-001`, `ARCH-NESTED-002`, `ARCH-NESTED-003` | None | Pass | No | Round 7 findings were resolved. Superseded by full-stack UI validation rework. |
 | 9 | Revised package after API/E2E frontend nested-team UI failure | Round 7/8 architecture findings and UI failure note | None | Pass | No | Frontend recursive display/read-model/route-key design was sufficient. Superseded by communication-roster design reset. |
 | 10 | Revised package after communication-boundary/user-discussion reset | Round 7/8/9 architecture findings and validation-discovered gaps | 2 | Fail | No | Communication-roster direction accepted in principle, but representative delivery and descriptor/projection shapes needed rework. |
-| 11 | Revised package after Round 10 design-impact response | `ARCH-COMM-001`, `ARCH-COMM-002` | None | Pass | Yes | Absolute-route representative delivery, descriptor coordinate semantics, and represented-subteam DTO flow are now concrete enough for implementation. |
+| 11 | Revised package after Round 10 design-impact response | `ARCH-COMM-001`, `ARCH-COMM-002` | None | Pass | No | Absolute-route representative delivery, descriptor coordinate semantics, and represented-subteam DTO flow became concrete enough for implementation. |
+| 12 | LLM roster-manifest presentation refinement | Round 10/11 communication findings and Round 11 pass state | None | Pass | Yes | `TeamMembershipRosterManifest` is a clean prompt-presentation boundary derived from descriptors; routing contract remains unchanged. |
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md` as a full architecture review of the current design package, not a delta-only check.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md` as a full architecture review of the current package with the latest roster-manifest refinement included.
 
-The revised design is now implementation-ready. It keeps the correct high-level boundary separation and resolves the Round 10 blockers:
+The refinement is architecturally sound and does not disturb the Round 11 routing approval:
 
-- structural topology remains recursive and owned by topology/config/metadata/frontend tree owners;
-- communication visibility is a separate scoped roster projection owned by `MemberCommunicationRosterBuilder`;
-- parent-to-subteam representative delivery now has one canonical absolute-route contract: `program_manager -> review_lead` resolves to parent-root recipient route `BuildSquad/review_lead`, executes through the top-level `BuildSquad` handle, and enters the child run with child-local selector `review_lead`;
-- structural subteam user/composer posts remain distinct and may still default to the child coordinator;
-- child-to-parent reporting uses parent-boundary descriptors and `ParentBoundaryBridge`, not global run lookup, sibling flattening, or stored reply state;
-- `MemberTeamRecipientDescriptor` now uses one coordinate shape, `delivery { teamRunId, selector }` plus `participant.address`, with explicit examples for parent-to-representative, child-local, and child-to-parent cases;
-- `TeamCommunicationParticipant.representedSubTeam` is now a concrete payload/projection field with an end-to-end mapping through `MixedTeamManager`, `TeamCommunicationService`, GraphQL/WebSocket DTOs, and frontend `TeamCommunicationStore`;
-- stale `reply_to_sender` / `replyAddress` / reply-alias routing is consistently rejected in the active design.
+- `communicationRecipients` descriptors remain the routing authority and tool-schema source for exact allowed `recipient_name` values;
+- `TeamMembershipRosterManifest` is explicitly a presentation/read-model shape derived from descriptors plus team display metadata;
+- `MemberRunInstructionComposer` / a roster-manifest renderer owns LLM-facing roster wording and must not become a resolver;
+- DS-023 provides a readable bounded local spine from `MemberTeamContext.communicationRecipients + team display metadata` to runtime instructions/tool schema;
+- REQ-040 and AC-032 capture the user-facing prompt requirement without adding new runtime routing behavior;
+- technical descriptor scopes such as `local_agent`, `parent_boundary_agent`, local child-team recipients, and parent-boundary recipients remain internal labels and are forbidden as primary LLM-facing organization headings;
+- Round 10 fixes remain intact: absolute-route representative delivery, parent-boundary bridge routing, represented-subteam DTO flow, and no hidden reply state.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | The design classifies the work as `Feature / Larger Requirement`. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | The design and investigation classify the issue as `Boundary Or Ownership Issue` plus `Shared Structure Looseness`, citing current structural `members`/`allowedRecipientNames`, tool-adapter structural lookup, manager current-boundary resolution, and frontend flattening evidence. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The design requires member handles, recursive topology, `MemberCommunicationRosterBuilder`, participant-shaped delivery requests, parent-boundary bridge routing, member-input events, projection dedupe, and frontend recursive tree/read-model work. | None. |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | The refactor is reflected in DS-001..DS-022, CR-001..CR-009, ownership boundaries, file mapping, dependency rules, forbidden bypasses, and migration steps. | None. |
+| Assessment is present for the current task posture | Pass | The broader design still classifies the work as `Feature / Larger Requirement`; the latest refinement is presentation-only within that architecture. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Investigation notes cite the current `member-run-instruction-composer.ts` prompt as a flat “Teammates” list and the new addendum classifies the issue as LLM-facing organization-manifest presentation, not runtime routing. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The design adds `TeamMembershipRosterManifest` / `member-team-roster-manifest.ts` and `MemberRunInstructionComposer` responsibilities while keeping `communicationRecipients` as routing authority. | None. |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | REQ-040, AC-032, CR-003a, DS-023, file mapping, ownership boundaries, dependency rules, and migration step 19 all reflect the refinement. | None. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -58,11 +58,12 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | --- | --- | --- | --- | --- | --- |
 | 7 | `ARCH-NESTED-001` | High | Resolved | `TeamMemberSelector` remains the authoritative public/domain command identity across `TeamRun`, `TeamRunBackend`, `TeamManager`, and mixed manager command methods. | No regression. |
 | 7 | `ARCH-NESTED-002` | High | Resolved | Canonical recursive `TeamRunMetadata.memberTree`, `TeamRunMetadataStore` schema ownership, flattener-derived projections, and no-backcompat policy remain explicit. | No regression. |
-| 7 | `ARCH-NESTED-003` | Medium | Resolved / superseded by stronger design | The current package specifies member-kind/path-aware participants, represented-subteam metadata, and exact communication DTO flow. | Superseded by Round 10/11 communication-roster design. |
+| 7 | `ARCH-NESTED-003` | Medium | Resolved / superseded by stronger design | The current package specifies member-kind/path-aware participants, represented-subteam metadata, exact communication DTO flow, and now roster-manifest prompt presentation. | Superseded by Round 10-12 communication-roster design. |
 | API/E2E UI gap | `FS-UI-NESTED-001` | High | Resolved in design | Recursive frontend `TeamMemberNode` tree, route-key indexes, subteam focus, launch config, history/restore, streaming/activity, and communication projections remain in scope. | No regression. |
 | API/E2E transcript/projection gap | `FS-TRANSCRIPT-001` | High | Resolved in design | `MEMBER_INPUT`, delivery trace IDs, projection dedupe, and stable presentation policy remain specified. | No regression. |
-| 10 | `ARCH-COMM-001` | High | Resolved | The design now chooses absolute-route representative delivery. `MixedTeamManager.deliverInterAgentMessage()` may resolve a top-level subteam handle while preserving actual representative identity, and `MixedSubTeamMemberHandle.deliverInterMemberMessage()` strips the subteam prefix and posts to a child-local selector. | The previously conflicting default-only inter-member delivery wording has been replaced. |
-| 10 | `ARCH-COMM-002` | High | Resolved | The descriptor now uses `delivery { teamRunId, selector }` plus `participant.address`; coordinate examples cover parent-to-representative, child-local, and child-to-parent descriptors; `representedSubTeam` is included in participant/event/projection/frontend flow. | Remaining duplication between participant path fields and `address` is controlled by explicit invariants. |
+| 10 | `ARCH-COMM-001` | High | Resolved | Absolute-route representative delivery remains canonical; `MixedSubTeamMemberHandle` strips the subteam prefix and posts to a child-local selector. | No regression from prompt-only refinement. |
+| 10 | `ARCH-COMM-002` | High | Resolved | Descriptor coordinate shape and represented-subteam event/projection flow remain concrete. | No regression. |
+| 11 | Round 11 pass residual risk | Medium | Addressed for prompt presentation | The design now names `TeamMembershipRosterManifest` / roster-manifest renderer as the LLM-facing presentation owner instead of leaving prompt formatting as flat `allowedRecipientNames` text. | Implementation still must update current prompt composer. |
 
 ## Spine Inventory Verdict
 
@@ -74,18 +75,20 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | DS-020 | Child-to-parent reporting | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-021 | Upward report projections/transcript | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-022 | Scoped recipient resolution | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-023 | LLM roster-manifest presentation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Structural topology / metadata / frontend tree | Pass | Pass | Pass | Pass | Recursive topology remains separate from communication roster. |
-| Mixed runtime member handles | Pass | Pass | Pass | Pass | Manager/registry/handle split is actionable, including explicit subteam-prefix stripping for representative delivery. |
-| Communication roster | Pass | Pass | Pass | Pass | `MemberCommunicationRosterBuilder` is the correct authoritative visibility-policy owner. |
-| Tool adapters | Pass | Pass | Pass | Pass | Codex, Claude, and AutoByteus adapters consume `communicationRecipients`, not structural `members`. |
-| Parent-boundary bridge | Pass | Pass | Pass | Pass | Scoped upward delivery is parent-owned and avoids global run lookup or fake local teammates. |
-| Team communication projection | Pass | Pass | Pass | Pass | Participant-shaped projection with represented-subteam metadata is now concrete. |
-| Live member input / projection dedupe / presentation | Pass | Pass | Pass | Pass | Prior validation gaps remain addressed through owned backend/frontend boundaries. |
+| Mixed runtime member handles | Pass | Pass | Pass | Pass | No change from this prompt refinement. |
+| Communication roster | Pass | Pass | Pass | Pass | `MemberCommunicationRosterBuilder` remains the correct visibility-policy owner. |
+| LLM roster-manifest presentation | Pass | Pass | Pass | Pass | New manifest/renderer is presentation-only and derived from descriptors. |
+| Tool adapters | Pass | Pass | Pass | Pass | Tool schema enums still derive from `communicationRecipients.map(r => r.recipientName)`. |
+| Parent-boundary bridge | Pass | Pass | Pass | Pass | No routing changes. |
+| Team communication projection | Pass | Pass | Pass | Pass | Represented-subteam projection remains intact. |
+| Live member input / projection dedupe / presentation | Pass | Pass | Pass | Pass | Prior validation-gap owners remain intact. |
 
 ## Reusable Owned Structures Verdict
 
@@ -93,11 +96,12 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | --- | --- | --- | --- | --- | --- |
 | `TeamMemberSelector` | Pass | Pass | Pass | Pass | Canonical domain command identity. |
 | `TeamMemberAddress` | Pass | Pass | Pass | Pass | Coordinate root for participant path/route identity. |
-| `MemberTeamRecipientDescriptor` | Pass | Pass | Pass | Pass | Descriptor fields now have one coordinate contract. |
-| `InterAgentMessageDeliveryRequest` | Pass | Pass | Pass | Pass | Participant-shaped request replaces loose scalar identity as the target design. |
+| `MemberTeamRecipientDescriptor` | Pass | Pass | Pass | Pass | Descriptor fields keep one coordinate contract. |
+| `InterAgentMessageDeliveryRequest` | Pass | Pass | Pass | Pass | Participant-shaped delivery remains approved. |
 | `MemberCommunicationRosterBuilder` | Pass | Pass | Pass | Pass | Correct owner for local, representative, and parent-boundary recipient visibility. |
+| `TeamMembershipRosterManifest` | Pass | Pass | Pass | Pass | Correct new owned presentation structure; avoids duplicating prompt formatting across runtimes. |
 | `ParentBoundaryBridge` | Pass | Pass | Pass | Pass | Correct scoped child-to-parent bridge. |
-| `TeamCommunicationParticipant` / `representedSubTeam` | Pass | Pass | Pass | Pass | Concrete projection shape is now specified end-to-end. |
+| `TeamCommunicationParticipant` / `representedSubTeam` | Pass | Pass | Pass | Pass | Concrete projection shape remains specified. |
 | `MEMBER_INPUT` / delivery trace | Pass | Pass | Pass | Pass | Separates recipient transcript rows from team communication rows. |
 | Recursive frontend `TeamMemberNode` | Pass | Pass | Pass | Pass | Display topology and leaf context indexes stay separate. |
 
@@ -109,7 +113,7 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | `TeamMemberAddress` | Pass | Pass | Pass | Pass | Pass | `teamRunId` defines coordinate root; path/route are relative to that root. |
 | `TeamCommunicationParticipant` | Pass | Pass | Pass | Pass | Pass | Participant identity and optional `representedSubTeam` have one meaning each. |
 | `MemberTeamRecipientDescriptor` | Pass | Pass | Pass | Pass | Pass | `delivery` owns executable target; `participant.address` owns actual recipient identity. |
-| `InterAgentDeliveryParticipant` | Pass | Medium | Pass | Pass | Pass | It intentionally carries both projection participant fields and normalized address; invariants keep them aligned. |
+| `TeamMembershipRosterManifest` | Pass | Pass | Pass | Pass | Pass | Presentation fields have one meaning: team context, current-member role, member rows, messageable recipient names. |
 | `InterAgentMessageDeliveryRequest` | Pass | Pass | Pass | Pass | Pass | Request is rooted at `teamRunId`; sender/recipient participants are relative to the same root. |
 | `TeamRunCommunicationEventPayload` | Pass | Pass | Pass | Pass | Pass | Payload carries sender/receiver participants and no abstract-subteam-as-agent impersonation. |
 | `TeamRunMetadata.memberTree` | Pass | Pass | Pass | Pass | Pass | No version suffix/field and no flat compatibility path. |
@@ -120,6 +124,8 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? (`Pass`/`Fail`) | Replacement Owner / Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Removal / Decommission Scope Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Flat structural `members` as send-message authority | Pass | Pass | Pass | Pass | Replaced by `communicationRecipients`; `allowedRecipientNames` is derived only. |
+| Flat “Teammates” prompt as the organization model | Pass | Pass | Pass | Pass | Replaced by `TeamMembershipRosterManifest` rendered by `MemberRunInstructionComposer`. |
+| Technical routing-scope labels as LLM headings | Pass | Pass | Pass | Pass | Explicitly forbidden as primary prompt grouping language. |
 | Hidden reply alias / stored reply state | Pass | Pass | Pass | Pass | Explicitly rejected; upward routing uses current scoped descriptors. |
 | Abstract subteam node as normal `send_message_to` target | Pass | Pass | Pass | Pass | Representative names are normal communication recipients; structural group posts remain separate. |
 | Default-only subteam delivery for all inter-member messages | Pass | Pass | Pass | Pass | Representative delivery carries explicit nested route and child-local selector. |
@@ -133,8 +139,10 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | File | Responsibility Is Singular And Clear? (`Pass`/`Fail`) | Responsibility Matches The Intended Owner/Boundary? (`Pass`/`Fail`) | Responsibilities Were Re-Tightened After Shared-Structure Extraction? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `member-team-context.ts` / `member-team-recipient.ts` | Pass | Pass | Pass | Pass | Owns structural member descriptors plus scoped communication recipient descriptors. |
-| `member-communication-roster-builder.ts` | Pass | Pass | Pass | Pass | Owns recipient visibility, grouping, and duplicate visible-name rejection. |
+| `member-communication-roster-builder.ts` | Pass | Pass | Pass | Pass | Owns recipient visibility, grouping metadata, and duplicate visible-name rejection. |
 | `member-team-context-builder.ts` | Pass | Pass | Pass | Pass | Attaches structural descriptors and roster descriptors; derives tool-schema names. |
+| `member-team-roster-manifest.ts` or equivalent | Pass | Pass | Pass | Pass | New presentation owner for manifest construction/rendering. |
+| `member-run-instruction-composer.ts` | Pass | Pass | Pass | Pass | Injects manifest and exact allowed recipient list into runtime instructions; does not resolve recipients. |
 | Tool adapter files for Codex/Claude/AutoByteus | Pass | Pass | Pass | Pass | Resolve `recipient_name` through descriptors and build participant-shaped requests. |
 | `inter-agent-message-delivery.ts` | Pass | Pass | Pass | Pass | Owns participant-shaped request and handler type. |
 | `mixed-team-manager.ts` | Pass | Pass | Pass | Pass | Governing runtime owner for delivery, payload publication, handle resolution, and bridge delegation. |
@@ -149,6 +157,7 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | Owner / Boundary | Allowed Dependencies Are Clear? (`Pass`/`Fail`) | Forbidden Shortcuts Are Explicit? (`Pass`/`Fail`) | Direction Is Coherent With Ownership? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Tool adapters -> `MemberTeamContext.communicationRecipients` | Pass | Pass | Pass | Pass | Prevents structural-member lookup bypass. |
+| `MemberRunInstructionComposer -> TeamMembershipRosterManifest builder -> communicationRecipients` | Pass | Pass | Pass | Pass | Prompt rendering is derived and one-way; it is not a resolver. |
 | `MemberCommunicationRosterBuilder` -> descriptors | Pass | Pass | Pass | Pass | Roster is derived, not persisted as topology. |
 | Parent manager -> top-level subteam handle for representative execution | Pass | Pass | Pass | Pass | Executable handle and communication identity are intentionally split. |
 | Subteam handle -> child `TeamRun.postMessage(..., childSelector)` | Pass | Pass | Pass | Pass | Explicit selector stripping replaces null/default inter-member delivery. |
@@ -165,6 +174,7 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | `MixedTeamManager.deliverInterAgentMessage` | Pass | Pass | Pass | Pass | Owns participant-shaped delivery at the request coordinate root or delegates parent-boundary requests through bridge. |
 | `MixedSubTeamMemberHandle.deliverInterMemberMessage` | Pass | Pass | Pass | Pass | Handles prefix stripping and child-local selector dispatch. |
 | `MemberCommunicationRosterBuilder` | Pass | Pass | Pass | Pass | Structural topology and communication roster are not conflated. |
+| `TeamMembershipRosterManifest` / `MemberRunInstructionComposer` | Pass | Pass | Pass | Pass | Prompt presentation is downstream of descriptors and cannot mutate routing identity. |
 | `ParentBoundaryBridge` | Pass | Pass | Pass | Pass | Child does not globally look up parent runs or treat parent members as local. |
 | `TeamCommunicationService` | Pass | Pass | Pass | Pass | Projection stores participant identity with represented-subteam metadata. |
 | Backend `MEMBER_INPUT` producer | Pass | Pass | Pass | Pass | Recipient transcript source remains backend-owned. |
@@ -177,6 +187,8 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | `TeamMemberSelector` | Pass | Pass | Pass | Low | Pass |
 | `MemberCommunicationRosterBuilder.build(...)` | Pass | Pass | Pass | Low | Pass |
 | `MemberTeamRecipientDescriptor` | Pass | Pass | Pass | Low | Pass |
+| `TeamMembershipRosterManifest` / manifest renderer | Pass | Pass | Pass | Low | Pass |
+| `MemberRunInstructionComposer` | Pass | Pass | Pass | Low | Pass |
 | `InterAgentMessageDeliveryRequest` | Pass | Pass | Pass | Low | Pass |
 | `MixedTeamManager.deliverInterAgentMessage(request)` | Pass | Pass | Pass | Low | Pass |
 | `MixedSubTeamMemberHandle.deliverInterMemberMessage(request)` | Pass | Pass | Pass | Low | Pass |
@@ -192,6 +204,8 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | --- | --- | --- | --- | --- | --- |
 | `agent-team-execution/services/member-communication-roster-builder.ts` | Pass | Pass | Low | Pass | Correct service/domain communication-roster owner. |
 | `agent-team-execution/domain/member-team-context.ts` or `member-team-recipient.ts` | Pass | Pass | Low | Pass | Descriptor contract belongs near member team context. |
+| `agent-team-execution/services/member-team-roster-manifest.ts` | Pass | Pass | Low | Pass | Prompt presentation derived from descriptors belongs near instruction/team context services. |
+| `agent-team-execution/services/member-run-instruction-composer.ts` | Pass | Pass | Low | Pass | Existing prompt composer is the right injection point. |
 | `agent-team-execution/domain/inter-agent-message-delivery.ts` | Pass | Pass | Low | Pass | Delivery command DTO belongs in domain. |
 | `agent-team-execution/backends/mixed` parent-boundary bridge types | Pass | Pass | Medium | Pass | Bridge is runtime wiring, not durable metadata. |
 | `services/team-communication` projection files | Pass | Pass | Low | Pass | Existing projection capability is the right owner. |
@@ -202,6 +216,7 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | Need / Concern | Existing Capability Area Was Checked? (`Pass`/`Fail`) | Reuse / Extension Decision Is Sound? (`Pass`/`Fail`) | New Support Piece Is Justified? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Scoped send-message recipient visibility | Pass | Pass | Pass | Pass | Existing structural members are insufficient; roster builder is justified. |
+| LLM roster prompt presentation | Pass | Pass | Pass | Pass | Existing instruction composer should be extended, with a small manifest builder to avoid duplicated prompt logic. |
 | Parent-to-child representative delivery | Pass | Pass | Pass | Pass | Reuses mixed manager/subteam handle/child team run with explicit child selector. |
 | Child-to-parent reporting | Pass | Pass | Pass | Pass | Reuses parent-owned bridge rather than global run lookup. |
 | Communication projection | Pass | Pass | N/A | Pass | Existing service is extended with participant/representation fields. |
@@ -216,6 +231,7 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | Abstract subteam recipient as normal `send_message_to` target | No in target design | Pass | Pass | Structural subteam composer post is separate from representative communication. |
 | `reply_to_sender` / reply state | No in target design | Pass | Pass | Explicitly rejected. |
 | Structural `members` as tool lookup | No in target design | Pass | Pass | Tool adapters use descriptors. |
+| Technical routing-scope prompt headings | No in target design | Pass | Pass | Replaced by organization-style manifest. |
 | Frontend flatten-only topology | No in target design | Pass | Pass | Recursive tree is authoritative. |
 
 ## Migration / Refactor Safety Verdict
@@ -225,6 +241,7 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | Existing backend/frontend nested topology work | Pass | Pass | Pass | Pass |
 | `MEMBER_INPUT`, projection dedupe, presentation policy | Pass | Pass | Pass | Pass |
 | Communication roster descriptor + tool adapters | Pass | Pass | Pass | Pass |
+| LLM roster-manifest prompt presentation | Pass | Pass | Pass | Pass |
 | Parent-to-representative and child-to-parent bridge routing | Pass | Pass | Pass | Pass |
 | Metadata/schema no-backcompat cleanup | Pass | Pass | Pass | Pass |
 | Full-stack validation recovery | Pass | Pass | Pass | Pass |
@@ -237,7 +254,8 @@ The revised design is now implementation-ready. It keeps the correct high-level 
 | Parent-to-representative delivery | Yes | Pass | Pass | Pass | Absolute-route contract and subteam-prefix stripping are clear. |
 | Child-to-parent reporting | Yes | Pass | Pass | Pass | Parent-boundary descriptor/bridge flow is clear. |
 | Descriptor coordinate shape | Yes | Pass | Pass | Pass | Table covers parent-to-representative, child-local, and child-to-parent coordinates. |
-| Represented-subteam projection flow | Yes | Pass | Pass | Pass | End-to-end mapping and JSON examples are present. |
+| LLM roster manifest | Yes | Pass | Pass | Pass | Examples for `BuildSquad/review_lead` and parent `program_manager` show named team contexts and exact allowed recipients. |
+| Represented-subteam projection flow | Yes | Pass | Pass | Pass | End-to-end mapping and JSON examples remain present. |
 | No reply state | Yes | Pass | Pass | Pass | Rejection is explicit. |
 | Frontend recursive tree/focus/history | Yes | Pass | Pass | Pass | Validation-failure scenario remains covered. |
 
@@ -257,7 +275,7 @@ None.
 
 ## Classification
 
-No blocking classification. Prior Round 10 `Design Impact` findings are resolved.
+No blocking classification. Prior Round 10 `Design Impact` findings remain resolved, and the Round 12 roster-manifest refinement is approved.
 
 ## Recommended Recipient
 
@@ -265,12 +283,15 @@ No blocking classification. Prior Round 10 `Design Impact` findings are resolved
 
 ## Residual Risks
 
-- Current implementation files still use the older scalar delivery request, structural-member roster lookup, and `MixedSubTeamMemberHandle.deliverInterMemberMessage(..., null)` behavior. This is expected pre-implementation state; implementation must follow the revised participant-shaped request and explicit child selector contract rather than minimally patching around current code.
-- The participant/address duplication is acceptable only if implementation enforces the documented invariants at descriptor construction/normalization boundaries. Do not let `participant.memberPath` and `participant.address.memberPath` diverge.
-- Delivery tests should cover: duplicate visible recipient names, parent-to-representative explicit child target, structural subteam composer default target, child-to-parent bridge delivery, represented-subteam projection fields, invalid cross-boundary rejections, and absence of `reply_to_sender` / `replyAddress` routing.
+- Current implementation still has `member-run-instruction-composer.ts` rendering a flat “Teammates” list. Implementation must replace that prompt shape with the manifest without changing descriptor-owned routing.
+- Current descriptor scope labels such as `local_agent`, `subteam_representative`, and `parent_boundary_agent` are acceptable internal metadata, but they must not appear as primary LLM-facing team headings.
+- The manifest may use route keys only as secondary/debug metadata; team definition/display names should be preferred for organization context.
+- Tool schema enums and runtime delivery must continue to derive from `communicationRecipients`, not from rendered manifest text.
+- Delivery tests should continue to cover duplicate visible recipient names, parent-to-representative explicit child target, structural subteam composer default target, child-to-parent bridge delivery, represented-subteam projection fields, invalid cross-boundary rejections, and absence of `reply_to_sender` / `replyAddress` routing.
+- Add focused prompt/contract tests for AC-032: `BuildSquad/review_lead` sees named contexts such as `BuildSquad` and `Delivery Leadership Team`, current-member/self/representative rows, `qa_specialist` and `program_manager`, and exact allowed recipient names, without technical scope headings.
 - Full-stack browser validation remains required because earlier backend-only validation missed frontend topology and transcript/presentation failures.
 
 ## Latest Authoritative Result
 
 - Review Decision: Pass
-- Notes: Round 11 is the latest authoritative architecture review. The revised communication-roster / representative-routing design is approved for implementation.
+- Notes: Round 12 is the latest authoritative architecture review. The nested mixed-team communication-roster design, including the LLM team-membership manifest refinement, is approved for implementation.

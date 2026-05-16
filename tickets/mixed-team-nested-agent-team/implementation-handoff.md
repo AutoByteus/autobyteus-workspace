@@ -474,3 +474,34 @@ Passed:
   - Result: `41` changed/untracked non-test source files checked; no file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation remains paused until code review passes again.
+
+## Architecture Round 12 Roster Manifest Implementation Update
+
+Implemented the approved LLM-facing team membership roster manifest refinement without changing the Round 11 runtime routing contract:
+
+- Added `member-team-roster-manifest.ts` as the prompt-presentation/read-model owner. It derives `TeamMembershipRosterManifest` from `MemberTeamContext.communicationRecipients`, current member metadata, parent-boundary presentation metadata, and exact `allowedRecipientNames`; it does not resolve or mutate routing descriptors.
+- Updated `MemberRunInstructionComposer` to inject the rendered organization-style roster manifest and exact allowed `recipient_name` list instead of the old flat `Teammates:` prompt block.
+- Extended `MemberTeamContext` with presentation metadata needed by the manifest: `teamName`, `coordinatorMemberRouteKey`, and optional `parentBoundary` display metadata.
+- Updated `MemberTeamContextBuilder` to resolve current team display names and parent-boundary display names. For a child team running through a parent boundary, the child context uses the represented subteam membership name such as `BuildSquad`; the parent context name can resolve through `parentTeamDefinitionId`, such as `Delivery Leadership Team`.
+- Passed parent team definition metadata through `MixedSubTeamMemberHandle` / `MixedParentBoundaryContext` for child coordinator prompts.
+- Updated Codex and Claude instruction paths to pass the full `MemberTeamContext` into the composer while leaving tool schema enums and delivery resolution owned by `communicationRecipients` descriptors.
+
+Focused AC-032 coverage:
+
+- `member-run-instruction-composer.test.ts` now verifies `BuildSquad/review_lead` instructions render named contexts `BuildSquad` and `Delivery Leadership Team`, mark `review_lead` as self/coordinator/representative, list `qa_specialist` and `program_manager`, include the exact allowed `send_message_to` recipient names, and avoid technical scope headings such as `local_agent`, `parent_boundary_agent`, `local child-team recipients`, or `parent-boundary recipients`.
+- Claude session tool-gating fixtures now carry real `communicationRecipients` descriptors so send-message prompt gating exercises the manifest path rather than only an allowed-name fallback.
+
+## Architecture Round 12 Roster Manifest Local Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts --reporter=dot`
+  - Result: `4` files passed, `15` tests passed.
+- `git diff --check`
+  - Result: passed.
+- Custom changed/untracked non-test `.ts` / `.vue` source size audit.
+  - Result: `8` changed/untracked non-test source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation remains paused until code review passes again.

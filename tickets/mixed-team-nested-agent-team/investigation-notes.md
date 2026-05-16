@@ -326,3 +326,16 @@ Revision response:
 - Tightened descriptors around `delivery: { teamRunId, selector }` plus `participant: TeamCommunicationParticipant & { address }`; removed loose parallel target/actual fields from the target shape.
 - Added concrete `representedSubTeam` fields to `TeamCommunicationParticipant` / projection payload flow and specified propagation through `MixedTeamManager.buildCommunicationPayload`, `TeamCommunicationService`, GraphQL/WebSocket DTOs, and frontend `TeamCommunicationStore`.
 - Removed stale hidden-reply wording from active design mappings.
+
+
+## Roster Manifest Presentation Refinement (2026-05-16)
+
+User follow-up clarified that the LLM-facing `send_message_to` roster should read like a real organization/team membership manifest, not a technical routing-scope list. The runtime remains nested and descriptor-routed; this is a small high-value presentation refactor only.
+
+Design conclusion:
+
+- Keep `communicationRecipients` as the routing authority.
+- Add/define a `TeamMembershipRosterManifest` presentation shape derived from descriptors and team display metadata.
+- Render instructions as named team contexts such as `BuildSquad` and `Delivery Leadership Team`, including current member role, self row, represented-team context, team members, and exact allowed `recipient_name` values.
+- Do not expose implementation labels like `local_agent`, `parent_boundary_agent`, `local child-team recipients`, or `parent-boundary recipients` as primary LLM-facing headings.
+- No change to `MixedTeamManager`, `ParentBoundaryBridge`, child team ownership, metadata, or communication event routing is intended by this refinement.

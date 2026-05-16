@@ -82,6 +82,8 @@ export type MixedTeamMemberContext = MixedAgentMemberContext | MixedSubTeamMembe
 
 export type MixedParentBoundaryContext = {
   parentTeamRunId: string;
+  parentTeamDefinitionId?: string | null;
+  parentTeamName?: string | null;
   representedSubTeam: TeamRepresentedSubTeam;
   parentMembers: AgentMemberTeamDescriptor[];
   deliverInterAgentMessage: InterAgentMessageDeliveryHandler;

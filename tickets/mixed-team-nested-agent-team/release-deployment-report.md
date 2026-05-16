@@ -7,25 +7,25 @@ No release, publication, version bump, tag, or deployment has been requested for
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/handoff-summary.md`
-- Handoff summary status: `Updated for Round 6 integrated state and successful Electron build`
-- Notes: Handoff records the latest integrated base, checkpoint/merge, post-integration verification, docs sync, resolved localization blocker, packaged Electron artifacts, and the user-verification hold.
+- Handoff summary status: `Updated for Round 7 integrated state and successful Electron build`
+- Notes: Handoff records the latest integrated base, checkpoint/merge, post-integration verification, docs sync, accepted Round 7 API/E2E validation, packaged Electron artifacts, and the user-verification hold.
 
 ## Latest Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal @ be56cab9b41b850c92690d79a8dfa70c52c369a0`
-- Earlier delivery integration base: `origin/personal @ 9d8a1aa665d6d37fb9b249cb9829ea729289a27`
-- Latest tracked remote base reference checked: `origin/personal @ aed54f77d0fbe10eea8ff67201375337b94ce362`
-- Base advanced since prior delivery handoff: `Yes`
+- Previous delivery integrated base: `origin/personal @ aed54f77d0fbe10eea8ff67201375337b94ce362`
+- Latest tracked remote base reference checked: `origin/personal @ b056b5f809dacb27524e492f3acef16630969e1b`
+- Base advanced since prior delivery handoff: `Yes` (`13` commits)
 - New base commits integrated into the ticket branch: `Yes`
-- Local checkpoint before latest integration: `998732fa chore(ticket): checkpoint nested mixed team round 6 candidate`
+- Local checkpoint before latest integration: `fd8c0b4cd68a6e1b44f8799bdd0b309f2b564ae3 chore(ticket): checkpoint nested mixed team round 7 candidate`
 - Latest integration method: `Merge` (`git merge --no-edit origin/personal`)
-- Latest integration result: `Completed` (`f80cde6688aebf6802be054f38806946377f240b`)
-- Current branch state against tracked base: `ahead 4`, `behind 0`
+- Latest integration result: `Completed` (`d76f8ee803904bde51609cfefe9ea42aeb04e646`)
+- Current branch state against tracked base: `ahead 6`, `behind 0`
 - Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
-- Blocker: `Resolved` — Round 6 Electron build originally failed on localization literal audit; implementation localized the literals and code review passed the fix.
+- Blocker: `N/A`
 
 ## User Verification
 
@@ -107,40 +107,41 @@ No deployment steps are in scope.
 - No database migration was added by delivery.
 - Runtime behavior intentionally rejects unsupported historical flat team metadata instead of migrating or inferring nested topology.
 - Existing transport bare-name aliases remain edge compatibility inputs for top-level/unambiguous targets only; nested duplicate leaf commands should use path/route-key fields.
+- Representative communication uses explicit scoped descriptors and represented-subteam metadata; there is no hidden reply alias.
 - Local Electron build is unsigned because signing/notarization credentials were intentionally not provided.
 
 ## Verification Checks
 
+API/E2E Round 7 authoritative validation passed before delivery resumed:
+
+- Real full-stack worktree backend/frontend validation on `127.0.0.1:8000` and `127.0.0.1:3020`.
+- Parent-to-representative routing, upward reporting, child-internal communication, represented-subteam display/projection, restore/open dedupe, top-level child history exclusion, and terminate cascade passed.
+- Durable live nested mixed-runtime GraphQL E2E passed with live provider gates enabled.
+
 Post-integration checks run after merging latest `origin/personal` and before delivery docs/report/build edits:
 
 - `git diff --check origin/personal...HEAD` — Passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/run-history/services/agent-run-view-projection-service.test.ts --reporter=dot` — Passed (`3` files, `23` tests).
-- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts stores/__tests__/teamCommunicationStore.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts --reporter=dot` — Passed (`6` files, `31` tests).
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-manager.test.ts tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/team-communication/team-communication-service.test.ts --reporter=dot` — Passed (`8` files, `36` tests).
+- `pnpm -C autobyteus-web exec vitest run stores/__tests__/teamCommunicationStore.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --reporter=dot` — Passed (`3` files, `27` tests).
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — Passed.
-
-Localization blocker fix and code-review checks accepted by `code_reviewer` before the final build rerun:
-
-- `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
 - `pnpm -C autobyteus-web audit:localization-literals` — Passed with zero unresolved findings.
-- `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts --reporter=dot` — Passed (`3` files, `13` tests).
-- `git diff --check` — Passed during code review.
-- Changed/untracked source-size audit over non-test `.ts` / `.vue` files — Passed with `0` hard-limit violations.
+- Check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round7-post-integration-checks.log`.
 
 Local Electron build for user testing:
 
 - README-selected command run from `autobyteus-web`: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac`.
 - Result: `Pass`.
 - Testable app: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.4.dmg`.
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.4.zip`.
-- App version: `1.3.4`; bundle id: `com.autobyteus.app`.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.dmg`.
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.zip`.
+- App version: `1.3.7`; bundle id: `com.autobyteus.app`.
 - ZIP integrity: `OK` (`zip -T`).
 - DMG checksum verification: `VALID` (`hdiutil verify`).
 - Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/electron-build-report.md`.
 
 ## Rollback Criteria
 
-Before finalization, rollback is simply to withhold user verification and leave the branch unmerged. After finalization, rollback should revert the final merge/commit if nested team launch, selector command handling, recursive restore, or path-aware projections regress existing non-nested teams or break nested mixed team routing.
+Before finalization, rollback is simply to withhold user verification and leave the branch unmerged. After finalization, rollback should revert the final merge/commit if nested team launch, selector command handling, representative communication, recursive restore, or path-aware projections regress existing non-nested teams or break nested mixed team routing.
 
 ## Final Status
 

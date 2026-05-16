@@ -43,3 +43,7 @@ After architecture review Round 10, the design was tightened further:
 - Recipient descriptors use `delivery { teamRunId, selector }` plus `participant.address`; no parallel target/actual coordinate fields.
 - Coordinate semantics are explicit: parent-to-representative descriptors are rooted at the parent run with recipient `BuildSquad/review_lead`; child-local descriptors are rooted at the child run with local route `qa_specialist`; child-to-parent descriptors are rooted at the parent run with recipient `program_manager` and sender normalized to `BuildSquad/review_lead`.
 - `TeamCommunicationParticipant` and projection DTOs carry `representedSubTeam` end-to-end.
+
+## Roster manifest refinement (2026-05-16)
+
+After further user discussion, the routing design remains unchanged, but the LLM-facing roster should be rendered as a real team membership manifest. `review_lead` should see named team contexts such as `BuildSquad` and `Delivery Leadership Team`, its role in each context, the team members in each context, and exact allowed `send_message_to.recipient_name` values. Internal terms such as `local` and `parent-boundary` remain descriptor implementation details and should not be the primary prompt headings.

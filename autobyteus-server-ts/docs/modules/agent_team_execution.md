@@ -65,9 +65,24 @@ Manages running team runs, selecting the authoritative team backend, restoring p
   selectors, then deliver through the receiving member handle. Agent recipients
   use the shared `AgentRun.postUserMessage(...)` boundary; subteam recipients
   post into the child `TeamRun` default/coordinator target.
+- Communication rosters are scoped to the member boundary. Parent members can
+  see a subteam coordinator/representative as an addressable recipient, while a
+  represented child coordinator can see local child teammates plus exposed
+  immediate parent-boundary members. This is descriptor-owned visibility, not a
+  hidden `reply_to_sender` alias or arbitrary cross-level access.
+- Representative delivery preserves the actual leaf participant identity. For
+  example `program_manager -> review_lead` resolves to parent-root route
+  `BuildSquad/review_lead`, enters the top-level `BuildSquad` subteam handle for
+  execution, and strips to the child-local selector `review_lead` only after the
+  child boundary is reached.
+- Upward reporting uses the same parent-root descriptor model in reverse:
+  `BuildSquad/review_lead -> program_manager` records the sender as the leaf
+  representative and delivers recipient input to the parent member without
+  exposing unrelated ancestors or sibling internals.
 - Communication projections preserve sender/receiver `memberKind`,
-  `memberPath`, and `memberRouteKey` so a subteam recipient remains visible as
-  an `agent_team` member instead of being misrepresented as a leaf agent.
+  `memberPath`, `memberRouteKey`, and optional `representedSubTeam` metadata so
+  representative messages can display the responsible subteam while retaining
+  the actual leaf participant path.
 - Leaf member input is emitted as a separate member-input event with stable
   message/dedupe identity. For inter-agent delivery into a child team, this
   event is what lets the child coordinator transcript show the inbound

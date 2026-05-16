@@ -12,13 +12,8 @@ export const buildClaudeTurnInput = (options: {
   const instructionComposition = composeMemberRunInstructions({
     teamInstruction: memberTeamContext?.teamInstruction ?? null,
     agentInstruction: options.runContext.runtimeContext.agentInstruction,
-    currentMemberName: memberTeamContext?.memberName ?? null,
+    memberTeamContext: memberTeamContext ?? null,
     sendMessageToEnabled: options.sendMessageToEnabled,
-    teammates: memberTeamContext?.communicationRecipients.map((recipient) => ({
-      memberName: recipient.recipientName,
-      role: recipient.role,
-      description: recipient.description,
-    })) ?? [],
   });
   if (
     !instructionComposition.teamInstruction &&

@@ -117,6 +117,7 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - REQ-037: Parent-to-child and parent-to-subteam delivered inputs MUST record sender/receiver address trace fields for event/projection/debugging, but routing back upward MUST NOT depend on stored sender state, `replyAddress`, or a `reply_to_sender` alias. Follow-up routing uses the current scoped communication recipient descriptor for `program_manager` or another visible parent-boundary recipient.
 - REQ-038: A subteam coordinator/representative MUST receive combined scoped communication visibility: local members from its own child team plus exposed immediate parent-team boundary members while acting as `SubTeam/coordinator`. This MUST NOT expose sibling subteam internals, grandparents, unrelated runs, or make every child member a parent member by default.
 - REQ-039: Communication-visible recipient names MUST be unique within each member's scoped roster. If a local child teammate and a parent-boundary recipient or two subteam representatives share the same visible `recipient_name`, tool exposure and delivery MUST fail with a clear ambiguity/configuration error instead of guessing.
+- REQ-040: Runtime instructions for `send_message_to` MUST render scoped recipients as a real organization-style team membership roster manifest, grouped by human team names and roles, not by implementation labels such as `local` or `parent-boundary`. The manifest MUST show each team context the current member participates in, the current member's role in that team, the team members in that context, representative/subteam context when applicable, and the exact `recipient_name` values that may be used. This manifest is prompt presentation only; routing authority remains `communicationRecipients` descriptors.
 
 ## Acceptance Criteria
 
@@ -151,6 +152,7 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - AC-029: When `program_manager -> BuildSquad/review_lead` is delivered, the child input/event metadata records sender and receiver address fields for projection/traceability only; follow-up routing back to `program_manager` is driven by the child coordinator's current communication recipient descriptor, not by stored reply state or a `reply_to_sender` alias.
 - AC-030: `BuildSquad/review_lead` runtime instructions/tool schema expose a separate parent-boundary recipient section including `program_manager` and any other exposed immediate parent members, while `BuildSquad/qa_specialist` does not automatically receive parent-boundary visibility unless it is also configured as a representative.
 - AC-031: `program_manager` runtime instructions/tool schema expose subteam representative `review_lead` as the recipient for `BuildSquad`, not abstract `BuildSquad`; the descriptor target is `BuildSquad/review_lead` and represented-subteam metadata is present in backend and frontend communication DTOs. If two visible recipients would both be named `review_lead`, tool exposure fails with a clear ambiguous-recipient error.
+- AC-032: In the seeded nested scenario, `BuildSquad/review_lead` instructions present a team membership roster manifest with named team contexts such as `BuildSquad` and `Delivery Leadership Team`, mark `review_lead` as the current member/coordinator/representative, list `qa_specialist` and `program_manager` under their respective team contexts, and include an exact allowed `send_message_to` recipient list. The LLM-facing roster MUST NOT use implementation labels like `local child-team recipients` or `parent-boundary recipients` as the primary grouping language.
 
 ## Constraints / Dependencies
 
@@ -222,6 +224,7 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 | REQ-037 | UC-003, UC-012 |
 | REQ-038 | UC-003, UC-012 |
 | REQ-039 | UC-007, UC-012 |
+| REQ-040 | UC-003, UC-012 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -258,7 +261,8 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 | AC-029 | Sender/receiver trace metadata exists, but upward routing uses current scoped recipient descriptors rather than stored reply state. |
 | AC-030 | Subteam coordinator has parent-boundary visibility without flattening all child members into parent members. |
 | AC-031 | Parent member communication roster exposes subteam representative names and rejects duplicate visible recipient names. |
+| AC-032 | LLM instructions render scoped recipients as named team membership manifests, not technical routing-scope sections. |
 
 ## Approval Status
 
-Scope inferred from the user's explicit investigation/design request. After review and user clarification, the requirements were refined to lock the design posture on mixed-only nested execution for new nested launches, parent-owned child runs, canonical `sourcePath`, canonical recursive `TeamRunMetadata` with no version suffix/field, and path-aware command/tool-approval payloads. The 2026-05-13 full-stack validation and follow-up discussion re-opened the requirements only for frontend nested-team tree/config/workspace/history/activity behavior, live transcript/projection/presentation invariants in REQ-028 through REQ-030, and the communication roster/representative model in REQ-031 through REQ-039; backend nested runtime direction remains unchanged except that nested communication is no longer top-down-only and no longer uses abstract subteam names as the normal `send_message_to` target.
+Scope inferred from the user's explicit investigation/design request. After review and user clarification, the requirements were refined to lock the design posture on mixed-only nested execution for new nested launches, parent-owned child runs, canonical `sourcePath`, canonical recursive `TeamRunMetadata` with no version suffix/field, and path-aware command/tool-approval payloads. The 2026-05-13 full-stack validation and follow-up discussion re-opened the requirements only for frontend nested-team tree/config/workspace/history/activity behavior, live transcript/projection/presentation invariants in REQ-028 through REQ-030, and the communication roster/representative model in REQ-031 through REQ-040; backend nested runtime direction remains unchanged except that nested communication is no longer top-down-only and no longer uses abstract subteam names as the normal `send_message_to` target.

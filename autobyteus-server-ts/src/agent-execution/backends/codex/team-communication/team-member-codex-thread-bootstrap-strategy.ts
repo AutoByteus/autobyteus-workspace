@@ -45,13 +45,8 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
     const instructionComposition = composeMemberRunInstructions({
       teamInstruction: memberTeamContext.teamInstruction,
       agentInstruction: input.agentInstruction,
-      currentMemberName: memberTeamContext.memberName,
+      memberTeamContext,
       sendMessageToEnabled,
-      teammates: memberTeamContext.communicationRecipients.map((recipient) => ({
-        memberName: recipient.recipientName,
-        role: recipient.role,
-        description: recipient.description,
-      })),
     });
 
     return {

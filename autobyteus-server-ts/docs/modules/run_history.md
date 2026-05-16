@@ -181,9 +181,11 @@ team `INTER_AGENT_MESSAGE` events are processor input; derived
 hydration reads that projection through `getTeamCommunicationMessages(teamRunId)`,
 and referenced content opens by persisted message-owned identity at
 `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
-The projection stores sender and receiver `memberKind`, `memberPath`, and
-`memberRouteKey`, so messages to or from a subteam remain attributable to the
-subteam member boundary.
+The projection stores sender and receiver `memberKind`, `memberPath`,
+`memberRouteKey`, and optional `representedSubTeam` metadata. Messages to a
+subteam representative remain attributable to the actual leaf path while showing
+the represented subteam, and child-to-parent reports keep the sender's subteam
+representation in restored Team Messages.
 The member Artifacts tab must not hydrate those reference files as Sent/Received
 artifact rows.
 

@@ -21,7 +21,7 @@ New runs whose definitions contain nested `agent_team` nodes should route to `Te
 
 The frontend must also treat nested teams as first-class team members. The visible workspace tree, active team member panel, grid/spotlight/focus modes, launch configuration, run history/restore, streaming, and activity/communication read models must preserve subteam nodes and use canonical route/path identity rather than flattening nested leaves into parent-level agent rows.
 
-Nested communication is not allowed to remain top-down only, and normal `send_message_to` visibility should not expose abstract subteam node names as if they were agents. Parent-to-subteam delegation exposes the subteam coordinator/representative as the visible recipient while routing through the structural subteam boundary. A child coordinator also has a controlled upward reporting path to immediate parent-boundary recipients such as the parent delegator. This is a bounded communication roster, not arbitrary cross-level messaging: child members do not become top-level parent members and cannot message unrelated grandparents, sibling internals, or global runs.
+Nested communication is not allowed to remain top-down only, and normal `send_message_to` visibility should not expose abstract subteam node names as if they were agents. Parent-to-subteam delegation exposes the subteam coordinator/representative as the visible recipient while routing through the structural subteam boundary. A child coordinator also has a controlled upward reporting path to immediate parent-boundary recipients such as the parent delegator. This is a bounded communication roster, not arbitrary cross-level messaging: child members do not become top-level parent members and cannot message unrelated grandparents, sibling internals, or global runs. The LLM-facing roster must be rendered as a named team membership manifest so the agent sees which real teams it belongs to, its role in each team, and the exact `recipient_name` values it may use; implementation scope labels remain internal.
 
 ## Design-Owner Recheck Decisions
 
@@ -746,17 +746,96 @@ Responsibilities:
    - exposed immediate parent-boundary recipients, excluding the represented subteam/self;
    - sibling subteam coordinators only as representatives if explicitly exposed by the parent roster policy.
 4. Reject duplicate visible `recipientName` values in the current roster.
-5. Emit grouped recipient sections for instructions:
+5. Provide enough presentation metadata for an LLM-facing team membership roster manifest: human team name, current member role in that team context, visible team members, representative/subteam context, and exact messageable `recipientName` values.
+
+The initial required policy is immediate-parent only. Do not expose grandparents, unrelated runs, sibling subteam internals, or every child member to the parent. The builder may own visibility and grouping metadata, but it must not turn prompt presentation into a second routing authority; routing remains descriptor-based.
+
+### CR-003a: LLM Roster Is A Team Membership Manifest
+
+The LLM should receive organization language, not runtime routing jargon. `MemberRunInstructionComposer` should render the current member's scoped `communicationRecipients` through a manifest shape such as:
+
+```ts
+type TeamMembershipRosterManifest = {
+  currentMemberName: string;
+  teams: TeamMembershipRosterTeam[];
+  allowedRecipientNames: string[]; // exact send_message_to recipient_name values
+};
+
+type TeamMembershipRosterTeam = {
+  teamName: string;                // e.g. 'BuildSquad' or 'Delivery Leadership Team'
+  teamRouteKey?: string | null;
+  currentMemberRole: string;       // e.g. 'coordinator' or 'BuildSquad representative'
+  members: Array<{
+    memberName: string;
+    displayName?: string | null;
+    isSelf?: boolean;
+    canMessage?: boolean;
+    recipientName?: string | null; // present only when this row is a valid send_message_to target
+    representsTeamName?: string | null;
+  }>;
+};
+```
+
+Example for the subteam coordinator:
 
 ```text
-Team members you can message:
-- qa_specialist
+Team membership roster
 
-Parent team members visible while representing BuildSquad:
+You are: review_lead
+
+You are a member of these teams:
+
+1. BuildSquad
+   Your role: coordinator
+   Team members:
+   - review_lead (you)
+   - qa_specialist
+
+   You can message:
+   - qa_specialist
+
+2. Delivery Leadership Team
+   Your role: BuildSquad representative
+   Team members:
+   - program_manager
+   - review_lead (you, representing BuildSquad)
+
+   You can message:
+   - program_manager
+
+When using send_message_to, recipient_name must exactly match one of:
+- qa_specialist
 - program_manager
 ```
 
-The initial required policy is immediate-parent only. Do not expose grandparents, unrelated runs, sibling subteam internals, or every child member to the parent.
+Example for the parent member:
+
+```text
+Team membership roster
+
+You are: program_manager
+
+You are a member of these teams:
+
+1. Delivery Leadership Team
+   Team members:
+   - program_manager (you)
+   - review_lead (BuildSquad representative)
+
+   You can message:
+   - review_lead
+
+When using send_message_to, recipient_name must exactly match one of:
+- review_lead
+```
+
+Rules:
+
+- The manifest is derived from `communicationRecipients` and structural/team metadata; it is not a separate resolver.
+- Tool schema enums still derive from `communicationRecipients.map(r => r.recipientName)`.
+- Instruction text must not use implementation labels such as `local_agent`, `parent_boundary_agent`, `local child-team recipients`, or `parent-boundary recipients` as the primary LLM-facing grouping language.
+- Team names should use user-facing team definition/display names when available, with route keys only as secondary/debug metadata.
+- The exact allowed `recipient_name` list remains mandatory, because it is the operational contract the LLM must follow.
 
 ### CR-004: Parent-To-Subteam Communication Targets The Representative Name, Routes Through The Subteam Boundary
 
@@ -858,7 +937,7 @@ Rules:
 - Tool schema enum derives from `communicationRecipients.map(r => r.recipientName)`.
 - Handler lookup resolves against `communicationRecipients`, not `members`.
 - Handler passes descriptor `delivery`, `participant`, represented-subteam metadata, and scope into the participant-shaped delivery request.
-- `composeMemberRunInstructions()` formats grouped communication recipients and must not present parent recipients as fake local teammates.
+- `composeMemberRunInstructions()` renders the team membership roster manifest from the same descriptors and must not present parent recipients as fake local teammates or expose routing-scope labels as the primary LLM-facing organization model.
 
 ### CR-008: UI And Projection Perspective Rules
 
@@ -889,6 +968,7 @@ Add or update tests to prove:
 - `MemberCommunicationRosterBuilder` exposes `review_lead` to `program_manager` as the `BuildSquad` representative and does not expose abstract `BuildSquad` as the normal `send_message_to` recipient.
 - `MemberCommunicationRosterBuilder` exposes `qa_specialist` and `program_manager` to `BuildSquad/review_lead`, grouped by local child-team vs parent-boundary scope.
 - Duplicate visible recipient names in one scoped roster fail tool exposure/delivery with a clear ambiguity error.
+- `BuildSquad/review_lead` instructions render named team contexts such as `BuildSquad` and `Delivery Leadership Team`, show `review_lead` as self/coordinator/representative, list messageable members under each context, and end with exact allowed recipient names (`qa_specialist`, `program_manager`) without using technical routing-scope labels as headings.
 - Codex, Claude, and AutoByteus team communication adapters resolve `recipient_name` against `communicationRecipients`, not structural `members`.
 - Parent `send_message_to('review_lead')` routes through `BuildSquad` and delivers to child route `review_lead`; the parent communication event receiver is `BuildSquad/review_lead` with represented-subteam metadata.
 - Child `send_message_to('program_manager')` routes through the `ParentBoundaryBridge`, publishes a parent communication event with `sourcePath: ['BuildSquad', 'review_lead']`, and delivers one live/durable member input to `program_manager`.
@@ -960,6 +1040,7 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-020 | Primary End-to-End | UC-012 | Child coordinator tool call `send_message_to({ recipient_name: 'program_manager' })` resolved from scoped parent-boundary recipient descriptors | Parent recipient leaf receives backend member input and parent communication projection records nested sender | `MemberCommunicationRosterBuilder` + child `MixedTeamManager` parent-boundary bridge + parent `MixedTeamManager` | Closes the delegation/report loop without flattening the child team into the parent member list or relying on stored reply state. |
 | DS-021 | Return-Event | UC-005, UC-011, UC-012 | Accepted upward parent-boundary communication | Parent Team Messages, subteam perspective, and parent recipient transcript each update once with canonical path identity | `TeamCommunicationService`, `TeamMemberInputEvent` producer, and `TeamStreamingService` | Ensures upward reports are visible where users expect them without duplicate transcript/communication rows. |
 | DS-022 | Bounded Local | UC-003, UC-007, UC-012 | `send_message_to` recipient name inside any member run | Communication recipient descriptor or clear rejection | `MemberCommunicationRosterBuilder` + `MemberTeamContextBuilder` + manager recipient resolver | Prevents representative/downward/upward communication from becoming an unsafe flat organization-wide recipient list. |
+| DS-023 | Bounded Local | UC-003, UC-012 | Current member context plus `communicationRecipients` descriptors and team display names | LLM prompt contains a named team membership roster manifest plus exact allowed recipient names | `MemberRunInstructionComposer` + roster-manifest renderer | Keeps LLM mental model aligned with real organization membership while preserving descriptor-owned routing. |
 
 ### Use-Case-To-Spine Coverage
 
@@ -967,7 +1048,7 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | --- | --- |
 | UC-001 Create/run nested mixed team | DS-001, DS-002, DS-003 |
 | UC-002 User posts to subteam member | DS-004, DS-006, DS-009, DS-010 |
-| UC-003 Parent agent sends to subteam representative | DS-004, DS-007, DS-009, DS-011 |
+| UC-003 Parent agent sends to subteam representative | DS-004, DS-007, DS-009, DS-011, DS-023 |
 | UC-004 Child team coordinates internally | DS-008, DS-010 |
 | UC-005 Parent stream has nested attribution | DS-010, DS-011, DS-012 |
 | UC-006 Interrupt/terminate/restore parent run | DS-013, DS-014, DS-015, DS-018, DS-019 |
@@ -976,7 +1057,7 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | UC-009 Select/focus subteam and leaf nodes | DS-004, DS-005, DS-006, DS-016 |
 | UC-010 Configure nested launches | DS-002 |
 | UC-011 Live/restored transcript, dedupe, labels | DS-005, DS-006, DS-007, DS-009, DS-015, DS-017 |
-| UC-012 Child reports upward to parent boundary | DS-004, DS-020, DS-021, DS-022 |
+| UC-012 Child reports upward to parent boundary | DS-004, DS-020, DS-021, DS-022, DS-023 |
 
 ## Primary Execution Spine(s)
 
@@ -992,6 +1073,7 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 - Frontend display/focus spine (UC-008/UC-009): `Backend metadata/definition memberTree -> frontend parser/topology utility -> AgentTeamContextsStore -> recursive tree rows/grid/spotlight -> focusedMemberRouteKey`
 - Durable projection/open spine (UC-011): `Agent raw traces/provider projection/local projection -> AgentRunViewProjectionService merge + dedupe -> getTeamMemberRunProjection -> runProjectionConversation defensive dedupe -> leaf conversation`
 - Presentation-label spine (UC-011): `TeamMemberNode + optional AgentContext -> useTeamMemberPresentation -> active/history row/header/grid labels + secondary route/definition metadata`
+- Roster-manifest instruction spine (UC-003/UC-012): `MemberTeamContext.communicationRecipients + team display metadata -> TeamMembershipRosterManifest -> MemberRunInstructionComposer -> runtime instructions/tool schema -> LLM uses exact recipient_name values`
 
 ## Return Or Event Spine(s) (High-Level)
 
@@ -1028,6 +1110,7 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-020 | A child coordinator sends a report to a parent-boundary recipient by direct visible member name. The child manager resolves the recipient against scoped communication recipients, bridges the request to the parent manager, and the parent delivers to its own member handle. | Child sender, communication recipient descriptor, parent-boundary bridge, parent recipient handle | `MemberCommunicationRosterBuilder` + child `MixedTeamManager` + parent `MixedTeamManager` | Communication recipient descriptors, nested sender normalization |
 | DS-021 | The accepted upward report updates parent Team Messages, subteam communication perspective, and the parent recipient transcript exactly once. Communication and transcript rows are linked but not conflated. | Parent communication row, subteam perspective row, parent member input | `TeamCommunicationService` + member input event producer | Delivery trace IDs, frontend perspective filtering |
 | DS-022 | A `send_message_to` argument is resolved against the current member's scoped communication roster: local teammates, subteam representatives, or parent-boundary recipients as applicable. Non-exposed or ambiguous targets fail before delivery. | Tool recipient name, communication recipient descriptor, selector | `MemberCommunicationRosterBuilder` + `MemberTeamContextBuilder` + manager recipient resolver | Visible-name uniqueness, instruction/schema enum generation |
+| DS-023 | The instruction composer turns scoped descriptors into an organization-style team membership manifest. It groups rows by human team name and role, marks the current member, shows represented subteam context, and separately lists exact allowed `recipient_name` values. | Member context, descriptors, team display metadata, prompt text | `MemberRunInstructionComposer` + roster-manifest renderer | Prompt formatting, recipient enum text, localization-safe wording |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -1066,7 +1149,8 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | `MixedAgentMemberHandle` | AgentRun creation/restore, agent message delivery, tool approval, agent event subscription. |
 | `MixedSubTeamMemberHandle` | Parent-owned internal child `TeamRun` creation/restore, default child-team message delivery, child event subscription, child lifecycle. |
 | `ParentBoundaryBridge` | Scoped upward delivery from an internal child run back into the parent mixed manager without global run lookup. |
-| `MemberCommunicationRosterBuilder` / `MemberTeamRecipientDescriptor` / `MemberTeamContextBuilder` | Local, subteam-representative, and parent-boundary recipient exposure, tool recipient names, selector/target-team-run identity, representation metadata, and ambiguity rejection. |
+| `MemberCommunicationRosterBuilder` / `MemberTeamRecipientDescriptor` / `MemberTeamContextBuilder` | Local, subteam-representative, and parent-boundary recipient exposure, tool recipient names, selector/target-team-run identity, representation metadata, grouping metadata, and ambiguity rejection. |
+| `TeamMembershipRosterManifest` / `MemberRunInstructionComposer` | LLM-facing organization roster presentation: named team contexts, current member role/self row, messageable rows, and exact allowed recipient list. |
 | `TeamRunMemberInputEventPayload` / member input producer | Canonical backend event for accepted recipient-side inputs that must appear in live leaf transcripts. |
 | `AgentTeamStreamHandler` | Edge adapter for WebSocket command selectors and team-event-to-transport payload mapping, including `MEMBER_INPUT -> EXTERNAL_USER_MESSAGE`. |
 | `TeamCommunicationService` | Backend participant-aware communication projection for parent-level member communication, including actual subteam representative participants and represented-subteam metadata. |
@@ -1103,6 +1187,7 @@ If `MixedTeamRunBackend` remains a public runtime facade, it is a thin entry wra
 | Frontend flat-only active team display (`resolveLeafTeamMembers` -> `members` map as UI topology) | Omits subteam nodes such as `BuildSquad`. | Recursive `TeamMemberNode` tree with derived leaf indexes. | In This Change | This is the validation-blocking UI failure. |
 | Frontend flat metadata schema (`runVersion` + `memberMetadata`) as current restore type | Conflicts with canonical backend `memberTree`. | Recursive frontend metadata parser/types. | In This Change | No frontend compatibility parser for old flat schema. |
 | Flat `allowedRecipientNames` as the authoritative communication model | Cannot distinguish local teammates, subteam representatives, and parent-boundary report recipients and would flatten hierarchy. | `communicationRecipients: MemberTeamRecipientDescriptor[]` with derived `allowedRecipientNames` for tool schema only. | In This Change | Do not append parent recipients to `members` as fake local teammates. |
+| Technical routing-scope labels as LLM roster headings | The LLM needs a real organization manifest, not internal labels like `local_agent` or `parent_boundary_agent`. | Team membership roster manifest grouped by team names and roles, with exact allowed recipient names. | In This Change | Scope names stay internal descriptor metadata only. |
 | Component-local primary label choices such as preferring `agentDefinitionName` in one view and `memberName` in another | Causes active/history nested row identity drift. | `useTeamMemberPresentation` primary/secondary label policy. | In This Change | Agent definition name stays secondary metadata, not the primary row label. |
 
 ## Return Or Event Spine(s) (If Applicable)
@@ -1273,6 +1358,8 @@ This local spine prevents nested live events from falling back to whichever memb
 | `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts` | Team communication domain | Member/recipient descriptor contract | Keep structural `members` as same-boundary descriptors and add scoped `communicationRecipients` for local agents, subteam representatives, and parent-boundary recipients. | Parent and child agents need representative/upward communication without fake local teammates or flat name-only routing. |
 | `autobyteus-server-ts/src/agent-team-execution/services/member-communication-roster-builder.ts` | Team communication domain | Communication roster owner | Derive scoped `communicationRecipients` from structural topology, subteam coordinator identities, parent-boundary bridge input, and uniqueness policy. | Keeps representative/downward/upward visibility policy out of runtime tool adapters and structural member lists. |
 | `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts` | Team communication domain | Descriptor builder | Build member-kind-aware local descriptors plus scoped communication recipient descriptors from `MemberCommunicationRosterBuilder`; derive `allowedRecipientNames` only for tool schema/instructions. | Subteam representatives and upward report recipients need path/scope/representation identity, not only names. |
+| `autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts` (or equivalent owned file) | Team communication presentation | Roster manifest builder/renderer | Convert scoped communication descriptors and team display metadata into a named team membership manifest for LLM instructions. | Keeps prompt mental-model formatting separate from routing descriptors while avoiding duplicated renderer logic. |
+| `autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts` | Agent runtime instruction composition | Prompt composer | Inject the roster manifest plus exact allowed `recipient_name` list into member instructions. | The LLM needs human team-membership context, not implementation routing-scope headings. |
 | `autobyteus-server-ts/src/agent-team-execution/domain/inter-agent-message-delivery.ts` | Team communication domain | Delivery command DTO | Define the participant-shaped request: `teamRunId`, sender participant, recipient participant plus selector, content, references, and trace IDs using `TeamMemberAddress`. Do not keep loose scalar identity fields. | Enables path-safe parent-to-representative delivery and child-to-parent reporting with nested sender identity. |
 | `autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-router.ts` | Team communication runtime | Agent recipient adapter | Accept resolved agent member delivery only; subteam delivery is owned by `MixedSubTeamMemberHandle`. | Avoids routing subteam messages through an agent-only router. |
 | `autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts` | Team communication runtime | Message/event builders | Build member-kind-aware communication events and recipient-visible messages with path/route identity. | Current payload names are agent-only. |
@@ -1309,6 +1396,7 @@ This local spine prevents nested live events from falling back to whichever memb
 - Frontend `TeamCommunicationStore` owns nested communication read-model normalization with sender/receiver participant identity.
 - `ParentBoundaryBridge` is the only allowed child-to-parent delivery bridge for internal child runs. It is built by the parent subteam handle/factory and must not be replaced by global top-level run lookup.
 - `MemberCommunicationRosterBuilder` owns the distinction between structural members, subteam representatives, and parent-boundary reporting recipients. `MemberTeamContextBuilder` attaches those descriptors to member contexts; tool adapters consume descriptors and must not infer recipients from structural names.
+- `TeamMembershipRosterManifest` / `MemberRunInstructionComposer` owns only LLM-facing roster presentation. It may group descriptors by team names and roles, but it must not become a routing resolver or change descriptor identity.
 - Frontend `runProjectionConversation` owns projection-to-conversation hydration and defensive row dedupe, but it is not the primary duplicate-fix boundary.
 - Frontend `useTeamMemberPresentation` owns primary/secondary member labels across active and history surfaces.
 
@@ -1325,6 +1413,7 @@ This local spine prevents nested live events from falling back to whichever memb
 | `team-run-metadata-flattener.ts` | Derived flat views from `memberTree`. | Run-history/member/file-change projections. | Projections read `metadata.memberMetadata` or each duplicate recursive traversal. | Add flattener helper for the needed derived view. |
 | `ParentBoundaryBridge` | Parent mixed manager delivery handler and scoped parent-boundary communication recipients. | Child `MixedTeamManager` / child member contexts. | Child manager looks up global runs or treats parent members as local teammates. | Add scoped bridge API and communication recipient descriptors. |
 | `MemberCommunicationRosterBuilder` / `MemberTeamContextBuilder` | Local members, subteam representatives, and scoped communication recipient descriptors. | Tool adapters and member-run instruction composer. | Tool handlers search only structural `members` or construct bare selectors for hidden recipients. | Add `communicationRecipients` lookup and derived tool names. |
+| `TeamMembershipRosterManifest` / `MemberRunInstructionComposer` | Organization-style roster text derived from descriptors and team display metadata. | Runtime backend instruction builders. | Prompt text exposes internal routing-scope labels as the organization model, or prompt renderer derives recipients independently from `members`. | Add manifest builder over `communicationRecipients`. |
 | Backend `MEMBER_INPUT` event producer | Accepted recipient-side input payloads and message identity. | Member handles, stream handler, frontend transcript. | Frontend derives child leaf prompts from parent communication events or `INTER_AGENT_MESSAGE` original-content events. | Add member input event payload and producer at the accepting leaf boundary. |
 | `AgentRunViewProjectionService` | Merged local/provider projection bundle. | `getTeamMemberRunProjection`, run-open/hydration. | Frontend components hide duplicates while GraphQL still returns them. | Add semantic projection dedupe normalizer at merge point. |
 | Frontend `AgentTeamContextsStore` | `memberTree`, member-node indexes, leaf-agent contexts, focus identity. | Workspace tree, team panels, grid, spotlight, composer. | Components call `resolveLeafTeamMembers` and render flat leaves directly. | Add context getters for tree nodes, visible children, and leaf contexts. |
@@ -1344,6 +1433,7 @@ Allowed:
 - `MixedSubTeamMemberHandle -> MixedSubTeamRunFactory -> MixedTeamRunBackendFactory` for internal child runs
 - `MixedSubTeamMemberHandle -> ParentBoundaryBridge -> child MixedTeamManager -> parent MixedTeamManager.deliverInterAgentMessage` for controlled child-to-parent reports
 - Tool adapters (`send_message_to`) -> `MemberTeamContext.communicationRecipients` -> `InterAgentMessageDeliveryRequest` selectors/scope/representation metadata
+- `MemberRunInstructionComposer -> TeamMembershipRosterManifest builder -> MemberTeamContext.communicationRecipients` for prompt roster text only
 - `MixedAgentMemberHandle / child MixedAgentMemberHandle -> team-member-input-event-builder -> MixedTeamManager.publish`
 - `AgentTeamStreamHandler.convertTeamEvent -> MEMBER_INPUT payload -> EXTERNAL_USER_MESSAGE transport payload`
 - `TeamRunMetadataStore -> TeamRunMetadata` canonical schema validation
@@ -1372,6 +1462,7 @@ Forbidden:
 - Frontend current metadata parser accepting `runVersion`/flat `memberMetadata` as the canonical restore schema.
 - Frontend stream handlers routing canonical nested events to the focused member because `agent_name` is missing or ambiguous.
 - Frontend components independently choosing primary labels from `agentDefinitionName` for active rows and `memberName` for history rows.
+- Instruction composers deriving allowed recipients from structural `members`, or using implementation scope names such as `parent_boundary_agent` as LLM-facing roster headings.
 
 ## Interface Boundary Mapping
 
@@ -1551,7 +1642,7 @@ Layering is explanatory only; ownership boundaries above are authoritative.
 16. Add backend run-projection semantic dedupe at `AgentRunViewProjectionService` merge time and defensive frontend dedupe in `runProjectionConversation`.
 17. Centralize frontend member labels in `useTeamMemberPresentation` and update active/history row builders to use membership labels as primary.
 18. Update frontend streaming, tool approval, activity, and communication stores to resolve/display canonical source path, member route key, and participant kind/path/route.
-19. Add communication recipient descriptors, representative roster projection, and bridge routing for child-to-parent reports; update tool handlers to resolve against `communicationRecipients` rather than structural `members`, update parent-to-subteam representative delivery to target coordinator routes, and update parent communication event publishing to use nested sender/receiver paths when participants are representatives.
+19. Add communication recipient descriptors, representative roster projection, and bridge routing for child-to-parent reports; update tool handlers to resolve against `communicationRecipients` rather than structural `members`; update runtime instructions to render a team membership roster manifest from those descriptors; update parent-to-subteam representative delivery to target coordinator routes; and update parent communication event publishing to use nested sender/receiver paths when participants are representatives.
 20. Update tests that currently assert nested definitions flatten for backend or frontend to either target non-nested flat behavior or assert recursive mixed nested behavior.
 21. Run focused backend unit/integration tests, frontend store/component tests, then the seeded full-stack browser validations from `fullstack-nested-team-ui-validation-failure.md` and `fullstack-nested-team-live-child-transcript-validation-failure.md`; run live provider E2E only after environment setup is complete.
 

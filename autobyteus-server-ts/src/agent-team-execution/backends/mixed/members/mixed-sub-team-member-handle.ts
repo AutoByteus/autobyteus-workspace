@@ -110,6 +110,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
       restoreRuntimeContext,
       parentBoundary: {
         parentTeamRunId: this.options.parentContext.runId,
+        parentTeamDefinitionId: this.options.parentContext.config?.teamDefinitionId ?? null,
         representedSubTeam: {
           memberKind: "agent_team",
           memberName: this.context.memberName,

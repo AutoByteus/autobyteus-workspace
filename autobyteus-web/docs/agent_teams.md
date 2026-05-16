@@ -157,7 +157,11 @@ path even when all leaf members use the same runtime. Leaf launch configs must
 therefore preserve `memberRouteKey` so duplicate leaf names under different
 subteams stay distinguishable. A top-level subteam is a first-class runtime
 target: sending to that member routes into the child team default/coordinator
-instead of flattening to an arbitrary child leaf.
+instead of flattening to an arbitrary child leaf. Team communication uses a
+separate scoped roster: parent members can address exposed subteam
+representatives such as `review_lead`, which routes to `BuildSquad/review_lead`,
+while that represented coordinator can report upward to exposed immediate
+parent-boundary recipients such as `program_manager`.
 
 ## Stopped Team Follow-Up And Termination State
 
@@ -200,11 +204,13 @@ and `source_route_key`; one-name aliases are display compatibility only.
 
 Subteam focus is a real UI state. Focusing a subteam such as `BuildSquad`
 shows the subteam Team Messages perspective, while focusing a leaf such as
-`BuildSquad/review_lead` shows that member transcript. Display labels use the
-membership label at the current boundary (`BuildSquad`, `review_lead`,
-`qa_specialist`) rather than stale flattened route copies. Internal child team
-runs are opened through their parent subteam node and should not appear as
-separate top-level history rows.
+`BuildSquad/review_lead` shows that member transcript. Team Messages can carry
+represented-subteam metadata, so parent-to-representative and upward-report
+rows display the responsible subteam badge/breadcrumb while still targeting the
+actual leaf participant path. Display labels use the membership label at the
+current boundary (`BuildSquad`, `review_lead`, `qa_specialist`) rather than
+stale flattened route copies. Internal child team runs are opened through their
+parent subteam node and should not appear as separate top-level history rows.
 
 ## Store Ownership
 

@@ -56,7 +56,11 @@ Content route ownership stays split:
 
 The focused frontend member decides whether a message is shown in the sent or
 received Team Communication perspective; sender/receiver identity is metadata on
-the message, not a receiver-owned route or projection owner.
+the message, not a receiver-owned route or projection owner. For represented
+subteam communication, `represented_sub_team` / `representedSubTeam` metadata
+travels with the sender or receiver participant so parent-to-representative and
+upward-report rows can display the responsible subteam while preserving the
+actual leaf path.
 
 Team events expose path-aware member identity:
 

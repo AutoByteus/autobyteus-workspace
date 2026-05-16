@@ -56,10 +56,12 @@ authorities. `TeamCommunicationMessageProcessor` emits one normalized
 `TEAM_COMMUNICATION_MESSAGE` event per accepted message, and
 `TeamCommunicationService` persists those derived events once per team run in
 `agent_teams/<teamRunId>/team_communication_messages.json`. The persisted
-message stores sender and receiver `memberKind`, `memberPath`, and
-`memberRouteKey`, so parent-to-subteam messages remain projected against the
-subteam boundary and child leaf messages remain projected against their full
-path. The frontend
+message stores sender and receiver `memberKind`, `memberPath`,
+`memberRouteKey`, and optional `representedSubTeam` metadata. Parent-to-
+representative messages can therefore display the represented subteam while
+projecting the actual leaf recipient path, and upward child-to-parent reports
+can display the child representative's subteam without inventing a reply alias.
+The frontend
 projects focused-member sent/received message views in the Team tab from
 `TEAM_COMMUNICATION_MESSAGE`, while raw `INTER_AGENT_MESSAGE` remains the
 conversation display source. Recipient runtime input may include one generated

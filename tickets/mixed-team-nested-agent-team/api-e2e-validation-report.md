@@ -10,10 +10,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/review-report.md`
-- Current Validation Round: 7
-- Trigger: Code review Round 14 pass after upward nested-team reporting, representative participant addressing, and bridge source-path/source-root corrections.
-- Prior Round Reviewed: Round 6 pass, then post-delivery/user-discovered upward-reporting design gap and subsequent implementation/code-review rounds through Round 14.
-- Latest Authoritative Round: Round 7
+- Current Validation Round: 8
+- Trigger: Code review Round 15 pass after Architecture Round 12 roster-manifest refinement.
+- Prior Round Reviewed: Round 7 pass plus post-delivery Architecture Round 12/Round 15 roster-manifest changes.
+- Latest Authoritative Round: Round 8
 
 ## Round History
 
@@ -25,20 +25,17 @@
 | 4 | Code review Round 7 pass after frontend nested-team rework | Round 3 nested UI flattening | Live frontend communication store/panel did not ingest parent-to-subteam `TEAM_COMMUNICATION_MESSAGE` even though backend projection was correct and child Codex response arrived | Fail | No | Nested UI and subteam routing worked; live communication display was blocked. See `fullstack-nested-team-communication-validation-failure.md`. |
 | 5 | Code review Round 8 pass after live communication event flattening fix and user browser recheck | `E2E-NESTED-009` | Live child coordinator transcript omitted inbound inter-agent message; active/history nested member labels were inconsistent; opened child projection duplicated timestamp/null messages | Fail | No | Previous parent/subteam Team Messages blocker was resolved, but delivery remained blocked. See `fullstack-nested-team-live-child-transcript-validation-failure.md`. |
 | 6 | Code review Round 10 pass after live transcript/projection/presentation fixes | `E2E-NESTED-011`, `E2E-NESTED-012`, `E2E-NESTED-013` | None | Pass | No | Real full-stack nested mixed-runtime validation passed for parent-to-subteam message, child inbound transcript, restore dedupe, labels, subteam perspective, history exclusion, and terminate cleanup. |
-| 7 | Code review Round 14 pass after upward reporting/representative-addressing fixes | User-observed top-down-only limitation; Round 14 review focus on parent-to-representative routing, child-internal root identity, upward reporting, represented-subteam display, restore/metadata, terminate cascade | None | Pass | Yes | Real full-stack nested mixed-runtime validation passed for `program_manager -> review_lead` representative routing, `BuildSquad/review_lead -> program_manager` upward reporting, child-internal communication, represented-subteam UI/projection, restore, history exclusion, durable live E2E, and termination. |
+| 7 | Code review Round 14 pass after upward reporting/representative-addressing fixes | User-observed top-down-only limitation; Round 14 review focus on parent-to-representative routing, child-internal root identity, upward reporting, represented-subteam display, restore/metadata, terminate cascade | None | Pass | No | Real full-stack nested mixed-runtime validation passed for `program_manager -> review_lead` representative routing, `BuildSquad/review_lead -> program_manager` upward reporting, child-internal communication, represented-subteam UI/projection, restore, history exclusion, durable live E2E, and termination. |
+| 8 | Code review Round 15 pass after Architecture Round 12 roster-manifest refinement | Round 15 residual risk: real Codex/Claude sessions must see a clean named team roster and use exact allowed `recipient_name` values; `allowedRecipientNames` must remain derived while descriptors route | None | Pass | Yes | Focused roster/composer/tool-gating regressions passed; a temporary live Codex/Claude roster harness proved clean roster text and exact recipient use; the durable live nested mixed-runtime E2E still passed. |
 
 ## Validation Basis
 
-Round 7 validated the latest code-review-passed implementation in a real full-stack setup using the worktree backend and frontend, seeded nested team definitions, LM Studio-backed AutoByteus parent runtime, Codex App Server child coordinator runtime, and Claude Agent SDK child sibling runtime. This was not the Electron app backend.
+Round 8 validated the reviewed roster-manifest refinement at the LLM/session boundary, not only at source-review level:
 
-Round 7 specifically rechecked the user-observed design/behavior gap that communication previously appeared effectively top-down:
-
-- A parent member can address a represented child-team coordinator by participant name (`program_manager -> review_lead`) and the backend routes to `BuildSquad/review_lead` rather than requiring the parent to know internal child paths.
-- The represented child-team coordinator can report back upward to the parent sender (`BuildSquad/review_lead -> program_manager`).
-- Child-internal communication remains canonical under parent-root route/path identity (`BuildSquad/review_lead -> BuildSquad/qa_specialist`).
-- Team Messages and projection display represented-subteam identity (`Represents BuildSquad`) without losing canonical route/path identity.
-- Restore/open-from-history for nested child members does not reintroduce stale timestamp/null duplicate projection rows.
-- Internal child team runs remain excluded from independent top-level active/history run lists.
+- `member-team-roster-manifest.ts` and `MemberRunInstructionComposer` now present a named team membership roster instead of the old flat `Teammates:` text.
+- Codex and Claude runtime instruction paths receive full `MemberTeamContext` and expose `send_message_to` with `recipient_name` constrained by derived `allowedRecipientNames`.
+- Runtime routing remains descriptor-owned through `communicationRecipients`; the validation did not treat `allowedRecipientNames` as routing authority.
+- Real Codex and Claude sessions were exercised through a nested mixed team so the models had to read the roster and choose the correct exact recipient names.
 
 ## Compatibility / Legacy Scope Check
 
@@ -50,108 +47,105 @@ Round 7 specifically rechecked the user-observed design/behavior gap that commun
 
 ## Validation Surfaces / Modes
 
-- Full-stack browser validation: worktree backend on `127.0.0.1:8000`, worktree Nuxt frontend on `127.0.0.1:3020`, Browser automation, real GraphQL, real team WebSocket.
-- Live runtime validation: AutoByteus/LM Studio parent, Codex App Server nested coordinator, Claude Agent SDK nested sibling configured from the frontend run store.
+- Focused backend regression suites for roster-manifest rendering, member-team context display metadata, Codex bootstrap dynamic tool schema, and Claude tool-gating/turn-input prompt composition.
+- Temporary live runtime harness using in-process GraphQL/schema plus team WebSocket, with real AutoByteus/LM Studio parent, real Codex App Server child coordinator, and real Claude Agent SDK child teammate.
 - Durable live runtime E2E: `tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts` with `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1`.
-- Backend GraphQL probes: `getTeamCommunicationMessages`, `getTeamRunResumeConfig`, `getTeamMemberRunProjection`, `listWorkspaceRunHistory`.
-- Browser store/DOM probes and screenshots for current workspace, team communication state, child transcript, child-internal transcript, history/open state, and visible represented-subteam labels.
-- Focused backend/frontend regression suites for event bridge, inter-agent delivery, roster/context builders, streaming, team communication store/panel, and localization.
 - Static/type checks: server source build typecheck and `git diff --check`.
 
 ## Platform / Runtime Targets
 
 - Host: macOS/Darwin arm64 worktree environment.
-- Frontend endpoint: `http://127.0.0.1:3020/workspace`.
-- Backend endpoint: `http://127.0.0.1:8000/graphql`.
-- Team WebSocket endpoint: frontend-bound worktree backend team stream.
-- Parent runtime/model: AutoByteus/LM Studio `qwen/qwen3.5-35b-a3b:lmstudio@127.0.0.1:1234`.
-- Child coordinator runtime/model: Codex App Server `gpt-5.4-mini`.
-- Child sibling runtime/model: Claude Agent SDK `haiku`.
+- Live runtime harness: in-process GraphQL + in-process Fastify team WebSocket from the backend test runtime.
+- Parent runtime/model: AutoByteus/LM Studio, preferred `qwen/qwen3.5-35b-a3b` fragment from available LM Studio models.
+- Child coordinator runtime/model: Codex App Server, preferred `gpt-5.4-mini`.
+- Child sibling runtime/model: Claude Agent SDK, preferred `haiku`.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
-- Worktree backend was rebuilt before validation and started with SQLite database `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/db/fullstack-e2e-round14.db`; migrations applied successfully during startup.
-- Seed script successfully created/updated the nested test fixtures.
-- Live terminate cleanup was exercised for `team_nested-mixed-runtime-delivery-team_85ea164c`; frontend status became `shutdown_complete`, backend `getTeamRunResumeConfig(...).isActive` returned `false`, and internal child team runs were not listed as independent top-level history rows.
-- Restore/open-from-history was exercised for nested child member route `BuildSquad/qa_specialist`; opened projection rendered the logical inbound prompt and exact reply only, with no stale duplicate rows.
+- Vitest live runtime runs used fresh temporary app data directories and reset the SQLite test database before each run.
+- Temporary agent/team definitions and workspace roots were cleaned up by test teardown.
+- Temporary live roster validation file `autobyteus-server-ts/tests/e2e/runtime/round15-roster-live.tmp.e2e.test.ts` was removed after execution; no temporary repository scaffolding remains.
+- Durable live nested mixed-runtime E2E terminated/restored/terminated its team run successfully.
 
 ## Coverage Matrix
 
 | Scenario ID | Scenario | Surface | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| E2E-NESTED-001 | Launch parent team with AutoByteus parent member and nested child team containing Codex coordinator plus Claude teammate | Live browser + backend GraphQL/WebSocket | Pass | Team run `team_nested-mixed-runtime-delivery-team_85ea164c`; member tree contained `program_manager`, `BuildSquad`, `BuildSquad/review_lead`, `BuildSquad/qa_specialist`. |
-| E2E-NESTED-004 | Recursive metadata contains subteam teamRunId and nested leaf platform/runtime IDs | Backend GraphQL + durable E2E | Pass | `getTeamRunResumeConfig` preserved `BuildSquad` as `agent_team` with child team run `team_nested-build-squad-team_b870ae1e` and nested route keys. |
-| E2E-NESTED-005 | Internal child team run is not listed as independent top-level history run | Backend GraphQL | Pass | `listWorkspaceRunHistory` listed the parent run and no top-level `nested-build-squad-team` child rows. |
-| E2E-NESTED-006 | Terminate cascade removes live runtime state from frontend/backend active state | Live browser + backend GraphQL | Pass | `terminateTeamRun` returned `true`; parent and leaf statuses became `shutdown_complete`; backend resume config `isActive=false`. |
-| E2E-NESTED-008 | Team list/run/sidebar/workspace render nested `BuildSquad` as a first-class team node, not flattened leaves | Live browser | Pass | Sidebar rendered `BuildSquad TEAM` with nested `Nested Review Lead Agent`/`Nested QA Specialist Agent` leaves for active run; restored run also retained the nested team node. |
-| E2E-NESTED-009 | Parent/team communication display updates live in frontend without manual GraphQL hydration | Live browser + team WebSocket | Pass | Parent Team tab showed communication rows live; Round 7 additionally showed represented-subteam rows for both downward and upward messages. |
-| E2E-NESTED-011 | Live child coordinator conversation shows inbound inter-agent message as well as child reply | Live browser + backend projection | Pass | `BuildSquad/review_lead` received the parent representative prompt and then sent the upward report. |
-| E2E-NESTED-012 | Nested member labels are consistent between active and opened/stopped runs | Browser UI | Pass | Active and restored rows retained nested team/member labels and represented-subteam badges; no fallback to wrong top-level-only display. |
-| E2E-NESTED-013 | Opening/restoring a nested child member projection renders each logical message once | Backend GraphQL + browser open path | Pass | Opened `BuildSquad/qa_specialist` projection rendered exactly the child-internal inbound prompt and `CHILD_INTERNAL_R14_1778700560503` reply. |
-| E2E-NESTED-015 | Parent-to-representative routing: parent member addresses child-team coordinator by participant name | Live browser + backend GraphQL/WebSocket | Pass | `program_manager -> review_lead` routed to `BuildSquad/review_lead`; communication message `frontend_parent_to_representative_r14` carried receiver route/path `BuildSquad/review_lead` and `receiverRepresentedSubTeam=BuildSquad`. |
-| E2E-NESTED-016 | Upward reporting from represented child-team coordinator back to parent member | Live browser + backend GraphQL/WebSocket | Pass | `BuildSquad/review_lead -> program_manager` delivered `UPWARD_REPORT_R14_1778700487004`; sender carried `senderRepresentedSubTeam=BuildSquad`; `program_manager` transcript included the inbound `You received...review_lead` message. |
-| E2E-NESTED-017 | Child-internal communication keeps parent-root route/path identity | Live browser + backend GraphQL/WebSocket | Pass | `BuildSquad/review_lead -> BuildSquad/qa_specialist` created message `frontend_child_internal_r14` with sender path `['BuildSquad','review_lead']` and receiver path `['BuildSquad','qa_specialist']`; QA replied with `CHILD_INTERNAL_R14_1778700560503`. |
-| E2E-NESTED-018 | Represented-subteam display/projection is visible for parent/subteam boundary communication | Live browser + GraphQL | Pass | Parent Team tab showed `Frontend Upward Report R14 Represents BuildSquad · from BuildSquad / review_lead` and `Frontend Parent To Representative R14 Represents BuildSquad · to BuildSquad / review_lead`. |
-| E2E-NESTED-019 | Restore/open path for nested child member remains deduped after termination | Backend GraphQL + browser history/open path | Pass | After termination, `getTeamMemberRunProjection(..., 'BuildSquad/qa_specialist')` returned 2 clean rows; opening from history rendered those two rows only. |
-| E2E-NESTED-020 | Durable live nested mixed-runtime GraphQL E2E still passes after Round 14 changes | Vitest + live external runtimes | Pass | `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts --reporter=dot` passed: 1 file / 1 test. |
-| INT-NESTED-003 | Backend focused bridge/delivery/context/streaming/team-communication regressions | Vitest | Pass | Focused bridge: 1 file / 2 tests. Broader backend focused suite: 8 files / 36 tests. |
-| INT-NESTED-004 | Frontend focused streaming/store/panel communication regressions | Vitest | Pass | 3 files / 27 tests passed. |
-| LOC-NESTED-001 | Frontend localization literal audit | `pnpm -C autobyteus-web audit:localization-literals` | Pass | Audit passed with zero unresolved findings. |
-| TYPE-NESTED-001 | Server source build typecheck | `tsc -p tsconfig.build.json --noEmit` | Pass | Command completed successfully. |
-| STATIC-NESTED-001 | Whitespace/diff check | Git | Pass | `git diff --check` passed before report update; rerun after report update also passed. |
+| E2E-NESTED-020 | Durable live nested mixed-runtime GraphQL E2E still passes after roster-manifest refinement | Vitest + live external runtimes | Pass | `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts --reporter=dot` passed: 1 file / 1 test, duration 67.33s. |
+| E2E-NESTED-021 | Real Codex child coordinator sees a clean named team roster | Temporary live roster harness + team WebSocket | Pass | Codex `BuildSquad/review_lead` answered a roster prompt containing token `ROSTER_CODEX_619f2374_6602_46b6_8ea4_ae153577fc97`; the asserted text included allowed recipients `qa_specialist` and `program_manager` and excluded raw scope labels `local_agent` / `parent_boundary_agent`. |
+| E2E-NESTED-022 | Real Codex child coordinator uses exact allowed recipient name for local QA teammate | Temporary live roster harness + team WebSocket | Pass | When asked to message the QA specialist without being given raw `recipient_name`, Codex emitted a `TEAM_COMMUNICATION_MESSAGE` from `BuildSquad/review_lead` to receiver path `BuildSquad/qa_specialist` with the validation tokens. |
+| E2E-NESTED-023 | Real Claude child teammate uses exact allowed recipient name for coordinator and surfaces clean roster value | Temporary live roster harness + team WebSocket | Pass | Claude received the Codex-delivered roster request, chose coordinator recipient `review_lead`, and emitted a `TEAM_COMMUNICATION_MESSAGE` from `BuildSquad/qa_specialist` to `BuildSquad/review_lead` containing token `CLAUDE_ROSTER_TOOL_619f2374_6602_46b6_8ea4_ae153577fc97`, the cross-token `CODEX_ROSTER_TOOL_619f2374_6602_46b6_8ea4_ae153577fc97`, and roster value `review_lead`; raw scope labels were excluded. |
+| INT-NESTED-005 | Roster manifest/composer/context/Codex/Claude focused regressions | Vitest | Pass | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts --reporter=dot` passed: 4 files / 15 tests. |
+| TYPE-NESTED-002 | Server source build typecheck after validation | `tsc -p tsconfig.build.json --noEmit` | Pass | Command completed successfully before and after live validation. |
+| STATIC-NESTED-002 | Whitespace/diff check | Git | Pass | `git diff --check` passed before and after validation-report update. |
 
 ## Test Scope
 
-Round 7's full-stack validation used the seeded nested mixed team requested by the user:
+Round 8 live validation used a temporary nested mixed team equivalent to the seeded/user flow:
 
-- Parent team: `Nested Mixed Runtime Delivery Team`
-- Parent coordinator: `program_manager` on AutoByteus/LM Studio
-- Child team: `BuildSquad`
-- Child coordinator/representative: `BuildSquad/review_lead` on Codex App Server
-- Child sibling: `BuildSquad/qa_specialist` on Claude Agent SDK
+- Parent team: `DeliveryLeadership-<uuid>` with `program_manager` parent coordinator.
+- Child team: `BuildSquad-<uuid>` represented in the parent as `BuildSquad`.
+- Child coordinator/representative: `BuildSquad/review_lead` on Codex App Server.
+- Child sibling: `BuildSquad/qa_specialist` on Claude Agent SDK.
 
-The test used frontend launch/config/open paths, real backend GraphQL/WebSocket boundaries, and live external runtimes. Browser store scripting was used only to set deterministic model overrides, issue exact validation prompts, and inspect state; the app under test still launched the real backend team run and streamed real runtime events.
+The live harness intentionally asked the models to use roster semantics rather than giving exact raw recipient names in user prompts:
+
+- Codex had to list allowed recipient names from its runtime roster and choose the local QA teammate recipient.
+- Claude had to respond to a coordinator-directed request and choose the coordinator recipient from its own runtime roster.
 
 ## Validation Setup / Environment
 
 Commands run from `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`.
 
-Backend build and startup:
+Focused checks:
 
 ```bash
-python3 -m py_compile scripts/seed-personal-test-fixtures.py
-pnpm -C autobyteus-server-ts build
-rm -f autobyteus-server-ts/db/fullstack-e2e-round14.db autobyteus-server-ts/db/fullstack-e2e-round14.db-* || true
-APP_ENV=development \
-AUTOBYTEUS_SERVER_HOST=http://localhost:8000 \
-DATABASE_URL="file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/db/fullstack-e2e-round14.db" \
-PRISMA_QUERY_ENGINE_LIBRARY="/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node" \
-PRISMA_SCHEMA_ENGINE_BINARY="/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64" \
-node dist/app.js --host 127.0.0.1 --port 8000
+pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false
+pnpm -C autobyteus-server-ts exec vitest run \
+  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts \
+  tests/unit/agent-team-execution/member-team-context-builder.test.ts \
+  tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts \
+  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts \
+  --reporter=dot
+git diff --check
 ```
 
-Seed and frontend:
+Temporary live roster harness:
 
 ```bash
-python3 scripts/seed-personal-test-fixtures.py --graphql-url http://127.0.0.1:8000/graphql --wait-retries 10 --wait-delay 1
-pnpm -C autobyteus-web dev --port 3020 --host 127.0.0.1
+RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 \
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/round15-roster-live.tmp.e2e.test.ts --reporter=dot
+# Result after final harness prompt design: 1 file passed, 1 test passed, duration 44.10s
+# Temporary file removed after execution.
 ```
 
-Browser endpoint: `http://127.0.0.1:3020/workspace`.
+Durable live nested E2E:
+
+```bash
+RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 \
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts --reporter=dot
+# Result: 1 file passed, 1 test passed, duration 67.33s
+```
+
+Known non-blocking environment messages: Ollama discovery reported no server at `127.0.0.1:11434`, while LM Studio discovery succeeded and supplied the model used for the live AutoByteus parent runtime.
 
 ## Tests Implemented Or Updated
 
-Round 7 added no repository-resident durable validation code. It updated the validation report only.
+Round 8 added no repository-resident durable validation code. It updated this validation report only.
 
-Durable validation that already existed and was reviewed before Round 7 was executed again where relevant, including the live nested mixed-runtime GraphQL E2E and focused bridge/communication tests.
+A temporary runtime-validation file was created to exercise the real Codex/Claude roster behavior and was deleted before handoff:
+
+- Removed temporary file: `autobyteus-server-ts/tests/e2e/runtime/round15-roster-live.tmp.e2e.test.ts`
+
+Durable validation already reviewed by code review Round 15 was executed unchanged.
 
 ## Durable Validation Added To The Codebase
 
-- Repository-resident durable validation added or updated in Round 7 by API/E2E: `No`
-- Validation/report artifacts updated in Round 7:
+- Repository-resident durable validation added or updated in Round 8 by API/E2E: `No`
+- Validation/report artifacts updated in Round 8:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
 - If `Yes`, returned through `code_reviewer` before delivery: N/A
-- Post-validation code review artifact: Code review Round 14 already passed the implementation-owned durable validation before this API/E2E round resumed.
+- Post-validation code review artifact: Code review Round 15 already passed the implementation-owned durable validation before this API/E2E round resumed.
 
 ## Other Validation Artifacts
 
@@ -159,80 +153,61 @@ Durable validation that already existed and was reviewed before Round 7 was exec
 - Round 4 communication failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-communication-validation-failure.md`
 - Round 5 child transcript/display failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
 - Upward reporting design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`
-- Round 7 screenshots:
-  - Parent Team Messages showing represented-subteam downward/upward rows: `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700588753.png`
-  - `BuildSquad/review_lead` panel showing parent representative and child-internal communication context: `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700597733.png`
-  - `BuildSquad/qa_specialist` panel showing inbound child-internal prompt and exact reply: `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700608779.png`
-  - Restored/opened `BuildSquad/qa_specialist` projection without stale duplicates: `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700671227.png`
+- Prior Round 7 screenshots remain relevant for frontend full-stack validation:
+  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700588753.png`
+  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700597733.png`
+  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700608779.png`
+  - `/Users/normy/.autobyteus/browser-artifacts/d2bd68-1778700671227.png`
 
 ## Temporary Validation Methods / Scaffolding
 
-No temporary repository scripts were retained. Browser store probes, DOM text capture, screenshots, and GraphQL shell probes were used as temporary validation methods to inspect live frontend state, backend projection state, and opened history state.
+Temporary Vitest live harness, in-process GraphQL, in-process WebSocket, and real external runtimes were used for Round 8. The temporary test file was removed. No temporary repository scaffolding remains.
 
 ## Dependencies Mocked Or Emulated
 
-- Round 7 full-stack validation: no mocked AutoByteus/LM Studio, Codex, or Claude runtimes for the live nested flow.
+- Round 8 temporary and durable live validations: no mocked Codex or Claude sessions.
 - Focused Vitest suites: existing unit/component mocks only.
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Round 3 | Full-stack UI flattened nested `BuildSquad` child team and omitted subteam node | Design/implementation reset | Resolved | Round 7 sidebar, focus, history, and subteam view render `BuildSquad` as a nested `agent_team` with nested leaves. | No flattening regression observed. |
-| Round 4 | `E2E-NESTED-009`: live frontend communication store/panel did not ingest parent-to-subteam `TEAM_COMMUNICATION_MESSAGE` | `Local Fix` | Resolved | Round 7 parent Team tab showed communication messages live without manual GraphQL hydration. | No live communication ingestion regression observed. |
-| Round 5 | `E2E-NESTED-011`: live child coordinator transcript omitted inbound parent/subteam prompt | `Local Fix` after design rework | Resolved | Live `BuildSquad/review_lead` received the representative prompt and then sent the upward report. | Screenshot `d2bd68-1778700597733.png`. |
-| Round 5 | `E2E-NESTED-012`: active/history labels inconsistent | `Local Fix` after design rework | Resolved | Active/offline rows retained nested team/member labels and represented-subteam badges. | Visible in Round 7 screenshots and DOM captures. |
-| Round 5 | `E2E-NESTED-013`: opened child projection duplicated timestamp/null rows | `Local Fix` after design rework | Resolved | Post-terminate `BuildSquad/qa_specialist` projection returned 2 clean rows and opened UI rendered those rows only. | Screenshot `d2bd68-1778700671227.png`. |
-| Post-Round 6 user validation | Child team coordinator could not report back to parent sender; communication appeared top-down only | Requirement/design gap sent to solution/design flow | Resolved | Round 7 live browser validation delivered `UPWARD_REPORT_R14_1778700487004` from `BuildSquad/review_lead` back to `program_manager`; parent transcript received it and Team Messages represented `BuildSquad`. | This validates the Round 14 representative/upward-reporting design. |
-| Code review Round 14 | Parent-root prefixing and participant/address invariants for child-internal and upward messages | Code review recheck | Resolved by review and rechecked by validation | Backend focused suite passed; live child-internal message used `BuildSquad/review_lead -> BuildSquad/qa_specialist` parent-root paths. | No new durable validation was added by API/E2E. |
+| Round 3 | Full-stack UI flattened nested `BuildSquad` child team and omitted subteam node | Design/implementation reset | Still resolved | Durable live E2E still launched and restored recursive nested metadata. | No UI retest required for roster-only backend instruction change. |
+| Round 4 | `E2E-NESTED-009`: live frontend communication store/panel did not ingest parent-to-subteam `TEAM_COMMUNICATION_MESSAGE` | `Local Fix` | Still resolved | Durable live E2E observed parent/child communication events over team WebSocket. | No live communication ingestion regression observed. |
+| Round 5 | `E2E-NESTED-011`/`012`/`013`: child transcript, labels, restore duplicates | `Local Fix` after design rework | Still resolved | Durable live E2E preserved recursive metadata and restore behavior after roster-manifest changes. | No projection/display regression observed in backend live path. |
+| Post-Round 6 user validation | Child coordinator could not report back to parent; communication appeared top-down only | Requirement/design gap | Still resolved | Durable live E2E and Round 8 roster harness retained child/parent/local communication descriptor routing. | Round 8 specifically revalidated descriptor-owned routing while `allowedRecipientNames` remained derived. |
+| Round 15 residual risk | Real Codex/Claude sessions might see unclear roster text or choose invalid recipient names | API/E2E validation focus | Resolved | `E2E-NESTED-021` through `E2E-NESTED-023` passed with real Codex and Claude sessions. | No product failure found. |
 
 ## Scenarios Checked
 
-- Worktree backend/frontend startup independent from the Electron app backend.
-- Seeded nested team definitions from `scripts/seed-personal-test-fixtures.py`.
-- Nested team config readiness and deterministic mixed runtime overrides.
-- Mixed runtime launch using AutoByteus/LM Studio parent, Codex child coordinator, Claude child sibling configuration.
-- Parent-to-representative `send_message_to` route from `program_manager` to `review_lead`, resolved to `BuildSquad/review_lead`.
-- Upward reporting from `BuildSquad/review_lead` to `program_manager`.
-- Child-internal `BuildSquad/review_lead` to `BuildSquad/qa_specialist` messaging with parent-root source identity.
-- Parent Team Messages display and represented-subteam perspective/badges.
-- Child member transcript display and exact child sibling reply.
-- Backend canonical team communication projection and route/path identity.
-- Recursive history/resume metadata and child top-level history exclusion.
-- Open-from-history nested child member projection and frontend hydration.
-- Terminate cleanup.
-- Existing durable live nested mixed-runtime GraphQL E2E.
+- Roster manifest text generation and old `Teammates:` prompt removal.
+- Display of local team, parent-boundary team, current role, self/coordinator/representative badges, and allowed recipient list.
+- Codex dynamic `send_message_to` schema enum derived from `allowedRecipientNames`.
+- Claude prompt composition and MCP/tool gating for `send_message_to`.
+- Real Codex roster awareness and exact local recipient selection.
+- Real Claude roster awareness and exact coordinator/upward recipient selection.
+- Durable mixed-runtime parent/subteam/child communication, recursive metadata, restore, and cleanup.
 
 ## Passed
 
-Backend focused validation:
+Focused Round 15 backend validation:
 
 ```bash
-pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts --reporter=dot
-# Result: 1 file passed, 2 tests passed
-
 pnpm -C autobyteus-server-ts exec vitest run \
-  tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts \
+  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts \
   tests/unit/agent-team-execution/member-team-context-builder.test.ts \
-  tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts \
-  tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts \
-  tests/unit/agent-team-execution/mixed-team-manager.test.ts \
-  tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts \
-  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts \
-  tests/unit/services/team-communication/team-communication-service.test.ts \
+  tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts \
+  tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts \
   --reporter=dot
-# Result: 8 files passed, 36 tests passed
+# Result: 4 files passed, 15 tests passed
 ```
 
-Frontend focused validation:
+Temporary live roster validation:
 
 ```bash
-pnpm -C autobyteus-web exec vitest run \
-  stores/__tests__/teamCommunicationStore.spec.ts \
-  components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts \
-  services/agentStreaming/__tests__/TeamStreamingService.spec.ts \
-  --reporter=dot
-# Result: 3 files passed, 27 tests passed
+RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 \
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/round15-roster-live.tmp.e2e.test.ts --reporter=dot
+# Result: 1 file passed, 1 test passed
 ```
 
 Durable live nested mixed-runtime E2E:
@@ -243,28 +218,23 @@ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/nested-mixed-team
 # Result: 1 file passed, 1 test passed
 ```
 
-Server source build typecheck, localization audit, and static check:
+Server source build typecheck and static check:
 
 ```bash
 pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false
 # Result: passed
 
-pnpm -C autobyteus-web audit:localization-literals
-# Result: passed with zero unresolved findings
-
 git diff --check
 # Result: passed
 ```
 
-Live positive checks are recorded in the coverage matrix.
-
 ## Failed
 
-None in Round 7.
+None in Round 8.
 
 ## Not Tested / Out Of Scope
 
-- Manual approval/denial UI was not re-exercised in Round 7; focused changed-area tests and code review covered route/path participant source propagation, and this live round used auto-execute tools to keep mixed-runtime validation deterministic.
+- Browser UI was not relaunched in Round 8 because the change is backend runtime-instruction/roster-manifest behavior; Round 7 already covered full-stack frontend presentation of nested communication.
 - Production multi-node/distributed deployment behavior was not exercised.
 - Release packaging/deployment is out of API/E2E scope.
 
@@ -274,11 +244,10 @@ None.
 
 ## Cleanup Performed
 
-- The live team run `team_nested-mixed-runtime-delivery-team_85ea164c` was terminated through the frontend store.
-- Frontend context statuses became `shutdown_complete` for parent plus leaf members.
-- Backend `getTeamRunResumeConfig(teamRunId: "team_nested-mixed-runtime-delivery-team_85ea164c").isActive` returned `false`.
-- Internal child team run `team_nested-build-squad-team_b870ae1e` was not listed as an independent top-level history row.
-- Worktree validation services started for this round were stopped after validation; ports `3020` and `8000` were clear after shutdown.
+- Temporary live harness team runs were terminated by test teardown.
+- Temporary agent definitions, team definitions, app data directories, and workspace roots were deleted by test teardown.
+- Temporary test file `autobyteus-server-ts/tests/e2e/runtime/round15-roster-live.tmp.e2e.test.ts` was removed.
+- No external backend/frontend validation services were left running by Round 8; the live checks used in-process test servers.
 
 ## Classification
 
@@ -290,27 +259,23 @@ None.
 
 ## Evidence / Notes
 
-Primary Round 7 live run:
+Primary Round 8 live roster harness pass:
 
-- Parent team run: `team_nested-mixed-runtime-delivery-team_85ea164c`
-- Child team run: `team_nested-build-squad-team_b870ae1e`
-- Parent member run: `program_manager_b01933cf715c7c76`
-- Child coordinator member run: `buildsquad_review_lead_f72c5c997b69f92a`
-- Child sibling member run: `buildsquad_qa_specialist_831aee8ac24411b9`
-- Parent-to-representative token: `PARENT_TO_REP_R14_1778700487004`
-- Upward report token: `UPWARD_REPORT_R14_1778700487004`
-- Child-internal exact-reply token: `CHILD_INTERNAL_R14_1778700560503`
+- Parent team run: `team_deliveryleadership-619f2374-6602-46b6-8e_c093b4f2`
+- Codex child coordinator run: `buildsquad_review_lead_3be4f780f4476589`
+- Claude child teammate run: `buildsquad_qa_specialist_a7d92077ccc2fcc5`
+- Codex roster token: `ROSTER_CODEX_619f2374_6602_46b6_8ea4_ae153577fc97`
+- Codex tool token: `CODEX_ROSTER_TOOL_619f2374_6602_46b6_8ea4_ae153577fc97`
+- Claude roster/tool token: `CLAUDE_ROSTER_TOOL_619f2374_6602_46b6_8ea4_ae153577fc97`
 
-Key GraphQL evidence:
+Key evidence:
 
-- `getTeamCommunicationMessages(teamRunId)` returned `frontend_parent_to_representative_r14`: `program_manager -> BuildSquad/review_lead`, `receiverRepresentedSubTeam=BuildSquad`.
-- `getTeamCommunicationMessages(teamRunId)` returned `frontend_upward_report_r14`: `BuildSquad/review_lead -> program_manager`, `senderRepresentedSubTeam=BuildSquad`, content `UPWARD_REPORT_R14_1778700487004`.
-- `getTeamCommunicationMessages(teamRunId)` returned `frontend_child_internal_r14`: `BuildSquad/review_lead -> BuildSquad/qa_specialist`, content `Reply with exactly CHILD_INTERNAL_R14_1778700560503 and nothing else.`
-- `getTeamMemberRunProjection(teamRunId, memberRouteKey: "BuildSquad/qa_specialist")` returned two clean rows after termination: inbound child-internal prompt and exact Claude reply.
-- `listWorkspaceRunHistory` did not expose `nested-build-squad-team` / `team_nested-build-squad-team_b870ae1e` as a top-level history run.
+- Codex roster response contained `qa_specialist` and `program_manager` and did not expose raw descriptor scopes.
+- Codex selected `qa_specialist` when asked to message the QA specialist without being handed a raw `recipient_name` value.
+- Claude selected `review_lead` when asked to message its coordinator without being handed a raw `recipient_name` value, and its message content surfaced `review_lead` as the exact allowed roster value.
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Round 7 full-stack validation proves the real nested mixed-runtime flow works through frontend and backend for parent-to-representative routing, upward child-team reporting, child-internal communication with parent-root source identity, represented-subteam Team Messages display/projection, restore/open dedupe, top-level history exclusion, durable live E2E, and terminate cleanup.
+- Notes: Round 8 validates the roster-manifest refinement through focused tests and real Codex/Claude runtime sessions. The LLM-facing roster is clean and named, models use exact allowed `recipient_name` values, and existing nested mixed-runtime behavior remains intact.

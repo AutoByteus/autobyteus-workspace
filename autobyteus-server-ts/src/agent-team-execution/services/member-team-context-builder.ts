@@ -44,7 +44,10 @@ export type ParentBoundaryCommunicationContextInput = Omit<ParentBoundaryCommuni
 export class MemberTeamContextBuilder {
   private readonly teamDefinitionService: AgentTeamDefinitionService;
   private readonly rosterBuilder: MemberCommunicationRosterBuilder;
-  private readonly teamInstructionCache = new Map<string, Promise<string | null>>();
+  private readonly teamDefinitionSummaryCache = new Map<string, Promise<{
+    name: string | null;
+    instruction: string | null;
+  }>>();
 
   constructor(
     teamDefinitionService: AgentTeamDefinitionService = AgentTeamDefinitionService.getInstance(),
@@ -69,8 +72,9 @@ export class MemberTeamContextBuilder {
   }): Promise<MemberTeamContext> {
     const members = input.members.map((member) => this.buildMemberDescriptor(input.teamRunId, member));
     const currentMemberRouteKey = input.currentMemberRouteKey.trim();
+    const parentBoundary = await this.buildParentBoundaryContext(input.parentBoundary ?? null);
     const currentMemberIsParentBoundaryRepresentative =
-      Boolean(input.parentBoundary) &&
+      Boolean(parentBoundary) &&
       Boolean(input.coordinatorMemberRouteKey?.trim()) &&
       input.coordinatorMemberRouteKey?.trim() === currentMemberRouteKey;
     const communicationRecipients = this.rosterBuilder.build({
@@ -78,21 +82,27 @@ export class MemberTeamContextBuilder {
       currentMemberRouteKey,
       currentMemberIsParentBoundaryRepresentative,
       members,
-      parentBoundary: input.parentBoundary ?? null,
+      parentBoundary,
     });
     const allowedRecipientNames = communicationRecipients.map((recipient) => recipient.recipientName);
     const deliverInterAgentMessage = input.deliverInterAgentMessage ?? null;
+    const teamName =
+      parentBoundary?.representedSubTeam.memberName?.trim() ||
+      await this.resolveTeamName(input.teamDefinitionId);
 
     return new MemberTeamContext({
       teamRunId: input.teamRunId,
       teamDefinitionId: input.teamDefinitionId,
+      teamName,
       teamBackendKind: input.teamBackendKind,
       memberName: input.currentMemberName,
       memberPath: input.currentMemberPath ?? [input.currentMemberName],
       memberRouteKey: input.currentMemberRouteKey,
       memberRunId: input.currentMemberRunId,
+      coordinatorMemberRouteKey: input.coordinatorMemberRouteKey ?? null,
       teamInstruction: await this.resolveTeamInstruction(input.teamDefinitionId),
       members,
+      parentBoundary,
       communicationRecipients,
       allowedRecipientNames,
       sendMessageToEnabled:
@@ -140,20 +150,53 @@ export class MemberTeamContextBuilder {
     };
   }
 
+  private async buildParentBoundaryContext(
+    input: ParentBoundaryCommunicationContextInput | null,
+  ): Promise<ParentBoundaryCommunicationContext | null> {
+    if (!input) {
+      return null;
+    }
+    const parentTeamName =
+      input.parentTeamName?.trim() ||
+      await this.resolveTeamName(input.parentTeamDefinitionId ?? null);
+    return {
+      ...input,
+      parentTeamName,
+    };
+  }
+
   private async resolveTeamInstruction(teamDefinitionId: string): Promise<string | null> {
-    if (!this.teamInstructionCache.has(teamDefinitionId)) {
-      this.teamInstructionCache.set(
+    return (await this.resolveTeamDefinitionSummary(teamDefinitionId)).instruction;
+  }
+
+  private async resolveTeamName(teamDefinitionId: string | null): Promise<string | null> {
+    if (!teamDefinitionId?.trim()) {
+      return null;
+    }
+    return (await this.resolveTeamDefinitionSummary(teamDefinitionId)).name ?? teamDefinitionId;
+  }
+
+  private async resolveTeamDefinitionSummary(teamDefinitionId: string): Promise<{
+    name: string | null;
+    instruction: string | null;
+  }> {
+    if (!this.teamDefinitionSummaryCache.has(teamDefinitionId)) {
+      this.teamDefinitionSummaryCache.set(
         teamDefinitionId,
         this.teamDefinitionService
           .getDefinitionById(teamDefinitionId)
           .then((definition) => {
-            const instructions = definition?.instructions?.trim() ?? "";
-            return instructions.length > 0 ? instructions : null;
+            const name = definition?.name?.trim() ?? "";
+            const instruction = definition?.instructions?.trim() ?? "";
+            return {
+              name: name.length > 0 ? name : null,
+              instruction: instruction.length > 0 ? instruction : null,
+            };
           })
-          .catch(() => null),
+          .catch(() => ({ name: null, instruction: null })),
       );
     }
-    return this.teamInstructionCache.get(teamDefinitionId) ?? null;
+    return this.teamDefinitionSummaryCache.get(teamDefinitionId)!;
   }
 }
 

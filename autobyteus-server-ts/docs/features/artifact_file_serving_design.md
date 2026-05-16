@@ -32,8 +32,9 @@ Artifacts tab.
    `reference_files` absolute local paths.
 2. Accepted delivery emits one `INTER_AGENT_MESSAGE` payload with message id,
    sender/receiver identity, content, message type, and structured reference
-   metadata. Nested teams use path-aware participant identity:
-   `memberKind`, `memberPath`, and `memberRouteKey`.
+   metadata. Nested teams use path-aware and representative-aware
+   participant identity: `memberKind`, `memberPath`, `memberRouteKey`, and
+   optional `representedSubTeam`.
 3. `TeamCommunicationMessageProcessor` converts accepted `INTER_AGENT_MESSAGE`
    events into one normalized `TEAM_COMMUNICATION_MESSAGE` per message.
 4. `TeamCommunicationService` observes derived `TEAM_COMMUNICATION_MESSAGE`

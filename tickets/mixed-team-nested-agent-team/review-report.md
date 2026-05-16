@@ -2,19 +2,19 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (Round 13 local-fix re-review before API/E2E resumes)
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
-- Current Review Round: `14`
-- Trigger: Local-fix return for the remaining Round 13 `CR-ROUND11-002` event-bridge `sourcePath` prefix edge.
-- Prior Review Round Reviewed: `13`
-- Latest Authoritative Round: `14`
+- Current Review Round: `15`
+- Trigger: Architecture Round 12 roster-manifest refinement implementation for LLM-facing team membership presentation and exact `send_message_to` recipient naming.
+- Prior Review Round Reviewed: `14`
+- Latest Authoritative Round: `15`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`; Round 11 rework note `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`; Round 5 rework note `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
 - Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`; prior full-stack failure notes as cumulative context.
-- API / E2E Validation Started Yet: `No` for the current Round 11/12/13 refactor; API/E2E/full-stack validation remains the next stage after this pass.
-- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No` by API/E2E. This implementation pass updated implementation-owned unit tests before API/E2E resumes.
+- API / E2E Validation Started Yet: `No` for this Architecture Round 12 roster-manifest implementation; API/E2E/full-stack validation remains paused until this review passes.
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No` by API/E2E. This implementation pass updated implementation-owned source and unit tests before API/E2E resumes.
 
 ## Round History
 
@@ -33,28 +33,35 @@
 | 11 | Delivery Round 6 localization source fix for Electron packaged-build audit blocker | All prior findings rechecked for regression by scope | None | Pass | No | Delivery localization blocker was resolved. |
 | 12 | Round 11 communication-roster / representative-routing refactor | All prior source findings and Round 11 design pass rechecked | `CR-ROUND11-001`, `CR-ROUND11-002`, `CR-ROUND11-003` | Fail | No | Bounded implementation/test fixes required before API/E2E/full-stack validation resumes. |
 | 13 | Round 12 local-fix re-review | `CR-ROUND11-001`, `CR-ROUND11-002`, `CR-ROUND11-003` | None | Fail | No | `CR-ROUND11-001` and `CR-ROUND11-003` resolved; `CR-ROUND11-002` remained partially unresolved for bridged `sourcePath` prefixing. |
-| 14 | Round 13 narrow event-bridge sourcePath local-fix re-review | `CR-ROUND11-002` | None | Pass | Yes | Root-aware bridged outer `sourcePath` prefixing is now implemented and covered by regression. |
+| 14 | Round 13 narrow event-bridge sourcePath local-fix re-review | `CR-ROUND11-002` | None | Pass | No | Root-aware bridged outer `sourcePath` prefixing was implemented and covered by regression. |
+| 15 | Architecture Round 12 roster-manifest implementation review | Historical findings and Round 14 pass state rechecked for regression by scope | None | Pass | Yes | `TeamMembershipRosterManifest` is a presentation/read-model boundary derived from `communicationRecipients`; runtime routing authority remains unchanged. |
 
 ## Review Scope
 
-Focused re-review of the remaining event-bridge source identity gap, with spot checks that prior Round 12 fixes remain intact:
+Fresh implementation review of the Architecture Round 12 roster-manifest refinement, with focus on REQ-040 / AC-032 and the shared design-principle boundaries:
 
-- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.ts`
-- `autobyteus-server-ts/tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts`
-- prior related files: `inter-agent-message-delivery.ts`, `mixed-team-manager.ts`, `team-communication-service.ts`, `agent-team-stream-handler.ts`, `teamCommunicationStore.ts`, and `nested-mixed-team-runtime-graphql.e2e.test.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts`
+- `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-context.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-turn-input-builder.ts`
+- Focused tests in `member-run-instruction-composer.test.ts`, `member-team-context-builder.test.ts`, Codex bootstrap tests, and Claude session tool-gating tests.
 
-Primary spine rechecked:
+Primary spine reviewed:
 
-`Child TeamRun event -> MixedSubTeamMemberHandle bridge -> prefixMixedSubTeamEvent -> parent-root TeamRunEvent.sourcePath + parent-root COMMUNICATION payload -> AgentTeamStreamHandler source_path/source_route_key -> TeamCommunicationStore / downstream validation`
+`MemberTeamContext.communicationRecipients + team/team-boundary display metadata -> TeamMembershipRosterManifest -> MemberRunInstructionComposer -> Codex/Claude runtime instructions -> LLM sees organization-style roster + exact allowed recipient_name list -> tool schemas/runtime delivery still resolve through communicationRecipients descriptors`
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 12 | `CR-ROUND11-001` | High | Resolved | Exact participant/address and represented-subteam invariants remain in `inter-agent-message-delivery.ts`; parent-boundary sender normalization remains root-aware in `mixed-team-manager.ts`; focused tests pass. | No action. |
-| 12 / 13 | `CR-ROUND11-002` | High | Resolved | `prefixMixedSubTeamEvent(...)` now calls the shared root-aware `prefixPath(...)` helper with `input.event.teamRunId === input.parentTeamRunId` as the already-parent-rooted signal. Child-run events are prefixed even when child-local `sourcePath` starts with the same segment as `sourcePrefix`. `mixed-team-event-bridge.test.ts` covers `sourcePrefix: ['BuildSquad']`, child event `teamRunId: 'child-run'`, child-local `sourcePath: ['BuildSquad']`, and expected bridged `sourcePath: ['BuildSquad', 'BuildSquad']` with matching participant route/address. | No action. |
-| 12 | `CR-ROUND11-003` | Medium | Resolved | The live E2E assertion remains on flattened `TEAM_COMMUNICATION_MESSAGE` fields plus represented-subteam metadata; old `payload.receiver` object shape remains absent. | No action. |
-| Earlier rounds | Historical findings `CR-NESTED-*`, `CR-VALIDATION-001`, `CR-ROUND9-*`, delivery localization blocker | Mixed | Resolved / not reopened | Focused verification and source inspection found no regression in these prior areas. | No action. |
+| 1-14 | Historical findings `CR-NESTED-*`, `CR-VALIDATION-001`, `CR-ROUND9-*`, delivery localization blocker | Mixed | Resolved / not reopened | The roster-manifest change does not alter nested runtime routing, durable validation code, frontend projection behavior, localization source strings, or prior sourcePath bridge logic. Focused source inspection found no regression in those areas. | No action. |
+| 12 | `CR-ROUND11-001` | High | Resolved / not reopened | The current change is prompt-presentation-only; participant/address invariant owners and parent-boundary normalization are unchanged in this round. | No action. |
+| 12 / 13 | `CR-ROUND11-002` | High | Resolved / not reopened | The roster-manifest change does not modify `mixed-team-event-bridge.ts`; the prior root-aware sourcePath fix remains intact by inspection. | No action. |
+| 12 | `CR-ROUND11-003` | Medium | Resolved / not reopened | The current change does not restore obsolete nested WebSocket payload assertions or receiver-object contracts. | No action. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
@@ -62,93 +69,77 @@ Changed/untracked non-test `.ts` / `.vue` source files only; unit, integration, 
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | 499 | Pass, close to hard limit | Review pressure | Existing runtime boundary remains broad but unchanged by the narrow fix. | Pass | Monitor | Avoid unrelated growth. |
-| `autobyteus-web/stores/teamCommunicationStore.ts` | 463 | Pass | Review pressure | Store owns communication projection state; no new change in this narrow fix. | Pass | Monitor | None. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-manager.ts` | 443 | Pass | Review pressure | Existing manager boundary. | Pass | Monitor | None. |
-| `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` | 441 | Pass | Review pressure | Transport shape owner. | Pass | Monitor | None. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-team-manager.ts` | 438 | Pass | Review pressure | Existing manager boundary. | Pass | Monitor | None. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts` | 386 | Pass | Review pressure | Correct parent-boundary normalization owner; prior issue remains resolved. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/services/team-communication/team-communication-normalizer.ts` | 348 | Pass | Review pressure | Correct projection normalizer owner. | Pass | Pass | None. |
-| `autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue` | 342 | Pass | Review pressure | Correct presentation owner. | Pass | Monitor | None. |
-| `autobyteus-server-ts/src/services/team-communication/team-communication-service.ts` | 246 | Pass | Review pressure | Correct projection service owner; prior root-key issue remains resolved. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-team-execution/domain/inter-agent-message-delivery.ts` | 141 | Pass | Pass | Correct invariant owner; prior invariant issue remains resolved. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.ts` | 111 | Pass | Pass | Correct child-event bridge owner; sourcePath prefixing is now root-aware. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-turn-input-builder.ts` | 51 | Pass | Pass | Pass: Claude turn prompt assembly delegates team prompt composition to `MemberRunInstructionComposer`. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts` | 76 | Pass | Pass | Pass: Codex bootstrap passes full `MemberTeamContext` to the composer and keeps dynamic tool registration descriptor-driven. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts` | 165 | Pass | Pass | Pass: parent-boundary setup passes parent definition metadata without moving routing authority. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-context.ts` | 96 | Pass | Pass | Pass: context shape carries parent team display metadata for child prompt presentation only. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts` | 120 | Pass | Pass | Pass: domain context now holds team display/presentation metadata beside existing descriptor authority. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts` | 58 | Pass | Pass | Pass: composer owns runtime instruction text and delegates roster rendering to a specific presentation owner. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts` | 197 | Pass | Pass | Pass: builder remains the owner for deriving descriptors, allowed names, and team display metadata from team definitions/boundaries. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-team-execution/services/member-team-roster-manifest.ts` | 161 | Pass | Pass | Pass: new file has a concrete prompt-presentation/read-model concern and does not perform delivery resolution. | Pass | Pass | None. |
 
-Summary: `41` changed/untracked non-test source files checked; hard-limit violations: `0`.
+Summary: `8` changed/untracked non-test source files checked; hard-limit violations: `0`.
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Round 11 design requires canonical `sourcePath` and parent-root bridged event visibility; the final bridge fix preserves that contract. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Child-run events are now bridged to parent-root `sourcePath` using event root context, and COMMUNICATION payloads/projections remain parent-rooted. | None. |
-| Ownership boundary preservation and clarity | Pass | Event prefixing is owned by the mixed event bridge; participant invariants and manager parent-boundary normalization remain in their proper owners. | None. |
-| Off-spine concern clarity | Pass | The fix stays within the bridge and its focused test. | None. |
-| Existing capability/subsystem reuse check | Pass | No parallel bridge/projection subsystem was introduced. | None. |
-| Reusable owned structures check | Pass | Existing `prefixPath` helper is reused consistently for outer event and participant path prefixing. | None. |
-| Shared-structure/data-model tightness check | Pass | Participant/address and sourcePath identities are now aligned under parent-root context. | None. |
-| Repeated coordination ownership check | Pass | Prefixing policy is centralized in `mixed-team-event-bridge.ts`. | None. |
-| Empty indirection check | Pass | No empty abstraction added. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The local fix is narrow and placed in the event bridge owner. | None. |
-| Ownership-driven dependency check | Pass | The bridge now uses event root identity instead of path-content guessing. | None. |
-| Authoritative Boundary Rule check | Pass | Child-to-parent delivery still routes through parent-boundary callback and parent manager; event bridging stays at the bridge boundary. | None. |
-| File placement check | Pass | Source and test paths match owning concerns. | None. |
-| Flat-vs-over-split layout judgment | Pass | No artificial split or broad file growth. | None. |
-| Interface/API/query/command/service-method boundary clarity | Pass | Public stream `source_path` / `source_route_key` now derive from canonical parent-root `sourcePath`; flattened communication payload contract remains intact. | None. |
-| Naming quality and naming-to-responsibility alignment check | Pass | Names remain clear and domain-aligned. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated prefixing policy found. | None. |
-| Patch-on-patch complexity control | Pass | The remaining path-content heuristic was replaced by a root-aware signal. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete validation path remains from prior findings. | None. |
-| Test quality is acceptable for the changed behavior | Pass | Tests cover ordinary child communication, parent projection visibility, and the same-prefix child-local sourcePath edge. | None. |
-| Test maintainability is acceptable for the changed behavior | Pass | Regression is focused beside existing bridge tests. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | Code review found no remaining implementation blocker; API/E2E/full-stack validation should resume. | None. |
-| No backward-compatibility mechanisms | Pass | No compatibility wrapper, old receiver payload object, or reply-state shortcut introduced. | None. |
-| No legacy code retention for old behavior | Pass | Old stale validation expectation remains removed. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | REQ-040 / AC-032 and DS-023 require a prompt-presentation manifest while keeping `communicationRecipients` as routing authority; implementation follows that posture. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | The reviewed spine stays one-way: descriptors/display metadata -> manifest -> instruction text; tool registration/delivery still use descriptor-owned allowed names and request builders. | None. |
+| Ownership boundary preservation and clarity | Pass | `member-team-roster-manifest.ts` owns only rendering/building of the prompt read-model; `MemberTeamContextBuilder` owns descriptor/display derivation; runtime adapters do not resolve from manifest text. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | The roster manifest is an off-spine presentation concern attached to member-run instruction composition, not a routing or delivery owner. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | New manifest file is placed under agent-team execution services beside the existing instruction/context services; no duplicate prompt renderer was added per runtime. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Codex and Claude paths both call `composeMemberRunInstructions`; roster formatting is centralized in `member-team-roster-manifest.ts`. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | `TeamMembershipRosterManifest` has presentation fields only: current member, teams, member rows, badges, and exact allowed names. It does not add duplicate selectors or route-delivery fields. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Team display name resolution and `allowedRecipientNames` derivation remain in `MemberTeamContextBuilder`; roster display grouping is in the manifest builder. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | The manifest builder performs real grouping and rendering decisions; it is not a no-op wrapper. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Composer now contains prompt-control lines only and delegates roster rows/formatting; runtime adapters pass context rather than constructing prompt-specific teammate lists. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Adapters depend on `MemberRunInstructionComposer` and descriptor-based tool registration, not on lower-level roster internals or delivery internals in parallel. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Codex/Claude instruction callers use the composer as the instruction boundary; send-message handlers/tool specs use `MemberTeamContext.communicationRecipients`/`allowedRecipientNames`, not rendered manifest output. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Source files are under agent-team execution services/domain and backend-specific runtime entrypoints matching their concerns. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | A single new manifest file is justified because it removes duplicated flat prompt formatting without creating a broad module tree. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `composeMemberRunInstructions` now accepts `MemberTeamContext` rather than separate `currentMemberName` + `teammates`, preserving a single source of prompt truth. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `TeamMembershipRosterManifest`, `buildTeamMembershipRosterManifest`, and `renderTeamMembershipRosterManifest` are explicit and responsibility-aligned. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicate Codex/Claude roster text remains; old flat `Teammates:` path is removed from the composer. | None. |
+| Patch-on-patch complexity control | Pass | The implementation replaces the old prompt section rather than layering compatibility text over it. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Removed old `teammates` input/formatter helpers from `MemberRunInstructionComposer`; source grep found no `Teammates:` prompt path in implementation source. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Tests exercise AC-032 manifest text, exact recipient list, absence of technical headings, context-builder derived allowed names, Codex path, and Claude tool gating path. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests are focused on prompt contract and descriptor derivation. Some fixtures still construct `MemberTeamContext` directly, but production construction is via builder; no blocker. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Focused tsc, unit tests, whitespace, and source-size audit pass; API/E2E/full-stack validation can resume. | None. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | The old flat `Teammates:` prompt is replaced, not retained as a fallback. | None. |
+| No legacy code retention for old behavior | Pass | No source prompt path exposes `local_agent`, `parent_boundary_agent`, `local child-team recipients`, or `parent-boundary recipients` as LLM grouping labels. | None. |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `9.3`
-- Overall score (`/100`): `93`
+- Overall score (`/10`): `9.4`
+- Overall score (`/100`): `94`
 - Score calculation note: Simple average for trend visibility only; pass decision is based on all mandatory checks passing and no open findings.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | Bridged child event -> parent stream/projection identity is now readable and root-aware. | Full live validation still must exercise providers/browser. | API/E2E should validate the complete flow. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | Event bridge, manager, domain invariant, and projection owners are all respected. | Existing broad manager files remain large. | Keep future changes bounded or split by owner. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Public WebSocket source aliases now derive from canonical parent-root sourcePath; flattened payload contract is covered. | Full E2E not yet rerun after the local fix. | API/E2E should confirm live contract. |
-| `4` | `Separation of Concerns and File Placement` | 9.3 | The fix is narrowly placed in bridge source and bridge tests. | Some unrelated changed files remain near size thresholds. | Avoid broad growth. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Participant/address and represented-subteam invariants remain exact; prefix helper is reused consistently. | None material in reviewed scope. | None. |
-| `6` | `Naming Quality and Local Readability` | 9.2 | The code is understandable and matches domain naming. | `prefixPath` requires careful reading of the root flag. | Keep future comments/tests around edge cases. |
-| `7` | `Validation Readiness` | 9.1 | Focused bridge/backend/frontend checks, localization audit, whitespace, and source-size audit pass. | Live provider/browser validation remains downstream. | API/E2E should run full scenarios. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.1 | Same-prefix child-local sourcePath edge is covered and fixed. | Deeper nested scenarios still need API/E2E confidence. | Include nested/deeper paths in validation if practical. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No old receiver object or reply-state shortcut retained. | Legacy aliases still exist at transport edges by project convention. | Do not extend alias usage beyond edges. |
-| `10` | `Cleanup Completeness` | 9.4 | Prior findings are resolved, no size/whitespace violations, no obsolete test path found. | Full packaging/browser artifacts are downstream. | API/E2E/delivery should update their evidence. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | The prompt-presentation spine is clear and descriptor-derived. | Full provider/full-stack validation has not yet rerun after this prompt change. | API/E2E should confirm live Codex/Claude instruction behavior. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Manifest presentation, context derivation, and runtime delivery remain separated. | Direct test construction of `MemberTeamContext` can bypass builder invariants in fixtures. | Keep future fixtures aligned with descriptor-derived contexts or add fixture builders. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Composer input is now the full `MemberTeamContext`; tool schemas still expose exact `recipient_name` values. | `allowedRecipientNames` remains a derived field carried on the context for tool specs. | Continue treating it as derived only; do not make it independently authoritative. |
+| `4` | `Separation of Concerns and File Placement` | 9.5 | New manifest file owns one concrete read-model/rendering concern; adapters remain thin. | None material in reviewed source. | None. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Manifest shape avoids delivery selectors and keeps prompt data tight. | Row display currently uses limited member presentation metadata; richer role/display labels may need future enhancement if product requires it. | Add explicit display fields only if required by user-facing prompt tests. |
+| `6` | `Naming Quality and Local Readability` | 9.5 | Names are readable and domain-aligned; prompt language is organization-oriented. | `canMessage`/`recipientName` appear in a presentation type, which is acceptable but must stay presentation-only. | Keep routing resolution out of this type. |
+| `7` | `Validation Readiness` | 9.2 | Focused checks pass and AC-032 unit coverage is present. | Live API/E2E/full-stack validation remains downstream. | API/E2E should include instruction prompt capture or equivalent evidence. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Parent-boundary representative prompt path and exact recipient names are covered for the seeded nested scenario. | Single-member/no-local-recipient child teams are not directly covered by this focused AC test. | Downstream or future unit coverage can add that edge if it becomes product-significant. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Old flat prompt wording is removed; technical scope labels remain internal only. | Edge alias fields elsewhere in transport/projection remain by prior design convention, outside this prompt scope. | Do not reintroduce alias-driven prompt/routing authority. |
+| `10` | `Cleanup Completeness` | 9.5 | No size/whitespace issues, no obsolete prompt helpers left. | Worktree contains unrelated delivery/documentation edits outside this source review scope. | Delivery should continue owning final docs/report/log cleanup. |
 
 ## Findings
 
 No open findings in the latest authoritative round.
-
-### `CR-ROUND11-001` — Participant/address invariants and parent-boundary sender normalization
-
-- Current status: Resolved in Round 13 and remains resolved.
-
-### `CR-ROUND11-002` — Bridged child communication root/sourcePath identity
-
-- Current status: Resolved.
-- Evidence: `prefixMixedSubTeamEvent(...)` now uses `event.teamRunId === parentTeamRunId` as the already-parent-rooted signal. Child-run events are always prefixed by the parent subteam path, including the same-prefix edge. The regression in `mixed-team-event-bridge.test.ts` verifies `['BuildSquad']` child source becomes `['BuildSquad', 'BuildSquad']` and participant route/address aligns.
-
-### `CR-ROUND11-003` — Live E2E payload contract
-
-- Current status: Resolved in Round 13 and remains resolved.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
 | Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E/full-stack validation to resume. |
-| Tests | Test quality is acceptable | Pass | Focused regressions cover invariant, manager bridge, event bridge, projection, frontend store, and E2E payload contract concerns. |
-| Tests | Test maintainability is acceptable | Pass | New regression is targeted and colocated with event-bridge tests. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open findings remain; downstream validation scenarios are documented in implementation handoff. |
+| Tests | Test quality is acceptable | Pass | AC-032 prompt content, forbidden technical labels, exact recipient list, builder derivation, Codex bootstrap, and Claude gating are covered. |
+| Tests | Test maintainability is acceptable | Pass | Focused tests remain readable. Future tests should prefer shared context fixture builders where possible to avoid invalid hand-built contexts. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open findings remain; downstream validation can proceed from the current implementation handoff. |
 
 ## Verification Commands Run By Code Review
 
@@ -156,20 +147,16 @@ Passed:
 
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
   - Result: passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts --reporter=dot`
-  - Result: `1` file passed, `2` tests passed.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-team-execution/inter-agent-message-runtime-builders.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-team-execution/mixed-team-manager.test.ts tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/team-communication/team-communication-service.test.ts --reporter=dot`
-  - Result: `8` files passed, `36` tests passed.
-- `pnpm -C autobyteus-web exec vitest run stores/__tests__/teamCommunicationStore.spec.ts components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --reporter=dot`
-  - Result: `3` files passed, `27` tests passed.
-- `pnpm -C autobyteus-web audit:localization-literals`
-  - Result: passed with zero unresolved findings.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts --reporter=dot`
+  - Result: `4` files passed, `15` tests passed.
 - `git diff --check`
   - Result: passed.
 - Changed/untracked non-test `.ts` / `.vue` source-size audit
-  - Result: `41` files checked; hard-limit violations `0`.
+  - Result: `8` files checked; hard-limit violations `0`.
+- Source/prompt grep for obsolete LLM-facing labels
+  - Result: no implementation prompt path containing `Teammates:`, `local child-team recipients`, or `parent-boundary recipients`; technical scope enum strings remain internal source/test fixture values only.
 
-Expected non-blocking logs observed: SQLite experimental warning in backend tests; frontend server-store setup logs; KaTeX quirks-mode warning in communication panel tests; Node typeless-package warning during localization audit.
+Expected non-blocking logs observed: SQLite experimental warning and backend test fixture initialization logs.
 
 Not run by code review:
 
@@ -179,9 +166,9 @@ Not run by code review:
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No compatibility wrapper, old receiver object contract, or reply-state shortcut introduced. |
-| No legacy old-behavior retention in changed scope | Pass | Stale E2E receiver-object assertion remains removed. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete source/test path identified. |
+| No backward-compatibility mechanisms in changed scope | Pass | Old flat `Teammates:` prompt section is removed, not retained as a compatibility fallback. |
+| No legacy old-behavior retention in changed scope | Pass | Runtime instructions now render a team membership roster when `send_message_to` is available. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete teammate formatter/input shape removed from `MemberRunInstructionComposer`; no obsolete source prompt path identified. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -191,9 +178,9 @@ Not run by code review:
 
 ## Docs-Impact Verdict
 
-- Docs impact: `No` new docs requirement from this narrow local fix.
-- Why: Existing Round 11 docs/design already require canonical prefixed `sourcePath`; the final implementation now matches that contract.
-- Files or areas likely affected: none before API/E2E. Downstream validation/delivery artifacts should record execution evidence.
+- Docs impact: `Yes`
+- Why: LLM-facing team communication prompt presentation changed from a flat teammate list to a named team membership roster. Requirements/design artifacts already record REQ-040 / AC-032 and DS-023; delivery should keep final durable docs synchronized after validation.
+- Files or areas likely affected: team communication / nested mixed team runtime instructions, agent team execution docs, and downstream handoff/validation reports.
 
 ## Classification
 
@@ -207,12 +194,13 @@ Routing note: pass from implementation review. API/E2E/full-stack validation sho
 
 ## Residual Risks
 
-- Live provider E2E and full-stack browser validation remain required, especially parent-to-representative, child-internal communication, upward reporting, represented-subteam display, metadata/restore, and terminate cascade.
-- Several files remain close to the source-size guardrail; future changes should stay narrow or split by ownership.
-- Existing broad frontend/server typecheck baseline issues remain documented in the implementation handoff and are not a clean sign-off signal for this scope.
+- Live provider E2E and full-stack browser validation remain required, especially whether Codex/Claude instructions in real sessions present the roster cleanly and whether agents choose exact `recipient_name` values.
+- `allowedRecipientNames` remains a derived edge/tool-schema list on `MemberTeamContext`; it must not become a second routing authority or drift from `communicationRecipients` descriptors.
+- Direct unit-test construction of `MemberTeamContext` is acceptable for focused fixtures but should not normalize mismatched `allowedRecipientNames` / `communicationRecipients` states.
+- Worktree contains unrelated delivery/documentation/log edits outside this source review scope; delivery remains responsible for final integrated-state documentation and artifact cleanup.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Score Summary: `9.3/10` (`93/100`); all mandatory checks pass and no open findings remain.
-- Notes: Route to `api_e2e_engineer` with cumulative artifacts so API/E2E/full-stack validation can resume.
+- Score Summary: `9.4/10` (`94/100`); all mandatory checks pass and no open findings remain.
+- Notes: Route to `api_e2e_engineer` with cumulative artifacts so API/E2E/full-stack validation can resume for the roster-manifest refinement.

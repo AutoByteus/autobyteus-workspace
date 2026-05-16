@@ -67,6 +67,8 @@ export type MemberTeamRecipientDescriptor = {
 
 export type ParentBoundaryCommunicationContext = {
   parentTeamRunId: string;
+  parentTeamDefinitionId?: string | null;
+  parentTeamName?: string | null;
   representedSubTeam: TeamRepresentedSubTeam;
   parentMembers: AgentMemberTeamDescriptor[];
 };
@@ -74,13 +76,16 @@ export type ParentBoundaryCommunicationContext = {
 export class MemberTeamContext {
   readonly teamRunId: string;
   readonly teamDefinitionId: string;
+  readonly teamName: string;
   readonly teamBackendKind: TeamBackendKind;
   readonly memberName: string;
   readonly memberPath: string[];
   readonly memberRouteKey: string;
   readonly memberRunId: string;
+  readonly coordinatorMemberRouteKey: string | null;
   readonly teamInstruction: string | null;
   readonly members: MemberTeamDescriptor[];
+  readonly parentBoundary: ParentBoundaryCommunicationContext | null;
   readonly communicationRecipients: MemberTeamRecipientDescriptor[];
   readonly allowedRecipientNames: string[];
   readonly sendMessageToEnabled: boolean;
@@ -89,13 +94,16 @@ export class MemberTeamContext {
   constructor(input: {
     teamRunId: string;
     teamDefinitionId: string;
+    teamName?: string | null;
     teamBackendKind: TeamBackendKind;
     memberName: string;
     memberPath?: string[] | null;
     memberRouteKey: string;
     memberRunId: string;
+    coordinatorMemberRouteKey?: string | null;
     teamInstruction?: string | null;
     members?: MemberTeamDescriptor[] | null;
+    parentBoundary?: ParentBoundaryCommunicationContext | null;
     communicationRecipients?: MemberTeamRecipientDescriptor[] | null;
     allowedRecipientNames?: string[] | null;
     sendMessageToEnabled?: boolean;
@@ -103,13 +111,16 @@ export class MemberTeamContext {
   }) {
     this.teamRunId = input.teamRunId;
     this.teamDefinitionId = input.teamDefinitionId;
+    this.teamName = input.teamName?.trim() || input.teamDefinitionId;
     this.teamBackendKind = input.teamBackendKind;
     this.memberName = input.memberName;
     this.memberPath = input.memberPath?.length ? [...input.memberPath] : [input.memberName];
     this.memberRouteKey = input.memberRouteKey;
     this.memberRunId = input.memberRunId;
+    this.coordinatorMemberRouteKey = input.coordinatorMemberRouteKey?.trim() || null;
     this.teamInstruction = input.teamInstruction ?? null;
     this.members = [...(input.members ?? [])];
+    this.parentBoundary = input.parentBoundary ?? null;
     this.communicationRecipients = [...(input.communicationRecipients ?? [])];
     this.allowedRecipientNames = [...(input.allowedRecipientNames ?? this.communicationRecipients.map((recipient) => recipient.recipientName))];
     this.sendMessageToEnabled = Boolean(input.sendMessageToEnabled);
