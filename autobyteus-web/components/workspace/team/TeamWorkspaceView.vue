@@ -116,7 +116,7 @@ const showSharedComposer = computed(() => {
 const headerStatus = computed(() => {
   return focusedMemberContext.value?.state.currentStatus
     ?? activeTeamContext.value?.currentStatus
-    ?? AgentStatus.Idle;
+    ?? AgentStatus.Offline;
 });
 
 const headerTitle = computed(() => {

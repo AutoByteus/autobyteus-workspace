@@ -8,28 +8,30 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/review-report.md`
-- Current Validation Round: `2`
-- Trigger: CR-002 Local Fix from post-validation durable-validation code review.
-- Prior Round Reviewed: `Round 1 API/E2E validation report plus post-validation code-review failure CR-002`
-- Latest Authoritative Round: `2`
+- Current Validation Round: `4` for the fresh four-state implementation package
+- Trigger: code review round 9 pass for CR-003, requesting API/E2E resume for `VAL-FS-008`, `AC-013`, and `AC-014`.
+- Latest Authoritative Round: `4`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Code review round 2 pass | N/A | None in product code. Stale durable validation fixtures were updated. | Pass, with durable validation changes requiring code-review recheck | No | Added real-WebSocket status contract coverage and frontend interrupt-affordance coverage. |
-| 2 | CR-002 Local Fix from post-validation code review | CR-002 rechecked | None | Pass, with durable validation changes requiring code-review recheck | Yes | Fixed validation fake event `statusHint` to use typed internal `ACTIVE` while preserving payload normalization input `RUNNING`. |
+| 1 | Fresh four-state implementation review pass | N/A | `VAL-FS-008` | Fail | No | Browser-backed local-stack validation proved normal live status events for AutoByteus/Codex/Claude, but successful single-agent termination did not publish live `offline/can_interrupt=false` before WebSocket close. |
+| 2 | Implementation Local Fix `VAL-FS-008` code-review pass | `VAL-FS-008` | None | Pass | No | Rebuilt/restarted local stack and verified already-connected browser WebSockets receive terminal offline `AGENT_STATUS` for AutoByteus, Codex, and Claude. |
+| 3 | AR-004 code-review pass | `VAL-FS-008` | None | Pass | No | Re-read README startup guidance, rebuilt/restarted backend/frontend, re-ran `VAL-FS-008` across all 3 runtimes, and added browser/Electron-like `AC-013` startup/reconcile evidence proving mixed active-team member statuses do not fan out to all running. |
+| 4 | CR-003 code-review pass | `VAL-FS-008`, `AC-013`, `AC-014` | None | Pass | Yes | Re-ran browser/local-stack `VAL-FS-008`, re-ran browser/Electron-like `AC-013`, and added browser/Electron-like `AC-014` evidence proving selected single-agent and focused-member `canInterrupt` is preserved through refresh/reconcile and revoked by later live status. |
 
 ## Validation Basis
 
-Validation was derived from:
+Validation was derived from the reviewed requirements/design/handoff package and code-review round 9 focus:
 
-- Requirements `REQ-001` through `REQ-013`, especially the clean-cut `{ status, can_interrupt }` `AGENT_STATUS` contract, `{ status }` `TEAM_STATUS`, reconnect snapshots, team member routing, and no `new_status` / `old_status` compatibility path.
-- Acceptance criteria `AC-001` through `AC-010`, especially normal terminal status, reconnect snapshot correctness, member snapshots, interrupt affordance via `can_interrupt`, and durable coverage for old-contract removal.
-- Reviewed design spec validation plan and legacy removal policy.
-- Implementation handoff validation hints for real WebSocket status ordering, team snapshots, aggregate `TEAM_STATUS`, absence of old fields, and browser/input interrupt affordance.
-- Code review round 2 report confirming CR-001 was fixed before validation.
-- Post-validation code-review finding CR-002 requiring a validation-code-only Local Fix in `agent-status-websocket.integration.test.ts`.
+- Canonical public status contract is `offline | idle | running | error`.
+- Single/member `AGENT_STATUS` shape is `{ status, can_interrupt, agent_id?, agent_name? }`.
+- Aggregate `TEAM_STATUS` shape is `{ status }`, without `can_interrupt`.
+- Runtime status projection and terminal behavior must work for `autobyteus`, `codex_app_server`, and `claude_agent_sdk`.
+- `VAL-FS-008`: active single-agent termination across AutoByteus, Codex, and Claude with an already-connected browser WebSocket receives terminal `AGENT_STATUS { status: "offline", can_interrupt: false }` before close.
+- `AC-013`: browser/Electron-like startup and refresh with active team aggregate `running`, one member `running`, remaining members `offline`; no reconcile/recovery cycle fans aggregate status out to all members.
+- `AC-014`: after live/snapshot `AGENT_STATUS { status: "running", can_interrupt: true }`, run-history refresh/reconcile and active recovery preserve selected single-agent/focused-member interrupt affordance until a later live status or explicit cleanup revokes it.
 
 ## Compatibility / Legacy Scope Check
 
@@ -39,265 +41,287 @@ Validation was derived from:
 - If compatibility-related invalid scope was observed, reroute classification used: `N/A`
 - Upstream recipient notified: `N/A`
 
-Audit notes:
+Legacy-field evidence:
 
-- Target output/status audit found no remaining `payload.status === "IDLE" / "RUNNING" / "ERROR"` expectations after fixture cleanup.
-- `new_status` / `old_status` grep in changed implementation surfaces found only task-plan payload usage (`TASK_PLAN_EVENT.new_status`) and validation assertions that status messages do not contain legacy fields. These are outside the target `AGENT_STATUS` / `TEAM_STATUS` contract.
-- No runtime or frontend target status dual-read such as `payload.status || payload.new_status` was observed during this validation pass.
+- Browser WebSocket assertions rejected `new_status` and `old_status` on all captured target `AGENT_STATUS` messages.
+- `AC-013` and `AC-014` team `TEAM_STATUS` snapshots were aggregate-only `{ status: "running" }`; no team `can_interrupt` was present.
+- Code-review round 9 already audited target AGENT_STATUS/TEAM_STATUS compatibility paths as clean.
 
 ## Validation Surfaces / Modes
 
-- Backend source build typecheck.
-- Server unit tests for runtime status projection, stream handlers, Claude completion ordering, team run status, and aggregate status helper.
-- Server Fastify/WebSocket integration tests using real WebSocket routes for single-agent and team streams.
-- Frontend Vitest component/store/handler tests for `canInterrupt`, status handling, team run state, run opening, history, and live tree status merge.
-- Static grep/audit checks for legacy target status fields and stale uppercase API-status expectations.
-- Disabled live-runtime E2E fixture import/syntax pass with default environment; live Codex/Claude/LM Studio E2E scenarios were not executed because the required `RUN_*_E2E` environment flags and external runtime services were not enabled for this validation run.
+- README-driven backend build/start and frontend dev start for local-stack validation.
+- Real Nuxt frontend dev server on `http://127.0.0.1:3002/`.
+- Real local Google Chrome browser driven by Playwright-core. The Browser plugin's Node REPL control surface was unavailable in this session, so host Chrome was used; GraphQL and WebSocket traffic still originated from the browser context loaded at the frontend URL.
+- Browser-context GraphQL calls and already-connected WebSocket connections to the running backend for `VAL-FS-008`.
+- Browser/Electron-like startup harnesses for `AC-013` and `AC-014`: the real Nuxt app booted in Chrome with preload-style `window.electronAPI` window/node binding and a temporary mock node backend serving exact active history + WebSocket startup shapes.
+- Focused server and frontend guardrail suites from the review package.
 
 ## Platform / Runtime Targets
 
 - Platform: macOS local worktree at `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis`.
-- Node/pnpm workspace as configured in the repository.
-- Runtime kinds covered by executable WebSocket integration: `autobyteus`, `codex_app_server`, `claude_agent_sdk`.
-- Team runtime stream covered through `AgentTeamStreamHandler` / Fastify WebSocket integration.
-- Frontend target: Nuxt/Vue component and store tests under `autobyteus-web`.
+- Backend for `VAL-FS-008`: rebuilt `autobyteus-server-ts/dist/app.js`, listening on `127.0.0.1:8000` from validation data at `.local/browser-e2e-four-state-rerun-server-data`.
+- Frontend: Nuxt dev server reachable on `http://127.0.0.1:3002/` during browser validation.
+- Browser: `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`, headless via Playwright-core.
+- Runtime availability reported by backend for `VAL-FS-008`: `autobyteus`, `codex_app_server`, and `claude_agent_sdk` all `enabled=true`.
+- Models selected by backend catalog for the latest browser run creation:
+  - AutoByteus: `gpt-5.4-mini`
+  - Codex: `gpt-5.2`
+  - Claude Agent SDK: `haiku`
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
-- No native installer, updater, restart, or migration behavior is in scope.
-- Reconnect/restore-adjacent behavior covered by single-agent idle snapshot over WebSocket and team initial member/aggregate snapshots over WebSocket.
-- Existing stopped-run restore WebSocket integration tests were rerun and passed as part of the focused server suite.
+- Native installer/updater/migration checks are not in scope.
+- Runtime lifecycle checks performed:
+  - normal browser-sent message lifecycle for all three runtimes was validated in round 1 and retained as context;
+  - latest `VAL-FS-008` verified successful single-agent termination for all three runtimes with already-connected browser WebSockets;
+  - latest first-load history after termination reported `offline`, inactive rows for all three runs;
+  - latest `AC-013` browser/Electron-like startup and refresh/reconcile cycle preserved mixed active-team member statuses;
+  - latest `AC-014` browser/Electron-like startup and refresh/reconcile cycle preserved selected single-agent and focused-member stop affordances after live `can_interrupt=true`, then revoked them after later live `idle/can_interrupt=false`.
 
 ## Coverage Matrix
 
 | Scenario ID | Requirement / AC Focus | Surface | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| VAL-001 | REQ-001/002/003/005, AC-004 | Single-agent WebSocket reconnect snapshot for AutoByteus/Codex/Claude | New `agent-status-websocket.integration.test.ts` snapshot cases | Pass |
-| VAL-002 | REQ-001/003/004/010, AC-002/007 | Live single-agent `AGENT_STATUS` normalization and terminal idle after `TURN_COMPLETED` | New real-WebSocket live status cases plus existing Claude CR-001 session regression | Pass |
-| VAL-003 | REQ-006/010/011, AC-005/008 | Team connect/reconnect member `AGENT_STATUS` snapshots before aggregate `TEAM_STATUS` | New real-WebSocket team snapshot case | Pass |
-| VAL-004 | REQ-011/012, AC-009 | Team aggregate status owner/helper | New `team-status-aggregation.test.ts` | Pass |
-| VAL-005 | REQ-007/008, AC-006 | Frontend primary button uses authoritative `canInterrupt`, not `isSending` | Updated `AgentUserInputTextArea.spec.ts` | Pass |
-| VAL-006 | REQ-007/009/013, AC-010 | Frontend handlers, run opening, history, live tree merge coarse statuses | Focused Nuxt/Vitest suite | Pass |
-| VAL-007 | REQ-010/011/013, AC-007/008 | Old status shape and stale uppercase API-status fixture removal | `rg` audit and E2E fixture cleanup | Pass |
-| VAL-008 | Runtime live E2E fixture syntax/import safety | Disabled Codex/Claude/LM Studio E2E fixture import pass | 9 files / 52 tests skipped by environment, no import failures | Pass for import/syntax only; live execution not run |
-| VAL-009 | Validation-code type correctness for fake `AgentRunEvent.statusHint` | CR-002 fix and audit | `statusHint: "ACTIVE"` for uppercase payload normalization case; no remaining `statusHint: "RUNNING"` matches | Pass |
+| `VAL-FS-001` | README stack + seeded/available fixtures | Built backend, started backend/frontend, loaded frontend in Chrome | Latest commands and screenshots | Pass |
+| `VAL-FS-002` | Runtime availability and real run creation for all 3 runtimes | Browser-context GraphQL | `browser-termination-rerun-evidence.json` | Pass |
+| `VAL-FS-003` | Single-agent WebSocket connect/reconnect snapshots for all 3 runtimes | Browser-context WebSocket `/ws/agent/:runId` | Round 1 `browser-status-evidence.json` plus latest termination WebSocket snapshots | Pass |
+| `VAL-FS-004` | Live normal status events for all 3 runtimes | Browser-context WebSocket plus browser-sent `SEND_MESSAGE` | Round 1 `browser-status-evidence.json` | Pass |
+| `VAL-FS-005` | Team connect/reconnect member snapshots before aggregate status | Browser-context WebSocket `/ws/agent-team/:teamRunId` | Round 1 `browser-status-evidence.json`; latest `AC-013`/`AC-014` browser/Electron-like team snapshots | Pass |
+| `VAL-FS-006` | First-load history canonical status projection | Browser-context GraphQL `listWorkspaceRunHistory` | Round 1/Round 2/Round 3/Round 4 evidence | Pass |
+| `VAL-FS-007` | Termination history projection | Browser-context GraphQL `terminateAgentRun`, then `listWorkspaceRunHistory` | `browser-termination-rerun-evidence.json` | Pass |
+| `VAL-FS-008` | Live termination publishes terminal `offline/can_interrupt=false` | Browser-context already-connected WebSocket kept open while browser called `terminateAgentRun` | `browser-termination-rerun-evidence.json` | Pass |
+| `AC-013` | Active team aggregate with one running member and other members offline after app restart/refresh | Real Nuxt app in Chrome with Electron-like node binding; temporary mock node backend for exact `ListWorkspaceRunHistory` + team WebSocket startup state | `ac013-browser-electron-startup-rerun-evidence.json` and screenshots | Pass |
+| `AC-014` | Preserve selected single-agent/focused-member interrupt affordance through refresh/reconcile after live `can_interrupt=true`, then revoke on later live non-interruptible status | Real Nuxt app in Chrome with Electron-like node binding; temporary mock node backend for active single-agent + focused team member state and WebSocket status updates | `ac014-browser-electron-caninterrupt-rerun-evidence.json` and screenshots | Pass |
 
 ## Test Scope
 
 In scope:
 
-- Status payload shape and normalization for single-agent WebSocket snapshots and live messages.
-- Team member status snapshot routing and aggregate `TEAM_STATUS` shape.
-- Team aggregate helper precedence (`error` > `running` > `idle`).
-- Frontend interrupt affordance authority (`canInterrupt`) independent of local `isSending`.
-- Focused status/hydration/history frontend behavior already in the implementation validation path.
-- Legacy target status field and stale status-value fixture audit.
+- Real backend/frontend startup and browser load of the Nuxt app.
+- Browser-originated GraphQL and WebSocket traffic against the local backend for all three runtime termination paths.
+- Runtime availability, run creation, already-connected WebSocket termination, and history projection after termination for AutoByteus, Codex, and Claude.
+- Browser/Electron-like startup/recovery/reconcile of active team history with mixed member statuses for `AC-013`.
+- Browser/Electron-like selected single-agent and focused-member stop affordance preservation/revocation for `AC-014`.
+- Focused source/test guardrails identified by implementation review.
 
-Out of scope for this round:
+Out of scope:
 
-- Live calls to external LLM/runtime services requiring `RUN_CODEX_E2E=1`, `RUN_CLAUDE_E2E=1`, or `RUN_LMSTUDIO_E2E=1`.
-- Full browser session against a manually launched Nuxt app with real backend data. The interrupt affordance was validated at the Vue component/store boundary with deterministic state.
-- Broad repository typecheck commands already documented as blocked by pre-existing project-wide issues.
+- Full `nuxi typecheck`, already documented by code review as blocked by unrelated broad typings.
+- Native installer/updater/deployment validation.
 
 ## Validation Setup / Environment
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis`
-- Branch: `codex/agent-status-event-analysis`
-- Base recorded upstream: `origin/personal`
-- Test database: repository test SQLite database reset by server Vitest setup.
-- No additional temporary harness files were kept; durable validation changes are repository-resident tests/fixtures.
+Latest setup used:
+
+1. Read repository/server/web README startup guidance.
+2. Build backend:
+   - `pnpm -C autobyteus-server-ts build`
+3. Start backend in foreground PTY so reviewed code remained loaded during browser validation:
+   - `node autobyteus-server-ts/dist/app.js --data-dir /Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/browser-e2e-four-state-rerun-server-data --host 127.0.0.1 --port 8000`
+   - Environment included `APP_ENV=production`, `AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000`, `CODEX_APP_SERVER_SANDBOX=danger-full-access`, `CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions`, and local Prisma engine paths.
+4. Start frontend:
+   - `BACKEND_NODE_BASE_URL=http://127.0.0.1:8000 pnpm -C autobyteus-web dev --host 127.0.0.1 --port 3002`
+5. Verify backend/frontend reachability:
+   - `curl` to `http://127.0.0.1:3002/workspace` returned `200`.
+   - `curl` to `http://127.0.0.1:8000/graphql` returned `200` for `query { __typename }`.
+6. Browser re-validation:
+   - `node .local/browser-four-state-termination-rerun-e2e.mjs`
+   - `node .local/ac013-browser-electron-startup-rerun-e2e.mjs`
+   - `node .local/ac014-browser-electron-caninterrupt-rerun-e2e.mjs`
 
 ## Tests Implemented Or Updated
 
-Added durable validation:
-
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts`
-  - Covers real Fastify/WebSocket single-agent status snapshots for AutoByteus/Codex/Claude.
-  - Covers live single-agent status normalization over WebSocket.
-  - Covers team member status snapshots before aggregate `TEAM_STATUS` and no legacy target fields.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/unit/agent-team-execution/team-status-aggregation.test.ts`
-  - Covers shared team aggregate status precedence.
-
-Updated durable validation:
-
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`
-  - Updated `storeToRefs` mock for `canInterrupt`.
-  - Added interrupt-button assertions for `canInterrupt=true` and `isSending=true/canInterrupt=false`.
-- Updated disabled/live E2E and backend factory status fixtures to expect lowercase API statuses (`idle`/`running`/`error`) instead of stale uppercase internal statuses.
+- No repository-resident durable validation code was added or updated by API/E2E in this re-validation round.
+- Temporary browser validation scripts were written under `.local/` only and are not intended as durable repository test code.
+- Implementation-owned durable regressions were reviewed before this re-validation in source tests including:
+  - `autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts`
+  - `autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts`
+  - `autobyteus-web/stores/__tests__/agentContextsStore.spec.ts`
+  - `autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts`
+  - `autobyteus-web/stores/__tests__/runHistoryStore.spec.ts`
 
 ## Durable Validation Added To The Codebase
 
-- Repository-resident durable validation added or updated this round: `Yes`
-- Paths added or updated by API/E2E validation:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/unit/agent-team-execution/team-status-aggregation.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts`
-- If `Yes`, returned through `code_reviewer` before delivery: `Yes` (this handoff routes back to `code_reviewer`).
-- Post-validation code review artifact: Pending code-reviewer re-review of API/E2E durable validation changes.
+- Repository-resident durable validation added or updated this round by API/E2E: `No`
+- Paths added or updated by API/E2E: `N/A`
+- If `Yes`, returned through `code_reviewer` before delivery: `N/A`
+- Post-validation code review artifact: `N/A`
 
 ## Other Validation Artifacts
 
-- This report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/api-e2e-validation-report.md`
+- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/api-e2e-validation-report.md`
+- Latest browser termination evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/four-state-browser-evidence-rerun/browser-termination-rerun-evidence.json`
+- Latest browser loaded screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/four-state-browser-evidence-rerun/frontend-loaded-rerun.png`
+- Latest `AC-013` evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac013-browser-evidence-rerun/ac013-browser-electron-startup-rerun-evidence.json`
+- Latest `AC-013` screenshots:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac013-browser-evidence-rerun/ac013-loaded-before-expand.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac013-browser-evidence-rerun/ac013-members-initial.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac013-browser-evidence-rerun/ac013-members-after-refresh.png`
+- Latest `AC-014` evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac014-browser-evidence-rerun/ac014-browser-electron-caninterrupt-rerun-evidence.json`
+- Latest `AC-014` screenshots:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac014-browser-evidence-rerun/ac014-loaded.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac014-browser-evidence-rerun/ac014-single-stop-initial.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac014-browser-evidence-rerun/ac014-single-stop-after-refresh.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac014-browser-evidence-rerun/ac014-single-after-live-revoke.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac014-browser-evidence-rerun/ac014-team-focused-stop-initial.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac014-browser-evidence-rerun/ac014-team-focused-stop-after-refresh.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac014-browser-evidence-rerun/ac014-team-after-live-revoke.png`
+- Round 1 normal-run evidence retained for context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/four-state-browser-evidence/browser-status-evidence.json`
+- Round 1 termination failure evidence retained for comparison: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/four-state-browser-evidence/browser-termination-evidence.json`
 
 ## Temporary Validation Methods / Scaffolding
 
-- No temporary repository files or scripts were left behind.
-- Temporary command output was observed in terminal only.
-- New WebSocket harness code is durable test code, not temporary scaffolding.
+Temporary scripts under `.local/`:
+
+- `.local/browser-four-state-termination-rerun-e2e.mjs`
+- `.local/ac013-browser-electron-startup-rerun-e2e.mjs`
+- `.local/ac014-browser-electron-caninterrupt-rerun-e2e.mjs`
+- Earlier Round 1 scripts retained under `.local/` for comparison.
+
+They are retained with local evidence for diagnosis, not committed durable validation.
 
 ## Dependencies Mocked Or Emulated
 
-- Real Fastify WebSocket routes were used with fake `AgentRun` / `TeamRun` subjects to exercise the server WebSocket boundary deterministically without external LLM processes.
-- Frontend component/store tests used existing Vitest mocks for Pinia stores and Nuxt environment.
-- Live external runtime E2E tests remained skipped because environment flags and external services were not enabled.
+- `VAL-FS-008`: no status/runtime behavior was mocked. The real backend runtime managers created AutoByteus, Codex, and Claude Agent SDK runs; the browser called real GraphQL mutations and observed real server WebSocket messages.
+- `AC-013`: the node backend boundary was temporarily mocked to force the exact active-team startup state required by the acceptance criterion. The validated frontend path was real Nuxt code in Chrome, with Electron-like `window.electronAPI` node binding, real GraphQL HTTP requests from the app, real WebSocket connections from the app, and a real refresh/reconcile interval.
+- `AC-014`: the node backend boundary was temporarily mocked to force the exact active single-agent plus focused-member live interrupt state required by the acceptance criterion. The validated frontend path was real Nuxt code in Chrome, with real app GraphQL and WebSocket clients, real sidebar selection, real composer stop/send button rendering, and a real refresh/reconcile interval.
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Code review after Round 1 | CR-002: `agent-status-websocket.integration.test.ts` used `statusHint: "RUNNING"` in a typed fake `AgentRunEvent` | Local Fix owned by API/E2E validation | Fixed to `statusHint: "ACTIVE"` while preserving `payload.status: "RUNNING"` to exercise API/status normalization | `rg` found no remaining `statusHint: "RUNNING"`; focused WebSocket/status suite passed 4 files / 33 tests | Validation-code-only; no product implementation change. |
+| 1 | `VAL-FS-008`: successful termination did not emit live `AGENT_STATUS { status: "offline", can_interrupt: false }` before WebSocket close | Local Fix to implementation_engineer | Resolved | Latest browser evidence shows all three runtimes emitted offline status to already-connected WebSockets after successful `terminateAgentRun`; history rows are offline/inactive | No repository-resident API/E2E validation changes were added in this recheck. |
+| AR-004 | Active team aggregate previously could fan out running state to all member rows during startup/refresh | Local Fix to implementation_engineer | Resolved | Latest `AC-013` browser/Electron-like evidence shows one running member and five offline members before and after refresh | No repository-resident API/E2E validation changes were added in this recheck. |
+| CR-003 | Existing subscribed single-agent context with `running/canInterrupt=true` reopened/hydrated as inactive/offline could retain `canInterrupt=true` | Local Fix to implementation_engineer | Resolved for API/E2E scope | Latest `AC-014` browser/Electron-like evidence shows live `running/can_interrupt=true` is preserved through active refresh/reconcile and later live `idle/can_interrupt=false` revokes stop affordance for selected single-agent and focused member | No repository-resident API/E2E validation changes were added in this recheck. |
 
 ## Scenarios Checked
 
-### VAL-001 — Single-agent reconnect snapshot status contract
+### VAL-FS-008 — Live termination `offline` status publication
 
-- Method: New Fastify/WebSocket integration test connects to `/ws/agent/:runId` for `autobyteus`, `codex_app_server`, and `claude_agent_sdk` fake active runs whose snapshot is `idle/can_interrupt=false`.
-- Expected: `CONNECTED` followed by `AGENT_STATUS { status: "idle", can_interrupt: false }`; no `new_status` / `old_status`.
+- Method: Browser loaded the frontend, then browser-context GraphQL created one run for each runtime. For each run, browser opened `/ws/agent/:runId`, waited for the initial status snapshot, called `terminateAgentRun` while the WebSocket stayed connected, and waited for `AGENT_STATUS { status: "offline", can_interrupt: false, agent_id: runId }`.
+- Expected: successful termination publishes terminal offline status over the already-connected browser WebSocket before stream teardown; payload has canonical fields only.
 - Result: Pass.
 
-### VAL-002 — Live single-agent WebSocket status normalization and terminal idle
+Latest evidence from `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/four-state-browser-evidence-rerun/browser-termination-rerun-evidence.json`:
 
-- Method: New Fastify/WebSocket integration test pushes live `AGENT_STATUS` events with internal uppercase `RUNNING` / `IDLE` values through the real mapper and WebSocket route, with a `TURN_COMPLETED` immediately before terminal idle.
-- Expected: outgoing status messages are lowercase `running` then `idle`, with correct `can_interrupt`; no legacy target fields.
+- `result.ok=true`
+- Runtime configs:
+  - `autobyteus` / `gpt-5.4-mini`
+  - `codex_app_server` / `gpt-5.2`
+  - `claude_agent_sdk` / `haiku`
+- All three scenarios observed terminal `AGENT_STATUS { status: "offline", can_interrupt: false, agent_id: runId }` after successful `terminateAgentRun`.
+- All history rows became `offline`, `isActive=false`.
+- `result.errors=[]`.
+
+### AC-013 — Active team startup keeps member-scoped statuses
+
+- Method: Browser loaded the real Nuxt app with an Electron-like preload binding to a temporary validation node. The temporary node returned `ListWorkspaceRunHistory` for an active team aggregate `status: "running"` where only `solution_designer` was `running` and `architecture_reviewer`, `implementation_engineer`, `code_reviewer`, `api_e2e_engineer`, and `delivery_engineer` were `offline`. The app connected to `/ws/agent-team/ac013-team-run`; the temporary node sent aggregate-only `TEAM_STATUS { status: "running" }` and member-scoped `AGENT_STATUS` snapshots. The script expanded the team in the real sidebar, captured member row status-dot classes, waited through a refresh/reconcile cycle, and captured them again.
+- Expected: backend history, team WebSocket snapshots, initial browser rows, and post-refresh browser rows all preserve exactly one running member and all other members offline; no aggregate team running status is fanned out to all members.
 - Result: Pass.
 
-### VAL-003 — Team member snapshots and aggregate `TEAM_STATUS`
+Latest evidence from `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac013-browser-evidence-rerun/ac013-browser-electron-startup-rerun-evidence.json`:
 
-- Method: New Fastify/WebSocket integration test connects to `/ws/agent-team/:teamRunId` with two member snapshots.
-- Expected: member `AGENT_STATUS` snapshots are emitted before aggregate `TEAM_STATUS`; `TEAM_STATUS` has only `{ status }` and no `can_interrupt` / `new_status` / `old_status`.
+- `ok=true`
+- `backendHistoryValid=true`
+- `teamStatusAggregateOnly=true`
+- `liveAgentSnapshotsValid=true`
+- `initialBrowserRowsMatchExpected=true`
+- `afterRefreshBrowserRowsMatchExpected=true`
+- `refreshObserved=true`
+- `noOfflineMembersFannedOutToRunningAfterRefresh=true`
+- GraphQL operation counts included `ListWorkspaceRunHistory: 3`, `GetTeamRunResumeConfig: 1`, `GetTeamMemberRunProjection: 6`.
+- WebSocket paths included `/ws/file-explorer/ws-ac013` and `/ws/agent-team/ac013-team-run`.
+- `errors=[]`, `pageErrors=[]`.
+
+### AC-014 — Interrupt affordance preservation and live revocation
+
+- Method: Browser loaded the real Nuxt app with an Electron-like preload binding to a temporary validation node. The temporary node returned active history for one single-agent run and one active team whose focused member was `solution_designer`. The app connected to `/ws/agent/ac014-single-agent-run` and `/ws/agent-team/ac014-team-run`; the temporary node sent live `AGENT_STATUS { status: "running", can_interrupt: true }` for the selected single-agent and focused member. The script selected the real sidebar rows, captured the composer primary button as `Stop generation`, waited through refresh/reconcile cycles, verified the stop affordance persisted, then sent later live `AGENT_STATUS { status: "idle", can_interrupt: false }` and verified the stop affordance reverted to `Send message`.
+- Expected: selected single-agent and focused-member `canInterrupt` remains true through history refresh/reconcile after live/snapshot grant; later live non-interruptible status revokes the stop affordance.
 - Result: Pass.
 
-### VAL-004 — Team aggregate helper
+Latest evidence from `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac014-browser-evidence-rerun/ac014-browser-electron-caninterrupt-rerun-evidence.json`:
 
-- Method: New unit test for `deriveTeamApiStatus(...)`.
-- Expected: all idle -> `idle`; any running member/native status -> `running`; any error/native failure -> `error`.
-- Result: Pass.
-
-### VAL-005 — Frontend interrupt affordance
-
-- Method: Updated `AgentUserInputTextArea` component tests.
-- Expected: `canInterrupt=true` shows enabled red stop button and calls `interruptGeneration()` even when draft is empty; `isSending=true` with `canInterrupt=false` does not show stop and keeps send disabled.
-- Result: Pass.
-
-### VAL-006 — Existing focused status/hydration/frontend behavior
-
-- Method: Focused Nuxt/Vitest suite for status handler, input, team run store, team run open coordinator, history store, and live tree merge.
-- Expected: coarse statuses and canInterrupt behavior remain intact.
-- Result: Pass.
-
-### VAL-007 — Legacy target status field/value audit
-
-- Method: `rg` audit for stale uppercase API-status expectations and `new_status` / `old_status` target status references.
-- Expected: no target status output expectations use `IDLE` / `RUNNING` / `ERROR`; no target `AGENT_STATUS` / `TEAM_STATUS` compatibility fields remain.
-- Result: Pass.
-
-### VAL-008 — Disabled live-runtime fixture import/syntax pass
-
-- Method: Ran selected live E2E/backend factory files under default environment to ensure skipped suites still import/parse after fixture updates.
-- Expected: tests skip due missing `RUN_*_E2E` flags; no import/syntax failures.
-- Result: Pass for import/syntax; live runtime execution not run.
-
-### VAL-009 — CR-002 validation fake event statusHint correctness
-
-- Method: Updated the live status normalization fake `AgentRunEvent` in `agent-status-websocket.integration.test.ts`.
-- Expected: keep `payload.status: "RUNNING"` to prove outbound API normalization, but use internal typed `statusHint: "ACTIVE"` per `AgentRunStatusHint = "ACTIVE" | "IDLE" | "ERROR" | null`.
-- Result: Pass.
+- `ok=true`
+- `singleLiveRunningCanInterruptSeen=true`
+- `singleStopVisibleInitially=true`
+- `singleRefreshObserved=true`
+- `singleStopPreservedAfterRefresh=true`
+- `singleLiveIdleRevokedStop=true`
+- `teamFocusedLiveRunningCanInterruptSeen=true`
+- `teamInitialRowsMatchBackendMemberStatus=true`
+- `teamStopVisibleInitially=true`
+- `teamRefreshObserved=true`
+- `teamRowsMatchBackendMemberStatusAfterRefresh=true`
+- `teamStopPreservedAfterRefresh=true`
+- `teamFocusedLiveIdleRevokedStop=true`
+- `noLegacyAgentStatusShape=true`
+- `teamStatusAggregateOnly=true`
+- `noConsolePageErrors=true`
+- GraphQL operation counts included `ListWorkspaceRunHistory: 4`, `GetRunProjection: 2`, `GetAgentRunResumeConfig: 2`, `GetRunFileChanges: 2`, `GetTeamRunResumeConfig: 1`, `GetTeamMemberRunProjection: 6`.
+- WebSocket paths included `/ws/file-explorer/ws-ac014`, `/ws/agent/ac014-single-agent-run`, and `/ws/agent-team/ac014-team-run`.
+- `errors=[]`, `pageErrors=[]`.
 
 ## Passed
 
-Commands run and passing:
+Commands run and passing in latest authoritative round:
 
-1. `git diff --check`
+1. Browser `VAL-FS-008` re-validation:
+   - `node .local/browser-four-state-termination-rerun-e2e.mjs`
+   - Result: Pass (`ok: true`, no errors).
+2. Browser/Electron-like `AC-013` validation:
+   - `node .local/ac013-browser-electron-startup-rerun-e2e.mjs`
+   - Result: Pass (`ok: true`, no errors, no page errors).
+3. Browser/Electron-like `AC-014` validation:
+   - `node .local/ac014-browser-electron-caninterrupt-rerun-e2e.mjs`
+   - Result: Pass (`ok: true`, no errors, no page errors).
+4. `git diff --check`
    - Result: Pass.
-2. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
-   - Result: Pass.
-3. Server focused status/WebSocket suite:
-   - Command: `pnpm -C autobyteus-server-ts test --run tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/integration/agent/agent-status-websocket.integration.test.ts tests/integration/agent/agent-websocket.integration.test.ts tests/integration/agent/agent-team-websocket.integration.test.ts`
-   - Result: 15 test files passed, 150 tests passed.
-4. Frontend focused status/input/hydration suite:
-   - Command: `pnpm -C autobyteus-web test:nuxt --run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts utils/__tests__/runTreeLiveStatusMerge.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts stores/__tests__/runHistoryStore.spec.ts`
-   - Result: 6 test files passed, 78 tests passed.
-5. Disabled live-runtime fixture import pass:
-   - Command: `pnpm -C autobyteus-server-ts test --run tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts`
-   - Result: 9 test files skipped by environment, 52 tests skipped, no import/syntax failures.
-6. Legacy/status audit:
-   - Command: `rg -n "payload\.status === \"(IDLE|RUNNING|ERROR)\"|event\.payload\.status === \"(IDLE|RUNNING|ERROR)\"|message\.payload\.status === \"(IDLE|RUNNING|ERROR)\"" autobyteus-server-ts/tests autobyteus-web || true`
-   - Result: no matches.
-   - Command: `rg -n "new_status|old_status" autobyteus-server-ts/src autobyteus-server-ts/tests autobyteus-web/components autobyteus-web/composables autobyteus-web/services autobyteus-web/stores autobyteus-web/types autobyteus-web/utils`
-   - Result: only task-plan payload references and new validation assertions, not target status compatibility.
+5. Server focused terminal-offline guardrail:
+   - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-stream-handler.test.ts`
+   - Result: 1 file / 15 tests passed.
+6. Frontend CR-003/AC-013/AC-014 focused suite:
+   - Command: `pnpm -C autobyteus-web exec vitest run services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts stores/__tests__/agentContextsStore.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts utils/__tests__/runTreeLiveStatusMerge.spec.ts stores/__tests__/runHistoryStore.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts`
+   - Result: 11 files / 124 tests passed.
 
-7. CR-002 focused rerun:
-   - Command: `git diff --check && pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit && pnpm -C autobyteus-server-ts test --run tests/integration/agent/agent-status-websocket.integration.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
-   - Result: diff guardrail passed, source build typecheck passed, 4 test files passed, 33 tests passed.
-8. CR-002 audit:
-   - Command: `rg -n "statusHint: \"RUNNING\"|statusHint: 'RUNNING'" autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts autobyteus-server-ts/tests || true`
-   - Result: no matches.
-   - Command: `rg -n "payload\.status === \"(IDLE|RUNNING|ERROR)\"|event\.payload\.status === \"(IDLE|RUNNING|ERROR)\"|message\.payload\.status === \"(IDLE|RUNNING|ERROR)\"" autobyteus-server-ts/tests autobyteus-web || true`
-   - Result: no matches.
+Previously passing and still used as basis from the latest stack restart:
+
+- `pnpm -C autobyteus-server-ts build` — Pass.
+- `curl` probes for `http://127.0.0.1:3002/workspace` and `http://127.0.0.1:8000/graphql` — Pass.
 
 ## Failed
 
-None.
+- None in latest authoritative round.
 
 ## Not Tested / Out Of Scope
 
-- Live external runtime E2E execution with real Codex, Claude, or LM Studio turns was not run because default environment lacks enabled `RUN_CODEX_E2E=1`, `RUN_CLAUDE_E2E=1`, and `RUN_LMSTUDIO_E2E=1` validation flags/services.
-- Full browser UI against a running Nuxt/backend stack was not run; the input interrupt affordance was validated through deterministic Vue component tests and active-context store state.
-- Broad `autobyteus-server-ts typecheck` and `autobyteus-web exec nuxi typecheck` remain subject to the pre-existing blockers recorded in the implementation handoff; source build typecheck and focused tests passed.
+- Full `nuxi typecheck` because code review documented unrelated broad typings as a residual risk.
+- Native deployment/release workflows; delivery engineer owns final branch refresh/docs/finalization.
 
 ## Blocked
 
-No blocking issue for this validation decision.
-
-Residual non-blocking environment limitations:
-
-- Live provider/runtime E2E requires explicit external runtime setup and opt-in environment flags.
-- Full project-wide web/server typecheck blockers are pre-existing and outside this status validation surface.
+- None.
 
 ## Cleanup Performed
 
-- No temporary files or scripts to remove.
-- Test-created temporary directories/databases were handled by existing test harness cleanup.
-- The only remaining new files are intentional durable validation files.
+- Browser sessions were closed by the validation scripts.
+- Temporary mock `AC-013` and `AC-014` backends were closed by the validation scripts.
+- README-started backend and frontend PTY sessions were stopped after validation.
+- Port checks after cleanup showed no listener on `127.0.0.1:3002` or `127.0.0.1:8000`.
 
 ## Classification
 
-- No product implementation failure found.
-- Durable validation was added/updated after the previous code review, so the workflow requires return to `code_reviewer` for a narrow validation-code re-review before delivery.
+- Latest classification: `N/A` — no unresolved validation failure remains.
 
 ## Recommended Recipient
 
-`code_reviewer`
+- `delivery_engineer`
 
 ## Evidence / Notes
 
-- New real WebSocket validation materially covers the previously residual risk around snapshot/live status payload shape across AutoByteus/Codex/Claude and team member/aggregate status snapshots.
-- The first run of `AgentUserInputTextArea.spec.ts` exposed a stale test mock missing `canInterrupt`; this was a durable validation fixture gap, fixed with additional assertions around the interrupt affordance.
-- CR-002 re-review found one validation fake event using invalid internal `statusHint: "RUNNING"`; round 2 fixed it to `"ACTIVE"` while preserving uppercase payload normalization coverage.
-- No compatibility wrapper, target legacy status dual-path, or old target status field emission was observed.
-- Delivery should still perform the documented branch refresh/integrated-state check and docs impact review after code-review re-approval of validation changes.
+Latest API/E2E directly rechecked `VAL-FS-008` with real browser-originated WebSockets across AutoByteus, Codex, and Claude Agent SDK. It also rechecked `AC-013` browser/Electron-like startup/reconcile and added `AC-014` browser/Electron-like evidence for interrupt affordance preservation and later live revocation. No repository-resident durable validation was added or updated by API/E2E during this re-validation, so the package does not need another validation-code review pass before delivery.
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: API/E2E validation passes after CR-002 Local Fix. Because repository-resident durable validation was added/updated during this stage, route back to `code_reviewer` before delivery.
+- Notes: `VAL-FS-008`, `AC-013`, and `AC-014` all pass. Focused server and frontend guardrails pass. No durable validation code was changed by API/E2E.

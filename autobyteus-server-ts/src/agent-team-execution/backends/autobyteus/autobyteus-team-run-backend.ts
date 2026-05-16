@@ -129,6 +129,9 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   }
 
   getStatusSnapshot() {
+    if (!this.isActive()) {
+      return { status: "offline" as const };
+    }
     const memberStatuses = this.getMemberStatusSnapshots();
     return {
       status: deriveTeamApiStatus({
@@ -148,6 +151,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       return [projectAutoByteusAgentStatus({
         currentStatus: member.currentStatus,
         context: member.context ?? null,
+        isActive: this.isActive(),
         agentId: member.agentId ?? null,
         agentName: memberName,
       })];
@@ -177,7 +181,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
 
     if (!nativeMember) {
       return {
-        status: "idle",
+        status: "offline",
         can_interrupt: false,
         agent_id: memberRunId,
         ...(normalizedMemberName ? { agent_name: normalizedMemberName } : {}),
@@ -187,6 +191,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     return projectAutoByteusAgentStatus({
       currentStatus: nativeMember.currentStatus,
       context: nativeMember.context ?? null,
+      isActive: this.isActive(),
       agentId: nativeMember.agentId ?? memberRunId,
       agentName: normalizedMemberName || nativeMember.context?.config?.name || null,
     });

@@ -7,6 +7,10 @@ import { AgentRunState } from '~/types/agent/AgentRunState';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { Conversation } from '~/types/conversation';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import {
+  applyMemberOrHistoryStatusSnapshot,
+  initializeRuntimeStatusState,
+} from '~/services/runStatus/agentRuntimeStatusState';
 
 interface AgentContextsStoreState {
   /** All running agent contexts, keyed by runId */
@@ -170,7 +174,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       status?: AgentStatus;
     }) {
       const existing = this.runs.get(options.runId);
-      const nextStatus = options.status ?? AgentStatus.Idle;
+      const nextStatus = options.status ?? AgentStatus.Offline;
 
       if (existing) {
         existing.config = {
@@ -178,12 +182,14 @@ export const useAgentContextsStore = defineStore('agentContexts', {
         };
         existing.state.runId = options.runId;
         existing.state.conversation = options.conversation;
-        existing.state.currentStatus = nextStatus;
+        applyMemberOrHistoryStatusSnapshot(existing, nextStatus, {
+          preserveLiveInterrupt: existing.isSubscribed,
+        });
         return;
       }
 
       const state = new AgentRunState(options.runId, options.conversation);
-      state.currentStatus = nextStatus;
+      initializeRuntimeStatusState(state, nextStatus);
       const runContext = new AgentContext(options.config, state);
       this.runs.set(options.runId, runContext);
     },

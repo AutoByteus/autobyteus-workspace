@@ -170,7 +170,7 @@ export class CodexThreadEventConverter {
     private readonly runId: string,
     private readonly workspaceRoot: string | null = null,
     private readonly getStatusPayload: () => AgentStatusPayload = () => ({
-      status: "idle",
+      status: "offline",
       can_interrupt: false,
     }),
   ) {

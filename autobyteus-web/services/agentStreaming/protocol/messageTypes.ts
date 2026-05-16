@@ -87,7 +87,7 @@ export interface SegmentEndPayload {
 }
 
 export interface AgentStatusPayload {
-  status: 'idle' | 'running' | 'error';
+  status: 'offline' | 'idle' | 'running' | 'error';
   can_interrupt: boolean;
   agent_id?: string;
   agent_name?: string;
@@ -131,7 +131,7 @@ export interface ExternalUserMessagePayload {
 }
 
 export interface TeamStatusPayload {
-  status: 'idle' | 'running' | 'error';
+  status: 'offline' | 'idle' | 'running' | 'error';
 }
 
 export interface ToolApprovalRequestedPayload {

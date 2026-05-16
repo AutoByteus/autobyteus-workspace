@@ -29,6 +29,12 @@ The most important owners are:
 
 Higher layers should depend on `CodexThread` state and normalized `AgentRunEvent`s exposed by these owners. They should not infer Codex raw protocol details themselves.
 
+Codex thread status changes update `CodexThread` state first. The normalized
+`AGENT_STATUS` event is then projected from that thread-owned snapshot into the
+server WebSocket contract `{ status: "offline" | "idle" | "running" | "error",
+can_interrupt: boolean }`; raw provider status payloads are not forwarded and
+legacy target fields such as `new_status` / `old_status` are not emitted.
+
 ## Apply-Patch / Edit-File Spine
 
 For Codex `apply_patch`, the authoritative mutation spine is the raw `fileChange` item lifecycle, not the `custom_tool_call` completion.
@@ -135,8 +141,8 @@ Forbidden downstream effect:
 
 | Raw Method | Raw Shape / Guard | Normalized Output | Owner | Decision |
 | --- | --- | --- | --- | --- |
-| `turn/started` | turn lifecycle start | `TURN_STARTED(turnId)` and `AGENT_STATUS(new_status=RUNNING)` | `codex-turn-event-converter.ts` | Keep |
-| `turn/completed` | turn lifecycle end | `TURN_COMPLETED(turnId)` and `AGENT_STATUS(new_status=IDLE)` and reasoning tracker reset | `codex-turn-event-converter.ts` | Keep |
+| `turn/started` | turn lifecycle start | `TURN_STARTED(turnId)` and projected `AGENT_STATUS { status: "running", can_interrupt }` | `codex-turn-event-converter.ts` | Keep |
+| `turn/completed` | turn lifecycle end | `TURN_COMPLETED(turnId)`, projected `AGENT_STATUS { status: "idle", can_interrupt: false }`, and reasoning tracker reset | `codex-turn-event-converter.ts` | Keep |
 | `turn/diff/updated` | supplemental unified diff for a turn | none | `codex-turn-event-converter.ts` | Keep as explicit no-op |
 | `turn/taskProgressUpdated` | task progress payload | `TODO_LIST_UPDATE` | `codex-turn-event-converter.ts` | Keep |
 | `item/started` | `item.type = commandExecution` | `TOOL_EXECUTION_STARTED` | `codex-item-event-converter.ts` | Keep |
@@ -164,7 +170,7 @@ Forbidden downstream effect:
 | `rawResponseItem/completed` | `item.type = custom_tool_call` or custom tool output | none in the normalized runtime-event spine | `codex-raw-response-event-converter.ts` | Keep ignored; file mutation state comes from `fileChange` events |
 | `rawResponseItem/completed` | `item.type = compaction` | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.raw_response_compaction_item, rotation_eligible=true)` | `codex-raw-response-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as storage-only duplicate-window fallback/provenance; de-dupe with `thread/compacted` |
 | `thread/started` | thread lifecycle start | none | `codex-thread-lifecycle-event-converter.ts` | Keep as explicit no-op |
-| `thread/status/changed` | runtime status payload | `AGENT_STATUS` | `codex-thread-lifecycle-event-converter.ts` | Keep |
+| `thread/status/changed` | runtime status payload | Codex thread-state side effect plus projected coarse `AGENT_STATUS { status, can_interrupt }` | `codex-thread-lifecycle-event-converter.ts` | Keep |
 | `thread/tokenUsage/updated` | token accounting update | none in normalized stream; records per-turn token usage readiness on `CodexThread` | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep as thread-state side effect plus explicit normalized no-op |
 | `thread/compacted` | provider-owned context compaction boundary | `COMPACTION_STATUS(kind=provider_compaction_boundary, source_surface=codex.thread_compacted, rotation_eligible=true)` | `codex-thread-lifecycle-event-converter.ts`, `ProviderCompactionBoundaryRecorder` | Keep as storage-only marker/rotation boundary; not semantic compaction |
 | `error` | runtime error payload | `ERROR` | `codex-thread-lifecycle-event-converter.ts` | Keep |
@@ -212,6 +218,7 @@ Output shape:
 - Treat `mcpToolCall` start plus the enriched local MCP completion event as the authoritative owner for Codex MCP tool execution lifecycle. Preserve pending call arguments through terminal events so restart/history projection can rebuild both transcript and Activity surfaces from the same raw traces.
 - Treat `webSearch` item lifecycle as the authoritative owner for Codex `search_web` execution status and storage-only memory tool traces. Segment events may seed pending Activity visibility, but lifecycle events own Activity executing/success/error status.
 - Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Persist ready per-turn usage from the thread boundary instead of parsing raw token payloads in higher runtime layers.
+- Treat Codex status notifications as thread-state inputs. Public status output is the projected coarse `AGENT_STATUS` payload from `CodexThread`, not a raw provider payload or legacy `new_status` / `old_status` transport.
 - Treat provider/session compaction signals as storage-only boundary metadata: marker append plus eligible segmented archive rotation only. Never treat them as permission for semantic compaction, trace-content rewrite, trace loss, runtime memory retrieval, or runtime memory injection.
 - Do not infer `edit_file` success from published-artifact transport on the frontend.
 - Do not promote `turn/diff/updated` into lifecycle or artifact ownership without a new explicit design decision.

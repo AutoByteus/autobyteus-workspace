@@ -1,4 +1,4 @@
-export type AgentApiStatus = "idle" | "running" | "error";
+export type AgentApiStatus = "offline" | "idle" | "running" | "error";
 
 export type AgentStatusPayload = {
   status: AgentApiStatus;
@@ -28,6 +28,9 @@ const RUNNING_STATUS_TOKENS = new Set([
 
 const IDLE_STATUS_TOKENS = new Set([
   "idle",
+]);
+
+const OFFLINE_STATUS_TOKENS = new Set([
   "uninitialized",
   "shutdown_complete",
   "shutdowncomplete",
@@ -53,11 +56,11 @@ const normalizeStatusToken = (value: unknown): string | null => {
 };
 
 export const isAgentApiStatus = (value: unknown): value is AgentApiStatus =>
-  value === "idle" || value === "running" || value === "error";
+  value === "offline" || value === "idle" || value === "running" || value === "error";
 
 export const normalizeAgentApiStatus = (
   value: unknown,
-  fallback: AgentApiStatus = "idle",
+  fallback: AgentApiStatus = "offline",
 ): AgentApiStatus => {
   const token = normalizeStatusToken(value);
   if (!token) {
@@ -72,6 +75,9 @@ export const normalizeAgentApiStatus = (
   if (IDLE_STATUS_TOKENS.has(token)) {
     return "idle";
   }
+  if (OFFLINE_STATUS_TOKENS.has(token)) {
+    return "offline";
+  }
   return fallback;
 };
 
@@ -81,9 +87,10 @@ export const buildAgentStatusPayload = (input: {
   agentId?: string | null;
   agentName?: string | null;
 }): AgentStatusPayload => {
+  const status = normalizeAgentApiStatus(input.status);
   const payload: AgentStatusPayload = {
-    status: normalizeAgentApiStatus(input.status),
-    can_interrupt: input.canInterrupt === true,
+    status,
+    can_interrupt: status === "running" && input.canInterrupt === true,
   };
   const agentId = typeof input.agentId === "string" ? input.agentId.trim() : "";
   if (agentId) {

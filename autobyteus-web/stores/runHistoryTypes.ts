@@ -1,4 +1,5 @@
 import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig';
+import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
@@ -10,6 +11,7 @@ export interface RunHistoryItem {
   runId: string;
   summary: string;
   lastActivityAt: string;
+  status: AgentStatus;
   lastKnownStatus: RunKnownStatus;
   isActive: boolean;
 }
@@ -67,6 +69,7 @@ export interface TeamRunMemberHistoryItem {
   memberRouteKey: string;
   memberName: string;
   memberRunId: string;
+  status: AgentStatus;
   runtimeKind?: AgentRuntimeKind | null;
   runtimeReference?: {
     runtimeKind: string;
@@ -85,6 +88,7 @@ export interface TeamRunHistoryItem {
   workspaceRootPath?: string | null;
   summary: string;
   lastActivityAt: string;
+  status: AgentTeamStatus;
   lastKnownStatus: TeamRunKnownStatus;
   deleteLifecycle: TeamRunDeleteLifecycle;
   isActive: boolean;
@@ -136,6 +140,7 @@ export interface TeamMemberTreeRow {
   workspaceRootPath: string | null;
   summary: string;
   lastActivityAt: string;
+  currentStatus: AgentStatus;
   lastKnownStatus: TeamRunKnownStatus;
   isActive: boolean;
   deleteLifecycle: TeamRunDeleteLifecycle;

@@ -9,7 +9,7 @@ interface StatusVisuals {
 
 export function useStatusVisuals(status: Ref<string | undefined>) {
   const visuals = computed((): StatusVisuals => {
-    const currentStatus = String(status.value || AgentStatus.Idle).toLowerCase();
+    const currentStatus = String(status.value || AgentStatus.Offline).toLowerCase();
 
     switch (currentStatus) {
       case AgentStatus.Running:
@@ -17,8 +17,10 @@ export function useStatusVisuals(status: Ref<string | undefined>) {
       case AgentStatus.Error:
         return { text: 'Error', colorClass: 'bg-red-500', iconName: 'heroicons:exclamation-triangle-solid' };
       case AgentStatus.Idle:
-      default:
         return { text: 'Idle', colorClass: 'bg-green-500', iconName: 'heroicons:check-circle-solid' };
+      case AgentStatus.Offline:
+      default:
+        return { text: 'Offline', colorClass: 'bg-gray-400', iconName: 'heroicons:no-symbol-solid' };
     }
   });
 

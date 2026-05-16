@@ -24,7 +24,7 @@ const resolveStatusHint = (
     return "IDLE";
   }
   if (eventType === StreamEventType.AGENT_STATUS_UPDATED) {
-    if (statusPayload?.status === "idle") {
+    if (statusPayload?.status === "offline" || statusPayload?.status === "idle") {
       return "IDLE";
     }
     if (statusPayload?.status === "error") {
@@ -80,7 +80,7 @@ const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
 type AutoByteusStatusSnapshotProvider = () => AgentStatusPayload;
 
 const defaultStatusSnapshotProvider = (): AgentStatusPayload => ({
-  status: "idle",
+  status: "offline",
   can_interrupt: false,
 });
 
@@ -117,7 +117,7 @@ export class AutoByteusStreamEventConverter {
           ? (payload.payload as Record<string, unknown>)
           : {};
       const {
-        turnId: _legacyNestedTurnId,
+        turnId: _nestedCamelTurnId,
         turn_id: _nestedTurnId,
         ...canonicalNestedPayload
       } = nestedPayload;

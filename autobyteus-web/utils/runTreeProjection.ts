@@ -3,6 +3,7 @@ import {
   FALLBACK_WORKSPACE_NAME,
   INVALID_DRAFT_WORKSPACE_WARNING,
 } from '~/utils/runTreeProjectionConstants';
+import type { AgentStatus } from '~/types/agent/AgentStatus';
 
 export type ProjectionRunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR';
 export type RunTreeRowSource = 'history' | 'draft';
@@ -11,6 +12,7 @@ export interface ProjectionRunItem {
   runId: string;
   summary: string;
   lastActivityAt: string;
+  currentStatus: AgentStatus;
   lastKnownStatus: ProjectionRunKnownStatus;
   isActive: boolean;
 }
@@ -41,6 +43,7 @@ export interface DraftRunSnapshot {
   agentAvatarUrl?: string | null;
   summary: string;
   lastActivityAt: string;
+  currentStatus: AgentStatus;
   lastKnownStatus: ProjectionRunKnownStatus;
   isActive: boolean;
 }
@@ -225,6 +228,7 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
           runId: run.runId,
           summary: run.summary,
           lastActivityAt: run.lastActivityAt,
+          currentStatus: run.currentStatus,
           lastKnownStatus: run.lastKnownStatus,
           isActive: run.isActive,
           source: 'history',
@@ -258,6 +262,7 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       runId: draft.runId,
       summary: draft.summary,
       lastActivityAt: draft.lastActivityAt,
+      currentStatus: draft.currentStatus,
       lastKnownStatus: draft.lastKnownStatus,
       isActive: draft.isActive,
       source: 'draft',

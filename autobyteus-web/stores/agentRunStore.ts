@@ -14,9 +14,9 @@ import {
   buildAgentDraftContextFileOwner,
   buildAgentFinalContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { ConnectionState } from '~/services/agentStreaming';
+import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 
 interface CreateAgentRunMutationResultPayload {
   createAgentRun: {
@@ -362,9 +362,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         }
 
         if (context) {
-          context.isSending = false;
-          context.state.currentStatus = AgentStatus.Idle;
-          context.state.canInterrupt = false;
+          applyOfflineOrTerminalCleanup(context);
         }
       };
 

@@ -34,7 +34,7 @@ const formatClaudeRuntimeError = (error: unknown): string =>
   error instanceof Error ? error.stack ?? error.message : String(error);
 
 type ClaudeSessionTurnExecutionInput = { turnId: string; content: string; abortController: AbortController };
-type ClaudeSessionStatus = "IDLE" | "RUNNING" | "ERROR";
+type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
 
 export type ClaudeSessionDependencies = {
   sessionMessageCache: ClaudeSessionMessageCache;
@@ -225,7 +225,7 @@ export class ClaudeSession {
   async settleActiveTurnForClosure(pendingToolApprovalReason: string): Promise<void> {
     const activeTurn = this.activeTurnExecution;
     if (!activeTurn) {
-      this.cleanupLegacyActiveInterruptState(pendingToolApprovalReason);
+      this.cleanupDanglingActiveInterruptState(pendingToolApprovalReason);
       return;
     }
 
@@ -270,7 +270,7 @@ export class ClaudeSession {
 
   async terminate(): Promise<void> {
     await this.dependencies.terminateRunSession();
-    this.currentStatus = "IDLE";
+    this.currentStatus = "OFFLINE";
     this.isInterruptingActiveTurn = false;
     this.clearActiveTurn();
     this.emitRuntimeEvent({
@@ -368,7 +368,7 @@ export class ClaudeSession {
     });
   }
 
-  private cleanupLegacyActiveInterruptState(pendingToolApprovalReason: string): void {
+  private cleanupDanglingActiveInterruptState(pendingToolApprovalReason: string): void {
     this.activeAbortController?.abort();
     this.clearActiveAbortController();
     this.dependencies.toolingCoordinator.clearPendingToolApprovals(

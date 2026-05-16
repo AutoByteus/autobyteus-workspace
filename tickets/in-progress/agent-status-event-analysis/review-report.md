@@ -2,175 +2,201 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Post-Validation Durable-Validation Re-Review`
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/requirements.md`
-- Current Review Round: 4
-- Trigger: CR-002 validation-code Local Fix returned by `api_e2e_engineer` after API/E2E validation round 2 passed.
-- Prior Review Round Reviewed: 3
-- Latest Authoritative Round: 4
+- Current Review Round: 9
+- Trigger: CR-003 local fix returned by `implementation_engineer` for re-review after round 8 found stale interrupt permission on inactive single-agent run-open.
+- Prior Review Round Reviewed: 8
+- Latest Authoritative Round: 9
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/implementation-handoff.md`
 - Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `Yes`
-- Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No` for API/E2E-authored durable validation in this round; implementation-owned frontend regression tests were added for CR-003.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Implementation handoff from `implementation_engineer` | N/A | CR-001 | Fail | No | Claude normal completion emitted status before the session state changed to idle. |
-| 2 | CR-001 local-fix rework | CR-001 | None | Pass | No | CR-001 resolved; implementation advanced to API/E2E validation. |
-| 3 | Post-validation durable-validation re-review | CR-001; round 2 pass state | CR-002 | Fail | No | API/E2E added durable WebSocket validation containing an invalid internal status hint value. |
-| 4 | CR-002 validation-code local fix | CR-002 | None | Pass | Yes | CR-002 is resolved; durable validation is ready for delivery handoff. |
+| 1 | Earlier implementation handoff | N/A | CR-001 | Fail | No | Earlier Claude completion-order issue. |
+| 2 | CR-001 local-fix rework | CR-001 | None | Pass | No | Earlier package advanced to API/E2E. |
+| 3 | Earlier post-validation durable-validation re-review | CR-001; round 2 pass state | CR-002 | Fail | No | Earlier WebSocket test used invalid internal status hint. |
+| 4 | CR-002 validation-code local fix | CR-002 | None | Pass | No | Earlier package passed post-validation re-review. |
+| 5 | Fresh four-state implementation handoff | CR-001/CR-002 checked as resolved/obsolete | None | Pass | No | Four-state package advanced to API/E2E validation. |
+| 6 | VAL-FS-008 implementation local fix | VAL-FS-008 validation failure | None | Pass | No | Accepted termination emits local canonical offline `AGENT_STATUS`; API/E2E re-validation required. |
+| 7 | AR-004 frontend active-team member-status rework | AR-004 design-impact concern; prior review state | None | Pass | No | Aggregate team `running` is no longer fanned out to all frontend member rows in reviewed paths. |
+| 8 | AC-014 interrupt-permission regression rework | CR-001, CR-002, VAL-FS-008, AR-004 | CR-003 | Fail | No | New mutation boundary mostly fixed direct writes, but inactive single-agent run-open could preserve stale `canInterrupt=true`. |
+| 9 | CR-003 local fix | CR-003 plus prior resolved findings | None | Pass | Yes | Offline/error projections now clear interrupt permission even when a caller requests live preservation; regression coverage added. |
 
 ## Review Scope
 
-Round 4 used the post-validation durable-validation re-review entry point. Scope was centered on the validation-code-only CR-002 fix, the updated API/E2E validation report, and the durable validation areas affected by the API/E2E stage:
+Round 9 re-reviewed the CR-003 local fix and the directly related AC-014 status/action mutation boundary behavior.
 
-- CR-002 fix in `autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts`;
-- updated `api-e2e-validation-report.md` round 2 evidence and CR-002 resolution record;
-- previously reviewed durable validation surfaces:
-  - WebSocket status contract coverage in `agent-status-websocket.integration.test.ts`;
-  - team aggregate helper coverage in `team-status-aggregation.test.ts`;
-  - frontend interrupt affordance coverage in `AgentUserInputTextArea.spec.ts`;
-  - selected live E2E/backend-factory fixture status-expectation cleanup listed in the validation report.
+Primary files reviewed:
+
+- `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts`
+- `autobyteus-web/stores/agentContextsStore.ts`
+- `autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts`
+- `autobyteus-web/stores/__tests__/agentContextsStore.spec.ts`
+- `autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts`
+- `autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts`
+
+Context files rechecked for non-regression:
+
+- `autobyteus-web/stores/runHistoryLoadActions.ts`
+- `autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts`
+- `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`
+- `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+- `autobyteus-web/stores/runHistoryTeamHelpers.ts`
+- `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts`
+- Input/history display tests and status merge tests listed below.
 
 Reviewer-run commands:
 
 - `git diff --check` — passed.
-- `rg -n "statusHint: \"RUNNING\"|statusHint: 'RUNNING'" autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts autobyteus-server-ts/tests || true` — no matches.
-- Target stale-status audit over reviewed durable validation and fixture-cleanup paths — no stale target uppercase/new-status expectation found; the only `old_status` output was the intended negative assertion `expect(payload).not.toHaveProperty("old_status")` in the WebSocket contract test.
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
-- `pnpm -C autobyteus-server-ts test --run tests/integration/agent/agent-status-websocket.integration.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts` — passed, 4 files / 33 tests.
+- Direct production `canInterrupt` write audit over `autobyteus-web/services`, `stores`, `components`, and `utils`, excluding tests — only `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts` writes `state.canInterrupt`.
+- Direct production `state.currentStatus = ...` write audit over the same target set — only `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts` writes `AgentRunState.currentStatus` directly.
+- Target legacy/fan-out grep — no target AGENT_STATUS/TEAM_STATUS `new_status`/`old_status` compatibility path, no `payload.status || ...`, no team `can_interrupt`, no `memberStatuses: []` active-member seeding, and no active-team aggregate-to-member running fan-out.
+- Broad production `new_status`/`old_status` grep over server/web source — only task-plan payload handling remains: `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts:148` and `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts:275`. These are `TASK_PLAN_EVENT` task-management fields, not the AGENT_STATUS/TEAM_STATUS runtime status contract under review.
+- `pnpm -C autobyteus-web exec vitest run services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts stores/__tests__/agentContextsStore.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts utils/__tests__/runTreeLiveStatusMerge.spec.ts stores/__tests__/runHistoryStore.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts` — passed, 11 files / 124 tests.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
-| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| Prior Round / Source | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | CR-001 | High | Resolved | Round 2 verified `ClaudeSession.executeTurn()` marks turn completion before emitting `TURN_COMPLETED`, and API/E2E validation includes Claude status coverage. | No reopened implementation issue. |
-| 3 | CR-002 | Medium | Resolved | `agent-status-websocket.integration.test.ts:364-369` now keeps `payload.status: "RUNNING"` for API normalization coverage while using the valid internal `statusHint: "ACTIVE"`. `rg` found no remaining `statusHint: "RUNNING"`; focused WebSocket/status suite passed 4 files / 33 tests; source build typecheck passed. | Validation-code-only local fix complete. |
+| 1 | CR-001 | High | Resolved / not reopened | CR-003 fix is frontend status/action boundary work; no Claude completion-order code was changed. | No reopened completion-order issue found in reviewed scope. |
+| 3 | CR-002 | Medium | Resolved / not reopened | CR-003 scope contains no backend invalid `statusHint: "RUNNING"` fixture path. | No validation-code blocker in this round. |
+| API/E2E round 1 | VAL-FS-008 | High | Not reopened by this frontend rework | Server-side accepted-termination offline emission path is not changed. | API/E2E still must re-run VAL-FS-008 after this pass. |
+| Architecture review / round 7 | AR-004 | Blocking design impact | Resolved / not reopened | Fan-out guardrail still finds no target team-member aggregate-running write path; reviewed team paths continue to preserve member-scoped statuses. | API/E2E still must run AC-013 browser/Electron-like validation. |
+| 8 | CR-003 | High | Resolved | `applyMemberOrHistoryStatusSnapshot(...)` now normalizes the projection and clears `canInterrupt` whenever the projection is `offline` or `error`, even if `preserveLiveInterrupt=true`; real-store regressions cover `upsertProjectionContext(... status: Offline)` and inactive run-open of an existing subscribed/can-interrupt context. | No stale interrupt retention remains in the reviewed inactive/offline single-agent path. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-This round did not review new implementation-owned source changes for size limits. The hard source-file size/delta audit does not apply to unit, integration, API, or E2E test files. Round 4 reviewed durable validation/test code and validation evidence only.
-
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| N/A for round 4 | N/A | N/A | N/A | N/A | N/A | N/A | N/A |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts` | 76 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts` | 71 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-web/stores/agentContextsStore.ts` | 188 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts` | 240 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-web/stores/runHistoryLoadActions.ts` | 294 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts` | 131 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | 479 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | 161 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-web/stores/runHistoryTeamHelpers.ts` | 436 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-web/stores/agentRunStore.ts` | 364 | Pass | Pass | Pass | Pass | Pass | None. |
+| `autobyteus-web/stores/agentTeamRunStore.ts` | 372 | Pass | Pass | Pass | Pass | Pass | None. |
+
+CR-003 regression test files are excluded from source-file hard limits. The added integration-style test is small and targeted.
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Requirements/design/handoff identify the status source-of-truth issue as a behavior/refactor fix. API/E2E round 2 and this review found no product-design gap. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Durable validation exercises reconnect snapshots, live WebSocket status normalization, team member snapshots, and aggregate `TEAM_STATUS`. | None. |
-| Ownership boundary preservation and clarity | Pass | Product code remains routed through runtime snapshots/projectors and team aggregation; CR-002 now correctly distinguishes API payload status from internal event hints. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Validation stays in the appropriate WebSocket integration, team aggregate unit, frontend input, and fixture-cleanup test areas. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Durable tests reuse existing WebSocket registration/stream handlers and the existing aggregate helper entrypoint. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Product shared structures remain centralized; tests do not introduce duplicate status models. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | `payload.status` and `statusHint` semantics are now kept distinct in the CR-002 fixture. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Team aggregate policy remains covered through `deriveTeamApiStatus(...)`. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | No empty production or validation indirection was added. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | New validation files each have a clear scope: WebSocket contract, team aggregation, and frontend input interrupt affordance. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Durable validation drives public WebSocket and domain helper boundaries without product boundary bypass. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No product or validation boundary bypass found in round 4. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | New tests are in appropriate integration/unit/component-test folders. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Validation additions remain localized and readable. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Public status API contract under test remains explicit: agent `status/can_interrupt`, aggregate team `status`. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | CR-002 corrected the internal `statusHint` vocabulary to `ACTIVE` while preserving uppercase payload normalization input. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated product status policy found. | None. |
-| Patch-on-patch complexity control | Pass | CR-002 fix is a minimal validation-code correction with focused rerun evidence. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Reviewed fixture cleanup uses lowercase `payload.status`; no target status dual-read/compatibility test path found. | None. |
-| Test quality is acceptable for the changed behavior | Pass | WebSocket integration coverage now uses valid internal event metadata and verifies public lowercase status output plus absence of legacy fields. | None. |
-| Test maintainability is acceptable for the changed behavior | Pass | The fake event now cleanly separates internal `statusHint: "ACTIVE"` from upstream/API-normalization input `payload.status: "RUNNING"`. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | API/E2E validation report is pass; reviewer reran source build typecheck and focused WebSocket/status suite successfully. | None. |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | No target `new_status`/`old_status` compatibility path found in reviewed validation cleanup. | None. |
-| No legacy code retention for old behavior | Pass | Fixture expectations now target lowercase `payload.status`; legacy field checks assert absence. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | REQ-017/AC-014 and DS-010 are preserved: active live contexts preserve interrupt permission, while offline/error projections clear stale permission. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Live `AGENT_STATUS` remains the only interrupt grant path; inactive run-open now ends at `offline/canInterrupt=false` before stream disconnect completes. | None. |
+| Ownership boundary preservation and clarity | Pass | `agentRuntimeStatusState.ts` owns the status/action mutation invariant; call sites still route through it rather than direct writes. | None. |
+| Off-spine concern clarity | Pass | Run-open, history refresh, recovery, hydration, and stream handlers remain consumers of the mutation boundary rather than competing owners. | None. |
+| Existing capability/subsystem reuse check | Pass | The fix tightened the existing mutation owner rather than adding a second helper or caller-local policy. | None. |
+| Reusable owned structures check | Pass | Four-state normalization and action-permission mutation remain centralized in owned files. | None. |
+| Shared-structure/data-model tightness check | Pass | Runtime status remains `offline/idle/running/error`; `canInterrupt` stays member/single-agent only. | None. |
+| Repeated coordination ownership check | Pass | The offline/error clearing rule is centralized in `applyMemberOrHistoryStatusSnapshot(...)`, eliminating the prior caller-specific stale-preservation gap. | None. |
+| Empty indirection check | Pass | The mutation boundary owns concrete source-class rules and is not pass-through-only. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The local fix stays in the status/action boundary and focused tests; open coordinator remains unchanged except earlier offline status mapping. | None. |
+| Ownership-driven dependency check | Pass | No new dependency shortcut into runtime internals or UI-derived status ownership was introduced. | None. |
+| Authoritative Boundary Rule check | Pass | Frontend callers depend on the mutation boundary for status/action state, and offline/error projections no longer let stale live permission bypass cleanup semantics. | None. |
+| File placement check | Pass | New and changed files are under the relevant frontend status, store, and run-open test areas. | None. |
+| Flat-vs-over-split layout judgment | Pass | The added integration test is justified; no new architectural layer was introduced. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Public runtime payload contracts remain unchanged; frontend mutation behavior now distinguishes terminal projections internally. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Names remain source-class-oriented and readable. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicated status-clearing logic was added; the central boundary handles the invariant. | None. |
+| Patch-on-patch complexity control | Pass | CR-003 fix is a small invariant tightening with focused regression coverage. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No stale target status/action behavior remains in reviewed paths; target legacy/compatibility greps are clean. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Added store-level and run-open integration-style regressions verify the previously missed stale-interrupt edge with real state mutation. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests are focused on the invariant and do not rely solely on mocked `upsertProjectionContext`. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Reviewer-run audits and focused suite pass; package is ready for API/E2E re-validation. | None. |
+| No backward-compatibility mechanisms | Pass | No AGENT_STATUS/TEAM_STATUS dual reads/writes or compatibility wrappers found. | None. |
+| No legacy code retention for old behavior | Pass | No old detailed runtime status ownership, `isSending` interrupt ownership, or active-team aggregate fan-out remains in reviewed target paths. | None. |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.3
-- Overall score (`/100`): 93
-- Score calculation note: Simple average of the ten mandatory categories. All categories are now at or above the clean-pass target.
+- Overall score (`/10`): 9.2
+- Overall score (`/100`): 92
+- Score calculation note: Simple average across the ten mandatory categories; the latest round passes because all prior blocking findings are resolved and no category remains below the clean-pass threshold.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | Validation covers reconnect snapshot, live status normalization, team member snapshot, and aggregate team status spines. | Live external-provider execution remains environment-gated outside this re-review. | Keep the same spine coverage when extending status behavior. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | The corrected fake event respects internal event hint ownership while exercising public payload normalization. | Tests still use local fakes for runtime event streams. | Continue using typed fixtures/helpers when faking domain events. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Agent/team WebSocket payload expectations are explicit and legacy fields are asserted absent. | None material. | Preserve clean-cut `status/can_interrupt` and aggregate `status` contracts. |
-| `4` | `Separation of Concerns and File Placement` | 9.2 | Validation is placed in focused integration/unit/component-test locations. | Some fixture setup is necessarily verbose for real WebSocket coverage. | Avoid growing the WebSocket fixture into unrelated scenarios. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Product and test status vocabularies are now distinct and tight. | No test-specific typed factory was added, though not required for this one-line fix. | Consider a small event builder if future fake-event coverage grows. |
-| `6` | `Naming Quality and Local Readability` | 9.2 | `statusHint: "ACTIVE"` now communicates internal lifecycle semantics correctly. | Existing repo still has some legacy naming outside target scope. | Keep public status wording out of internal hint fields. |
-| `7` | `Validation Readiness` | 9.4 | API/E2E report passes; reviewer reran source build typecheck, diff guardrail, audits, and focused 4-file/33-test suite. | Full browser/live external runtime execution remains environment-gated. | Delivery should preserve validation evidence in final handoff. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Durable tests cover reconnect snapshots, live status normalization, completion ordering path through stream handlers, and team aggregation. | Live external runtimes are still covered through fixture/import paths where environment-gated. | Run live provider suites when credentials/environment are available. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Reviewed paths do not retain target `new_status`/`old_status` compatibility; negative assertions guard legacy field absence. | Only unrelated task-plan `new_status` references remain per upstream audits. | Keep target status contract clean during delivery/doc updates. |
-| `10` | `Cleanup Completeness` | 9.3 | CR-002 is fixed and fixture cleanup aligns to lowercase API statuses. | Delivery still needs integrated-state docs check. | Delivery should update or explicitly no-impact docs against refreshed branch state. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.2 | The live status, active placeholder, history snapshot, and offline cleanup spines are now classifiable through the mutation boundary. | Browser timing still needs API/E2E evidence. | API/E2E should validate VAL-FS-008, AC-013, and AC-014 in realistic runtime/browser flows. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Status/action writes are confined to the frontend mutation owner and backend `can_interrupt` remains the only grant source. | The boundary must stay protected in later refactors. | Preserve the direct-write audit as a regression guard. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Public payload contracts remain clean and the frontend store API no longer leaks stale interrupt semantics. | `TASK_PLAN_EVENT.new_status` still uses the same field name in another domain. | Leave it out of this status contract unless a separate task-plan naming cleanup is opened. |
+| `4` | `Separation of Concerns and File Placement` | 9.2 | The fix stays in the status mutation owner and tests; coordinators remain orchestration consumers. | Existing frontend status behavior is spread across several coordinators by product flow. | Future refactor should not move action authority back into those coordinators. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Four-state status and single action-permission flag remain semantically tight. | None material in reviewed scope. | None. |
+| `6` | `Naming Quality and Local Readability` | 9.1 | Function/test names clearly describe live, placeholder, history, and terminal state behavior. | `applyMemberOrHistoryStatusSnapshot` now includes terminal-projection clearing semantics, which is documented by tests but slightly broader than the name. | If the function grows further, consider splitting explicit terminal projection API; not needed now. |
+| `7` | `Validation Readiness` | 9.1 | `git diff --check`, strict audits, broad target legacy grep, and 11-file/124-test focused suite passed. | Full `nuxi typecheck` remains blocked by unrelated project-wide issues. | API/E2E must provide real runtime/browser evidence next. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.0 | The previously missed inactive/offline subscribed run-open edge is fixed and covered. | Race/timing behavior still needs live-browser/API validation. | API/E2E should explicitly exercise refresh/recovery after live `can_interrupt=true`. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | Target old status contract, dual paths, and aggregate fan-out are absent. | Non-target task-plan `new_status` naming remains in a separate protocol. | Keep target status-contract legacy checks strict in API/E2E and delivery. |
+| `10` | `Cleanup Completeness` | 9.2 | CR-003 stale permission path is removed; no new bypass appeared. | Final integrated docs/source cleanup still belongs to delivery. | Delivery should do final integrated-state docs sync after API/E2E passes. |
 
 ## Findings
 
-No unresolved findings in round 4.
+No unresolved findings in round 9.
 
-Resolved prior findings:
+Resolved finding:
 
-### CR-001 — Resolved
+### CR-003 — Resolved
 
-Claude normal completion applies terminal idle state before emitting `TURN_COMPLETED`, so the paired `AGENT_STATUS` reads `status: "idle", can_interrupt: false` from the session-owned snapshot source. No reopened implementation defect was found.
-
-### CR-002 — Resolved
-
-The durable WebSocket validation now uses the valid internal `AgentRunStatusHint` value `"ACTIVE"` while preserving `payload.status: "RUNNING"` to exercise outbound API/status normalization to lowercase `running`. Reviewer reran the invalid-hint audit and focused WebSocket/status suite successfully.
+Inactive single-agent run-open no longer preserves stale interrupt permission. `applyMemberOrHistoryStatusSnapshot(...)` now clears `canInterrupt` for `offline` and `error` projections even when `preserveLiveInterrupt=true`. The store-level and run-open integration-style tests cover the exact stale `running/canInterrupt=true` -> inactive `offline/canInterrupt=false` path.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for delivery handoff; API/E2E validation report is pass and CR-002 is resolved. |
-| Tests | Test quality is acceptable | Pass | Durable validation covers WebSocket snapshots/live normalization, team aggregation, and frontend interrupt authority. |
-| Tests | Test maintainability is acceptable | Pass | CR-002 removed the API/internal vocabulary mix; tests remain localized and readable. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No unresolved findings remain. |
+| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E to resume; not delivery-ready until API/E2E re-validates VAL-FS-008, AC-013, and AC-014. |
+| Tests | Test quality is acceptable | Pass | New tests verify both direct store hydration and run-open coordinator behavior with real store mutation. |
+| Tests | Test maintainability is acceptable | Pass | Regression is clear, bounded, and avoids mocking away the state owner that caused the original issue. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open review findings; next owner should focus on realistic browser/API validation. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Reviewed validation cleanup does not reintroduce `new_status` / `old_status` compatibility paths for target `AGENT_STATUS` / `TEAM_STATUS`. |
-| No legacy old-behavior retention in changed scope | Pass | Live fixture expectations target lowercase `payload.status`; legacy field checks are negative assertions. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No dead target validation path found in this re-review. |
+| No backward-compatibility mechanisms in changed scope | Pass | No AGENT_STATUS/TEAM_STATUS dual-read fallback, compatibility wrapper, or old-payload fallback was found. |
+| No legacy old-behavior retention in changed scope | Pass | Direct-write, stale interrupt retention, detailed runtime status, and aggregate-to-member fan-out target paths are clean in reviewed scope. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No dead target status/action behavior remains from CR-003. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
 | Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| None identified in this review round. | N/A | N/A | N/A | N/A |
+| None identified in the reviewed target status/action scope. | N/A | Target legacy greps are clean. | N/A | N/A |
+
+Note: `TASK_PLAN_EVENT.new_status` remains in task-plan payload handling and is not an AGENT_STATUS/TEAM_STATUS runtime-status compatibility path. It is not classified as target legacy for this ticket.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`
-- Why: The backend/frontend status protocol and interrupt authority changed, and API/E2E validation added durable status-contract coverage. Delivery should update durable docs or explicitly record no-impact against the integrated state.
-- Files or areas likely affected:
-  - `autobyteus-web/docs/agent_integration_minimal_bridge.md`
-  - `autobyteus-web/docs/agent_execution_architecture.md`
-  - any server/WebSocket protocol docs mentioning old `new_status` / `old_status`, detailed frontend status labels, or `isSending` as interrupt/status authority.
+- Docs impact: `No additional docs impact expected for CR-003`.
+- Why: Requirements/design/handoff already record the mutation-boundary and offline/error cleanup invariants. The local fix aligns implementation with that design.
+- Files or areas likely affected: Delivery should still perform final integrated-state docs sync after API/E2E passes.
 
 ## Classification
 
-No failure classification. Round 4 review result is `Pass`.
+No failure classification. Round 9 review result is `Pass`.
 
 ## Recommended Recipient
 
-`delivery_engineer`
+`api_e2e_engineer`
 
 ## Residual Risks
 
-- Live external-runtime execution remains environment-gated as recorded in the API/E2E validation report.
-- Repository/package-level broad typecheck blockers remain as documented upstream, though source build typecheck passed.
-- Branch remains behind `origin/personal`; delivery must refresh/integrate against the recorded base branch before finalization.
-- Delivery still owns docs sync/no-impact recording against the refreshed integrated state.
+- API/E2E must re-run `VAL-FS-008` to confirm the terminal offline publication fix remains browser-visible across AutoByteus, Codex, and Claude WebSocket termination flows.
+- API/E2E must run AC-013 browser/Electron-like startup validation: active team aggregate `running`, one member `running`, other members `offline`, and no refresh/reconcile cycle turning all members running.
+- API/E2E must run AC-014 browser-visible validation: after live/snapshot `AGENT_STATUS { status: "running", can_interrupt: true }`, run-history refresh/reconcile and active recovery preserve the selected single-agent/focused-member stop affordance until a later live status or explicit cleanup revokes it.
+- Full `autobyteus-web` `nuxi typecheck` remains blocked by unrelated broad project-wide typing issues documented in the implementation handoff.
+- Branch was previously observed behind `origin/personal`; delivery must refresh/integrate against the recorded base branch before finalization.
 
 ## Latest Authoritative Result
 
 - Review Decision: Pass
-- Score Summary: 9.3/10 (93/100)
-- Notes: CR-002 is resolved. Repository-resident durable validation added during API/E2E has passed re-review and the cumulative package is ready for delivery.
+- Score Summary: 9.2/10 (92/100)
+- Notes: CR-003 is resolved. The package is code-review passed and ready for API/E2E to resume VAL-FS-008, AC-013, and AC-014 validation.

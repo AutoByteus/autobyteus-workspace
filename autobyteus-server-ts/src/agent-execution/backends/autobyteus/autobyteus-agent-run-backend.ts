@@ -98,6 +98,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     return projectAutoByteusAgentStatus({
       currentStatus: this.agent.currentStatus,
       context: this.agent.context ?? null,
+      isActive: this.isActive(),
       agentId: this.runId,
     });
   }

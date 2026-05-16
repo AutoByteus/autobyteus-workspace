@@ -64,7 +64,10 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
   }
 
   getStatusSnapshot() {
-    return projectClaudeAgentStatus(this.session.getStatusSnapshotSource());
+    return projectClaudeAgentStatus({
+      ...this.session.getStatusSnapshotSource(),
+      isActive: this.isActive(),
+    });
   }
 
   async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {

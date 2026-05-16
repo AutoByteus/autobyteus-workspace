@@ -8,17 +8,19 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamTreeNode, TeamRunHistoryItem, TeamRunMetadataPayload, TeamMemberRunProjectionPayload } from '~/stores/runHistoryTypes';
 import { buildConversationFromProjection } from '~/services/runHydration/runProjectionConversation';
 import { hydrateActivitiesFromProjection } from '~/services/runHydration/runProjectionActivityHydration';
+import {
+  normalizeAgentRuntimeStatus,
+  normalizeTeamRuntimeStatus,
+} from '~/services/runHydration/runtimeStatusNormalization';
+import {
+  applyMemberOrHistoryStatusSnapshot,
+  initializeRuntimeStatusState,
+} from '~/services/runStatus/agentRuntimeStatusState';
 
 export const toHistoryTeamStatus = (
-  team: Pick<TeamRunHistoryItem, 'isActive' | 'lastKnownStatus'>,
+  team: Pick<TeamRunHistoryItem, 'status'>,
 ): AgentTeamStatus => {
-  if (team.lastKnownStatus === 'ERROR') {
-    return AgentTeamStatus.Error;
-  }
-  if (!team.isActive) {
-    return AgentTeamStatus.Idle;
-  }
-  return AgentTeamStatus.Running;
+  return normalizeTeamRuntimeStatus(team.status);
 };
 
 export const toTeamRunStatus = (
@@ -28,7 +30,7 @@ export const toTeamRunStatus = (
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
 
-  if (status === AgentTeamStatus.Idle) {
+  if (status === AgentTeamStatus.Offline) {
     return { isActive: false, lastKnownStatus: 'IDLE' };
   }
 
@@ -42,11 +44,23 @@ const toTeamMemberRunStatus = (
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
 
-  if (status === AgentStatus.Idle) {
+  if (status === AgentStatus.Offline) {
     return { isActive: false, lastKnownStatus: 'IDLE' };
   }
 
   return { isActive: true, lastKnownStatus: 'ACTIVE' };
+};
+
+const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
+  if (
+    status === AgentStatus.Running ||
+    status === AgentStatus.Idle ||
+    status === AgentStatus.Error ||
+    status === AgentStatus.Offline
+  ) {
+    return status;
+  }
+  return AgentStatus.Offline;
 };
 
 export const summarizeTeamDraft = (teamContext: AgentTeamContext, draftSummaryPrefix: string): string => {
@@ -117,7 +131,7 @@ export const buildTeamNodes = (params: {
   summarizeTeamDraft: (teamContext: AgentTeamContext) => string;
   resolveTeamLastActivityAt: (teamContext: AgentTeamContext) => string;
   toHistoryTeamStatus: (
-    team: Pick<TeamRunHistoryItem, 'isActive' | 'lastKnownStatus'>,
+    team: Pick<TeamRunHistoryItem, 'status'>,
   ) => AgentTeamStatus;
   toTeamRunStatus: (
     status: AgentTeamStatus,
@@ -135,18 +149,21 @@ export const buildTeamNodes = (params: {
       params.normalizeRootPath(team.workspaceRootPath) ||
       fallbackWorkspaceRootPath;
     const sortedMembers = team.members
-      .map((member) => ({
-        teamRunId: team.teamRunId,
-        memberRouteKey: member.memberRouteKey,
-        memberName: member.memberName,
-        memberRunId: member.memberRunId,
-        workspaceRootPath: member.workspaceRootPath ?? null,
-        summary: team.summary,
-        lastActivityAt: team.lastActivityAt,
-        lastKnownStatus: team.lastKnownStatus,
-        isActive: team.isActive,
-        deleteLifecycle: team.deleteLifecycle,
-      }))
+      .map((member) => {
+        const currentStatus = normalizeAgentRuntimeStatus(member.status);
+        return {
+          ...toTeamMemberRunStatus(currentStatus),
+          teamRunId: team.teamRunId,
+          memberRouteKey: member.memberRouteKey,
+          memberName: member.memberName,
+          memberRunId: member.memberRunId,
+          workspaceRootPath: member.workspaceRootPath ?? null,
+          summary: team.summary,
+          lastActivityAt: team.lastActivityAt,
+          currentStatus,
+          deleteLifecycle: team.deleteLifecycle,
+        };
+      })
       .sort((a, b) => a.memberName.localeCompare(b.memberName));
     const coordinatorMemberRouteKey = team.coordinatorMemberRouteKey?.trim() || '';
     const focusedMemberName =
@@ -173,24 +190,29 @@ export const buildTeamNodes = (params: {
   for (const teamContext of params.teamContexts) {
     const existing = nodesByTeamRunId.get(teamContext.teamRunId);
     const workspaceRootPath = params.resolveWorkspaceRootPathFromContext(teamContext);
-    const { isActive, lastKnownStatus } = params.toTeamRunStatus(teamContext.currentStatus);
+    const currentStatus = normalizeTeamRuntimeStatus(teamContext.currentStatus);
+    const { isActive, lastKnownStatus } = params.toTeamRunStatus(currentStatus);
     const summary = existing?.summary?.trim() || params.summarizeTeamDraft(teamContext);
     const lastActivityAt = existing?.lastActivityAt || params.resolveTeamLastActivityAt(teamContext);
     const members = Array.from(teamContext.members.entries())
-      .map(([memberRouteKey, memberContext]) => ({
-        ...toTeamMemberRunStatus(memberContext.state.currentStatus),
-        teamRunId: teamContext.teamRunId,
-        memberRouteKey,
-        memberName: memberContext.config.agentDefinitionName || memberRouteKey,
-        memberRunId: memberContext.state.runId,
-        workspaceRootPath: params.resolveWorkspaceRootPath(memberContext.config.workspaceId),
-        summary,
-        lastActivityAt:
-          memberContext.state.conversation.updatedAt ||
-          memberContext.state.conversation.createdAt ||
-          lastActivityAt,
-        deleteLifecycle: 'READY' as const,
-      }))
+      .map(([memberRouteKey, memberContext]) => {
+        const memberCurrentStatus = normalizeAgentRuntimeStatus(memberContext.state.currentStatus);
+        return {
+          ...toTeamMemberRunStatus(memberCurrentStatus),
+          teamRunId: teamContext.teamRunId,
+          memberRouteKey,
+          memberName: memberContext.config.agentDefinitionName || memberRouteKey,
+          memberRunId: memberContext.state.runId,
+          workspaceRootPath: params.resolveWorkspaceRootPath(memberContext.config.workspaceId),
+          summary,
+          currentStatus: memberCurrentStatus,
+          lastActivityAt:
+            memberContext.state.conversation.updatedAt ||
+            memberContext.state.conversation.createdAt ||
+            lastActivityAt,
+          deleteLifecycle: 'READY' as const,
+        };
+      })
       .sort((a, b) => a.memberName.localeCompare(b.memberName));
     const deleteLifecycle = existing?.deleteLifecycle ?? ('READY' as const);
     const teamDefinitionId =
@@ -207,7 +229,7 @@ export const buildTeamNodes = (params: {
       lastActivityAt,
       lastKnownStatus,
       isActive,
-      currentStatus: teamContext.currentStatus,
+      currentStatus,
       deleteLifecycle,
       focusedMemberName: teamContext.focusedMemberName,
       members,
@@ -391,10 +413,13 @@ export const applyProjectionToTeamMemberContext = (params: {
   });
   params.memberContext.state.runId = memberRunId;
   params.memberContext.state.conversation = conversation;
-  params.memberContext.state.currentStatus = params.isActive
-    ? AgentStatus.Running
-    : AgentStatus.Idle;
-  params.memberContext.state.canInterrupt = false;
+  applyMemberOrHistoryStatusSnapshot(
+    params.memberContext,
+    params.isActive
+      ? preserveCanonicalMemberStatus(params.memberContext.state.currentStatus)
+      : AgentStatus.Offline,
+    { preserveLiveInterrupt: params.isActive },
+  );
 
   if (params.projection) {
     hydrateActivitiesFromProjection(memberRunId, params.projection.activities || []);
@@ -439,8 +464,7 @@ export const buildTeamMemberContexts = async (params: {
     });
 
     const state = new AgentRunState(memberRunId, conversation);
-    state.currentStatus = params.isActive ? AgentStatus.Running : AgentStatus.Idle;
-    state.canInterrupt = false;
+    initializeRuntimeStatusState(state, AgentStatus.Offline);
     members.set(
       normalizedMemberRouteKey,
       new AgentContext(memberConfig, state),

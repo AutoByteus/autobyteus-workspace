@@ -1,6 +1,7 @@
 import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
@@ -103,6 +104,7 @@ export class AgentRunHistoryService {
     for (const row of normalizedRows) {
       const isActive = activeRunIds.has(row.runId);
       const runStatus: RunKnownStatus = isActive ? "ACTIVE" : row.lastKnownStatus;
+      const status = this.resolveHistoryStatus(row, isActive);
       let agentMap = workspaceMap.get(row.workspaceRootPath);
       if (!agentMap) {
         agentMap = new Map<string, RunHistoryAgentGroup>();
@@ -121,6 +123,7 @@ export class AgentRunHistoryService {
         runId: row.runId,
         summary: row.summary,
         lastActivityAt: row.lastActivityAt,
+        status,
         lastKnownStatus: runStatus,
         isActive,
       });
@@ -189,6 +192,19 @@ export class AgentRunHistoryService {
         message: `Failed to archive stored run '${normalizedRunId}'.`,
       };
     }
+  }
+
+  private resolveHistoryStatus(
+    row: Pick<RunHistoryIndexRow, "runId" | "lastKnownStatus">,
+    isActive: boolean,
+  ): AgentApiStatus {
+    if (isActive) {
+      const activeRun = this.agentRunManager.getActiveRun(row.runId);
+      if (activeRun) {
+        return activeRun.getStatusSnapshot().status;
+      }
+    }
+    return row.lastKnownStatus === "ERROR" ? "error" : "offline";
   }
 
   async deleteStoredRun(runId: string): Promise<DeleteStoredRunResult> {

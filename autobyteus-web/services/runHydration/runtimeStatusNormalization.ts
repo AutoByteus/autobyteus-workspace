@@ -28,6 +28,9 @@ const RUNNING_TOKENS = new Set([
 
 const IDLE_TOKENS = new Set([
   'idle',
+]);
+
+const OFFLINE_TOKENS = new Set([
   'shutdown_complete',
   'offline',
   'terminated',
@@ -40,24 +43,26 @@ const ERROR_TOKENS = new Set(['error', 'failed', 'failure']);
 
 export const normalizeAgentRuntimeStatus = (
   status?: string | null,
-  fallback: AgentStatus = AgentStatus.Idle,
+  fallback: AgentStatus = AgentStatus.Offline,
 ): AgentStatus => {
   const normalized = normalizeToken(status);
   if (!normalized) return fallback;
   if (ERROR_TOKENS.has(normalized)) return AgentStatus.Error;
   if (RUNNING_TOKENS.has(normalized)) return AgentStatus.Running;
   if (IDLE_TOKENS.has(normalized)) return AgentStatus.Idle;
+  if (OFFLINE_TOKENS.has(normalized)) return AgentStatus.Offline;
   return fallback;
 };
 
 export const normalizeTeamRuntimeStatus = (
   status?: string | null,
-  fallback: AgentTeamStatus = AgentTeamStatus.Idle,
+  fallback: AgentTeamStatus = AgentTeamStatus.Offline,
 ): AgentTeamStatus => {
   const normalized = normalizeToken(status);
   if (!normalized) return fallback;
   if (ERROR_TOKENS.has(normalized)) return AgentTeamStatus.Error;
   if (RUNNING_TOKENS.has(normalized)) return AgentTeamStatus.Running;
   if (IDLE_TOKENS.has(normalized)) return AgentTeamStatus.Idle;
+  if (OFFLINE_TOKENS.has(normalized)) return AgentTeamStatus.Offline;
   return fallback;
 };

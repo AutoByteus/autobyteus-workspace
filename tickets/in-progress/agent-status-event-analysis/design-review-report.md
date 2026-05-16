@@ -5,227 +5,226 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/design-spec.md`
-- Current Review Round: 2
-- Trigger: Round-2 review after `solution_designer` revised the design for AR-001, AR-002, and AR-003.
-- Prior Review Round Reviewed: 1
-- Latest Authoritative Round: 2
-- Current-State Evidence Basis: Round-2 requirements/design artifacts, prior round-1 report, and spot checks against the current code paths for server/web status payloads, team stream status, and frontend hydration/history/recovery status usage.
+- Current Review Round: Fresh independent review after interrupt-permission regression
+- Trigger: Post-implementation regression where a live Codex run displayed `Running`, backend WebSocket returned `AGENT_STATUS { status: "running", can_interrupt: true }`, but frontend recovery/history state later hid the stop/interrupt button by overwriting `state.canInterrupt=false`.
+- Prior Review Round Reviewed: AR-004 team-member fan-out re-review remains historical context only. This round independently reread the cumulative requirements, investigation notes, and design spec instead of reviewing only a delta.
+- Latest Authoritative Round: This fresh interrupt-permission regression review.
+- Current-State Evidence Basis:
+  - Requirements now include `REQ-017` and `AC-014`, which forbid active history refresh/recovery/open/hydration paths from revoking backend-granted interrupt permission for existing active subscribed single-agent or focused team-member contexts.
+  - Investigation notes include live WebSocket evidence that the backend returned `can_interrupt: true` and identify current frontend overwrite paths in `runHistoryLoadActions.ts`, `activeRunRecoveryCoordinator.ts`, `teamRunOpenCoordinator.ts`, and `runHistoryTeamHelpers.ts`.
+  - Design spec includes `DS-010`, case-by-case data-flow spines `C-001` through `C-012`, a new frontend runtime status/action mutation boundary at `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts`, direct-write removal/rerouting rules, and validation additions for AC-014.
+  - I spot-checked the current worktree for design/code alignment risks with `rg` and confirmed the present implementation still contains competing direct writes to `state.canInterrupt` and `state.currentStatus`; those are correctly named as migration/removal targets by the design and are not acceptable steady-state code.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial architecture review | N/A | AR-001, AR-002, AR-003 | Fail | No | Design direction was sound, but team status contract, aggregate ownership, and frontend migration/removal scope were not implementation-ready. |
-| 2 | Revised design package responding to AR-001/002/003 | AR-001, AR-002, AR-003 | None | Pass | Yes | Blocking findings are resolved; design is ready for implementation. |
+| Prior superseded rounds | Earlier incremental reviews before comprehensive reset | N/A | N/A | Superseded | No | Historical only. |
+| Fresh independent four-state review | User-approved consolidated `offline/idle/running/error` package | N/A | None | Pass | No | Later superseded by post-build team-member evidence. |
+| Post-build team-member fan-out review | Built Electron app showed all team members running after restart | New evidence reviewed | AR-004 | Fail | No | Backend source of truth was sound; frontend fan-out migration was not actionable enough. |
+| AR-004 re-review | Design spec revised with concrete DS-009 frontend fan-out rules | AR-004 rechecked | None | Pass | No | Later superseded by interrupt-permission regression evidence. |
+| Fresh interrupt-permission regression review | Live backend granted `can_interrupt=true`, but frontend refresh/recovery could overwrite it false | AR-004 rechecked as historical resolved item | None | Pass | Yes | DS-010 and C-001..C-012 make the action-permission owner explicit and actionable. |
 
 ## Reviewed Design Spec
 
-Round 2 reviews the revised design that makes existing `AGENT_STATUS` the authoritative agent/member status contract and `TEAM_STATUS` the authoritative aggregate team status contract. The target contracts are:
+The reviewed design defines one backend-owned normalized status spine feeding first-load history rows, WebSocket connect/reconnect snapshots, and live `AGENT_STATUS` / `TEAM_STATUS` updates. The canonical API/UI statuses remain `offline | idle | running | error`. `AGENT_STATUS` is the member/single-agent authority for `{ status, can_interrupt, agent_id?, agent_name? }`, while `TEAM_STATUS` is aggregate-only `{ status }`.
 
-```ts
-type AgentApiStatus = "idle" | "running" | "error";
-
-type AgentStatusPayload = {
-  status: AgentApiStatus;
-  can_interrupt: boolean;
-  agent_id?: string;
-  agent_name?: string;
-};
-
-type TeamStatusPayload = {
-  status: AgentApiStatus;
-};
-```
-
-The revised design adds a single team aggregate owner, decommissions old string-only status snapshot methods, and expands frontend migration/removal scope across handlers, status types, hydration/recovery/history, visuals, local termination, and input state.
+This fresh review focused on the new interrupt-permission boundary. The design now states that `can_interrupt` is not merely a display field: it is the action-permission source for the input stop/interrupt affordance. Frontend history, recovery, open, and hydration code may create safe non-interruptible placeholders before an authoritative snapshot exists and may clear permission during explicit offline/terminal cleanup, but they must not become competing owners after live `AGENT_STATUS` has granted interrupt permission.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Design states Bug Fix + Behavior Change + Refactor. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Design classifies Missing Invariant, Boundary/Ownership Issue, Duplicated Policy/Coordination, Shared Structure Looseness, and Legacy/Compatibility Pressure with code-path evidence. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Design says refactor is required now and maps it to backend status projection, snapshots, team aggregation, and frontend migration. | None. |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Design includes concrete file responsibilities, removal/decommission plan, migration sequence, runtime mapping rules, and validation plan. | None. |
+| Assessment is present for the current task posture | Pass | The package classifies the reported issue as a bug/regression that exposes a design-boundary gap, not a one-line UI defect. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Investigation shows backend WebSocket returned `running/can_interrupt=true`; source audit names frontend overwrite paths that can set `canInterrupt=false` later. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The design requires a frontend runtime status/action mutation boundary and removal/rerouting of direct status/action writes from history/recovery/open/hydration paths. | None. |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | `DS-010`, C-001..C-012, mutation API, file-level migration rules, forbidden shortcuts, and AC-014 validations all implement the refactor decision. | None. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | AR-001 | High | Resolved | Design now defines `TeamStatusPayload = { status: AgentApiStatus }`, states `TEAM_STATUS` has no `can_interrupt`, adds server/frontend migration responsibilities for `TeamRunStatusUpdateData`, managers, stream handler, snapshot service, protocol types, `teamHandler.ts`, and `AgentTeamStatus`, and includes a member-snapshot-plus-aggregate example. | No remaining blocking issue. |
-| 1 | AR-002 | High | Resolved | Design now names `autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts` and `deriveTeamApiStatus(...)` as the single aggregate owner; live Codex/Claude/Mixed managers and snapshot service must call it; `TeamRunBackend.getStatus()` / `TeamRun.getStatus()` are decommissioned in favor of `getStatusSnapshot(): TeamStatusPayload`. | Implementation should preserve this single-owner rule. |
-| 1 | AR-003 | Medium | Resolved | Design now includes concrete frontend migration/removal for `AgentStatus`, `AgentTeamStatus`, `AgentRunState.canInterrupt`, active recovery/open placeholders, local termination, `runtimeStatusNormalization.ts`, recovery/open coordinators, history/read-model helpers, status visuals, protocol payloads, and handlers. | No remaining blocking issue. |
+| Post-build team-member fan-out review | AR-004 | Blocking Design Impact | Remains resolved | The current design still carries DS-009 rules: team aggregate status is never member status; member rows use member-scoped history/status snapshots/events or safe offline/preserved placeholders. C-007 through C-012 preserve this invariant. | No AR-004 regression found in the design. |
+| Current fresh interrupt-permission review | N/A | N/A | No open prior finding | `REQ-017`, `AC-014`, and `DS-010` directly address the new regression. | No new finding ID opened because the design is sufficient. |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? (`Pass`/`Fail`) | Narrative Is Clear? (`Pass`/`Fail`) | Facade Vs Governing Owner Is Clear? (`Pass`/`Fail`/`N/A`) | Main Domain Subject Naming Is Clear? (`Pass`/`Fail`) | Ownership Is Clear? (`Pass`/`Fail`) | Off-Spine Concerns Stay Off Main Line? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Live single-agent status | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 | Single-agent connect/reconnect snapshot | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Team member live status | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-004 | Team aggregate status | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-005 | Native AutoByteus internal status | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-006 | Codex internal status | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-007 | Claude current status owner | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-001 | Single-agent live `AGENT_STATUS` controls display and interrupt | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-002 | Single-agent WebSocket connect/reconnect snapshot | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-003 | Single-agent active history refresh after live snapshot | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-004 | Single-agent active recovery/open placeholder before snapshot | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-005 | Single-agent inactive/offline cleanup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-006 | Single-agent historical first-load/offline rows | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-007 | Team member live `AGENT_STATUS` controls focused member interrupt | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-008 | Team connect/reconnect member snapshots plus aggregate snapshot | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-009 | Team active history refresh/reconcile | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-010 | Team active recovery/open placeholder | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-011 | Team aggregate display | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| C-012 | Team inactive/offline history | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `agent-execution/domain` status payload | Pass | Pass | Pass | Pass | Acceptable owner for shared single/member `AGENT_STATUS` payload and `AgentApiStatus`. |
-| Runtime backend projectors | Pass | Pass | Pass | Pass | Per-runtime projector ownership keeps provider details behind runtime boundaries. |
-| `services/agent-streaming` single-agent snapshot/delivery | Pass | Pass | Pass | Pass | Delivery ordering is correctly assigned to stream handler. |
-| `agent-team-execution/domain` team payload/aggregation | Pass | Pass | Pass | Pass | Revised design gives aggregate policy one domain owner. |
-| Team managers and team snapshot service | Pass | Pass | Pass | Pass | Managers publish/multiplex; snapshot service collects/delivers; neither owns aggregate policy independently. |
-| Frontend status model/migration | Pass | Pass | Pass | Pass | Migration now covers live handlers, protocol types, enums, recovery, hydration, history/read model, visuals, and input selectors. |
+| Backend runtime status projection | Pass | Pass | Pass | Pass | Runtime backends own `status/can_interrupt` projection for live and snapshot paths. |
+| Backend history read model | Pass | Pass | Pass | Pass | First-load history is explicitly part of the status spine and returns normalized status. |
+| Team aggregate domain helper | Pass | Pass | Pass | Pass | Aggregate helper remains the only team status policy owner; it does not grant member interrupt. |
+| Frontend runtime status/action mutation boundary | Pass | Pass | Pass | Pass | New `agentRuntimeStatusState.ts` is justified because status/action writes were duplicated across recovery/history/open code. |
+| Frontend history/recovery/open/hydration owners | Pass | Pass | Pass | Pass | They remain orchestration/consumer paths and must call the mutation boundary instead of owning action permission. |
+| Frontend input affordance | Pass | Pass | Pass | Pass | Input reads `canInterrupt`; it does not infer interrupt from `isSending`, aggregate team status, or run activity flags. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? (`Pass`/`Fail`) | Shared File Choice Is Sound? (`Pass`/`Fail`/`N/A`) | Ownership Of Shared Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentStatusPayload` | Pass | Pass | Pass | Pass | Tight API structure; old/new fields removed for `AGENT_STATUS`. |
-| `TeamStatusPayload` | Pass | Pass | Pass | Pass | Separate team aggregate payload avoids overloading member action permission. |
-| Runtime-specific active/non-terminal mapping | Pass | Pass | Pass | Pass | Per-runtime projectors avoid generic hidden provider policy. |
-| Team aggregate status rule | Pass | Pass | Pass | Pass | `team-status-aggregation.ts` is the shared owner for live and snapshot aggregate status. |
-| Frontend coarse status normalization | Pass | Pass | Pass | Pass | Existing frontend status-normalization capability is extended rather than creating a second status owner. |
+| `AgentStatusPayload` / `AgentApiStatus` | Pass | Pass | Pass | Pass | Tight single/member API status payload. |
+| `TeamStatusPayload` | Pass | Pass | Pass | Pass | Aggregate-only team payload. |
+| `deriveTeamApiStatus(...)` | Pass | Pass | Pass | Pass | One aggregate owner across live and snapshot surfaces. |
+| `agentRuntimeStatusState.ts` mutation API | Pass | Pass | Pass | Pass | Replaces repeated direct writes with a single frontend mutation owner. |
+| History/recovery/open placeholder and cleanup semantics | Pass | Pass | Pass | Pass | Centralized through explicit mutation methods rather than duplicated ad hoc assignments. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Pass`/`Fail`) | Redundant Attributes Removed? (`Pass`/`Fail`) | Overlapping Representation Risk Is Controlled? (`Pass`/`Fail`) | Shared Core Vs Specialized Variant / Composition Decision Is Sound? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `AgentStatusPayload` | Pass | Pass | Pass | Pass | Pass | `status` is display/work state; `can_interrupt` is action permission; identity fields are route metadata only. |
-| `TeamStatusPayload` | Pass | Pass | Pass | Pass | Pass | Team aggregate uses the same coarse status vocabulary but excludes member-level action permission. |
-| Frontend `AgentStatus` / `AgentTeamStatus` | Pass | Pass | Pass | Pass | Pass | Revised target enums collapse API-visible status to `idle`, `running`, `error`. |
+| `AgentStatusPayload.status` | Pass | Pass | Pass | Pass | Pass | Four-state API/UI vocabulary is singular. |
+| `AgentStatusPayload.can_interrupt` | Pass | Pass | Pass | Pass | Pass | Member/single-agent action permission only; not inferred from display status. |
+| `TeamStatusPayload.status` | Pass | Pass | Pass | Pass | Pass | Aggregate display status only; no `can_interrupt`. |
+| `AgentRunState.currentStatus` | Pass | Pass | Pass | Pass | Pass | Stored frontend display state; mutation authority is centralized. |
+| `AgentRunState.canInterrupt` | Pass | Pass | Pass | Pass | Pass | Stored frontend action state; live `AGENT_STATUS.can_interrupt` is the only active-stream grant/revoke source. |
+| History row `status` | Pass | Pass | Pass | Pass | Pass | Backend-normalized display status only; history rows do not grant interrupt permission. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? (`Pass`/`Fail`) | Replacement Owner / Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Removal / Decommission Scope Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AGENT_STATUS.new_status` / `old_status` | Pass | Pass | Pass | Pass | Clean-cut replacement is clear. |
-| `TEAM_STATUS.new_status` / `old_status` | Pass | Pass | Pass | Pass | Revised design covers server and frontend team paths. |
-| Raw Codex status payload forwarding | Pass | Pass | Pass | Pass | Replaced by Codex projector. |
-| Claude listener-derived `lastStatus` | Pass | Pass | Pass | Pass | Replaced by Claude current status owner. |
-| `TeamRunBackend.getStatus()` / `TeamRun.getStatus()` and constant active `IDLE` | Pass | Pass | Pass | Pass | Replaced with `getStatusSnapshot(): TeamStatusPayload` and aggregate helper. |
-| Frontend detailed statuses, hydration placeholders, local shutdown statuses | Pass | Pass | Pass | Pass | Active placeholders and local termination policy are now explicit. |
-| `isSending` as interrupt/status authority | Pass | Pass | Pass | Pass | May remain only as non-status submit-in-flight state if needed; interrupt UI uses `canInterrupt`. |
+| Legacy `new_status` / `old_status` payload contract | Pass | Pass | Pass | Pass | No backward compatibility path in target design. |
+| Detailed frontend API-visible statuses | Pass | Pass | Pass | Pass | Coarse statuses only. |
+| `isSending` as interrupt authority | Pass | Pass | Pass | Pass | Input uses backend-owned `can_interrupt` through context state. |
+| Team aggregate-to-member running fan-out | Pass | Pass | Pass | Pass | DS-009 remains explicit; team running does not make every member running. |
+| Direct non-test `state.canInterrupt = ...` writes outside mutation boundary | Pass | Pass | Pass | Pass | DS-010 names them as migration/removal targets. Current code still has them; implementation must remove/reroute them. |
+| Direct refresh/recovery/open `currentStatus` writes that bypass the mutation boundary | Pass | Pass | Pass | Pass | Direct status writes are forbidden except low-level initialization/explicit cleanup; implementation must route active paths through the new owner. |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? (`Pass`/`Fail`) | Responsibility Matches The Intended Owner/Boundary? (`Pass`/`Fail`) | Responsibilities Were Re-Tightened After Shared-Structure Extraction? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts` | Pass | Pass | Pass | Pass | Shared single/member API status contract. |
-| `autobyteus-server-ts/src/agent-team-execution/domain/team-status-payload.ts` | Pass | Pass | Pass | Pass | Team aggregate payload contract. |
-| `autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts` | Pass | Pass | Pass | Pass | Single aggregate policy owner. |
-| `autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.ts` | Pass | Pass | Pass | Pass | `getStatusSnapshot()` is the single-agent snapshot boundary. |
-| Runtime-specific `*-status-projector.ts` files | Pass | Pass | Pass | Pass | Runtime-specific adapter placement is coherent. |
-| `autobyteus-server-ts/src/services/agent-streaming/team-runtime-status-snapshot-service.ts` | Pass | Pass | Pass | Pass | Snapshot service collects and delegates aggregate policy to domain helper. |
-| `autobyteus-server-ts/src/agent-team-execution/domain/team-run-event.ts` | Pass | Pass | Pass | Pass | Team live event payload now mapped to `{ status }`. |
-| Team manager files | Pass | Pass | Pass | Pass | Managers multiplex/publish and call shared aggregate helper. |
-| Frontend protocol/handlers/types | Pass | Pass | Pass | Pass | Revised mapping covers `AgentStatusPayload`, `TeamStatusPayload`, `handleAgentStatus`, `handleTeamStatus`, and status enums. |
-| Frontend hydration/recovery/history/display files | Pass | Pass | Pass | Pass | Scope now includes each major non-live status source. |
+| `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts` | Pass | Pass | N/A | Pass | New owner for frontend runtime status/action mutations. |
+| `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts` | Pass | Pass | Pass | Pass | Should delegate live status application to `applyLiveAgentStatus`. |
+| `autobyteus-web/stores/runHistoryLoadActions.ts` | Pass | Pass | Pass | Pass | Active refresh/reconcile must ensure streams and preserve existing live status/action state. |
+| `autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts` | Pass | Pass | Pass | Pass | Existing active subscribed contexts preserve live `canInterrupt`; only newly created placeholders set false. |
+| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | Pass | Pass | Pass | Pass | Team/member open must not clear focused member interrupt after live status. |
+| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | Pass | Pass | Pass | Pass | Hydrates member-scoped statuses; no aggregate-to-member action authority. |
+| `autobyteus-web/stores/runHistoryTeamHelpers.ts` | Pass | Pass | Pass | Pass | Helper paths merge member status and call mutation boundary for placeholder/offline cleanup. |
+| `autobyteus-web/stores/runHistoryStore.ts` | Pass | Pass | Pass | Pass | Store-level active marks do not grant/revoke member interrupt. |
+| `autobyteus-web/stores/agentRunStore.ts` / `agentTeamRunStore.ts` | Pass | Pass | Pass | Pass | Local termination/offline cleanup is allowed only through explicit cleanup semantics or clearly documented low-level initialization. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? (`Pass`/`Fail`) | Forbidden Shortcuts Are Explicit? (`Pass`/`Fail`) | Direction Is Coherent With Ownership? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime backend status projection | Pass | Pass | Pass | Pass | Callers use payload/snapshot, not runtime internals. |
-| Stream handler snapshot boundary | Pass | Pass | Pass | Pass | Bind-before-snapshot direction is clear. |
-| Team aggregate status boundary | Pass | Pass | Pass | Pass | Live managers and snapshot service call the same aggregate helper. |
-| Frontend status/input boundary | Pass | Pass | Pass | Pass | `canInterrupt` is the input affordance source; hydration/history cannot reintroduce detailed current statuses. |
+| Backend status projection -> WebSocket/history consumers | Pass | Pass | Pass | Pass | Backend owns normalized status and active interrupt permission. |
+| Frontend status mutation boundary -> context state | Pass | Pass | Pass | Pass | Consumers call mutation methods; context state is storage, not authority. |
+| History/recovery/open/hydration -> mutation boundary | Pass | Pass | Pass | Pass | They may request placeholder/history/offline application but may not set active interrupt directly. |
+| Team aggregate -> member rows/contexts | Pass | Pass | Pass | Pass | Aggregate-to-member status/action shortcuts are forbidden. |
+| Input button -> active context `canInterrupt` | Pass | Pass | Pass | Pass | No `isSending`, active flags, or team aggregate bypass. |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? (`Pass`/`Fail`) | Internal Owned Mechanisms Stay Internal? (`Pass`/`Fail`) | Caller Bypass Risk Is Controlled? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentRunBackend.getStatusSnapshot()` | Pass | Pass | Pass | Pass | Good authoritative single-agent snapshot boundary. |
-| Runtime-specific status projector | Pass | Pass | Pass | Pass | Provider status does not leak to frontend. |
-| `deriveTeamApiStatus(...)` | Pass | Pass | Pass | Pass | One aggregate rule across live and snapshot team status. |
-| `TeamRunBackend.getStatusSnapshot()` | Pass | Pass | Pass | Pass | Replaces constant active `IDLE` / string-only team snapshot. |
-| Frontend status handler/context | Pass | Pass | Pass | Pass | Handler stores backend truth; UI and non-live paths do not own runtime status. |
+| Runtime backend status snapshot/projector | Pass | Pass | Pass | Pass | Runtime internals are projected into coarse API status. |
+| `AGENT_STATUS` event contract | Pass | Pass | Pass | Pass | Member/single-agent source of truth for active interrupt permission. |
+| `TEAM_STATUS` event contract | Pass | Pass | Pass | Pass | Aggregate-only; intentionally lacks `can_interrupt`. |
+| Frontend `agentRuntimeStatusState.ts` mutation boundary | Pass | Pass | Pass | Pass | Controls writes to `currentStatus`/`canInterrupt` and blocks history/recovery/open bypasses. |
+| Active context state | Pass | Pass | Pass | Pass | Treated as mutable storage behind the mutation boundary, not a public write target. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? (`Pass`/`Fail`) | Responsibility Is Singular? (`Pass`/`Fail`) | Identity Shape Is Explicit? (`Pass`/`Fail`) | Generic Boundary Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- |
-| `AgentRunBackend.getStatusSnapshot()` | Pass | Pass | Pass | Low | Pass |
-| `AgentRunEventType.AGENT_STATUS` payload | Pass | Pass | Pass | Low | Pass |
-| Member-scoped `AGENT_STATUS` | Pass | Pass | Pass | Low | Pass |
-| `TEAM_STATUS` payload | Pass | Pass | Pass | Low | Pass |
-| `TeamRunBackend.getStatusSnapshot()` | Pass | Pass | Pass | Low | Pass |
-| `TeamRunEventType.TEAM` / `TeamRunStatusUpdateData` | Pass | Pass | Pass | Low | Pass |
-| Frontend active context `canInterrupt` selector | Pass | Pass | Pass | Low | Pass |
+| `AGENT_STATUS { status, can_interrupt, agent_id?, agent_name? }` | Pass | Pass | Pass | Low | Pass |
+| `TEAM_STATUS { status }` | Pass | Pass | Pass | Low | Pass |
+| `ListWorkspaceRunHistory` normalized row status | Pass | Pass | Pass | Low | Pass |
+| `applyLiveAgentStatus(context, payload)` | Pass | Pass | Pass | Low | Pass |
+| `applyActivePlaceholder(context, options)` | Pass | Pass | Pass | Medium | Pass |
+| `applyHistoryStatusSnapshot(context, status, options)` | Pass | Pass | Pass | Medium | Pass |
+| `applyOfflineCleanup(context, status?)` | Pass | Pass | Pass | Low | Pass |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? (`Pass`/`Fail`) | Folder Matches Owning Boundary? (`Pass`/`Fail`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `agent-execution/domain/agent-status-payload.ts` | Pass | Pass | Low | Pass | Shared API model placement is acceptable. |
-| `agent-team-execution/domain/team-status-payload.ts` | Pass | Pass | Low | Pass | Team aggregate event contract belongs in team domain. |
-| `agent-team-execution/domain/team-status-aggregation.ts` | Pass | Pass | Low | Pass | Team aggregate policy belongs outside transport and manager-local rules. |
-| Runtime projector files under `backends/*/events` | Pass | Pass | Low | Pass | Adapter placement is coherent. |
-| `services/agent-streaming` snapshot/mapping files | Pass | Pass | Medium | Pass | Medium risk is controlled by explicit rule: transport validates/serializes only. |
-| Frontend hydration/recovery/history/display mappings | Pass | Pass | Medium | Pass | Medium risk is controlled by explicit rule: coarse projection only, no second runtime status owner. |
+| `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts` | Pass | Pass | Low | Pass | Existing shared API/domain contract owner remains sound. |
+| `autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts` | Pass | Pass | Low | Pass | Existing aggregate owner remains sound. |
+| `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts` | Pass | Pass | Low | Pass | New folder/service is appropriate for cross-path frontend runtime status/action mutation. |
+| Existing `runHydration`, `runRecovery`, `runOpen`, stores, and read-model paths | Pass | Pass | Medium | Pass | Medium coordination risk is controlled by C-001..C-012 and direct-write audit validation. |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? (`Pass`/`Fail`) | Reuse / Extension Decision Is Sound? (`Pass`/`Fail`) | New Support Piece Is Justified? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Single-agent status transport | Pass | Pass | N/A | Pass | Extending existing `AGENT_STATUS` is correct. |
-| Runtime event conversion | Pass | Pass | N/A | Pass | Per-backend event areas are correct. |
-| Team member snapshots | Pass | Pass | N/A | Pass | Existing `TeamRuntimeStatusSnapshotService` remains the snapshot delivery owner. |
-| Team aggregate policy | Pass | Pass | Pass | Pass | New domain helper is justified by repeated manager rules and missing snapshot ownership. |
-| Frontend status hydration/recovery/history | Pass | Pass | N/A | Pass | Existing owners are extended instead of introducing a new parallel store. |
+| Backend status projection | Pass | Pass | N/A | Pass | Reuses backend projectors/snapshots rather than frontend inference. |
+| Team aggregation | Pass | Pass | N/A | Pass | Reuses one domain helper. |
+| Frontend active context state | Pass | Pass | Pass | Pass | Existing context state remains storage; new mutation boundary is justified by repeated direct-write regressions. |
+| Frontend history/recovery/open/hydration | Pass | Pass | N/A | Pass | Existing orchestration paths are retained but stripped of competing authority. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? (`Yes`/`No`) | Clean-Cut Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- |
-| `AGENT_STATUS` old fields | No target dual path | Pass | Pass | Design rejects `payload.status || payload.new_status`. |
-| `TEAM_STATUS` old fields | No target dual path | Pass | Pass | Design rejects `TEAM_STATUS.new_status` retention. |
-| Frontend detailed API statuses | No target API-visible retention | Pass | Pass | Detailed status display is deferred as a separate future contract if needed. |
-| `isSending` stop-button authority | No target dual path | Pass | Pass | Stop button reads `canInterrupt` only. |
+| Old `AGENT_STATUS` `new_status`/`old_status` payload | No in target | Pass | Pass | No backward compatibility allowed. |
+| Detailed frontend API-visible runtime phases | No in target | Pass | Pass | Kept internal only; UI/API contract is coarse status. |
+| `isSending` interrupt authority | No in target | Pass | Pass | Must remain non-authoritative. |
+| Active-team aggregate-to-member fan-out | No in target | Pass | Pass | Removed by DS-009. |
+| Direct status/action writes in refresh/recovery/open/hydration | No in target | Pass | Pass | Removed/rerouted by DS-010. This is the key no-legacy-code criterion for this regression. |
 
 ## Migration / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? (`Pass`/`Fail`) | Temporary Seams Are Explicit? (`Pass`/`Fail`) | Cleanup / Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- |
-| Server single-agent status payload/projectors | Pass | Pass | Pass | Pass |
-| Codex/Claude status ownership | Pass | Pass | Pass | Pass |
-| Team aggregate/member status path | Pass | Pass | Pass | Pass |
-| Frontend status enum/handler/input migration | Pass | Pass | Pass | Pass |
-| Frontend hydration/recovery/history migration | Pass | Pass | Pass | Pass |
+| Add frontend `agentRuntimeStatusState.ts` mutation owner | Pass | Pass | Pass | Pass |
+| Route `handleAgentStatus` through live status mutation | Pass | Pass | Pass | Pass |
+| Rework single-agent history refresh/recovery/open placeholders | Pass | Pass | Pass | Pass |
+| Rework team-member refresh/recovery/open/hydration paths | Pass | Pass | Pass | Pass |
+| Remove direct non-test `state.canInterrupt = ...` writes outside boundary | Pass | Pass | Pass | Pass |
+| AC-014 validation for single-agent and focused team-member interrupt persistence | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AGENT_STATUS` payload | Yes | Pass | Pass | Pass | Examples are clear. |
-| Codex raw payload normalization | Yes | Pass | Pass | Pass | Examples are clear. |
-| Frontend interrupt button | Yes | Pass | Pass | Pass | `showStop = activeContext.canInterrupt` is clear. |
-| Team aggregate/status payload | Yes | Pass | Pass | Pass | Revised design includes member snapshots and aggregate `TEAM_STATUS { status }`. |
-| Frontend hydration/recovery placeholders | Yes | Pass | Pass | Pass | Revised design defines `running/canInterrupt=false` pending snapshot and avoids `Uninitialized`/`ShutdownComplete`. |
+| Live Codex `running/can_interrupt=true` then refresh/recovery | Yes | Pass | Pass | Pass | Directly covers the reported stop-button regression. |
+| Single-agent active placeholder before first snapshot | Yes | Pass | Pass | Pass | Placeholder is safe only before authoritative snapshot or for newly created contexts. |
+| Existing active subscribed context after live snapshot | Yes | Pass | Pass | Pass | Preserve status/action until later live status or explicit cleanup. |
+| Focused team member interrupt permission | Yes | Pass | Pass | Pass | Team aggregate and `memberStatuses: []` cannot clear or grant focused member interrupt. |
+| Offline/terminal cleanup | Yes | Pass | Pass | Pass | Explicit cleanup is allowed to clear interrupt. |
 
 ## Missing Use Cases / Open Unknowns
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| `TEAM_STATUS` target payload shape | Team aggregate status is part of reconnect/team correctness and currently uses legacy `new_status`. | Defined as `{ status: AgentApiStatus }`, no `can_interrupt`; server/frontend migration included. | Resolved. |
-| One owner for live/snapshot team aggregate rule | Prevents duplicated policy between team managers and snapshot service. | `deriveTeamApiStatus(...)` in `agent-team-execution/domain/team-status-aggregation.ts`; live managers and snapshot service must call it. | Resolved. |
-| Frontend hydration/history/recovery migration | Existing web paths can synthesize detailed/stale statuses independently from `AGENT_STATUS`. | Concrete migration/removal plan now covers status enums, normalization, active recovery/open, local termination, history/read-model, visuals, protocol, and handlers. | Resolved. |
-| Product policy for `can_interrupt` during tool approval/execution | Affects runtime projector mapping only. | Keep as residual risk under backend-owned policy; default remains active-turn interruptible except locked/interrupting/shutting-down phases. | Non-blocking residual risk. |
-| `shutdown_complete` collapse to `idle` | Product may later want stopped/offline display. | Keep out of v1 status contract; future stopped/offline display must be separate from API status. | Non-blocking residual risk. |
+| Product policy for `can_interrupt` during tool approval/executing tool phases | Determines backend boolean value for some runtime phases. | Keep backend-owned current default unless product changes policy; do not move policy into frontend. | Residual risk, not blocking. |
+| Optional flags on mutation methods (`preserveExistingLive`, `preserveLiveInterrupt`) | Incorrect caller options could recreate a weaker form of the bug. | Implementation should prefer safe defaults that preserve existing live interrupt state, and tests must cover both single-agent and focused team-member AC-014 paths. | Residual implementation risk, not blocking. |
+| Existing implementation already has many direct writes | Confirms the migration is non-trivial and legacy/competing code must be removed, not masked. | Implementation and code review must enforce the direct-write audit. | Not a design blocker; it is the reason for DS-010. |
 
 ## Review Decision
 
-- `Pass`: the design is ready for implementation.
+Pass — the design is ready for implementation rework.
 
 ## Findings
 
-None.
+None open.
+
+Resolved / historical:
+
+- AR-004 — Remains resolved. Team aggregate-to-member fan-out removal is still explicit and is now covered by the broader C-007 through C-012 spines.
 
 ## Classification
 
-No unresolved design findings in round 2.
+No blocking `Design Impact`, `Requirement Gap`, or `Unclear` findings remain.
 
 ## Recommended Recipient
 
@@ -233,13 +232,12 @@ No unresolved design findings in round 2.
 
 ## Residual Risks
 
-- Implementation must preserve the single team aggregate owner. If live managers or snapshot service keep local aggregate tables, that would violate the approved design even if tests pass superficially.
-- `can_interrupt` during tool approval/execution remains a product-policy-sensitive runtime projection detail; the design keeps this backend-owned and testable.
-- `TEAM_STATUS` intentionally has no `can_interrupt`. A future team-level interrupt-all affordance should introduce a separate team action-permission contract rather than overloading aggregate status.
-- `shutdown_complete`, offline, and terminated displays are intentionally collapsed to `idle` for this fix. Any future stopped/offline UI should be designed as separate display metadata, not as a fourth API status.
-- The worktree previously reported the branch behind `origin/personal`; downstream implementation/delivery should follow normal refresh/integration checks before finalization.
+- This is an architecture pass, not an implementation approval. The current worktree still contains direct `state.canInterrupt = ...` and `state.currentStatus = ...` assignments in production paths. The rework must remove or reroute those through the new mutation boundary, with only explicit low-level initialization/offline cleanup exceptions.
+- Code review should run a direct-write audit similar to: `rg -n "\.canInterrupt\s*=" autobyteus-web -g '*.ts' -g '*.vue'` and confirm only the mutation boundary, tests, and documented initialization/cleanup exceptions remain.
+- AC-014 validation must exercise the real regression sequence: receive `AGENT_STATUS { status: "running", can_interrupt: true }`, then run history refresh/reconcile or active recovery, and confirm the input remains in stop/interrupt mode.
+- Continue enforcing the no-legacy-code criterion: no `new_status`/`old_status` fallback, no detailed API-visible status vocabulary, no `isSending` interrupt authority, no aggregate-to-member running fan-out, and no direct refresh/recovery/open writes that compete with backend-granted interrupt permission.
 
 ## Latest Authoritative Result
 
 - Review Decision: Pass
-- Notes: Round-1 blocking findings AR-001, AR-002, and AR-003 are resolved. The design now has clear status contracts, ownership boundaries, removal plan, migration sequence, and validation coverage for implementation.
+- Notes: The revised package satisfies the Authoritative Boundary Rule. `AGENT_STATUS.can_interrupt` remains the active-stream action-permission authority, and frontend history/recovery/open/hydration paths are constrained to explicit placeholder, history display, or offline cleanup mutations through one frontend owner.

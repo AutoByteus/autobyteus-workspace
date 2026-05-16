@@ -1,4 +1,5 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type {
   TeamRunDeleteLifecycleRecord,
   TeamRunIndexFileRecord,
@@ -21,6 +22,7 @@ export interface TeamRunMemberHistoryItem {
   memberRouteKey: string;
   memberName: string;
   memberRunId: string;
+  status: AgentApiStatus;
   runtimeKind: RuntimeKind;
   platformAgentRunId: string | null;
   agentDefinitionId: string;
@@ -38,6 +40,7 @@ export interface TeamRunHistoryItem {
   workspaceRootPath: string | null;
   summary: string;
   lastActivityAt: string;
+  status: AgentApiStatus;
   lastKnownStatus: TeamRunKnownStatus;
   deleteLifecycle: TeamRunDeleteLifecycle;
   isActive: boolean;

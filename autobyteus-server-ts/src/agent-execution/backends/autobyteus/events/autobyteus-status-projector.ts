@@ -25,11 +25,17 @@ const hasActiveTurn = (context: AutoByteusAgentContextLike): boolean =>
 export const projectAutoByteusAgentStatus = (input: {
   currentStatus?: unknown;
   context?: AutoByteusAgentContextLike;
+  isActive?: boolean;
   agentId?: string | null;
   agentName?: string | null;
 }): AgentStatusPayload => {
-  const status = normalizeAgentApiStatus(input.currentStatus);
   const statusToken = normalizeStatusToken(input.currentStatus);
+  const status =
+    input.isActive === false
+      ? "offline"
+      : statusToken === "uninitialized"
+        ? "running"
+        : normalizeAgentApiStatus(input.currentStatus, "idle");
   const canInterrupt =
     status === "running" &&
     hasActiveTurn(input.context ?? null) &&

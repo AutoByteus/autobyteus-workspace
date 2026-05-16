@@ -1,8 +1,9 @@
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type {
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
+  TeamRunHistoryItem,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import { flattenWorkspaceTeamRuns } from '~/stores/runHistoryStoreSupport';
@@ -12,6 +13,26 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
+import {
+  normalizeAgentRuntimeStatus,
+  normalizeTeamRuntimeStatus,
+} from '~/services/runHydration/runtimeStatusNormalization';
+import {
+  applyActiveRuntimePlaceholder,
+  applyMemberOrHistoryStatusSnapshot,
+} from '~/services/runStatus/agentRuntimeStatusState';
+
+const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
+  if (
+    status === AgentStatus.Running ||
+    status === AgentStatus.Idle ||
+    status === AgentStatus.Error ||
+    status === AgentStatus.Offline
+  ) {
+    return status;
+  }
+  return AgentStatus.Offline;
+};
 
 export interface RecoverActiveRunsFromHistoryInput {
   workspaceGroups: RunHistoryWorkspaceGroup[];
@@ -30,10 +51,37 @@ const listActiveRunIds = (workspaceGroups: RunHistoryWorkspaceGroup[]): string[]
     ),
   );
 
-const listActiveTeamRunIds = (workspaceGroups: RunHistoryWorkspaceGroup[]): string[] =>
-  flattenWorkspaceTeamRuns(workspaceGroups)
-    .filter((teamRun) => teamRun.isActive)
-    .map((teamRun) => teamRun.teamRunId);
+const listActiveTeamRuns = (workspaceGroups: RunHistoryWorkspaceGroup[]): TeamRunHistoryItem[] =>
+  flattenWorkspaceTeamRuns(workspaceGroups).filter((teamRun) => teamRun.isActive);
+
+const applyTeamHistoryStatusToExistingContext = (
+  existingTeamContext: AgentTeamContext,
+  teamRun: TeamRunHistoryItem,
+): void => {
+  const statusByKey = new Map(
+    teamRun.members
+      .map((member) => [member.memberRouteKey.trim(), member.status] as const)
+      .filter(([memberRouteKey]) => Boolean(memberRouteKey)),
+  );
+  const statusByRunId = new Map(
+    teamRun.members
+      .map((member) => [member.memberRunId.trim(), member.status] as const)
+      .filter(([memberRunId]) => Boolean(memberRunId)),
+  );
+
+  existingTeamContext.currentStatus = normalizeTeamRuntimeStatus(teamRun.status);
+  existingTeamContext.members.forEach((memberContext, memberRouteKey) => {
+    memberContext.config.isLocked = true;
+    const matchedStatus =
+      statusByKey.get(memberRouteKey) ||
+      statusByRunId.get(memberContext.state.runId);
+    applyMemberOrHistoryStatusSnapshot(
+      memberContext,
+      matchedStatus ? normalizeAgentRuntimeStatus(matchedStatus) : preserveCanonicalMemberStatus(memberContext.state.currentStatus),
+      { preserveLiveInterrupt: existingTeamContext.isSubscribed },
+    );
+  });
+};
 
 export const recoverActiveRunsFromHistory = async (
   input: RecoverActiveRunsFromHistoryInput,
@@ -47,8 +95,7 @@ export const recoverActiveRunsFromHistory = async (
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
       existingContext.config.isLocked = true;
-      existingContext.state.currentStatus = AgentStatus.Running;
-      existingContext.state.canInterrupt = false;
+      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true });
 
       if (!existingContext.isSubscribed) {
         agentRunStore.connectToAgentStream(runId);
@@ -69,16 +116,12 @@ export const recoverActiveRunsFromHistory = async (
     }
   }
 
-  for (const teamRunId of listActiveTeamRunIds(input.workspaceGroups)) {
+  for (const teamRun of listActiveTeamRuns(input.workspaceGroups)) {
+    const teamRunId = teamRun.teamRunId;
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
       existingTeamContext.config.isLocked = true;
-      existingTeamContext.currentStatus = AgentTeamStatus.Running;
-      existingTeamContext.members.forEach((memberContext) => {
-        memberContext.config.isLocked = true;
-        memberContext.state.currentStatus = AgentStatus.Running;
-        memberContext.state.canInterrupt = false;
-      });
+      applyTeamHistoryStatusToExistingContext(existingTeamContext, teamRun);
 
       if (!existingTeamContext.isSubscribed) {
         agentTeamRunStore.connectToTeamStream(teamRunId);

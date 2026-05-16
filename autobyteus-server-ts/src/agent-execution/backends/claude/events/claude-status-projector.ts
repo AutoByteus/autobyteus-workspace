@@ -8,10 +8,14 @@ export type ClaudeStatusSource = {
   currentStatus?: unknown;
   activeTurnId?: string | null;
   isInterrupting?: boolean;
+  isActive?: boolean;
 };
 
 export const projectClaudeAgentStatus = (source: ClaudeStatusSource): AgentStatusPayload => {
-  const status = normalizeAgentApiStatus(source.currentStatus);
+  const status =
+    source.isActive === false
+      ? "offline"
+      : normalizeAgentApiStatus(source.currentStatus, "idle");
   return buildAgentStatusPayload({
     status,
     canInterrupt: status === "running" && Boolean(source.activeTurnId) && source.isInterrupting !== true,

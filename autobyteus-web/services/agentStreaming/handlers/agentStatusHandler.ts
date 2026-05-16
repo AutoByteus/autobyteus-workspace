@@ -18,6 +18,7 @@ import { findOrCreateAIMessage, findSegmentById } from './segmentHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
+import { applyLiveAgentStatusEvent } from '~/services/runStatus/agentRuntimeStatusState';
 import {
   applyExecutionFailedState,
   applyExecutionInterruptedState,
@@ -33,8 +34,7 @@ export function handleAgentStatus(
   payload: AgentStatusPayload,
   context: AgentContext
 ): void {
-  context.state.currentStatus = payload.status as AgentStatus;
-  context.state.canInterrupt = payload.status === AgentStatus.Running && payload.can_interrupt === true;
+  applyLiveAgentStatusEvent(context, payload);
 
   // If status indicates completion, mark the current AI message as complete.
   if (payload.status === AgentStatus.Idle) {
@@ -42,10 +42,6 @@ export function handleAgentStatus(
     if (lastMessage?.type === 'ai') {
       lastMessage.isComplete = true;
     }
-  }
-
-  if (payload.status !== AgentStatus.Running) {
-    context.isSending = false;
   }
 }
 

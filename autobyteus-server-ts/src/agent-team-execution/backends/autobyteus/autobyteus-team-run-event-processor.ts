@@ -94,7 +94,7 @@ export class AutoByteusTeamRunEventProcessor {
         eventSourceType: TeamRunEventSourceType.TEAM,
         teamRunId: this.teamRunId,
         data: {
-          status: this.options.getTeamStatusSnapshot?.().status ?? "idle",
+          status: this.options.getTeamStatusSnapshot?.().status ?? "offline",
           ...(typeof nativePayload.error_message === "string"
             ? { error_message: nativePayload.error_message }
             : {}),
@@ -168,7 +168,7 @@ export class AutoByteusTeamRunEventProcessor {
         resolvedMemberRunId,
         agentPayload.agent_name,
       ) ?? {
-        status: "idle",
+        status: "offline",
         can_interrupt: false,
         agent_id: resolvedMemberRunId,
         agent_name: agentPayload.agent_name,

@@ -89,7 +89,10 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   }
 
   getStatusSnapshot() {
-    return projectCodexAgentStatus(this.codexThread.getStatusSnapshotSource());
+    return projectCodexAgentStatus({
+      ...this.codexThread.getStatusSnapshotSource(),
+      isActive: this.isActive(),
+    });
   }
 
   async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {

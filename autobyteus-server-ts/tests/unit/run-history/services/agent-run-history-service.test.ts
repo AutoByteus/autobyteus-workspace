@@ -10,6 +10,7 @@ import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-r
 
 const agentRunManagerMock = {
   hasActiveRun: vi.fn<(runId: string) => boolean>(),
+  getActiveRun: vi.fn<(runId: string) => { getStatusSnapshot: () => { status: "offline" | "idle" | "running" | "error" } } | null>(),
   listActiveRuns: vi.fn<() => string[]>(),
 };
 
@@ -63,8 +64,10 @@ describe("AgentRunHistoryService", () => {
   beforeEach(async () => {
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-run-history-service-"));
     agentRunManagerMock.hasActiveRun.mockReset();
+    agentRunManagerMock.getActiveRun.mockReset();
     agentRunManagerMock.listActiveRuns.mockReset();
     agentRunManagerMock.hasActiveRun.mockReturnValue(false);
+    agentRunManagerMock.getActiveRun.mockReturnValue(null);
     agentRunManagerMock.listActiveRuns.mockReturnValue([]);
   });
 
@@ -108,6 +111,9 @@ describe("AgentRunHistoryService", () => {
     ];
 
     agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active"]);
+    agentRunManagerMock.getActiveRun.mockReturnValue({
+      getStatusSnapshot: () => ({ status: "running" as const }),
+    });
 
     const service = new AgentRunHistoryService(memoryDir, {
       indexService: {
@@ -133,6 +139,7 @@ describe("AgentRunHistoryService", () => {
                 runId: "run-idle-newer",
                 summary: "newer idle row",
                 lastActivityAt: "2026-03-26T08:00:00.000Z",
+                status: "offline",
                 lastKnownStatus: "IDLE",
                 isActive: false,
               },
@@ -152,6 +159,7 @@ describe("AgentRunHistoryService", () => {
                 runId: "run-terminated",
                 summary: "terminated row",
                 lastActivityAt: "2026-03-24T08:00:00.000Z",
+                status: "offline",
                 lastKnownStatus: "TERMINATED",
                 isActive: false,
               },
@@ -194,6 +202,46 @@ describe("AgentRunHistoryService", () => {
     expect(indexService.rebuildIndexFromDisk).toHaveBeenCalledTimes(1);
     expect(result).toHaveLength(1);
     expect(result[0]?.agents[0]?.runs[0]?.runId).toBe("run-1");
+  });
+
+  it("uses an active runtime status snapshot for active history rows", async () => {
+    const { AgentRunHistoryService } = await import(
+      "../../../../src/run-history/services/agent-run-history-service.js"
+    );
+
+    const rows: RunHistoryIndexRow[] = [
+      {
+        runId: "run-active-idle",
+        agentDefinitionId: "agent-1",
+        agentName: "Agent One",
+        workspaceRootPath: "/tmp/workspace",
+        summary: "active idle runtime",
+        lastActivityAt: "2026-03-26T08:00:00.000Z",
+        lastKnownStatus: "IDLE",
+      },
+    ];
+    agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active-idle"]);
+    agentRunManagerMock.getActiveRun.mockReturnValue({
+      getStatusSnapshot: () => ({ status: "idle" as const }),
+    });
+
+    const service = new AgentRunHistoryService(memoryDir, {
+      indexService: {
+        listRows: vi.fn().mockResolvedValue(rows),
+        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
+        removeRow: vi.fn(),
+      },
+      metadataStore: createMetadataStore({ "run-active-idle": {} }) as any,
+    });
+
+    const result = await service.listRunHistory();
+
+    expect(result[0]?.agents[0]?.runs[0]).toEqual(expect.objectContaining({
+      runId: "run-active-idle",
+      status: "idle",
+      isActive: true,
+      lastKnownStatus: "ACTIVE",
+    }));
   });
 
   it("repairs an active row summary from the projection first user message when the stored summary is a later user message", async () => {

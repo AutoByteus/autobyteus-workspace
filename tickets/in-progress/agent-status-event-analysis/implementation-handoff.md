@@ -9,85 +9,92 @@
 
 ## What Changed
 
-Implemented the approved clean-cut `AGENT_STATUS` / `TEAM_STATUS` source-of-truth contract.
+Implemented the fresh, independently reviewed four-state status source-of-truth design.
 
-- Added tight backend API status payloads:
-  - `AgentStatusPayload = { status: "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`
-  - `TeamStatusPayload = { status: "idle" | "running" | "error" }`
-- Replaced old run status authority methods with snapshot boundaries:
-  - `AgentRunBackend.getStatusSnapshot()` / `AgentRun.getStatusSnapshot()`
-  - `TeamRunBackend.getStatusSnapshot()` / `TeamRun.getStatusSnapshot()`
-  - `TeamRunBackend.getMemberStatusSnapshots()` / `TeamRun.getMemberStatusSnapshots()`
-- Added runtime-specific status projectors for AutoByteus, Codex, and Claude so live events and snapshots read the same runtime-owned status source.
-- Added one shared team aggregate owner, `deriveTeamApiStatus(...)`, and routed Codex/Claude/Mixed/native team snapshots and live team events through it.
-- Updated stream handlers so listeners bind before snapshots and snapshots emit normalized `AGENT_STATUS` / `TEAM_STATUS` payloads.
-- Removed target-path `new_status` / `old_status` reads and writes for `AGENT_STATUS` and `TEAM_STATUS`.
-- Removed raw Codex `thread/status/changed` forwarding as `AGENT_STATUS`; Codex lifecycle events now emit normalized status payloads from `CodexThread` state.
-- Removed Claude listener-derived `lastStatus`; Claude session owns current status/interrupting state for snapshots and live events.
-- Collapsed frontend agent/team status enums to only `Idle`, `Running`, and `Error`.
-- Migrated frontend live stream handling, team routing, hydration/recovery/open flows, history/read-model display, running rows, and local termination state to the coarse status model.
-- Moved interrupt button authority to backend-owned `can_interrupt` / selected member `canInterrupt`; `isSending` remains only a local submit-flight/disable signal.
-- Updated focused unit, integration, and E2E test expectations/fixtures away from old target status payload fields and old run `getStatus()` APIs.
-
-## Code Review Rework
-
-### CR-001 — Claude normal completion status ordering
-
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/review-report.md`
-- Classification: `Local Fix`
-- Fix applied:
-  - `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` now calls `markTurnCompleted(options.turnId)` before emitting `ClaudeSessionEventName.TURN_COMPLETED`.
-  - The duplicate post-`executeTurn()` completion mark in `sendTurn()` was removed so the Claude session owner applies the terminal idle state exactly once on the normal-completion path.
-  - Because `ClaudeSessionEventConverter` builds the paired `AGENT_STATUS` from `session.getStatusSnapshotSource()`, the completion event now emits `AGENT_STATUS { status: "idle", can_interrupt: false }` instead of reading the still-running active turn state.
-- Regression coverage added:
-  - `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts` now includes `applies idle status before emitting normal turn completion`.
-  - The test uses a real `ClaudeSession`, subscribes to real session runtime events, records `getStatusSnapshotSource()` at `TURN_COMPLETED`, and runs the real `ClaudeSessionEventConverter` / `projectClaudeAgentStatus(...)` path.
-  - It asserts the completion-time status source is `IDLE` with no active turn and no interrupt, and that the converted final `AGENT_STATUS` payload is `idle/can_interrupt=false`.
+- Canonical backend/frontend status vocabulary is now `offline | idle | running | error`.
+- `AGENT_STATUS` target payload is `{ status, can_interrupt, agent_id?, agent_name? }`.
+- `TEAM_STATUS` target payload is aggregate-only `{ status }`; it does not carry `can_interrupt`.
+- Runtime-specific backend status projectors now derive status from each runtime owner:
+  - AutoByteus agent context/native status + active-turn state.
+  - Codex `CodexThread` state; raw `thread/status/changed` is consumed as thread state input and is not forwarded raw.
+  - Claude `ClaudeSession` state; no listener-derived snapshot authority.
+- Inactive/no-runtime agent/team/member snapshots resolve to `offline`; active idle runtimes remain `idle`.
+- Team aggregate status has one shared owner, `deriveTeamApiStatus(...)`, with precedence `error > running > idle > offline`.
+- Backend run-history list APIs now expose normalized `status` for agent rows, team rows, and team-member rows:
+  - active rows use live runtime/team snapshots;
+  - inactive non-error rows are `offline`;
+  - historical errors are `error`.
+- Frontend status enums, stream payload types, hydration/open/recovery flows, history read models, sidebar display, running rows, local termination, and team/member projection code consume the four-state model.
+- Frontend interrupt affordance is controlled by selected agent/member `canInterrupt` from backend-owned `can_interrupt`; `isSending` remains local submit/disable state only.
+- Existing status docs touched by the branch were updated from the prior partial three-state wording to the four-state contract.
+- API/E2E local fix `VAL-FS-008`: successful single-agent termination now publishes a terminal live `AGENT_STATUS { status: "offline", can_interrupt: false }` from the `AgentRun` status/event boundary after the backend accepts termination and before callers proceed to active-run cleanup/stream teardown.
+- AR-004 rework: active/running team aggregate state is no longer fanned out to every team member in frontend history load, recovery, hydration/open, local active helpers, or team read-model overlays.
+  - Active team rows may be `running`, but member rows/contexts use member-scoped history statuses, member snapshots/events, preserved member-scoped live context status, or an `offline/canInterrupt=false` unknown placeholder.
+  - `memberStatuses: []` now means no member-scoped status snapshot is available; it does not imply all members are running.
+- Interrupt-permission rework / AC-014:
+  - Added `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts` as the frontend mutation boundary for `AgentRunState.currentStatus` and `canInterrupt`.
+  - Live `AGENT_STATUS.can_interrupt` is now applied through that boundary and remains the only path that can grant interrupt permission.
+  - History refresh, recovery, open, hydration, and local cleanup now use explicit boundary methods for live status events, active placeholders, member/history snapshots, and offline/terminal cleanup.
+  - Existing active subscribed single-agent and focused team-member contexts preserve backend-granted `canInterrupt=true` through history refresh/reconcile and active recovery until a later live status or explicit cleanup revokes it.
+- CR-003 local fix:
+  - `applyMemberOrHistoryStatusSnapshot(...)` now always clears `canInterrupt` for `offline` and `error` projections, even when a caller asks to preserve live interrupt permission for active/subscribed contexts.
+  - Inactive single-agent run-open/hydration of an existing subscribed context now lands at `offline/canInterrupt=false` and disconnects the stream instead of preserving stale interrupt permission.
 
 ## Key Files Or Areas
 
 Backend:
 
 - `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts`
+- `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts`
 - `autobyteus-server-ts/src/agent-team-execution/domain/team-status-payload.ts`
 - `autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts`
 - `autobyteus-server-ts/src/agent-execution/backends/{autobyteus,codex,claude}/...` status projectors/converters/backends
 - `autobyteus-server-ts/src/agent-team-execution/backends/{autobyteus,codex,claude,mixed}/...`
-- `autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts`
-- `autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts`
-- `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts`
-- `autobyteus-server-ts/src/services/agent-streaming/team-runtime-status-snapshot-service.ts`
+- `autobyteus-server-ts/src/run-history/services/{agent-run-history-service,team-run-history-service}.ts`
+- `autobyteus-server-ts/src/api/graphql/types/run-history.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/*`
 
 Frontend:
 
-- `autobyteus-web/types/agent/AgentStatus.ts`
-- `autobyteus-web/types/agent/AgentTeamStatus.ts`
-- `autobyteus-web/types/agent/AgentRunState.ts`
+- `autobyteus-web/types/agent/{AgentStatus,AgentTeamStatus,AgentRunState}.ts`
 - `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
-- `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts`
-- `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts`
-- `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
-- `autobyteus-web/stores/activeContextStore.ts`
-- `autobyteus-web/components/agentInput/AgentUserInputTextArea.vue`
+- `autobyteus-web/services/agentStreaming/handlers/{agentStatusHandler,teamHandler}.ts`
+- `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts`
 - `autobyteus-web/services/runHydration/runtimeStatusNormalization.ts`
-- `autobyteus-web/services/runOpen/*`
+- `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`
 - `autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts`
-- `autobyteus-web/stores/runHistoryReadModel.ts`
-- `autobyteus-web/stores/runHistoryTeamHelpers.ts`
-- `autobyteus-web/utils/runTreeLiveStatusMerge.ts`
+- `autobyteus-web/services/runOpen/*`
+- `autobyteus-web/stores/runHistory*`, `agentRunStore.ts`, `agentTeamRunStore.ts`, context stores
+- `autobyteus-web/utils/runTree*`
+- `autobyteus-web/components/workspace/**` and `components/agentInput/AgentUserInputTextArea.vue`
+- `autobyteus-web/graphql/queries/runHistoryQueries.ts`, `autobyteus-web/generated/graphql.ts`
+
+Tests:
+
+- `autobyteus-server-ts/tests/unit/agent-execution/agent-api-status-projectors.test.ts`
+- `autobyteus-server-ts/tests/unit/agent-team-execution/team-status-aggregation.test.ts`
+- `autobyteus-server-ts/tests/unit/run-history/services/{agent-run-history-service,team-run-history-service}.test.ts`
+- `autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts`
+- `autobyteus-web/stores/__tests__/runHistoryStore.spec.ts`
+- `autobyteus-web/stores/__tests__/agentContextsStore.spec.ts`
+- `autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts`
+- `autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts`
+- `autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts`
+- `autobyteus-web/services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts`
+- `autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`
+- `autobyteus-web/utils/__tests__/runTreeLiveStatusMerge.spec.ts`
+- `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel*.spec.ts`
 
 ## Important Assumptions
 
-- Native `autobyteus-ts` detailed lifecycle/status internals remain internal runtime detail. This implementation collapses them at the server API boundary; it does not redesign the native CLI/runtime event model.
-- `TASK_PLAN_EVENT.new_status` remains a task-management payload field and is not part of the target `AGENT_STATUS` / `TEAM_STATUS` contract.
-- App-update status handling remains unrelated to agent/team runtime status and was not changed.
-- API/E2E validation setup/execution is downstream-owned; this handoff includes implementation-scoped checks only.
+- Native/provider runtimes may keep detailed internal lifecycle states. The public API/UI status contract collapses them at the server/frontend boundary.
+- `TASK_PLAN_EVENT.new_status` remains a task-management field and is intentionally outside the `AGENT_STATUS` / `TEAM_STATUS` contract.
+- API/E2E validation setup and execution remain downstream-owned; this handoff includes implementation-scoped checks only.
 
 ## Known Risks
 
-- Broad frontend `nuxi typecheck` still fails on many unrelated project-wide typing issues outside this status surface. I fixed the status-surface errors found during that run and then filtered the same typecheck output for touched status files with no remaining matches.
-- `autobyteus-server-ts` package `typecheck` is blocked by the repository's existing `tsconfig.json` shape (`rootDir: "src"` while `include` also contains `tests`), producing TS6059 for test files. Source build typecheck with `tsconfig.build.json` passes.
-- Integration/E2E test fixtures were migrated to the new target contract, but broader API/E2E execution was not run by implementation engineering.
+- Full `autobyteus-web` typecheck still fails with broad pre-existing project-wide typing issues outside this status surface. I did not attempt to fix unrelated build-script, missing-module, generated GraphQL, browser-shell bridge, and unrelated fixture typings.
+- Real runtime API/E2E coverage is still needed for live WebSocket ordering, reconnect snapshots, browser sidebar behavior, interrupt affordance, confirmation that the `VAL-FS-008` terminal offline publication fix is visible across AutoByteus, Codex, and Claude browser WebSocket flows, AC-013 Electron-like restart behavior with one running team member plus offline members, and AC-014 browser-visible preservation of the stop button after refresh/recovery.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -97,11 +104,13 @@ Frontend:
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A
 - Evidence / notes:
-  - Status ownership moved to backend status projection/snapshot boundaries.
-  - Team aggregate status has one domain owner in `team-status-aggregation.ts`.
-  - Frontend no longer treats detailed runtime phases as API-visible agent/team status values.
-  - Interrupt affordance reads selected agent/member `canInterrupt`, not `isSending`.
-  - No compatibility fallback/dual-read was added for target status events.
+  - Status ownership is at runtime projectors/snapshot boundaries.
+  - Team aggregate status is centralized in `team-status-aggregation.ts`.
+  - History first-load now receives normalized backend `status` instead of deriving display status from `lastKnownStatus=IDLE`.
+  - Frontend API-visible status enums are only `Offline`, `Idle`, `Running`, `Error`.
+  - Interrupt authority is `can_interrupt` / selected `canInterrupt`, not `isSending`.
+  - AR-004 implementation keeps team aggregate status scoped to team rows; member contexts/rows are never derived from `TEAM_STATUS.status`, team `isActive`, or `resumeConfig.isActive`.
+  - AC-014 implementation keeps all production `AgentRunState.currentStatus` / `canInterrupt` writes behind the new frontend runtime status/action mutation boundary.
 
 ## Legacy / Compatibility Removal Check
 
@@ -112,70 +121,60 @@ Frontend:
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
 - Notes:
-  - Target source grep for legacy status fields/fallbacks found no `AGENT_STATUS` / `TEAM_STATUS` old-field reads/writes. Remaining matches are intentionally outside the target contract: task-plan `new_status` and app-update status fallback.
-  - Server tests no longer contain target `new_status` / `old_status` status-contract expectations or old `AgentRun`/`TeamRun` `.getStatus()` usage.
-  - Native `autobyteus-ts` internal runtime detailed status events still use their existing internal shape by design; those are collapsed at the server boundary.
+  - No target `AGENT_STATUS` / `TEAM_STATUS` dual-read fallback such as `payload.status || payload.new_status` was added.
+  - No target `AGENT_STATUS` / `TEAM_STATUS` `new_status` / `old_status` emission remains.
+  - Exact `getStatus(` grep under `src/agent-execution` and `src/agent-team-execution` returns no old authoritative run/team status methods.
+  - Remaining `new_status` source matches are task-plan payload handling only, outside the status contract.
+  - Codex `thread/status/changed` remains a provider state input; outbound `AGENT_STATUS` is projected from `CodexThread` status snapshot.
+  - Claude completion ordering continues to apply terminal idle state before `TURN_COMPLETED` emits its paired status projection.
+  - The termination fix emits the new canonical `status: "offline"` payload only; it does not add legacy termination fallback fields or dual-read compatibility.
+  - AR-004 grep guardrail after rework found no target `memberStatuses: []` active-team status seeding and no target `memberContext.state.currentStatus = AgentStatus.Running` aggregate fan-out path. Remaining `AgentStatus.Running` matches in the reviewed target set are single-agent active-run metadata only.
+  - CR-003 local fix tightened the mutation boundary rather than adding a call-site compatibility branch: `offline`/`error` projections are terminal for interrupt permission and always clear `canInterrupt`.
+  - AC-014 direct-write audit after rework:
+    - `rg -n "\\.canInterrupt\\s*=" autobyteus-web/services autobyteus-web/stores autobyteus-web/components autobyteus-web/utils -g '*.ts' -g '*.vue' -g '!**/__tests__/**' -g '!**/*.spec.ts' -g '!**/*.test.ts'` returns only `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts`.
+    - `rg -n "state\\.currentStatus\\s*=" autobyteus-web/services autobyteus-web/stores autobyteus-web/components autobyteus-web/utils -g '*.ts' -g '*.vue' -g '!**/__tests__/**' -g '!**/*.spec.ts' -g '!**/*.test.ts'` returns only `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts`.
 
 ## Environment Or Dependency Notes
 
-- `pnpm install --frozen-lockfile` was run because `node_modules` was initially absent in the worktree; it completed successfully.
-- `pnpm -C autobyteus-web exec nuxi prepare` completed successfully earlier in the implementation pass.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis`
+- No dependency or lockfile changes were needed.
 
 ## Local Implementation Checks Run
 
 Passed:
 
 - `git diff --check`
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
-- `pnpm -C autobyteus-server-ts test --run tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-memory/agent-run-memory-recorder.test.ts tests/unit/run-history/services/run-file-change-projection-service.test.ts`
-  - Result: 13 test files passed, 127 tests passed.
-- `pnpm -C autobyteus-web test:nuxt --run services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts utils/__tests__/runTreeLiveStatusMerge.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts stores/__tests__/runHistoryStore.spec.ts`
-  - Result: 5 test files passed, 70 tests passed.
-- CR-001 focused Claude/session regression check:
-  - `pnpm -C autobyteus-server-ts test --run tests/unit/agent-execution/backends/claude/session/claude-session.test.ts`
-  - Result: 1 test file passed, 12 tests passed.
-- CR-001 focused source/status check:
-  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit && pnpm -C autobyteus-server-ts test --run tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts`
-  - Result: source build typecheck passed; 5 test files passed, 57 tests passed.
+- `cd autobyteus-server-ts && pnpm exec tsc -p tsconfig.build.json --noEmit`
+- `cd autobyteus-server-ts && pnpm exec vitest run tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/run-history/services/agent-run-history-service.test.ts tests/unit/run-history/services/team-run-history-service.test.ts tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts tests/unit/services/agent-streaming/agent-stream-handler.test.ts`
+  - Result: 7 test files passed, 73 tests passed.
+- `cd autobyteus-web && pnpm exec vitest run services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts stores/__tests__/agentContextsStore.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts utils/__tests__/runTreeLiveStatusMerge.spec.ts stores/__tests__/runHistoryStore.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts`
+  - Result: 11 test files passed, 124 tests passed.
 - Legacy gate grep:
-  - Target implementation grep found no `AGENT_STATUS` / `TEAM_STATUS` old-field reads/writes or old run `.getStatus()` authoritative paths.
-  - Server tests target grep found no `new_status` / `old_status` or old `.getStatus()` target-status references.
-- Changed implementation source-file guardrails:
-  - No changed non-test implementation file exceeded 500 effective non-empty lines.
-  - No changed non-test implementation file had >220 added lines.
+  - no exact old run/team `getStatus(` authoritative methods under agent/team execution source;
+  - no target `payload.status || payload.new_status` fallback;
+  - target `AGENT_STATUS`/`TEAM_STATUS` payload types expose only the four-state `status` field plus member `can_interrupt`.
+- Changed source-file guardrail check:
+  - no changed non-test implementation file exceeded 500 effective non-empty lines.
 
-Blocked / not counted as pass:
+Not counted as pass:
 
-- `pnpm -C autobyteus-server-ts typecheck`
-  - Fails with TS6059 because `tsconfig.json` includes `tests` while `rootDir` is `src`.
-  - `tsconfig.build.json` source typecheck passes.
-- `pnpm -C autobyteus-web exec nuxi typecheck`
-  - Fails with broad project-wide typing issues outside this status implementation surface (examples include build-script type-only imports, missing `~/stores/agents`, generated GraphQL types, browser shell bridge typings, and multiple existing test fixture typings).
-  - After fixing the status-surface errors revealed by this command, a filtered rerun showed no remaining errors for touched status files (`runHistoryReadModel`, `teamHandler`, status payload/types/handlers, input, hydration, and live tree merge files).
+- `cd autobyteus-web && pnpm exec nuxi typecheck`
+  - Fails with many broad project-wide type errors outside this status implementation surface, including build script type-only imports, missing `~/stores/agents`, generated GraphQL exports, browser shell bridge typings, and unrelated test fixture types.
 
 ## Downstream Validation Hints / Suggested Scenarios
 
-Suggested API/E2E scenarios:
-
-1. Single-agent AutoByteus/Codex/Claude run:
-   - Connect to the stream before and after a turn.
-   - Verify `AGENT_STATUS` payload is only `{ status, can_interrupt, ...optional identity }` and never contains `new_status` / `old_status`.
-   - Verify `can_interrupt` is true only during interruptible active work.
-2. Codex `thread/status/changed`:
-   - Confirm raw provider payload is not forwarded as `AGENT_STATUS`; emitted status is normalized to `idle` / `running` / `error`.
-3. Claude run restore/connect:
-   - Confirm initial snapshot comes from Claude session state, not listener-derived `lastStatus`.
-4. Team stream connect/reconnect:
-   - Verify member `AGENT_STATUS` snapshots are sent and routed to the correct member before/alongside aggregate `TEAM_STATUS`.
-   - Verify `TEAM_STATUS` has no `can_interrupt`.
-5. Team aggregate:
-   - One running member yields aggregate `running`; any error member yields aggregate `error`; otherwise aggregate `idle`.
-6. Frontend interrupt affordance:
-   - In a team workspace, focus different members and confirm the red interrupt button follows the focused member's `canInterrupt`.
-   - Confirm `isSending` no longer creates interrupt authority.
-7. Recovery/history/local termination:
-   - Stopped/offline/shutdown-complete/terminated historical states display as coarse `idle` unless there is explicit error.
+1. Connect/reconnect single-agent streams for AutoByteus, Codex, and Claude and verify initial/live `AGENT_STATUS` payload shape is only `{ status, can_interrupt, ...identity }`.
+2. Complete and interrupt turns; verify `can_interrupt=true` only during interruptible `running` periods and terminal projections are `idle/can_interrupt=false` or `error/can_interrupt=false`.
+3. Terminate active single-agent runs for AutoByteus, Codex, and Claude while a browser WebSocket is already connected; verify the socket receives `AGENT_STATUS { status: "offline", can_interrupt: false }` before any stream close.
+4. Trigger Codex `thread/status/changed`; verify raw provider status is not forwarded and outbound status is normalized from `CodexThread` state.
+5. Connect/reconnect team streams; verify member `AGENT_STATUS` snapshots plus aggregate `TEAM_STATUS { status }`, with no team `can_interrupt`.
+6. Exercise team aggregate precedence: error > running > idle > offline, including all-offline historical teams.
+7. First-load history/sidebar after restart: inactive non-error runs/teams/members display `offline`, historical errors display `error`, and active rows use runtime snapshots.
+8. Confirm the interrupt button follows the selected agent/team member `canInterrupt` and is not enabled by `isSending` alone.
+9. AC-013: simulate app restart/Electron startup where backend history and team stream snapshots report `team.status=running`, `solution_designer=running`, and all other members `offline`; verify first load, active recovery, reconnect, refresh, and sidebar/read-model overlays preserve exactly those member statuses.
+10. AC-014: after a live/snapshot `AGENT_STATUS { status: "running", can_interrupt: true }`, trigger run-history refresh/reconcile and active recovery for both single-agent and focused team-member contexts; verify selected context `canInterrupt` remains true and the input remains in stop/interrupt mode.
+11. CR-003: reopen an existing subscribed single-agent context that previously had `running/canInterrupt=true` as inactive/offline; verify projection hydration clears interrupt (`offline/canInterrupt=false`) and stream disconnect occurs.
 
 ## API / E2E / Executable Validation Still Required
 
-Yes. API/E2E validation is still required downstream, especially for real runtime WebSocket streams, team reconnect snapshots, and interrupt-button behavior in a browser session.
+Yes. API/E2E validation is still required downstream for real runtime streams, reconnect snapshots, first-load sidebar behavior, browser-visible interrupt affordance, re-validation of `VAL-FS-008` live terminal offline publication, AC-013 team-member status preservation through restart/recovery/refresh, and AC-014 stop-button persistence after refresh/recovery.

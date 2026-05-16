@@ -1,7 +1,8 @@
 import type { AgentRunBackend } from "../backends/agent-run-backend.js";
 import type { AgentRunContext } from "./agent-run-context.js";
-import type { AgentRunEvent } from "./agent-run-event.js";
+import { AgentRunEventType, type AgentRunEvent } from "./agent-run-event.js";
 import type { AgentRunCommandObserver } from "./agent-run-command-observer.js";
+import { buildAgentStatusPayload } from "./agent-status-payload.js";
 
 type AgentRunOptions = {
   context: AgentRunContext<unknown | null>;
@@ -114,6 +115,23 @@ export class AgentRun {
   }
 
   async terminate() {
-    return this.backend.terminate();
+    const result = await this.backend.terminate();
+    if (result.accepted) {
+      this.emitTerminationStatus();
+    }
+    return result;
+  }
+
+  private emitTerminationStatus(): void {
+    this.emitLocalEvent({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      runId: this.runId,
+      payload: buildAgentStatusPayload({
+        status: "offline",
+        canInterrupt: false,
+        agentId: this.runId,
+      }),
+      statusHint: "IDLE",
+    });
   }
 }

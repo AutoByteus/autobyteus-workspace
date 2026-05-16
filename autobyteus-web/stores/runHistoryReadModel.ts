@@ -14,6 +14,7 @@ import {
   type RunTreeWorkspaceNode,
 } from '~/utils/runTreeProjection';
 import { mergeRunTreeWithLiveContexts } from '~/utils/runTreeLiveStatusMerge';
+import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 import {
   DEFAULT_DRAFT_SUMMARY_PREFIX,
   DRAFT_RUN_ID_PREFIX,
@@ -96,7 +97,7 @@ const toRunStatus = (status: AgentStatus): { isActive: boolean; lastKnownStatus:
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
 
-  if (status === AgentStatus.Idle) {
+  if (status === AgentStatus.Offline) {
     return { isActive: false, lastKnownStatus: 'IDLE' };
   }
 
@@ -183,6 +184,7 @@ export const buildRunHistoryTreeNodes = (params: {
         null,
       runs: agent.runs.map((run) => ({
         ...run,
+        currentStatus: normalizeAgentRuntimeStatus(run.status),
         lastKnownStatus: normalizeProjectionRunStatus(run.lastKnownStatus),
       })),
     })),
@@ -204,7 +206,8 @@ export const buildRunHistoryTreeNodes = (params: {
 
     const agentName = context.config.agentDefinitionName || 'Agent';
     const conversation = context.state.conversation;
-    const { isActive, lastKnownStatus } = toRunStatus(context.state.currentStatus);
+    const currentStatus = normalizeAgentRuntimeStatus(context.state.currentStatus);
+    const { isActive, lastKnownStatus } = toRunStatus(currentStatus);
     const agentAvatarUrl =
       context.config.agentAvatarUrl?.trim() ||
       agentAvatarByDefinitionId.get(context.config.agentDefinitionId) ||
@@ -221,6 +224,7 @@ export const buildRunHistoryTreeNodes = (params: {
         conversation.updatedAt ||
         conversation.createdAt ||
         new Date().toISOString(),
+      currentStatus,
       lastKnownStatus,
       isActive,
     });

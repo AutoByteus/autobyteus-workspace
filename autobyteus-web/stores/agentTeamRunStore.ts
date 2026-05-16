@@ -17,7 +17,6 @@ import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type { ContextAttachment } from '~/types/conversation';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { partitionContextAttachmentsForStreaming } from '~/utils/contextFiles/contextAttachmentSend';
 import {
@@ -29,6 +28,7 @@ import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
 import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
+import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
@@ -157,11 +157,9 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
         if (teamContext) {
           teamContext.isSubscribed = false;
-          teamContext.currentStatus = AgentTeamStatus.Idle;
+          teamContext.currentStatus = AgentTeamStatus.Offline;
           teamContext.members.forEach((member) => {
-            member.isSending = false;
-            member.state.currentStatus = AgentStatus.Idle;
-            member.state.canInterrupt = false;
+            applyOfflineOrTerminalCleanup(member);
             useAgentActivityStore().clearActivities(member.state.runId);
           });
         }
@@ -222,10 +220,9 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
 
       teamContext.isSubscribed = false;
+      teamContext.currentStatus = AgentTeamStatus.Offline;
       teamContext.members.forEach((member) => {
-        member.isSending = false;
-        member.state.currentStatus = AgentStatus.Idle;
-        member.state.canInterrupt = false;
+        applyOfflineOrTerminalCleanup(member);
         useAgentActivityStore().clearActivities(member.state.runId);
       });
 
@@ -353,7 +350,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (!finalTeamContext) {
           throw new Error(`Team context '${finalTeamRunId}' not found after creation.`);
         }
-
         const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
           draftOwner,
           finalOwner: buildTeamMemberFinalContextFileOwner(finalTeamRunId, targetMemberRouteKey),
@@ -364,7 +360,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (!finalFocusedMember) {
           throw new Error(`Focused member '${targetMemberRouteKey}' not found after team creation.`);
         }
-
         finalFocusedMember.state.conversation.messages.push({
           type: 'user',
           text,

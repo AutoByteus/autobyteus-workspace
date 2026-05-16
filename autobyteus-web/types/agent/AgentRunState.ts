@@ -23,7 +23,7 @@ export interface AgentCompactionStatus {
 
 export class AgentRunState {
   public runId: string;
-  public currentStatus: AgentStatus = AgentStatus.Idle;
+  public currentStatus: AgentStatus = AgentStatus.Offline;
   public canInterrupt = false;
   public conversation: Conversation;
   public agent_tool_invocation_counts = new Map<string, number>();

@@ -59,7 +59,7 @@ const normalizeSegmentPayload = (payload: Record<string, unknown>): Record<strin
           ? null
           : null;
   const {
-    turnId: _legacyTurnId,
+    turnId: _camelTurnId,
     turn_id: _rawTurnId,
     ...payloadWithoutTurnAliases
   } = payload;

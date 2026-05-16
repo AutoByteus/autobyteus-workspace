@@ -102,7 +102,7 @@ export class ClaudeTeamManager implements TeamManager {
     return runtimeContext.memberContexts.map((memberContext) => {
       const memberRun = this.memberRuns.get(memberContext.memberRouteKey) ?? null;
       const snapshot = memberRun?.getStatusSnapshot() ?? {
-        status: "idle" as const,
+        status: "offline" as const,
         can_interrupt: false,
       };
       return {

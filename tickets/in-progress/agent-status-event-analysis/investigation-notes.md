@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Source analysis complete; implementation design pending user approval.
+- Current Status: Revised design package complete after 2026-05-16 interrupt-button regression analysis; ready for architecture review.
 - Investigation Goal: Determine how agent status is currently derived across backend/runtime, `autobyteus-ts`, and frontend; identify whether a dedicated authoritative status event exists; recommend/design source-of-truth status flow for accurate UI status and interrupt eligibility.
 - Scope Classification (`Small`/`Medium`/`Large`): Medium
 - Scope Classification Rationale: Crosses runtime event production, server WebSocket projection/snapshotting, frontend live stream handling, and team-member routing/hydration. It does not require a broad LLM provider rewrite.
@@ -57,6 +57,9 @@ User reports frontend status can be inaccurate: the UI may show “waiting for L
 | 2026-05-15 | Code | `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts` | Inspect team WebSocket connect and status snapshot | Team connect binds before sending snapshot, but `sendInitialStatusSnapshot` only sends `TEAM_STATUS`; no member `AGENT_STATUS` snapshots. | Yes |
 | 2026-05-15 | Code | `autobyteus-server-ts/src/services/agent-streaming/team-runtime-status-snapshot-service.ts` | Check for existing team member snapshot capability | Service can build team and member `AGENT_STATUS` snapshot messages, but no usage found. | Yes |
 | 2026-05-15 | Code | `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`; `autobyteus-web/stores/runHistoryLoadActions.ts`; `autobyteus-web/stores/runHistoryTeamHelpers.ts` | Inspect active team hydration status | Active team contexts initialize team status as active/processing, but member statuses are `Uninitialized` unless live member statuses are supplied; active discovery passes empty `memberStatuses`. | Yes |
+| 2026-05-16 | Trace | Direct WebSocket probe to `ws://127.0.0.1:29695/ws/agent/c6234e69-86bf-43a0-b329-8ad5a29c704e` while the Electron UI showed `Codex - 704E` as running without the stop button | Verify whether backend `can_interrupt` or frontend state caused the missing interrupt affordance | Backend returned `AGENT_STATUS {"status":"running","can_interrupt":true}` immediately after `CONNECTED`. Backend status projection is correct for this live Codex run. | No |
+| 2026-05-16 | Code | `autobyteus-web/components/agentInput/AgentUserInputTextArea.vue`; `autobyteus-web/stores/activeContextStore.ts`; `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts` | Trace interrupt button state | Input button uses `activeContextStore.canInterrupt`; `activeContextStore.canInterrupt` reads `activeAgentContext.state.canInterrupt`; `handleAgentStatus` correctly sets it from `payload.can_interrupt`. | No |
+| 2026-05-16 | Code | `autobyteus-web/stores/runHistoryLoadActions.ts`; `autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts`; `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`; `autobyteus-web/stores/runHistoryTeamHelpers.ts` | Audit non-status-handler writes to `state.currentStatus` and `state.canInterrupt` after regression | Multiple frontend reconciliation/hydration/recovery paths still write `canInterrupt=false`; active single-agent refresh (`runHistoryLoadActions.ts`) and active recovery (`activeRunRecoveryCoordinator.ts`) can overwrite an existing live context after backend `AGENT_STATUS` has set `canInterrupt=true`. Similar team-member paths can reset focused-member interrupt permission. | Yes |
 
 ## Current Behavior / Current Flow
 
@@ -146,6 +149,28 @@ Native AutoByteus already has a dedicated status event path:
 2. Single-agent WebSocket connect sends status snapshot before subscribing to live run events. A status transition can occur between these operations.
 3. Team WebSocket connect does not send member status snapshots, and active team hydration initializes member statuses to `Uninitialized` if no member snapshot is supplied.
 4. Interrupt availability is currently controlled by `isSending`, a frontend-local mutable flag that is not equivalent to runtime active-turn/interruptible state.
+
+### 2026-05-16 post-implementation interrupt regression
+
+The latest Electron build exposed a different ownership leak after the coarse backend status refactor. The selected Codex run displayed `Running` in the header, but the input form rendered the blue send button instead of the red stop/interrupt button.
+
+Runtime probe:
+
+```json
+{"type":"AGENT_STATUS","payload":{"status":"running","can_interrupt":true}}
+```
+
+This proves the live backend source-of-truth was correct for the selected run. The frontend input path is also correct in isolation:
+
+`AgentUserInputTextArea.vue` -> `activeContextStore.canInterrupt` -> `activeAgentContext.state.canInterrupt`; `handleAgentStatus(...)` writes that state from `payload.can_interrupt`.
+
+The defect is that status/action ownership remains duplicated outside the status handler. Evidence:
+
+- `autobyteus-web/stores/runHistoryLoadActions.ts` active existing single-agent branch sets `existingContext.state.currentStatus = normalizeAgentRuntimeStatus('ACTIVE')` and `existingContext.state.canInterrupt = false`.
+- `autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts` existing active single-agent branch sets `currentStatus = Running` and `canInterrupt = false`.
+- Active team refresh/open/helper paths also reset member `canInterrupt=false`, which can hide the interrupt button for a focused member even when a member-scoped backend `AGENT_STATUS` has granted interrupt permission.
+
+Design implication: this is not just a local button defect. It violates the authoritative-boundary rule: backend `AGENT_STATUS.can_interrupt` is the action-permission owner, but frontend history/recovery code still acts as a competing owner. The target design must introduce/enforce one frontend mutation authority for runtime status/action state, or at minimum forbid direct `canInterrupt` writes outside explicit local placeholder/offline cleanup APIs.
 
 ### Cross-runtime facts
 
@@ -251,7 +276,7 @@ The design should therefore normalize status at the server runtime-boundary rath
 
 - Use existing API/WebSocket `AGENT_STATUS` event name.
 - No backward compatibility for the old `new_status` / `old_status` payload contract.
-- API-level status should be coarse: `idle`, `running`, `error`.
+- API-level status should be coarse. Initial user-confirmed model was `idle`, `running`, `error`; the later Electron restart evidence refines this to `offline`, `idle`, `running`, `error`.
 - Include `can_interrupt` as the backend-owned action permission for the input interrupt button.
 - Detailed runtime statuses may remain internal to runtime/backend logic but should not be the frontend status contract for this fix.
 ## Architecture Review Round 1 Findings And Design Rework
@@ -267,4 +292,63 @@ Design rework decisions:
 - Add `TeamStatusPayload = { status: AgentApiStatus }`; no `can_interrupt` on `TEAM_STATUS`.
 - Add `agent-team-execution/domain/team-status-aggregation.ts` as the single aggregate owner used by live team managers and `TeamRuntimeStatusSnapshotService`.
 - Replace `TeamRunBackend.getStatus()` / `TeamRun.getStatus()` with `getStatusSnapshot(): TeamStatusPayload`; no constant active `IDLE` status authority remains.
-- Migrate frontend `AgentStatus` and `AgentTeamStatus` to `idle/running/error`; active recovery placeholder becomes `running` with interrupt unavailable, inactive/local termination becomes `idle`.
+- Migrate frontend `AgentStatus` and `AgentTeamStatus` to `offline/idle/running/error`; active recovery placeholder becomes `running` with interrupt unavailable, inactive/local termination/history becomes `offline`.
+## Additional UI Evidence: Offline Was Missing
+
+After the user ran a newly built Electron app, historical agent and team runs shown after app restart appeared as green `Idle`. The user clarified these rows are not live/running runtimes; they are historical/inactive runs after restart. This exposes a design gap in the previous coarse model: `idle` was doing two jobs.
+
+Refined conclusion:
+- `idle` must mean an active runtime/session exists and is ready, with no active turn.
+- `offline` must mean no active runtime/session exists for this historical, terminated, or inactive run/team.
+- `running` means active runtime/session owns work or an active transition.
+- `error` means failed/error state.
+
+The API/UI status vocabulary is therefore refined from three states to four: `offline`, `idle`, `running`, `error`. `can_interrupt` remains only on `AGENT_STATUS` and is always false for `offline`. Team status remains a derived aggregate of member statuses, with all members offline -> team offline.
+
+## Additional First-Load History Status Clarification
+
+Current first-load history flow uses `ListWorkspaceRunHistory`, whose rows include `lastKnownStatus` and `isActive`. Backend services compute `isActive` by checking active run/team managers (`AgentRunManager.listActiveRuns()` and team active checks), while inactive persisted rows can still carry `lastKnownStatus: IDLE`. The frontend currently maps inactive `IDLE` rows to green idle in several read-model helpers, which is exactly the Electron restart symptom.
+
+Refined design clarification: the history API/read model should expose normalized coarse `status` for displayed rows. Active rows should use the same backend status snapshot/projector boundary used by streams where available; inactive non-error history should return `offline`; historical error rows should return `error`. The frontend history tree should consume that status instead of deriving display status from `isActive`/`lastKnownStatus` alone.
+
+## User Approval Of Consolidated Design Direction
+
+On 2026-05-15, after requesting a comprehensive rather than ad hoc design pass, the user approved the consolidated design direction: one backend-owned normalized runtime status projection should feed first-load history rows, WebSocket connect/reconnect snapshots, and live `AGENT_STATUS` / `TEAM_STATUS` events. The approved vocabulary is `offline`, `idle`, `running`, and `error`; `idle` requires an active runtime/session; inactive historical/no-runtime rows are `offline`; team status is derived from member statuses; `can_interrupt` remains a member/single-agent action permission only.
+
+## Post-Build Bug Report: Active Team Fan-Out Makes All Members Look Running
+
+After the delivery build, the user restarted the Electron app and observed the active Software Engineering Team row with every member shown blue/running, even though only `solution_designer` had been addressed in the current live session and the other members should not have active work.
+
+Runtime evidence gathered on 2026-05-15:
+
+- Recent Electron/server logs under `/Users/normy/.autobyteus` show the embedded server restored the team run and the solution designer member run at startup:
+  - `/Users/normy/.autobyteus/logs/app.log`
+  - `/Users/normy/.autobyteus/server-data/logs/server.log`
+  - Example log lines:
+    - `Successfully restored codex_app_server team run 'team_software-engineering-team_713dbb38'.`
+    - `Successfully restored codex_app_server agent run 'solution_designer_a02195d7e100f269'.`
+- Querying the live GraphQL endpoint from the built app (`ListWorkspaceRunHistory`) returned the correct backend-normalized member statuses for `team_software-engineering-team_713dbb38`:
+  - team status: `running`
+  - `solution_designer`: `running`
+  - `architecture_reviewer`, `implementation_engineer`, `code_reviewer`, `api_e2e_engineer`, `delivery_engineer`: `offline`
+- Opening a direct WebSocket connection to `/ws/agent-team/team_software-engineering-team_713dbb38` returned the correct initial status snapshot:
+  - `AGENT_STATUS { status: "running", can_interrupt: true, agent_name: "solution_designer", ... }`
+  - one `AGENT_STATUS { status: "offline", can_interrupt: false, ... }` for each other team member
+  - `TEAM_STATUS { status: "running" }`
+
+Current frontend evidence:
+
+- `autobyteus-web/stores/runHistoryLoadActions.ts` still treats an active team as if every existing member is running:
+  - `existingTeamContext.currentStatus = normalizeTeamRuntimeStatus('ACTIVE')`
+  - every `memberContext.state.currentStatus = AgentStatus.Running`
+  - newly hydrated active teams call `hydrateLiveTeamRunContext(... memberStatuses: [])`, which seeds active members as running through helper code.
+- `autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts` does the same fan-out during active recovery.
+- `autobyteus-web/stores/runHistoryTeamHelpers.ts` seeds active member contexts with `AgentStatus.Running` in `buildTeamMemberContexts` and `applyProjectionToTeamMemberContext`.
+- `autobyteus-web/stores/runHistoryStore.ts` has local helpers (`markTeamAsActive`, `reconcileActiveTeamRunIds`) that set all `team.members[].status = AgentStatus.Running` when the team is active.
+- `buildTeamNodes(...)` overlays `teamContextsStore.allTeamRuns` over the backend history rows, so a stale/fanned-out live context can override the correct GraphQL `team.members[].status` values.
+
+Conclusion:
+
+- The backend API and WebSocket status source of truth are correct for this observed run.
+- The observed all-blue team member rows are a frontend implementation/design-invariant miss: active team aggregate state is being fanned out to every member context/row.
+- The design has been tightened with an explicit invariant: `team active/running aggregate != every member running`. Team aggregate status may make the team row blue, but member rows must only use member-scoped status from history, member `AGENT_STATUS` snapshots/events, or a safe non-running placeholder while waiting for those member-scoped statuses.

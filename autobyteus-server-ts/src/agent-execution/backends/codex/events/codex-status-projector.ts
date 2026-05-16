@@ -7,10 +7,14 @@ import {
 export type CodexStatusSource = {
   currentStatus?: unknown;
   activeTurnId?: string | null;
+  isActive?: boolean;
 };
 
 export const projectCodexAgentStatus = (source: CodexStatusSource): AgentStatusPayload => {
-  const status = normalizeAgentApiStatus(source.currentStatus);
+  const status =
+    source.isActive === false
+      ? "offline"
+      : normalizeAgentApiStatus(source.currentStatus, "idle");
   return buildAgentStatusPayload({
     status,
     canInterrupt: status === "running" && Boolean(source.activeTurnId),
