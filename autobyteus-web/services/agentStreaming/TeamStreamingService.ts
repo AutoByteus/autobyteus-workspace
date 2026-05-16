@@ -8,7 +8,13 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { WebSocketClient, ConnectionState, type IWebSocketClient } from './transport';
-import { parseServerMessage, serializeClientMessage, type ServerMessage, type ClientMessage } from './protocol';
+import {
+  parseServerMessage,
+  serializeClientMessage,
+  type ServerMessage,
+  type TeamClientMessage,
+  type InterruptGenerationPayload,
+} from './protocol';
 import {
   handleSegmentStart,
   handleSegmentContent,
@@ -57,6 +63,11 @@ const summarizeDelta = (delta: string, maxLen = 120): string => {
 
 export interface TeamStreamingServiceOptions {
   wsClient?: IWebSocketClient;
+}
+
+export interface TeamInterruptGenerationTarget {
+  targetMemberRouteKey: string;
+  targetAgentRunId?: string | null;
 }
 
 export class TeamStreamingService {
@@ -116,7 +127,7 @@ export class TeamStreamingService {
     contextFilePaths?: string[],
     imageUrls?: string[],
   ): void {
-    const message: ClientMessage = {
+    const message: TeamClientMessage = {
       type: 'SEND_MESSAGE',
       payload: {
         content,
@@ -130,7 +141,7 @@ export class TeamStreamingService {
 
   approveTool(invocationId: string, agentName?: string, reason?: string): void {
     const approvalToken = this.approvalTokenByInvocationId.get(invocationId);
-    const message: ClientMessage = {
+    const message: TeamClientMessage = {
       type: 'APPROVE_TOOL',
       payload: { invocation_id: invocationId, agent_name: agentName, reason, approval_token: approvalToken as any },
     };
@@ -140,7 +151,7 @@ export class TeamStreamingService {
 
   denyTool(invocationId: string, agentName?: string, reason?: string): void {
     const approvalToken = this.approvalTokenByInvocationId.get(invocationId);
-    const message: ClientMessage = {
+    const message: TeamClientMessage = {
       type: 'DENY_TOOL',
       payload: { invocation_id: invocationId, agent_name: agentName, reason, approval_token: approvalToken as any },
     };
@@ -148,8 +159,24 @@ export class TeamStreamingService {
     this.approvalTokenByInvocationId.delete(invocationId);
   }
 
-  interruptGeneration(): void {
-    const message: ClientMessage = { type: 'INTERRUPT_GENERATION' };
+  interruptGeneration(target: TeamInterruptGenerationTarget): void {
+    const targetMemberRouteKey = target.targetMemberRouteKey.trim();
+    if (!targetMemberRouteKey) {
+      throw new Error('Cannot interrupt generation: target member route key is required.');
+    }
+
+    const payload: InterruptGenerationPayload = {
+      target_member_name: targetMemberRouteKey,
+    };
+    const targetAgentRunId = target.targetAgentRunId?.trim();
+    if (targetAgentRunId) {
+      payload.agent_id = targetAgentRunId;
+    }
+
+    const message: TeamClientMessage = {
+      type: 'INTERRUPT_GENERATION',
+      payload,
+    };
     this.wsClient.send(serializeClientMessage(message));
   }
 

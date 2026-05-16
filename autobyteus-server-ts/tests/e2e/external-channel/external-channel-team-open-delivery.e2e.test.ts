@@ -270,7 +270,7 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
   }
 
   async approveToolInvocation(): Promise<AgentOperationResult> { return { accepted: true }; }
-  async interrupt(): Promise<AgentOperationResult> { return { accepted: true }; }
+  async interruptMember(): Promise<AgentOperationResult> { return { accepted: true }; }
   async terminate(): Promise<AgentOperationResult> { this.active = false; return { accepted: true }; }
 
   private emitTextTurn(memberName: string, memberRunId: string, turnId: string, text: string): void {

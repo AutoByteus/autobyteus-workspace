@@ -64,6 +64,7 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 - `TeamRunService.resolveTeamRun(teamRunId)` is the canonical restore-aware lookup boundary for callers that are allowed to resume a stopped persisted team run. It returns the active team runtime when present and otherwise attempts persisted restore before returning `null`.
 - Team WebSocket connection and `SEND_MESSAGE` dispatch use `resolveTeamRun(...)`, so a follow-up message to a stopped-but-persisted team can restore the team runtime, rebind stream subscription to the restored `TeamRun`, and post to the requested member route.
 - Active-only team controls still use the active lookup path. `INTERRUPT_GENERATION` and tool approval/denial commands must not restore a stopped team run as a side effect.
+- Team generation interrupt is intentionally member-scoped. `TeamRun.interruptMember(targetMemberRouteKey, targetMemberRunId?)` is the domain boundary; backend managers resolve the route key as the authoritative target and use the optional run id only as a stale-target guard. A missing target or route-key/run-id mismatch rejects without retargeting or falling back to a team-wide interrupt.
 - Persisted member metadata still carries the member runtime kind and platform-native run/thread/session id needed for restore.
 - `applicationExecutionContext` stays member-local and flows through create/restore for both single-runtime and mixed team members.
 - Accepted restored follow-up messages call

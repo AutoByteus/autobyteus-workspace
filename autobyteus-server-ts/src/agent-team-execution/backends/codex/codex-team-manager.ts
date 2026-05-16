@@ -51,6 +51,23 @@ const buildTargetMemberNotFoundResult = (targetMemberName: string): AgentOperati
   message: `Team member '${targetMemberName}' was not found.`,
 });
 
+const buildTargetMemberRunMismatchResult = (
+  targetMemberRouteKey: string,
+  targetMemberRunId: string,
+): AgentOperationResult => ({
+  accepted: false,
+  code: "TARGET_MEMBER_RUN_MISMATCH",
+  message: `Team member route key '${targetMemberRouteKey}' does not match member run '${targetMemberRunId}'.`,
+});
+
+const buildTargetMemberRunInactiveResult = (
+  targetMemberRouteKey: string,
+): AgentOperationResult => ({
+  accepted: false,
+  code: "RUN_NOT_FOUND",
+  message: `Team member route key '${targetMemberRouteKey}' is not active.`,
+});
+
 const buildPlaceholderThreadConfig = (memberContext: CodexTeamMemberContext) =>
   buildCodexThreadConfig({
     model: memberContext.agentRunConfig.llmModelIdentifier,
@@ -204,18 +221,39 @@ export class CodexTeamManager implements TeamManager {
     return memberRun.approveToolInvocation(invocationId, approved, reason ?? null);
   }
 
-  async interrupt(): Promise<AgentOperationResult> {
+  async interruptMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+  ): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
     }
-    for (const memberRun of this.memberRuns.values()) {
-      const result = await memberRun.interrupt();
-      if (!result.accepted) {
-        return result;
-      }
+    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
+    const memberContext = this.findMemberContextByRouteKey(normalizedTargetMemberRouteKey);
+    if (!memberContext) {
+      return buildTargetMemberNotFoundResult(normalizedTargetMemberRouteKey);
     }
-    this.publishTeamStatusIfChanged();
-    return { accepted: true };
+    const normalizedTargetMemberRunId = targetMemberRunId?.trim();
+    if (
+      normalizedTargetMemberRunId &&
+      normalizedTargetMemberRunId !== memberContext.memberRunId
+    ) {
+      return buildTargetMemberRunMismatchResult(
+        normalizedTargetMemberRouteKey,
+        normalizedTargetMemberRunId,
+      );
+    }
+
+    const memberRun = this.memberRuns.get(memberContext.memberRouteKey) ?? null;
+    if (!memberRun?.isActive()) {
+      return buildTargetMemberRunInactiveResult(normalizedTargetMemberRouteKey);
+    }
+
+    const result = await memberRun.interrupt();
+    if (result.accepted) {
+      this.publishTeamStatusIfChanged();
+    }
+    return result;
   }
 
   async terminate(): Promise<AgentOperationResult> {

@@ -148,6 +148,13 @@ The frontend still creates a local temporary team context first, but mixed-runti
 
 This is the frontend contract that makes the backend `TeamBackendKind.MIXED` path reachable from the actual app UX rather than only from backend/API-only proof.
 
+The focused-member routing contract also applies to the shared composer stop
+control. Text send and team interrupt both resolve the current
+`focusedMemberName` at action time. Team interrupt dispatch sends
+`target_member_name` as that member route key, includes the focused member run
+id only as a stale-target guard, and does not use a team-run-only fallback when
+the member target is missing or stale.
+
 ## Stopped Team Follow-Up And Termination State
 
 `agentTeamRunStore.sendMessageToFocusedMember()` supports follow-up chat against existing team runs after local stop/termination:
