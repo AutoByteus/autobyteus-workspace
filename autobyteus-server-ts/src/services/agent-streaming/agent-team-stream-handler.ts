@@ -39,9 +39,13 @@ import {
   ServerMessageType,
 } from "./models.js";
 import { serializePayload } from "./payload-serialization.js";
-import { resolveTeamMemberSelectorFromPayload } from "./team-member-selector-payload-adapter.js";
 import { buildTeamCommunicationMessagePayload } from "./team-communication-message-payload.js";
 import { buildTeamMemberInputMessagePayload } from "./team-member-input-message-payload.js";
+import { resolveTeamMemberSelectorFromPayload } from "./team-member-selector-payload-adapter.js";
+import {
+  TeamRuntimeStatusSnapshotService,
+  getTeamRuntimeStatusSnapshotService,
+} from "./team-runtime-status-snapshot-service.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -83,6 +87,8 @@ export class AgentTeamStreamHandler {
     teamRunService: TeamRunService = getTeamRunService(),
     broadcaster: TeamStreamBroadcaster = getTeamStreamBroadcaster(),
     agentRunEventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
+    private readonly statusSnapshotService: TeamRuntimeStatusSnapshotService =
+      getTeamRuntimeStatusSnapshotService(),
   ) {
     this.sessionManager = sessionManager;
     this.teamRunService = teamRunService;
@@ -163,8 +169,8 @@ export class AgentTeamStreamHandler {
         return;
       }
 
-      if (msgType === ClientMessageType.STOP_GENERATION) {
-        await this.handleStopGeneration(teamRunId);
+      if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
+        await this.handleInterruptGeneration(teamRunId);
       } else if (msgType === ClientMessageType.APPROVE_TOOL) {
         await this.handleToolApproval(teamRunId, payload, true);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
@@ -207,16 +213,9 @@ export class AgentTeamStreamHandler {
     connection: WebSocketConnection,
     teamRun: TeamRun,
   ): void {
-    const currentStatus = teamRun.getStatus();
-    if (typeof currentStatus !== "string" || currentStatus.trim().length === 0) {
-      return;
+    for (const message of this.statusSnapshotService.getInitialMessages(teamRun)) {
+      connection.send(message.toJson());
     }
-
-    connection.send(
-      new ServerMessage(ServerMessageType.TEAM_STATUS, {
-        new_status: currentStatus.trim().toUpperCase(),
-      }).toJson(),
-    );
   }
 
   private ensureActiveSessionSubscription(sessionId: string, teamRunId: string): boolean {
@@ -344,17 +343,17 @@ export class AgentTeamStreamHandler {
     });
   }
 
-  private async handleStopGeneration(teamRunId: string): Promise<void> {
+  private async handleInterruptGeneration(teamRunId: string): Promise<void> {
     const activeRun = this.resolveCommandRun(teamRunId);
     if (!activeRun) {
-      logger.warn(`STOP_GENERATION rejected for team run ${teamRunId}: active run not found.`);
+      logger.warn(`INTERRUPT_GENERATION rejected for team run ${teamRunId}: active run not found.`);
       return;
     }
 
     const result = await activeRun.interrupt();
     if (!result.accepted) {
       logger.warn(
-        `STOP_GENERATION rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
+        `INTERRUPT_GENERATION rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
     }
   }

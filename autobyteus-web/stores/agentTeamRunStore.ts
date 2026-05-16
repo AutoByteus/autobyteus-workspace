@@ -16,7 +16,6 @@ import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type { ContextAttachment } from '~/types/conversation';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { partitionContextAttachmentsForStreaming } from '~/utils/contextFiles/contextAttachmentSend';
@@ -29,6 +28,7 @@ import { flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
 import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
+import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
@@ -171,9 +171,9 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
         if (teamContext) {
           teamContext.isSubscribed = false;
-          teamContext.currentStatus = AgentTeamStatus.ShutdownComplete;
+          teamContext.currentStatus = AgentTeamStatus.Offline;
           teamContext.leafAgentContextsByRouteKey.forEach((member) => {
-            member.state.currentStatus = AgentStatus.ShutdownComplete;
+            applyOfflineOrTerminalCleanup(member);
             useAgentActivityStore().clearActivities(member.state.runId);
           });
         }
@@ -234,8 +234,9 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
 
       teamContext.isSubscribed = false;
+      teamContext.currentStatus = AgentTeamStatus.Offline;
       teamContext.leafAgentContextsByRouteKey.forEach((member) => {
-        member.isSending = false;
+        applyOfflineOrTerminalCleanup(member);
         useAgentActivityStore().clearActivities(member.state.runId);
       });
 
@@ -360,7 +361,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (!finalTeamContext) {
           throw new Error(`Team context '${finalTeamRunId}' not found after creation.`);
         }
-
         const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
           draftOwner,
           finalOwner: buildTeamMemberFinalContextFileOwner(finalTeamRunId, targetMemberRouteKey),
@@ -441,23 +441,23 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
     },
 
-    stopGeneration(teamRunId?: string): boolean {
+    interruptGeneration(teamRunId?: string): boolean {
       const teamContextsStore = useAgentTeamContextsStore();
       const activeTeam = teamContextsStore.activeTeamContext;
       const resolvedTeamRunId = (teamRunId && teamRunId.trim()) || activeTeam?.teamRunId;
 
       if (!resolvedTeamRunId) {
-        console.warn('Cannot stop generation: no active team ID.');
+        console.warn('Cannot interrupt generation: no active team ID.');
         return false;
       }
 
       const service = teamStreamingServices.get(resolvedTeamRunId);
       if (!service) {
-        console.warn(`Cannot stop generation: no streaming service for team '${resolvedTeamRunId}'.`);
+        console.warn(`Cannot interrupt generation: no streaming service for team '${resolvedTeamRunId}'.`);
         return false;
       }
 
-      service.stopGeneration();
+      service.interruptGeneration();
       return true;
     },
   },

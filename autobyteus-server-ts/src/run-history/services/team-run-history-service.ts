@@ -3,6 +3,10 @@ import path from "node:path";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
 import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+import type {
+  AgentApiStatus,
+  AgentStatusPayload,
+} from "../../agent-execution/domain/agent-status-payload.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   TeamRunHistoryItem,
@@ -89,10 +93,22 @@ export class TeamRunHistoryService {
         staleTeamRunIds.push(row.teamRunId);
         continue;
       }
-      const isActive = this.isTeamRunActive(row.teamRunId);
+      const activeTeamRun = this.teamRunManager.getActiveRun(row.teamRunId);
+      const isActive = activeTeamRun !== null;
       if (metadata.archivedAt && !isActive) {
         continue;
       }
+      const memberStatusSnapshots =
+        typeof activeTeamRun?.getMemberStatusSnapshots === "function"
+          ? activeTeamRun.getMemberStatusSnapshots()
+          : [];
+      const status: AgentApiStatus = activeTeamRun
+        ? typeof activeTeamRun.getStatusSnapshot === "function"
+          ? activeTeamRun.getStatusSnapshot().status
+          : "running"
+        : row.lastKnownStatus === "ERROR"
+          ? "error"
+          : "offline";
       const summary = await this.resolveSummary(row, metadata);
       const coordinatorMemberRouteKey = resolveCoordinatorMemberRouteKey(metadata);
       items.push({
@@ -103,6 +119,7 @@ export class TeamRunHistoryService {
         workspaceRootPath: row.workspaceRootPath ?? resolveTeamWorkspaceRootPath(metadata) ?? null,
         summary,
         lastActivityAt: row.lastActivityAt,
+        status,
         lastKnownStatus: isActive ? "ACTIVE" : row.lastKnownStatus,
         deleteLifecycle: row.deleteLifecycle,
         isActive,
@@ -110,6 +127,7 @@ export class TeamRunHistoryService {
           memberRouteKey: member.memberRouteKey,
           memberName: member.memberName,
           memberRunId: member.memberRunId,
+          status: this.resolveMemberHistoryStatus(member, memberStatusSnapshots),
           runtimeKind: member.runtimeKind,
           platformAgentRunId: member.platformAgentRunId,
           agentDefinitionId: member.agentDefinitionId,
@@ -277,6 +295,18 @@ export class TeamRunHistoryService {
 
   private isTeamRunActive(teamRunId: string): boolean {
     return this.teamRunManager.getActiveRun(teamRunId) !== null;
+  }
+
+  private resolveMemberHistoryStatus(
+    member: TeamRunAgentMemberMetadata,
+    statusSnapshots: AgentStatusPayload[],
+  ): AgentApiStatus {
+    const snapshot = statusSnapshots.find((candidate) =>
+      candidate.agent_id === member.memberRunId ||
+      candidate.agent_id === member.platformAgentRunId ||
+      candidate.agent_name === member.memberName,
+    );
+    return snapshot?.status ?? "offline";
   }
 
   private async resolveSummary(

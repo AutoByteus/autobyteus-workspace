@@ -505,3 +505,44 @@ Passed:
   - Result: `8` changed/untracked non-test source files checked; no file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation remains paused until code review passes again.
+
+## Delivery Round 8 Latest-Base Integration Local Fix
+
+Resolved the delivery-blocking merge conflicts from the required latest-base refresh against `origin/personal @ a51d3abd8bb6` while preserving the reviewed/API-E2E-passed Round 8 nested mixed-team roster/communication behavior.
+
+Key integration decisions:
+
+- Preserved Round 8 recursive frontend topology (`memberTree`, `memberNodesByRouteKey`, `leafAgentContextsByRouteKey`, `focusedMemberRouteKey`) across the conflicted team grid/spotlight/workspace, run-open, run-hydration, run-recovery, and run-history helper paths.
+- Integrated the newer base runtime-status contract (`AGENT_STATUS`/`TEAM_STATUS` using canonical `offline | idle | running | error`, `INTERRUPT_GENERATION`, and runtime status snapshots) without reintroducing flat `focusedMemberName` / `members` authority in the active frontend team context.
+- Kept nested team stream identity intact: `source_path` / `source_route_key`, `member_path` / `member_route_key`, `MEMBER_INPUT`, and flattened live `TEAM_COMMUNICATION_MESSAGE` payloads remain the transport contract.
+- Kept Round 8 prompt/roster behavior intact: clean named rosters expose real recipient names only; descriptor-owned routing remains authoritative; `allowedRecipientNames` remains a derived schema/edge list.
+- Updated nested run-history row projection to carry canonical per-member runtime statuses while preserving recursive team rows from metadata/context rather than falling back to flat rows.
+- Resolved docs conflicts by documenting both the nested selector/member-input/team-approval identity contract and the latest base interrupt/status contract.
+- Preserved delivery-owned `release-deployment-report.md` edits; the new delivery blocker artifact remains available at `delivery-round8-integration-blocker.md`.
+
+Implementation notes:
+
+- `autobyteus-ts` was rebuilt locally (`pnpm -C autobyteus-ts build`) before server typecheck so the workspace package `dist` declarations reflect the latest base interrupt stream events used by `autobyteus-server-ts`.
+- The merge conflicts are resolved in the worktree/index; no unresolved conflict markers or unmerged paths remain.
+
+## Delivery Round 8 Integration Local Checks
+
+Passed:
+
+- `pnpm -C autobyteus-ts build`
+  - Result: passed; runtime dependency verification passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts --reporter=dot`
+  - Result: `5` files passed, `26` tests passed.
+- `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamGridView.spec.ts components/workspace/team/__tests__/TeamSpotlightView.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts --reporter=dot`
+  - Result: `8` files passed, `41` tests passed.
+  - Notes: output includes existing KaTeX quirks-mode warnings from Markdown renderer tests.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- Custom changed `.ts` / `.vue` source size audit against `origin/personal`.
+  - Result: `216` changed files checked; no changed non-test implementation source file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until this integrated source state passes code review again.

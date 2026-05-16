@@ -43,9 +43,9 @@ The Pinia stores act as the primary interface for the UI components to interact 
 - **Key Actions**:
   - `sendUserInputAndSubscribe()`: Sends user messages via mutation and ensures an agent WebSocket stream is connected. For persisted inactive runs, it uses resume config to call `RestoreAgentRun` before finalizing attachments and sending. Before the send, it finalizes any staged browser uploads so optimistic history and runtime payloads both point at final run-scoped attachment locators.
   - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. The backend WebSocket boundary is also restore-aware for connect and `SEND_MESSAGE`, so a stale/missing frontend resume cache does not have to be the only recovery path.
-  - `stopGeneration()`: Sends the backend `STOP_GENERATION` control command without locally marking the run send-ready. `isSending` is cleared by backend lifecycle/status/error stream handling after the runtime has settled the active turn.
+  - `interruptGeneration()`: Sends the backend `INTERRUPT_GENERATION` control command without locally marking the run send-ready. `isSending` is cleared by backend lifecycle/status/error stream handling after the runtime has settled the active turn.
   - `terminateRun(runId)`: Sends backend `TerminateAgentRun` for persisted runs before local teardown, then disconnects the stream, marks the run inactive in history, and refreshes the history tree. Row-level terminate actions delegate here without selecting the row; follow-up chat recovery still uses the restore-aware send path rather than treating terminate as a local-only close.
-  - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls.
+  - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls through the backend active-runtime approval command; it is not a restore or turn-starting operation.
   - `closeAgent()`: Cleans up local state and unsubscribes.
 
 ### `agentTeamRunStore.ts` (Agent Teams)
@@ -56,7 +56,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
   - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., task updates, status changes) via WebSocket.
   - `sendMessageToFocusedMember()`: Routes user input to a specific agent within the team context, restoring an inactive persisted team when resume config says it is inactive, then finalizing that member's staged uploaded attachments after the authoritative team/member identity is known. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent.
-  - `stopGeneration()`: Sends the team `STOP_GENERATION` control command for the active team run/member without locally clearing the focused member's `isSending` flag. The focused member becomes send-ready from backend lifecycle/status/error events, not from local stop-command dispatch.
+  - `interruptGeneration()`: Sends the team `INTERRUPT_GENERATION` control command for the active team run/member without locally clearing the focused member's `isSending` flag. The focused member becomes send-ready from backend lifecycle/status/error events, not from local interrupt-command dispatch.
   - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. On success it disconnects the team stream, marks members shut down, marks run-history resume config inactive, and refreshes the history tree; on failure it leaves the active local team state intact.
 
 ### Stopped-Run Follow-Up Recovery
@@ -66,14 +66,67 @@ Single-agent and team follow-up chat share the same recovery model:
 - frontend stores use cached resume config to eagerly call explicit restore mutations when they know a selected run/team is inactive;
 - WebSocket connect and `SEND_MESSAGE` are restore-aware on the backend, so follow-up chat can still recover stopped-but-persisted runs when the frontend cache is stale, missing, or was updated after a local stop;
 - accepted follow-up messages mark the run/team active in run history and refresh the history tree; and
-- stop/tool-approval control messages are active-only and should not be used as implicit restore operations.
+- interrupt/tool-approval control messages are active-only and should not be used as implicit restore operations.
 
-Stop dispatch is intentionally not a local completion event. The frontend must
+Tool approval controls use the selected active context only. Inline approval
+buttons call the active context store, which routes to the single-agent or team
+run store and emits `APPROVE_TOOL` / `DENY_TOOL` to the backend. The frontend
+must not treat a click as local execution success, local denial finality beyond
+the immediate requested command, or stopped-run recovery. Authoritative state
+comes back through backend `TOOL_APPROVED`, `TOOL_DENIED`,
+`TOOL_EXECUTION_*`, `ERROR`, and status/lifecycle projections; stale/no-active
+or interrupted approval attempts remain backend-rejected control outcomes. A
+visible tool row is not itself approval authority: approval buttons should be
+shown only for `awaiting-approval` rows, and backend rejection remains
+authoritative when a stale client attempts to approve an active-but-not-pending
+tool invocation.
+
+Interrupt dispatch is intentionally not a local completion event. The frontend must
 keep the affected single run or focused team member in its current sending
 state until `TURN_COMPLETED`, `AGENT_STATUS`, or `ERROR` stream handling clears
 that state. This keeps the primary input from advertising follow-up readiness
 before provider runtimes such as Claude Agent SDK have settled interrupted
 query/process resources.
+
+### Runtime Status And Interrupt Authority
+
+The frontend runtime status model is intentionally coarse:
+
+- single-agent and team status enums expose only `offline`, `idle`, `running`, and `error`;
+- single-agent `AGENT_STATUS` payloads are
+  `{ status: "offline" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
+- aggregate `TEAM_STATUS` payloads are `{ status: "offline" | "idle" | "running" | "error" }`;
+- team member interrupt authority comes from the selected member's most recent
+  `AGENT_STATUS.can_interrupt` value, not from aggregate `TEAM_STATUS`; and
+- legacy target fields such as `new_status` / `old_status` and detailed runtime
+  phases such as `bootstrapping`, `awaiting_llm_response`, or `executing_tool`
+  are not part of the frontend WebSocket status contract.
+
+Runtime adapters may still use richer provider/native status internally. The
+server boundary projects those details into the coarse API status and computes
+`can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
+remains a local submit-flight and disabled-input signal only; it must not be
+used to show the stop button or to infer that an interrupt can be accepted.
+Run-history refresh, active recovery, and run-open hydration must preserve an
+already-live `running/canInterrupt=true` single run or focused team member while
+that live stream remains authoritative, but terminal `offline` or `error`
+history projections must clear stale `canInterrupt` even when a caller asks to
+preserve live interrupt state. A later live
+`AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
+browser-visible stop affordance.
+
+Active team recovery and refresh must keep aggregate and member status separate.
+If a team row is `running` but only one member has a member-scoped `running`
+history/snapshot/event, the other members must stay at their own member-scoped
+status, or default to `offline/canInterrupt=false` until a member `AGENT_STATUS`
+arrives. Frontend reconciliation must never fan out aggregate team `running`
+state to every member row.
+
+When a single-agent run is terminated successfully, the backend publishes
+`AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
+stream before teardown. Frontend live state and history merge logic should treat
+`offline` as the canonical inactive non-error terminal state instead of waiting
+for a socket close or a later history reload to infer that transition.
 
 ### Run Reopen Projection Hydration
 
@@ -222,13 +275,14 @@ Incoming events are routed based on their `type`:
 | :------------------------ | :------------------------------------------------- | :-------------------------------------------------------------- |
 | `SEGMENT_START`           | `segmentHandler.handleSegmentStart`                | Creates or merges a transcript UI segment (Text, Code, Tool) and seeds/hydrates a pending Activity row for eligible displayable tool segments. |
 | `SEGMENT_CONTENT`         | `segmentHandler.handleSegmentContent`              | Appends streaming content (deltas) to an existing segment.      |
-| `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata and hydrates the matching Activity row without owning terminal execution state. |
+| `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
-| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run-level status such as `running`, `idle`, or `error`. |
+| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no `new_status` / `old_status`. |
+| `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into banner-ready run state (`requested`, `started`, `completed`, `failed`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
-| `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation. |
+| `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
 | `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`.                     |
 | `TOOL_APPROVED`           | `toolLifecycleHandler.handleToolApproved`          | Marks invocation as approved before execution starts.           |
 | `TOOL_DENIED`             | `toolLifecycleHandler.handleToolDenied`            | Marks invocation as terminal denied immediately.                |
@@ -257,7 +311,7 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 
 - **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes/merges a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`) for transcript structure. When that segment is an eligible displayable tool invocation with a stable invocation id and tool identity, it delegates to `toolActivityProjection.ts` to seed or hydrate the matching pending Activity row. File-change sidecar state is still not inferred here; the backend emits dedicated `FILE_CHANGE` events for the Artifacts experience.
 - **`handleSegmentContent`**: Finds the segment by backend-provided `segment_type` + `id` and appends string deltas. This powers the "typewriter" effect. The frontend intentionally trusts that identity contract; provider adapters must emit different ids for distinct text blocks that belong on different sides of tool cards instead of relying on frontend runtime-specific reorder logic.
-- **`handleSegmentEnd`**: Performs transcript cleanup, sets the final tool name if it was streamed lazily, preserves final metadata such as arguments, and marks the segment as "parsed" (ready for execution state changes). It also delegates segment metadata hydration to `toolActivityProjection.ts`; lifecycle events remain authoritative for execution and terminal result/error state.
+- **`handleSegmentEnd`**: Performs transcript cleanup, sets the final tool name if it was streamed lazily, preserves final metadata such as arguments, and marks the segment as "parsed" (ready for execution state changes). When the backend sends `interrupted` or `failed` terminal metadata, it marks the segment/tool row terminal (`interrupted` or `error`) and stores the reason/error instead of leaving a spinner. It also delegates segment metadata hydration to `toolActivityProjection.ts`; lifecycle events remain authoritative for successful execution and terminal result/error state.
 
 #### `toolLifecycleHandler.ts`
 
@@ -265,13 +319,14 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 - Enforces normal non-terminal progress while allowing provider order where `TOOL_EXECUTION_STARTED` can arrive before `TOOL_APPROVAL_REQUESTED`; in that case `awaiting-approval` remains the active UI state until approval/denial/terminal events arrive.
 - Enforces terminal precedence: `success` / `error` / `denied` are terminal and cannot be regressed by later non-terminal events or logs.
 - Hydrates arguments from lifecycle payloads. `TOOL_APPROVAL_REQUESTED` and `TOOL_EXECUTION_STARTED` are the primary sources; `TOOL_EXECUTION_SUCCEEDED` and `TOOL_EXECUTION_FAILED` may also carry arguments as a defensive result-first recovery path for runtimes whose start event is missed or arrives out of order.
-- Owns lifecycle state transitions and delegates Activity projection to `toolActivityProjection.ts`. Lifecycle events create the row if no segment has seeded it yet, and otherwise update the same Activity row by invocation id/aliases.
+- Owns lifecycle state transitions and delegates Activity projection to `toolActivityProjection.ts`. Lifecycle events create the row if no segment has seeded it yet, and otherwise update the same Activity row by exact invocation id only.
 
 #### `toolActivityProjection.ts`
 
 - Owns the shared live Activity projection policy used by both segment and lifecycle handlers.
 - Seeds pending/running Activity visibility from eligible tool-like `SEGMENT_START` payloads so the right-side Activity panel appears when the middle tool card appears.
-- Deduplicates segment-first and lifecycle-first paths by invocation id/aliases, merges arguments and tool names, projects logs/result/error updates, and preserves terminal status precedence.
+- Deduplicates segment-first and lifecycle-first paths by exact invocation id only, merges arguments and tool names, projects logs/result/error updates, and preserves terminal status precedence.
+- Treats backend/provider invocation ids as opaque identity tokens for distinct tool calls. Colon suffixes are never stripped or aliased by frontend projection: provider-generated ordinals such as `run_bash:0`, `run_bash:1`, semantic-looking suffixes such as `call_1:write_file`, and approval metadata suffixes such as `call_1:approval-1` are distinct ids unless the backend emits the same canonical id on every related event. Producer adapters must keep approval ids and other provider metadata out of public `invocation_id`.
 - Skips placeholder or missing generic tool names to avoid noisy blank Activity rows.
 
 ### Sidecar Store Pattern
@@ -328,7 +383,9 @@ The backend can emit:
 - A generic `ERROR` event for unrecoverable system/agent failures.
 - Explicit turn-scoped lifecycle events (`TURN_STARTED`, `TURN_COMPLETED`) for one accepted user turn.
 
-`AGENT_STATUS` is still run-scoped state. `TURN_COMPLETED` is now the preferred signal when a client needs to know that one exact turn has finished.
+`AGENT_STATUS` is still run-scoped or team-member state. `TEAM_STATUS` is only
+aggregate team state. `TURN_COMPLETED` is now the preferred signal when a client
+needs to know that one exact turn has finished.
 
 `TOOL_LOG` is diagnostic-only and never the lifecycle authority for completion/failure.
 

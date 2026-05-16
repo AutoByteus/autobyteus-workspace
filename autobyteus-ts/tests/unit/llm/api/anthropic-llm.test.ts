@@ -118,6 +118,14 @@ describe('AnthropicLLM', () => {
     expect(params.thinking).toEqual({ type: 'adaptive', display: 'omitted' });
   });
 
+  it('passes invocation AbortSignal to sync message requests', async () => {
+    const controller = new AbortController();
+
+    await llm.sendMessages(userMessages, null, {}, { signal: controller.signal });
+
+    expect(mockCreate.mock.calls[0]?.[1]).toEqual({ signal: controller.signal });
+  });
+
   it('preserves fixed-budget thinking behavior for older Claude models without leaking internal fields', async () => {
     const opus46 = new AnthropicLLM(
       buildModel('claude-opus-4.6', 'claude-opus-4-6'),
@@ -172,5 +180,16 @@ describe('AnthropicLLM', () => {
     expect(params).not.toHaveProperty('thinking_enabled');
     expect(params).not.toHaveProperty('thinking_budget_tokens');
     expect(params).not.toHaveProperty('thinking_display');
+  });
+
+  it('passes invocation AbortSignal to streaming message requests', async () => {
+    mockCreate.mockResolvedValueOnce(emptyStream());
+    const controller = new AbortController();
+
+    for await (const _chunk of llm.streamMessages(userMessages, null, {}, { signal: controller.signal })) {
+      // consume stream
+    }
+
+    expect(mockCreate.mock.calls[0]?.[1]).toEqual({ signal: controller.signal });
   });
 });

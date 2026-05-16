@@ -20,11 +20,13 @@ import {
   handleToolExecutionStarted,
   handleToolExecutionSucceeded,
   handleToolExecutionFailed,
+  handleToolExecutionInterrupted,
   handleToolLog,
   handleAgentStatus,
   handleCompactionStatus,
   handleAssistantComplete,
   handleTurnCompleted,
+  handleTurnInterrupted,
   handleExternalUserMessage,
   handleTodoListUpdate,
   handleError,
@@ -166,8 +168,8 @@ export class TeamStreamingService {
     this.approvalTargetByInvocationId.delete(invocationId);
   }
 
-  stopGeneration(): void {
-    const message: ClientMessage = { type: 'STOP_GENERATION' };
+  interruptGeneration(): void {
+    const message: ClientMessage = { type: 'INTERRUPT_GENERATION' };
     this.wsClient.send(serializeClientMessage(message));
   }
 
@@ -368,6 +370,16 @@ export class TeamStreamingService {
   }
 
   private dispatchMessage(message: ServerMessage, teamContext: AgentTeamContext): void {
+    if (message.type === 'TEAM_STATUS') {
+      handleTeamStatus(message.payload, teamContext);
+      return;
+    }
+
+    if (message.type === 'TASK_PLAN_EVENT') {
+      handleTaskPlanEvent(message.payload, teamContext);
+      return;
+    }
+
     if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
       handleTeamCommunicationMessage(message.payload);
       return;
@@ -420,6 +432,10 @@ export class TeamStreamingService {
         handleToolExecutionFailed(message.payload, memberContext);
         break;
 
+      case 'TOOL_EXECUTION_INTERRUPTED':
+        handleToolExecutionInterrupted(message.payload, memberContext);
+        break;
+
       case 'TOOL_LOG':
         handleToolLog(message.payload, memberContext);
         break;
@@ -439,6 +455,10 @@ export class TeamStreamingService {
         handleTurnCompleted(message.payload, memberContext);
         break;
 
+      case 'TURN_INTERRUPTED':
+        handleTurnInterrupted(message.payload, memberContext);
+        break;
+
       case 'ASSISTANT_COMPLETE':
         handleAssistantComplete(message.payload, memberContext);
         break;
@@ -449,14 +469,6 @@ export class TeamStreamingService {
 
       case 'TODO_LIST_UPDATE':
         handleTodoListUpdate(message.payload, memberContext);
-        break;
-
-      case 'TEAM_STATUS':
-        handleTeamStatus(message.payload, teamContext);
-        break;
-
-      case 'TASK_PLAN_EVENT':
-        handleTaskPlanEvent(message.payload, teamContext);
         break;
 
       case 'ERROR':

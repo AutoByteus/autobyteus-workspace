@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { BaseLLM } from '../base.js';
+import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
@@ -138,7 +138,7 @@ export class AnthropicLLM extends BaseLLM {
     this._renderer = createAnthropicPromptRendererForToolFormat();
   }
 
-  protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): Promise<CompleteResponse> {
+  protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
     const { systemPrompt, remaining } = splitSystemMessages(messages);
     const formattedMessages = await this._renderer.render(remaining) as MessageParam[];
 
@@ -155,7 +155,8 @@ export class AnthropicLLM extends BaseLLM {
     applyAnthropicRequestParams(params, this.model.value, this.config.extraParams ?? null, kwargs);
 
     try {
-      const response = await this.client.messages.create(params);
+      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const response = await this.client.messages.create(params, requestOptions as any);
       
       let content = '';
       let reasoning: string | null = null;
@@ -179,7 +180,7 @@ export class AnthropicLLM extends BaseLLM {
     }
   }
 
-  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): AsyncGenerator<ChunkResponse, void, unknown> {
+  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
     const { systemPrompt, remaining } = splitSystemMessages(messages);
     const formattedMessages = await this._renderer.render(remaining) as MessageParam[];
 
@@ -198,7 +199,8 @@ export class AnthropicLLM extends BaseLLM {
     params.stream = true;
 
     try {
-      const stream = await this.client.messages.create(params);
+      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const stream = await this.client.messages.create(params, requestOptions as any);
       
       for await (const event of stream as AsyncIterable<RawMessageStreamEvent>) {
         if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {

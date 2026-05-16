@@ -18,6 +18,13 @@ import { findOrCreateAIMessage, findSegmentById } from './segmentHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
+import { applyLiveAgentStatusEvent } from '~/services/runStatus/agentRuntimeStatusState';
+import {
+  applyExecutionFailedState,
+  applyExecutionInterruptedState,
+  isTerminalStatus,
+  type ToolLifecycleSegment,
+} from './toolLifecycleState';
 
 
 /**
@@ -27,25 +34,14 @@ export function handleAgentStatus(
   payload: AgentStatusPayload,
   context: AgentContext
 ): void {
-  const normalizedStatus = String(payload.new_status || AgentStatus.Uninitialized).toLowerCase();
-  context.state.currentStatus = normalizedStatus as AgentStatus;
-  
-  const shouldStopSending = [
-    AgentStatus.Idle,
-    AgentStatus.Error,
-    AgentStatus.ShutdownComplete,
-  ].includes(normalizedStatus as AgentStatus);
+  applyLiveAgentStatusEvent(context, payload);
 
-  // If status indicates completion, mark the current AI message as complete
-  if (normalizedStatus === AgentStatus.Idle) {
+  // If status indicates completion, mark the current AI message as complete.
+  if (payload.status === AgentStatus.Idle) {
     const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
     if (lastMessage?.type === 'ai') {
       lastMessage.isComplete = true;
     }
-  }
-
-  if (shouldStopSending) {
-    context.isSending = false;
   }
 }
 
@@ -64,6 +60,14 @@ export function handleTurnCompleted(
   _payload: TurnLifecyclePayload,
   context: AgentContext
 ): void {
+  markConversationComplete(context);
+}
+
+export function handleTurnInterrupted(
+  payload: TurnLifecyclePayload,
+  context: AgentContext
+): void {
+  terminalizeOpenToolSegmentsForInterruptedTurn(payload, context);
   markConversationComplete(context);
 }
 
@@ -120,6 +124,8 @@ export function handleError(
     return;
   }
 
+  terminalizeOpenToolSegmentsForError(payload, context);
+
   const aiMessage = findOrCreateAIMessage(context);
 
   const errorSegment: ErrorSegment = {
@@ -130,7 +136,6 @@ export function handleError(
 
   aiMessage.segments.push(errorSegment);
   aiMessage.isComplete = true;
-  context.isSending = false;
 }
 
 // ============================================================================
@@ -201,5 +206,73 @@ function markConversationComplete(context: AgentContext): void {
   if (lastMessage?.type === 'ai') {
     lastMessage.isComplete = true;
   }
-  context.isSending = false;
+}
+
+function isToolLifecycleSegment(segment: unknown): segment is ToolLifecycleSegment {
+  if (!segment || typeof segment !== 'object') {
+    return false;
+  }
+  const type = (segment as { type?: string }).type;
+  return type === 'tool_call' || type === 'write_file' || type === 'terminal_command' || type === 'edit_file';
+}
+
+function terminalizeOpenToolSegmentsForInterruptedTurn(
+  payload: TurnLifecyclePayload,
+  context: AgentContext,
+): void {
+  const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
+  if (lastMessage?.type !== 'ai') {
+    return;
+  }
+
+  const rawReason = (payload as { reason?: unknown }).reason;
+  const reason =
+    typeof rawReason === 'string' && rawReason.trim().length > 0
+      ? rawReason.trim()
+      : 'interrupted';
+  const activityStore = useAgentActivityStore();
+
+  for (const segment of lastMessage.segments) {
+    if (!isToolLifecycleSegment(segment) || isTerminalStatus(segment.status)) {
+      continue;
+    }
+
+    const transitioned = applyExecutionInterruptedState(segment, reason);
+    if (!transitioned) {
+      continue;
+    }
+
+    activityStore.updateActivityStatus(context.state.runId, segment.invocationId, 'interrupted');
+    activityStore.setActivityResult(context.state.runId, segment.invocationId, null, segment.error);
+  }
+}
+
+function terminalizeOpenToolSegmentsForError(
+  payload: ErrorPayload,
+  context: AgentContext,
+): void {
+  const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
+  if (lastMessage?.type !== 'ai') {
+    return;
+  }
+
+  const error =
+    typeof payload.message === 'string' && payload.message.trim().length > 0
+      ? payload.message.trim()
+      : 'stream_error';
+  const activityStore = useAgentActivityStore();
+
+  for (const segment of lastMessage.segments) {
+    if (!isToolLifecycleSegment(segment) || isTerminalStatus(segment.status)) {
+      continue;
+    }
+
+    const transitioned = applyExecutionFailedState(segment, error);
+    if (!transitioned) {
+      continue;
+    }
+
+    activityStore.updateActivityStatus(context.state.runId, segment.invocationId, 'error');
+    activityStore.setActivityResult(context.state.runId, segment.invocationId, null, segment.error);
+  }
 }

@@ -130,6 +130,27 @@ export class ToolExecutionFailedData extends BaseStreamPayload {
   }
 }
 
+
+export class ToolExecutionInterruptedData extends BaseStreamPayload {
+  invocation_id: string;
+  tool_name: string;
+  turn_id: string | null;
+  reason: string;
+
+  constructor(data: Record<string, any>) {
+    assertRequiredKeys(
+      data,
+      ['invocation_id', 'tool_name', 'turn_id', 'reason'],
+      'ToolExecutionInterruptedData'
+    );
+    super(data);
+    this.invocation_id = String(data.invocation_id ?? '');
+    this.tool_name = String(data.tool_name ?? '');
+    this.turn_id = data.turn_id == null ? null : String(data.turn_id);
+    this.reason = String(data.reason ?? '');
+  }
+}
+
 export const createToolInteractionLogEntryData = (
   logData: unknown
 ): ToolInteractionLogEntryData => {
@@ -187,4 +208,13 @@ export const createToolExecutionFailedData = (
     throw new Error('Cannot create ToolExecutionFailedData from non-object');
   }
   return new ToolExecutionFailedData(failureData);
+};
+
+export const createToolExecutionInterruptedData = (
+  interruptedData: unknown
+): ToolExecutionInterruptedData => {
+  if (!isRecord(interruptedData)) {
+    throw new Error('Cannot create ToolExecutionInterruptedData from non-object');
+  }
+  return new ToolExecutionInterruptedData(interruptedData);
 };

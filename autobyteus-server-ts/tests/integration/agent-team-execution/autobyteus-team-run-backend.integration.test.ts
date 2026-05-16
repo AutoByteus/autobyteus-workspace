@@ -73,6 +73,7 @@ type FakeTeam = {
   currentStatus: string;
   postMessage: ReturnType<typeof vi.fn>;
   postToolExecutionApproval: ReturnType<typeof vi.fn>;
+  interrupt: ReturnType<typeof vi.fn>;
   stop: ReturnType<typeof vi.fn>;
 };
 
@@ -151,6 +152,7 @@ const createBackend = (
     currentStatus: "IDLE",
     postMessage: vi.fn().mockResolvedValue(undefined),
     postToolExecutionApproval: vi.fn().mockResolvedValue(undefined),
+    interrupt: vi.fn().mockResolvedValue({ accepted: true, status: "accepted" }),
     stop: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   };
@@ -187,7 +189,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
     expect(backend.runId).toBe("team-auto-1");
     expect(backend.teamBackendKind).toBe(TeamBackendKind.AUTOBYTEUS);
     expect(backend.getRuntimeContext()).toBeNull();
-    expect(backend.getStatus()).toBe("IDLE");
+    expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
 
     const userMessage = new AgentInputUserMessage("hello team");
     await expect(backend.postMessage(userMessage, "WorkerA")).resolves.toMatchObject({
@@ -232,8 +234,13 @@ describe("AutoByteusTeamRunBackend integration", () => {
       "approved",
     );
 
-    await expect(backend.interrupt()).resolves.toEqual({ accepted: true });
-    expect(team.stop).toHaveBeenCalledTimes(1);
+    await expect(backend.interrupt()).resolves.toEqual({
+      accepted: true,
+      code: "accepted",
+      message: undefined,
+    });
+    expect(team.interrupt).toHaveBeenCalledWith({ reason: "user_interrupt" });
+    expect(team.stop).not.toHaveBeenCalled();
 
     await expect(backend.terminate()).resolves.toEqual({ accepted: true });
   });
@@ -298,8 +305,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
         team_id: team.teamId,
         event_source_type: "TEAM",
         data: new AgentTeamStatusUpdateData({
-          old_status: "PROCESSING",
-          new_status: "IDLE",
+          status: "idle",
         }),
       }),
     );
@@ -372,8 +378,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
       eventSourceType: TeamRunEventSourceType.TEAM,
       teamRunId: "team-auto-1",
       data: {
-        old_status: "PROCESSING",
-        new_status: "IDLE",
+        status: "idle",
       },
       subTeamNodeName: null,
     });

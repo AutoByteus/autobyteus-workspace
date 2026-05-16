@@ -1,0 +1,18 @@
+### 2026-05-14T10:54:12+02:00 local-terminal-validation.mjs rerun
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+{
+  "status": "pass",
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/logs/local-terminal-validation-2026-05-14T08-54-12-065Z.json",
+  "workspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/local-terminal-2026-05-14T08-54-12-065Z",
+  "expectedBytes": 155275,
+  "expectedHash": "42c2d926e719998ea35401727c69b51a12af53a386bcc679e4c60a045a53d0e4",
+  "bashNativePids": [
+    44049,
+    44050
+  ],
+  "startPid": 44106
+}

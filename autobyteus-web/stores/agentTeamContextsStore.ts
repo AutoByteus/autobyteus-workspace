@@ -166,7 +166,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         coordinatorMemberRouteKey,
         historicalHydration: null,
         focusedMemberRouteKey,
-        currentStatus: AgentTeamStatus.Idle,
+        currentStatus: AgentTeamStatus.Offline,
         isSubscribed: false,
         taskPlan: null,
         taskStatuses: null,

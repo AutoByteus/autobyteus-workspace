@@ -5,6 +5,8 @@ import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
 import type { TeamMemberSelector } from "../domain/team-run-member-identity.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
 import type { TeamBackendKind } from "../domain/team-backend-kind.js";
+import type { AgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
+import type { TeamStatusPayload } from "../domain/team-status-payload.js";
 
 export interface TeamRunBackend {
   readonly runId: string;
@@ -12,7 +14,8 @@ export interface TeamRunBackend {
 
   getRuntimeContext(): RuntimeTeamRunContext | null;
   isActive(): boolean;
-  getStatus(): string | null;
+  getStatusSnapshot(): TeamStatusPayload;
+  getMemberStatusSnapshots(): AgentStatusPayload[];
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe;
   postMessage(
     message: AgentInputUserMessage,

@@ -62,8 +62,13 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     return this.agentRun?.isActive() ?? false;
   }
 
-  getStatus(): string | null {
-    return this.agentRun?.getStatus() ?? null;
+  getStatusSnapshot() {
+    return this.agentRun?.getStatusSnapshot() ?? {
+      status: "offline" as const,
+      can_interrupt: false,
+      agent_id: this.context.memberRunId,
+      agent_name: this.context.memberName,
+    };
   }
 
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {

@@ -50,18 +50,69 @@ describe('AutobyteusLLM', () => {
     );
 
     expect(response.content).toBe('ok');
-    expect(sendMessage).toHaveBeenCalledWith({
-      conversationId: 'run-123',
-      modelName: 'autobyteus-rpa-model',
-      payload: {
-        current_message_index: 3,
-        messages: [
-          expect.objectContaining({ role: 'system', content: 'system' }),
-          expect.objectContaining({ role: 'user', content: 'first' }),
-          expect.objectContaining({ role: 'assistant', content: 'answer' }),
-          expect.objectContaining({ role: 'user', content: 'next' })
-        ]
-      }
+    expect(sendMessage).toHaveBeenCalledWith(
+      {
+        conversationId: 'run-123',
+        modelName: 'autobyteus-rpa-model',
+        payload: {
+          current_message_index: 3,
+          messages: [
+            expect.objectContaining({ role: 'system', content: 'system' }),
+            expect.objectContaining({ role: 'user', content: 'first' }),
+            expect.objectContaining({ role: 'assistant', content: 'answer' }),
+            expect.objectContaining({ role: 'user', content: 'next' })
+          ]
+        }
+      },
+      { signal: null }
+    );
+  });
+
+  it('passes send-message cancellation signal through to the client', async () => {
+    const llm = new AutobyteusLLM(buildModel(), new LLMConfig());
+    const sendMessage = vi.fn().mockResolvedValue({ response: 'ok' });
+    (llm as any).client = {
+      sendMessage,
+      cleanup: vi.fn()
+    };
+    const controller = new AbortController();
+
+    await llm.sendMessages(
+      [new Message(MessageRole.USER, 'hello')],
+      null,
+      { logicalConversationId: 'run-signal' },
+      { signal: controller.signal }
+    );
+
+    expect(sendMessage).toHaveBeenCalledWith(expect.any(Object), {
+      signal: controller.signal
+    });
+  });
+
+  it('passes stream-message cancellation signal through to the client', async () => {
+    const llm = new AutobyteusLLM(buildModel(), new LLMConfig());
+    const streamMessage = vi.fn(async function* () {
+      yield { content: 'ok', is_complete: true };
+    });
+    (llm as any).client = {
+      streamMessage,
+      cleanup: vi.fn()
+    };
+    const controller = new AbortController();
+
+    const chunks: string[] = [];
+    for await (const chunk of llm.streamMessages(
+      [new Message(MessageRole.USER, 'hello')],
+      null,
+      { logicalConversationId: 'run-stream-signal' },
+      { signal: controller.signal }
+    )) {
+      chunks.push(chunk.content ?? '');
+    }
+
+    expect(chunks).toEqual(['ok']);
+    expect(streamMessage).toHaveBeenCalledWith(expect.any(Object), {
+      signal: controller.signal
     });
   });
 

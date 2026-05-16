@@ -118,7 +118,7 @@ describe("MixedTeamRunBackend integration", () => {
     expect(backend.runId).toBe("team-mixed-1");
     expect(backend.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(backend.isActive()).toBe(true);
-    expect(backend.getStatus()).toBe("IDLE");
+    expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
 
     const userMessage = new AgentInputUserMessage("coordinate the mixed task");
@@ -244,7 +244,7 @@ describe("MixedTeamRunBackend integration", () => {
       accepted: false,
       code: "RUN_NOT_FOUND",
     });
-    expect(backend.getStatus()).toBeNull();
+    expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
   });
 
   it("forwards team events from the manager subscription", () => {
@@ -300,8 +300,7 @@ describe("MixedTeamRunBackend integration", () => {
       teamRunId: "team-mixed-1",
       sourcePath: [],
       data: {
-        old_status: "PROCESSING",
-        new_status: "IDLE",
+        status: "idle",
       },
     });
     expect(observed).toHaveLength(1);

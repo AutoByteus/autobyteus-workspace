@@ -12,7 +12,6 @@ import type { SegmentStartPayload, SegmentContentPayload, SegmentEndPayload } fr
 import { createSegmentFromPayload } from '../protocol/segmentTypes';
 import { hasStreamSegmentId, matchesStreamSegmentIdentity, setStreamSegmentIdentity } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
-import { invocationIdsMatch } from '~/utils/invocationAliases';
 import { isProjectableToolSegment, upsertActivityFromToolSegment } from './toolActivityProjection';
 
 function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): Record<string, any> {
@@ -214,7 +213,12 @@ export function handleSegmentEnd(
     }
   }
 
-  finalizeSegment(segment, payload.metadata);
+  finalizeSegment(segment, payload.metadata, {
+    interrupted: payload.interrupted === true,
+    reason: typeof payload.reason === 'string' ? payload.reason : null,
+    failed: payload.failed === true,
+    error: typeof payload.error === 'string' ? payload.error : null,
+  });
   if (isProjectableToolSegment(segment)) {
     upsertActivityFromToolSegment(context, payload.id, segment);
   }
@@ -262,7 +266,7 @@ export function findSegmentById(
         }
         if (
           ['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type) &&
-          invocationIdsMatch((segment as ToolInvocationLifecycle).invocationId, segmentId)
+          (segment as ToolInvocationLifecycle).invocationId === segmentId
         ) {
           return segment;
         }
@@ -343,7 +347,13 @@ function removeSegmentById(context: AgentContext, segmentId: string): void {
  */
 function finalizeSegment(
   segment: AIResponseSegment,
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>,
+  options: {
+    interrupted?: boolean;
+    reason?: string | null;
+    failed?: boolean;
+    error?: string | null;
+  } = {},
 ): void {
   if (segment.type === 'tool_call' || segment.type === 'write_file' || segment.type === 'terminal_command' || segment.type === 'edit_file') {
     const toolSegment = segment as ToolInvocationLifecycle;
@@ -393,6 +403,20 @@ function finalizeSegment(
       if (!terminalSegment.command && typeof metadata?.command === 'string') {
         terminalSegment.command = metadata.command;
       }
+    }
+
+    if (options.failed) {
+      toolSegment.status = 'error';
+      toolSegment.result = null;
+      toolSegment.error = options.error ?? 'stream_error';
+      return;
+    }
+
+    if (options.interrupted) {
+      toolSegment.status = 'interrupted';
+      toolSegment.result = null;
+      toolSegment.error = options.reason ?? 'interrupted';
+      return;
     }
 
     if (toolSegment.status === 'parsing') {

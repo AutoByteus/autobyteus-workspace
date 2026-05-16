@@ -206,7 +206,7 @@ const buildAgentRun = (input: {
     getContext: () => context,
     isActive: () => active,
     getPlatformAgentRunId: () => input.platformAgentRunId,
-    getStatus: () => "IDLE",
+    getStatusSnapshot: () => ({ status: "idle", can_interrupt: false }),
     subscribeToEvents: (listener: (event: unknown) => void) => {
       listeners.add(listener);
       return () => {
@@ -346,7 +346,8 @@ const createAutoByteusTeamBackendFactory = () => {
         memberContexts,
       }),
       isActive: () => active,
-      getStatus: () => "IDLE",
+      getStatusSnapshot: () => ({ status: "idle" }),
+      getMemberStatusSnapshots: () => [],
       subscribeToEvents: (listener: (event: unknown) => void) => {
         listeners.add(listener);
         return () => {

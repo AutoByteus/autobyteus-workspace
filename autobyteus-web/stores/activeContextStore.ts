@@ -35,6 +35,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
   });
 
   const isSending = computed<boolean>(() => activeAgentContext.value?.isSending ?? false);
+  const canInterrupt = computed<boolean>(() => activeAgentContext.value?.state.canInterrupt ?? false);
   const currentRequirement = computed<string>(() => activeAgentContext.value?.requirement ?? '');
   const currentContextPaths = computed<ContextFilePath[]>(() => activeAgentContext.value?.contextFilePaths ?? []);
   const activeConfig = computed<AgentRunConfig | null>(() => activeAgentContext.value?.config ?? null);
@@ -168,28 +169,29 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     }
   };
 
-  const stopGeneration = () => {
+  const interruptGeneration = () => {
     const context = activeAgentContext.value;
     _assertContext(context);
 
     if (selectionStore.selectedType === 'agent') {
-      return agentRunStore.stopGeneration(context.state.runId);
+      return agentRunStore.interruptGeneration(context.state.runId);
     }
 
     if (selectionStore.selectedType === 'team') {
       const activeTeamRunId = agentTeamContextsStore.activeTeamContext?.teamRunId;
       if (!activeTeamRunId) {
-        throw new Error('Cannot stop generation: No active team context.');
+        throw new Error('Cannot interrupt generation: No active team context.');
       }
-      return agentTeamRunStore.stopGeneration(activeTeamRunId);
+      return agentTeamRunStore.interruptGeneration(activeTeamRunId);
     }
 
-    throw new Error('Cannot stop generation: Unknown selection type.');
+    throw new Error('Cannot interrupt generation: Unknown selection type.');
   };
 
   return {
     activeAgentContext,
     isSending,
+    canInterrupt,
     currentRequirement,
     currentContextPaths,
     activeConfig,
@@ -204,6 +206,6 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     updateConfig,
     postToolExecutionApproval,
     send,
-    stopGeneration,
+    interruptGeneration,
   };
 });

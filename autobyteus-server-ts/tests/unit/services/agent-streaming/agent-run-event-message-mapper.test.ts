@@ -61,4 +61,35 @@ describe("AgentRunEventMessageMapper", () => {
       referenceFiles: [{ referenceId: "ref-1", path: "/tmp/report.md" }],
     });
   });
+
+  it.each([
+    [AgentRunEventType.SEGMENT_START, ServerMessageType.SEGMENT_START, { segment_type: "text", metadata: { source: "llm" } }],
+    [AgentRunEventType.SEGMENT_CONTENT, ServerMessageType.SEGMENT_CONTENT, { delta: "hello" }],
+    [
+      AgentRunEventType.SEGMENT_END,
+      ServerMessageType.SEGMENT_END,
+      { interrupted: true, reason: "user_interrupt", metadata: { tool_name: "search_web" } },
+    ],
+  ])("normalizes %s segment payloads to canonical turn_id", (eventType, messageType, extraPayload) => {
+    const mapper = new AgentRunEventMessageMapper();
+
+    const message = mapper.map({
+      eventType,
+      runId: "run-1",
+      payload: {
+        id: "seg-1",
+        turnId: " turn-segment-1 ",
+        ...extraPayload,
+      },
+      statusHint: null,
+    });
+
+    expect(message.type).toBe(messageType);
+    expect(message.payload).toEqual({
+      id: "seg-1",
+      turn_id: "turn-segment-1",
+      ...extraPayload,
+    });
+    expect(message.payload).not.toHaveProperty("turnId");
+  });
 });

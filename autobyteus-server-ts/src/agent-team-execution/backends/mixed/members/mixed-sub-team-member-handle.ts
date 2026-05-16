@@ -1,5 +1,6 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
+import { buildAgentStatusPayload } from "../../../../agent-execution/domain/agent-status-payload.js";
 import type { TeamRun } from "../../../domain/team-run.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import {
@@ -47,8 +48,13 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     return this.childRun?.isActive() ?? false;
   }
 
-  getStatus(): string | null {
-    return this.childRun?.getStatus() ?? null;
+  getStatusSnapshot() {
+    return buildAgentStatusPayload({
+      status: this.childRun?.getStatusSnapshot().status ?? "offline",
+      canInterrupt: false,
+      agentId: this.context.memberRunId,
+      agentName: this.context.memberName,
+    });
   }
 
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
@@ -173,7 +179,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
       eventSourceType: TeamRunEventSourceType.TEAM,
       teamRunId: this.options.parentContext.runId,
       sourcePath: this.context.memberPath,
-      data: { new_status: status } satisfies TeamRunStatusUpdateData,
+      data: { status: status === "ERROR" ? "error" : "idle" } satisfies TeamRunStatusUpdateData,
     });
     this.options.notifyStatusChange();
   }

@@ -10,7 +10,7 @@ const {
   llmProviderConfigStoreMock,
   runHistoryStoreMock,
   mockSendMessage,
-  mockStopGeneration,
+  mockInterruptGeneration,
   mockConnect,
   mockDisconnect,
   mockAttachContext,
@@ -38,7 +38,7 @@ const {
     refreshTreeQuietly: vi.fn(),
   },
   mockSendMessage: vi.fn(),
-  mockStopGeneration: vi.fn(),
+  mockInterruptGeneration: vi.fn(),
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
   mockAttachContext: vi.fn(),
@@ -72,7 +72,7 @@ vi.mock('~/services/agentStreaming', () => ({
     sendMessage: mockSendMessage,
     approveTool: vi.fn(),
     denyTool: vi.fn(),
-    stopGeneration: mockStopGeneration,
+    interruptGeneration: mockInterruptGeneration,
   })),
 }));
 
@@ -111,7 +111,7 @@ describe('agentRunStore', () => {
         vi.clearAllMocks();
         mockConnectionState.value = 'connected';
         mockSendMessage.mockReset();
-        mockStopGeneration.mockReset();
+        mockInterruptGeneration.mockReset();
         llmProviderConfigStoreMock.models = ['gpt-4-fallback'];
         llmProviderConfigStoreMock.fetchProvidersWithModels.mockResolvedValue(undefined);
         contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(async ({ attachments }: { attachments: any[] }) => attachments);
@@ -295,7 +295,7 @@ describe('agentRunStore', () => {
         mockAgentContext.isSubscribed = true;
         mockAgentContext.state.runId = 'run-1';
         store.connectToAgentStream('run-1');
-        mockAgentContext.state.currentStatus = 'processing_user_input';
+        mockAgentContext.state.currentStatus = 'running';
         mutateMock.mockResolvedValueOnce({
             data: {
                 terminateAgentRun: {
@@ -367,16 +367,16 @@ describe('agentRunStore', () => {
         expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
     });
 
-    it('stopGeneration should signal active stream without clearing sending state optimistically', () => {
+    it('interruptGeneration should signal active stream without clearing sending state optimistically', () => {
         const store = useAgentRunStore();
         mockAgentContext.state.runId = 'agent-1';
         mockAgentContext.isSending = true;
 
         store.connectToAgentStream('agent-1');
-        const result = store.stopGeneration('agent-1');
+        const result = store.interruptGeneration('agent-1');
 
         expect(result).toBe(true);
-        expect(mockStopGeneration).toHaveBeenCalledTimes(1);
+        expect(mockInterruptGeneration).toHaveBeenCalledTimes(1);
         expect(mockAgentContext.isSending).toBe(true);
     });
 });

@@ -1,0 +1,18 @@
+{
+  "toolNames": [
+    "run_bash"
+  ],
+  "skillNames": [],
+  "inputProcessorNames": [],
+  "llmResponseProcessorNames": [],
+  "systemPromptProcessorNames": [],
+  "toolExecutionResultProcessorNames": [],
+  "toolInvocationPreprocessorNames": [],
+  "lifecycleProcessorNames": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": {
+    "llmModelIdentifier": "kimi-k2.5",
+    "runtimeKind": "autobyteus",
+    "llmConfig": null
+  }
+}

@@ -134,6 +134,34 @@ describe('AutobyteusClient', () => {
     expect(payload.messages[1].video_urls).toEqual(['data:mock/type;base64,data:image/png;base64,abc']);
   });
 
+  it('forwards AbortSignal to sendMessage Axios request', async () => {
+    const client = new AutobyteusClient();
+    const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });
+    (client.asyncClient.post as any) = postMock;
+    const controller = new AbortController();
+
+    await client.sendMessage({
+      conversationId: 'conversation-signal',
+      modelName: 'model-1',
+      payload: {
+        current_message_index: 0,
+        messages: [
+          {
+            role: 'user',
+            content: 'hello',
+            image_urls: [],
+            audio_urls: [],
+            video_urls: []
+          }
+        ]
+      }
+    }, { signal: controller.signal });
+
+    expect(postMock.mock.calls[0][2]).toEqual(expect.objectContaining({
+      signal: controller.signal
+    }));
+  });
+
   it('normalizes media to data URIs for streamMessage', async () => {
     const client = new AutobyteusClient();
     const stream = Readable.from(['data: {"content":"ok","is_complete":true}\n']);
@@ -161,6 +189,37 @@ describe('AutobyteusClient', () => {
     const payload = postMock.mock.calls[0][1];
     expect(payload.messages[0].image_urls).toEqual(['data:mock/type;base64,/tmp/image.png']);
     expect(payload).not.toHaveProperty('user_message');
+  });
+
+  it('forwards AbortSignal to streamMessage Axios request', async () => {
+    const client = new AutobyteusClient();
+    const stream = Readable.from(['data: {"content":"ok","is_complete":true}\n']);
+    const postMock = vi.fn().mockResolvedValue({ data: stream });
+    (client.asyncClient.post as any) = postMock;
+    const controller = new AbortController();
+
+    const iterator = client.streamMessage({
+      conversationId: 'conversation-stream-signal',
+      modelName: 'model-1',
+      payload: {
+        current_message_index: 0,
+        messages: [
+          {
+            role: 'user',
+            content: 'hello',
+            image_urls: [],
+            audio_urls: [],
+            video_urls: []
+          }
+        ]
+      }
+    }, { signal: controller.signal });
+    await iterator.next();
+
+    expect(postMock.mock.calls[0][2]).toEqual(expect.objectContaining({
+      responseType: 'stream',
+      signal: controller.signal
+    }));
   });
 
   it('posts rendered tool transcript content without structured tool payload fields', async () => {

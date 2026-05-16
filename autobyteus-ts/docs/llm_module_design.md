@@ -27,7 +27,7 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
   Represents the _metadata_ of a model, not the active instance. It contains:
   - **Identifier:** A globally unique string (e.g., `gpt-4o`,
     `llama3:latest:ollama@localhost:11434`,
-    `openai-compatible:provider_1234567890abcdef:deepseek-chat`).
+    `openai-compatible:provider_1234567890abcdef:custom-chat-model`).
   - **Provider Identity:** `providerId`, `providerName`, and `providerType`.
     Built-in providers use stable enum IDs (for example `OPENAI`), while custom
     OpenAI-compatible providers keep their own generated provider IDs.
@@ -90,7 +90,7 @@ new built-in enum value for every saved endpoint.
     // or
     const llm = await LLMFactory.createLLM('llama3:latest:ollama@localhost:11434');
     // or
-    const llm = await LLMFactory.createLLM('openai-compatible:provider_1234567890abcdef:deepseek-chat');
+    const llm = await LLMFactory.createLLM('openai-compatible:provider_1234567890abcdef:custom-chat-model');
     ```
 
 3.  **Interaction:**
@@ -121,10 +121,10 @@ Current examples of provider-specific model rules:
 - `deepseek-v4-flash` and `deepseek-v4-pro` use the existing DeepSeek
   OpenAI-compatible adapter with their V4 thinking schema.
 - `kimi-k2.6` disables thinking automatically for tool workflows when the
-  caller has not supplied an explicit thinking override. `kimi-k2.5` and
-  `kimi-k2.6` also normalize provider-safe temperature defaults: tool
-  workflows use `temperature: 0.6`, non-tool requests use `temperature: 1`, and
-  explicit per-request `temperature` kwargs are preserved.
+  caller has not supplied an explicit thinking override. It also normalizes
+  provider-safe temperature defaults: tool workflows use `temperature: 0.6`,
+  non-tool requests use `temperature: 1`, and explicit per-request
+  `temperature` kwargs are preserved.
 
 See `docs/provider_model_catalogs.md` for the catalog ownership map across LLM,
 audio/TTS, and image models.
@@ -188,9 +188,9 @@ lower-level direct caller explicitly supplies `kwargs.tool_choice`. This keeps
 provider request payloads deterministic and prevents
 agent bookkeeping identifiers from leaking to OpenAI-compatible endpoints.
 Provider adapters can still normalize provider-specific request legality before
-delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.5` and
-`kimi-k2.6` on Moonshot-safe temperature defaults unless a caller explicitly
-passes a per-request `temperature`.
+delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.6` on
+Moonshot-safe temperature defaults unless a caller explicitly passes a
+per-request `temperature`.
 
 Prompt renderers, not `OpenAICompatibleRequestBuilder`, own provider-visible
 message-history extensions. The default `OpenAIChatRenderer` is conservative and
@@ -241,7 +241,7 @@ Current native mappings are:
 | Provider path | Native history shape |
 | --- | --- |
 | OpenAI-compatible Chat / LM Studio | `assistant.tool_calls` plus matching `role: "tool"` messages. Generic `OpenAIChatRenderer` omits internal `Message.reasoning_content`. |
-| DeepSeek Chat | Same OpenAI-compatible tool-call/result shape, with `DeepSeekChatRenderer` replaying preserved assistant `Message.reasoning_content` as DeepSeek `reasoning_content` for thinking-mode continuation. |
+| DeepSeek OpenAI-compatible path | Same OpenAI-compatible tool-call/result shape, with `DeepSeekChatRenderer` replaying preserved assistant `Message.reasoning_content` as DeepSeek `reasoning_content` for thinking-mode continuation. |
 | Gemini | model `functionCall` parts plus user `functionResponse` parts, preserving call ids when available. |
 | Ollama | assistant `tool_calls` plus `role: "tool"` result messages with `tool_name`. |
 | Anthropic | assistant `tool_use` blocks plus immediately-following user `tool_result` blocks. |

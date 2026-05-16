@@ -64,8 +64,8 @@ const sendTeamMessageOverSocket = (
   );
 };
 
-const sendStopGenerationOverSocket = (socket: WebSocket): void => {
-  socket.send(JSON.stringify({ type: "STOP_GENERATION" }));
+const sendInterruptGenerationOverSocket = (socket: WebSocket): void => {
+  socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
 };
 
 type TeamStreamMessage = { type: string; payload: Record<string, unknown> };
@@ -918,7 +918,7 @@ Rules:
         );
 
         const interruptStartIndex = streamMessages.length;
-        sendStopGenerationOverSocket(teamSocket);
+        sendInterruptGenerationOverSocket(teamSocket);
 
         await waitForTeamStreamMessageAfter(
           streamMessages,
@@ -934,7 +934,7 @@ Rules:
           (message) =>
             message.type === "AGENT_STATUS" &&
             message.payload.agent_name === "worker" &&
-            message.payload.new_status === "IDLE",
+            message.payload.status === "idle",
           "worker AGENT_STATUS IDLE after interrupt",
         );
 
@@ -975,7 +975,7 @@ Rules:
           (message) =>
             message.type === "AGENT_STATUS" &&
             message.payload.agent_name === "worker" &&
-            message.payload.new_status === "IDLE",
+            message.payload.status === "idle",
           "worker AGENT_STATUS IDLE after follow-up",
         );
 
@@ -1734,7 +1734,7 @@ Rules:
             (message) =>
               message.type === "AGENT_STATUS" &&
               message.payload.agent_name === "professor" &&
-              message.payload.new_status === "IDLE",
+              message.payload.status === "idle",
           );
           if (isProfessorIdle) {
             break;
@@ -1797,7 +1797,7 @@ Rules:
             (message) =>
               message.type === "AGENT_STATUS" &&
               message.payload.agent_name === "professor" &&
-              message.payload.new_status === "IDLE",
+              message.payload.status === "idle",
           );
           if (isProfessorIdle) {
             break;

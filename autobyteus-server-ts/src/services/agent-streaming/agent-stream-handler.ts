@@ -106,16 +106,6 @@ export class AgentStreamHandler {
     const connectedMsg = createConnectedMessage(agentRunId, sessionId);
     this.broadcaster.registerConnection(sessionId, agentRunId, connection);
     this.sessionConnections.set(sessionId, connection);
-    connection.send(connectedMsg.toJson());
-    const currentStatus = activeRun.getStatus();
-    if (currentStatus) {
-      connection.send(
-        new ServerMessage(ServerMessageType.AGENT_STATUS, {
-          new_status: currentStatus.trim().toUpperCase(),
-          old_status: null,
-        }).toJson(),
-      );
-    }
 
     if (!this.bindSessionToRun(sessionId, activeRun, connection)) {
       this.sessionConnections.delete(sessionId);
@@ -129,6 +119,14 @@ export class AgentStreamHandler {
       connection.close(1011);
       return null;
     }
+
+    connection.send(connectedMsg.toJson());
+    connection.send(
+      new ServerMessage(
+        ServerMessageType.AGENT_STATUS,
+        activeRun.getStatusSnapshot(),
+      ).toJson(),
+    );
 
     logger.info(`Agent WebSocket connected: session=${sessionId}, run=${agentRunId}`);
     return sessionId;
@@ -163,8 +161,8 @@ export class AgentStreamHandler {
         return;
       }
 
-      if (msgType === ClientMessageType.STOP_GENERATION) {
-        await this.handleStopGeneration(agentRunId);
+      if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
+        await this.handleInterruptGeneration(agentRunId);
       } else if (msgType === ClientMessageType.APPROVE_TOOL) {
         await this.handleToolApproval(agentRunId, payload, true);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
@@ -343,16 +341,16 @@ export class AgentStreamHandler {
     });
   }
 
-  private async handleStopGeneration(agentRunId: string): Promise<void> {
+  private async handleInterruptGeneration(agentRunId: string): Promise<void> {
     const activeRun = this.getActiveRun(agentRunId);
     if (!activeRun) {
-      logger.warn(`STOP_GENERATION rejected for missing agent run ${agentRunId}.`);
+      logger.warn(`INTERRUPT_GENERATION rejected for missing agent run ${agentRunId}.`);
       return;
     }
     const result = await activeRun.interrupt(null);
     if (!result.accepted) {
       logger.warn(
-        `STOP_GENERATION rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
+        `INTERRUPT_GENERATION rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
     }
   }

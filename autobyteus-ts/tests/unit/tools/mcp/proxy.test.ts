@@ -38,7 +38,23 @@ describe('McpServerProxy', () => {
 
     expect(mocks.getInstance).toHaveBeenCalledTimes(1);
     expect(mocks.getServerInstance).toHaveBeenCalledWith('agent-1', 'server-1');
-    expect(callTool).toHaveBeenCalledWith('remote_tool', { foo: 'bar' });
+    expect(callTool).toHaveBeenCalledWith('remote_tool', { foo: 'bar' }, {});
     expect(result).toEqual({ ok: true });
+  });
+
+  it('forwards abort signals to the server instance', async () => {
+    const callTool = vi.fn().mockResolvedValue({ ok: true });
+    mocks.getServerInstance.mockReturnValue({ callTool });
+    mocks.getInstance.mockReturnValue({ getServerInstance: mocks.getServerInstance });
+    const controller = new AbortController();
+
+    const proxy = new McpServerProxy('agent-1', 'server-1');
+    await proxy.callTool('remote_tool', { foo: 'bar' }, { signal: controller.signal });
+
+    expect(callTool).toHaveBeenCalledWith(
+      'remote_tool',
+      { foo: 'bar' },
+      { signal: controller.signal }
+    );
   });
 });

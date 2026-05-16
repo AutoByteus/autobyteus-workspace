@@ -9,8 +9,6 @@ export type {
 export {
   normalizeAgentRunFileChangePath as normalizeRunFileChangePath,
   buildAgentRunFileChangeId as buildRunFileChangeId,
-  buildInvocationAliases,
-  invocationIdsMatch,
 } from "../../agent-execution/domain/agent-run-file-change.js";
 
 export interface RunFileChangeEntry extends AgentRunFileChangePayload {}

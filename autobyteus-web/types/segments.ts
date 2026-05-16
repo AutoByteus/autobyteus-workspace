@@ -21,7 +21,8 @@ export type ToolInvocationStatus =
   | 'executing'
   | 'success'
   | 'error'
-  | 'denied';
+  | 'denied'
+  | 'interrupted';
 
 export interface ToolInvocationLifecycle {
   invocationId: string;

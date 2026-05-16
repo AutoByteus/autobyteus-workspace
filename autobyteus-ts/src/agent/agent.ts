@@ -6,8 +6,21 @@ import {
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
   ToolExecutionApprovalEvent,
+  ToolResultEvent,
   BaseEvent
 } from './events/agent-events.js';
+import type {
+  AgentInterruptOptions,
+  AgentInterruptResult
+} from './interruption/agent-interruption.js';
+import {
+  normalizeToolApprovalInvocationId,
+  type PostToolApprovalResult
+} from './tool-approval-result.js';
+import {
+  normalizeToolResultInvocationId,
+  type PostToolResultResult
+} from './tool-result-posting.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -50,17 +63,49 @@ export class Agent {
   async postToolExecutionApproval(
     toolInvocationId: string,
     isApproved: boolean,
-    reason: string | null = null
-  ): Promise<void> {
-    if (!toolInvocationId || typeof toolInvocationId !== 'string') {
+    reason: string | null = null,
+    options: { turnId?: string; requestedBy?: string } = {}
+  ): Promise<PostToolApprovalResult> {
+    const invocationId = normalizeToolApprovalInvocationId(toolInvocationId);
+    if (!invocationId) {
       throw new Error('tool_invocation_id must be a non-empty string.');
     }
     if (typeof isApproved !== 'boolean') {
       throw new TypeError('is_approved must be a boolean.');
     }
 
-    const approvalEvent = new ToolExecutionApprovalEvent(toolInvocationId, isApproved, reason ?? undefined);
-    await this.submitEventToRuntime(approvalEvent);
+    return this.runtime.postToolApprovalEvent(
+      new ToolExecutionApprovalEvent(
+        invocationId,
+        isApproved,
+        reason ?? undefined,
+        options.turnId,
+        options.requestedBy
+      )
+    );
+  }
+
+  async postToolExecutionResult(
+    toolInvocationId: string,
+    result: unknown,
+    options: { turnId?: string; toolName?: string; error?: string; toolArgs?: Record<string, unknown>; isDenied?: boolean } = {}
+  ): Promise<PostToolResultResult> {
+    const invocationId = normalizeToolResultInvocationId(toolInvocationId);
+    if (!invocationId) {
+      throw new Error('tool_invocation_id must be a non-empty string.');
+    }
+
+    return this.runtime.postToolResultEvent(
+      new ToolResultEvent(
+        options.toolName ?? '',
+        result,
+        invocationId,
+        options.error,
+        options.toolArgs,
+        options.turnId,
+        options.isDenied ?? false
+      )
+    );
   }
 
   get currentStatus(): AgentStatus {
@@ -87,6 +132,20 @@ export class Agent {
   async stop(timeout: number = 10.0): Promise<void> {
     console.info(`Agent '${this.agentId}' requesting runtime to stop (timeout: ${timeout}s).`);
     await this.runtime.stop(timeout);
+  }
+
+  async interrupt(options: AgentInterruptOptions = {}): Promise<AgentInterruptResult> {
+    if (!this.runtime.isRunning) {
+      return {
+        accepted: false,
+        status: 'no_active_turn',
+        turnId: null,
+        reason: options.reason ?? 'user_interrupt',
+        message: `Agent '${this.agentId}' runtime is not running.`
+      };
+    }
+    console.info(`Agent '${this.agentId}' requesting runtime interrupt.`);
+    return this.runtime.interrupt(options);
   }
 
   toString(): string {

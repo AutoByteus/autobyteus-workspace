@@ -1,178 +1,165 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
+import { PassThrough } from 'node:stream';
+import { mkdtemp, rm } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import { BackgroundProcessManager } from '../../../../src/tools/terminal/background-process-manager.js';
-import { BackgroundProcessOutput, ProcessInfo } from '../../../../src/tools/terminal/types.js';
+import { BackgroundProcessInfo, BackgroundProcessOutput } from '../../../../src/tools/terminal/types.js';
+import { ProcessGroupObserver, type ExecFileRunner } from '../../../../src/tools/terminal/command-execution/process-group-observer.js';
+import type { NonInteractiveShellResolver } from '../../../../src/tools/terminal/command-execution/non-interactive-shell-resolver.js';
 
-class MockPtySession {
-  sessionId: string;
-  private alive = false;
-  private outputQueue: Buffer[] = [];
-  private written: Buffer[] = [];
+const tempRoots: string[] = [];
+const runPosix = process.platform === 'win32' ? describe.skip : describe;
 
-  constructor(sessionId: string) {
-    this.sessionId = sessionId;
-  }
+async function createTempDir(): Promise<string> {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'bg-manager-test-'));
+  tempRoots.push(dir);
+  return dir;
+}
 
-  get isAlive(): boolean {
-    return this.alive;
-  }
-
-  async start(cwd: string): Promise<void> {
-    this.alive = true;
-    void cwd;
-  }
-
-  async write(data: Buffer): Promise<void> {
-    this.written.push(data);
-    const cmd = data.toString('utf8').trim();
-    this.outputQueue.push(Buffer.from(`Started: ${cmd}\n`));
-  }
-
-  async read(): Promise<Buffer | null> {
-    if (this.outputQueue.length > 0) {
-      return this.outputQueue.shift() ?? null;
+afterEach(async () => {
+  while (tempRoots.length > 0) {
+    const next = tempRoots.pop();
+    if (next) {
+      await rm(next, { recursive: true, force: true });
     }
-    return null;
   }
+});
 
-  resize(): void {
-    // no-op
-  }
+describe('BackgroundProcessManager adoption', () => {
+  it('adopts observed PID records with PID-only public info and captured output', async () => {
+    const manager = new BackgroundProcessManager();
+    const stdout = new PassThrough();
+    const adoptedPid = process.pid;
+    const infos = manager.adoptObservedProcesses({
+      command: 'npm run dev > server.log 2>&1 &',
+      effectiveCwd: '/tmp/project',
+      processGroupId: 4321,
+      processes: [{ pid: adoptedPid, parentPid: 1, processGroupId: 4321, status: 'S', command: 'node server.js' }],
+      stdout,
+      initialOutput: 'booting\n'
+    });
 
-  async close(): Promise<void> {
-    this.alive = false;
-  }
-}
+    stdout.write('ready\n');
+    const output = await manager.getOutput(adoptedPid);
+    const listed = await manager.listProcesses();
 
-class FailingStartupSession {
-  sessionId: string;
-
-  constructor(sessionId: string) {
-    this.sessionId = sessionId;
-  }
-
-  get isAlive(): boolean {
-    return false;
-  }
-
-  async start(): Promise<void> {
-    throw new Error('posix_spawnp failed.');
-  }
-
-  async write(): Promise<void> {
-    throw new Error('Session not started');
-  }
-
-  async read(): Promise<Buffer | null> {
-    throw new Error('Session not started');
-  }
-
-  resize(): void {
-    // no-op
-  }
-
-  async close(): Promise<void> {
-    // no-op
-  }
-}
-
-describe('BackgroundProcessManager', () => {
-  it('startProcess returns process id', async () => {
-    const manager = new BackgroundProcessManager(MockPtySession);
-    const processId = await manager.startProcess('echo hello', '/tmp');
-
-    expect(processId).toBeTruthy();
-    expect(processId.startsWith('bg_')).toBe(true);
-
-    await manager.stopAll();
+    expect(infos).toHaveLength(1);
+    expect(infos[0]).toBeInstanceOf(BackgroundProcessInfo);
+    expect(infos[0]).toMatchObject({
+      pid: adoptedPid,
+      command: 'npm run dev > server.log 2>&1 &',
+      status: 'running',
+      effectiveCwd: '/tmp/project'
+    });
+    expect(output).toBeInstanceOf(BackgroundProcessOutput);
+    expect(output.pid).toBe(adoptedPid);
+    expect(output.output).toContain('booting');
+    expect(output.output).toContain('ready');
+    expect(listed.map((entry) => entry.pid)).toContain(adoptedPid);
   });
 
-  it('assigns unique ids', async () => {
-    const manager = new BackgroundProcessManager(MockPtySession);
-    const id1 = await manager.startProcess('cmd1', '/tmp');
-    const id2 = await manager.startProcess('cmd2', '/tmp');
-    const id3 = await manager.startProcess('cmd3', '/tmp');
+  it('getOutput throws for unknown PID', async () => {
+    const manager = new BackgroundProcessManager();
 
-    expect(id1).not.toBe(id2);
-    expect(id2).not.toBe(id3);
-
-    await manager.stopAll();
+    await expect(manager.getOutput(999999)).rejects.toThrow('Process 999999 not found');
   });
+});
 
-  it('getOutput returns BackgroundProcessOutput', async () => {
-    const manager = new BackgroundProcessManager(MockPtySession);
-    const processId = await manager.startProcess('echo hello', '/tmp');
+describe('BackgroundProcessManager WSL lifecycle', () => {
+  it('starts, tracks, reads, and stops background commands by WSL Linux PID', async () => {
+    const marker = '__AUTOBYTEUS_TEST_WSL_ID__';
+    const linuxPid = 4321;
+    const resolver = {
+      resolve: () => ({
+        executable: process.execPath,
+        args: [
+          '-e',
+          [
+            `process.stderr.write(${JSON.stringify(`${marker}:${linuxPid}:${linuxPid}\n`)});`,
+            "process.stdout.write('ready\\n');",
+            'setInterval(() => {}, 1000);'
+          ].join('')
+        ],
+        env: { ...process.env },
+        kind: 'windows-wsl',
+        processTarget: { kind: 'wsl', wslExecutable: 'wsl.exe', distro: 'Ubuntu' },
+        shellIdentityMarker: marker
+      })
+    } as unknown as NonInteractiveShellResolver;
 
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    const result = manager.getOutput(processId);
-
-    expect(result).toBeInstanceOf(BackgroundProcessOutput);
-    expect(result.processId).toBe(processId);
-    expect(result.isRunning).toBe(true);
-
-    await manager.stopAll();
-  });
-
-  it('getOutput throws for unknown process', async () => {
-    const manager = new BackgroundProcessManager(MockPtySession);
-
-    expect(() => manager.getOutput('nonexistent')).toThrow('Process nonexistent not found');
-  });
-
-  it('stopProcess removes process', async () => {
-    const manager = new BackgroundProcessManager(MockPtySession);
-    const processId = await manager.startProcess('cmd', '/tmp');
-
-    expect(manager.processCount).toBe(1);
-    const success = await manager.stopProcess(processId);
-    expect(success).toBe(true);
-    expect(manager.processCount).toBe(0);
-  });
-
-  it('stopProcess returns false for unknown process', async () => {
-    const manager = new BackgroundProcessManager(MockPtySession);
-
-    const success = await manager.stopProcess('nonexistent');
-    expect(success).toBe(false);
-  });
-
-  it('stopAll stops all processes', async () => {
-    const manager = new BackgroundProcessManager(MockPtySession);
-    await manager.startProcess('cmd1', '/tmp');
-    await manager.startProcess('cmd2', '/tmp');
-    await manager.startProcess('cmd3', '/tmp');
-
-    expect(manager.processCount).toBe(3);
-    const count = await manager.stopAll();
-    expect(count).toBe(3);
-    expect(manager.processCount).toBe(0);
-  });
-
-  it('listProcesses returns process info', async () => {
-    const manager = new BackgroundProcessManager(MockPtySession);
-    const id1 = await manager.startProcess('cmd1', '/tmp');
-    const id2 = await manager.startProcess('cmd2', '/tmp');
-
-    const processes = manager.listProcesses();
-    expect(Object.keys(processes).length).toBe(2);
-    expect(processes[id1]).toBeInstanceOf(ProcessInfo);
-    expect(processes[id2]).toBeInstanceOf(ProcessInfo);
-
-    await manager.stopAll();
-  });
-
-  it('falls back to provided session factory when primary startup fails', async () => {
+    let running = true;
+    const calls: Array<{ file: string; args: string[] }> = [];
+    const runner: ExecFileRunner = async (file, args) => {
+      calls.push({ file, args });
+      if (args.includes('ps')) {
+        return {
+          stdout: running
+            ? ` ${linuxPid} 1 ${linuxPid} S bash -lc npm run dev\n`
+            : ''
+        };
+      }
+      if (args.includes('bash')) {
+        running = false;
+      }
+      return { stdout: '' };
+    };
     const manager = new BackgroundProcessManager(
-      FailingStartupSession as any,
       1_000_000,
-      [MockPtySession as any],
+      resolver,
+      new ProcessGroupObserver(runner)
     );
 
-    const processId = await manager.startProcess('echo hello', '/tmp');
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    const output = manager.getOutput(processId);
+    const info = await manager.startCommand('npm run dev', 'C:\\project');
+    await new Promise((resolve) => setTimeout(resolve, 25));
+    const output = await manager.getOutput(linuxPid);
+    const listed = await manager.listProcesses();
+    const stopped = await manager.stopProcess(linuxPid);
 
-    expect(output.output).toContain('Started: echo hello');
+    expect(info).toMatchObject({
+      pid: linuxPid,
+      command: 'npm run dev',
+      status: 'running',
+      effectiveCwd: 'C:\\project'
+    });
+    expect(output.pid).toBe(linuxPid);
+    expect(output.output).toContain('ready');
+    expect(output.output).not.toContain(marker);
+    expect(listed.map((entry) => entry.pid)).toContain(linuxPid);
+    expect(stopped).toBe(true);
+    expect(calls.some((call) => call.file === 'wsl.exe' && call.args.includes('ps'))).toBe(true);
+    expect(calls.some((call) => call.file === 'wsl.exe' && call.args.includes('bash'))).toBe(true);
+  });
+});
 
-    await manager.stopAll();
+runPosix('BackgroundProcessManager process lifecycle', () => {
+  it('startCommand returns PID metadata and captures output', async () => {
+    const tempDir = await createTempDir();
+    const manager = new BackgroundProcessManager();
+    const info = await manager.startCommand('for i in 1 2 3; do echo line$i; sleep 0.1; done; sleep 10', tempDir);
+
+    try {
+      expect(info.pid).toBeGreaterThan(0);
+      expect(info.status).toBe('running');
+      expect(info.effectiveCwd).toBe(tempDir);
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const result = await manager.getOutput(info.pid);
+      expect(result.output).toContain('line');
+      expect(result.isRunning).toBe(true);
+    } finally {
+      await manager.stopAll();
+    }
+  });
+
+  it('stopProcess removes a managed process', async () => {
+    const tempDir = await createTempDir();
+    const manager = new BackgroundProcessManager();
+    const info = await manager.startCommand('sleep 100', tempDir);
+
+    expect(manager.processCount).toBe(1);
+    const success = await manager.stopProcess(info.pid);
+    expect(success).toBe(true);
+    expect(manager.processCount).toBe(0);
   });
 });

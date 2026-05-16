@@ -1,4 +1,5 @@
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
@@ -13,8 +14,21 @@ import {
   loadTeamRunContextHydrationPayload,
 } from '~/services/runHydration/teamRunContextHydrationService';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
+import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRuntimeStatusState';
 import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
 import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
+
+const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
+  if (
+    status === AgentStatus.Running ||
+    status === AgentStatus.Idle ||
+    status === AgentStatus.Error ||
+    status === AgentStatus.Offline
+  ) {
+    return status;
+  }
+  return AgentStatus.Offline;
+};
 
 export interface OpenTeamRunWithCoordinatorInput {
   teamRunId: string;
@@ -32,7 +46,7 @@ export interface OpenTeamRunWithCoordinatorResult {
 const mergeHydratedMembers = (
   existingMembers: Map<string, any>,
   hydratedMembers: Map<string, any>,
-  options: { preserveLiveRuntimeState: boolean },
+  options: { preserveLiveRuntimeState: boolean; preserveMemberStatus: boolean },
 ): Map<string, any> => {
   const refreshedMembers = new Map<string, any>();
 
@@ -48,7 +62,13 @@ const mergeHydratedMembers = (
     if (!options.preserveLiveRuntimeState) {
       existingMemberContext.state.runId = memberContext.state.runId;
       existingMemberContext.state.conversation = memberContext.state.conversation;
-      existingMemberContext.state.currentStatus = memberContext.state.currentStatus;
+      applyMemberOrHistoryStatusSnapshot(
+        existingMemberContext,
+        options.preserveMemberStatus
+          ? preserveCanonicalMemberStatus(existingMemberContext.state.currentStatus)
+          : memberContext.state.currentStatus,
+        { preserveLiveInterrupt: false },
+      );
     }
 
     refreshedMembers.set(memberRouteKey, existingMemberContext);
@@ -88,8 +108,8 @@ export const openTeamRun = async (
     historicalHydration,
     focusedMemberRouteKey,
     currentStatus: shouldTreatAsLive
-      ? AgentTeamStatus.Uninitialized
-      : AgentTeamStatus.ShutdownComplete,
+      ? AgentTeamStatus.Running
+      : AgentTeamStatus.Offline,
     isSubscribed: false,
     taskPlan: null,
     taskStatuses: null,
@@ -118,10 +138,12 @@ export const openTeamRun = async (
       );
       existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingTeamContext.leafAgentContextsByRouteKey, members, {
         preserveLiveRuntimeState: true,
+        preserveMemberStatus: true,
       });
     } else {
       existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingTeamContext.leafAgentContextsByRouteKey, members, {
         preserveLiveRuntimeState: false,
+        preserveMemberStatus: shouldTreatAsLive,
       });
       existingTeamContext.currentStatus = hydratedContext.currentStatus;
       existingTeamContext.isSubscribed = false;
@@ -135,7 +157,7 @@ export const openTeamRun = async (
 
   if (shouldTreatAsLive && liveProjectionActivityMemberKeys.length > 0) {
     const teamContext = teamContextsStore.getTeamContextById(metadata.teamRunId) || hydratedContext;
-      hydrateTeamMemberActivitiesFromProjection({
+    hydrateTeamMemberActivitiesFromProjection({
       members: teamContext.leafAgentContextsByRouteKey,
       projectionByMemberRouteKey,
       memberRouteKeys: liveProjectionActivityMemberKeys,

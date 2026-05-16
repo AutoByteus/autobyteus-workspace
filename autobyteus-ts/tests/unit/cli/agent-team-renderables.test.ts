@@ -3,7 +3,7 @@ import {
   renderAssistantCompleteResponse,
   renderError,
   renderToolApprovalRequest,
-  renderToolAutoExecuting,
+  renderToolExecutionStarted,
   renderToolInteractionLog,
   renderSystemTaskNotification
 } from '../../../src/cli/agent-team/widgets/renderables.js';
@@ -37,7 +37,7 @@ describe('agent team renderables', () => {
     expect(approval).toContain("approval for tool 'write_file'");
     expect(approval).toContain('"path": "/tmp/demo"');
 
-    const autoExec = renderToolAutoExecuting({
+    const autoExec = renderToolExecutionStarted({
       invocation_id: 'inv-3',
       tool_name: 'run_bash',
       arguments: { command: 'ls' }

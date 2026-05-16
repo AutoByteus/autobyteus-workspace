@@ -27,8 +27,14 @@ pwd > runtime/pwd.txt
 
 ### Example 4: Use an absolute cwd when needed
 
-<run_bash cwd="/absolute/path/to/workspace/apps/web" background="true">
-npm run dev
+<run_bash cwd="/absolute/path/to/workspace/apps/web">
+npm run build
+</run_bash>
+
+### Example 5: Start a long-running command with normal bash syntax
+
+<run_bash cwd="/absolute/path/to/workspace/apps/web">
+npm run dev > server.log 2>&1 &
 </run_bash>`;
   }
 }

@@ -1,194 +1,169 @@
 # Terminal Tools
 
-Terminal tools providing stateful command execution and background process management for agents across PTY and direct-shell backends.
+Terminal tools provide stateless non-interactive command execution for agents plus PID-keyed background process management. Interactive PTY terminal sessions are a separate server/web terminal capability and are not used by the agent `run_bash` tool.
 
 ## Design References
 
-- Android direct-shell backend: `docs/terminal_android_direct_shell_backend_design.md`
-- Windows WSL/tmux backend: `docs/terminal_wsl_tmux_backend_design.md`
+- Interactive terminal backend designs (server/web terminal session path):
+  - Android direct-shell backend: `docs/terminal_android_direct_shell_backend_design.md`
+  - Windows WSL/tmux backend: `docs/terminal_wsl_tmux_backend_design.md`
+- Agent `run_bash` command execution is the non-interactive path documented in this file; it does not use those interactive session backends.
 
 ## Overview
 
-These tools replace the legacy `bash_executor` with backend-driven terminal sessions where:
-
-- **State persists** — `cd` and environment variables persist across commands
-- **Background processes** — Start servers, check output, stop them
-- **Backend recovery is shared** — Unix runtimes still prefer PTY, but startup recovery is centralized so ordinary commands continue to work when PTY bootstrap is unavailable
+- **`run_bash` is stateless** — each call runs the supplied command through a non-interactive shell in the resolved `cwd`. Do not rely on `cd` or exported variables from earlier calls.
+- **Foreground execution is non-PTY** — command output is captured from process pipes, avoiding terminal prompt/echo/wrapping artifacts.
+- **Background processes use PID identity** — managed background processes are returned and queried by `pid` only.
+- **Long-running commands use normal shell syntax** — for example, `npm run dev > server.log 2>&1 &`. If an ordinary live descendant remains after the shell exits, it is adopted and returned in `backgroundProcesses`.
+- **Interactive terminals remain PTY-backed elsewhere** — server/web xterm sessions continue to use `TerminalSessionManager`, `PtySession`, and WSL/tmux session infrastructure.
 
 ## Tools
 
 ### `run_bash`
 
-Execute a command in a stateful terminal session.
+Execute a stateless command in a working directory.
 
 ```ts
-await runBash(context, "npm install", 120);
+const result = await runBash(context, "npm install", "apps/web", 120);
 ```
 
 **Parameters:**
 
-- `command` (string): Bash command to execute
-- `timeout_seconds` (number): Maximum wait time (default: 30)
-- `background` (boolean): Run asynchronously and return a process handle (default: false)
+- `command` (string): shell command to execute.
+- `cwd` (string, optional): absolute path or workspace-root-relative path. If omitted, the workspace root is used when available.
+- `timeout_seconds` (number, optional): maximum execution time, default `30`.
 
-**Returns:**
+**Returns:** `TerminalResult`
 
-- Foreground (`background=false`): `TerminalResult` with `stdout`, `stderr`, `exit_code`, `timed_out`
-- Background (`background=true`): `{ mode: "background", processId, command, status, startedAt }`
+```ts
+{
+  stdout: string;
+  stderr: string;
+  exitCode: number | null;
+  timedOut: boolean;
+  effectiveCwd: string;
+  backgroundProcesses: Array<{
+    pid: number;
+    status: "running" | "exited" | "stopped";
+    command: string;
+    startedAt: string;
+    effectiveCwd: string;
+  }>;
+}
+```
 
 **Key behavior:**
 
-- State persists between calls (`cd`, `export` work as expected)
-- Command is killed if timeout exceeded
-- Background mode returns a process handle for `get_process_output` and `stop_background_process`
-- On Linux/macOS, `PtySession` remains the preferred backend; if `node-pty` startup is broken because the bundled `spawn-helper` is not executable, the runtime repairs that helper when possible and still has a shared direct-shell recovery path for non-PTY execution
+- Reuse `cwd` on every location-sensitive command that should run in a nested target.
+- A foreground timeout stops the spawned shell process group when possible.
+- The tool does not parse shell text to infer intent. It only adopts actual live ordinary background descendants after the shell exits.
+- Commands that redirect output to files may produce little or no captured background output; read the log file with a later `run_bash` call.
+
+Example long-running command:
+
+```xml
+<run_bash cwd="apps/web">
+npm run dev > server.log 2>&1 &
+</run_bash>
+```
 
 ---
 
 ### `start_background_process`
 
-Start a long-running process (server, watcher) in the background.
+Convenience tool for starting a long-running process when shell `&` syntax is not desired.
 
 ```ts
-const result = await startBackgroundProcess(context, "yarn dev");
-// result: { processId: "bg_001", status: "started" }
+const info = await startBackgroundProcess(context, "yarn dev", "apps/web");
+// info.pid is the PID to use with the other background tools
 ```
 
 **Parameters:**
 
-- `command` (string): Command to run
+- `command` (string): command to run.
+- `cwd` (string, optional): absolute path or workspace-root-relative path.
 
-**Returns:** object with `processId` and `status`
+**Returns:** `BackgroundProcessInfo` with `pid`, `status`, `command`, `startedAt`, and `effectiveCwd`.
+
+---
+
+### `get_background_processes`
+
+List managed background processes for the current agent context.
+
+```ts
+const result = await getBackgroundProcesses(context);
+// result: { processes: [{ pid, status, command, startedAt, effectiveCwd }] }
+```
 
 ---
 
 ### `get_process_output`
 
-Read recent output from a background process.
+Read recent captured output from a managed background process.
 
 ```ts
-const result = await getProcessOutput(context, "bg_001", 50);
-// result: { output: "...", isRunning: true, processId: "bg_001" }
+const result = await getProcessOutput(context, pid, 50);
+// result: { output: "...", isRunning: true, pid, status: "running" }
 ```
 
 **Parameters:**
 
-- `process_id` (string): ID from `start_background_process`
-- `lines` (number): Number of lines to return (default: 100)
+- `pid` (number): PID returned by `run_bash`, `start_background_process`, or `get_background_processes`.
+- `lines` (number): number of recent lines to return, default `100`.
 
 ---
 
 ### `stop_background_process`
 
-Stop a background process.
+Stop a managed background process by PID.
 
 ```ts
-const result = await stopBackgroundProcess(context, "bg_001");
-// result: { status: "stopped", processId: "bg_001" }
+const result = await stopBackgroundProcess(context, pid);
+// result: { status: "stopped", pid }
 ```
 
 ## Architecture
 
 ```
 src/tools/terminal/
-├── types.ts                   # TerminalResult, ProcessInfo types
-├── output-buffer.ts           # Ring buffer for output (bounded memory)
-├── prompt-detector.ts         # Detects when commands complete
-├── pty-session.ts             # Low-level PTY wrapper (fork/exec)
-├── direct-shell-session.ts    # Non-PTY shell session backend (Android policy path)
-├── terminal-session-manager.ts # Main stateful terminal
-├── background-process-manager.ts # Background process lifecycle
-└── tools/                     # LLM-facing tool functions
+├── command-execution/
+│   ├── non-interactive-shell-resolver.ts # bash/WSL shell invocation
+│   ├── process-group-observer.ts         # process-group scan/status/stop
+│   └── shell-command-executor.ts         # foreground run_bash lifecycle
+├── background-process-manager.ts         # PID registry and output buffers
+├── types.ts                              # TerminalResult and PID process types
+├── output-buffer.ts                      # bounded output ring buffer
+├── terminal-session-manager.ts           # interactive session infrastructure
+├── pty-session.ts                        # PTY backend for interactive terminals
+└── tools/                                # LLM-facing tool functions
 ```
 
 ## Testing
 
-Run all terminal tests:
+Run terminal unit tests:
 
 ```bash
 pnpm exec vitest --run tests/unit/tools/terminal/
 ```
 
-Run integration tests only (spawn real PTY):
+Run terminal integration tests:
 
 ```bash
 pnpm exec vitest --run tests/integration/tools/terminal/
 ```
 
-### Windows-Specific Testing
-
-**Important**: On Windows, PTY-backed tests rely on WSL. Use the WSL-specific tests instead:
-
-```bash
-# Run Windows-specific WSL tests
-pnpm exec vitest --run tests/unit/tools/terminal/wsl-tmux-session.test.ts
-```
-
-The Windows tests:
-
-- Only import WSL-related modules (no Unix dependencies)
-- Verify WSL executable and distro availability
-- Test real bash command execution inside WSL
-- Validate state persistence and background processes
-
-**Prerequisites**:
-
-- WSL installed and configured (see Windows Setup Guide below)
-- Ubuntu or another Linux distro installed in WSL
-- `tmux` installed inside the WSL distro (`sudo apt install tmux`)
-
 ## Platform Support
 
-- **Linux/macOS**: Full support out of the box.
-- **Windows**: Supported via **WSL (Windows Subsystem for Linux)**.
-- **Android**: Supported via **Termux + Node.js** using the direct-shell backend (no `node-pty` requirement on Android profile).
+- **Linux/macOS**: `run_bash` uses a non-interactive POSIX shell process.
+- **Windows**: `run_bash` executes through WSL with non-interactive `bash`; WSL/tmux remains an interactive terminal backend concern.
+- **Android**: command execution uses a non-interactive shell available in the Termux environment.
 
-For macOS specifically, the workspace install also repairs the `node-pty` `spawn-helper` execute bit during `postinstall` because `node-pty@1.1.0` can publish that file without executable permissions.
+For macOS/server interactive terminals, `node-pty` remains relevant to the web terminal path. It is not part of stateless agent `run_bash`.
 
-### Android (Termux) Setup Guide
+### Windows Setup Guide (Required for WSL-backed `run_bash`)
 
-Android support profile for this project is:
-
-- Termux installed on device/emulator.
-- Node.js installed in Termux.
-- Shell tools run through direct shell (`bash` primary, `sh` fallback).
-
-#### 1. Install Termux
-
-Install Termux from an official distribution channel and open a Termux session.
-
-#### 2. Install Node.js in Termux
-
-```bash
-pkg update -y
-pkg install -y nodejs
-node --version
-npm --version
-```
-
-#### 3. Install project dependencies in Android profile
-
-Use the Android profile install flow that does not require optional native modules:
-
-```bash
-pnpm install --no-optional --filter ./autobyteus-ts... --filter ./autobyteus-server-ts... --filter ./autobyteus-message-gateway...
-pnpm verify:android-profile
-```
-
-If you are in the workspace root, prefer:
-
-```bash
-pnpm android:bootstrap
-```
-
-#### 4. Backend behavior
-
-- On Android, terminal tools use direct shell backend.
-- The runtime prefers a persistent interactive `bash` session in Termux; if unavailable, it falls back to a persistent interactive `sh` session.
-
-### 🪟 Windows Setup Guide (Required for `run_bash`)
-
-On Windows, the `run_bash` tool executes commands inside a real Linux environment running via WSL. Follow these steps to set it up:
+On Windows, commands execute inside a real Linux environment running via WSL.
 
 #### 1. Install WSL
 
@@ -198,76 +173,15 @@ Open PowerShell as **Administrator** and run:
 wsl --install
 ```
 
-- **Restart your computer** when prompted.
-- After restarting, a window will open to finish installing Ubuntu (or the default distro).
-- Create a **username** and **password** when asked (remember these!).
+Restart when prompted and finish Ubuntu (or default distro) setup.
 
 #### 2. Set Ubuntu as the default WSL distro
-
-If you have multiple distros (for example, Docker's minimal distro), set Ubuntu
-as the default so tools run against a full Linux environment:
 
 ```powershell
 wsl -l -v
 wsl --set-default Ubuntu
 ```
 
-#### 3. Install Node.js & npm (Required)
+#### 3. Access Windows files
 
-Install the latest Node.js LTS version:
-
-```bash
-# Install Node Version Manager (nvm)
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
-# Close and reopen your terminal, or source the profile
-source ~/.bashrc
-
-# Install Node.js LTS
-nvm install --lts
-
-# Verify installation
-node --version
-npm --version
-```
-
-#### 4. Install tmux (Required)
-
-The Windows terminal backend uses tmux inside WSL:
-
-```bash
-sudo apt install -y tmux
-tmux -V
-```
-
-#### 5. Accessing your Windows Files (Automatic)
-
-WSL automatically "mounts" your Windows drives. You can access your Windows folders using the path `/mnt/<drive-letter>/`.
-
-- **Your C: Drive**: Accessible at `/mnt/c/`
-- **Your Projects**: If your code is in `C:\Code\my-project`, the agent can access it via:
-  ```bash
-  cd /mnt/c/Code/my-project
-  ```
-
-This allows Autobyteus agents to manage your Windows folders seamlessly using Linux tools.
-
-#### 6. GUI Support (Optional)
-
-Modern WSL supports graphical applications. If you install a Linux app inside Ubuntu, it will automatically appear in your **Windows Start Menu**.
-
-For easier file management, you can install a Linux file manager:
-
-```bash
-sudo apt install nautilus -y
-```
-
-Then, just search for **"Nautilus"** in your Windows Start Menu to browse your WSL and Windows files graphically.
-
-#### 8. How it works
-
-When an agent runs `run_bash("npm install")`:
-
-1.  Autobyteus (running on Windows) talks to WSL and uses `tmux` for the shell session.
-2.  The command executes inside your WSL Ubuntu instance.
-3.  Files created (like `node_modules`) live in the WSL file system, or on your Windows drive if you `cd` there first.
+WSL mounts Windows drives under `/mnt/<drive-letter>/`. For example, `C:\Code\my-project` is available as `/mnt/c/Code/my-project`.

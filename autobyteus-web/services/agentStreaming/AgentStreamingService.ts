@@ -19,11 +19,13 @@ import {
   handleToolExecutionStarted,
   handleToolExecutionSucceeded,
   handleToolExecutionFailed,
+  handleToolExecutionInterrupted,
   handleToolLog,
   handleAgentStatus,
   handleCompactionStatus,
   handleAssistantComplete,
   handleTurnCompleted,
+  handleTurnInterrupted,
   handleTodoListUpdate,
   handleError,
   handleFileChange,
@@ -142,11 +144,11 @@ export class AgentStreamingService {
   }
 
   /**
-   * Stop the current generation.
+   * Interrupt the current generation.
    */
-  stopGeneration(): void {
+  interruptGeneration(): void {
     const message: ClientMessage = {
-      type: 'STOP_GENERATION',
+      type: 'INTERRUPT_GENERATION',
     };
     this.wsClient.send(serializeClientMessage(message));
   }
@@ -264,6 +266,10 @@ export class AgentStreamingService {
         handleToolExecutionFailed(message.payload, context);
         break;
 
+      case 'TOOL_EXECUTION_INTERRUPTED':
+        handleToolExecutionInterrupted(message.payload, context);
+        break;
+
       case 'TOOL_LOG':
         handleToolLog(message.payload, context);
         break;
@@ -281,6 +287,10 @@ export class AgentStreamingService {
 
       case 'TURN_COMPLETED':
         handleTurnCompleted(message.payload, context);
+        break;
+
+      case 'TURN_INTERRUPTED':
+        handleTurnInterrupted(message.payload, context);
         break;
 
       case 'ASSISTANT_COMPLETE':

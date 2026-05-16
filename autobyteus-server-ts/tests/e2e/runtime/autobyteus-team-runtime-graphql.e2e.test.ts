@@ -268,6 +268,96 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     return result.createAgentDefinition.id;
   };
 
+  const createSingleWorkerTeamRun = async (input: {
+    llmModelIdentifier: string;
+    workspaceRootPath: string;
+    autoExecuteTools: boolean;
+  }): Promise<string> => {
+    const workerAgentDefinitionId = await createAgentDefinition("worker");
+    const createTeamDefinitionMutation = `
+      mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+        createAgentTeamDefinition(input: $input) {
+          id
+        }
+      }
+    `;
+
+    const teamDefinitionResult = await execGraphql<{
+      createAgentTeamDefinition: { id: string };
+    }>(createTeamDefinitionMutation, {
+      input: {
+        name: `autobyteus-team-runtime-${randomUUID()}`,
+        description: "AutoByteus team API e2e team",
+        instructions: "Coordinate the worker when needed.",
+        coordinatorMemberName: "worker",
+        nodes: [
+          {
+            memberName: "worker",
+            ref: workerAgentDefinitionId,
+            refType: "AGENT",
+            refScope: "SHARED",
+          },
+        ],
+      },
+    });
+
+    const createTeamRunMutation = `
+      mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+        createAgentTeamRun(input: $input) {
+          success
+          message
+          teamRunId
+        }
+      }
+    `;
+
+    const createTeamRunResult = await execGraphql<{
+      createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+    }>(createTeamRunMutation, {
+      input: {
+        teamDefinitionId: teamDefinitionResult.createAgentTeamDefinition.id,
+        memberConfigs: [
+          {
+            memberName: "worker",
+            agentDefinitionId: workerAgentDefinitionId,
+            llmModelIdentifier: input.llmModelIdentifier,
+            autoExecuteTools: input.autoExecuteTools,
+            skillAccessMode: "NONE",
+            runtimeKind: "autobyteus",
+            workspaceRootPath: input.workspaceRootPath,
+          },
+        ],
+      },
+    });
+
+    expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+    expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
+    return createTeamRunResult.createAgentTeamRun.teamRunId as string;
+  };
+
+  const openTeamSocket = async (teamRunId: string): Promise<{
+    app: Awaited<ReturnType<typeof fastify>>;
+    socket: WebSocket;
+    messages: WsMessage[];
+  }> => {
+    const app = fastify();
+    await app.register(websocket);
+    await registerAgentWebsocket(app);
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${teamRunId}`);
+    const messages: WsMessage[] = [];
+    socket.on("message", (raw) => {
+      const parsed = parseWsMessage(raw);
+      if (parsed) {
+        messages.push(parsed);
+      }
+    });
+    await waitForSocketOpen(socket);
+    await waitForMessage(messages, (message) => message.type === "CONNECTED", "CONNECTED", 15_000);
+    return { app, socket, messages };
+  };
+
   it("creates a real team, approves a tool call, restores it, and continues on the same websocket", async () => {
     const llmModelIdentifier = await fetchModelIdentifier();
     const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "autobyteus-team-runtime-workspace-"));
@@ -439,7 +529,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE",
       );
 
@@ -496,7 +586,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE after restore",
       );
     } finally {
@@ -511,6 +601,225 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
           }
         }
       `;
+      await execGraphql<{
+        terminateAgentTeamRun: { success: boolean; message: string };
+      }>(terminateMutation, { teamRunId }).catch(() => undefined);
+    }
+  }, 240_000);
+
+  it("interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket", async () => {
+    const llmModelIdentifier = await fetchModelIdentifier();
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "autobyteus-team-interrupt-workspace-"));
+    createdWorkspaceRoots.add(workspaceRootPath);
+    const teamRunId = await createSingleWorkerTeamRun({
+      llmModelIdentifier,
+      workspaceRootPath,
+      autoExecuteTools: false,
+    });
+
+    const { app, socket, messages } = await openTeamSocket(teamRunId);
+    const terminateMutation = `
+      mutation TerminateAgentTeamRun($teamRunId: String!) {
+        terminateAgentTeamRun(teamRunId: $teamRunId) {
+          success
+          message
+        }
+      }
+    `;
+
+    try {
+      const targetRelativePath = `team-interrupt-${randomUUID().replace(/-/g, "_")}.txt`;
+      const targetAbsolutePath = path.join(workspaceRootPath, targetRelativePath);
+      const expectedContent = `TEAM_INTERRUPT_SHOULD_NOT_WRITE_${randomUUID().replace(/-/g, "_")}`;
+      const interruptStartIndex = messages.length;
+
+      socket.send(
+        JSON.stringify({
+          type: "SEND_MESSAGE",
+          payload: {
+            target_member_name: "worker",
+            content:
+              `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
+              "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
+          },
+        }),
+      );
+
+      const approvalRequested = await waitForMessageAfter(
+        messages,
+        interruptStartIndex,
+        (message) =>
+          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_name === "worker",
+        "worker TOOL_APPROVAL_REQUESTED before interrupt",
+      );
+      const invocationId = resolveInvocationId(approvalRequested.payload);
+      expect(invocationId).toBeTruthy();
+
+      socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+
+      await waitForMessageAfter(
+        messages,
+        interruptStartIndex,
+        (message) =>
+          message.type === "TOOL_EXECUTION_INTERRUPTED" &&
+          message.payload.agent_name === "worker" &&
+          resolveInvocationId(message.payload) === invocationId,
+        "worker TOOL_EXECUTION_INTERRUPTED after interrupt",
+      );
+      await waitForMessageAfter(
+        messages,
+        interruptStartIndex,
+        (message) => message.type === "TURN_INTERRUPTED" && message.payload.agent_name === "worker",
+        "worker TURN_INTERRUPTED after interrupt",
+      );
+      await waitForMessageAfter(
+        messages,
+        interruptStartIndex,
+        (message) =>
+          message.type === "AGENT_STATUS" &&
+          message.payload.agent_name === "worker" &&
+          message.payload.status === "idle",
+        "worker AGENT_STATUS IDLE after interrupt",
+      );
+      await expect(readFile(targetAbsolutePath, "utf-8")).rejects.toMatchObject({
+        code: "ENOENT",
+      });
+
+      const followUpToken = `TEAM_INTERRUPT_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
+      const followUpStartIndex = messages.length;
+      socket.send(
+        JSON.stringify({
+          type: "SEND_MESSAGE",
+          payload: {
+            target_member_name: "worker",
+            content: `Reply with exactly ${followUpToken} and nothing else.`,
+          },
+        }),
+      );
+
+      await waitForMessageAfter(
+        messages,
+        followUpStartIndex,
+        (message) => assistantTextMatches(message, "worker", followUpToken),
+        `worker assistant text containing ${followUpToken} after interrupt`,
+      );
+      await waitForMessageAfter(
+        messages,
+        followUpStartIndex,
+        (message) =>
+          message.type === "AGENT_STATUS" &&
+          message.payload.agent_name === "worker" &&
+          message.payload.status === "idle",
+        "worker AGENT_STATUS IDLE after interrupt follow-up",
+      );
+    } finally {
+      socket.close();
+      await app.close();
+      await execGraphql<{
+        terminateAgentTeamRun: { success: boolean; message: string };
+      }>(terminateMutation, { teamRunId }).catch(() => undefined);
+    }
+  }, 240_000);
+
+  it("terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket", async () => {
+    const llmModelIdentifier = await fetchModelIdentifier();
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "autobyteus-team-active-terminate-workspace-"));
+    createdWorkspaceRoots.add(workspaceRootPath);
+    const teamRunId = await createSingleWorkerTeamRun({
+      llmModelIdentifier,
+      workspaceRootPath,
+      autoExecuteTools: false,
+    });
+
+    const { app, socket, messages } = await openTeamSocket(teamRunId);
+    const terminateMutation = `
+      mutation TerminateAgentTeamRun($teamRunId: String!) {
+        terminateAgentTeamRun(teamRunId: $teamRunId) {
+          success
+          message
+        }
+      }
+    `;
+    const restoreMutation = `
+      mutation RestoreAgentTeamRun($teamRunId: String!) {
+        restoreAgentTeamRun(teamRunId: $teamRunId) {
+          success
+          message
+          teamRunId
+        }
+      }
+    `;
+
+    try {
+      const targetRelativePath = `team-terminate-${randomUUID().replace(/-/g, "_")}.txt`;
+      const targetAbsolutePath = path.join(workspaceRootPath, targetRelativePath);
+      const expectedContent = `TEAM_TERMINATE_SHOULD_NOT_WRITE_${randomUUID().replace(/-/g, "_")}`;
+      const terminateStartIndex = messages.length;
+
+      socket.send(
+        JSON.stringify({
+          type: "SEND_MESSAGE",
+          payload: {
+            target_member_name: "worker",
+            content:
+              `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
+              "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
+          },
+        }),
+      );
+
+      await waitForMessageAfter(
+        messages,
+        terminateStartIndex,
+        (message) =>
+          message.type === "TOOL_APPROVAL_REQUESTED" && message.payload.agent_name === "worker",
+        "worker TOOL_APPROVAL_REQUESTED before active terminate",
+      );
+
+      const terminateResult = await execGraphql<{
+        terminateAgentTeamRun: { success: boolean; message: string };
+      }>(terminateMutation, { teamRunId });
+      expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
+      await expect(readFile(targetAbsolutePath, "utf-8")).rejects.toMatchObject({
+        code: "ENOENT",
+      });
+
+      const restoreResult = await execGraphql<{
+        restoreAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+      }>(restoreMutation, { teamRunId });
+      expect(restoreResult.restoreAgentTeamRun.success).toBe(true);
+      expect(restoreResult.restoreAgentTeamRun.teamRunId).toBe(teamRunId);
+
+      const followUpToken = `TEAM_TERMINATE_FOLLOWUP_${randomUUID().replace(/-/g, "_")}`;
+      const followUpStartIndex = messages.length;
+      socket.send(
+        JSON.stringify({
+          type: "SEND_MESSAGE",
+          payload: {
+            target_member_name: "worker",
+            content: `Reply with exactly ${followUpToken} and nothing else.`,
+          },
+        }),
+      );
+
+      await waitForMessageAfter(
+        messages,
+        followUpStartIndex,
+        (message) => assistantTextMatches(message, "worker", followUpToken),
+        `worker assistant text containing ${followUpToken} after active terminate restore`,
+      );
+      await waitForMessageAfter(
+        messages,
+        followUpStartIndex,
+        (message) =>
+          message.type === "AGENT_STATUS" &&
+          message.payload.agent_name === "worker" &&
+          message.payload.status === "idle",
+        "worker AGENT_STATUS IDLE after active terminate restore follow-up",
+      );
+    } finally {
+      socket.close();
+      await app.close();
       await execGraphql<{
         terminateAgentTeamRun: { success: boolean; message: string };
       }>(terminateMutation, { teamRunId }).catch(() => undefined);
@@ -660,7 +969,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE for first projection turn",
       );
 
@@ -720,7 +1029,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE for second projection turn",
       );
 

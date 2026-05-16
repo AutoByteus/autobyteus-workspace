@@ -1,0 +1,12 @@
+{
+  "toolNames": [],
+  "skillNames": [],
+  "inputProcessorNames": [],
+  "llmResponseProcessorNames": [],
+  "systemPromptProcessorNames": [],
+  "toolExecutionResultProcessorNames": [],
+  "toolInvocationPreprocessorNames": [],
+  "lifecycleProcessorNames": [],
+  "avatarUrl": null,
+  "defaultLaunchConfig": null
+}

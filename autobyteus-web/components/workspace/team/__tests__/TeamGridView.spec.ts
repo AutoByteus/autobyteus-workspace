@@ -67,7 +67,7 @@ const buildNestedTeamContext = () => {
     leafAgentContextsByRouteKey: new Map([
       ['program_manager', buildMember('program_manager', AgentStatus.Idle)],
       ['BuildSquad/review_lead', buildMember('review_lead', AgentStatus.Idle)],
-      ['BuildSquad/qa_specialist', buildMember('qa_specialist', AgentStatus.ExecutingTool)],
+      ['BuildSquad/qa_specialist', buildMember('qa_specialist', AgentStatus.Running)],
     ]),
   };
 };
@@ -78,7 +78,7 @@ describe('TeamGridView', () => {
       props: {
         teamContext: buildTeamContext([
           ['professor', buildMember('Professor', AgentStatus.Idle)],
-          ['student', buildMember('Student', AgentStatus.ExecutingTool)],
+          ['student', buildMember('Student', AgentStatus.Running)],
         ]) as any,
         focusedMemberRouteKey: 'professor',
       },
@@ -140,7 +140,7 @@ describe('TeamGridView', () => {
       props: {
         teamContext: buildTeamContext([
           ['professor', buildMember('Professor', AgentStatus.Idle)],
-          ['student', buildMember('Student', AgentStatus.ExecutingTool)],
+          ['student', buildMember('Student', AgentStatus.Running)],
           ['planner', buildMember('Planner', AgentStatus.Idle)],
         ]) as any,
         focusedMemberRouteKey: 'professor',
@@ -173,7 +173,7 @@ describe('TeamGridView', () => {
       props: {
         teamContext: buildTeamContext([
           ['professor', buildMember('Professor', AgentStatus.Idle)],
-          ['student', buildMember('Student', AgentStatus.ExecutingTool)],
+          ['student', buildMember('Student', AgentStatus.Running)],
         ]) as any,
         focusedMemberRouteKey: 'professor',
       },

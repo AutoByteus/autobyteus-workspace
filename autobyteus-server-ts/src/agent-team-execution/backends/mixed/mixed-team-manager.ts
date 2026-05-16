@@ -1,5 +1,7 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
+import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
 import { TeamRunContext } from "../../domain/team-run-context.js";
 import {
   buildDeliveryEndpointForParticipant,
@@ -76,6 +78,36 @@ export class MixedTeamManager implements TeamManager {
 
   hasActiveMembers(): boolean {
     return this.teamContext !== null;
+  }
+
+  getMemberStatusSnapshots(): AgentStatusPayload[] {
+    const runtimeContext = this.teamContext?.runtimeContext ?? null;
+    if (!runtimeContext) {
+      return [];
+    }
+
+    return runtimeContext.memberContexts.map((memberContext) => {
+      const handle = this.memberRegistry.listHandles().find(
+        (candidate) => candidate.context.memberRouteKey === memberContext.memberRouteKey,
+      ) ?? null;
+      const snapshot = handle?.getStatusSnapshot() ?? {
+        status: "offline" as const,
+        can_interrupt: false,
+      };
+      return {
+        ...snapshot,
+        agent_id: memberContext.memberRunId,
+        agent_name: memberContext.memberName,
+      };
+    });
+  }
+
+  getStatusSnapshot() {
+    return {
+      status: deriveTeamApiStatus({
+        memberStatuses: this.getMemberStatusSnapshots(),
+      }),
+    };
   }
 
   async postMessage(
@@ -360,7 +392,7 @@ export class MixedTeamManager implements TeamManager {
     if (!this.teamContext) {
       return;
     }
-    const nextStatus = this.deriveTeamStatus();
+    const nextStatus = this.getStatusSnapshot().status;
     if (nextStatus === this.lastTeamStatus) {
       return;
     }
@@ -369,36 +401,10 @@ export class MixedTeamManager implements TeamManager {
       teamRunId: this.teamContext.runId,
       sourcePath: [],
       data: {
-        new_status: nextStatus,
-        ...(this.lastTeamStatus ? { old_status: this.lastTeamStatus } : {}),
+        status: nextStatus,
       } satisfies TeamRunStatusUpdateData,
     });
     this.lastTeamStatus = nextStatus;
-  }
-
-  private deriveTeamStatus(): string {
-    let hasActiveMember = false;
-    let hasBusyMember = false;
-    for (const handle of this.memberRegistry.listHandles()) {
-      if (!handle.isActive()) {
-        continue;
-      }
-      hasActiveMember = true;
-      const status = handle.getStatus()?.trim().toUpperCase() ?? null;
-      if (status === "ERROR") {
-        return "ERROR";
-      }
-      if (status && status !== "IDLE") {
-        hasBusyMember = true;
-      }
-    }
-    if (hasBusyMember) {
-      return "PROCESSING";
-    }
-    if (hasActiveMember || this.teamContext) {
-      return "IDLE";
-    }
-    return "IDLE";
   }
 
   private publish(event: TeamRunEvent): void {

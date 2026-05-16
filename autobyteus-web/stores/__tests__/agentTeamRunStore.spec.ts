@@ -14,7 +14,7 @@ const {
   mockSendMessage,
   mockApproveTool,
   mockDenyTool,
-  mockStopGeneration,
+  mockInterruptGeneration,
   mockMutate,
   mockClearActivities,
   teamContextsStoreMock,
@@ -30,7 +30,7 @@ const {
   mockSendMessage: vi.fn(),
   mockApproveTool: vi.fn(),
   mockDenyTool: vi.fn(),
-  mockStopGeneration: vi.fn(),
+  mockInterruptGeneration: vi.fn(),
   mockMutate: vi.fn(),
   mockClearActivities: vi.fn(),
   teamContextsStoreMock: {
@@ -129,7 +129,7 @@ vi.mock('~/services/agentStreaming', () => ({
     sendMessage: mockSendMessage,
     approveTool: mockApproveTool,
     denyTool: mockDenyTool,
-    stopGeneration: mockStopGeneration,
+    interruptGeneration: mockInterruptGeneration,
   })),
 }));
 
@@ -184,7 +184,7 @@ describe('agentTeamRunStore', () => {
     mockSendMessage.mockReset();
     mockApproveTool.mockReset();
     mockDenyTool.mockReset();
-    mockStopGeneration.mockReset();
+    mockInterruptGeneration.mockReset();
     teamContextsStoreMock.activeTeamContext = null;
     teamContextsStoreMock.focusedMemberContext = null;
     teamContextsStoreMock.focusedMemberNode = null;
@@ -213,14 +213,14 @@ describe('agentTeamRunStore', () => {
     expect(mockDisconnect).toHaveBeenCalledTimes(1);
   });
 
-  it('marks team as shutdown but keeps context for history restore after terminate', async () => {
+  it('marks team as idle but keeps context for history restore after terminate', async () => {
     const teamContext = {
       teamRunId: 'team-1',
       isSubscribed: true,
-      currentStatus: AgentTeamStatus.Processing,
+      currentStatus: AgentTeamStatus.Running,
       unsubscribe: undefined as undefined | (() => void),
       leafAgentContextsByRouteKey: new Map([
-        ['member-a', { state: { runId: 'agent-a', currentStatus: AgentStatus.ProcessingUserInput } }],
+        ['member-a', { isSending: true, state: { runId: 'agent-a', currentStatus: AgentStatus.Running, canInterrupt: true } }],
         ['member-b', { state: { runId: 'agent-b', currentStatus: AgentStatus.Idle } }],
       ]),
     };
@@ -243,9 +243,11 @@ describe('agentTeamRunStore', () => {
     expect(mockDisconnect).toHaveBeenCalledTimes(1);
     expect(teamContext.unsubscribe).toBeUndefined();
     expect(teamContext.isSubscribed).toBe(false);
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.ShutdownComplete);
-    expect(teamContext.leafAgentContextsByRouteKey.get('member-a')?.state.currentStatus).toBe(AgentStatus.ShutdownComplete);
-    expect(teamContext.leafAgentContextsByRouteKey.get('member-b')?.state.currentStatus).toBe(AgentStatus.ShutdownComplete);
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Offline);
+    expect(teamContext.leafAgentContextsByRouteKey.get('member-a')?.state.currentStatus).toBe(AgentStatus.Offline);
+    expect(teamContext.leafAgentContextsByRouteKey.get('member-a')?.state.canInterrupt).toBe(false);
+    expect(teamContext.leafAgentContextsByRouteKey.get('member-a')?.isSending).toBe(false);
+    expect(teamContext.leafAgentContextsByRouteKey.get('member-b')?.state.currentStatus).toBe(AgentStatus.Offline);
     expect(mockClearActivities).toHaveBeenCalledWith('agent-a');
     expect(mockClearActivities).toHaveBeenCalledWith('agent-b');
     expect(teamContextsStoreMock.removeTeamContext).not.toHaveBeenCalled();
@@ -258,10 +260,10 @@ describe('agentTeamRunStore', () => {
     const teamContext = {
       teamRunId: 'team-terminate-fails-1',
       isSubscribed: true,
-      currentStatus: AgentTeamStatus.Processing,
+      currentStatus: AgentTeamStatus.Running,
       unsubscribe: undefined as undefined | (() => void),
       leafAgentContextsByRouteKey: new Map([
-        ['member-a', { state: { runId: 'agent-a', currentStatus: AgentStatus.ProcessingUserInput } }],
+        ['member-a', { state: { runId: 'agent-a', currentStatus: AgentStatus.Running } }],
       ]),
     };
     teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
@@ -357,7 +359,10 @@ describe('agentTeamRunStore', () => {
     expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
     expect(TeamStreamingService).toHaveBeenCalledWith('ws://node-a.example/ws/agent-team');
     expect(mockConnect).toHaveBeenCalledWith('team-1', teamContext);
-    expect(mockSendMessage).toHaveBeenCalledWith('hello from history', 'professor', [], []);
+    expect(mockSendMessage).toHaveBeenCalledWith('hello from history', 'professor', [], [], expect.objectContaining({
+      messageId: expect.stringMatching(/^client_/),
+      dedupeKey: expect.stringContaining('member_input:'),
+    }));
     expect(teamContext.isSubscribed).toBe(true);
   });
 
@@ -370,7 +375,7 @@ describe('agentTeamRunStore', () => {
           state: { runId: 'pm-run-1', currentStatus: AgentStatus.Idle },
         },
         'BuildSquad/review_lead': {
-          state: { runId: 'review-run-1', currentStatus: AgentStatus.AwaitingToolApproval },
+          state: { runId: 'review-run-1', currentStatus: AgentStatus.Running },
         },
       },
     });
@@ -475,7 +480,10 @@ describe('agentTeamRunStore', () => {
     );
     expect(teamContextsStoreMock.lockConfig).toHaveBeenCalledWith('team-restore-1');
     expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-restore-1');
-    expect(mockSendMessage).toHaveBeenCalledWith('restore then send', 'professor', [], []);
+    expect(mockSendMessage).toHaveBeenCalledWith('restore then send', 'professor', [], [], expect.objectContaining({
+      messageId: expect.stringMatching(/^client_/),
+      dedupeKey: expect.stringContaining('member_input:'),
+    }));
   });
 
   it('reconnects stale disconnected team stream after successful send', async () => {
@@ -525,7 +533,10 @@ describe('agentTeamRunStore', () => {
 
     expect(mockConnect).toHaveBeenCalledTimes(2);
     expect(mockConnect).toHaveBeenLastCalledWith(teamRunId, teamContext);
-    expect(mockSendMessage).toHaveBeenCalledWith('hello after reconnect', 'professor', [], []);
+    expect(mockSendMessage).toHaveBeenCalledWith('hello after reconnect', 'professor', [], [], expect.objectContaining({
+      messageId: expect.stringMatching(/^client_/),
+      dedupeKey: expect.stringContaining('member_input:'),
+    }));
   });
 
   it('reattaches an existing team stream service to the latest team context', () => {
@@ -555,7 +566,7 @@ describe('agentTeamRunStore', () => {
     expect(typeof replacementTeamContext.unsubscribe).toBe('function');
   });
 
-  it('stopGeneration should send STOP_GENERATION without clearing sending state optimistically', () => {
+  it('interruptGeneration should send INTERRUPT_GENERATION without clearing sending state optimistically', () => {
     const focusedMember = {
       isSending: true,
       state: {
@@ -588,10 +599,10 @@ describe('agentTeamRunStore', () => {
 
     const store = useAgentTeamRunStore();
     store.connectToTeamStream('team-1');
-    const result = store.stopGeneration('team-1');
+    const result = store.interruptGeneration('team-1');
 
     expect(result).toBe(true);
-    expect(mockStopGeneration).toHaveBeenCalledTimes(1);
+    expect(mockInterruptGeneration).toHaveBeenCalledTimes(1);
     expect(focusedMember.isSending).toBe(true);
   });
 
@@ -699,7 +710,10 @@ describe('agentTeamRunStore', () => {
       'team-1',
     );
     expect(teamContextsStoreMock.lockConfig).toHaveBeenCalledWith('team-1');
-    expect(mockSendMessage).toHaveBeenCalledWith('launch', 'professor', [], []);
+    expect(mockSendMessage).toHaveBeenCalledWith('launch', 'professor', [], [], expect.objectContaining({
+      messageId: expect.stringMatching(/^client_/),
+      dedupeKey: expect.stringContaining('member_input:'),
+    }));
   });
 
   it('uses nested route keys in mixed leaf member configs when launching a temporary team', async () => {
@@ -820,6 +834,9 @@ describe('agentTeamRunStore', () => {
         },
       }),
     );
-    expect(mockSendMessage).toHaveBeenCalledWith('launch nested', 'Nested Group/Leaf A', [], []);
+    expect(mockSendMessage).toHaveBeenCalledWith('launch nested', 'Nested Group/Leaf A', [], [], expect.objectContaining({
+      messageId: expect.stringMatching(/^client_/),
+      dedupeKey: expect.stringContaining('member_input:'),
+    }));
   });
 });

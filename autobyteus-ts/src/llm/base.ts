@@ -8,6 +8,11 @@ import { LLMUserMessage } from './user-message.js';
 import { CompleteResponse, ChunkResponse } from './utils/response-types.js';
 import { TokenUsage } from './utils/token-usage.js';
 
+export type LLMInvocationOptions = {
+  signal?: AbortSignal | null;
+  turnId?: string | null;
+};
+
 export abstract class BaseLLM {
   public static DEFAULT_SYSTEM_MESSAGE = "You are a helpful assistant";
   
@@ -96,10 +101,11 @@ export abstract class BaseLLM {
   async sendMessages(
     messages: Message[],
     renderedPayload: unknown = null,
-    kwargs: Record<string, unknown> = {}
+    kwargs: Record<string, unknown> = {},
+    options: LLMInvocationOptions = {}
   ): Promise<CompleteResponse> {
     await this.executeBeforeHooks(messages, renderedPayload, kwargs);
-    const response = await this._sendMessagesToLLM(messages, kwargs);
+    const response = await this._sendMessagesToLLM(messages, kwargs, options);
     await this.executeAfterHooks(messages, response, kwargs);
     return response;
   }
@@ -107,7 +113,8 @@ export abstract class BaseLLM {
   async *streamMessages(
     messages: Message[],
     renderedPayload: unknown = null,
-    kwargs: Record<string, unknown> = {}
+    kwargs: Record<string, unknown> = {},
+    options: LLMInvocationOptions = {}
   ): AsyncGenerator<ChunkResponse, void, unknown> {
     await this.executeBeforeHooks(messages, renderedPayload, kwargs);
 
@@ -115,7 +122,7 @@ export abstract class BaseLLM {
     let accumulatedReasoning = "";
     let finalChunk: ChunkResponse | null = null;
 
-    for await (const chunk of this._streamMessagesToLLM(messages, kwargs)) {
+    for await (const chunk of this._streamMessagesToLLM(messages, kwargs, options)) {
       if (chunk.content) accumulatedContent += chunk.content;
       if (chunk.reasoning) accumulatedReasoning += chunk.reasoning;
       
@@ -133,19 +140,20 @@ export abstract class BaseLLM {
     await this.executeAfterHooks(messages, completeResponse, kwargs);
   }
 
-  async sendUserMessage(userMessage: LLMUserMessage, kwargs: Record<string, unknown> = {}): Promise<CompleteResponse> {
+  async sendUserMessage(userMessage: LLMUserMessage, kwargs: Record<string, unknown> = {}, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
     const messages: Message[] = [];
     const systemMessage = this.buildSystemMessage();
     if (systemMessage) {
       messages.push(systemMessage);
     }
     messages.push(this.buildUserMessage(userMessage));
-    return this.sendMessages(messages, null, kwargs);
+    return this.sendMessages(messages, null, kwargs, options);
   }
 
   async *streamUserMessage(
     userMessage: LLMUserMessage,
-    kwargs: Record<string, unknown> = {}
+    kwargs: Record<string, unknown> = {},
+    options: LLMInvocationOptions = {}
   ): AsyncGenerator<ChunkResponse, void, unknown> {
     const messages: Message[] = [];
     const systemMessage = this.buildSystemMessage();
@@ -153,7 +161,7 @@ export abstract class BaseLLM {
       messages.push(systemMessage);
     }
     messages.push(this.buildUserMessage(userMessage));
-    for await (const chunk of this.streamMessages(messages, null, kwargs)) {
+    for await (const chunk of this.streamMessages(messages, null, kwargs, options)) {
       yield chunk;
     }
   }
@@ -173,7 +181,8 @@ export abstract class BaseLLM {
 
   protected async *_streamUserMessageToLLM(
     userMessage: LLMUserMessage,
-    kwargs: Record<string, unknown> = {}
+    kwargs: Record<string, unknown> = {},
+    options: LLMInvocationOptions = {}
   ): AsyncGenerator<ChunkResponse, void, unknown> {
     const messages: Message[] = [];
     const systemMessage = this.buildSystemMessage();
@@ -181,16 +190,21 @@ export abstract class BaseLLM {
       messages.push(systemMessage);
     }
     messages.push(this.buildUserMessage(userMessage));
-    for await (const chunk of this._streamMessagesToLLM(messages, kwargs)) {
+    for await (const chunk of this._streamMessagesToLLM(messages, kwargs, options)) {
       yield chunk;
     }
   }
 
-  protected abstract _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): Promise<CompleteResponse>;
+  protected abstract _sendMessagesToLLM(
+    messages: any,
+    kwargs?: Record<string, unknown>,
+    options?: LLMInvocationOptions
+  ): Promise<CompleteResponse>;
 
   protected abstract _streamMessagesToLLM(
-    messages: Message[],
-    kwargs: Record<string, unknown>
+    messages: any,
+    kwargs?: Record<string, unknown>,
+    options?: LLMInvocationOptions
   ): AsyncGenerator<ChunkResponse, void, unknown>;
 
   async cleanup(): Promise<void> {

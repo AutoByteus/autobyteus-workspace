@@ -138,18 +138,21 @@ const waitForThreadState = async (
 };
 
 const resolveApprovalInvocationId = (message: CodexAppServerMessage): string | null => {
+  const invocationId =
+    typeof message.params.invocation_id === "string" && message.params.invocation_id.trim().length > 0
+      ? message.params.invocation_id.trim()
+      : null;
+  if (invocationId) {
+    return invocationId;
+  }
   const itemId =
     typeof message.params.itemId === "string" && message.params.itemId.trim().length > 0
       ? message.params.itemId.trim()
       : null;
-  const approvalId =
-    typeof message.params.approvalId === "string" && message.params.approvalId.trim().length > 0
-      ? message.params.approvalId.trim()
-      : null;
   if (!itemId) {
     return null;
   }
-  return approvalId ? `${itemId}:${approvalId}` : itemId;
+  return itemId;
 };
 
 const fetchCodexMiniModelIdentifier = async (
@@ -437,7 +440,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     const interruptStartedAt = Date.now();
     await thread.interrupt(turn.turnId);
     await waitForThreadState(
-      () => thread.getStatus() === "IDLE" || thread.getStatus() === "ERROR" || thread.activeTurnId === null,
+      () => thread.getStatusSnapshotSource().currentStatus === "IDLE" || thread.getStatusSnapshotSource().currentStatus === "ERROR" || thread.activeTurnId === null,
       20_000,
     );
     expect(Date.now() - interruptStartedAt).toBeLessThan(20_000);

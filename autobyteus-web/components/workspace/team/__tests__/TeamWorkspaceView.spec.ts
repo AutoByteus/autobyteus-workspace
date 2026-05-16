@@ -98,80 +98,60 @@ vi.mock('~/stores/teamWorkspaceViewStore', () => ({
   useTeamWorkspaceViewStore: () => teamWorkspaceViewStoreMock,
 }));
 
-const buildTeamContext = (overrides: Record<string, any> = {}) => ({
-  teamRunId: 'team-1',
-  config: {
-    teamDefinitionName: 'Class Room Simulation',
-    teamDefinitionId: 'team-def-1',
-  },
-  focusedMemberRouteKey: 'professor',
-  memberTree: [
-    {
-      memberKind: 'agent',
-      memberName: 'professor',
-      displayName: 'Professor',
-      memberPath: ['professor'],
-      memberRouteKey: 'professor',
-      memberRunId: 'professor-run',
-      agentDefinitionId: 'agent-professor-def',
-    },
-    {
-      memberKind: 'agent',
-      memberName: 'student',
-      displayName: 'Student',
-      memberPath: ['student'],
-      memberRouteKey: 'student',
-      memberRunId: 'student-run',
-      agentDefinitionId: 'agent-student-def',
-    },
-  ],
-  memberNodesByRouteKey: new Map<string, any>([
-    ['professor', {
-      memberKind: 'agent',
-      memberName: 'professor',
-      displayName: 'Professor',
-      memberPath: ['professor'],
-      memberRouteKey: 'professor',
-      memberRunId: 'professor-run',
-      agentDefinitionId: 'agent-professor-def',
-    }],
-    ['student', {
-      memberKind: 'agent',
-      memberName: 'student',
-      displayName: 'Student',
-      memberPath: ['student'],
-      memberRouteKey: 'student',
-      memberRunId: 'student-run',
-      agentDefinitionId: 'agent-student-def',
-    }],
-  ]),
-  leafAgentContextsByRouteKey: new Map<string, any>([
-    ['professor', {
-      config: {
-        agentDefinitionId: 'agent-professor-def',
-        agentDefinitionName: 'Professor',
-        agentAvatarUrl: null,
-      },
-      state: {
-        currentStatus: AgentStatus.ExecutingTool,
-        conversation: { agentName: 'Professor', messages: [] },
-      },
-    }],
-    ['student', {
-      config: {
-        agentDefinitionId: 'agent-student-def',
-        agentDefinitionName: 'Student',
-        agentAvatarUrl: null,
-      },
-      state: {
-        currentStatus: AgentStatus.Idle,
-        conversation: { agentName: 'Student', messages: [] },
-      },
-    }],
-  ]),
-  currentStatus: AgentTeamStatus.Idle,
-  ...overrides,
+const buildAgentMemberNode = (memberRouteKey: string, displayName: string, memberRunId: string, agentDefinitionId: string) => ({
+  memberKind: 'agent',
+  memberName: memberRouteKey,
+  displayName,
+  memberPath: [memberRouteKey],
+  memberRouteKey,
+  memberRunId,
+  agentDefinitionId,
 });
+
+const buildTeamContext = (overrides: Record<string, any> = {}) => {
+  const professorNode = buildAgentMemberNode('professor', 'Professor', 'professor-run', 'agent-professor-def');
+  const studentNode = buildAgentMemberNode('student', 'Student', 'student-run', 'agent-student-def');
+
+  return {
+    teamRunId: 'team-1',
+    config: {
+      teamDefinitionName: 'Class Room Simulation',
+      teamDefinitionId: 'team-def-1',
+    },
+    focusedMemberRouteKey: 'professor',
+    memberTree: [professorNode, studentNode],
+    memberNodesByRouteKey: new Map<string, any>([
+      ['professor', professorNode],
+      ['student', studentNode],
+    ]),
+    leafAgentContextsByRouteKey: new Map<string, any>([
+      ['professor', {
+        config: {
+          agentDefinitionId: 'agent-professor-def',
+          agentDefinitionName: 'Professor',
+          agentAvatarUrl: null,
+        },
+        state: {
+          currentStatus: AgentStatus.Running,
+          conversation: { agentName: 'Professor', messages: [] },
+        },
+      }],
+      ['student', {
+        config: {
+          agentDefinitionId: 'agent-student-def',
+          agentDefinitionName: 'Student',
+          agentAvatarUrl: null,
+        },
+        state: {
+          currentStatus: AgentStatus.Idle,
+          conversation: { agentName: 'Student', messages: [] },
+        },
+      }],
+    ]),
+    currentStatus: AgentTeamStatus.Idle,
+    ...overrides,
+  };
+};
 
 describe('TeamWorkspaceView', () => {
   beforeEach(() => {
@@ -218,7 +198,7 @@ describe('TeamWorkspaceView', () => {
 
   it('shows focused member status in header', () => {
     const wrapper = mountComponent();
-    expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.ExecutingTool);
+    expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Running);
   });
 
   it('shows focused member avatar in header when available', () => {

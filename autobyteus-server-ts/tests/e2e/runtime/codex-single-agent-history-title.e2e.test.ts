@@ -148,7 +148,7 @@ const assistantTextContains = (message: WsMessage, token: string): boolean => {
 };
 
 const isIdleStatus = (message: WsMessage): boolean =>
-  message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE";
+  message.type === "AGENT_STATUS" && message.payload.status === "idle";
 
 describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", () => {
   let schema: GraphQLSchema;

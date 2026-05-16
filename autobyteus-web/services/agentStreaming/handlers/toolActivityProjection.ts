@@ -1,7 +1,6 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { EditFileSegment, TerminalCommandSegment, ToolApprovalTarget, ToolCallSegment, ToolInvocationStatus, WriteFileSegment } from '~/types/segments';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { buildInvocationAliases, invocationIdsMatch } from '~/utils/invocationAliases';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 
 export type ProjectableToolSegment = ToolCallSegment | WriteFileSegment | TerminalCommandSegment | EditFileSegment;
@@ -109,22 +108,11 @@ const getContextText = (
   return toolName;
 };
 
-const resolveActivityInvocationIds = (context: AgentContext, invocationId: string): string[] => {
-  const activityStore = useAgentActivityStore();
-  const aliases = buildInvocationAliases(invocationId);
-  const existingIds = activityStore
-    .getActivities(context.state.runId)
-    .map((activity) => activity.invocationId)
-    .filter((activityInvocationId) => invocationIdsMatch(activityInvocationId, invocationId));
-
-  return [...new Set([...aliases, ...existingIds])];
-};
-
 const hasExistingActivity = (context: AgentContext, invocationId: string): boolean => {
   const activityStore = useAgentActivityStore();
   return activityStore
     .getActivities(context.state.runId)
-    .some((activity) => invocationIdsMatch(activity.invocationId, invocationId));
+    .some((activity) => activity.invocationId === invocationId);
 };
 
 export const upsertActivityFromToolSegment = (
@@ -167,9 +155,7 @@ export const upsertActivityFromToolSegment = (
 
 export const syncActivityToolName = (context: AgentContext, invocationId: string, toolName: string): void => {
   const activityStore = useAgentActivityStore();
-  for (const activityInvocationId of resolveActivityInvocationIds(context, invocationId)) {
-    activityStore.updateActivityToolName(context.state.runId, activityInvocationId, toolName);
-  }
+  activityStore.updateActivityToolName(context.state.runId, invocationId, toolName);
 };
 
 export const updateActivityArguments = (
@@ -178,13 +164,11 @@ export const updateActivityArguments = (
   argumentsPayload: Record<string, any>,
 ): void => {
   const activityStore = useAgentActivityStore();
-  for (const activityInvocationId of resolveActivityInvocationIds(context, invocationId)) {
-    activityStore.updateActivityArguments(
-      context.state.runId,
-      activityInvocationId,
-      argumentsPayload,
-    );
-  }
+  activityStore.updateActivityArguments(
+    context.state.runId,
+    invocationId,
+    argumentsPayload,
+  );
 };
 
 export const updateActivityStatus = (
@@ -193,9 +177,7 @@ export const updateActivityStatus = (
   status: ToolInvocationStatus,
 ): void => {
   const activityStore = useAgentActivityStore();
-  for (const activityInvocationId of resolveActivityInvocationIds(context, invocationId)) {
-    activityStore.updateActivityStatus(context.state.runId, activityInvocationId, status);
-  }
+  activityStore.updateActivityStatus(context.state.runId, invocationId, status);
 };
 
 export const updateActivityApprovalTarget = (
@@ -216,14 +198,10 @@ export const setActivityResult = (
   error: string | null,
 ): void => {
   const activityStore = useAgentActivityStore();
-  for (const activityInvocationId of resolveActivityInvocationIds(context, invocationId)) {
-    activityStore.setActivityResult(context.state.runId, activityInvocationId, result, error);
-  }
+  activityStore.setActivityResult(context.state.runId, invocationId, result, error);
 };
 
 export const addActivityLog = (context: AgentContext, invocationId: string, logEntry: string): void => {
   const activityStore = useAgentActivityStore();
-  for (const activityInvocationId of resolveActivityInvocationIds(context, invocationId)) {
-    activityStore.addActivityLog(context.state.runId, activityInvocationId, logEntry);
-  }
+  activityStore.addActivityLog(context.state.runId, invocationId, logEntry);
 };

@@ -253,28 +253,6 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     configSchema: deepseekV4Schema
   },
   {
-    name: 'deepseek-chat',
-    value: 'deepseek-chat',
-    provider: LLMProvider.DEEPSEEK,
-    llmClass: DeepSeekLLM,
-    canonicalName: 'deepseek-chat',
-    defaultConfig: new LLMConfig({
-      rateLimit: 60,
-      pricingConfig: pricing(0.014, 0.28)
-    })
-  },
-  {
-    name: 'deepseek-reasoner',
-    value: 'deepseek-reasoner',
-    provider: LLMProvider.DEEPSEEK,
-    llmClass: DeepSeekLLM,
-    canonicalName: 'deepseek-reasoner',
-    defaultConfig: new LLMConfig({
-      rateLimit: 60,
-      pricingConfig: pricing(0.14, 2.19)
-    })
-  },
-  {
     name: 'gemini-3.1-pro-preview',
     value: 'gemini-3.1-pro-preview',
     provider: LLMProvider.GEMINI,
@@ -298,14 +276,6 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     provider: LLMProvider.KIMI,
     llmClass: KimiLLM,
     canonicalName: 'kimi-k2.6'
-  },
-  {
-    name: 'kimi-k2.5',
-    value: 'kimi-k2.5',
-    provider: LLMProvider.KIMI,
-    llmClass: KimiLLM,
-    canonicalName: 'kimi-k2.5',
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(0.6, 3.0) })
   },
   {
     name: 'kimi-k2-thinking',

@@ -9,6 +9,8 @@ import {
   ShutdownRequestedEvent,
   AgentStoppedEvent,
   AgentErrorEvent,
+  AgentInterruptRequestedEvent,
+  AgentTurnInterruptedEvent,
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
   LLMUserMessageReadyEvent,
@@ -16,7 +18,6 @@ import {
   LLMCompleteResponseReceivedEvent,
   PendingToolInvocationEvent,
   ToolExecutionApprovalEvent,
-  ExecuteToolInvocationEvent,
   ToolResultEvent
 } from '../../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
@@ -115,10 +116,6 @@ describe('AgentStatusDeriver', () => {
     expect(newStatus).toBe(AgentStatus.EXECUTING_TOOL);
 
     deriver = new AgentStatusDeriver(AgentStatus.IDLE);
-    [, newStatus] = deriver.apply(new ExecuteToolInvocationEvent(invocation), context as any);
-    expect(newStatus).toBe(AgentStatus.EXECUTING_TOOL);
-
-    deriver = new AgentStatusDeriver(AgentStatus.IDLE);
     [, newStatus] = deriver.apply(new ToolExecutionApprovalEvent('tid1', true), context as any);
     expect(newStatus).toBe(AgentStatus.EXECUTING_TOOL);
 
@@ -134,5 +131,22 @@ describe('AgentStatusDeriver', () => {
     deriver = new AgentStatusDeriver(AgentStatus.EXECUTING_TOOL);
     [, newStatus] = deriver.apply(resultEvent, context as any);
     expect(newStatus).toBe(AgentStatus.PROCESSING_TOOL_RESULT);
+  });
+
+  it('handles turn interrupt transitions', () => {
+    let deriver = new AgentStatusDeriver(AgentStatus.AWAITING_LLM_RESPONSE);
+    let [, newStatus] = deriver.apply(new AgentInterruptRequestedEvent('turn-1', 'user_interrupt'));
+    expect(newStatus).toBe(AgentStatus.INTERRUPTING);
+
+    [, newStatus] = deriver.apply(new AgentTurnInterruptedEvent('turn-1', 'user_interrupt'));
+    expect(newStatus).toBe(AgentStatus.IDLE);
+
+    deriver = new AgentStatusDeriver(AgentStatus.ERROR);
+    [, newStatus] = deriver.apply(new AgentInterruptRequestedEvent('turn-2', 'user_interrupt'));
+    expect(newStatus).toBe(AgentStatus.ERROR);
+
+    deriver = new AgentStatusDeriver(AgentStatus.SHUTTING_DOWN);
+    [, newStatus] = deriver.apply(new AgentTurnInterruptedEvent('turn-2', 'runtime_stop'));
+    expect(newStatus).toBe(AgentStatus.SHUTTING_DOWN);
   });
 });

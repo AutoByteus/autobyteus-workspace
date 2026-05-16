@@ -5,40 +5,7 @@ import { Agent } from '../agent.js';
 import { AgentConfig } from '../context/agent-config.js';
 import { AgentRuntimeState } from '../context/agent-runtime-state.js';
 import { AgentContext } from '../context/agent-context.js';
-import {
-  UserMessageReceivedEvent,
-  InterAgentMessageReceivedEvent,
-  LLMCompleteResponseReceivedEvent,
-  PendingToolInvocationEvent,
-  ToolResultEvent,
-  GenericEvent,
-  ToolExecutionApprovalEvent,
-  LLMUserMessageReadyEvent,
-  ToolContinuationReadyEvent,
-  ExecuteToolInvocationEvent,
-  BootstrapStartedEvent,
-  BootstrapStepRequestedEvent,
-  BootstrapStepCompletedEvent,
-  BootstrapCompletedEvent,
-  AgentReadyEvent,
-  AgentStoppedEvent,
-  AgentIdleEvent,
-  ShutdownRequestedEvent,
-  AgentErrorEvent
-} from '../events/agent-events.js';
 import { BaseTool } from '../../tools/base-tool.js';
-import { EventHandlerRegistry } from '../handlers/event-handler-registry.js';
-import { UserInputMessageEventHandler } from '../handlers/user-input-message-event-handler.js';
-import { InterAgentMessageReceivedEventHandler } from '../handlers/inter-agent-message-event-handler.js';
-import { LLMCompleteResponseReceivedEventHandler } from '../handlers/llm-complete-response-received-event-handler.js';
-import { ToolInvocationRequestEventHandler } from '../handlers/tool-invocation-request-event-handler.js';
-import { ToolResultEventHandler } from '../handlers/tool-result-event-handler.js';
-import { GenericEventHandler } from '../handlers/generic-event-handler.js';
-import { ToolExecutionApprovalEventHandler } from '../handlers/tool-execution-approval-event-handler.js';
-import { LLMUserMessageReadyEventHandler } from '../handlers/llm-user-message-ready-event-handler.js';
-import { ToolInvocationExecutionEventHandler } from '../handlers/tool-invocation-execution-event-handler.js';
-import { BootstrapEventHandler } from '../handlers/bootstrap-event-handler.js';
-import { LifecycleEventLogger } from '../handlers/lifecycle-event-logger.js';
 import { SkillRegistry } from '../../skills/registry.js';
 import {
   CompactionPolicy,
@@ -79,35 +46,6 @@ export class AgentFactory extends Singleton {
     initializeLogging();
     registerTools();
     console.info('AgentFactory (Singleton) initialized.');
-  }
-
-  private getDefaultEventHandlerRegistry(): EventHandlerRegistry {
-    const registry = new EventHandlerRegistry();
-    registry.register(UserMessageReceivedEvent, new UserInputMessageEventHandler());
-    registry.register(InterAgentMessageReceivedEvent, new InterAgentMessageReceivedEventHandler());
-    registry.register(LLMCompleteResponseReceivedEvent, new LLMCompleteResponseReceivedEventHandler());
-    registry.register(PendingToolInvocationEvent, new ToolInvocationRequestEventHandler());
-    registry.register(ToolResultEvent, new ToolResultEventHandler());
-    registry.register(GenericEvent, new GenericEventHandler());
-    registry.register(ToolExecutionApprovalEvent, new ToolExecutionApprovalEventHandler());
-    const llmUserMessageReadyHandler = new LLMUserMessageReadyEventHandler();
-    registry.register(LLMUserMessageReadyEvent, llmUserMessageReadyHandler);
-    registry.register(ToolContinuationReadyEvent, llmUserMessageReadyHandler);
-    registry.register(ExecuteToolInvocationEvent, new ToolInvocationExecutionEventHandler());
-
-    const bootstrapHandler = new BootstrapEventHandler();
-    registry.register(BootstrapStartedEvent, bootstrapHandler);
-    registry.register(BootstrapStepRequestedEvent, bootstrapHandler);
-    registry.register(BootstrapStepCompletedEvent, bootstrapHandler);
-    registry.register(BootstrapCompletedEvent, bootstrapHandler);
-
-    const lifecycleLogger = new LifecycleEventLogger();
-    registry.register(AgentReadyEvent, lifecycleLogger);
-    registry.register(AgentStoppedEvent, lifecycleLogger);
-    registry.register(AgentIdleEvent, lifecycleLogger);
-    registry.register(ShutdownRequestedEvent, lifecycleLogger);
-    registry.register(AgentErrorEvent, lifecycleLogger);
-    return registry;
   }
 
   private prepareToolInstances(agentId: string, config: AgentConfig): Record<string, BaseTool> {
@@ -217,10 +155,8 @@ export class AgentFactory extends Singleton {
     );
 
     const context = new AgentContext(agentId, config, runtimeState);
-    const eventHandlerRegistry = this.getDefaultEventHandlerRegistry();
-
     console.info(`Instantiating AgentRuntime for agent_id: '${agentId}' with config: '${config.name}'.`);
-    return new AgentRuntime(context, eventHandlerRegistry);
+    return new AgentRuntime(context);
   }
 
   createAgent(config: AgentConfig): Agent {

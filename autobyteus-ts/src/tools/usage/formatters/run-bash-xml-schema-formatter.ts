@@ -5,7 +5,7 @@ export class RunBashXmlSchemaFormatter extends BaseXmlSchemaFormatter {
   provide(_toolDefinition: ToolDefinition): string {
     return `## run_bash
 
-Runs a command in the terminal.
+Runs a stateless non-interactive bash command.
 
 **Syntax:**
 \`\`\`xml
@@ -26,8 +26,7 @@ command_to_execute
 - Content between tags: The shell command to execute.
 - Optional XML attributes:
   - \`cwd="relative/or/absolute/path"\` (optional; relative values resolve from the workspace root, absolute values are also allowed)
-  - \`background="true|false"\` (default false)
-  - \`timeout_seconds="30"\` (foreground timeout)
+  - \`timeout_seconds="30"\` (command timeout)
 
 The command runs in the provided \`cwd\`. Do not rely on a prior \`cd\` from an earlier call.
 If \`cwd\` is omitted, the workspace root is used when available.
@@ -35,10 +34,10 @@ If a task targets a nested directory, reuse that same \`cwd\` on every command t
 Relative \`cwd\` values are resolved from the workspace root, never from a prior shell state.
 Do not invent generic sandbox aliases like \`/workspace\` or \`/home/ubuntu\`; use the actual path provided in the task or context.
 Each successful result includes \`effectiveCwd\` so you can verify where the command actually ran before deciding the next step.
+For long-running commands, use normal bash syntax such as \`npm run dev > server.log 2>&1 &\`; if ordinary live background descendants remain after the shell exits, the result includes \`backgroundProcesses\` entries identified by \`pid\`.
 
 When using structured/native tool calling (not XML shorthand), you can also pass:
 - \`cwd\` (string, optional) as a workspace-root-relative or absolute working-directory path such as \`packages/api\` or \`/Users/alice/project\`
-- \`background\` (boolean, default false) to run asynchronously and get a process handle
-- \`timeout_seconds\` (integer, default 30) for foreground execution timeout`;
+- \`timeout_seconds\` (integer, default 30) for execution timeout`;
   }
 }

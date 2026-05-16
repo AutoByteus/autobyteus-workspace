@@ -80,9 +80,8 @@
           >
             <div class="min-w-0 flex items-center">
               <span
-                v-if="run.isActive"
                 class="mr-2 inline-block h-2 w-2 flex-shrink-0 rounded-full"
-                :class="state.activeStatusClass"
+                :class="state.runStatusClass(run.currentStatus)"
               />
               <span class="truncate">
                 {{ formatRunLabel(run.summary) }}
@@ -264,6 +263,10 @@
                   @click="actions.onSelectTeamMember(member)"
                 >
                   <div class="flex min-w-0 items-center">
+                    <span
+                      class="mr-1.5 inline-block h-2 w-2 flex-shrink-0 rounded-full"
+                      :class="state.runStatusClass(member.currentStatus)"
+                    />
                     <span
                       class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
                     >

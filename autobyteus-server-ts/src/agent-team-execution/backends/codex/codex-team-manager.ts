@@ -6,6 +6,8 @@ import {
   type AgentRunEvent,
 } from "../../../agent-execution/domain/agent-run-event.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
+import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
 import { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import { AgentRunContext } from "../../../agent-execution/domain/agent-run-context.js";
 import { CodexAgentRunContext } from "../../../agent-execution/backends/codex/backend/codex-agent-run-context.js";
@@ -91,6 +93,34 @@ export class CodexTeamManager implements TeamManager {
 
   hasActiveMembers(): boolean {
     return this.teamContext !== null;
+  }
+
+  getMemberStatusSnapshots(): AgentStatusPayload[] {
+    const runtimeContext = this.teamContext?.runtimeContext ?? null;
+    if (!runtimeContext) {
+      return [];
+    }
+
+    return runtimeContext.memberContexts.map((memberContext) => {
+      const memberRun = this.memberRuns.get(memberContext.memberRouteKey) ?? null;
+      const snapshot = memberRun?.getStatusSnapshot() ?? {
+        status: "offline" as const,
+        can_interrupt: false,
+      };
+      return {
+        ...snapshot,
+        agent_name: memberContext.memberName,
+        agent_id: memberContext.memberRunId,
+      };
+    });
+  }
+
+  getStatusSnapshot() {
+    return {
+      status: deriveTeamApiStatus({
+        memberStatuses: this.getMemberStatusSnapshots(),
+      }),
+    };
   }
 
   async postMessage(
@@ -421,7 +451,7 @@ export class CodexTeamManager implements TeamManager {
       return;
     }
 
-    const nextStatus = this.deriveTeamStatus();
+    const nextStatus = this.getStatusSnapshot().status;
     if (nextStatus === this.lastTeamStatus) {
       return;
     }
@@ -431,38 +461,10 @@ export class CodexTeamManager implements TeamManager {
       teamRunId: this.teamContext.runId,
       sourcePath: [],
       data: {
-        new_status: nextStatus,
-        ...(this.lastTeamStatus ? { old_status: this.lastTeamStatus } : {}),
+        status: nextStatus,
       } satisfies TeamRunStatusUpdateData,
     });
     this.lastTeamStatus = nextStatus;
-  }
-
-  private deriveTeamStatus(): string {
-    let hasActiveMember = false;
-    let hasBusyMember = false;
-
-    for (const memberRun of this.memberRuns.values()) {
-      if (!memberRun.isActive()) {
-        continue;
-      }
-      hasActiveMember = true;
-      const status = memberRun.getStatus()?.trim().toUpperCase() ?? null;
-      if (status === "ERROR") {
-        return "ERROR";
-      }
-      if (status && status !== "IDLE") {
-        hasBusyMember = true;
-      }
-    }
-
-    if (hasBusyMember) {
-      return "PROCESSING";
-    }
-    if (hasActiveMember || this.teamContext) {
-      return "IDLE";
-    }
-    return "IDLE";
   }
 
   private clearMemberSubscriptions(): void {

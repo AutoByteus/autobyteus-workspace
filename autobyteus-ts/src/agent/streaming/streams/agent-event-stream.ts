@@ -14,6 +14,7 @@ import {
   createToolExecutionStartedData,
   createToolExecutionSucceededData,
   createToolExecutionFailedData,
+  createToolExecutionInterruptedData,
   createSegmentEventData,
   createSystemTaskNotificationData,
   createInterAgentMessageData,
@@ -30,6 +31,7 @@ import {
   ToolExecutionStartedData,
   ToolExecutionSucceededData,
   ToolExecutionFailedData,
+  ToolExecutionInterruptedData,
   SegmentEventData,
   ErrorEventData,
   CompactionStatusData,
@@ -110,6 +112,10 @@ export class AgentEventStream extends EventEmitter {
           typedPayload = createTurnLifecycleData(payload);
           streamEventType = StreamEventType.TURN_COMPLETED;
           break;
+        case EventType.AGENT_TURN_INTERRUPTED:
+          typedPayload = createTurnLifecycleData(payload);
+          streamEventType = StreamEventType.TURN_INTERRUPTED;
+          break;
         case EventType.AGENT_STATUS_UPDATED:
           typedPayload = createAgentStatusUpdateData(payload);
           streamEventType = StreamEventType.AGENT_STATUS_UPDATED;
@@ -145,6 +151,10 @@ export class AgentEventStream extends EventEmitter {
         case EventType.AGENT_TOOL_EXECUTION_FAILED:
           typedPayload = createToolExecutionFailedData(payload);
           streamEventType = StreamEventType.TOOL_EXECUTION_FAILED;
+          break;
+        case EventType.AGENT_TOOL_EXECUTION_INTERRUPTED:
+          typedPayload = createToolExecutionInterruptedData(payload);
+          streamEventType = StreamEventType.TOOL_EXECUTION_INTERRUPTED;
           break;
         case EventType.AGENT_DATA_SEGMENT_EVENT:
           typedPayload = createSegmentEventData(payload);
@@ -248,7 +258,19 @@ export class AgentEventStream extends EventEmitter {
     for await (const event of this.allEvents()) {
       if (
         (event.event_type === StreamEventType.TURN_STARTED ||
-          event.event_type === StreamEventType.TURN_COMPLETED) &&
+          event.event_type === StreamEventType.TURN_COMPLETED ||
+          event.event_type === StreamEventType.TURN_INTERRUPTED) &&
+        event.data instanceof TurnLifecycleData
+      ) {
+        yield event.data;
+      }
+    }
+  }
+
+  async *streamTurnInterruptions(): AsyncGenerator<TurnLifecycleData, void, unknown> {
+    for await (const event of this.allEvents()) {
+      if (
+        event.event_type === StreamEventType.TURN_INTERRUPTED &&
         event.data instanceof TurnLifecycleData
       ) {
         yield event.data;
@@ -272,6 +294,17 @@ export class AgentEventStream extends EventEmitter {
       if (
         event.event_type === StreamEventType.TOOL_EXECUTION_STARTED &&
         event.data instanceof ToolExecutionStartedData
+      ) {
+        yield event.data;
+      }
+    }
+  }
+
+  async *streamToolExecutionInterrupted(): AsyncGenerator<ToolExecutionInterruptedData, void, unknown> {
+    for await (const event of this.allEvents()) {
+      if (
+        event.event_type === StreamEventType.TOOL_EXECUTION_INTERRUPTED &&
+        event.data instanceof ToolExecutionInterruptedData
       ) {
         yield event.data;
       }

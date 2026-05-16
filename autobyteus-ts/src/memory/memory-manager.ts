@@ -4,7 +4,7 @@ import { CompleteResponse } from '../llm/utils/response-types.js';
 import { ToolResultEvent } from '../agent/events/agent-events.js';
 import { ToolInvocation } from '../agent/tool-invocation.js';
 
-import { RawTraceItem } from './models/raw-trace-item.js';
+import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
 import { MemoryType } from './models/memory-types.js';
 import { CompactionPolicy } from './policies/compaction-policy.js';
 import { Compactor } from './compaction/compactor.js';
@@ -15,11 +15,41 @@ import { WorkingContextSnapshot } from './working-context-snapshot.js';
 import { WorkingContextSnapshotSerializer } from './working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
+import { projectLlmSafeWorkingContext } from './working-context-llm-safe-projector.js';
 
 export type ToolIntentIngestionOptions = {
+  appendToWorkingContext?: boolean;
   assistantContent?: string | null;
   assistantReasoning?: string | null;
 };
+
+export type ToolResultIngestionOptions = {
+  source?: string;
+  appendToWorkingContext?: boolean;
+};
+
+export type MemoryProjectionScope = {
+  kind: 'agent_turn';
+  id: string;
+};
+
+export type AppendRawTraceInput = RawTraceItem | (
+  Omit<RawTraceItemOptions, 'id' | 'ts' | 'seq'> &
+  Partial<Pick<RawTraceItemOptions, 'id' | 'ts' | 'seq'>>
+);
+
+export type ProjectWorkingContextForNextLlmInput = {
+  mode?: 'llm_safe';
+  fenceIncompleteToolProtocolScope?: MemoryProjectionScope;
+  includeCommittedFacts?: boolean;
+};
+
+export type OperationBoundaryNoteInput = {
+  scope: MemoryProjectionScope;
+  reason?: string | null;
+};
+
+const OPERATION_BOUNDARY_TRACE_TYPE = 'operation_boundary';
 
 export class MemoryManager {
   store: MemoryStore;
@@ -155,10 +185,12 @@ export class MemoryManager {
     }
 
     this.store.add(traces);
-    this.workingContextSnapshot.appendToolCalls(toolCalls, {
-      content: options?.assistantContent ?? null,
-      reasoningContent: options?.assistantReasoning ?? null
-    });
+    if (options?.appendToWorkingContext !== false) {
+      this.workingContextSnapshot.appendToolCalls(toolCalls, {
+        content: options?.assistantContent ?? null,
+        reasoningContent: options?.assistantReasoning ?? null
+      });
+    }
   }
 
   ingestToolResult(event: ToolResultEvent, turnId?: string): void {
@@ -168,15 +200,21 @@ export class MemoryManager {
   ingestToolResults(
     events: ToolResultEvent[],
     turnId?: string,
-    options?: { source?: string }
+    options?: ToolResultIngestionOptions
   ): void {
     if (!events.length) {
       return;
     }
 
     const traces: RawTraceItem[] = [];
+    const ingestedEvents: ToolResultEvent[] = [];
     let effectiveTurnId: string | null = null;
     const sourceEvent = options?.source ?? 'ToolResultEvent';
+    const existingToolResultIds = new Set(
+      this.listRawTracesOrdered()
+        .filter((item) => item.traceType === 'tool_result' && item.toolCallId)
+        .map((item) => `${item.turnId}:${item.toolCallId}`)
+    );
 
     for (const event of events) {
       const eventTurnId = event.turnId ?? turnId;
@@ -187,6 +225,14 @@ export class MemoryManager {
         effectiveTurnId = eventTurnId;
       } else if (effectiveTurnId !== eventTurnId) {
         throw new Error('All tool results in a batch must belong to the same turnId');
+      }
+
+      const resultIdentity = event.toolInvocationId ? `${eventTurnId}:${event.toolInvocationId}` : null;
+      if (resultIdentity && existingToolResultIds.has(resultIdentity)) {
+        continue;
+      }
+      if (resultIdentity) {
+        existingToolResultIds.add(resultIdentity);
       }
 
       traces.push(
@@ -205,11 +251,17 @@ export class MemoryManager {
           toolError: event.error ?? null
         })
       );
+      ingestedEvents.push(event);
     }
 
-    this.store.add(traces);
+    if (traces.length) {
+      this.store.add(traces);
+    }
+    if (options?.appendToWorkingContext === false || !ingestedEvents.length) {
+      return;
+    }
     this.workingContextSnapshot.appendToolResults(
-      events.map((event) => ({
+      ingestedEvents.map((event) => ({
         toolCallId: event.toolInvocationId ?? '',
         toolName: event.toolName,
         toolResult: event.result,
@@ -241,6 +293,59 @@ export class MemoryManager {
     this.persistWorkingContextSnapshot();
   }
 
+  appendRawTrace(input: AppendRawTraceInput): RawTraceItem {
+    const trace = input instanceof RawTraceItem
+      ? input
+      : new RawTraceItem({
+          ...input,
+          id: input.id ?? `rt_${Date.now()}_${input.turnId}_${input.traceType}`,
+          ts: input.ts ?? Date.now() / 1000,
+          seq: input.seq ?? this.nextSeq(input.turnId)
+        });
+    const currentSeq = this.seqByTurn.get(trace.turnId) ?? 0;
+    if (trace.seq > currentSeq) {
+      this.seqByTurn.set(trace.turnId, trace.seq);
+    }
+    this.store.add([trace]);
+    return trace;
+  }
+
+  buildOperationBoundaryNote(input: OperationBoundaryNoteInput): string {
+    const scopeId = this.requireAgentTurnScopeId(input.scope, 'MemoryManager.buildOperationBoundaryNote');
+    const reasonText = input.reason ? ` Reason: ${input.reason}.` : '';
+    return (
+      `System note: turn '${scopeId}' was interrupted before normal completion.${reasonText} ` +
+      'Preserve accepted user input and completed facts as history, but do not continue any incomplete tool-call protocol from that turn.'
+    );
+  }
+
+  async projectWorkingContextForNextLlm(input: ProjectWorkingContextForNextLlmInput = {}): Promise<void> {
+    const mode = input.mode ?? 'llm_safe';
+    if (mode !== 'llm_safe') {
+      throw new Error(`MemoryManager.projectWorkingContextForNextLlm does not support mode '${mode}'.`);
+    }
+
+    const fenceTurnId = input.fenceIncompleteToolProtocolScope
+      ? this.requireAgentTurnScopeId(
+          input.fenceIncompleteToolProtocolScope,
+          'MemoryManager.projectWorkingContextForNextLlm'
+        )
+      : null;
+    const boundaryContent = fenceTurnId ? this.getOperationBoundaryNoteContent(fenceTurnId) : null;
+    const completedToolResults =
+      fenceTurnId && input.includeCommittedFacts !== false
+        ? this.getCompletedToolResultsForTurn(fenceTurnId)
+        : [];
+
+    const currentMessages = this.workingContextSnapshot.buildMessages();
+    const projectedMessages = projectLlmSafeWorkingContext(
+      currentMessages,
+      boundaryContent,
+      completedToolResults
+    );
+    this.resetWorkingContextSnapshot(projectedMessages, this.workingContextSnapshot.lastCompactionTs);
+  }
+
   listRawTracesOrdered(limit?: number): RawTraceItem[] {
     return this.store.listRawTracesOrdered(limit);
   }
@@ -253,8 +358,12 @@ export class MemoryManager {
     return this.workingContextSnapshot.buildMessages();
   }
 
-  resetWorkingContextSnapshot(snapshotMessages: Iterable<any>): void {
-    this.workingContextSnapshot.reset(snapshotMessages);
+  resetWorkingContextSnapshot(snapshotMessages: Iterable<any>, lastCompactionTs?: number | null): void {
+    if (arguments.length >= 2) {
+      this.workingContextSnapshot.reset(snapshotMessages, lastCompactionTs);
+    } else {
+      this.workingContextSnapshot.reset(snapshotMessages);
+    }
     this.persistWorkingContextSnapshot();
   }
 
@@ -282,4 +391,32 @@ export class MemoryManager {
     }
     return buildToolInteractions(rawItems);
   }
+
+  private requireAgentTurnScopeId(scope: MemoryProjectionScope | undefined, operation: string): string {
+    if (!scope || scope.kind !== 'agent_turn' || typeof scope.id !== 'string' || !scope.id.trim()) {
+      throw new Error(`${operation} requires an agent_turn scope with a non-empty id.`);
+    }
+    return scope.id.trim();
+  }
+
+  private getOperationBoundaryNoteContent(turnId: string): string | null {
+    const marker = this.listRawTracesOrdered()
+      .filter((item) => item.turnId === turnId && item.traceType === OPERATION_BOUNDARY_TRACE_TYPE)
+      .at(-1);
+    return marker?.content ?? null;
+  }
+
+  private getCompletedToolResultsForTurn(turnId: string): ToolResultEvent[] {
+    return this.listRawTracesOrdered()
+      .filter((item) => item.turnId === turnId && item.traceType === 'tool_result')
+      .map((item) => new ToolResultEvent(
+        item.toolName ?? 'unknown_tool',
+        item.toolResult,
+        item.toolCallId ?? undefined,
+        item.toolError ?? undefined,
+        item.toolArgs ?? undefined,
+        turnId
+      ));
+  }
+
 }

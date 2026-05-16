@@ -1,0 +1,313 @@
+### 2026-05-14T10:55:44+02:00 server terminal unit + websocket integration tests
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-zJKjrh
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-zJKjrh. Call initialize() to build file tree.
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-zJKjrh' with max_depth=1
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-zJKjrh' completed in 0.0010 seconds.
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-zJKjrh (Shallow). Starting background full scan...
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-zJKjrh' with max_depth=null
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/autobyteus-server-ts
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-zJKjrh' completed in 0.0010 seconds.
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+FileNameIndexer starting...
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Created and registered workspace ID: agent_ws_194ea185ef9d4d39bdbf93d5fd4ca93fc8d2663492025b8a2f46376f75f289dc
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Terminal websocket attached for workspace agent_ws_194ea185ef9d4d39bdbf93d5fd4ca93fc8d2663492025b8a2f46376f75f289dc
+Created terminal session session-1 using backend FakePtySession for workspace agent_ws_194ea185ef9d4d39bdbf93d5fd4ca93fc8d2663492025b8a2f46376f75f289dc
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Terminal WebSocket connected: session-1
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-zJKjrh' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-zJKjrh
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+FileNameIndexer started monitoring
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Background full initialization for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-zJKjrh completed.
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Closed PTY session session-1
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > round-trips input/output and resize
+Terminal WebSocket disconnected: session-1
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > rejects missing workspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-KWqI6Q
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-KWqI6Q. Call initialize() to build file tree.
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-KWqI6Q' with max_depth=1
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > rejects missing workspace
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-KWqI6Q' completed in 0.0010 seconds.
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > rejects missing workspace
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-KWqI6Q (Shallow). Starting background full scan...
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-KWqI6Q' with max_depth=null
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > rejects missing workspace
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-KWqI6Q' completed in 0.0000 seconds.
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > rejects missing workspace
+FileNameIndexer starting...
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > rejects missing workspace
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-KWqI6Q' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-KWqI6Q
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > rejects missing workspace
+Created and registered workspace ID: agent_ws_43e12dee22f19c393d530a0aa8a8059bb249333ffa23abe8f3205b4f923bd3bd
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > rejects missing workspace
+FileNameIndexer started monitoring
+
+stdout | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > rejects missing workspace
+Background full initialization for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-KWqI6Q completed.
+
+stderr | tests/integration/terminal/terminal-websocket.integration.test.ts > Terminal websocket integration > rejects missing workspace
+Terminal connection rejected: workspace missing not found
+
+ ✓ tests/integration/terminal/terminal-websocket.integration.test.ts (2 tests) 325ms
+stdout | tests/unit/services/terminal/terminal-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > writes input to session
+Created terminal session s1 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > resizes session
+Created terminal session s1 using backend MockPtySession for workspace ws1
+
+stderr | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > ignores messages for unknown session
+Message for unknown session: missing
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > connects and disconnects
+Created terminal session s1 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > connects and disconnects
+Terminal WebSocket connected: s1
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > connects and disconnects
+Closed PTY session s1
+
+stdout | tests/unit/services/terminal/terminal-handler.test.ts > TerminalHandler messaging > connects and disconnects
+Terminal WebSocket disconnected: s1
+
+ ✓ tests/unit/services/terminal/terminal-handler.test.ts (9 tests) 16ms
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > creates session and stores it
+Created terminal session s1 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > rejects duplicate session IDs
+Created terminal session s1 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > tracks session count
+Created terminal session s1 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > tracks session count
+Created terminal session s2 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > tracks session count
+Closed PTY session s1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions
+Created terminal session s1 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions
+Closed PTY session s1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions by workspace
+Created terminal session s1 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions by workspace
+Created terminal session s2 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions by workspace
+Created terminal session s3 using backend MockPtySession for workspace ws2
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions by workspace
+Closed PTY session s1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions by workspace
+Closed PTY session s2
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes all sessions
+Created terminal session s1 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes all sessions
+Created terminal session s2 using backend MockPtySession for workspace ws2
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes all sessions
+Closed PTY session s1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes all sessions
+Closed PTY session s2
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > lists sessions
+Created terminal session s1 using backend MockPtySession for workspace ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > lists sessions
+Created terminal session s2 using backend MockPtySession for workspace ws2
+
+ ✓ tests/unit/services/terminal/pty-session-manager.test.ts (9 tests) 4ms
+
+ Test Files  3 passed (3)
+      Tests  20 passed (20)
+   Start at  10:55:45
+   Duration  5.27s (transform 1.37s, setup 29ms, import 3.71s, tests 346ms, environment 0ms)
+

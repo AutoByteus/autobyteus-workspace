@@ -1,0 +1,122 @@
+{
+  "startedAt": "2026-05-14T06:26:37.547Z",
+  "completedAt": "2026-05-14T06:26:44.440Z",
+  "model": "kimi-k2.6",
+  "workspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/kimi-k2.6/workspace",
+  "memoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/kimi-k2.6/memory",
+  "env": {
+    "AUTOBYTEUS_STREAM_PARSER": "api_tool_call",
+    "hasOpenAIKey": true,
+    "hasKimiKey": true
+  },
+  "finalStatus": "idle",
+  "idleSeen": true,
+  "errorSeen": null,
+  "error": null,
+  "eventCount": 10,
+  "events": [
+    {
+      "event_id": "07b0eac9-4cac-429c-8b7b-47629cefb588",
+      "timestamp": "2026-05-14T06:26:42.103Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "bootstrapping",
+        "old_status": "uninitialized"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_2486"
+    },
+    {
+      "event_id": "d0666824-73b2-4e67-b153-9c54f0a9774c",
+      "timestamp": "2026-05-14T06:26:42.114Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "idle",
+        "old_status": "bootstrapping"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_2486"
+    },
+    {
+      "event_id": "f867dacb-b465-4e71-9bce-c507a37adfd9",
+      "timestamp": "2026-05-14T06:26:42.116Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "processing_user_input",
+        "old_status": "idle",
+        "trigger": "UserMessageReceivedEvent"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_2486"
+    },
+    {
+      "event_id": "262ec47d-2d04-42e3-a207-a0f53f3f52e7",
+      "timestamp": "2026-05-14T06:26:42.117Z",
+      "event_type": "turn_started",
+      "data": {
+        "turn_id": "turn_0001"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_2486"
+    },
+    {
+      "event_id": "b1084663-2708-4c66-b8ca-988fda5f5363",
+      "timestamp": "2026-05-14T06:26:42.119Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "awaiting_llm_response",
+        "old_status": "processing_user_input"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_2486"
+    },
+    {
+      "event_id": "0b095e8b-132d-4625-9a90-41591231fdd6",
+      "timestamp": "2026-05-14T06:26:44.423Z",
+      "event_type": "error_event",
+      "data": {
+        "source": "LLMUserMessageReadyEventHandler.streamUserMessage",
+        "message": "Error processing your request with the LLM: Error: Error in API streaming: Error: 429 Your account org-74d1d929c9544732b71d85bafbbffa20 / proj-cdc53f62fda8457a818bad5e29011938 <ak-[REDACTED]> request reached organization TPD rate limit, current: 1503963, limit: 1500000",
+        "details": "Error: Error in API streaming: Error: 429 Your account org-74d1d929c9544732b71d85bafbbffa20 / proj-cdc53f62fda8457a818bad5e29011938 <ak-[REDACTED]> request reached organization TPD rate limit, current: 1503963, limit: 1500000"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_2486"
+    },
+    {
+      "event_id": "fe3d55b3-18ac-4969-b8bb-81e369d312f3",
+      "timestamp": "2026-05-14T06:26:44.425Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "analyzing_llm_response",
+        "old_status": "awaiting_llm_response"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_2486"
+    },
+    {
+      "event_id": "69db6e24-6eda-4581-9d92-9ff68bb96480",
+      "timestamp": "2026-05-14T06:26:44.425Z",
+      "event_type": "assistant_complete_response",
+      "data": {
+        "content": "Error processing your request with the LLM: Error: Error in API streaming: Error: 429 Your account org-74d1d929c9544732b71d85bafbbffa20 / proj-cdc53f62fda8457a818bad5e29011938 <ak-[REDACTED]> request reached organization TPD rate limit, current: 1503963, limit: 1500000",
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": []
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_2486"
+    },
+    {
+      "event_id": "2075b70e-73c9-4340-a6a0-90505873c001",
+      "timestamp": "2026-05-14T06:26:44.428Z",
+      "event_type": "turn_completed",
+      "data": {
+        "turn_id": "turn_0001"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_2486"
+    },
+    {
+      "event_id": "90d5718a-f891-4f73-b605-7e4634e63790",
+      "timestamp": "2026-05-14T06:26:44.428Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "idle",
+        "old_status": "analyzing_llm_response"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_2486"
+    }
+  ],
+  "files": []
+}

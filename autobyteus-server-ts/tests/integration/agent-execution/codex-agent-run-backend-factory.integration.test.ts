@@ -112,7 +112,7 @@ const waitForEvent = async (
         event.payload.tool_invocation_id ??
         event.payload.id ??
         null,
-      newStatus: event.payload.new_status ?? null,
+      status: event.payload.status ?? null,
       toolName: event.payload.tool_name ?? null,
     }));
     throw new Error(
@@ -319,14 +319,14 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "RUNNING" &&
+          event.payload.status === "running" &&
           event.statusHint === "ACTIVE",
       );
       await waitForEvent(
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE" &&
+          event.payload.status === "idle" &&
           event.statusHint === "IDLE",
       );
       const textSegmentStart = await waitForEvent(
@@ -343,7 +343,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           event.eventType === AgentRunEventType.SEGMENT_END &&
           event.payload.id === textSegmentId,
       );
-      await waitFor(() => (backend.getStatus() ?? "").toUpperCase() === "IDLE");
+      await waitFor(() => backend.getStatusSnapshot().status === "idle");
       expect(
         events.some(
           (event) =>
@@ -463,7 +463,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
       await expect(fsPromises.readFile(destinationPath, "utf8")).resolves.toBe(`${expectedToken}\n`);
     } finally {
@@ -547,7 +547,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
 
       expect(
@@ -646,7 +646,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
 
       expect(fs.existsSync(destinationPath)).toBe(false);
@@ -729,7 +729,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
 
       expect(
@@ -897,7 +897,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
 
       const dynamicToolStartedEvents = events.filter(
@@ -1073,7 +1073,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
 
       const dynamicToolStartedEvents = events.filter(
@@ -1182,7 +1182,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
 
       const distinctToolInvocationIds = new Set(
@@ -1321,7 +1321,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
 
       const written = await fsPromises.readFile(targetPath, "utf8");
@@ -1419,7 +1419,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
 
       expect(
@@ -1572,7 +1572,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
 
       expect(
@@ -1690,7 +1690,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
 
       const succeededToolNames = events

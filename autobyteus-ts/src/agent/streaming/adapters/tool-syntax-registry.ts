@@ -35,9 +35,6 @@ const buildRunBashArgs: ToolArgsBuilder = (metadata, content) => {
   if (typeof metadata.cwd === 'string' && metadata.cwd.trim().length > 0) {
     args.cwd = metadata.cwd;
   }
-  if (metadata.background !== undefined) {
-    args.background = metadata.background;
-  }
   const timeoutSeconds = metadata.timeout_seconds ?? metadata.timeoutSeconds;
   if (timeoutSeconds !== undefined) {
     args.timeout_seconds = timeoutSeconds;

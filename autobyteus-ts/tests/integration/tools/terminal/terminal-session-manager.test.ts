@@ -26,6 +26,17 @@ async function withTempDir<T>(fn: (dir: string) => Promise<T>): Promise<T> {
   }
 }
 
+async function waitForCondition(condition: () => boolean, timeoutMs = 3000): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (condition()) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  throw new Error('Timed out waiting for condition');
+}
+
 runIntegration('TerminalSessionManager Integration', () => {
   if (!TerminalSessionManagerClass) {
     return;
@@ -73,6 +84,29 @@ runIntegration('TerminalSessionManager Integration', () => {
         const result = await manager.executeCommand('sleep 10', 1);
 
         expect(result.timedOut).toBe(true);
+      } finally {
+        await manager.close();
+      }
+    });
+  });
+
+  it('closes an active foreground command when its signal is aborted', async () => {
+    await withTempDir(async (tempDir) => {
+      const manager = new TerminalSessionManagerClass();
+      try {
+        await manager.ensureStarted(tempDir);
+        const controller = new AbortController();
+        const startedAt = Date.now();
+        const resultPromise = manager.executeCommand('sleep 10', 30, { signal: controller.signal });
+
+        await new Promise((resolve) => setTimeout(resolve, 150));
+        controller.abort();
+        const result = await resultPromise;
+
+        expect(result.timedOut).toBe(true);
+        expect(Date.now() - startedAt).toBeLessThan(5000);
+        await waitForCondition(() => !manager.isStarted);
+        expect(manager.isStarted).toBe(false);
       } finally {
         await manager.close();
       }

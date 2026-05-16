@@ -5,10 +5,11 @@ import {
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
+import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
 
 const resolveStatusHint = (
   eventType: StreamEventType,
-  payload: Record<string, unknown>,
+  statusPayload?: AgentStatusPayload,
 ): "ACTIVE" | "IDLE" | "ERROR" | null => {
   if (eventType === StreamEventType.ERROR_EVENT) {
     return "ERROR";
@@ -19,23 +20,17 @@ const resolveStatusHint = (
   if (eventType === StreamEventType.TURN_COMPLETED) {
     return "IDLE";
   }
+  if (eventType === StreamEventType.TURN_INTERRUPTED) {
+    return "IDLE";
+  }
   if (eventType === StreamEventType.AGENT_STATUS_UPDATED) {
-    const nextStatus =
-      typeof payload.new_status === "string"
-        ? payload.new_status
-        : typeof payload.status === "string"
-          ? payload.status
-          : null;
-    const normalized = nextStatus?.trim().toUpperCase() ?? null;
-    if (normalized === "IDLE") {
+    if (statusPayload?.status === "offline" || statusPayload?.status === "idle") {
       return "IDLE";
     }
-    if (normalized === "ERROR") {
+    if (statusPayload?.status === "error") {
       return "ERROR";
     }
-    if (normalized) {
-      return "ACTIVE";
-    }
+    return "ACTIVE";
   }
   return null;
 };
@@ -63,6 +58,7 @@ const resolveSegmentEventType = (payload: Record<string, unknown>): AgentRunEven
 const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
   [StreamEventType.TURN_STARTED, AgentRunEventType.TURN_STARTED],
   [StreamEventType.TURN_COMPLETED, AgentRunEventType.TURN_COMPLETED],
+  [StreamEventType.TURN_INTERRUPTED, AgentRunEventType.TURN_INTERRUPTED],
   [StreamEventType.AGENT_STATUS_UPDATED, AgentRunEventType.AGENT_STATUS],
   [StreamEventType.COMPACTION_STATUS, AgentRunEventType.COMPACTION_STATUS],
   [StreamEventType.ASSISTANT_COMPLETE_RESPONSE, AgentRunEventType.ASSISTANT_COMPLETE],
@@ -72,6 +68,7 @@ const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
   [StreamEventType.TOOL_EXECUTION_STARTED, AgentRunEventType.TOOL_EXECUTION_STARTED],
   [StreamEventType.TOOL_EXECUTION_SUCCEEDED, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED],
   [StreamEventType.TOOL_EXECUTION_FAILED, AgentRunEventType.TOOL_EXECUTION_FAILED],
+  [StreamEventType.TOOL_EXECUTION_INTERRUPTED, AgentRunEventType.TOOL_EXECUTION_INTERRUPTED],
   [StreamEventType.TOOL_INTERACTION_LOG_ENTRY, AgentRunEventType.TOOL_LOG],
   [StreamEventType.SYSTEM_TASK_NOTIFICATION, AgentRunEventType.SYSTEM_TASK_NOTIFICATION],
   [StreamEventType.INTER_AGENT_MESSAGE, AgentRunEventType.INTER_AGENT_MESSAGE],
@@ -80,12 +77,26 @@ const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
   [StreamEventType.ERROR_EVENT, AgentRunEventType.ERROR],
 ]);
 
+type AutoByteusStatusSnapshotProvider = () => AgentStatusPayload;
+
+const defaultStatusSnapshotProvider = (): AgentStatusPayload => ({
+  status: "offline",
+  can_interrupt: false,
+});
+
 export class AutoByteusStreamEventConverter {
-  constructor(private readonly runId: string) {}
+  constructor(
+    private readonly runId: string,
+    private readonly getStatusPayload: AutoByteusStatusSnapshotProvider = defaultStatusSnapshotProvider,
+  ) {}
 
   convert(event: StreamEvent): AgentRunEvent | null {
     const payload = serializePayload(event.data);
-    const statusHint = resolveStatusHint(event.event_type, payload);
+    const statusPayload =
+      event.event_type === StreamEventType.AGENT_STATUS_UPDATED
+        ? this.getStatusPayload()
+        : undefined;
+    const statusHint = resolveStatusHint(event.event_type, statusPayload);
 
     if (event.event_type === StreamEventType.SEGMENT_EVENT) {
       const eventType = resolveSegmentEventType(payload);
@@ -99,6 +110,17 @@ export class AutoByteusStreamEventConverter {
       if (!turnId) {
         return null;
       }
+      const nestedPayload =
+        payload.payload &&
+        typeof payload.payload === "object" &&
+        !Array.isArray(payload.payload)
+          ? (payload.payload as Record<string, unknown>)
+          : {};
+      const {
+        turnId: _nestedCamelTurnId,
+        turn_id: _nestedTurnId,
+        ...canonicalNestedPayload
+      } = nestedPayload;
       return {
         eventType,
         runId: this.runId,
@@ -107,13 +129,9 @@ export class AutoByteusStreamEventConverter {
             typeof payload.segment_id === "string" && payload.segment_id.length > 0
               ? payload.segment_id
               : "",
-          turnId,
+          turn_id: turnId,
           ...(payload.segment_type !== undefined ? { segment_type: payload.segment_type } : {}),
-          ...((payload.payload &&
-          typeof payload.payload === "object" &&
-          !Array.isArray(payload.payload))
-            ? (payload.payload as Record<string, unknown>)
-            : {}),
+          ...canonicalNestedPayload,
         },
         statusHint,
       };
@@ -127,7 +145,9 @@ export class AutoByteusStreamEventConverter {
     return {
       eventType,
       runId: this.runId,
-      payload,
+      payload: eventType === AgentRunEventType.AGENT_STATUS
+        ? (statusPayload ?? this.getStatusPayload())
+        : payload,
       statusHint,
     };
   }

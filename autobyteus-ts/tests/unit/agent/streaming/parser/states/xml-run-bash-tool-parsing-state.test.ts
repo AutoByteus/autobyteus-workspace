@@ -93,7 +93,7 @@ describe('XmlRunBashToolParsingState', () => {
     expect(fullDump).not.toContain('</tool>');
   });
 
-  it('captures background and timeout_seconds from arguments metadata', () => {
+  it('captures timeout_seconds from arguments metadata and ignores background', () => {
     const ctx = createContext();
     const signature = '<tool name="run_bash">';
     const content =
@@ -108,12 +108,12 @@ describe('XmlRunBashToolParsingState', () => {
     const endEvents = events.filter((e) => e.event_type === SegmentEventType.END);
     expect(endEvents).toHaveLength(1);
     expect(endEvents[0].payload.metadata).toMatchObject({
-      background: true,
       timeout_seconds: 90
     });
+    expect(endEvents[0].payload.metadata.background).toBeUndefined();
   });
 
-  it('captures background and timeout metadata from opening attributes', () => {
+  it('captures timeout metadata from opening attributes and ignores background', () => {
     const ctx = createContext();
     const signature = "<tool name=\"run_bash\" background=\"true\" timeout_seconds=\"33\">";
     const content = "<arguments><arg name='command'>echo attrs</arg></arguments></tool>";
@@ -129,15 +129,15 @@ describe('XmlRunBashToolParsingState', () => {
     expect(startEvents).toHaveLength(1);
     expect(startEvents[0].payload.metadata).toMatchObject({
       tool_name: 'run_bash',
-      background: true,
       timeout_seconds: 33
     });
+    expect(startEvents[0].payload.metadata.background).toBeUndefined();
     expect(endEvents).toHaveLength(1);
     expect(endEvents[0].payload.metadata).toMatchObject({
       tool_name: 'run_bash',
-      background: true,
       timeout_seconds: 33
     });
+    expect(endEvents[0].payload.metadata.background).toBeUndefined();
   });
 
   it('captures timeoutSeconds alias and normalizes it to timeout_seconds', () => {
@@ -180,7 +180,7 @@ describe('XmlRunBashToolParsingState', () => {
     expect(endEvents[0].payload.metadata.timeout_seconds).toBeUndefined();
   });
 
-  it('keeps attribute metadata when conflicting argument metadata appears later', () => {
+  it('keeps timeout attribute metadata when conflicting argument metadata appears later and ignores background', () => {
     const ctx = createContext();
     const signature = "<tool name='run_bash' background='false' timeout_seconds='10'>";
     const content =
@@ -196,12 +196,12 @@ describe('XmlRunBashToolParsingState', () => {
     expect(endEvents).toHaveLength(1);
     expect(endEvents[0].payload.metadata).toMatchObject({
       tool_name: 'run_bash',
-      background: false,
       timeout_seconds: 10
     });
+    expect(endEvents[0].payload.metadata.background).toBeUndefined();
   });
 
-  it('extracts metadata when metadata args arrive in fragmented chunks', () => {
+  it('extracts supported timeout metadata when metadata args arrive in fragmented chunks', () => {
     const ctx = createContext();
     const signature = '<tool name="run_bash">';
     const chunks = [
@@ -223,8 +223,8 @@ describe('XmlRunBashToolParsingState', () => {
     expect(endEvents).toHaveLength(1);
     expect(endEvents[0].payload.metadata).toMatchObject({
       tool_name: 'run_bash',
-      background: true,
       timeout_seconds: 60
     });
+    expect(endEvents[0].payload.metadata.background).toBeUndefined();
   });
 });

@@ -1,33 +1,19 @@
 import { getApolloClient } from '~/utils/apolloClient';
-import {
-  GetTeamMemberRunProjection,
-  GetTeamRunResumeConfig,
-} from '~/graphql/queries/runHistoryQueries';
-import type {
-  GetTeamRunResumeConfigQueryData,
-  TeamMemberRunProjectionPayload,
-  TeamRunResumeConfigPayload,
-} from '~/stores/runHistoryTypes';
-import {
-  flattenTeamRunAgentMetadata,
-  parseTeamRunMetadata,
-  toTeamMemberKey,
-} from '~/stores/runHistoryMetadata';
+import { GetTeamMemberRunProjection, GetTeamRunResumeConfig } from '~/graphql/queries/runHistoryQueries';
+import type { GetTeamRunResumeConfigQueryData, TeamMemberRunProjectionPayload, TeamRunResumeConfigPayload } from '~/stores/runHistoryTypes';
+import { flattenTeamRunAgentMetadata, parseTeamRunMetadata, toTeamMemberKey } from '~/stores/runHistoryMetadata';
 import {
   applyProjectionToTeamMemberContext,
   buildTeamMemberContexts,
   fetchTeamMemberProjection,
   fetchTeamMemberProjections,
 } from '~/stores/runHistoryTeamHelpers';
-import type {
-  AgentTeamContext,
-  HistoricalTeamHydrationState,
-  TeamMemberProjectionLoadState,
-} from '~/types/agent/AgentTeamContext';
-import { normalizeAgentRuntimeStatus, normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
+import type { AgentTeamContext, HistoricalTeamHydrationState, TeamMemberProjectionLoadState } from '~/types/agent/AgentTeamContext';
+import { normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 import { hydrateActivitiesFromProjection } from './runProjectionActivityHydration';
 import { fetchAndHydrateTeamCommunicationForTeam } from './teamCommunicationHydrationService';
+import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRuntimeStatusState';
 import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
 import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
 
@@ -111,6 +97,7 @@ const collectMetadataMemberRouteKeys = (metadata: ReturnType<typeof parseTeamRun
 const applyMemberStatuses = (
   members: Map<string, any>,
   snapshots: TeamMemberLiveSnapshot[],
+  options: { preserveLiveInterrupt?: boolean } = {},
 ): void => {
   const statusByKey = new Map<string, TeamMemberLiveSnapshot>();
   const statusByRunId = new Map<string, TeamMemberLiveSnapshot>();
@@ -132,7 +119,9 @@ const applyMemberStatuses = (
     const byRunId = statusByRunId.get(memberContext.state.runId);
     const matched = byRouteKey || byRunId;
     if (matched) {
-      memberContext.state.currentStatus = normalizeAgentRuntimeStatus(matched.currentStatus);
+      applyMemberOrHistoryStatusSnapshot(memberContext, matched.currentStatus, {
+        preserveLiveInterrupt: options.preserveLiveInterrupt === true,
+      });
     }
   });
 };
@@ -384,9 +373,10 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
 export const applyLiveTeamStatusSnapshot = (
   context: AgentTeamContext,
   snapshot: TeamLiveStatusSnapshot,
+  options: { preserveLiveInterrupt?: boolean } = {},
 ): void => {
   context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
-  applyMemberStatuses(context.leafAgentContextsByRouteKey, snapshot.memberStatuses || []);
+  applyMemberStatuses(context.leafAgentContextsByRouteKey, snapshot.memberStatuses || [], options);
 };
 
 export const loadTeamRunContextHydrationPayload = async (

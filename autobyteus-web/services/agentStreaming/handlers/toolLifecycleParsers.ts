@@ -3,6 +3,7 @@ import type {
   ToolApprovedPayload,
   ToolDeniedPayload,
   ToolExecutionFailedPayload,
+  ToolExecutionInterruptedPayload,
   ToolExecutionStartedPayload,
   ToolExecutionSucceededPayload,
   ToolLogPayload,
@@ -42,6 +43,11 @@ export interface ParsedToolExecutionSucceededPayload extends ParsedToolLifecycle
 export interface ParsedToolExecutionFailedPayload extends ParsedToolLifecycleBase {
   arguments: Record<string, any>;
   error: string;
+}
+
+export interface ParsedToolExecutionInterruptedPayload extends ParsedToolLifecycleBase {
+  arguments: Record<string, any>;
+  reason: string;
 }
 
 export interface ParsedToolLogPayload {
@@ -233,6 +239,26 @@ export const parseToolExecutionFailedPayload = (
     ...base,
     arguments: normalizeArguments(payload.arguments),
     error,
+  };
+};
+
+export const parseToolExecutionInterruptedPayload = (
+  payload: ToolExecutionInterruptedPayload,
+): ParsedToolExecutionInterruptedPayload | null => {
+  const base = parseBase(payload);
+  if (!base) {
+    return null;
+  }
+
+  const reason = normalizeString(payload.reason);
+  if (!reason) {
+    return null;
+  }
+
+  return {
+    ...base,
+    arguments: normalizeArguments(payload.arguments),
+    reason,
   };
 };
 

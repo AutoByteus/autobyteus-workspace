@@ -29,11 +29,14 @@ describe("AutoByteusStreamEventConverter", () => {
       event_type: streamEventType,
       data: { invocation_id: "inv-1", detail: "ok" },
     } as any);
+    const isStatusEvent = streamEventType === StreamEventType.AGENT_STATUS_UPDATED;
 
     expect(event).toEqual({
       eventType: agentRunEventType,
       runId: "run-1",
-      payload: { invocation_id: "inv-1", detail: "ok" },
+      payload: isStatusEvent
+        ? { status: "idle", can_interrupt: false }
+        : { invocation_id: "inv-1", detail: "ok" },
       statusHint:
         streamEventType === StreamEventType.ERROR_EVENT
           ? "ERROR"
@@ -41,28 +44,38 @@ describe("AutoByteusStreamEventConverter", () => {
             ? "ACTIVE"
             : streamEventType === StreamEventType.TURN_COMPLETED
               ? "IDLE"
+              : isStatusEvent
+                ? "IDLE"
               : null,
     });
   });
 
   it("treats idle and error agent status updates as explicit status hints", () => {
     expect(
-      converter.convert({
+      new AutoByteusStreamEventConverter("run-1", () => ({
+        status: "idle",
+        can_interrupt: false,
+      })).convert({
         event_type: StreamEventType.AGENT_STATUS_UPDATED,
-        data: { new_status: "idle" },
+        data: {},
       } as any),
     )?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
+      payload: { status: "idle", can_interrupt: false },
       statusHint: "IDLE",
     });
 
     expect(
-      converter.convert({
+      new AutoByteusStreamEventConverter("run-1", () => ({
+        status: "error",
+        can_interrupt: false,
+      })).convert({
         event_type: StreamEventType.AGENT_STATUS_UPDATED,
-        data: { status: "error" },
+        data: {},
       } as any),
     )?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
+      payload: { status: "error", can_interrupt: false },
       statusHint: "ERROR",
     });
   });
@@ -93,7 +106,7 @@ describe("AutoByteusStreamEventConverter", () => {
       runId: "run-1",
       payload: {
         id: "seg-1",
-        turnId: "turn-1",
+        turn_id: "turn-1",
         segment_type: "assistant_text",
         content: "hello",
       },
@@ -114,7 +127,7 @@ describe("AutoByteusStreamEventConverter", () => {
       eventType: AgentRunEventType.SEGMENT_CONTENT,
       payload: {
         id: "seg-2",
-        turnId: "turn-2",
+        turn_id: "turn-2",
         text: "chunk",
       },
     });
@@ -132,8 +145,61 @@ describe("AutoByteusStreamEventConverter", () => {
       eventType: AgentRunEventType.SEGMENT_END,
       payload: {
         id: "seg-3",
-        turnId: "turn-3",
+        turn_id: "turn-3",
       },
+    });
+  });
+
+  it("canonicalizes native segment payloads to turn_id for all segment event variants", () => {
+    const start = converter.convert({
+      event_type: StreamEventType.SEGMENT_EVENT,
+      data: {
+        event_type: "SEGMENT_START",
+        segment_id: "seg-start",
+        segment_type: "text",
+        turn_id: "turn-native",
+        payload: { metadata: { role: "assistant" }, turnId: "legacy-nested" },
+      },
+    } as any);
+    const content = converter.convert({
+      event_type: StreamEventType.SEGMENT_EVENT,
+      data: {
+        event_type: "SEGMENT_CONTENT",
+        segment_id: "seg-content",
+        turn_id: "turn-native",
+        payload: { delta: "partial", turn_id: "nested-wrong" },
+      },
+    } as any);
+    const end = converter.convert({
+      event_type: StreamEventType.SEGMENT_EVENT,
+      data: {
+        event_type: "SEGMENT_END",
+        segment_id: "seg-end",
+        turn_id: "turn-native",
+        payload: {
+          interrupted: true,
+          reason: "user_interrupt",
+          metadata: { tool_name: "search_web" },
+          turnId: "legacy-nested",
+        },
+      },
+    } as any);
+
+    for (const event of [start, content, end]) {
+      expect(event?.payload).toMatchObject({ turn_id: "turn-native" });
+      expect(event?.payload).not.toHaveProperty("turnId");
+    }
+    expect(start?.payload).toMatchObject({
+      id: "seg-start",
+      segment_type: "text",
+      metadata: { role: "assistant" },
+    });
+    expect(content?.payload).toMatchObject({ id: "seg-content", delta: "partial" });
+    expect(end?.payload).toMatchObject({
+      id: "seg-end",
+      interrupted: true,
+      reason: "user_interrupt",
+      metadata: { tool_name: "search_web" },
     });
   });
 

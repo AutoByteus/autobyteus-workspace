@@ -3,44 +3,18 @@ import type { BaseTool } from '../../base-tool.js';
 import { ToolCategory } from '../../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../utils/parameter-schema.js';
 import { defaultToolRegistry } from '../../registry/tool-registry.js';
-import { BackgroundProcessManager } from '../background-process-manager.js';
-import { resolveExecutionCwd, type AgentContextLike } from './run-bash.js';
+import { getBackgroundManager, type AgentContextLike } from '../background-process-context.js';
+import { resolveExecutionCwd } from '../execution-cwd.js';
+import type { BackgroundProcessInfo } from '../types.js';
 
-let defaultBackgroundManager: BackgroundProcessManager | null = null;
-
-function getBackgroundManager(context: AgentContextLike | null | undefined): BackgroundProcessManager {
-  if (!context) {
-    if (!defaultBackgroundManager) {
-      defaultBackgroundManager = new BackgroundProcessManager();
-    }
-    return defaultBackgroundManager;
-  }
-
-  const contextRecord = context as Record<string, unknown>;
-  const existing = contextRecord._backgroundProcessManager as BackgroundProcessManager | undefined;
-
-  if (!existing) {
-    const manager = new BackgroundProcessManager();
-    contextRecord._backgroundProcessManager = manager;
-    return manager;
-  }
-
-  if (!contextRecord._backgroundProcessManager) {
-    contextRecord._backgroundProcessManager = existing;
-  }
-
-  return existing;
-}
 export async function startBackgroundProcess(
   context: AgentContextLike | null,
   command: string,
   cwd?: string | null
-): Promise<{ processId: string; status: string; effectiveCwd: string }> {
+): Promise<BackgroundProcessInfo> {
   const manager = getBackgroundManager(context);
   const resolvedCwd = resolveExecutionCwd(context, cwd);
-
-  const processId = await manager.startProcess(command, resolvedCwd);
-  return { processId, status: 'started', effectiveCwd: resolvedCwd };
+  return manager.startCommand(command, resolvedCwd);
 }
 
 const argumentSchema = new ParameterSchema();
@@ -66,7 +40,7 @@ export function registerStartBackgroundProcessTool(): BaseTool {
     cachedTool = tool({
       name: TOOL_NAME,
       description:
-        'Start a long-running process in a working directory and return its process_id. If cwd is omitted, the workspace root is used. If cwd is provided, it may be absolute or workspace-root-relative. The result includes effectiveCwd so you can confirm where the process started.',
+        'Start a long-running non-interactive shell command in a working directory and return its PID as pid. If cwd is omitted, the workspace root is used. If cwd is provided, it may be absolute or workspace-root-relative. The result includes effectiveCwd so you can confirm where the process started.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
       paramNames: ['context', 'command', 'cwd']

@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { type AgentEventStream } from "autobyteus-ts";
 import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRun } from "../../../../src/agent-execution/domain/agent-run.js";
+import { AgentRunConfig } from "../../../../src/agent-execution/domain/agent-run-config.js";
+import { AgentRunContext } from "../../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentStreamHandler } from "../../../../src/services/agent-streaming/agent-stream-handler.js";
 import {
   getAgentRunEventMessageMapper,
@@ -37,7 +40,7 @@ describe("AgentStreamHandler", () => {
     runId: "agent-123",
     runtimeKind: "autobyteus",
     isActive: vi.fn().mockReturnValue(true),
-    getStatus: vi.fn().mockReturnValue("ACTIVE"),
+    getStatusSnapshot: vi.fn().mockReturnValue({ status: "running", can_interrupt: true }),
     subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
       const stream = createStream([]);
       void (async () => {
@@ -198,15 +201,15 @@ describe("AgentStreamHandler", () => {
     await flush();
 
     expect(connection.send).toHaveBeenCalledTimes(3);
-    const payload = JSON.parse(connection.send.mock.calls[2][0]);
-    expect(payload).toMatchObject({
+    const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
+    expect(messages).toContainEqual(expect.objectContaining({
       type: ServerMessageType.SEGMENT_CONTENT,
-      payload: {
+      payload: expect.objectContaining({
         id: "item-1",
         delta: "hello",
         segment_type: "text",
-      },
-    });
+      }),
+    }));
   });
 
   it("maps turn lifecycle AgentRunEvents directly to websocket messages", async () => {
@@ -241,13 +244,13 @@ describe("AgentStreamHandler", () => {
     await flush();
 
     expect(connection.send).toHaveBeenCalledTimes(3);
-    const payload = JSON.parse(connection.send.mock.calls[2][0]);
-    expect(payload).toMatchObject({
+    const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
+    expect(messages).toContainEqual(expect.objectContaining({
       type: ServerMessageType.TURN_COMPLETED,
-      payload: {
+      payload: expect.objectContaining({
         turn_id: "turn-3",
-      },
-    });
+      }),
+    }));
   });
 
   it("registers the websocket connection for run-scoped live message broadcasts", async () => {
@@ -287,6 +290,76 @@ describe("AgentStreamHandler", () => {
         content: "hello from telegram",
       },
     });
+  });
+
+  it("publishes terminal offline status to an already-connected websocket when a run terminates", async () => {
+    const sessionManager = new AgentSessionManager();
+    const runId = "run-terminate-1";
+    const config = new AgentRunConfig({
+      runtimeKind: "codex_app_server",
+      agentDefinitionId: "agent-def-1",
+      llmModelIdentifier: "gpt-5.3-codex",
+      autoExecuteTools: false,
+      workspaceId: "workspace-1",
+      llmConfig: null,
+      skillAccessMode: null,
+    });
+    const context = new AgentRunContext({
+      runId,
+      config,
+      runtimeContext: null,
+    });
+    let isActive = true;
+    const backend = {
+      runId,
+      runtimeKind: "codex_app_server",
+      getContext: () => context,
+      isActive: () => isActive,
+      getPlatformAgentRunId: () => null,
+      getStatusSnapshot: () => ({
+        status: isActive ? "idle" : "offline",
+        can_interrupt: false,
+      }),
+      subscribeToEvents: vi.fn().mockReturnValue(() => undefined),
+      postUserMessage: vi.fn().mockResolvedValue({ accepted: true }),
+      approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
+      interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+      terminate: vi.fn(async () => {
+        isActive = false;
+        return { accepted: true };
+      }),
+    };
+    const activeRun = new AgentRun({
+      context,
+      backend: backend as any,
+    });
+    const agentRunService = createAgentRunService(activeRun as any);
+    const handler = new AgentStreamHandler(
+      sessionManager,
+      agentRunService as any,
+      getAgentRunEventMessageMapper(),
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, runId);
+    expect(sessionId).toBeTruthy();
+
+    await activeRun.terminate();
+    await flush();
+
+    const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
+    expect(messages).toContainEqual(expect.objectContaining({
+      type: ServerMessageType.AGENT_STATUS,
+      payload: {
+        status: "offline",
+        can_interrupt: false,
+        agent_id: runId,
+      },
+    }));
+    expect(connection.close).not.toHaveBeenCalled();
   });
 
   it("handles SEND_MESSAGE and forwards to the live AgentRun subject", async () => {
@@ -371,7 +444,7 @@ describe("AgentStreamHandler", () => {
     );
   });
 
-  it("keeps stop-generation active-only and does not restore a stopped agent run", async () => {
+  it("keeps interrupt-generation active-only and does not restore a stopped agent run", async () => {
     const activeRun = createActiveRun();
     const agentRunService = createAgentRunService(activeRun);
     const handler = new AgentStreamHandler(new AgentSessionManager(), agentRunService as any);
@@ -387,7 +460,7 @@ describe("AgentStreamHandler", () => {
     await handler.handleMessage(
       sessionId as string,
       JSON.stringify({
-        type: ClientMessageType.STOP_GENERATION,
+        type: ClientMessageType.INTERRUPT_GENERATION,
       }),
     );
 

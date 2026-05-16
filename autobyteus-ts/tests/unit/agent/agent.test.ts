@@ -47,9 +47,21 @@ const makeRuntimeStub = (context: AgentContext, isRunning: boolean) => {
   runtime.start = vi.fn();
   runtime.stop = vi.fn(async () => undefined);
   runtime.submitEvent = vi.fn(async () => undefined);
+  runtime.postToolApprovalEvent = vi.fn(async (event) => ({
+    accepted: true,
+    code: 'posted',
+    turnId: event.turnId ?? 'turn-1',
+    invocationId: event.toolInvocationId
+  }));
+  runtime.postToolResultEvent = vi.fn(async (event) => ({
+    accepted: true,
+    code: 'posted',
+    turnId: event.turnId ?? 'turn-1',
+    invocationId: event.toolInvocationId ?? ''
+  }));
   Object.defineProperty(runtime, 'isRunning', { get: () => isRunning });
   Object.defineProperty(runtime, 'currentStatus', { get: () => AgentStatus.IDLE, configurable: true });
-  return runtime as AgentRuntime & { start: any; stop: any; submitEvent: any };
+  return runtime as AgentRuntime & { start: any; stop: any; submitEvent: any; postToolApprovalEvent: any; postToolResultEvent: any };
 };
 
 describe('Agent', () => {
@@ -94,14 +106,29 @@ describe('Agent', () => {
     expect(event).toBeInstanceOf(InterAgentMessageReceivedEvent);
   });
 
-  it('submits tool execution approvals', async () => {
+  it('posts tool execution approvals through runtime approval boundary without starting runtime', async () => {
     const context = makeContext();
-    const runtime = makeRuntimeStub(context, true);
+    const runtime = makeRuntimeStub(context, false);
     const agent = new Agent(runtime as any);
-    await agent.postToolExecutionApproval('tid-1', true, 'ok');
+    const result = await agent.postToolExecutionApproval('tid-1', true, 'ok', { turnId: 'turn-1' });
 
-    const event = runtime.submitEvent.mock.calls[0][0];
-    expect(event).toBeInstanceOf(ToolExecutionApprovalEvent);
+    expect(runtime.start).not.toHaveBeenCalled();
+    expect(runtime.submitEvent).not.toHaveBeenCalled();
+    expect(runtime.postToolApprovalEvent).toHaveBeenCalledOnce();
+    const approvalEvent = runtime.postToolApprovalEvent.mock.calls[0][0];
+    expect(approvalEvent).toBeInstanceOf(ToolExecutionApprovalEvent);
+    expect(approvalEvent).toMatchObject({
+      toolInvocationId: 'tid-1',
+      isApproved: true,
+      reason: 'ok',
+      turnId: 'turn-1'
+    });
+    expect(result).toEqual({
+      accepted: true,
+      code: 'posted',
+      turnId: 'turn-1',
+      invocationId: 'tid-1'
+    });
   });
 
   it('exposes status and running state', () => {

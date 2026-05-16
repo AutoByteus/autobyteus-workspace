@@ -77,8 +77,12 @@ export class ClaudeTeamRunBackend implements TeamRunBackend {
     return this.context.runtimeContext ?? null;
   }
 
-  getStatus(): string | null {
-    return this.isActive() ? "IDLE" : null;
+  getStatusSnapshot() {
+    return this.options.claudeTeamManager.getStatusSnapshot();
+  }
+
+  getMemberStatusSnapshots() {
+    return this.options.claudeTeamManager.getMemberStatusSnapshots();
   }
 
   async postMessage(

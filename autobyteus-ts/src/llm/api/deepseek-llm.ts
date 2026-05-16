@@ -9,9 +9,9 @@ export class DeepSeekLLM extends OpenAICompatibleLLM {
     const effectiveModel =
       model ??
       new LLMModel({
-        name: 'deepseek-chat',
-        value: 'deepseek-chat',
-        canonicalName: 'deepseek-chat',
+        name: 'deepseek-v4-flash',
+        value: 'deepseek-v4-flash',
+        canonicalName: 'deepseek-v4-flash',
         provider: LLMProvider.DEEPSEEK
       });
 

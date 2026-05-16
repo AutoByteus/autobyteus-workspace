@@ -32,7 +32,7 @@ describe('OpenAiJsonSchemaFormatter (integration)', () => {
       function: {
         name: 'NoArgTool',
         description: 'Tool with no args.',
-        parameters: { type: 'object', properties: {}, required: [] }
+        parameters: { type: 'object', properties: {}, required: [], additionalProperties: false }
       }
     });
   });

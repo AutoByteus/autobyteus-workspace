@@ -24,6 +24,7 @@ describe('run_bash OpenAI-compatible schema', () => {
     });
     expect(schema.function.parameters.required).toContain('command');
     expect(schema.function.parameters.required).not.toContain('cwd');
+    expect(Object.keys(schema.function.parameters.properties)).not.toContain('background');
     expect(schema.function.strict).toBeUndefined();
   });
 });

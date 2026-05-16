@@ -1,0 +1,162 @@
+[log] Successfully registered tool definition: 'read_file'
+[log] Successfully registered tool definition: 'write_file'
+[log] Successfully registered tool definition: 'edit_file'
+[log] Successfully registered tool definition: 'replace_in_file'
+[log] Successfully registered tool definition: 'insert_in_file'
+[log] Successfully registered tool definition: 'load_skill'
+[log] Successfully registered tool definition: 'run_bash'
+[log] Successfully registered tool definition: 'start_background_process'
+[log] Successfully registered tool definition: 'get_process_output'
+[log] Successfully registered tool definition: 'stop_background_process'
+[log] Successfully registered tool definition: 'search_web'
+[log] Successfully registered tool definition: 'read_media_file'
+[log] Successfully registered tool definition: 'download_media'
+[log] Successfully registered tool definition: 'read_url'
+[log] Successfully registered tool definition: 'send_message_to'
+[log] Successfully registered tool definition: 'assign_task_to'
+[log] Successfully registered tool definition: 'create_tasks'
+[log] Successfully registered tool definition: 'create_task'
+[log] Successfully registered tool definition: 'get_my_tasks'
+[log] Successfully registered tool definition: 'get_task_plan_status'
+[log] Successfully registered tool definition: 'update_task_status'
+[log] Successfully registered tool definition: 'add_todo'
+[log] Successfully registered tool definition: 'create_todo_list'
+[log] Successfully registered tool definition: 'get_todo_list'
+[log] Successfully registered tool definition: 'update_todo_status'
+[info] AgentFactory (Singleton) initialized.
+[info] AgentTeamFactory (Singleton) initialized.
+[warn] Failed to resolve model metadata for provider ANTHROPIC: Anthropic metadata request failed with status 401
+[warn] Failed to resolve model metadata for provider GEMINI: Gemini metadata request failed with status 400
+[info] Discovering Ollama models from host: http://127.0.0.1:11434
+[warn] Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+[log] Discovering LM Studio models from host: http://127.0.0.1:1234
+[log] Finished LM Studio discovery. Total models registered: 28
+[info] Discovering Autobyteus models from host: https://localhost:51739
+[warn] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[info] Discovering Autobyteus models from host: https://localhost:51740
+[warn] SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[info] Finished Autobyteus discovery. Total models registered: 68
+[info] AgentRuntimeState initialized for agent_id 'dailyassistantrepro_daily_assistant_4771'. Initial status: uninitialized. Workspace linked. InputQueues pending initialization. Output data via notifier.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': LLM instance 'OpenAILLM' and 1 tools prepared and stored in state.
+[info] AgentContext composed for agent_id 'dailyassistantrepro_daily_assistant_4771'. Config and State linked.
+[info] EventHandlerRegistry initialized.
+[info] UserInputMessageEventHandler initialized.
+[info] Handler 'UserInputMessageEventHandler' registered for event class 'UserMessageReceivedEvent'.
+[info] InterAgentMessageReceivedEventHandler initialized.
+[info] Handler 'InterAgentMessageReceivedEventHandler' registered for event class 'InterAgentMessageReceivedEvent'.
+[info] LLMCompleteResponseReceivedEventHandler initialized.
+[info] Handler 'LLMCompleteResponseReceivedEventHandler' registered for event class 'LLMCompleteResponseReceivedEvent'.
+[info] ToolInvocationRequestEventHandler initialized.
+[info] Handler 'ToolInvocationRequestEventHandler' registered for event class 'PendingToolInvocationEvent'.
+[info] ToolResultEventHandler initialized.
+[info] Handler 'ToolResultEventHandler' registered for event class 'ToolResultEvent'.
+[info] GenericEventHandler initialized.
+[info] Handler 'GenericEventHandler' registered for event class 'GenericEvent'.
+[info] ToolExecutionApprovalEventHandler initialized.
+[info] Handler 'ToolExecutionApprovalEventHandler' registered for event class 'ToolExecutionApprovalEvent'.
+[info] LLMUserMessageReadyEventHandler initialized.
+[info] Handler 'LLMUserMessageReadyEventHandler' registered for event class 'LLMUserMessageReadyEvent'.
+[info] Handler 'LLMUserMessageReadyEventHandler' registered for event class 'ToolContinuationReadyEvent'.
+[info] ToolInvocationExecutionEventHandler initialized.
+[info] Handler 'ToolInvocationExecutionEventHandler' registered for event class 'ExecuteToolInvocationEvent'.
+[info] Handler 'BootstrapEventHandler' registered for event class 'BootstrapStartedEvent'.
+[info] Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepRequestedEvent'.
+[info] Handler 'BootstrapEventHandler' registered for event class 'BootstrapStepCompletedEvent'.
+[info] Handler 'BootstrapEventHandler' registered for event class 'BootstrapCompletedEvent'.
+[info] Handler 'LifecycleEventLogger' registered for event class 'AgentReadyEvent'.
+[info] Handler 'LifecycleEventLogger' registered for event class 'AgentStoppedEvent'.
+[info] Handler 'LifecycleEventLogger' registered for event class 'AgentIdleEvent'.
+[info] Handler 'LifecycleEventLogger' registered for event class 'ShutdownRequestedEvent'.
+[info] Handler 'LifecycleEventLogger' registered for event class 'AgentErrorEvent'.
+[info] Instantiating AgentRuntime for agent_id: 'dailyassistantrepro_daily_assistant_4771' with config: 'DailyAssistantRepro'.
+[info] AgentWorker initialized for agent_id 'dailyassistantrepro_daily_assistant_4771'.
+[log] Registered AgentContext for agent_id 'dailyassistantrepro_daily_assistant_4771'. Total registered contexts: 1
+[info] AgentRuntime initialized for agent_id 'dailyassistantrepro_daily_assistant_4771'. Context registered.
+[info] Agent facade initialized for agent_id 'dailyassistantrepro_daily_assistant_4771'.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' created and stored successfully.
+[info] AgentEventStream (ID: bb41534a-564e-4f4d-ad1a-e3f6aeee8b64) initialized for agent_id 'dailyassistantrepro_daily_assistant_4771'. Subscribed to notifier.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' runtime is not running. Calling start() before submitting event.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' requesting runtime to start.
+[info] AgentRuntime for 'dailyassistantrepro_daily_assistant_4771': Starting worker.
+[info] AgentWorker 'dailyassistantrepro_daily_assistant_4771': Starting...
+[info] AgentWorker 'dailyassistantrepro_daily_assistant_4771' asyncRun(): Starting.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Runtime init completed (event store initialized).
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Runtime init completed (status deriver initialized).
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Runtime init completed (input queues initialized).
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Starting internal initialization process using bootstrap events.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Bootstrap started with 3 steps.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Executing McpServerPrewarmingStep.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Executing SystemPromptProcessingStep.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': No skills found in registry. Skipping injection.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': System prompt processor 'AvailableSkillsProcessor' applied successfully.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Final processed system prompt configured on LLM instance. Final length: 321.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Final processed system prompt:
+---
+You are a realistic daily assistant operating in a dedicated workspace. You have exactly one available tool: run_bash. When asked to create a file, use run_bash with ordinary Unix shell commands. Do not use any unavailable tools. After writing files, verify the file exists and report the path. Keep the workflow concise.
+---
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Bootstrap completed successfully. Emitting AgentReadyEvent.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' Logged AgentReadyEvent. Current agent status: idle
+[info] AgentWorker 'dailyassistantrepro_daily_assistant_4771' initialized successfully. Entering main event loop.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' handling UserMessageReceivedEvent (type: user): 'create a jet game in html, put in your own folder'
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Input processor 'MemoryIngestInputProcessor' applied successfully.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' processed AgentInputUserMessage and enqueued LLMUserMessageReadyEvent.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' handling LLMUserMessageReadyEvent: 'create a jet game in html, put in your own folder'
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Streaming handler selected: ApiToolCallStreamingResponseHandler
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Passing 1 tool schemas to LLM API (Provider: OPENAI).
+[info] ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Parsed 1 tool invocations from streaming parser.
+[info] compaction_budget_evaluated {"agent_id":"dailyassistantrepro_daily_assistant_4771","prompt_tokens":308,"effective_total_context_tokens":1050000,"context_derived_input_cap_tokens":922000,"provider_input_cap_tokens":null,"effective_input_cap_tokens":922000,"reserved_output_tokens":128000,"safety_margin_tokens":256,"input_budget_tokens":921744,"compaction_ratio":0.5,"trigger_threshold_tokens":460872,"override_active":false,"compaction_required":false}
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' handling LLMCompleteResponseReceivedEvent. Response Length: 0, Reasoning Length: 0, IsErrorFlagged: false, TokenUsage: [object Object]
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' received full LLM content for processing:
+---
+
+---
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[info] TerminalSessionManager started backend 'PtySession' in '/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/workspace'.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' enqueued native API tool continuation for turn 'turn_0001' after 1 tool result(s); no aggregate user message was added.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' handling ToolContinuationReadyEvent for turn 'turn_0001'.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Streaming handler selected: ApiToolCallStreamingResponseHandler
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': Passing 1 tool schemas to LLM API (Provider: OPENAI).
+[error] Agent 'dailyassistantrepro_daily_assistant_4771' error during LLM stream: Error: Error in OPENAI Responses API streaming: 400 Item 'fc_0812063dd3850fbb006a056ab0507481909f1e32f111924d72' of type 'function_call' was provided without its required 'reasoning' item: 'rs_0812063dd3850fbb006a056aaf9440819081060961940dc73e'.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' enqueued LLMCompleteResponseReceivedEvent with error details.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' handling LLMCompleteResponseReceivedEvent. Response Length: 289, Reasoning Length: 0, IsErrorFlagged: true, TokenUsage: null
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' received full LLM content for processing:
+---
+Error processing your request with the LLM: Error: Error in OPENAI Responses API streaming: 400 Item 'fc_0812063dd3850fbb006a056ab0507481909f1e32f111924d72' of type 'function_call' was provided without its required 'reasoning' item: 'rs_0812063dd3850fbb006a056aaf9440819081060961940dc73e'.
+---
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': LLMCompleteResponseReceivedEvent was marked as an error response. Skipping LLMResponseProcessor attempts.
+[info] Agent 'dailyassistantrepro_daily_assistant_4771': No LLMResponseProcessor handled the response. Emitting the full LLM response as a final answer and completion signal.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' Logged AgentIdleEvent. Current agent status: idle
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' requesting runtime to stop (timeout: 20s).
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] AgentWorker 'dailyassistantrepro_daily_assistant_4771': Stop requested.
+[info] AgentExternalEventNotifier (NotifierID: c8808c9c-a30e-412f-9b6a-a37f1b6deb74, AgentID: dailyassistantrepro_daily_assistant_4771) emitted agent_status_updated. Kwarg keys for emit: agent_id,payload
+[info] Agent 'dailyassistantrepro_daily_assistant_4771' Logged AgentStoppedEvent. Current agent status: shutdown_complete
+[info] AgentWorker 'dailyassistantrepro_daily_assistant_4771' asyncRun() loop has finished.
+[info] AgentWorker 'dailyassistantrepro_daily_assistant_4771': Running shutdown sequence on worker loop.
+[info] AgentWorker 'dailyassistantrepro_daily_assistant_4771': Shutdown resource cleanup completed successfully.
+[info] AgentWorker 'dailyassistantrepro_daily_assistant_4771': Shutdown sequence completed.
+[log] Unregistered AgentContext for agent_id 'dailyassistantrepro_daily_assistant_4771'.
+[info] AgentRuntime for 'dailyassistantrepro_daily_assistant_4771': Context unregistered.
+[info] AgentRuntime for 'dailyassistantrepro_daily_assistant_4771' stop() method completed.
+[info] AgentEventStream (ID: bb41534a-564e-4f4d-ad1a-e3f6aeee8b64) for 'dailyassistantrepro_daily_assistant_4771': close() called. Unsubscribing all listeners and signaling.

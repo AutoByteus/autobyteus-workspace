@@ -113,7 +113,7 @@ export abstract class BaseManagedMcpServer {
     return [];
   }
 
-  async callTool(toolName: string, argumentsPayload: Record<string, unknown>): Promise<unknown> {
+  async callTool(toolName: string, argumentsPayload: Record<string, unknown>, options: { signal?: AbortSignal | null } = {}): Promise<unknown> {
     if (this.state !== ServerState.CONNECTED) {
       await this.connect();
     }
@@ -124,13 +124,13 @@ export abstract class BaseManagedMcpServer {
 
     const callTool = this.clientSession.callTool.bind(this.clientSession);
     if (callTool.length >= 2) {
-      return await callTool(toolName, argumentsPayload, { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS });
+      return await callTool(toolName, argumentsPayload, { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS, signal: options.signal ?? undefined });
     }
 
     return await callTool(
       { name: toolName, arguments: argumentsPayload },
       undefined,
-      { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS }
+      { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS, signal: options.signal ?? undefined }
     );
   }
 

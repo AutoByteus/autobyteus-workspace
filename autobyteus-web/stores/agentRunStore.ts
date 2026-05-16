@@ -14,9 +14,9 @@ import {
   buildAgentDraftContextFileOwner,
   buildAgentFinalContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { ConnectionState } from '~/services/agentStreaming';
+import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 
 interface CreateAgentRunMutationResultPayload {
   createAgentRun: {
@@ -326,23 +326,23 @@ export const useAgentRunStore = defineStore('agentRun', {
       }
     },
 
-    stopGeneration(runId?: string): boolean {
+    interruptGeneration(runId?: string): boolean {
       const agentContextsStore = useAgentContextsStore();
       const resolvedRunId =
         (runId && runId.trim()) || agentContextsStore.activeRun?.state.runId;
 
       if (!resolvedRunId) {
-        console.warn("Cannot stop generation: no active run ID.");
+        console.warn("Cannot interrupt generation: no active run ID.");
         return false;
       }
 
       const service = streamingServices.get(resolvedRunId);
       if (!service) {
-        console.warn(`Cannot stop generation: no streaming service for run '${resolvedRunId}'.`);
+        console.warn(`Cannot interrupt generation: no streaming service for run '${resolvedRunId}'.`);
         return false;
       }
 
-      service.stopGeneration();
+      service.interruptGeneration();
       return true;
     },
 
@@ -362,8 +362,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         }
 
         if (context) {
-          context.isSending = false;
-          context.state.currentStatus = AgentStatus.ShutdownComplete;
+          applyOfflineOrTerminalCleanup(context);
         }
       };
 

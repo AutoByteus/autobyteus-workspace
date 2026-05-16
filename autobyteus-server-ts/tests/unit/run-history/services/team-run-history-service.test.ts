@@ -113,6 +113,13 @@ describe("TeamRunHistoryService", () => {
         teamRunId: "team-1",
         coordinatorMemberRouteKey: "coordinator",
         summary: "Could you rebuild the electron app?",
+        status: "offline",
+        members: [
+          expect.objectContaining({
+            memberRunId: "member-run-1",
+            status: "offline",
+          }),
+        ],
       }),
     ]);
     expect(indexService.recordRunActivity).toHaveBeenCalledWith({
@@ -121,6 +128,64 @@ describe("TeamRunHistoryService", () => {
       summary: "Could you rebuild the electron app?",
       lastKnownStatus: "IDLE",
       lastActivityAt: "2026-04-11T20:05:00.000Z",
+    });
+  });
+
+  it("uses active team and member status snapshots for history rows", async () => {
+    const { TeamRunHistoryService } = await import(
+      "../../../../src/run-history/services/team-run-history-service.js"
+    );
+
+    const metadata = buildTeamMetadata("team-active");
+    teamRunManagerMock.getActiveRun.mockReturnValue({
+      getStatusSnapshot: () => ({ status: "idle" }),
+      getMemberStatusSnapshots: () => [
+        {
+          agent_id: "member-run-1",
+          agent_name: "Coordinator",
+          status: "running",
+          can_interrupt: true,
+        },
+      ],
+    });
+
+    const service = new TeamRunHistoryService(memoryDir, {
+      metadataStore: {
+        readMetadata: vi.fn().mockResolvedValue(metadata),
+      } as any,
+      indexService: {
+        listRows: vi.fn().mockResolvedValue([
+          {
+            teamRunId: "team-active",
+            teamDefinitionId: "team-def-1",
+            teamDefinitionName: "Team Alpha",
+            workspaceRootPath: "/ws/a",
+            summary: "active team",
+            lastActivityAt: "2026-04-11T20:05:00.000Z",
+            lastKnownStatus: "IDLE",
+            deleteLifecycle: "READY",
+          },
+        ]),
+        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
+        removeRow: vi.fn(),
+        recordRunActivity: vi.fn(),
+      } as any,
+      teamRunManager: teamRunManagerMock as any,
+    });
+
+    const result = await service.listTeamRunHistory();
+
+    expect(result[0]).toMatchObject({
+      teamRunId: "team-active",
+      status: "idle",
+      isActive: true,
+      lastKnownStatus: "ACTIVE",
+      members: [
+        {
+          memberRunId: "member-run-1",
+          status: "running",
+        },
+      ],
     });
   });
 

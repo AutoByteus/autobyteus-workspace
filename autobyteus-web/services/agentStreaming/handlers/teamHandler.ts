@@ -8,7 +8,7 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { InterAgentMessageSegment, SystemTaskNotificationSegment } from '~/types/segments';
-import type { Task, TaskStatus, FileDeliverable } from '~/types/taskManagement';
+import { TaskStatus, type Task, type FileDeliverable } from '~/types/taskManagement';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { 
   InterAgentMessagePayload, 
@@ -76,25 +76,24 @@ export function handleTeamStatus(
   payload: TeamStatusPayload,
   context: AgentTeamContext
 ): void {
-  const normalizedStatus = String(payload.new_status || AgentTeamStatus.Uninitialized).toLowerCase();
-  context.currentStatus = normalizedStatus as AgentTeamStatus;
+  context.currentStatus = payload.status as AgentTeamStatus;
 }
 
 function normalizeTaskStatus(status?: string): TaskStatus {
   const normalized = String(status || '').toLowerCase();
   switch (normalized) {
     case 'in_progress':
-      return 'in_progress';
+      return TaskStatus.IN_PROGRESS;
     case 'completed':
-      return 'completed';
+      return TaskStatus.COMPLETED;
     case 'blocked':
-      return 'blocked';
+      return TaskStatus.BLOCKED;
     case 'failed':
-      return 'failed';
+      return TaskStatus.FAILED;
     case 'queued':
     case 'not_started':
     default:
-      return 'not_started';
+      return TaskStatus.NOT_STARTED;
   }
 }
 
@@ -138,7 +137,7 @@ export function handleTaskPlanEvent(
     context.taskPlan = tasks;
     const statuses: Record<string, TaskStatus> = {};
     tasks.forEach(task => {
-      statuses[task.taskId] = 'not_started';
+      statuses[task.taskId] = TaskStatus.NOT_STARTED;
     });
     context.taskStatuses = statuses;
     return;

@@ -27,6 +27,28 @@ export class AgentErrorEvent extends LifecycleEvent {
   }
 }
 
+export class AgentInterruptRequestedEvent extends LifecycleEvent {
+  turnId: string | null;
+  reason: string;
+
+  constructor(turnId: string | null, reason: string) {
+    super();
+    this.turnId = turnId;
+    this.reason = reason;
+  }
+}
+
+export class AgentTurnInterruptedEvent extends LifecycleEvent {
+  turnId: string;
+  reason: string;
+
+  constructor(turnId: string, reason: string) {
+    super();
+    this.turnId = turnId;
+    this.reason = reason;
+  }
+}
+
 export class AgentIdleEvent extends LifecycleEvent {
   turnId: string | null;
 
@@ -39,30 +61,6 @@ export class AgentIdleEvent extends LifecycleEvent {
 export class ShutdownRequestedEvent extends LifecycleEvent {}
 
 export class BootstrapStartedEvent extends LifecycleEvent {}
-
-export class BootstrapStepRequestedEvent extends LifecycleEvent {
-  stepIndex: number;
-
-  constructor(stepIndex: number) {
-    super();
-    this.stepIndex = stepIndex;
-  }
-}
-
-export class BootstrapStepCompletedEvent extends LifecycleEvent {
-  stepIndex: number;
-  stepName: string;
-  success: boolean;
-  errorMessage?: string;
-
-  constructor(stepIndex: number, stepName: string, success: boolean, errorMessage?: string) {
-    super();
-    this.stepIndex = stepIndex;
-    this.stepName = stepName;
-    this.success = success;
-    this.errorMessage = errorMessage;
-  }
-}
 
 export class BootstrapCompletedEvent extends LifecycleEvent {
   success: boolean;
@@ -175,21 +173,22 @@ export class ToolExecutionApprovalEvent extends AgentOperationalEvent {
   toolInvocationId: string;
   isApproved: boolean;
   reason?: string;
+  turnId?: string;
+  requestedBy?: string;
 
-  constructor(toolInvocationId: string, isApproved: boolean, reason?: string) {
+  constructor(
+    toolInvocationId: string,
+    isApproved: boolean,
+    reason?: string,
+    turnId?: string,
+    requestedBy?: string
+  ) {
     super();
     this.toolInvocationId = toolInvocationId;
     this.isApproved = isApproved;
     this.reason = reason;
-  }
-}
-
-export class ExecuteToolInvocationEvent extends AgentOperationalEvent {
-  toolInvocation: ToolInvocation;
-
-  constructor(toolInvocation: ToolInvocation) {
-    super();
-    this.toolInvocation = toolInvocation;
+    this.turnId = turnId;
+    this.requestedBy = requestedBy;
   }
 }
 

@@ -160,8 +160,12 @@ export class ParserContext {
     this.emitter.emitSegmentContent(delta);
   }
 
-  emitSegmentEnd(): string | undefined {
-    return this.emitter.emitSegmentEnd();
+  emitSegmentEnd(payload: Record<string, any> = {}): string | undefined {
+    return this.emitter.emitSegmentEnd(payload);
+  }
+
+  emitSegmentInterrupted(reason: string): string | undefined {
+    return this.emitter.emitSegmentInterrupted(reason);
   }
 
   getCurrentSegmentId(): string | undefined {

@@ -55,7 +55,7 @@ const extractToolName = (payload: Record<string, unknown>): string | null =>
   asString(payload.tool_name) ?? asString(payload.toolName) ?? asString(payload.name);
 
 const isIdleStatusPayload = (payload: Record<string, unknown>): boolean => {
-  const raw = asString(payload.new_status) ?? asString(payload.status);
+  const raw = asString(payload.status);
   return raw?.trim().toUpperCase() === "IDLE";
 };
 

@@ -15,6 +15,32 @@ class RecordingTool extends BaseTool {
   static schema: ParameterSchema | null = null;
 }
 
+class ExternalPreparationTool extends BaseTool<unknown, Record<string, unknown>, Record<string, unknown>> {
+  public executeCalls = 0;
+
+  static schema: ParameterSchema | null = null;
+
+  static getDescription() { return 'External preparation tool'; }
+  static getArgumentSchema() { return ExternalPreparationTool.schema; }
+
+  protected getToolResultExecutionMode(): 'external_result' {
+    return 'external_result';
+  }
+
+  protected _execute(_context: unknown, args: Record<string, unknown>): Promise<Record<string, unknown>> {
+    this.executeCalls += 1;
+    return Promise.resolve(args);
+  }
+}
+
+class FailingModeTool extends ExternalPreparationTool {
+  static getDescription() { return 'Failing mode tool'; }
+
+  protected getToolResultExecutionMode(): 'external_result' {
+    throw new Error('mode unavailable');
+  }
+}
+
 describe('BaseTool', () => {
   it('test_set_agent_id_validates', () => {
     const tool = new RecordingTool();
@@ -170,5 +196,50 @@ describe('BaseTool', () => {
       audio_paths: ['/tmp/1.wav', '/tmp/2.wav'],
       output_audio_path: '/tmp/out.wav'
     });
+  });
+
+  it('test_prepare_execution_coerces_validates_and_does_not_execute', async () => {
+    const schema = new ParameterSchema();
+    schema.addParameter(new ParameterDefinition({
+      name: 'count',
+      type: ParameterType.INTEGER,
+      description: 'Count',
+      required: true
+    }));
+    ExternalPreparationTool.schema = schema;
+    const tool = new ExternalPreparationTool();
+
+    const preparation = await tool.prepareExecution({ agentId: 'agent-1' }, { count: '9' });
+
+    expect(preparation).toEqual({
+      toolName: 'ExternalPreparationTool',
+      args: { count: 9 },
+      resultExecutionMode: 'external_result'
+    });
+    expect((tool as any).agentId).toBe('agent-1');
+    expect(tool.executeCalls).toBe(0);
+  });
+
+  it('test_prepare_execution_preserves_validation_errors_and_mode_errors', async () => {
+    const schema = new ParameterSchema();
+    schema.addParameter(new ParameterDefinition({
+      name: 'count',
+      type: ParameterType.INTEGER,
+      description: 'Count',
+      required: true
+    }));
+    ExternalPreparationTool.schema = schema;
+    const tool = new ExternalPreparationTool();
+
+    await expect(tool.prepareExecution({ agentId: 'agent-1' }, {})).rejects.toThrow(
+      "Invalid arguments for tool 'ExternalPreparationTool'"
+    );
+    expect(tool.executeCalls).toBe(0);
+
+    const failingModeTool = new FailingModeTool();
+    await expect(failingModeTool.prepareExecution({ agentId: 'agent-1' }, { count: '1' })).rejects.toThrow(
+      'mode unavailable'
+    );
+    expect(failingModeTool.executeCalls).toBe(0);
   });
 });

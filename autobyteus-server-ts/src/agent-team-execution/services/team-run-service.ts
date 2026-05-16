@@ -142,8 +142,8 @@ export class TeamRunService {
 
       if (event.eventSourceType === TeamRunEventSourceType.TEAM) {
         const payload = event.data as Record<string, unknown>;
-        const newStatus = typeof payload.new_status === "string" ? payload.new_status.trim().toUpperCase() : "";
-        if (newStatus === "ERROR" || newStatus === "FAILED") {
+        const status = typeof payload.status === "string" ? payload.status.trim().toLowerCase() : "";
+        if (status === "error") {
           terminalPhase = "FAILED";
           listener({
             runtimeSubject: "TEAM_RUN",

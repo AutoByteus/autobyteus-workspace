@@ -1,7 +1,7 @@
 import { AgentConfig } from './agent-config.js';
 import { AgentRuntimeState } from './agent-runtime-state.js';
 import { AgentStatus } from '../status/status-enum.js';
-import { AgentInputEventQueueManager } from '../events/agent-input-event-queue-manager.js';
+import type { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import type { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
@@ -56,16 +56,16 @@ export class AgentContext {
     this.state.llmInstance = value;
   }
 
-  get inputEventQueues(): AgentInputEventQueueManager {
-    if (!this.state.inputEventQueues) {
+  get agentEventInbox(): AgentEventInbox {
+    if (!this.state.agentEventInbox) {
       console.error(
-        `AgentContext for '${this.agentId}': Attempted to access 'inputEventQueues' before they were initialized by AgentWorker.`
+        `AgentContext for '${this.agentId}': Attempted to access 'agentEventInbox' before it was initialized by AgentWorker.`
       );
       throw new Error(
-        `Agent '${this.agentId}': Input event queues have not been initialized. This typically occurs during agent bootstrapping.`
+        `Agent '${this.agentId}': AgentEventInbox has not been initialized. This typically occurs during agent bootstrapping.`
       );
     }
-    return this.state.inputEventQueues;
+    return this.state.agentEventInbox;
   }
 
   get currentStatus(): AgentStatus {
@@ -134,13 +134,13 @@ export class AgentContext {
   }
 
   toString(): string {
-    const inputQueueStatus = this.state.inputEventQueues ? 'Initialized' : 'Pending Init';
+    const inputBoxStatus = this.state.agentEventInbox ? 'Initialized' : 'Pending Init';
     return (
       `AgentContext(agentId='${this.agentId}', ` +
       `currentStatus='${this.state.currentStatus}', ` +
       `llmInitialized=${this.state.llmInstance !== null}, ` +
       `toolsInitialized=${this.state.toolInstances !== null}, ` +
-      `inputQueuesStatus='${inputQueueStatus}')`
+      `agentEventInboxStatus='${inputBoxStatus}')`
     );
   }
 }

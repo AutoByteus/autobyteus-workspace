@@ -5,6 +5,7 @@ import type {
   TeamRunHistoryItem,
   TeamRunMetadataMember,
 } from '~/stores/runHistoryTypes';
+import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 
 const toTeamMemberRunStatus = (
   status: AgentStatus,
@@ -13,11 +14,7 @@ const toTeamMemberRunStatus = (
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
 
-  if (
-    status === AgentStatus.Uninitialized ||
-    status === AgentStatus.ShutdownComplete ||
-    status === AgentStatus.ToolDenied
-  ) {
+  if (status === AgentStatus.Offline) {
     return { isActive: false, lastKnownStatus: 'IDLE' };
   }
 
@@ -27,30 +24,36 @@ const toTeamMemberRunStatus = (
 const buildLeafRowFromHistory = (
   team: TeamRunHistoryItem,
   member: TeamRunHistoryItem['members'][number],
-): TeamMemberTreeRow => ({
-  teamRunId: team.teamRunId,
-  memberKind: 'agent',
-  memberRouteKey: member.memberRouteKey,
-  memberPath: member.memberRouteKey.split('/').filter(Boolean),
-  memberName: member.memberName,
-  displayName: member.memberName,
-  memberRunId: member.memberRunId,
-  workspaceRootPath: member.workspaceRootPath ?? null,
-  summary: team.summary,
-  lastActivityAt: team.lastActivityAt,
-  lastKnownStatus: team.lastKnownStatus,
-  isActive: team.isActive,
-  deleteLifecycle: team.deleteLifecycle,
-  children: [],
-});
+): TeamMemberTreeRow => {
+  const currentStatus = normalizeAgentRuntimeStatus(member.status);
+  return {
+    ...toTeamMemberRunStatus(currentStatus),
+    teamRunId: team.teamRunId,
+    memberKind: 'agent',
+    memberRouteKey: member.memberRouteKey,
+    memberPath: member.memberRouteKey.split('/').filter(Boolean),
+    memberName: member.memberName,
+    displayName: member.memberName,
+    memberRunId: member.memberRunId,
+    workspaceRootPath: member.workspaceRootPath ?? null,
+    summary: team.summary,
+    lastActivityAt: team.lastActivityAt,
+    currentStatus,
+    deleteLifecycle: team.deleteLifecycle,
+    children: [],
+  };
+};
 
 const buildRowsFromMetadataTree = (
   team: TeamRunHistoryItem,
   memberTree: readonly TeamRunMetadataMember[],
+  memberByRouteKey: Map<string, TeamRunHistoryItem['members'][number]>,
 ): TeamMemberTreeRow[] =>
   memberTree.map((member): TeamMemberTreeRow => {
     if (member.memberKind === 'agent_team') {
+      const currentStatus = normalizeAgentRuntimeStatus(team.status);
       return {
+        ...toTeamMemberRunStatus(currentStatus),
         teamRunId: team.teamRunId,
         memberKind: 'agent_team',
         memberRouteKey: member.memberRouteKey,
@@ -64,14 +67,16 @@ const buildRowsFromMetadataTree = (
         workspaceRootPath: null,
         summary: team.summary,
         lastActivityAt: team.lastActivityAt,
-        lastKnownStatus: team.lastKnownStatus,
-        isActive: team.isActive,
+        currentStatus,
         deleteLifecycle: team.deleteLifecycle,
-        children: buildRowsFromMetadataTree(team, member.memberTree),
+        children: buildRowsFromMetadataTree(team, member.memberTree, memberByRouteKey),
       };
     }
 
+    const historyMember = memberByRouteKey.get(member.memberRouteKey);
+    const currentStatus = normalizeAgentRuntimeStatus(historyMember?.status ?? AgentStatus.Offline);
     return {
+      ...toTeamMemberRunStatus(currentStatus),
       teamRunId: team.teamRunId,
       memberKind: 'agent',
       memberRouteKey: member.memberRouteKey,
@@ -82,8 +87,7 @@ const buildRowsFromMetadataTree = (
       workspaceRootPath: member.workspaceRootPath ?? null,
       summary: team.summary,
       lastActivityAt: team.lastActivityAt,
-      lastKnownStatus: team.lastKnownStatus,
-      isActive: team.isActive,
+      currentStatus,
       deleteLifecycle: team.deleteLifecycle,
       children: [],
     };
@@ -96,7 +100,8 @@ export const buildTeamRowsFromHistoryItem = (
   team: TeamRunHistoryItem,
 ): TeamMemberTreeRow[] => {
   if (Array.isArray(team.memberTree) && team.memberTree.length > 0) {
-    return buildRowsFromMetadataTree(team, team.memberTree);
+    const memberByRouteKey = new Map(team.members.map((member) => [member.memberRouteKey, member]));
+    return buildRowsFromMetadataTree(team, team.memberTree, memberByRouteKey);
   }
 
   return team.members
@@ -113,7 +118,9 @@ export const buildTeamRowsFromContext = (
   const visit = (nodes: AgentTeamContext['memberTree']): TeamMemberTreeRow[] =>
     nodes.map((node) => {
       if (node.memberKind === 'agent_team') {
+        const currentStatus = normalizeAgentRuntimeStatus(teamContext.currentStatus);
         return {
+          ...toTeamMemberRunStatus(currentStatus),
           teamRunId: teamContext.teamRunId,
           memberKind: 'agent_team',
           memberRouteKey: node.memberRouteKey,
@@ -127,19 +134,16 @@ export const buildTeamRowsFromContext = (
           workspaceRootPath: null,
           summary,
           lastActivityAt: fallbackLastActivityAt,
-          lastKnownStatus: 'IDLE' as const,
-          isActive: false,
+          currentStatus,
           deleteLifecycle: 'READY' as const,
           children: visit(node.children),
         };
       }
 
       const memberContext = teamContext.leafAgentContextsByRouteKey.get(node.memberRouteKey);
-      const memberStatus = memberContext
-        ? toTeamMemberRunStatus(memberContext.state.currentStatus)
-        : { isActive: false, lastKnownStatus: 'IDLE' as const };
+      const currentStatus = normalizeAgentRuntimeStatus(memberContext?.state.currentStatus ?? AgentStatus.Offline);
       return {
-        ...memberStatus,
+        ...toTeamMemberRunStatus(currentStatus),
         teamRunId: teamContext.teamRunId,
         memberKind: 'agent',
         memberRouteKey: node.memberRouteKey,
@@ -149,6 +153,7 @@ export const buildTeamRowsFromContext = (
         memberRunId: memberContext?.state.runId ?? node.memberRunId ?? null,
         workspaceRootPath: resolveWorkspaceRootPath(memberContext?.config.workspaceId ?? null),
         summary,
+        currentStatus,
         lastActivityAt:
           memberContext?.state.conversation.updatedAt ||
           memberContext?.state.conversation.createdAt ||

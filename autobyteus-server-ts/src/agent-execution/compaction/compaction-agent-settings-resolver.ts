@@ -16,6 +16,12 @@ export type ResolvedCompactionAgentSettings = {
   skillAccessMode: SkillAccessMode;
 };
 
+export type CompactionParentLaunchFallback = {
+  runtimeKind?: RuntimeKind | string | null;
+  llmModelIdentifier?: string | null;
+  sourceAgentDefinitionId?: string | null;
+};
+
 const asTrimmedString = (value: unknown): string | null => {
   if (typeof value !== "string") {
     return null;
@@ -35,7 +41,9 @@ export class CompactionAgentSettingsResolver {
     private readonly agentDefinitionService: Pick<AgentDefinitionService, "getFreshAgentDefinitionById" | "getAgentDefinitionById"> = AgentDefinitionService.getInstance(),
   ) {}
 
-  async resolve(): Promise<ResolvedCompactionAgentSettings> {
+  async resolve(
+    parentLaunchFallback: CompactionParentLaunchFallback | null = null,
+  ): Promise<ResolvedCompactionAgentSettings> {
     const selectedAgentId = this.serverSettingsService.getCompactionAgentDefinitionId();
     if (!selectedAgentId) {
       throw new Error(
@@ -49,14 +57,22 @@ export class CompactionAgentSettingsResolver {
     }
 
     const launchConfig = definition.defaultLaunchConfig;
-    const runtimeKind = runtimeKindFromString(launchConfig?.runtimeKind ?? null);
+    const explicitRuntimeKind = runtimeKindFromString(launchConfig?.runtimeKind ?? null);
+    const fallbackRuntimeKind = runtimeKindFromString(parentLaunchFallback?.runtimeKind ?? null);
+    const runtimeKind = explicitRuntimeKind ?? fallbackRuntimeKind;
     if (!runtimeKind) {
-      throw new Error(`Compactor agent '${selectedAgentId}' is missing a valid default runtime kind.`);
+      throw new Error(
+        `Compactor agent '${selectedAgentId}' is missing a valid default runtime kind and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent runtime kind fallback.`,
+      );
     }
 
-    const llmModelIdentifier = asTrimmedString(launchConfig?.llmModelIdentifier);
+    const explicitModelIdentifier = asTrimmedString(launchConfig?.llmModelIdentifier);
+    const fallbackModelIdentifier = asTrimmedString(parentLaunchFallback?.llmModelIdentifier);
+    const llmModelIdentifier = explicitModelIdentifier ?? fallbackModelIdentifier;
     if (!llmModelIdentifier) {
-      throw new Error(`Compactor agent '${selectedAgentId}' is missing a default model identifier.`);
+      throw new Error(
+        `Compactor agent '${selectedAgentId}' is missing a default model identifier and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent model identifier fallback.`,
+      );
     }
 
     return {
@@ -75,5 +91,17 @@ export class CompactionAgentSettingsResolver {
       return freshLoader.call(this.agentDefinitionService, selectedAgentId);
     }
     return this.agentDefinitionService.getAgentDefinitionById(selectedAgentId);
+  }
+
+  private formatFallbackSource(
+    parentLaunchFallback: CompactionParentLaunchFallback | null,
+  ): string {
+    const sourceAgentDefinitionId = asTrimmedString(
+      parentLaunchFallback?.sourceAgentDefinitionId,
+    );
+    if (sourceAgentDefinitionId) {
+      return `parent fallback context for agent '${sourceAgentDefinitionId}'`;
+    }
+    return "parent fallback context";
   }
 }

@@ -2,6 +2,7 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../domain/agent-operation-result.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../domain/agent-run-context.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { AgentStatusPayload } from "../domain/agent-status-payload.js";
 
 export type AgentRunEventListener = (event: unknown) => void;
 export type AgentRunEventUnsubscribe = () => void;
@@ -13,7 +14,7 @@ export interface AgentRunBackend {
   getContext(): AgentRunContext<RuntimeAgentRunContext>;
   isActive(): boolean;
   getPlatformAgentRunId(): string | null;
-  getStatus(): string | null;
+  getStatusSnapshot(): AgentStatusPayload;
   subscribeToEvents(listener: AgentRunEventListener): AgentRunEventUnsubscribe;
   postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult>;
   approveToolInvocation(

@@ -27,6 +27,9 @@ describe('RunBashXmlFormatter', () => {
     expect(schema).toContain('relative values resolve from the workspace root');
     expect(schema).toContain('Do not invent generic sandbox aliases');
     expect(schema).toContain('Each successful result includes `effectiveCwd`');
+    expect(schema).toContain('normal bash syntax');
+    expect(schema).not.toContain('background="true|false"');
+    expect(schema).not.toContain('`background` (boolean');
   });
 
   it('example uses shorthand XML syntax', () => {
@@ -37,5 +40,7 @@ describe('RunBashXmlFormatter', () => {
     expect(example).toContain('cwd="tests"');
     expect(example).toContain('cwd="/absolute/path/to/workspace/apps/web"');
     expect(example).toContain('pwd > runtime/pwd.txt');
+    expect(example).toContain('npm run dev > server.log 2>&1 &');
+    expect(example).not.toContain('background="true"');
   });
 });

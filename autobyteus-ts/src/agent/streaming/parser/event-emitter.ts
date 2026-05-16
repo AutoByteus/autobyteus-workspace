@@ -49,22 +49,40 @@ export class EventEmitter {
     this.eventQueue.push(event);
   }
 
-  emitSegmentEnd(): string | undefined {
+  emitSegmentEnd(payload: Record<string, any> = {}): string | undefined {
     if (!this.currentSegmentId) {
       return undefined;
     }
 
     const segmentId = this.currentSegmentId;
-    const payload = Object.keys(this.currentSegmentMetadata).length
+    const metadata = {
+      ...this.currentSegmentMetadata,
+      ...(payload.metadata && typeof payload.metadata === 'object' && !Array.isArray(payload.metadata)
+        ? payload.metadata
+        : {})
+    };
+    const eventPayload = Object.keys(metadata).length
+      ? { ...payload, metadata }
+      : payload;
+    const finalPayload = Object.keys(eventPayload).length
+      ? eventPayload
+      : Object.keys(this.currentSegmentMetadata).length
       ? { metadata: { ...this.currentSegmentMetadata } }
       : {};
-    const event = SegmentEvent.end(this.turnId, segmentId, payload);
+    const event = SegmentEvent.end(this.turnId, segmentId, finalPayload);
     this.eventQueue.push(event);
 
     this.currentSegmentId = undefined;
     this.currentSegmentType = undefined;
 
     return segmentId;
+  }
+
+  emitSegmentInterrupted(reason: string): string | undefined {
+    return this.emitSegmentEnd({
+      interrupted: true,
+      reason
+    });
   }
 
   getCurrentSegmentId(): string | undefined {

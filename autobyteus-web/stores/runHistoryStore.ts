@@ -9,6 +9,8 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { buildEditableAgentRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import type {
   RunEditableFieldFlags,
@@ -218,6 +220,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
               ? {
                   ...run,
                   isActive: true,
+                  status: AgentStatus.Running,
                   lastKnownStatus: 'ACTIVE',
                   lastActivityAt: now,
                 }
@@ -254,6 +257,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
               ? {
                   ...run,
                   isActive: false,
+                  status: run.lastKnownStatus === 'ERROR' ? AgentStatus.Error : AgentStatus.Offline,
                   lastKnownStatus:
                     run.lastKnownStatus === 'ERROR' || run.lastKnownStatus === 'TERMINATED'
                       ? run.lastKnownStatus
@@ -294,6 +298,11 @@ export const useRunHistoryStore = defineStore('runHistory', {
             return {
               ...run,
               isActive,
+              status: isActive
+                ? AgentStatus.Running
+                : run.lastKnownStatus === 'ERROR'
+                  ? AgentStatus.Error
+                  : AgentStatus.Offline,
               lastKnownStatus,
             };
           }),
@@ -313,6 +322,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
               : {
                   ...team,
                   isActive: true,
+                  status: AgentTeamStatus.Running,
                   lastKnownStatus: 'ACTIVE',
                   lastActivityAt: now,
                 }),
@@ -340,6 +350,11 @@ export const useRunHistoryStore = defineStore('runHistory', {
               : {
                   ...team,
                   isActive: false,
+                  status: team.lastKnownStatus === 'ERROR' ? AgentTeamStatus.Error : AgentTeamStatus.Offline,
+                  members: team.members.map((member) => ({
+                    ...member,
+                    status: AgentStatus.Offline,
+                  })),
                   lastKnownStatus: team.lastKnownStatus === 'ERROR' ? 'ERROR' : 'IDLE',
                   lastActivityAt: now,
                 }),
@@ -383,6 +398,15 @@ export const useRunHistoryStore = defineStore('runHistory', {
             return {
               ...team,
               isActive,
+              status: isActive
+                ? AgentTeamStatus.Running
+                : team.lastKnownStatus === 'ERROR'
+                  ? AgentTeamStatus.Error
+                  : AgentTeamStatus.Offline,
+              members: team.members.map((member) => ({
+                ...member,
+                status: isActive ? member.status : AgentStatus.Offline,
+              })),
               lastKnownStatus,
             };
           }),

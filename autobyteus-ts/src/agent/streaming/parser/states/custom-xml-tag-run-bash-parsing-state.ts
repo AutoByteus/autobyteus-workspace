@@ -18,16 +18,6 @@ export class CustomXmlTagRunBashParsingState extends DelimitedContentState {
 
   private static extractMetadata(openingTag: string): Record<string, any> {
     const metadata: Record<string, any> = {};
-    const backgroundRaw = this.readAttribute(openingTag, 'background');
-    if (backgroundRaw !== null) {
-      const normalized = backgroundRaw.trim().toLowerCase();
-      if (['true', '1', 'yes'].includes(normalized)) {
-        metadata.background = true;
-      } else if (['false', '0', 'no'].includes(normalized)) {
-        metadata.background = false;
-      }
-    }
-
     const timeoutRaw =
       this.readAttribute(openingTag, 'timeout_seconds') ??
       this.readAttribute(openingTag, 'timeoutSeconds');

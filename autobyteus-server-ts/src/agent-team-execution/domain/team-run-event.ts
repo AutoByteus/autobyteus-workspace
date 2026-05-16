@@ -1,4 +1,5 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
+import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TeamMemberAddress, TeamRepresentedSubTeam } from "./inter-agent-message-delivery.js";
 import { buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
@@ -12,8 +13,7 @@ export enum TeamRunEventSourceType {
 }
 
 export type TeamRunStatusUpdateData = {
-  new_status: string;
-  old_status?: string | null;
+  status: AgentApiStatus;
   error_message?: string | null;
 };
 

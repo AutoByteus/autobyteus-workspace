@@ -7,10 +7,12 @@ import { OllamaLLM } from '../../../../src/llm/api/ollama-llm.js';
 import { createLocalLongRunningFetch } from '../../../../src/llm/transport/local-long-running-fetch.js';
 
 const mockChat = vi.hoisted(() => vi.fn());
+const mockAbort = vi.hoisted(() => vi.fn());
 const mockOllamaConstructor = vi.hoisted(
   () =>
-    vi.fn(function (this: { chat: typeof mockChat }) {
+    vi.fn(function (this: { chat: typeof mockChat; abort: typeof mockAbort }) {
       this.chat = mockChat;
+      this.abort = mockAbort;
     }),
 );
 
@@ -22,6 +24,17 @@ async function* createStream(parts: any[]) {
   for (const part of parts) {
     yield part;
   }
+}
+
+async function waitForCondition(condition: () => boolean, timeoutMs = 1000): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (condition()) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+  throw new Error('Timed out waiting for condition');
 }
 
 describe('OllamaLLM', () => {
@@ -36,6 +49,7 @@ describe('OllamaLLM', () => {
 
   beforeEach(() => {
     mockChat.mockReset();
+    mockAbort.mockReset();
     mockOllamaConstructor.mockClear();
   });
 
@@ -78,6 +92,35 @@ describe('OllamaLLM', () => {
       host: 'http://localhost:11434',
       fetch: createLocalLongRunningFetch(),
     });
+  });
+
+  it('aborts the Ollama client when the invocation signal is aborted', async () => {
+    let resolveChat!: (response: any) => void;
+    mockChat.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveChat = resolve;
+        })
+    );
+
+    const llm = new OllamaLLM(buildModel(), new LLMConfig());
+    const controller = new AbortController();
+    const responsePromise = llm.sendUserMessage(
+      new LLMUserMessage({ content: 'wait until interrupted' }),
+      {},
+      { signal: controller.signal }
+    );
+
+    await waitForCondition(() => mockChat.mock.calls.length === 1);
+    controller.abort();
+    expect(mockAbort).toHaveBeenCalledTimes(1);
+
+    resolveChat({
+      message: { content: 'late response' },
+      prompt_eval_count: 1,
+      eval_count: 1
+    });
+    await expect(responsePromise).resolves.toMatchObject({ content: 'late response' });
   });
 
   it('emits normalized tool calls from streamed Ollama responses', async () => {

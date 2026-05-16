@@ -13,13 +13,15 @@ export {
   ToolExecutionStartedData,
   ToolExecutionSucceededData,
   ToolExecutionFailedData,
+  ToolExecutionInterruptedData,
   createToolInteractionLogEntryData,
   createToolApprovalRequestedData,
   createToolApprovedData,
   createToolDeniedData,
   createToolExecutionStartedData,
   createToolExecutionSucceededData,
-  createToolExecutionFailedData
+  createToolExecutionFailedData,
+  createToolExecutionInterruptedData
 } from './stream-event-payload-tool.js';
 
 export {
@@ -57,7 +59,8 @@ import type {
   ToolDeniedData,
   ToolExecutionStartedData,
   ToolExecutionSucceededData,
-  ToolExecutionFailedData
+  ToolExecutionFailedData,
+  ToolExecutionInterruptedData
 } from './stream-event-payload-tool.js';
 import type {
   AgentStatusUpdateData,
@@ -86,6 +89,7 @@ export type StreamDataPayload =
   | ToolExecutionStartedData
   | ToolExecutionSucceededData
   | ToolExecutionFailedData
+  | ToolExecutionInterruptedData
   | SegmentEventData
   | SystemTaskNotificationData
   | InterAgentMessageData

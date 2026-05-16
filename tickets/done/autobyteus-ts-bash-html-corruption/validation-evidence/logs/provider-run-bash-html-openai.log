@@ -1,0 +1,44 @@
+### 2026-05-14T11:00:31+02:00 provider run_bash HTML validation: OpenAI gpt-5.5
+Successfully registered tool definition: 'run_bash'
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+{
+  "status": "complete",
+  "results": [
+    {
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "status": "pass",
+      "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/logs/provider-run-bash-html-openai-2026-05-14T09-00-31-682Z.json",
+      "invocationSummary": {
+        "name": "run_bash",
+        "id": "call_pLCXxwBwbKksj88SJJuzpJNR",
+        "commandLength": 2273,
+        "commandSha256": "bcbbfec3e126bc0b3335c0fcbb1b48a6cbfdcb4189bac97bb6bca3cdba86c7bc",
+        "commandExactMatch": true,
+        "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/provider-openai-2026-05-14T09-00-31-682Z",
+        "cwdExactMatch": true,
+        "timeout": 20,
+        "hasBackgroundArg": false
+      },
+      "executionSummary": {
+        "toolResult": {
+          "stdout": "sha256=2109f17a337294c1ec09299991d4051bbf3571868d4e72dc6a644d41fd5588b7\nbytes=122140\n",
+          "stderr": "",
+          "exitCode": 0,
+          "timedOut": false,
+          "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/validation-evidence/workspaces/provider-openai-2026-05-14T09-00-31-682Z",
+          "backgroundProcesses": []
+        },
+        "fileRelativePath": "provider-jet-game/index.html",
+        "expectedBytes": 122140,
+        "actualBytes": 122140,
+        "expectedSha256": "2109f17a337294c1ec09299991d4051bbf3571868d4e72dc6a644d41fd5588b7",
+        "actualSha256": "2109f17a337294c1ec09299991d4051bbf3571868d4e72dc6a644d41fd5588b7",
+        "exactBytesMatch": true,
+        "stdoutContainsExpectedHash": true,
+        "stdoutContainsExpectedBytes": true
+      },
+      "providerError": null
+    }
+  ]
+}

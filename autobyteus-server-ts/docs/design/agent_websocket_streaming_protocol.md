@@ -24,6 +24,64 @@ Defines runtime behavior for agent and team streaming WebSocket endpoints.
 
 Handlers forward streamed model/tool events from runtime managers to clients and normalize error/completion semantics for transport-safe delivery.
 
+### Status Contract
+
+The WebSocket status contract is intentionally coarse and transport-owned.
+Provider/native runtimes may keep detailed internal lifecycle states, but
+clients receive only these status messages:
+
+```ts
+type AgentStatusPayload = {
+  status: "offline" | "idle" | "running" | "error";
+  can_interrupt: boolean;
+  agent_id?: string;
+  agent_name?: string;
+};
+
+type TeamStatusPayload = {
+  status: "offline" | "idle" | "running" | "error";
+};
+```
+
+`AGENT_STATUS` is emitted for single-agent runs and for team members. Team
+member messages include `agent_id` and/or `agent_name` when the handler can
+resolve that identity, and member `can_interrupt` is the authority for the
+frontend stop/interrupt affordance.
+
+Successful single-agent termination publishes a terminal
+`AGENT_STATUS { status: "offline", can_interrupt: false, agent_id }` to
+already-connected WebSocket clients before the run stream is torn down. Clients
+should treat that message as the authoritative live transition from an active
+run to an inactive/offline run; socket close or history reload is not the only
+termination signal.
+
+`TEAM_STATUS` is only the aggregate team status and intentionally does not
+carry `can_interrupt`. Team aggregation is derived from member statuses plus
+the native team status: any error wins, otherwise any running member/native
+running state yields `running`, otherwise any active idle member/native idle
+state yields `idle`, and an all-inactive/no-runtime team is `offline`.
+Clients must not apply aggregate `TEAM_STATUS` back onto every member. Member
+rows are driven by member `AGENT_STATUS` snapshots/events or member-scoped
+history; an active running team can legitimately contain one running member and
+other offline members.
+
+Status payloads do not expose legacy target fields such as `new_status` or
+`old_status`. Those names may still exist in native runtime-internal packages
+for their own streams, but they are not part of the server WebSocket status
+contract.
+
+Segment payloads use snake-case `turn_id` as the canonical transport field for
+all `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END` messages. Native
+AutoByteus segment conversion drops outbound camel-case `turnId` aliases from
+segment payloads, while the final WebSocket mapper still tolerates inbound
+legacy aliases and re-emits only `turn_id`.
+
+Stream terminalization is explicit. Interrupted turns end active segments with
+`interrupted: true` / `reason`; non-interrupt LLM stream failures end active
+segments with `failed: true` / `error` before the backend emits the runtime
+error. Failed partial tool segments are not executable invocations and should be
+rendered as terminal error state by clients.
+
 Runtime backends run each base normalized event batch through
 `AgentRunEventPipeline` before any subscriber fan-out. The stream therefore
 already includes derived events such as `FILE_CHANGE` for explicit
@@ -110,14 +168,14 @@ leaf names.
 
 Control commands remain active-only:
 
-- `STOP_GENERATION`
+- `INTERRUPT_GENERATION`
 - `APPROVE_TOOL`
 - `DENY_TOOL`
 
-Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat approval/stop messages as a way to resume a stopped run; stopped-run recovery is owned by connection setup, explicit restore mutations, and `SEND_MESSAGE`.
+Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat interrupt/approval messages as a way to resume a stopped run; stopped-run recovery is owned by connection setup, explicit restore mutations, and `SEND_MESSAGE`.
 
 Tool approval and denial target the agent that produced the pending approval
-request. Preferred payload identity is the source identity emitted with the
+request. Preferred team payload identity is the source identity emitted with the
 event:
 
 - `source_path` / `sourcePath`, `member_path` / `memberPath`, or
@@ -132,13 +190,36 @@ back to the recorded member path before invoking the domain approval command.
 An approval request aimed at a subteam member rather than a leaf agent is
 rejected by the runtime.
 
-`STOP_GENERATION` should also not be treated as an immediate send-readiness
-acknowledgement. A client that sends stop should wait for the backend's
+Approval commands are active-turn control commands, not queued runtime input.
+For native AutoByteus single-agent runs, `APPROVE_TOOL` / `DENY_TOOL` delegate
+to the active run backend and then to the agent's public
+`postToolExecutionApproval(...)` boundary. For native team runs, the team
+backend resolves the target member and routes the decision through that member
+agent's public approval API via the async team event path. The backend may
+publish approval status/projection events after a valid decision, but
+`ToolExecutionApprovalEvent` is not a WebSocket command payload that can start a
+turn, restore a run, or bypass the active member runtime. Stale, inactive,
+no-pending, and interrupted approval attempts are non-restoring failures.
+Native AutoByteus treats only pending approval records as approval authority:
+membership in the active tool invocation batch is not enough for
+`APPROVE_TOOL` / `DENY_TOOL` to succeed. Auto-executing active tools and stale
+client retries therefore reject as no-pending without status mutation.
+
+`INTERRUPT_GENERATION` should also not be treated as an immediate send-readiness
+acknowledgement. A client that sends interrupt should wait for the backend's
 terminal lifecycle/status stream projection for the affected turn before
 enabling a follow-up send. Runtime adapters that own provider processes must
 finish their cancellation boundary first; for Claude Agent SDK sessions this
 means aborting/closing the active query and clearing active turn/query state
-before the interrupted/idle projection is emitted.
+before the interrupted/idle projection is emitted. In the public WebSocket
+contract, that idle projection is an `AGENT_STATUS` payload such as
+`{ status: "idle", can_interrupt: false }`.
+
+Native AutoByteus runtimes follow the same interrupt-vs-stop split:
+`INTERRUPT_GENERATION` delegates to the active run/team `interrupt(...)` path,
+while terminal stop/termination remains the shutdown path. Stale or inactive
+control commands must not restore a stopped run and must not fall back to
+shutdown cleanup.
 
 Explicit GraphQL termination of an active Claude Agent SDK run follows the same
 provider-settlement invariant before final session termination. The session must

@@ -6,33 +6,43 @@ import { AgentExternalEventNotifier } from '../events/notifiers.js';
 import {
   BaseEvent,
   AgentErrorEvent,
+  AgentInterruptRequestedEvent,
   AgentStoppedEvent,
   ShutdownRequestedEvent,
   UserMessageReceivedEvent,
   InterAgentMessageReceivedEvent,
-  ToolExecutionApprovalEvent
+  LifecycleEvent,
+  ToolExecutionApprovalEvent,
+  ToolResultEvent
 } from '../events/agent-events.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
 import { AgentWorker } from './agent-worker.js';
-import type { EventHandlerRegistry } from '../handlers/event-handler-registry.js';
+import { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
+import {
+  normalizeInterruptReason,
+  type AgentInterruptOptions,
+  type AgentInterruptResult
+} from '../interruption/agent-interruption.js';
+import type { PostToolApprovalResult } from '../tool-approval-result.js';
+import type { PostToolResultResult } from '../tool-result-posting.js';
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class AgentRuntime {
   context: AgentContext;
-  eventHandlerRegistry: EventHandlerRegistry;
   externalEventNotifier: AgentExternalEventNotifier;
   statusManager: AgentStatusManager;
   private worker: AgentWorker;
   private contextRegistry: AgentContextRegistry;
 
-  constructor(context: AgentContext, eventHandlerRegistry: EventHandlerRegistry) {
+  constructor(context: AgentContext, _eventHandlerRegistry?: unknown) {
     this.context = context;
-    this.eventHandlerRegistry = eventHandlerRegistry;
 
     this.externalEventNotifier = new AgentExternalEventNotifier(this.context.agentId);
     this.statusManager = new AgentStatusManager(this.context, this.externalEventNotifier);
     this.context.state.statusManagerRef = this.statusManager;
 
-    this.worker = new AgentWorker(this.context, this.eventHandlerRegistry);
+    this.worker = new AgentWorker(this.context, _eventHandlerRegistry);
     this.worker.addDoneCallback((result) => this.handleWorkerCompletion(result));
 
     this.contextRegistry = new AgentContextRegistry();
@@ -43,26 +53,57 @@ export class AgentRuntime {
 
   async submitEvent(event: BaseEvent): Promise<void> {
     const agentId = this.context.agentId;
-    if (!this.worker || !this.worker.isAlive()) {
+    if (!this.worker || !this.worker.isAlive() || this.worker.isStopping()) {
       throw new Error(`Agent '${agentId}' worker is not active.`);
     }
 
-    if (!this.context.state.inputEventQueues) {
-      console.error(
-        `AgentRuntime '${agentId}': Input event queues not initialized for event ${event.constructor.name}.`
+    if (event instanceof UserMessageReceivedEvent) {
+      await this.getAgentEventInbox().postUserEvent(event);
+    } else if (event instanceof InterAgentMessageReceivedEvent) {
+      await this.getAgentEventInbox().postInterAgentEvent(event);
+    } else if (event instanceof LifecycleEvent) {
+      await this.getAgentEventInbox().postLifecycleEvent(event);
+    } else {
+      throw new TypeError(
+        `AgentRuntime '${agentId}' rejects unsupported runtime input event '${event.constructor.name}'. ` +
+        'Route turn-local operational events through AgentTurnRunner/TurnToolInputPort.'
       );
-      return;
+    }
+  }
+
+  async postToolApprovalEvent(event: ToolExecutionApprovalEvent): Promise<PostToolApprovalResult> {
+    const agentId = this.context.agentId;
+    if (!this.worker || !this.worker.isAlive() || this.worker.isStopping()) {
+      return {
+        accepted: false,
+        code: 'runtime_stopped',
+        invocationId: event.toolInvocationId,
+        message: `Agent '${agentId}' runtime is not running.`
+      };
     }
 
-    if (event instanceof UserMessageReceivedEvent) {
-      await this.context.state.inputEventQueues.enqueueUserMessage(event);
-    } else if (event instanceof InterAgentMessageReceivedEvent) {
-      await this.context.state.inputEventQueues.enqueueInterAgentMessage(event);
-    } else if (event instanceof ToolExecutionApprovalEvent) {
-      await this.context.state.inputEventQueues.enqueueToolApprovalEvent(event);
-    } else {
-      await this.context.state.inputEventQueues.enqueueInternalSystemEvent(event);
+    return this.getAgentEventInbox().postToolApprovalEvent(event);
+  }
+
+  async postToolResultEvent(event: ToolResultEvent): Promise<PostToolResultResult> {
+    const agentId = this.context.agentId;
+    if (!this.worker || !this.worker.isAlive() || this.worker.isStopping()) {
+      return {
+        accepted: false,
+        code: 'runtime_stopped',
+        invocationId: event.toolInvocationId ?? '',
+        message: `Agent '${agentId}' runtime is not running.`
+      };
     }
+
+    return this.getAgentEventInbox().postToolResultEvent(event);
+  }
+
+  private getAgentEventInbox(): AgentEventInbox {
+    if (!this.context.state.agentEventInbox) {
+      this.context.state.agentEventInbox = new AgentEventInbox();
+    }
+    return this.context.state.agentEventInbox;
   }
 
   start(): void {
@@ -113,6 +154,69 @@ export class AgentRuntime {
 
     await this.applyEventAndDeriveStatus(new AgentStoppedEvent());
     console.info(`AgentRuntime for '${agentId}' stop() method completed.`);
+  }
+
+  async interrupt(options: AgentInterruptOptions = {}): Promise<AgentInterruptResult> {
+    const agentId = this.context.agentId;
+    const reason = normalizeInterruptReason(options.reason);
+    const activeTurn = this.context.state.activeTurn;
+
+    if (!this.worker.isAlive() || !activeTurn) {
+      return {
+        accepted: false,
+        status: 'no_active_turn',
+        turnId: null,
+        reason,
+        message: `Agent '${agentId}' has no active turn to interrupt.`
+      };
+    }
+
+    const requestedTurnId =
+      typeof options.turnId === 'string' && options.turnId.trim().length > 0
+        ? options.turnId.trim()
+        : null;
+    if (requestedTurnId && requestedTurnId !== activeTurn.turnId) {
+      return {
+        accepted: false,
+        status: 'turn_mismatch',
+        turnId: activeTurn.turnId,
+        reason,
+        message: `Agent '${agentId}' active turn is '${activeTurn.turnId}', not '${requestedTurnId}'.`
+      };
+    }
+
+    await this.applyEventAndDeriveStatus(new AgentInterruptRequestedEvent(activeTurn.turnId, reason));
+    const result = activeTurn.interrupt(reason);
+    this.context.state.clearPendingToolApprovalsForTurn(activeTurn.turnId);
+    if (!result.accepted && result.status !== 'already_interrupted') {
+      return result;
+    }
+
+    const timeoutMs =
+      typeof options.timeoutMs === 'number' && Number.isFinite(options.timeoutMs) && options.timeoutMs >= 0
+        ? options.timeoutMs
+        : 5000;
+    const settlement = await Promise.race([
+      activeTurn.waitForSettlement(),
+      delay(timeoutMs).then(() => null)
+    ]);
+
+    if (!settlement) {
+      return {
+        accepted: true,
+        status: 'settlement_timeout',
+        turnId: activeTurn.turnId,
+        reason,
+        message: `Interrupt accepted for turn '${activeTurn.turnId}', but settlement did not complete within ${timeoutMs}ms.`
+      };
+    }
+
+    return {
+      ...result,
+      accepted: true,
+      turnId: activeTurn.turnId,
+      reason: settlement.kind === 'interrupted' ? settlement.reason : reason
+    };
   }
 
   async applyEventAndDeriveStatus(event: BaseEvent): Promise<void> {

@@ -6,19 +6,7 @@ import { AgentFactory } from '../../../../src/agent/factory/agent-factory.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntime } from '../../../../src/agent/runtime/agent-runtime.js';
 import { Agent } from '../../../../src/agent/agent.js';
-import { EventHandlerRegistry } from '../../../../src/agent/handlers/event-handler-registry.js';
-import { UserInputMessageEventHandler } from '../../../../src/agent/handlers/user-input-message-event-handler.js';
-import { LifecycleEventLogger } from '../../../../src/agent/handlers/lifecycle-event-logger.js';
-import {
-  UserMessageReceivedEvent,
-  AgentReadyEvent,
-  AgentErrorEvent,
-  AgentStoppedEvent,
-  LLMUserMessageReadyEvent,
-  ToolContinuationReadyEvent
-} from '../../../../src/agent/events/agent-events.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
-import { LLMUserMessageReadyEventHandler } from '../../../../src/agent/handlers/llm-user-message-ready-event-handler.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
@@ -89,22 +77,9 @@ describe('AgentFactory', () => {
     expect((factory as any).tool_registry).toBeUndefined();
   });
 
-  it('builds the default event handler registry', () => {
+  it('does not expose a default turn-control handler registry', () => {
     const factory = new AgentFactory();
-    const registry = (factory as any).getDefaultEventHandlerRegistry();
-    expect(registry).toBeInstanceOf(EventHandlerRegistry);
-
-    const handler = registry.getHandler(UserMessageReceivedEvent);
-    expect(handler).toBeInstanceOf(UserInputMessageEventHandler);
-
-    const llmReadyHandler = registry.getHandler(LLMUserMessageReadyEvent);
-    expect(llmReadyHandler).toBeInstanceOf(LLMUserMessageReadyEventHandler);
-    expect(registry.getHandler(ToolContinuationReadyEvent)).toBe(llmReadyHandler);
-
-    const lifecycleLogger = registry.getHandler(AgentReadyEvent);
-    expect(lifecycleLogger).toBeInstanceOf(LifecycleEventLogger);
-    expect(registry.getHandler(AgentStoppedEvent)).toBe(lifecycleLogger);
-    expect(registry.getHandler(AgentErrorEvent)).toBe(lifecycleLogger);
+    expect((factory as any).getDefaultEventHandlerRegistry).toBeUndefined();
   });
 
   it('creates agents and stores them', () => {

@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
     start: vi.fn(),
     stop: vi.fn().mockResolvedValue(undefined),
     isAlive: vi.fn().mockReturnValue(false),
+    isStopping: vi.fn().mockReturnValue(false),
     addDoneCallback: vi.fn()
   },
   statusManagerInstance: {
@@ -19,6 +20,7 @@ vi.mock('../../../../src/agent/runtime/agent-worker.js', () => {
     start = mocks.workerInstance.start;
     stop = mocks.workerInstance.stop;
     isAlive = mocks.workerInstance.isAlive;
+    isStopping = mocks.workerInstance.isStopping;
     addDoneCallback = mocks.workerInstance.addDoneCallback;
   }
   return { AgentWorker: MockAgentWorker };
@@ -45,8 +47,20 @@ import { AgentRuntime } from '../../../../src/agent/runtime/agent-runtime.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentContext } from '../../../../src/agent/context/agent-context.js';
+import { AgentEventInbox } from '../../../../src/agent/event-inbox/agent-event-inbox.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
-import { ShutdownRequestedEvent, AgentStoppedEvent, AgentErrorEvent } from '../../../../src/agent/events/agent-events.js';
+import {
+  ShutdownRequestedEvent,
+  AgentStoppedEvent,
+  AgentErrorEvent,
+  AgentInterruptRequestedEvent,
+  UserMessageReceivedEvent,
+  ToolExecutionApprovalEvent,
+  ToolResultEvent,
+  PendingToolInvocationEvent
+} from '../../../../src/agent/events/agent-events.js';
+import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
+import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
@@ -54,9 +68,10 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import type { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import type { CompleteResponse as CompleteResponseType, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import type { Message } from '../../../../src/llm/utils/messages.js';
 
 class DummyLLM extends BaseLLM {
-  protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponseType> {
+  protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponseType> {
     return new CompleteResponse({ content: 'ok' });
   }
 
@@ -77,6 +92,9 @@ const makeContext = () => {
   const llm = new DummyLLM(model, new LLMConfig());
   const config = new AgentConfig('name', 'role', 'desc', llm);
   const state = new AgentRuntimeState('agent-1');
+  state.memoryManager = {
+    startTurn: () => 'turn-1'
+  } as any;
   return new AgentContext('agent-1', config, state);
 };
 
@@ -85,6 +103,7 @@ describe('AgentRuntime', () => {
     mocks.workerInstance.start.mockReset();
     mocks.workerInstance.stop.mockReset();
     mocks.workerInstance.isAlive.mockReset();
+    mocks.workerInstance.isStopping.mockReset().mockReturnValue(false);
     mocks.workerInstance.addDoneCallback.mockReset();
     mocks.registerContext.mockReset();
     mocks.unregisterContext.mockReset();
@@ -182,5 +201,170 @@ describe('AgentRuntime', () => {
 
     mocks.workerInstance.isAlive.mockReturnValue(false);
     expect(runtime.isRunning).toBe(false);
+  });
+
+  it('interrupt returns no_active_turn when worker is inactive', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+
+    mocks.workerInstance.isAlive.mockReturnValue(false);
+    const result = await runtime.interrupt({ reason: 'user_interrupt' });
+
+    expect(result.accepted).toBe(false);
+    expect(result.status).toBe('no_active_turn');
+    expect(result.turnId).toBeNull();
+  });
+
+  it('interrupt signals the active turn without stopping the worker', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const activeTurn = context.state.startActiveTurn('turn-1');
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+    runtime.applyEventAndDeriveStatus = vi.fn(async () => undefined) as any;
+
+    const interruptPromise = runtime.interrupt({
+      turnId: 'turn-1',
+      reason: 'user_interrupt',
+      timeoutMs: 100
+    });
+
+    await Promise.resolve();
+    expect(activeTurn.executionScope.signal.aborted).toBe(true);
+    activeTurn.settle({ kind: 'interrupted', turnId: 'turn-1', reason: 'user_interrupt' });
+    const result = await interruptPromise;
+
+    expect(result.accepted).toBe(true);
+    expect(result.status).toBe('accepted');
+    expect(result.turnId).toBe('turn-1');
+    expect((runtime.applyEventAndDeriveStatus as any).mock.calls[0][0]).toBeInstanceOf(
+      AgentInterruptRequestedEvent
+    );
+    expect(mocks.workerInstance.stop).not.toHaveBeenCalled();
+  });
+
+  it('interrupt rejects mismatched turn ids without signaling the active turn', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const activeTurn = context.state.startActiveTurn('turn-1');
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+
+    const result = await runtime.interrupt({ turnId: 'other-turn', reason: 'user_interrupt' });
+
+    expect(result.accepted).toBe(false);
+    expect(result.status).toBe('turn_mismatch');
+    expect(activeTurn.executionScope.signal.aborted).toBe(false);
+  });
+
+  it('posts tool approvals as awaitable AgentEventInbox active-turn events', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const inbox = new AgentEventInbox();
+    inbox.postToolApprovalEvent = vi.fn(async () => ({
+      accepted: true,
+      code: 'posted',
+      turnId: 'turn-1',
+      invocationId: 'inv-1'
+    })) as any;
+    context.state.agentEventInbox = inbox;
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+
+    const event = new ToolExecutionApprovalEvent('inv-1', true, 'approved', 'turn-1');
+    const result = await runtime.postToolApprovalEvent(event);
+
+    expect(result).toEqual({
+      accepted: true,
+      code: 'posted',
+      turnId: 'turn-1',
+      invocationId: 'inv-1'
+    });
+    expect(inbox.postToolApprovalEvent).toHaveBeenCalledWith(event);
+  });
+
+  it('posts external tool results as awaitable AgentEventInbox active-turn events', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const inbox = new AgentEventInbox();
+    inbox.postToolResultEvent = vi.fn(async () => ({
+      accepted: true,
+      code: 'posted',
+      turnId: 'turn-1',
+      invocationId: 'inv-1'
+    })) as any;
+    context.state.agentEventInbox = inbox;
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+
+    const event = new ToolResultEvent('tool', { ok: true }, 'inv-1', undefined, undefined, 'turn-1');
+    const result = await runtime.postToolResultEvent(event);
+
+    expect(result).toEqual({
+      accepted: true,
+      code: 'posted',
+      turnId: 'turn-1',
+      invocationId: 'inv-1'
+    });
+    expect(inbox.postToolResultEvent).toHaveBeenCalledWith(event);
+  });
+
+  it('returns runtime_stopped for tool approvals/results when the worker is inactive or stopping', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    mocks.workerInstance.isAlive.mockReturnValue(false);
+
+    const inactiveApproval = await runtime.postToolApprovalEvent(
+      new ToolExecutionApprovalEvent('inv-1', true)
+    );
+    expect(inactiveApproval).toEqual({
+      accepted: false,
+      code: 'runtime_stopped',
+      invocationId: 'inv-1',
+      message: "Agent 'agent-1' runtime is not running."
+    });
+
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+    mocks.workerInstance.isStopping.mockReturnValue(true);
+    const stoppingResult = await runtime.postToolResultEvent(
+      new ToolResultEvent('tool', { ok: true }, 'inv-1')
+    );
+
+    expect(stoppingResult).toEqual({
+      accepted: false,
+      code: 'runtime_stopped',
+      invocationId: 'inv-1',
+      message: "Agent 'agent-1' runtime is not running."
+    });
+    expect(mocks.workerInstance.start).not.toHaveBeenCalled();
+  });
+
+  it('routes external turn-starting input through AgentEventInbox', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const agentEventInbox = new AgentEventInbox();
+    agentEventInbox.postUserEvent = vi.fn(async () => undefined) as any;
+    context.state.agentEventInbox = agentEventInbox;
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+
+    const event = new UserMessageReceivedEvent(new AgentInputUserMessage('hello'));
+    await runtime.submitEvent(event);
+
+    expect(agentEventInbox.postUserEvent).toHaveBeenCalledWith(event);
+  });
+
+  it('rejects unsupported turn-local operational events instead of queuing them as lifecycle input', async () => {
+    const context = makeContext();
+    const runtime = new AgentRuntime(context, {} as any);
+    const agentEventInbox = new AgentEventInbox();
+    agentEventInbox.postLifecycleEvent = vi.fn(async () => undefined) as any;
+    context.state.agentEventInbox = agentEventInbox;
+    mocks.workerInstance.isAlive.mockReturnValue(true);
+
+    await expect(
+      runtime.submitEvent(new PendingToolInvocationEvent(new ToolInvocation('tool', {}, 'invocation-1')))
+    ).rejects.toThrow(/unsupported runtime input event 'PendingToolInvocationEvent'/);
+
+    await expect(
+      runtime.submitEvent(new ToolExecutionApprovalEvent('invocation-1', true))
+    ).rejects.toThrow(/unsupported runtime input event 'ToolExecutionApprovalEvent'/);
+
+    expect(agentEventInbox.postLifecycleEvent).not.toHaveBeenCalled();
   });
 });

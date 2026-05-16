@@ -1,0 +1,682 @@
+{
+  "startedAt": "2026-05-14T06:24:42.727Z",
+  "completedAt": "2026-05-14T06:24:50.723Z",
+  "model": "gpt-5.5",
+  "workspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/workspace",
+  "memoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/memory",
+  "env": {
+    "AUTOBYTEUS_STREAM_PARSER": "api_tool_call",
+    "hasOpenAIKey": true,
+    "hasKimiKey": true
+  },
+  "finalStatus": "idle",
+  "idleSeen": true,
+  "errorSeen": null,
+  "error": null,
+  "eventCount": 45,
+  "events": [
+    {
+      "event_id": "0e7e44af-7fa0-48cf-b80e-612119a0301b",
+      "timestamp": "2026-05-14T06:24:46.436Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "bootstrapping",
+        "old_status": "uninitialized"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "a83deaa7-9fdd-4605-8d4a-32587e8f2d96",
+      "timestamp": "2026-05-14T06:24:46.447Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "idle",
+        "old_status": "bootstrapping"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "6814a673-e1a4-4f12-b5ed-a3e075100984",
+      "timestamp": "2026-05-14T06:24:46.449Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "processing_user_input",
+        "old_status": "idle",
+        "trigger": "UserMessageReceivedEvent"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "9bac22b5-ebed-4e36-b68e-ff043063151a",
+      "timestamp": "2026-05-14T06:24:46.449Z",
+      "event_type": "turn_started",
+      "data": {
+        "turn_id": "turn_0001"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "20a299ed-9b26-4e0a-85ab-b64903fb588d",
+      "timestamp": "2026-05-14T06:24:46.451Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "awaiting_llm_response",
+        "old_status": "processing_user_input"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "91fc8782-9d5e-4d9c-a0d4-e292567b63ec",
+      "timestamp": "2026-05-14T06:24:48.411Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_START",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "metadata": {
+            "tool_name": "run_bash",
+            "native_tool_call_context": {
+              "provider": "openai_responses",
+              "functionCallItem": {
+                "id": "fc_0812063dd3850fbb006a056ab0507481909f1e32f111924d72",
+                "type": "function_call",
+                "status": "in_progress",
+                "arguments": "",
+                "call_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+                "name": "run_bash"
+              }
+            }
+          }
+        },
+        "segment_type": "tool_call",
+        "event_type": "SEGMENT_START"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "ac92f1f7-cc6b-4b06-acc1-71f2aa9cd487",
+      "timestamp": "2026-05-14T06:24:48.411Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "{\""
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "39642102-97bb-467c-a9f4-d11d67436446",
+      "timestamp": "2026-05-14T06:24:48.432Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "command"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "c1492a57-7730-4e8f-91c7-b59db31d75c0",
+      "timestamp": "2026-05-14T06:24:48.498Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "\":"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "9be7f7f6-1c52-48a1-8ba4-5c6fb9b4165b",
+      "timestamp": "2026-05-14T06:24:48.510Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": " \""
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "03cc9139-eded-4531-851f-b0503e9a5941",
+      "timestamp": "2026-05-14T06:24:48.511Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "pwd"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "2d5b4e9a-23e5-4df5-9a6c-46800236a4b6",
+      "timestamp": "2026-05-14T06:24:48.568Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": " &&"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "cd41d789-b3a3-4171-9eed-099b7d44b90e",
+      "timestamp": "2026-05-14T06:24:48.570Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": " ls"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "4609e638-2ec5-4244-8a17-e8f9ea94cc95",
+      "timestamp": "2026-05-14T06:24:48.570Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "\","
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "3ec23ba3-2219-40d1-8079-8603d59c9b2f",
+      "timestamp": "2026-05-14T06:24:48.709Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": " \""
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "d3eb59c1-882e-4711-9c24-6db3e2673740",
+      "timestamp": "2026-05-14T06:24:48.709Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "cwd"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "520d66ad-dbd9-4d38-806b-c40a0dd3ad37",
+      "timestamp": "2026-05-14T06:24:48.709Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "\":"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "415a77dc-adf6-4a20-81c8-940576065762",
+      "timestamp": "2026-05-14T06:24:48.765Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": " \".\","
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "41ccee5c-6f53-467c-bb4b-191e65723d89",
+      "timestamp": "2026-05-14T06:24:48.769Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": " \""
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "d8ec2cf0-4ebe-411f-9d0f-8d6c72981d9f",
+      "timestamp": "2026-05-14T06:24:48.772Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "timeout"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "07fcff28-87cf-4189-82bc-0ea3cfbf4bcd",
+      "timestamp": "2026-05-14T06:24:48.774Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "_seconds"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "cfd54bdb-b291-4cf2-9743-465a8a410fff",
+      "timestamp": "2026-05-14T06:24:48.809Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "\":"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "57fccb3d-7386-45d9-a0f5-f527c5b1de63",
+      "timestamp": "2026-05-14T06:24:48.828Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": " "
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "02f10e1f-ef39-49fe-a0e3-c5ced7b4039c",
+      "timestamp": "2026-05-14T06:24:48.908Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "30"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "f83fdfaa-3396-4d9a-adeb-a998b403294d",
+      "timestamp": "2026-05-14T06:24:48.909Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": ","
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "8c34bc52-4292-4fde-9a43-f50ef865dbef",
+      "timestamp": "2026-05-14T06:24:48.910Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": " \""
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "c159c22d-efec-46f8-9141-2b7a02d82034",
+      "timestamp": "2026-05-14T06:24:48.914Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "background"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "c752e7f3-5845-4149-8db7-1cf945e03b12",
+      "timestamp": "2026-05-14T06:24:48.917Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "\":"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "8ac95376-955f-4a76-8134-1a88934989b2",
+      "timestamp": "2026-05-14T06:24:48.918Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": " false"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "501df688-38f5-4c57-90a0-9a43321e26ad",
+      "timestamp": "2026-05-14T06:24:48.918Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_CONTENT",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "delta": "}"
+        },
+        "event_type": "SEGMENT_CONTENT"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "054d5a1d-1a3c-44c3-bb3b-7bc69f5e6342",
+      "timestamp": "2026-05-14T06:24:49.160Z",
+      "event_type": "segment_event",
+      "data": {
+        "type": "SEGMENT_END",
+        "segment_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "payload": {
+          "metadata": {
+            "tool_name": "run_bash",
+            "arguments": {
+              "command": "pwd && ls",
+              "cwd": ".",
+              "timeout_seconds": 30,
+              "background": false
+            },
+            "native_tool_call_context": {
+              "provider": "openai_responses",
+              "functionCallItem": {
+                "id": "fc_0812063dd3850fbb006a056ab0507481909f1e32f111924d72",
+                "type": "function_call",
+                "status": "completed",
+                "arguments": "{\"command\": \"pwd && ls\", \"cwd\": \".\", \"timeout_seconds\": 30, \"background\": false}",
+                "call_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+                "name": "run_bash"
+              },
+              "responseOutputItems": [
+                {
+                  "id": "rs_0812063dd3850fbb006a056aaf9440819081060961940dc73e",
+                  "type": "reasoning",
+                  "summary": []
+                },
+                {
+                  "id": "fc_0812063dd3850fbb006a056ab0507481909f1e32f111924d72",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{\"command\": \"pwd && ls\", \"cwd\": \".\", \"timeout_seconds\": 30, \"background\": false}",
+                  "call_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+                  "name": "run_bash"
+                }
+              ]
+            }
+          }
+        },
+        "event_type": "SEGMENT_END"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "eab371c4-d98d-404a-b02b-e7a1330c267d",
+      "timestamp": "2026-05-14T06:24:49.161Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "executing_tool",
+        "old_status": "awaiting_llm_response",
+        "tool_name": "run_bash"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "44b13fa2-012e-44eb-a990-5ff5872baa8a",
+      "timestamp": "2026-05-14T06:24:49.163Z",
+      "event_type": "assistant_complete_response",
+      "data": {
+        "content": "",
+        "usage": {
+          "prompt_tokens": 308,
+          "completion_tokens": 70,
+          "total_tokens": 378
+        },
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": []
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "7bcac4f4-876d-4a06-ba87-171caace04af",
+      "timestamp": "2026-05-14T06:24:49.165Z",
+      "event_type": "tool_execution_started",
+      "data": {
+        "agent_id": "dailyassistantrepro_daily_assistant_4771",
+        "tool_name": "run_bash",
+        "invocation_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "arguments": {
+          "command": "pwd && ls",
+          "cwd": ".",
+          "timeout_seconds": 30,
+          "background": false
+        }
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "ddd32b1d-11f8-431b-9a6f-089f74a5a83f",
+      "timestamp": "2026-05-14T06:24:49.165Z",
+      "event_type": "tool_interaction_log_entry",
+      "data": {
+        "log_entry": "[TOOL_CALL] Agent_ID: dailyassistantrepro_daily_assistant_4771, Tool: run_bash, Invocation_ID: call_MDNDbZZllVXUStFjz7ifJB4g, Arguments: command: pwd && ls\ncwd: .\ntimeout_seconds: 30\nbackground: false",
+        "tool_invocation_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "tool_name": "run_bash",
+        "turn_id": "turn_0001"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "ab59f183-cb6e-45d1-ab67-4787f0561284",
+      "timestamp": "2026-05-14T06:24:50.383Z",
+      "event_type": "tool_interaction_log_entry",
+      "data": {
+        "log_entry": "[TOOL_RESULT] stdout:\n  pwd && ls\n  /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/workspace\n  ~/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/\r/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/wor\rrkspace $ \nstderr: \"\"\nexitCode: 0\ntimedOut: false\neffectiveCwd: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/workspace",
+        "tool_invocation_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "tool_name": "run_bash",
+        "turn_id": "turn_0001"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "c0e2f02b-499c-4661-87bd-7a8ea17148fb",
+      "timestamp": "2026-05-14T06:24:50.385Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "processing_tool_result",
+        "old_status": "executing_tool",
+        "tool_name": "run_bash"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "14ffffab-f821-46c9-a80d-aa554c102377",
+      "timestamp": "2026-05-14T06:24:50.385Z",
+      "event_type": "tool_interaction_log_entry",
+      "data": {
+        "log_entry": "[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: dailyassistantrepro_daily_assistant_4771, Tool: run_bash, Invocation_ID: call_MDNDbZZllVXUStFjz7ifJB4g, Result: stdout:\n  pwd && ls\n  /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/workspace\n  ~/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/\r/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/wor\rrkspace $ \nstderr: \"\"\nexitCode: 0\ntimedOut: false\neffectiveCwd: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/workspace",
+        "tool_invocation_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "tool_name": "run_bash",
+        "turn_id": "turn_0001"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "61d09e38-a33a-4124-9f4d-e8214d0ebe85",
+      "timestamp": "2026-05-14T06:24:50.385Z",
+      "event_type": "tool_execution_succeeded",
+      "data": {
+        "agent_id": "dailyassistantrepro_daily_assistant_4771",
+        "tool_name": "run_bash",
+        "invocation_id": "call_MDNDbZZllVXUStFjz7ifJB4g",
+        "turn_id": "turn_0001",
+        "result": {
+          "stdout": "pwd && ls\r\n/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/workspace\r\n~/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/\r/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/wor\rrkspace $ ",
+          "stderr": "",
+          "exitCode": 0,
+          "timedOut": false,
+          "effectiveCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption/tickets/in-progress/autobyteus-ts-bash-html-corruption/repro/live-agent-runs/gpt-5.5/workspace"
+        }
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "f57bbbae-02dd-4fc9-b847-76ddcb5851c2",
+      "timestamp": "2026-05-14T06:24:50.387Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "awaiting_llm_response",
+        "old_status": "processing_tool_result"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "2ad81259-3b12-44f0-925c-8f4eebb516d0",
+      "timestamp": "2026-05-14T06:24:50.710Z",
+      "event_type": "error_event",
+      "data": {
+        "source": "LLMUserMessageReadyEventHandler.streamUserMessage",
+        "message": "Error processing your request with the LLM: Error: Error in OPENAI Responses API streaming: 400 Item 'fc_0812063dd3850fbb006a056ab0507481909f1e32f111924d72' of type 'function_call' was provided without its required 'reasoning' item: 'rs_0812063dd3850fbb006a056aaf9440819081060961940dc73e'.",
+        "details": "Error: Error in OPENAI Responses API streaming: 400 Item 'fc_0812063dd3850fbb006a056ab0507481909f1e32f111924d72' of type 'function_call' was provided without its required 'reasoning' item: 'rs_0812063dd3850fbb006a056aaf9440819081060961940dc73e'."
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "d7e5e0c5-7a92-4550-9643-d00bcf2d5e0b",
+      "timestamp": "2026-05-14T06:24:50.712Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "analyzing_llm_response",
+        "old_status": "awaiting_llm_response"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "bcd8f2d8-b6b4-4b7c-afaa-6db5453f23e5",
+      "timestamp": "2026-05-14T06:24:50.712Z",
+      "event_type": "assistant_complete_response",
+      "data": {
+        "content": "Error processing your request with the LLM: Error: Error in OPENAI Responses API streaming: 400 Item 'fc_0812063dd3850fbb006a056ab0507481909f1e32f111924d72' of type 'function_call' was provided without its required 'reasoning' item: 'rs_0812063dd3850fbb006a056aaf9440819081060961940dc73e'.",
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": []
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "9d3d1eaf-f529-44c2-97cb-1b30a6f5f93b",
+      "timestamp": "2026-05-14T06:24:50.714Z",
+      "event_type": "turn_completed",
+      "data": {
+        "turn_id": "turn_0001"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    },
+    {
+      "event_id": "1541b872-4871-45e6-91b6-c4fce8af9b7c",
+      "timestamp": "2026-05-14T06:24:50.714Z",
+      "event_type": "agent_status_updated",
+      "data": {
+        "new_status": "idle",
+        "old_status": "analyzing_llm_response"
+      },
+      "agent_id": "dailyassistantrepro_daily_assistant_4771"
+    }
+  ],
+  "files": []
+}

@@ -3,29 +3,18 @@ import {
   type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
+import { buildAgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
 import { serializePayload } from "./payload-serialization.js";
 
 const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
-  const nextStatus =
-    typeof payload.new_status === "string" ? payload.new_status.trim().toUpperCase() : payload.new_status;
-  const previousStatus =
-    typeof payload.old_status === "string" ? payload.old_status.trim().toUpperCase() : payload.old_status;
-  const turnId =
-    typeof payload.turn_id === "string"
-      ? payload.turn_id.trim()
-      : typeof payload.turnId === "string"
-        ? payload.turnId.trim()
-        : payload.turn_id === null || payload.turnId === null
-          ? null
-          : undefined;
-
-  return {
-    ...payload,
-    ...(nextStatus !== undefined ? { new_status: nextStatus } : {}),
-    ...(previousStatus !== undefined ? { old_status: previousStatus } : {}),
-    ...(turnId !== undefined ? { turn_id: turnId } : {}),
-  };
+  return buildAgentStatusPayload({
+    status: payload.status,
+    canInterrupt: payload.can_interrupt === true,
+    agentId: typeof payload.agent_id === "string" ? payload.agent_id : null,
+    agentName: typeof payload.agent_name === "string" ? payload.agent_name : null,
+  });
 };
+
 
 
 const normalizeCompactionPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
@@ -60,6 +49,27 @@ const normalizeTurnPayload = (payload: Record<string, unknown>): Record<string, 
   };
 };
 
+const normalizeSegmentPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
+  const turnId =
+    typeof payload.turn_id === "string"
+      ? payload.turn_id.trim()
+      : typeof payload.turnId === "string"
+        ? payload.turnId.trim()
+        : payload.turn_id === null || payload.turnId === null
+          ? null
+          : null;
+  const {
+    turnId: _camelTurnId,
+    turn_id: _rawTurnId,
+    ...payloadWithoutTurnAliases
+  } = payload;
+
+  return {
+    ...payloadWithoutTurnAliases,
+    turn_id: turnId,
+  };
+};
+
 export class AgentRunEventMessageMapper {
   map(event: AgentRunEvent): ServerMessage {
     const payload = serializePayload(event.payload);
@@ -69,12 +79,14 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.TURN_STARTED, normalizeTurnPayload(payload));
       case AgentRunEventType.TURN_COMPLETED:
         return new ServerMessage(ServerMessageType.TURN_COMPLETED, normalizeTurnPayload(payload));
+      case AgentRunEventType.TURN_INTERRUPTED:
+        return new ServerMessage(ServerMessageType.TURN_INTERRUPTED, normalizeTurnPayload(payload));
       case AgentRunEventType.SEGMENT_START:
-        return new ServerMessage(ServerMessageType.SEGMENT_START, payload);
+        return new ServerMessage(ServerMessageType.SEGMENT_START, normalizeSegmentPayload(payload));
       case AgentRunEventType.SEGMENT_CONTENT:
-        return new ServerMessage(ServerMessageType.SEGMENT_CONTENT, payload);
+        return new ServerMessage(ServerMessageType.SEGMENT_CONTENT, normalizeSegmentPayload(payload));
       case AgentRunEventType.SEGMENT_END:
-        return new ServerMessage(ServerMessageType.SEGMENT_END, payload);
+        return new ServerMessage(ServerMessageType.SEGMENT_END, normalizeSegmentPayload(payload));
       case AgentRunEventType.AGENT_STATUS:
         return new ServerMessage(ServerMessageType.AGENT_STATUS, normalizeStatusPayload(payload));
       case AgentRunEventType.COMPACTION_STATUS:
@@ -93,6 +105,8 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.TOOL_EXECUTION_SUCCEEDED, payload);
       case AgentRunEventType.TOOL_EXECUTION_FAILED:
         return new ServerMessage(ServerMessageType.TOOL_EXECUTION_FAILED, payload);
+      case AgentRunEventType.TOOL_EXECUTION_INTERRUPTED:
+        return new ServerMessage(ServerMessageType.TOOL_EXECUTION_INTERRUPTED, payload);
       case AgentRunEventType.TOOL_LOG:
         return new ServerMessage(ServerMessageType.TOOL_LOG, payload);
       case AgentRunEventType.TODO_LIST_UPDATE:

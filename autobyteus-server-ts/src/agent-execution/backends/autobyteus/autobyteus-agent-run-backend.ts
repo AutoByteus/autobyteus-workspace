@@ -6,6 +6,7 @@ import type { AgentRunContext, RuntimeAgentRunContext } from "../../domain/agent
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunBackend, AgentRunEventListener } from "../agent-run-backend.js";
 import { AutoByteusStreamEventConverter } from "./events/autobyteus-stream-event-converter.js";
+import { projectAutoByteusAgentStatus } from "./events/autobyteus-status-projector.js";
 import { dispatchProcessedAgentRunEvents } from "../../events/dispatch-processed-agent-run-events.js";
 
 export type AutoByteusAgentLike = {
@@ -17,7 +18,31 @@ export type AutoByteusAgentLike = {
     toolInvocationId: string,
     isApproved: boolean,
     reason?: string | null,
-  ) => Promise<void>;
+    options?: { turnId?: string; requestedBy?: string },
+  ) => Promise<{
+    accepted: boolean;
+    code?: string;
+    turnId?: string | null;
+    invocationId?: string;
+    message?: string;
+  }>;
+  interrupt?: (options?: {
+    turnId?: string | null;
+    reason?: string | null;
+    timeoutMs?: number | null;
+  }) => Promise<{
+    accepted: boolean;
+    status?: string;
+    turnId?: string | null;
+    reason?: string | null;
+    message?: string;
+  }> | {
+    accepted: boolean;
+    status?: string;
+    turnId?: string | null;
+    reason?: string | null;
+    message?: string;
+  };
   stop?: (timeout?: number) => Promise<void> | void;
 };
 
@@ -54,7 +79,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   ) {
     this.context = context;
     this.runId = agent.agentId;
-    this.eventConverter = new AutoByteusStreamEventConverter(this.runId);
+    this.eventConverter = new AutoByteusStreamEventConverter(this.runId, () => this.getStatusSnapshot());
   }
 
   getContext(): AgentRunContext<RuntimeAgentRunContext> {
@@ -69,8 +94,13 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     return this.runId;
   }
 
-  getStatus(): string | null {
-    return this.agent.currentStatus ?? null;
+  getStatusSnapshot() {
+    return projectAutoByteusAgentStatus({
+      currentStatus: this.agent.currentStatus,
+      context: this.agent.context ?? null,
+      isActive: this.isActive(),
+      agentId: this.runId,
+    });
   }
 
   subscribeToEvents(listener: AgentRunEventListener): () => void {
@@ -107,20 +137,40 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       return buildRunNotFoundResult(this.runId);
     }
     try {
-      await this.agent.postToolExecutionApproval(invocationId, approved, reason);
-      return { accepted: true };
+      const result = await this.agent.postToolExecutionApproval(invocationId, approved, reason);
+      return {
+        accepted: result.accepted,
+        code: result.code,
+        message: result.message,
+        turnId: result.turnId ?? null,
+      };
     } catch (error) {
       return buildCommandFailure("approve tool", error);
     }
   }
 
-  async interrupt(): Promise<AgentOperationResult> {
-    if (!this.agent.stop || !this.isActive()) {
+  async interrupt(turnId?: string | null): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
     }
+    if (!this.agent.interrupt) {
+      return {
+        accepted: false,
+        code: "UNSUPPORTED_RUNTIME_COMMAND",
+        message: "Native Autobyteus agent does not expose interrupt().",
+      };
+    }
     try {
-      await this.agent.stop();
-      return { accepted: true };
+      const result = await this.agent.interrupt({
+        turnId: turnId ?? null,
+        reason: "user_interrupt",
+      });
+      return {
+        accepted: result.accepted,
+        code: result.accepted ? result.status : (result.status ?? "INTERRUPT_REJECTED"),
+        message: result.message,
+        turnId: result.turnId ?? null,
+      };
     } catch (error) {
       return buildCommandFailure("interrupt run", error);
     }

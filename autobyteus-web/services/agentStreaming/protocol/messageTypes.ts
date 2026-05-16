@@ -13,6 +13,7 @@ export type ServerMessageType =
   | 'CONNECTED'
   | 'TURN_STARTED'
   | 'TURN_COMPLETED'
+  | 'TURN_INTERRUPTED'
   | 'SEGMENT_START'
   | 'SEGMENT_CONTENT'
   | 'SEGMENT_END'
@@ -26,6 +27,7 @@ export type ServerMessageType =
   | 'TOOL_EXECUTION_STARTED'
   | 'TOOL_EXECUTION_SUCCEEDED'
   | 'TOOL_EXECUTION_FAILED'
+  | 'TOOL_EXECUTION_INTERRUPTED'
   | 'TOOL_LOG'
   | 'ASSISTANT_COMPLETE'
   | 'TODO_LIST_UPDATE'
@@ -90,12 +92,15 @@ export interface SegmentEndPayload {
   source_route_key?: string;
   source_path?: string[];
   metadata?: Record<string, any>;
+  interrupted?: boolean;
+  reason?: string | null;
+  failed?: boolean;
+  error?: string | null;
 }
 
 export interface AgentStatusPayload {
-  new_status: string;
-  old_status?: string | null;
-  turn_id?: string | null;
+  status: 'offline' | 'idle' | 'running' | 'error';
+  can_interrupt: boolean;
   agent_id?: string;
   agent_name?: string;
   member_route_key?: string;
@@ -162,8 +167,7 @@ export interface ExternalUserMessagePayload {
 }
 
 export interface TeamStatusPayload {
-  new_status: string;
-  old_status?: string | null;
+  status: 'offline' | 'idle' | 'running' | 'error';
   error_message?: string | null;
   sub_team_node_name?: string | null;
   source_route_key?: string;
@@ -242,6 +246,16 @@ export interface ToolExecutionFailedPayload {
   agent_id?: string;
 }
 
+export interface ToolExecutionInterruptedPayload {
+  invocation_id: string;
+  tool_name: string;
+  turn_id: string | null;
+  arguments?: Record<string, any>;
+  reason: string;
+  agent_name?: string;
+  agent_id?: string;
+}
+
 export interface ToolLogPayload {
   log_entry: string;
   tool_invocation_id: string;
@@ -264,6 +278,8 @@ export interface AssistantCompletePayload {
 
 export interface TurnLifecyclePayload {
   turn_id: string | null;
+  reason?: string | null;
+  interrupted?: boolean;
   agent_name?: string;
   agent_id?: string;
 }
@@ -420,6 +436,7 @@ export type ServerMessage =
   | { type: 'CONNECTED'; payload: ConnectedPayload }
   | { type: 'TURN_STARTED'; payload: TurnLifecyclePayload }
   | { type: 'TURN_COMPLETED'; payload: TurnLifecyclePayload }
+  | { type: 'TURN_INTERRUPTED'; payload: TurnLifecyclePayload }
   | { type: 'SEGMENT_START'; payload: SegmentStartPayload }
   | { type: 'SEGMENT_CONTENT'; payload: SegmentContentPayload }
   | { type: 'SEGMENT_END'; payload: SegmentEndPayload }
@@ -433,6 +450,7 @@ export type ServerMessage =
   | { type: 'TOOL_EXECUTION_STARTED'; payload: ToolExecutionStartedPayload }
   | { type: 'TOOL_EXECUTION_SUCCEEDED'; payload: ToolExecutionSucceededPayload }
   | { type: 'TOOL_EXECUTION_FAILED'; payload: ToolExecutionFailedPayload }
+  | { type: 'TOOL_EXECUTION_INTERRUPTED'; payload: ToolExecutionInterruptedPayload }
   | { type: 'TOOL_LOG'; payload: ToolLogPayload }
   | { type: 'ASSISTANT_COMPLETE'; payload: AssistantCompletePayload }
   | { type: 'TODO_LIST_UPDATE'; payload: TodoListUpdatePayload }
@@ -450,7 +468,7 @@ export type ServerMessage =
 
 export type ClientMessageType =
   | 'SEND_MESSAGE'
-  | 'STOP_GENERATION'
+  | 'INTERRUPT_GENERATION'
   | 'APPROVE_TOOL'
   | 'DENY_TOOL';
 
@@ -479,6 +497,6 @@ export interface ToolActionPayload {
 
 export type ClientMessage =
   | { type: 'SEND_MESSAGE'; payload: SendMessagePayload }
-  | { type: 'STOP_GENERATION' }
+  | { type: 'INTERRUPT_GENERATION' }
   | { type: 'APPROVE_TOOL'; payload: ToolActionPayload }
   | { type: 'DENY_TOOL'; payload: ToolActionPayload };

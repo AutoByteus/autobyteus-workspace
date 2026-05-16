@@ -112,11 +112,10 @@ const formatId = (id: string) => {
 
 const statusColor = computed(() => {
   switch (props.teamRun.currentStatus) {
+    case AgentTeamStatus.Offline: return 'bg-gray-300';
     case AgentTeamStatus.Idle: return 'bg-green-400';
-    case AgentTeamStatus.Processing: return 'bg-blue-400 animate-pulse';
-    case AgentTeamStatus.Bootstrapping: return 'bg-purple-400 animate-pulse';
+    case AgentTeamStatus.Running: return 'bg-blue-400 animate-pulse';
     case AgentTeamStatus.Error: return 'bg-red-500';
-    case AgentTeamStatus.ShutdownComplete: return 'bg-gray-400';
     default: return 'bg-gray-300';
   }
 });

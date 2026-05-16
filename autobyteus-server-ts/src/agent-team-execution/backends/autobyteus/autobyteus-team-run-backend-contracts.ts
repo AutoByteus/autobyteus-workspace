@@ -12,7 +12,9 @@ export type AutoByteusTeamLike = {
   context?: {
     agents?: Array<{
       agentId?: string | null;
+      currentStatus?: unknown;
       context?: {
+        state?: { activeTurn?: unknown | null } | null;
         config?: {
           name?: string | null;
         } | null;
@@ -28,6 +30,23 @@ export type AutoByteusTeamLike = {
     approved: boolean,
     reason?: string | null,
   ) => Promise<void>;
+  interrupt?: (options?: {
+    reason?: string | null;
+    timeoutMs?: number | null;
+    targetMemberName?: string | null;
+  }) => Promise<{
+    accepted: boolean;
+    status?: string;
+    reason?: string;
+    interruptedCount?: number;
+    message?: string;
+  }> | {
+    accepted: boolean;
+    status?: string;
+    reason?: string;
+    interruptedCount?: number;
+    message?: string;
+  };
   stop?: (timeout?: number) => Promise<void> | void;
 };
 

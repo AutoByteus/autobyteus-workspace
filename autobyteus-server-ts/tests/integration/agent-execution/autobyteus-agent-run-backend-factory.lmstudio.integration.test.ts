@@ -315,7 +315,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
           () => events.some((event) => event.eventType === AgentRunEventType.AGENT_STATUS),
           EVENT_WAIT_TIMEOUT_MS,
         );
-        await waitFor(() => (backend.getStatus() ?? "").toLowerCase() === "idle");
+        await waitFor(() => backend.getStatusSnapshot().status === "idle");
 
         const targetPath = path.join(workspaceDir, targetRelativePath);
         expect(await waitForFile(targetPath)).toBe(true);
@@ -381,7 +381,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
             event.eventType === AgentRunEventType.TOOL_DENIED &&
             resolveInvocationId(event.payload) === invocationId,
         );
-        await waitFor(() => (backend.getStatus() ?? "").toLowerCase() === "idle");
+        await waitFor(() => backend.getStatusSnapshot().status === "idle");
 
         const targetPath = path.join(workspaceDir, targetRelativePath);
         expect(fs.existsSync(targetPath)).toBe(false);
@@ -437,7 +437,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
           events,
           (event) => event.eventType === AgentRunEventType.ASSISTANT_COMPLETE,
         );
-        await waitFor(() => (backend.getStatus() ?? "").toLowerCase() === "idle");
+        await waitFor(() => backend.getStatusSnapshot().status === "idle");
 
         expect(
           events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
@@ -547,7 +547,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
           events,
           (event) => event.eventType === AgentRunEventType.ASSISTANT_COMPLETE,
         );
-        await waitFor(() => (run.getStatus() ?? "").toLowerCase() === "idle");
+        await waitFor(() => run.getStatusSnapshot().status === "idle");
 
         expect(
           events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),

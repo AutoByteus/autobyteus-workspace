@@ -97,6 +97,14 @@ export class ToolInvocationAdapter {
     this.activeSegments.delete(event.segment_id);
 
     const metadata = event.payload?.metadata ?? {};
+    if (
+      event.payload?.interrupted === true ||
+      metadata.interrupted === true ||
+      event.payload?.failed === true ||
+      metadata.failed === true
+    ) {
+      return null;
+    }
     const segmentType = segmentData.segmentType as SegmentType | undefined;
     let toolName = metadata.tool_name || segmentData.toolName;
     let argumentsValue: Record<string, any> = segmentData.toolArguments ?? {};

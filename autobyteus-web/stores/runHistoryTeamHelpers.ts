@@ -13,6 +13,11 @@ import type {
 } from '~/stores/runHistoryTypes';
 import { buildConversationFromProjection } from '~/services/runHydration/runProjectionConversation';
 import { hydrateActivitiesFromProjection } from '~/services/runHydration/runProjectionActivityHydration';
+import { normalizeTeamRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
+import {
+  applyMemberOrHistoryStatusSnapshot,
+  initializeRuntimeStatusState,
+} from '~/services/runStatus/agentRuntimeStatusState';
 import { flattenTeamRunAgentMetadata } from '~/stores/runHistoryMetadata';
 import {
   buildTeamRowsFromContext,
@@ -21,15 +26,9 @@ import {
 } from '~/stores/runHistoryTeamRows';
 
 export const toHistoryTeamStatus = (
-  team: Pick<TeamRunHistoryItem, 'isActive' | 'lastKnownStatus'>,
+  team: Pick<TeamRunHistoryItem, 'status'>,
 ): AgentTeamStatus => {
-  if (team.lastKnownStatus === 'ERROR') {
-    return AgentTeamStatus.Error;
-  }
-  if (!team.isActive) {
-    return AgentTeamStatus.ShutdownComplete;
-  }
-  return AgentTeamStatus.Processing;
+  return normalizeTeamRuntimeStatus(team.status);
 };
 
 export const toTeamRunStatus = (
@@ -39,14 +38,23 @@ export const toTeamRunStatus = (
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
 
-  if (
-    status === AgentTeamStatus.Uninitialized ||
-    status === AgentTeamStatus.ShutdownComplete
-  ) {
+  if (status === AgentTeamStatus.Offline) {
     return { isActive: false, lastKnownStatus: 'IDLE' };
   }
 
   return { isActive: true, lastKnownStatus: 'ACTIVE' };
+};
+
+const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
+  if (
+    status === AgentStatus.Running ||
+    status === AgentStatus.Idle ||
+    status === AgentStatus.Error ||
+    status === AgentStatus.Offline
+  ) {
+    return status;
+  }
+  return AgentStatus.Offline;
 };
 
 export const summarizeTeamDraft = (teamContext: AgentTeamContext, draftSummaryPrefix: string): string => {
@@ -117,7 +125,7 @@ export const buildTeamNodes = (params: {
   summarizeTeamDraft: (teamContext: AgentTeamContext) => string;
   resolveTeamLastActivityAt: (teamContext: AgentTeamContext) => string;
   toHistoryTeamStatus: (
-    team: Pick<TeamRunHistoryItem, 'isActive' | 'lastKnownStatus'>,
+    team: Pick<TeamRunHistoryItem, 'status'>,
   ) => AgentTeamStatus;
   toTeamRunStatus: (
     status: AgentTeamStatus,
@@ -162,7 +170,8 @@ export const buildTeamNodes = (params: {
   for (const teamContext of params.teamContexts) {
     const existing = nodesByTeamRunId.get(teamContext.teamRunId);
     const workspaceRootPath = params.resolveWorkspaceRootPathFromContext(teamContext);
-    const { isActive, lastKnownStatus } = params.toTeamRunStatus(teamContext.currentStatus);
+    const currentStatus = normalizeTeamRuntimeStatus(teamContext.currentStatus);
+    const { isActive, lastKnownStatus } = params.toTeamRunStatus(currentStatus);
     const summary = existing?.summary?.trim() || params.summarizeTeamDraft(teamContext);
     const lastActivityAt = existing?.lastActivityAt || params.resolveTeamLastActivityAt(teamContext);
     const memberTree = buildTeamRowsFromContext(
@@ -187,7 +196,7 @@ export const buildTeamNodes = (params: {
       lastActivityAt,
       lastKnownStatus,
       isActive,
-      currentStatus: teamContext.currentStatus,
+      currentStatus,
       deleteLifecycle,
       focusedMemberRouteKey: teamContext.focusedMemberRouteKey,
       members,
@@ -372,9 +381,13 @@ export const applyProjectionToTeamMemberContext = (params: {
   });
   params.memberContext.state.runId = memberRunId;
   params.memberContext.state.conversation = conversation;
-  params.memberContext.state.currentStatus = params.isActive
-    ? AgentStatus.Uninitialized
-    : AgentStatus.ShutdownComplete;
+  applyMemberOrHistoryStatusSnapshot(
+    params.memberContext,
+    params.isActive
+      ? preserveCanonicalMemberStatus(params.memberContext.state.currentStatus)
+      : AgentStatus.Offline,
+    { preserveLiveInterrupt: params.isActive },
+  );
 
   if (params.projection) {
     hydrateActivitiesFromProjection(memberRunId, params.projection.activities || []);
@@ -419,7 +432,7 @@ export const buildTeamMemberContexts = async (params: {
     });
 
     const state = new AgentRunState(memberRunId, conversation);
-    state.currentStatus = params.isActive ? AgentStatus.Uninitialized : AgentStatus.ShutdownComplete;
+    initializeRuntimeStatusState(state, AgentStatus.Offline);
     members.set(
       normalizedMemberRouteKey,
       new AgentContext(memberConfig, state),
