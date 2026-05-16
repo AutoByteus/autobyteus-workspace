@@ -1,6 +1,6 @@
 ## Improvements
 
-- Removed deprecated DeepSeek Chat and DeepSeek Reasoner model options from the built-in model catalog.
-- Removed deprecated Kimi 2.5 from the built-in Kimi model catalog.
-- Updated DeepSeek and Kimi defaults to use retained supported models.
-- Refreshed model catalog documentation so users see only the currently supported DeepSeek and Kimi options.
+- Standardized live agent status updates on the public four-state contract: `offline`, `idle`, `running`, and `error`.
+- Improved single-agent termination so connected clients receive a terminal offline status before the stream closes.
+- Improved team run recovery so an active team can show one running member while other members remain offline instead of copying aggregate running state to every member.
+- Improved refresh/reopen handling so valid Stop generation affordances are preserved for active live runs, while stale stop affordances are cleared after offline, error, or non-interruptible idle status updates.
