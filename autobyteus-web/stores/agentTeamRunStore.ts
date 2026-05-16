@@ -426,16 +426,12 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
 
       const service = teamStreamingServices.get(activeTeam.teamRunId);
-      const fallbackTarget: ToolApprovalTarget | null = activeTeam.focusedMemberRouteKey
-        ? { memberRouteKey: activeTeam.focusedMemberRouteKey }
-        : null;
-      const target = approvalTarget ?? fallbackTarget;
 
       if (service) {
         if (isApproved) {
-          service.approveTool(invocationId, target, reason || undefined);
+          service.approveTool(invocationId, approvalTarget, reason || undefined);
         } else {
-          service.denyTool(invocationId, target, reason || undefined);
+          service.denyTool(invocationId, approvalTarget, reason || undefined);
         }
       }
 

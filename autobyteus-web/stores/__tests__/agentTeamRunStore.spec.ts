@@ -366,6 +366,31 @@ describe('agentTeamRunStore', () => {
     expect(teamContext.isSubscribed).toBe(true);
   });
 
+  it('does not synthesize a focused-member approval target when no event target is supplied', async () => {
+    const teamContext = buildTeamContext({
+      teamRunId: 'team-approval-no-fallback-1',
+      focusedMemberRouteKey: 'BuildSquad',
+      memberContexts: {
+        program_manager: {
+          state: { runId: 'pm-run-1', currentStatus: AgentStatus.Idle },
+        },
+        'BuildSquad/review_lead': {
+          state: { runId: 'review-run-1', currentStatus: AgentStatus.Running },
+        },
+      },
+    });
+    setActiveTeamContext(teamContext);
+
+    const store = useAgentTeamRunStore();
+    store.connectToTeamStream('team-approval-no-fallback-1');
+    await store.postToolExecutionApproval('tool-no-fallback-1', true, null, null);
+
+    expect(mockApproveTool).toHaveBeenCalledWith('tool-no-fallback-1', null, undefined);
+    expect(mockApproveTool).not.toHaveBeenCalledWith('tool-no-fallback-1', {
+      memberRouteKey: 'BuildSquad',
+    }, undefined);
+  });
+
   it('approves nested tool requests using the event source target after focus changes', async () => {
     const teamContext = buildTeamContext({
       teamRunId: 'team-approval-1',

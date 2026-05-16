@@ -572,3 +572,43 @@ Passed:
   - Result: `217` changed files checked; no changed non-test implementation source file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes again.
+
+## Code Review Round 16 No-Legacy Follow-Up
+
+After the user emphasized that the latest-base update must be handled as a clean target-state update rather than backward-compatible fallback code, I re-audited the active frontend source touched by the integration and removed an additional stale fallback path in the tool-approval spine.
+
+Implementation updates:
+
+- `agentTeamRunStore.ts` no longer synthesizes a tool-approval target from the currently focused member when an approval request lacks an explicit event target. Approval and denial now pass the supplied `ToolApprovalTarget` through unchanged; `TeamStreamingService` remains the authoritative edge that can resolve a captured approval-request target by `invocationId`.
+- `agentTeamRunStore.spec.ts` adds a regression proving that a focused structural subteam (`BuildSquad`) is not used as a fabricated approval target when the caller supplies no target.
+- `toolActivityProjection.ts` now updates approval target metadata by the canonical invocation id directly. This completes the latest-base canonical invocation identity cleanup and removes the last stale `resolveActivityInvocationIds` reference rather than restoring the deleted invocation-alias compatibility helper.
+
+No-legacy audit results:
+
+- Removed status enum refs in active web source: no matches for `AgentStatus.Uninitialized`, `ShutdownComplete`, `ProcessingUserInput`, `AwaitingToolApproval`, `ExecutingTool`, or `ToolDenied`.
+- Active frontend team source authority audit: no active-source `focusedMemberName` authority refs outside tests.
+- Legacy approval/invocation fallback audit: no active-source matches for `resolveActivityInvocationIds`, `invocationAliases`, `fallbackTarget`, or focused-member approval fallback patterns.
+
+## Code Review Round 16 No-Legacy Follow-Up Checks
+
+Passed:
+
+- `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/workspace/team/__tests__/TeamGridView.spec.ts components/workspace/team/__tests__/TeamSpotlightView.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --reporter=dot`
+  - Result: `10` files passed, `55` tests passed.
+  - Notes: output includes existing KaTeX quirks-mode warnings from Markdown renderer tests and the expected negative termination log in `agentTeamRunStore.spec.ts`.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- Active-source removed status grep.
+  - Result: no matches.
+- Active-source no-legacy approval/invocation fallback grep.
+  - Result: no matches.
+- Active-source `focusedMemberName` authority grep outside tests.
+  - Result: no matches.
+- `pnpm -C autobyteus-web exec nuxi typecheck --noEmit --pretty false` targeted probe.
+  - Result: the known broad typecheck remains non-clean, but the Round 16 blocker signature is absent: no `TeamMemberMonitorTile.vue`, `AgentStatus.Uninitialized`, or `Property 'Uninitialized'` diagnostics were present in the captured output.
+- Custom changed `.ts` / `.vue` source size audit for current implementation-owned local changes.
+  - Result: `3` changed TS/Vue files checked; no changed non-test implementation source file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this no-legacy integrated source state again.

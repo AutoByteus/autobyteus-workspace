@@ -186,9 +186,7 @@ export const updateActivityApprovalTarget = (
   approvalTarget: ToolApprovalTarget | null,
 ): void => {
   const activityStore = useAgentActivityStore();
-  for (const activityInvocationId of resolveActivityInvocationIds(context, invocationId)) {
-    activityStore.updateActivityApprovalTarget(context.state.runId, activityInvocationId, approvalTarget);
-  }
+  activityStore.updateActivityApprovalTarget(context.state.runId, invocationId, approvalTarget);
 };
 
 export const setActivityResult = (
