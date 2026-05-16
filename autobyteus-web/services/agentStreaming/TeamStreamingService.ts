@@ -134,7 +134,7 @@ export class TeamStreamingService {
     this.wsClient.send(serializeClientMessage(message));
   }
 
-  approveTool(invocationId: string, target?: ToolApprovalTarget | string | null, reason?: string): void {
+  approveTool(invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
     const approvalToken = this.approvalTokenByInvocationId.get(invocationId);
     const approvalTarget = this.resolveApprovalTarget(invocationId, target);
     const message: ClientMessage = {
@@ -151,7 +151,7 @@ export class TeamStreamingService {
     this.approvalTargetByInvocationId.delete(invocationId);
   }
 
-  denyTool(invocationId: string, target?: ToolApprovalTarget | string | null, reason?: string): void {
+  denyTool(invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
     const approvalToken = this.approvalTokenByInvocationId.get(invocationId);
     const approvalTarget = this.resolveApprovalTarget(invocationId, target);
     const message: ClientMessage = {
@@ -263,11 +263,8 @@ export class TeamStreamingService {
 
   private resolveApprovalTarget(
     invocationId: string,
-    target?: ToolApprovalTarget | string | null,
+    target?: ToolApprovalTarget | null,
   ): ToolApprovalTarget | null {
-    if (typeof target === 'string') {
-      return this.normalizeApprovalTarget({ memberRouteKey: target });
-    }
     return this.normalizeApprovalTarget(target ?? null)
       ?? this.approvalTargetByInvocationId.get(invocationId)
       ?? null;

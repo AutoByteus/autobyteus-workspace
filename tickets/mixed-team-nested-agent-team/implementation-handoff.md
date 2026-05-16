@@ -612,3 +612,43 @@ Passed:
   - Result: `3` changed TS/Vue files checked; no changed non-test implementation source file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this no-legacy integrated source state again.
+
+## Code Review Round 17 Local Fix Update
+
+Addressed `CR-ROUND8-INTEGRATION-002` by removing the remaining legacy scalar approval-target alias from `TeamStreamingService`.
+
+Implementation updates:
+
+- `TeamStreamingService.approveTool(...)` and `denyTool(...)` now accept only `ToolApprovalTarget | null | undefined` for team approval target identity. The public service API no longer exposes `ToolApprovalTarget | string | null`.
+- Removed the `typeof target === 'string'` conversion branch from `resolveApprovalTarget(...)`; structured selector identity and cached approval-request target identity are the only accepted target paths.
+- Updated `TeamStreamingService.spec.ts` to approve with an explicit structured `{ memberRouteKey: 'worker-a' }` target instead of scalar `'worker-a'`, while the existing nested approval test continues to prove cached event target resolution after focus changes.
+
+No-legacy audit results:
+
+- No active-source matches for `ToolApprovalTarget | string`.
+- No active-source matches for `typeof target === 'string'` / `typeof target === "string"` approval-target handling.
+- No active-source matches for scalar `approveTool(..., 'member')` / `denyTool(..., 'member')` call patterns.
+- Removed status enum refs remain absent in active web source.
+
+## Code Review Round 17 Local Checks
+
+Passed:
+
+- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts --reporter=dot`
+  - Result: `3` files passed, `26` tests passed.
+  - Notes: output includes the expected negative termination log in `agentTeamRunStore.spec.ts` and an existing KaTeX quirks-mode warning from Markdown renderer tests.
+- `pnpm -C autobyteus-web exec vitest run components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts stores/__tests__/agentTeamRunStore.spec.ts components/workspace/team/__tests__/TeamGridView.spec.ts components/workspace/team/__tests__/TeamSpotlightView.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts --reporter=dot`
+  - Result: `10` files passed, `55` tests passed.
+  - Notes: output includes existing KaTeX quirks-mode warnings from Markdown renderer tests and the expected negative termination log in `agentTeamRunStore.spec.ts`.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- No-legacy approval target grep for `ToolApprovalTarget | string`, `typeof target === 'string'`, and scalar `approveTool(..., 'member')` / `denyTool(..., 'member')` patterns.
+  - Result: no matches.
+- Active-source removed status grep.
+  - Result: no matches.
+- Custom changed `.ts` / `.vue` source size audit for current local fix.
+  - Result: `2` changed TS/Vue files checked; no changed non-test implementation source file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this no-legacy source state again.

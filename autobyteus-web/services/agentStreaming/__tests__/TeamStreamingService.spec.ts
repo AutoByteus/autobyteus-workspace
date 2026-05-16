@@ -71,7 +71,7 @@ describe('TeamStreamingService', () => {
       }),
     );
 
-    service.approveTool('inv-1', 'worker-a');
+    service.approveTool('inv-1', { memberRouteKey: 'worker-a' });
 
     expect(wsClient.send).toHaveBeenCalledTimes(1);
     const outbound = JSON.parse(wsClient.send.mock.calls[0][0]);
