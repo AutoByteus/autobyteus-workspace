@@ -766,7 +766,7 @@ const defineRuntimeSuite = (input: {
           messages,
           firstStartIndex,
           (message) =>
-            message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            message.type === "AGENT_STATUS" && message.payload.status === "idle",
           "first AGENT_STATUS IDLE",
         );
 
@@ -803,7 +803,7 @@ const defineRuntimeSuite = (input: {
           messages,
           secondStartIndex,
           (message) =>
-            message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            message.type === "AGENT_STATUS" && message.payload.status === "idle",
           "second AGENT_STATUS IDLE",
         );
       } finally {
@@ -874,7 +874,7 @@ const defineRuntimeSuite = (input: {
             messages,
             interruptStartIndex,
             (message) =>
-              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
             "AutoByteus AGENT_STATUS IDLE after interrupt",
           );
           await expect(readFile(targetAbsolutePath, "utf-8")).rejects.toMatchObject({
@@ -903,7 +903,7 @@ const defineRuntimeSuite = (input: {
             messages,
             followUpStartIndex,
             (message) =>
-              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
             "AutoByteus AGENT_STATUS IDLE after interrupt follow-up",
             180_000,
           );
@@ -981,7 +981,7 @@ const defineRuntimeSuite = (input: {
             messages,
             followUpStartIndex,
             (message) =>
-              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
             "AutoByteus AGENT_STATUS IDLE after active terminate restore follow-up",
             180_000,
           );
@@ -1064,7 +1064,7 @@ const defineRuntimeSuite = (input: {
             restoredConnection.messages,
             followUpStartIndex,
             (message) =>
-              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
             "AGENT_STATUS IDLE after active terminate restore follow-up",
             180_000,
           );
@@ -1145,7 +1145,7 @@ const defineRuntimeSuite = (input: {
           messages,
           firstStartIndex,
           (message) =>
-            message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            message.type === "AGENT_STATUS" && message.payload.status === "idle",
           "first AGENT_STATUS IDLE for projection flow",
         );
 
@@ -1208,7 +1208,7 @@ const defineRuntimeSuite = (input: {
           messages,
           secondStartIndex,
           (message) =>
-            message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            message.type === "AGENT_STATUS" && message.payload.status === "idle",
           "second AGENT_STATUS IDLE for projection flow",
         );
 
@@ -1406,7 +1406,7 @@ const defineRuntimeSuite = (input: {
           messages,
           startIndex,
           (message) =>
-            message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            message.type === "AGENT_STATUS" && message.payload.status === "idle",
           "AGENT_STATUS IDLE after tool execution",
         );
 
@@ -1488,7 +1488,7 @@ const defineRuntimeSuite = (input: {
             messages,
             startIndex,
             (message) =>
-              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
             "AGENT_STATUS IDLE after auto-executed tool",
           );
           await waitForMessageAfter(
@@ -1611,7 +1611,7 @@ const defineRuntimeSuite = (input: {
             messages,
             startIndex,
             (message) =>
-              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
             "AGENT_STATUS IDLE after approved speak tool",
           );
           await waitForMessageAfter(
@@ -1718,7 +1718,7 @@ const defineRuntimeSuite = (input: {
             messages,
             startIndex,
             (message) =>
-              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
             "AGENT_STATUS IDLE after auto-executed speak tool",
           );
           await waitForMessageAfter(
@@ -1793,7 +1793,7 @@ const defineRuntimeSuite = (input: {
             messages,
             startIndex,
             (message) =>
-              message.type === "AGENT_STATUS" && message.payload.new_status === "RUNNING",
+              message.type === "AGENT_STATUS" && message.payload.status === "running",
             "AGENT_STATUS RUNNING for skill turn",
           );
           await waitForMessageAfter(
@@ -1806,7 +1806,7 @@ const defineRuntimeSuite = (input: {
             messages,
             startIndex,
             (message) =>
-              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+              message.type === "AGENT_STATUS" && message.payload.status === "idle",
             "AGENT_STATUS IDLE for skill turn",
           );
         } finally {
@@ -1898,7 +1898,7 @@ const defineRuntimeSuite = (input: {
               messages,
               startIndex,
               (message) =>
-                message.type === "AGENT_STATUS" && message.payload.new_status === "RUNNING",
+                message.type === "AGENT_STATUS" && message.payload.status === "running",
               "AGENT_STATUS RUNNING for linked shared skill turn",
             );
             await waitForMessageAfter(
@@ -1911,7 +1911,7 @@ const defineRuntimeSuite = (input: {
               messages,
               startIndex,
               (message) =>
-                message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+                message.type === "AGENT_STATUS" && message.payload.status === "idle",
               "AGENT_STATUS IDLE for linked shared skill turn",
             );
           } finally {

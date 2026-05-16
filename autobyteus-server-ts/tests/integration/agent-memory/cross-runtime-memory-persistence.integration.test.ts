@@ -78,7 +78,7 @@ const createRuntimeBackendFactory = (runtimeKind: RuntimeKind) => {
           }),
         isActive: () => true,
         getPlatformAgentRunId: () => `platform-${runId}`,
-        getStatus: () => "IDLE",
+        getStatusSnapshot: () => ({ status: "idle", can_interrupt: false }),
         subscribeToEvents: (listener) => {
           listeners.add(listener);
           return () => listeners.delete(listener);

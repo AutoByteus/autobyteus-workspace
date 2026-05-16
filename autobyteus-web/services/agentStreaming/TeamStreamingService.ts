@@ -262,6 +262,16 @@ export class TeamStreamingService {
   }
 
   private dispatchMessage(message: ServerMessage, teamContext: AgentTeamContext): void {
+    if (message.type === 'TEAM_STATUS') {
+      handleTeamStatus(message.payload, teamContext);
+      return;
+    }
+
+    if (message.type === 'TASK_PLAN_EVENT') {
+      handleTaskPlanEvent(message.payload, teamContext);
+      return;
+    }
+
     if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
       handleTeamCommunicationMessage(message.payload);
       return;
@@ -351,14 +361,6 @@ export class TeamStreamingService {
 
       case 'TODO_LIST_UPDATE':
         handleTodoListUpdate(message.payload, memberContext);
-        break;
-
-      case 'TEAM_STATUS':
-        handleTeamStatus(message.payload, teamContext);
-        break;
-
-      case 'TASK_PLAN_EVENT':
-        handleTaskPlanEvent(message.payload, teamContext);
         break;
 
       case 'ERROR':

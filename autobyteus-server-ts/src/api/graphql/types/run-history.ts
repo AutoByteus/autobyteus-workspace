@@ -27,6 +27,9 @@ class RunHistoryItemObject {
   lastActivityAt!: string;
 
   @Field(() => String)
+  status!: string;
+
+  @Field(() => String)
   lastKnownStatus!: string;
 
   @Field(() => Boolean)
@@ -57,6 +60,9 @@ class WorkspaceHistoryTeamRunMemberObject {
   memberRunId!: string;
 
   @Field(() => String)
+  status!: string;
+
+  @Field(() => String)
   runtimeKind!: string;
 
   @Field(() => String, { nullable: true })
@@ -85,6 +91,9 @@ class WorkspaceHistoryTeamRunItemObject {
 
   @Field(() => String)
   lastActivityAt!: string;
+
+  @Field(() => String)
+  status!: string;
 
   @Field(() => String)
   lastKnownStatus!: string;

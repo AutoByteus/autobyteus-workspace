@@ -94,7 +94,7 @@ class FakeAgentManager {
   private readonly activeRun: {
     runId: string;
     runtimeKind: string;
-    getStatus: () => string;
+    getStatusSnapshot: () => { status: "running"; can_interrupt: boolean };
     isActive: () => boolean;
     subscribeToEvents: (listener: (event: unknown) => void) => () => void;
     postUserMessage: (message: AgentInputUserMessage) => Promise<{ accepted: true; runtimeReference: null }>;
@@ -112,7 +112,7 @@ class FakeAgentManager {
     this.activeRun = {
       runId: this.agent.agentRunId,
       runtimeKind: "autobyteus",
-      getStatus: () => "ACTIVE",
+      getStatusSnapshot: () => ({ status: "running", can_interrupt: true }),
       isActive: () => true,
       subscribeToEvents: (listener: (event: unknown) => void) => {
         void (async () => {

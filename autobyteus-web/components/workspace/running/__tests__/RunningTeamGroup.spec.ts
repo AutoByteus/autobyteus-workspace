@@ -12,7 +12,7 @@ describe('RunningTeamGroup', () => {
 
   const runs = [
     { teamRunId: 'team-1', config: { teamDefinitionName: 'Team A' }, currentStatus: AgentTeamStatus.Idle },
-    { teamRunId: 'team-2', config: { teamDefinitionName: 'Team A' }, currentStatus: AgentTeamStatus.Processing }
+    { teamRunId: 'team-2', config: { teamDefinitionName: 'Team A' }, currentStatus: AgentTeamStatus.Running }
   ] as any;
 
   it('renders header and runs', async () => {

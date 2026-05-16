@@ -18,6 +18,7 @@ import { findOrCreateAIMessage, findSegmentById } from './segmentHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
+import { applyLiveAgentStatusEvent } from '~/services/runStatus/agentRuntimeStatusState';
 import {
   applyExecutionFailedState,
   applyExecutionInterruptedState,
@@ -33,25 +34,14 @@ export function handleAgentStatus(
   payload: AgentStatusPayload,
   context: AgentContext
 ): void {
-  const normalizedStatus = String(payload.new_status || AgentStatus.Uninitialized).toLowerCase();
-  context.state.currentStatus = normalizedStatus as AgentStatus;
-  
-  const shouldStopSending = [
-    AgentStatus.Idle,
-    AgentStatus.Error,
-    AgentStatus.ShutdownComplete,
-  ].includes(normalizedStatus as AgentStatus);
+  applyLiveAgentStatusEvent(context, payload);
 
-  // If status indicates completion, mark the current AI message as complete
-  if (normalizedStatus === AgentStatus.Idle) {
+  // If status indicates completion, mark the current AI message as complete.
+  if (payload.status === AgentStatus.Idle) {
     const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
     if (lastMessage?.type === 'ai') {
       lastMessage.isComplete = true;
     }
-  }
-
-  if (shouldStopSending) {
-    context.isSending = false;
   }
 }
 
@@ -79,7 +69,6 @@ export function handleTurnInterrupted(
 ): void {
   terminalizeOpenToolSegmentsForInterruptedTurn(payload, context);
   markConversationComplete(context);
-  context.isSending = false;
 }
 
 
@@ -147,7 +136,6 @@ export function handleError(
 
   aiMessage.segments.push(errorSegment);
   aiMessage.isComplete = true;
-  context.isSending = false;
 }
 
 // ============================================================================
@@ -218,7 +206,6 @@ function markConversationComplete(context: AgentContext): void {
   if (lastMessage?.type === 'ai') {
     lastMessage.isComplete = true;
   }
-  context.isSending = false;
 }
 
 function isToolLifecycleSegment(segment: unknown): segment is ToolLifecycleSegment {

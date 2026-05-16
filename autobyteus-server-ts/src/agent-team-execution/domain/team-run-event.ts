@@ -1,5 +1,6 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 
 export enum TeamRunEventSourceType {
   AGENT = "AGENT",
@@ -8,8 +9,7 @@ export enum TeamRunEventSourceType {
 }
 
 export type TeamRunStatusUpdateData = {
-  new_status: string;
-  old_status?: string | null;
+  status: AgentApiStatus;
   error_message?: string | null;
 };
 

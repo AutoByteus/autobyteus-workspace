@@ -20,10 +20,11 @@ import type {
   HistoricalTeamHydrationState,
   TeamMemberProjectionLoadState,
 } from '~/types/agent/AgentTeamContext';
-import { normalizeAgentRuntimeStatus, normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
+import { normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 import { hydrateActivitiesFromProjection } from './runProjectionActivityHydration';
 import { fetchAndHydrateTeamCommunicationForTeam } from './teamCommunicationHydrationService';
+import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRuntimeStatusState';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -88,6 +89,7 @@ const resolveFocusKey = (params: {
 const applyMemberStatuses = (
   members: Map<string, any>,
   snapshots: TeamMemberLiveSnapshot[],
+  options: { preserveLiveInterrupt?: boolean } = {},
 ): void => {
   const statusByKey = new Map<string, TeamMemberLiveSnapshot>();
   const statusByRunId = new Map<string, TeamMemberLiveSnapshot>();
@@ -109,7 +111,9 @@ const applyMemberStatuses = (
     const byRunId = statusByRunId.get(memberContext.state.runId);
     const matched = byRouteKey || byRunId;
     if (matched) {
-      memberContext.state.currentStatus = normalizeAgentRuntimeStatus(matched.currentStatus);
+      applyMemberOrHistoryStatusSnapshot(memberContext, matched.currentStatus, {
+        preserveLiveInterrupt: options.preserveLiveInterrupt === true,
+      });
     }
   });
 };
@@ -359,9 +363,10 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
 export const applyLiveTeamStatusSnapshot = (
   context: AgentTeamContext,
   snapshot: TeamLiveStatusSnapshot,
+  options: { preserveLiveInterrupt?: boolean } = {},
 ): void => {
   context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
-  applyMemberStatuses(context.members, snapshot.memberStatuses || []);
+  applyMemberStatuses(context.members, snapshot.memberStatuses || [], options);
 };
 
 export const loadTeamRunContextHydrationPayload = async (

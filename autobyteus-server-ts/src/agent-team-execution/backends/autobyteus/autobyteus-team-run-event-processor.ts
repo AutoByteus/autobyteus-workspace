@@ -15,8 +15,10 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../agent-execution/domain/agent-run-event.js";
+import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
 import { AutoByteusStreamEventConverter } from "../../../agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
+import type { TeamStatusPayload } from "../../domain/team-status-payload.js";
 import type { TeamMemberRunConfig, TeamRunConfig } from "../../domain/team-run-config.js";
 import {
   TeamRunEventSourceType,
@@ -41,6 +43,8 @@ type AutoByteusTeamRunEventProcessorOptions = {
   memberRunIdsByName?: ReadonlyMap<string, string>;
   runtimeContext?: AutoByteusTeamRunContext | null;
   teamRunConfig?: TeamRunConfig | null;
+  getMemberStatusSnapshot?: (memberRunId: string, memberName: string | null) => AgentStatusPayload;
+  getTeamStatusSnapshot?: () => TeamStatusPayload;
 };
 
 const normalizeReferenceFilesPayload = (payload: Record<string, unknown>): string[] => {
@@ -85,10 +89,16 @@ export class AutoByteusTeamRunEventProcessor {
       nativeEvent.event_source_type === "TEAM" &&
       nativeEvent.data instanceof AgentTeamStatusUpdateData
     ) {
+      const nativePayload = asRecord(nativeEvent.data);
       return [{
         eventSourceType: TeamRunEventSourceType.TEAM,
         teamRunId: this.teamRunId,
-        data: asRecord(nativeEvent.data) as TeamRunStatusUpdateData,
+        data: {
+          status: this.options.getTeamStatusSnapshot?.().status ?? "offline",
+          ...(typeof nativePayload.error_message === "string"
+            ? { error_message: nativePayload.error_message }
+            : {}),
+        } satisfies TeamRunStatusUpdateData,
         subTeamNodeName,
       }];
     }
@@ -152,7 +162,18 @@ export class AutoByteusTeamRunEventProcessor {
     if (runtimeMemberContext && nativeAgentId) {
       runtimeMemberContext.nativeAgentId = nativeAgentId;
     }
-    const converter = new AutoByteusStreamEventConverter(resolvedMemberRunId);
+    const converter = new AutoByteusStreamEventConverter(
+      resolvedMemberRunId,
+      () => this.options.getMemberStatusSnapshot?.(
+        resolvedMemberRunId,
+        agentPayload.agent_name,
+      ) ?? {
+        status: "offline",
+        can_interrupt: false,
+        agent_id: resolvedMemberRunId,
+        agent_name: agentPayload.agent_name,
+      },
+    );
     const convertedEvent = converter.convert(agentPayload.agent_event);
     if (!convertedEvent) {
       return [];

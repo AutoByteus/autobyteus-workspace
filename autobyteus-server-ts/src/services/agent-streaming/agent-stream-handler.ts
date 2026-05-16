@@ -106,16 +106,6 @@ export class AgentStreamHandler {
     const connectedMsg = createConnectedMessage(agentRunId, sessionId);
     this.broadcaster.registerConnection(sessionId, agentRunId, connection);
     this.sessionConnections.set(sessionId, connection);
-    connection.send(connectedMsg.toJson());
-    const currentStatus = activeRun.getStatus();
-    if (currentStatus) {
-      connection.send(
-        new ServerMessage(ServerMessageType.AGENT_STATUS, {
-          new_status: currentStatus.trim().toUpperCase(),
-          old_status: null,
-        }).toJson(),
-      );
-    }
 
     if (!this.bindSessionToRun(sessionId, activeRun, connection)) {
       this.sessionConnections.delete(sessionId);
@@ -129,6 +119,14 @@ export class AgentStreamHandler {
       connection.close(1011);
       return null;
     }
+
+    connection.send(connectedMsg.toJson());
+    connection.send(
+      new ServerMessage(
+        ServerMessageType.AGENT_STATUS,
+        activeRun.getStatusSnapshot(),
+      ).toJson(),
+    );
 
     logger.info(`Agent WebSocket connected: session=${sessionId}, run=${agentRunId}`);
     return sessionId;

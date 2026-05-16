@@ -295,7 +295,7 @@ describe('agentRunStore', () => {
         mockAgentContext.isSubscribed = true;
         mockAgentContext.state.runId = 'run-1';
         store.connectToAgentStream('run-1');
-        mockAgentContext.state.currentStatus = 'processing_user_input';
+        mockAgentContext.state.currentStatus = 'running';
         mutateMock.mockResolvedValueOnce({
             data: {
                 terminateAgentRun: {

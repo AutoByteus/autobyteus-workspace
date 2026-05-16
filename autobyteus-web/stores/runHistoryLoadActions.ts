@@ -12,6 +12,7 @@ import type {
   ListWorkspaceRunHistoryQueryData,
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
+  TeamRunHistoryItem,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import {
@@ -27,15 +28,17 @@ import {
 } from '~/services/runOpen/agentRunOpenCoordinator';
 import { hydrateLiveRunContext } from '~/services/runHydration/runContextHydrationService';
 import {
+  applyLiveTeamStatusSnapshot,
   hydrateLiveTeamRunContext,
   hydrateTeamMemberActivitiesFromProjection,
+  type TeamMemberLiveSnapshot,
 } from '~/services/runHydration/teamRunContextHydrationService';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import {
-  normalizeAgentRuntimeStatus,
-  normalizeTeamRuntimeStatus,
-} from '~/services/runHydration/runtimeStatusNormalization';
+  applyActiveRuntimePlaceholder,
+  applyOfflineOrTerminalCleanup,
+} from '~/services/runStatus/agentRuntimeStatusState';
 
 interface RunHistoryFetchStoreLike {
   loading: boolean;
@@ -112,21 +115,34 @@ const listActiveAgentRunIds = (
     ),
   );
 
-const listActiveTeamRunIds = (
+const listActiveTeamRuns = (
   workspaceGroups: RunHistoryWorkspaceGroup[],
-): Set<string> =>
-  new Set(
-    flattenWorkspaceTeamRuns(workspaceGroups)
-      .filter((teamRun) => teamRun.isActive)
-      .map((teamRun) => teamRun.teamRunId.trim())
-      .filter(Boolean),
-  );
+): TeamRunHistoryItem[] =>
+  flattenWorkspaceTeamRuns(workspaceGroups).filter((teamRun) => teamRun.isActive);
+
+const buildMemberStatusSnapshotsFromHistory = (
+  teamRun: TeamRunHistoryItem,
+): TeamMemberLiveSnapshot[] =>
+  teamRun.members.map((member) => ({
+    memberRouteKey: member.memberRouteKey,
+    memberName: member.memberName,
+    memberRunId: member.memberRunId,
+    currentStatus: member.status,
+  }));
 
 const reconcileDiscoveredActiveRuns = async (
   store: RunHistoryFetchStoreLike,
 ): Promise<void> => {
   const activeAgentRunIds = listActiveAgentRunIds(store.workspaceGroups);
-  const activeTeamRunIds = listActiveTeamRunIds(store.workspaceGroups);
+  const activeTeamRuns = listActiveTeamRuns(store.workspaceGroups);
+  const activeTeamRunById = new Map<string, TeamRunHistoryItem>();
+  activeTeamRuns.forEach((teamRun) => {
+    const teamRunId = teamRun.teamRunId.trim();
+    if (teamRunId) {
+      activeTeamRunById.set(teamRunId, teamRun);
+    }
+  });
+  const activeTeamRunIds = new Set(activeTeamRunById.keys());
   const agentContextsStore = useAgentContextsStore();
   const agentRunStore = useAgentRunStore();
   const teamContextsStore = useAgentTeamContextsStore();
@@ -141,7 +157,9 @@ const reconcileDiscoveredActiveRuns = async (
       agentRunStore.disconnectAgentStream(runId);
     }
     if (context.state.currentStatus !== AgentStatus.Error) {
-      context.state.currentStatus = AgentStatus.ShutdownComplete;
+      applyOfflineOrTerminalCleanup(context);
+    } else {
+      applyOfflineOrTerminalCleanup(context, AgentStatus.Error);
     }
   }
 
@@ -149,7 +167,7 @@ const reconcileDiscoveredActiveRuns = async (
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
       existingContext.config.isLocked = true;
-      existingContext.state.currentStatus = normalizeAgentRuntimeStatus('ACTIVE');
+      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true });
       if (!existingContext.isSubscribed) {
         agentRunStore.connectToAgentStream(runId);
       }
@@ -178,20 +196,28 @@ const reconcileDiscoveredActiveRuns = async (
       agentTeamRunStore.disconnectTeamStream(teamContext.teamRunId);
     }
     if (teamContext.currentStatus !== AgentTeamStatus.Error) {
-      teamContext.currentStatus = AgentTeamStatus.ShutdownComplete;
+      teamContext.currentStatus = AgentTeamStatus.Offline;
     }
     teamContext.members.forEach((memberContext) => {
       if (memberContext.state.currentStatus !== AgentStatus.Error) {
-        memberContext.state.currentStatus = AgentStatus.ShutdownComplete;
+        applyOfflineOrTerminalCleanup(memberContext);
+      } else {
+        applyOfflineOrTerminalCleanup(memberContext, AgentStatus.Error);
       }
     });
   }
 
-  for (const teamRunId of activeTeamRunIds) {
+  for (const [teamRunId, activeTeamRun] of activeTeamRunById.entries()) {
+    const memberStatuses = buildMemberStatusSnapshotsFromHistory(activeTeamRun);
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
       existingTeamContext.config.isLocked = true;
-      existingTeamContext.currentStatus = normalizeTeamRuntimeStatus('ACTIVE');
+      applyLiveTeamStatusSnapshot(existingTeamContext, {
+        currentStatus: activeTeamRun.status,
+        memberStatuses,
+      }, {
+        preserveLiveInterrupt: existingTeamContext.isSubscribed,
+      });
       existingTeamContext.members.forEach((memberContext) => {
         memberContext.config.isLocked = true;
       });
@@ -206,8 +232,8 @@ const reconcileDiscoveredActiveRuns = async (
         teamRunId,
         memberRouteKey: null,
         ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
-        currentStatus: 'ACTIVE',
-        memberStatuses: [],
+        currentStatus: activeTeamRun.status,
+        memberStatuses,
       });
       teamContextsStore.addTeamContext(result.hydratedContext);
       hydrateTeamMemberActivitiesFromProjection({

@@ -12,6 +12,7 @@ export const ListWorkspaceRunHistory = gql`
           runId
           summary
           lastActivityAt
+          status
           lastKnownStatus
           isActive
         }
@@ -27,6 +28,7 @@ export const ListWorkspaceRunHistory = gql`
           workspaceRootPath
           summary
           lastActivityAt
+          status
           lastKnownStatus
           deleteLifecycle
           isActive
@@ -34,6 +36,7 @@ export const ListWorkspaceRunHistory = gql`
             memberRouteKey
             memberName
             memberRunId
+            status
             runtimeKind
             workspaceRootPath
           }

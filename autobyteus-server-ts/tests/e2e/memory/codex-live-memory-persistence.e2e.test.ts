@@ -91,7 +91,7 @@ const waitForEvent = async (
       statusHint: event.statusHint,
       segmentType: event.payload.segment_type ?? null,
       sourceId: event.payload.id ?? event.payload.turnId ?? null,
-      newStatus: event.payload.new_status ?? null,
+      status: event.payload.status ?? null,
     }));
     throw new Error(
       `${String(error)}\nObserved Codex events:\n${JSON.stringify(eventSummary, null, 2)}`,
@@ -291,7 +291,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         events,
         (event) =>
           event.eventType === AgentRunEventType.AGENT_STATUS &&
-          event.payload.new_status === "IDLE",
+          event.payload.status === "idle",
       );
       await waitForEvent(
         events,

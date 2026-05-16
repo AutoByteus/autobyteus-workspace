@@ -5,6 +5,7 @@ import type { ClaudeSession } from "../session/claude-session.js";
 import { ClaudeSessionEventConverter } from "../events/claude-session-event-converter.js";
 import type { ClaudeRunContext } from "./claude-agent-run-context.js";
 import { dispatchProcessedAgentRunEvents } from "../../../events/dispatch-processed-agent-run-events.js";
+import { projectClaudeAgentStatus } from "../events/claude-status-projector.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -16,12 +17,14 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
   private readonly listeners = new Set<AgentRunEventListener>();
   private readonly eventConverter: ClaudeSessionEventConverter;
   private unsubscribeFromSession: (() => void) | null = null;
-  private lastStatus: string | null = null;
 
   constructor(context: ClaudeRunContext, session: ClaudeSession) {
     this.context = context;
     this.session = session;
-    this.eventConverter = new ClaudeSessionEventConverter(this.runId);
+    this.eventConverter = new ClaudeSessionEventConverter(
+      this.runId,
+      () => this.getStatusSnapshot(),
+    );
   }
 
   get runId(): string {
@@ -60,8 +63,11 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
     return this.session.sessionId ?? null;
   }
 
-  getStatus(): string | null {
-    return this.lastStatus;
+  getStatusSnapshot() {
+    return projectClaudeAgentStatus({
+      ...this.session.getStatusSnapshotSource(),
+      isActive: this.isActive(),
+    });
   }
 
   async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
@@ -141,10 +147,6 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
         runContext: this.context,
         listeners: this.listeners,
         events: convertedEvents,
-      }).then(() => {
-        for (const convertedEvent of convertedEvents) {
-          this.lastStatus = convertedEvent.statusHint ?? this.lastStatus;
-        }
       }).catch((error: unknown) => {
         logger.error(
           `Failed to process Claude runtime event for run '${this.runId}': ${String(error)}`,

@@ -1,4 +1,5 @@
 import { computed, ref, watch } from 'vue';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
 import type { RunHistoryWorkspaceGroup, TeamRunHistoryDefinitionGroup, TeamTreeNode } from '~/stores/runHistoryTypes';
@@ -118,23 +119,35 @@ export const useWorkspaceHistoryTreeState = (params: {
 
   const teamStatusClass = (status: AgentTeamStatus): string => {
     switch (status) {
-      case AgentTeamStatus.Processing:
+      case AgentTeamStatus.Running:
         return 'bg-blue-500 animate-pulse';
       case AgentTeamStatus.Idle:
         return 'bg-green-500';
-      case AgentTeamStatus.Bootstrapping:
-        return 'bg-purple-500 animate-pulse';
       case AgentTeamStatus.Error:
         return 'bg-red-500';
-      case AgentTeamStatus.ShutdownComplete:
+      case AgentTeamStatus.Offline:
         return 'bg-gray-400';
       default:
         return 'bg-gray-300';
     }
   };
 
+  const runStatusClass = (status: AgentStatus): string => {
+    switch (status) {
+      case AgentStatus.Running:
+        return 'bg-blue-500 animate-pulse';
+      case AgentStatus.Idle:
+        return 'bg-green-500';
+      case AgentStatus.Error:
+        return 'bg-red-500';
+      case AgentStatus.Offline:
+      default:
+        return 'bg-gray-400';
+    }
+  };
+
   const canTerminateTeam = (status: AgentTeamStatus): boolean =>
-    status !== AgentTeamStatus.ShutdownComplete && status !== AgentTeamStatus.Uninitialized;
+    status !== AgentTeamStatus.Offline;
 
   return {
     activeStatusClass,
@@ -150,6 +163,7 @@ export const useWorkspaceHistoryTreeState = (params: {
     isTeamExpanded,
     setTeamExpanded,
     toggleTeam,
+    runStatusClass,
     teamStatusClass,
     canTerminateTeam,
   };

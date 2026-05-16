@@ -26,10 +26,30 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>) => {
     return groups;
   }, []);
 
+  const normalizedAgentDefinitions = (agentDefinitions ?? agents ?? []).map((agent: any) => ({
+    ...agent,
+    runs: (agent.runs ?? []).map((run: any) => ({
+      ...run,
+      status: run.status ?? (run.isActive ? 'running' : run.lastKnownStatus === 'ERROR' ? 'error' : 'offline'),
+    })),
+  }));
+
+  const normalizedTeamDefinitions = groupedTeamDefinitions.map((definition: any) => ({
+    ...definition,
+    runs: (definition.runs ?? []).map((teamRun: any) => ({
+      ...teamRun,
+      status: teamRun.status ?? (teamRun.isActive ? 'running' : teamRun.lastKnownStatus === 'ERROR' ? 'error' : 'offline'),
+      members: (teamRun.members ?? []).map((member: any) => ({
+        ...member,
+        status: member.status ?? 'offline',
+      })),
+    })),
+  }));
+
   return {
     ...rest,
-    agentDefinitions: agentDefinitions ?? agents ?? [],
-    teamDefinitions: groupedTeamDefinitions,
+    agentDefinitions: normalizedAgentDefinitions,
+    teamDefinitions: normalizedTeamDefinitions,
   };
 };
 
@@ -103,7 +123,7 @@ const {
           existing.config = { ...options.config };
           existing.state.runId = options.runId;
           existing.state.conversation = options.conversation;
-          existing.state.currentStatus = options.status ?? 'idle';
+          existing.state.currentStatus = options.status ?? 'offline';
           return;
         }
         runs.set(options.runId, {
@@ -111,7 +131,7 @@ const {
           state: {
             agentRunId: options.runId,
             conversation: options.conversation,
-            currentStatus: options.status ?? 'idle',
+            currentStatus: options.status ?? 'offline',
           },
           isSubscribed: false,
         });
@@ -201,6 +221,7 @@ vi.mock('~/graphql/queries/runHistoryQueries', () => ({
   GetAgentRunResumeConfig: 'GetAgentRunResumeConfig',
   GetTeamRunResumeConfig: 'GetTeamRunResumeConfig',
   GetTeamMemberRunProjection: 'GetTeamMemberRunProjection',
+  GetTeamCommunicationMessages: 'GetTeamCommunicationMessages',
 }));
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
@@ -402,6 +423,9 @@ describe('runHistoryStore', () => {
           errors: [],
         };
       }
+      if (query === 'GetTeamCommunicationMessages') {
+        return { data: { getTeamCommunicationMessages: [] } };
+      }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -478,10 +502,186 @@ describe('runHistoryStore', () => {
       teamRunId: 'team-live-1',
       memberRouteKey: null,
       ensureWorkspaceByRootPath: expect.any(Function),
-      currentStatus: 'ACTIVE',
-      memberStatuses: [],
+      currentStatus: 'running',
+      memberStatuses: [{
+        memberRouteKey: 'super_agent',
+        memberName: 'Super Agent',
+        memberRunId: 'member-run-live-1',
+        currentStatus: 'offline',
+      }],
     });
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-live-1');
+  });
+
+  it('preserves backend member-scoped statuses when refreshing an active running team', async () => {
+    queryMock.mockResolvedValue({
+      data: {
+        listWorkspaceRunHistory: [
+          buildWorkspaceHistoryGroup({
+            workspaceRootPath: '/ws/a',
+            workspaceName: 'a',
+            agents: [],
+            teamRuns: [
+              {
+                teamRunId: 'team-live-1',
+                teamDefinitionId: 'team-def-1',
+                teamDefinitionName: 'Team Alpha',
+                coordinatorMemberRouteKey: 'solution_designer',
+                workspaceRootPath: '/ws/a',
+                summary: 'Live team task',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                lastKnownStatus: 'ACTIVE',
+                status: 'running',
+                deleteLifecycle: 'READY',
+                isActive: true,
+                members: [
+                  {
+                    memberRouteKey: 'solution_designer',
+                    memberName: 'Solution Designer',
+                    memberRunId: 'member-run-solution',
+                    workspaceRootPath: '/ws/a',
+                    status: 'running',
+                  },
+                  {
+                    memberRouteKey: 'implementation_engineer',
+                    memberName: 'Implementation Engineer',
+                    memberRunId: 'member-run-implementation',
+                    workspaceRootPath: '/ws/a',
+                    status: 'offline',
+                  },
+                  {
+                    memberRouteKey: 'code_reviewer',
+                    memberName: 'Code Reviewer',
+                    memberRunId: 'member-run-review',
+                    workspaceRootPath: '/ws/a',
+                    status: 'offline',
+                  },
+                ],
+              },
+            ],
+          }),
+        ],
+      },
+      errors: [],
+    });
+    teamContextsStoreMock.teams.set('team-live-1', {
+      teamRunId: 'team-live-1',
+      config: {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceId: 'ws-1',
+        isLocked: false,
+      },
+      members: new Map([
+        ['solution_designer', {
+          config: { agentDefinitionName: 'Solution Designer', workspaceId: 'ws-1', isLocked: false },
+          state: {
+            runId: 'member-run-solution',
+            conversation: { id: 'member-run-solution', messages: [] },
+            currentStatus: 'offline',
+            canInterrupt: true,
+          },
+        }],
+        ['implementation_engineer', {
+          config: { agentDefinitionName: 'Implementation Engineer', workspaceId: 'ws-1', isLocked: false },
+          state: {
+            runId: 'member-run-implementation',
+            conversation: { id: 'member-run-implementation', messages: [] },
+            currentStatus: 'idle',
+            canInterrupt: false,
+          },
+        }],
+        ['code_reviewer', {
+          config: { agentDefinitionName: 'Code Reviewer', workspaceId: 'ws-1', isLocked: false },
+          state: {
+            runId: 'member-run-review',
+            conversation: { id: 'member-run-review', messages: [] },
+            currentStatus: 'running',
+            canInterrupt: false,
+          },
+        }],
+      ]),
+      coordinatorMemberRouteKey: 'solution_designer',
+      historicalHydration: null,
+      focusedMemberName: 'solution_designer',
+      currentStatus: 'offline',
+      isSubscribed: true,
+      taskPlan: null,
+      taskStatuses: null,
+    });
+
+    const store = useRunHistoryStore();
+    await store.fetchTree();
+
+    const context = teamContextsStoreMock.teams.get('team-live-1');
+    expect(context.currentStatus).toBe('running');
+    expect(context.members.get('solution_designer')?.state.currentStatus).toBe('running');
+    expect(context.members.get('implementation_engineer')?.state.currentStatus).toBe('offline');
+    expect(context.members.get('code_reviewer')?.state.currentStatus).toBe('offline');
+    expect(context.members.get('solution_designer')?.state.canInterrupt).toBe(true);
+    expect(context.members.get('implementation_engineer')?.state.canInterrupt).toBe(false);
+    expect(context.members.get('code_reviewer')?.state.canInterrupt).toBe(false);
+    expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalledWith('team-live-1');
+
+    const teamNode = store.getTeamNodes().find((node) => node.teamRunId === 'team-live-1');
+    expect(teamNode?.currentStatus).toBe('running');
+    expect(Object.fromEntries(
+      (teamNode?.members || []).map((member) => [member.memberRouteKey, member.currentStatus]),
+    )).toEqual({
+      solution_designer: 'running',
+      implementation_engineer: 'offline',
+      code_reviewer: 'offline',
+    });
+  });
+
+  it('preserves backend-granted single-agent interrupt permission during active history refresh', async () => {
+    queryMock.mockResolvedValue({
+      data: {
+        listWorkspaceRunHistory: [
+          buildWorkspaceHistoryGroup({
+            workspaceRootPath: '/ws/a',
+            workspaceName: 'a',
+            agents: [
+              {
+                agentDefinitionId: 'agent-def-1',
+                agentName: 'SuperAgent',
+                runs: [
+                  {
+                    runId: 'run-live-1',
+                    summary: 'Live task',
+                    lastActivityAt: '2026-01-01T00:00:00.000Z',
+                    lastKnownStatus: 'ACTIVE',
+                    status: 'running',
+                    isActive: true,
+                  },
+                ],
+              },
+            ],
+            teamRuns: [],
+          }),
+        ],
+      },
+      errors: [],
+    });
+    agentContextsStoreMock.runs.set('run-live-1', {
+      config: { isLocked: false },
+      state: {
+        runId: 'run-live-1',
+        conversation: { id: 'run-live-1', messages: [] },
+        currentStatus: 'running',
+        canInterrupt: true,
+      },
+      isSubscribed: true,
+    });
+
+    const store = useRunHistoryStore();
+    await store.fetchTree();
+
+    const context = agentContextsStoreMock.runs.get('run-live-1');
+    expect(context.config.isLocked).toBe(true);
+    expect(context.state.currentStatus).toBe('running');
+    expect(context.state.canInterrupt).toBe(true);
+    expect(agentRunStoreMock.connectToAgentStream).not.toHaveBeenCalledWith('run-live-1');
   });
 
   it('returns backend readiness error on fetchTree when backend is not ready', async () => {
@@ -563,6 +763,9 @@ describe('runHistoryStore', () => {
           errors: [],
         };
       }
+      if (query === 'GetTeamCommunicationMessages') {
+        return { data: { getTeamCommunicationMessages: [] } };
+      }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -605,7 +808,7 @@ describe('runHistoryStore', () => {
     expect(store.isRuntimeLockedForRun('run-1')).toBe(true);
     expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
       expect.objectContaining({
-        status: 'uninitialized',
+        status: 'running',
         config: expect.objectContaining({
           runtimeKind: 'codex_app_server',
         }),
@@ -675,6 +878,9 @@ describe('runHistoryStore', () => {
           errors: [],
         };
       }
+      if (query === 'GetTeamCommunicationMessages') {
+        return { data: { getTeamCommunicationMessages: [] } };
+      }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -697,6 +903,7 @@ describe('runHistoryStore', () => {
                 runId: 'run-2',
                 summary: 'Historical run',
                 lastActivityAt: '2026-01-01T00:00:00.000Z',
+                status: 'offline',
                 lastKnownStatus: 'IDLE',
                 isActive: false,
               },
@@ -712,7 +919,7 @@ describe('runHistoryStore', () => {
     expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
       expect.objectContaining({
         runId: 'run-2',
-        status: 'shutdown_complete',
+        status: 'offline',
       }),
     );
     expect(store.isRuntimeLockedForRun('run-2')).toBe(true);
@@ -783,6 +990,9 @@ describe('runHistoryStore', () => {
           errors: [],
         };
       }
+      if (query === 'GetTeamCommunicationMessages') {
+        return { data: { getTeamCommunicationMessages: [] } };
+      }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -798,7 +1008,7 @@ describe('runHistoryStore', () => {
     expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
       expect.objectContaining({
         runId: 'run-stale-1',
-        status: 'uninitialized',
+        status: 'running',
         config: expect.objectContaining({
           isLocked: true,
         }),
@@ -866,6 +1076,9 @@ describe('runHistoryStore', () => {
           },
           errors: [],
         };
+      }
+      if (query === 'GetTeamCommunicationMessages') {
+        return { data: { getTeamCommunicationMessages: [] } };
       }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
@@ -1259,7 +1472,7 @@ describe('runHistoryStore', () => {
     expect(runB?.lastActivityAt).toBe('2026-01-03T00:00:00.000Z');
   });
 
-  it('treats idle draft contexts as active in tree projection', () => {
+  it('projects offline draft contexts as inactive in tree projection', () => {
     const store = useRunHistoryStore();
     workspaceStoreMock.allWorkspaces = [
       { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
@@ -1275,7 +1488,7 @@ describe('runHistoryStore', () => {
         agentDefinitionName: 'SuperAgent',
       },
       state: {
-        currentStatus: 'idle',
+        currentStatus: 'offline',
         conversation: {
           id: 'temp-1',
           messages: [],
@@ -1289,8 +1502,9 @@ describe('runHistoryStore', () => {
     const draft = nodes[0]?.agents[0]?.runs.find((run) => run.runId === 'temp-1');
 
     expect(draft?.source).toBe('draft');
-    expect(draft?.isActive).toBe(true);
-    expect(draft?.lastKnownStatus).toBe('ACTIVE');
+    expect(draft?.isActive).toBe(false);
+    expect(draft?.currentStatus).toBe('offline');
+    expect(draft?.lastKnownStatus).toBe('IDLE');
   });
 
   it('selectTreeRun delegates to openRun for history rows', async () => {
@@ -1301,6 +1515,7 @@ describe('runHistoryStore', () => {
       runId: 'run-1',
       summary: 'Persisted run',
       lastActivityAt: '2026-01-01T00:00:00.000Z',
+      currentStatus: 'offline' as any,
       lastKnownStatus: 'IDLE',
       isActive: false,
       source: 'history',
@@ -1321,6 +1536,7 @@ describe('runHistoryStore', () => {
       runId: 'temp-1',
       summary: 'New - SuperAgent',
       lastActivityAt: '2026-01-01T00:00:00.000Z',
+      currentStatus: 'offline' as any,
       lastKnownStatus: 'IDLE',
       isActive: false,
       source: 'draft',
@@ -1393,6 +1609,63 @@ describe('runHistoryStore', () => {
     );
   });
 
+  it('updates active team aggregate metadata without fanning running status out to members', () => {
+    const store = useRunHistoryStore();
+    store.workspaceGroups = [buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/ws/a',
+      workspaceName: 'a',
+      agents: [],
+      teamRuns: [
+        {
+          teamRunId: 'team-1',
+          teamDefinitionId: 'team-def-1',
+          teamDefinitionName: 'Team Alpha',
+          coordinatorMemberRouteKey: 'solution_designer',
+          workspaceRootPath: '/ws/a',
+          summary: 'Persisted team task',
+          lastActivityAt: '2026-01-01T00:00:00.000Z',
+          lastKnownStatus: 'IDLE',
+          status: 'offline',
+          deleteLifecycle: 'READY',
+          isActive: false,
+          members: [
+            {
+              memberRouteKey: 'solution_designer',
+              memberName: 'Solution Designer',
+              memberRunId: 'member-run-1',
+              workspaceRootPath: '/ws/a',
+              status: 'running',
+            },
+            {
+              memberRouteKey: 'implementation_engineer',
+              memberName: 'Implementation Engineer',
+              memberRunId: 'member-run-2',
+              workspaceRootPath: '/ws/a',
+              status: 'offline',
+            },
+          ],
+        },
+      ],
+    })];
+
+    store.markTeamAsActive('team-1');
+    let team = flattenWorkspaceGroupTeamRuns(store.workspaceGroups[0])[0];
+    expect(team.status).toBe('running');
+    expect(team.isActive).toBe(true);
+    expect(team.members.map((member: any) => [member.memberRouteKey, member.status])).toEqual([
+      ['solution_designer', 'running'],
+      ['implementation_engineer', 'offline'],
+    ]);
+
+    store.reconcileActiveTeamRunIds(['team-1']);
+    team = flattenWorkspaceGroupTeamRuns(store.workspaceGroups[0])[0];
+    expect(team.status).toBe('running');
+    expect(team.members.map((member: any) => [member.memberRouteKey, member.status])).toEqual([
+      ['solution_designer', 'running'],
+      ['implementation_engineer', 'offline'],
+    ]);
+  });
+
   it('keeps the persisted team summary when a stored team run is also hydrated locally', () => {
     const store = useRunHistoryStore();
     workspaceStoreMock.allWorkspaces = [
@@ -1446,7 +1719,7 @@ describe('runHistoryStore', () => {
           config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
           state: {
             runId: 'member-run-1',
-            currentStatus: 'shutdown_complete',
+            currentStatus: 'idle',
             conversation: {
               id: 'member-run-1',
               messages: [
@@ -1459,7 +1732,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'super_agent',
-      currentStatus: 'shutdown_complete',
+      currentStatus: 'idle',
       isSubscribed: false,
       taskPlan: null,
       taskStatuses: null,
@@ -1616,7 +1889,7 @@ describe('runHistoryStore', () => {
           config: { workspaceId: 'ws-1', agentDefinitionName: 'Student' },
           state: {
             runId: 'member-student-1',
-            currentStatus: 'shutdown_complete',
+            currentStatus: 'idle',
             conversation: {
               id: 'member-student-1',
               messages: [],
@@ -1642,13 +1915,15 @@ describe('runHistoryStore', () => {
     expect(professorRow).toEqual(
       expect.objectContaining({
         isActive: true,
+        currentStatus: 'running',
         lastKnownStatus: 'ACTIVE',
       }),
     );
     expect(studentRow).toEqual(
       expect.objectContaining({
-        isActive: false,
-        lastKnownStatus: 'IDLE',
+        isActive: true,
+        currentStatus: 'idle',
+        lastKnownStatus: 'ACTIVE',
       }),
     );
   });
@@ -1801,7 +2076,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'api_e2e_engineer',
-      currentStatus: 'shutdown_complete',
+      currentStatus: 'idle',
       isSubscribed: false,
       taskPlan: null,
       taskStatuses: null,
@@ -1871,7 +2146,7 @@ describe('runHistoryStore', () => {
         },
       },
       focusedMemberName: 'api_e2e_engineer',
-      currentStatus: 'shutdown_complete',
+      currentStatus: 'idle',
       isSubscribed: false,
       taskPlan: null,
       taskStatuses: null,
@@ -2013,6 +2288,9 @@ describe('runHistoryStore', () => {
           errors: [],
         };
       }
+      if (query === 'GetTeamCommunicationMessages') {
+        return { data: { getTeamCommunicationMessages: [] } };
+      }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -2025,7 +2303,7 @@ describe('runHistoryStore', () => {
     expect(hydratedTeam).toBeTruthy();
     expect(hydratedTeam.focusedMemberName).toBe('super_agent');
     expect(hydratedTeam.members.get('super_agent')?.state.conversation.messages.length).toBe(2);
-    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('shutdown_complete');
+    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('offline');
     expect(hydratedTeam.members.get('architect_reviewer')?.state.conversation.messages.length).toBe(0);
     expect(hydratedTeam.historicalHydration?.memberProjectionLoadStateByRouteKey).toEqual({
       super_agent: 'loaded',
@@ -2040,7 +2318,7 @@ describe('runHistoryStore', () => {
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalled();
   });
 
-  it('openTeamMemberRun hydrates generic live status and connects stream for active teams', async () => {
+  it('openTeamMemberRun uses non-running member placeholders and connects stream for active teams', async () => {
     queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
       if (query === 'GetTeamRunResumeConfig') {
         return {
@@ -2094,6 +2372,9 @@ describe('runHistoryStore', () => {
           errors: [],
         };
       }
+      if (query === 'GetTeamCommunicationMessages') {
+        return { data: { getTeamCommunicationMessages: [] } };
+      }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -2104,8 +2385,8 @@ describe('runHistoryStore', () => {
 
     const hydratedTeam = teamContextsStoreMock.teams.get('team-1');
     expect(hydratedTeam).toBeTruthy();
-    expect(hydratedTeam.currentStatus).toBe('uninitialized');
-    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('uninitialized');
+    expect(hydratedTeam.currentStatus).toBe('running');
+    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('offline');
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-1');
   });
 
@@ -2162,6 +2443,9 @@ describe('runHistoryStore', () => {
           errors: [],
         };
       }
+      if (query === 'GetTeamCommunicationMessages') {
+        return { data: { getTeamCommunicationMessages: [] } };
+      }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -2173,7 +2457,7 @@ describe('runHistoryStore', () => {
     const hydratedTeam = teamContextsStoreMock.teams.get('team-stale-1');
     expect(hydratedTeam).toBeTruthy();
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-stale-1');
-    expect(hydratedTeam.currentStatus).toBe('uninitialized');
+    expect(hydratedTeam.currentStatus).toBe('running');
     expect(hydratedTeam.config.isLocked).toBe(true);
   });
 
@@ -2256,6 +2540,9 @@ describe('runHistoryStore', () => {
         }
 
         throw new Error(`Unexpected member projection request: ${JSON.stringify(variables)}`);
+      }
+      if (query === 'GetTeamCommunicationMessages') {
+        return { data: { getTeamCommunicationMessages: [] } };
       }
       throw new Error(`Unexpected query: ${String(query)}`);
     });

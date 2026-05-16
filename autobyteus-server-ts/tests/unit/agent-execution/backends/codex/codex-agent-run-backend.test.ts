@@ -169,7 +169,8 @@ describe("CodexAgentRunBackend", () => {
         expect.objectContaining({
           eventType: AgentRunEventType.AGENT_STATUS,
           payload: expect.objectContaining({
-            new_status: "IDLE",
+            status: "idle",
+            can_interrupt: false,
           }),
         }),
         expect.objectContaining({

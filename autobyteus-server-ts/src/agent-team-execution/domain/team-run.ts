@@ -52,8 +52,12 @@ export class TeamRun {
     return this.backend.subscribeToEvents(listener);
   }
 
-  getStatus(): string | null {
-    return this.backend.getStatus();
+  getStatusSnapshot() {
+    return this.backend.getStatusSnapshot();
+  }
+
+  getMemberStatusSnapshots() {
+    return this.backend.getMemberStatusSnapshots();
   }
 
   async postMessage(

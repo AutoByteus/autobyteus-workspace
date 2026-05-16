@@ -8,6 +8,7 @@ import type { AgentOperationResult } from "../../../domain/agent-operation-resul
 import type { AgentRunBackend, AgentRunEventListener } from "../../agent-run-backend.js";
 import type { CodexRunContext } from "./codex-agent-run-context.js";
 import { dispatchProcessedAgentRunEvents } from "../../../events/dispatch-processed-agent-run-events.js";
+import { projectCodexAgentStatus } from "../events/codex-status-projector.js";
 import type { CodexAppServerMessage } from "../thread/codex-app-server-message.js";
 
 const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => ({
@@ -36,7 +37,11 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     this.runContext = runContext;
     this.codexThread = codexThread;
     this.threadManager = threadManager;
-    this.eventConverter = new CodexThreadEventConverter(this.runId, this.codexThread.workingDirectory);
+    this.eventConverter = new CodexThreadEventConverter(
+      this.runId,
+      this.codexThread.workingDirectory,
+      () => this.getStatusSnapshot(),
+    );
     this.unsubscribeFromThread = this.codexThread.subscribeAppServerMessages((event) => {
       try {
         void this.handleAppServerMessage(event).catch((error: unknown) => {
@@ -83,8 +88,11 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     return this.codexThread.getPlatformAgentRunId() ?? null;
   }
 
-  getStatus(): string | null {
-    return this.codexThread.getStatus() ?? null;
+  getStatusSnapshot() {
+    return projectCodexAgentStatus({
+      ...this.codexThread.getStatusSnapshotSource(),
+      isActive: this.isActive(),
+    });
   }
 
   async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {

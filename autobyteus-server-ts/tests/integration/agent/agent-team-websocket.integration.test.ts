@@ -132,8 +132,12 @@ class FakeTeamRun {
     this.runId = team.teamRunId;
   }
 
-  getStatus(): string {
-    return "ACTIVE";
+  getStatusSnapshot() {
+    return { status: "running" as const };
+  }
+
+  getMemberStatusSnapshots() {
+    return [];
   }
 
   subscribeToEvents(listener: (event: TeamRunEvent) => void): () => void {

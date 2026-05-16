@@ -107,7 +107,7 @@ const createMemberContext = (runId: string, conversationId: string) => ({
       id: conversationId,
       messages: [],
     },
-    currentStatus: 'Uninitialized',
+    currentStatus: 'running',
   },
 });
 
@@ -248,5 +248,50 @@ describe('openTeamRun', () => {
       projectionByMemberRouteKey,
       memberRouteKeys: ['member-b'],
     });
+  });
+
+  it('preserves existing member-scoped statuses when reopening an active unsubscribed team', async () => {
+    const existingContext = {
+      teamRunId: 'team-1',
+      config: {},
+      members: new Map([
+        ['member-a', {
+          config: { isLocked: true },
+          state: {
+            runId: 'run-a',
+            conversation: { id: 'existing-conversation', messages: [] },
+            currentStatus: 'idle',
+            canInterrupt: true,
+          },
+        }],
+      ]),
+      coordinatorMemberRouteKey: 'member-a',
+      historicalHydration: null,
+      focusedMemberName: 'member-a',
+      currentStatus: 'offline',
+      isSubscribed: false,
+      taskPlan: null,
+      taskStatuses: null,
+    };
+    const projectedMembers = new Map([
+      ['member-a', createMemberContext('run-a', 'projected-conversation')],
+    ]);
+    const projectionByMemberRouteKey = new Map([
+      ['member-a', { activities: [{ invocationId: 'tool-a' }] }],
+    ]);
+    getTeamContextByIdMock.mockReturnValue(existingContext);
+    loadTeamRunContextHydrationPayloadMock.mockResolvedValue(
+      createPayload(projectedMembers, projectionByMemberRouteKey),
+    );
+
+    await openTeamRun({
+      teamRunId: 'team-1',
+      ensureWorkspaceByRootPath: vi.fn(),
+    });
+
+    expect(existingContext.members.get('member-a')?.state.conversation.id).toBe('projected-conversation');
+    expect(existingContext.members.get('member-a')?.state.currentStatus).toBe('idle');
+    expect(existingContext.members.get('member-a')?.state.canInterrupt).toBe(false);
+    expect(connectToTeamStreamMock).toHaveBeenCalledWith('team-1');
   });
 });

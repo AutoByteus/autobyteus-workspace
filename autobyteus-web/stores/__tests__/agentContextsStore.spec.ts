@@ -4,6 +4,7 @@ import { useAgentContextsStore } from '../agentContextsStore';
 import { useAgentRunConfigStore } from '../agentRunConfigStore';
 import { useAgentSelectionStore } from '../agentSelectionStore';
 import type { AgentDefinition } from '../agentDefinitionStore';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 
 // Mock AgentDefinition
 const mockAgentDef: AgentDefinition = {
@@ -175,6 +176,57 @@ describe('agentContextsStore', () => {
 
             // Verify selection updated
             expect(selectionStore.selectedRunId).toBe(permId);
+        });
+    });
+
+    describe('upsertProjectionContext', () => {
+        it('clears stale interrupt permission when a subscribed run is hydrated as offline', () => {
+            const store = useAgentContextsStore();
+            const runId = 'run-offline-1';
+            const config = {
+                agentDefinitionId: 'def-1',
+                agentDefinitionName: 'TestAgent',
+                llmModelIdentifier: 'gpt-4',
+                runtimeKind: 'codex_app_server',
+                workspaceId: 'ws-1',
+                autoExecuteTools: false,
+                skillAccessMode: 'PRELOADED_ONLY',
+                llmConfig: null,
+                isLocked: true,
+            } as any;
+            const liveConversation = {
+                id: runId,
+                messages: [],
+                createdAt: '2026-05-16T00:00:00.000Z',
+                updatedAt: '2026-05-16T00:01:00.000Z',
+            } as any;
+            const historicalConversation = {
+                id: runId,
+                messages: [],
+                createdAt: '2026-05-16T00:00:00.000Z',
+                updatedAt: '2026-05-16T00:02:00.000Z',
+            } as any;
+
+            store.upsertProjectionContext({
+                runId,
+                config,
+                conversation: liveConversation,
+                status: AgentStatus.Running,
+            });
+            const existing = store.runs.get(runId)!;
+            existing.isSubscribed = true;
+            existing.state.canInterrupt = true;
+
+            store.upsertProjectionContext({
+                runId,
+                config: { ...config, isLocked: false },
+                conversation: historicalConversation,
+                status: AgentStatus.Offline,
+            });
+
+            expect(existing.state.currentStatus).toBe(AgentStatus.Offline);
+            expect(existing.state.canInterrupt).toBe(false);
+            expect(existing.state.conversation).toEqual(historicalConversation);
         });
     });
 

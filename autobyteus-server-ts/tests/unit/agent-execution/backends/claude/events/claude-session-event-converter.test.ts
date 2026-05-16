@@ -641,8 +641,11 @@ describe("ClaudeSessionEventConverter", () => {
     });
   });
 
-  it("emits explicit turn completed plus preserved agent-status events", () => {
-    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+  it("emits explicit turn completed plus normalized agent-status events", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter", () => ({
+      status: "idle",
+      can_interrupt: false,
+    }));
 
     const completed = converter.convert({
       method: ClaudeSessionEventName.TURN_COMPLETED,
@@ -663,16 +666,18 @@ describe("ClaudeSessionEventConverter", () => {
     expect(completed[1]).toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
       payload: {
-        new_status: "IDLE",
-        old_status: "RUNNING",
-        turnId: "turn-claude-1",
+        status: "idle",
+        can_interrupt: false,
       },
       statusHint: "IDLE",
     });
   });
 
   it("emits explicit turn started before the running status event", () => {
-    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+    const converter = new ClaudeSessionEventConverter("run-claude-converter", () => ({
+      status: "running",
+      can_interrupt: true,
+    }));
 
     const started = converter.convert({
       method: ClaudeSessionEventName.TURN_STARTED,
@@ -690,9 +695,8 @@ describe("ClaudeSessionEventConverter", () => {
     expect(started[1]).toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
       payload: {
-        new_status: "RUNNING",
-        old_status: null,
-        turnId: "turn-claude-2",
+        status: "running",
+        can_interrupt: true,
       },
       statusHint: "ACTIVE",
     });

@@ -28,7 +28,7 @@ describe('TeamGridView', () => {
         teamContext: {
           members: new Map([
             ['professor', buildMember('Professor', AgentStatus.Idle)],
-            ['student', buildMember('Student', AgentStatus.ExecutingTool)],
+            ['student', buildMember('Student', AgentStatus.Running)],
           ]),
         } as any,
         focusedMemberName: 'professor',
@@ -56,7 +56,7 @@ describe('TeamGridView', () => {
         teamContext: {
           members: new Map([
             ['professor', buildMember('Professor', AgentStatus.Idle)],
-            ['student', buildMember('Student', AgentStatus.ExecutingTool)],
+            ['student', buildMember('Student', AgentStatus.Running)],
             ['planner', buildMember('Planner', AgentStatus.Idle)],
           ]),
         } as any,
@@ -91,7 +91,7 @@ describe('TeamGridView', () => {
         teamContext: {
           members: new Map([
             ['professor', buildMember('Professor', AgentStatus.Idle)],
-            ['student', buildMember('Student', AgentStatus.ExecutingTool)],
+            ['student', buildMember('Student', AgentStatus.Running)],
           ]),
         } as any,
         focusedMemberName: 'professor',

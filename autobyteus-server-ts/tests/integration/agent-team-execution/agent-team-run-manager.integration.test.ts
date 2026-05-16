@@ -38,7 +38,7 @@ const createBackend = (input: {
 }) => {
   const state = {
     active: input.active ?? true,
-    status: input.status ?? "IDLE",
+    status: input.status ?? "idle",
   };
 
   const backend: TeamRunBackend = {
@@ -46,7 +46,8 @@ const createBackend = (input: {
     teamBackendKind: input.teamBackendKind,
     getRuntimeContext: () => (input.runtimeContext ?? null) as never,
     isActive: () => state.active,
-    getStatus: () => state.status,
+    getStatusSnapshot: () => ({ status: state.status as "idle" | "running" | "error" }),
+    getMemberStatusSnapshots: () => [],
     subscribeToEvents: vi.fn().mockImplementation(() => () => undefined),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),

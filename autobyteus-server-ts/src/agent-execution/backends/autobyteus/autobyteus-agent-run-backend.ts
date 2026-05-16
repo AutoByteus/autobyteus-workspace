@@ -6,6 +6,7 @@ import type { AgentRunContext, RuntimeAgentRunContext } from "../../domain/agent
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunBackend, AgentRunEventListener } from "../agent-run-backend.js";
 import { AutoByteusStreamEventConverter } from "./events/autobyteus-stream-event-converter.js";
+import { projectAutoByteusAgentStatus } from "./events/autobyteus-status-projector.js";
 import { dispatchProcessedAgentRunEvents } from "../../events/dispatch-processed-agent-run-events.js";
 
 export type AutoByteusAgentLike = {
@@ -78,7 +79,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   ) {
     this.context = context;
     this.runId = agent.agentId;
-    this.eventConverter = new AutoByteusStreamEventConverter(this.runId);
+    this.eventConverter = new AutoByteusStreamEventConverter(this.runId, () => this.getStatusSnapshot());
   }
 
   getContext(): AgentRunContext<RuntimeAgentRunContext> {
@@ -93,8 +94,13 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     return this.runId;
   }
 
-  getStatus(): string | null {
-    return this.agent.currentStatus ?? null;
+  getStatusSnapshot() {
+    return projectAutoByteusAgentStatus({
+      currentStatus: this.agent.currentStatus,
+      context: this.agent.context ?? null,
+      isActive: this.isActive(),
+      agentId: this.runId,
+    });
   }
 
   subscribeToEvents(listener: AgentRunEventListener): () => void {

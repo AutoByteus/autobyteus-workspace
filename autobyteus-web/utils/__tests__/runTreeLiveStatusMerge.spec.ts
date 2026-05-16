@@ -16,6 +16,7 @@ const baseTree = (): RunTreeWorkspaceNode[] => [
             runId: 'run-history-a',
             summary: 'A',
             lastActivityAt: '2026-01-01T00:00:00.000Z',
+            currentStatus: AgentStatus.Offline,
             lastKnownStatus: 'IDLE',
             isActive: false,
             source: 'history',
@@ -25,6 +26,7 @@ const baseTree = (): RunTreeWorkspaceNode[] => [
             runId: 'run-history-b',
             summary: 'B',
             lastActivityAt: '2026-01-01T00:00:00.000Z',
+            currentStatus: AgentStatus.Offline,
             lastKnownStatus: 'IDLE',
             isActive: false,
             source: 'history',
@@ -34,6 +36,7 @@ const baseTree = (): RunTreeWorkspaceNode[] => [
             runId: 'temp-1',
             summary: 'draft',
             lastActivityAt: '2026-01-01T00:00:00.000Z',
+            currentStatus: AgentStatus.Running,
             lastKnownStatus: 'ACTIVE',
             isActive: true,
             source: 'draft',
@@ -52,7 +55,7 @@ describe('runTreeLiveStatusMerge', () => {
         'run-history-b',
         {
           state: {
-            currentStatus: AgentStatus.Bootstrapping,
+            currentStatus: AgentStatus.Running,
             conversation: { updatedAt: '2026-01-05T00:00:00.000Z' },
           },
         },
@@ -65,15 +68,17 @@ describe('runTreeLiveStatusMerge', () => {
     const draft = merged[0]?.agents[0]?.runs.find((run) => run.runId === 'temp-1');
 
     expect(runA?.isActive).toBe(false);
+    expect(runA?.currentStatus).toBe(AgentStatus.Offline);
     expect(runA?.lastKnownStatus).toBe('IDLE');
     expect(runB?.isActive).toBe(true);
+    expect(runB?.currentStatus).toBe(AgentStatus.Running);
     expect(runB?.lastKnownStatus).toBe('ACTIVE');
     expect(runB?.lastActivityAt).toBe('2026-01-05T00:00:00.000Z');
     expect(draft?.isActive).toBe(true);
     expect(draft?.lastKnownStatus).toBe('ACTIVE');
   });
 
-  it('keeps idle live contexts active while preserving terminal status mapping', () => {
+  it('maps offline and error live contexts to inactive history rows while idle remains active', () => {
     const contexts = new Map<string, any>([
       [
         'run-history-a',
@@ -88,7 +93,7 @@ describe('runTreeLiveStatusMerge', () => {
         'run-history-b',
         {
           state: {
-            currentStatus: AgentStatus.Idle,
+            currentStatus: AgentStatus.Offline,
             conversation: { updatedAt: '2026-01-03T00:00:00.000Z' },
           },
         },
@@ -100,8 +105,31 @@ describe('runTreeLiveStatusMerge', () => {
     const runB = merged[0]?.agents[0]?.runs.find((run) => run.runId === 'run-history-b');
 
     expect(runA?.isActive).toBe(false);
+    expect(runA?.currentStatus).toBe(AgentStatus.Error);
     expect(runA?.lastKnownStatus).toBe('ERROR');
+    expect(runB?.isActive).toBe(false);
+    expect(runB?.currentStatus).toBe(AgentStatus.Offline);
+    expect(runB?.lastKnownStatus).toBe('IDLE');
+  });
+
+  it('maps active-runtime idle live contexts to active history rows', () => {
+    const contexts = new Map<string, any>([
+      [
+        'run-history-b',
+        {
+          state: {
+            currentStatus: AgentStatus.Idle,
+            conversation: { updatedAt: '2026-01-03T00:00:00.000Z' },
+          },
+        },
+      ],
+    ]);
+
+    const merged = mergeRunTreeWithLiveContexts(baseTree(), contexts as Map<string, any>);
+    const runB = merged[0]?.agents[0]?.runs.find((run) => run.runId === 'run-history-b');
+
     expect(runB?.isActive).toBe(true);
+    expect(runB?.currentStatus).toBe(AgentStatus.Idle);
     expect(runB?.lastKnownStatus).toBe('ACTIVE');
   });
 
@@ -111,7 +139,7 @@ describe('runTreeLiveStatusMerge', () => {
         'run-history-b',
         {
           state: {
-            currentStatus: AgentStatus.Bootstrapping,
+            currentStatus: AgentStatus.Running,
             conversation: {
               updatedAt: '2026-01-05T00:00:00.000Z',
               messages: [

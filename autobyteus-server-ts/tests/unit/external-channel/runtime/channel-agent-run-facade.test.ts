@@ -85,12 +85,14 @@ const createActiveRun = (options: {
   subscribeToEvents?: ReturnType<typeof vi.fn>;
 }) =>
   new AgentRun({
+    context: { runId: options.runId ?? "agent-1", config: { runtimeKind: options.runtimeKind ?? "codex_app_server" }, runtimeContext: null } as any,
     backend: {
       runId: options.runId ?? "agent-1",
       runtimeKind: options.runtimeKind ?? "codex_app_server",
       isActive: () => true,
-      getRuntimeReference: () => null,
-      getStatus: () => "ACTIVE",
+      getContext: () => ({ runId: options.runId ?? "agent-1", config: { runtimeKind: options.runtimeKind ?? "codex_app_server" }, runtimeContext: null }) as any,
+      getPlatformAgentRunId: () => options.runId ?? "agent-1",
+      getStatusSnapshot: () => ({ status: "running", can_interrupt: true }),
       subscribeToEvents:
         options.subscribeToEvents ?? vi.fn().mockReturnValue(() => undefined),
       postUserMessage:
