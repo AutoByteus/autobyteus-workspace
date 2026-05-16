@@ -5,7 +5,7 @@ import { AgentEventStream } from "../../../../src/agent/streaming/streams/agent-
 import { StreamEvent, StreamEventType } from "../../../../src/agent/streaming/events/stream-events.js";
 import { ChunkResponse } from "../../../../src/llm/utils/response-types.js";
 
-const TURN_ID = "turn-kimi-k25-boundary";
+const TURN_ID = "turn-kimi-tool-id-boundary";
 
 const collectEvents = async (stream: AgentEventStream): Promise<StreamEvent[]> => {
   const events: StreamEvent[] = [];

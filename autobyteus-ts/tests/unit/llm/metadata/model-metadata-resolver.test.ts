@@ -77,12 +77,12 @@ describe('ModelMetadataResolver', () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 
-  it('prefers live Kimi metadata when available and falls back to curated values for missing models', async () => {
+  it('prefers live Kimi metadata when available and falls back to curated values for missing retained models', async () => {
     process.env.KIMI_API_KEY = 'test-kimi-key';
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({
-        data: [{ id: 'kimi-k2.5', context_length: 262144 }]
+        data: [{ id: 'kimi-k2.6', context_length: 262144 }]
       })
     });
 
@@ -90,15 +90,15 @@ describe('ModelMetadataResolver', () => {
 
     const liveMetadata = await resolver.resolve({
       provider: LLMProvider.KIMI,
-      name: 'kimi-k2.5',
-      value: 'kimi-k2.5',
-      canonicalName: 'kimi-k2.5'
-    });
-    const curatedFallback = await resolver.resolve({
-      provider: LLMProvider.KIMI,
       name: 'kimi-k2.6',
       value: 'kimi-k2.6',
       canonicalName: 'kimi-k2.6'
+    });
+    const curatedFallback = await resolver.resolve({
+      provider: LLMProvider.KIMI,
+      name: 'kimi-k2-thinking',
+      value: 'kimi-k2-thinking',
+      canonicalName: 'kimi-k2-thinking'
     });
 
     expect(liveMetadata.maxContextTokens).toBe(262144);

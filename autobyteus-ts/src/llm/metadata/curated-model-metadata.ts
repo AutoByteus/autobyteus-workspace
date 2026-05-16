@@ -72,18 +72,6 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
       maxOutputTokens: 384000,
       sourceUrl: 'https://api-docs.deepseek.com/quick_start/pricing',
       verifiedAt: '2026-04-25'
-    },
-    'deepseek-chat': {
-      maxContextTokens: 128000,
-      maxOutputTokens: 8000,
-      sourceUrl: 'https://api-docs.deepseek.com/quick_start/pricing',
-      verifiedAt: '2026-04-09'
-    },
-    'deepseek-reasoner': {
-      maxContextTokens: 128000,
-      maxOutputTokens: 64000,
-      sourceUrl: 'https://api-docs.deepseek.com/guides/thinking_mode',
-      verifiedAt: '2026-04-09'
     }
   },
   [LLMProvider.MISTRAL]: {
@@ -119,11 +107,6 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
       maxContextTokens: 256000,
       sourceUrl: 'https://platform.kimi.ai/docs/models',
       verifiedAt: '2026-04-25'
-    },
-    'kimi-k2.5': {
-      maxContextTokens: 256000,
-      sourceUrl: 'https://platform.moonshot.ai/docs/guide/auto-reconnect',
-      verifiedAt: '2026-04-09'
     },
     'kimi-k2-thinking': {
       maxContextTokens: 256000,
