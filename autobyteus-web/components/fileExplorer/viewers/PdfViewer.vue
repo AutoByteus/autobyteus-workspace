@@ -8,8 +8,8 @@
       <span class="block sm:inline">{{ error }}</span>
     </div>
     <VuePdfEmbed
-      v-if="url"
-      :source="url"
+      v-if="resolvedUrl"
+      :source="resolvedUrl"
       class="pdf-content shadow-lg w-full max-w-4xl mx-auto"
       @loaded="onLoaded"
       @loading-failed="onError"
@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import VuePdfEmbed from 'vue-pdf-embed'
+import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl'
 
 // Essential styles for vue-pdf-embed
 // index.css is no longer separate in v2, styles are injected or not needed for base
@@ -34,9 +35,17 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { resolvedUrl, error: resourceError } = useAuthorizedObjectUrl(() => props.url)
 
 const loading = ref(true)
 const error = ref<string | null>(null)
+
+watch(resourceError, (value) => {
+  if (value) {
+    loading.value = false
+    error.value = value
+  }
+})
 
 watch(() => props.url, () => {
   loading.value = true

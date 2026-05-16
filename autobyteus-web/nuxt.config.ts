@@ -10,6 +10,7 @@ import {
 const isDevelopment = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test'
 const isElectronBuild = process.env.BUILD_TARGET === 'electron'
 const isTest = process.env.NODE_ENV === 'test' || process.env.NUXT_TEST === 'true' || process.env.VITEST === 'true'
+const isMobileWebBuild = process.env.AUTOBYTEUS_MOBILE_WEB_BUILD === 'true'
 
 const ensureClientPrecomputedFile = (serverDir: string): void => {
   const precomputedPath = join(serverDir, 'client.precomputed.mjs')
@@ -199,6 +200,7 @@ const baseConfig = {
       graphqlWsEndpoint: serverUrls.graphqlWsEndpoint,
       terminalWsEndpoint: serverUrls.terminalWsEndpoint,
       fileExplorerWsEndpoint: serverUrls.fileExplorerWsEndpoint,
+      mobileRemoteAccessBuild: isMobileWebBuild,
       googleSpeechApiKey: process.env.GOOGLE_SPEECH_API_KEY || '',
       showDebugErrorPanel: process.env.SHOW_DEBUG_ERROR_PANEL === 'true',
 

@@ -2,6 +2,8 @@ import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/clien
 import { onError } from '@apollo/client/link/error';
 import { useUiErrorStore } from '~/stores/uiErrorStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { getRemoteAccessAuthHeaders } from '~/utils/remoteAccess/authorizedTransport';
+import { resolveCurrentGraphqlHttpEndpoint } from '~/utils/remoteAccess/mobileSessionBootstrap';
 
 export const BOUND_APOLLO_CLIENT_KEY = '__boundApolloClient';
 
@@ -14,8 +16,13 @@ type NuxtAppLike = {
   };
 };
 
-export function buildBoundApolloClient(graphqlHttpEndpoint: string): ApolloClient<unknown> {
+export function buildBoundApolloClient(
+  graphqlHttpEndpoint: string | (() => string),
+): ApolloClient<unknown> {
   const uiErrorStore = useUiErrorStore();
+  const resolveGraphqlHttpEndpoint = typeof graphqlHttpEndpoint === 'function'
+    ? graphqlHttpEndpoint
+    : () => graphqlHttpEndpoint;
 
   const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
     if (graphQLErrors && graphQLErrors.length > 0) {
@@ -38,12 +45,22 @@ export function buildBoundApolloClient(graphqlHttpEndpoint: string): ApolloClien
   });
 
   const httpLink = new HttpLink({
-    uri: graphqlHttpEndpoint,
+    uri: () => resolveGraphqlHttpEndpoint(),
     fetch: globalThis.fetch,
+  });
+  const authLink = new ApolloLink((operation, forward) => {
+    const authHeaders = getRemoteAccessAuthHeaders();
+    operation.setContext(({ headers = {} }) => ({
+      headers: {
+        ...headers,
+        ...authHeaders,
+      },
+    }));
+    return forward(operation);
   });
 
   return new ApolloClient({
-    link: ApolloLink.from([errorLink, httpLink]),
+    link: ApolloLink.from([errorLink, authLink, httpLink]),
     cache: new InMemoryCache(),
     devtools: {
       enabled: process.env.NODE_ENV !== 'production',
@@ -94,8 +111,12 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   const windowNodeContextStore = useWindowNodeContextStore();
-  const graphqlHttpEndpoint = windowNodeContextStore.getBoundEndpoints().graphqlHttp;
 
-  const client = buildBoundApolloClient(graphqlHttpEndpoint);
+  const client = buildBoundApolloClient(() => {
+    // Touch the reactive revision so a rebuilt Nuxt app/client sees the current binding,
+    // while the HttpLink URI function resolves the latest paired-node endpoint per operation.
+    void windowNodeContextStore.bindingRevision;
+    return resolveCurrentGraphqlHttpEndpoint();
+  });
   registerBoundApolloClient(nuxtApp as NuxtAppLike, client);
 });

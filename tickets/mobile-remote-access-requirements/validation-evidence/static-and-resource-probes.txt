@@ -1,0 +1,9 @@
+HTTP static serving through real Fastify harness:
+/mobile -> status=200 content_type=text/html size=1511
+/mobile?pairing=<redacted> -> status=200 content_type=text/html size=1511
+/mobile/workspace -> status=200 content_type=text/html size=1511
+/mobile/_nuxt/R_lKcliv.js -> status=200 content_type=text/javascript size=889360
+
+Protected resource probe over LAN address:
+GET /rest/files/images/e2e.txt without token -> 401 REMOTE_ACCESS_AUTH_REQUIRED
+GET /rest/files/images/e2e.txt with paired-device bearer token -> 200 text/plain body "mra protected image placeholder"

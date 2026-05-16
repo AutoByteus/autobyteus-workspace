@@ -1,6 +1,19 @@
 <template>
   <div
-    v-if="application && iframeLaunchId"
+    v-if="isApplicationIframeUnsupportedOnMobile"
+    class="flex h-full min-h-[20rem] items-center justify-center bg-slate-950 px-6 text-center text-slate-300"
+    data-testid="mobile-unsupported-application-iframe"
+  >
+    <div class="max-w-lg rounded-3xl border border-slate-800 bg-slate-900/90 p-8 shadow-xl shadow-slate-950/30">
+      <h2 class="text-lg font-semibold text-white">Application unavailable on phone</h2>
+      <p class="mt-2 text-sm leading-6 text-slate-300">
+        Application iframe surfaces are not part of the mobile MVP yet. Open this application from the desktop app.
+      </p>
+    </div>
+  </div>
+
+  <div
+    v-else-if="application && iframeLaunchId"
     class="h-full min-h-[32rem] w-full"
   >
     <div class="relative h-full min-h-0 overflow-hidden bg-slate-950">
@@ -82,6 +95,7 @@ import ApplicationIframeHost from '~/components/applications/ApplicationIframeHo
 import { useLocalization } from '~/composables/useLocalization'
 import type { ApplicationDetailRecord } from '~/stores/applicationStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates'
 import {
   areApplicationIframeDescriptorInputsEqual,
   buildApplicationIframeLaunchDescriptor,
@@ -109,6 +123,7 @@ const launchState = ref<'waiting_for_ready' | 'bootstrapped' | 'failed'>('waitin
 const launchError = ref<string | null>(null)
 const readyTimeoutHandle = ref<number | null>(null)
 const iframeMountRevision = ref(0)
+const isApplicationIframeUnsupportedOnMobile = computed(() => !isFeatureAvailableInRuntime('applicationIframe'))
 
 const iframeMountKey = computed(() => {
   if (!launchDescriptor.value) {
@@ -181,6 +196,11 @@ const buildLaunchInputs = (application: ApplicationDetailRecord): ApplicationIfr
 })
 
 const commitLaunchDescriptor = (forceRemount: boolean): void => {
+  if (isApplicationIframeUnsupportedOnMobile.value) {
+    resetLaunchState()
+    return
+  }
+
   const currentApplication = props.application
   const currentIframeLaunchId = props.iframeLaunchId?.trim() || ''
   if (!currentApplication || !currentIframeLaunchId) {

@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
 import * as XLSX from 'xlsx';
+import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 const props = defineProps<{
   url: string | null;
@@ -74,7 +75,7 @@ const loadExcel = async () => {
   try {
     // 1. Try URL first
     if (props.url) {
-      const response = await fetch(props.url);
+      const response = await authorizedFetch(props.url);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch file: ${response.status} ${response.statusText}`);

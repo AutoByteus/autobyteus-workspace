@@ -80,6 +80,7 @@ import type { TeamCommunicationReferenceFile } from '~/stores/teamCommunicationS
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';
 import FileViewer from '~/components/fileExplorer/FileViewer.vue';
+import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 const props = defineProps<{
   teamRunId: string;
@@ -165,7 +166,7 @@ const fetchContent = async () => {
   const currentToken = ++fetchToken;
   isFetchingContent.value = true;
   try {
-    const response = await fetch(contentUrl.value, { cache: 'no-store' });
+    const response = await authorizedFetch(contentUrl.value, { cache: 'no-store' });
     if (response.status === 404) {
       if (currentToken !== fetchToken) return;
       isDeleted.value = true;

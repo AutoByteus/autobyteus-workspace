@@ -13,6 +13,11 @@
 import { ref, computed, type Ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
+import {
+  buildAuthenticatedWebSocketUrl,
+  redactRemoteAccessWebSocketUrl,
+} from '~/utils/remoteAccess/websocketAuth';
 
 export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected';
 
@@ -65,9 +70,11 @@ export function useTerminalSession(options: TerminalSessionOptions): TerminalSes
 
     const windowNodeContextStore = useWindowNodeContextStore();
     const wsBaseUrl = windowNodeContextStore.getBoundEndpoints().terminalWs;
-    const wsUrl = `${wsBaseUrl}/${workspaceId}/${sessionId.value}`;
+    const baseWsUrl = `${wsBaseUrl}/${workspaceId}/${sessionId.value}`;
+    const credential = getActiveRemoteAccessCredential();
+    const wsUrl = credential ? buildAuthenticatedWebSocketUrl(baseWsUrl, credential) : baseWsUrl;
 
-    console.log('[useTerminalSession] Connecting to:', wsUrl);
+    console.log('[useTerminalSession] Connecting to:', redactRemoteAccessWebSocketUrl(wsUrl));
     connectionStatus.value = 'connecting';
     errorMessage.value = '';
 

@@ -37,6 +37,8 @@ import {
   handleFileChange,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
+import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
+import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -95,7 +97,9 @@ export class TeamStreamingService {
     this.wsClient.on('onDisconnect', this.handleDisconnect);
     this.wsClient.on('onError', this.handleError);
 
-    const url = `${this.wsEndpoint}/${teamRunId}`;
+    const baseUrl = `${this.wsEndpoint}/${teamRunId}`;
+    const credential = getActiveRemoteAccessCredential();
+    const url = credential ? buildAuthenticatedWebSocketUrl(baseUrl, credential) : baseUrl;
     this.wsClient.connect(url);
   }
 

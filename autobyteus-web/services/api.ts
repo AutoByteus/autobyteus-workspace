@@ -6,6 +6,7 @@ import axios, {
 } from 'axios';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { getServerUrls } from '~/utils/serverConfig';
+import { addRemoteAccessAxiosAuth } from '~/utils/remoteAccess/authorizedTransport';
 
 class ApiService {
   private readonly clientsByBaseUrl = new Map<string, AxiosInstance>();
@@ -36,7 +37,7 @@ class ApiService {
     const nextClient = axios.create({ baseURL });
 
     nextClient.interceptors.request.use(
-      (config: InternalAxiosRequestConfig) => config,
+      (config: InternalAxiosRequestConfig) => addRemoteAccessAxiosAuth(config),
       (error) => Promise.reject(error),
     );
 
@@ -87,4 +88,3 @@ class ApiService {
 
 const apiService = new ApiService();
 export default apiService;
-

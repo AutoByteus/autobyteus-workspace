@@ -27,6 +27,7 @@
     "start": "electron .",
     "generate": "nuxt generate",
     "generate:electron": "cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate",
+    "build:mobile-web": "node ./scripts/build-mobile-web.mjs",
     "generate:icons": "tsc -p build/tsconfig.json && node build/scripts/generateIcons.js",
     "preview": "nuxt preview",
     "codegen": "graphql-codegen --require dotenv/config --config codegen.ts",

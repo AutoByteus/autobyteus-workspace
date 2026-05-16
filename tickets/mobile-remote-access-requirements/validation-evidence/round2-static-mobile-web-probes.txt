@@ -1,0 +1,56 @@
+# Round 2 static/mobile build probes
+Timestamp: 2026-05-16T07:36:41Z
+Backend harness: http://127.0.0.1:49216 / http://192.168.2.158:49216
+
+## curl HTTP status probes
+/mobile -> HTTP 200 (1540 bytes)
+/mobile/ -> HTTP 200 (1540 bytes)
+/mobile/settings -> HTTP 200 (1540 bytes)
+/mobile/workspace -> HTTP 200 (1540 bytes)
+/rest/remote-access/status -> HTTP 200 (110 bytes)
+
+## generated mobile build flags
+mobileRemoteAccessBuild:true
+baseURL:"/mobile/"
+
+## top-level mobile static files
+autobyteus-web/dist-mobile/public/200.html
+autobyteus-web/dist-mobile/public/404.html
+autobyteus-web/dist-mobile/public/_nuxt/0ph9orQs.js
+autobyteus-web/dist-mobile/public/_nuxt/4RU_q_xR.js
+autobyteus-web/dist-mobile/public/_nuxt/5J0xJHOV.js
+autobyteus-web/dist-mobile/public/_nuxt/5rNKqzFG.js
+autobyteus-web/dist-mobile/public/_nuxt/5z35uWER.js
+autobyteus-web/dist-mobile/public/_nuxt/7G3pIe3f.js
+autobyteus-web/dist-mobile/public/_nuxt/A7p-v41A.js
+autobyteus-web/dist-mobile/public/_nuxt/AgentDefinitionForm.B4uhkLvJ.css
+autobyteus-web/dist-mobile/public/_nuxt/B7OykbEP.js
+autobyteus-web/dist-mobile/public/_nuxt/B8v4xBd3.js
+autobyteus-web/dist-mobile/public/_nuxt/BMjaER1V.js
+autobyteus-web/dist-mobile/public/_nuxt/BPgnFX99.js
+autobyteus-web/dist-mobile/public/_nuxt/BTHf-iG-.js
+autobyteus-web/dist-mobile/public/_nuxt/BY014KVZ.js
+autobyteus-web/dist-mobile/public/_nuxt/BcQkDwB6.js
+autobyteus-web/dist-mobile/public/_nuxt/BfckMJqq.js
+autobyteus-web/dist-mobile/public/_nuxt/BgPb916L.js
+autobyteus-web/dist-mobile/public/_nuxt/Bm75TuN6.js
+autobyteus-web/dist-mobile/public/_nuxt/BmPOfkfR.js
+autobyteus-web/dist-mobile/public/_nuxt/Bni3Ma9n.js
+autobyteus-web/dist-mobile/public/_nuxt/Bq9G-BI1.js
+autobyteus-web/dist-mobile/public/_nuxt/BqPBrrSj.js
+autobyteus-web/dist-mobile/public/_nuxt/BrKi_Q7T.js
+autobyteus-web/dist-mobile/public/_nuxt/BuBNH_HB.js
+autobyteus-web/dist-mobile/public/_nuxt/BuFE0P5P.js
+autobyteus-web/dist-mobile/public/_nuxt/Bvli_2vR.js
+autobyteus-web/dist-mobile/public/_nuxt/C-hFgSjX.js
+autobyteus-web/dist-mobile/public/_nuxt/C1K6bQ0c.js
+autobyteus-web/dist-mobile/public/_nuxt/C3TFVfKs.js
+autobyteus-web/dist-mobile/public/_nuxt/C5_V5N0J.js
+autobyteus-web/dist-mobile/public/_nuxt/C5zIoHuh.js
+autobyteus-web/dist-mobile/public/_nuxt/C83BjJZj.js
+autobyteus-web/dist-mobile/public/_nuxt/C8GzXhN_.js
+autobyteus-web/dist-mobile/public/_nuxt/CAP-4PL4.js
+autobyteus-web/dist-mobile/public/_nuxt/CCslMXl3.js
+autobyteus-web/dist-mobile/public/_nuxt/CDsGvqeh.js
+autobyteus-web/dist-mobile/public/_nuxt/CHtEbeQR.js
+autobyteus-web/dist-mobile/public/_nuxt/CP3jeldZ.js

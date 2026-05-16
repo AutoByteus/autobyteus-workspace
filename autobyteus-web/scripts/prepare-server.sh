@@ -44,6 +44,9 @@ fi
 pnpm -C "$SERVER_REPO_DIR" exec prisma generate --schema prisma/schema.prisma
 pnpm -C "$SERVER_REPO_DIR" build
 
+echo -e "\n${YELLOW}Building mobile web assets...${NC}"
+pnpm -C "$WEB_ROOT" build:mobile-web
+
 echo -e "\n${YELLOW}Deploying server package into Electron resources...${NC}"
 rm -rf "$TARGET_DIR"
 mkdir -p "$TARGET_DIR"
@@ -178,6 +181,11 @@ fi
 if [ -d "$SERVER_REPO_DIR/download" ]; then
   mkdir -p "$TARGET_DIR/download"
   cp -R "$SERVER_REPO_DIR/download/." "$TARGET_DIR/download/"
+fi
+
+if [ -d "$WEB_ROOT/dist-mobile/public" ]; then
+  mkdir -p "$TARGET_DIR/mobile-web"
+  cp -R "$WEB_ROOT/dist-mobile/public/." "$TARGET_DIR/mobile-web/"
 fi
 
 echo -e "\n${YELLOW}Rebuilding native modules for Electron...${NC}"

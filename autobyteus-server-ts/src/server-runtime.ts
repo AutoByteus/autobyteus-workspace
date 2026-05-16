@@ -21,6 +21,8 @@ import { bootstrapBuiltInAgents } from "./built-in-agents/built-in-agent-bootstr
 import { registerRestRoutes } from "./api/rest/index.js";
 import { registerGraphql } from "./api/graphql/index.js";
 import { registerWebsocketRoutes } from "./api/websocket/index.js";
+import { registerRemoteAccessPolicyPlugin } from "./api/security/remote-access-policy-plugin.js";
+import { registerMobileWebStaticRoutes } from "./api/static/mobile-web.js";
 import { getApplicationExecutionEventDispatchService } from "./application-orchestration/services/application-execution-event-dispatch-service.js";
 import { getApplicationOrchestrationRecoveryService } from "./application-orchestration/services/application-orchestration-recovery-service.js";
 import { getApplicationOrchestrationStartupGate } from "./application-orchestration/services/application-orchestration-startup-gate.js";
@@ -70,6 +72,8 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
   });
   await app.register(websocket);
 
+  await registerRemoteAccessPolicyPlugin(app);
+  await registerMobileWebStaticRoutes(app);
   await app.register(registerRestRoutes, { prefix: "/rest" });
   await registerWebsocketRoutes(app);
   await registerGraphql(app);
