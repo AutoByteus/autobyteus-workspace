@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/design-review-report.md`
 
 ## What Changed
 

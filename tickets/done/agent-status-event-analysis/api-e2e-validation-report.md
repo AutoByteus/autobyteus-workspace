@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/review-report.md`
 - Current Validation Round: `4` for the fresh four-state implementation package
 - Trigger: code review round 9 pass for CR-003, requesting API/E2E resume for `VAL-FS-008`, `AC-013`, and `AC-014`.
 - Latest Authoritative Round: `4`
@@ -149,7 +149,7 @@ Latest setup used:
 
 ## Other Validation Artifacts
 
-- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/api-e2e-validation-report.md`
+- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/api-e2e-validation-report.md`
 - Latest browser termination evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/four-state-browser-evidence-rerun/browser-termination-rerun-evidence.json`
 - Latest browser loaded screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/four-state-browser-evidence-rerun/frontend-loaded-rerun.png`
 - Latest `AC-013` evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/.local/ac013-browser-evidence-rerun/ac013-browser-electron-startup-rerun-evidence.json`

@@ -107,6 +107,13 @@ server boundary projects those details into the coarse API status and computes
 `can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
 remains a local submit-flight and disabled-input signal only; it must not be
 used to show the stop button or to infer that an interrupt can be accepted.
+Run-history refresh, active recovery, and run-open hydration must preserve an
+already-live `running/canInterrupt=true` single run or focused team member while
+that live stream remains authoritative, but terminal `offline` or `error`
+history projections must clear stale `canInterrupt` even when a caller asks to
+preserve live interrupt state. A later live
+`AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
+browser-visible stop affordance.
 
 Active team recovery and refresh must keep aggregate and member status separate.
 If a team row is `running` but only one member has a member-scoped `running`

@@ -60,6 +60,11 @@ These handlers update the agent context and mark messages complete. In the curre
   It does not contain legacy `new_status` / `old_status` fields.
 - The interrupt/stop affordance should use backend-owned `can_interrupt`. `isSending`
   is only local submit-flight state and must not grant interrupt authority by itself.
+- Refresh/reopen/recovery should preserve a selected live `running/canInterrupt=true`
+  single run or focused team member while that stream remains authoritative, but
+  terminal `offline` or `error` projections must always clear stale
+  `canInterrupt`, and a later live `idle/can_interrupt=false` status should
+  return the composer to the send affordance.
 - A successful terminate/stop flow should surface a terminal
   `{ status: "offline", can_interrupt: false }` `AGENT_STATUS` before stream
   teardown. Treat `offline` as the inactive non-error terminal state for live
@@ -115,6 +120,9 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 - Treats member `AGENT_STATUS` as the source for each member's status and
   `canInterrupt`; aggregate `TEAM_STATUS` has payload
   `{ status: "offline" | "idle" | "running" | "error" }` only.
+- Preserves a focused member's live `running/canInterrupt=true` interrupt
+  affordance across refresh/reconcile until that member receives a terminal
+  projection or a later live non-interruptible status.
 - Does not fan out aggregate team `running` to every member during first load,
   refresh, or recovery. Missing member-scoped status means the member is
   unknown/offline and non-interruptible until a member `AGENT_STATUS` arrives.

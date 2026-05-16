@@ -22,7 +22,7 @@ User reports frontend status can be inaccurate: the UI may show “waiting for L
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis`
 - Current Branch: `codex/agent-status-event-analysis`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis`
 - Bootstrap Base Branch: `origin/personal`

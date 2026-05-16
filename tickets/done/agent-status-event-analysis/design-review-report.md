@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/in-progress/agent-status-event-analysis/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis/tickets/done/agent-status-event-analysis/design-spec.md`
 - Current Review Round: Fresh independent review after interrupt-permission regression
 - Trigger: Post-implementation regression where a live Codex run displayed `Running`, backend WebSocket returned `AGENT_STATUS { status: "running", can_interrupt: true }`, but frontend recovery/history state later hid the stop/interrupt button by overwriting `state.canInterrupt=false`.
 - Prior Review Round Reviewed: AR-004 team-member fan-out re-review remains historical context only. This round independently reread the cumulative requirements, investigation notes, and design spec instead of reviewing only a delta.
