@@ -130,7 +130,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     );
     expect(commandResult.accepted).toBe(true);
 
-    await waitFor(() => (backend.getStatus() ?? "").toLowerCase() === "idle");
+    await waitFor(() => backend.getStatusSnapshot().status === "idle");
 
     const terminateResult = await backend.terminate();
     expect(terminateResult.accepted).toBe(true);
@@ -157,7 +157,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       new AgentInputUserMessage("hello explicit memory"),
     );
     expect(commandResult.accepted).toBe(true);
-    await waitFor(() => (backend.getStatus() ?? "").toLowerCase() === "idle");
+    await waitFor(() => backend.getStatusSnapshot().status === "idle");
 
     const rawTracesPath = path.join(memoryDir, "agents", preferredRunId, "raw_traces.jsonl");
     await waitFor(async () => {
@@ -181,7 +181,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       new AgentInputUserMessage("first restoreable turn"),
     );
     expect(firstResult.accepted).toBe(true);
-    await waitFor(() => (created.getStatus() ?? "").toLowerCase() === "idle");
+    await waitFor(() => created.getStatusSnapshot().status === "idle");
 
     const terminateResult = await created.terminate();
     expect(terminateResult.accepted).toBe(true);
@@ -206,7 +206,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       new AgentInputUserMessage("second restoreable turn"),
     );
     expect(secondResult.accepted).toBe(true);
-    await waitFor(() => (restored.getStatus() ?? "").toLowerCase() === "idle");
+    await waitFor(() => restored.getStatusSnapshot().status === "idle");
   });
 
   it("rejects fresh create when the standalone run is not fully prepared", async () => {

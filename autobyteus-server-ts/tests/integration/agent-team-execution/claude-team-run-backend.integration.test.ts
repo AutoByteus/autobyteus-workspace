@@ -120,7 +120,7 @@ describe("ClaudeTeamRunBackend integration", () => {
     expect(backend.runId).toBe("team-claude-1");
     expect(backend.teamBackendKind).toBe(TeamBackendKind.CLAUDE_AGENT_SDK);
     expect(backend.isActive()).toBe(true);
-    expect(backend.getStatus()).toBe("IDLE");
+    expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
 
     const userMessage = new AgentInputUserMessage("coordinate the task");
@@ -212,7 +212,7 @@ describe("ClaudeTeamRunBackend integration", () => {
       accepted: false,
       code: "RUN_NOT_FOUND",
     });
-    expect(backend.getStatus()).toBeNull();
+    expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
   });
 
   it("forwards team events from the manager subscription", () => {
@@ -263,8 +263,7 @@ describe("ClaudeTeamRunBackend integration", () => {
       eventSourceType: TeamRunEventSourceType.TEAM,
       teamRunId: "team-claude-1",
       data: {
-        old_status: "PROCESSING",
-        new_status: "IDLE",
+        status: "idle",
       },
     });
     expect(observed).toHaveLength(1);

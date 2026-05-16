@@ -38,13 +38,13 @@
       <button
         @click="handlePrimaryAction"
         :disabled="isActionDisabled"
-        :title="isSending ? 'Stop generation' : 'Send message'"
+        :title="canInterrupt ? 'Stop generation' : 'Send message'"
         class="absolute bottom-2 right-2 flex items-center justify-center p-2 text-white rounded-full focus:outline-none focus:ring-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-        :class="isSending
+        :class="canInterrupt
           ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500/50'
           : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500/50'"
       >
-        <Icon v-if="isSending" icon="heroicons:stop-solid" class="h-5 w-5" />
+        <Icon v-if="canInterrupt" icon="heroicons:stop-solid" class="h-5 w-5" />
         <Icon v-else icon="heroicons:paper-airplane-solid" class="h-5 w-5" />
       </button>
     </div>
@@ -89,15 +89,19 @@ const contextFileUploadStore = useContextFileUploadStore();
 const workspaceStore = useWorkspaceStore();
 
 // Store refs
-const { isSending, currentRequirement: storeCurrentRequirement } = storeToRefs(activeContextStore);
+const {
+  isSending,
+  canInterrupt,
+  currentRequirement: storeCurrentRequirement,
+} = storeToRefs(activeContextStore);
 const isActionDisabled = computed(() => {
   if (!activeContextStore.activeAgentContext) {
     return true;
   }
-  if (isSending.value) {
+  if (canInterrupt.value) {
     return false;
   }
-  return contextFileUploadStore.isUploading || !internalRequirement.value.trim();
+  return isSending.value || contextFileUploadStore.isUploading || !internalRequirement.value.trim();
 });
 const voiceButtonTitle = computed(() => {
   if (voiceInputStore.isTranscribing) {
@@ -266,7 +270,7 @@ const handleStop = () => {
 };
 
 const handlePrimaryAction = () => {
-  if (isSending.value) {
+  if (canInterrupt.value) {
     handleStop();
     return;
   }

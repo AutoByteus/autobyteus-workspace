@@ -206,7 +206,7 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     await firstThread.sendTurn(
       new AgentInputUserMessage("Reply with the single word READY."),
     );
-    await waitForIdle(() => firstThread.getStatus() === "IDLE" || firstThread.getStatus() === "ERROR");
+    await waitForIdle(() => firstThread.getStatusSnapshotSource().currentStatus === "IDLE" || firstThread.getStatusSnapshotSource().currentStatus === "ERROR");
 
     const firstThreadId = firstThread.threadId;
     await threadManager.terminateThread(runId);
@@ -225,8 +225,8 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     await restoredThread.sendTurn(
       new AgentInputUserMessage("Reply with the single word RESTORED."),
     );
-    await waitForIdle(() => restoredThread.getStatus() === "IDLE" || restoredThread.getStatus() === "ERROR");
-    expect(restoredThread.getStatus()).toBe("IDLE");
+    await waitForIdle(() => restoredThread.getStatusSnapshotSource().currentStatus === "IDLE" || restoredThread.getStatusSnapshotSource().currentStatus === "ERROR");
+    expect(restoredThread.getStatusSnapshotSource().currentStatus).toBe("IDLE");
   }, 120_000);
 
   it("reuses one live app-server client for two threads on the same workspace", async () => {
@@ -276,14 +276,14 @@ describeCodexThreadManagerIntegration("CodexThreadManager integration (live tran
     await threadA.sendTurn(
       new AgentInputUserMessage("Reply with the single word ALPHA."),
     );
-    await waitForIdle(() => threadA.getStatus() === "IDLE" || threadA.getStatus() === "ERROR");
+    await waitForIdle(() => threadA.getStatusSnapshotSource().currentStatus === "IDLE" || threadA.getStatusSnapshotSource().currentStatus === "ERROR");
 
     await threadB.sendTurn(
       new AgentInputUserMessage("Reply with the single word BRAVO."),
     );
-    await waitForIdle(() => threadB.getStatus() === "IDLE" || threadB.getStatus() === "ERROR");
+    await waitForIdle(() => threadB.getStatusSnapshotSource().currentStatus === "IDLE" || threadB.getStatusSnapshotSource().currentStatus === "ERROR");
 
-    expect(threadA.getStatus()).toBe("IDLE");
-    expect(threadB.getStatus()).toBe("IDLE");
+    expect(threadA.getStatusSnapshotSource().currentStatus).toBe("IDLE");
+    expect(threadB.getStatusSnapshotSource().currentStatus).toBe("IDLE");
   }, 120_000);
 });

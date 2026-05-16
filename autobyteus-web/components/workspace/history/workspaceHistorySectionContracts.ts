@@ -1,4 +1,5 @@
 import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
+import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 
@@ -17,6 +18,7 @@ export interface WorkspaceHistorySectionState {
   isAgentExpanded: (workspaceRootPath: string, agentDefinitionId: string) => boolean;
   toggleAgent: (workspaceRootPath: string, agentDefinitionId: string) => void;
   isTeamExpanded: (teamRunId: string) => boolean;
+  runStatusClass: (status: AgentStatus) => string;
   teamStatusClass: (status: AgentTeamStatus) => string;
   canTerminateTeam: (status: AgentTeamStatus) => boolean;
 }

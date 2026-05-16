@@ -7,6 +7,11 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
   const session = {
     isActive: vi.fn().mockReturnValue(true),
     sessionId: "claude-session-1",
+    getStatusSnapshotSource: vi.fn().mockReturnValue({
+      currentStatus: "IDLE",
+      activeTurnId: null,
+      isInterrupting: false,
+    }),
     subscribeRuntimeEvents: vi.fn().mockImplementation((listener) => {
       listener({ method: "turn/completed", params: {} });
       return () => {};
@@ -54,13 +59,14 @@ describe("ClaudeAgentRunBackend", () => {
     expect(session.terminate).toHaveBeenCalledTimes(1);
     expect(sendResult).toEqual({
       accepted: true,
+      turnId: "turn-1",
       platformAgentRunId: "claude-session-1",
     });
     expect(approveResult).toEqual({ accepted: true });
     expect(interruptResult).toEqual({ accepted: true });
     expect(terminateResult).toEqual({ accepted: true });
     expect(backend.getPlatformAgentRunId()).toBe("claude-session-1");
-    expect(backend.getStatus()).toBe("IDLE");
+    expect(backend.getStatusSnapshot()).toEqual({ status: "idle", can_interrupt: false });
   });
 
   it("returns a runtime command failure when session sendTurn throws", async () => {

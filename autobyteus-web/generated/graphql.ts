@@ -1478,6 +1478,7 @@ export type RunHistoryItemObject = {
   lastActivityAt: Scalars['String']['output'];
   lastKnownStatus: Scalars['String']['output'];
   runId: Scalars['String']['output'];
+  status: Scalars['String']['output'];
   summary: Scalars['String']['output'];
 };
 
@@ -1864,6 +1865,7 @@ export type WorkspaceHistoryTeamRunItemObject = {
   lastActivityAt: Scalars['String']['output'];
   lastKnownStatus: Scalars['String']['output'];
   members: Array<WorkspaceHistoryTeamRunMemberObject>;
+  status: Scalars['String']['output'];
   summary: Scalars['String']['output'];
   teamDefinitionId: Scalars['String']['output'];
   teamDefinitionName: Scalars['String']['output'];
@@ -1877,6 +1879,7 @@ export type WorkspaceHistoryTeamRunMemberObject = {
   memberRouteKey: Scalars['String']['output'];
   memberRunId: Scalars['String']['output'];
   runtimeKind: Scalars['String']['output'];
+  status: Scalars['String']['output'];
   workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
@@ -2432,7 +2435,7 @@ export type ListWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, lastActivityAt: string, lastKnownStatus: string, isActive: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
+export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, lastActivityAt: string, status: string, lastKnownStatus: string, isActive: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, status: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
 
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -5383,6 +5386,7 @@ export const ListWorkspaceRunHistoryDocument = gql`
         runId
         summary
         lastActivityAt
+        status
         lastKnownStatus
         isActive
       }
@@ -5398,6 +5402,7 @@ export const ListWorkspaceRunHistoryDocument = gql`
         workspaceRootPath
         summary
         lastActivityAt
+        status
         lastKnownStatus
         deleteLifecycle
         isActive
@@ -5405,6 +5410,7 @@ export const ListWorkspaceRunHistoryDocument = gql`
           memberRouteKey
           memberName
           memberRunId
+          status
           runtimeKind
           workspaceRootPath
         }

@@ -189,7 +189,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
     expect(backend.runId).toBe("team-auto-1");
     expect(backend.teamBackendKind).toBe(TeamBackendKind.AUTOBYTEUS);
     expect(backend.getRuntimeContext()).toBeNull();
-    expect(backend.getStatus()).toBe("IDLE");
+    expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
 
     const userMessage = new AgentInputUserMessage("hello team");
     await expect(backend.postMessage(userMessage, "WorkerA")).resolves.toMatchObject({
@@ -305,8 +305,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
         team_id: team.teamId,
         event_source_type: "TEAM",
         data: new AgentTeamStatusUpdateData({
-          old_status: "PROCESSING",
-          new_status: "IDLE",
+          status: "idle",
         }),
       }),
     );
@@ -379,8 +378,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
       eventSourceType: TeamRunEventSourceType.TEAM,
       teamRunId: "team-auto-1",
       data: {
-        old_status: "PROCESSING",
-        new_status: "IDLE",
+        status: "idle",
       },
       subTeamNodeName: null,
     });

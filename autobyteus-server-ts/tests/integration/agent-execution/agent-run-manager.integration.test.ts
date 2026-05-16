@@ -30,7 +30,7 @@ const createBackend = (input: {
   const state = {
     active: input.active ?? true,
     platformAgentRunId: input.platformAgentRunId ?? null,
-    status: input.status ?? "IDLE",
+    status: input.status ?? "idle",
   };
   const context =
     input.context ??
@@ -46,7 +46,7 @@ const createBackend = (input: {
     getContext: () => context,
     isActive: () => state.active,
     getPlatformAgentRunId: () => state.platformAgentRunId,
-    getStatus: () => state.status,
+    getStatusSnapshot: () => ({ status: state.status as "idle" | "running" | "error", can_interrupt: false }),
     subscribeToEvents: () => () => undefined,
     postUserMessage: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),

@@ -33,7 +33,7 @@ Orchestrates:
 - creating a temporary context
 - calling the GraphQL mutation
 - opening the WebSocket stream
-- tracking `isSending` / completion
+- tracking local submit-in-flight state, backend status, interrupt authority, and completion
 
 ### 3) Streaming service + protocol
 A WebSocket client that:
@@ -55,13 +55,28 @@ Minimal handler set:
 These handlers update the agent context and mark messages complete. In the current contract:
 - `TURN_STARTED` is a turn-scoped lifecycle marker that clients can observe directly.
 - `TURN_COMPLETED` is the preferred completion signal for one specific turn.
-- `AGENT_STATUS` remains useful as run-level state, but should not be the only completion signal a client depends on.
+- `AGENT_STATUS` is run-level state with payload
+  `{ status: "offline" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
+  It does not contain legacy `new_status` / `old_status` fields.
+- The interrupt/stop affordance should use backend-owned `can_interrupt`. `isSending`
+  is only local submit-flight state and must not grant interrupt authority by itself.
+- Refresh/reopen/recovery should preserve a selected live `running/canInterrupt=true`
+  single run or focused team member while that stream remains authoritative, but
+  terminal `offline` or `error` projections must always clear stale
+  `canInterrupt`, and a later live `idle/can_interrupt=false` status should
+  return the composer to the send affordance.
+- A successful terminate/stop flow should surface a terminal
+  `{ status: "offline", can_interrupt: false }` `AGENT_STATUS` before stream
+  teardown. Treat `offline` as the inactive non-error terminal state for live
+  and first-load history views.
+- `AGENT_STATUS` remains useful as run-level state, but `TURN_COMPLETED` is the
+  preferred signal when a client needs to know that one accepted turn has finished.
 
 ### 5) Core types
 You need small types for:
 - Agent context + run state
 - Conversation + message segments
-- Agent status enum
+- Agent status enum (`offline` / `idle` / `running` / `error`) plus `canInterrupt`
 
 ## Minimal file checklist (frontend)
 
@@ -102,6 +117,15 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 3) **Team streaming service**
 - Routes incoming events to the correct member by `agent_name` or `agent_id`
 - Handles core events: `SEGMENT_*`, `TURN_*`, `AGENT_STATUS`, `ASSISTANT_COMPLETE`, `TEAM_STATUS`, `ERROR`
+- Treats member `AGENT_STATUS` as the source for each member's status and
+  `canInterrupt`; aggregate `TEAM_STATUS` has payload
+  `{ status: "offline" | "idle" | "running" | "error" }` only.
+- Preserves a focused member's live `running/canInterrupt=true` interrupt
+  affordance across refresh/reconcile until that member receives a terminal
+  projection or a later live non-interruptible status.
+- Does not fan out aggregate team `running` to every member during first load,
+  refresh, or recovery. Missing member-scoped status means the member is
+  unknown/offline and non-interruptible until a member `AGENT_STATUS` arrives.
 
 ### Minimal team file checklist
 
@@ -173,8 +197,9 @@ export const useMyFeatureStore = defineStore('myFeature', {
 ## Troubleshooting
 
 - Stuck in loading state
-  - Ensure the streaming service sets `isSending = false` on `TURN_COMPLETED` or `ASSISTANT_COMPLETE`, with `AGENT_STATUS: idle` treated as a compatibility fallback rather than the only completion signal.
+  - Ensure the streaming service sets `isSending = false` only after backend lifecycle/status/error handling indicates the active turn has settled. Use `TURN_COMPLETED` for exact turn completion; a terminal `AGENT_STATUS` payload such as `{ status: "idle", can_interrupt: false }`, `ASSISTANT_COMPLETE`, or `ERROR` can also settle run-level UI state as appropriate.
   - Do not clear `isSending` merely because a stop/interrupt command was sent; wait for the backend lifecycle/status/error stream event so provider runtimes can finish cancellation cleanup first.
+  - If the red stop/interrupt button appears incorrectly, verify the UI is reading `can_interrupt` / `canInterrupt` from the selected run or team member rather than deriving it from `isSending`.
 - "agentDefinitionId and llmModelIdentifier are required"
   - Both must be provided for a new agent run.
 - No stream output

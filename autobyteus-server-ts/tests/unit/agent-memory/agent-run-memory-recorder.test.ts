@@ -51,7 +51,7 @@ const createRun = (input: {
     getContext: () => context,
     isActive: () => true,
     getPlatformAgentRunId: () => "platform-run-1",
-    getStatus: () => "IDLE",
+    getStatusSnapshot: () => ({ status: "idle", can_interrupt: false }),
     subscribeToEvents: (listener) => {
       listeners.add(listener);
       return () => listeners.delete(listener);

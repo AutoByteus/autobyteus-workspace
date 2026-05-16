@@ -415,7 +415,7 @@ describeCodex("Codex token usage GraphQL runtime e2e", () => {
       await waitForMessageAfter(
         messages,
         runStartIndex,
-        (message) => message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+        (message) => message.type === "AGENT_STATUS" && message.payload.status === "idle",
         "AGENT_STATUS IDLE after token usage turn",
       );
 

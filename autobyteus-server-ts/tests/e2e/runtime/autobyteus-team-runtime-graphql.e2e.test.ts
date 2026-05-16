@@ -529,7 +529,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE",
       );
 
@@ -586,7 +586,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE after restore",
       );
     } finally {
@@ -678,7 +678,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE after interrupt",
       );
       await expect(readFile(targetAbsolutePath, "utf-8")).rejects.toMatchObject({
@@ -709,7 +709,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE after interrupt follow-up",
       );
     } finally {
@@ -814,7 +814,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE after active terminate restore follow-up",
       );
     } finally {
@@ -969,7 +969,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE for first projection turn",
       );
 
@@ -1029,7 +1029,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         (message) =>
           message.type === "AGENT_STATUS" &&
           message.payload.agent_name === "worker" &&
-          message.payload.new_status === "IDLE",
+          message.payload.status === "idle",
         "worker AGENT_STATUS IDLE for second projection turn",
       );
 

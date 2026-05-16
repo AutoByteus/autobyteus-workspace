@@ -111,8 +111,11 @@ export class CodexThread {
     };
   }
 
-  getStatus(): string | null {
-    return this.currentStatus;
+  getStatusSnapshotSource() {
+    return {
+      currentStatus: this.currentStatus,
+      activeTurnId: this.activeTurnId,
+    };
   }
 
   getPlatformAgentRunId(): string {
@@ -147,6 +150,11 @@ export class CodexThread {
     const normalizedStatus = status?.trim().toUpperCase() ?? null;
     if (normalizedStatus === "IDLE") {
       this.markTurnTokenUsageReady(this.activeTurnId ?? this.lastCompletedTurnId);
+      this.runContext.runtimeContext.activeTurnId = null;
+      this.pendingMcpToolCalls.clear();
+    } else if (normalizedStatus === "ERROR") {
+      this.runContext.runtimeContext.activeTurnId = null;
+      this.pendingMcpToolCalls.clear();
     }
   }
 

@@ -88,6 +88,46 @@ that state. This keeps the primary input from advertising follow-up readiness
 before provider runtimes such as Claude Agent SDK have settled interrupted
 query/process resources.
 
+### Runtime Status And Interrupt Authority
+
+The frontend runtime status model is intentionally coarse:
+
+- single-agent and team status enums expose only `offline`, `idle`, `running`, and `error`;
+- single-agent `AGENT_STATUS` payloads are
+  `{ status: "offline" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
+- aggregate `TEAM_STATUS` payloads are `{ status: "offline" | "idle" | "running" | "error" }`;
+- team member interrupt authority comes from the selected member's most recent
+  `AGENT_STATUS.can_interrupt` value, not from aggregate `TEAM_STATUS`; and
+- legacy target fields such as `new_status` / `old_status` and detailed runtime
+  phases such as `bootstrapping`, `awaiting_llm_response`, or `executing_tool`
+  are not part of the frontend WebSocket status contract.
+
+Runtime adapters may still use richer provider/native status internally. The
+server boundary projects those details into the coarse API status and computes
+`can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
+remains a local submit-flight and disabled-input signal only; it must not be
+used to show the stop button or to infer that an interrupt can be accepted.
+Run-history refresh, active recovery, and run-open hydration must preserve an
+already-live `running/canInterrupt=true` single run or focused team member while
+that live stream remains authoritative, but terminal `offline` or `error`
+history projections must clear stale `canInterrupt` even when a caller asks to
+preserve live interrupt state. A later live
+`AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
+browser-visible stop affordance.
+
+Active team recovery and refresh must keep aggregate and member status separate.
+If a team row is `running` but only one member has a member-scoped `running`
+history/snapshot/event, the other members must stay at their own member-scoped
+status, or default to `offline/canInterrupt=false` until a member `AGENT_STATUS`
+arrives. Frontend reconciliation must never fan out aggregate team `running`
+state to every member row.
+
+When a single-agent run is terminated successfully, the backend publishes
+`AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
+stream before teardown. Frontend live state and history merge logic should treat
+`offline` as the canonical inactive non-error terminal state instead of waiting
+for a socket close or a later history reload to infer that transition.
+
 ### Run Reopen Projection Hydration
 
 Run-history reopen consumes a backend replay bundle with sibling
@@ -238,7 +278,8 @@ Incoming events are routed based on their `type`:
 | `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
-| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run-level status such as `running`, `idle`, or `error`. |
+| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no `new_status` / `old_status`. |
+| `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into banner-ready run state (`requested`, `started`, `completed`, `failed`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
@@ -341,7 +382,9 @@ The backend can emit:
 - A generic `ERROR` event for unrecoverable system/agent failures.
 - Explicit turn-scoped lifecycle events (`TURN_STARTED`, `TURN_COMPLETED`) for one accepted user turn.
 
-`AGENT_STATUS` is still run-scoped state. `TURN_COMPLETED` is now the preferred signal when a client needs to know that one exact turn has finished.
+`AGENT_STATUS` is still run-scoped or team-member state. `TEAM_STATUS` is only
+aggregate team state. `TURN_COMPLETED` is now the preferred signal when a client
+needs to know that one exact turn has finished.
 
 `TOOL_LOG` is diagnostic-only and never the lifecycle authority for completion/failure.
 

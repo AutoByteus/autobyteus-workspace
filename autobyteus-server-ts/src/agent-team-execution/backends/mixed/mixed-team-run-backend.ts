@@ -54,8 +54,12 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     return this.context.runtimeContext ?? null;
   }
 
-  getStatus(): string | null {
-    return this.isActive() ? "IDLE" : null;
+  getStatusSnapshot() {
+    return this.teamManager.getStatusSnapshot();
+  }
+
+  getMemberStatusSnapshots() {
+    return this.teamManager.getMemberStatusSnapshots();
   }
 
   async postMessage(

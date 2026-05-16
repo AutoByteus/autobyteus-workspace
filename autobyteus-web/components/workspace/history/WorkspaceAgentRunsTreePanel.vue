@@ -249,6 +249,7 @@ const sectionState: WorkspaceHistorySectionState = {
   isAgentExpanded: treeState.isAgentExpanded,
   toggleAgent: treeState.toggleAgent,
   isTeamExpanded: treeState.isTeamExpanded,
+  runStatusClass: treeState.runStatusClass,
   teamStatusClass: treeState.teamStatusClass,
   canTerminateTeam: treeState.canTerminateTeam,
 };

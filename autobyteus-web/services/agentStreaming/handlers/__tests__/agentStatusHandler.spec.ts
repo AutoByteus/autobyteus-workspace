@@ -68,7 +68,8 @@ describe('agentStatusHandler', () => {
     vi.clearAllMocks();
     mockContext = {
       state: { 
-        currentStatus: AgentStatus.Uninitialized,
+        currentStatus: AgentStatus.Idle,
+        canInterrupt: false,
         compactionStatus: null,
         runId: 'run-1',
       },
@@ -81,22 +82,24 @@ describe('agentStatusHandler', () => {
 
   describe('handleAgentStatus', () => {
     it('updates currentStatus', () => {
-      const payload: AgentStatusPayload = { new_status: 'processing_user_input', old_status: 'idle' };
+      const payload: AgentStatusPayload = { status: 'running', can_interrupt: true };
       handleAgentStatus(payload, mockContext);
-      expect(mockContext.state.currentStatus).toBe(AgentStatus.ProcessingUserInput);
+      expect(mockContext.state.currentStatus).toBe(AgentStatus.Running);
+      expect(mockContext.state.canInterrupt).toBe(true);
     });
 
     it('sets isSending to false when status is Idle', () => {
-      const payload: AgentStatusPayload = { new_status: 'idle', old_status: 'processing_user_input' };
+      const payload: AgentStatusPayload = { status: 'idle', can_interrupt: false };
       handleAgentStatus(payload, mockContext);
       expect(mockContext.isSending).toBe(false);
+      expect(mockContext.state.canInterrupt).toBe(false);
     });
 
     it('marks last AI message as complete when Idle', () => {
       const aiMsg = { type: 'ai', isComplete: false };
       mockContext.conversation.messages.push(aiMsg);
       
-      const payload: AgentStatusPayload = { new_status: 'idle', old_status: 'processing_user_input' };
+      const payload: AgentStatusPayload = { status: 'idle', can_interrupt: false };
       handleAgentStatus(payload, mockContext);
       
       expect(aiMsg.isComplete).toBe(true);
@@ -171,7 +174,7 @@ describe('agentStatusHandler', () => {
   });
 
   describe('handleTurnCompleted', () => {
-    it('marks last AI message as complete and stops sending', () => {
+    it('marks last AI message as complete without owning send state', () => {
       const aiMsg = { type: 'ai', isComplete: false };
       mockContext.conversation.messages.push(aiMsg);
 
@@ -179,12 +182,11 @@ describe('agentStatusHandler', () => {
       handleTurnCompleted(payload, mockContext);
 
       expect(aiMsg.isComplete).toBe(true);
-      expect(mockContext.isSending).toBe(false);
     });
   });
 
   describe('handleTurnInterrupted', () => {
-    it('terminalizes pending approval tool rows and stops sending', () => {
+    it('terminalizes pending approval tool rows without owning send state', () => {
       const toolSegment = {
         type: 'tool_call',
         invocationId: 'inv-pending',
@@ -208,7 +210,6 @@ describe('agentStatusHandler', () => {
       expect(toolSegment.status).toBe('interrupted');
       expect(toolSegment.error).toBe('user_interrupt');
       expect(aiMsg.isComplete).toBe(true);
-      expect(mockContext.isSending).toBe(false);
       expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(
         mockContext.state.runId,
         'inv-pending',
@@ -224,7 +225,7 @@ describe('agentStatusHandler', () => {
   });
 
   describe('handleError', () => {
-    it('adds error segment and stops sending', () => {
+    it('adds error segment without owning send state', () => {
       const payload: ErrorPayload = { code: 'TEST_ERR', message: 'Something went wrong' };
       handleError(payload, mockContext);
 
@@ -236,7 +237,6 @@ describe('agentStatusHandler', () => {
         source: 'TEST_ERR',
         message: 'Something went wrong'
       });
-      expect(mockContext.isSending).toBe(false);
     });
 
     it('suppresses error segment for tool execution errors and updates tool segment', () => {
@@ -270,7 +270,6 @@ describe('agentStatusHandler', () => {
         'inv-123',
         'read_file',
       );
-      expect(mockContext.isSending).toBe(false);
       expect(aiMsg.isComplete).toBe(true);
     });
 
@@ -306,7 +305,6 @@ describe('agentStatusHandler', () => {
         message: 'stream exploded',
       });
       expect(aiMsg.isComplete).toBe(true);
-      expect(mockContext.isSending).toBe(false);
       expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(
         mockContext.state.runId,
         'inv-partial',

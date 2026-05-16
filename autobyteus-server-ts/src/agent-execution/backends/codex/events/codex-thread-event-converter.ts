@@ -1,4 +1,5 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
+import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
@@ -93,6 +94,8 @@ export class CodexThreadEventConverter {
   private readonly turnEventConverterContext: CodexTurnEventConverterContext = {
     createEvent: (codexEventName, eventType, payload) =>
       this.createEvent(codexEventName, eventType, payload),
+    createStatusEvent: (codexEventName, payload) =>
+      this.createStatusEvent(codexEventName, payload),
     clearReasoningSegmentForTurn: (payload) =>
       this.itemEventPayloadParser.clearReasoningSegmentForTurn(payload),
   };
@@ -149,6 +152,8 @@ export class CodexThreadEventConverter {
   private readonly threadLifecycleEventConverterContext: CodexThreadLifecycleEventConverterContext = {
     createEvent: (codexEventName, eventType, payload) =>
       this.createEvent(codexEventName, eventType, payload),
+    createStatusEvent: (codexEventName, payload) =>
+      this.createStatusEvent(codexEventName, payload),
   };
 
   private readonly rawResponseEventConverterContext: CodexRawResponseEventConverterContext = {
@@ -164,6 +169,10 @@ export class CodexThreadEventConverter {
   constructor(
     private readonly runId: string,
     private readonly workspaceRoot: string | null = null,
+    private readonly getStatusPayload: () => AgentStatusPayload = () => ({
+      status: "offline",
+      can_interrupt: false,
+    }),
   ) {
   }
 
@@ -203,12 +212,11 @@ export class CodexThreadEventConverter {
       return converted ? [converted] : [];
     }
     if (isCodexThreadLifecycleEventName(codexEventName)) {
-      const converted = convertCodexThreadLifecycleEvent(
+      return convertCodexThreadLifecycleEvent(
         this.threadLifecycleEventConverterContext,
         codexEventName,
         payload,
       );
-      return converted ? [converted] : [];
     }
     return [];
   }
@@ -238,6 +246,17 @@ export class CodexThreadEventConverter {
         ...(segmentType ? { segment_type: segmentType } : {}),
       },
     );
+  }
+
+
+  private createStatusEvent(
+    codexEventName: string,
+    payload: Partial<AgentStatusPayload> = {},
+  ): AgentRunEvent {
+    return this.createEvent(codexEventName, AgentRunEventType.AGENT_STATUS, {
+      ...this.getStatusPayload(),
+      ...payload,
+    });
   }
 
   private createEvent(

@@ -31,6 +31,10 @@ import {
   ServerMessageType,
 } from "./models.js";
 import { serializePayload } from "./payload-serialization.js";
+import {
+  TeamRuntimeStatusSnapshotService,
+  getTeamRuntimeStatusSnapshotService,
+} from "./team-runtime-status-snapshot-service.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -72,6 +76,8 @@ export class AgentTeamStreamHandler {
     teamRunService: TeamRunService = getTeamRunService(),
     broadcaster: TeamStreamBroadcaster = getTeamStreamBroadcaster(),
     agentRunEventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
+    private readonly statusSnapshotService: TeamRuntimeStatusSnapshotService =
+      getTeamRuntimeStatusSnapshotService(),
   ) {
     this.sessionManager = sessionManager;
     this.teamRunService = teamRunService;
@@ -196,16 +202,9 @@ export class AgentTeamStreamHandler {
     connection: WebSocketConnection,
     teamRun: TeamRun,
   ): void {
-    const currentStatus = teamRun.getStatus();
-    if (typeof currentStatus !== "string" || currentStatus.trim().length === 0) {
-      return;
+    for (const message of this.statusSnapshotService.getInitialMessages(teamRun)) {
+      connection.send(message.toJson());
     }
-
-    connection.send(
-      new ServerMessage(ServerMessageType.TEAM_STATUS, {
-        new_status: currentStatus.trim().toUpperCase(),
-      }).toJson(),
-    );
   }
 
   private ensureActiveSessionSubscription(sessionId: string, teamRunId: string): boolean {

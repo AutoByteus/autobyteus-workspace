@@ -100,7 +100,7 @@ const waitForEvent = async (
     const eventSummary = events.map((event) => ({
       eventType: event.eventType,
       statusHint: event.statusHint,
-      newStatus: event.payload.new_status ?? null,
+      status: event.payload.status ?? null,
       segmentType: event.payload.segment_type ?? null,
       invocationId: resolveInvocationId(event.payload),
       toolName: event.payload.tool_name ?? null,
@@ -302,7 +302,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events,
           (event) =>
             event.eventType === AgentRunEventType.AGENT_STATUS &&
-            event.payload.new_status === "RUNNING" &&
+            event.payload.status === "running" &&
             event.statusHint === "ACTIVE",
         );
         await waitForEvent(
@@ -321,11 +321,11 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events,
           (event) =>
             event.eventType === AgentRunEventType.AGENT_STATUS &&
-            event.payload.new_status === "IDLE" &&
+            event.payload.status === "idle" &&
             event.statusHint === "IDLE",
         );
 
-        expect(backend.getStatus()).toBe("IDLE");
+        expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
         expect(
           events.some(
             (event) =>
@@ -429,7 +429,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events,
           (event) =>
             event.eventType === AgentRunEventType.AGENT_STATUS &&
-            event.payload.new_status === "IDLE",
+            event.payload.status === "idle",
         );
 
         expect(await waitForFile(targetFilePath)).toBe(true);
@@ -577,7 +577,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events,
           (event) =>
             event.eventType === AgentRunEventType.AGENT_STATUS &&
-            event.payload.new_status === "IDLE",
+            event.payload.status === "idle",
         );
 
         expect(
@@ -658,7 +658,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events,
           (event) =>
             event.eventType === AgentRunEventType.AGENT_STATUS &&
-            event.payload.new_status === "IDLE",
+            event.payload.status === "idle",
         );
 
         expect(fsSync.existsSync(targetFilePath)).toBe(false);
@@ -754,7 +754,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           restoredEvents,
           (event) =>
             event.eventType === AgentRunEventType.AGENT_STATUS &&
-            event.payload.new_status === "IDLE",
+            event.payload.status === "idle",
         );
 
         const messages = await sessionManager.getSessionMessages(sessionId!);
@@ -837,7 +837,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events,
           (event) =>
             event.eventType === AgentRunEventType.AGENT_STATUS &&
-            event.payload.new_status === "IDLE",
+            event.payload.status === "idle",
         );
 
         expect(
@@ -935,7 +935,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events,
           (event) =>
             event.eventType === AgentRunEventType.AGENT_STATUS &&
-            event.payload.new_status === "IDLE",
+            event.payload.status === "idle",
         );
 
         const succeededToolNames = events

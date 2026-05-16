@@ -18,6 +18,7 @@ const createContext = (contextId: string, requirement = ''): MockAgentContext =>
 const activeContextStoreMock = reactive({
   activeAgentContext: createContext('ctx-1') as MockAgentContext | null,
   isSending: false,
+  canInterrupt: false,
   currentRequirement: '',
   updateRequirement: vi.fn(),
   updateRequirementForContext: vi.fn(),
@@ -53,6 +54,7 @@ vi.mock('pinia', async () => {
     ...actual,
     storeToRefs: (store: any) => ({
       isSending: toRef(store, 'isSending'),
+      canInterrupt: toRef(store, 'canInterrupt'),
       currentRequirement: toRef(store, 'currentRequirement'),
     }),
   }
@@ -114,6 +116,7 @@ describe('AgentUserInputTextArea', () => {
     )
     selectContext(createContext('ctx-1'))
     activeContextStoreMock.isSending = false
+    activeContextStoreMock.canInterrupt = false
     contextFileUploadStoreMock.isUploading = false
     voiceInputStoreMock.isAvailable = false
     voiceInputStoreMock.isRecording = false
@@ -159,6 +162,40 @@ describe('AgentUserInputTextArea', () => {
     await nextTick()
 
     expect(wrapper.find('button[title="Send message"]').attributes('disabled')).toBeDefined()
+  })
+
+  it('uses backend canInterrupt to show and trigger stop even without a sendable draft', async () => {
+    activeContextStoreMock.canInterrupt = true
+    activeContextStoreMock.isSending = false
+    selectContext(createContext('ctx-interrupt', ''))
+
+    const wrapper = mount(AgentUserInputTextArea)
+    await nextTick()
+
+    const button = wrapper.find('button[title="Stop generation"]')
+    expect(button.exists()).toBe(true)
+    expect(button.attributes('disabled')).toBeUndefined()
+    expect(wrapper.find('[data-icon="heroicons:stop-solid"]').exists()).toBe(true)
+
+    await button.trigger('click')
+
+    expect(activeContextStoreMock.interruptGeneration).toHaveBeenCalledTimes(1)
+    expect(activeContextStoreMock.send).not.toHaveBeenCalled()
+  })
+
+  it('does not show stop from isSending alone when canInterrupt is false', async () => {
+    activeContextStoreMock.isSending = true
+    activeContextStoreMock.canInterrupt = false
+    selectContext(createContext('ctx-sending', 'ready to send'))
+
+    const wrapper = mount(AgentUserInputTextArea)
+    await nextTick()
+
+    const sendButton = wrapper.find('button[title="Send message"]')
+    expect(sendButton.exists()).toBe(true)
+    expect(sendButton.attributes('disabled')).toBeDefined()
+    expect(wrapper.find('button[title="Stop generation"]').exists()).toBe(false)
+    expect(wrapper.find('[data-icon="heroicons:paper-airplane-solid"]').exists()).toBe(true)
   })
 
   it('keeps a debounced draft with the member that typed it when focus changes', async () => {
