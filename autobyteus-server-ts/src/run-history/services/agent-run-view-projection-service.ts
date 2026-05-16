@@ -8,10 +8,9 @@ import type {
   RunProjectionProvider,
   RunProjectionProviderInput,
   RunProjection,
-  RunProjectionActivityEntry,
-  RunProjectionConversationEntry,
   RunProjectionSourceDescriptor,
 } from "../projection/run-projection-types.js";
+import { mergeProjectionBundles } from "../projection/run-projection-merge.js";
 import { buildRunProjectionBundle } from "../projection/run-projection-utils.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
@@ -32,53 +31,6 @@ const projectionRichnessScore = (projection: RunProjection | null | undefined): 
   const siblingBundleBonus =
     projection.conversation.length > 0 && projection.activities.length > 0 ? 5 : 0;
   return conversationScore + activityScore + summaryScore + lastActivityScore + siblingBundleBonus;
-};
-
-const mergeProjectionRows = <T extends RunProjectionConversationEntry | RunProjectionActivityEntry>(
-  primaryRows: T[],
-  secondaryRows: T[],
-): T[] => {
-  const merged: T[] = [];
-  const seen = new Set<string>();
-
-  for (const row of [...primaryRows, ...secondaryRows]) {
-    const key = JSON.stringify(row);
-    if (seen.has(key)) {
-      continue;
-    }
-    seen.add(key);
-    merged.push(row);
-  }
-
-  return merged;
-};
-
-const mergeProjectionBundles = (
-  runId: string,
-  primaryProjection: RunProjection | null,
-  secondaryProjection: RunProjection | null,
-): RunProjection | null => {
-  if (!primaryProjection) {
-    return secondaryProjection;
-  }
-  if (!secondaryProjection) {
-    return primaryProjection;
-  }
-
-  const bundle = buildRunProjectionBundle(
-    runId,
-    mergeProjectionRows(primaryProjection.conversation, secondaryProjection.conversation),
-    mergeProjectionRows(primaryProjection.activities, secondaryProjection.activities),
-  );
-
-  return {
-    ...bundle,
-    summary: bundle.summary ?? primaryProjection.summary ?? secondaryProjection.summary,
-    lastActivityAt:
-      bundle.lastActivityAt ??
-      primaryProjection.lastActivityAt ??
-      secondaryProjection.lastActivityAt,
-  };
 };
 
 export class AgentRunViewProjectionService {

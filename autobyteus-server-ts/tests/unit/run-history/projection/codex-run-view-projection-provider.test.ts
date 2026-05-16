@@ -311,6 +311,295 @@ describe("CodexRunViewProjectionProvider", () => {
     }
   });
 
+  it("preserves failed command execution output and exit-code diagnostics", async () => {
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-projection-unit-"));
+    const reader: CodexThreadHistoryReader = {
+      readThread: vi.fn(async () => ({
+        thread: {
+          id: "thread-failed-command",
+          turns: [
+            {
+              id: "turn-1",
+              items: [
+                {
+                  type: "commandExecution",
+                  id: "call-failed-command",
+                  command: "/bin/bash -lc 'exit 1'",
+                  status: "failed",
+                  aggregatedOutput: "boom\n",
+                  exitCode: 1,
+                },
+              ],
+            },
+          ],
+        },
+      })),
+    } as unknown as CodexThreadHistoryReader;
+    const provider = new CodexRunViewProjectionProvider(reader);
+    try {
+      const projection = await provider.buildProjection(
+        createProjectionInput({
+          runId: "run-codex-failed-command",
+          workspaceRootPath,
+          platformAgentRunId: "thread-failed-command",
+        }),
+      );
+
+      expect(projection).not.toBeNull();
+      expect(projection?.conversation).toEqual([
+        expect.objectContaining({
+          kind: "tool_call",
+          invocationId: "call-failed-command",
+          toolName: "run_bash",
+          toolArgs: { command: "/bin/bash -lc 'exit 1'" },
+          toolResult: {
+            status: "failed",
+            output: "boom\n",
+            exit_code: 1,
+          },
+          toolError: "Tool execution failed.",
+        }),
+      ]);
+      expect(projection?.activities).toEqual([
+        expect.objectContaining({
+          invocationId: "call-failed-command",
+          toolName: "run_bash",
+          type: "terminal_command",
+          status: "error",
+          result: {
+            status: "failed",
+            output: "boom\n",
+            exit_code: 1,
+          },
+          error: "Tool execution failed.",
+        }),
+      ]);
+    } finally {
+      await rm(workspaceRootPath, { recursive: true, force: true });
+    }
+  });
+
+  it("preserves dynamic and MCP tool calls from codex thread history in transcript order", async () => {
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-projection-unit-"));
+    const reader: CodexThreadHistoryReader = {
+      readThread: vi.fn(async () => ({
+        thread: {
+          id: "thread-dynamic-tools",
+          turns: [
+            {
+              id: "turn-1",
+              createdAt: "2026-05-16T08:00:00.000Z",
+              items: [
+                {
+                  type: "userMessage",
+                  id: "item-user",
+                  content: [{ type: "text", text: "run shell and send a message" }],
+                },
+                {
+                  type: "reasoning",
+                  id: "item-reasoning",
+                  summary: ["I will inspect the workspace and send the handoff."],
+                },
+                {
+                  type: "mcpToolCall",
+                  id: "call-shell-1",
+                  name: "functions.exec_command",
+                  arguments: { cmd: "pwd", workdir: "/tmp/workspace" },
+                  contentItems: [
+                    {
+                      type: "inputText",
+                      text: JSON.stringify({ stdout: "/tmp/workspace\n", exit_code: 0 }),
+                    },
+                  ],
+                  status: "completed",
+                },
+                {
+                  type: "dynamicToolCall",
+                  id: "call-send-1",
+                  tool: "send_message_to",
+                  arguments: {
+                    recipient_name: "code_reviewer",
+                    content: "Implementation handoff is ready.",
+                  },
+                  result: { success: true },
+                  status: "completed",
+                },
+                {
+                  type: "agentMessage",
+                  id: "item-assistant",
+                  text: "Done.",
+                },
+              ],
+            },
+          ],
+        },
+      })),
+    } as unknown as CodexThreadHistoryReader;
+    const provider = new CodexRunViewProjectionProvider(reader);
+    try {
+      const projection = await provider.buildProjection(
+        createProjectionInput({
+          runId: "run-codex-dynamic-tools",
+          workspaceRootPath,
+          platformAgentRunId: "thread-dynamic-tools",
+        }),
+      );
+
+      expect(projection).not.toBeNull();
+      expect(projection?.conversation.map((entry) => entry.kind)).toEqual([
+        "message",
+        "reasoning",
+        "tool_call",
+        "tool_call",
+        "message",
+      ]);
+      const toolCalls = projection?.conversation.filter((entry) => entry.kind === "tool_call") ?? [];
+      expect(toolCalls.map((entry) => entry.toolName)).toEqual([
+        "functions.exec_command",
+        "send_message_to",
+      ]);
+      expect(toolCalls[0]).toMatchObject({
+        invocationId: "call-shell-1",
+        toolArgs: { cmd: "pwd", workdir: "/tmp/workspace" },
+        toolResult: { stdout: "/tmp/workspace\n", exit_code: 0 },
+      });
+      expect(toolCalls[1]).toMatchObject({
+        invocationId: "call-send-1",
+        toolArgs: {
+          recipient_name: "code_reviewer",
+          content: "Implementation handoff is ready.",
+        },
+        toolResult: { success: true },
+      });
+      expect(projection?.activities).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            invocationId: "call-shell-1",
+            toolName: "functions.exec_command",
+            type: "tool_call",
+            status: "success",
+            arguments: { cmd: "pwd", workdir: "/tmp/workspace" },
+            result: { stdout: "/tmp/workspace\n", exit_code: 0 },
+          }),
+          expect.objectContaining({
+            invocationId: "call-send-1",
+            toolName: "send_message_to",
+            type: "tool_call",
+            status: "success",
+            arguments: {
+              recipient_name: "code_reviewer",
+              content: "Implementation handoff is ready.",
+            },
+            result: { success: true },
+          }),
+        ]),
+      );
+    } finally {
+      await rm(workspaceRootPath, { recursive: true, force: true });
+    }
+  });
+
+  it("extracts failed MCP and dynamic tool errors from nested result content", async () => {
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-projection-unit-"));
+    const reader: CodexThreadHistoryReader = {
+      readThread: vi.fn(async () => ({
+        thread: {
+          id: "thread-failed-dynamic-tools",
+          turns: [
+            {
+              id: "turn-1",
+              items: [
+                {
+                  type: "mcpToolCall",
+                  id: "call-tts-failed",
+                  server: "tts",
+                  tool: "speak",
+                  arguments: { text: "hello" },
+                  status: "failed",
+                  result: {
+                    content: [
+                      {
+                        type: "text",
+                        text: "Error executing tool speak: timeout",
+                      },
+                    ],
+                    structuredContent: { code: "ETIMEDOUT" },
+                  },
+                },
+                {
+                  type: "dynamicToolCall",
+                  id: "call-send-failed",
+                  tool: "send_message_to",
+                  arguments: { recipient_name: "missing", content: "hello" },
+                  status: "failed",
+                  result: {
+                    content: [
+                      {
+                        type: "text",
+                        text: "Recipient missing was not found.",
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      })),
+    } as unknown as CodexThreadHistoryReader;
+    const provider = new CodexRunViewProjectionProvider(reader);
+    try {
+      const projection = await provider.buildProjection(
+        createProjectionInput({
+          runId: "run-codex-failed-dynamic-tools",
+          workspaceRootPath,
+          platformAgentRunId: "thread-failed-dynamic-tools",
+        }),
+      );
+
+      expect(projection).not.toBeNull();
+      expect(projection?.conversation).toEqual([
+        expect.objectContaining({
+          kind: "tool_call",
+          invocationId: "call-tts-failed",
+          toolName: "tts.speak",
+          toolArgs: { text: "hello" },
+          toolResult: {
+            content: [
+              {
+                type: "text",
+                text: "Error executing tool speak: timeout",
+              },
+            ],
+            structuredContent: { code: "ETIMEDOUT" },
+          },
+          toolError: "Error executing tool speak: timeout",
+        }),
+        expect.objectContaining({
+          kind: "tool_call",
+          invocationId: "call-send-failed",
+          toolName: "send_message_to",
+          toolArgs: { recipient_name: "missing", content: "hello" },
+          toolError: "Recipient missing was not found.",
+        }),
+      ]);
+      expect(projection?.activities).toEqual([
+        expect.objectContaining({
+          invocationId: "call-tts-failed",
+          status: "error",
+          error: "Error executing tool speak: timeout",
+        }),
+        expect.objectContaining({
+          invocationId: "call-send-failed",
+          status: "error",
+          error: "Recipient missing was not found.",
+        }),
+      ]);
+    } finally {
+      await rm(workspaceRootPath, { recursive: true, force: true });
+    }
+  });
+
   it("falls back to process cwd when manifest workspace path does not exist", async () => {
     const reader: CodexThreadHistoryReader = {
       readThread: vi.fn(async () => ({

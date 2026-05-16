@@ -9,9 +9,42 @@ const asString = (value: unknown): string | null =>
 export type CodexFileChangeFields = {
   path: string | null;
   patch: string | null;
+  kind?: string | null;
 };
 
 export class CodexFileChangePayloadHelper {
+  public resolveArguments(payload: Record<string, unknown>): Record<string, unknown> | null {
+    const item = asObject(payload.item);
+    const changes = [
+      ...this.resolveChangeEntries(payload.changes),
+      ...this.resolveChangeEntries(item.changes),
+    ];
+
+    if (changes.length === 0) {
+      const singleChangeCandidates = [
+        asObject(payload.change),
+        asObject(payload.file_change),
+        asObject(item.change),
+        asObject(item.file_change),
+        payload,
+        item,
+      ];
+      for (const candidate of singleChangeCandidates) {
+        const resolved = this.resolveEntry(candidate);
+        const argument = this.toArgument(resolved);
+        if (argument) {
+          return argument;
+        }
+      }
+      return null;
+    }
+
+    if (changes.length === 1) {
+      return changes[0] ?? null;
+    }
+    return { changes };
+  }
+
   public resolveFields(payload: Record<string, unknown>): CodexFileChangeFields {
     const item = asObject(payload.item);
     const singleChangeCandidates = [
@@ -53,6 +86,7 @@ export class CodexFileChangePayloadHelper {
 
   private resolveEntry(change: Record<string, unknown>): CodexFileChangeFields {
     const file = asObject(change.file);
+    const kind = asObject(change.kind);
     return {
       path: asString(change.path) ?? asString(file.path),
       patch:
@@ -62,6 +96,30 @@ export class CodexFileChangePayloadHelper {
         asString(change.content) ??
         asString(file.patch) ??
         asString(file.diff),
+      kind: asString(change.kind) ?? asString(kind.type),
     };
+  }
+
+  private resolveChangeEntries(value: unknown): Record<string, unknown>[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+    return value
+      .map((entry) => this.toArgument(this.resolveEntry(asObject(entry))))
+      .filter((entry): entry is Record<string, unknown> => Boolean(entry));
+  }
+
+  private toArgument(fields: CodexFileChangeFields): Record<string, unknown> | null {
+    const next: Record<string, unknown> = {};
+    if (fields.path) {
+      next.path = fields.path;
+    }
+    if (fields.patch) {
+      next.patch = fields.patch;
+    }
+    if (fields.kind) {
+      next.kind = fields.kind;
+    }
+    return Object.keys(next).length > 0 ? next : null;
   }
 }

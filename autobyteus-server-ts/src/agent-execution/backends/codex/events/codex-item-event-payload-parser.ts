@@ -1,6 +1,10 @@
-import { CodexFileChangePayloadHelper } from "./codex-file-change-payload-helper.js";
+import { CodexFileChangePayloadHelper } from "../items/codex-file-change-payload-helper.js";
+import {
+  normalizeCodexItemTypeToken,
+  resolveCodexToolItemFamily,
+} from "../items/codex-tool-item-family.js";
+import { CodexToolPayloadParser } from "../items/codex-tool-payload-parser.js";
 import { CodexReasoningPayloadParser } from "./codex-reasoning-payload-parser.js";
-import { CodexToolPayloadParser } from "./codex-tool-payload-parser.js";
 
 const asObject = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -16,6 +20,16 @@ const normalizeSegmentTypeToken = (value: string): string =>
 const asSegmentType = (value: string | null): string => {
   if (!value) {
     return "text";
+  }
+  const family = resolveCodexToolItemFamily(value);
+  if (family === "dynamic_tool_call" || family === "mcp_tool_call" || family === "web_search") {
+    return "tool_call";
+  }
+  if (family === "command_execution") {
+    return "run_bash";
+  }
+  if (family === "file_change") {
+    return "edit_file";
   }
   const token = normalizeSegmentTypeToken(value);
   if (token === "text" || token === "message" || token === "agentmessage") {
@@ -164,7 +178,7 @@ export class CodexItemEventPayloadParser {
     if (!type) {
       return null;
     }
-    return type.replace(/[_-]/g, "").toLowerCase();
+    return normalizeCodexItemTypeToken(type);
   }
 
   public isUserMessageItem(itemType: string | null): boolean {
@@ -176,7 +190,7 @@ export class CodexItemEventPayloadParser {
   }
 
   public isWebSearchItem(itemType: string | null): boolean {
-    return itemType === "websearch";
+    return resolveCodexToolItemFamily(itemType) === "web_search";
   }
 
   public resolveWebSearchMetadata(payload: Record<string, unknown>): Record<string, unknown> {

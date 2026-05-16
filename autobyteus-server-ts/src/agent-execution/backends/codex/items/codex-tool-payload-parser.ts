@@ -272,6 +272,11 @@ export class CodexToolPayloadParser {
       return candidate;
     }
 
+    const resultError = this.resolveParsedErrorText(payload.result ?? item.result);
+    if (resultError) {
+      return resultError;
+    }
+
     const textCandidate = this.resolveToolResultText(payload);
     if (textCandidate) {
       const parsed = parseJsonValue(textCandidate);
@@ -341,29 +346,44 @@ export class CodexToolPayloadParser {
     return merged;
   }
 
-  private collectText(value: unknown): string {
+  private collectText(value: unknown, depth = 0): string {
+    if (depth > 6 || value === null || value === undefined) {
+      return "";
+    }
     if (typeof value === "string") {
       return value;
     }
-    if (!Array.isArray(value)) {
+
+    const chunks: string[] = [];
+    if (Array.isArray(value)) {
+      for (const entry of value) {
+        const text = this.collectText(entry, depth + 1);
+        if (text) {
+          chunks.push(text);
+        }
+      }
+      return chunks.join("");
+    }
+
+    const row = asObject(value);
+    if (Object.keys(row).length === 0) {
       return "";
     }
 
-    const chunks: string[] = [];
-    for (const entry of value) {
-      if (typeof entry === "string") {
-        chunks.push(entry);
-        continue;
-      }
-      const row = asObject(entry);
-      const text =
-        asString(row.text) ??
-        asString(row.content) ??
-        asString(row.summary) ??
-        asString(row.delta) ??
-        asString(row.reasoning) ??
-        asString(row.value) ??
-        null;
+    const fields = [
+      row.text,
+      row.content,
+      row.contentItems,
+      row.summary,
+      row.delta,
+      row.reasoning,
+      row.value,
+      row.error,
+      row.message,
+      row.structuredContent,
+    ];
+    for (const field of fields) {
+      const text = this.collectText(field, depth + 1);
       if (text) {
         chunks.push(text);
       }
@@ -378,7 +398,11 @@ export class CodexToolPayloadParser {
       this.collectText(payload.contentItems) ||
       this.collectText(item.contentItems) ||
       this.collectText(payload.content) ||
-      this.collectText(item.content);
+      this.collectText(item.content) ||
+      this.collectText(payload.result) ||
+      this.collectText(item.result) ||
+      this.collectText(payload.output) ||
+      this.collectText(item.output);
     return candidate.trim();
   }
 
@@ -392,7 +416,34 @@ export class CodexToolPayloadParser {
       return direct;
     }
     const nestedError = asObject(parsed.error);
-    return asString(nestedError.message) ?? asString(nestedError.code);
+    const nestedErrorText = asString(nestedError.message) ?? asString(nestedError.code);
+    if (nestedErrorText) {
+      return nestedErrorText;
+    }
+    const structuredContent = asObject(parsed.structuredContent);
+    const structuredDirect =
+      asString(structuredContent.error) ?? asString(structuredContent.message);
+    if (structuredDirect) {
+      return structuredDirect;
+    }
+    const structuredError = asObject(structuredContent.error);
+    const structuredErrorText =
+      asString(structuredError.message) ?? asString(structuredError.code);
+    if (structuredErrorText) {
+      return structuredErrorText;
+    }
+    const contentText = this.collectText(parsed.content) || this.collectText(parsed.contentItems);
+    if (!contentText) {
+      return null;
+    }
+    const parsedContent = parseJsonValue(contentText);
+    if (parsedContent.parsed) {
+      const nestedErrorText = this.resolveParsedErrorText(parsedContent.value);
+      if (nestedErrorText) {
+        return nestedErrorText;
+      }
+    }
+    return contentText;
   }
 
   private resolveCommandActionValue(payload: Record<string, unknown>): string | null {
