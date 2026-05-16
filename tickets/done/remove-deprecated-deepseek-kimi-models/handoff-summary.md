@@ -43,3 +43,11 @@ Per workflow, the ticket remains under `tickets/in-progress/remove-deprecated-de
 ## Finalization Request
 
 User explicitly requested finalization and release on 2026-05-16. Release notes were created at `tickets/in-progress/remove-deprecated-deepseek-kimi-models/release-notes.md` before archival.
+
+## Finalization Completed
+
+- Ticket branch committed and pushed: `codex/remove-deprecated-deepseek-kimi-models`.
+- Merged into `personal` and pushed.
+- Released version `v1.3.12` using the documented `pnpm release` helper.
+- Release helper pushed branch `personal` and tag `v1.3.12`, triggering the configured release workflows.
+- Dedicated ticket worktree was removed, `git worktree prune` was run, and the local ticket branch was deleted after merge.

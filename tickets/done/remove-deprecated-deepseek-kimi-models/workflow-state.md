@@ -66,3 +66,13 @@ Awaiting explicit user completion/verification before moving ticket to `tickets/
 - 2026-05-16: User explicitly requested ticket finalization and a new release.
 - Code Edit Permission: Locked
 - Finalization sequence started: archive ticket to `tickets/done/`, commit/push ticket branch, merge into `origin/personal`, then run documented release helper.
+
+## Finalization Completion Record
+
+- 2026-05-16: Ticket branch committed and pushed to `origin/codex/remove-deprecated-deepseek-kimi-models`.
+- 2026-05-16: Ticket branch merged into `personal`; `personal` pushed to origin.
+- 2026-05-16: Documented release helper completed for `v1.3.12`; branch `personal` and tag `v1.3.12` pushed to origin.
+- 2026-05-16: Dedicated ticket worktree removed; `git worktree prune` completed; local ticket branch deleted after merge.
+- Current Stage: 10 - Complete
+- Code Edit Permission: Locked
+- Stage 10 Gate: Pass
