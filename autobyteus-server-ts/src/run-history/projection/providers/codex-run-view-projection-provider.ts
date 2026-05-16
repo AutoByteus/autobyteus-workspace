@@ -265,6 +265,12 @@ const transformThreadPayload = (payload: Record<string, unknown>): HistoricalRep
   return events;
 };
 
+/**
+ * Diagnostic/runtime-native Codex thread projection utility.
+ *
+ * Normal UI history does not use this provider; AgentRunViewProjectionService
+ * hydrates display rows from the local application-owned replay trace only.
+ */
 export class CodexRunViewProjectionProvider implements RunProjectionProvider {
   readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
   private readonly historyReader: CodexThreadHistoryReader;
@@ -302,12 +308,3 @@ export class CodexRunViewProjectionProvider implements RunProjectionProvider {
     return buildRunProjectionBundleFromEvents(input.source.runId, events);
   }
 }
-
-let cachedCodexRunViewProjectionProvider: CodexRunViewProjectionProvider | null = null;
-
-export const getCodexRunViewProjectionProvider = (): CodexRunViewProjectionProvider => {
-  if (!cachedCodexRunViewProjectionProvider) {
-    cachedCodexRunViewProjectionProvider = new CodexRunViewProjectionProvider();
-  }
-  return cachedCodexRunViewProjectionProvider;
-};

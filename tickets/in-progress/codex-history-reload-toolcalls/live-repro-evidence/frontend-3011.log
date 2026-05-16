@@ -1,0 +1,37 @@
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+
+              █▀▀▀▀▀▀▀██▀▀▀█▀██▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▀▀ ▄█▀█▀█ █▀▀▀█ █
+              █ █   █ █ █ ▄▀▄ ▄▄█ █   █ █
+              █ ▀▀▀▀▀ █▀▄ █▀█ █▀█ ▀▀▀▀▀ █
+              █▀▀███▀▀▀█ ▀█ ▀▄ ▀███▀▀████
+              ███▀▀ ▄▀ ▄▀▄▀▀▄█ ▄▄▀▀▄ ▄ ▀█
+              █▄▀▄▀█ ▀ ▄▀ ▄▀█▀▄ ▀▀█▄▄██ █
+              █ ▄██▀▄▀▀▄█▄█▄ ▄ █▀█▀█▀█ ▀█
+              █ █▀▀▄█▀▀██▀ ▀▀▄█ ▀▀▀ █ █▄█
+              █▀▀▀▀▀▀▀█  ▀ ▄█ ▄ █▀█ ▀▄█▀█
+              █ █▀▀▀█ █▄█▄█▄▀▄▀ ▀▀▀ ▀▀███
+              █ █   █ ██▄█▄▄████▀▄▄█▄▀▄ █
+              █ ▀▀▀▀▀ █ ▀█▀▄█▀  █ ▄▄▀██ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
+  ➜ Local:    http://0.0.0.0:3011/
+  ➜ Network:  http://192.168.2.158:3011/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 38ms
+✔ Vite server built in 203ms
+[nitro] ✔ Nuxt Nitro server built in 2205ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: @iconify/vue
+ℹ ✨ optimized dependencies changed. reloading
+ℹ ✨ new dependencies optimized: crypto-js/sha256
+ℹ ✨ optimized dependencies changed. reloading
+
+ ERROR  Pre-transform error: The file does not exist at "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/autobyteus-web/node_modules/.cache/vite/client/deps/chunk-PZ5AY32C.js" which is in the optimize deps directory. The dependency might be incompatible with the dep optimizer. Try adding it to optimizeDeps.exclude.
+
+ℹ ✨ new dependencies optimized: @xterm/xterm, @xterm/addon-fit, @monaco-editor/loader, vue-pdf-embed, xlsx, markdown-it, dompurify, katex, @mdit/plugin-katex, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json
+ℹ ✨ optimized dependencies changed. reloading

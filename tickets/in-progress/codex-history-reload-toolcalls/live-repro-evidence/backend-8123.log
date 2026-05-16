@@ -1,0 +1,1825 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/autobyteus-server-ts
+App data directory: /tmp/autobyteus-codex-history-repro-20260516-091701/server-data
+AppConfig instance created.
+Config file path: /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/.env
+Loading environment from: /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../tmp/autobyteus-codex-history-repro-20260516-091701/server-data/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8123
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8123
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/autobyteus-codex-history-repro-20260516-091701/server-data
+DB DIRECTORY: /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/db
+LOGS DIRECTORY: /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/logs
+DOWNLOAD DIRECTORY: /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/download
+MEMORY DIRECTORY: /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+(node:11690) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Running Prisma migrations...
+Using Prisma engine overrides from existing-env: process.env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/tmp/autobyteus-codex-history-repro-20260516-091701/server-data/db/production.db"
+
+SQLite database production.db created at file:/tmp/autobyteus-codex-history-repro-20260516-091701/server-data/db/production.db
+
+12 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+Database migrations completed successfully.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 44 items.
+AgentRunManager initialized.
+[2026-05-16T07:19:31.179Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+{"level":30,"time":1778915971251,"pid":11690,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:8123"}
+[2026-05-16T07:19:31.251Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8123
+[2026-05-16T07:19:31.252Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8123
+Creating temp workspace at: /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace
+Initialized FileSystemWorkspace at /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace. Call initialize() to build file tree.
+Initialized TempWorkspace at /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Starting directory traversal for: '/tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace' with max_depth=1
+Directory traversal for '/tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace' completed in 0.0010 seconds.
+Initialized FileSystemWorkspace at /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace (Shallow). Starting background full scan...
+Starting directory traversal for: '/tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace' with max_depth=null
+Temp workspace created and cached with ID: temp_ws_default
+Directory traversal for '/tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace' completed in 0.0000 seconds.
+FileNameIndexer starting...
+FileSystemWatcher initialized for '/tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace
+FileNameIndexer started monitoring
+Background full initialization for /tmp/autobyteus-codex-history-repro-20260516-091701/server-data/temp_workspace completed.
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Pre-loaded 44 agent definitions into cache.
+[2026-05-16T07:19:31.282Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Loaded tool group: Browser Tools
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'list_available_tools'
+Successfully registered tool definition: 'list_input_processors'
+Successfully registered tool definition: 'list_llm_response_processors'
+Successfully registered tool definition: 'list_lifecycle_processors'
+Successfully registered tool definition: 'list_tool_result_processors'
+Loaded tool group: Tool Management Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'create_skill_version'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=34
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-05-16T07:19:31.322Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 14 items.
+Pre-loaded 14 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Registered 6 image models from Autobyteus host https://localhost:51740.
+Autobyteus image models from https://localhost:51740: gpt-image-1-rpa@localhost:51740, nano-banana-pro-app-rpa@localhost:51740, imagen-4-rpa@localhost:51740, imagen-4-ultra-rpa@localhost:51740, imagen-4-fast-rpa@localhost:51740, qwen-image-rpa@localhost:51740
+Autobyteus image discovery summary for https://localhost:51740: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=16
+Finished Autobyteus image model discovery. Total models registered: 12
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 28
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Finished Autobyteus discovery. Total models registered: 68
+Successfully fetched 116 models from LLMFactory.
+LLM models cache populated with 116 items.
+Pre-loaded 116 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 18 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4, AUTOBYTEUS=12
+Image models by runtime: api=6, autobyteus=12
+Image models cache populated with 18 items.
+Pre-loaded 18 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=14
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 4 audio models from Autobyteus host https://localhost:51740.
+Autobyteus audio models from https://localhost:51740: gemini-2.5-pro-tts-rpa@localhost:51740, gemini-2.5-flash-tts-rpa@localhost:51740, gemini-3.1-flash-tts-rpa@localhost:51740, qwen-tts-rpa@localhost:51740
+Autobyteus audio discovery summary for https://localhost:51740: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=12
+Finished Autobyteus audio model discovery. Total models registered: 8
+Successfully fetched 12 audio models from AudioClientFactory.
+Audio models by provider: AUTOBYTEUS=8, OPENAI=1, GEMINI=3
+Audio models by runtime: autobyteus=8, api=4
+Audio models cache populated with 12 items.
+Pre-loaded 12 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID professor-agent.
+Agent Definition created successfully with ID: professor-agent
+In-memory cache: Added new agent definition with ID student-agent.
+Agent Definition created successfully with ID: student-agent
+[2026-05-16T07:19:57.254Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID professor-student-team.
+Agent Team Definition created successfully with ID: professor-student-team
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: 378927d1-597c-4a85-ae59-b16b8a86144f for workspace temp_ws_default
+Created file explorer session 378927d1-597c-4a85-ae59-b16b8a86144f for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 378927d1-597c-4a85-ae59-b16b8a86144f for workspace temp_ws_default
+{"level":30,"time":1778916049535,"pid":11690,"hostname":"MacBookPro","reqId":"req-z","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at routeOptions.handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:198:24)\n    at preHandlerCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)\n    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:77:7)","extensions":{}},"msg":"Graphql validation error"}
+{"level":30,"time":1778916133612,"pid":11690,"hostname":"MacBookPro","reqId":"req-2u","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at routeOptions.handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:198:24)\n    at preHandlerCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)\n    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:77:7)","extensions":{}},"msg":"Graphql validation error"}
+{"level":30,"time":1778916133615,"pid":11690,"hostname":"MacBookPro","reqId":"req-2v","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at routeOptions.handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:198:24)\n    at preHandlerCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)\n    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:77:7)","extensions":{}},"msg":"Graphql validation error"}
+{"level":30,"time":1778916133617,"pid":11690,"hostname":"MacBookPro","reqId":"req-2w","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at routeOptions.handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:198:24)\n    at preHandlerCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)\n    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:77:7)","extensions":{}},"msg":"Graphql validation error"}
+{"level":30,"time":1778916159648,"pid":11690,"hostname":"MacBookPro","reqId":"req-3e","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at routeOptions.handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:198:24)\n    at preHandlerCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)\n    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:77:7)","extensions":{}},"msg":"Graphql validation error"}
+{"level":30,"time":1778916159649,"pid":11690,"hostname":"MacBookPro","reqId":"req-3f","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at routeOptions.handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:198:24)\n    at preHandlerCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)\n    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:77:7)","extensions":{}},"msg":"Graphql validation error"}
+[2026-05-16T07:24:51.830Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID codex-history-toolcall-repro-team-20260516072451.
+Agent Team Definition created successfully with ID: codex-history-toolcall-repro-team-20260516072451
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls
+Initialized FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls. Call initialize() to build file tree.
+Starting directory traversal for: '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls' with max_depth=1
+Directory traversal for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls' completed in 0.0030 seconds.
+Initialized FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls (Shallow). Starting background full scan...
+Starting directory traversal for: '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls' with max_depth=null
+Created and registered workspace ID: agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+Successfully created codex_app_server team run 'team_codex-history-toolcall-repro-team-202605_6086dd85'.
+Agent team websocket attached for team run team_codex-history-toolcall-repro-team-202605_6086dd85
+Created agent session 6a4ef1a2-997e-44f0-8b45-f00b132ed65c for run team_codex-history-toolcall-repro-team-202605_6086dd85
+Agent Team WebSocket connected: session=6a4ef1a2-997e-44f0-8b45-f00b132ed65c, run=team_codex-history-toolcall-repro-team-202605_6086dd85
+Skill 'unix-filesystem-practice' could not be resolved via SkillService. Skipping.
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'deprecationNotice',
+  matchesThread: true,
+  threadId: 'worker_517c3afd25fff88f',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'summary', 'details' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'deprecationNotice',
+  listenerCount: 0,
+  paramKeys: [ 'summary', 'details' ]
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'thread/started',
+  matchesThread: false,
+  threadId: 'worker_517c3afd25fff88f',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'thread' ]
+}
+Successfully created codex_app_server agent run 'worker_517c3afd25fff88f'.
+[CodexSendTurnStart] {
+  runId: 'worker_517c3afd25fff88f',
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: null,
+  startupStatus: 'ready',
+  contentPreview: 'This is a history reload reproduction. Please use bash tool calls, not just prose. Run these commands in order: pwd; ls -la | head -20; git status --short. Then'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 1,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'mcpServer/startupStatus/updated',
+  eventName: 'mcpServer/startupStatus/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'name', 'status', 'error' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"mcpServer/startupStatus/updated","params":{"name":"codex_apps","status":"starting","error":null}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 2,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'mcpServer/startupStatus/updated',
+  eventName: 'mcpServer/startupStatus/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'name', 'status', 'error' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"mcpServer/startupStatus/updated","params":{"name":"alexa_home","status":"starting","error":null}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 3,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'mcpServer/startupStatus/updated',
+  eventName: 'mcpServer/startupStatus/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'name', 'status', 'error' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"mcpServer/startupStatus/updated","params":{"name":"VideoAudioServer","status":"starting","error":null}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 4,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'mcpServer/startupStatus/updated',
+  eventName: 'mcpServer/startupStatus/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'name', 'status', 'error' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"mcpServer/startupStatus/updated","params":{"name":"ssh_remote","status":"starting","error":null}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 5,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'mcpServer/startupStatus/updated',
+  eventName: 'mcpServer/startupStatus/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'name', 'status', 'error' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"mcpServer/startupStatus/updated","params":{"name":"tts","status":"starting","error":null}}'
+}
+[CodexSendTurnResponse] {
+  runId: 'worker_517c3afd25fff88f',
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadType: 'object',
+  payloadKeys: [ 'turn' ]
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'thread/status/changed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'thread/status/changed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 6,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'thread/status/changed',
+  eventName: 'thread/status/changed',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'threadId', 'status' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"thread/status/changed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","status":{"type":"active","activeFlags":[]}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'turn/started',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'turn/started',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 7,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'turn/started',
+  eventName: 'turn/started',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turn' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"turn/started","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turn":{"id":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","items":[],"itemsView":"notLoaded","status":"inProgress","error":null,"startedAt":1778916292,"completedAt":null,"durationMs":null}}}'
+}
+Directory traversal for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls' completed in 0.6070 seconds.
+FileNameIndexer starting...
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 8,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'mcpServer/startupStatus/updated',
+  eventName: 'mcpServer/startupStatus/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'name', 'status', 'error' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"mcpServer/startupStatus/updated","params":{"name":"codex_apps","status":"ready","error":null}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 9,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'mcpServer/startupStatus/updated',
+  eventName: 'mcpServer/startupStatus/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'name', 'status', 'error' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"mcpServer/startupStatus/updated","params":{"name":"VideoAudioServer","status":"ready","error":null}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 10,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'mcpServer/startupStatus/updated',
+  eventName: 'mcpServer/startupStatus/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'name', 'status', 'error' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"mcpServer/startupStatus/updated","params":{"name":"tts","status":"ready","error":null}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 11,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'mcpServer/startupStatus/updated',
+  eventName: 'mcpServer/startupStatus/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'name', 'status', 'error' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"mcpServer/startupStatus/updated","params":{"name":"ssh_remote","status":"ready","error":null}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'mcpServer/startupStatus/updated',
+  listenerCount: 1,
+  paramKeys: [ 'name', 'status', 'error' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 12,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'mcpServer/startupStatus/updated',
+  eventName: 'mcpServer/startupStatus/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'name', 'status', 'error' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"mcpServer/startupStatus/updated","params":{"name":"alexa_home","status":"ready","error":null}}'
+}
+FileNameIndexer started monitoring
+Background full initialization for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls completed.
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 13,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'rawResponseItem/completed',
+  eventName: 'rawResponseItem/completed',
+  eventId: null,
+  itemId: null,
+  itemType: 'message',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'item' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"rawResponseItem/completed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","item":{"type":"message","role":"developer","content":[{"type":"input_text","text":"<permissions instructions>\\nFilesystem sandboxing defines which files can be read or written. `sandbox_mode` is `danger-full-access`: No filesystem sandboxing - all commands are permitted. Network access is enabled.\\nApproval policy is currently never. Do not provide the `sandbox_permissions` for any reason, commands will be rejected.\\n</permissions instructions>"},{"type":"input_text","text":"Current team member: worker\\nDo not attempt `send_message_to`; it is not exposed for this run even though teammates exist."},{"type":"input_text","text":"<skills_instructions>\\n## Skills\\nA skill is a set of local instructions to follow that is stored in a `SKILL.md` file. Below is the list of skills that can be used. Each entry includes a name, description, and a short path that can be expanded into an absolute path using the skill roots table.\\n### Skill roots\\n- `r0` = `/Users/normy/.codex/skills`\\n- `r1` = `/Users/normy/.codex/skills/.system`\\n- `r2` = `/Users/normy/.codex/plugins/cache/openai-bundled`\\n- `r3` = `/Users/normy/.codex/plugins/cache/openai-curated/github/dc902811/skills`\\n- `r4` = `/Users/normy/.codex/plugins/cache/openai-curated/hyperframes/dc902811/skills`\\n- `r5` = `/Users/normy/.codex/plugins/cache/openai-primary-runtime`\\n### Available skills\\n- imagegen: Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the out (file: r1/imagegen/SKILL.md)\\n- openai-docs: Use when the user asks how to build with OpenAI products or APIs and needs up-to-date official documentation with citations, help choosing the latest model for a use case, or model upgrade and prompt-upgrade guidance; prioritize OpenAI docs MCP tools, use bundled references only as helper context, and restr (file: r1/openai-docs/SKILL.md)\\n- plugin-creator: Create and scaffold plugin directories for Codex with a required `.codex-plugin/plugin.json`, optional plugin folders/files, and baseline placeholders you can edit before publishing or testing. Use when Codex needs to create a new local plugin, add optional plugin structure, or generate or update repo-root `. (file: r1/plugin-creator/SKILL.md)\\n- skill-creator: Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Codex\'s capabilities with specialized knowledge, workflows, or tool integrations. (file: r1/skill-creator/SKILL.md)\\n- skill-installer: Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path. Use when a user asks to list installable skills, install a curated skill, or install a skill from another repo (including private repos). (file: r1/skill-installer/SKILL.md)\\n- bilingual-style-article-writer: Write and revise publish-ready Chinese (WeChat) and English (Medium) articles or factual technical notes in configurable author styles. Use when the user provides ideas, rough notes, or sample articles and asks Codex to match an existing style profile or create a new profile for any author, then iterate draft (file: r0/bilingual-style-article-writer/SKILL.md)\\n- browser:browser: Browser automation for the Codex in-app browser. Use to open, navigate, inspect, test, click, type, screenshot, or verify local targets such as localhost, 127.0.0.1, ::1, file://, the current in-app browser tab, and websites shown side by side inside Codex. (file: r2/browser/0.1.0-alpha2/skills/browser/SKILL.md)\\n- chat-emoji-gif-maker: Create and package chat-ready emoji, stickers, and short reaction GIFs from text ideas or source images, including scripture-themed reactions. Use when the user wants custom expressions for WeChat or ...<truncated>'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 14,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'rawResponseItem/completed',
+  eventName: 'rawResponseItem/completed',
+  eventId: null,
+  itemId: null,
+  itemType: 'message',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'item' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"rawResponseItem/completed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","item":{"type":"message","role":"user","content":[{"type":"input_text","text":"<environment_context>\\n  <cwd>/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls</cwd>\\n  <shell>bash</shell>\\n  <current_date>2026-05-16</current_date>\\n  <timezone>Europe/Berlin</timezone>\\n</environment_context>"}]}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 15,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'rawResponseItem/completed',
+  eventName: 'rawResponseItem/completed',
+  eventId: null,
+  itemId: null,
+  itemType: 'message',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'item' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"rawResponseItem/completed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","item":{"type":"message","role":"user","content":[{"type":"input_text","text":"This is a history reload reproduction. Please use bash tool calls, not just prose. Run these commands in order: pwd; ls -la | head -20; git status --short. Then answer with a concise summary. Do not modify files."}]}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 16,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/started',
+  eventName: 'item/started',
+  eventId: null,
+  itemId: '151136a6-9ca4-4dd6-984a-01db6a7e9af1',
+  itemType: 'userMessage',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/started","params":{"item":{"type":"userMessage","id":"151136a6-9ca4-4dd6-984a-01db6a7e9af1","content":[{"type":"text","text":"This is a history reload reproduction. Please use bash tool calls, not just prose. Run these commands in order: pwd; ls -la | head -20; git status --short. Then answer with a concise summary. Do not modify files.","text_elements":[]}]},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","startedAtMs":1778916296104}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 17,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/completed',
+  eventName: 'item/completed',
+  eventId: null,
+  itemId: '151136a6-9ca4-4dd6-984a-01db6a7e9af1',
+  itemType: 'userMessage',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/completed","params":{"item":{"type":"userMessage","id":"151136a6-9ca4-4dd6-984a-01db6a7e9af1","content":[{"type":"text","text":"This is a history reload reproduction. Please use bash tool calls, not just prose. Run these commands in order: pwd; ls -la | head -20; git status --short. Then answer with a concise summary. Do not modify files.","text_elements":[]}]},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","completedAtMs":1778916296104}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'account/rateLimits/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'account/rateLimits/updated',
+  listenerCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 18,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'account/rateLimits/updated',
+  eventName: 'account/rateLimits/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'rateLimits' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"account/rateLimits/updated","params":{"rateLimits":{"limitId":"codex","limitName":null,"primary":{"usedPercent":44,"windowDurationMins":300,"resetsAt":1778920083},"secondary":{"usedPercent":77,"windowDurationMins":10080,"resetsAt":1779162820},"credits":null,"planType":"pro","rateLimitReachedType":null}}}'
+}
+GraphQL mutation to create workspace
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls
+Initialized FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls. Call initialize() to build file tree.
+Reusing existing workspace ID: agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+File explorer websocket attached for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+FileExplorerSession created: 7d5729d8-1afc-4bc3-9f19-6890e7d4a0e7 for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+Created file explorer session 7d5729d8-1afc-4bc3-9f19-6890e7d4a0e7 for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5. Active sessions: 2
+File explorer WebSocket connected: 7d5729d8-1afc-4bc3-9f19-6890e7d4a0e7 for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+Agent team websocket attached for team run team_codex-history-toolcall-repro-team-202605_6086dd85
+Created agent session f3560c76-5020-49e0-ae5f-dca8e5af0b33 for run team_codex-history-toolcall-repro-team-202605_6086dd85
+Agent Team WebSocket connected: session=f3560c76-5020-49e0-ae5f-dca8e5af0b33, run=team_codex-history-toolcall-repro-team-202605_6086dd85
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 19,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/started',
+  eventName: 'item/started',
+  eventId: null,
+  itemId: 'rs_03e4729c5c15a597016a081bc947588191adfca61a09d03770',
+  itemType: 'reasoning',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/started","params":{"item":{"type":"reasoning","id":"rs_03e4729c5c15a597016a081bc947588191adfca61a09d03770","summary":[],"content":[]},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","startedAtMs":1778916297278}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 20,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/completed',
+  eventName: 'item/completed',
+  eventId: null,
+  itemId: 'rs_03e4729c5c15a597016a081bc947588191adfca61a09d03770',
+  itemType: 'reasoning',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/completed","params":{"item":{"type":"reasoning","id":"rs_03e4729c5c15a597016a081bc947588191adfca61a09d03770","summary":[],"content":[]},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","completedAtMs":1778916297449}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 21,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'rawResponseItem/completed',
+  eventName: 'rawResponseItem/completed',
+  eventId: null,
+  itemId: null,
+  itemType: 'reasoning',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'item' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"rawResponseItem/completed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","item":{"type":"reasoning","summary":[],"content":null,"encrypted_content":"gAAAAABqCBvJbi4PhxDd8Y2lHrcsD1C-mk13FsVdRyz83g2rY6tfnzmkILXCF1gcjLjvrDukm-tligz9xZhCKJAESPq8d9HsmQ1Dd15e5KghRZ5gC-m0NChRcfzjfL6c6Stp7lBtL_EUfssyPT1o65KE0npKI83mETbtFI7fvnRrF3MUQxGPwyYLYWOf9LLmC_jCx8S5gWrj-nf7MyjKMGgE9AuxrtY6F0TUeuJkkOeZ8RPW_bnqxs98jgdR_PXFjwnkKBlSmpA95yPUfWUo1GtguYt-FNc4eMvMqk3K4fyyR1exE1SO0XnSXRxElq-yriX5Hqk7cOWPe7ojlMmCNVxwV2KA7W4DXbfp3-0gF7KE4HDjc_x8uaD0Zxmc16Sgdapr1x3CNNVaLQo9DkfCX1SGmotJg2p56NcefVy585TBvkEbVoySZiOrEEeYFA6T8_JtAcQgmfyddgEnkKrr1SFFK2D8aW2FF-S3sKL2SccwAjkXC80E_L5M5myWlgwW59to6G21b32jd-mpeXHnSqZbi_1CVjcm1E-K1uKPhPzDhsY0kvW9OvLkTbUEXzdl8o1EBKObnLNVHo7j6iVwvoXCMcnVCWRbkLQBQnUuCjF3MceSwbFQOs_msudcApAIKO-FkNXkqukggMEahvB79u2GOHsSN9DIBuRNDwslg_GhgHHvSd94NfpZAmzxFUPrKcfJEuj9-B7Xuq4VWtxTkm4QdUSYc8skNNQqCv3u8cUfD2-eh_WMscinPot0qplRDUJyf6LsU334ryMX5sQJifdlWcGgdNaKnTpqvdH4dP3aQguhgtjHqX_cvyuKjTyrkbnoxtM_w-_pwFqpkDetRpKMRWGb-tV5fyTaTSVHNv_P7pHYjT3DAfikYB0SEK0CXSqJ88OY4Rhc8f0YTPEq4FW7bcHrpojI8ZDw637mmUOggP-13Phj3jR1ShmnNr07cnzZAkhQHyM4cPHeHeEZPjj-3pe5wGohE11NHRe4SLC-MC_LTcIuac7XVoGSekQ22sEhbEIGUW4YbX2FHneL0Y0QLOK1csi2KHEb2tdnSY-A1ufzeRk4jCEb3NKTDi2vcrSTeA0AhD4xoCN8CozxKVAg_sqVPZWoAyV-qY_nLXSf0mC1GVYhGfbBUuV2Ga8bJzCdqTud5cG6-1TOgd8hOZfPWloGjLpZsnMEjKkURVHoqJCqFuUfci9SIDwA6j7KPmk_V3ySy4VpDKwhmYPObyGRGAhTqFRMDkH4JOblFSyM5zaXK4NHB1f2Ic2G7SP8hCICboZ2QlrZLqSGqLJCvUuWqzS784Ixk3E3yLpJDZgc1UgxiYkVFYx00P48xdtR4Iyb7ktkRyFrUZZSKXUA7vIj6unPU-0_e2E5hSffLpSyOGUTDiwZdB5tucC7IRkO6XsdS133AF4YRvki3SxIp6hOyv1vtZsSPPI9uksWy3BPpuZc74SI8T-Ol358G7tM6BIZVSOuxNOa1ZSHR5dVyUJBPtDJ9tLVPvyRTgH6YI6amiCpi1U1Bx_NeQKSLyHGj6b36O_hmxSg3Fraiw7FJH2ITLiecCCoy9aQJ2uLDG40ssIfPPrOuc0H3LHYWiqHXwHyuO4-RXAb1pyoRpN7g6CdILejIaMYJhBxJDorNbAt8VO6dI2Z9-G7j5tNYdH4tt76Ha0uDytwyvYFCYi4AR-3hC5fkYtKTkqdlDusJR9r4_HuRYDFMNL4pD6vX_ACbDTzFS8pJ5Us7Q_0ONbdbWb0Fa87rHAmrWB8MLRSf2Bea32ZvOkcz86kgJxZnNn7SVQuyUoKanEFt_ZXDMNDTJxt44WU1xfpuDQxbqRf9LaYEHwYX7UCB-FHmirxvQJO2AhLogI8oiOJWJNwEwZXrbxtBNaPeEpKbVW_dpGPkSDk01VZGRpz9iNO85cjt3dyxaqSURck7h7Nqrj7ewvZ_lh2rFb-BZdpSeakWx_Wr8ig4RWWvgEFdJQrbdTO2-aFIJ0uwCORq49S3ROU1x-HBDGtxNW3w-4bE6zDL3LiXA53MyfIB6rt9mkKoAWwjwNNaUbmFQIRB0Gb3FONFYr-xmRv4H_K56t-ig=="}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 22,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/started',
+  eventName: 'item/started',
+  eventId: null,
+  itemId: 'msg_03e4729c5c15a597016a081bc972248191b9c1137e14780950',
+  itemType: 'agentMessage',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/started","params":{"item":{"type":"agentMessage","id":"msg_03e4729c5c15a597016a081bc972248191b9c1137e14780950","text":"","phase":"commentary","memoryCitation":null},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","startedAtMs":1778916297449}}'
+}
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68', cacheSize: 0 }
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 23,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/completed',
+  eventName: 'item/completed',
+  eventId: null,
+  itemId: 'msg_03e4729c5c15a597016a081bc972248191b9c1137e14780950',
+  itemType: 'agentMessage',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/completed","params":{"item":{"type":"agentMessage","id":"msg_03e4729c5c15a597016a081bc972248191b9c1137e14780950","text":"Got it — I’ll run the requested shell commands in that exact order and then report back with a concise summary.","phase":"commentary","memoryCitation":null},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","completedAtMs":1778916297475}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 24,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'rawResponseItem/completed',
+  eventName: 'rawResponseItem/completed',
+  eventId: null,
+  itemId: null,
+  itemType: 'message',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'item' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"rawResponseItem/completed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","item":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Got it — I’ll run the requested shell commands in that exact order and then report back with a concise summary."}],"phase":"commentary"}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 25,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'rawResponseItem/completed',
+  eventName: 'rawResponseItem/completed',
+  eventId: null,
+  itemId: null,
+  itemType: 'function_call',
+  itemName: 'exec_command',
+  itemStatus: null,
+  callId: 'call_UIeSeK5X7lnC5TMZLUaYJ6x7',
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'item' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"rawResponseItem/completed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","item":{"type":"function_call","name":"exec_command","arguments":"{\\"cmd\\":\\"pwd; ls -la | head -20; git status --short\\",\\"max_output_tokens\\":1200}","call_id":"call_UIeSeK5X7lnC5TMZLUaYJ6x7"}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'thread/tokenUsage/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'thread/tokenUsage/updated',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 26,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'thread/tokenUsage/updated',
+  eventName: 'thread/tokenUsage/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'tokenUsage' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"thread/tokenUsage/updated","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","tokenUsage":{"total":{"totalTokens":17096,"inputTokens":16841,"cachedInputTokens":7040,"outputTokens":255,"reasoningOutputTokens":185},"last":{"totalTokens":17096,"inputTokens":16841,"cachedInputTokens":7040,"outputTokens":255,"reasoningOutputTokens":185},"modelContextWindow":121600}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'account/rateLimits/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'account/rateLimits/updated',
+  listenerCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 27,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'account/rateLimits/updated',
+  eventName: 'account/rateLimits/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'rateLimits' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"account/rateLimits/updated","params":{"rateLimits":{"limitId":"codex","limitName":null,"primary":{"usedPercent":44,"windowDurationMins":300,"resetsAt":1778920083},"secondary":{"usedPercent":77,"windowDurationMins":10080,"resetsAt":1779162820},"credits":null,"planType":"pro","rateLimitReachedType":null}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 28,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/started',
+  eventName: 'item/started',
+  eventId: null,
+  itemId: 'call_UIeSeK5X7lnC5TMZLUaYJ6x7',
+  itemType: 'commandExecution',
+  itemName: null,
+  itemStatus: 'inProgress',
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: `{"method":"item/started","params":{"item":{"type":"commandExecution","id":"call_UIeSeK5X7lnC5TMZLUaYJ6x7","command":"/bin/bash -lc 'pwd; ls -la | head -20; git status --short'","cwd":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls","processId":"94201","source":"unifiedExecStartup","status":"inProgress","commandActions":[{"type":"unknown","command":"pwd; ls -la | head -20; git status --short"}],"aggregatedOutput":null,"exitCode":null,"durationMs":null},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","startedAtMs":1778916297697}}`
+}
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68', cacheSize: 0 }
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 29,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/completed',
+  eventName: 'item/completed',
+  eventId: null,
+  itemId: 'call_UIeSeK5X7lnC5TMZLUaYJ6x7',
+  itemType: 'commandExecution',
+  itemName: null,
+  itemStatus: 'completed',
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: `{"method":"item/completed","params":{"item":{"type":"commandExecution","id":"call_UIeSeK5X7lnC5TMZLUaYJ6x7","command":"/bin/bash -lc 'pwd; ls -la | head -20; git status --short'","cwd":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls","processId":"94201","source":"unifiedExecStartup","status":"completed","commandActions":[{"type":"unknown","command":"pwd; ls -la | head -20; git status --short"}],"aggregatedOutput":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls\\ntotal 1272\\ndrwxr-xr-x@  29 normy  staff     928 May 16 08:51 .\\ndrwxr-xr-x@ 109 normy  staff    3488 May 16 07:32 ..\\n-rw-r--r--@   1 normy  staff     240 May 16 07:32 .dockerignore\\n-rw-r--r--@   1 normy  staff     113 May 16 07:32 .git\\ndrwxr-xr-x@   4 normy  staff     128 May 16 07:32 .github\\n-rw-r--r--@   1 normy  staff     244 May 16 07:32 .gitignore\\ndrwxr-xr-x@   4 normy  staff     128 May 16 08:56 .local\\n-rw-r--r--@   1 normy  staff   10174 May 16 07:32 LICENSE\\n-rw-r--r--@   1 normy  staff     355 May 16 07:32 NOTICE\\n-rw-r--r--@   1 normy  staff   10198 May 16 07:32 README.md\\ndrwxr-xr-x@   4 normy  staff     128 May 16 07:32 applications\\ndrwxr-xr-x@   9 normy  staff     288 May 16 07:35 autobyteus-application-backend-sdk\\ndrwxr-xr-x@  10 normy  staff     320 May 16 07:35 autobyteus-application-devkit\\ndrwxr-xr-x@  11 normy  staff     352 May 16 07:35 autobyteus-application-frontend-sdk\\ndrwxr-xr-x@  10 normy  staff     320 May 16 07:35 autobyteus-application-sdk-contracts\\ndrwxr-xr-x@  15 normy  staff     480 May 16 07:35 autobyteus-message-gateway\\ndrwxr-xr-x@  27 normy  staff     864 May 16 09:16 autobyteus-server-ts\\ndrwxr-xr-x@  20 normy  staff     640 May 16 08:50 autobyteus-ts\\ndrwxr-xr-x@  66 normy  staff    2112 May 16 09:16 autobyteus-web\\n M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md\\n M autobyteus-server-ts/docs/modules/codex_integration.md\\n M autobyteus-server-ts/docs/modules/run_history.md\\n?? tickets/in-progress/codex-history-reload-toolcalls/docs-sync-report.md\\n?? tickets/in-progress/codex-history-reload-toolcalls/electron-test-build-report.md\\n?? tickets/in-progress/codex-history-reload-toolcalls/handoff-summary.md\\n?? tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/\\n?? tickets/in-progress/codex-history-reload-toolcalls/release-deployment-report.md\\n","exitCode":0,"durationMs":0},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","completedAtMs":1778916297697}}`
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 30,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'rawResponseItem/completed',
+  eventName: 'rawResponseItem/completed',
+  eventId: null,
+  itemId: null,
+  itemType: 'function_call_output',
+  itemName: null,
+  itemStatus: null,
+  callId: 'call_UIeSeK5X7lnC5TMZLUaYJ6x7',
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'item' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"rawResponseItem/completed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","item":{"type":"function_call_output","call_id":"call_UIeSeK5X7lnC5TMZLUaYJ6x7","output":"Chunk ID: 549c7b\\nWall time: 0.0000 seconds\\nProcess exited with code 0\\nOriginal token count: 477\\nOutput:\\n/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls\\ntotal 1272\\ndrwxr-xr-x@  29 normy  staff     928 May 16 08:51 .\\ndrwxr-xr-x@ 109 normy  staff    3488 May 16 07:32 ..\\n-rw-r--r--@   1 normy  staff     240 May 16 07:32 .dockerignore\\n-rw-r--r--@   1 normy  staff     113 May 16 07:32 .git\\ndrwxr-xr-x@   4 normy  staff     128 May 16 07:32 .github\\n-rw-r--r--@   1 normy  staff     244 May 16 07:32 .gitignore\\ndrwxr-xr-x@   4 normy  staff     128 May 16 08:56 .local\\n-rw-r--r--@   1 normy  staff   10174 May 16 07:32 LICENSE\\n-rw-r--r--@   1 normy  staff     355 May 16 07:32 NOTICE\\n-rw-r--r--@   1 normy  staff   10198 May 16 07:32 README.md\\ndrwxr-xr-x@   4 normy  staff     128 May 16 07:32 applications\\ndrwxr-xr-x@   9 normy  staff     288 May 16 07:35 autobyteus-application-backend-sdk\\ndrwxr-xr-x@  10 normy  staff     320 May 16 07:35 autobyteus-application-devkit\\ndrwxr-xr-x@  11 normy  staff     352 May 16 07:35 autobyteus-application-frontend-sdk\\ndrwxr-xr-x@  10 normy  staff     320 May 16 07:35 autobyteus-application-sdk-contracts\\ndrwxr-xr-x@  15 normy  staff     480 May 16 07:35 autobyteus-message-gateway\\ndrwxr-xr-x@  27 normy  staff     864 May 16 09:16 autobyteus-server-ts\\ndrwxr-xr-x@  20 normy  staff     640 May 16 08:50 autobyteus-ts\\ndrwxr-xr-x@  66 normy  staff    2112 May 16 09:16 autobyteus-web\\n M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md\\n M autobyteus-server-ts/docs/modules/codex_integration.md\\n M autobyteus-server-ts/docs/modules/run_history.md\\n?? tickets/in-progress/codex-history-reload-toolcalls/docs-sync-report.md\\n?? tickets/in-progress/codex-history-reload-toolcalls/electron-test-build-report.md\\n?? tickets/in-progress/codex-history-reload-toolcalls/handoff-summary.md\\n?? tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/\\n?? tickets/in-progress/codex-history-reload-toolcalls/release-deployment-report.md\\n"}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 31,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/started',
+  eventName: 'item/started',
+  eventId: null,
+  itemId: 'rs_03e4729c5c15a597016a081bcb1b288191967eafaa867afeec',
+  itemType: 'reasoning',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/started","params":{"item":{"type":"reasoning","id":"rs_03e4729c5c15a597016a081bcb1b288191967eafaa867afeec","summary":[],"content":[]},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","startedAtMs":1778916299103}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 32,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/completed',
+  eventName: 'item/completed',
+  eventId: null,
+  itemId: 'rs_03e4729c5c15a597016a081bcb1b288191967eafaa867afeec',
+  itemType: 'reasoning',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/completed","params":{"item":{"type":"reasoning","id":"rs_03e4729c5c15a597016a081bcb1b288191967eafaa867afeec","summary":[],"content":[]},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","completedAtMs":1778916299131}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 33,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'rawResponseItem/completed',
+  eventName: 'rawResponseItem/completed',
+  eventId: null,
+  itemId: null,
+  itemType: 'reasoning',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'item' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"rawResponseItem/completed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","item":{"type":"reasoning","summary":[],"content":null,"encrypted_content":"gAAAAABqCBvLXHYWL0QG7j8KgMc8x28ErBeGYj63wh9nC3ulsyrxkxrA8qxzf8JzpcYDhClL5Yc5t5Zj9_48KLYHlqfV3ql-E38x0KztmGrx8i41d6rUtN-BCZPZslN43hYAkTtt5VXBJSizPsuIkua_7stgYkNuSiB2XF7YiFrRjRytTfhce0qVl1YpFOW91VUBR5zIenGJqh4naOwEh5aDsfuHD3DzqWDOnBpkOy5fxLkzZdAeA5DH6HS7CZlk_s6A0xxf0PPM8nRpUC0deKhcM4NVvQqftsfSzbmCbm2HwgztdK8vQcrdOCMKlKBZQJ-XXk2MK5TXv8GbV3Z_DMZ38yhcjsCu7g52Y73IJn_XgKofeKa5Lu3Evgq0HGmp0kM-4yNct0wop6367zPpJmghybXm-9WARtbfCG3xnkXt_MGIyTe6eVeTCAAN1LvLmE1mkUWslpH1EX6GxU9GjW3CX_9YzrAzYK-BC7NKNDM4n2Sjc2rPDNUzY-JWjzN9cS4CoTyuxy9PAGgCAX0AfxDJqmNtSCFzjeFfhjg-nUR3jovAcLq51hAHMUUKUgu6A7x1a7qDl6XwKjl_FcgAR4GaQjs1i-9PKLBT1U60lTrr4t0XfPFUMutetEcatjbAWkLVu5TTjQbHcn736TjxkfDFRG3wIqQtiCfMp04vFnsJiyuKK3UwCEjZEWWrB30Di1ETjVdQYJ5Dn20oD-NRKASo1MNjHXj_45z_MkjaYumBB5b_LpNPYgLb43Zo2lHw--khSzl5FIGFzBzHxeH8ZJB5WPsdYiGoAxqsUKAbiYmLQs1dr7uCRBaYJDaKeoMwDq88aMCJK6kyXnFS7-ABK3rOPcDgEohHqWDKpMTM9YKkS8NVjRhBtuI4Q-YLPOgL_dq2cjc-8LOqtr9KFgY_OUSr91_BdZkaidhMTO59M6-Fc6KrCUpcSz0JMhxHpKUfjJuhfwOqLBeNoGaA6Am4W93ursu2vnL1ysuInjJ4Mq-UYXZBbSIHh9eSGPkQm2TuKFhM9PZgNEnAYJlx79PzKN3Vv7KGtbu3B54jX8RcEuVF-jwtRj3vlUjsSuMkq61K4pf5IOTPcc0p5zWVFZC6HefSWeujnIjEscfSya0NOorjHvieHMdf3zE="}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/started',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 34,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/started',
+  eventName: 'item/started',
+  eventId: null,
+  itemId: 'msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e',
+  itemType: 'agentMessage',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'startedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/started","params":{"item":{"type":"agentMessage","id":"msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e","text":"","phase":"final_answer","memoryCitation":null},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","startedAtMs":1778916299131}}'
+}
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68', cacheSize: 0 }
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 35,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/agentMessage/delta',
+  eventName: 'item/agentMessage/delta',
+  eventId: null,
+  itemId: 'msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e',
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/agentMessage/delta","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","itemId":"msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e","delta":"Done — ran exactly as requested:\\n\\n1. `pwd`\\n2. `ls -la | head -20`\\n3. `git status --short`\\n\\nSummary:\\n- Working directory: `/Users/normy/autobyteus_org/aut"}}'
+}
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68', cacheSize: 0 }
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 36,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/agentMessage/delta',
+  eventName: 'item/agentMessage/delta',
+  eventId: null,
+  itemId: 'msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e',
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/agentMessage/delta","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","itemId":"msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e","delta":"obyteus-worktrees/codex-history-reload-toolcalls`\\n- `ls -la | head -20` succeeded (repo root contents shown).\\n- `git status --short` shows:\\n  - **Modified**:\\n    -"}}'
+}
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68', cacheSize: 0 }
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 37,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/agentMessage/delta',
+  eventName: 'item/agentMessage/delta',
+  eventId: null,
+  itemId: 'msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e',
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/agentMessage/delta","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","itemId":"msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e","delta":" `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`\\n    - `autobyteus-server-ts/docs/modules/codex_integration.md`\\n    - `autobyteus-server-ts/docs/modules/run_history"}}'
+}
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68', cacheSize: 0 }
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 38,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/agentMessage/delta',
+  eventName: 'item/agentMessage/delta',
+  eventId: null,
+  itemId: 'msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e',
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/agentMessage/delta","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","itemId":"msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e","delta":".md`\\n  - **Untracked**:\\n    - `tickets/in-progress/codex-history-reload-toolcalls/docs-sync-report.md`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/electron-test-build-report.md"}}'
+}
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68', cacheSize: 0 }
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 39,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/agentMessage/delta',
+  eventName: 'item/agentMessage/delta',
+  eventId: null,
+  itemId: 'msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e',
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/agentMessage/delta","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","itemId":"msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e","delta":"`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/handoff-summary.md`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/`\\n    - `tickets/in-progress/c"}}'
+}
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68', cacheSize: 0 }
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/agentMessage/delta',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 40,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/agentMessage/delta',
+  eventName: 'item/agentMessage/delta',
+  eventId: null,
+  itemId: 'msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e',
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'itemId', 'delta' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/agentMessage/delta","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","itemId":"msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e","delta":"odex-history-reload-toolcalls/release-deployment-report.md`\\n\\nNo files were modified by me."}}'
+}
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68', cacheSize: 0 }
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'item/completed',
+  listenerCount: 1,
+  paramKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 41,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'item/completed',
+  eventName: 'item/completed',
+  eventId: null,
+  itemId: 'msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e',
+  itemType: 'agentMessage',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'item', 'threadId', 'turnId', 'completedAtMs' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"item/completed","params":{"item":{"type":"agentMessage","id":"msg_03e4729c5c15a597016a081bcb1fd88191923c4d8394063c5e","text":"Done — ran exactly as requested:\\n\\n1. `pwd`\\n2. `ls -la | head -20`\\n3. `git status --short`\\n\\nSummary:\\n- Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls`\\n- `ls -la | head -20` succeeded (repo root contents shown).\\n- `git status --short` shows:\\n  - **Modified**:\\n    - `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`\\n    - `autobyteus-server-ts/docs/modules/codex_integration.md`\\n    - `autobyteus-server-ts/docs/modules/run_history.md`\\n  - **Untracked**:\\n    - `tickets/in-progress/codex-history-reload-toolcalls/docs-sync-report.md`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/electron-test-build-report.md`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/handoff-summary.md`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/release-deployment-report.md`\\n\\nNo files were modified by me.","phase":"final_answer","memoryCitation":null},"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","completedAtMs":1778916299347}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'rawResponseItem/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'item' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 42,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'rawResponseItem/completed',
+  eventName: 'rawResponseItem/completed',
+  eventId: null,
+  itemId: null,
+  itemType: 'message',
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'item' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"rawResponseItem/completed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","item":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Done — ran exactly as requested:\\n\\n1. `pwd`\\n2. `ls -la | head -20`\\n3. `git status --short`\\n\\nSummary:\\n- Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls`\\n- `ls -la | head -20` succeeded (repo root contents shown).\\n- `git status --short` shows:\\n  - **Modified**:\\n    - `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`\\n    - `autobyteus-server-ts/docs/modules/codex_integration.md`\\n    - `autobyteus-server-ts/docs/modules/run_history.md`\\n  - **Untracked**:\\n    - `tickets/in-progress/codex-history-reload-toolcalls/docs-sync-report.md`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/electron-test-build-report.md`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/handoff-summary.md`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/`\\n    - `tickets/in-progress/codex-history-reload-toolcalls/release-deployment-report.md`\\n\\nNo files were modified by me."}],"phase":"final_answer"}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'thread/tokenUsage/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'thread/tokenUsage/updated',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turnId', 'tokenUsage' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 43,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'thread/tokenUsage/updated',
+  eventName: 'thread/tokenUsage/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turnId', 'tokenUsage' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"thread/tokenUsage/updated","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turnId":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","tokenUsage":{"total":{"totalTokens":35246,"inputTokens":34701,"cachedInputTokens":23808,"outputTokens":545,"reasoningOutputTokens":213},"last":{"totalTokens":18150,"inputTokens":17860,"cachedInputTokens":16768,"outputTokens":290,"reasoningOutputTokens":28},"modelContextWindow":121600}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'account/rateLimits/updated',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'account/rateLimits/updated',
+  listenerCount: 1,
+  paramKeys: [ 'rateLimits' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 44,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'account/rateLimits/updated',
+  eventName: 'account/rateLimits/updated',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'rateLimits' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"account/rateLimits/updated","params":{"rateLimits":{"limitId":"codex","limitName":null,"primary":{"usedPercent":44,"windowDurationMins":300,"resetsAt":1778920083},"secondary":{"usedPercent":77,"windowDurationMins":10080,"resetsAt":1779162820},"credits":null,"planType":"pro","rateLimitReachedType":null}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'thread/status/changed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'thread/status/changed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'status' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 45,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'thread/status/changed',
+  eventName: 'thread/status/changed',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: null,
+  payloadKeys: [ 'threadId', 'status' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"thread/status/changed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","status":{"type":"idle"}}}'
+}
+[CodexAppServerNotification] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'turn/completed',
+  matchesThread: true,
+  threadId: '019e2fac-75ba-7002-99b0-2571371f4a1d',
+  activeTurnId: null,
+  threadCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexEmitAppServerMessage] {
+  runId: 'worker_517c3afd25fff88f',
+  method: 'turn/completed',
+  listenerCount: 1,
+  paramKeys: [ 'threadId', 'turn' ]
+}
+[CodexThreadEvent] Raw Codex event {
+  sequence: 46,
+  runId: 'worker_517c3afd25fff88f',
+  rawMethod: 'turn/completed',
+  eventName: 'turn/completed',
+  eventId: null,
+  itemId: null,
+  itemType: null,
+  itemName: null,
+  itemStatus: null,
+  callId: null,
+  turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68',
+  payloadKeys: [ 'threadId', 'turn' ],
+  summaryPartLength: 0,
+  rawEventJson: '{"method":"turn/completed","params":{"threadId":"019e2fac-75ba-7002-99b0-2571371f4a1d","turn":{"id":"019e2fac-75f3-7810-b4c0-e548f4e4cb68","items":[],"itemsView":"notLoaded","status":"completed","error":null,"startedAt":1778916292,"completedAt":1778916299,"durationMs":7274}}}'
+}
+[CodexThreadEvent] Cleared reasoning turn cache { turnId: '019e2fac-75f3-7810-b4c0-e548f4e4cb68', cacheSize: 0 }
+{"level":30,"time":1778916300371,"pid":11690,"hostname":"MacBookPro","reqId":"req-5z","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at routeOptions.handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:198:24)\n    at preHandlerCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)\n    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:77:7)","extensions":{}},"msg":"Graphql validation error"}
+Closed agent session 6a4ef1a2-997e-44f0-8b45-f00b132ed65c
+Agent Team WebSocket disconnected: 6a4ef1a2-997e-44f0-8b45-f00b132ed65c
+FileExplorerSession closed: 378927d1-597c-4a85-ae59-b16b8a86144f
+Closed file explorer session 378927d1-597c-4a85-ae59-b16b8a86144f. Active sessions: 1
+File explorer WebSocket disconnected: 378927d1-597c-4a85-ae59-b16b8a86144f
+FileExplorerSession closed: 7d5729d8-1afc-4bc3-9f19-6890e7d4a0e7
+Closed file explorer session 7d5729d8-1afc-4bc3-9f19-6890e7d4a0e7. Active sessions: 0
+File explorer WebSocket disconnected: 7d5729d8-1afc-4bc3-9f19-6890e7d4a0e7
+Closed agent session f3560c76-5020-49e0-ae5f-dca8e5af0b33
+Agent Team WebSocket disconnected: f3560c76-5020-49e0-ae5f-dca8e5af0b33
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: 41860b01-7d6d-45d2-afce-45f7aff143b4 for workspace temp_ws_default
+Created file explorer session 41860b01-7d6d-45d2-afce-45f7aff143b4 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 41860b01-7d6d-45d2-afce-45f7aff143b4 for workspace temp_ws_default
+File explorer websocket attached for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+FileExplorerSession created: 65e368f6-91f5-4eec-a1eb-2746375eb0de for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+Created file explorer session 65e368f6-91f5-4eec-a1eb-2746375eb0de for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5. Active sessions: 2
+File explorer WebSocket connected: 65e368f6-91f5-4eec-a1eb-2746375eb0de for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+Agent team websocket attached for team run team_codex-history-toolcall-repro-team-202605_6086dd85
+Created agent session e9a1eaae-b6fa-42b7-ae85-adaff53b7aea for run team_codex-history-toolcall-repro-team-202605_6086dd85
+Agent Team WebSocket connected: session=e9a1eaae-b6fa-42b7-ae85-adaff53b7aea, run=team_codex-history-toolcall-repro-team-202605_6086dd85
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: 63934acb-767c-44d4-84ba-8ec5ea4bfa3e for workspace temp_ws_default
+Created file explorer session 63934acb-767c-44d4-84ba-8ec5ea4bfa3e for workspace temp_ws_default. Active sessions: 3
+File explorer WebSocket connected: 63934acb-767c-44d4-84ba-8ec5ea4bfa3e for workspace temp_ws_default
+File explorer websocket attached for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+FileExplorerSession created: 91c1c8bf-4761-454f-99dc-ff1b83680d6e for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+Created file explorer session 91c1c8bf-4761-454f-99dc-ff1b83680d6e for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5. Active sessions: 4
+File explorer WebSocket connected: 91c1c8bf-4761-454f-99dc-ff1b83680d6e for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+Agent team websocket attached for team run team_codex-history-toolcall-repro-team-202605_6086dd85
+Created agent session da1185d1-46cf-43c8-9d04-8fd80d580303 for run team_codex-history-toolcall-repro-team-202605_6086dd85
+Agent Team WebSocket connected: session=da1185d1-46cf-43c8-9d04-8fd80d580303, run=team_codex-history-toolcall-repro-team-202605_6086dd85
+{"level":30,"time":1778916368220,"pid":11690,"hostname":"MacBookPro","reqId":"req-90","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at routeOptions.handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:198:24)\n    at preHandlerCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)\n    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:77:7)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1778916368221,"pid":11690,"hostname":"MacBookPro","reqId":"req-90","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":1.2487077713012695,"msg":"http request completed"}
+Watcher detected creation: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/pre-restart-projection.json
+{"level":30,"time":1778916380164,"pid":11690,"hostname":"MacBookPro","reqId":"req-98","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at routeOptions.handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:198:24)\n    at preHandlerCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)\n    at handler (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:77:7)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1778916380164,"pid":11690,"hostname":"MacBookPro","reqId":"req-98","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.9453330039978027,"msg":"http request completed"}
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/pre-restart-projection.json
+FileExplorerSession closed: 41860b01-7d6d-45d2-afce-45f7aff143b4
+Closed file explorer session 41860b01-7d6d-45d2-afce-45f7aff143b4. Active sessions: 3
+File explorer WebSocket disconnected: 41860b01-7d6d-45d2-afce-45f7aff143b4
+Closed agent session e9a1eaae-b6fa-42b7-ae85-adaff53b7aea
+Agent Team WebSocket disconnected: e9a1eaae-b6fa-42b7-ae85-adaff53b7aea
+FileExplorerSession closed: 65e368f6-91f5-4eec-a1eb-2746375eb0de
+Closed file explorer session 65e368f6-91f5-4eec-a1eb-2746375eb0de. Active sessions: 2
+File explorer WebSocket disconnected: 65e368f6-91f5-4eec-a1eb-2746375eb0de
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: 672f19eb-b490-451d-9bca-318a851901e0 for workspace temp_ws_default
+Created file explorer session 672f19eb-b490-451d-9bca-318a851901e0 for workspace temp_ws_default. Active sessions: 3
+File explorer WebSocket connected: 672f19eb-b490-451d-9bca-318a851901e0 for workspace temp_ws_default
+File explorer websocket attached for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+FileExplorerSession created: 16672d10-c1ec-41e4-8e2a-6c962f78994c for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+Created file explorer session 16672d10-c1ec-41e4-8e2a-6c962f78994c for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5. Active sessions: 4
+File explorer WebSocket connected: 16672d10-c1ec-41e4-8e2a-6c962f78994c for workspace agent_ws_25fb00b4dcd03e2217399638c95a04682f34f613fb1809b5ae70a76b50d6d0e5
+Agent team websocket attached for team run team_codex-history-toolcall-repro-team-202605_6086dd85
+Created agent session f145c81f-1c8d-4b03-9757-ca10da1dc308 for run team_codex-history-toolcall-repro-team-202605_6086dd85
+Agent Team WebSocket connected: session=f145c81f-1c8d-4b03-9757-ca10da1dc308, run=team_codex-history-toolcall-repro-team-202605_6086dd85

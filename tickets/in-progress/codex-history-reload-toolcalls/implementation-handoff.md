@@ -4,76 +4,96 @@
 
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/requirements.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/design-spec.md`
-- Backend scratch repro evidence log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/tmp-dynamic-tool-repro.log`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/design-review-report.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/review-report.md`
+- Revised design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/design-spec.md`
+- Updated design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/design-review-report.md`
+- Latest design rework addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/design-rework-addendum.md`
+- Post-delivery live repro: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/post-delivery-live-repro.md`
+- Backend projection evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/current-electron-backend-implementation-projection.json`
+- Pre-restart projection evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/pre-restart-projection.json`
+- Screenshot evidence: `/Users/normy/.autobyteus/browser-artifacts/b0b990-1778916761455.png`
+- Prior code review context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/review-report.md`
 
 ## What Changed
 
-Implemented the reviewed backend fix for Codex history reload tool-call loss:
+Implemented the Round 4 local-only display-source design, superseding the previous turn-aware merge and Codex-native-provider-only attempts:
 
-- Added Codex-owned raw item family classification for active tool item families: `dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`, and `fileChange`.
-- Re-homed pure Codex file-change and tool payload parsing under `agent-execution/backends/codex/items/` and updated live event parsing imports.
-- Added a Codex thread-history item normalizer that converts one `thread/read` tool item into normalized Codex tool facts without emitting GraphQL/frontend rows directly.
-- Refactored `CodexRunViewProjectionProvider` so it remains responsible for thread traversal and replay-event assembly while delegating tool item interpretation to the normalizer.
-- Added run-history-owned invocation-aware projection merge for conversation/activity rows. Stable invocation ids now dedupe/enrich rows across local memory and runtime-native projections; generated/source-scoped fallback ids remain exact-row-dedupe-only to avoid over-collapsing unrelated anonymous tool rows.
-- Preserved existing canonical `RunProjection` shape and did not add frontend Codex-specific rendering logic.
-
-## Local Fix Update After Code Review Round 1
-
-Addressed code review findings from `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/review-report.md`:
-
-- CR-001: Failed `commandExecution` / terminal history items now preserve available terminal result facts even when activity status is `error` or `denied`. Failed command history with `aggregatedOutput` and `exitCode` projects `toolResult`/Activity `result` with status/output/exit-code diagnostics.
-- CR-002: `CodexToolPayloadParser` now extracts nested result/error text from `result.content`, `result.contentItems`, and structured nested result shapes. Failed MCP/dynamic history items with source error text under `result.content[{ text }]` now project that text as `toolError`/Activity `error` instead of degrading to generic fallback text.
-- Added deterministic provider coverage for failed command diagnostics and failed MCP/dynamic nested `result.content` error extraction.
-- Removed the unused stable-invocation flag/export from the normalizer shape while preserving generated-id safety in the run-history merge helper.
+- `AgentRunViewProjectionService` now uses one display authority for normal UI history: `LocalMemoryRunViewProjectionProvider`, regardless of runtime kind.
+- `getRunProjection` / `getProjectionFromMetadata` no longer select runtime-native providers, no longer fallback from native providers to local memory, and no longer merge local/native projection bundles.
+- `TeamMemberRunViewProjectionService` resolves member metadata and member `memoryDir`, then delegates to the same `AgentRunViewProjectionService` local replay path. This applies to AutoByteus, Codex, and Claude Agent SDK members.
+- `TeamRunHistoryService` summary fallback no longer preloads `TeamMemberLocalRunProjectionReader`; it delegates through the same agent projection boundary when raw trace summary extraction is insufficient.
+- Removed obsolete normal-display source machinery: `run-projection-provider-registry.ts`, `run-projection-merge.ts`, and `team-member-local-run-projection-reader.ts`, plus their obsolete tests.
+- Kept Codex/Claude runtime-native projection providers as direct diagnostic utilities only and documented that they are not normal UI display sources.
+- Updated run-history/Codex docs to define local application-owned replay traces as the display source and Codex native `thread/read` as diagnostic/protocol support.
 
 ## Key Files Or Areas
 
-- Added: `autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-tool-item-family.ts`
-- Added: `autobyteus-server-ts/src/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.ts`
-- Added: `autobyteus-server-ts/src/run-history/projection/run-projection-merge.ts`
-- Moved/re-homed: `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-file-change-payload-helper.ts` -> `autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-file-change-payload-helper.ts`
-- Moved/re-homed: `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-tool-payload-parser.ts` -> `autobyteus-server-ts/src/agent-execution/backends/codex/items/codex-tool-payload-parser.ts`
-- Modified: `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts`
-- Modified: `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts`
-- Modified: `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-converter.ts`
-- Modified: `autobyteus-server-ts/src/run-history/projection/providers/codex-run-view-projection-provider.ts`
+Implementation source:
+
 - Modified: `autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts`
-- Modified: `autobyteus-server-ts/tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts`
-- Added: `autobyteus-server-ts/tests/unit/run-history/projection/run-projection-merge.test.ts`
+- Modified: `autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts`
+- Modified: `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
+- Modified: `autobyteus-server-ts/src/run-history/projection/providers/local-memory-run-view-projection-provider.ts`
+- Modified/scoped diagnostic only: `autobyteus-server-ts/src/run-history/projection/providers/codex-run-view-projection-provider.ts`
+- Modified/scoped diagnostic only: `autobyteus-server-ts/src/run-history/projection/providers/claude-run-view-projection-provider.ts`
+- Removed: `autobyteus-server-ts/src/run-history/projection/run-projection-provider-registry.ts`
+- Removed: `autobyteus-server-ts/src/run-history/projection/run-projection-merge.ts`
+- Removed: `autobyteus-server-ts/src/run-history/services/team-member-local-run-projection-reader.ts`
+
+Tests / durable checks updated:
+
+- Modified: `autobyteus-server-ts/tests/unit/run-history/services/agent-run-view-projection-service.test.ts`
+- Modified: `autobyteus-server-ts/tests/unit/run-history/team-member-run-view-projection-service.test.ts`
+- Modified: `autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts`
+- Modified: `autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
+- Removed obsolete registry/merge/team-member-reader tests.
+
+Docs updated:
+
+- `autobyteus-server-ts/docs/modules/run_history.md`
+- `autobyteus-server-ts/docs/modules/codex_integration.md`
+- `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`
+
+## Test Coverage Updated
+
+- Unit coverage now proves `AgentRunViewProjectionService` calls only the local replay provider for Codex, Claude Agent SDK, and AutoByteus metadata.
+- Unit coverage proves a Codex run with missing local replay remains empty even if a mocked native provider could return rows.
+- Unit coverage proves local replay traces containing user, reasoning, tool call/result, and assistant text hydrate into canonical conversation/activity rows in order.
+- Team-member unit coverage proves member metadata includes member `memoryDir` and delegates through the unified local replay path.
+- Integration coverage now runs standalone and team-member projection from actual memory layouts for AutoByteus, Codex, and Claude Agent SDK.
+- GraphQL projection coverage now proves Codex standalone and team-member `getRunProjection` / `getTeamMemberRunProjection` return local replay tool rows and do not call the mocked Codex thread reader.
+- Frontend canonical hydration tests still pass unchanged; no runtime-specific frontend branch was added.
 
 ## Important Assumptions
 
-- Codex `thread/read` dynamic/MCP tool items expose a stable `id`/call id for normal same-invocation dedupe; when missing, provider-generated fallback ids are intentionally treated as source-scoped and not semantically merged across local/native sources.
-- MCP thread-history tool names may be present as `name` or `tool`; when only `server` + `tool` are available, history normalization qualifies the tool as `server.tool`.
-- The frontend canonical projection hydration path remains sufficient when backend returns canonical `tool_call` rows.
+- Normal UI history display is local replay authoritative for every runtime, including Codex and Claude Agent SDK.
+- Missing or incomplete local replay traces are allowed to produce empty/incomplete UI history; runtime-native history must not be used to recover normal display.
+- Runtime-native Codex/Claude providers may remain only as diagnostic utilities or direct protocol tests; they are not part of GraphQL normal history APIs.
+- If a reloaded history is missing tool rows now, the defect boundary is local event normalization/raw-trace writing or local replay projection, not provider-source reconciliation.
 
 ## Known Risks
 
-- Histories whose Codex native thread is unavailable and whose local raw traces never captured tool facts remain unrecoverable by this read-time projection fix.
-- Future unknown Codex tool-like item shapes still require follow-up support; the normalizer now logs unsupported tool-like history item summaries only when `CODEX_THREAD_HISTORY_DEBUG=1` or `CODEX_THREAD_EVENT_DEBUG=1` is set.
-- Repository-wide typecheck commands are currently blocked by existing tsconfig/workspace setup issues noted below; focused runtime/unit coverage passed.
+- Older runs without local raw/replay traces will not be reconstructed from Codex native thread history or Claude session history. This is intentional under the approved design.
+- `LocalMemoryRunViewProjectionProvider` name still says “memory,” but docs and comments now identify it as the local replay display authority.
+- Broad `pnpm run typecheck` was not rerun; prior repo config issue remains (`tests` included while `rootDir` is `src`). Source build passed via `pnpm run build`.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Bug Fix
-- Reviewed root-cause classification: Duplicated Policy Or Coordination / Shared Structure Looseness
-- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now
-- Implementation matched the reviewed assessment (`Yes`/`No`): Yes
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A
-- Evidence / notes: Provider-local narrow tool parsing was removed as authoritative policy; Codex raw item interpretation now lives in Codex item/history normalizer files, and local/native projection merge is run-history-owned and invocation-aware.
+- Reviewed change posture: Bug fix + source-authority refactor.
+- Reviewed root-cause classification: Boundary Or Ownership Issue / Duplicated Policy Or Coordination.
+- Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now.
+- Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A.
+- Evidence / notes: Normal UI history now has one source boundary. `AgentRunViewProjectionService` owns local-only projection policy; team-member service owns member identity/memory metadata only; local provider owns replay trace reading; frontend remains canonical-projection-only.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: `None`
-- Legacy old-behavior retained in scope: `No`
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
-- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: Changed implementation source files are all below the 500 effective non-empty-line guardrail. `codex-item-event-converter.ts` remains below 500 effective non-empty lines after using shared family classification.
+- Backward-compatibility mechanisms introduced: None.
+- Legacy old-behavior retained in scope: No.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: Yes — removed runtime provider registry, local/native projection merge helper, team-member local reader bypass, and obsolete tests.
+- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): Yes.
+- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: Yes.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): Yes.
+- Notes: The implementation is a clean-cut source-authority replacement, not a Codex-specific runtime branch or a compatibility fallback.
 
 ## Environment Or Dependency Notes
 
@@ -81,32 +101,27 @@ Addressed code review findings from `/Users/normy/autobyteus_org/autobyteus-work
 - Branch: `codex/codex-history-reload-toolcalls`
 - Base recorded by upstream: `origin/personal`
 - `git diff --check` passed.
-- Typecheck attempts:
-  - `cd autobyteus-server-ts && pnpm exec tsc -p tsconfig.json --noEmit` failed before implementation-specific type errors because `tsconfig.json` includes `tests` while `rootDir` is `src` (`TS6059`).
-  - `cd autobyteus-server-ts && pnpm exec tsc -p tsconfig.build.json --noEmit` failed before implementation-specific type errors because workspace/package generated types were not available with that direct command (`autobyteus-ts` / Prisma module resolution errors).
-  - `cd autobyteus-server-ts && pnpm exec tsc -p tsconfig.json --noEmit --rootDir . --pretty false` also failed on existing cross-workspace rootDir/strictness issues outside this change.
+- `pnpm run build` passed for `autobyteus-server-ts`.
 
 ## Local Implementation Checks Run
 
-Implementation-scoped checks run:
+Implementation-scoped checks run after the Round 4 local-only rework:
 
-- `cd autobyteus-server-ts && pnpm exec vitest run tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts tests/unit/run-history/projection/run-projection-merge.test.ts tests/unit/run-history/services/agent-run-view-projection-service.test.ts` — passed before code review, 13 tests.
-- `cd autobyteus-server-ts && pnpm exec vitest run tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts tests/unit/run-history/projection/run-projection-merge.test.ts tests/unit/run-history/services/agent-run-view-projection-service.test.ts` — passed after CR-001/CR-002 fixes, 15 tests.
-- `cd autobyteus-server-ts && pnpm exec vitest run tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts` — passed before and after CR-001/CR-002 fixes, 27 tests.
-- `cd autobyteus-server-ts && pnpm exec vitest run tests/unit/run-history` — passed after CR-001/CR-002 fixes, 25 files / 87 tests.
-- `cd autobyteus-web && pnpm exec nuxi prepare && pnpm exec cross-env NUXT_TEST=true vitest run services/runHydration/__tests__/runProjectionConversation.spec.ts --config vitest.config.mts --maxWorkers=1` — passed, 3 tests.
-- `cd autobyteus-web && pnpm exec cross-env NUXT_TEST=true vitest run stores/__tests__/runHistoryStore.spec.ts --config vitest.config.mts --maxWorkers=1` — passed, 45 tests.
+- `cd autobyteus-server-ts && pnpm exec vitest run tests/unit/run-history/services/agent-run-view-projection-service.test.ts tests/unit/run-history/team-member-run-view-projection-service.test.ts tests/unit/run-history/team-member-run-view-projection-service.import.test.ts tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts` — passed, 5 files / 17 tests.
+- `cd autobyteus-server-ts && pnpm exec vitest run tests/integration/run-history/memory-layout-and-projection.integration.test.ts` — passed, 1 file / 12 tests.
+- `cd autobyteus-server-ts && pnpm exec vitest run tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts` — passed, 1 file / 2 tests. Narrow GraphQL projection check only; not downstream validation sign-off.
+- `cd autobyteus-server-ts && pnpm exec vitest run tests/unit/run-history` — passed, 22 files / 81 tests.
+- `cd autobyteus-server-ts && pnpm run build` — passed, including `tsc -p tsconfig.build.json` and built-in agents bootstrap smoke check.
+- `cd autobyteus-web && pnpm exec nuxi prepare && pnpm exec cross-env NUXT_TEST=true vitest run services/runHydration/__tests__/runProjectionConversation.spec.ts stores/__tests__/runHistoryStore.spec.ts --config vitest.config.mts --maxWorkers=1` — passed, 2 files / 48 tests.
 - `git diff --check` — passed.
 
 ## Downstream Validation Hints / Suggested Scenarios
 
-- Review the new provider fixture that asserts `userMessage -> reasoning -> mcpToolCall -> dynamicToolCall -> agentMessage` projects tool rows in order with tool names, arguments, and results.
-- Review merge helper behavior for:
-  - same stable invocation id dedupe/enrichment across local/native conversation rows;
-  - same stable invocation id dedupe/enrichment across Activity rows;
-  - generated fallback ids such as `codex-0-1` not semantically collapsing distinct rows.
-- Optional API/E2E validation can run a Codex/team-member scenario that emits `send_message_to` plus an MCP/dynamic command-like tool, then reloads `getRunProjection` / `getTeamMemberRunProjection` after backend restart/history selection and compares invocation ids/tool names/args/results.
+- Code review should verify no production normal UI path imports or resolves `CodexRunViewProjectionProvider`, `ClaudeRunViewProjectionProvider`, provider registry, or projection merge.
+- Code review should verify `getRunProjection` and `getTeamMemberRunProjection` are local replay only for Codex, Claude Agent SDK, and AutoByteus.
+- API/E2E should validate a real restart/history reload for Codex and, if available, Claude Agent SDK: live reasoning/tool/text rows should be persisted as local raw traces and reload through the same local projection path.
+- API/E2E should validate an older/missing-local-history case returns empty/incomplete projection instead of reconstructing from runtime-native history.
 
 ## API / E2E / Executable Validation Still Required
 
-API/E2E validation is still required downstream. No live Codex app-server reload E2E was run during implementation because that is environment-dependent and belongs to the API/E2E validation stage.
+API/E2E validation is still required downstream after code review passes. The checks above are implementation-scoped unit/integration/narrow GraphQL confidence checks and should not be treated as final API/E2E validation sign-off.

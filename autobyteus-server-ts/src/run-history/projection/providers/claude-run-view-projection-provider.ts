@@ -113,6 +113,12 @@ const toReplayEvent = (row: Record<string, unknown>): HistoricalReplayEvent | nu
   };
 };
 
+/**
+ * Diagnostic/runtime-native Claude session projection utility.
+ *
+ * Normal UI history does not use this provider; AgentRunViewProjectionService
+ * hydrates display rows from the local application-owned replay trace only.
+ */
 export class ClaudeRunViewProjectionProvider implements RunProjectionProvider {
   readonly runtimeKind = RuntimeKind.CLAUDE_AGENT_SDK;
 
@@ -137,12 +143,3 @@ export class ClaudeRunViewProjectionProvider implements RunProjectionProvider {
     return buildRunProjectionBundleFromEvents(input.source.runId, events);
   }
 }
-
-let cachedClaudeRunViewProjectionProvider: ClaudeRunViewProjectionProvider | null = null;
-
-export const getClaudeRunViewProjectionProvider = (): ClaudeRunViewProjectionProvider => {
-  if (!cachedClaudeRunViewProjectionProvider) {
-    cachedClaudeRunViewProjectionProvider = new ClaudeRunViewProjectionProvider();
-  }
-  return cachedClaudeRunViewProjectionProvider;
-};

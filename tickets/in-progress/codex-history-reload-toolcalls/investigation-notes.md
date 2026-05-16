@@ -154,3 +154,38 @@ The user reports a suspected bug in Codex history loading. The screenshot shows 
 - The target design should be reviewed primarily for ownership: Codex raw/thread item interpretation should not keep drifting between live converter and history provider.
 - The projection merge change is not optional once dynamic/MCP provider coverage is added; team-member projection already merges local + Codex-native sources.
 - Frontend work should be considered out of scope unless architecture review requires an explicit component regression fixture; current canonical projection tests pass.
+
+## 2026-05-16 Post-Delivery Source-Authority Rework
+
+### New user clarification
+
+The user clarified that Codex raw traces are intentionally persisted for future memory/audit/diagnostic features, but the Codex runtime UI history should not normally load from those raw traces. The intended Codex display source is Codex native thread history through `CodexRunViewProjectionProvider`.
+
+### Additional current-state evidence
+
+- `autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts` currently reads `TeamMemberLocalRunProjectionReader.getProjection(teamRunId, memberRunId)` before delegating to `AgentRunViewProjectionService`.
+- The same service passes that raw-trace `localProjection` into `AgentRunViewProjectionService.getProjectionFromMetadata(...)` even when the member runtime is `CODEX_APP_SERVER`.
+- `AgentRunViewProjectionService.getProjectionFromMetadata(...)` then resolves the runtime provider (`CodexRunViewProjectionProvider` for Codex) and calls `mergeProjectionBundles(runId, localProjection, primaryProjection)`.
+- `LocalMemoryRunViewProjectionProvider` can already read explicit `metadata.memoryDir`, so local/memory-backed team-member history does not require a separate `TeamMemberLocalRunProjectionReader` bypass if source selection is centralized in `AgentRunViewProjectionService`.
+
+### Revised root-cause classification
+
+The post-delivery issue is not just missing provider item coverage or insufficient text-turn merge. It is a boundary/ownership issue: the team-member path depends on both the Codex projection boundary and raw-trace memory internals for the same Codex UI projection. This violates the Authoritative Boundary Rule and causes duplicate raw/native conversation tails.
+
+### Revised design implication
+
+The design has been reworked so `AgentRunViewProjectionService` owns runtime source authority. For `CODEX_APP_SERVER`, normal UI projection must use `CodexRunViewProjectionProvider` only; raw traces stay persisted for memory/diagnostics/future features and must not be merged into the Codex UI history path. Missing Codex display rows should be fixed in `CodexRunViewProjectionProvider` / Codex item normalization.
+
+## 2026-05-16 Final Source-Authority Clarification: Local Replay Only
+
+### New user clarification
+
+The user clarified that no fallback/recovery from Codex native thread history is required. If a run has no local history, empty/incomplete display is acceptable. The preferred direction is to use the local application-owned replay trace consistently for display.
+
+### Revised design implication
+
+The design now treats local replay traces as the sole normal UI history display source for every runtime, including Codex. Runtime-native providers such as `CodexRunViewProjectionProvider` should not participate in `getRunProjection` or `getTeamMemberRunProjection` normal display paths, and local/native projection merge should be removed from normal UI history.
+
+### Updated root-cause classification
+
+The reproduced defect is a multiple-authority display-history problem. The current/recent code can combine local replay projection and Codex-native projection, producing duplicate text/reasoning-only tails. The corrected design removes the need for source reconciliation by making the local replay source authoritative and accepting missing local history as missing display history.

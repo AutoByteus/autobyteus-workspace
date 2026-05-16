@@ -111,12 +111,12 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
     const projection = await provider.buildProjection({
       source: {
         runId: "server-run-1",
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
         workspaceRootPath: "/tmp/workspace",
         memoryDir: explicitMemoryDir,
         platformRunId: "platform-thread-id",
         metadata: createMetadata({
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
           memoryDir: explicitMemoryDir,
           platformAgentRunId: "platform-thread-id",
         }),
