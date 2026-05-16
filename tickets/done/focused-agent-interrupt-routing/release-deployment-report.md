@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-No release, publication, or deployment is in scope before user verification. This report records the delivery-stage integrated-state refresh, docs sync, final handoff preparation, and the mandatory hold before repository finalization.
+User verified the local Electron build and requested finalization plus a new release. Delivery archived the ticket, merged the ticket branch into `personal`, bumped the workspace release version to `1.3.14`, pushed tag `v1.3.14`, and verified the desktop, messaging gateway, and server Docker release workflows completed successfully.
 
 ## Handoff Summary
 
@@ -53,42 +53,51 @@ No release, publication, or deployment is in scope before user verification. Thi
 
 ## Version / Tag / Release Commit
 
-No version bump, tag, release commit, or release-note publication was performed. A local unsigned macOS Electron verification build was produced for user testing only; see `/Users/normy/autobyteus_org/autobyteus-worktrees/focused-agent-interrupt-routing/tickets/done/focused-agent-interrupt-routing/electron-build-report.md`.
+- Version before release: `1.3.13`
+- New release version: `1.3.14`
+- Release tag: `v1.3.14`
+- Release commit: `ba55f18eb38128d00b5306a21b0f4417a6502005` (`chore(release): bump workspace release version to 1.3.14`)
+- Release notes artifact used: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/focused-agent-interrupt-routing/release-notes.md`
+- Curated release notes synced to: `.github/release-notes/release-notes.md`
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/focused-agent-interrupt-routing/tickets/done/focused-agent-interrupt-routing/investigation-notes.md`
 - Ticket branch: `codex/focused-agent-interrupt-routing`
-- Ticket branch commit result: `Pending final commit`
-- Ticket branch push result: `Pending final commit`
+- Ticket branch commit result: `Completed` — `c71a879b6ebddb9db804931e2e08ceb36281a0e5` (`fix(team): target focused member interrupts`).
+- Ticket branch push result: `Completed` — pushed `codex/focused-agent-interrupt-routing` to origin.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed - target unchanged at a51d3abd8bb620bb984c9c9f24209e4d32eb167b`
-- Target branch update result: `Pending final commit`
-- Merge into target result: `Pending final commit`
-- Push target branch result: `Pending final commit`
-- Repository finalization status: `In progress`
+- Target branch update result: `Completed` — local `personal` refreshed from latest `origin/personal` before merge.
+- Merge into target result: `Completed` — merge commit `ccad7dee9361714b689513a25f2617bc10eac384` (`Merge branch 'codex/focused-agent-interrupt-routing' into personal`).
+- Push target branch result: `Completed` — pushed `personal` to origin.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: N/A
-- Method reference / command: N/A
-- Release/publication/deployment result: `In progress - preparing v1.3.14`
-- Release notes handoff result: `Prepared`
+- Applicable: `Yes`
+- Method: `Documented Command`
+- Method reference / command: `scripts/desktop-release.sh release 1.3.14 --release-notes tickets/done/focused-agent-interrupt-routing/release-notes.md`
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Used`
+- Release URL: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.14`
+- Desktop release workflow run: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25971021651`
+- Messaging gateway release workflow run: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25971021648`
+- Server Docker release workflow run: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25971021652`
 - Blocker (if applicable): N/A
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/focused-agent-interrupt-routing`
-- Worktree cleanup result: `Not required before user verification`
-- Worktree prune result: `Not required before user verification`
-- Local ticket branch cleanup result: `Not required before user verification`
+- Worktree cleanup result: `Not required` — retained locally to preserve the tested unsigned Electron build for immediate post-release inspection.
+- Worktree prune result: `Not required`
+- Local ticket branch cleanup result: `Not required` — retained with the local worktree for auditability.
 - Remote branch cleanup result: `Not required`
-- Blocker (if applicable): `Cleanup waits until repository finalization is complete and safe.`
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -104,13 +113,16 @@ No version bump, tag, release commit, or release-note publication was performed.
 
 ## Deployment Steps
 
-N/A. No deployment path was requested or detected for this delivery-stage handoff. Local test build launch options:
+Completed release steps:
 
-```bash
-open /Users/normy/autobyteus_org/autobyteus-worktrees/focused-agent-interrupt-routing/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg
-# or
-open /Users/normy/autobyteus_org/autobyteus-worktrees/focused-agent-interrupt-routing/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
-```
+1. Committed archived ticket state on `codex/focused-agent-interrupt-routing` (`c71a879b`).
+2. Pushed ticket branch to origin.
+3. Refreshed local `personal` from `origin/personal`.
+4. Merged ticket branch into `personal` (`ccad7dee`) and pushed `personal`.
+5. Ran `scripts/desktop-release.sh release 1.3.14 --release-notes tickets/done/focused-agent-interrupt-routing/release-notes.md --no-push` from clean `personal`.
+6. Pushed `personal` release commit `ba55f18e` and tag `v1.3.14`.
+7. Monitored `release-desktop.yml`, `release-messaging-gateway.yml`, and `release-server-docker.yml` GitHub Actions workflows to successful completion.
+8. Verified GitHub Release `v1.3.14` exists and has published assets.
 
 ## Environment Or Migration Notes
 
@@ -138,10 +150,18 @@ Delivery-owned checks:
 - `pnpm -C autobyteus-server-ts test --run tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts tests/integration/agent/agent-team-websocket.integration.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/agent-team-execution/team-run.test.ts` — passed, 4 files / 30 tests.
 - `git fetch origin --prune` after the Electron build confirmed `HEAD` and `origin/personal` still match at `a51d3abd8bb620bb984c9c9f24209e4d32eb167b`.
 
+- Release workflow verification:
+  - Desktop Release run `25971021651` — `success`.
+  - Release Messaging Gateway run `25971021648` — `success`.
+  - Server Docker Release run `25971021652` — `success`.
+- Release asset verification:
+  - `gh release view v1.3.14` succeeded.
+  - Published assets include macOS ARM64 DMG/ZIP/blockmaps, macOS x64 DMG/ZIP/blockmaps, Linux AppImage, Windows installer, latest metadata files, messaging gateway tarball/checksum/manifest, and `release-manifest.json`.
+
 ## Rollback Criteria
 
 If user verification shows a focused-member interrupt still targets the wrong member, rejects a valid focused member, or regresses single-agent interrupt behavior, do not finalize. Route back to `implementation_engineer` for a local fix unless the observed behavior changes the requirement/design boundary, in which case route to `solution_designer`.
 
 ## Final Status
 
-`User verified; repository finalization and v1.3.14 release are in progress.`
+`Completed: ticket archived, merged to personal, release v1.3.14 published, release workflows passed.`

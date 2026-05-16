@@ -2,8 +2,8 @@
 
 ## Status
 
-- Delivery status: `User verified; finalization/release in progress`
-- Repository finalization status: `In progress after explicit user verification`
+- Delivery status: `Completed`
+- Repository finalization status: `Completed`
 - Ticket branch: `codex/focused-agent-interrupt-routing`
 - Task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/focused-agent-interrupt-routing`
 - Finalization target from bootstrap context: `personal` / `origin/personal`
@@ -93,3 +93,13 @@ Verified focused-member interrupt behavior in the product/worktree:
 3. Confirm the interrupted member is the currently focused member and that another member is not stopped by stale focus/team-run fallback.
 
 Repository finalization and release may proceed. Ticket archival has moved this package to `tickets/done/focused-agent-interrupt-routing/`.
+
+## Release Result
+
+- Release version: `1.3.14`
+- Release tag: `v1.3.14`
+- Release URL: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.14`
+- Release commit: `ba55f18eb38128d00b5306a21b0f4417a6502005`
+- Desktop Release workflow: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25971021651` — success
+- Messaging Gateway workflow: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25971021648` — success
+- Server Docker workflow: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/25971021652` — success
