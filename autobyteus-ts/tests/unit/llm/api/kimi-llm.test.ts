@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { KimiLLM } from '../../../../src/llm/api/kimi-llm.js';
-import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import {
@@ -22,7 +21,7 @@ vi.mock('openai', () => {
   return { OpenAI };
 });
 
-const buildModel = (value = 'kimi-k2.5') =>
+const buildModel = (value = 'kimi-k2.6') =>
   new LLMModel({
     name: value,
     value,
@@ -44,39 +43,18 @@ describe('KimiLLM', () => {
     });
   });
 
-  it('disables thinking for kimi-k2.5 tool requests when no explicit thinking override is provided', async () => {
-    const llm = new KimiLLM(buildModel('kimi-k2.5'));
+  it('defaults to the retained kimi-k2.6 model', async () => {
+    const llm = new KimiLLM();
 
-    await llm.sendMessages(
-      [
-        new Message(MessageRole.SYSTEM, { content: 'You are a tool-using assistant.' }),
-        new Message(MessageRole.USER, { content: 'Call echo_number with 42.' })
-      ],
-      null,
-      {
-        tools: [
-          {
-            type: 'function',
-            function: {
-              name: 'echo_number',
-              parameters: {
-                type: 'object',
-                properties: { number: { type: 'number' } },
-                required: ['number']
-              }
-            }
-          }
-        ],
-        tool_choice: 'required'
-      }
-    );
+    await llm.sendMessages([
+      new Message(MessageRole.SYSTEM, { content: 'You are a helpful assistant.' }),
+      new Message(MessageRole.USER, { content: 'Say pong.' })
+    ]);
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
-      model: 'kimi-k2.5',
-      tool_choice: 'required',
-      temperature: 0.6,
-      thinking: { type: 'disabled' }
+      model: 'kimi-k2.6',
+      temperature: 1
     });
   });
 
@@ -116,8 +94,8 @@ describe('KimiLLM', () => {
     });
   });
 
-  it('disables thinking for kimi-k2.5 continuation turns that include tool messages', async () => {
-    const llm = new KimiLLM(buildModel('kimi-k2.5'));
+  it('disables thinking for kimi-k2.6 continuation turns that include tool messages', async () => {
+    const llm = new KimiLLM(buildModel('kimi-k2.6'));
 
     await llm.sendMessages([
       new Message(MessageRole.SYSTEM, { content: 'You are a tool-using assistant.' }),
@@ -143,51 +121,9 @@ describe('KimiLLM', () => {
 
     expect(mockCreate).toHaveBeenCalledTimes(1);
     expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
-      model: 'kimi-k2.5',
+      model: 'kimi-k2.6',
       temperature: 0.6,
       thinking: { type: 'disabled' }
-    });
-  });
-
-  it('preserves explicit thinking settings on kimi-k2.5 tool requests', async () => {
-    const llm = new KimiLLM(
-      buildModel('kimi-k2.5'),
-      new LLMConfig({
-        extraParams: {
-          thinking: { type: 'enabled' }
-        }
-      })
-    );
-
-    await llm.sendMessages(
-      [
-        new Message(MessageRole.SYSTEM, { content: 'You are a tool-using assistant.' }),
-        new Message(MessageRole.USER, { content: 'Call echo_number with 42.' })
-      ],
-      null,
-      {
-        tools: [
-          {
-            type: 'function',
-            function: {
-              name: 'echo_number',
-              parameters: {
-                type: 'object',
-                properties: { number: { type: 'number' } },
-                required: ['number']
-              }
-            }
-          }
-        ],
-        tool_choice: 'required'
-      }
-    );
-
-    expect(mockCreate).toHaveBeenCalledTimes(1);
-    expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({
-      model: 'kimi-k2.5',
-      temperature: 0.6,
-      thinking: { type: 'enabled' }
     });
   });
 

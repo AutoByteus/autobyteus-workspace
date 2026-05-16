@@ -55,9 +55,9 @@ Two OpenAI-style paths coexist:
   `tools` placement, and preserves explicit lower-level `tool_choice`
   pass-through. The default agent/server path leaves `tool_choice` unset.
 - Provider adapters keep provider-specific request legality local before
-  delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.5` and
-  `kimi-k2.6` requests to Moonshot-safe temperature defaults unless the caller
-  explicitly passes a per-request `temperature`.
+  delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.6`
+  requests to Moonshot-safe temperature defaults unless the caller explicitly
+  passes a per-request `temperature`.
 - **Saved custom providers** use:
   - `openai-compatible-endpoint-discovery.ts` for `/models` probing
   - `OpenAICompatibleEndpointModel`
@@ -104,7 +104,7 @@ Dynamic custom runtime:
   Example:
 
   ```text
-  openai-compatible:provider_1234567890abcdef:deepseek-chat
+  openai-compatible:provider_1234567890abcdef:custom-chat-model
   ```
 
 This keeps model identity stable even when two providers expose the same model
@@ -131,10 +131,10 @@ Provider adapters own request-shape differences:
   thinking budgets or an adapter-injected default `temperature`.
 - `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4.
 - `KimiLLM` keeps tool-call continuation safe for `kimi-k2.6` by disabling
-  thinking when tool workflows have no explicit thinking override. For
-  `kimi-k2.5` and `kimi-k2.6`, Kimi also normalizes provider-safe temperature
-  defaults: `0.6` for tool workflows and `1` for non-tool requests, while
-  preserving explicit per-request temperature kwargs.
+  thinking when tool workflows have no explicit thinking override. Kimi also
+  normalizes provider-safe temperature defaults for `kimi-k2.6`: `0.6` for tool
+  workflows and `1` for non-tool requests, while preserving explicit
+  per-request temperature kwargs.
 
 For image and audio/TTS catalogs, including OpenAI `gpt-image-2` and Gemini TTS
 models, see `docs/provider_model_catalogs.md`.
@@ -202,7 +202,7 @@ entries to the provider's wire format only when `resolveToolCallFormat()` is
 
 | Provider path | Native history shape in `api_tool_call` mode |
 | --- | --- |
-| DeepSeek Chat | OpenAI-compatible `assistant.tool_calls` followed by matching `role: "tool"` messages; assistant messages with preserved `Message.reasoning_content` also render DeepSeek `reasoning_content`. |
+| DeepSeek OpenAI-compatible path | OpenAI-compatible `assistant.tool_calls` followed by matching `role: "tool"` messages; assistant messages with preserved `Message.reasoning_content` also render DeepSeek `reasoning_content`. |
 | Gemini | model turns with `functionCall` parts followed by user `functionResponse` parts, preserving the function-call `id` when present. |
 | Ollama | assistant messages with `tool_calls` followed by `role: "tool"` result messages containing `tool_name`. |
 | Anthropic | assistant `tool_use` blocks followed immediately by user `tool_result` blocks, with result blocks first in that user message. |

@@ -172,7 +172,7 @@ describe('OpenAICompatibleLLM', () => {
     ]);
 
     const [params] = mockCreate.mock.calls.at(-1) ?? [];
-    expect(params.model).toBe('deepseek-chat');
+    expect(params.model).toBe('deepseek-v4-flash');
     expect(params.messages[0]).toMatchObject({
       role: 'assistant',
       content: 'I will inspect the workspace.',

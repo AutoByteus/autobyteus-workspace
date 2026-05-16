@@ -6,7 +6,7 @@ import { Message, MessageRole } from '../utils/messages.js';
 import { ChunkResponse, CompleteResponse } from '../utils/response-types.js';
 import type { LLMInvocationOptions } from '../base.js';
 
-const KIMI_TOOL_SAFE_NON_THINKING_MODELS = new Set(['kimi-k2.5', 'kimi-k2.6']);
+const KIMI_TOOL_SAFE_NON_THINKING_MODELS = new Set(['kimi-k2.6']);
 const KIMI_DEFAULT_TEMPERATURE = 1;
 const KIMI_TOOL_WORKFLOW_TEMPERATURE = 0.6;
 
@@ -23,9 +23,9 @@ export class KimiLLM extends OpenAICompatibleLLM {
     const effectiveModel =
       model ??
       new LLMModel({
-        name: 'kimi-k2.5',
-        value: 'kimi-k2.5',
-        canonicalName: 'kimi-k2.5',
+        name: 'kimi-k2.6',
+        value: 'kimi-k2.6',
+        canonicalName: 'kimi-k2.6',
         provider: LLMProvider.KIMI
       });
 
