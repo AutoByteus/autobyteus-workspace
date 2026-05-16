@@ -94,6 +94,9 @@ describe('LLMFactory metadata resolution', () => {
       value: 'kimi-k2.6',
       max_context_tokens: 256000
     });
+    expect(deepseekModels.map((model) => model.model_identifier)).not.toContain('deepseek-chat');
+    expect(deepseekModels.map((model) => model.model_identifier)).not.toContain('deepseek-reasoner');
+    expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2.5');
     expect(qwenModels.find((model) => model.model_identifier === 'qwen3-max')?.max_context_tokens).toBe(262144);
     expect(mockFetch).not.toHaveBeenCalled();
   });
@@ -126,7 +129,6 @@ describe('LLMFactory metadata resolution', () => {
           json: async () => ({
             data: [
               { id: 'kimi-k2.6', context_length: 256000 },
-              { id: 'kimi-k2.5', context_length: 262144 },
               { id: 'kimi-k2-thinking', context_length: 131072 }
             ]
           })
@@ -180,8 +182,8 @@ describe('LLMFactory metadata resolution', () => {
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')?.max_output_tokens).toBe(128000);
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')?.value).toBe('claude-opus-4-7');
     expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')?.max_context_tokens).toBe(256000);
-    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.5')?.max_context_tokens).toBe(262144);
     expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2-thinking')?.max_context_tokens).toBe(131072);
+    expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2.5');
     expect(mistralModels.find((model) => model.model_identifier === 'mistral-large-3')?.max_context_tokens).toBe(300000);
     expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.1-pro-preview')?.max_input_tokens).toBe(1048576);
     expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.1-pro-preview')?.max_output_tokens).toBe(65536);
