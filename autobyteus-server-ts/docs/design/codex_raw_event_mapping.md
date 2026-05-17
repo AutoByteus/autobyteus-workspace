@@ -16,6 +16,8 @@ The authoritative raw-event interpretation boundaries live under:
 
 - `src/agent-execution/backends/codex/thread/`
 - `src/agent-execution/backends/codex/events/`
+- `src/agent-execution/backends/codex/history/` for diagnostic `thread/read` replay
+- `src/agent-execution/backends/codex/items/` for shared tool item payload parsing
 
 The most important owners are:
 
@@ -26,6 +28,9 @@ The most important owners are:
 - `codex-thread-lifecycle-event-converter.ts` — authoritative owner for `thread/*` and `error`
 - `codex-raw-response-event-converter.ts` — raw-response sidecar normalization
 - `codex-thread-server-request-handler.ts` — server-request handling for approval requests and dynamic tool calls
+- `codex-thread-history-reader.ts` — owner for diagnostic `thread/read` retrieval and protocol replay inspection
+- `codex-thread-history-item-normalizer.ts` — owner for mapping diagnostic `thread/read` item families into historical replay tool facts
+- `codex-tool-item-family.ts` and `codex-tool-payload-parser.ts` — shared item family and payload extraction helpers used to keep live conversion and history replay aligned
 
 Higher layers should depend on `CodexThread` state and normalized `AgentRunEvent`s exposed by these owners. They should not infer Codex raw protocol details themselves.
 
@@ -120,6 +125,56 @@ seed or hydrate pending Activity display facts through the shared frontend
 Activity projection. `TOOL_EXECUTION_*` events own executing/terminal state,
 result/error, logs, and storage-only memory tool traces for `search_web`.
 
+## Thread History Replay Mapping
+
+Codex `thread/read` is not a live notification stream and is no longer the
+normal focused UI history display source. Normal `getRunProjection` and
+`getTeamMemberRunProjection` responses are hydrated from the local
+application-owned replay trace for every runtime, including Codex. The
+`CodexRunViewProjectionProvider` remains a diagnostic/runtime-native utility
+for inspecting saved Codex turns/items and protocol mapping behavior.
+
+Diagnostic `thread/read` replay still maps active Codex tool families into the
+canonical replay shape:
+
+- `dynamicToolCall` -> canonical `tool_call` conversation row and Activity row
+  using the original invocation id when present.
+- `mcpToolCall` -> canonical `tool_call` row pair with the MCP server name
+  qualified into the tool name when the item exposes one.
+- `webSearch` -> `search_web` replay row pair.
+- `commandExecution` -> `run_bash` replay row pair.
+- `fileChange` -> `edit_file` replay row pair.
+
+Those diagnostic rows should preserve stable invocation id, tool name, parsed
+arguments, terminal result/error, and status when those facts exist in Codex
+history. They must not be used as a normal UI fallback, complementary source,
+or merge partner for local replay display. If Codex UI reload is missing rows,
+fix the live event normalization and local raw-trace recording path so the
+application-owned replay trace contains the expected display facts.
+
+Unsupported tool-like `thread/read` items are logged only under
+`CODEX_THREAD_HISTORY_DEBUG=1` or `CODEX_THREAD_EVENT_DEBUG=1`.
+
+## Local Replay Reasoning Persistence
+
+Normal Codex UI reload depends on local application-owned raw traces, so live
+Codex reasoning must be written before later visible facts in the same turn.
+`RuntimeMemoryEventAccumulator` owns this storage boundary after Codex raw
+events are normalized into `AgentRunEvent`s:
+
+- open reasoning is flushed before explicit tool-call writes;
+- open reasoning is flushed before terminal tool-result writes that infer a
+  missing tool call;
+- open reasoning is flushed before assistant text writes;
+- open reasoning is flushed before assistant-complete output writes;
+- `TURN_COMPLETED` remains a final reasoning flush boundary.
+
+This preserves reload ordering such as reasoning before MCP/dynamic tool cards
+using the same local replay trace that the UI displays. A run that terminates
+with open reasoning and no later visible write or `TURN_COMPLETED` boundary has
+no reliable flush signal; the local replay may remain incomplete rather than
+speculatively writing or recovering from diagnostic `thread/read`.
+
 ## Provider Compaction Boundary Guardrail
 
 Codex provider/session compaction signals are provider-owned context management, not AutoByteus semantic compaction. The installed Codex protocol may expose names or payloads such as `thread/compacted`, `ContextCompactedEvent`, or Responses `type = "compaction"` items. This server integration may normalize those signals into `COMPACTION_STATUS` events carrying a `provider_compaction_boundary` payload.
@@ -156,6 +211,7 @@ Forbidden downstream effect:
 | `item/completed` | `item.type = webSearch` | `TOOL_EXECUTION_FAILED` when status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED(search_web)`; always ends with `SEGMENT_END(tool_call)` | `codex-item-event-converter.ts` | Keep |
 | `item/started` | `item.type = fileChange` | `SEGMENT_START(edit_file)`, `TOOL_EXECUTION_STARTED(edit_file)` | `codex-item-event-converter.ts` | Keep |
 | `item/completed` | `item.type = fileChange` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED(edit_file)`; always ends with `SEGMENT_END(edit_file)` | `codex-item-event-converter.ts` | Keep |
+| diagnostic `thread/read` replay | item families `dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`, `fileChange` | diagnostic historical replay tool events; not a normal UI display fallback or merge source | `codex-thread-history-item-normalizer.ts`, `codex-run-view-projection-provider.ts` | Keep |
 | `item/agentMessage/delta` | agent visible text delta | `SEGMENT_CONTENT(text)` | `codex-item-event-converter.ts` | Keep |
 | `item/reasoning/delta` | reasoning delta | `SEGMENT_CONTENT(reasoning)` | `codex-item-event-converter.ts` | Keep |
 | `item/reasoning/summaryPartAdded` | reasoning summary delta | `SEGMENT_CONTENT(reasoning)` | `codex-item-event-converter.ts` | Keep |
@@ -199,6 +255,7 @@ Optional console debug flags:
 
 - `CODEX_THREAD_EVENT_DEBUG=1`
 - `CODEX_THREAD_RAW_EVENT_DEBUG=1`
+- `CODEX_THREAD_HISTORY_DEBUG=1` for unsupported tool-like `thread/read` item diagnostics during history projection
 - `CODEX_THREAD_RAW_EVENT_MAX_CHARS=<number>`
 
 Output shape:
@@ -217,6 +274,10 @@ Output shape:
 - Treat `dynamicToolCall` item lifecycle as the authoritative owner for Codex dynamic-tool execution lifecycle. Use its lifecycle events, not display-only `SEGMENT_*` events or diagnostic `TOOL_LOG`, for Activity success/error status and storage-only memory tool traces.
 - Treat `mcpToolCall` start plus the enriched local MCP completion event as the authoritative owner for Codex MCP tool execution lifecycle. Preserve pending call arguments through terminal events so restart/history projection can rebuild both transcript and Activity surfaces from the same raw traces.
 - Treat `webSearch` item lifecycle as the authoritative owner for Codex `search_web` execution status and storage-only memory tool traces. Segment events may seed pending Activity visibility, but lifecycle events own Activity executing/success/error status.
+- Treat local application-owned raw traces as the focused Codex UI reload
+  source. `thread/read` replay is diagnostic/runtime-native mapping support;
+  keep supported history item families aligned with the live lifecycle families
+  above, but do not use them as the normal UI display fallback or merge partner.
 - Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Persist ready per-turn usage from the thread boundary instead of parsing raw token payloads in higher runtime layers.
 - Treat Codex status notifications as thread-state inputs. Public status output is the projected coarse `AGENT_STATUS` payload from `CodexThread`, not a raw provider payload or legacy `new_status` / `old_status` transport.
 - Treat provider/session compaction signals as storage-only boundary metadata: marker append plus eligible segmented archive rotation only. Never treat them as permission for semantic compaction, trace-content rewrite, trace loss, runtime memory retrieval, or runtime memory injection.

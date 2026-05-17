@@ -83,7 +83,11 @@ Codex runtime runs now receive server-owned durable memory in addition to Codex-
 - `AgentRunManager` attaches the storage-only `AgentRunMemoryRecorder`; the recorder captures accepted `AgentRun.postUserMessage(...)` commands plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
 - The recorder writes shared `RawTraceItem` rows and `working_context_snapshot.json` through the `autobyteus-ts` `RunMemoryFileStore` primitives.
 
-This memory is for inspection, run-history fallback, and future offline analyzers. It is **not** Codex runtime memory management: AutoByteus does not retrieve these traces for Codex, inject them into Codex prompts, replace Codex session state, or run semantic compaction inside the Codex execution path.
+This memory is the normal run-history display replay source and is also useful
+for inspection and future offline analyzers. It is **not** Codex runtime memory
+management: AutoByteus does not retrieve these traces for Codex, inject them
+into Codex prompts, replace Codex session state, or run semantic compaction
+inside the Codex execution path.
 
 Codex provider/session compaction metadata is treated as provider-owned context management, not AutoByteus semantic compaction. `thread/compacted` and raw Responses `type = "compaction"` items are normalized at the Codex converter boundary into deduplicated `provider_compaction_boundary` payloads. The server recorder writes one provenance marker and may rotate settled active raw traces before that marker into a complete segmented archive entry. It must not create semantic/episodic memory, rewrite trace content, drop trace history, retrieve memory for Codex, or inject memory back into Codex.
 
@@ -160,21 +164,71 @@ This keeps Codex skill loading aligned with the Codex filesystem contract instea
 
 ## Projection / History
 
-Codex run history and projection prefer persisted Codex thread history. Server-owned local memory is also available for the memory inspector and as a run-history fallback when the Codex-native history reader cannot produce a usable replay bundle.
+Normal Codex UI history uses the same local application-owned replay trace as
+all other runtimes. `getRunProjection(runId)` and
+`getTeamMemberRunProjection(teamRunId, memberRouteKey)` do not call, fallback
+to, or merge with Codex native `thread/read` history for display. If local
+replay traces are absent or incomplete, focused Codex UI history may be empty
+or incomplete. That is the accepted display boundary.
 
-Relevant components:
+Relevant display components:
 
-- `src/agent-execution/backends/codex/history/codex-thread-history-reader.ts`
-- `src/run-history/projection/providers/codex-run-view-projection-provider.ts`
 - `src/run-history/projection/providers/local-memory-run-view-projection-provider.ts`
+- `src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts`
 - `src/run-history/services/agent-run-view-projection-service.ts`
 - `src/run-history/services/team-member-run-view-projection-service.ts`
 
-The projection path uses:
+Diagnostic/runtime-native Codex components:
 
-- domain run ids for AutoByteus-owned identity
-- Codex thread ids for Codex-native identity
-- explicit `memoryDir` basenames for local-memory fallback reads
+- `src/agent-execution/backends/codex/history/codex-thread-history-reader.ts`
+- `src/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.ts`
+- `src/agent-execution/backends/codex/items/codex-tool-item-family.ts`
+- `src/run-history/projection/providers/codex-run-view-projection-provider.ts`
+
+The normal display projection path uses:
+
+- domain run ids for AutoByteus-owned identity;
+- explicit `memoryDir` basenames for standalone and team-member local replay
+  reads;
+- Codex thread ids only as runtime-native metadata, not as display-source
+  selectors.
+
+For Codex live streams, the server-owned memory recorder and
+`RuntimeMemoryEventAccumulator` must persist open reasoning before the next
+same-turn visible write. This includes explicit tool calls, inferred tool calls
+from terminal tool-result events, assistant text, and assistant-complete output.
+That write boundary is what lets restart/history reload show thinking rows
+before the corresponding local replay tool cards or assistant text. If a Codex
+run ends with open reasoning and no later visible write or `TURN_COMPLETED`
+boundary, the local replay can still be incomplete rather than recovered from
+Codex native history.
+
+`AgentRunViewProjectionService` owns the source-authority policy and always
+loads local replay projection through `LocalMemoryRunViewProjectionProvider`,
+regardless of `runtimeKind`. It has no normal UI branch that selects
+`CodexRunViewProjectionProvider`, no local/native merge path, and no recovery
+from native thread history when local replay is missing.
+
+`TeamMemberRunViewProjectionService` resolves team/member metadata, including
+the member memory directory, and delegates to `AgentRunViewProjectionService`.
+It must not read member raw traces as a second projection beside another source
+and must not pass Codex native provider output into focused member history.
+
+Codex `thread/read` replay still maps active Codex tool item families for
+diagnostics and protocol investigation:
+
+- `dynamicToolCall` -> canonical `tool_call` rows, including team
+  `send_message_to`.
+- `mcpToolCall` -> canonical `tool_call` rows with server-qualified tool names
+  when available, for example `functions.exec_command`.
+- `webSearch` -> `search_web`.
+- `commandExecution` -> `run_bash`.
+- `fileChange` -> `edit_file`.
+
+Those runtime-native rows are not the normal UI display authority. Missing
+Codex display rows after reload should be fixed in the live normalized event
+and local raw-trace recording path so the application-owned replay trace
+contains the expected reasoning/tool/text facts.
 
 Projection consumers must apply conversation and Activity rows as one replay
 bundle. If a subscribed live context is preserved during reopen, the frontend

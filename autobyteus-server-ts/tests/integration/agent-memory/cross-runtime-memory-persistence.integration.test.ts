@@ -20,6 +20,7 @@ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run
 import { AgentRunMemoryRecorder } from "../../../src/agent-memory/services/agent-run-memory-recorder.js";
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
+import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { ClaudeTeamRunBackendFactory } from "../../../src/agent-team-execution/backends/claude/claude-team-run-backend-factory.js";
 import { ClaudeTeamManager } from "../../../src/agent-team-execution/backends/claude/claude-team-manager.js";
@@ -135,6 +136,244 @@ afterEach(async () => {
 });
 
 describe("cross-runtime memory persistence integration", () => {
+  it("persists open Codex reasoning before visible backend events and reloads it from local projection", async () => {
+    const memoryDir = await mkTempDir();
+    const recorder = new AgentRunMemoryRecorder();
+    const { factory, createdBackends } = createRuntimeBackendFactory(RuntimeKind.CODEX_APP_SERVER);
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createRuntimeBackendFactory(RuntimeKind.AUTOBYTEUS).factory,
+      codexBackendFactory: factory,
+      claudeBackendFactory: createRuntimeBackendFactory(RuntimeKind.CLAUDE_AGENT_SDK).factory,
+      runFileChangeService: createNoopSidecar() as never,
+      publishedArtifactRelayService: createNoopSidecar() as never,
+      memoryRecorder: recorder,
+    });
+
+    const run = await manager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        agentDefinitionId: "agent-def-codex-reasoning",
+        llmModelIdentifier: "gpt-codex",
+        autoExecuteTools: true,
+        workspaceId: "workspace-1",
+        workspaceRootPath: "/tmp/codex-reasoning-storage",
+        memoryDir,
+        skillAccessMode: SkillAccessMode.NONE,
+      }),
+    );
+    const backend = createdBackends[0];
+    expect(backend?.listenerCount()).toBe(1);
+
+    await run.postUserMessage(new AgentInputUserMessage("validate codex reasoning storage"));
+    let timestamp = 1_720_100_000;
+    const emit = (eventType: AgentRunEventType, payload: Record<string, unknown>) => {
+      timestamp += 0.001;
+      backend?.emit(eventType, { ts: timestamp, ...payload });
+    };
+
+    emit(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-tool",
+      turn_id: `turn-${run.runId}-tool`,
+      segment_type: "reasoning",
+      delta: "backend think before explicit tool",
+    });
+    emit(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "backend-explicit-tool",
+      turn_id: `turn-${run.runId}-tool`,
+      tool_name: "functions.exec_command",
+      arguments: { cmd: "pwd" },
+    });
+    emit(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "backend-explicit-tool",
+      turn_id: `turn-${run.runId}-tool`,
+      tool_name: "functions.exec_command",
+      arguments: { cmd: "pwd" },
+      result: { stdout: "/tmp/codex-reasoning-storage\n", exit_code: 0 },
+    });
+    emit(AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-tool",
+      turn_id: `turn-${run.runId}-tool`,
+      segment_type: "reasoning",
+    });
+    emit(AgentRunEventType.TURN_COMPLETED, { turnId: `turn-${run.runId}-tool` });
+
+    emit(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-inferred-result",
+      turn_id: `turn-${run.runId}-inferred`,
+      segment_type: "reasoning",
+      delta: "backend think before inferred terminal result",
+    });
+    emit(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "backend-inferred-tool",
+      turn_id: `turn-${run.runId}-inferred`,
+      tool_name: "run_bash",
+      arguments: { command: "echo backend-inferred" },
+      result: { stdout: "backend-inferred\n" },
+    });
+    emit(AgentRunEventType.TURN_COMPLETED, { turnId: `turn-${run.runId}-inferred` });
+
+    emit(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-text",
+      turn_id: `turn-${run.runId}-text`,
+      segment_type: "reasoning",
+      delta: "backend think before assistant text",
+    });
+    emit(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "assistant-text",
+      turn_id: `turn-${run.runId}-text`,
+      segment_type: "text",
+      delta: "backend assistant text",
+    });
+    emit(AgentRunEventType.SEGMENT_END, {
+      id: "assistant-text",
+      turn_id: `turn-${run.runId}-text`,
+      segment_type: "text",
+    });
+    emit(AgentRunEventType.TURN_COMPLETED, { turnId: `turn-${run.runId}-text` });
+
+    emit(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-complete",
+      turn_id: `turn-${run.runId}-complete`,
+      segment_type: "reasoning",
+      delta: "backend think before assistant complete",
+    });
+    emit(AgentRunEventType.ASSISTANT_COMPLETE, {
+      turn_id: `turn-${run.runId}-complete`,
+      content: "backend assistant complete",
+    });
+    emit(AgentRunEventType.TURN_COMPLETED, { turnId: `turn-${run.runId}-complete` });
+    await recorder.waitForIdle(run.runId);
+
+    const rawTraceLines = await readLines(path.join(memoryDir, RAW_TRACES_MEMORY_FILE_NAME));
+    const persistedRelevantRows = rawTraceLines
+      .filter((trace) =>
+        trace.trace_type === "reasoning" ||
+        trace.trace_type === "tool_call" ||
+        trace.trace_type === "tool_result" ||
+        (
+          trace.trace_type === "assistant" &&
+          String(trace.content ?? "").startsWith("backend assistant")
+        ),
+      )
+      .map((trace) => ({
+        traceType: trace.trace_type,
+        content: trace.content ?? null,
+        toolCallId: trace.tool_call_id ?? null,
+      }));
+    expect(persistedRelevantRows).toEqual([
+      {
+        traceType: "reasoning",
+        content: "backend think before explicit tool",
+        toolCallId: null,
+      },
+      {
+        traceType: "tool_call",
+        content: "",
+        toolCallId: "backend-explicit-tool",
+      },
+      {
+        traceType: "tool_result",
+        content: "",
+        toolCallId: "backend-explicit-tool",
+      },
+      {
+        traceType: "reasoning",
+        content: "backend think before inferred terminal result",
+        toolCallId: null,
+      },
+      {
+        traceType: "tool_call",
+        content: "",
+        toolCallId: "backend-inferred-tool",
+      },
+      {
+        traceType: "tool_result",
+        content: "",
+        toolCallId: "backend-inferred-tool",
+      },
+      {
+        traceType: "reasoning",
+        content: "backend think before assistant text",
+        toolCallId: null,
+      },
+      {
+        traceType: "assistant",
+        content: "backend assistant text",
+        toolCallId: null,
+      },
+      {
+        traceType: "reasoning",
+        content: "backend think before assistant complete",
+        toolCallId: null,
+      },
+      {
+        traceType: "assistant",
+        content: "backend assistant complete",
+        toolCallId: null,
+      },
+    ]);
+
+    const view = readView(memoryDir);
+    const traces = view.rawTraces ?? [];
+    const reasoningTraces = traces.filter((trace) => trace.traceType === "reasoning");
+    expect(reasoningTraces.map((trace) => trace.content)).toEqual([
+      "backend think before explicit tool",
+      "backend think before inferred terminal result",
+      "backend think before assistant text",
+      "backend think before assistant complete",
+    ]);
+    expect(reasoningTraces).toHaveLength(4);
+    expect(traces.filter((trace) => trace.toolCallId === "backend-explicit-tool").map((trace) => trace.traceType)).toEqual([
+      "tool_call",
+      "tool_result",
+    ]);
+    expect(traces.filter((trace) => trace.toolCallId === "backend-inferred-tool").map((trace) => trace.traceType)).toEqual([
+      "tool_call",
+      "tool_result",
+    ]);
+
+    const projection = await new AgentRunViewProjectionService(path.dirname(memoryDir))
+      .getProjectionFromMetadata({
+        runId: run.runId,
+        metadata: {
+          runId: run.runId,
+          agentDefinitionId: "agent-def-codex-reasoning",
+          workspaceRootPath: "/tmp/codex-reasoning-storage",
+          memoryDir,
+          llmModelIdentifier: "gpt-codex",
+          llmConfig: null,
+          autoExecuteTools: true,
+          skillAccessMode: SkillAccessMode.NONE,
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          platformAgentRunId: `platform-${run.runId}`,
+          lastKnownStatus: "IDLE",
+        },
+      });
+
+    const rowIndex = (predicate: (row: Record<string, unknown>) => boolean): number =>
+      projection.conversation.findIndex((row) => predicate(row as unknown as Record<string, unknown>));
+    const reasoningIndex = (content: string): number =>
+      rowIndex((row) => row.kind === "reasoning" && row.content === content);
+    const toolIndex = (invocationId: string): number =>
+      rowIndex((row) => row.kind === "tool_call" && row.invocationId === invocationId);
+    const messageIndex = (content: string): number =>
+      rowIndex((row) => row.kind === "message" && row.content === content);
+
+    expect(projection.conversation.filter((row) => row.kind === "reasoning")).toHaveLength(4);
+    expect(reasoningIndex("backend think before explicit tool")).toBeLessThan(
+      toolIndex("backend-explicit-tool"),
+    );
+    expect(reasoningIndex("backend think before inferred terminal result")).toBeLessThan(
+      toolIndex("backend-inferred-tool"),
+    );
+    expect(reasoningIndex("backend think before assistant text")).toBeLessThan(
+      messageIndex("backend assistant text"),
+    );
+    expect(reasoningIndex("backend think before assistant complete")).toBeLessThan(
+      messageIndex("backend assistant complete"),
+    );
+  });
+
   it.each([
     [RuntimeKind.CODEX_APP_SERVER],
     [RuntimeKind.CLAUDE_AGENT_SDK],

@@ -9,14 +9,12 @@ import { AgentRunService } from "../../../src/agent-execution/services/agent-run
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
 import { AgentRunHistoryIndexService } from "../../../src/run-history/services/agent-run-history-index-service.js";
 import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
-import { LocalMemoryRunViewProjectionProvider } from "../../../src/run-history/projection/providers/local-memory-run-view-projection-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { TeamRunMetadataService } from "../../../src/run-history/services/team-run-metadata-service.js";
 import { TeamRunHistoryIndexService } from "../../../src/run-history/services/team-run-history-index-service.js";
 import { TeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { TeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
-import { TeamMemberLocalRunProjectionReader } from "../../../src/run-history/services/team-member-local-run-projection-reader.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -35,25 +33,6 @@ const createTempMemoryDir = async (): Promise<string> => {
 
 const readJson = async (filePath: string): Promise<Record<string, unknown>> =>
   JSON.parse(await fs.readFile(filePath, "utf-8")) as Record<string, unknown>;
-
-const createLocalProjectionRegistry = (memoryDir: string) => {
-  const provider = new LocalMemoryRunViewProjectionProvider(memoryDir);
-  return {
-    resolveProvider: () => provider,
-    resolveFallbackProvider: () => provider,
-  };
-};
-
-const createNullProjectionRegistry = () => ({
-  resolveProvider: () => ({
-    runtimeKind: RuntimeKind.AUTOBYTEUS,
-    buildProjection: async () => null,
-  }),
-  resolveFallbackProvider: () => ({
-    runtimeKind: RuntimeKind.AUTOBYTEUS,
-    buildProjection: async () => null,
-  }),
-});
 
 const createActiveRun = (input: {
   runId: string;
@@ -230,9 +209,15 @@ describe("memory layout and projection integration", () => {
     },
   );
 
-  it("builds a single-agent projection from the current on-disk memory layout", async () => {
+  it.each([
+    [RuntimeKind.AUTOBYTEUS, null],
+    [RuntimeKind.CODEX_APP_SERVER, "thread-agent-projection"],
+    [RuntimeKind.CLAUDE_AGENT_SDK, "session-agent-projection"],
+  ] as const)(
+    "builds a single-agent %s projection from the local replay memory layout",
+    async (runtimeKind, platformAgentRunId) => {
     const memoryDir = await createTempMemoryDir();
-    const runId = "agent-projection-run";
+    const runId = `agent-projection-run-${runtimeKind}`;
     const runDir = path.join(memoryDir, "agents", runId);
     await fs.mkdir(runDir, { recursive: true });
     await fs.writeFile(
@@ -246,8 +231,8 @@ describe("memory layout and projection integration", () => {
         llmConfig: null,
         autoExecuteTools: true,
         skillAccessMode: SkillAccessMode.NONE,
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-        platformAgentRunId: null,
+        runtimeKind,
+        platformAgentRunId,
         lastKnownStatus: "IDLE",
       }),
       "utf-8",
@@ -288,9 +273,7 @@ describe("memory layout and projection integration", () => {
       turnId: "turn-1",
       seq: 3,
     }));
-    const service = new AgentRunViewProjectionService(memoryDir, {
-      providerRegistry: createLocalProjectionRegistry(memoryDir) as never,
-    });
+    const service = new AgentRunViewProjectionService(memoryDir);
     const projection = await service.getProjection(runId);
 
     expect(projection.runId).toBe(runId);
@@ -305,7 +288,8 @@ describe("memory layout and projection integration", () => {
     expect(projection.conversation[0]?.content).toBe("hello from archived user");
     expect(projection.conversation[1]?.content).toBe("hello from active assistant");
     expect(projection.lastActivityAt).toBe("1970-01-01T00:00:02.000Z");
-  });
+    },
+  );
 
   it.each([
     [RuntimeKind.AUTOBYTEUS, "native-team-1"],
@@ -413,9 +397,15 @@ describe("memory layout and projection integration", () => {
     },
   );
 
-  it("builds a team member projection from the current team member memory layout", async () => {
+  it.each([
+    [RuntimeKind.AUTOBYTEUS, null],
+    [RuntimeKind.CODEX_APP_SERVER, "thread-team-projection"],
+    [RuntimeKind.CLAUDE_AGENT_SDK, "session-team-projection"],
+  ] as const)(
+    "builds a %s team member projection from the local team member memory layout",
+    async (runtimeKind, platformAgentRunId) => {
     const memoryDir = await createTempMemoryDir();
-    const teamRunId = "team-projection-run";
+    const teamRunId = `team-projection-run-${runtimeKind}`;
     const memberRouteKey = "coordinator";
     const memberRunId = buildTeamMemberRunId(teamRunId, memberRouteKey);
     const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
@@ -436,8 +426,8 @@ describe("memory layout and projection integration", () => {
             memberRouteKey,
             memberName: "Coordinator",
             memberRunId,
-            runtimeKind: RuntimeKind.AUTOBYTEUS,
-            platformAgentRunId: null,
+            runtimeKind,
+            platformAgentRunId,
             agentDefinitionId: "agent-def-1",
             llmModelIdentifier: "model-1",
             autoExecuteTools: true,
@@ -452,8 +442,8 @@ describe("memory layout and projection integration", () => {
     await fs.writeFile(
       path.join(memberDir, "raw_traces.jsonl"),
       [
-        JSON.stringify({ trace_type: "user", content: "team hello", ts: 10 }),
-        JSON.stringify({ trace_type: "assistant", content: "team reply", ts: 11 }),
+        JSON.stringify({ trace_type: "user", content: "team hello", turn_id: "turn-1", seq: 1, ts: 10 }),
+        JSON.stringify({ trace_type: "assistant", content: "team reply", turn_id: "turn-1", seq: 2, ts: 11 }),
       ].join("\n"),
       "utf-8",
     );
@@ -464,11 +454,9 @@ describe("memory layout and projection integration", () => {
       } as never,
     });
     const service = new TeamMemberRunViewProjectionService({
+      memoryDir,
       teamRunHistoryService,
-      projectionReader: new TeamMemberLocalRunProjectionReader(memoryDir),
-      agentRunViewProjectionService: new AgentRunViewProjectionService(memoryDir, {
-        providerRegistry: createNullProjectionRegistry() as never,
-      }),
+      agentRunViewProjectionService: new AgentRunViewProjectionService(memoryDir),
     });
 
     const projection = await service.getProjection(teamRunId, memberRouteKey);
@@ -480,5 +468,6 @@ describe("memory layout and projection integration", () => {
     expect(projection.conversation[0]?.content).toBe("team hello");
     expect(projection.conversation[1]?.content).toBe("team reply");
     expect(projection.lastActivityAt).toBe("1970-01-01T00:00:11.000Z");
-  });
+    },
+  );
 });

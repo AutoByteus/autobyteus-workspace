@@ -1,0 +1,59 @@
+CREATED_TEAM {"id":"codex-history-toolcall-repro-team-20260516072451","name":"Codex History Toolcall Repro Team 20260516072451","coordinatorMemberName":"worker","nodes":[{"memberName":"worker","ref":"daily-assistant","refType":"AGENT","refScope":"SHARED"}]}
+CREATED_RUN {"success":true,"message":"Agent team run created successfully.","teamRunId":"team_codex-history-toolcall-repro-team-202605_6086dd85"}
+WS_OPEN
+WS_MSG {"type":"CONNECTED"}
+WS_SENT_PROMPT
+WS_MSG {"type":"AGENT_STATUS","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","status":"offline"}
+WS_MSG {"type":"TEAM_STATUS","status":"offline"}
+WS_MSG {"type":"TEAM_STATUS","status":"idle"}
+WS_MSG {"type":"TEAM_STATUS","status":"running"}
+WS_MSG {"type":"AGENT_STATUS","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","status":"running"}
+WS_MSG {"type":"TURN_STARTED","agent_id":"worker_517c3afd25fff88f","agent_name":"worker"}
+WS_MSG {"type":"AGENT_STATUS","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","status":"running"}
+WS_MSG {"type":"SEGMENT_START","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","segment_type":"text"}
+WS_MSG {"type":"SEGMENT_END","agent_id":"worker_517c3afd25fff88f","agent_name":"worker"}
+WS_MSG {"type":"TOOL_EXECUTION_STARTED","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","tool_name":"run_bash","invocation_id":"call_UIeSeK5X7lnC5TMZLUaYJ6x7"}
+WS_MSG {"type":"TOOL_EXECUTION_SUCCEEDED","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","tool_name":"run_bash","invocation_id":"call_UIeSeK5X7lnC5TMZLUaYJ6x7"}
+WS_MSG {"type":"TOOL_LOG","agent_id":"worker_517c3afd25fff88f","agent_name":"worker"}
+WS_MSG {"type":"SEGMENT_START","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","segment_type":"text"}
+WS_MSG {"type":"SEGMENT_CONTENT","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","segment_type":"text"}
+WS_MSG {"type":"SEGMENT_CONTENT","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","segment_type":"text"}
+WS_MSG {"type":"SEGMENT_CONTENT","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","segment_type":"text"}
+WS_MSG {"type":"SEGMENT_CONTENT","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","segment_type":"text"}
+WS_MSG {"type":"SEGMENT_CONTENT","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","segment_type":"text"}
+WS_MSG {"type":"SEGMENT_CONTENT","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","segment_type":"text"}
+WS_MSG {"type":"SEGMENT_END","agent_id":"worker_517c3afd25fff88f","agent_name":"worker"}
+WS_MSG {"type":"AGENT_STATUS","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","status":"idle"}
+WS_MSG {"type":"TEAM_STATUS","status":"idle"}
+WS_MSG {"type":"TURN_COMPLETED","agent_id":"worker_517c3afd25fff88f","agent_name":"worker"}
+WS_MSG {"type":"AGENT_STATUS","agent_id":"worker_517c3afd25fff88f","agent_name":"worker","status":"idle"}
+WS_CLOSE
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/run-live-codex-team-repro.mjs:20
+    throw new Error(`GraphQL error ${res.status}: ${JSON.stringify(json.errors || json, null, 2)}`);
+          ^
+
+Error: GraphQL error 200: [
+  {
+    "message": "Cannot query field \"teamRuns\" on type \"WorkspaceRunHistoryGroupObject\".",
+    "locations": [
+      {
+        "line": 1,
+        "column": 80
+      }
+    ]
+  },
+  {
+    "message": "Cannot query field \"agentRuns\" on type \"WorkspaceRunHistoryGroupObject\".",
+    "locations": [
+      {
+        "line": 1,
+        "column": 178
+      }
+    ]
+  }
+]
+    at gql (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/run-live-codex-team-repro.mjs:20:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/run-live-codex-team-repro.mjs:134:17
+
+Node.js v22.21.1

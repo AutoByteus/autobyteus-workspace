@@ -110,7 +110,6 @@ export class CodexThreadEventConverter {
     resolveItemType: (payload) => this.itemEventPayloadParser.resolveItemType(payload),
     isUserMessageItem: (itemType) => this.itemEventPayloadParser.isUserMessageItem(itemType),
     isReasoningItem: (itemType) => this.itemEventPayloadParser.isReasoningItem(itemType),
-    isWebSearchItem: (itemType) => this.itemEventPayloadParser.isWebSearchItem(itemType),
     resolveWebSearchMetadata: (payload) =>
       this.itemEventPayloadParser.resolveWebSearchMetadata(payload),
     resolveWebSearchArguments: (payload) =>
