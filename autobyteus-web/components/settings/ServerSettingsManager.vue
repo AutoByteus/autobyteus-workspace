@@ -10,6 +10,7 @@
       </div>
 
       <ServerSettingsBasicsPanel v-else-if="activeTab === 'quick'" />
+      <ServerMigrationsManager v-else-if="activeTab === 'migrations'" />
 
       <div v-else class="space-y-4">
         <div class="px-1 pt-1 pb-2">
@@ -153,8 +154,9 @@ import { useServerSettingsStore, type ServerSetting as ServerSettingRecord } fro
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import ServerMonitor from '~/components/server/ServerMonitor.vue'
 import ServerSettingsBasicsPanel from '~/components/settings/ServerSettingsBasicsPanel.vue'
+import ServerMigrationsManager from '~/components/settings/ServerMigrationsManager.vue'
 
-type SettingsTab = 'quick' | 'advanced'
+type SettingsTab = 'quick' | 'advanced' | 'migrations'
 type AdvancedPanel = 'raw-settings' | 'server-status'
 
 const saveButtonClass =

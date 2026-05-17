@@ -16,6 +16,8 @@
 - Round 5 live child transcript/display failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
 - Round 5 live transcript/projection/presentation design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
 - Upward nested-team reporting / representative routing design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`
+- Command API clean-cut design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- App data migration design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
 - Delivery Round 6 Electron build blocker note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round6-electron-build-blocker.md`
 - Delivery Round 6 Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/electron-build.log`
 - Failure screenshot: `/Users/normy/.autobyteus/browser-artifacts/995de5-1778644109170.png`
@@ -801,3 +803,68 @@ Passed:
   - Result: `137` changed/untracked non-test TS/Vue source files checked; no file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this latest-base integrated state.
+
+## Architecture Round 16 App Data Migration Implementation Update
+
+Implemented the approved app-data-migration design reset as an isolated migration subsystem. Runtime stores, frontend parsers, and normal history/restore mappers remain current-schema-only; legacy flat team metadata conversion exists only inside the app-data-migration implementation.
+
+Implementation updates:
+
+- Added `AppDataMigrationRecord` persistence and Prisma migration `20260517090000_add_app_data_migration_records` for durable migration status, attempt counts, summaries, errors, and log paths.
+- Added the app-data-migration subsystem:
+  - `AppDataMigrationRegistry` owns the registered migration definitions.
+  - `AppDataMigrationRunner` owns startup/manual execution, in-process duplicate-run rejection, stale `RUNNING` handling, retry eligibility, status snapshots, and migration log files.
+  - `AppDataMigrationRecordRepository` owns DB read/write for migration records.
+- Added `TeamRunMetadataMemberTreeMigration` as the only legacy flat metadata conversion owner. It scans team metadata files, skips already-current `memberTree` files idempotently, converts only equivalent flat top-level agent-only records, writes a timestamped backup, writes through a temp file and atomic rename, records per-file details, and leaves unsafe legacy nested/topology-lost files as explicit failures instead of guessing topology.
+- Extracted current recursive team metadata validation/normalization into `team-run-metadata-schema.ts` so both `TeamRunMetadataStore` and the migration can validate canonical `memberTree` output without adding a runtime dual-schema reader.
+- Kept `TeamRunMetadataStore` current-schema-only: `memberMetadata` / `runVersion` still throw typed unsupported legacy metadata errors and are not converted at runtime.
+- Startup now runs pending required app-data migrations after Prisma migrations and before normal service bootstrap continues.
+- Added GraphQL thin facade:
+  - `getAppDataMigrations`
+  - `runAppDataMigration(migrationId)`
+- Added Settings -> Server -> Migrations UI, dedicated Pinia store, GraphQL query/mutation documents, localized English/zh-CN strings, status/details display, and manual retry action.
+- Direct restore/open of unmigrated legacy team metadata now returns a friendly upgrade-required message rather than exposing the raw unsupported metadata exception; team history listing skips unmigrated legacy rows with a logged migration hint until the migration succeeds.
+
+Focused regression coverage added:
+
+- Migration converts flat top-level agent-only metadata to canonical `memberTree` and writes a backup.
+- Migration skips current `memberTree` metadata idempotently.
+- Migration records partial failures while continuing other files.
+- Migration fails legacy flat metadata with nested route/path identity instead of inferring nested topology.
+- Runner rejects true concurrent duplicate retry in-process.
+- Runner treats stale `RUNNING` records as retryable.
+- Runner lists registered migrations even before DB records exist.
+- Frontend app-data migration store fetches statuses and runs/refreshes a migration.
+- Settings routes expose the new Server -> Migrations tab and render the migrations manager.
+
+Important clean-cut notes:
+
+- No runtime/frontend dual-read or compatibility conversion was added. Legacy conversion is isolated to `TeamRunMetadataMemberTreeMigration`.
+- Existing current-schema parsers still reject `memberMetadata` / `runVersion`; this is intentional and is now paired with a friendly migration-required diagnostic at history/restore edges.
+- Unsafe topology-lost legacy records remain explicit migration failures so the app does not reconstruct nested team topology from flat rows.
+
+## Architecture Round 16 App Data Migration Local Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts tests/unit/app-data-migrations/app-data-migration-runner.test.ts --reporter=dot`
+  - Result: `2` files passed, `7` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/store/team-run-metadata-store.test.ts tests/unit/run-history/services/team-run-history-service.test.ts --reporter=dot`
+  - Result: `2` files passed, `11` tests passed.
+- `pnpm -C autobyteus-web exec vitest run stores/__tests__/appDataMigrationsStore.spec.ts components/settings/__tests__/ServerSettingsManager.spec.ts pages/__tests__/settings.spec.ts --reporter=dot`
+  - Result: `3` files passed, `26` tests passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec prisma validate`
+  - Result: passed.
+- `git diff --check`
+  - Result: passed.
+- Runtime legacy conversion isolation grep:
+  - Command: `rg -n "memberMetadata|runVersion" autobyteus-server-ts/src autobyteus-web --glob '!src/app-data-migrations/**' --glob '!**/node_modules/**'`
+  - Result: only current-schema rejection, current recursive member metadata variable names, existing tests, and the isolated app-data-migration owner contain legacy schema terms; no runtime conversion path was introduced.
+- Custom changed/untracked non-test `.ts` / `.vue` source size audit.
+  - Result: `20` changed/untracked non-test TS/Vue source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this app-data-migration implementation state.

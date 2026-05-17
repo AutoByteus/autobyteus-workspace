@@ -448,6 +448,23 @@ const settingsMessages = {
   'settings.components.settings.ApplicationPackagesManager.details.source': '来源',
   'settings.components.settings.ApplicationPackagesManager.details.managedInstallPath': '托管安装路径',
   'settings.components.settings.ApplicationPackagesManager.details.bundledSourceRootPath': '内置资源根目录',
+  'settings.page.serverSettings.migrations': '迁移',
+  'settings.components.settings.ServerMigrationsManager.title': '应用数据迁移',
+  'settings.components.settings.ServerMigrationsManager.description': '查看必需的应用数据升级、检查迁移详情，并重试失败的迁移。',
+  'settings.components.settings.ServerMigrationsManager.refresh': '刷新',
+  'settings.components.settings.ServerMigrationsManager.migration': '迁移',
+  'settings.components.settings.ServerMigrationsManager.status': '状态',
+  'settings.components.settings.ServerMigrationsManager.summary': '摘要',
+  'settings.components.settings.ServerMigrationsManager.lastAttempt': '最近尝试',
+  'settings.components.settings.ServerMigrationsManager.actions': '操作',
+  'settings.components.settings.ServerMigrationsManager.logPath': '日志路径',
+  'settings.components.settings.ServerMigrationsManager.attempts': '{{count}} 次尝试',
+  'settings.components.settings.ServerMigrationsManager.counts': '扫描 {{scanned}} · 已迁移 {{migrated}} · 已跳过 {{skipped}} · 失败 {{failed}}',
+  'settings.components.settings.ServerMigrationsManager.showDetails': '显示详情',
+  'settings.components.settings.ServerMigrationsManager.noSummary': '暂无摘要',
+  'settings.components.settings.ServerMigrationsManager.retry': '重试',
+  'settings.components.settings.ServerMigrationsManager.empty': '没有已注册的应用数据迁移。',
+  'settings.components.settings.ServerMigrationsManager.noDate': '不可用',
 } satisfies TranslationCatalog;
 
 export default settingsMessages;

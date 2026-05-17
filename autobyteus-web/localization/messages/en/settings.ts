@@ -452,6 +452,23 @@ const settingsMessages = {
   'settings.components.settings.ApplicationPackagesManager.details.source': 'Source',
   'settings.components.settings.ApplicationPackagesManager.details.managedInstallPath': 'Managed install path',
   'settings.components.settings.ApplicationPackagesManager.details.bundledSourceRootPath': 'Bundled source root',
+  'settings.page.serverSettings.migrations': 'Migrations',
+  'settings.components.settings.ServerMigrationsManager.title': 'App Data Migrations',
+  'settings.components.settings.ServerMigrationsManager.description': 'Review required app data upgrades, inspect migration details, and retry failed migrations.',
+  'settings.components.settings.ServerMigrationsManager.refresh': 'Refresh',
+  'settings.components.settings.ServerMigrationsManager.migration': 'Migration',
+  'settings.components.settings.ServerMigrationsManager.status': 'Status',
+  'settings.components.settings.ServerMigrationsManager.summary': 'Summary',
+  'settings.components.settings.ServerMigrationsManager.lastAttempt': 'Last Attempt',
+  'settings.components.settings.ServerMigrationsManager.actions': 'Actions',
+  'settings.components.settings.ServerMigrationsManager.logPath': 'Log path',
+  'settings.components.settings.ServerMigrationsManager.attempts': '{{count}} attempt(s)',
+  'settings.components.settings.ServerMigrationsManager.counts': 'Scanned {{scanned}} · Migrated {{migrated}} · Skipped {{skipped}} · Failed {{failed}}',
+  'settings.components.settings.ServerMigrationsManager.showDetails': 'Show details',
+  'settings.components.settings.ServerMigrationsManager.noSummary': 'No summary yet',
+  'settings.components.settings.ServerMigrationsManager.retry': 'Retry',
+  'settings.components.settings.ServerMigrationsManager.empty': 'No app data migrations are registered.',
+  'settings.components.settings.ServerMigrationsManager.noDate': 'Not available',
 } satisfies TranslationCatalog;
 
 export default settingsMessages;

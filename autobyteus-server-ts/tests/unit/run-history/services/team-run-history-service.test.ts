@@ -5,7 +5,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import type { TeamRunMetadata } from "../../../../src/run-history/store/team-run-metadata-types.js";
-import { TeamRunMetadataStore } from "../../../../src/run-history/store/team-run-metadata-store.js";
+import {
+  LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_MESSAGE,
+  TeamRunMetadataStore,
+  UnsupportedLegacyTeamRunMetadataError,
+} from "../../../../src/run-history/store/team-run-metadata-store.js";
 
 const teamRunManagerMock = {
   getActiveRun: vi.fn<(teamRunId: string) => unknown>(),
@@ -186,6 +190,82 @@ describe("TeamRunHistoryService", () => {
           status: "running",
         },
       ],
+    });
+  });
+
+  it("skips unmigrated legacy team metadata from history rows with a migration diagnostic boundary", async () => {
+    const { TeamRunHistoryService } = await import(
+      "../../../../src/run-history/services/team-run-history-service.js"
+    );
+
+    const service = new TeamRunHistoryService(memoryDir, {
+      metadataStore: {
+        readMetadata: vi.fn(async (teamRunId: string) => {
+          if (teamRunId === "team-legacy") {
+            throw new UnsupportedLegacyTeamRunMetadataError(teamRunId);
+          }
+          return buildTeamMetadata(teamRunId);
+        }),
+      } as any,
+      indexService: {
+        listRows: vi.fn().mockResolvedValue([
+          {
+            teamRunId: "team-legacy",
+            teamDefinitionId: "team-def-1",
+            teamDefinitionName: "Legacy Team",
+            workspaceRootPath: "/ws/a",
+            summary: "legacy",
+            lastActivityAt: "2026-04-10T20:05:00.000Z",
+            lastKnownStatus: "IDLE",
+            deleteLifecycle: "READY",
+          },
+          {
+            teamRunId: "team-current",
+            teamDefinitionId: "team-def-1",
+            teamDefinitionName: "Current Team",
+            workspaceRootPath: "/ws/a",
+            summary: "current",
+            lastActivityAt: "2026-04-11T20:05:00.000Z",
+            lastKnownStatus: "IDLE",
+            deleteLifecycle: "READY",
+          },
+        ]),
+        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
+        removeRow: vi.fn(),
+        recordRunActivity: vi.fn(),
+      } as any,
+      teamRunManager: teamRunManagerMock as any,
+    });
+
+    const result = await service.listTeamRunHistory();
+
+    expect(result.map((row) => row.teamRunId)).toEqual(["team-current"]);
+  });
+
+  it("maps direct resume of unmigrated legacy team metadata to a friendly upgrade-required error", async () => {
+    const { TeamRunHistoryService } = await import(
+      "../../../../src/run-history/services/team-run-history-service.js"
+    );
+
+    const service = new TeamRunHistoryService(memoryDir, {
+      metadataStore: {
+        readMetadata: vi.fn(async (teamRunId: string) => {
+          throw new UnsupportedLegacyTeamRunMetadataError(teamRunId);
+        }),
+      } as any,
+      indexService: {
+        listRows: vi.fn().mockResolvedValue([]),
+        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
+        removeRow: vi.fn(),
+        recordRunActivity: vi.fn(),
+      } as any,
+      teamRunManager: teamRunManagerMock as any,
+    });
+
+    await expect(service.getTeamRunResumeConfig("team-legacy")).rejects.toMatchObject({
+      message: LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_MESSAGE,
+      code: "LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED",
+      teamRunId: "team-legacy",
     });
   });
 

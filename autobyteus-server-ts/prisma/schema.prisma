@@ -34,3 +34,21 @@ model AgentArtifact {
   @@index([runId])
   @@map("agent_artifacts")
 }
+
+
+model AppDataMigrationRecord {
+  id           Int       @id @default(autoincrement())
+  migrationId  String    @unique @map("migration_id")
+  displayName  String    @map("display_name")
+  status       String
+  attempts     Int       @default(0)
+  startedAt    DateTime? @map("started_at")
+  completedAt  DateTime? @map("completed_at")
+  summaryJson  String?   @map("summary_json")
+  errorMessage String?   @map("error_message")
+  logPath      String?   @map("log_path")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@map("app_data_migration_records")
+}

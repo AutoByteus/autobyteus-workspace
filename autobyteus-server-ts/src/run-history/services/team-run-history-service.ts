@@ -16,7 +16,11 @@ import {
   TeamRunMetadata,
   type TeamRunAgentMemberMetadata,
 } from "../store/team-run-metadata-types.js";
-import { TeamRunMetadataStore } from "../store/team-run-metadata-store.js";
+import {
+  isUnsupportedLegacyTeamRunMetadataError,
+  TeamRunMetadataStore,
+  toLegacyTeamRunMetadataUpgradeRequiredError,
+} from "../store/team-run-metadata-store.js";
 import { extractSummaryFromRawTraces } from "./run-history-service-helpers.js";
 import { AgentRunViewProjectionService } from "./agent-run-view-projection-service.js";
 import { TeamMemberLocalRunProjectionReader } from "./team-member-local-run-projection-reader.js";
@@ -88,7 +92,18 @@ export class TeamRunHistoryService {
     const items: TeamRunHistoryItem[] = [];
     const staleTeamRunIds: string[] = [];
     for (const row of rows) {
-      const metadata = await this.metadataStore.readMetadata(row.teamRunId);
+      let metadata: TeamRunMetadata | null = null;
+      try {
+        metadata = await this.metadataStore.readMetadata(row.teamRunId);
+      } catch (error) {
+        if (isUnsupportedLegacyTeamRunMetadataError(error)) {
+          logger.warn(
+            `Skipping unmigrated legacy team run metadata '${row.teamRunId}'. Open Settings -> Server -> Migrations for details.`,
+          );
+          continue;
+        }
+        throw error;
+      }
       if (!metadata) {
         staleTeamRunIds.push(row.teamRunId);
         continue;
@@ -149,7 +164,15 @@ export class TeamRunHistoryService {
   }
 
   async getTeamRunResumeConfig(teamRunId: string): Promise<TeamRunResumeConfig> {
-    const metadata = await this.metadataStore.readMetadata(teamRunId);
+    let metadata: TeamRunMetadata | null = null;
+    try {
+      metadata = await this.metadataStore.readMetadata(teamRunId);
+    } catch (error) {
+      if (isUnsupportedLegacyTeamRunMetadataError(error)) {
+        throw toLegacyTeamRunMetadataUpgradeRequiredError(error);
+      }
+      throw error;
+    }
     if (!metadata) {
       throw new Error(`Team run metadata not found for '${teamRunId}'.`);
     }
