@@ -1,0 +1,191 @@
+{
+  "summary": {
+    "runId": "ff0b9fcd-3bb5-4f33-b806-02baf05e1922",
+    "rawTracePath": "/Users/normy/.autobyteus/server-data/memory/agents/ff0b9fcd-3bb5-4f33-b806-02baf05e1922/raw_traces.jsonl",
+    "rawTraceCount": 8,
+    "rawTraceTypes": [
+      "user",
+      "assistant",
+      "tool_call",
+      "tool_result",
+      "assistant",
+      "tool_call",
+      "tool_result",
+      "assistant"
+    ],
+    "rawReasoningCount": 0,
+    "rawToolCount": 4,
+    "projectionConversationKinds": [
+      "message",
+      "message",
+      "tool_call",
+      "message",
+      "tool_call",
+      "message"
+    ],
+    "projectionReasoningCount": 0,
+    "projectionToolCallCount": 2,
+    "projectionActivityCount": 2,
+    "rawTraceBrief": [
+      {
+        "seq": 1,
+        "trace_type": "user",
+        "source_event": "AgentRun.postUserMessage",
+        "content": "create cool jet striking game in html, think first about the feature you wanna add\n\n",
+        "tool_name": null,
+        "tool_call_id": null
+      },
+      {
+        "seq": 2,
+        "trace_type": "assistant",
+        "source_event": "SEGMENT_END",
+        "content": "I’ll first confirm the workspace with `pwd`, then I’ll create a small self-contained HTML game with a clear feature plan before coding.",
+        "tool_name": null,
+        "tool_call_id": null
+      },
+      {
+        "seq": 3,
+        "trace_type": "tool_call",
+        "source_event": "TOOL_EXECUTION_STARTED",
+        "content": "",
+        "tool_name": "run_bash",
+        "tool_call_id": "call_ZOHNtSkw78HcsNGZ3qCBBc0l"
+      },
+      {
+        "seq": 4,
+        "trace_type": "tool_result",
+        "source_event": "TOOL_EXECUTION_SUCCEEDED",
+        "content": "",
+        "tool_name": "run_bash",
+        "tool_call_id": "call_ZOHNtSkw78HcsNGZ3qCBBc0l"
+      },
+      {
+        "seq": 5,
+        "trace_type": "assistant",
+        "source_event": "SEGMENT_END",
+        "content": "Feature direction: I’ll build a neon top-down jet striker with mouse/keyboard controls, rapid fire, enemies, missiles, power-ups, explosions, screen shake, score/combo, and a boss ",
+        "tool_name": null,
+        "tool_call_id": null
+      },
+      {
+        "seq": 6,
+        "trace_type": "tool_call",
+        "source_event": "TOOL_EXECUTION_STARTED",
+        "content": "",
+        "tool_name": "run_bash",
+        "tool_call_id": "call_5bDpVTEwFoRLa1Stsy4nYMp9"
+      },
+      {
+        "seq": 7,
+        "trace_type": "tool_result",
+        "source_event": "TOOL_EXECUTION_SUCCEEDED",
+        "content": "",
+        "tool_name": "run_bash",
+        "tool_call_id": "call_5bDpVTEwFoRLa1Stsy4nYMp9"
+      },
+      {
+        "seq": 8,
+        "trace_type": "assistant",
+        "source_event": "SEGMENT_END",
+        "content": "I’ll create a new file named `neon_jet_strike.html` so I don’t overwrite any existing game files, with everything bundled in one HTML file.",
+        "tool_name": null,
+        "tool_call_id": null
+      }
+    ]
+  },
+  "projection": {
+    "runId": "ff0b9fcd-3bb5-4f33-b806-02baf05e1922",
+    "summary": "create cool jet striking game in html, think first about the feature you wanna add",
+    "lastActivityAt": "2026-05-17T04:00:26.129Z",
+    "conversation": [
+      {
+        "kind": "message",
+        "role": "user",
+        "content": "create cool jet striking game in html, think first about the feature you wanna add\n\n",
+        "media": null,
+        "ts": 1778990402.35
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "I’ll first confirm the workspace with `pwd`, then I’ll create a small self-contained HTML game with a clear feature plan before coding.",
+        "media": null,
+        "ts": 1778990409.441
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "call_ZOHNtSkw78HcsNGZ3qCBBc0l",
+        "role": null,
+        "content": "",
+        "toolName": "run_bash",
+        "toolArgs": {
+          "command": "/bin/bash -lc pwd"
+        },
+        "toolResult": "/Users/normy/.autobyteus/server-data/temp_workspace\n",
+        "toolError": null,
+        "media": null,
+        "ts": 1778990409.697
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "Feature direction: I’ll build a neon top-down jet striker with mouse/keyboard controls, rapid fire, enemies, missiles, power-ups, explosions, screen shake, score/combo, and a boss wave so it feels like a complete mini arcade game. Next I’ll inspect the folder and add the game files.",
+        "media": null,
+        "ts": 1778990414.701
+      },
+      {
+        "kind": "tool_call",
+        "invocationId": "call_5bDpVTEwFoRLa1Stsy4nYMp9",
+        "role": null,
+        "content": "",
+        "toolName": "run_bash",
+        "toolArgs": {
+          "command": "/bin/bash -lc 'ls -la'"
+        },
+        "toolResult": "total 33184\ndrwxr-xr-x@ 119 normy  staff     3808 May 17 05:58 .\ndrwxr-xr-x@  23 normy  staff      736 May  1 17:47 ..\ndrwxr-xr-x@   3 normy  staff       96 Mar 31 19:49 .claude\ndrwxr-xr-x@   3 normy  staff       96 Apr 23 21:15 .codex\ndrwxr-xr-x@   9 normy  staff      288 May 13 21:11 .git\n-rw-r--r--@   1 normy  staff   138284 Apr 28 05:33 A valid string for 'output_file_path'\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH001\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH001B\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH002\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH008\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH008B\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH009\n-rw-r--r--@   1 normy  staff   907975 May  4 18:41 akiyama.pdf\n-rw-r--r--@   1 normy  staff    71126 May  4 18:41 akiyama.txt\n-rw-r--r--@   1 normy  staff    10545 Mar  8 08:32 article.md\ndrwxr-xr-x@   6 normy  staff      192 May  1 18:11 assets\n-rw-r--r--@   1 normy  staff     6897 Feb 28 20:43 atom_simulation.py\ndrwxr-xr-x@   7 normy  staff      224 May  6 09:41 autobyteus_software_eng_team\ndrwxr-xr-x@   3 normy  staff       96 Apr 12 14:31 bible-discussion\ndrwxr-xr-x@   3 normy  staff       96 Mar 30 17:25 bible-learning\ndrwxr-xr-x@   7 normy  staff      224 May 12 20:09 bible-study-group\ndrwxr-xr-x@   4 normy  staff      128 May  5 14:02 brief-studio\n-rw-r--r--@   1 normy  staff     6061 Apr 15 13:57 brief-studio-handshake-host.html\n-rw-r--r--@   1 normy  staff     3359 Mar  8 08:32 claim_evidence_ledger.md\ndrwxr-xr-x@   3 normy  staff       96 Apr 11 19:50 codex\ndrwxr-xr-x@   7 normy  staff      224 Apr 10 12:53 compaction-origin-personal-refresh-20260410-125349\ndrwxr-xr-x@   6 normy  staff      192 Apr 10 12:38 compaction-worktree-backup-20260410-123853\n-rw-r--r--@   1 normy  staff      406 May 14 22:06 convert_pdf.py\n-rwxr-xr-x@   1 normy  staff     1095 May  7 10:42 cut_words.sh\ndrwxr-xr-x@   6 normy  staff      192 Mar  8 19:27 demo-website\ndrwxr-xr-x@  11 normy  staff      352 May  8 15:55 dictionary-word-audio-merken-test\ndrwxr-xr-x@   4 normy  staff      128 May  8 15:46 dictionary_append_manifest_test\ndrwxr-xr-x@   5 normy  staff      160 May  8 15:22 dictionary_bootstrap_test\ndrwxr-xr-x@   7 normy  staff      224 May  8 15:39 dictionary_manifest_test\ndrwxr-xr-x@   4 normy  staff      128 May  8 15:35 dictionary_no_history_test\ndrwxr-xr-x@   5 normy  staff      160 May  8 15:46 dictionary_profile_reuse_test\ndrwxr-xr-x@   5 normy  staff      160 May  8 15:28 dictionary_profile_test\ndrwxr-xr-x@   5 normy  staff      160 May  8 15:31 dictionary_simple_test\ndrwxr-xr-x@   6 normy  staff      192 May  8 15:47 dictionary_skill_final_sim\ndrwxr-xr-x@   6 normy  staff      192 May  8 15:48 dictionary_skill_final_strict_clean\ndrwxr-xr-x@   6 normy  staff      192 May  8 15:42 dictionary_skill_strict_sim\ndrwxr-xr-x@   6 normy  staff      192 May  8 15:44 dictionary_skill_strict_sim2\n-rw-r--r--@   1 normy  staff  1774073 May  6 05:08 dog.png\n-rw-r--r--@   1 normy  staff  1854549 May  6 05:11 dog_image.png\n-rw-r--r--@   1 normy  staff  1327245 May  5 19:15 dog_test.png\n-rw-r--r--@   1 normy  staff  1812776 May  6 05:12 dog_with_text.png\n-rw-r--r--@   1 normy  staff   102096 May  4 18:39 even_odd.pdf\n-rw-r--r--@   1 normy  staff     4433 Mar  8 08:32 evidence_extract.md\n-rw-r--r--@   1 normy  staff      782 May  8 07:02 fibonacci.py\n-rw-r--r--@   1 normy  staff     1430 May  3 09:49 fibonacci.test.ts\n-rw-r--r--@   1 normy  staff     1474 May  3 09:49 fibonacci.ts\n-rw-r--r--@   1 normy  staff   140235 May  4 18:31 flp.pdf\n-rw-r--r--@   1 normy  staff      656 May  4 21:22 hard_math_problem.md\n-rw-r--r--@   1 normy  staff      753 May  4 19:25 hard_math_problem.txt\n-rw-r--r--@   1 normy  staff     2308 Apr  5 20:44 index.html\n-rw-r--r--@   1 normy  staff     8993 Apr  7 21:24 investigation-notes.md\n-rw-r--r--@   1 normy  staff    24743 May 14 12:06 jet-game.html\n-rw-r--r--@   1 normy  staff    22932 May 14 12:21 jet_game.html\n-rw-r--r--@   1 normy  staff     2221 May 13 21:50 jet_name.html\n-rw-r--r--@   1 normy  staff    40659 May 15 18:49 jet_shooter_deluxe.html\n-rw-r--r--@   1 normy  staff    13201 Apr 18 21:26 llmProviderConfig.DlZ6XvKN.js\n-rw-r--r--@   1 normy  staff      720 May  4 17:39 math_problem.md\n-rw-r--r--@   1 normy  staff      922 May  5 15:19 math_problem.txt\n-rw-r--r--@   1 normy  staff     3239 May  4 17:45 math_solution.md\n-rw-r--r--@   1 normy  staff     3626 May  5 15:20 math_solution.txt\ndrwxr-xr-x@   3 normy  staff       96 Apr 11 15:02 medium-import\n-rw-r--r--@   1 normy  staff     1162 Mar 31 15:41 names_list.txt\ndrwxr-xr-x@  16 normy  staff      512 Apr 15 19:06 nuxt-vue-demo\n-rw-r--r--@   1 normy  staff     5547 May 12 15:05 online_pitch_opportunities_before_may20_2026.md\ndrwxr-xr-x@   8 normy  staff      256 Mar  8 06:28 openclaw-paper\ndrwxr-xr-x@   3 normy  staff       96 May 15 13:53 output\ndrwxr-xr-x@  28 normy  staff      896 Mar 10 09:11 paul-authority-clarification-20260310\ndrwxr-xr-x@   2 normy  staff       64 May 14 22:03 pdf_images\ndrwxr-xr-x@  27 normy  staff      864 May 14 22:06 pdf_pages\n-rw-r--r--@   1 normy  staff    24363 May 14 23:01 rabbit_cabbit_game.html\n-rw-r--r--@   1 normy  staff     6192 May 14 11:29 rabbit_tutorial_game.html\n-rw-r--r--@   1 normy  staff   181629 Apr 22 22:31 real-backend-inspect.png\ndrwxr-xr-x@   7 normy  staff      224 Apr 11 13:26 real-compaction-origin-personal-refresh-20260411-132647\ndrwxr-xr-x@   6 normy  staff      192 Apr 11 18:50 real-compaction-origin-personal-refresh-20260411-185003\n-rw-r--r--@   1 normy  staff     7241 Apr  9 19:28 requirements-doc.md\n-rw-r--r--@   1 normy  staff     3085 Mar  8 08:32 research_notes.md\n-rw-r--r--@   1 normy  staff       96 Apr  4 06:49 results.txt\n-rw-r--r--@   1 normy  staff      864 Apr  4 15:51 sample.html\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 sh001c\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 sh001d\ndrwxr-xr-x@  23 normy  staff      736 May  9 19:18 shoes-shopping-demo\n-rw-r--r--@   1 normy  staff     9274 May 17 05:58 simple_jet_strike_game.html\n-rw-r--r--@   1 normy  staff    34349 May 16 07:20 sky_strike.html\n-rw-r--r--@   1 normy  staff     1599 Mar  8 08:31 slide_extraction.md\n-rw-r--r--@   1 normy  staff     5666 Mar  8 08:32 source_dossier.md\n-rw-r--r--@   1 normy  staff   286124 May  5 19:17 speech_test.wav\n-rw-r--r--@   1 normy  staff  1321232 May  6 12:07 test-generated-image.png\ndrwxr-xr-x@   4 normy  staff      128 May  8 15:09 test_dictionary_agent\ndrwxr-xr-x@   8 normy  staff      256 May  8 15:10 test_dictionary_agent2\ndrwxr-xr-x@   8 normy  staff      256 May  8 15:12 test_dictionary_agent3\n-rw-r--r--@   1 normy  staff     2469 May  3 09:48 test_fibonacci.py\n-rw-r--r--@   1 normy  staff   295724 May  5 19:27 test_speech.wav\ndrwxr-xr-x@   3 normy  staff       96 Feb 27 12:49 tickets\ndrwxr-xr-x@   3 normy  staff       96 May 15 13:53 tmp\n-rw-r--r--@   1 normy  staff   343724 Apr 23 12:17 tmp_ab05.wav\n-rw-r--r--@   1 normy  staff   384044 Apr 23 12:17 tmp_ab13.wav\n-rw-r--r--@   1 normy  staff   314924 Apr 23 12:14 tmp_fini_gemini.wav\n-rw-r--r--@   1 normy  staff   289964 Apr 23 12:14 tmp_kuno_gemini.wav\n-rw-r--r--@   1 normy  staff   360044 May 15 14:12 tmp_pdf_enhance_final.wav\n-rw-r--r--@   1 normy  staff   435644 May 15 14:11 tmp_pdf_enhance_render.wav\n-rw-r--r--@   1 normy  staff   406844 May 15 14:04 tmp_pdf_enhance_start.wav\n-rw-r--r--@   1 normy  staff   532844 May 15 14:56 tmp_pdf_refine_final.wav\n-rw-r--r--@   1 normy  staff   531644 May 15 14:49 tmp_pdf_refine_start.wav\n-rw-r--r--@   1 normy  staff   291644 May 15 13:56 tmp_pdf_status_final.wav\n-rw-r--r--@   1 normy  staff   354044 May 15 13:50 tmp_pdf_status_toolcheck.wav\n-rw-r--r--@   1 normy  staff   700610 Apr 23 12:12 tmp_test_fini.wav\ndrwxr-xr-x@   3 normy  staff       96 Apr 16 20:43 video_tutorial_jobs\ndrwxr-xr-x@  13 normy  staff      416 May  7 10:42 word_segments\ndrwxr-xr-x@  26 normy  staff      832 May  7 10:39 worterbuch_audio\n-rw-r--r--@   1 normy  staff     3651 May 10 08:37 write_app.py\n-rw-r--r--@   1 normy  staff    10577 May  6 21:12 x_agent_orchestration_posts_summary_2026-05-06.md\n-rw-r--r--@   1 normy  staff   645164 May  7 10:41 zunaechst_sentence.wav\n-rw-r--r--@   1 normy  staff     2908 May  7 10:41 zunaechst_silencedetect.txt\n-rw-r--r--@   1 normy  staff   763715 May  7 10:42 zunaechst_word_segments.zip\n",
+        "toolError": null,
+        "media": null,
+        "ts": 1778990417.19
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "content": "I’ll create a new file named `neon_jet_strike.html` so I don’t overwrite any existing game files, with everything bundled in one HTML file.",
+        "media": null,
+        "ts": 1778990426.129
+      }
+    ],
+    "activities": [
+      {
+        "invocationId": "call_ZOHNtSkw78HcsNGZ3qCBBc0l",
+        "toolName": "run_bash",
+        "type": "terminal_command",
+        "status": "success",
+        "contextText": "/bin/bash -lc pwd",
+        "arguments": {
+          "command": "/bin/bash -lc pwd"
+        },
+        "logs": [],
+        "result": "/Users/normy/.autobyteus/server-data/temp_workspace\n",
+        "error": null,
+        "ts": 1778990409.697,
+        "detailLevel": "source_limited"
+      },
+      {
+        "invocationId": "call_5bDpVTEwFoRLa1Stsy4nYMp9",
+        "toolName": "run_bash",
+        "type": "terminal_command",
+        "status": "success",
+        "contextText": "/bin/bash -lc 'ls -la'",
+        "arguments": {
+          "command": "/bin/bash -lc 'ls -la'"
+        },
+        "logs": [],
+        "result": "total 33184\ndrwxr-xr-x@ 119 normy  staff     3808 May 17 05:58 .\ndrwxr-xr-x@  23 normy  staff      736 May  1 17:47 ..\ndrwxr-xr-x@   3 normy  staff       96 Mar 31 19:49 .claude\ndrwxr-xr-x@   3 normy  staff       96 Apr 23 21:15 .codex\ndrwxr-xr-x@   9 normy  staff      288 May 13 21:11 .git\n-rw-r--r--@   1 normy  staff   138284 Apr 28 05:33 A valid string for 'output_file_path'\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH001\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH001B\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH002\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH008\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH008B\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 SH009\n-rw-r--r--@   1 normy  staff   907975 May  4 18:41 akiyama.pdf\n-rw-r--r--@   1 normy  staff    71126 May  4 18:41 akiyama.txt\n-rw-r--r--@   1 normy  staff    10545 Mar  8 08:32 article.md\ndrwxr-xr-x@   6 normy  staff      192 May  1 18:11 assets\n-rw-r--r--@   1 normy  staff     6897 Feb 28 20:43 atom_simulation.py\ndrwxr-xr-x@   7 normy  staff      224 May  6 09:41 autobyteus_software_eng_team\ndrwxr-xr-x@   3 normy  staff       96 Apr 12 14:31 bible-discussion\ndrwxr-xr-x@   3 normy  staff       96 Mar 30 17:25 bible-learning\ndrwxr-xr-x@   7 normy  staff      224 May 12 20:09 bible-study-group\ndrwxr-xr-x@   4 normy  staff      128 May  5 14:02 brief-studio\n-rw-r--r--@   1 normy  staff     6061 Apr 15 13:57 brief-studio-handshake-host.html\n-rw-r--r--@   1 normy  staff     3359 Mar  8 08:32 claim_evidence_ledger.md\ndrwxr-xr-x@   3 normy  staff       96 Apr 11 19:50 codex\ndrwxr-xr-x@   7 normy  staff      224 Apr 10 12:53 compaction-origin-personal-refresh-20260410-125349\ndrwxr-xr-x@   6 normy  staff      192 Apr 10 12:38 compaction-worktree-backup-20260410-123853\n-rw-r--r--@   1 normy  staff      406 May 14 22:06 convert_pdf.py\n-rwxr-xr-x@   1 normy  staff     1095 May  7 10:42 cut_words.sh\ndrwxr-xr-x@   6 normy  staff      192 Mar  8 19:27 demo-website\ndrwxr-xr-x@  11 normy  staff      352 May  8 15:55 dictionary-word-audio-merken-test\ndrwxr-xr-x@   4 normy  staff      128 May  8 15:46 dictionary_append_manifest_test\ndrwxr-xr-x@   5 normy  staff      160 May  8 15:22 dictionary_bootstrap_test\ndrwxr-xr-x@   7 normy  staff      224 May  8 15:39 dictionary_manifest_test\ndrwxr-xr-x@   4 normy  staff      128 May  8 15:35 dictionary_no_history_test\ndrwxr-xr-x@   5 normy  staff      160 May  8 15:46 dictionary_profile_reuse_test\ndrwxr-xr-x@   5 normy  staff      160 May  8 15:28 dictionary_profile_test\ndrwxr-xr-x@   5 normy  staff      160 May  8 15:31 dictionary_simple_test\ndrwxr-xr-x@   6 normy  staff      192 May  8 15:47 dictionary_skill_final_sim\ndrwxr-xr-x@   6 normy  staff      192 May  8 15:48 dictionary_skill_final_strict_clean\ndrwxr-xr-x@   6 normy  staff      192 May  8 15:42 dictionary_skill_strict_sim\ndrwxr-xr-x@   6 normy  staff      192 May  8 15:44 dictionary_skill_strict_sim2\n-rw-r--r--@   1 normy  staff  1774073 May  6 05:08 dog.png\n-rw-r--r--@   1 normy  staff  1854549 May  6 05:11 dog_image.png\n-rw-r--r--@   1 normy  staff  1327245 May  5 19:15 dog_test.png\n-rw-r--r--@   1 normy  staff  1812776 May  6 05:12 dog_with_text.png\n-rw-r--r--@   1 normy  staff   102096 May  4 18:39 even_odd.pdf\n-rw-r--r--@   1 normy  staff     4433 Mar  8 08:32 evidence_extract.md\n-rw-r--r--@   1 normy  staff      782 May  8 07:02 fibonacci.py\n-rw-r--r--@   1 normy  staff     1430 May  3 09:49 fibonacci.test.ts\n-rw-r--r--@   1 normy  staff     1474 May  3 09:49 fibonacci.ts\n-rw-r--r--@   1 normy  staff   140235 May  4 18:31 flp.pdf\n-rw-r--r--@   1 normy  staff      656 May  4 21:22 hard_math_problem.md\n-rw-r--r--@   1 normy  staff      753 May  4 19:25 hard_math_problem.txt\n-rw-r--r--@   1 normy  staff     2308 Apr  5 20:44 index.html\n-rw-r--r--@   1 normy  staff     8993 Apr  7 21:24 investigation-notes.md\n-rw-r--r--@   1 normy  staff    24743 May 14 12:06 jet-game.html\n-rw-r--r--@   1 normy  staff    22932 May 14 12:21 jet_game.html\n-rw-r--r--@   1 normy  staff     2221 May 13 21:50 jet_name.html\n-rw-r--r--@   1 normy  staff    40659 May 15 18:49 jet_shooter_deluxe.html\n-rw-r--r--@   1 normy  staff    13201 Apr 18 21:26 llmProviderConfig.DlZ6XvKN.js\n-rw-r--r--@   1 normy  staff      720 May  4 17:39 math_problem.md\n-rw-r--r--@   1 normy  staff      922 May  5 15:19 math_problem.txt\n-rw-r--r--@   1 normy  staff     3239 May  4 17:45 math_solution.md\n-rw-r--r--@   1 normy  staff     3626 May  5 15:20 math_solution.txt\ndrwxr-xr-x@   3 normy  staff       96 Apr 11 15:02 medium-import\n-rw-r--r--@   1 normy  staff     1162 Mar 31 15:41 names_list.txt\ndrwxr-xr-x@  16 normy  staff      512 Apr 15 19:06 nuxt-vue-demo\n-rw-r--r--@   1 normy  staff     5547 May 12 15:05 online_pitch_opportunities_before_may20_2026.md\ndrwxr-xr-x@   8 normy  staff      256 Mar  8 06:28 openclaw-paper\ndrwxr-xr-x@   3 normy  staff       96 May 15 13:53 output\ndrwxr-xr-x@  28 normy  staff      896 Mar 10 09:11 paul-authority-clarification-20260310\ndrwxr-xr-x@   2 normy  staff       64 May 14 22:03 pdf_images\ndrwxr-xr-x@  27 normy  staff      864 May 14 22:06 pdf_pages\n-rw-r--r--@   1 normy  staff    24363 May 14 23:01 rabbit_cabbit_game.html\n-rw-r--r--@   1 normy  staff     6192 May 14 11:29 rabbit_tutorial_game.html\n-rw-r--r--@   1 normy  staff   181629 Apr 22 22:31 real-backend-inspect.png\ndrwxr-xr-x@   7 normy  staff      224 Apr 11 13:26 real-compaction-origin-personal-refresh-20260411-132647\ndrwxr-xr-x@   6 normy  staff      192 Apr 11 18:50 real-compaction-origin-personal-refresh-20260411-185003\n-rw-r--r--@   1 normy  staff     7241 Apr  9 19:28 requirements-doc.md\n-rw-r--r--@   1 normy  staff     3085 Mar  8 08:32 research_notes.md\n-rw-r--r--@   1 normy  staff       96 Apr  4 06:49 results.txt\n-rw-r--r--@   1 normy  staff      864 Apr  4 15:51 sample.html\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 sh001c\n-rw-r--r--@   1 normy  staff        0 Apr 28 21:40 sh001d\ndrwxr-xr-x@  23 normy  staff      736 May  9 19:18 shoes-shopping-demo\n-rw-r--r--@   1 normy  staff     9274 May 17 05:58 simple_jet_strike_game.html\n-rw-r--r--@   1 normy  staff    34349 May 16 07:20 sky_strike.html\n-rw-r--r--@   1 normy  staff     1599 Mar  8 08:31 slide_extraction.md\n-rw-r--r--@   1 normy  staff     5666 Mar  8 08:32 source_dossier.md\n-rw-r--r--@   1 normy  staff   286124 May  5 19:17 speech_test.wav\n-rw-r--r--@   1 normy  staff  1321232 May  6 12:07 test-generated-image.png\ndrwxr-xr-x@   4 normy  staff      128 May  8 15:09 test_dictionary_agent\ndrwxr-xr-x@   8 normy  staff      256 May  8 15:10 test_dictionary_agent2\ndrwxr-xr-x@   8 normy  staff      256 May  8 15:12 test_dictionary_agent3\n-rw-r--r--@   1 normy  staff     2469 May  3 09:48 test_fibonacci.py\n-rw-r--r--@   1 normy  staff   295724 May  5 19:27 test_speech.wav\ndrwxr-xr-x@   3 normy  staff       96 Feb 27 12:49 tickets\ndrwxr-xr-x@   3 normy  staff       96 May 15 13:53 tmp\n-rw-r--r--@   1 normy  staff   343724 Apr 23 12:17 tmp_ab05.wav\n-rw-r--r--@   1 normy  staff   384044 Apr 23 12:17 tmp_ab13.wav\n-rw-r--r--@   1 normy  staff   314924 Apr 23 12:14 tmp_fini_gemini.wav\n-rw-r--r--@   1 normy  staff   289964 Apr 23 12:14 tmp_kuno_gemini.wav\n-rw-r--r--@   1 normy  staff   360044 May 15 14:12 tmp_pdf_enhance_final.wav\n-rw-r--r--@   1 normy  staff   435644 May 15 14:11 tmp_pdf_enhance_render.wav\n-rw-r--r--@   1 normy  staff   406844 May 15 14:04 tmp_pdf_enhance_start.wav\n-rw-r--r--@   1 normy  staff   532844 May 15 14:56 tmp_pdf_refine_final.wav\n-rw-r--r--@   1 normy  staff   531644 May 15 14:49 tmp_pdf_refine_start.wav\n-rw-r--r--@   1 normy  staff   291644 May 15 13:56 tmp_pdf_status_final.wav\n-rw-r--r--@   1 normy  staff   354044 May 15 13:50 tmp_pdf_status_toolcheck.wav\n-rw-r--r--@   1 normy  staff   700610 Apr 23 12:12 tmp_test_fini.wav\ndrwxr-xr-x@   3 normy  staff       96 Apr 16 20:43 video_tutorial_jobs\ndrwxr-xr-x@  13 normy  staff      416 May  7 10:42 word_segments\ndrwxr-xr-x@  26 normy  staff      832 May  7 10:39 worterbuch_audio\n-rw-r--r--@   1 normy  staff     3651 May 10 08:37 write_app.py\n-rw-r--r--@   1 normy  staff    10577 May  6 21:12 x_agent_orchestration_posts_summary_2026-05-06.md\n-rw-r--r--@   1 normy  staff   645164 May  7 10:41 zunaechst_sentence.wav\n-rw-r--r--@   1 normy  staff     2908 May  7 10:41 zunaechst_silencedetect.txt\n-rw-r--r--@   1 normy  staff   763715 May  7 10:42 zunaechst_word_segments.zip\n",
+        "error": null,
+        "ts": 1778990417.19,
+        "detailLevel": "source_limited"
+      }
+    ]
+  }
+}

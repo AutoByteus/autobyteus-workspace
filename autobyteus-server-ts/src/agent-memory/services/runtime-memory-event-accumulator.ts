@@ -217,6 +217,9 @@ export class RuntimeMemoryEventAccumulator {
     sourceEvent: string,
     ts: number | null,
   ): void {
+    if (sourceEvent !== AgentRunEventType.TURN_COMPLETED) {
+      this.flushOpenReasoningSegments(turnId, sourceEvent);
+    }
     const reasoning = this.consumePendingReasoning(turnId);
     this.input.writer.write({
       trace: {
@@ -275,6 +278,14 @@ export class RuntimeMemoryEventAccumulator {
     return pending.join("\n\n");
   }
 
+  private flushOpenReasoningSegments(turnId: string, sourceEvent: string): void {
+    for (const segment of [...this.segments.values()]) {
+      if (segment.turnId === turnId && segment.type === "reasoning") {
+        this.flushSegment(segment.id, sourceEvent);
+      }
+    }
+  }
+
   private recordToolCall(event: AgentRunEvent): void {
     const turnId = this.resolveTurnId(extractTurnId(event.payload));
     const tool = this.resolveToolState(event.payload, turnId, "call");
@@ -306,6 +317,7 @@ export class RuntimeMemoryEventAccumulator {
       : failed
         ? null
         : extractToolResult(event.payload);
+    this.flushOpenReasoningSegments(turnId, event.eventType);
     this.input.writer.write({
       trace: {
         traceType: "tool_result",
@@ -335,6 +347,7 @@ export class RuntimeMemoryEventAccumulator {
     sourceEvent: string,
     ts: number | null,
   ): void {
+    this.flushOpenReasoningSegments(turnId, sourceEvent);
     tool.callWritten = true;
     this.input.writer.write({
       trace: {

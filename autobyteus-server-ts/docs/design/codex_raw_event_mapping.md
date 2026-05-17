@@ -16,7 +16,7 @@ The authoritative raw-event interpretation boundaries live under:
 
 - `src/agent-execution/backends/codex/thread/`
 - `src/agent-execution/backends/codex/events/`
-- `src/agent-execution/backends/codex/history/` for `thread/read` replay
+- `src/agent-execution/backends/codex/history/` for diagnostic `thread/read` replay
 - `src/agent-execution/backends/codex/items/` for shared tool item payload parsing
 
 The most important owners are:
@@ -28,8 +28,8 @@ The most important owners are:
 - `codex-thread-lifecycle-event-converter.ts` — authoritative owner for `thread/*` and `error`
 - `codex-raw-response-event-converter.ts` — raw-response sidecar normalization
 - `codex-thread-server-request-handler.ts` — server-request handling for approval requests and dynamic tool calls
-- `codex-thread-history-reader.ts` — owner for `thread/read` retrieval during history projection
-- `codex-thread-history-item-normalizer.ts` — owner for mapping `thread/read` item families into historical replay tool facts
+- `codex-thread-history-reader.ts` — owner for diagnostic `thread/read` retrieval and protocol replay inspection
+- `codex-thread-history-item-normalizer.ts` — owner for mapping diagnostic `thread/read` item families into historical replay tool facts
 - `codex-tool-item-family.ts` and `codex-tool-payload-parser.ts` — shared item family and payload extraction helpers used to keep live conversion and history replay aligned
 
 Higher layers should depend on `CodexThread` state and normalized `AgentRunEvent`s exposed by these owners. They should not infer Codex raw protocol details themselves.
@@ -155,6 +155,26 @@ application-owned replay trace contains the expected display facts.
 Unsupported tool-like `thread/read` items are logged only under
 `CODEX_THREAD_HISTORY_DEBUG=1` or `CODEX_THREAD_EVENT_DEBUG=1`.
 
+## Local Replay Reasoning Persistence
+
+Normal Codex UI reload depends on local application-owned raw traces, so live
+Codex reasoning must be written before later visible facts in the same turn.
+`RuntimeMemoryEventAccumulator` owns this storage boundary after Codex raw
+events are normalized into `AgentRunEvent`s:
+
+- open reasoning is flushed before explicit tool-call writes;
+- open reasoning is flushed before terminal tool-result writes that infer a
+  missing tool call;
+- open reasoning is flushed before assistant text writes;
+- open reasoning is flushed before assistant-complete output writes;
+- `TURN_COMPLETED` remains a final reasoning flush boundary.
+
+This preserves reload ordering such as reasoning before MCP/dynamic tool cards
+using the same local replay trace that the UI displays. A run that terminates
+with open reasoning and no later visible write or `TURN_COMPLETED` boundary has
+no reliable flush signal; the local replay may remain incomplete rather than
+speculatively writing or recovering from diagnostic `thread/read`.
+
 ## Provider Compaction Boundary Guardrail
 
 Codex provider/session compaction signals are provider-owned context management, not AutoByteus semantic compaction. The installed Codex protocol may expose names or payloads such as `thread/compacted`, `ContextCompactedEvent`, or Responses `type = "compaction"` items. This server integration may normalize those signals into `COMPACTION_STATUS` events carrying a `provider_compaction_boundary` payload.
@@ -191,7 +211,7 @@ Forbidden downstream effect:
 | `item/completed` | `item.type = webSearch` | `TOOL_EXECUTION_FAILED` when status is failure-like; otherwise `TOOL_EXECUTION_SUCCEEDED(search_web)`; always ends with `SEGMENT_END(tool_call)` | `codex-item-event-converter.ts` | Keep |
 | `item/started` | `item.type = fileChange` | `SEGMENT_START(edit_file)`, `TOOL_EXECUTION_STARTED(edit_file)` | `codex-item-event-converter.ts` | Keep |
 | `item/completed` | `item.type = fileChange` | `TOOL_DENIED` or `TOOL_EXECUTION_FAILED` or `TOOL_EXECUTION_SUCCEEDED(edit_file)`; always ends with `SEGMENT_END(edit_file)` | `codex-item-event-converter.ts` | Keep |
-| `thread/read` replay | item families `dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`, `fileChange` | historical replay tool events that become canonical transcript `tool_call` rows and Activity rows | `codex-thread-history-item-normalizer.ts`, `codex-run-view-projection-provider.ts` | Keep |
+| diagnostic `thread/read` replay | item families `dynamicToolCall`, `mcpToolCall`, `webSearch`, `commandExecution`, `fileChange` | diagnostic historical replay tool events; not a normal UI display fallback or merge source | `codex-thread-history-item-normalizer.ts`, `codex-run-view-projection-provider.ts` | Keep |
 | `item/agentMessage/delta` | agent visible text delta | `SEGMENT_CONTENT(text)` | `codex-item-event-converter.ts` | Keep |
 | `item/reasoning/delta` | reasoning delta | `SEGMENT_CONTENT(reasoning)` | `codex-item-event-converter.ts` | Keep |
 | `item/reasoning/summaryPartAdded` | reasoning summary delta | `SEGMENT_CONTENT(reasoning)` | `codex-item-event-converter.ts` | Keep |

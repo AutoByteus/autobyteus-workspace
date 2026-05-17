@@ -12,6 +12,12 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
 import { TeamMemberMemoryLayout } from "../../../src/agent-memory/store/team-member-memory-layout.js";
+import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
+import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writer.js";
+import {
+  AgentRunEventType,
+  type AgentRunEvent,
+} from "../../../src/agent-execution/domain/agent-run-event.js";
 
 const { readThreadMock } = vi.hoisted(() => ({
   readThreadMock: vi.fn(),
@@ -50,6 +56,32 @@ const findToolRow = (
   invocationId: string,
 ): Record<string, unknown> | undefined =>
   rows.find((row) => row.invocationId === invocationId);
+
+const findReasoningRow = (
+  rows: Array<Record<string, unknown>>,
+  content: string,
+): Record<string, unknown> | undefined =>
+  rows.find((row) => row.kind === "reasoning" && row.content === content);
+
+let eventTimestampCounter = 1_720_000_000;
+const nextEventTimestamp = (): number => {
+  eventTimestampCounter += 0.001;
+  return eventTimestampCounter;
+};
+
+const event = (
+  runId: string,
+  eventType: AgentRunEventType,
+  payload: Record<string, unknown>,
+): AgentRunEvent => ({
+  eventType,
+  runId,
+  payload: {
+    ts: nextEventTimestamp(),
+    ...payload,
+  },
+  statusHint: null,
+});
 
 const writeLocalReplayToolTrace = async (
   runDir: string,
@@ -154,6 +186,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
   });
 
   beforeEach(async () => {
+    eventTimestampCounter = 1_720_000_000;
     readThreadMock.mockReset();
     readThreadMock.mockResolvedValue({
       thread: {
@@ -274,6 +307,218 @@ describe("Run projection tool-call GraphQL e2e", () => {
       status: "success",
       arguments: { cmd: "echo graphql-api-validation" },
       result: { stdout: "graphql-api-validation\n", exit_code: 0 },
+    });
+  });
+
+  it("preserves Codex reasoning across runtime writes and reloads through getRunProjection", async () => {
+    const metadataStore = new AgentRunMetadataStore(memoryDir);
+    const runId = "run-codex-reasoning-durability-graphql";
+    const runDir = path.join(memoryDir, "agents", runId);
+    await metadataStore.writeMetadata(runId, {
+      runId,
+      agentDefinitionId: "agent-codex-reasoning-durability",
+      workspaceRootPath,
+      memoryDir: runDir,
+      llmModelIdentifier: "gpt-5.2-codex",
+      llmConfig: null,
+      autoExecuteTools: false,
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      platformAgentRunId: "native-thread-should-not-recover-reasoning",
+      lastKnownStatus: "IDLE",
+    });
+
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId,
+      writer: new RunMemoryWriter({ memoryDir: runDir }),
+    });
+
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-tool" }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-tool",
+      turn_id: "turn-tool",
+      segment_type: "reasoning",
+      delta: "think before explicit tool",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "explicit-tool-after-reasoning",
+      turn_id: "turn-tool",
+      tool_name: "functions.exec_command",
+      arguments: { cmd: "pwd" },
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "explicit-tool-after-reasoning",
+      turn_id: "turn-tool",
+      tool_name: "functions.exec_command",
+      arguments: { cmd: "pwd" },
+      result: { stdout: "/tmp/project\n", exit_code: 0 },
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-tool",
+      turn_id: "turn-tool",
+      segment_type: "reasoning",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-tool" }));
+
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-inferred" }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-inferred-result",
+      turn_id: "turn-inferred",
+      segment_type: "reasoning",
+      delta: "think before inferred terminal result",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "inferred-tool-after-reasoning",
+      turn_id: "turn-inferred",
+      tool_name: "run_bash",
+      arguments: { command: "echo inferred" },
+      result: { stdout: "inferred\n" },
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-inferred-result",
+      turn_id: "turn-inferred",
+      segment_type: "reasoning",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-inferred" }));
+
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-text" }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-text",
+      turn_id: "turn-text",
+      segment_type: "reasoning",
+      delta: "think before assistant text",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "assistant-text-after-reasoning",
+      turn_id: "turn-text",
+      segment_type: "text",
+      delta: "assistant text after thinking",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_END, {
+      id: "assistant-text-after-reasoning",
+      turn_id: "turn-text",
+      segment_type: "text",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-text",
+      turn_id: "turn-text",
+      segment_type: "reasoning",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-text" }));
+
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_STARTED, { turnId: "turn-complete" }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-complete",
+      turn_id: "turn-complete",
+      segment_type: "reasoning",
+      delta: "think before assistant complete",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.ASSISTANT_COMPLETE, {
+      turn_id: "turn-complete",
+      content: "assistant complete after thinking",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-complete",
+      turn_id: "turn-complete",
+      segment_type: "reasoning",
+    }));
+    accumulator.recordRunEvent(event(runId, AgentRunEventType.TURN_COMPLETED, { turnId: "turn-complete" }));
+
+    const result = await execGraphql<{ getRunProjection: ProjectionPayload }>(
+      `
+        query RunProjection($runId: String!) {
+          getRunProjection(runId: $runId) {
+            runId
+            summary
+            lastActivityAt
+            conversation
+            activities
+          }
+        }
+      `,
+      { runId },
+    );
+
+    const projection = result.getRunProjection;
+    const serializedProjection = JSON.stringify(projection);
+    const reasoningRows = projection.conversation.filter((row) => row.kind === "reasoning");
+    const explicitTool = findToolRow(projection.conversation, "explicit-tool-after-reasoning");
+    const inferredTool = findToolRow(projection.conversation, "inferred-tool-after-reasoning");
+    const rowIndex = (predicate: (row: Record<string, unknown>) => boolean): number =>
+      projection.conversation.findIndex(predicate);
+    const reasoningIndex = (content: string): number =>
+      rowIndex((row) => row.kind === "reasoning" && row.content === content);
+    const messageIndex = (content: string): number =>
+      rowIndex((row) => row.kind === "message" && row.content === content);
+    const toolIndex = (invocationId: string): number =>
+      rowIndex((row) => row.kind === "tool_call" && row.invocationId === invocationId);
+
+    expect(readThreadMock).not.toHaveBeenCalled();
+    expect(serializedProjection).not.toContain(NATIVE_THREAD_MARKER);
+    expect(projection.conversation.map((row) => row.kind)).toEqual([
+      "reasoning",
+      "tool_call",
+      "reasoning",
+      "tool_call",
+      "reasoning",
+      "message",
+      "reasoning",
+      "message",
+    ]);
+    expect(reasoningRows.map((row) => row.content)).toEqual(expect.arrayContaining([
+      "think before explicit tool",
+      "think before inferred terminal result",
+      "think before assistant text",
+      "think before assistant complete",
+    ]));
+    expect(reasoningRows).toHaveLength(4);
+    expect(findReasoningRow(projection.conversation, "think before explicit tool")).toBeTruthy();
+    expect(findReasoningRow(projection.conversation, "think before inferred terminal result")).toBeTruthy();
+    expect(findReasoningRow(projection.conversation, "think before assistant text")).toBeTruthy();
+    expect(findReasoningRow(projection.conversation, "think before assistant complete")).toBeTruthy();
+    expect(reasoningIndex("think before explicit tool")).toBeLessThan(
+      toolIndex("explicit-tool-after-reasoning"),
+    );
+    expect(reasoningIndex("think before inferred terminal result")).toBeLessThan(
+      toolIndex("inferred-tool-after-reasoning"),
+    );
+    expect(reasoningIndex("think before assistant text")).toBeLessThan(
+      messageIndex("assistant text after thinking"),
+    );
+    expect(reasoningIndex("think before assistant complete")).toBeLessThan(
+      messageIndex("assistant complete after thinking"),
+    );
+    expect(explicitTool).toMatchObject({
+      kind: "tool_call",
+      toolName: "functions.exec_command",
+      toolArgs: { cmd: "pwd" },
+      toolResult: { stdout: "/tmp/project\n", exit_code: 0 },
+    });
+    expect(inferredTool).toMatchObject({
+      kind: "tool_call",
+      toolName: "run_bash",
+      toolArgs: { command: "echo inferred" },
+      toolResult: { stdout: "inferred\n" },
+    });
+    expect(projection.conversation[messageIndex("assistant text after thinking")]).toMatchObject({
+      kind: "message",
+      role: "assistant",
+      content: "assistant text after thinking",
+    });
+    expect(projection.conversation[messageIndex("assistant complete after thinking")]).toMatchObject({
+      kind: "message",
+      role: "assistant",
+      content: "assistant complete after thinking",
+    });
+    expect(findToolRow(projection.activities, "explicit-tool-after-reasoning")).toMatchObject({
+      toolName: "functions.exec_command",
+      status: "success",
+      result: { stdout: "/tmp/project\n", exit_code: 0 },
+    });
+    expect(findToolRow(projection.activities, "inferred-tool-after-reasoning")).toMatchObject({
+      toolName: "run_bash",
+      status: "success",
+      result: { stdout: "inferred\n" },
     });
   });
 

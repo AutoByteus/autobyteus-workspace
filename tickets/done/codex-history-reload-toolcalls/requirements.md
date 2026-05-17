@@ -122,3 +122,19 @@ Medium
 ## Approval Status
 
 Refined after user clarification that local display history should be used consistently and missing local histories do not need fallback/recovery. Downstream review should treat this as the latest requirement basis and supersede prior Codex-provider-authoritative design direction.
+
+## 2026-05-17 Requirement Refinement: Thinking Row Persistence
+
+Additional finding: the local-only source is correct, but local replay persistence currently misses some UI-visible Codex `Thinking` rows. Raw traces and backend projection for the inspected Daily Assistant run contained zero `reasoning` rows even though live UI showed thinking markers.
+
+Additional functional requirements:
+
+- FR-008: Local replay persistence must durably record UI-visible reasoning/thinking segments; it must not rely solely on `TURN_COMPLETED` or reasoning `SEGMENT_END`.
+- FR-009: When a reasoning segment is followed by a tool call or assistant text in the same turn, the reasoning trace must be flushed before that subsequent visible row is persisted.
+- FR-010: History projection must preserve persisted reasoning rows in order with adjacent tool/text rows.
+
+Additional acceptance criteria:
+
+- AC-008: Given reasoning `SEGMENT_CONTENT` followed by `TOOL_EXECUTION_STARTED` without `TURN_COMPLETED`, raw traces contain a `reasoning` row before the `tool_call` row.
+- AC-009: Given reasoning `SEGMENT_CONTENT` followed by assistant text `SEGMENT_END` without `TURN_COMPLETED`, raw traces contain a `reasoning` row before the assistant row.
+- AC-010: Given those persisted raw traces, `getRunProjection` returns canonical `reasoning` conversation entries so the frontend can render `Thinking` after reload.

@@ -95,6 +95,23 @@ Raw traces are still written. For this scope, those traces are the local replay 
 
 ## Evidence package
 
-- Post-delivery reproduction note: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/post-delivery-live-repro.md`
-- Current Electron backend projection: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/current-electron-backend-implementation-projection.json`
+- Post-delivery reproduction note: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/post-delivery-live-repro.md`
+- Current Electron backend projection: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/live-repro-evidence/current-electron-backend-implementation-projection.json`
 - Screenshot: `/Users/normy/.autobyteus/browser-artifacts/b0b990-1778916761455.png`
+
+## 2026-05-17 Refinement: Thinking Segment Durability
+
+The local-only source-authority decision remains correct. The new bug shows that the local replay source is incomplete for one visible segment kind: Codex reasoning/thinking.
+
+Add this invariant:
+
+> Any UI-visible reasoning/thinking segment must be durable in the local replay trace before the app can lose in-memory stream state. The local replay writer must not depend only on `TURN_COMPLETED` or a reasoning `SEGMENT_END` event.
+
+Implementation guidance:
+
+- `RuntimeMemoryEventAccumulator` should flush open reasoning segments for the same turn before writing a tool call.
+- It should flush open reasoning segments for the same turn before writing assistant text / assistant-complete output.
+- It should still flush on `TURN_COMPLETED`.
+- If a run is stopped/terminated while a reasoning segment is open, any available reasoning content should be flushed before shutdown/cleanup if the event path exposes such a boundary.
+
+This is a local replay persistence fix. Do not reintroduce Codex-native fallback or local/native merge.

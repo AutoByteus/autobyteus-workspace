@@ -149,6 +149,14 @@ team member metadata -> member memoryDir -> raw trace corpus -> historical repla
   with local storage ids. Provider-boundary marker traces are provenance and
   are ignored as conversation/activity content by the historical replay
   transformer.
+- `RuntimeMemoryEventAccumulator` owns the live event-to-raw-trace write
+  boundary for runtime streams. When a same-turn reasoning segment is still
+  open and the next visible write arrives (tool call, terminal tool result,
+  assistant text, or assistant-complete output), the accumulator flushes that
+  reasoning first so reload projection preserves the live ordering before tool
+  cards or assistant text. `TURN_COMPLETED` still flushes pending reasoning, but
+  a run that ends with open reasoning and no later visible write or turn
+  completion can still have incomplete local replay by design.
 - Runtime-native providers such as `CodexRunViewProjectionProvider` and
   `ClaudeRunViewProjectionProvider` are diagnostic utilities only. They are not
   reachable from normal `getRunProjection` / `getTeamMemberRunProjection` UI

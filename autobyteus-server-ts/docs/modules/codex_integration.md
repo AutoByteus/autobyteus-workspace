@@ -193,6 +193,16 @@ The normal display projection path uses:
 - Codex thread ids only as runtime-native metadata, not as display-source
   selectors.
 
+For Codex live streams, the server-owned memory recorder and
+`RuntimeMemoryEventAccumulator` must persist open reasoning before the next
+same-turn visible write. This includes explicit tool calls, inferred tool calls
+from terminal tool-result events, assistant text, and assistant-complete output.
+That write boundary is what lets restart/history reload show thinking rows
+before the corresponding local replay tool cards or assistant text. If a Codex
+run ends with open reasoning and no later visible write or `TURN_COMPLETED`
+boundary, the local replay can still be incomplete rather than recovered from
+Codex native history.
+
 `AgentRunViewProjectionService` owns the source-authority policy and always
 loads local replay projection through `LocalMemoryRunViewProjectionProvider`,
 regardless of `runtimeKind`. It has no normal UI branch that selects

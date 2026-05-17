@@ -23,7 +23,7 @@ The user reports a suspected bug in Codex history loading. The screenshot shows 
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls`
 - Current Branch: `codex/codex-history-reload-toolcalls`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls`
 - Bootstrap Base Branch: `origin/personal`
@@ -56,7 +56,7 @@ The user reports a suspected bug in Codex history loading. The screenshot shows 
 | 2026-05-16 | Doc | `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` | Verify current raw-event contract | Docs state dynamic, MCP, and web-search item lifecycles are authoritative tool lifecycle spines for live normalization. | Yes |
 | 2026-05-16 | Command | `pnpm install --frozen-lockfile --offline` from worktree root | Install dependencies in dedicated worktree without network downloads | Completed; reused store packages. | No |
 | 2026-05-16 | Command/Test | `pnpm exec vitest run tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts` | Baseline provider tests | Passed: 5 tests. Existing coverage does not include dynamic/MCP tool item history. | Yes |
-| 2026-05-16 | Probe/Test | Temporary Vitest fixture `tests/unit/run-history/projection/.tmp-codex-dynamic-tool-history-repro.test.ts`; log saved at `tickets/in-progress/codex-history-reload-toolcalls/tmp-dynamic-tool-repro.log` | Reproduce backend loss for dynamic/MCP Codex `thread/read` items | Failed as expected: `toolCalls.map(toolName)` received `[]` instead of `["functions.exec_command", "send_message_to"]`. Temporary test file removed after run. | Yes |
+| 2026-05-16 | Probe/Test | Temporary Vitest fixture `tests/unit/run-history/projection/.tmp-codex-dynamic-tool-history-repro.test.ts`; log saved at `tickets/done/codex-history-reload-toolcalls/tmp-dynamic-tool-repro.log` | Reproduce backend loss for dynamic/MCP Codex `thread/read` items | Failed as expected: `toolCalls.map(toolName)` received `[]` instead of `["functions.exec_command", "send_message_to"]`. Temporary test file removed after run. | Yes |
 | 2026-05-16 | Command/Test | Initial `pnpm exec cross-env NUXT_TEST=true vitest run services/runHydration/__tests__/runProjectionConversation.spec.ts stores/__tests__/runHistoryStore.spec.ts --config vitest.config.mts --maxWorkers=1` | Check frontend tests | Failed before collection because new worktree lacked `.nuxt/tsconfig.json`. | No |
 | 2026-05-16 | Command/Setup | `pnpm exec nuxi prepare` in `autobyteus-web` | Generate test-time Nuxt tsconfig | Completed. | No |
 | 2026-05-16 | Command/Test | `pnpm exec cross-env NUXT_TEST=true vitest run services/runHydration/__tests__/runProjectionConversation.spec.ts --config vitest.config.mts --maxWorkers=1` | Verify canonical projection-to-tool segment behavior | Passed: 3 tests. | No |
@@ -189,3 +189,34 @@ The design now treats local replay traces as the sole normal UI history display 
 ### Updated root-cause classification
 
 The reproduced defect is a multiple-authority display-history problem. The current/recent code can combine local replay projection and Codex-native projection, producing duplicate text/reasoning-only tails. The corrected design removes the need for source reconciliation by making the local replay source authoritative and accepting missing local history as missing display history.
+
+## 2026-05-17 Post-Delivery Thinking Row Loss
+
+### User symptom
+
+The local-only display history build is more consistent, but live `Thinking` rows disappear after application restart/history reload for a new Daily Assistant/Codex run.
+
+### Runtime/data evidence
+
+- Electron backend process: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/.../server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data`.
+- Latest matching run: `ff0b9fcd-3bb5-4f33-b806-02baf05e1922`.
+- Local raw trace file: `/Users/normy/.autobyteus/server-data/memory/agents/ff0b9fcd-3bb5-4f33-b806-02baf05e1922/raw_traces.jsonl`.
+- Raw trace types: `user`, `assistant`, `tool_call`, `tool_result`, `assistant`, `tool_call`, `tool_result`, `assistant`.
+- Raw reasoning count: `0`.
+- GraphQL `getRunProjection` conversation kinds: `message`, `message`, `tool_call`, `message`, `tool_call`, `message`.
+- Projection reasoning count: `0`.
+- Evidence file: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/live-repro-evidence/daily-assistant-thinking-loss-analysis.json`.
+
+### Focused code/probe evidence
+
+- `raw-trace-to-historical-replay-events.ts` already converts `traceType === "reasoning"` into canonical reasoning rows, so projection/frontend would have data if local persistence wrote it.
+- `RuntimeMemoryEventAccumulator` buffers reasoning and normally flushes it on explicit reasoning `SEGMENT_END` or `TURN_COMPLETED`.
+- Temporary probe without `TURN_COMPLETED` persisted `tool_call`, `tool_result`, `assistant` but not the preceding reasoning segment. Probe log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/live-repro-evidence/reasoning-persistence-probe.log`.
+
+### Revised loss boundary
+
+The remaining bug is a local replay persistence gap. Codex reasoning/thinking can be UI-visible while the run is still active, but the memory accumulator may keep it only in memory until turn completion. Restart loses that buffered reasoning before it becomes a raw trace.
+
+### Design implication
+
+Local-only display authority remains correct, but it needs a durability invariant: UI-visible reasoning/thinking segments must be flushed to local replay before subsequent visible boundaries such as tool calls or assistant text, and must not depend solely on `TURN_COMPLETED`.

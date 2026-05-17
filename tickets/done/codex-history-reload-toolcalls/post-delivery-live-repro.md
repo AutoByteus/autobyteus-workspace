@@ -32,7 +32,7 @@ produced:
 
 Raw saved projection:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/current-electron-backend-implementation-projection.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/live-repro-evidence/current-electron-backend-implementation-projection.json`
 
 ## Key ordering / merge finding
 The problem is not simply that backend returns zero tool calls. The backend projection contains many tool rows, but the merged historical conversation contains duplicate message/reasoning tails after the tool-bearing rows.
@@ -74,9 +74,9 @@ Minimum behavioral requirement:
 
 ## Evidence commands / artifacts
 - Screenshot: `/Users/normy/.autobyteus/browser-artifacts/b0b990-1778916761455.png`
-- Current Electron backend projection: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/current-electron-backend-implementation-projection.json`
+- Current Electron backend projection: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/live-repro-evidence/current-electron-backend-implementation-projection.json`
 - Isolated live Codex repro logs and pre/post restart projections are under:
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/`
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/live-repro-evidence/`
 
 ## Routing recommendation
 Route as design/implementation rework, not as resolved delivery. The prior design acceptance criteria need an explicit non-duplicated historical turn/order criterion in addition to tool-call presence.

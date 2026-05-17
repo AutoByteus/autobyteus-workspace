@@ -37,8 +37,8 @@ Post-delivery reproduction against the current Electron backend showed the failu
 
 Evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/post-delivery-live-repro.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/current-electron-backend-implementation-projection.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/post-delivery-live-repro.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/live-repro-evidence/current-electron-backend-implementation-projection.json`
 - `/Users/normy/.autobyteus/browser-artifacts/b0b990-1778916761455.png`
 
 The user clarified the desired behavior: history display only needs the locally recorded application history. If an older run has no local history, empty/incomplete display is acceptable. No Codex-native fallback or recovery is required.
@@ -290,3 +290,44 @@ Live/reproduction validation:
 - AC-006: Standalone and team-member histories use one local replay path across runtimes.
 - AC-007: Frontend remains canonical-projection-only.
 - AC-008: Docs and tests classify remaining failures as local trace write/read/projection defects, not Codex provider recovery defects.
+
+## 2026-05-17 Design Refinement: Reasoning/Thinking Durability
+
+### New finding
+
+Local-only display history is correct, but the local replay trace currently misses some UI-visible Codex `Thinking` rows. Inspection of the latest Daily Assistant run showed local raw traces and backend projection both have zero reasoning rows, while the live UI had shown thinking markers.
+
+Evidence:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/post-delivery-thinking-loss-analysis.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/live-repro-evidence/daily-assistant-thinking-loss-analysis.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls/tickets/done/codex-history-reload-toolcalls/live-repro-evidence/reasoning-persistence-probe.log`
+
+### Root cause classification
+
+- Change posture: bug fix inside the local replay authority.
+- Root cause classification: Missing Invariant.
+- Refactor needed now: local persistence behavior must be tightened.
+
+The raw-trace projection transformer already supports reasoning rows. The missing invariant is in `RuntimeMemoryEventAccumulator`: reasoning is buffered and flushed on explicit segment end or turn completion, but Codex can show thinking while the run is still active and before either boundary arrives.
+
+### Added target invariant
+
+> Local replay persistence must durably record every UI-visible reasoning/thinking segment before subsequent visible boundaries are written. Reasoning durability must not depend solely on `TURN_COMPLETED`.
+
+### Target implementation adjustment
+
+`RuntimeMemoryEventAccumulator` should own open-reasoning flush policy:
+
+- flush open reasoning for the turn before `writeToolCall(...)` writes a tool trace;
+- flush open reasoning for the turn before `writeAssistantTrace(...)` writes assistant text;
+- flush open reasoning on `recordAssistantComplete(...)` before assistant-complete output;
+- keep existing turn-completion flushing;
+- add termination/shutdown flushing if the runtime event spine exposes a reliable boundary.
+
+### Added tests
+
+- Reasoning `SEGMENT_CONTENT -> TOOL_EXECUTION_STARTED` without `TURN_COMPLETED` persists `reasoning` before `tool_call`.
+- Reasoning `SEGMENT_CONTENT -> assistant SEGMENT_END` without `TURN_COMPLETED` persists `reasoning` before `assistant`.
+- Local raw-trace projection emits canonical `kind: "reasoning"` rows from those traces.
+- Frontend hydration renders those rows as `Thinking` after reload.
