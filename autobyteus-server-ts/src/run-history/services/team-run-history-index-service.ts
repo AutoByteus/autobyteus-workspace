@@ -10,7 +10,10 @@ import { TeamRunHistoryIndexStore } from "../store/team-run-history-index-store.
 import type {
   TeamRunMetadata,
 } from "../store/team-run-metadata-types.js";
-import { TeamRunMetadataStore } from "../store/team-run-metadata-store.js";
+import {
+  isUnsupportedLegacyTeamRunMetadataError,
+  TeamRunMetadataStore,
+} from "../store/team-run-metadata-store.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { compactSummary, extractSummaryFromRawTraces } from "./run-history-service-helpers.js";
 import {
@@ -20,6 +23,10 @@ import {
 } from "./team-run-metadata-flattener.js";
 
 const nowIso = (): string => new Date().toISOString();
+
+const logger = {
+  warn: (...args: unknown[]) => console.warn(...args),
+};
 
 export class TeamRunHistoryIndexService {
   private readonly indexStore: TeamRunHistoryIndexStore;
@@ -124,7 +131,18 @@ export class TeamRunHistoryIndexService {
     const teamRunIds = await this.metadataStore.listTeamRunIds();
     const rows: TeamRunIndexRow[] = [];
     for (const teamRunId of teamRunIds) {
-      const metadata = await this.metadataStore.readMetadata(teamRunId);
+      let metadata: TeamRunMetadata | null = null;
+      try {
+        metadata = await this.metadataStore.readMetadata(teamRunId);
+      } catch (error) {
+        if (isUnsupportedLegacyTeamRunMetadataError(error)) {
+          logger.warn(
+            `Skipping unmigrated legacy team run metadata '${teamRunId}' while rebuilding history index. Open Settings -> Server -> Migrations for details.`,
+          );
+          continue;
+        }
+        throw error;
+      }
       if (!metadata) {
         continue;
       }

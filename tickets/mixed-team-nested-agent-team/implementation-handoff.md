@@ -868,3 +868,42 @@ Passed:
   - Result: `20` changed/untracked non-test TS/Vue source files checked; no file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this app-data-migration implementation state.
+
+## API/E2E Round 14 Local Fix Update
+
+Addressed `APPDATA-MIG-005`, where `listWorkspaceRunHistory` could still leak the raw unsupported legacy metadata error when the team history index was empty and rebuilt from disk.
+
+Implementation updates:
+
+- `TeamRunHistoryIndexService.rebuildIndexFromDisk()` now catches `UnsupportedLegacyTeamRunMetadataError` for unmigrated legacy team metadata, logs a migration hint, skips the unsafe row, and continues indexing current/migrated rows.
+- The existing `TeamRunHistoryService.listTeamRunHistory()` legacy skip remains in place for pre-existing index rows. The rebuild path now applies the same friendly degradation boundary before workspace/sidebar history sees rebuilt rows.
+- No runtime conversion or dual-schema reader was added. Unmigrated topology-lost metadata stays unsupported and remains visible through Settings -> Server -> Migrations diagnostics/retry only.
+
+Regression coverage added:
+
+- `team-run-history-index-service.test.ts` now creates an unmigrated unsafe legacy flat metadata file with nested route `BuildSquad/review_lead` plus a current canonical metadata file, calls `rebuildIndexFromDisk()`, and asserts only the current/canonical row is returned and persisted to the history index.
+
+## API/E2E Round 14 Local Fix Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts tests/unit/app-data-migrations/app-data-migration-runner.test.ts --reporter=dot`
+  - Result: `2` files passed, `7` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/store/team-run-metadata-store.test.ts tests/unit/run-history/services/team-run-history-index-service.test.ts tests/unit/run-history/services/team-run-history-service.test.ts tests/unit/run-history/services/workspace-run-history-service.test.ts --reporter=dot`
+  - Result: `4` files passed, `19` tests passed.
+- `pnpm -C autobyteus-web exec vitest run stores/__tests__/appDataMigrationsStore.spec.ts components/settings/__tests__/ServerSettingsManager.spec.ts pages/__tests__/settings.spec.ts --reporter=dot`
+  - Result: `3` files passed, `26` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec prisma validate`
+  - Result: passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- Custom changed/untracked non-test `.ts` / `.vue` source size audit.
+  - Result: `1` changed non-test TS/Vue source file checked; no file exceeded `500` non-empty lines (`team-run-history-index-service.ts` is `223` non-empty lines).
+
+API/E2E/full-stack validation should resume only after this local fix passes code review.
