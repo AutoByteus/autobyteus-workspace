@@ -217,6 +217,7 @@ const reconcileDiscoveredActiveRuns = async (
         memberStatuses,
       }, {
         preserveLiveInterrupt: existingTeamContext.isSubscribed,
+        preserveCurrentStatus: existingTeamContext.isSubscribed,
       });
       existingTeamContext.leafAgentContextsByRouteKey.forEach((memberContext) => {
         memberContext.config.isLocked = true;

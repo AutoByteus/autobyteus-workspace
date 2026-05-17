@@ -41,12 +41,22 @@ describe("deriveTeamApiStatus", () => {
     })).toBe("initializing");
   });
 
-  it("does not derive aggregate status from removed native lifecycle tokens", () => {
-    for (const removedStatus of [
+  it("maps internal team startup tokens to canonical initializing", () => {
+    for (const startupStatus of [
       "uninitialized",
       "bootstrapping",
       "starting",
       "startup",
+    ]) {
+      expect(deriveTeamApiStatus({
+        nativeTeamStatus: startupStatus,
+        memberStatuses: [{ status: "idle" }],
+      })).toBe("initializing");
+    }
+  });
+
+  it("does not derive aggregate status from removed non-startup native lifecycle tokens", () => {
+    for (const removedStatus of [
       "processing_user_input",
       "awaiting_llm_response",
       "awaiting_tool_approval",

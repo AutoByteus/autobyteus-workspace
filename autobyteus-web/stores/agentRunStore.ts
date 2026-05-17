@@ -18,10 +18,8 @@ import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { ConnectionState } from '~/services/agentStreaming';
 import {
-  applyAcceptedStartupStatus,
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
-import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 import {
   beginLocalUserSubmission,
   failLocalSubmission,
@@ -119,19 +117,9 @@ export const useAgentRunStore = defineStore('agentRun', {
       const messageContent = currentAgent.requirement;
       const draftAttachments = [...currentAgent.contextFilePaths];
       const draftOwner = buildAgentDraftContextFileOwner(runId);
-      const currentStatus = normalizeAgentRuntimeStatus(state.currentStatus);
-      const shouldApplyStartupStatus =
-        isNewAgent ||
-        resumeConfig?.isActive === false ||
-        currentStatus === AgentStatus.Offline ||
-        currentStatus === AgentStatus.Error ||
-        currentStatus === AgentStatus.Initializing;
       const localSubmission = beginLocalUserSubmission(currentAgent, {
         text: messageContent,
         attachments: draftAttachments,
-        applyInitializing: shouldApplyStartupStatus
-          ? () => applyAcceptedStartupStatus(currentAgent)
-          : undefined,
       });
 
       try {

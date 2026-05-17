@@ -144,7 +144,11 @@ const avatarUrl = computed(() => (
 ));
 const showAvatarImage = computed(() => Boolean(avatarUrl.value) && !avatarLoadError.value);
 const initials = computed(() => getMemberInitials(displayName.value));
-const displayStatus = computed(() => props.memberContext?.state.currentStatus ?? AgentStatus.Offline);
+const displayStatus = computed(() => (
+  props.memberContext?.state.currentStatus
+    ?? props.memberNode?.currentStatus
+    ?? AgentStatus.Offline
+));
 const hasPreviewMessages = computed(() => (props.memberContext?.state.conversation.messages.length ?? 0) > 0);
 const subteamChildRows = computed(() => (
   props.memberNode?.memberKind === 'agent_team'

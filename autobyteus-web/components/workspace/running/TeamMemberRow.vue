@@ -34,6 +34,7 @@ const props = defineProps<{
   memberName: string;
   memberRouteKey: string;
   memberContext: AgentContext | null | undefined;
+  memberStatus?: AgentStatus | null;
   isFocused: boolean;
   isCoordinator: boolean;
 }>();
@@ -43,9 +44,9 @@ defineEmits<{
 }>();
 
 const statusColor = computed(() => {
-  if (!props.memberContext) return 'bg-gray-300';
+  const status = props.memberContext?.state.currentStatus ?? props.memberStatus ?? AgentStatus.Offline;
   
-  switch (props.memberContext.state.currentStatus) {
+  switch (status) {
     case AgentStatus.Offline:
       return 'bg-gray-300';
     case AgentStatus.Initializing:

@@ -69,8 +69,39 @@ describe("agent API status projectors", () => {
     });
   });
 
-  it("does not map removed lifecycle tokens through provider status projectors", () => {
-    for (const currentStatus of ["uninitialized", "interrupting", "shutting_down"]) {
+  it("maps provider startup lifecycle tokens to canonical initializing inside provider projectors", () => {
+    for (const currentStatus of ["uninitialized", "bootstrapping", "starting", "startup"]) {
+      expect(projectAutoByteusAgentStatus({
+        currentStatus,
+        context: { state: { activeTurn: {} } },
+        isActive: true,
+      })).toMatchObject({
+        status: "initializing",
+        can_interrupt: false,
+      });
+    }
+
+    expect(projectCodexAgentStatus({
+      currentStatus: "starting",
+      activeTurnId: "turn-1",
+      isActive: true,
+    })).toMatchObject({
+      status: "initializing",
+      can_interrupt: false,
+    });
+
+    expect(projectClaudeAgentStatus({
+      currentStatus: "startup",
+      activeTurnId: "turn-1",
+      isActive: true,
+    })).toMatchObject({
+      status: "initializing",
+      can_interrupt: false,
+    });
+  });
+
+  it("does not map removed non-startup lifecycle tokens through provider status projectors", () => {
+    for (const currentStatus of ["interrupting", "shutting_down"]) {
       expect(projectAutoByteusAgentStatus({
         currentStatus,
         context: { state: { activeTurn: {} } },

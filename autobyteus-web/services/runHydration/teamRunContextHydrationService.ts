@@ -97,7 +97,7 @@ const collectMetadataMemberRouteKeys = (metadata: ReturnType<typeof parseTeamRun
 const applyMemberStatuses = (
   members: Map<string, any>,
   snapshots: TeamMemberLiveSnapshot[],
-  options: { preserveLiveInterrupt?: boolean } = {},
+  options: { preserveLiveInterrupt?: boolean; preserveCurrentStatus?: boolean } = {},
 ): void => {
   const statusByKey = new Map<string, TeamMemberLiveSnapshot>();
   const statusByRunId = new Map<string, TeamMemberLiveSnapshot>();
@@ -121,6 +121,7 @@ const applyMemberStatuses = (
     if (matched) {
       applyMemberOrHistoryStatusSnapshot(memberContext, matched.currentStatus, {
         preserveLiveInterrupt: options.preserveLiveInterrupt === true,
+        preserveCurrentStatus: options.preserveCurrentStatus === true,
       });
     }
   });
@@ -373,9 +374,11 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
 export const applyLiveTeamStatusSnapshot = (
   context: AgentTeamContext,
   snapshot: TeamLiveStatusSnapshot,
-  options: { preserveLiveInterrupt?: boolean } = {},
+  options: { preserveLiveInterrupt?: boolean; preserveCurrentStatus?: boolean } = {},
 ): void => {
-  context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
+  if (options.preserveCurrentStatus !== true) {
+    context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
+  }
   applyMemberStatuses(context.leafAgentContextsByRouteKey, snapshot.memberStatuses || [], options);
 };
 

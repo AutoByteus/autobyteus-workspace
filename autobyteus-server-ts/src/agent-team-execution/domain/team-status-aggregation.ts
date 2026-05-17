@@ -4,11 +4,28 @@ import {
   type AgentStatusPayload,
 } from "../../agent-execution/domain/agent-status-payload.js";
 
+const normalizeToken = (value: unknown): string | null =>
+  typeof value === "string"
+    ? value.trim().toLowerCase().replace(/[-\s]+/g, "_") || null
+    : null;
+
+const INTERNAL_TEAM_STARTUP_STATUS_TOKENS = new Set([
+  "bootstrapping",
+  "starting",
+  "startup",
+  "uninitialized",
+]);
+
+const normalizeInternalTeamStatus = (value: unknown): AgentApiStatus =>
+  INTERNAL_TEAM_STARTUP_STATUS_TOKENS.has(normalizeToken(value) ?? "")
+    ? "initializing"
+    : normalizeAgentApiStatus(value, "offline");
+
 export function deriveTeamApiStatus(input: {
   memberStatuses: Array<Pick<AgentStatusPayload, "status">>;
   nativeTeamStatus?: unknown;
 }): AgentApiStatus {
-  const nativeStatus = normalizeAgentApiStatus(input.nativeTeamStatus, "offline");
+  const nativeStatus = normalizeInternalTeamStatus(input.nativeTeamStatus);
 
   let hasRunningMember = false;
   let hasInitializingMember = false;

@@ -40,8 +40,8 @@
             Coord
           </span>
         </div>
-        <div v-if="member.context" class="mt-2">
-          <AgentStatusDisplay :status="member.context.state.currentStatus" />
+        <div v-if="member.context || member.node.currentStatus" class="mt-2">
+          <AgentStatusDisplay :status="member.context?.state.currentStatus ?? member.node.currentStatus" />
         </div>
       </div>
     </div>

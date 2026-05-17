@@ -13,6 +13,23 @@ type AutoByteusAgentContextLike = {
 const hasActiveTurn = (context: AutoByteusAgentContextLike): boolean =>
   Boolean(context?.state?.activeTurn);
 
+const normalizeToken = (value: unknown): string | null =>
+  typeof value === "string"
+    ? value.trim().toLowerCase().replace(/[-\s]+/g, "_") || null
+    : null;
+
+const AUTOBYTEUS_STARTUP_STATUS_TOKENS = new Set([
+  "bootstrapping",
+  "starting",
+  "startup",
+  "uninitialized",
+]);
+
+const normalizeAutoByteusAgentStatus = (value: unknown): AgentStatusPayload["status"] =>
+  AUTOBYTEUS_STARTUP_STATUS_TOKENS.has(normalizeToken(value) ?? "")
+    ? "initializing"
+    : normalizeAgentApiStatus(value, "idle");
+
 export const projectAutoByteusAgentStatus = (input: {
   currentStatus?: unknown;
   context?: AutoByteusAgentContextLike;
@@ -23,7 +40,7 @@ export const projectAutoByteusAgentStatus = (input: {
   const status =
     input.isActive === false
       ? "offline"
-      : normalizeAgentApiStatus(input.currentStatus, "idle");
+      : normalizeAutoByteusAgentStatus(input.currentStatus);
   const canInterrupt =
     status === "running" &&
     hasActiveTurn(input.context ?? null);

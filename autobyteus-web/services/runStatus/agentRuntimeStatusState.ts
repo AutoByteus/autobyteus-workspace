@@ -1,13 +1,8 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentRunState } from '~/types/agent/AgentRunState';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { AgentStatusPayload } from '~/services/agentStreaming/protocol/messageTypes';
-import {
-  normalizeAgentRuntimeStatus,
-  normalizeTeamRuntimeStatus,
-} from '~/services/runHydration/runtimeStatusNormalization';
+import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 
 type RuntimeStatusTarget = AgentContext | AgentRunState;
 
@@ -40,20 +35,6 @@ export const applyLiveAgentStatusEvent = (
   }
 };
 
-export const applyAcceptedStartupStatus = (context: AgentContext): void => {
-  context.state.currentStatus = AgentStatus.Initializing;
-  context.state.canInterrupt = false;
-  context.isSending = true;
-};
-
-export const applyAcceptedTeamMemberStartupStatus = (
-  teamContext: AgentTeamContext,
-  memberContext: AgentContext,
-): void => {
-  applyAcceptedStartupStatus(memberContext);
-  teamContext.currentStatus = AgentTeamStatus.Initializing;
-};
-
 export const applyLiveRuntimeActivityProjectionRepair = (context: AgentContext): void => {
   const status = normalizeAgentRuntimeStatus(context.state.currentStatus);
   if (status !== AgentStatus.Error) {
@@ -63,22 +44,6 @@ export const applyLiveRuntimeActivityProjectionRepair = (context: AgentContext):
   context.state.currentStatus = AgentStatus.Running;
   context.state.canInterrupt = false;
   context.isSending = true;
-};
-
-export const applyLiveTeamMemberRuntimeActivityProjectionRepair = (
-  teamContext: AgentTeamContext,
-  memberContext: AgentContext,
-): void => {
-  const previousMemberStatus = normalizeAgentRuntimeStatus(memberContext.state.currentStatus);
-  applyLiveRuntimeActivityProjectionRepair(memberContext);
-  if (previousMemberStatus !== AgentStatus.Error) {
-    return;
-  }
-
-  const teamStatus = normalizeTeamRuntimeStatus(teamContext.currentStatus);
-  if (teamStatus !== AgentTeamStatus.Running) {
-    teamContext.currentStatus = AgentTeamStatus.Running;
-  }
 };
 
 export const applyActiveRuntimePlaceholder = (
@@ -127,19 +92,6 @@ export const applyOfflineOrTerminalCleanup = (
   if (isAgentContext(target)) {
     target.isSending = false;
   }
-};
-
-export const applyTeamMemberTerminalCleanup = (
-  teamContext: AgentTeamContext,
-  memberContext: AgentContext,
-  status: string | AgentStatus | null | undefined = AgentStatus.Offline,
-): void => {
-  applyOfflineOrTerminalCleanup(memberContext, status);
-  const normalizedStatus = normalizeAgentRuntimeStatus(status, AgentStatus.Offline);
-  teamContext.currentStatus =
-    normalizedStatus === AgentStatus.Error
-      ? AgentTeamStatus.Error
-      : AgentTeamStatus.Offline;
 };
 
 export const initializeRuntimeStatusState = (

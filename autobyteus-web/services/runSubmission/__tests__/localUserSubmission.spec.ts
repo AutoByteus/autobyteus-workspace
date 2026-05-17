@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   beginLocalUserSubmission,
   failLocalSubmission,
@@ -18,15 +18,13 @@ const buildContext = () => ({
 }) as any;
 
 describe('localUserSubmission', () => {
-  it('appends the local user message, clears the composer, and applies startup status', () => {
+  it('appends the local user message and leaves canonical runtime status to backend events', () => {
     const context = buildContext();
-    const applyInitializing = vi.fn();
     const draftAttachments = [...context.contextFilePaths];
 
     const handle = beginLocalUserSubmission(context, {
       text: 'hello runtime',
       attachments: draftAttachments,
-      applyInitializing,
     });
 
     expect(context.state.conversation.messages).toHaveLength(1);
@@ -39,7 +37,6 @@ describe('localUserSubmission', () => {
     expect(context.requirement).toBe('');
     expect(context.contextFilePaths).toEqual([]);
     expect(context.isSending).toBe(true);
-    expect(applyInitializing).toHaveBeenCalledTimes(1);
   });
 
   it('reconciles finalized attachments on the existing local message', () => {

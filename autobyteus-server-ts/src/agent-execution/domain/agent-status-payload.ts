@@ -5,6 +5,10 @@ export type AgentStatusPayload = {
   can_interrupt: boolean;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
 };
 
 const normalizeStatusToken = (value: unknown): string | null => {
@@ -47,6 +51,10 @@ export const buildAgentStatusPayload = (input: {
   canInterrupt?: boolean | null;
   agentId?: string | null;
   agentName?: string | null;
+  memberRouteKey?: string | null;
+  memberPath?: string[] | null;
+  sourceRouteKey?: string | null;
+  sourcePath?: string[] | null;
 }): AgentStatusPayload => {
   const status = normalizeAgentApiStatus(input.status);
   const payload: AgentStatusPayload = {
@@ -60,6 +68,26 @@ export const buildAgentStatusPayload = (input: {
   const agentName = typeof input.agentName === "string" ? input.agentName.trim() : "";
   if (agentName) {
     payload.agent_name = agentName;
+  }
+  const memberRouteKey = typeof input.memberRouteKey === "string" ? input.memberRouteKey.trim() : "";
+  if (memberRouteKey) {
+    payload.member_route_key = memberRouteKey;
+  }
+  const memberPath = Array.isArray(input.memberPath)
+    ? input.memberPath.map((part) => String(part).trim()).filter(Boolean)
+    : [];
+  if (memberPath.length > 0) {
+    payload.member_path = memberPath;
+  }
+  const sourceRouteKey = typeof input.sourceRouteKey === "string" ? input.sourceRouteKey.trim() : "";
+  if (sourceRouteKey) {
+    payload.source_route_key = sourceRouteKey;
+  }
+  const sourcePath = Array.isArray(input.sourcePath)
+    ? input.sourcePath.map((part) => String(part).trim()).filter(Boolean)
+    : [];
+  if (sourcePath.length > 0) {
+    payload.source_path = sourcePath;
   }
   return payload;
 };

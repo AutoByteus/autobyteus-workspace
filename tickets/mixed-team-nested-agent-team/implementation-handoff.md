@@ -5,6 +5,9 @@
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Round 36 backend status source-of-truth design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round36-backend-status-source-of-truth-design-rework-note.md`
+- Superseded Round 35 initializing-status design note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round35-initializing-status-design-rework-note.md`
+- Delivery Round 35 initializing-status blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round35-initializing-status-verification-blocker.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
 - Architecture pause note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/architecture-review-pause-note.md`
 - Design-owner recheck note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-owner-recheck-note.md`
@@ -1194,3 +1197,64 @@ Passed:
   - Result: clean.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 33 provider status cleanup.
+
+## Round 36 Backend Status Source-of-Truth Implementation Update
+
+Implemented the architecture-reviewed Round 36 correction, which supersedes the Round 35 frontend-startup-guard posture. Canonical runtime status is now backend/runtime-owned; frontend pending UI no longer writes `currentStatus = initializing`.
+
+Backend changes:
+
+- `AgentRun` now owns an accepted-startup status override for backend-accepted sends from `offline`/`idle`: it emits an `AGENT_STATUS` event and returns `getStatusSnapshot().status === "initializing"` until an authoritative backend status event moves the run to `running`, `idle`, `error`, or `offline`.
+- `TeamRun` now does the same for root team status on accepted `postMessage(...)` / inter-agent delivery, emitting root `TEAM_STATUS` with `sourcePath: []` and snapshot `status: "initializing"`.
+- AutoByteus, Codex, and Claude provider status projectors map provider-internal startup states (`bootstrapping`, `starting`, `startup`, `uninitialized`) to canonical backend/public `initializing` at the adapter edge. The shared public status normalizer still rejects removed lifecycle tokens.
+- Team status aggregation maps provider-internal startup team states to canonical `initializing` while retaining the no-legacy fallback behavior for removed non-startup lifecycle tokens.
+- Team member status snapshots now include canonical route/path identity (`member_route_key`, `member_path`, `source_route_key`, `source_path`) across AutoByteus, Codex, Claude, and Mixed managers; root team snapshots include `source_path: []`.
+
+Frontend changes:
+
+- Removed frontend canonical-startup authorship: `beginLocalUserSubmission(...)`, `agentRunStore`, and `agentTeamRunStore` no longer set `currentStatus = initializing` or `canInterrupt` on local accepted/pending send.
+- Removed `applyAcceptedStartupStatus(...)`, `applyAcceptedTeamMemberStartupStatus(...)`, and the team live-activity status repair path from `agentRuntimeStatusState.ts`.
+- Local submit still owns UX-only pending state: optimistic user row, composer/file clearing, and `isSending`.
+- Team stream handling now applies backend-owned `AGENT_STATUS` / `TEAM_STATUS` events with route/path identity to structural `agent_team` nodes, so focused subteams/groups can display backend-owned `initializing` without frontend inference from focus/name.
+- Run-history hydration/recovery now preserves current live subscribed statuses when applying older history snapshots, preventing stale history reads from downgrading newer backend live status.
+- Team member presentation surfaces (`TeamMemberMonitorTile`, `TeamMembersPanel`, running team rows, `TeamWorkspaceView`) can render backend-owned structural node status without pretending an `agent_team` group is a leaf `AgentContext`.
+
+Regression coverage added/updated:
+
+- Backend `AgentRun` accepted offline/idle send publishes and snapshots backend-owned `initializing`, then backend `running` status supersedes it.
+- Backend `TeamRun` accepted idle team send publishes and snapshots root `initializing`, then backend root `running` status supersedes it.
+- Provider projector and team aggregation tests prove startup raw provider states canonicalize to `initializing` at backend adapter/aggregation boundaries while removed lifecycle residues such as `interrupting` / `shutting_down` still fall back.
+- WebSocket status integration coverage now includes initializing single-agent and team/member snapshots/events with canonical route/path/source identity.
+- Frontend submission/store tests prove pending local sends do not mutate canonical status to `initializing`.
+- Frontend team streaming tests prove backend-owned subteam `AGENT_STATUS` / `TEAM_STATUS` updates apply by route/path, and live non-status activity does not repair/promote canonical lifecycle status.
+
+## Round 36 Implementation Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/integration/agent/agent-status-websocket.integration.test.ts --reporter=dot`
+  - Result: `5` files passed, `33` tests passed.
+- `pnpm -C autobyteus-web exec vitest run services/runSubmission/__tests__/localUserSubmission.spec.ts services/runStatus/__tests__/agentRuntimeStatusState.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot`
+  - Result: `6` files passed, `59` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec prisma validate`
+  - Result: passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- `git diff --check origin/personal...HEAD`
+  - Result: passed.
+- Frontend accepted-startup helper scan:
+  - Command scanned for `applyAcceptedStartupStatus`, `applyAcceptedTeamMemberStartupStatus`, `applyInitializing`, `applyTeamMemberTerminalCleanup`, `applyLiveTeamMemberRuntimeActivityProjectionRepair`, and `teamMemberNodeStatus` under `autobyteus-web`.
+  - Result: no matches.
+- Backend provider/status residue scan:
+  - Command scanned backend active agent/team status source for `LOCKED_RUNNING_STATUSES`, `statusToken`, and removed non-startup lifecycle residues (`awaiting_llm_response`, `awaiting_tool_approval`, `executing_tool`, `tool_denied`, `shutdown_complete`, `interrupting`, `shutting_down`).
+  - Result: no active-source matches; removed tokens remain only in negative tests where expected.
+- Custom changed non-test `.ts` / `.vue` source size audit.
+  - Result: `29` changed non-test source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 36 backend-status-source-of-truth implementation.

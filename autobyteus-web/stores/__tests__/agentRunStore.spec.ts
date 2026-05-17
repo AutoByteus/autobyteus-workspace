@@ -219,8 +219,8 @@ describe('agentRunStore', () => {
         expect(mockAgentContext.requirement).toBe('');
         expect(mockAgentContext.contextFilePaths).toEqual([]);
         expect(mockAgentContext.isSending).toBe(true);
-        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Initializing);
-        expect(mockAgentContext.state.canInterrupt).toBe(false);
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
+        expect(mockAgentContext.state.canInterrupt).toBeUndefined();
 
         resolveCreate({
           data: {

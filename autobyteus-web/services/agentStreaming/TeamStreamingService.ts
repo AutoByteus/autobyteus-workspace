@@ -45,7 +45,7 @@ import {
   handleFileChange,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
-import { applyLiveTeamMemberRuntimeActivityProjectionRepair } from '~/services/runStatus/agentRuntimeStatusState';
+import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -64,24 +64,6 @@ const summarizeDelta = (delta: string, maxLen = 120): string => {
   return clean.length > maxLen ? `${clean.slice(0, maxLen)}…` : clean;
 };
 
-const LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES = new Set<ServerMessage['type']>([
-  'TURN_STARTED',
-  'SEGMENT_START',
-  'SEGMENT_CONTENT',
-  'TOOL_APPROVAL_REQUESTED',
-  'TOOL_EXECUTION_STARTED',
-  'TOOL_EXECUTION_SUCCEEDED',
-  'TOOL_EXECUTION_FAILED',
-  'TOOL_EXECUTION_INTERRUPTED',
-  'TOOL_LOG',
-  'TODO_LIST_UPDATE',
-  'INTER_AGENT_MESSAGE',
-  'SYSTEM_TASK_NOTIFICATION',
-]);
-
-const isLiveRuntimeActivityMessage = (message: ServerMessage): boolean =>
-  LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES.has(message.type);
-
 export interface TeamStreamingServiceOptions {
   wsClient?: IWebSocketClient;
 }
@@ -93,7 +75,6 @@ export interface TeamInterruptGenerationTarget {
 
 interface MemberContextResolution {
   context: AgentContext;
-  isExplicitIdentityMatch: boolean;
 }
 
 export class TeamStreamingService {
@@ -393,7 +374,6 @@ export class TeamStreamingService {
       }
       return {
         context: routedMatch,
-        isExplicitIdentityMatch: true,
       };
     }
 
@@ -402,7 +382,6 @@ export class TeamStreamingService {
         if (memberContext.state.runId === memberRunId) {
           return {
             context: memberContext,
-            isExplicitIdentityMatch: true,
           };
         }
       }
@@ -430,16 +409,21 @@ export class TeamStreamingService {
     const memberResolution = this.getMemberContextResolution(message);
 
     if (!memberResolution) {
+      if (message.type === 'AGENT_STATUS') {
+        const payload = message.payload;
+        const routeKey = payload.member_route_key || payload.source_route_key || payload.member_path?.join('/') || payload.source_path?.join('/') || '';
+        const memberNode = routeKey ? teamContext.memberNodesByRouteKey.get(routeKey) : null;
+        if (memberNode?.memberKind === 'agent_team') {
+          memberNode.currentStatus = normalizeAgentRuntimeStatus(payload.status);
+          return;
+        }
+      }
       console.warn('No member context found for message, skipping');
       return;
     }
 
     const memberContext = memberResolution.context;
     memberContext.conversation.updatedAt = new Date().toISOString();
-    if (isLiveRuntimeActivityMessage(message) && memberResolution.isExplicitIdentityMatch) {
-      applyLiveTeamMemberRuntimeActivityProjectionRepair(teamContext, memberContext);
-    }
-
     switch (message.type) {
       case 'SEGMENT_START':
         handleSegmentStart(message.payload, memberContext);

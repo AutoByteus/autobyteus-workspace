@@ -30,11 +30,8 @@ import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuil
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
 import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
 import {
-  applyAcceptedTeamMemberStartupStatus,
   applyOfflineOrTerminalCleanup,
-  applyTeamMemberTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
-import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 import {
   beginLocalUserSubmission,
   failLocalSubmission,
@@ -319,19 +316,9 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         }
 
         if (focusedMember) {
-          const memberStatus = normalizeAgentRuntimeStatus(focusedMember.state.currentStatus);
-          const shouldApplyStartupStatus =
-            isTemporary ||
-            teamResumeConfig?.isActive === false ||
-            memberStatus === AgentStatus.Offline ||
-            memberStatus === AgentStatus.Error ||
-            memberStatus === AgentStatus.Initializing;
           localSubmission = beginLocalUserSubmission(focusedMember, {
             text,
             attachments: contextAttachments,
-            applyInitializing: shouldApplyStartupStatus
-              ? () => applyAcceptedTeamMemberStartupStatus(activeTeam, focusedMember)
-              : undefined,
           });
         }
 
@@ -439,7 +426,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         console.error(`Failed to send message to member ${targetMemberRouteKey}:`, error);
         if (localSubmission) {
           failLocalSubmission(localSubmission, error);
-          applyTeamMemberTerminalCleanup(activeTeam, localSubmission.context, AgentStatus.Error);
+          applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
           return;
         }
         if (focusedMember) {

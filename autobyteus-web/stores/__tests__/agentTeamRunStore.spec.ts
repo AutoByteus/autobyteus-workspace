@@ -567,9 +567,9 @@ describe('agentTeamRunStore', () => {
     expect(focusedMember.requirement).toBe('');
     expect(focusedMember.contextFilePaths).toEqual([]);
     expect(focusedMember.isSending).toBe(true);
-    expect(focusedMember.state.currentStatus).toBe(AgentStatus.Initializing);
-    expect(focusedMember.state.canInterrupt).toBe(false);
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Initializing);
+    expect(focusedMember.state.currentStatus).toBe(AgentStatus.Offline);
+    expect(focusedMember.state.canInterrupt).toBe(true);
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Offline);
 
     resolveRestore({
       data: {

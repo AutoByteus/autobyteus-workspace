@@ -45,6 +45,7 @@
         :member-name="member.node.displayName || member.node.memberName"
         :member-route-key="member.node.memberRouteKey"
         :member-context="member.context"
+        :member-status="member.node.currentStatus"
         :style="{ marginLeft: `${member.depth * 12}px` }"
         :is-focused="teamRun.focusedMemberRouteKey === member.node.memberRouteKey"
         :is-coordinator="member.node.memberRouteKey === coordinatorRouteKey"

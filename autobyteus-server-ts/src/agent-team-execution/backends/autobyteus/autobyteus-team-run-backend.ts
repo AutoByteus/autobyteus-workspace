@@ -9,6 +9,7 @@ import {
 } from "../../../agent-execution/domain/agent-status-payload.js";
 import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
 import type { RuntimeTeamRunContext } from "../../domain/team-run-context.js";
+import type { AutoByteusTeamMemberContext } from "./autobyteus-team-run-context.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import type { TeamRunBackend } from "../team-run-backend.js";
@@ -94,6 +95,17 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   }
 
   getMemberStatusSnapshots() {
+    const runtimeMemberContexts = this.options.runtimeContext?.memberContexts ?? [];
+    if (runtimeMemberContexts.length > 0) {
+      return runtimeMemberContexts.map((memberContext) =>
+        this.getMemberStatusSnapshotFor(
+          memberContext.memberRunId,
+          memberContext.memberName,
+          memberContext,
+        ),
+      );
+    }
+
     const members = this.team.context?.agents ?? [];
     return members.flatMap((member) => {
       const memberName = member.context?.config?.name?.trim() ?? "";
@@ -113,9 +125,10 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   private getMemberStatusSnapshotFor(
     memberRunId: string,
     memberName: string | null,
+    knownRuntimeMemberContext: AutoByteusTeamMemberContext | null = null,
   ): AgentStatusPayload {
     const normalizedMemberName = memberName?.trim() ?? "";
-    const runtimeMemberContext = this.options.runtimeContext?.memberContexts.find(
+    const runtimeMemberContext = knownRuntimeMemberContext ?? this.options.runtimeContext?.memberContexts.find(
       (context) =>
         context.memberRunId === memberRunId ||
         context.memberName === normalizedMemberName ||
@@ -137,16 +150,31 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
         can_interrupt: false,
         agent_id: memberRunId,
         ...(normalizedMemberName ? { agent_name: normalizedMemberName } : {}),
+        ...(runtimeMemberContext ? {
+          member_route_key: runtimeMemberContext.memberRouteKey,
+          member_path: runtimeMemberContext.memberPath,
+          source_route_key: runtimeMemberContext.memberRouteKey,
+          source_path: runtimeMemberContext.memberPath,
+        } : {}),
       };
     }
 
-    return projectAutoByteusAgentStatus({
+    const snapshot = projectAutoByteusAgentStatus({
       currentStatus: nativeMember.currentStatus,
       context: nativeMember.context ?? null,
       isActive: this.isActive(),
       agentId: nativeMember.agentId ?? memberRunId,
       agentName: normalizedMemberName || nativeMember.context?.config?.name || null,
     });
+    return {
+      ...snapshot,
+      ...(runtimeMemberContext ? {
+        member_route_key: runtimeMemberContext.memberRouteKey,
+        member_path: runtimeMemberContext.memberPath,
+        source_route_key: runtimeMemberContext.memberRouteKey,
+        source_path: runtimeMemberContext.memberPath,
+      } : {}),
+    };
   }
 
   async postMessage(
@@ -469,6 +497,10 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
         canInterrupt: payload.agentEvent.payload.can_interrupt === true,
         agentId: payload.memberRunId,
         agentName: payload.memberName,
+        memberRouteKey: payload.memberRouteKey,
+        memberPath: payload.memberPath,
+        sourceRouteKey: payload.memberRouteKey,
+        sourcePath: payload.memberPath,
       });
       byRunId.set(payload.memberRunId, statusPayload);
     }

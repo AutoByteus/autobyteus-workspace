@@ -481,7 +481,7 @@ describe('TeamStreamingService', () => {
     }));
   });
 
-  it('clears stale team/member error only for the member receiving live non-error activity', () => {
+  it('does not clear stale team/member error from live non-status activity', () => {
     const callbacks = new Map<string, (payload?: any) => void>();
     const wsClient = {
       state: 'disconnected',
@@ -542,10 +542,10 @@ describe('TeamStreamingService', () => {
       }),
     );
 
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Running);
-    expect(professorContext.state.currentStatus).toBe(AgentStatus.Running);
-    expect(professorContext.state.canInterrupt).toBe(false);
-    expect(professorContext.isSending).toBe(true);
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Error);
+    expect(professorContext.state.currentStatus).toBe(AgentStatus.Error);
+    expect(professorContext.state.canInterrupt).toBe(true);
+    expect(professorContext.isSending).toBe(false);
     expect(studentContext.state.currentStatus).toBe(AgentStatus.Error);
     expect(studentContext.state.canInterrupt).toBe(true);
   });
@@ -654,6 +654,104 @@ describe('TeamStreamingService', () => {
     expect(teamContext.currentStatus).toBe(AgentTeamStatus.Idle);
     expect(memberContext.state.currentStatus).toBe(AgentStatus.Idle);
     expect(memberContext.isSending).toBe(false);
+  });
+
+  it('applies backend-owned agent status to a structural subteam node by route key', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const buildSquadNode = {
+      memberKind: 'agent_team',
+      memberName: 'BuildSquad',
+      displayName: 'BuildSquad',
+      memberRouteKey: 'BuildSquad',
+      memberPath: ['BuildSquad'],
+      children: [],
+      currentStatus: AgentStatus.Offline,
+    };
+    const teamContext = {
+      currentStatus: AgentTeamStatus.Idle,
+      focusedMemberRouteKey: 'program_manager',
+      leafAgentContextsByRouteKey: new Map(),
+      memberNodesByRouteKey: new Map([
+        ['BuildSquad', buildSquadNode],
+      ]),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'initializing',
+          can_interrupt: false,
+          member_route_key: 'BuildSquad',
+          member_path: ['BuildSquad'],
+          source_route_key: 'BuildSquad',
+          source_path: ['BuildSquad'],
+        },
+      }),
+    );
+
+    expect(buildSquadNode.currentStatus).toBe(AgentStatus.Initializing);
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Idle);
+  });
+
+  it('applies backend-owned team status to a structural subteam node by source path', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const buildSquadNode = {
+      memberKind: 'agent_team',
+      memberName: 'BuildSquad',
+      displayName: 'BuildSquad',
+      memberRouteKey: 'BuildSquad',
+      memberPath: ['BuildSquad'],
+      children: [],
+      currentStatus: AgentStatus.Offline,
+    };
+    const teamContext = {
+      currentStatus: AgentTeamStatus.Idle,
+      focusedMemberRouteKey: 'program_manager',
+      leafAgentContextsByRouteKey: new Map(),
+      memberNodesByRouteKey: new Map([
+        ['BuildSquad', buildSquadNode],
+      ]),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'TEAM_STATUS',
+        payload: {
+          status: 'initializing',
+          source_path: ['BuildSquad'],
+        },
+      }),
+    );
+
+    expect(buildSquadNode.currentStatus).toBe(AgentStatus.Initializing);
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Idle);
   });
 
   it('does not convert team transport errors into lifecycle errors', () => {

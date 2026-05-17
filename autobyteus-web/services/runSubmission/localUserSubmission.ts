@@ -4,7 +4,6 @@ import type { ContextAttachment, UserMessage } from '~/types/conversation';
 export interface BeginLocalUserSubmissionOptions {
   text: string;
   attachments: ContextAttachment[];
-  applyInitializing?: () => void;
 }
 
 export interface LocalUserSubmissionHandle {
@@ -37,7 +36,6 @@ export const beginLocalUserSubmission = (
   context.requirement = '';
   context.contextFilePaths = [];
   context.isSending = true;
-  options.applyInitializing?.();
 
   return {
     context,

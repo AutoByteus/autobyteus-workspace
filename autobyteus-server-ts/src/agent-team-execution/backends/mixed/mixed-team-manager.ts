@@ -128,6 +128,10 @@ export class MixedTeamManager implements TeamManager {
         ...snapshot,
         agent_id: memberContext.memberRunId,
         agent_name: memberContext.memberName,
+        member_route_key: memberContext.memberRouteKey,
+        member_path: memberContext.memberPath,
+        source_route_key: memberContext.memberRouteKey,
+        source_path: memberContext.memberPath,
       };
     });
   }

@@ -4,6 +4,10 @@ import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+import {
+  TeamRunEventSourceType,
+  type TeamRunEvent,
+} from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 const createBackend = () => ({
   runId: "team-run-1",
@@ -138,5 +142,56 @@ describe("TeamRun", () => {
       code: "TARGET_MEMBER_REQUIRED",
     });
     expect(backend.interruptMember).not.toHaveBeenCalled();
+  });
+
+  it("publishes backend-owned initializing status after an accepted idle team send", async () => {
+    let listener: ((event: TeamRunEvent) => void) | null = null;
+    const observedEvents: TeamRunEvent[] = [];
+    const backend = {
+      ...createBackend(),
+      getStatusSnapshot: () => ({ status: "idle" as const }),
+      subscribeToEvents: vi.fn().mockImplementation((next: (event: TeamRunEvent) => void) => {
+        listener = next;
+        return () => {
+          listener = null;
+        };
+      }),
+    };
+    const run = new TeamRun({
+      context: new TeamRunContext({
+        runId: "team-run-1",
+        teamBackendKind: TeamBackendKind.MIXED,
+        coordinatorMemberName: null,
+        config: null,
+        runtimeContext: { memberContexts: [] },
+      }),
+      backend: backend as never,
+    });
+
+    run.subscribeToEvents((event) => observedEvents.push(event));
+    await run.postMessage(new AgentInputUserMessage("continue"));
+
+    expect(run.getStatusSnapshot()).toEqual({
+      status: "initializing",
+      source_path: [],
+    });
+    expect(observedEvents).toContainEqual(expect.objectContaining({
+      eventSourceType: TeamRunEventSourceType.TEAM,
+      teamRunId: "team-run-1",
+      sourcePath: [],
+      data: { status: "initializing" },
+    }));
+
+    listener?.({
+      eventSourceType: TeamRunEventSourceType.TEAM,
+      teamRunId: "team-run-1",
+      sourcePath: [],
+      data: { status: "running" },
+    });
+
+    expect(run.getStatusSnapshot()).toEqual({
+      status: "running",
+      source_path: [],
+    });
   });
 });

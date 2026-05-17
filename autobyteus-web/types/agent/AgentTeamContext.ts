@@ -1,6 +1,7 @@
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { AgentContext } from './AgentContext';
 import type { Task, TaskStatus } from '~/types/taskManagement';
+import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { TeamRunMetadataAgentMember } from '~/stores/runHistoryTypes';
 
@@ -13,6 +14,8 @@ export interface TeamMemberNodeBase {
   memberPath: string[];
   memberRouteKey: string;
   memberRunId?: string | null;
+  /** Backend-owned canonical status for structural/non-leaf members. */
+  currentStatus?: AgentStatus | null;
   role?: string | null;
   description?: string | null;
 }

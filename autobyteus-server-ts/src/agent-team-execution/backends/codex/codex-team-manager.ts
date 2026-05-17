@@ -128,6 +128,10 @@ export class CodexTeamManager implements TeamManager {
         ...snapshot,
         agent_name: memberContext.memberName,
         agent_id: memberContext.memberRunId,
+        member_route_key: memberContext.memberRouteKey,
+        member_path: memberContext.memberPath,
+        source_route_key: memberContext.memberRouteKey,
+        source_path: memberContext.memberPath,
       };
     });
   }
