@@ -1708,3 +1708,225 @@ Routing note: This is an implementation-review pass, so API/E2E/full-stack valid
 - Review Decision: `Pass — Ready for API/E2E Validation`
 - Score Summary: `9.2 / 10` (`92 / 100`) for Round 31 refresh re-review.
 - Notes: Round 30 no-legacy blockers are resolved. API/E2E/full-stack validation may resume from current HEAD `b06a74cd`.
+
+---
+
+# Review Report — Round 32 Latest-Base Integration Re-Review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Current Review Round: `32`
+- Trigger: Delivery Round 16 latest-base integration commit `af9a99b8 merge origin/personal into nested mixed team`, integrating `origin/personal @ 5f6e8ddec70d365dcb4021e573c37e439e3dc4fb` / `v1.3.16`.
+- Prior Review Round Reviewed: `31`
+- Latest Authoritative Round: `32`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- API / E2E Validation Started Yet: `No` for the current latest-base integration state.
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`; this entry point is implementation-source latest-base integration review.
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 32 | Latest-base merge `af9a99b8` after Round 31 pass | Round 31 had no unresolved findings | `CR-ROUND32-001` | Fail — Local Fix Required | Yes | Latest-base status UX integration reintroduced active backend legacy status-token normalization despite frontend negative tests. |
+
+## Review Scope
+
+Latest-base integration review focused on:
+
+- Whether Round 31 route/path-only runtime target behavior stayed intact after merge.
+- Whether latest status UX integration preserved the no-legacy runtime-status contract.
+- Whether AutoByteus aggregate status rebroadcasts and team streaming remain route/path/run-id authoritative.
+- Changed source size, conflict markers, focused tests, static checks, and validation readiness before API/E2E resumes.
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 31 | None | N/A | N/A | Round 31 was a pass. | New finding below is introduced by latest-base status integration, not an unresolved Round 31 finding. |
+| 30 | `CR-ROUND30-001` | High | Still resolved | Application runtime-control remains route/path-targeted; no accepted `targetMemberName` contract was found in active application/runtime-control source. | No regression found. |
+| 30 | `CR-ROUND30-002` | High | Still resolved | Active external-channel target fields remain `targetMemberRouteKey` / `targetMemberPath` and `entryMemberRouteKey` / `entryMemberPath`; `targetNodeName` / `entryMemberName` scans were clean. | No regression found. |
+| 30 | `CR-ROUND30-003` | Medium-High | Still resolved | No `candidate.agent_name === member.memberName` status fallback was found in run-history status code. | No regression found. |
+
+## Source File Size And Structure Audit
+
+Changed non-test TS/Vue implementation files were audited against `origin/personal...HEAD`; no file exceeds the `500` effective non-empty-line hard limit.
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` | 497 | Pass, close to limit | Watch | Pass, but very near limit | Pass | Residual watch | Split before future protocol expansion. |
+| `autobyteus-server-ts/src/external-channel/providers/file-channel-binding-provider.ts` | 497 | Pass, close to limit | Watch | Pass | Pass | Residual watch | Split before future provider persistence growth. |
+| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` | 470 | Pass, close to limit | Watch | Pass for current integration; routing identity is still canonical | Pass | Residual watch | Avoid adding more routing policy here. |
+| `autobyteus-web/stores/agentTeamRunStore.ts` | 442 | Pass | Watch | Pass for current integration; optimistic submission is still route-keyed | Pass | Residual watch | Keep future submission helpers extracted. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | 439 | Pass | Watch | Partial due status normalization dependency, not size | Pass | Local Fix | See `CR-ROUND32-001` for upstream status-normalizer cleanup. |
+| `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts` | below 220 | Pass | Pass | Fail for active legacy token acceptance | Pass | Local Fix | See `CR-ROUND32-001`. |
+
+Full audit result: `173` changed non-test TS/Vue implementation files checked; `0` over `500` effective non-empty lines.
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by implementation | Fail | The requirements identify legacy/compatibility pressure as a core risk. Latest-base merge preserved route/path command identity but reintroduced backend lifecycle-token compatibility in active status normalization. | Remove active legacy status-token acceptance. |
+| Data-flow spine inventory clarity and preservation under shared principles | Partial | Team streaming and command spines are still clear; backend status projection spine now accepts broad old lifecycle tokens before producing public `AgentApiStatus`. | Keep status spine canonical: provider event -> provider adapter if needed -> canonical API status. |
+| Ownership boundary preservation and clarity | Partial | Route/path command boundaries remain intact. Status boundary is now unclear because the domain payload normalizer owns provider/native legacy token compatibility. | Move any unavoidable provider-native mapping to provider adapter only, or remove it. |
+| Off-spine concern clarity | Partial | Lifecycle-status processor is well placed, but legacy-token mapping is in shared domain status payload code. | Tighten shared normalizer. |
+| Existing capability/subsystem reuse check | Pass | Existing status projection/aggregation capability is reused. | None beyond cleanup. |
+| Reusable owned structures check | Fail | `normalizeAgentApiStatus` became a broad compatibility normalizer rather than a tight canonical API status structure. | Remove obsolete token sets from shared status model. |
+| Shared-structure/data-model tightness check | Fail | `AgentApiStatus` is canonical, but the normalizer treats removed tokens such as `uninitialized`, `bootstrapping`, `awaiting_llm_response`, and `shutdown_complete` as valid inputs. | Tighten accepted input vocabulary. |
+| Repeated coordination ownership check | Partial | Frontend runtime status normalization rejects removed tokens; backend domain normalization accepts them. | Align backend and frontend policy under one clean no-legacy contract. |
+| Empty indirection check | Pass | No empty indirection found. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Partial | Most merge resolution is scoped correctly; status compatibility belongs outside the shared API status domain if it exists at all. | Clean up status normalizer/tests. |
+| Ownership-driven dependency check | Partial | Command ownership is preserved. Status projection depends on broad domain compatibility mapping. | Make backend status projection depend on canonical values or provider-specific adapter mapping only. |
+| Authoritative Boundary Rule check | Partial | Route/path command boundary passes. Status boundary fails the no-legacy shared domain authority because old provider/runtime tokens become accepted at the domain helper. | Tighten authoritative status boundary. |
+| File placement check | Partial | Files are placed correctly, but the token policy inside `agent-status-payload.ts` is too broad for its domain role. | Remove obsolete tokens there. |
+| Flat-vs-over-split layout judgment | Pass | Layout remains readable despite near-limit files. | Watch only. |
+| Interface/API/query/command/service-method boundary clarity | Partial | Command interfaces pass. Status normalization API does not clearly reject obsolete lifecycle statuses. | Make `normalizeAgentApiStatus(...)` canonical/current-only. |
+| Naming quality and naming-to-responsibility alignment check | Partial | Most names are good; tests call old tokens part of the “public startup-aware vocabulary,” which contradicts the no-legacy policy. | Rename/reshape tests to assert rejection/fallback for removed tokens. |
+| No unjustified duplication of code / repeated structures in changed scope | Partial | Frontend/backend status-token policies diverge. | Align behavior and tests. |
+| Patch-on-patch complexity control | Fail | Latest-base conflict resolution merged a status UX improvement by broadening status token compatibility instead of preserving the clean-cut no-legacy posture. | Remove compatibility branch/test expectations. |
+| Dead/obsolete code cleanup completeness in changed scope | Fail | Active backend code retains removed lifecycle tokens. | Remove obsolete token sets and positive tests. |
+| Test quality is acceptable for the changed behavior | Fail | Focused tests pass but assert the wrong no-legacy behavior on backend status normalization. | Replace positive legacy-token tests with negative/fallback regressions. |
+| Test maintainability is acceptable for the changed behavior | Partial | Tests are localized but encode stale vocabulary as public. | Update tests to canonical/current statuses only. |
+| Validation or delivery readiness for the next workflow stage | Fail | API/E2E should not resume with an active no-legacy regression in backend status normalization. | Local fix first. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Fail | Backend shared normalizer accepts removed lifecycle tokens and maps them to canonical statuses. | Remove compatibility mapping. |
+| No legacy code retention for old behavior | Fail | Removed lifecycle tokens are in implementation source and positive tests. | See finding. |
+
+## Review Scorecard
+
+- Overall score (`/10`): `8.0`
+- Overall score (`/100`): `80`
+- Score calculation note: Simple average for trend visibility only. The review decision is fail because the no-legacy category and validation readiness fail on a concrete active-source regression.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | --- | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.5 | Route/path command and stream spines remain intact. | Status projection spine accepts removed tokens in a shared domain normalizer. | Status flow should be canonical/current-only. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.2 | Command boundaries remain well owned. | Shared status domain owns legacy provider token mapping. | Quarantine provider-specific mapping or remove obsolete tokens entirely. |
+| `3` | `API / Interface / Query / Command Clarity` | 8.4 | Runtime command APIs remain route/path-only. | Backend status normalization API accepts old lifecycle tokens. | Canonical status vocabulary only. |
+| `4` | `Separation of Concerns and File Placement` | 8.1 | Merge changes are mostly in correct subsystems. | Status compatibility is in the wrong shared layer. | Move/remove legacy mapping. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 7.4 | `AgentApiStatus` type is tight. | Accepted input token sets are broad and legacy-heavy. | Tighten normalizer and tests. |
+| `6` | `Naming Quality and Local Readability` | 8.0 | Most integration code is readable. | Tests label removed tokens as public vocabulary. | Rename/update tests to encode no-legacy rule. |
+| `7` | `Validation Readiness` | 7.2 | Focused tests/static checks pass. | Tests pass while asserting a no-legacy violation. | Local fix and rerun focused suites. |
+| `8` | `Runtime Correctness Under Edge Cases` | 8.0 | Initializing status and team aggregate rebroadcasts mostly behave. | Removed status tokens can still influence backend runtime/team status. | Removed tokens should fall back instead of altering status. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 5.5 | Route/path command legacy remains clean. | Active backend status normalization retains multiple removed lifecycle tokens. | Remove obsolete token sets from implementation and positive tests. |
+| `10` | `Cleanup Completeness` | 7.0 | Command-target cleanup remains complete. | Status legacy cleanup incomplete after merge. | Complete cleanup before validation. |
+
+## Findings
+
+### CR-ROUND32-001 — Backend status normalization reintroduced removed lifecycle-token compatibility
+
+- Severity: `High`
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+- Files:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/unit/agent-execution/agent-api-status-projectors.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/unit/agent-team-execution/team-status-aggregation.test.ts`
+- Evidence:
+  - `agent-status-payload.ts:10-26` maps broad running tokens including `processing_user_input`, `awaiting_llm_response`, `awaiting_tool_approval`, `tool_denied`, and `executing_tool` to canonical `running`.
+  - `agent-status-payload.ts:28-34` maps removed startup tokens including `bootstrapping`, `starting`, `startup`, and `uninitialized` to canonical `initializing`.
+  - `agent-status-payload.ts:40-48` maps removed/old offline tokens including `shutdown_complete` to canonical `offline`.
+  - Positive tests encode these tokens as accepted backend behavior: `agent-api-status-projectors.test.ts:11-19`, `agent-api-status-projectors.test.ts:41-48`, and `team-status-aggregation.test.ts:27-37`.
+  - Frontend `runtimeStatusNormalization.spec.ts` correctly asserts the opposite for the removed lifecycle tokens, so backend and frontend no-legacy policy now diverge.
+- Why this is blocking:
+  - The user explicitly clarified that this ticket must not keep backward-compatible or legacy behavior.
+  - The command API clean-cut rework and prior code reviews treated removed lifecycle tokens as rejected/fallback-only, not active accepted vocabulary. The latest handoff also says removed lifecycle tokens remain rejected and only appear in negative regression tests, but the backend implementation has positive acceptance tests.
+  - This is active runtime/status implementation code, not migration-only conversion, not display metadata, and not a negative-test rejection key. It can change emitted API/team statuses based on obsolete internal tokens.
+- Required action:
+  1. Tighten `normalizeAgentApiStatus(...)` to accept only canonical/current API status values (`offline`, `initializing`, `idle`, `running`, `error`) plus any explicitly current persisted status tokens that are still required by the design. Do not retain the removed lifecycle tokens above as accepted inputs.
+  2. If a provider adapter truly must translate current provider-native state, keep that mapping inside the provider-specific adapter with an explicit current-native vocabulary; do not use the shared domain `AgentApiStatus` normalizer as a backward-compatibility sink.
+  3. Update `deriveTeamApiStatus(...)` tests so removed native team tokens fall back rather than drive aggregate status.
+  4. Replace positive backend tests for `shutdown_complete`, `bootstrapping`, `uninitialized`, `starting`, `awaiting_llm_response`, `processing_user_input`, etc. with negative/fallback regressions matching the frontend no-legacy tests.
+  5. Rerun the focused backend status/team aggregation suites and the frontend runtime status suite.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Validation Readiness | Ready for API/E2E/full-stack validation | Fail | Focused checks pass, but backend status tests assert active legacy compatibility. |
+| Tests | Test quality is acceptable for route/path command identity | Pass | No regression found in route/path command/streaming identity. |
+| Tests | Test quality is acceptable for no-legacy status behavior | Fail | Backend tests treat removed status tokens as accepted public/runtime vocabulary. |
+| Findings clarity | Findings are clear enough for local fix | Pass | The blocker is bounded to backend status normalization/aggregation tests and directly related status code. |
+
+## Verification Evidence
+
+Commands/checks run during Round 32 review:
+
+- Reloaded `code-reviewer` skill and shared `design-principles.md`.
+- Reviewed current status/log and confirmed HEAD `af9a99b8 merge origin/personal into nested mixed team`.
+- Reviewed merge parents and changed files from `b06a74cd..HEAD`.
+- Inspected latest-base integration in:
+  - `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts`
+  - `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts`
+  - `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
+  - `autobyteus-web/services/runHydration/runtimeStatusNormalization.ts`
+  - `autobyteus-web/stores/agentTeamRunStore.ts`
+- Focused tests:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts --reporter=dot` — passed, `5` files / `37` tests.
+  - `pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runtimeStatusNormalization.spec.ts stores/__tests__/agentTeamRunStore.spec.ts --reporter=dot` — passed, `3` files / `37` tests.
+- Static/diff checks:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+  - `pnpm -C autobyteus-server-ts exec prisma validate` — passed.
+  - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings.
+  - `git diff --check` — passed.
+  - `git diff --cached --check` — passed.
+  - `git diff --check origin/personal...HEAD` — passed.
+- No-legacy scans:
+  - Touched route/path command/streaming paths were clean for focused-member/member-map routing fallback reintroduction.
+  - Active command/application/external-channel scan found no accepted `targetNodeName`, `entryMemberName`, or `targetMemberName` public-runtime target regressions.
+  - Active backend status-token scan found removed lifecycle tokens in `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts`.
+- Source-size audit:
+  - `173` changed non-test TS/Vue implementation files checked; `0` over `500` effective non-empty lines.
+- Conflict-marker scan:
+  - Anchored scan over active source/docs/ticket package excluding dependency/build/log dirs found no conflict markers.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed/integrated scope | Fail | Backend shared status normalizer accepts removed lifecycle tokens and maps them to current statuses. |
+| No legacy old-behavior retention in changed/integrated scope | Fail | `processing_user_input`, `awaiting_llm_response`, `awaiting_tool_approval`, `executing_tool`, `tool_denied`, `bootstrapping`, `uninitialized`, `starting`, `startup`, and `shutdown_complete` remain active accepted status inputs. |
+| Dead/obsolete code cleanup completeness in changed/integrated scope | Fail | Positive backend tests still preserve obsolete status vocabulary. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| Removed lifecycle token sets in `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts` | `LegacyBranch` / `CompatWrapper` | Lines `10-48` map old status tokens to canonical statuses. | Shared domain status normalization must be current/canonical-only under the no-legacy policy. | Remove obsolete tokens or quarantine truly current provider-native mapping in provider-specific adapter code only. |
+| Positive legacy-token tests in `agent-api-status-projectors.test.ts` and `team-status-aggregation.test.ts` | `UnusedTest` / `LegacyBranch` | Tests assert `shutdown_complete`, `bootstrapping`, `uninitialized`, `starting`, `awaiting_llm_response`, and `processing_user_input` are accepted. | Tests encode forbidden compatibility as expected behavior. | Replace with negative/fallback assertions. |
+
+## Docs-Impact Verdict
+
+- Docs impact: `Likely no new docs impact after local fix`.
+- Why: The intended public status contract remains canonical statuses plus the new `initializing`; the fix should align implementation/tests with existing no-legacy direction rather than introduce new documented behavior.
+- Files or areas likely affected: none beyond updating test names/comments if they mention “public startup-aware vocabulary” for removed tokens.
+
+## Classification
+
+- Classification: `Local Fix`
+- Rationale: The design and user clarification are clear. The bug is a bounded latest-base integration mistake in backend status normalization/tests, not a requirement gap or design ambiguity.
+
+## Recommended Recipient
+
+- `implementation_engineer`
+
+Routing note: API/E2E/full-stack validation and delivery packaging should remain paused until this local fix returns to code review.
+
+## Residual Risks
+
+- Provider-native status vocabulary may still be needed for active AutoByteus integration. If so, the mapping must be explicit, current, and provider-local; it should not become a general shared compatibility normalizer.
+- Route/path command identity remained intact in this review, but status cleanup should rerun no-legacy scans to ensure the fix does not reintroduce command or member-name fallbacks.
+- Several files are close to the `500` effective-line limit; local fix should avoid growing `TeamStreamingService.ts`, `agentTeamRunStore.ts`, and `autobyteus-team-run-backend.ts` unnecessarily.
+
+## Latest Authoritative Result
+
+- Review Decision: `Fail — Local Fix Required`
+- Score Summary: `8.0 / 10` (`80 / 100`) for Round 32 latest-base integration review.
+- Notes: Latest-base merge preserved route/path command identity, but reintroduced active backend legacy lifecycle status-token normalization. This must be cleaned before API/E2E resumes.

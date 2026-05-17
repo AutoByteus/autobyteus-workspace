@@ -7,52 +7,6 @@ export type AgentStatusPayload = {
   agent_name?: string;
 };
 
-const RUNNING_STATUS_TOKENS = new Set([
-  "active",
-  "running",
-  "processing",
-  "processing_user_input",
-  "awaiting_llm_response",
-  "analyzing_llm_response",
-  "awaiting_tool_approval",
-  "tool_denied",
-  "executing_tool",
-  "processing_tool_result",
-  "interrupting",
-  "shutting_down",
-  "inprogress",
-  "in_progress",
-  "busy",
-]);
-
-const INITIALIZING_STATUS_TOKENS = new Set([
-  "bootstrapping",
-  "initializing",
-  "starting",
-  "startup",
-  "uninitialized",
-]);
-
-const IDLE_STATUS_TOKENS = new Set([
-  "idle",
-]);
-
-const OFFLINE_STATUS_TOKENS = new Set([
-  "shutdown_complete",
-  "shutdowncomplete",
-  "stopped",
-  "offline",
-  "terminated",
-  "missing",
-  "inactive",
-]);
-
-const ERROR_STATUS_TOKENS = new Set([
-  "error",
-  "failed",
-  "failure",
-]);
-
 const normalizeStatusToken = (value: unknown): string | null => {
   if (typeof value !== "string") {
     return null;
@@ -76,19 +30,13 @@ export const normalizeAgentApiStatus = (
   if (!token) {
     return fallback;
   }
-  if (ERROR_STATUS_TOKENS.has(token)) {
-    return "error";
+  if (isAgentApiStatus(token)) {
+    return token;
   }
-  if (INITIALIZING_STATUS_TOKENS.has(token)) {
-    return "initializing";
-  }
-  if (RUNNING_STATUS_TOKENS.has(token)) {
+  if (token === "active") {
     return "running";
   }
-  if (IDLE_STATUS_TOKENS.has(token)) {
-    return "idle";
-  }
-  if (OFFLINE_STATUS_TOKENS.has(token)) {
+  if (token === "terminated") {
     return "offline";
   }
   return fallback;

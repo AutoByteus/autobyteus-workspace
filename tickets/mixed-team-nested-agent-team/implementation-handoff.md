@@ -1117,3 +1117,42 @@ Passed:
   - Result: no `TeamStreamingService` focused-member or `members` routing fallback; no broad legacy runtime-status token sets in implementation. Removed lifecycle tokens remain only in negative regression assertions.
 
 API/E2E/full-stack validation and delivery packaging remain paused until this latest-base integration passes code review.
+
+## Code Review Round 32 Local Fix Update
+
+Addressed `CR-ROUND32-001`, where backend status normalization had reintroduced removed lifecycle-token compatibility during the latest-base status UX integration.
+
+Implementation updates:
+
+- `normalizeAgentApiStatus(...)` in `agent-status-payload.ts` now accepts only canonical API statuses (`offline`, `initializing`, `idle`, `running`, `error`) plus the explicitly current persisted tokens already aligned with frontend policy (`active` -> `running`, `terminated` -> `offline`).
+- Removed the shared backend compatibility token sets that mapped historical lifecycle/runtime tokens such as `processing_user_input`, `awaiting_llm_response`, `awaiting_tool_approval`, `executing_tool`, `tool_denied`, `bootstrapping`, `uninitialized`, `starting`, `startup`, `shutdown_complete`, `failed`, and `failure`.
+- Updated backend agent status projector tests to assert removed lifecycle tokens fall back instead of driving API status, including provider projector paths.
+- Updated team aggregation tests so removed native team tokens fall back rather than driving aggregate team status; canonical `error`, `initializing`, and current persisted `active` remain covered.
+- Frontend no-legacy status normalization was unchanged and re-run to verify policy alignment.
+
+## Code Review Round 32 Local Fix Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts --reporter=dot`
+  - Result: `2` files passed, `15` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts --reporter=dot`
+  - Result: `5` files passed, `40` tests passed.
+- `pnpm -C autobyteus-web exec vitest run services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot`
+  - Result: `1` file passed, `4` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec prisma validate`
+  - Result: passed.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- `git diff --check origin/personal...HEAD`
+  - Result: passed.
+- Backend status no-legacy implementation scan over status normalizer, team aggregation, and provider projectors.
+  - Result: no implementation matches for the removed lifecycle tokens or old status token set names. Removed tokens appear only in negative regression tests.
+- Conflict-marker scan over active source/docs excluding historical ticket logs.
+  - Result: clean.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 32 backend status no-legacy fix.
