@@ -1298,3 +1298,45 @@ Passed:
   - Result: `3` changed non-test source files checked; no file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 18 local fix.
+
+## API/E2E Round 19 Local Fix Update
+
+Addressed the Round 19 live team/nested status blockers reported after commit `902274e5`.
+
+Implementation updates:
+
+- Fixed `STATUS-ROUND37-002` for native AutoByteus teams: `AutoByteusTeamRunBackend` now keeps a backend-owned per-member canonical status cache from emitted member `AGENT_STATUS` events and uses it when deriving aggregate `TEAM_STATUS` snapshots/events. Stale native team/member snapshots that report `idle` while a member is known `running` no longer publish premature aggregate `TEAM_STATUS idle`; aggregate status remains `running` until the active member emits an idle/offline/error status.
+- Native AutoByteus `TEAM_STATUS` events are normalized through the same aggregate status derivation boundary instead of being trusted as an independent stale source.
+- Fixed `STATUS-ROUND37-003` for nested mixed teams: `prefixMixedSubTeamEvent(...)` now prefixes child `AGENT` event payload `memberPath` / `memberRouteKey` in addition to the canonical outer `sourcePath`. Parent team WebSocket projections can therefore expose nested child leaf status identity as `BuildSquad/review_lead` rather than child-local `review_lead`.
+- Added focused regressions for active-member aggregate status preservation and parent-rooted nested child agent status identity.
+
+## API/E2E Round 19 Local Fix Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-event-processor.test.ts tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/integration/agent/agent-status-websocket.integration.test.ts --reporter=dot`
+  - Result: `9` files passed, `62` tests passed.
+- `pnpm -C autobyteus-web exec vitest run services/runSubmission/__tests__/localUserSubmission.spec.ts services/runStatus/__tests__/agentRuntimeStatusState.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot`
+  - Result: `6` files passed, `59` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts build`
+  - Result: passed, including built-in agents bootstrap smoke check.
+- `pnpm -C autobyteus-server-ts exec prisma validate`
+  - Result: passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- `git diff --check origin/personal...HEAD`
+  - Result: passed.
+- Frontend accepted-startup helper scan for `applyAcceptedStartupStatus`, `applyAcceptedTeamMemberStartupStatus`, `applyInitializing`, `applyTeamMemberTerminalCleanup`, `applyLiveTeamMemberRuntimeActivityProjectionRepair`, and `teamMemberNodeStatus` under `autobyteus-web`.
+  - Result: no matches.
+- Backend status residue scan for `LOCKED_RUNNING_STATUSES`, `statusToken`, and removed non-startup lifecycle residues under active backend agent/team/streaming source.
+  - Result: no matches.
+- Custom changed non-test `.ts` / `.vue` source size audit.
+  - Result: `2` changed non-test source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 19 local fix.

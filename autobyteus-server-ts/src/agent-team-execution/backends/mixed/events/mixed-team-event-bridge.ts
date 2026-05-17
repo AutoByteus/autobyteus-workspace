@@ -1,5 +1,6 @@
 import {
   TeamRunEventSourceType,
+  type TeamRunAgentEventPayload,
   type TeamCommunicationParticipant,
   type TeamRunCommunicationEventPayload,
   type TeamRunEvent,
@@ -90,23 +91,48 @@ const prefixCommunicationPayload = (input: {
   }),
 });
 
+const prefixAgentPayload = (input: {
+  sourcePrefix: string[];
+  payload: TeamRunAgentEventPayload;
+  isAlreadyParentRooted: boolean;
+}): TeamRunAgentEventPayload => {
+  const memberPath = prefixPath(
+    input.payload.memberPath,
+    input.sourcePrefix,
+    input.isAlreadyParentRooted,
+  );
+  return {
+    ...input.payload,
+    memberPath,
+    memberRouteKey: buildMemberRouteKeyFromPath(memberPath),
+  };
+};
+
 export const prefixMixedSubTeamEvent = (input: {
   parentTeamRunId: string;
   sourcePrefix: string[];
   event: TeamRunEvent;
 }): TeamRunEvent => {
+  const isAlreadyParentRooted = input.event.teamRunId === input.parentTeamRunId;
   const sourcePath = prefixPath(
     input.event.sourcePath,
     input.sourcePrefix,
-    input.event.teamRunId === input.parentTeamRunId,
+    isAlreadyParentRooted,
   );
-  const data = input.event.eventSourceType === TeamRunEventSourceType.COMMUNICATION
-    ? prefixCommunicationPayload({
-        parentTeamRunId: input.parentTeamRunId,
-        sourcePrefix: input.sourcePrefix,
-        payload: input.event.data as TeamRunCommunicationEventPayload,
-      })
-    : input.event.data;
+  const data =
+    input.event.eventSourceType === TeamRunEventSourceType.COMMUNICATION
+      ? prefixCommunicationPayload({
+          parentTeamRunId: input.parentTeamRunId,
+          sourcePrefix: input.sourcePrefix,
+          payload: input.event.data as TeamRunCommunicationEventPayload,
+        })
+      : input.event.eventSourceType === TeamRunEventSourceType.AGENT
+        ? prefixAgentPayload({
+            sourcePrefix: input.sourcePrefix,
+            payload: input.event.data as TeamRunAgentEventPayload,
+            isAlreadyParentRooted,
+          })
+        : input.event.data;
 
   return {
     ...input.event,

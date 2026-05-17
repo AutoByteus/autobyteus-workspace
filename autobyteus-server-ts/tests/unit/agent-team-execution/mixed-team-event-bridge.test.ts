@@ -5,6 +5,8 @@ import {
   type TeamRunEvent,
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { prefixMixedSubTeamEvent } from "../../../src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.js";
+import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 describe("prefixMixedSubTeamEvent", () => {
   it("normalizes child communication payloads to the parent run and prefixes participants", () => {
@@ -135,6 +137,45 @@ describe("prefixMixedSubTeamEvent", () => {
           memberRouteKey: "BuildSquad/BuildSquad",
         },
       }),
+    }));
+  });
+
+  it("prefixes child agent event member identity for parent-rooted websocket projection", () => {
+    const event = prefixMixedSubTeamEvent({
+      parentTeamRunId: "parent-run",
+      sourcePrefix: ["BuildSquad"],
+      event: {
+        eventSourceType: TeamRunEventSourceType.AGENT,
+        teamRunId: "child-run",
+        sourcePath: ["review_lead"],
+        data: {
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          memberName: "review_lead",
+          memberRunId: "review-run",
+          memberPath: ["review_lead"],
+          memberRouteKey: "review_lead",
+          agentEvent: {
+            eventType: AgentRunEventType.AGENT_STATUS,
+            runId: "review-run",
+            payload: {
+              status: "running",
+              can_interrupt: false,
+              agent_id: "review-run",
+              agent_name: "review_lead",
+            },
+            statusHint: "ACTIVE",
+          },
+        },
+      } satisfies TeamRunEvent,
+    });
+
+    expect(event.teamRunId).toBe("parent-run");
+    expect(event.sourcePath).toEqual(["BuildSquad", "review_lead"]);
+    expect(event.data).toEqual(expect.objectContaining({
+      memberName: "review_lead",
+      memberRunId: "review-run",
+      memberPath: ["BuildSquad", "review_lead"],
+      memberRouteKey: "BuildSquad/review_lead",
     }));
   });
 });
