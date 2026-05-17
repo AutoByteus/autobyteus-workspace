@@ -153,7 +153,8 @@ const providerCalls = (provider: 'gemini' | 'anthropic' | 'mistral' | 'ollama' |
               {
                 type: 'reasoning',
                 id: 'rs_1',
-                summary: [{ type: 'summary_text', text: 'used tools' }]
+                summary: [{ type: 'summary_text', text: 'used tools' }],
+                encrypted_content: 'encrypted-reasoning'
               },
               {
                 type: 'function_call',
@@ -441,13 +442,15 @@ describe('provider-native API request payloads', () => {
     expectNoLegacyProviderText(captured);
   });
 
-  it('captures OpenAI Responses payload with function_call/function_call_output item retention, call_id matching, and no synthetic aggregate user text', async () => {
+  it('captures OpenAI Responses payload with reasoning/function_call/function_call_output retention, include merge, and no synthetic aggregate user text', async () => {
     let captured: any;
+    const openAIConfig = commonConfig();
+    openAIConfig.extraParams = { include: ['file_search_call.results'] };
     const llm = new OpenAIResponsesLLM(
       model(LLMProvider.OPENAI, 'gpt-5.1'),
       'OPENAI_API_KEY',
       'https://api.openai.com/v1',
-      commonConfig(),
+      openAIConfig,
       'test-openai-key'
     );
     (llm as any).client = {
@@ -469,15 +472,81 @@ describe('provider-native API request payloads', () => {
 
     const functionCalls = captured.input.filter((item: any) => item.type === 'function_call');
     const outputs = captured.input.filter((item: any) => item.type === 'function_call_output');
+    const reasoningItems = captured.input.filter((item: any) => item.type === 'reasoning');
     const userMessages = captured.input.filter((item: any) =>
       item.type === 'message' && item.role === 'user'
     );
+    const reasoningIndex = captured.input.findIndex((item: any) => item.type === 'reasoning');
+    const callAIndex = captured.input.findIndex((item: any) =>
+      item.type === 'function_call' && item.call_id === 'call_a'
+    );
+    const firstOutputIndex = captured.input.findIndex((item: any) =>
+      item.type === 'function_call_output'
+    );
+    expect(reasoningItems).toEqual([
+      {
+        type: 'reasoning',
+        id: 'rs_1',
+        summary: [{ type: 'summary_text', text: 'used tools' }],
+        encrypted_content: 'encrypted-reasoning'
+      }
+    ]);
+    expect(reasoningIndex).toBeGreaterThan(-1);
+    expect(reasoningIndex).toBeLessThan(callAIndex);
+    expect(firstOutputIndex).toBeGreaterThan(callAIndex);
+    expect(functionCalls).toHaveLength(2);
     expect(functionCalls.map((item: any) => item.call_id)).toEqual(['call_a', 'call_b']);
     expect(functionCalls.map((item: any) => item.id)).toEqual(['fc_a', 'fc_b']);
     expect(JSON.parse(functionCalls[0].arguments).city).toBe('Berlin');
     expect(outputs.map((item: any) => item.call_id)).toEqual(['call_a', 'call_b']);
     expect(userMessages.map((item: any) => item.content)).toEqual(['Use both tools, then continue.']);
     expect(captured.tools[0]).toMatchObject({ type: 'function', name: 'get_weather' });
+    expect(captured.include).toEqual(['file_search_call.results', 'reasoning.encrypted_content']);
+    expectNoLegacyProviderText(captured);
+  });
+
+  it('captures OpenAI Responses streaming payload with caller include preserved and encrypted reasoning requested', async () => {
+    let captured: any;
+    const openAIConfig = commonConfig();
+    openAIConfig.extraParams = { include: ['file_search_call.results'] };
+    const llm = new OpenAIResponsesLLM(
+      model(LLMProvider.OPENAI, 'gpt-5.1'),
+      'OPENAI_API_KEY',
+      'https://api.openai.com/v1',
+      openAIConfig,
+      'test-openai-key'
+    );
+    (llm as any).client = {
+      responses: {
+        create: async (params: any) => {
+          captured = params;
+          async function* stream() {
+            yield {
+              type: 'response.completed',
+              response: {
+                output: [{ type: 'message', content: [{ type: 'output_text', text: 'ok' }] }],
+                usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 }
+              }
+            };
+          }
+          return stream();
+        }
+      }
+    };
+
+    for await (const _chunk of llm.streamMessages(messagesFor('openai_responses'), null, {
+      tools: commonTools,
+      tool_choice: 'auto'
+    })) {
+      // Exhaust the stream so request construction is exercised.
+    }
+
+    const reasoningItems = captured.input.filter((item: any) => item.type === 'reasoning');
+    const functionCalls = captured.input.filter((item: any) => item.type === 'function_call');
+    expect(captured.stream).toBe(true);
+    expect(reasoningItems).toHaveLength(1);
+    expect(functionCalls.map((item: any) => item.call_id)).toEqual(['call_a', 'call_b']);
+    expect(captured.include).toEqual(['file_search_call.results', 'reasoning.encrypted_content']);
     expectNoLegacyProviderText(captured);
   });
 });

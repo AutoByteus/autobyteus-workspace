@@ -449,9 +449,12 @@ the shared `ToolCallDelta` boundary:
 - `ollama-tool-call-converter.ts`: Ollama `message.tool_calls`.
 
 Converters may attach `native_context` for provider metadata that a stateless
-continuation needs to replay exactly enough provider-native history. The
-normalized call id, name, and parsed arguments are still the authoritative
-tool-invocation fields consumed by the runtime.
+continuation needs to replay exactly enough provider-native history. For OpenAI
+Responses, that context includes the completed `response.output` item sequence
+when available so the renderer can replay provider-required `reasoning` items in
+the original order before matching `function_call_output` items. The normalized
+call id, name, and parsed arguments are still the authoritative tool-invocation
+fields consumed by the runtime.
 
 ---
 

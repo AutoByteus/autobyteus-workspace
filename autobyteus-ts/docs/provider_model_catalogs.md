@@ -45,6 +45,17 @@ request shape. The built-in `claude-opus-4.7` schema exposes adaptive thinking:
 Callers should not pass provider-invalid non-default sampling parameters for
 this model unless Anthropic documents support for them.
 
+### OpenAI Responses Models
+
+Official OpenAI text models such as `gpt-5.5` use the `OpenAIResponsesLLM` path
+and the Responses API input-item history format. For native tool continuation,
+the adapter requests `reasoning.encrypted_content` when tools or prior Responses
+tool/reasoning items are present, merges that request with any caller-supplied
+`include` entries, and replays captured `response.output` items exactly once
+when available. This preserves provider-required reasoning items before their
+matching `function_call` items while still using the normalized final
+`ToolCallSpec` for call id, name, and arguments.
+
 ### DeepSeek V4
 
 DeepSeek V4 models keep using the DeepSeek OpenAI-compatible Chat Completions

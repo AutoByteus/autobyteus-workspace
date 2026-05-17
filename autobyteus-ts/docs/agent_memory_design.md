@@ -1022,8 +1022,17 @@ type ToolPayload = ToolCallPayload | ToolResultPayload;
 
 **OpenAI Responses API**
 
-- Assistant tool-call:
-  - `{"type": "function_call", "id": ..., "call_id": ..., "name": ..., "arguments": ...}`
+- Assistant tool-call continuation:
+  - when `nativeToolCallContext.responseOutputItems` is present, the
+    `OpenAIResponsesRenderer` replays the captured `response.output` sequence
+    exactly once so provider-required `reasoning` items stay before their
+    matching `function_call` items;
+  - replay preserves provider item metadata such as `id`, `status`, `summary`,
+    and `reasoning.encrypted_content`, while the final normalized
+    `ToolCallSpec` remains authoritative for the function-call `call_id`,
+    `name`, and `arguments`;
+  - when no captured OpenAI Responses output sequence exists, the renderer falls
+    back to rendering normalized `function_call` items.
 - Tool result:
   - `{"type": "function_call_output", "call_id": ..., "output": ...}`
 
@@ -1048,7 +1057,10 @@ a batch, such as Gemini and Anthropic, coalesce adjacent matching
 normal assistant messages and assistant `ToolCallPayload` messages. Renderer
 selection decides whether it is provider-visible: generic `OpenAIChatRenderer`
 omits it, while `DeepSeekChatRenderer` replays it on assistant messages for
-DeepSeek thinking-mode continuation.
+DeepSeek thinking-mode continuation. OpenAI Responses reasoning replay is
+provider-native instead: it comes from captured `response.output` reasoning items
+on `ToolCallSpec.nativeToolCallContext`, not from the generic
+`Message.reasoning_content` field.
 
 ---
 
@@ -1071,7 +1083,10 @@ DeepSeek thinking-mode continuation.
     for `api_tool_call`; non-native parser modes keep text history.
   - Streaming converters may preserve provider-native metadata on
     `ToolCallSpec.nativeToolCallContext`, but normalized id/name/arguments remain
-    authoritative when renderers replay history.
+    authoritative when renderers replay history. For OpenAI Responses, the
+    captured completed `response.output` item sequence is the authoritative
+    provider order for prior reasoning/function-call replay; renderers normalize
+    only the matching function-call identity, name, and final arguments.
 
 **Tests**
 

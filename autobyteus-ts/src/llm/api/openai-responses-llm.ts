@@ -14,6 +14,8 @@ type ResponseInputItem = Record<string, unknown>;
 type ResponseOutputItem = Record<string, unknown>;
 type ResponseUsage = Record<string, unknown>;
 
+const REASONING_ENCRYPTED_CONTENT_INCLUDE = 'reasoning.encrypted_content';
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
@@ -128,6 +130,36 @@ export class OpenAIResponsesLLM extends BaseLLM {
     });
   }
 
+  private shouldRequestEncryptedReasoning(
+    formattedMessages: ResponseInputItem[],
+    kwargs: Record<string, unknown>
+  ): boolean {
+    if (Array.isArray(kwargs.tools) && kwargs.tools.length > 0) {
+      return true;
+    }
+
+    return formattedMessages.some((item) =>
+      item.type === 'function_call' ||
+      item.type === 'function_call_output' ||
+      item.type === 'reasoning'
+    );
+  }
+
+  private ensureReasoningEncryptedContentInclude(params: Record<string, unknown>): void {
+    const existingInclude = params.include;
+    const include = Array.isArray(existingInclude)
+      ? [...existingInclude]
+      : typeof existingInclude === 'string'
+        ? [existingInclude]
+        : [];
+
+    if (!include.includes(REASONING_ENCRYPTED_CONTENT_INCLUDE)) {
+      include.push(REASONING_ENCRYPTED_CONTENT_INCLUDE);
+    }
+
+    params.include = include;
+  }
+
   protected async _sendMessagesToLLM(
     messages: Message[],
     kwargs: Record<string, unknown>,
@@ -158,6 +190,9 @@ export class OpenAIResponsesLLM extends BaseLLM {
     }
     if (kwargs.tool_choice !== undefined) {
       params.tool_choice = kwargs.tool_choice;
+    }
+    if (this.shouldRequestEncryptedReasoning(formattedMessages, kwargs)) {
+      this.ensureReasoningEncryptedContentInclude(params);
     }
 
     try {
@@ -206,6 +241,9 @@ export class OpenAIResponsesLLM extends BaseLLM {
     }
     if (kwargs.tool_choice !== undefined) {
       params.tool_choice = kwargs.tool_choice;
+    }
+    if (this.shouldRequestEncryptedReasoning(formattedMessages, kwargs)) {
+      this.ensureReasoningEncryptedContentInclude(params);
     }
 
     const toolCallState = new Map<
