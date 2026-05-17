@@ -1,8 +1,16 @@
 # Delivery Round 16 Latest-Base Integration Blocker
 
-## Status
+## Resolution As Of Delivery Round 35
 
-Delivery is `Blocked` as of `2026-05-17` after API/E2E Round 16 passed at HEAD `b06a74cd fix(team): remove name-based runtime targets`.
+This blocker is `Resolved / Historical` as of `2026-05-17`.
+
+Round 16 latest-base source/test conflicts were resolved by later implementation work, code review, and API/E2E validation. Current delivery resumed at HEAD `54cacc2a59af4020d20b148e070171ddc97731e4 fix(status): remove provider lifecycle residue`, with `origin/personal @ 5f6e8ddec70d365dcb4021e573c37e439e3dc4fb`, branch state `behind 0` / `ahead 29`, code review Round 35 `Pass`, API/E2E Round 17 `Pass`, and a fresh local Electron build `1.3.16`.
+
+The original blocker details below are retained only for audit history and should not be treated as the current delivery state.
+
+## Original Status
+
+Delivery was `Blocked` as of `2026-05-17` after API/E2E Round 16 passed at HEAD `b06a74cd fix(team): remove name-based runtime targets`.
 
 Delivery refreshed the tracked base before rebuilding Electron or finalizing docs. `origin/personal` has advanced to `5f6e8ddec70d365dcb4021e573c37e439e3dc4fb` (`v1.3.16`), so the ticket branch is no longer current with the tracked finalization target.
 

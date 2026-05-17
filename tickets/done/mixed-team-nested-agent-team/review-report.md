@@ -9,12 +9,12 @@
 - Latest Authoritative Round: `24`
 - Branch Reviewed: `codex/mixed-team-nested-agent-team`
 - Worktree Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`; prior full-stack failure notes and delivery integration blocker notes as cumulative context.
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`; prior full-stack failure notes and delivery integration blocker notes as cumulative context.
 - API / E2E Validation Started Yet: `Yes`; API/E2E Round 13 passed product/API/E2E/browser behavior and returned one durable validation fixture update for required code-review recheck before delivery.
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`; API/E2E updated `autobyteus-server-ts/tests/unit/agent-team-execution/team-run.test.ts` only, correcting stale fixture input from `runtimeKind` to canonical `teamBackendKind`.
 
@@ -47,7 +47,7 @@ Reviewed durable validation change:
 
 Reviewed report update:
 
-- `tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- `tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
   - Records Round 13 pass at commit `3fa327bb`, product/browser validation evidence, and the required return through code review because durable validation was updated.
 
 Worktree/product-code check:
@@ -302,17 +302,17 @@ Routing note: This is a pass from the API/E2E validation-code re-review entry po
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
 - Current Review Round: `25`
 - Trigger: Round 16 app-data-migration implementation handoff after commits `66a93d04 fix(team): add legacy team metadata app migration` and `dfade0a1 test(team): align team run context fixture`.
 - Prior Review Round Reviewed: `24`
 - Latest Authoritative Round: `25`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Design Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Design Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet For This New Implementation Slice: `No`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No` for this entry point; this is implementation-owned source plus tests.
 
@@ -523,17 +523,17 @@ Routing note: This is a pass from the implementation-review entry point. API/E2E
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
 - Current Review Round: `26`
 - Trigger: API/E2E Round 14 local fix for `APPDATA-MIG-005` after commit `49470432 fix(history): skip legacy team metadata during index rebuild`.
 - Prior Review Round Reviewed: `25`
 - Latest Authoritative Round: `26`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Design Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Design Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet For This Fix: `Paused pending re-review`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`; this is an implementation-owned source/test local fix.
 
@@ -550,7 +550,7 @@ Reviewed the narrow local fix for the empty-history-index rebuild path:
 
 - `autobyteus-server-ts/src/run-history/services/team-run-history-index-service.ts`
 - `autobyteus-server-ts/tests/unit/run-history/services/team-run-history-index-service.test.ts`
-- updated implementation notes in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
+- updated implementation notes in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
 
 Review focus:
 
@@ -701,17 +701,17 @@ Routing note: This is a pass from the implementation-review entry point. API/E2E
 ## Review Round Meta
 
 - Review Entry Point: `Post-Validation Durable-Validation Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
 - Current Review Round: `27`
 - Trigger: API/E2E Round 15 passed product/API/E2E/browser validation and added repository-resident durable validation for app-data migration clean/degraded historical metadata behavior.
 - Prior Review Round Reviewed: `26`
 - Latest Authoritative Round: `27`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Design Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Design Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `Yes; Round 15 passed`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`
 
@@ -729,7 +729,7 @@ Reviewed repository-resident durable validation added by API/E2E Round 15 and th
 - `autobyteus-server-ts/tests/fixtures/app-data-migrations/team-run-metadata-member-tree/legacy-flat-safe-team-run-metadata.json`
 - `autobyteus-server-ts/tests/fixtures/app-data-migrations/team-run-metadata-member-tree/legacy-flat-unsafe-nested-team-run-metadata.json`
 - `autobyteus-server-ts/tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
 - Screenshot evidence: `/Users/normy/.autobyteus/browser-artifacts/578f22-1778997477577.png`
 
 Review focus:
@@ -886,11 +886,11 @@ Routing note: This is a pass from the API/E2E validation-code re-review entry po
 - Current Review Round: `28`
 - Trigger: Delivery Round 27 latest-base integration merge `c843c5a3` against `origin/personal @ 720f46940841a2b407bb65428095fe5435f5238d`.
 - User Clarification Applied: `No backward compatibility / no legacy runtime paths. Route/path identity must remain authoritative; historical flat metadata handling is allowed only inside the app-data migration subsystem.`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Command API Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
-- App Data Migration Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Command API Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- App Data Migration Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
 - API / E2E Validation Started Yet For This Integrated State: `No; paused pending this review`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No; this is an implementation latest-base integration review`
 
@@ -1065,10 +1065,10 @@ Routing note: API/E2E/full-stack validation and delivery packaging should remain
 - Trigger: Round 28 local fix commit `68e2d15e fix(history): require route-key team member selection`.
 - Prior Finding Rechecked: `CR-ROUND28-001`
 - User Clarification Applied: `No backward compatibility / no legacy runtime paths. Route/path identity must remain authoritative; historical flat metadata handling is allowed only inside the app-data migration subsystem.`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Command API Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Command API Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
 - API / E2E Validation Started Yet For This Integrated State: `No; paused pending this review`
 
 ## Review Scope
@@ -1225,14 +1225,14 @@ Routing note: API/E2E/full-stack validation and delivery packaging should remain
 - Branch Reviewed: `codex/mixed-team-nested-agent-team`
 - HEAD Reviewed: `68cd8750 fix(team): keep config overrides route-keyed`
 - Worktree Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Command API Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
-- App Data Migration Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Command API Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- App Data Migration Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet For This Integrated State: `No; paused pending this fresh review`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No; this is implementation/source review after local fixes`
 
@@ -1433,7 +1433,7 @@ Commands/checks run during Round 30 review:
 
 - Reloaded `code-reviewer` skill, template, and canonical `design-principles.md`.
 - Re-read requirements/design/rework/handoff context listed above.
-- `git status --short` — only code-review-owned `tickets/mixed-team-nested-agent-team/review-report.md` modified.
+- `git status --short` — only code-review-owned `tickets/done/mixed-team-nested-agent-team/review-report.md` modified.
 - `git log --oneline --decorate -8` — confirmed HEAD `68cd8750` after Round 29 fix.
 - Focused command/external-channel backend suite:
   - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/agent-streaming/team-live-message-publisher.test.ts tests/unit/external-channel/runtime/channel-team-run-facade.test.ts tests/integration/agent/agent-team-websocket.integration.test.ts tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts --reporter=dot` — passed, `5` files / `43` tests.
@@ -1514,16 +1514,16 @@ Routing note: API/E2E/full-stack validation and delivery packaging should remain
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
 - Current Review Round: `31`
 - Trigger: Round 30 local fix commit `b06a74cd fix(team): remove name-based runtime targets`, plus user request for a refresh review under the strict no-backward-compatibility/no-legacy rule.
 - Prior Review Round Reviewed: `30`
 - Latest Authoritative Round: `31`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `No` for the current Round 30 local-fix state.
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`; this entry point is implementation-source re-review.
 
@@ -1640,7 +1640,7 @@ Commands/checks run during Round 31 review:
 
 - Reloaded `code-reviewer` skill, `design-principles.md`, and the review report template.
 - Re-read requirements, design spec, command API clean-cut rework note, app-data migration design note, and implementation handoff.
-- `git status --short` — only code-review-owned `tickets/mixed-team-nested-agent-team/review-report.md` modified.
+- `git status --short` — only code-review-owned `tickets/done/mixed-team-nested-agent-team/review-report.md` modified.
 - `git log --oneline --decorate -12` — confirmed HEAD `b06a74cd fix(team): remove name-based runtime targets`.
 - Reviewed `git show --stat --find-renames b06a74cd` and focused diffs for SDK contracts, application orchestration, external-channel binding/dispatch/output, and run-history status code.
 - Focused implementation suite:
@@ -1716,16 +1716,16 @@ Routing note: This is an implementation-review pass, so API/E2E/full-stack valid
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
 - Current Review Round: `32`
 - Trigger: Delivery Round 16 latest-base integration commit `af9a99b8 merge origin/personal into nested mixed team`, integrating `origin/personal @ 5f6e8ddec70d365dcb4021e573c37e439e3dc4fb` / `v1.3.16`.
 - Prior Review Round Reviewed: `31`
 - Latest Authoritative Round: `32`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `No` for the current latest-base integration state.
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`; this entry point is implementation-source latest-base integration review.
 
@@ -1942,12 +1942,12 @@ Routing note: API/E2E/full-stack validation and delivery packaging should remain
 - Trigger: Round 32 local-fix commit `7ce0ea49 fix(status): reject removed lifecycle tokens`.
 - Prior Review Round Reviewed: `32`
 - Latest Authoritative Round: `33`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Command API Clean-Cut Design Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Command API Clean-Cut Design Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
 - API / E2E Validation Started Yet: `No` for this post-latest-base local-fix state.
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`; this is implementation-source local-fix re-review.
 
@@ -2114,3 +2114,933 @@ Routing note: API/E2E/full-stack validation and delivery packaging should remain
 - Review Decision: `Fail — Local Fix Required`
 - Score Summary: `8.7 / 10` (`87 / 100`) for Round 33 local-fix re-review.
 - Notes: The shared backend status normalizer is fixed, but active provider source still retains removed `interrupting` / `shutting_down` lifecycle-token dead code. Remove it before API/E2E resumes.
+
+---
+
+# Review Report — Round 34 Provider Status Local-Fix Re-Review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Current Review Round: `34`
+- Trigger: Round 33 local-fix commit `54cacc2a fix(status): remove provider lifecycle residue`.
+- Prior Review Round Reviewed: `33`
+- Latest Authoritative Round: `34`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- App-Data Migration Design Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
+- Command API Clean-Cut Design Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- API / E2E Validation Started Yet: `No` for this post-latest-base local-fix state.
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`; this is implementation-source local-fix re-review.
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 32 | Latest-base merge `af9a99b8` | N/A | `CR-ROUND32-001` | Fail — Local Fix Required | No | Shared backend status normalizer accepted removed lifecycle tokens. |
+| 33 | Local fix `7ce0ea49` | `CR-ROUND32-001` | Same finding partially unresolved | Fail — Local Fix Required | No | Shared normalizer fixed, but provider projector retained `interrupting` / `shutting_down` residue. |
+| 34 | Local fix `54cacc2a` | `CR-ROUND32-001` / Round 33 residue | None | Pass | Yes | Provider lifecycle residue removed; no active status implementation retains removed tokens. |
+
+## Review Scope
+
+Round 34 re-reviewed the narrow status cleanup plus directly related tests:
+
+- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts`
+- `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts`
+- `autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts`
+- Backend status projector and team aggregation tests.
+- Frontend runtime status normalization test alignment.
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 32/33 | `CR-ROUND32-001` | High / Medium-High follow-up | Resolved | `normalizeAgentApiStatus(...)` remains canonical/current-only. `autobyteus-status-projector.ts` no longer has `LOCKED_RUNNING_STATUSES`, local token normalization, or `interrupting` / `shutting_down` branches. Negative tests now include `interrupting` and `shutting_down` for backend normalizer, provider projector, and team aggregation. | No remaining blocker. |
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by implementation | Pass | The implementation now preserves the clean-cut no-legacy status contract after latest-base integration. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Status spine is now `provider/current snapshot -> provider projector -> shared canonical payload -> team aggregation/live stream`, with no removed-token compatibility sink. | None. |
+| Ownership boundary preservation and clarity | Pass | Shared domain status normalization owns canonical/current API status only; provider projectors no longer retain stale lifecycle-token exceptions. | None. |
+| Off-spine concern clarity | Pass | Provider projectors adapt current provider status shape and defer canonical mapping to the shared normalizer. | None. |
+| Reusable owned structures / shared model tightness | Pass | `AgentApiStatus` remains a tight five-value public API status model with only current persisted `active` / `terminated` translations. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The AutoByteus projector now only computes inactive override and `can_interrupt` from canonical `running` plus active-turn evidence. | None. |
+| Interface/API/query/command clarity | Pass | No command/route-path identity changes or regressions were introduced by this fix. | None. |
+| Patch-on-patch complexity control | Pass | The residual dead compatibility branch was removed rather than patched around. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No `LOCKED_RUNNING_STATUSES`, `interrupting`, or `shutting_down` residue remains in active status implementation source. | None. |
+| Test quality is acceptable for changed behavior | Pass | Tests cover canonical/current status acceptance and removed lifecycle-token fallback, including provider and aggregate paths. | None. |
+| Validation readiness for next workflow stage | Pass | Focused tests, typecheck, Prisma validate, localization audit, diff checks, conflict scan, and no-legacy status scans passed. | API/E2E/full-stack validation can resume. |
+| No backward-compatibility mechanisms / no legacy retention | Pass | Removed status tokens appear only in negative regressions, not active provider/shared/team status implementation. | None. |
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.4`
+- Overall score (`/100`): `94`
+- Score calculation note: Pass. Remaining risks are validation/runtime-environment risks, not source-review blockers.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | --- | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Status projection and aggregation flow is now canonical and easy to trace. | Full live API/E2E still has not rerun after latest-base status integration. | API/E2E should validate live status/browser behavior. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Shared normalizer and provider projector roles are clean. | None blocking. | Keep future provider-specific mappings current-only and tested. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Command identity remains route/path-only; status payload vocabulary is canonical. | None blocking. | API/E2E should exercise both status and command behavior together. |
+| `4` | `Separation of Concerns and File Placement` | 9.4 | Provider projector, shared payload model, and aggregation responsibilities are separated. | None blocking. | None. |
+| `5` | `Shared-Structure / Data-Model Tightness` | 9.5 | `AgentApiStatus` and normalizer no longer collect legacy tokens. | None blocking. | None. |
+| `6` | `Naming Quality and Local Readability` | 9.4 | Misleading `LOCKED_RUNNING_STATUSES` naming is gone. | None blocking. | None. |
+| `7` | `Validation Readiness` | 9.2 | Focused executable checks passed. | Full API/E2E/browser validation still needs to resume. | Validate latest integrated state. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.3 | Removed tokens fall back; inactive runtime snapshots and canonical running/initializing/error paths remain covered. | Frontend negative list does not include every backend-only removed token, but implementation rejects unknown tokens by default. | Optional future frontend test expansion only if status token lists are centralized. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Active status implementation scan is clean; removed tokens remain only in negative tests. | Migration-specific legacy handling remains elsewhere by design, isolated to app-data migration. | Maintain isolation. |
+| `10` | `Cleanup Completeness` | 9.3 | Residual provider dead code was deleted. | Several unrelated files in the huge ticket remain near source-size guardrails. | Continue size guard in delivery/API fixes. |
+
+## Findings
+
+No blocking findings remain in Round 34.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Validation Readiness | Ready for API/E2E/full-stack validation | Pass | Code review blockers are resolved. |
+| Tests | Focused status regression quality | Pass | Backend tests cover removed-token fallback for shared normalizer, provider projector, and team aggregation. |
+| Tests | Test maintainability | Pass | Tests assert observable status payload/aggregation behavior rather than private branch details. |
+| Findings clarity | Clear enough for next owner | Pass | No findings remain; validation emphasis is recorded. |
+
+## Verification Evidence
+
+Commands/checks run during Round 34 review:
+
+- Reloaded `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/code-reviewer/SKILL.md` and canonical `design-principles.md`.
+- Confirmed worktree state and HEAD:
+  - `git status --short` — clean before review-report update.
+  - `git branch --show-current` — `codex/mixed-team-nested-agent-team`.
+  - `git rev-parse --short HEAD` — `54cacc2a`.
+- Inspected local-fix diff:
+  - `git show --stat --find-renames 54cacc2a`.
+  - `git show --find-renames --unified=90 54cacc2a -- autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts autobyteus-server-ts/tests/unit/agent-execution/agent-api-status-projectors.test.ts autobyteus-server-ts/tests/unit/agent-team-execution/team-status-aggregation.test.ts autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts`.
+- Inspected current status source/projectors:
+  - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts`.
+  - `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-status-projector.ts`.
+  - `autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-status-projector.ts`.
+  - `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts`.
+  - `autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts`.
+- Focused checks passed:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts --reporter=dot` — `2` files / `15` tests passed.
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts --reporter=dot` — `5` files / `40` tests passed.
+  - `pnpm -C autobyteus-web exec vitest run services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot` — `1` file / `4` tests passed.
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+  - `pnpm -C autobyteus-server-ts exec prisma validate` — passed.
+  - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings.
+  - `git diff --check`, `git diff --cached --check`, and `git diff --check origin/personal...HEAD` — passed.
+- No-legacy scans:
+  - Provider/status scan found no matches for `LOCKED_RUNNING_STATUSES`, `interrupting`, `shutting_down`, or the removed lifecycle-token set in active status implementation files.
+  - Removed lifecycle tokens appear in relevant backend/frontend tests only as negative/fallback regressions.
+- Conflict-marker scan:
+  - Anchored scan over active backend/frontend source/tests/docs paths found no conflict markers.
+- Source-size spot check:
+  - `autobyteus-status-projector.ts`: `33` non-empty lines.
+  - `agent-status-payload.ts`: `60` non-empty lines.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed/integrated status scope | Pass | Active status source accepts canonical/current statuses only. |
+| No legacy old-behavior retention in active status source | Pass | Provider projector residue was removed. |
+| Dead/obsolete code cleanup completeness | Pass | `LOCKED_RUNNING_STATUSES` and local token branch are gone. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None in the current Round 34 status local-fix scope.
+
+## Docs-Impact Verdict
+
+- Docs impact: `No new docs impact expected`.
+- Why: The local fix aligns implementation with the existing canonical status contract and no-legacy rule.
+
+## Classification
+
+- Classification: `Pass`
+- Rationale: The residual provider status cleanup is complete and no new implementation, architecture, or requirement finding remains.
+
+## Recommended Recipient
+
+- `api_e2e_engineer`
+
+Routing note: This is a pass from the implementation-review entry point. API/E2E/full-stack validation should resume from HEAD `54cacc2a` with emphasis on latest-base status UX plus existing nested team route/path behaviors.
+
+## Residual Risks
+
+- Full-stack/API/E2E has not yet rerun after the latest status cleanup. Validation should exercise canonical `initializing`, `running`, `idle`, `offline`, and error/status aggregation behavior in addition to nested route/path command flows.
+- If future provider-native status vocabulary changes, add explicit current-provider adapter tests rather than broadening the shared status normalizer.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass — Ready for API/E2E Validation`
+- Score Summary: `9.4 / 10` (`94 / 100`) for Round 34 local-fix re-review.
+- Notes: `CR-ROUND32-001` is resolved. API/E2E/full-stack validation may resume from current HEAD `54cacc2a`.
+
+---
+
+# Review Report — Round 35 API/E2E Durable Validation-Code Re-Review
+
+## Review Round Meta
+
+- Review Entry Point: `API/E2E Validation-Code Re-Review`
+- Current Review Round: `35`
+- Trigger: API/E2E Round 17 pass at HEAD `54cacc2a fix(status): remove provider lifecycle residue`, with repository-resident durable validation update.
+- Prior Review Round Reviewed: `34`
+- Latest Authoritative Round: `35`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- App-Data Migration Design Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
+- Command API Clean-Cut Design Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- API/E2E Validation Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts`
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 34 | Provider status local fix `54cacc2a` | `CR-ROUND32-001` | None | Pass | No | API/E2E resumed. |
+| 35 | API/E2E Round 17 durable validation update | Round 34 no open findings; validation-code staleness around removed status tokens | None | Pass | Yes | Durable validation was updated to canonical status and current source identity expectations. |
+
+## Review Scope
+
+This re-review is intentionally narrow because the entry point is API/E2E-owned durable validation code:
+
+- Changed repository-resident validation:
+  - `autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts`
+- Updated validation report:
+  - `tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- Directly related current implementation context:
+  - `agent-status-payload.ts`
+  - `autobyteus-status-projector.ts`
+  - `team-status-aggregation.ts`
+  - `runtimeStatusNormalization.ts`
+
+No production/source implementation files were changed by API/E2E in this round.
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 32/33 | `CR-ROUND32-001` | High / Medium-High | Still resolved | Active provider/shared/team status implementation scans remain clean for removed lifecycle-token mappings. The touched durable validation now uses canonical `initializing` instead of removed `BOOTSTRAPPING` / `STARTING`. | No action. |
+| 34 | No open findings | N/A | N/A | Round 34 was a pass. | This review only checks API/E2E durable validation changes. |
+
+## Validation-Code Review Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Durable validation matches the current canonical status contract | Pass | The changed integration test now uses `status: "initializing"` for startup/live initializing paths instead of removed `BOOTSTRAPPING` / `STARTING`. | None. |
+| Durable validation does not reintroduce legacy compatibility expectations | Pass | Touched test has no `BOOTSTRAPPING`, `STARTING`, `interrupting`, `shutting_down`, or other removed-token positive expectations. Removed lifecycle tokens appear only in negative unit/frontend tests elsewhere. | None. |
+| Durable validation asserts current live event identity shape | Pass | Live team/member status assertions include `source_path: []` where the current mapper emits root source identity for source-less test events. | None. |
+| Durable validation remains behavior-oriented | Pass | The integration test exercises real WebSocket messages through Fastify/WebSocket handlers rather than private mapper internals. | None. |
+| Validation report accurately records the repository-resident update and pause reason | Pass | `api-e2e-validation-report.md` marks Round 17 as pass with validation-code re-review required and identifies the changed integration test. | None. |
+| No production code changed during API/E2E | Pass | `git diff --stat` shows only the integration test, API/E2E report, and code-review report modified. | None. |
+| No backward-compatibility / no legacy retention in validation update | Pass | The durable validation change removed stale legacy-token expectations rather than preserving them. | None. |
+| Delivery readiness after validation-code re-review | Pass | Validation-code re-review passed; delivery can resume with the cumulative package. | None. |
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `95`
+- Score calculation note: This is a narrow validation-code re-review. The score reflects durable validation correctness and maintainability, not a full implementation re-review.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | --- | --- | --- | --- |
+| `1` | `Validation-Code Alignment With Current Design` | 9.6 | The updated integration test matches canonical status and source identity behavior. | None blocking. | Keep stale removed-token probes as negative tests only. |
+| `2` | `No Legacy / No Backward Compatibility` | 9.6 | Removed startup lifecycle tokens were eliminated from positive WebSocket validation. | Frontend negative status list is not identical to backend list, but touched durable test is clean. | Optional future centralization if status-token negative lists grow. |
+| `3` | `Behavioral Coverage Quality` | 9.5 | Test covers real single-agent and team WebSocket snapshots/live status events. | It still uses fake run/event streams, which is appropriate for integration contract scope. | None. |
+| `4` | `Source Identity Coverage` | 9.4 | Live source identity assertions now include `source_path: []`. | Snapshot status messages remain source-less by design in the current test shape. | API/E2E can add deeper nested source-path status coverage if a future product bug appears. |
+| `5` | `Report Quality / Evidence` | 9.5 | Validation report clearly records the stale-test failure, correction, commands, and pass result. | Long report, but appropriate for this ticket's history. | None. |
+| `6` | `Delivery Readiness` | 9.4 | Focused tests/static checks passed and no implementation source changed. | Delivery still needs its own integrated-state/package checks. | Delivery should resume final packaging/docs checks. |
+
+## Findings
+
+No blocking findings were found in Round 35.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Delivery readiness | Ready for delivery workflow to resume | Pass | Validation-code re-review passed. |
+| Test quality | Durable validation code quality is acceptable | Pass | The integration test now asserts current canonical status and live source identity. |
+| Test maintainability | Acceptable | Pass | The updates are localized and remove stale assumptions instead of adding compatibility branches. |
+| Findings clarity | Clear enough for next owner | Pass | No findings remain. |
+
+## Verification Evidence
+
+Commands/checks run during Round 35 review:
+
+- Reloaded `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/code-reviewer/SKILL.md` and canonical `design-principles.md`.
+- Confirmed worktree state and HEAD:
+  - `git status --short` showed API/E2E changes to `agent-status-websocket.integration.test.ts` and `api-e2e-validation-report.md`, plus this review report.
+  - `git branch --show-current` — `codex/mixed-team-nested-agent-team`.
+  - `git rev-parse --short HEAD` — `54cacc2a`.
+- Inspected validation-code/report diff:
+  - `git diff --stat`.
+  - `git diff -- autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`.
+- Inspected current test context around the changed WebSocket status assertions.
+- Inspected current mapper behavior in `team-run-event-websocket-message-mapper.ts` for `source_path` projection.
+- Focused tests/checks run and passed:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts --reporter=dot` — `2` files / `15` tests passed.
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts --reporter=dot` — `5` files / `40` tests passed.
+  - `pnpm -C autobyteus-web exec vitest run services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot` — `1` file / `4` tests passed.
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent/agent-status-websocket.integration.test.ts --reporter=dot` — `1` file / `9` tests passed.
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+  - `pnpm -C autobyteus-server-ts exec prisma validate` — passed.
+  - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings.
+  - `git diff --check`, `git diff --cached --check`, and `git diff --check origin/personal...HEAD` — passed.
+- Scans:
+  - Provider/status active implementation no-legacy scan — no matches for removed lifecycle status tokens or `LOCKED_RUNNING_STATUSES` in active status implementation files.
+  - Touched durable integration test scan — no stale `BOOTSTRAPPING` / `STARTING` or removed positive lifecycle-token expectations.
+  - Conflict marker scan over active backend/frontend source/tests/docs paths — clean.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms introduced by validation update | Pass | The test was updated away from removed lifecycle tokens. |
+| No legacy old-behavior retention in durable validation | Pass | The stale positive `BOOTSTRAPPING` / `STARTING` assumptions are gone. |
+| Dead/obsolete validation expectations removed | Pass | The updated WebSocket integration test asserts canonical `initializing` and `source_path` identity. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None in the current Round 35 validation-code re-review scope.
+
+## Docs-Impact Verdict
+
+- Docs impact: `No new docs impact from code review`.
+- Why: API/E2E report already records the validation update. Delivery can decide whether final handoff/docs should mention the latest status validation evidence.
+
+## Classification
+
+- Classification: `Pass`
+- Rationale: API/E2E-owned durable validation code was updated correctly and no new product/source implementation issue was introduced.
+
+## Recommended Recipient
+
+- `delivery_engineer`
+
+Routing note: This is a pass from the API/E2E validation-code re-review entry point. Delivery can resume with the cumulative package.
+
+## Residual Risks
+
+- Delivery should still run its integrated-state checks and packaging/docs verification from the current branch state, including the uncommitted validation/report artifacts that need to be incorporated according to delivery workflow.
+- If future status tokens are added, they should be treated as current canonical/provider-native behavior with explicit tests, not by broadening shared fallback compatibility.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass — Ready for Delivery`
+- Score Summary: `9.5 / 10` (`95 / 100`) for Round 35 validation-code re-review.
+- Notes: API/E2E Round 17 durable validation update is accepted. Delivery can resume from HEAD `54cacc2a` plus the current validation/report artifacts.
+
+---
+
+# Review Report — Round 36 Backend Status Source-of-Truth Implementation Review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Current Review Round: `36`
+- Trigger: Implementation commit `def22234 fix(status): make backend startup status authoritative`, implementing the Round 36 backend-status source-of-truth design correction.
+- Prior Review Round Reviewed: `35`
+- Latest Authoritative Round: `36`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Round 36 Design Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/round36-backend-status-source-of-truth-design-rework-note.md`
+- Superseded Round 35 Design Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/round35-initializing-status-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- API / E2E Validation Started Yet For This Implementation Round: `No`
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 35 | API/E2E Round 17 durable validation update | `CR-ROUND32-001` remained resolved | None | Pass | No | Delivery could resume from HEAD `54cacc2a`. |
+| 36 | Backend status source-of-truth implementation `def22234` | Round 35 had no open implementation findings | None | Pass | Yes | Backend/runtime now owns canonical `initializing`; frontend keeps only pending UX state. |
+
+## Review Scope
+
+This was a refresh implementation review of the Round 36 backend-status source-of-truth correction, with focused re-checks against the existing no-legacy rule and latest-base status integration pressure.
+
+Reviewed implementation areas:
+
+- Backend runtime status ownership:
+  - `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts`
+  - `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts`
+  - provider status projectors for AutoByteus, Codex, and Claude.
+- Team/member status snapshots and route/path identity:
+  - `autobyteus-server-ts/src/agent-team-execution/backends/**`
+  - `autobyteus-server-ts/src/services/agent-streaming/team-runtime-status-snapshot-service.ts`
+- Frontend status ownership separation:
+  - `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts`
+  - `autobyteus-web/services/runSubmission/localUserSubmission.ts`
+  - `autobyteus-web/stores/agentRunStore.ts`
+  - `autobyteus-web/stores/agentTeamRunStore.ts`
+  - `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
+  - `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts`
+  - hydration/recovery paths that preserve live backend status against stale history snapshots.
+- Focused tests and validation readiness for status snapshots/events, provider-edge canonicalization, frontend no-local-status-authorship, and route/path team status routing.
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 32/33 | `CR-ROUND32-001` | High / Medium-High | Still resolved in shared/public status normalizers | `normalizeAgentApiStatus(...)` still accepts only canonical/current persisted statuses; frontend `runtimeStatusNormalization.ts` rejects raw startup/removed lifecycle tokens. | Round 36 intentionally reintroduces provider-edge startup-token canonicalization only inside provider projectors/team aggregation, not public/frontend status API. |
+| 34/35 | No open findings | N/A | N/A | Previous latest authoritative result was pass. | No prior unresolved blocker to carry forward. |
+
+## Source File Size And Structure Audit
+
+Changed non-test TS/Vue implementation files in `54cacc2a..def22234` were checked. No changed implementation source file exceeds the `500` non-empty-line hard limit.
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | 491 | Pass | Watch | Existing large hydration owner; Round 36 changes are status-preservation related and within owner. | Pass | Accept with guardrail pressure | Keep future changes split/extracted. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-manager.ts` | 483 | Pass | Watch | Team manager still owns Codex member lifecycle/status bridging. | Pass | Accept with guardrail pressure | Keep future changes small. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-team-manager.ts` | 478 | Pass | Watch | Team manager still owns Claude member lifecycle/status bridging. | Pass | Accept with guardrail pressure | Keep future changes small. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | 470 | Pass | Watch | Native AutoByteus team adapter remains cohesive but large. | Pass | Accept with guardrail pressure | Keep adapter-only provider terminology isolated. |
+| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` | 457 | Pass | Watch | Streaming facade still owns dispatch/routing; Round 36 removes status repair and routes structural status by route/path. | Pass | Accept with guardrail pressure | Split if additional routing concerns are added. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts` | 455 | Pass | Watch | Mixed manager owns aggregate status and member handle orchestration. | Pass | Accept with guardrail pressure | Keep future subteam logic in handles/owned helpers. |
+| `autobyteus-web/stores/agentTeamRunStore.ts` | 429 | Pass | Watch | Store owns team send/connect UI flow; local status authorship was removed. | Pass | Accept | None now. |
+| `autobyteus-web/stores/agentRunStore.ts` | 357 | Pass | Watch | Store owns single-agent send/connect UI flow; local initializing mutation was removed. | Pass | Accept | None now. |
+| Other changed non-test TS/Vue files | 6–295 | Pass | Pass | Responsibilities remain aligned with existing owners. | Pass | Accept | None. |
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Round 36 note correctly reclassified the issue as mixed status authorship / authoritative-boundary problem and superseded the frontend guard posture. Implementation removes frontend canonical `initializing` authorship. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Backend accepted-send spine now runs through `AgentRun.postUserMessage(...)` / `TeamRun.postMessage(...)` -> backend-owned status event/snapshot -> stream payload -> frontend status renderer. | None. |
+| Ownership boundary preservation and clarity | Pass | Backend runtime wrapper owns accepted-startup canonical status; provider projectors own provider-native token mapping; frontend owns pending UX only. | None. |
+| Off-spine concern clarity | Pass | Snapshot service, provider projectors, and frontend hydration preservation serve their owning runtime/streaming spines without becoming alternate status authorities. | None. |
+| Existing capability/subsystem reuse check | Pass | Implementation reused `AgentRun`, `TeamRun`, provider projectors, `TeamRuntimeStatusSnapshotService`, and `agentRuntimeStatusState` instead of introducing parallel status helpers. | None. |
+| Reusable owned structures check | Pass | `AgentApiStatus`, `buildAgentStatusPayload(...)`, provider projectors, and team aggregation remain the reusable status-owned structures. | None. |
+| Shared-structure/data-model tightness check | Pass | Public status domain remains tight: `offline | initializing | idle | running | error`; raw provider startup tokens are not added to public/frontend normalizers. | None. |
+| Repeated coordination ownership check | Pass | Startup canonicalization policy has two clear owners: provider-edge projectors for raw provider startup tokens, and `AgentRun`/`TeamRun` for accepted-startup snapshots. | None. |
+| Empty indirection check | Pass | New/changed paths own translation or lifecycle state; no pass-through-only layer was added. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Frontend submission code only mutates pending UX and optimistic messages; status handlers apply backend events. | None. |
+| Ownership-driven dependency check | Pass | No frontend caller bypasses backend status by writing canonical `initializing`; stream dispatch uses route/path identity. | None. |
+| Authoritative Boundary Rule check | Pass | Canonical runtime status now depends on the backend/runtime boundary, not both backend status and frontend optimistic inference. | None. |
+| File placement check | Pass | Backend status code remains under runtime/domain/provider/status areas; frontend state handling remains under run status/submission/streaming owners. | None. |
+| Flat-vs-over-split layout judgment | Pass | Layout is readable for this patch. Several files remain near the guardrail, but no new artificial fragmentation or god-file expansion was introduced. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Public command identity remains route/path-only; public status vocabulary remains canonical. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Names such as `applyLiveAgentStatusEvent`, `applyMemberOrHistoryStatusSnapshot`, and provider projector names match their responsibilities. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Provider startup-token sets are intentionally provider-edge and small; shared public normalizer is not duplicated with compatibility maps. | None. |
+| Patch-on-patch complexity control | Pass | Round 36 removes the Round 35 frontend-authoring posture instead of adding another guard layer. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Removed frontend accepted-startup helpers and live team-member activity status repair; no active matches in focused scans. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Backend tests cover accepted-startup snapshots and superseding running events; frontend tests cover no local canonical status mutation and route/path structural status routing. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests assert observable status snapshots/events and store state, not private implementation flags. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Focused backend/frontend tests, typecheck, Prisma validation, localization audit, diff checks, scans, and conflict-marker scan passed. | API/E2E/full-stack validation should resume. |
+| No backward-compatibility mechanisms | Pass | Provider startup-token mapping is adapter canonicalization for provider-native startup states, not public compatibility. Shared/frontend normalizers do not accept raw startup or removed lifecycle tokens. | None. |
+| No legacy code retention for old behavior | Pass | No frontend accepted-startup canonical-status authoring remains. Removed lifecycle tokens are absent from active status implementation except provider-edge startup token mapping approved by Round 36. | None. |
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.3`
+- Overall score (`/100`): `93`
+- Score calculation note: Simple average across the ten mandatory categories, with runtime validation and source-size pressure as the main drag. Review decision follows findings and mandatory checks, not the average alone.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | The corrected spine is clear: accepted backend operation -> backend-owned status snapshot/event -> streaming route/path payload -> frontend render. | Full browser/API/E2E still needs to prove the live product timing. | API/E2E should validate offline/idle -> initializing -> running transitions in real runtime/browser flows. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.4 | Frontend no longer writes canonical `initializing`; runtime/backend and provider adapters own lifecycle status. | Accepted-startup override supersession is event-driven through active subscriptions; production managers attach subscribers, but this remains a lifecycle detail to validate. | API/E2E should cover reconnect/background paths. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.5 | Status vocabulary stays canonical and command identity remains route/path-only. | Native AutoByteus adapter still has provider-name terminology internally because the lower-level native API is name-based. | Keep name terminology isolated to provider adapter boundaries only. |
+| `4` | `Separation of Concerns and File Placement` | 9.2 | Submission, status application, provider projection, and stream routing are separated. | Several owned files remain close to the 500-line guardrail. | Future additions should extract before these files exceed the guardrail. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | `AgentApiStatus` and payload builders remain tight; route/path identity is carried in member snapshots. | Provider startup token sets are repeated per provider by design rather than centralized, which is acceptable but should stay small. | Centralize only if providers converge further without loosening public status. |
+| `6` | `Naming Quality and Local Readability` | 9.3 | Names generally match concerns and the superseded frontend helper names were removed. | Some legacy provider/native terminology remains in AutoByteus adapter signatures. | Keep comments/tests clear that those are provider adapter terms, not public identity. |
+| `7` | `Validation Readiness` | 9.2 | Focused test suites and static checks passed. | Full API/E2E/browser validation is still pending after this implementation round. | API/E2E should run live nested/team status scenarios. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.1 | Tests cover accepted startup, status supersession, provider startup canonicalization, and stale history preservation. | Background/no-subscriber/reconnect timing is not deeply exercised by focused tests, although managers attach listeners in production. | API/E2E should validate reconnect and non-focused nested team status behavior. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | Public/frontend status no longer accepts raw startup or removed lifecycle tokens; old frontend startup authorship is gone. | Provider-edge startup token canonicalization must remain strictly internal. | Do not broaden shared/frontend status normalizers. |
+| `10` | `Cleanup Completeness` | 9.2 | Obsolete frontend accepted-startup helpers and team activity status repair path are removed. | Historical ticket/test artifacts still contain old terminology, but active changed scope is clean. | Continue cleaning stale tests opportunistically when those suites are touched. |
+
+## Findings
+
+No blocking findings were found in Round 36.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Validation Readiness | Ready for API/E2E/full-stack validation | Pass | Implementation review passes; API/E2E should resume from HEAD `def22234`. |
+| Tests | Test quality is acceptable | Pass | Tests cover backend accepted-startup snapshots/events and frontend no-local-status-authorship. |
+| Tests | Test maintainability is acceptable | Pass | Tests use observable behavior and current canonical status vocabulary. |
+| Findings clarity | Clear enough for next owner | Pass | No implementation findings remain; residual validation focus is documented. |
+
+## Verification Evidence
+
+Commands/checks run during Round 36 review:
+
+- Reloaded code-review criteria:
+  - `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/code-reviewer/SKILL.md`
+  - `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/code-reviewer/design-principles.md`
+  - review report template.
+- Confirmed current state:
+  - `git branch --show-current` -> `codex/mixed-team-nested-agent-team`.
+  - `git rev-parse --short HEAD` -> `def22234`.
+  - `git show --stat --oneline --decorate --no-renames HEAD`.
+- Reviewed artifacts:
+  - Round 36 design rework note.
+  - Superseded Round 35 design note.
+  - Updated implementation handoff.
+  - Prior review report Round 35.
+- Inspected key source paths:
+  - `agent-run.ts`, `team-run.ts`, `agent-status-payload.ts`, provider status projectors, `team-status-aggregation.ts`, backend team managers/handles, `TeamStreamingService.ts`, `agentRuntimeStatusState.ts`, `localUserSubmission.ts`, frontend stores/hydration.
+- Focused tests passed:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/integration/agent/agent-status-websocket.integration.test.ts --reporter=dot` — `5` files / `33` tests passed.
+  - `pnpm -C autobyteus-web exec vitest run services/runSubmission/__tests__/localUserSubmission.spec.ts services/runStatus/__tests__/agentRuntimeStatusState.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot` — `6` files / `59` tests passed.
+- Static checks passed:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+  - `pnpm -C autobyteus-server-ts exec prisma validate` — passed.
+  - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings.
+  - `git diff --check`, `git diff --cached --check`, and `git diff --check origin/personal...HEAD` — passed.
+- No-legacy/status scans:
+  - Frontend accepted-startup helper scan found no matches for removed frontend canonical status-authoring helpers.
+  - Frontend raw runtime lifecycle token scan found no agent/team runtime-status implementation matches; matches were unrelated server/app startup UI terminology.
+  - Backend removed non-startup lifecycle residue scan found no active source matches.
+  - Backend provider startup token scan found approved provider-edge/team-aggregation locations only.
+  - Focused route/name command identity scan found expected explicit rejection keys / provider-native adapter terminology only, not public command authority.
+- Conflict-marker scan over active backend/frontend source/tests/docs paths — clean.
+- Changed source size audit over `54cacc2a..def22234` — `29` changed non-test TS/Vue source files checked; no file exceeded `500` non-empty lines.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | The public/frontend status surface remains clean-cut; provider startup token mapping is internal adapter canonicalization, not public compatibility. |
+| No legacy old-behavior retention in changed scope | Pass | Removed frontend accepted-startup canonical status authorship is gone; removed lifecycle tokens remain absent from active public status implementation. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete frontend startup helpers and team live activity status repair path were removed. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None in the current Round 36 changed implementation scope.
+
+## Docs-Impact Verdict
+
+- Docs impact: `No additional code-review-driven docs update required before API/E2E`.
+- Why: The implementation handoff and Round 36 design note already record the corrected backend source-of-truth posture. Delivery can decide final user-facing docs impact after validation.
+- Files or areas likely affected if delivery chooses to mention it: final handoff/release notes status behavior summary.
+
+## Classification
+
+- Classification: `Pass`
+- Rationale: The implementation preserves the Round 36 corrected design, removes frontend canonical `initializing` authorship, keeps provider startup-token mapping isolated to backend adapter/aggregation boundaries, and passes focused executable/static checks.
+
+## Recommended Recipient
+
+- `api_e2e_engineer`
+
+Routing note: This is a pass from the implementation-review entry point. API/E2E/full-stack validation should resume from HEAD `def22234`, with emphasis on live/browser status timing, nested route/path status identity, background/reconnect snapshots, and ensuring provider raw startup tokens do not leak to public/frontend status APIs.
+
+## Residual Risks
+
+- Full API/E2E/browser validation has not yet rerun after Round 36. It should exercise individual and nested team status transitions from accepted input through provider startup/running/settle states.
+- `AgentRun` / `TeamRun` accepted-startup overrides are superseded by backend events observed through active subscriptions; production managers attach subscriptions on registration, but validation should still cover reconnect/background timing.
+- Provider-native AutoByteus team APIs still require member-name terminology internally at the adapter boundary. This is acceptable only as provider adapter translation and must not become public command/identity authority again.
+- Several files remain near the source-size guardrail; future changes should extract owned helpers before crossing the hard limit.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass — Ready for API/E2E Validation`
+- Score Summary: `9.3 / 10` (`93 / 100`) for Round 36 implementation review.
+- Notes: API/E2E/full-stack validation may resume from current HEAD `def22234` plus the current ticket/report artifacts.
+
+---
+
+# Review Report — Round 37 Status Active-Turn Local Fix Implementation Review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Current Review Round: `37`
+- Trigger: Round 18 implementation local fix `902274e5 fix(status): preserve running during active turns` for `STATUS-ROUND36-001` after live evidence showed `initializing -> idle` while AutoByteus was actively streaming and no public `running` status appeared.
+- Prior Review Round Reviewed: `36`
+- Latest Authoritative Round: `37`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/round36-live-status-validation-evidence.json`
+- API / E2E Validation Started Yet: `No` for this Round 18 local fix after implementation.
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`.
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `36` | Backend status source-of-truth implementation at `def22234` | No unresolved blocking findings. | No. | `Pass` | No | API/E2E was asked to validate live runtime timing. |
+| `37` | Round 18 local fix `902274e5` for `STATUS-ROUND36-001` | Round 36 residual live-status timing risk rechecked against new converter/lifecycle processor implementation. | No. | `Pass` | Yes | Ready for API/E2E re-validation from `902274e5`. |
+
+## Review Scope
+
+Reviewed the Round 18 local fix in the context of the Round 36 backend-status-source-of-truth design and the no-backward-compatibility rule:
+
+- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts`
+- `autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-processor.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts`
+- the focused unit/integration tests added or updated for those paths
+- prior Round 36 report, Round 36 design rework note, implementation handoff, and live failure evidence
+
+This review focused on whether the fix preserves backend/runtime status authority, avoids frontend inference, avoids public legacy lifecycle tokens, keeps AutoByteus provider/native name terminology isolated to the adapter boundary, and is ready for renewed API/E2E/full-stack validation.
+
+## Prior Findings Resolution Check (Mandatory On Round >1)
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `36` | `STATUS-ROUND36-001` validation blocker / residual risk | High live-behavior risk, not a code-review blocking finding in Round 36 | Addressed by current local fix; needs live API/E2E proof | `AutoByteusStreamEventConverter` now keeps active-turn state; `LifecycleStatusEventProcessor` derives backend-owned `running`/`idle` when explicit status events are absent; AutoByteus team processor caches converters per member run. Focused tests passed. | API/E2E should rerun the original live LM Studio/browser status scenario to prove behavior outside unit/integration fixtures. |
+
+## Source File Size And Structure Audit (If Applicable)
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts` | `371` | Pass | Monitor | Owns AutoByteus team-event rebroadcast adaptation; converter cache is part of that adapter concern. | Correct AutoByteus team backend adapter path. | Pass with size pressure | Future additions should extract before the file approaches the hard limit. |
+| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts` | `177` | Pass | Pass | Owns native AutoByteus stream event -> canonical agent event/status conversion. | Correct AutoByteus event adapter path. | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-processor.ts` | `102` | Pass | Pass | Owns backend lifecycle-derived status events in the shared event pipeline. | Correct event-processor subsystem path. | Pass | None. |
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The root issue is a backend lifecycle/status invariant gap: provider snapshots could go stale while turn events proved an active backend turn. The fix strengthens the backend adapter/event pipeline rather than the frontend. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Spine is clear: native AutoByteus turn event -> adapter active-turn state -> canonical `AGENT_STATUS running`/derived status -> team rebroadcast route -> frontend consumes backend status. | API/E2E should validate the live runtime spine. |
+| Ownership boundary preservation and clarity | Pass | Status remains backend/runtime authored. The frontend status tests are unchanged and still prove no local accepted-submit canonical status mutation. | None. |
+| Off-spine concern clarity | Pass | Active-turn tracking is a bounded local adapter state; lifecycle-derived status is a shared event-pipeline off-spine concern serving runtime status publication. | None. |
+| Existing capability/subsystem reuse check | Pass | The fix extends existing AutoByteus event converter, default event pipeline, and AutoByteus team event processor instead of adding a parallel status subsystem. | None. |
+| Reusable owned structures check | Pass | `buildAgentStatusPayload` remains the reusable canonical payload builder; no new loose status DTO was introduced. | None. |
+| Shared-structure/data-model tightness check | Pass | Public status remains `offline | initializing | idle | running | error`; active-turn correction produces canonical status only. | None. |
+| Repeated coordination ownership check | Pass | Active-turn stale-status correction is owned in the AutoByteus converter and team processor preserves that converter state per member run; no frontend duplicate policy was added. | None. |
+| Empty indirection check | Pass | New converter cache owns state continuity; it is not pass-through-only. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Converter handles native event canonicalization; lifecycle processor handles derived status when explicit status is absent; team processor handles team rebroadcast state continuity. | None. |
+| Ownership-driven dependency check | Pass | No caller bypasses backend status authority; adapter uses status snapshots only through its injected provider. | None. |
+| Authoritative Boundary Rule check | Pass | Frontend still depends on backend status events/snapshots, not on backend internals or frontend inference. | None. |
+| File placement check | Pass | All changed implementation files are under the existing backend event/status adapter and team backend ownership paths. | None. |
+| Flat-vs-over-split layout judgment | Pass | No unnecessary new folders/layers were added for a narrow lifecycle-state fix. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Public status vocabulary is unchanged and canonical. No public command or WebSocket selector compatibility was added. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `hasActiveTurn`, `getCanonicalStatusPayload`, and `lastLifecycleStatusByRunId` communicate their exact responsibilities. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Status construction reuses `buildAgentStatusPayload`; lifecycle evidence sets are local to the processor owner. | None. |
+| Patch-on-patch complexity control | Pass | The fix addresses the live timing hole inside the backend status owners instead of adding a frontend guard or compatibility path. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No old frontend status-authoring helpers were reintroduced; scans found no removed status residue in active backend status paths. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Tests cover converter stale status suppression during active turn, lifecycle-derived running/idle events, and AutoByteus team member rebroadcast state continuity. | API/E2E must still prove live runtime behavior. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests assert observable canonical events/status payloads rather than private implementation flags. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Focused backend/frontend tests, typecheck, Prisma validation, localization audit, diff checks, no-legacy scans, and size audit passed. | API/E2E should resume. |
+| No backward-compatibility mechanisms | Pass | Mapping stale `idle`/`offline`/`initializing` snapshots to `running` is driven by current turn lifecycle evidence inside the backend adapter, not by accepting legacy public tokens. | Keep raw provider/native tokens isolated to provider projectors only. |
+| No legacy code retention for old behavior | Pass | No frontend canonical status inference or removed lifecycle-token acceptance was reintroduced. Adapter-native member-name references remain provider-boundary translation only, not public identity authority. | None. |
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.2`
+- Overall score (`/100`): `92`
+- Score calculation note: Simple average across the ten mandatory categories. The review decision follows concrete findings and mandatory checks, not the average alone.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.2 | The backend status spine is coherent from native turn lifecycle through canonical event publication. | Full live runtime validation is still pending after this local fix. | API/E2E should replay the original LM Studio scenario and nested team/browser paths. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Backend adapter and event pipeline own the lifecycle correction; frontend remains a consumer. | Converter state is intentionally local and must remain per runtime/member instance. | Keep future status timing fixes in backend/runtime owners. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.3 | Public status and command APIs remain clean-cut and canonical. | AutoByteus native adapter still contains member-name terminology required by the provider boundary. | Keep provider-native names from leaking into public selectors or frontend identity. |
+| `4` | `Separation of Concerns and File Placement` | 9.1 | Responsibilities are split among converter, lifecycle processor, and team processor. | AutoByteus team processor is 371 non-empty lines and remains size-pressure prone. | Extract owned sub-concerns before adding more team adapter behavior. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Canonical payload builder/status type remains tight; no new loose status shape. | Lifecycle evidence sets remain local policy in the processor. | Centralize only if another processor genuinely needs the same policy. |
+| `6` | `Naming Quality and Local Readability` | 9.2 | Names describe status lifecycle behavior clearly. | Existing provider adapter naming includes native `agent_name`/member-name terms. | Continue making comments/reports clear that these are provider-boundary terms only. |
+| `7` | `Validation Readiness` | 9.1 | Focused backend/frontend tests and static checks passed. | No live E2E rerun has happened after `902274e5`. | API/E2E should validate the original failure timeline now includes `running`. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.0 | Active-turn state settles on completion/interruption/error and team rebroadcast caches converter state per member run. | Background/reconnect/no-subscriber timing and multi-member converter-cache lifetimes need live validation. | API/E2E should cover reconnect and nested team member status rebroadcasts. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.3 | No frontend/public legacy status token acceptance or command alias support was added. | Provider startup/native name terminology remains visible in adapter internals. | Keep strict scans in future latest-base integrations. |
+| `10` | `Cleanup Completeness` | 9.2 | No removed frontend status helpers or backend legacy lifecycle residue reappeared. | Historical ticket/test artifacts still contain old terminology outside active implementation. | Clean stale artifacts opportunistically only when those artifacts are in scope. |
+
+## Findings
+
+No blocking findings were found in Round 37.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Validation Readiness | Ready for the next workflow stage (`API / E2E`) | Pass | Implementation review passes; API/E2E should resume from HEAD `902274e5`. |
+| Tests | Test quality is acceptable | Pass | Coverage targets the specific live failure shape: stale non-active snapshots during active turn and status derivation when explicit status is absent. |
+| Tests | Test maintainability is acceptable | Pass | Tests assert public/canonical event outputs, not private flags. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No findings; residual validation focus is documented. |
+
+## Verification Evidence
+
+Commands/checks run during Round 37 review:
+
+- Reloaded code-review criteria and principles:
+  - `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/code-reviewer/SKILL.md`
+  - `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/code-reviewer/design-principles.md`
+  - review report template.
+- Confirmed current state:
+  - `git status --short` showed pre-existing ticket/report artifact edits plus this code-review-owned report update; implementation source is committed at `902274e5`.
+  - `git show --stat --oneline --name-status HEAD` confirmed the Round 18 implementation diff.
+- Reviewed artifacts:
+  - Round 36 backend status source-of-truth design note.
+  - Round 36 live status validation evidence.
+  - Updated implementation handoff.
+  - Prior Round 36 code review report.
+- Inspected key source paths:
+  - `autobyteus-stream-event-converter.ts`
+  - `lifecycle-status-event-processor.ts`
+  - `autobyteus-team-run-event-processor.ts`
+  - directly related status/projector/backend paths for boundary context.
+- Focused backend tests passed:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-event-processor.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/integration/agent/agent-status-websocket.integration.test.ts --reporter=dot` — `8` files / `63` tests passed.
+- Focused frontend status tests passed:
+  - `pnpm -C autobyteus-web exec vitest run services/runSubmission/__tests__/localUserSubmission.spec.ts services/runStatus/__tests__/agentRuntimeStatusState.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot` — `6` files / `59` tests passed.
+- Static checks passed:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - `pnpm -C autobyteus-server-ts exec prisma validate`
+  - `pnpm -C autobyteus-web audit:localization-literals`
+  - `git diff --check`
+  - `git diff --cached --check`
+  - `git diff --check origin/personal...HEAD`
+- No-legacy/status scans:
+  - Frontend accepted-startup helper scan found no matches for `applyAcceptedStartupStatus`, `applyAcceptedTeamMemberStartupStatus`, `applyInitializing`, `applyTeamMemberTerminalCleanup`, `applyLiveTeamMemberRuntimeActivityProjectionRepair`, or `teamMemberNodeStatus` under active frontend services/stores/components/composables/utils.
+  - Backend removed lifecycle residue scan found no active-source matches for `awaiting_llm_response`, `awaiting_tool_approval`, `executing_tool`, `tool_denied`, `shutdown_complete`, `interrupting`, `shutting_down`, `LOCKED_RUNNING_STATUSES`, `processing_user_input`, `processing_tool_result`, `analyzing_llm_response`, or `statusToken` in active backend agent/team/streaming source.
+  - Backend startup token scan found approved provider-edge/team-aggregation startup canonicalization locations only, plus unrelated Codex thread startup infrastructure terminology.
+  - Route/path command no-legacy spot scan found explicit rejection keys and provider-native adapter `targetMemberName` terminology only; no public selector compatibility path was added by this local fix.
+- Changed source size audit over `def22234..902274e5` — `3` changed non-test TS/Vue implementation source files checked; no file exceeded `500` non-empty lines.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | The active-turn correction uses backend turn lifecycle evidence to canonicalize stale snapshots; it does not accept removed lifecycle tokens or introduce public dual-path status behavior. |
+| No legacy old-behavior retention in changed scope | Pass | Frontend status inference remains removed. Removed lifecycle tokens are absent from active implementation paths scanned. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete helper or compatibility branch was reintroduced. Provider-native name terminology remains adapter-only and is not public command identity. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None in the current Round 37 changed implementation scope.
+
+## Docs-Impact Verdict
+
+- Docs impact: `No additional code-review-driven docs update required before API/E2E`.
+- Why: The implementation handoff, Round 36 design note, and validation evidence already capture the status-source-of-truth context and this local fix.
+- Files or areas likely affected: final handoff/release notes can mention backend-owned status timing after API/E2E validates it.
+
+## Classification
+
+- Classification: `Pass`
+- Rationale: The local fix preserves backend/runtime status authority, keeps the frontend out of canonical status authorship, does not add legacy public status tokens or compatibility selectors, and passes focused executable/static/no-legacy checks.
+
+## Recommended Recipient
+
+- `api_e2e_engineer`
+
+Routing note: This is a pass from the implementation-review entry point. API/E2E/full-stack validation should resume from HEAD `902274e5`, specifically rechecking the live AutoByteus/LM Studio timeline that previously showed no `running` status while the turn was actively streaming.
+
+## Residual Risks
+
+- Live API/E2E/browser validation still needs to prove the original `STATUS-ROUND36-001` failure is fixed in a real AutoByteus/LM Studio streaming turn.
+- Multi-member/nested AutoByteus team status rebroadcasts should be validated to ensure converter state stays per member run and no status crosses member boundaries.
+- Reconnect/background/no-subscriber timing remains a runtime validation concern because focused tests exercise unit/integration behavior but not all live stream lifecycle races.
+- AutoByteus native adapter APIs still use provider-native member-name terminology internally; this remains acceptable only as provider-boundary translation and must not leak back into public command or frontend identity authority.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass — Ready for API/E2E Validation`
+- Score Summary: `9.2 / 10` (`92 / 100`) for Round 37 implementation review.
+- Notes: API/E2E/full-stack validation may resume from HEAD `902274e5` with the current cumulative ticket/report artifact package.
+
+---
+
+# Review Report — Round 38 Team/Nested Active Status Local Fix Implementation Review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Current Review Round: `38`
+- Trigger: API/E2E Round 19 local fix `f231d0e2 fix(status): keep team status active for nested turns`, addressing `STATUS-ROUND37-002` and `STATUS-ROUND37-003` from live status validation after Round 37.
+- Prior Review Round Reviewed: `37`
+- Latest Authoritative Round: `38`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/round36-live-status-validation-evidence.json`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/round37-live-status-validation-evidence.json`
+- API / E2E Validation Started Yet: `No` after this Round 19 local fix.
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`.
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `37` | Round 18 local fix `902274e5` for single-agent active-turn status | No blocking code findings; residual live team/nested status risks moved to API/E2E. | No. | `Pass` | No | API/E2E later found team aggregate and nested identity issues. |
+| `38` | Round 19 local fix `f231d0e2` for `STATUS-ROUND37-002` and `STATUS-ROUND37-003` | Rechecked Round 37 residuals against team aggregate status cache and mixed child status identity prefixing. | No. | `Pass` | Yes | Ready for API/E2E re-validation from `f231d0e2`. |
+
+## Review Scope
+
+Reviewed the Round 19 implementation-owned local fix in the context of Round 36/37 backend status source-of-truth behavior and the no-legacy rule:
+
+- `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.ts`
+- focused tests in `autobyteus-team-run-backend.test.ts` and `mixed-team-event-bridge.test.ts`
+- prior Round 37 live validation evidence showing premature team `idle` and nested child status identity gaps
+
+The review focused on whether aggregate `TEAM_STATUS` remains backend-owned and member-status-derived during active turns, whether native AutoByteus team status snapshots are no longer treated as a separate stale authority, whether parent-rooted nested child `AGENT_STATUS` identity is preserved by route/path, and whether the fix avoids frontend inference or public legacy compatibility.
+
+## Prior Findings Resolution Check (Mandatory On Round >1)
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `37` | `STATUS-ROUND37-002` live validation blocker | High live behavior risk | Addressed in implementation; needs live API/E2E proof | `AutoByteusTeamRunBackend` records emitted member `AGENT_STATUS` payloads in a per-member status cache and derives aggregate team status from cached member status plus current snapshots. Native `TEAM_STATUS` events are rewritten through this aggregate derivation boundary. | API/E2E should re-run Professor/Student and nested AutoByteus team scenarios. |
+| `37` | `STATUS-ROUND37-003` live validation blocker | High live identity/routing risk | Addressed in implementation; needs live API/E2E proof | `prefixMixedSubTeamEvent(...)` now prefixes child `AGENT` event payload `memberPath` and `memberRouteKey` in addition to the outer `sourcePath`. | API/E2E should verify parent WebSocket payloads expose `BuildSquad/review_lead`-style nested identity. |
+
+## Source File Size And Structure Audit (If Applicable)
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts` | `500` | Pass, but exactly at hard limit | Monitor | Owns AutoByteus team backend lifecycle/status/event fan-out. The new cache is within that owner, but the file is now at the absolute limit. | Correct backend adapter path. | Pass with hard size pressure | No more implementation logic should be added here without extraction. Future changes should split owned status/event-fanout concerns first. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.ts` | `136` | Pass | Pass | Owns parent-root prefixing for child mixed-team events. | Correct mixed event bridge path. | Pass | None. |
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The root issue was a backend aggregate-status invariant gap plus nested child identity projection gap, both exposed by live validation. The fix strengthens backend owners instead of moving policy to frontend. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Spine: child/member `AGENT_STATUS` -> AutoByteus team backend per-member status cache -> aggregate `TEAM_STATUS` derivation -> WebSocket projection; nested spine: child team event -> mixed bridge prefixing -> parent-rooted WebSocket payload. | API/E2E should validate both live spines. |
+| Ownership boundary preservation and clarity | Pass | Team aggregate status remains backend-owned; frontend remains a status consumer. Mixed event bridge owns parent-root identity normalization for child events. | None. |
+| Off-spine concern clarity | Pass | Per-member status cache is an off-spine concern serving the AutoByteus team backend owner; prefixing remains isolated to the mixed event bridge. | None. |
+| Existing capability/subsystem reuse check | Pass | The fix extends existing AutoByteus team backend and mixed event bridge rather than introducing parallel status/identity systems. | None. |
+| Reusable owned structures check | Pass | `buildAgentStatusPayload`, `deriveTeamApiStatus`, and route-key builders remain the canonical shared structures. | None. |
+| Shared-structure/data-model tightness check | Pass | Public status remains canonical; member identity remains explicit route/path. No new broad optional DTO or compatibility shape was added. | None. |
+| Repeated coordination ownership check | Pass | Aggregate normalization is centralized in `withTeamStatusUpdate(...)` / `getStatusSnapshotForEvents(...)` for AutoByteus team backend fan-out. | None. |
+| Empty indirection check | Pass | The added cache and prefix helper own concrete state/translation concerns. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Status aggregation and event fan-out remain in the AutoByteus team backend; child event prefixing remains in the mixed bridge. | Future AutoByteus backend changes should extract before adding logic due file size. |
+| Ownership-driven dependency check | Pass | No caller bypasses the backend status boundary; native team status events are interpreted through the backend aggregate boundary. | None. |
+| Authoritative Boundary Rule check | Pass | The frontend and WebSocket mapper continue to consume canonical backend route/path/status events; they do not inspect native AutoByteus internals. | None. |
+| File placement check | Pass | Changed files are under their owning backend adapter/bridge folders. | None. |
+| Flat-vs-over-split layout judgment | Pass | No artificial folder split for the small bridge change; however the AutoByteus backend file is now at the hard limit. | Extract on next touch. |
+| Interface/API/query/command/service-method boundary clarity | Pass | No public API shape changed; no command target compatibility was added. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Names such as `lastMemberStatusByRunId`, `applyCachedMemberStatusOverrides`, and `prefixAgentPayload` match responsibilities. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Aggregate status still uses `deriveTeamApiStatus`; status payloads use `buildAgentStatusPayload`. | None. |
+| Patch-on-patch complexity control | Pass | The fix addresses stale backend team snapshots at the owning backend boundary, not by adding frontend repair code. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No removed frontend status helpers or legacy status token branches were reintroduced. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Tests cover stale native team idle suppression while member is running and parent-rooted nested child agent status identity. | API/E2E still needs live proof. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests assert observable team events and prefixed payloads. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Focused backend/frontend tests, typecheck, full backend build, Prisma validate, localization audit, diff checks, scans, and size audit passed. | API/E2E should resume. |
+| No backward-compatibility mechanisms | Pass | Command/selector scans showed only explicit rejection keys; status fix uses current canonical route/path/status fields. | None. |
+| No legacy code retention for old behavior | Pass | Native provider member-name terminology remains isolated inside AutoByteus adapter calls; no public name-target compatibility path was added. | None. |
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.1`
+- Overall score (`/100`): `91`
+- Score calculation note: Simple average across the ten mandatory categories. The review decision follows concrete findings and mandatory checks, not the average alone.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.2 | Team aggregate and nested identity spines are now explicit and backend-owned. | Live API/E2E proof is still pending after this implementation fix. | Re-run the Round 37 failing team/nested scenarios. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.2 | AutoByteus team backend owns aggregate status; mixed bridge owns parent-root child identity. | Status cache lifetime is an internal backend detail that should be validated in reconnect/no-subscriber flows. | Keep cache behavior tied to emitted backend status events and validate settle behavior. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.3 | Public status and selector APIs remain unchanged and canonical. | Provider-native member-name fields remain in adapter internals. | Keep them confined to provider-boundary calls only. |
+| `4` | `Separation of Concerns and File Placement` | 9.0 | Concerns are placed correctly, but `AutoByteusTeamRunBackend.ts` is exactly at the 500-line hard limit. | Future additions would breach the hard guardrail and risk mixed responsibilities. | Extract owned status/fan-out helpers before any further backend logic changes. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | Canonical status payload and route/path identity structures are reused. | Cache is keyed by run id while payloads also carry route/path; this is acceptable for now but should not drift into identity authority. | Consider route-key indexed cache if future behavior requires more status cache work. |
+| `6` | `Naming Quality and Local Readability` | 9.1 | New helper names are understandable. | The 500-line backend file is harder to scan. | Extract before adding more names/branches. |
+| `7` | `Validation Readiness` | 9.1 | Focused tests and static checks passed, including full backend build. | Full live API/E2E remains pending. | API/E2E should repeat Professor/Student, nested mixed child identity, and reconnect cases. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.0 | Tests cover the immediate stale idle and nested identity failures. | Cache settle behavior depends on receiving member idle/offline/error events; no-subscriber/reconnect timing remains a live validation risk. | Validate cache settles after completion/interruption/error in live team runs. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.3 | No public legacy status tokens, frontend inference, or command aliases were reintroduced. | Explicit rejection-key strings still appear by design in parser/orchestration guards. | Keep scans strict on future latest-base merges. |
+| `10` | `Cleanup Completeness` | 9.1 | No obsolete code reappeared in changed scope. | Historical ticket artifacts still contain old terminology; backend file size pressure remains. | Keep artifacts/report cleanup separate from implementation; extract backend on next touch. |
+
+## Findings
+
+No blocking findings were found in Round 38.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Validation Readiness | Ready for the next workflow stage (`API / E2E`) | Pass | Implementation review passes; API/E2E should resume from HEAD `f231d0e2`. |
+| Tests | Test quality is acceptable | Pass | Tests target active-member aggregate preservation and nested child identity prefixing. |
+| Tests | Test maintainability is acceptable | Pass | Tests assert public team events/payload identity rather than private native state. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No findings; residual validation focus is documented. |
+
+## Verification Evidence
+
+Commands/checks run during Round 38 review:
+
+- Reloaded code-review criteria and design principles.
+- Confirmed current state:
+  - HEAD `f231d0e2` on branch `codex/mixed-team-nested-agent-team`.
+  - `git show --stat --name-status --oneline HEAD` confirmed two implementation source files plus tests/handoff changed.
+- Reviewed artifacts:
+  - Round 36 backend status source-of-truth design note.
+  - Round 37 live status validation evidence (`result: fail` at `902274e5`) showing team aggregate premature `idle` and nested scenario failure.
+  - Updated implementation handoff.
+  - Prior Round 37 review report.
+- Inspected key source paths:
+  - `AutoByteusTeamRunBackend.ts`
+  - `mixed-team-event-bridge.ts`
+  - `team-run-event-websocket-message-mapper.ts` for projected route/path identity behavior.
+- Focused backend tests passed:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-event-processor.test.ts tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts tests/unit/agent-team-execution/mixed-team-event-bridge.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/integration/agent/agent-status-websocket.integration.test.ts --reporter=dot` — `9` files / `62` tests passed.
+- Focused frontend status tests passed:
+  - `pnpm -C autobyteus-web exec vitest run services/runSubmission/__tests__/localUserSubmission.spec.ts services/runStatus/__tests__/agentRuntimeStatusState.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot` — `6` files / `59` tests passed.
+- Static/build checks passed:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - `pnpm -C autobyteus-server-ts build` — passed, including built-in agents bootstrap smoke check.
+  - `pnpm -C autobyteus-server-ts exec prisma validate`
+  - `pnpm -C autobyteus-web audit:localization-literals`
+  - `git diff --check`
+  - `git diff --cached --check`
+  - `git diff --check origin/personal...HEAD`
+- No-legacy/status scans:
+  - Frontend accepted-startup helper scan found no matches for removed frontend canonical status-authoring helpers.
+  - Backend removed lifecycle residue scan found no active-source matches for removed status residues.
+  - Public command/selector legacy scan found only explicit rejection keys / rejection messages, not compatibility branches.
+- Conflict-marker scan over active backend/frontend source/tests paths — clean.
+- Changed source size audit over `902274e5..f231d0e2` — `2` changed non-test TS/Vue implementation source files checked; no file exceeded `500` non-empty lines (`AutoByteusTeamRunBackend.ts` is exactly `500`).
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | The fix uses canonical backend status events, route/path member identity, and explicit rejection-only command legacy keys. |
+| No legacy old-behavior retention in changed scope | Pass | No frontend inferred status, public raw provider lifecycle aliases, or name-based public target compatibility was added. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete helper or dormant compatibility path was introduced. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None in the current Round 38 changed implementation scope.
+
+## Docs-Impact Verdict
+
+- Docs impact: `No additional code-review-driven docs update required before API/E2E`.
+- Why: The implementation handoff and validation artifacts document the status timing context. Delivery can decide final release/handoff docs after API/E2E verifies the live behavior.
+- Files or areas likely affected: final handoff/release notes may mention backend-owned team status behavior and nested status identity.
+
+## Classification
+
+- Classification: `Pass`
+- Rationale: The local fix preserves backend/runtime status authority, keeps frontend status read-only, normalizes native team status through the aggregate boundary, prefixes nested child route/path identity for parent WebSocket projection, and passes focused executable/static/no-legacy checks.
+
+## Recommended Recipient
+
+- `api_e2e_engineer`
+
+Routing note: This is a pass from the implementation-review entry point. API/E2E/full-stack validation should resume from HEAD `f231d0e2`, specifically rechecking the Round 37 failing Professor/Student team status timeline and nested mixed AutoByteus child identity/status projection.
+
+## Residual Risks
+
+- Live API/E2E/browser validation still needs to prove `STATUS-ROUND37-002` and `STATUS-ROUND37-003` are fixed in real AutoByteus team and nested mixed team runs.
+- The per-member status cache should be validated through completion/interruption/error and reconnect/no-subscriber timing to ensure it does not retain stale `running` after member settle events.
+- `AutoByteusTeamRunBackend.ts` is exactly at the 500-line hard limit; future source changes should extract owned status/fan-out helpers before adding more logic.
+- Provider-native AutoByteus member-name calls remain acceptable only as adapter-boundary translation and must not become public command/identity authority.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass — Ready for API/E2E Validation`
+- Score Summary: `9.1 / 10` (`91 / 100`) for Round 38 implementation review.
+- Notes: API/E2E/full-stack validation may resume from HEAD `f231d0e2` with the current cumulative ticket/report artifact package.

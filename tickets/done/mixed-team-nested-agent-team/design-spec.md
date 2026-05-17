@@ -25,6 +25,8 @@ Nested communication is not allowed to remain top-down only, and normal `send_me
 
 The 2026-05-17 Electron upgrade finding adds a data-migration requirement for historical flat team-run metadata. This is not a reversal of the clean runtime schema policy: normal runtime/read/restore code still accepts only canonical recursive `TeamRunMetadata.memberTree`. Known old `runVersion` + flat `memberMetadata[]` files are converted by a registered app data migration before normal history hydration, with durable database status and a Settings -> Server -> Migrations UI. If migration fails, the normal app UI must remain usable and raw parser errors must stay out of the sidebar/workspace.
 
+The 2026-05-17 delivery/user status finding adds an integration requirement for the already-merged `agent-initializing-status-ux` behavior from `origin/personal`, with corrected ownership: backend runtime lifecycle is the sole authority for canonical statuses. Accepted user sends/startups must show backend-emitted/snapshotted `offline -> initializing -> running` for individual agents and team/nested members. The nested branch may keep public statuses canonical, but provider-edge lifecycle translation must stay in the backend and frontend must stop authoring canonical `currentStatus = initializing`; frontend may only own local pending-submit UI.
+
 ## Design-Owner Recheck Decisions
 
 Architecture review paused for design-owner confirmation. The refined decisions are:
@@ -419,7 +421,7 @@ The parent team run remains the only top-level history/active run. Internal chil
 
 ### UI-006: Streaming, Tool Approval, Activity, And Team Communication Use Path Identity
 
-`TeamStreamingService.getMemberContext()` must resolve inbound events by canonical `source_path`/`member_route_key` first, with `agent_name`/`agent_id` only as edge fallback. Tool approval commands should send `member_route_key`/`source_path` from the approval event; `agent_name` is not authoritative for nested leaves.
+`TeamStreamingService.getMemberContext()` must resolve inbound events and status snapshots by canonical `source_path`/`member_route_key` (or equivalent path/route fields). `agent_name`/`agent_id` may be retained as display/trace metadata but are not nested routing authority and must not be used to recover ambiguous member routing. Tool approval commands should send `member_route_key`/`source_path` from the approval event; `agent_name` is not authoritative for nested leaves.
 
 `TeamCommunicationStore` and activity panels should store/display participant identity with member kind, path, route key, and represented-subteam context. Parent communication should display `program_manager -> BuildSquad/review_lead` (or `program_manager -> review_lead` with a `BuildSquad` badge) as a parent-level message to the responsible representative; child processing appears separately as `BuildSquad/review_lead` events.
 
@@ -1049,10 +1051,10 @@ Add or update tests to prove:
 
 - Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Feature / Larger Requirement
 - Current design issue found (`Yes`/`No`/`Unclear`): Yes
-- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue; Shared Structure Looseness
+- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue; Shared Structure Looseness; Missing Invariant
 - Refactor needed now (`Yes`/`No`/`Deferred`/`Unclear`): Yes
-- Evidence: Current mixed manager originally owned `Map<string, AgentRun>` and `ensureMemberReady(): Promise<AgentRun>`; current run config and metadata required agent-only fields; launch traversal flattened nested teams. The 2026-05-13 full-stack validation additionally proved `autobyteus-web` still flattens nested active UI members through `resolveLeafTeamMembers()` and omits `BuildSquad` even when backend `memberTree` is recursive.
-- Design response: Introduce recursive team topology planning, make `MixedTeamManager` own member handles instead of `AgentRun`s directly, add a scoped communication roster/representative projection for `send_message_to`, and make the frontend own a recursive `TeamMemberNode` tree with derived leaf lookups instead of flat display members.
+- Evidence: Current mixed manager originally owned `Map<string, AgentRun>` and `ensureMemberReady(): Promise<AgentRun>`; current run config and metadata required agent-only fields; launch traversal flattened nested teams. The 2026-05-13 full-stack validation additionally proved `autobyteus-web` still flattens nested active UI members through `resolveLeafTeamMembers()` and omits `BuildSquad` even when backend `memberTree` is recursive. The 2026-05-17 git/status investigation shows `origin/personal` already merged initializing UX, but later nested-branch status cleanup removed provider-edge startup mapping and current frontend code still writes canonical `initializing`, competing with backend snapshots/events for the same status field.
+- Design response: Introduce recursive team topology planning, make `MixedTeamManager` own member handles instead of `AgentRun`s directly, add a scoped communication roster/representative projection for `send_message_to`, make the frontend own a recursive `TeamMemberNode` tree with derived leaf lookups instead of flat display members, and add an explicit backend-owned runtime status startup spine for backend lifecycle transitions, provider-edge canonicalization, frontend passive rendering/local pending UI separation, and nested member snapshot identity.
 - Refactor rationale: Adding an `if subteam` branch inside agent-only backend maps, runtime tool handlers, or frontend leaf-only component loops would violate the authoritative boundary rule and spread structural-vs-communication roster distinctions across launch, runtime, events, restore, and UI display.
 - Intentional deferrals and residual risk, if any: Arbitrary cross-level leaf-to-leaf messaging remains out of scope, but controlled child-to-immediate-parent reporting and parent-to-subteam-representative communication are now in scope because manual full-stack validation and user discussion showed abstract-subteam/top-down-only delegation is incomplete. Frontend nested tree/config/workspace/history/activity behavior remains in scope because seeded browser validation proved flatten-only UI is user-visible wrong.
 
@@ -1118,6 +1120,11 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-028 | Return-Event / Degraded UX | UC-008, UC-013 | Unmigrated legacy metadata encountered during history/sidebar hydration | Normal UI skips or friendly-scopes the affected run and points diagnostics to Migrations | `TeamRunHistoryService` + migration diagnostics | Raw metadata parser exceptions must not render in the left sidebar/main app. |
 | DS-029 | Primary End-to-End / Bounded Concurrency | UC-013 | Settings retry click for one migration | Retry either runs once with locked status transition and refreshed UI, or is rejected as already running | `AppDataMigrationRunner` + `AppDataMigrationRecordRepository` + GraphQL migration resolver | AC-037/AC-038 require retry execution and duplicate-run prevention, not only status display. |
 | DS-030 | Primary End-to-End / Degraded UX | UC-006, UC-013 | Direct open/restore of a historical team run with unmigrated legacy metadata | No runtime starts; user gets friendly legacy-unmigrated result pointing to Migrations details/retry | `TeamRunService` + `TeamRunMetadataStore` typed diagnostics + frontend restore/open coordinator | Prevents direct restore from bypassing the history/sidebar degraded path and leaking raw parser text or guessing topology. |
+| DS-031 | Primary End-to-End | UC-014 | Individual agent user send/start accepted while run is offline or idle | Backend lifecycle owner emits/snapshots canonical `initializing`, then `running`, then final idle/error/offline; frontend only renders backend status | Backend `AgentRun`/provider backend lifecycle owner + stream status snapshot/event mapper | Reintegrates personal-branch initializing UX under backend status authority and fixes `offline -> initializing -> offline/done` regression. |
+| DS-032 | Primary End-to-End | UC-009, UC-014 | Team leaf or subteam/group send accepted | Backend mixed member/subteam handles emit/snapshot leaf/group/team `initializing`; resolved child coordinator transitions by route/path backend event | `MixedTeamManager` + `MixedTeamMemberHandle` + `TeamRuntimeStatusSnapshotService` + `TeamStreamingService` renderer | Makes team/nested members follow the same backend-owned startup semantics as individual agents. |
+| DS-033 | Return-Event / Adapter | UC-005, UC-014 | Raw provider/runtime lifecycle status observed internally | Canonical public status payload such as `initializing` or `running` emitted to frontend | Backend provider status projectors + `normalizeAgentApiStatus` internal adapter | Keeps public status contract clean while preserving provider-edge startup semantics. |
+| DS-034 | Return-Event / Read-Model Freshness | UC-008, UC-009, UC-014 | Initial WebSocket snapshot or run-history status hydration occurs around backend-accepted startup | Backend snapshot itself reports `initializing` while startup is in progress; frontend does not override backend live status with stale history rows | Backend stream snapshot owners + frontend status renderer/history merge | Separates backend status authority from frontend local pending UI and stale read-model merging. |
+| DS-035 | Return-Event / Identity Routing | UC-005, UC-009, UC-014 | Team initial member status snapshot emitted for a nested member | Frontend routes backend status by `member_route_key`/`source_path`, not bare display name | Mixed member status snapshot producer + `TeamRuntimeStatusSnapshotService` + `TeamStreamingService` | Strict nested routing needs canonical identity in snapshots, not only `agent_name`/`agent_id`. |
 
 ### Use-Case-To-Spine Coverage
 
@@ -1136,6 +1143,7 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | UC-011 Live/restored transcript, dedupe, labels | DS-005, DS-006, DS-007, DS-009, DS-015, DS-017 |
 | UC-012 Child reports upward to parent boundary | DS-004, DS-020, DS-021, DS-022, DS-023, DS-024 |
 | UC-013 Upgrade legacy flat team metadata safely | DS-025, DS-026, DS-027, DS-028, DS-029, DS-030 |
+| UC-014 Startup status visibility for agents and nested teams | DS-031, DS-032, DS-033, DS-034, DS-035 |
 
 ## Primary Execution Spine(s)
 
@@ -1158,6 +1166,10 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 - Migrations settings UI spine (UC-013): `Settings -> Server -> Migrations -> frontend appDataMigrationsStore -> GraphQL getAppDataMigrations -> DB records + registry definitions -> status table/details/retry`
 - Manual migration retry/concurrency spine (UC-013): `Settings retry click -> appDataMigrationsStore.runMigration(id) -> GraphQL runAppDataMigration(id) -> AppDataMigrationRunner acquire per-migration lock -> resolve stale RUNNING or reject live duplicate -> AppDataMigrationRecordRepository RUNNING transition -> migration execute/skip/fail -> DB summary/log -> GraphQL result -> status refresh -> Settings UI`
 - Direct legacy restore degraded spine (UC-006/UC-013): `User opens/restores historical team run -> frontend run-open/restore coordinator -> GraphQL restore/open request -> TeamRunService -> TeamRunMetadataStore typed legacy-unmigrated diagnostic -> no runtime start/no topology guessing -> friendly operation result/toast/dialog -> link to Settings -> Server -> Migrations details/retry`
+- Individual backend-owned startup status spine (UC-014): `User clicks Run/send -> frontend records local pending submit only -> GraphQL/WebSocket command -> backend AgentRun/provider backend accepts work and sets lifecycle status initializing -> AGENT_STATUS snapshot/event -> frontend renders initializing -> backend runtime activity emits running -> completion/error/termination settles status`
+- Team/nested backend-owned startup status spine (UC-009/UC-014): `Focused leaf or subteam send -> frontend records local pending submit only and sends route/path selector -> MixedTeamManager/member handle accepts work and sets leaf/group/team lifecycle status initializing -> route/path status snapshot/event -> TeamStreamingService renders exact member/group/team -> child coordinator running/terminal events settle status`
+- Provider canonical status projection spine (UC-014): `Provider backend raw lifecycle state -> provider-specific status projector/internal normalizer -> canonical AgentStatusPayload -> WebSocket/GraphQL/frontend status handler`
+- Team status snapshot identity spine (UC-005/UC-014): `MixedTeamManager.getMemberStatusSnapshots -> include member_route_key/source_path -> TeamRuntimeStatusSnapshotService -> AGENT_STATUS snapshot -> TeamStreamingService route by canonical identity -> member status state`
 
 ## Return Or Event Spine(s) (High-Level)
 
@@ -1171,6 +1183,9 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 - Legacy history degradation spine: `TeamRunHistoryService reads legacy-unmigrated metadata -> typed diagnostic -> skip/friendly unavailable run row -> no raw parser text in left sidebar -> Migrations view owns detailed error`
 - Migration retry completion spine: `Manual retry result -> AppDataMigrationRecordRepository writes SUCCEEDED/FAILED/SUCCEEDED_WITH_WARNINGS -> GraphQL mutation response -> appDataMigrationsStore refreshes list -> Settings row updates status/details/retry availability`
 - Direct restore degraded return spine: `TeamRunService legacy-unmigrated result -> GraphQL restore/open payload with friendly code/message -> frontend restore/open coordinator prevents workspace activation -> user sees actionable message and Migrations navigation`
+- Backend startup snapshot return spine: `Backend accepted startup -> backend status snapshot returns initializing -> WebSocket/status event carries canonical status -> frontend status renderer applies backend status; stale history refresh cannot replace newer live backend status`
+- Provider status projection return spine: `Provider lifecycle token -> backend internal projector -> canonical public status -> frontend receives only canonical status`
+- Team member status snapshot return spine: `TeamRun member status snapshot with source path/route key -> frontend stream router -> exact leaf/group status update`
 
 ## Spine Narratives (Mandatory)
 
@@ -1206,6 +1221,11 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-028 | History/sidebar hydration catches typed legacy-unmigrated metadata diagnostics, avoids raw parser errors, skips or friendly-scopes affected historical runs, and points details to the migration screen. | History query, metadata diagnostic, history read model, sidebar row | `TeamRunHistoryService` + frontend history/read-model owners | Friendly unavailable row text, logging, migration-detail link |
 | DS-029 | Manual retry starts from the Settings retry button and flows through the frontend store and GraphQL mutation into the runner. The runner handles stale `RUNNING`, rejects true concurrent duplicate runs, transitions status through `RUNNING`, executes the migration idempotently, records summary/logs, and returns a refreshed status. | Retry action, GraphQL mutation, runner lock, migration record, migration execution | `AppDataMigrationRunner` + GraphQL migration resolver + `appDataMigrationsStore` | Per-migration locking, stale-running timeout, duplicate-run error, idempotent skip of already-current files |
 | DS-030 | Direct open/restore of an unmigrated legacy team run uses the same typed metadata diagnostic as history, but returns a controlled operation result: no runtime starts, no topology is guessed, and the frontend shows a friendly message with navigation to Settings -> Server -> Migrations. | Restore/open request, metadata diagnostic, operation result, frontend restore/open coordinator | `TeamRunService` + GraphQL team-run restore/open resolver + frontend run-open/restore coordinator | Error code mapping, toast/dialog copy, migration detail routing |
+| DS-031 | A user send/start enters the backend while an individual run is offline/idle. The backend lifecycle owner records canonical `initializing` before accepted operation acknowledgment/snapshot, then emits `running` and terminal/idle states as runtime work progresses. Frontend local submission state is separate and does not mutate canonical status. | Backend run lifecycle state, status snapshot, live status event, frontend renderer | Backend `AgentRun`/provider backend lifecycle owner + stream handler | Local pending UI, optimistic message row, completion cleanup |
+| DS-032 | A team leaf or subteam/group send uses the same backend-owned invariant. The mixed member/subteam handle records canonical `initializing` for the accepted member/group/team boundary, then route/path backend events update the resolved child coordinator leaf and aggregate team. Frontend renders those backend statuses without focus-based inference. | Mixed member lifecycle state, group/team aggregate status, child coordinator leaf, frontend renderer | `MixedTeamManager` + `MixedTeamMemberHandle` + `TeamStreamingService` | Group status summary, child coordinator resolution, terminal cleanup |
+| DS-033 | Provider backends may observe raw lifecycle states, but the backend projector/adaptor converts them to canonical public statuses before any WebSocket/GraphQL/frontend payload. This is not public alias compatibility; it is provider-edge translation. | Provider status token, canonical AgentStatusPayload | Provider-specific status projectors + internal status normalizer | Provider runtime quirks, docs alignment |
+| DS-034 | Initial WebSocket snapshots are backend truth and must report `initializing` while backend startup is in progress. Run-history hydration is a stale read model and must not overwrite newer live backend status. Frontend keeps pending-submit UI separate from canonical runtime status. | Backend snapshot payload, live status state, history read model, frontend renderer | Backend stream snapshot owners + frontend history/live merge owner | Snapshot metadata, hydration ordering, completion cleanup |
+| DS-035 | Team member status snapshots include canonical route/path identity so the frontend can dispatch them through strict nested routing. `agent_name` and `agent_id` are not routing authority for nested status updates. | Member status snapshot, source path/route key, frontend member context | Mixed snapshot producer + `TeamRuntimeStatusSnapshotService` + `TeamStreamingService` | Child route derivation, snapshot DTO typing |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -1238,6 +1258,10 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 - Frontend `appDataMigrationsStore`
 - Frontend `ServerMigrationsManager`
 - Team-run restore/open degraded-result owner (`TeamRunService` + GraphQL restore/open resolver + frontend run-open/restore coordinator)
+- Backend runtime lifecycle status owner (`AgentRun`/provider backends, `MixedTeamManager`, mixed member/subteam handles)
+- Backend provider status projection owner (`agent-status-payload.ts` plus provider-specific projectors)
+- WebSocket status snapshot owners (`AgentStreamHandler`, `TeamRuntimeStatusSnapshotService`)
+- Frontend runtime status renderer/local submission UI owner (`agentRuntimeStatusState`, single-agent/team run stores, run-history live merge)
 
 ## Ownership Map
 
@@ -1273,6 +1297,10 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | Frontend `appDataMigrationsStore` | Migration Settings state, status refresh, retry action execution, loading/error state, and post-retry refresh. |
 | `ServerMigrationsManager` | User-facing Settings -> Server -> Migrations table, friendly status/errors, technical detail expansion, refresh, and retry controls. |
 | Direct restore/open degraded-result owner | `TeamRunService` and GraphQL restore/open resolver convert typed legacy-unmigrated metadata diagnostics into a controlled operation result; frontend run-open/restore coordinator prevents workspace activation and shows friendly migration guidance. |
+| Backend runtime lifecycle status owner | Canonical runtime status transitions for individual runs, mixed leaf members, subteam/group handles, aggregate team status, running/terminal settlement, and `getStatusSnapshot()` correctness. |
+| Backend provider status projection owner | Internal raw provider lifecycle token mapping into canonical public status payloads; ensures provider-specific startup states become `initializing` before publication without widening public command/status APIs. |
+| WebSocket status snapshot owners | Status snapshot emission for agent/team streams, including canonical current backend status and canonical member route/path identity for team member snapshots. |
+| Frontend runtime status renderer/local submission UI owner | Renders backend canonical statuses, owns separate pending-submit/disabled-control/optimistic-message UI state, and prevents stale history read models from replacing newer live backend status. |
 
 If `MixedTeamRunBackend` remains a public runtime facade, it is a thin entry wrapper; `MixedTeamManager` is the governing owner behind it.
 
@@ -1304,6 +1332,10 @@ If `MixedTeamRunBackend` remains a public runtime facade, it is a thin entry wra
 | Technical routing-scope labels as LLM roster headings | The LLM needs a real organization manifest, not internal labels like `local_agent` or `parent_boundary_agent`. | Team membership roster manifest grouped by team names and roles, with exact allowed recipient names. | In This Change | Scope names stay internal descriptor metadata only. |
 | Scalar command target aliases | They keep ambiguous bare-name routing alive at the API edge and conflict with the no-legacy policy. | Explicit path/route selector fields for command input. | In This Change | Remove `target_member_name`, `target_agent_name`, command-side `agent_name`, command-side `agent_id`, and camelCase equivalents as accepted command targets. |
 | Component-local primary label choices such as preferring `agentDefinitionName` in one view and `memberName` in another | Causes active/history nested row identity drift. | `useTeamMemberPresentation` primary/secondary label policy. | In This Change | Agent definition name stays secondary metadata, not the primary row label. |
+| Frontend-authored canonical `initializing` (`applyAcceptedStartupStatus` / `applyAcceptedTeamMemberStartupStatus` mutating `currentStatus`) | Creates two authorities for the same runtime status field and causes `offline -> initializing -> offline` races when backend snapshots disagree. | Backend runtime lifecycle owner emits/snapshots canonical `initializing`; frontend keeps only local pending-submit UI. | In This Change | Remove or repurpose these helpers so they do not write canonical runtime status. |
+| Backend missing startup lifecycle snapshot/state | If backend accepts startup but snapshots `offline`/`idle`, frontend cannot be a passive renderer and the UI regresses. | Backend run/member lifecycle status state and `getStatusSnapshot()` returning `initializing` while startup is in progress. | In This Change | Initial stream snapshots are backend truth; make them correct rather than guarded by frontend canonical overrides. |
+| Global removal of provider startup-token projection | Confuses clean public API with internal provider adaptation and removes canonical `initializing` from provider startup states. | Provider-edge status projectors/internal normalizer emitting canonical statuses. | In This Change | Do not reintroduce raw provider tokens as public frontend statuses. |
+| Team member status snapshots without canonical route/path identity | Strict nested frontend routing cannot reliably attach initial status to the right member. | Snapshot payloads with `member_route_key`/`source_path`. | In This Change | `agent_name`/`agent_id` remain non-authoritative metadata only and must not be the nested status-routing contract. |
 
 ## Return Or Event Spine(s) (If Applicable)
 
@@ -1359,6 +1391,24 @@ Parent owner: frontend run-open/restore coordinator
 
 This local spine prevents direct restore/open from leaking backend parser errors or partially activating an invalid runtime.
 
+Parent owner: backend runtime lifecycle status owner
+
+`Accepted send/start -> record backend lifecycle status initializing -> publish/snapshot canonical status -> runtime activity changes to running -> completion/error/termination settles backend status`
+
+This local spine makes backend the source of truth for initialization instead of relying on frontend optimistic canonical status writes.
+
+Parent owner: frontend runtime status renderer/local submission UI owner
+
+`User submits -> set local pending UI/optimistic message only -> receive backend status snapshot/event -> render canonical backend status -> stale history rows cannot replace newer live backend status -> completion clears pending UI`
+
+This local spine keeps UX responsiveness without duplicating canonical runtime status ownership.
+
+Parent owner: backend provider status projector
+
+`Provider raw status token -> provider/runtime-specific mapper -> canonical status payload -> stream/projection emission`
+
+This local spine keeps provider compatibility inside adapters while preserving a clean canonical public status contract.
+
 ## Off-Spine Concerns Around The Spine
 
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
@@ -1381,6 +1431,10 @@ This local spine prevents direct restore/open from leaking backend parser errors
 | Frontend event identity mapping | DS-007 | `TeamStreamingService` | Resolve source path/route to member node or leaf context. | Streaming payloads carry transport aliases plus canonical identity. | Activity would attach to focused or wrong flat member. |
 | Frontend projection hydration defense | DS-015 | `runProjectionConversation` | Defensively dedupe stale projection payloads before building `Conversation`. | Backend owns dedupe but UI should be robust to stale rows. | Opened runs could still duplicate messages from cached/old responses. |
 | Frontend member presentation | DS-017 | `useTeamMemberPresentation` | Compute primary membership label and secondary route/definition metadata consistently. | Active/history rows need one identity policy. | Each row/component would choose different names. |
+| Backend startup lifecycle state | DS-031, DS-032, DS-034 | Backend runtime lifecycle status owner | Record accepted startup as canonical `initializing` and expose it through snapshots/events until running or terminal settlement. | Prevents `initializing` flicker/regression while preserving backend authority. | Frontend would need optimistic canonical overrides or each backend would guess differently. |
+| Frontend pending-submit UI | DS-031, DS-032, DS-034 | Frontend runtime status renderer/local submission UI owner | Show responsive submitting controls/optimistic messages without changing canonical runtime status. | UX can stay responsive while status remains backend-driven. | Stores/components would keep writing runtime status locally. |
+| Provider raw status adaptation | DS-033 | Backend provider status projection owner | Translate provider lifecycle tokens to canonical statuses before public payloads. | Raw provider tokens are runtime internals, not public aliases. | Removing mapping globally loses `initializing`; keeping it in frontend widens public status compatibility. |
+| Team status snapshot identity | DS-035 | Mixed manager/status snapshot service | Attach `member_route_key`/`source_path` to team member status snapshots. | Strict nested routing requires canonical identity. | Frontend would need display-name or focused-member fallbacks. |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -1394,6 +1448,7 @@ This local spine prevents direct restore/open from leaking backend parser errors
 | Run projection merge | `AgentRunViewProjectionService.mergeProjectionBundles` | Extend | It already owns local/primary/fallback projection merging. | Needs semantic dedupe instead of exact JSON row dedupe. |
 | Metadata store | `TeamRunMetadataService` / `TeamRunMetadataMapper` | Extend | Same durable storage should store recursive metadata. | N/A |
 | Native nested team reference | AutoByteus-ts `TeamManager`, `TeamEventBridge`, `SubTeamShutdownStep` | Reuse as design reference | Behavior is local package, not server runtime abstraction. | Direct reuse is not possible for Codex/Claude server runs. |
+| Initializing status UX from `origin/personal` | Frontend status helpers and docs from `agent-initializing-status-ux` | Reintegrate/Extend | The behavior is already merged to the base branch and is a release expectation. | Current nested branch cleanup must reapply the invariant with nested route/path identity instead of reverting the whole cleanup. |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -1411,6 +1466,10 @@ This local spine prevents direct restore/open from leaking backend parser errors
 | Parent-boundary communication bridge | Controlled child-to-parent report routing and nested sender normalization. | DS-020, DS-021, DS-022 | Child and parent `MixedTeamManager` | Extend mixed runtime/team communication | Reuses `InterAgentMessageDeliveryRequest`, `TeamCommunicationService`, and `MEMBER_INPUT` rather than a new global messaging system. |
 | Frontend streaming/activity/communication | Path-aware event dispatch, approval identity, participant displays. | DS-009, DS-010, DS-011, DS-012 | `TeamStreamingService`, `TeamCommunicationStore` | Extend | Keeps event identity aligned with backend `sourcePath`. |
 | Frontend presentation policy | Stable nested member primary/secondary labels. | DS-017 | `useTeamMemberPresentation` | Extend | Prevents active/history label drift. |
+| Runtime status projection | Provider-edge raw status mapping to canonical public statuses and canonical status payload typing. | DS-033 | Backend provider status projectors / `normalizeAgentApiStatus` | Extend | Restore personal-branch initializing semantics without accepting raw public status aliases. |
+| Backend runtime lifecycle status | Accepted-startup state, canonical `initializing`/`running`/terminal transitions, member/group/team aggregate startup settlement, and snapshot correctness. | DS-031, DS-032, DS-034 | `AgentRun`/provider backends, `MixedTeamManager`, mixed member handles | Extend/Refactor | Prevents `offline -> initializing -> offline` regression at the source of truth. |
+| Frontend runtime status rendering/local pending UI | Backend status rendering, local pending submit controls, optimistic message rows, and stale history/live merge. | DS-031, DS-032, DS-034 | `agentRuntimeStatusState`, `agentRunStore`, `agentTeamRunStore`, run-history stores | Refactor | Removes frontend as canonical status writer while preserving responsive UI. |
+| Team status snapshot routing | Member snapshot route/path identity and strict nested frontend dispatch. | DS-035 | Mixed member snapshot producer + `TeamStreamingService` | Extend | Team members need the same status visibility as individual agents. |
 
 ## Draft File Responsibility Mapping
 
@@ -1534,6 +1593,7 @@ This local spine prevents direct restore/open from leaking backend parser errors
 - Frontend `AgentTeamContextsStore` is the authoritative active team UI context owner. Components read recursive member nodes from it; they must not rebuild flat members from definitions.
 - Frontend topology utilities own recursive `TeamMemberNode` construction and derived leaf-agent lists. Launch config builders use the derived leaves; display components use the tree.
 - Frontend `TeamStreamingService` owns client-side stream event routing by source path/route key. Handlers must not fall back to the focused member when canonical nested identity is present.
+- Backend runtime lifecycle owners own canonical status. Frontend status utilities/stores render backend status and local pending UI only; they must not write canonical `initializing` in response to local submit acceptance.
 - Frontend `TeamCommunicationStore` owns nested communication read-model normalization with sender/receiver participant identity.
 - `ParentBoundaryBridge` is the only allowed child-to-parent delivery bridge for internal child runs. It is built by the parent subteam handle/factory and must not be replaced by global top-level run lookup.
 - `MemberCommunicationRosterBuilder` owns the distinction between structural members, subteam representatives, and parent-boundary reporting recipients. `MemberTeamContextBuilder` attaches those descriptors to member contexts; tool adapters consume descriptors and must not infer recipients from structural names.
@@ -1590,12 +1650,19 @@ Allowed:
 - `autobyteus-web/components/workspace/* -> AgentTeamContextsStore` for active member tree and focus state
 - `autobyteus-web/services/agentStreaming/TeamStreamingService -> AgentTeamContext.memberNodesByRouteKey / leafAgentContextsByRouteKey`
 - `autobyteus-web/components/workspace/* -> useTeamMemberPresentation` for labels instead of direct `agentDefinitionName` precedence
+- Provider backend/projector -> backend internal status normalizer -> canonical `AgentStatusPayload`
+- Backend run/member lifecycle owner -> canonical status payload/snapshot -> frontend status renderer
+- `agentRunStore` / `agentTeamRunStore` -> local pending-submit UI and optimistic messages only; canonical status arrives from backend stream/snapshot
+- `AgentStreamHandler` / `TeamRuntimeStatusSnapshotService` -> canonical backend status payloads with route/path identity -> frontend status renderer
 
 Forbidden:
 
 - Transport/resolvers directly constructing `MixedTeamMemberContext` or child `TeamRun`s.
 - `MixedTeamManager` directly managing separate `Map<string, AgentRun>` and `Map<string, TeamRun>` as public policy; use member handles.
 - Runtime event consumers guessing nested identity from member names; use `sourcePath`/route key.
+- Frontend stores/helpers writing canonical `currentStatus = initializing` on accepted local submit.
+- Backend accepting startup while `getStatusSnapshot()` still returns `offline`/`idle` for that run/member.
+- Backend cleanup removing provider-edge startup-token mapping and thereby expecting frontend public normalizers to recover raw provider lifecycle names.
 - Frontend or stream handlers deriving child leaf user prompts from `TEAM_COMMUNICATION_MESSAGE`; backend `MEMBER_INPUT` owns recipient transcript rows.
 - Mixed nested delivery relying on `INTER_AGENT_MESSAGE` as the canonical leaf transcript event; use `MEMBER_INPUT` for recipient-visible prompts and `COMMUNICATION` for team messages.
 - Metadata store, mapper, frontend parser, or restore path keeps old flat restore support, inline migration branches, dual schemas, silent `null` fallback, or runtime recovery for historical team metadata. Legacy conversion belongs only to app data migrations.
@@ -1663,6 +1730,10 @@ Forbidden:
 | WebSocket/GraphQL command mappers | Yes | Yes | Low | Map `target_member_path`/`target_member_route_key`/approval `source_path` to domain selectors; reject scalar name/id command aliases. |
 | Frontend active team context | Yes | Yes | Low | Store recursive `memberTree` and route-key indexes; never expose flat leaves as display topology. |
 | Frontend stream dispatch | Yes | Yes | Low | Resolve by `source_path`/`member_route_key`; treat `agent_name`/`agent_id` only as display metadata, not routing authority. |
+| Backend runtime lifecycle status | Yes | Yes | Low | Backend owns canonical `offline`/`initializing`/`idle`/`running`/`error`; accepted startup must be reflected in `getStatusSnapshot()` and status events before frontend renders it. |
+| Frontend runtime status rendering | Yes | Yes | Low | Frontend applies backend status payloads and local pending UI separately; it must not author canonical initializing. |
+| Backend status projection | Yes | Yes | Low | Provider raw tokens are translated internally to canonical public statuses; public payloads stay canonical. |
+| Team status snapshot payload | Yes | Yes | Low | Include `member_route_key`/`source_path` for each nested member status snapshot. |
 | Frontend member presentation | Yes | Yes | Low | Use `TeamMemberNode` membership label as primary everywhere; route/definition are secondary. |
 
 ## Main Domain Subject Naming Check
@@ -1720,14 +1791,23 @@ Forbidden:
 | `autobyteus-web/utils/teamDefinitionMembers.ts` | File | Frontend team topology | Build recursive `TeamMemberNode` trees and derived leaf-agent lists. | Existing frontend topology utility. | Flatten-only display source of truth. |
 | `autobyteus-web/types/agent/AgentTeamContext.ts` | File | Frontend active team context | Store recursive tree, route-key indexes, leaf agent contexts, and `focusedMemberRouteKey`. | Existing active team context type. | Subteam-as-agent context. |
 | `autobyteus-web/stores/agentTeamContextsStore.ts` | File | Frontend active team owner | Create/focus/hydrate active contexts from recursive tree. | Existing store owns active team contexts. | Rebuilding display from flat leaf members. |
-| `autobyteus-web/stores/agentTeamRunStore.ts` | File | Frontend team run transport owner | Launch with canonical leaf route keys; send selected route/path target. | Existing run command store. | Sending flat nested child names. |
 | `autobyteus-web/utils/teamRunMemberConfigBuilder.ts` | File | Frontend launch config builder | Build leaf agent config records from tree-derived leaves keyed by route key. | Existing config builder. | Override lookup by nested flat member names. |
 | `autobyteus-web/stores/runHistoryTypes.ts` / `runHistoryMetadata.ts` | Files | Frontend run history metadata | Define/parse recursive `memberTree`; no `runVersion` current schema. | Existing history type/parser owners. | Current flat `memberMetadata` schema. |
 | `autobyteus-web/stores/runHistoryTeamHelpers.ts` / `runHistoryReadModel.ts` | Files | Frontend history read model | Build recursive team tree rows from active contexts and metadata. | Existing history projection owners. | Sorting child leaves as parent-level rows. |
 | `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` and history section components | Files | Workspace history UI | Render team member rows recursively. | Existing workspace tree UI. | Flat `team.members` rendering only. |
 | `autobyteus-web/components/workspace/team/TeamMembersPanel.vue` | File | Active team member tree UI | Render recursive active member tree and subteam rows. | Existing team member panel. | Leaf-only list. |
 | `autobyteus-web/components/workspace/team/TeamWorkspaceView.vue` / `TeamGridView.vue` / `TeamSpotlightView.vue` | Files | Active team workspace modes | Support leaf agent tiles and subteam group focus/tile. | Existing mode components. | Assuming every selected member has `AgentContext`. |
-| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` / protocol types | Files | Frontend stream transport | Route by source path/route; send route/path selectors and approval identity. | Existing stream owner. | Bare `agent_name` as nested authority. |
+| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` / protocol types | Files | Frontend stream transport | Route by source path/route; send route/path selectors and approval identity; classify/apply member status snapshots with canonical route/path identity. | Existing stream owner. | Bare `agent_name` as nested authority or snapshot downgrade logic in handlers. |
+| `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts` | File | Frontend runtime status renderer | Apply backend canonical status payloads, update interrupt/sending flags from backend status, and remove/repurpose accepted-startup helpers so they do not write canonical `currentStatus = initializing`. | Existing shared status utility should render status, not own backend lifecycle. | Frontend-authored canonical initializing or duplicated status guards in components. |
+| `autobyteus-web/services/runHydration/runtimeStatusNormalization.ts` | File | Frontend canonical status parser | Accept canonical public statuses from backend/UI state only; do not re-add broad provider lifecycle aliases here because they must be canonicalized at backend edge. | Keeps frontend public status surface clean. | Provider raw status compatibility policy. |
+| `autobyteus-web/stores/agentRunStore.ts` | File | Individual run submission owner | Set local pending submit/optimistic message state, send create/restore/message command, and rely on backend status event/snapshot for `initializing`. | Existing single-agent send/create flow. | Mutating canonical runtime status on submit. |
+| `autobyteus-web/stores/agentTeamRunStore.ts` | File | Frontend team run transport owner | Launch with canonical leaf route keys; send selected route/path target; set local pending UI for team/subteam sends and rely on backend route/path status events for leaf/group/team `initializing`. | Existing run command store. | Sending flat nested child names, assuming every focused member has an AgentContext, or mutating canonical status locally. |
+| `autobyteus-web/stores/runHistoryStore.ts` / `runHistoryLoadActions.ts` | Files | Frontend history status hydration | Hydrate historical status without overwriting newer live backend status; mark active rows consistently with backend stream/snapshot state. | History refresh currently can race live status. | Forcing active rows to running/offline over newer backend live status. |
+| `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts` | File | Backend canonical status payload/internal normalizer | Emit canonical public statuses and provide internal provider-edge mapping for raw lifecycle tokens. | Existing status payload boundary. | Removing provider-edge mapping or accepting raw public statuses. |
+| `autobyteus-server-ts/src/agent-execution/backends/*/events/*status*` | Files | Provider status projectors | Map backend/provider startup and processing states to canonical public statuses before publication. | Provider-specific raw statuses belong at adapter edge. | Leaking raw lifecycle names to frontend. |
+| `autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts` | File | Single-agent stream status snapshot owner | Emit backend-authoritative `getStatusSnapshot()`; after accepted startup this snapshot must be `initializing`, not stale `offline`/`idle`. | It currently sends an immediate status snapshot after `CONNECTED`. | Treating initial snapshot as a frontend-corrected passive value. |
+| `autobyteus-server-ts/src/services/agent-streaming/team-runtime-status-snapshot-service.ts` | File | Team initial snapshot owner | Emit backend-authoritative member/team status snapshots with canonical route/path identity; accepted member/subteam startup snapshots must be `initializing`. | Existing team snapshot source. | Snapshots identified only by display names or requiring frontend status invention. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts` | File | Mixed runtime | Route participant-shaped delivery requests. For nested representative selectors, resolve the executable top-level subteam handle while publishing actual leaf sender/receiver participants; for parent-boundary descriptors, delegate through the bridge instead of resolving locally; include route/path identity in member status snapshots. | Parent-to-representative delivery must publish receiver `BuildSquad/review_lead`; parent-boundary reports must preserve sender `BuildSquad/review_lead` and deliver to parent recipients; status snapshots must route strictly. | Parent communication projections that lose nested identity or status snapshots that rely on names. |
 | `autobyteus-web/services/agentStreaming/handlers/externalUserMessageHandler.ts` | File | Frontend live input handler | Upsert `EXTERNAL_USER_MESSAGE` into leaf conversation by backend message identity/dedupe key. | Existing handler for user-visible input messages. | Team communication projection or child route guessing. |
 | `autobyteus-web/services/runHydration/runProjectionConversation.ts` | File | Frontend projection hydration | Convert deduped projection rows into conversation messages; defensively dedupe stale rows. | Existing projection-to-conversation owner. | Backend projection source selection. |
 | `autobyteus-web/composables/useTeamMemberPresentation.ts` | File | Frontend presentation policy | Compute primary membership label, secondary route breadcrumb, definition subtitle, initials/avatar inputs. | Existing shared presentation composable. | Component-specific hidden label precedence. |
@@ -1757,6 +1837,8 @@ Forbidden:
 | Event attribution | `sourcePath: ['CodeReviewTeam', 'Reviewer']`, with transport deriving `source_route_key: 'CodeReviewTeam/Reviewer'` if needed. | `subTeamNodeName: 'Reviewer'` as authoritative identity or no path. | Distinguishes subteam path from leaf member identity. |
 | Frontend workspace tree | `Parent Team -> BuildSquad [team] -> BuildSquad/review_lead` | `Parent Team -> review_lead` as a parent-level row. | Shows the addressed subteam boundary. |
 | Frontend subteam focus | Selecting `BuildSquad` opens group panel and composer targets `BuildSquad`. | Try to find `AgentContext` for `BuildSquad` and fail/hide composer. | Subteam is a selectable team member, not a leaf agent. |
+| Backend-owned startup status | Backend accepts send/start and snapshots/emits `initializing`; frontend renders it; runtime event then moves to `running`; completion moves to `idle`/done. | Frontend sets `initializing` locally while backend snapshot still says `offline`, producing `offline -> initializing -> offline`. | This is the delivery-blocking status ownership regression. |
+| Provider status projection | Provider `bootstrapping`/`starting` becomes public `initializing` at backend adapter edge. | Frontend accepts raw `bootstrapping` as a public status, or backend drops it to fallback `offline`. | Keeps public API clean without losing startup UX. |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 

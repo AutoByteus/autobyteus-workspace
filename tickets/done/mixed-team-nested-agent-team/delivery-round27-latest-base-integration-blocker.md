@@ -1,8 +1,16 @@
 # Delivery Round 27 Latest-Base Integration Blocker
 
-## Status
+## Resolution As Of Delivery Round 35
 
-Delivery is `Blocked` as of `2026-05-17` after code review Round 27 passed at implementation commit `49470432 fix(history): skip legacy team metadata during index rebuild`.
+This blocker is `Resolved / Historical` as of `2026-05-17`.
+
+Round 27 run-history source/docs/test conflicts were resolved by later implementation work, code review, and API/E2E validation. Current delivery resumed at HEAD `54cacc2a59af4020d20b148e070171ddc97731e4 fix(status): remove provider lifecycle residue`, with `origin/personal @ 5f6e8ddec70d365dcb4021e573c37e439e3dc4fb`, branch state `behind 0` / `ahead 29`, code review Round 35 `Pass`, API/E2E Round 17 `Pass`, and a fresh local Electron build `1.3.16`.
+
+The original blocker details below are retained only for audit history and should not be treated as the current delivery state.
+
+## Original Status
+
+Delivery was `Blocked` as of `2026-05-17` after code review Round 27 passed at implementation commit `49470432 fix(history): skip legacy team metadata during index rebuild`.
 
 Delivery refreshed the tracked base before rebuilding Electron or finalizing docs. `origin/personal` has advanced to `720f46940841a2b407bb65428095fe5435f5238d`, so the ticket branch is no longer current with the tracked finalization target.
 

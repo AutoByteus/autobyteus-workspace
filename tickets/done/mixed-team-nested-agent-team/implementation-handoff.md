@@ -2,27 +2,27 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
-- Round 36 backend status source-of-truth design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round36-backend-status-source-of-truth-design-rework-note.md`
-- Superseded Round 35 initializing-status design note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round35-initializing-status-design-rework-note.md`
-- Delivery Round 35 initializing-status blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round35-initializing-status-verification-blocker.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
-- Architecture pause note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/architecture-review-pause-note.md`
-- Design-owner recheck note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-owner-recheck-note.md`
-- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/review-report.md`
-- Prior API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
-- Full-stack UI failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-ui-validation-failure.md`
-- Frontend rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/frontend-nested-team-ui-design-rework-note.md`
-- Full-stack communication failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-communication-validation-failure.md`
-- Round 5 live child transcript/display failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
-- Round 5 live transcript/projection/presentation design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
-- Upward nested-team reporting / representative routing design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`
-- Command API clean-cut design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
-- App data migration design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
-- Delivery Round 6 Electron build blocker note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round6-electron-build-blocker.md`
-- Delivery Round 6 Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/electron-build.log`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/requirements-doc.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-spec.md`
+- Round 36 backend status source-of-truth design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/round36-backend-status-source-of-truth-design-rework-note.md`
+- Superseded Round 35 initializing-status design note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/round35-initializing-status-design-rework-note.md`
+- Delivery Round 35 initializing-status blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/delivery-round35-initializing-status-verification-blocker.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-review-report.md`
+- Architecture pause note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/architecture-review-pause-note.md`
+- Design-owner recheck note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/design-owner-recheck-note.md`
+- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/review-report.md`
+- Prior API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- Full-stack UI failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/fullstack-nested-team-ui-validation-failure.md`
+- Frontend rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/frontend-nested-team-ui-design-rework-note.md`
+- Full-stack communication failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/fullstack-nested-team-communication-validation-failure.md`
+- Round 5 live child transcript/display failure note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`
+- Round 5 live transcript/projection/presentation design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/round5-live-transcript-projection-presentation-design-rework-note.md`
+- Upward nested-team reporting / representative routing design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/upward-nested-team-reporting-design-rework-note.md`
+- Command API clean-cut design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- App data migration design rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
+- Delivery Round 6 Electron build blocker note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/delivery-round6-electron-build-blocker.md`
+- Delivery Round 6 Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/electron-build.log`
 - Failure screenshot: `/Users/normy/.autobyteus/browser-artifacts/995de5-1778644109170.png`
 - Round 4 nested subteam UI screenshots: `/Users/normy/.autobyteus/browser-artifacts/e47bac-1778653656912.png`, `/Users/normy/.autobyteus/browser-artifacts/e47bac-1778653663419.png`
 - Round 5 live communication/transcript screenshots: `/Users/normy/.autobyteus/browser-artifacts/382035-1778656478050.png`, `/Users/normy/.autobyteus/browser-artifacts/382035-1778656693356.png`, `/Users/normy/.autobyteus/browser-artifacts/382035-1778657119879.png`
@@ -79,7 +79,7 @@ Focused Round 11 regression coverage added or updated:
 
 ## Code Review Round 5 Local Fix Update
 
-Round 5 code review returned `Local Fix` findings in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/review-report.md`. The bounded fixes are complete:
+Round 5 code review returned `Local Fix` findings in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/review-report.md`. The bounded fixes are complete:
 
 - `CR-ROUND9-001` fixed: grid and spotlight now use recursive display entries, so `BuildSquad`, `BuildSquad/review_lead`, and `BuildSquad/qa_specialist` are first-class selectable route-key targets. Subteam child rows inside subteam cards and focus-mode subteam summaries are actionable, and component event parameters now represent `memberRouteKey` rather than member names.
 - `CR-ROUND9-002` fixed: `TOOL_APPROVAL_REQUESTED` source/member route and path identity is captured into tool segments and activity records, passed through `ToolCallIndicator` and `activeContextStore`, and sent by `agentTeamRunStore` / `TeamStreamingService` without consulting current UI focus. The stream service also caches approval request source identity by invocation ID for direct approve/deny calls.
@@ -113,7 +113,7 @@ API/E2E full-stack validation found `E2E-NESTED-009`: persisted GraphQL communic
 
 ## API/E2E Round 5 Local Fix Update
 
-API/E2E full-stack validation then found three local implementation blockers in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`. The design was reworked by `solution_designer` before this implementation pass; I implemented that refined spine rather than a frontend-only patch.
+API/E2E full-stack validation then found three local implementation blockers in `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/done/mixed-team-nested-agent-team/fullstack-nested-team-live-child-transcript-validation-failure.md`. The design was reworked by `solution_designer` before this implementation pass; I implemented that refined spine rather than a frontend-only patch.
 
 - `E2E-NESTED-011` fixed at the backend-owned leaf-input boundary:
   - Added `TeamRunEventSourceType.MEMBER_INPUT` and `TeamRunMemberInputEventPayload` as a recipient-side transcript event separate from parent-level `COMMUNICATION`.

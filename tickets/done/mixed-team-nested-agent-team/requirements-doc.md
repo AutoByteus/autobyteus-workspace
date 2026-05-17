@@ -24,15 +24,16 @@ Enable the backend mixed team manager to execute nested agent-team members as re
 - Later full-stack validation on 2026-05-13 proved parent-to-subteam live communication projection now works, but exposed three remaining UI/projection defects: the live child coordinator transcript omits the inbound inter-agent prompt, opened child coordinator projections duplicate timestamped messages with `ts: null` copies, and active nested member rows use agent definition names while restored/history rows use member names. These defects require a focused event/projection/presentation invariant rather than ad hoc component fixes.
 - Manual full-stack testing and follow-up requirements discussion on 2026-05-13 exposed the refined communication-boundary requirement: structural subteam nodes remain nested, but `send_message_to` visibility should expose subteam coordinators/representatives as addressable members. A parent member such as `program_manager` should see `review_lead` as the `BuildSquad` representative rather than the abstract `BuildSquad` node, and `BuildSquad/review_lead` should see both local child teammates such as `qa_specialist` and exposed immediate parent-boundary members such as `program_manager`. The design must not use a hidden `reply_to_sender` state/alias; direct visible recipient names are resolved through scoped recipient descriptors.
 - Electron build validation on 2026-05-17 exposed a release-blocking upgrade UX gap: historical team runs written with `runVersion` plus flat `memberMetadata[]` trigger raw unsupported-legacy metadata text in the left sidebar. The new recursive `memberTree` schema can semantically represent old non-nested teams, so known legacy flat metadata should be converted by a one-time app data migration before normal runtime/history hydration. Runtime code should still read only the current canonical schema; migration is a separate maintenance boundary with database-recorded status and frontend visibility.
+- Delivery/user verification on 2026-05-17 exposed a status-regression design gap after merging the `agent-initializing-status-ux` work into the nested-team branch: individual agents can visibly transition `offline -> initializing -> offline/done` after a user send, and team members do not consistently show the same startup transition. Git comparison shows `origin/personal` contains the initializing UX merge, but current code mixes frontend optimistic `initializing` writes with backend snapshots/events. This violates the backend-runtime-status authoritative boundary. The target design must make backend the only source of canonical runtime status and keep frontend-only pending submit UI separate.
 
 ## Design Health Assessment (Mandatory)
 
 - Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Feature / Larger Requirement
 - Initial design issue signal (`Yes`/`No`/`Unclear`): Yes
-- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue; Shared Structure Looseness; Legacy Or Compatibility Pressure
+- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue; Shared Structure Looseness; Legacy Or Compatibility Pressure; Missing Invariant
 - Refactor posture (`Likely Needed`/`Likely Not Needed`/`Deferred`/`Unclear`): Likely Needed
-- Evidence basis: Mixed manager directly owns agent-only maps, agent-only runtime creation, agent-only events, and flat member metadata. Adding subteams by patching conditionals into those paths would mix agent and team lifecycle concerns without an explicit member-runtime boundary. The Electron red-sidebar failure shows that clean schema changes also need an explicit app-data migration boundary; otherwise user data upgrade failures leak as raw runtime/UI errors.
-- Requirement or scope impact: The design must introduce a member runtime abstraction and recursive mixed-team topology before adding nested execution; it should not only add another branch to `ensureMemberReady()`. It must also add a data-migration subsystem so known legacy persisted data is upgraded once, while normal runtime code remains current-schema-only.
+- Evidence basis: Mixed manager directly owns agent-only maps, agent-only runtime creation, agent-only events, and flat member metadata. Adding subteams by patching conditionals into those paths would mix agent and team lifecycle concerns without an explicit member-runtime boundary. The Electron red-sidebar failure shows that clean schema changes also need an explicit app-data migration boundary; otherwise user data upgrade failures leak as raw runtime/UI errors. The delivery/user status regression shows a status ownership violation: frontend currently writes canonical `initializing` while backend snapshots/events remain authoritative for the same field.
+- Requirement or scope impact: The design must introduce a member runtime abstraction and recursive mixed-team topology before adding nested execution; it should not only add another branch to `ensureMemberReady()`. It must also add a data-migration subsystem so known legacy persisted data is upgraded once, while normal runtime code remains current-schema-only. It must also refactor runtime status ownership so the backend owns canonical `initializing`/`running` transitions for individual and nested-team sends.
 
 ## Recommendations
 
@@ -70,6 +71,7 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - UC-011: During live and restored nested runs, show the same recipient-side child leaf conversation, without duplicate projection messages, and with one stable member-label policy across active and history views.
 - UC-012: A nested child team coordinator can report upward to allowed immediate parent-boundary recipients by direct visible member name, especially the parent member that delegated work to the subteam.
 - UC-013: Upgrading an installation with historical flat team-run metadata runs a recorded app data migration that converts known legacy metadata to canonical `memberTree`, exposes migration status/failures in Settings -> Server -> Migrations, and prevents raw migration/parser errors from rendering in the normal Agents/workspace/sidebar UI.
+- UC-014: Starting or sending work to an individual agent, team leaf member, or nested subteam shows a stable startup lifecycle: visible `offline -> initializing -> running`, then `idle`/done only after the accepted user input finishes; passive startup snapshots must not cause `initializing -> offline/idle` flicker.
 
 ## Out of Scope
 
@@ -127,6 +129,10 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - REQ-044: App data migration failures MUST be safe and diagnosable. A failed item MUST NOT corrupt the source file; the migration MUST continue processing independent items where safe, record counts/details/errors in the database summary/log, and support manual retry. A stale `RUNNING` record from a crashed process MUST be resolved to a retryable failed/aborted state before the next attempt.
 - REQ-045: The frontend settings area MUST expose a Server -> Migrations view that lists registered migrations, current status, last attempt timestamps, counts/summary, failure details, and actions to refresh and retry failed/not-run migrations. Technical details may be expandable, but normal users should see concise friendly explanations.
 - REQ-046: Normal Agents/workspace/sidebar/history hydration MUST NOT display raw legacy metadata parser errors. If unmigrated or failed legacy metadata is encountered despite startup migration, the affected historical team run is skipped or shown as a scoped "legacy data not upgraded" item, and the detailed failure is available in the Migrations view/logs.
+- REQ-047: Backend runtime lifecycle owners MUST be the only source of canonical runtime status (`offline`, `initializing`, `idle`, `running`, `error`). Frontend stores/components MUST NOT set canonical `currentStatus` to `initializing` on accepted send/start; they may only set separate local UI-pending state such as `isSending`, disabled controls, or optimistic message rows.
+- REQ-048: When the backend accepts a user send/start/create/restore command for an offline or idle individual agent, it MUST transition that run to canonical `initializing` before acknowledging the accepted operation or emitting/snapshotting runtime status. `getStatusSnapshot()` MUST return `initializing` while backend startup is in progress, then `running` when runtime work begins, then `idle`/done, `error`, or `offline` only after actual completion/failure/termination.
+- REQ-049: Public runtime status payloads emitted to the frontend MUST remain canonical (`offline`, `initializing`, `idle`, `running`, `error`). Raw provider lifecycle tokens such as `bootstrapping`, `starting`, `startup`, and `uninitialized` are not public API aliases, but provider/backend adapters MUST still map those internal states to canonical `initializing` before publishing status.
+- REQ-050: Team and nested-team sends MUST follow the same backend-owned status semantics. Backend mixed member handles/subteam handles MUST emit and snapshot route/path-identified `initializing` for the focused leaf, structural subteam/group where applicable, aggregate team, and backend-resolved child coordinator leaf; frontend routing renders those backend statuses by canonical route/path identity and does not infer canonical status from focus or display names.
 
 ## Acceptance Criteria
 
@@ -169,6 +175,11 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - AC-037: GraphQL/API tests prove migration status and retry endpoints expose registered migrations with statuses, timestamps, summary JSON/counts, error messages, and prevent concurrent duplicate runs of the same migration.
 - AC-038: Frontend tests cover Settings -> Server -> Migrations listing, failed migration detail expansion, refresh, and retry action wiring. The view displays friendly failure text while preserving technical details for diagnostics.
 - AC-039: A seeded Electron/browser scenario with legacy team-run metadata no longer renders raw unsupported metadata text in the left sidebar or main Agents/workspace UI. If conversion fails for one historical run, normal UI remains usable and the failure is visible through the Migrations view.
+- AC-040: In an Electron/browser user-send scenario for an individual agent that starts from `offline`, the frontend does not call a local canonical `applyAcceptedStartupStatus`/`currentStatus = initializing` path. Instead, the backend accepted operation emits or snapshots `AGENT_STATUS { status: "initializing" }`, and the visible status follows backend `offline -> initializing -> running -> idle/done` without an intervening backend `offline`/`idle` snapshot after acceptance.
+- AC-041: In a focused team leaf send, backend mixed runtime status events/snapshots set the selected member row and aggregate team state to `initializing`, then `running`, then terminal/idle; frontend tests prove canonical member/team status changes come from backend payloads rather than local status mutation.
+- AC-042: In a focused subteam/group send such as `BuildSquad`, backend mixed subteam handling emits/snapshots `initializing` for the structural group/aggregate and route/path status or member-input events move `BuildSquad/review_lead` to `initializing`/`running` without relying on flat `agent_name` fallback or frontend focus inference.
+- AC-043: Backend/provider status tests prove internal raw lifecycle tokens such as `bootstrapping`, `starting`, `startup`, and `uninitialized` are projected to canonical `initializing` before WebSocket/GraphQL/frontend payloads. Public payload tests still reject non-canonical status tokens at public boundaries where applicable.
+- AC-044: Team initial member status snapshot messages include canonical `member_route_key` and/or `source_path` for each member, and frontend routing tests prove strict nested identity dispatch works without bare display-name fallback.
 
 ## Constraints / Dependencies
 
@@ -180,6 +191,7 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - The dedicated worktree currently lacks installed dependencies; validation commands requiring `tsc`/Vitest need environment setup before execution.
 - Full-stack browser validation must use the worktree backend/frontend setup recorded in `fullstack-nested-team-ui-validation-failure.md` and assert the seeded nested UI tree, because backend-only E2E is no longer sufficient for this feature.
 - App data migrations run after Prisma/database schema migrations and before normal server services expose history to frontend clients. The migration record store uses the application database; migrated team metadata remains in the existing file-based memory/run-history layout.
+- The merged `agent-initializing-status-ux` behavior from `origin/personal` is an integration baseline for this branch. The nested-team/status cleanup may keep the public status contract clean, but it must not remove backend/provider-edge startup mapping or move canonical `initializing` ownership into the frontend.
 
 ## Assumptions
 
@@ -190,6 +202,7 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - A child team's default upward recipients are immediate parent-boundary recipients exposed by policy, not the whole organization graph.
 - Mixed manager is the long-term superset manager, but this change should not remove existing managers yet.
 - Known flat v1 team metadata represents non-nested top-level agent members and can be mechanically converted to a one-level `memberTree`; this conversion is data migration, not runtime backward compatibility.
+- `idle`/done is a valid backend-settled state after a user input completes, but after the backend accepts startup it should not snapshot `offline`/`idle` until the startup either fails/terminates or completes.
 
 ## Risks / Open Questions
 
@@ -200,6 +213,7 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 - Upward reporting must not be implemented by simply appending all parent/sibling/grandparent members to a child flat teammate list; that would erase the hierarchy and create ambiguous or unsafe cross-boundary messaging.
 - App data migrations must not become hidden best-effort startup work with no user visibility. Failed or partially successful migrations need durable records and Settings -> Server -> Migrations visibility so release validation and user support can see upgrade health.
 - Migration code must remain isolated from normal runtime parsers; otherwise the project recreates the dual-schema compatibility branches this design is trying to avoid.
+- Status cleanup must not confuse no-legacy public API cleanup with internal provider adaptation. Removing provider-edge mappings for startup states makes canonical `initializing` disappear and regresses the merged personal-branch UX. Moving canonical `initializing` to frontend optimistic state is also forbidden because it creates two status authorities.
 
 ## Requirement-To-Use-Case Coverage
 
@@ -251,6 +265,10 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 | REQ-044 | UC-013 |
 | REQ-045 | UC-013 |
 | REQ-046 | UC-008, UC-013 |
+| REQ-047 | UC-014 |
+| REQ-048 | UC-009, UC-014 |
+| REQ-049 | UC-005, UC-014 |
+| REQ-050 | UC-008, UC-009, UC-014 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -295,6 +313,11 @@ This crosses team-definition traversal, team-run launch config shape, backend se
 | AC-037 | Migration status/retry API exposes durable operational state and prevents duplicate concurrent runs. |
 | AC-038 | Settings -> Server -> Migrations shows friendly status, details, refresh, and retry. |
 | AC-039 | Legacy metadata/migration failures do not leak raw parser errors into normal app UI. |
+| AC-040 | Individual agent initializing is backend-emitted/snapshotted, not frontend-authored. |
+| AC-041 | Team leaf initializing is backend-emitted/snapshotted, not frontend-authored. |
+| AC-042 | Subteam/group and resolved child coordinator initializing are backend-emitted/snapshotted by route/path. |
+| AC-043 | Provider startup lifecycle tokens map internally to canonical public initializing. |
+| AC-044 | Team member status snapshots include canonical route/path identity for nested dispatch. |
 
 ## Approval Status
 
