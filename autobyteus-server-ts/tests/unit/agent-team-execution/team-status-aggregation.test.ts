@@ -30,6 +30,17 @@ describe("deriveTeamApiStatus", () => {
     })).toBe("running");
   });
 
+  it("returns initializing when startup is active but no member is running", () => {
+    expect(deriveTeamApiStatus({
+      nativeTeamStatus: "bootstrapping",
+      memberStatuses: [{ status: "idle" }],
+    })).toBe("initializing");
+    expect(deriveTeamApiStatus({
+      nativeTeamStatus: "idle",
+      memberStatuses: [{ status: "initializing" }, { status: "offline" }],
+    })).toBe("initializing");
+  });
+
   it("gives idle precedence over offline statuses", () => {
     expect(deriveTeamApiStatus({
       nativeTeamStatus: "offline",
@@ -37,11 +48,18 @@ describe("deriveTeamApiStatus", () => {
     })).toBe("idle");
   });
 
-  it("gives error precedence over running and idle statuses", () => {
+  it("gives running and initializing precedence over stale aggregate errors", () => {
     expect(deriveTeamApiStatus({
       nativeTeamStatus: "running",
       memberStatuses: [{ status: "error" }, { status: "running" }],
-    })).toBe("error");
+    })).toBe("running");
+    expect(deriveTeamApiStatus({
+      nativeTeamStatus: "failed",
+      memberStatuses: [{ status: "initializing" }, { status: "error" }],
+    })).toBe("initializing");
+  });
+
+  it("keeps terminal errors visible when no member is active", () => {
     expect(deriveTeamApiStatus({
       nativeTeamStatus: "failed",
       memberStatuses: [{ status: "idle" }],

@@ -11,7 +11,6 @@ type AutoByteusAgentContextLike = {
 } | null;
 
 const LOCKED_RUNNING_STATUSES = new Set([
-  "bootstrapping",
   "interrupting",
   "shutting_down",
 ]);
@@ -33,9 +32,7 @@ export const projectAutoByteusAgentStatus = (input: {
   const status =
     input.isActive === false
       ? "offline"
-      : statusToken === "uninitialized"
-        ? "running"
-        : normalizeAgentApiStatus(input.currentStatus, "idle");
+      : normalizeAgentApiStatus(input.currentStatus, "idle");
   const canInterrupt =
     status === "running" &&
     hasActiveTurn(input.context ?? null) &&

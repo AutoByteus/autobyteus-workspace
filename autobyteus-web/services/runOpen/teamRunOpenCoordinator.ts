@@ -19,6 +19,7 @@ import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRu
 const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
   if (
     status === AgentStatus.Running ||
+    status === AgentStatus.Initializing ||
     status === AgentStatus.Idle ||
     status === AgentStatus.Error ||
     status === AgentStatus.Offline

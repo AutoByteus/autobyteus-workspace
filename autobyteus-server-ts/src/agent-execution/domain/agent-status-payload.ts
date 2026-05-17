@@ -1,4 +1,4 @@
-export type AgentApiStatus = "offline" | "idle" | "running" | "error";
+export type AgentApiStatus = "offline" | "initializing" | "idle" | "running" | "error";
 
 export type AgentStatusPayload = {
   status: AgentApiStatus;
@@ -19,11 +19,18 @@ const RUNNING_STATUS_TOKENS = new Set([
   "executing_tool",
   "processing_tool_result",
   "interrupting",
-  "bootstrapping",
   "shutting_down",
   "inprogress",
   "in_progress",
   "busy",
+]);
+
+const INITIALIZING_STATUS_TOKENS = new Set([
+  "bootstrapping",
+  "initializing",
+  "starting",
+  "startup",
+  "uninitialized",
 ]);
 
 const IDLE_STATUS_TOKENS = new Set([
@@ -31,7 +38,6 @@ const IDLE_STATUS_TOKENS = new Set([
 ]);
 
 const OFFLINE_STATUS_TOKENS = new Set([
-  "uninitialized",
   "shutdown_complete",
   "shutdowncomplete",
   "stopped",
@@ -56,7 +62,11 @@ const normalizeStatusToken = (value: unknown): string | null => {
 };
 
 export const isAgentApiStatus = (value: unknown): value is AgentApiStatus =>
-  value === "offline" || value === "idle" || value === "running" || value === "error";
+  value === "offline" ||
+  value === "initializing" ||
+  value === "idle" ||
+  value === "running" ||
+  value === "error";
 
 export const normalizeAgentApiStatus = (
   value: unknown,
@@ -68,6 +78,9 @@ export const normalizeAgentApiStatus = (
   }
   if (ERROR_STATUS_TOKENS.has(token)) {
     return "error";
+  }
+  if (INITIALIZING_STATUS_TOKENS.has(token)) {
+    return "initializing";
   }
   if (RUNNING_STATUS_TOKENS.has(token)) {
     return "running";

@@ -1,0 +1,92 @@
+# Electron macOS user-test build artifact verification
+Date: 2026-05-17
+## Artifacts
+electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg.blockmap
+electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.zip
+electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.zip.blockmap
+electron-dist/latest-mac.yml
+
+## Sizes
+total 1510912
+-rw-r--r--@ 1 normy  staff   358M May 17 08:28 AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+-rw-r--r--@ 1 normy  staff   383K May 17 08:28 AutoByteus_enterprise_macos-arm64-1.3.15.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   356M May 17 08:29 AutoByteus_enterprise_macos-arm64-1.3.15.zip
+-rw-r--r--@ 1 normy  staff   374K May 17 08:29 AutoByteus_enterprise_macos-arm64-1.3.15.zip.blockmap
+-rw-r--r--@ 1 normy  staff   561B May 17 08:29 latest-mac.yml
+drwxr-xr-x@ 3 normy  staff    96B May 17 08:27 mac-arm64
+
+## SHA256
+465d08bee53230427cfadd818a0bbf34a7abc8907f0cca5dce22a305a91b2458  electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+971bfb08fe01d278e09c287e7b4159a03884278a015c1bbe1a8b0b45565a904b  electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg.blockmap
+bd58e6411f4b7947d9b10d141c5088bc4f44324dba30104048d46ed33436739c  electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.zip
+6485c63c98f832460a68684f1947ab083e4979f00e1bf407fcb1f3d11f5e4183  electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.zip.blockmap
+
+## ZIP integrity
+No errors detected in compressed data of electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.zip.
+
+## DMG image info
+Format Description: UDIF, nur Lesen, komprimiert (zlib)
+Class Name: CUDIFDiskImage
+Checksum Type: CRC32
+Size Information:
+	CUDIFEncoding-bytes-total: 375778455
+	Total Empty Bytes: 614316032
+	Sector Count: 3638879
+	Total Bytes: 1863106048
+	CUDIFEncoding-bytes-wasted: 0
+	Total Non-Empty Bytes: 1248790016
+	Compressed Ratio: 0.30091392402675965
+	CUDIFEncoding-bytes-in-use: 375778455
+	Compressed Bytes: 375778455
+Checksum Value: $AF3F39C1
+Segments:
+	0: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initializing-status-ux/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+Partition Information:
+	3:
+		Name: disk image (Apple_APFS : 4)
+		Partition Number: 3
+		Checksum Type: CRC32
+		Checksum Value: $5B20F11A
+	4:
+		Name:  (Apple_Free : 5)
+		Partition Number: 4
+		Checksum Type: CRC32
+		Checksum Value: $00000000
+	0:
+		Name: GPT Header (Primary GPT Header : 1)
+		Partition Number: 0
+		Checksum Type: CRC32
+		Checksum Value: $4A19E880
+	5:
+		Name: GPT Partition Data (Backup GPT Table : 6)
+		Partition Number: 5
+		Checksum Type: CRC32
+		Checksum Value: $8E3B0010
+	1:
+		Name: GPT Partition Data (Primary GPT Table : 2)
+		Partition Number: 1
+		Checksum Type: CRC32
+		Checksum Value: $8E3B0010
+	6:
+		Name: GPT Header (Backup GPT Header : 7)
+		Partition Number: 6
+		Checksum Type: CRC32
+		Checksum Value: $CF45CF1D
+	-1:
+		Name: Protective Master Boot Record (MBR : 0)
+		Partition Number: -1
+		Checksum Type: CRC32
+		Checksum Value: $7940F261
+	2:
+		Name:  (Apple_Free : 3)
+		Partition Number: 2
+		Checksum Type: CRC32
+		Checksum Value: $00000000
+Format: UDZO
+Backing Store Information:
+	URL: file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-initializing-status-ux/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+
+## App bundle metadata
+Version: 1.3.15
+Executable: AutoByteus

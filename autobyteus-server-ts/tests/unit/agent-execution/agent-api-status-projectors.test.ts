@@ -8,9 +8,12 @@ import { projectCodexAgentStatus } from "../../../src/agent-execution/backends/c
 import { projectClaudeAgentStatus } from "../../../src/agent-execution/backends/claude/events/claude-status-projector.js";
 
 describe("agent API status projectors", () => {
-  it("normalizes the public four-state vocabulary with offline as the no-runtime fallback", () => {
+  it("normalizes the public startup-aware vocabulary with offline as the no-runtime fallback", () => {
     expect(normalizeAgentApiStatus(undefined)).toBe("offline");
     expect(normalizeAgentApiStatus("shutdown_complete")).toBe("offline");
+    expect(normalizeAgentApiStatus("bootstrapping")).toBe("initializing");
+    expect(normalizeAgentApiStatus("uninitialized")).toBe("initializing");
+    expect(normalizeAgentApiStatus("starting")).toBe("initializing");
     expect(normalizeAgentApiStatus("idle")).toBe("idle");
     expect(normalizeAgentApiStatus("awaiting_llm_response")).toBe("running");
     expect(normalizeAgentApiStatus("failed")).toBe("error");
@@ -22,6 +25,25 @@ describe("agent API status projectors", () => {
       canInterrupt: true,
     })).toMatchObject({
       status: "offline",
+      can_interrupt: false,
+    });
+  });
+
+  it("keeps initializing non-interruptible even when a runtime reports an active turn", () => {
+    expect(buildAgentStatusPayload({
+      status: "initializing",
+      canInterrupt: true,
+    })).toMatchObject({
+      status: "initializing",
+      can_interrupt: false,
+    });
+
+    expect(projectAutoByteusAgentStatus({
+      currentStatus: "uninitialized",
+      context: { state: { activeTurn: {} } },
+      isActive: true,
+    })).toMatchObject({
+      status: "initializing",
       can_interrupt: false,
     });
   });

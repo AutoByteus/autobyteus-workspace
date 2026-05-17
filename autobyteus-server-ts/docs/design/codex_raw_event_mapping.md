@@ -36,9 +36,12 @@ Higher layers should depend on `CodexThread` state and normalized `AgentRunEvent
 
 Codex thread status changes update `CodexThread` state first. The normalized
 `AGENT_STATUS` event is then projected from that thread-owned snapshot into the
-server WebSocket contract `{ status: "offline" | "idle" | "running" | "error",
+server WebSocket contract `{ status: "offline" | "initializing" | "idle" | "running" | "error",
 can_interrupt: boolean }`; raw provider status payloads are not forwarded and
 legacy target fields such as `new_status` / `old_status` are not emitted.
+Startup thread statuses project as `initializing` with `can_interrupt: false`;
+active generation/tool statuses project as `running`, and only `running`
+snapshots can expose interrupt authority.
 
 ## Apply-Patch / Edit-File Spine
 

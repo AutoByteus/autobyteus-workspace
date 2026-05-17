@@ -4,6 +4,7 @@ import { useAgentRunStore } from '../agentRunStore';
 import { useAgentContextsStore } from '../agentContextsStore';
 import { AgentStreamingService } from '~/services/agentStreaming';
 import { RestoreAgentRun } from '~/graphql/mutations/agentMutations';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const {
   mutateMock,
@@ -199,6 +200,39 @@ describe('agentRunStore', () => {
         // 6. Should connect stream and send the first message over WebSocket
         expect(AgentStreamingService).toHaveBeenCalled(); 
         expect(mockSendMessage).toHaveBeenCalledWith('do something', [], []);
+    });
+
+    it('acknowledges a new agent send locally before backend creation resolves', () => {
+        let resolveCreate: (value: any) => void = () => {};
+        mutateMock.mockReturnValueOnce(new Promise((resolve) => {
+          resolveCreate = resolve;
+        }));
+        const store = useAgentRunStore();
+
+        const sendPromise = store.sendUserInputAndSubscribe();
+
+        expect(mockAgentContext.state.conversation.messages).toHaveLength(1);
+        expect(mockAgentContext.state.conversation.messages[0]).toMatchObject({
+          type: 'user',
+          text: 'do something',
+        });
+        expect(mockAgentContext.requirement).toBe('');
+        expect(mockAgentContext.contextFilePaths).toEqual([]);
+        expect(mockAgentContext.isSending).toBe(true);
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Initializing);
+        expect(mockAgentContext.state.canInterrupt).toBe(false);
+
+        resolveCreate({
+          data: {
+            createAgentRun: {
+              success: true,
+              runId: 'perm-agent-id',
+              message: 'Success',
+            },
+          },
+          errors: [],
+        });
+        return sendPromise;
     });
 
     it('sendUserInputAndSubscribe should apply fallback model for new agent when missing', async () => {
