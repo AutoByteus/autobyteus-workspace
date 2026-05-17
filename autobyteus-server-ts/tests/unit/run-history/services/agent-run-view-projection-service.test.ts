@@ -3,53 +3,23 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { RAW_TRACES_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { buildRunProjectionBundle } from "../../../../src/run-history/projection/run-projection-utils.js";
 import type { RunProjectionProvider } from "../../../../src/run-history/projection/run-projection-types.js";
 import { AgentRunViewProjectionService } from "../../../../src/run-history/services/agent-run-view-projection-service.js";
 import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
 
-const { FakeRunProjectionProviderRegistry } = vi.hoisted(() => ({
-  FakeRunProjectionProviderRegistry: class {
-    private readonly fallbackProvider: RunProjectionProvider;
-    private readonly providersByRuntime = new Map<string, RunProjectionProvider>();
-
-    constructor(
-      fallbackProvider: RunProjectionProvider,
-      runtimeProviders: RunProjectionProvider[] = [],
-    ) {
-      this.fallbackProvider = fallbackProvider;
-      for (const provider of runtimeProviders) {
-        if (provider.runtimeKind) {
-          this.providersByRuntime.set(provider.runtimeKind, provider);
-        }
-      }
-    }
-
-    resolveProvider(runtimeKind: string): RunProjectionProvider {
-      return this.providersByRuntime.get(runtimeKind) ?? this.fallbackProvider;
-    }
-
-    resolveFallbackProvider(): RunProjectionProvider {
-      return this.fallbackProvider;
-    }
-  },
-}));
-
-vi.mock("../../../../src/run-history/projection/run-projection-provider-registry.js", () => ({
-  RunProjectionProviderRegistry: FakeRunProjectionProviderRegistry,
-  getRunProjectionProviderRegistry: vi.fn(() => {
-    throw new Error("getRunProjectionProviderRegistry should not be used in this unit test");
-  }),
-}));
-
 const createMetadata = (
   runtimeKind: RuntimeKind,
   runId: string,
+  overrides: Partial<AgentRunMetadata> = {},
 ): AgentRunMetadata => ({
   runId,
   agentDefinitionId: "agent-definition-1",
   workspaceRootPath: "/tmp/workspace",
+  memoryDir: null,
   llmModelIdentifier: "gpt-5.2-codex",
   llmConfig: null,
   autoExecuteTools: false,
@@ -57,6 +27,14 @@ const createMetadata = (
   runtimeKind,
   platformAgentRunId: runtimeKind === RuntimeKind.CODEX_APP_SERVER ? "thread-1" : runId,
   lastKnownStatus: "IDLE",
+  ...overrides,
+});
+
+const createProvider = (
+  impl: RunProjectionProvider["buildProjection"],
+): RunProjectionProvider => ({
+  runtimeKind: RuntimeKind.AUTOBYTEUS,
+  buildProjection: impl,
 });
 
 describe("AgentRunViewProjectionService", () => {
@@ -75,173 +53,235 @@ describe("AgentRunViewProjectionService", () => {
     return dir;
   };
 
-  const createProvider = (
-    runtimeKind: RuntimeKind | undefined,
-    impl: RunProjectionProvider["buildProjection"],
-  ): RunProjectionProvider => ({
-    runtimeKind,
-    buildProjection: impl,
-  });
-
-  it("uses runtime provider first and falls back to local provider when primary result is null", async () => {
+  it("uses the local replay provider for Codex runs instead of runtime-native provider selection", async () => {
     const memoryDir = await createTempMemoryDir();
-    const runId = "run-codex-fallback";
+    const runId = "run-codex-local-only";
     const metadataStore = new AgentRunMetadataStore(memoryDir);
     await metadataStore.writeMetadata(runId, createMetadata(RuntimeKind.CODEX_APP_SERVER, runId));
 
-    const codexProvider = createProvider(
-      RuntimeKind.CODEX_APP_SERVER,
-      vi.fn(async () => null),
-    );
-    const fallbackProvider = createProvider(
-      RuntimeKind.AUTOBYTEUS,
+    const localProvider = createProvider(
       vi.fn(async (input) => ({
         runId: input.source.runId,
-        conversation: [{ kind: "message", role: "user", content: "local fallback", ts: 1 }],
+        conversation: [
+          {
+            kind: "message",
+            role: "user",
+            content: `local:${input.source.platformRunId}`,
+            ts: 1,
+          },
+        ],
         activities: [],
-        summary: "local fallback",
+        summary: "local:thread-1",
+        lastActivityAt: "2026-02-24T00:00:01.000Z",
+      })),
+    );
+    const nativeCodexProvider = createProvider(vi.fn(async () => {
+      throw new Error("Codex provider must not be reachable from normal UI history");
+    }));
+
+    const service = new AgentRunViewProjectionService(memoryDir, {
+      metadataStore,
+      localProjectionProvider: localProvider,
+    });
+
+    const projection = await service.getProjection(runId);
+
+    expect(localProvider.buildProjection).toHaveBeenCalledTimes(1);
+    expect(localProvider.buildProjection).toHaveBeenCalledWith({
+      source: expect.objectContaining({
+        runId,
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        memoryDir: path.join(memoryDir, "agents", runId),
+        platformRunId: "thread-1",
+      }),
+    });
+    expect(nativeCodexProvider.buildProjection).not.toHaveBeenCalled();
+    expect(projection.conversation.map((entry) => entry.content)).toEqual(["local:thread-1"]);
+  });
+
+  it("keeps Codex projection empty when local replay history is missing", async () => {
+    const memoryDir = await createTempMemoryDir();
+    const runId = "run-codex-missing-local";
+    const nativeCodexProvider = createProvider(vi.fn(async () => ({
+      runId,
+      conversation: [{ kind: "message", role: "assistant", content: "native recovery", ts: 2 }],
+      activities: [],
+      summary: "native recovery",
+      lastActivityAt: "2026-02-24T00:00:02.000Z",
+    })));
+
+    const service = new AgentRunViewProjectionService(memoryDir);
+    const projection = await service.getProjectionFromMetadata({
+      runId,
+      metadata: createMetadata(RuntimeKind.CODEX_APP_SERVER, runId),
+    });
+
+    expect(nativeCodexProvider.buildProjection).not.toHaveBeenCalled();
+    expect(projection).toEqual(buildRunProjectionBundle(runId, [], []));
+  });
+
+  it("uses the same local replay path for Claude Agent SDK runs", async () => {
+    const memoryDir = await createTempMemoryDir();
+    const runId = "run-claude-local-only";
+    const memberMemoryDir = path.join(memoryDir, "agent_teams", "team-1", "member-1");
+    const localProvider = createProvider(
+      vi.fn(async (input) => ({
+        runId: input.source.runId,
+        conversation: [
+          {
+            kind: "message",
+            role: "user",
+            content: `runtime:${input.source.runtimeKind};memory:${input.source.memoryDir}`,
+            ts: 1,
+          },
+        ],
+        activities: [],
+        summary: "claude local",
         lastActivityAt: "2026-02-24T00:00:01.000Z",
       })),
     );
 
     const service = new AgentRunViewProjectionService(memoryDir, {
-      metadataStore,
-      providerRegistry: new FakeRunProjectionProviderRegistry(fallbackProvider, [codexProvider]),
-    });
-
-    const projection = await service.getProjection(runId);
-    expect(codexProvider.buildProjection).toHaveBeenCalledTimes(1);
-    expect(fallbackProvider.buildProjection).toHaveBeenCalledTimes(1);
-    expect(projection.summary).toBe("local fallback");
-    expect(projection.conversation[0]?.content).toBe("local fallback");
-  });
-
-  it("returns primary runtime projection and skips fallback when primary has usable conversation", async () => {
-    const memoryDir = await createTempMemoryDir();
-    const runId = "run-codex-primary";
-    const metadataStore = new AgentRunMetadataStore(memoryDir);
-    await metadataStore.writeMetadata(runId, createMetadata(RuntimeKind.CODEX_APP_SERVER, runId));
-
-    const codexProvider = createProvider(
-      RuntimeKind.CODEX_APP_SERVER,
-      vi.fn(async (input) => ({
-        runId: input.source.runId,
-        conversation: [],
-        activities: [
-          {
-            invocationId: "call-1",
-            toolName: "run_bash",
-            type: "terminal_command",
-            status: "success",
-            contextText: "pwd",
-            arguments: { command: "pwd" },
-            logs: [],
-            result: { stdout: "/tmp" },
-            error: null,
-            ts: 2,
-            detailLevel: "source_limited",
-          },
-        ],
-        summary: "primary",
-        lastActivityAt: "2026-02-24T00:00:02.000Z",
-      })),
-    );
-    const fallbackProvider = createProvider(
-      RuntimeKind.AUTOBYTEUS,
-      vi.fn(async () => ({
-        runId,
-        conversation: [{ kind: "message", role: "assistant", content: "fallback", ts: 3 }],
-        activities: [],
-        summary: "fallback",
-        lastActivityAt: "2026-02-24T00:00:03.000Z",
-      })),
-    );
-
-    const service = new AgentRunViewProjectionService(memoryDir, {
-      metadataStore,
-      providerRegistry: new FakeRunProjectionProviderRegistry(fallbackProvider, [codexProvider]),
-    });
-
-    const projection = await service.getProjection(runId);
-    expect(codexProvider.buildProjection).toHaveBeenCalledTimes(1);
-    expect(fallbackProvider.buildProjection).not.toHaveBeenCalled();
-    expect(projection.summary).toBe("primary");
-    expect(projection.activities).toHaveLength(1);
-  });
-
-  it("merges local projection rows with runtime provider rows instead of dropping complementary history", async () => {
-    const memoryDir = await createTempMemoryDir();
-    const runId = "run-claude-merged";
-
-    const claudeProvider = createProvider(
-      RuntimeKind.CLAUDE_AGENT_SDK,
-      vi.fn(async (input) => ({
-        runId: input.source.runId,
-        conversation: [{ kind: "message", role: "assistant", content: "runtime follow-up", ts: 2 }],
-        activities: [],
-        summary: "runtime follow-up",
-        lastActivityAt: "2026-02-24T00:00:02.000Z",
-      })),
-    );
-    const fallbackProvider = createProvider(
-      RuntimeKind.AUTOBYTEUS,
-      vi.fn(async () => ({
-        runId,
-        conversation: [{ kind: "message", role: "assistant", content: "fallback", ts: 3 }],
-        activities: [],
-        summary: "fallback",
-        lastActivityAt: "2026-02-24T00:00:03.000Z",
-      })),
-    );
-
-    const service = new AgentRunViewProjectionService(memoryDir, {
-      providerRegistry: new FakeRunProjectionProviderRegistry(fallbackProvider, [claudeProvider]),
+      localProjectionProvider: localProvider,
     });
 
     const projection = await service.getProjectionFromMetadata({
       runId,
-      metadata: createMetadata(RuntimeKind.CLAUDE_AGENT_SDK, runId),
-      localProjection: {
-        runId,
-        conversation: [{ kind: "message", role: "user", content: "local first turn", ts: 1 }],
-        activities: [],
-        summary: "local first turn",
-        lastActivityAt: "2026-02-24T00:00:01.000Z",
-      },
-      allowFallbackProvider: false,
+      metadata: createMetadata(RuntimeKind.CLAUDE_AGENT_SDK, runId, {
+        memoryDir: memberMemoryDir,
+        platformAgentRunId: "claude-session-1",
+      }),
     });
 
-    expect(claudeProvider.buildProjection).toHaveBeenCalledTimes(1);
-    expect(fallbackProvider.buildProjection).not.toHaveBeenCalled();
-    expect(projection.conversation.map((entry) => entry.content)).toEqual([
-      "local first turn",
-      "runtime follow-up",
+    expect(localProvider.buildProjection).toHaveBeenCalledWith({
+      source: expect.objectContaining({
+        runId,
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        memoryDir: memberMemoryDir,
+        platformRunId: "claude-session-1",
+      }),
+    });
+    expect(projection.conversation[0]?.content).toBe(
+      `runtime:${RuntimeKind.CLAUDE_AGENT_SDK};memory:${memberMemoryDir}`,
+    );
+  });
+
+  it("uses the same local replay path for AutoByteus runs", async () => {
+    const memoryDir = await createTempMemoryDir();
+    const runId = "run-autobyteus-local-only";
+    const localProvider = createProvider(
+      vi.fn(async (input) => ({
+        runId: input.source.runId,
+        conversation: [
+          {
+            kind: "message",
+            role: "assistant",
+            content: `runtime:${input.source.runtimeKind}`,
+            ts: 1,
+          },
+        ],
+        activities: [],
+        summary: "autobyteus local",
+        lastActivityAt: "2026-02-24T00:00:01.000Z",
+      })),
+    );
+
+    const service = new AgentRunViewProjectionService(memoryDir, {
+      localProjectionProvider: localProvider,
+    });
+
+    const projection = await service.getProjectionFromMetadata({
+      runId,
+      metadata: createMetadata(RuntimeKind.AUTOBYTEUS, runId),
+    });
+
+    expect(localProvider.buildProjection).toHaveBeenCalledWith({
+      source: expect.objectContaining({
+        runId,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+      }),
+    });
+    expect(projection.conversation[0]?.content).toBe(`runtime:${RuntimeKind.AUTOBYTEUS}`);
+  });
+
+  it("builds Codex display rows from local replay traces with reasoning, tools, and assistant text in order", async () => {
+    const memoryDir = await createTempMemoryDir();
+    const runId = "run-codex-local-traces";
+    const metadataStore = new AgentRunMetadataStore(memoryDir);
+    await metadataStore.writeMetadata(runId, createMetadata(RuntimeKind.CODEX_APP_SERVER, runId));
+
+    const runDir = path.join(memoryDir, "agents", runId);
+    await fs.mkdir(runDir, { recursive: true });
+    await fs.writeFile(
+      path.join(runDir, RAW_TRACES_MEMORY_FILE_NAME),
+      [
+        { trace_type: "user", content: "inspect workspace", turn_id: "turn-1", seq: 1, ts: 1 },
+        { trace_type: "reasoning", content: "I should list files first.", turn_id: "turn-1", seq: 2, ts: 2 },
+        {
+          trace_type: "tool_call",
+          tool_call_id: "call-1",
+          tool_name: "run_bash",
+          tool_args: { command: "ls" },
+          turn_id: "turn-1",
+          seq: 3,
+          ts: 3,
+        },
+        {
+          trace_type: "tool_result",
+          tool_call_id: "call-1",
+          tool_name: "run_bash",
+          tool_args: { command: "ls" },
+          tool_result: { stdout: "README.md\n" },
+          turn_id: "turn-1",
+          seq: 4,
+          ts: 4,
+        },
+        { trace_type: "assistant", content: "README.md exists.", turn_id: "turn-1", seq: 5, ts: 5 },
+      ].map((row) => JSON.stringify(row)).join("\n"),
+      "utf-8",
+    );
+
+    const service = new AgentRunViewProjectionService(memoryDir, { metadataStore });
+    const projection = await service.getProjection(runId);
+
+    expect(projection.conversation.map((entry) => entry.kind)).toEqual([
+      "message",
+      "reasoning",
+      "tool_call",
+      "message",
+    ]);
+    expect(projection.conversation[0]).toMatchObject({ role: "user", content: "inspect workspace" });
+    expect(projection.conversation[1]).toMatchObject({ kind: "reasoning", content: "I should list files first." });
+    expect(projection.conversation[2]).toMatchObject({
+      kind: "tool_call",
+      invocationId: "call-1",
+      toolName: "run_bash",
+      toolArgs: { command: "ls" },
+      toolResult: { stdout: "README.md\n" },
+    });
+    expect(projection.conversation[3]).toMatchObject({ role: "assistant", content: "README.md exists." });
+    expect(projection.activities).toEqual([
+      expect.objectContaining({
+        invocationId: "call-1",
+        toolName: "run_bash",
+        type: "terminal_command",
+        status: "success",
+        arguments: { command: "ls" },
+        result: { stdout: "README.md\n" },
+      }),
     ]);
   });
 
-  it("deduplicates projection rows when one provider returns timestamped rows and another returns null timestamp copies", async () => {
+  it("deduplicates timestamped/null local replay duplicate rows", async () => {
     const memoryDir = await createTempMemoryDir();
-    const runId = "run-merged-duplicate-rows";
-
-    const codexProvider = createProvider(
-      RuntimeKind.CODEX_APP_SERVER,
+    const runId = "run-local-duplicate-rows";
+    const localProvider = createProvider(
       vi.fn(async (input) => ({
         runId: input.source.runId,
         conversation: [
           { kind: "message", role: "user", content: "inbound child prompt", ts: null },
-          { kind: "message", role: "assistant", content: "child reply", ts: null },
-        ],
-        activities: [],
-        summary: "inbound child prompt",
-        lastActivityAt: null,
-      })),
-    );
-    const fallbackProvider = createProvider(
-      RuntimeKind.AUTOBYTEUS,
-      vi.fn(async () => ({
-        runId,
-        conversation: [
           { kind: "message", role: "user", content: "inbound child prompt", ts: 100 },
+          { kind: "message", role: "assistant", content: "child reply", ts: null },
           { kind: "message", role: "assistant", content: "child reply", ts: 101 },
         ],
         activities: [],
@@ -251,38 +291,24 @@ describe("AgentRunViewProjectionService", () => {
     );
 
     const service = new AgentRunViewProjectionService(memoryDir, {
-      providerRegistry: new FakeRunProjectionProviderRegistry(fallbackProvider, [codexProvider]),
+      localProjectionProvider: localProvider,
     });
 
     const projection = await service.getProjectionFromMetadata({
       runId,
       metadata: createMetadata(RuntimeKind.CODEX_APP_SERVER, runId),
-      localProjection: {
-        runId,
-        conversation: [
-          { kind: "message", role: "user", content: "inbound child prompt", ts: 100 },
-          { kind: "message", role: "assistant", content: "child reply", ts: 101 },
-        ],
-        activities: [],
-        summary: "inbound child prompt",
-        lastActivityAt: "1970-01-01T00:01:41.000Z",
-      },
-      allowFallbackProvider: false,
     });
 
-    expect(codexProvider.buildProjection).toHaveBeenCalledTimes(1);
     expect(projection.conversation).toEqual([
       { kind: "message", role: "user", content: "inbound child prompt", ts: 100 },
       { kind: "message", role: "assistant", content: "child reply", ts: 101 },
     ]);
   });
 
-  it("preserves repeated no-id no-timestamp projection rows", async () => {
+  it("preserves repeated no-id no-timestamp local replay rows", async () => {
     const memoryDir = await createTempMemoryDir();
     const runId = "run-repeated-no-timestamp";
-
-    const provider = createProvider(
-      RuntimeKind.AUTOBYTEUS,
+    const localProvider = createProvider(
       vi.fn(async (input) => ({
         runId: input.source.runId,
         conversation: [
@@ -296,13 +322,12 @@ describe("AgentRunViewProjectionService", () => {
     );
 
     const service = new AgentRunViewProjectionService(memoryDir, {
-      providerRegistry: new FakeRunProjectionProviderRegistry(provider),
+      localProjectionProvider: localProvider,
     });
 
     const projection = await service.getProjectionFromMetadata({
       runId,
       metadata: createMetadata(RuntimeKind.AUTOBYTEUS, runId),
-      allowFallbackProvider: false,
     });
 
     expect(projection.conversation).toEqual([
@@ -311,98 +336,23 @@ describe("AgentRunViewProjectionService", () => {
     ]);
   });
 
-  it("keeps local-memory tool activities when Claude runtime projection is conversation-only", async () => {
+  it("returns deterministic empty projection when the local replay provider fails", async () => {
     const memoryDir = await createTempMemoryDir();
-    const runId = "run-claude-local-activity-merge";
-    const metadataStore = new AgentRunMetadataStore(memoryDir);
-    await metadataStore.writeMetadata(runId, createMetadata(RuntimeKind.CLAUDE_AGENT_SDK, runId));
-
-    const claudeProvider = createProvider(
-      RuntimeKind.CLAUDE_AGENT_SDK,
-      vi.fn(async (input) => ({
-        runId: input.source.runId,
-        conversation: [{ kind: "message", role: "assistant", content: "runtime reply", ts: 2 }],
-        activities: [],
-        summary: "runtime reply",
-        lastActivityAt: "2026-02-24T00:00:02.000Z",
-      })),
-    );
-    const fallbackProvider = createProvider(
-      RuntimeKind.AUTOBYTEUS,
-      vi.fn(async () => ({
-        runId,
-        conversation: [{ kind: "message", role: "user", content: "pwd please", ts: 1 }],
-        activities: [
-          {
-            invocationId: "toolu-bash-1",
-            toolName: "Bash",
-            type: "terminal_command",
-            status: "success",
-            contextText: "pwd",
-            arguments: { command: "pwd" },
-            logs: [],
-            result: "workspace\n",
-            error: null,
-            ts: 1.5,
-            detailLevel: "full",
-          },
-        ],
-        summary: "pwd please",
-        lastActivityAt: "2026-02-24T00:00:01.500Z",
-      })),
-    );
+    const runId = "run-local-provider-fails";
+    const localProvider = createProvider(vi.fn(async () => {
+      throw new Error("local replay failed");
+    }));
 
     const service = new AgentRunViewProjectionService(memoryDir, {
-      metadataStore,
-      providerRegistry: new FakeRunProjectionProviderRegistry(fallbackProvider, [claudeProvider]),
+      localProjectionProvider: localProvider,
     });
 
-    const projection = await service.getProjection(runId);
-
-    expect(claudeProvider.buildProjection).toHaveBeenCalledTimes(1);
-    expect(fallbackProvider.buildProjection).toHaveBeenCalledTimes(1);
-    expect(projection.conversation.map((entry) => entry.content)).toEqual([
-      "pwd please",
-      "runtime reply",
-    ]);
-    expect(projection.activities).toEqual([
-      expect.objectContaining({
-        invocationId: "toolu-bash-1",
-        toolName: "Bash",
-        type: "terminal_command",
-        status: "success",
-        arguments: { command: "pwd" },
-      }),
-    ]);
-  });
-
-  it("returns deterministic empty projection when both providers fail", async () => {
-    const memoryDir = await createTempMemoryDir();
-    const runId = "run-codex-empty";
-    const metadataStore = new AgentRunMetadataStore(memoryDir);
-    await metadataStore.writeMetadata(runId, createMetadata(RuntimeKind.CODEX_APP_SERVER, runId));
-
-    const codexProvider = createProvider(
-      RuntimeKind.CODEX_APP_SERVER,
-      vi.fn(async () => {
-        throw new Error("primary failed");
-      }),
-    );
-    const fallbackProvider = createProvider(
-      RuntimeKind.AUTOBYTEUS,
-      vi.fn(async () => null),
-    );
-
-    const service = new AgentRunViewProjectionService(memoryDir, {
-      metadataStore,
-      providerRegistry: new FakeRunProjectionProviderRegistry(fallbackProvider, [codexProvider]),
+    const projection = await service.getProjectionFromMetadata({
+      runId,
+      metadata: createMetadata(RuntimeKind.CODEX_APP_SERVER, runId),
     });
 
-    const projection = await service.getProjection(runId);
-    expect(projection.runId).toBe(runId);
-    expect(projection.conversation).toEqual([]);
-    expect(projection.activities).toEqual([]);
-    expect(projection.summary).toBeNull();
-    expect(projection.lastActivityAt).toBeNull();
+    expect(localProvider.buildProjection).toHaveBeenCalledTimes(1);
+    expect(projection).toEqual(buildRunProjectionBundle(runId, [], []));
   });
 });

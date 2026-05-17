@@ -907,3 +907,46 @@ Passed:
   - Result: `1` changed non-test TS/Vue source file checked; no file exceeded `500` non-empty lines (`team-run-history-index-service.ts` is `223` non-empty lines).
 
 API/E2E/full-stack validation should resume only after this local fix passes code review.
+
+## Delivery Round 27 Latest-Base Integration Local Fix Update
+
+Integrated latest tracked base `origin/personal @ 720f46940841a2b407bb65428095fe5435f5238d` (`v1.3.15`) after delivery found conflicts against the Round 27 code-review-passed candidate.
+
+Integration decisions:
+
+- Preserved the latest-base Codex history replay/tool-call persistence direction: normal UI run-history projection now uses `LocalMemoryRunViewProjectionProvider` as the display authority for AutoByteus, Codex, and Claude runs. Runtime-native Codex/Claude projection providers remain diagnostic utilities only and are not used as normal UI fallback/merge sources.
+- Preserved this ticket's recursive team metadata model: `TeamMemberRunViewProjectionService` resolves leaf agents from canonical recursive `memberTree` via `getTeamRunLeafAgentMetadata(...)`, not flat `memberMetadata`.
+- Preserved app-data migration behavior and the Round 14 legacy metadata degradation fix: unsafe unmigrated legacy team metadata is skipped during history-index rebuild and remains visible through Settings -> Server -> Migrations diagnostics/retry rather than workspace history/sidebar raw errors.
+- Kept projection dedupe at the run-history projection boundary. The local replay projection is deduped with the conservative rule that merges timestamped/null duplicate copies while preserving repeated no-id/no-timestamp rows.
+- Removed the stale provider-registry/team-member-local-reader conflict path in favor of the latest-base local replay service boundary; team-member projection now delegates metadata with the explicit team-member memory directory to `AgentRunViewProjectionService`.
+- Resolved `run_history.md` docs to describe local replay as display authority, recursive team `memberTree` restore/projection, team communication projection, and app-data migration boundaries without reintroducing runtime-native projection fallback as UI authority.
+- Resolved the latest-base whitespace issue in `tickets/done/codex-history-reload-toolcalls/tmp-dynamic-tool-repro.log` so repository diff hygiene checks pass after merge.
+
+## Delivery Round 27 Latest-Base Integration Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/agent-run-view-projection-service.test.ts tests/unit/run-history/team-member-run-view-projection-service.test.ts tests/unit/run-history/services/team-run-history-index-service.test.ts tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts --reporter=dot`
+  - Result: `4` files passed, `23` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/agent-run-view-projection-service.test.ts tests/unit/run-history/team-member-run-view-projection-service.test.ts tests/unit/run-history/services/team-run-history-index-service.test.ts tests/unit/run-history/services/team-run-history-service.test.ts tests/unit/run-history/services/workspace-run-history-service.test.ts tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts --reporter=dot`
+  - Result: `9` files passed, `44` tests passed.
+- `pnpm -C autobyteus-web exec vitest run stores/__tests__/appDataMigrationsStore.spec.ts components/settings/__tests__/ServerSettingsManager.spec.ts pages/__tests__/settings.spec.ts --reporter=dot`
+  - Result: `3` files passed, `26` tests passed.
+- `pnpm -C autobyteus-server-ts exec prisma validate`
+  - Result: passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- `git diff --check origin/personal...HEAD`
+  - Result: passed.
+- Conflict marker scan over backend/frontend source, tests, and docs.
+  - Result: no conflict markers found.
+- Custom changed/untracked non-test `.ts` / `.vue` source size audit.
+  - Result: `155` changed/untracked non-test source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this latest-base integrated state.

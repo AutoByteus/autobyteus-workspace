@@ -10,11 +10,35 @@ vi.mock("../../../src/run-history/services/team-run-history-service.js", () => (
   }),
 }));
 
-vi.mock("../../../src/run-history/projection/run-projection-provider-registry.js", () => ({
-  getRunProjectionProviderRegistry: vi.fn(() => {
-    throw new Error("getRunProjectionProviderRegistry should not be used in this unit test");
-  }),
-}));
+const buildAgentMember = (overrides: Record<string, unknown> = {}) => ({
+  memberKind: "agent",
+  memberRouteKey: "professor",
+  memberPath: ["professor"],
+  memberName: "Professor",
+  memberRunId: "member-1",
+  runtimeKind: "autobyteus",
+  platformAgentRunId: null,
+  agentDefinitionId: "agent-1",
+  llmModelIdentifier: "model-1",
+  autoExecuteTools: false,
+  skillAccessMode: "PRELOADED_ONLY",
+  llmConfig: null,
+  workspaceRootPath: "/tmp/workspace",
+  role: null,
+  description: null,
+  ...overrides,
+});
+
+const buildTeamMetadata = (memberTree: unknown[]) => ({
+  teamRunId: "team-1",
+  teamDefinitionId: "team-def-1",
+  teamDefinitionName: "Team One",
+  coordinatorMemberRouteKey: "professor",
+  createdAt: "2026-03-04T12:00:00.000Z",
+  updatedAt: "2026-03-04T12:05:00.000Z",
+  archivedAt: null,
+  memberTree,
+});
 
 describe("TeamMemberRunViewProjectionService", () => {
   const createAgentRunViewProjectionService = (result: unknown) => ({
@@ -26,40 +50,13 @@ describe("TeamMemberRunViewProjectionService", () => {
       memberRunId,
     );
 
-  it("resolves by memberRouteKey and reads canonical projection", async () => {
+  it("resolves by memberRouteKey from recursive memberTree and delegates canonical projection", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
-      metadata: {
-        memberTree: [
-          {
-            memberKind: "agent",
-            memberRouteKey: "professor",
-            memberPath: ["Professor"],
-            memberName: "Professor",
-            memberRunId: "member-1",
-            runtimeKind: "autobyteus",
-            platformAgentRunId: null,
-            agentDefinitionId: "agent-1",
-            llmModelIdentifier: "model-1",
-            autoExecuteTools: false,
-            skillAccessMode: "PRELOADED_ONLY",
-            llmConfig: null,
-            workspaceRootPath: "/tmp/workspace",
-          },
-        ],
-      },
+      metadata: buildTeamMetadata([buildAgentMember()]),
     });
-    const getProjection = vi.fn().mockResolvedValue({
-      runId: "member-1",
-      summary: "hello",
-      lastActivityAt: "2026-02-25T00:00:00.000Z",
-      conversation: [{ role: "user", content: "hi" }],
-      activities: [],
-    });
-
     const service = new TeamMemberRunViewProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
-      projectionReader: { getProjection } as any,
       agentRunViewProjectionService: createAgentRunViewProjectionService({
         runId: "member-1",
         summary: "hello",
@@ -71,47 +68,79 @@ describe("TeamMemberRunViewProjectionService", () => {
 
     const result = await service.getProjection("team-1", "professor");
 
-    expect(getProjection).toHaveBeenCalledWith("team-1", "member-1");
     expect(result.agentRunId).toBe("member-1");
     expect(result.summary).toBe("hello");
     expect(result.conversation).toHaveLength(1);
     expect(result.activities).toEqual([]);
   });
 
+  it("resolves nested leaf route keys from recursive memberTree", async () => {
+    const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
+      teamRunId: "team-1",
+      metadata: buildTeamMetadata([
+        {
+          memberKind: "agent_team",
+          memberRouteKey: "BuildSquad",
+          memberPath: ["BuildSquad"],
+          memberName: "BuildSquad",
+          memberRunId: "build-squad-handle",
+          role: null,
+          description: null,
+          teamDefinitionId: "build-team",
+          teamRunId: "child-team-run",
+          coordinatorMemberRouteKey: "review_lead",
+          memberTree: [
+            buildAgentMember({
+              memberRouteKey: "BuildSquad/review_lead",
+              memberPath: ["BuildSquad", "review_lead"],
+              memberName: "review_lead",
+              memberRunId: "review-lead-run",
+              runtimeKind: "codex_app_server",
+              platformAgentRunId: "thread-review-lead",
+            }),
+          ],
+        },
+      ]),
+    });
+    const getProjectionFromMetadata = vi.fn().mockResolvedValue({
+      runId: "review-lead-run",
+      summary: "nested summary",
+      lastActivityAt: "2026-02-25T00:00:00.000Z",
+      conversation: [{ role: "user", content: "nested hi" }],
+      activities: [],
+    });
+    const service = new TeamMemberRunViewProjectionService({
+      teamRunHistoryService: { getTeamRunResumeConfig } as any,
+      agentRunViewProjectionService: { getProjectionFromMetadata } as any,
+    });
+
+    const result = await service.getProjection("team-1", "BuildSquad/review_lead");
+
+    expect(getProjectionFromMetadata).toHaveBeenCalledWith({
+      runId: "review-lead-run",
+      metadata: expect.objectContaining({
+        runId: "review-lead-run",
+        runtimeKind: "codex_app_server",
+        platformAgentRunId: "thread-review-lead",
+        memoryDir: getExpectedMemberMemoryDir("team-1", "review-lead-run"),
+      }),
+    });
+    expect(result.summary).toBe("nested summary");
+  });
+
   it("falls back to member name match when route key differs", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
-      metadata: {
-        memberTree: [
-          {
-            memberKind: "agent",
-            memberRouteKey: "root/professor",
-            memberPath: ["professor"],
-            memberName: "professor",
-            memberRunId: "member-1",
-            runtimeKind: "autobyteus",
-            platformAgentRunId: null,
-            agentDefinitionId: "agent-1",
-            llmModelIdentifier: "model-1",
-            autoExecuteTools: false,
-            skillAccessMode: "PRELOADED_ONLY",
-            llmConfig: null,
-            workspaceRootPath: "/tmp/workspace",
-          },
-        ],
-      },
+      metadata: buildTeamMetadata([
+        buildAgentMember({
+          memberRouteKey: "root/professor",
+          memberPath: ["root", "professor"],
+          memberName: "professor",
+        }),
+      ]),
     });
-    const getProjection = vi.fn().mockResolvedValue({
-      runId: "member-1",
-      summary: null,
-      lastActivityAt: null,
-      conversation: [],
-      activities: [],
-    });
-
     const service = new TeamMemberRunViewProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
-      projectionReader: { getProjection } as any,
       agentRunViewProjectionService: createAgentRunViewProjectionService({
         runId: "member-1",
         summary: null,
@@ -125,39 +154,21 @@ describe("TeamMemberRunViewProjectionService", () => {
     expect(result.agentRunId).toBe("member-1");
   });
 
-  it("delegates to agent run view projection service with local team-member projection as fallback", async () => {
+  it("delegates member metadata through the unified local replay projection path", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
-      metadata: {
-        memberTree: [
-          {
-            memberKind: "agent",
-            memberRouteKey: "professor",
-            memberPath: ["Professor"],
-            memberName: "Professor",
-            memberRunId: "member-1",
-            runtimeKind: "claude_agent_sdk",
-            platformAgentRunId: "session-1",
-            agentDefinitionId: "agent-1",
-            llmModelIdentifier: "model-1",
-            autoExecuteTools: true,
-            skillAccessMode: "PRELOADED_ONLY",
-            llmConfig: { temperature: 0.2 },
-            workspaceRootPath: "/tmp/workspace",
-          },
-        ],
-      },
-    });
-    const getProjection = vi.fn().mockResolvedValue({
-      runId: "member-1",
-      summary: "local-summary",
-      lastActivityAt: "2026-03-04T12:00:00.000Z",
-      conversation: [{ role: "user", content: "turn-1" }],
-      activities: [{ invocationId: "local-1", toolName: "tool", type: "tool_call", status: "parsed", contextText: "tool" }],
+      metadata: buildTeamMetadata([
+        buildAgentMember({
+          runtimeKind: "claude_agent_sdk",
+          platformAgentRunId: "session-1",
+          autoExecuteTools: true,
+          llmConfig: { temperature: 0.2 },
+        }),
+      ]),
     });
     const getProjectionFromMetadata = vi.fn().mockResolvedValue({
       runId: "member-1",
-      summary: "runtime-summary",
+      summary: "local-replay-summary",
       lastActivityAt: "2026-03-04T12:05:00.000Z",
       conversation: [
         { role: "user", content: "turn-1" },
@@ -169,7 +180,6 @@ describe("TeamMemberRunViewProjectionService", () => {
     });
     const service = new TeamMemberRunViewProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
-      projectionReader: { getProjection } as any,
       agentRunViewProjectionService: { getProjectionFromMetadata } as any,
     });
 
@@ -190,72 +200,21 @@ describe("TeamMemberRunViewProjectionService", () => {
         platformAgentRunId: "session-1",
         lastKnownStatus: "IDLE",
       },
-      localProjection: {
-        runId: "member-1",
-        summary: "local-summary",
-        lastActivityAt: "2026-03-04T12:00:00.000Z",
-        conversation: [{ role: "user", content: "turn-1" }],
-        activities: [{ invocationId: "local-1", toolName: "tool", type: "tool_call", status: "parsed", contextText: "tool" }],
-      },
-      allowFallbackProvider: false,
     });
-    expect(result.summary).toBe("runtime-summary");
+    expect(result.summary).toBe("local-replay-summary");
     expect(result.conversation).toHaveLength(4);
     expect(result.activities).toHaveLength(1);
     expect(String(result.conversation[3]?.content ?? "")).toContain("reply-2");
   });
 
-  it("throws local projection read error when the delegated projection stays empty", async () => {
-    const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
-      teamRunId: "team-1",
-      metadata: {
-        memberTree: [
-          {
-            memberKind: "agent",
-            memberRouteKey: "professor",
-            memberPath: ["Professor"],
-            memberName: "Professor",
-            memberRunId: "member-1",
-            runtimeKind: "claude_agent_sdk",
-            platformAgentRunId: "session-1",
-            agentDefinitionId: "agent-1",
-            llmModelIdentifier: "model-1",
-            autoExecuteTools: false,
-            skillAccessMode: "PRELOADED_ONLY",
-            llmConfig: null,
-            workspaceRootPath: "/tmp/workspace",
-          },
-        ],
-      },
-    });
-    const getProjection = vi.fn().mockRejectedValue(new Error("local unavailable"));
-
-    const service = new TeamMemberRunViewProjectionService({
-      teamRunHistoryService: { getTeamRunResumeConfig } as any,
-      projectionReader: { getProjection } as any,
-      agentRunViewProjectionService: createAgentRunViewProjectionService({
-        runId: "member-1",
-        summary: null,
-        lastActivityAt: null,
-        conversation: [],
-        activities: [],
-      }) as any,
-    });
-
-    await expect(service.getProjection("team-1", "professor")).rejects.toThrow(
-      "local unavailable",
-    );
-  });
-
   it("throws when member binding is missing", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
-      metadata: { memberTree: [] },
+      metadata: buildTeamMetadata([]),
     });
 
     const service = new TeamMemberRunViewProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
-      projectionReader: { getProjection: vi.fn() } as any,
       agentRunViewProjectionService: createAgentRunViewProjectionService(null) as any,
     });
 
@@ -264,89 +223,70 @@ describe("TeamMemberRunViewProjectionService", () => {
     );
   });
 
-  it("returns delegated codex projection when local member memory projection is empty", async () => {
+  it("returns delegated Codex local replay projection with member memory metadata", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
-      metadata: {
-        memberTree: [
-          {
-            memberKind: "agent",
-            memberRouteKey: "pong",
-            memberPath: ["pong"],
-            memberName: "pong",
-            memberRunId: "pong-run",
-            runtimeKind: "codex_app_server",
-            platformAgentRunId: "thread-1",
-            agentDefinitionId: "agent-2",
-            llmModelIdentifier: "model-2",
-            autoExecuteTools: false,
-            skillAccessMode: "PRELOADED_ONLY",
-            llmConfig: null,
-            workspaceRootPath: "/tmp/workspace",
-          },
-        ],
-      },
-    });
-    const getProjection = vi.fn().mockResolvedValue({
-      runId: "pong-run",
-      summary: null,
-      lastActivityAt: null,
-      conversation: [],
+      metadata: buildTeamMetadata([
+        buildAgentMember({
+          memberRouteKey: "pong",
+          memberPath: ["pong"],
+          memberName: "pong",
+          memberRunId: "pong-run",
+          runtimeKind: "codex_app_server",
+          platformAgentRunId: "thread-1",
+          agentDefinitionId: "agent-2",
+          llmModelIdentifier: "model-2",
+        }),
+      ]),
     });
     const getProjectionFromMetadata = vi.fn().mockResolvedValue({
       runId: "pong-run",
-      summary: "summary-from-codex",
+      summary: "summary-from-local-replay",
       lastActivityAt: "2026-02-26T13:00:00.000Z",
       conversation: [{ role: "user", content: "PING-TO-PONG token" }],
+      activities: [],
     });
 
     const service = new TeamMemberRunViewProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
-      projectionReader: { getProjection } as any,
       agentRunViewProjectionService: { getProjectionFromMetadata } as any,
     });
 
     const result = await service.getProjection("team-1", "pong");
 
     expect(getProjectionFromMetadata).toHaveBeenCalledTimes(1);
+    expect(getProjectionFromMetadata).toHaveBeenCalledWith({
+      runId: "pong-run",
+      metadata: expect.objectContaining({
+        runId: "pong-run",
+        runtimeKind: "codex_app_server",
+        platformAgentRunId: "thread-1",
+        memoryDir: getExpectedMemberMemoryDir("team-1", "pong-run"),
+      }),
+    });
     expect(result.agentRunId).toBe("pong-run");
-    expect(result.summary).toBe("summary-from-codex");
+    expect(result.summary).toBe("summary-from-local-replay");
     expect(result.conversation).toHaveLength(1);
   });
 
-  it("returns an empty projection when both local and delegated projections are empty", async () => {
+  it("returns an empty projection when delegated projection is empty", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
-      metadata: {
-        memberTree: [
-          {
-            memberKind: "agent",
-            memberRouteKey: "student",
-            memberPath: ["student"],
-            memberName: "student",
-            memberRunId: "student-run",
-            runtimeKind: "codex_app_server",
-            platformAgentRunId: "thread-student",
-            agentDefinitionId: "agent-3",
-            llmModelIdentifier: "model-3",
-            autoExecuteTools: false,
-            skillAccessMode: "PRELOADED_ONLY",
-            llmConfig: null,
-            workspaceRootPath: "/tmp/workspace",
-          },
-        ],
-      },
-    });
-    const getProjection = vi.fn().mockResolvedValue({
-      runId: "student-run",
-      summary: null,
-      lastActivityAt: null,
-      conversation: [],
-      activities: [],
+      metadata: buildTeamMetadata([
+        buildAgentMember({
+          memberRouteKey: "student",
+          memberPath: ["student"],
+          memberName: "student",
+          memberRunId: "student-run",
+          runtimeKind: "codex_app_server",
+          platformAgentRunId: "thread-student",
+          agentDefinitionId: "agent-3",
+          llmModelIdentifier: "model-3",
+        }),
+      ]),
     });
     const service = new TeamMemberRunViewProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
-      projectionReader: { getProjection } as any,
       agentRunViewProjectionService: createAgentRunViewProjectionService({
         runId: "student-run",
         summary: null,
