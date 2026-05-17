@@ -41,7 +41,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 - **Role**: Manages the execution lifecycle of individual agents.
 - **Key Actions**:
-  - `sendUserInputAndSubscribe()`: Sends user messages via mutation and ensures an agent WebSocket stream is connected. For persisted inactive runs, it uses resume config to call `RestoreAgentRun` before finalizing attachments and sending. Before the send, it finalizes any staged browser uploads so optimistic history and runtime payloads both point at final run-scoped attachment locators.
+  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, setting `isSending`, and applying `initializing` when startup or restore is expected. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible local message rather than appended as a duplicate.
   - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. The backend WebSocket boundary is also restore-aware for connect and `SEND_MESSAGE`, so a stale/missing frontend resume cache does not have to be the only recovery path.
   - `interruptGeneration()`: Sends the backend `INTERRUPT_GENERATION` control command without locally marking the run send-ready. `isSending` is cleared by backend lifecycle/status/error stream handling after the runtime has settled the active turn.
   - `terminateRun(runId)`: Sends backend `TerminateAgentRun` for persisted runs before local teardown, then disconnects the stream, marks the run inactive in history, and refreshes the history tree. Row-level terminate actions delegate here without selecting the row; follow-up chat recovery still uses the restore-aware send path rather than treating terminate as a local-only close.
@@ -55,7 +55,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
   - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., task updates, status changes) via WebSocket.
-  - `sendMessageToFocusedMember()`: Routes user input to a specific agent within the team context, restoring an inactive persisted team when resume config says it is inactive, then finalizing that member's staged uploaded attachments after the authoritative team/member identity is known. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent.
+  - `sendMessageToFocusedMember()`: Routes user input to a specific focused member. After validation, it immediately begins a local submission for that member by appending the user message, clearing the composer/staged context files, setting `isSending`, and applying member/team `initializing` when startup or restore is expected. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery boundary when the local resume cache is stale or absent.
   - `interruptGeneration()`: Sends the team `INTERRUPT_GENERATION` control command for the active team run/member without locally clearing the focused member's `isSending` flag. The focused member becomes send-ready from backend lifecycle/status/error events, not from local interrupt-command dispatch.
   - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. On success it disconnects the team stream, marks members shut down, marks run-history resume config inactive, and refreshes the history tree; on failure it leaves the active local team state intact.
 
@@ -92,7 +92,7 @@ query/process resources.
 
 The frontend runtime status model is intentionally coarse:
 
-- single-agent and team status enums expose only `offline`, `idle`, `running`, and `error`;
+- single-agent and team status enums expose `offline`, `initializing`, `idle`, `running`, and `error`;
 - single-agent `AGENT_STATUS` payloads are
   `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
 - aggregate `TEAM_STATUS` payloads are `{ status: "offline" | "initializing" | "idle" | "running" | "error" }`;
@@ -107,6 +107,10 @@ server boundary projects those details into the coarse API status and computes
 `can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
 remains a local submit-flight and disabled-input signal only; it must not be
 used to show the stop button or to infer that an interrupt can be accepted.
+Startup tokens such as `bootstrapping`, `starting`, `startup`, `initializing`,
+and active `uninitialized` project as active non-interruptible
+`initializing`; they keep send readiness blocked without granting the red
+interrupt affordance. Active processing/tool/LLM tokens project as `running`.
 When the selected context is a team, stop/interrupt dispatch must resolve the
 same focused member as the composer send path at click time. The frontend sends
 team `INTERRUPT_GENERATION` with `target_member_name` set to the focused member
@@ -114,19 +118,19 @@ route key and `agent_id` set only as an optional focused member run-id guard. If
 there is no focused member, the focused context is stale, or no active team
 streaming service exists, the frontend must not send a team interrupt command.
 Run-history refresh, active recovery, and run-open hydration must preserve an
-already-live `running/canInterrupt=true` single run or focused team member while
-that live stream remains authoritative, but terminal `offline` or `error`
-history projections must clear stale `canInterrupt` even when a caller asks to
-preserve live interrupt state. A later live
+already-live `initializing/canInterrupt=false` or `running/canInterrupt=true`
+single run or focused team member while that live stream remains authoritative,
+but terminal `offline` or `error` history projections must clear stale
+`canInterrupt` even when a caller asks to preserve live interrupt state. A later live
 `AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
 browser-visible stop affordance.
 
 Active team recovery and refresh must keep aggregate and member status separate.
-If a team row is `running` but only one member has a member-scoped `running`
-history/snapshot/event, the other members must stay at their own member-scoped
-status, or default to `offline/canInterrupt=false` until a member `AGENT_STATUS`
-arrives. Frontend reconciliation must never fan out aggregate team `running`
-state to every member row.
+If a team row is `running` or `initializing` but only one member has a
+member-scoped active history/snapshot/event, the other members must stay at
+their own member-scoped status, or default to `offline/canInterrupt=false`
+until a member `AGENT_STATUS` arrives. Frontend reconciliation must never fan
+out aggregate team `running` or `initializing` state to every member row.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open
@@ -193,7 +197,7 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 1. UI surfaces work against the shared discriminated attachment model (`workspace_path`, `uploaded`, `external_url`) instead of raw path strings.
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
-4. Send stores create or restore the final run/team identity first, then call `/context-files/finalize` with `attachments[{ storedFilename, displayName }]` and replace draft uploaded descriptors with final run/member locators before optimistic append + runtime send.
+4. Send stores begin the local user submission immediately after validation, then create or restore the final run/team identity, call `/context-files/finalize` with `attachments[{ storedFilename, displayName }]`, and replace draft uploaded descriptors with final run/member locators on the already-visible local message before runtime send.
 5. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
 
 This separation keeps draft attachment transport concerns out of UI components and keeps runtime consumers dependent only on finalized run-scoped attachment locators.
@@ -284,8 +288,8 @@ Incoming events are routed based on their `type`:
 | `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
-| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no `new_status` / `old_status`. |
-| `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
+| `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no `new_status` / `old_status`. |
+| `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `initializing`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into banner-ready run state (`requested`, `started`, `completed`, `failed`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |

@@ -8,10 +8,10 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initializing-status-ux/tickets/agent-initializing-status-ux/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initializing-status-ux/tickets/agent-initializing-status-ux/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initializing-status-ux/tickets/agent-initializing-status-ux/review-report.md`
-- Current Validation Round: `2`
-- Trigger: Code reviewer passed the `VAL-001` local fix and requested API/E2E validation resumption.
-- Prior Round Reviewed: `1`
-- Latest Authoritative Round: `2`
+- Current Validation Round: `3`
+- Trigger: User requested a full real-runtime backend E2E after round 2 passed deterministic component/service/websocket validation.
+- Prior Round Reviewed: `2`
+- Latest Authoritative Round: `3`
 
 Round rules:
 - Reuse the same scenario IDs across reruns for the same scenarios.
@@ -22,7 +22,8 @@ Round rules:
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Code review pass handoff to API/E2E | N/A | `VAL-001` | Fail | No | Validation added frontend UI-boundary coverage that exposed the composer local buffer staying populated after immediate local acknowledgement while send remained pending. Backend websocket/status validation passed. |
-| 2 | Code-review pass for `VAL-001` local fix | `VAL-001` | None | Pass | Yes | Prior failure is resolved. Frontend focused validation, backend websocket/status validation, backend build typecheck, and diff hygiene all passed. |
+| 2 | Code-review pass for `VAL-001` local fix | `VAL-001` | None | Pass | No | Prior failure resolved. Frontend focused validation, backend websocket/status validation, backend build typecheck, and diff hygiene all passed. |
+| 3 | User-requested full real-runtime backend E2E | None unresolved; round 2 pass was re-evaluated with stronger runtime evidence | None | Pass | Yes | Live Codex runtime GraphQL + websocket E2E passed with real `codex` CLI runtime, real assistant turns, runtime event debug logs, `AGENT_STATUS running -> idle`, streamed assistant text, run-history/projection validation, and cleanup. |
 
 ## Validation Basis
 
@@ -33,7 +34,7 @@ Validated against the reviewed requirements and implementation handoff, especial
 - `REQ-006`, `REQ-007`, `AC-005`, `AC-006`: backend-authored lifecycle recovery clears stale `Error` through explicit non-error status.
 - `REQ-008`, `AC-007`: transport/reconnect health is separate from backend lifecycle status.
 - `AC-010`: attachment finalization updates the accepted local message without duplicate user messages.
-- Implementation handoff `Legacy / Compatibility Removal Check`: reread in round 2 and remains clean. No compatibility wrapper, dual status path, schema-upgrade shim, retained legacy branch, or fallback behavior for old four-status behavior was found in the exercised scope.
+- Implementation handoff `Legacy / Compatibility Removal Check`: reread in round 3 and remains clean. No compatibility wrapper, dual status path, schema-upgrade shim, retained legacy branch, or fallback behavior for old four-status behavior was found in the exercised scope.
 
 ## Compatibility / Legacy Scope Check
 
@@ -50,6 +51,7 @@ Validated against the reviewed requirements and implementation handoff, especial
 - Backend websocket integration validation using real Fastify websocket routes with fake run/team backends for status-contract ordering and live event normalization.
 - Backend unit validation for status projectors, lifecycle-error recovery publication, team aggregate status precedence, and AutoByteus team aggregate publication.
 - Backend TypeScript build typecheck.
+- Full live Codex runtime E2E through GraphQL create-run, real Codex app-server runtime, real websocket streaming, runtime event debug logs, assistant output, status transitions, history/projection checks, and cleanup.
 - Whitespace/patch hygiene with `git diff --check`.
 
 ## Platform / Runtime Targets
@@ -59,6 +61,7 @@ Validated against the reviewed requirements and implementation handoff, especial
 - Frontend: `autobyteus-web`, Nuxt/Vue test environment.
 - Backend: `autobyteus-server-ts`, Fastify websocket integration tests and TypeScript build.
 - Runtime kinds exercised in backend websocket status integration: `autobyteus`, `codex_app_server`, `claude_agent_sdk` for single-agent status snapshots/live status where already parameterized; AutoByteus team websocket status path for team/member status.
+- Live real runtime exercised: `codex_app_server` using installed `codex-cli 0.130.0` and repository GraphQL/websocket runtime harness with `RUN_CODEX_E2E=1`.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
@@ -67,11 +70,12 @@ Validated against the reviewed requirements and implementation handoff, especial
   - startup/initializing websocket contract for single-agent and team/member status snapshots and live status events;
   - backend lifecycle error recovery processor (`error` followed by non-error work emits recovery status);
   - team aggregate recovery from stale error via AutoByteus team backend event publication;
-  - frontend stale-error recovery and transport/reconnect separation in stream services/status state.
+  - frontend stale-error recovery and transport/reconnect separation in stream services/status state;
+  - live Codex runtime create/send/follow-up lifecycle through real GraphQL create-run and websocket `SEND_MESSAGE`, including `AGENT_STATUS running -> idle` and streamed assistant segments.
 
 ## Coverage Matrix
 
-| Scenario | Requirement / AC | Surface | Round 1 | Round 2 Latest | Evidence |
+| Scenario | Requirement / AC | Surface | Round 1 | Round 3 Latest | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | `VAL-001` | `REQ-001`, `REQ-002`, `AC-001`, `AC-002` | Frontend component/UI boundary | Fail | Pass | Durable test `AgentUserInputTextArea > clears the visible composer when the active send is locally acknowledged while send remains pending` now passes in the focused frontend validation command. |
 | `VAL-002` | `REQ-001`, `REQ-002`, `AC-010` | Frontend store/service | Pass | Pass | Store/local submission tests pass: local user message appended, send state set, attachments reconciled on the existing message, no duplicate message at store level. |
@@ -80,16 +84,18 @@ Validated against the reviewed requirements and implementation handoff, especial
 | `VAL-005` | `REQ-006`, `REQ-007`, `AC-005`, `AC-006` | Backend team aggregate/unit | Pass | Pass | `team-status-aggregation.test.ts` and `autobyteus-team-run-backend.test.ts` pass, including stale error aggregate recovery. |
 | `VAL-006` | `REQ-007`, `REQ-008`, `REQ-009`, `REQ-010`, `AC-006`, `AC-007`, `AC-008`, `AC-009` | Frontend stream/status services | Pass | Pass | `agentRuntimeStatusState`, `AgentStreamingService`, and `TeamStreamingService` tests pass; expected stderr from negative transport/error-path tests. |
 | `VAL-007` | No legacy / compatibility constraint | Grep/diff hygiene | Pass | Pass | `git diff --check` passed; compatibility/legacy four-status grep returned no exercised-scope compatibility wrapper pattern. |
+| `VAL-008` | Backend real runtime confidence for websocket/status/live-turn behavior | Full live Codex runtime GraphQL + websocket E2E | N/A | Pass | `RUN_CODEX_E2E=1 RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=4000 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts --testTimeout=300000 --reporter=verbose` passed, 1 file / 1 test. Logs show real Codex run creation, websocket connection, two live turns, `AGENT_STATUS running`, streamed assistant text, `AGENT_STATUS idle`, history/projection validation, and cleanup. |
 
 ## Test Scope
 
-Round 2 reran the authoritative focused validation set after the code-reviewed local fix:
+Round 2 reran the authoritative focused validation set after the code-reviewed local fix; round 3 added full real Codex runtime E2E evidence:
 
 - user-visible send/composer state boundary (`AgentUserInputTextArea.vue` + active context send semantics), including the previously failing pending-send local acknowledgement scenario;
 - frontend stores/services that own local acknowledgement and status projection;
 - backend websocket contract and status ordering;
 - backend lifecycle recovery and team aggregate publication;
-- backend build typing and diff hygiene.
+- backend build typing and diff hygiene;
+- round-3 full real Codex runtime E2E with runtime debug logs.
 
 ## Validation Setup / Environment
 
@@ -113,11 +119,19 @@ Repository-resident durable validation added during the API/E2E lifecycle and re
    - Covers team/member websocket `initializing` member and aggregate statuses and live member startup-token normalization.
    - Round 2: passed.
 
-No additional durable validation files were added in round 2.
+3. Existing live-runtime E2E harness used in round 3: `autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts`
+   - Creates a real Codex-backed agent run through GraphQL.
+   - Opens the real backend websocket endpoint.
+   - Sends two real `SEND_MESSAGE` turns to the installed Codex runtime.
+   - Waits for assistant output tokens and `AGENT_STATUS idle`.
+   - Verifies run-history/projection behavior after follow-up turns.
+   - Round 3: passed with runtime debug logs enabled.
+
+No additional durable validation files were added in round 2 or round 3. Round 3 used an existing live Codex runtime E2E harness and did not modify repository-resident test code.
 
 ## Durable Validation Added To The Codebase
 
-- Repository-resident durable validation added or updated this round: `No` — round 2 only reran the durable validation added in round 1.
+- Repository-resident durable validation added or updated this round: `No` — round 3 used an existing live-runtime E2E harness and only updated this validation report.
 - Repository-resident durable validation added or updated during API/E2E overall: `Yes`
 - Paths added or updated:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initializing-status-ux/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`
@@ -138,7 +152,7 @@ No additional durable validation files were added in round 2.
 
 - Frontend component validation used the existing mocked Pinia stores and Vue Test Utils harness for `AgentUserInputTextArea.vue`.
 - Backend websocket integration used existing fake agent/team run classes behind real Fastify websocket route registration.
-- No external LLM/provider runtime was invoked.
+- Round 3 invoked an actual installed Codex runtime (`codex-cli 0.130.0`) through the repository live E2E harness. No fake run backend was used for `VAL-008`.
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
@@ -205,6 +219,27 @@ No additional durable validation files were added in round 2.
   ```
   The command exited `0`; typecheck and diff check passed, and the grep returned no matches.
 
+### `VAL-008` — Full real Codex runtime GraphQL + websocket validation
+
+- Requirement: backend/runtime confidence for real websocket status and live-turn behavior beyond fake-run contract tests.
+- Method: Ran the existing live Codex single-agent E2E harness with runtime raw event debug enabled. The harness created a real `codex_app_server` agent definition/run through GraphQL, opened the real backend websocket endpoint, sent two real websocket `SEND_MESSAGE` turns, waited for exact assistant tokens, waited for idle status, verified run history/projection behavior, and cleaned up the run/definition/workspace.
+- Round 3 Result: Pass.
+- Evidence:
+  - Command:
+    ```bash
+    RUN_CODEX_E2E=1 RUNTIME_RAW_EVENT_DEBUG=1 RUNTIME_RAW_EVENT_MAX_CHARS=4000 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts --testTimeout=300000 --reporter=verbose
+    ```
+  - Result: passed, 1 file / 1 test.
+  - Runtime evidence observed in logs:
+    - installed Codex runtime available: `codex-cli 0.130.0`;
+    - real run created: `Successfully created codex_app_server agent run 'db514e4e-f24f-4847-9a06-e8d00f412932'`;
+    - websocket connected for that real run;
+    - first turn emitted `AGENT_STATUS running` (`RuntimeEvent` sequences 1/3), streamed assistant text containing the requested `HISTORY_TITLE_FIRST_...` token, then emitted `AGENT_STATUS idle` (`RuntimeEvent` sequences 36/38);
+    - second turn emitted `AGENT_STATUS running` (`RuntimeEvent` sequences 39/41), streamed assistant text containing the requested `HISTORY_TITLE_SECOND_...` token, then emitted `AGENT_STATUS idle` (`RuntimeEvent` sequences 71/73);
+    - run-history/projection assertions passed and test cleanup deleted the run/agent definition.
+- Interpretation: this is a true live-runtime backend E2E for the Codex path. It proves the backend can create a real Codex-backed run, stream through the real websocket API, publish running/idle lifecycle statuses from actual runtime events, receive assistant output, keep history/projection coherent, and clean up.
+- Limit: it does not prove the frontend local composer clearing by itself; that remains covered by the component/store validation. It also does not show an early backend `initializing` event before `createAgentRun` returns because the current create/restore contract intentionally waits for bootstrap readiness; that is why frontend accepted-startup acknowledgement remains required.
+
 ## Passed
 
 - Prior failure `VAL-001` is resolved in API/E2E's authoritative rerun.
@@ -214,6 +249,7 @@ No additional durable validation files were added in round 2.
 - Backend live startup tokens such as `BOOTSTRAPPING` and `STARTING` normalize to `initializing` with `can_interrupt=false` at websocket status-event mapping boundaries.
 - Backend status projectors, lifecycle recovery processor, team status aggregation, and AutoByteus team aggregate publication tests passed.
 - Backend build typecheck and `git diff --check` passed.
+- Full real Codex runtime E2E passed with GraphQL create-run, real websocket streaming, exact assistant token responses, `AGENT_STATUS running -> idle`, run-history/projection validation, and cleanup.
 
 ## Failed
 
@@ -221,7 +257,7 @@ No failures in the latest authoritative round.
 
 ## Not Tested / Out Of Scope
 
-- Full native desktop Electron manual run against a real LLM/runtime provider was not performed. The exercised boundaries cover the prior API/E2E failure and the reviewed status contract/recovery risks with deterministic component/service/websocket executable validation.
+- Full native desktop Electron manual UI run was not performed. Round 3 did perform a real backend Codex runtime GraphQL + websocket E2E with an actual installed Codex runtime. Frontend visible-composer behavior remains covered by deterministic component/store validation rather than manual Electron UI automation.
 - Installer/updater/restart/migration flows are out of scope.
 - Repo-wide Nuxt typecheck remains documented upstream as blocked by unrelated existing type debt and was not rerun as a gating validation here.
 
@@ -253,10 +289,10 @@ Rationale: API/E2E passes, but repository-resident durable validation was added 
 
 - The implementation handoff's `Legacy / Compatibility Removal Check` was reread; no compatibility or legacy-retention reroute was triggered.
 - Expected frontend stderr from negative-path tests was observed; all tests passed.
-- Previous code review report round 3 passed the `VAL-001` local fix and durable validation review before this API/E2E rerun. This handoff asks for the required post-pass durable-validation re-review before delivery resumes.
+- Previous code review report round 3 passed the `VAL-001` local fix and durable validation review before the round-2 API/E2E rerun. Round 3 adds live Codex runtime E2E evidence and updates this validation report; handoff remains to `code_reviewer` before delivery resumes.
 
 ## Latest Authoritative Result
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: Round 2 is authoritative. Prior failure `VAL-001` is resolved; frontend focused validation, backend websocket/status validation, backend build typecheck, and diff hygiene all passed. Route to `code_reviewer` because API/E2E added repository-resident durable validation.
+- Notes: Round 3 is authoritative. Prior failure `VAL-001` is resolved; frontend focused validation, backend websocket/status validation, backend build typecheck, diff hygiene, and full live Codex runtime GraphQL + websocket E2E all passed. Route to `code_reviewer` because API/E2E added repository-resident durable validation and the validation report has been updated with additional runtime evidence.

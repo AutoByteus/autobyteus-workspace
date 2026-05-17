@@ -48,6 +48,12 @@ member messages include `agent_id` and/or `agent_name` when the handler can
 resolve that identity, and member `can_interrupt` is the authority for the
 frontend stop/interrupt affordance.
 
+Startup lifecycle tokens such as `bootstrapping`, `starting`, `startup`,
+`initializing`, and active `uninitialized` normalize to `initializing`, not to
+`running` or `offline`. `initializing` is an active but non-interruptible
+startup status, so `can_interrupt` remains `false` until a later `running`
+projection explicitly grants interrupt authority.
+
 Successful single-agent termination publishes a terminal
 `AGENT_STATUS { status: "offline", can_interrupt: false, agent_id }` to
 already-connected WebSocket clients before the run stream is torn down. Clients
@@ -57,13 +63,14 @@ termination signal.
 
 `TEAM_STATUS` is only the aggregate team status and intentionally does not
 carry `can_interrupt`. Team aggregation is derived from member statuses plus
-the native team status: any error wins, otherwise any running member/native
-running state yields `running`, otherwise any active idle member/native idle
-state yields `idle`, and an all-inactive/no-runtime team is `offline`.
+the native team status: any running member/native running state yields
+`running`; otherwise startup/initializing member or native state yields
+`initializing`; otherwise errors remain visible; otherwise active idle state
+yields `idle`; and an all-inactive/no-runtime team is `offline`.
 Clients must not apply aggregate `TEAM_STATUS` back onto every member. Member
 rows are driven by member `AGENT_STATUS` snapshots/events or member-scoped
-history; an active running team can legitimately contain one running member and
-other offline members.
+history; an active running or initializing team can legitimately contain one
+active member and other offline members.
 
 Status payloads do not expose legacy target fields such as `new_status` or
 `old_status`. Those names may still exist in native runtime-internal packages

@@ -1,0 +1,112 @@
+# Electron macOS build artifact verification
+Date: 2026-05-17
+Artifacts:
+electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg.blockmap
+electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.zip
+electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.zip.blockmap
+electron-dist/latest-mac.yml
+
+## Sizes
+total 1510912
+-rw-r--r--@ 1 normy  staff   358M May 17 08:11 AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+-rw-r--r--@ 1 normy  staff   383K May 17 08:11 AutoByteus_enterprise_macos-arm64-1.3.15.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   356M May 17 08:12 AutoByteus_enterprise_macos-arm64-1.3.15.zip
+-rw-r--r--@ 1 normy  staff   374K May 17 08:12 AutoByteus_enterprise_macos-arm64-1.3.15.zip.blockmap
+-rw-r--r--@ 1 normy  staff   561B May 17 08:12 latest-mac.yml
+drwxr-xr-x@ 3 normy  staff    96B May 17 08:10 mac-arm64
+
+## SHA256
+de80f081d236b9c986ce4489918f67fbd381914d91bd39bb5499b81534e6e112  electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+85a2910e95d36a866793d1ca7de37a49ddabd4ceec66ce4d959417bdffc42937  electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg.blockmap
+d6cbee544ce1bfad977a3ace66a6740c75d182011808ce766e063b61ec7b1cac  electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.zip
+1072d1877205f7ecf1d227e8f829e61570ade97a6a421b8053d8aed5864f3de1  electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.zip.blockmap
+
+## ZIP integrity
+No errors detected in compressed data of electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.zip.
+
+## DMG image info
+Format Description: UDIF, nur Lesen, komprimiert (zlib)
+Class Name: CUDIFDiskImage
+Checksum Type: CRC32
+Size Information:
+	CUDIFEncoding-bytes-total: 375779800
+	Total Empty Bytes: 610718720
+	Sector Count: 3631605
+	Total Bytes: 1859381760
+	CUDIFEncoding-bytes-wasted: 0
+	Total Non-Empty Bytes: 1248663040
+	Compressed Ratio: 0.30094534390959471
+	CUDIFEncoding-bytes-in-use: 375779800
+	Compressed Bytes: 375779800
+Checksum Value: $B1BF2C83
+Segments:
+	0: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initializing-status-ux/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+Partition Information:
+	3:
+		Name: disk image (Apple_APFS : 4)
+		Partition Number: 3
+		Checksum Type: CRC32
+		Checksum Value: $D9A67BEC
+	4:
+		Name:  (Apple_Free : 5)
+		Partition Number: 4
+		Checksum Type: CRC32
+		Checksum Value: $00000000
+	0:
+		Name: GPT Header (Primary GPT Header : 1)
+		Partition Number: 0
+		Checksum Type: CRC32
+		Checksum Value: $BB716C0F
+	5:
+		Name: GPT Partition Data (Backup GPT Table : 6)
+		Partition Number: 5
+		Checksum Type: CRC32
+		Checksum Value: $208CC865
+	1:
+		Name: GPT Partition Data (Primary GPT Table : 2)
+		Partition Number: 1
+		Checksum Type: CRC32
+		Checksum Value: $208CC865
+	6:
+		Name: GPT Header (Backup GPT Header : 7)
+		Partition Number: 6
+		Checksum Type: CRC32
+		Checksum Value: $D00D1DE3
+	-1:
+		Name: Protective Master Boot Record (MBR : 0)
+		Partition Number: -1
+		Checksum Type: CRC32
+		Checksum Value: $1C0427AD
+	2:
+		Name:  (Apple_Free : 3)
+		Partition Number: 2
+		Checksum Type: CRC32
+		Checksum Value: $00000000
+Format: UDZO
+Backing Store Information:
+	URL: file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-initializing-status-ux/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+	Name: AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+	Class Name: CUDIFEncoding
+	Backing Store Information:
+		URL: file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-initializing-status-ux/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+		Name: AutoByteus_enterprise_macos-arm64-1.3.15.dmg
+		Class Name: CBSDBackingStore
+partitions:
+	partition-scheme: GUID
+	block-size: 512
+	partitions:
+		0:
+			partition-name: Protective Master Boot Record
+			partition-start: 0
+			partition-synthesized: true
+			partition-length: 1
+			partition-hint: MBR
+		1:
+			partition-name: GPT Header
+			partition-start: 1
+			partition-synthesized: true
+
+## App bundle metadata
+1.3.15
+AutoByteus

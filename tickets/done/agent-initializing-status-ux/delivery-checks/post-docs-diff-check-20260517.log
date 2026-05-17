@@ -1,0 +1,6 @@
+# Post-docs diff check
+Date: 2026-05-17
+Branch: codex/agent-initializing-status-ux
+HEAD: 56a0f42484732602b6e9e0705b7c7b960e4cb7cc
++ git diff --check
+Post-docs diff check: PASS

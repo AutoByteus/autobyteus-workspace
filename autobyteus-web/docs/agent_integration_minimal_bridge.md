@@ -34,6 +34,10 @@ Orchestrates:
 - calling the GraphQL mutation
 - opening the WebSocket stream
 - tracking local submit-in-flight state, backend status, interrupt authority, and completion
+- beginning the local user submission immediately after validation: append the
+  user message, clear the composer/staged files, set `isSending`, and later
+  reconcile finalized attachment locators onto that same message rather than
+  adding a duplicate
 
 ### 3) Streaming service + protocol
 A WebSocket client that:
@@ -58,13 +62,17 @@ These handlers update the agent context and mark messages complete. In the curre
 - `AGENT_STATUS` is run-level state with payload
   `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
   It does not contain legacy `new_status` / `old_status` fields.
+- Startup tokens such as `bootstrapping`, `starting`, `startup`,
+  `initializing`, and active `uninitialized` should be treated as
+  non-interruptible `initializing`, not as `running` or `offline`.
 - The interrupt/stop affordance should use backend-owned `can_interrupt`. `isSending`
   is only local submit-flight state and must not grant interrupt authority by itself.
-- Refresh/reopen/recovery should preserve a selected live `running/canInterrupt=true`
-  single run or focused team member while that stream remains authoritative, but
-  terminal `offline` or `error` projections must always clear stale
-  `canInterrupt`, and a later live `idle/can_interrupt=false` status should
-  return the composer to the send affordance.
+- Refresh/reopen/recovery should preserve a selected live
+  `initializing/canInterrupt=false` or `running/canInterrupt=true` single run
+  or focused team member while that stream remains authoritative, but terminal
+  `offline` or `error` projections must always clear stale `canInterrupt`, and
+  a later live `idle/can_interrupt=false` status should return the composer to
+  the send affordance.
 - A successful terminate/stop flow should surface a terminal
   `{ status: "offline", can_interrupt: false }` `AGENT_STATUS` before stream
   teardown. Treat `offline` as the inactive non-error terminal state for live
@@ -76,7 +84,7 @@ These handlers update the agent context and mark messages complete. In the curre
 You need small types for:
 - Agent context + run state
 - Conversation + message segments
-- Agent status enum (`offline` / `idle` / `running` / `error`) plus `canInterrupt`
+- Agent status enum (`offline` / `initializing` / `idle` / `running` / `error`) plus `canInterrupt`
 
 ## Minimal file checklist (frontend)
 
@@ -120,12 +128,14 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 - Treats member `AGENT_STATUS` as the source for each member's status and
   `canInterrupt`; aggregate `TEAM_STATUS` has payload
   `{ status: "offline" | "initializing" | "idle" | "running" | "error" }` only.
-- Preserves a focused member's live `running/canInterrupt=true` interrupt
-  affordance across refresh/reconcile until that member receives a terminal
-  projection or a later live non-interruptible status.
-- Does not fan out aggregate team `running` to every member during first load,
-  refresh, or recovery. Missing member-scoped status means the member is
-  unknown/offline and non-interruptible until a member `AGENT_STATUS` arrives.
+- Preserves a focused member's live `initializing/canInterrupt=false` startup
+  state or `running/canInterrupt=true` interrupt affordance across
+  refresh/reconcile until that member receives a terminal projection or a later
+  live non-interruptible status.
+- Does not fan out aggregate team `running` or `initializing` to every member
+  during first load, refresh, or recovery. Missing member-scoped status means
+  the member is unknown/offline and non-interruptible until a member
+  `AGENT_STATUS` arrives.
 
 ### Minimal team file checklist
 
