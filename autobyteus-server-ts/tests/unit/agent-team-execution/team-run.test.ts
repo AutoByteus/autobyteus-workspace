@@ -105,7 +105,7 @@ describe("TeamRun", () => {
     const run = new TeamRun({
       context: new TeamRunContext({
         runId: "team-run-1",
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
         coordinatorMemberName: null,
         config: null,
         runtimeContext: { memberContexts: [] },
@@ -125,7 +125,7 @@ describe("TeamRun", () => {
     const run = new TeamRun({
       context: new TeamRunContext({
         runId: "team-run-1",
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
         coordinatorMemberName: null,
         config: null,
         runtimeContext: { memberContexts: [] },
