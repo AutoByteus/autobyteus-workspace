@@ -69,6 +69,8 @@ const normalizeReferenceFilesPayload = (payload: Record<string, unknown>): strin
 };
 
 export class AutoByteusTeamRunEventProcessor {
+  private readonly agentEventConverters = new Map<string, AutoByteusStreamEventConverter>();
+
   constructor(
     private readonly teamRunId: string,
     private readonly options: AutoByteusTeamRunEventProcessorOptions,
@@ -164,17 +166,9 @@ export class AutoByteusTeamRunEventProcessor {
     if (runtimeMemberContext && nativeAgentId) {
       runtimeMemberContext.nativeAgentId = nativeAgentId;
     }
-    const converter = new AutoByteusStreamEventConverter(
+    const converter = this.getAgentEventConverter(
       resolvedMemberRunId,
-      () => this.options.getMemberStatusSnapshot?.(
-        resolvedMemberRunId,
-        agentPayload.agent_name,
-      ) ?? {
-        status: "offline",
-        can_interrupt: false,
-        agent_id: resolvedMemberRunId,
-        agent_name: agentPayload.agent_name,
-      },
+      agentPayload.agent_name,
     );
     const convertedEvent = converter.convert(agentPayload.agent_event);
     if (!convertedEvent) {
@@ -209,6 +203,31 @@ export class AutoByteusTeamRunEventProcessor {
       subTeamNodeName,
     });
     return processedEvents;
+  }
+
+  private getAgentEventConverter(
+    memberRunId: string,
+    memberName: string | null,
+  ): AutoByteusStreamEventConverter {
+    const cached = this.agentEventConverters.get(memberRunId);
+    if (cached) {
+      return cached;
+    }
+
+    const converter = new AutoByteusStreamEventConverter(
+      memberRunId,
+      () => this.options.getMemberStatusSnapshot?.(
+        memberRunId,
+        memberName,
+      ) ?? {
+        status: "offline",
+        can_interrupt: false,
+        agent_id: memberRunId,
+        agent_name: memberName ?? undefined,
+      },
+    );
+    this.agentEventConverters.set(memberRunId, converter);
+    return converter;
   }
 
   private enrichConvertedEvent(input: {

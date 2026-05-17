@@ -5,7 +5,10 @@ import {
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
-import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
+import {
+  buildAgentStatusPayload,
+  type AgentStatusPayload,
+} from "../../../domain/agent-status-payload.js";
 
 const resolveStatusHint = (
   eventType: StreamEventType,
@@ -85,16 +88,19 @@ const defaultStatusSnapshotProvider = (): AgentStatusPayload => ({
 });
 
 export class AutoByteusStreamEventConverter {
+  private hasActiveTurn = false;
+
   constructor(
     private readonly runId: string,
     private readonly getStatusPayload: AutoByteusStatusSnapshotProvider = defaultStatusSnapshotProvider,
   ) {}
 
   convert(event: StreamEvent): AgentRunEvent | null {
+    this.observeTurnLifecycle(event.event_type);
     const payload = serializePayload(event.data);
     const statusPayload =
       event.event_type === StreamEventType.AGENT_STATUS_UPDATED
-        ? this.getStatusPayload()
+        ? this.getCanonicalStatusPayload()
         : undefined;
     const statusHint = resolveStatusHint(event.event_type, statusPayload);
 
@@ -150,5 +156,35 @@ export class AutoByteusStreamEventConverter {
         : payload,
       statusHint,
     };
+  }
+
+  private observeTurnLifecycle(eventType: StreamEventType): void {
+    if (eventType === StreamEventType.TURN_STARTED) {
+      this.hasActiveTurn = true;
+      return;
+    }
+    if (
+      eventType === StreamEventType.TURN_COMPLETED ||
+      eventType === StreamEventType.TURN_INTERRUPTED ||
+      eventType === StreamEventType.ERROR_EVENT
+    ) {
+      this.hasActiveTurn = false;
+    }
+  }
+
+  private getCanonicalStatusPayload(): AgentStatusPayload {
+    const snapshot = this.getStatusPayload();
+    if (
+      this.hasActiveTurn &&
+      (snapshot.status === "idle" || snapshot.status === "offline" || snapshot.status === "initializing")
+    ) {
+      return buildAgentStatusPayload({
+        status: "running",
+        canInterrupt: snapshot.can_interrupt === true,
+        agentId: snapshot.agent_id,
+        agentName: snapshot.agent_name,
+      });
+    }
+    return snapshot;
   }
 }

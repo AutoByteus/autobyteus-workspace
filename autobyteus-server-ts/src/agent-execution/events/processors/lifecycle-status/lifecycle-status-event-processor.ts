@@ -82,10 +82,10 @@ export class LifecycleStatusEventProcessor implements AgentRunEventProcessor {
       return [];
     }
 
+    const lastLifecycleStatus = this.lastLifecycleStatusByRunId.get(runId) ?? null;
     if (
       input.events.length === 0 ||
-      hasLifecycleStatusEvent(input.sourceEvents) ||
-      this.lastLifecycleStatusByRunId.get(runId) !== "error"
+      hasLifecycleStatusEvent(input.sourceEvents)
     ) {
       return [];
     }
@@ -96,7 +96,7 @@ export class LifecycleStatusEventProcessor implements AgentRunEventProcessor {
         : hasIdleLifecycleEvidence(input.sourceEvents)
           ? "idle"
           : null;
-    if (!status) {
+    if (!status || status === lastLifecycleStatus) {
       return [];
     }
 

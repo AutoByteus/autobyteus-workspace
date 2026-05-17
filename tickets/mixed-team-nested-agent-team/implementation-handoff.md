@@ -1258,3 +1258,43 @@ Passed:
   - Result: `29` changed non-test source files checked; no file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 36 backend-status-source-of-truth implementation.
+
+## API/E2E Round 18 Local Fix Update
+
+Addressed `STATUS-ROUND36-001`, where the real AutoByteus/LM Studio live path emitted backend/public `initializing` and then stale `idle` status updates while the turn was already active and streaming, so no public `running` status appeared.
+
+Implementation updates:
+
+- `AutoByteusStreamEventConverter` now tracks native turn lifecycle within the backend adapter boundary. Once `TURN_STARTED` is observed, stale non-active status snapshots (`offline`, `idle`, or startup `initializing`) are published as canonical backend/public `running` until `TURN_COMPLETED`, `TURN_INTERRUPTED`, or `ERROR_EVENT` settles the turn.
+- `LifecycleStatusEventProcessor` now derives backend-owned `running` / `idle` status events from turn/activity lifecycle evidence when no explicit status event accompanies the batch. This keeps backend status authoritative even when a provider omits a status event at turn start or turn completion.
+- `AutoByteusTeamRunEventProcessor` now reuses one `AutoByteusStreamEventConverter` per member run so nested/team AutoByteus rebroadcast paths preserve active-turn state across member events instead of recreating a stateless converter per event.
+- Added regression coverage for single-agent converter behavior, lifecycle-derived backend status events, and AutoByteus team member rebroadcast behavior.
+
+## API/E2E Round 18 Local Fix Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-event-processor.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/integration/agent/agent-status-websocket.integration.test.ts --reporter=dot`
+  - Result: `7` files passed, `57` tests passed.
+- `pnpm -C autobyteus-web exec vitest run services/runSubmission/__tests__/localUserSubmission.spec.ts services/runStatus/__tests__/agentRuntimeStatusState.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot`
+  - Result: `6` files passed, `59` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec prisma validate`
+  - Result: passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- `git diff --check origin/personal...HEAD`
+  - Result: passed.
+- Frontend accepted-startup helper scan for `applyAcceptedStartupStatus`, `applyAcceptedTeamMemberStartupStatus`, `applyInitializing`, `applyTeamMemberTerminalCleanup`, `applyLiveTeamMemberRuntimeActivityProjectionRepair`, and `teamMemberNodeStatus` under `autobyteus-web`.
+  - Result: no matches.
+- Backend status residue scan for `LOCKED_RUNNING_STATUSES`, `statusToken`, and removed non-startup lifecycle residues under active backend agent/team/streaming source.
+  - Result: no matches.
+- Custom changed non-test `.ts` / `.vue` source size audit.
+  - Result: `3` changed non-test source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 18 local fix.

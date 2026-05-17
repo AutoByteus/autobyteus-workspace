@@ -96,7 +96,7 @@ describe("LifecycleStatusEventProcessor", () => {
     expect(processed.filter((event) => event.eventType === AgentRunEventType.AGENT_STATUS)).toHaveLength(1);
   });
 
-  it("does not replace ordinary backend status publication with activity-derived status", async () => {
+  it("publishes running status from active lifecycle evidence when no explicit status accompanies it", async () => {
     const pipeline = new AgentRunEventPipeline([
       new LifecycleStatusEventProcessor(),
     ]);
@@ -117,7 +117,57 @@ describe("LifecycleStatusEventProcessor", () => {
 
     expect(processed.map((event) => event.eventType)).toEqual([
       AgentRunEventType.SEGMENT_CONTENT,
+      AgentRunEventType.AGENT_STATUS,
     ]);
+    expect(processed[1]).toMatchObject({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: {
+        status: "running",
+        can_interrupt: false,
+        agent_id: "run-1",
+      },
+      statusHint: "ACTIVE",
+    });
+  });
+
+  it("publishes idle status when active lifecycle settles without an explicit status event", async () => {
+    const pipeline = new AgentRunEventPipeline([
+      new LifecycleStatusEventProcessor(),
+    ]);
+
+    await pipeline.process({
+      runContext,
+      events: [{
+        eventType: AgentRunEventType.TURN_STARTED,
+        runId: "run-1",
+        payload: { turn_id: "turn-1" },
+        statusHint: "ACTIVE",
+      }],
+    });
+
+    const processed = await pipeline.process({
+      runContext,
+      events: [{
+        eventType: AgentRunEventType.TURN_COMPLETED,
+        runId: "run-1",
+        payload: { turn_id: "turn-1" },
+        statusHint: "IDLE",
+      }],
+    });
+
+    expect(processed.map((event) => event.eventType)).toEqual([
+      AgentRunEventType.TURN_COMPLETED,
+      AgentRunEventType.AGENT_STATUS,
+    ]);
+    expect(processed[1]).toMatchObject({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: {
+        status: "idle",
+        can_interrupt: false,
+        agent_id: "run-1",
+      },
+      statusHint: "IDLE",
+    });
   });
 
   it("keeps lifecycle errors terminal when no later non-error activity arrives", async () => {

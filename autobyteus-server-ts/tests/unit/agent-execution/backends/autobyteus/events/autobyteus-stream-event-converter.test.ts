@@ -4,8 +4,6 @@ import { AutoByteusStreamEventConverter } from "../../../../../../src/agent-exec
 import { AgentRunEventType } from "../../../../../../src/agent-execution/domain/agent-run-event.js";
 
 describe("AutoByteusStreamEventConverter", () => {
-  const converter = new AutoByteusStreamEventConverter("run-1");
-
   it.each([
     [StreamEventType.TURN_STARTED, AgentRunEventType.TURN_STARTED],
     [StreamEventType.TURN_COMPLETED, AgentRunEventType.TURN_COMPLETED],
@@ -25,6 +23,7 @@ describe("AutoByteusStreamEventConverter", () => {
     [StreamEventType.ARTIFACT_PERSISTED, AgentRunEventType.ARTIFACT_PERSISTED],
     [StreamEventType.ERROR_EVENT, AgentRunEventType.ERROR],
   ])("maps %s to %s", (streamEventType, agentRunEventType) => {
+    const converter = new AutoByteusStreamEventConverter("run-1");
     const event = converter.convert({
       event_type: streamEventType,
       data: { invocation_id: "inv-1", detail: "ok" },
@@ -35,7 +34,7 @@ describe("AutoByteusStreamEventConverter", () => {
       eventType: agentRunEventType,
       runId: "run-1",
       payload: isStatusEvent
-        ? { status: "idle", can_interrupt: false }
+        ? { status: "offline", can_interrupt: false }
         : { invocation_id: "inv-1", detail: "ok" },
       statusHint:
         streamEventType === StreamEventType.ERROR_EVENT
@@ -80,7 +79,74 @@ describe("AutoByteusStreamEventConverter", () => {
     });
   });
 
+  it("preserves public running status for stale non-active snapshots while a turn is active", () => {
+    let snapshotStatus: "idle" | "initializing" = "idle";
+    const converter = new AutoByteusStreamEventConverter("run-1", () => ({
+      status: snapshotStatus,
+      can_interrupt: false,
+      agent_id: "run-1",
+    }));
+
+    expect(converter.convert({
+      event_type: StreamEventType.TURN_STARTED,
+      data: { turn_id: "turn-1" },
+    } as any))?.toMatchObject({
+      eventType: AgentRunEventType.TURN_STARTED,
+      statusHint: "ACTIVE",
+    });
+
+    expect(converter.convert({
+      event_type: StreamEventType.AGENT_STATUS_UPDATED,
+      data: {},
+    } as any))?.toMatchObject({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: {
+        status: "running",
+        can_interrupt: false,
+        agent_id: "run-1",
+      },
+      statusHint: "ACTIVE",
+    });
+
+    snapshotStatus = "initializing";
+    expect(converter.convert({
+      event_type: StreamEventType.AGENT_STATUS_UPDATED,
+      data: {},
+    } as any))?.toMatchObject({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: {
+        status: "running",
+        can_interrupt: false,
+        agent_id: "run-1",
+      },
+      statusHint: "ACTIVE",
+    });
+
+    snapshotStatus = "idle";
+    expect(converter.convert({
+      event_type: StreamEventType.TURN_COMPLETED,
+      data: { turn_id: "turn-1" },
+    } as any))?.toMatchObject({
+      eventType: AgentRunEventType.TURN_COMPLETED,
+      statusHint: "IDLE",
+    });
+
+    expect(converter.convert({
+      event_type: StreamEventType.AGENT_STATUS_UPDATED,
+      data: {},
+    } as any))?.toMatchObject({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: {
+        status: "idle",
+        can_interrupt: false,
+        agent_id: "run-1",
+      },
+      statusHint: "IDLE",
+    });
+  });
+
   it("ignores deprecated artifact_updated stream events", () => {
+    const converter = new AutoByteusStreamEventConverter("run-1");
     expect(
       converter.convert({
         event_type: StreamEventType.ARTIFACT_UPDATED,
@@ -90,6 +156,7 @@ describe("AutoByteusStreamEventConverter", () => {
   });
 
   it("maps segment events into start, content, and end events", () => {
+    const converter = new AutoByteusStreamEventConverter("run-1");
     expect(
       converter.convert({
         event_type: StreamEventType.SEGMENT_EVENT,
@@ -151,6 +218,7 @@ describe("AutoByteusStreamEventConverter", () => {
   });
 
   it("canonicalizes native segment payloads to turn_id for all segment event variants", () => {
+    const converter = new AutoByteusStreamEventConverter("run-1");
     const start = converter.convert({
       event_type: StreamEventType.SEGMENT_EVENT,
       data: {
@@ -204,6 +272,7 @@ describe("AutoByteusStreamEventConverter", () => {
   });
 
   it("drops unknown segment types", () => {
+    const converter = new AutoByteusStreamEventConverter("run-1");
     expect(
       converter.convert({
         event_type: StreamEventType.SEGMENT_EVENT,
@@ -220,6 +289,7 @@ describe("AutoByteusStreamEventConverter", () => {
   });
 
   it("keeps native turn lifecycle payloads intact", () => {
+    const converter = new AutoByteusStreamEventConverter("run-1");
     expect(
       converter.convert({
         event_type: StreamEventType.TURN_COMPLETED,
