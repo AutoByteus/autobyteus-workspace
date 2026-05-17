@@ -73,6 +73,157 @@ describe("RuntimeMemoryEventAccumulator", () => {
     ]);
   });
 
+  it("persists open reasoning before a following tool call without duplicating later flushes", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-tool" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-tool",
+      turn_id: "turn-reason-tool",
+      segment_type: "reasoning",
+      delta: "inspect before tool",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      invocation_id: "tool-after-reasoning",
+      turn_id: "turn-reason-tool",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-tool",
+      turn_id: "turn-reason-tool",
+      segment_type: "reasoning",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-reason-tool" }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => [trace.traceType, trace.content, trace.toolCallId])).toEqual([
+      ["reasoning", "inspect before tool", null],
+      ["tool_call", "", "tool-after-reasoning"],
+    ]);
+    expect(traces.filter((trace) => trace.traceType === "reasoning")).toHaveLength(1);
+  });
+
+  it("persists open reasoning before an inferred tool call from a terminal tool result", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-result" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-result",
+      turn_id: "turn-reason-result",
+      segment_type: "reasoning",
+      delta: "tool result will imply a call",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      invocation_id: "inferred-tool-after-reasoning",
+      turn_id: "turn-reason-result",
+      tool_name: "run_bash",
+      arguments: { command: "pwd" },
+      result: { stdout: "/tmp" },
+    }));
+
+    const traces = readView(memoryDir).rawTraces ?? [];
+    expect(traces.map((trace) => [trace.traceType, trace.content, trace.toolCallId])).toEqual([
+      ["reasoning", "tool result will imply a call", null],
+      ["tool_call", "", "inferred-tool-after-reasoning"],
+      ["tool_result", "", "inferred-tool-after-reasoning"],
+    ]);
+    expect(traces[2]).toMatchObject({ toolResult: { stdout: "/tmp" } });
+  });
+
+  it("persists open reasoning before assistant text without requiring turn completion", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-text" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-text",
+      turn_id: "turn-reason-text",
+      segment_type: "reasoning",
+      delta: "think before answer",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "assistant-text-after-reasoning",
+      turn_id: "turn-reason-text",
+      segment_type: "text",
+      delta: "visible answer",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "assistant-text-after-reasoning",
+      turn_id: "turn-reason-text",
+      segment_type: "text",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-text",
+      turn_id: "turn-reason-text",
+      segment_type: "reasoning",
+    }));
+
+    const view = readView(memoryDir);
+    expect(view.rawTraces?.map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["reasoning", "think before answer"],
+      ["assistant", "visible answer"],
+    ]);
+    expect(view.workingContext).toEqual([
+      expect.objectContaining({
+        role: "assistant",
+        content: "visible answer",
+        reasoning: "think before answer",
+      }),
+    ]);
+  });
+
+  it("persists open reasoning before assistant complete output", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = new RuntimeMemoryEventAccumulator({
+      runId: "run-1",
+      writer: new RunMemoryWriter({ memoryDir }),
+    });
+
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-reason-complete" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-complete",
+      turn_id: "turn-reason-complete",
+      segment_type: "reasoning",
+      delta: "think before final complete",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.ASSISTANT_COMPLETE, {
+      turn_id: "turn-reason-complete",
+      content: "final complete answer",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_END, {
+      id: "reasoning-before-complete",
+      turn_id: "turn-reason-complete",
+      segment_type: "reasoning",
+    }));
+    accumulator.recordRunEvent(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-reason-complete" }));
+
+    const view = readView(memoryDir);
+    expect(view.rawTraces?.map((trace) => [trace.traceType, trace.content])).toEqual([
+      ["reasoning", "think before final complete"],
+      ["assistant", "final complete answer"],
+    ]);
+    expect(view.rawTraces?.filter((trace) => trace.traceType === "reasoning")).toHaveLength(1);
+    expect(view.workingContext).toEqual([
+      expect.objectContaining({
+        role: "assistant",
+        content: "final complete answer",
+        reasoning: "think before final complete",
+      }),
+    ]);
+  });
+
 
   it("uses an active turn when accepted command notification arrives after lifecycle start", async () => {
     const memoryDir = await mkTempDir();

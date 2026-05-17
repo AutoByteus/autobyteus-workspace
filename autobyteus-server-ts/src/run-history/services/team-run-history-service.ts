@@ -19,7 +19,6 @@ import {
 import { TeamRunMetadataStore } from "../store/team-run-metadata-store.js";
 import { extractSummaryFromRawTraces } from "./run-history-service-helpers.js";
 import { AgentRunViewProjectionService } from "./agent-run-view-projection-service.js";
-import { TeamMemberLocalRunProjectionReader } from "./team-member-local-run-projection-reader.js";
 import {
   TeamRunHistoryIndexService,
   getTeamRunHistoryIndexService,
@@ -50,7 +49,6 @@ export class TeamRunHistoryService {
   private readonly indexService: TeamRunHistoryIndexService;
   private readonly teamRunManager: AgentTeamRunManager;
   private readonly memberLayout: TeamMemberMemoryLayout;
-  private readonly projectionReader: TeamMemberLocalRunProjectionReader;
   private readonly agentRunViewProjectionService: AgentRunViewProjectionService;
 
   constructor(
@@ -59,7 +57,6 @@ export class TeamRunHistoryService {
       metadataStore?: TeamRunMetadataStore;
       indexService?: TeamRunHistoryIndexService;
       teamRunManager?: AgentTeamRunManager;
-      projectionReader?: TeamMemberLocalRunProjectionReader;
       agentRunViewProjectionService?: AgentRunViewProjectionService;
     } = {},
   ) {
@@ -68,8 +65,6 @@ export class TeamRunHistoryService {
       options.indexService ?? getTeamRunHistoryIndexService();
     this.teamRunManager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
     this.memberLayout = new TeamMemberMemoryLayout(memoryDir);
-    this.projectionReader =
-      options.projectionReader ?? new TeamMemberLocalRunProjectionReader(memoryDir);
     this.agentRunViewProjectionService =
       options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
   }
@@ -355,15 +350,9 @@ export class TeamRunHistoryService {
       return rawTraceSummary;
     }
 
-    const localProjection = await this.projectionReader.getProjection(
-      metadata.teamRunId,
-      coordinatorMember.memberRunId,
-    );
     const resolvedProjection = await this.agentRunViewProjectionService.getProjectionFromMetadata({
       runId: coordinatorMember.memberRunId,
       metadata: this.toMemberRunMetadata(metadata, coordinatorMember),
-      localProjection,
-      allowFallbackProvider: false,
     });
     return resolvedProjection.summary?.trim() || "";
   }

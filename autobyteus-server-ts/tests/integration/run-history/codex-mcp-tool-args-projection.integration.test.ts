@@ -59,6 +59,12 @@ describe("Codex MCP tool arguments memory/projection integration", () => {
     };
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-mcp" }));
+    accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_CONTENT, {
+      id: "reasoning-before-mcp-tool",
+      turn_id: "turn-mcp",
+      segment_type: "reasoning",
+      delta: "I should generate the image via MCP.",
+    }));
     accumulator.recordRunEvent(event(AgentRunEventType.SEGMENT_START, {
       id: "call_generate_image",
       turn_id: "turn-mcp",
@@ -83,13 +89,17 @@ describe("Codex MCP tool arguments memory/projection integration", () => {
     }));
 
     const traces = readRawTraces(memoryDir);
-    expect(traces.map((trace) => trace.traceType)).toEqual(["tool_call", "tool_result"]);
+    expect(traces.map((trace) => trace.traceType)).toEqual(["reasoning", "tool_call", "tool_result"]);
     expect(traces[0]).toMatchObject({
+      traceType: "reasoning",
+      content: "I should generate the image via MCP.",
+    });
+    expect(traces[1]).toMatchObject({
       toolCallId: "call_generate_image",
       toolName: "generate_image",
       toolArgs,
     });
-    expect(traces[1]).toMatchObject({
+    expect(traces[2]).toMatchObject({
       toolCallId: "call_generate_image",
       toolName: "generate_image",
       toolArgs,
@@ -105,6 +115,14 @@ describe("Codex MCP tool arguments memory/projection integration", () => {
       (entry) => entry.invocationId === "call_generate_image",
     );
 
+    expect(projection.conversation.map((entry) => entry.kind)).toEqual([
+      "reasoning",
+      "tool_call",
+    ]);
+    expect(projection.conversation[0]).toMatchObject({
+      kind: "reasoning",
+      content: "I should generate the image via MCP.",
+    });
     expect(projectedTool).toMatchObject({
       toolName: "generate_image",
       toolArgs,

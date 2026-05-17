@@ -3,6 +3,10 @@ import {
   CodexThreadHistoryReader,
   getCodexThreadHistoryReader,
 } from "../../../agent-execution/backends/codex/history/codex-thread-history-reader.js";
+import {
+  normalizeCodexThreadHistoryItem,
+  type CodexThreadHistoryToolStatus,
+} from "../../../agent-execution/backends/codex/history/codex-thread-history-item-normalizer.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../historical-replay-event-types.js";
 import type {
@@ -21,9 +25,6 @@ const asArray = (value: unknown): unknown[] | null => (Array.isArray(value) ? va
 
 const asString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
-const asRawNonEmptyString = (value: unknown): string | null =>
-  typeof value === "string" && value.length > 0 ? value : null;
 
 const asNumber = (value: unknown): number | null =>
   typeof value === "number" && Number.isFinite(value) ? value : null;
@@ -108,126 +109,10 @@ const resolveUserMessageContent = (item: Record<string, unknown>): string | null
   return fragments.join("\n\n");
 };
 
-const asArrayOfObjects = (value: unknown): Array<Record<string, unknown>> =>
-  (asArray(value) ?? [])
-    .map((entry) => asObject(entry))
-    .filter((entry): entry is Record<string, unknown> => Boolean(entry));
-
-const resolveFileChangeArguments = (
-  item: Record<string, unknown>,
-): Record<string, unknown> | null => {
-  const changes = asArrayOfObjects(item.changes).map((change) => {
-    const kind = asObject(change.kind);
-    const next: Record<string, unknown> = {};
-    const path = asString(change.path);
-    const patch = asRawNonEmptyString(change.diff);
-    const kindType = asString(kind?.type);
-    if (path) {
-      next.path = path;
-    }
-    if (patch) {
-      next.patch = patch;
-    }
-    if (kindType) {
-      next.kind = kindType;
-    }
-    return next;
-  });
-
-  if (changes.length === 0) {
-    return null;
-  }
-  if (changes.length === 1) {
-    return changes[0];
-  }
-  return { changes };
-};
-
-const resolveCommandExecutionArguments = (
-  item: Record<string, unknown>,
-): Record<string, unknown> | null => {
-  const command = asRawNonEmptyString(item.command);
-  if (!command) {
-    return null;
-  }
-  return { command };
-};
-
-const resolveWebSearchArguments = (
-  item: Record<string, unknown>,
-): Record<string, unknown> | null => {
-  const action = asObject(item.action);
-  const query = asRawNonEmptyString(item.query) ?? asRawNonEmptyString(action?.query);
-  const queriesCandidate = asArray(action?.queries);
-  const queries = (queriesCandidate ?? [])
-    .filter((entry): entry is string => typeof entry === "string")
-    .map((entry) => entry.trim())
-    .filter((entry) => entry.length > 0);
-
-  const next: Record<string, unknown> = {};
-  const actionType = asString(action?.type);
-  if (query) {
-    next.query = query;
-  }
-  if (actionType) {
-    next.action_type = actionType;
-  }
-  if (queries.length > 0) {
-    next.queries = queries;
-  }
-  return Object.keys(next).length > 0 ? next : null;
-};
-
-const resolveWebSearchResult = (
-  item: Record<string, unknown>,
-  toolArgs: Record<string, unknown> | null,
-): Record<string, unknown> | null => {
-  const status = asString(item.status) ?? "completed";
-  if (!toolArgs && !status) {
-    return null;
-  }
-
-  const next: Record<string, unknown> = { status };
-  if (typeof toolArgs?.query === "string") {
-    next.query = toolArgs.query;
-  }
-  if (Array.isArray(toolArgs?.queries)) {
-    next.queries = toolArgs.queries;
-  }
-  return next;
-};
-
-const resolveInvocationId = (
-  item: Record<string, unknown>,
-  turnIndex: number,
-  itemIndex: number,
-): string =>
-  asString(item.invocationId) ??
-  asString(item.callId) ??
-  asString(item.toolCallId) ??
-  asString(item.id) ??
-  `codex-${turnIndex}-${itemIndex}`;
-
 const resolveToolStatus = (
-  item: Record<string, unknown>,
-  toolResult: unknown,
+  status: CodexThreadHistoryToolStatus,
 ): HistoricalReplayToolEvent["status"] => {
-  if (asString(item.error)) {
-    return "error";
-  }
-  const normalizedStatus = (asString(item.status) ?? "").toLowerCase();
-  if (normalizedStatus === "error" || normalizedStatus === "failed") {
-    return "error";
-  }
-  if (
-    normalizedStatus === "success" ||
-    normalizedStatus === "completed" ||
-    normalizedStatus === "done" ||
-    normalizedStatus === "ok"
-  ) {
-    return "success";
-  }
-  return toolResult == null ? "parsed" : "success";
+  return status;
 };
 
 const inferActivityType = (
@@ -271,48 +156,28 @@ const resolveToolEvent = (
   turnIndex: number,
   itemIndex: number,
 ): HistoricalReplayToolEvent | null => {
-  const type = normalizeItemKind(item);
-  let toolName: string | null = null;
-  let toolArgs: Record<string, unknown> | null = null;
-  let toolResult: unknown = null;
-
-  if (type === "filechange") {
-    toolName = "edit_file";
-    toolArgs = resolveFileChangeArguments(item);
-    toolResult = {
-      status: asString(item.status) ?? null,
-      changes: asArray(item.changes) ?? null,
-    };
-  } else if (type === "commandexecution") {
-    toolName = "run_bash";
-    toolArgs = resolveCommandExecutionArguments(item);
-    toolResult = {
-      status: asString(item.status) ?? null,
-      output: item.aggregatedOutput ?? null,
-      exit_code: item.exitCode ?? null,
-    };
-  } else if (type === "websearch") {
-    toolName = "search_web";
-    toolArgs = resolveWebSearchArguments(item);
-    toolResult = resolveWebSearchResult(item, toolArgs);
-  } else {
+  const normalized = normalizeCodexThreadHistoryItem({
+    item,
+    turnIndex,
+    itemIndex,
+  });
+  if (!normalized) {
     return null;
   }
 
-  const normalizedToolName = toolName ?? "tool";
   return {
     kind: "tool",
-    invocationId: resolveInvocationId(item, turnIndex, itemIndex),
-    toolName: normalizedToolName,
-    toolArgs,
-    toolResult,
-    toolError: asString(item.error),
+    invocationId: normalized.invocationId,
+    toolName: normalized.toolName,
+    toolArgs: normalized.toolArgs,
+    toolResult: normalized.toolResult,
+    toolError: normalized.toolError,
     content: null,
     media: null,
     ts: resolveEntryTimestamp(item) ?? turnTs,
-    activityType: inferActivityType(normalizedToolName, toolArgs),
-    status: resolveToolStatus(item, toolResult),
-    contextText: resolveContextText(normalizedToolName, toolArgs),
+    activityType: inferActivityType(normalized.toolName, normalized.toolArgs),
+    status: resolveToolStatus(normalized.status),
+    contextText: resolveContextText(normalized.toolName, normalized.toolArgs),
     logs: [],
     detailLevel: "source_limited",
   };
@@ -400,6 +265,12 @@ const transformThreadPayload = (payload: Record<string, unknown>): HistoricalRep
   return events;
 };
 
+/**
+ * Diagnostic/runtime-native Codex thread projection utility.
+ *
+ * Normal UI history does not use this provider; AgentRunViewProjectionService
+ * hydrates display rows from the local application-owned replay trace only.
+ */
 export class CodexRunViewProjectionProvider implements RunProjectionProvider {
   readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
   private readonly historyReader: CodexThreadHistoryReader;
@@ -437,12 +308,3 @@ export class CodexRunViewProjectionProvider implements RunProjectionProvider {
     return buildRunProjectionBundleFromEvents(input.source.runId, events);
   }
 }
-
-let cachedCodexRunViewProjectionProvider: CodexRunViewProjectionProvider | null = null;
-
-export const getCodexRunViewProjectionProvider = (): CodexRunViewProjectionProvider => {
-  if (!cachedCodexRunViewProjectionProvider) {
-    cachedCodexRunViewProjectionProvider = new CodexRunViewProjectionProvider();
-  }
-  return cachedCodexRunViewProjectionProvider;
-};
