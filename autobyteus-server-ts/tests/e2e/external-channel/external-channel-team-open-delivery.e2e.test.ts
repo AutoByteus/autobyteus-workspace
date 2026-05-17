@@ -14,6 +14,7 @@ import type { InterAgentMessageDeliveryRequest } from "../../../src/agent-team-e
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import { selectorToRouteKey, type TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import { TeamRunContext, type RuntimeTeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRunEventSourceType, type TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
@@ -120,7 +121,7 @@ describe("external channel team open delivery e2e", () => {
       targetType: "TEAM",
       teamDefinitionId: "team-definition-open-delivery",
       teamRunId,
-      targetNodeName: "coordinator",
+      targetMemberRouteKey: "coordinator",
       allowTransportFallback: false,
     });
 
@@ -233,8 +234,8 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
     return () => this.listeners.delete(listener);
   }
 
-  async postMessage(_message: AgentInputUserMessage, targetMemberName?: string | null): Promise<AgentOperationResult> {
-    expect(targetMemberName).toBe("coordinator");
+  async postMessage(_message: AgentInputUserMessage, target?: TeamMemberSelector | null): Promise<AgentOperationResult> {
+    expect(target ? selectorToRouteKey(target) : null).toBe("coordinator");
     setTimeout(() => {
       this.emitOverlappingStreamTurn("coordinator", "run-coordinator", "turn-direct", [
         "Sent the",
@@ -322,6 +323,8 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
             runtimeKind: RuntimeKind.AUTOBYTEUS,
             memberName,
             memberRunId,
+            memberRouteKey: memberName,
+            memberPath: [memberName],
             agentEvent: {
               eventType: event.eventType,
               runId: memberRunId,
@@ -372,6 +375,7 @@ const createMemberConfig = (memberName: string, memberRunId: string) => ({
 
 const createRuntimeMemberContext = (memberName: string, memberRunId: string) => ({
   memberName,
+  memberPath: [memberName],
   memberRouteKey: memberName,
   memberRunId,
   getPlatformAgentRunId: () => null,

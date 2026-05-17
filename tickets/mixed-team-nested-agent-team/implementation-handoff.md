@@ -1031,3 +1031,49 @@ Passed:
   - Result: `1` changed non-test source file checked; no file exceeded `500` non-empty lines (`teamRunConfigUtils.ts` is `264` non-empty lines).
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this no-legacy config reconstruction cleanup.
+
+## Code Review Round 30 Local Fix Update
+
+Addressed the Round 30 integrated-state no-legacy findings:
+
+- `CR-ROUND30-001`: Application runtime-control input no longer exposes `targetMemberName` in the application SDK contract. `ApplicationRuntimeInput` and `runtimeControl.postRunInput(...)` now use `targetMemberRouteKey` / `targetMemberPath`; generated `dist` declarations and vendored app SDK declarations were updated. The orchestration host rejects legacy `targetMemberName` payloads before dispatch and posts team input through `TeamMemberSelector` route/path identity.
+- `CR-ROUND30-002`: External-channel TEAM bindings and output delivery no longer use `targetNodeName` or `entryMemberName`. Binding setup persists `targetMemberRouteKey` / `targetMemberPath`; team dispatch builds structured selectors, captures turn/output correlation by member run id plus route/path identity, and delivery keys / binding checks use `entryMemberRouteKey` / `entryMemberPath` / `entryMemberRunId` only.
+- `CR-ROUND30-003`: Team history member status resolution no longer falls back from run ids to `agent_name === member.memberName`; member status now matches only canonical member run id or platform run id, otherwise returns safe offline status.
+
+Additional regressions added/updated:
+
+- Application host unit coverage for structured route-key posting and legacy `targetMemberName` rejection before dispatch.
+- External-channel route/path identity coverage across binding, ingress, team facade, output parsing/eligibility, delivery persistence, and reply callback tests.
+- Team history status regression proving a bare matching `agent_name` with a mismatched run id does not select the team member.
+
+The remaining `targetMemberName` string references in active source are limited to explicit invalid-alias rejection diagnostics and AutoByteus native adapter/downstream API terminology, not public application runtime-control contract authority or external-channel binding identity.
+
+## Code Review Round 30 Local Fix Checks
+
+Passed:
+
+- `pnpm -C autobyteus-application-sdk-contracts build`
+  - Result: passed; regenerated SDK declaration output.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-orchestration/application-orchestration-host-service.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts tests/unit/external-channel/runtime/channel-team-run-facade.test.ts tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts tests/unit/external-channel/runtime/channel-output-event-parser.test.ts tests/unit/external-channel/services/channel-binding-service.test.ts tests/unit/external-channel/services/channel-ingress-service.test.ts tests/unit/external-channel/services/channel-run-output-delivery-service.test.ts tests/unit/external-channel/services/reply-callback-service.test.ts tests/unit/run-history/services/team-run-history-service.test.ts tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts --reporter=dot`
+  - Result: `12` files passed, `67` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec prisma validate`
+  - Result: passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- `git diff --check origin/personal...HEAD`
+  - Result: passed.
+- No-legacy scans:
+  - `targetNodeName` in active server source/tests/application contract/application packages: no matches.
+  - `entryMemberName` in server source/tests: no matches.
+  - `targetMemberName` in application SDK source/dist and vendored app SDK declarations: no matches.
+  - `candidate.agent_name === member.memberName` / `agent_name === member.memberName` in server source/tests: no matches.
+- Custom changed-path non-test `.ts` / `.vue` source size audit.
+  - Result: `314` changed paths checked; no changed source implementation file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes the Round 30 no-legacy local fix.

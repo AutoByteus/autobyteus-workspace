@@ -32,7 +32,7 @@ const createBinding = (): ChannelBinding => ({
   teamRunId: null,
   teamDefinitionId: null,
   teamLaunchPreset: null,
-  targetNodeName: null,
+  targetMemberRouteKey: null,
   allowTransportFallback: false,
   createdAt: new Date("2026-02-08T00:00:00.000Z"),
   updatedAt: new Date("2026-02-08T00:00:00.000Z"),

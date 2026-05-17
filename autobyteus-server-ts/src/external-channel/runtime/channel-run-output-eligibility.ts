@@ -1,4 +1,5 @@
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
+import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import type { ChannelRunOutputTarget } from "../domain/models.js";
 import type { ParsedChannelOutputEvent } from "./channel-output-event-parser.js";
 
@@ -54,9 +55,13 @@ export class ChannelRunOutputEligibilityPolicy {
     }
 
     const configuredMemberRunId = normalizeOptionalString(target.entryMemberRunId);
-    const configuredMemberName = normalizeOptionalString(target.entryMemberName);
+    const configuredMemberRouteKey =
+      normalizeOptionalString(target.entryMemberRouteKey) ??
+      normalizeRouteKeyFromPath(target.entryMemberPath);
     const eventMemberRunId = normalizeOptionalString(event.memberRunId);
-    const eventMemberName = normalizeOptionalString(event.memberName);
+    const eventMemberRouteKey =
+      normalizeOptionalString(event.memberRouteKey) ??
+      normalizeRouteKeyFromPath(event.memberPath);
 
     if (configuredMemberRunId) {
       if (eventMemberRunId !== configuredMemberRunId) {
@@ -67,12 +72,13 @@ export class ChannelRunOutputEligibilityPolicy {
         target: {
           ...target,
           entryMemberRunId: configuredMemberRunId,
-          entryMemberName: configuredMemberName ?? eventMemberName,
+          entryMemberRouteKey: configuredMemberRouteKey ?? eventMemberRouteKey,
+          entryMemberPath: target.entryMemberPath ?? event.memberPath,
         },
       };
     }
 
-    if (!configuredMemberName || eventMemberName !== configuredMemberName) {
+    if (!configuredMemberRouteKey || eventMemberRouteKey !== configuredMemberRouteKey) {
       return null;
     }
 
@@ -81,7 +87,8 @@ export class ChannelRunOutputEligibilityPolicy {
       target: {
         ...target,
         entryMemberRunId: eventMemberRunId,
-        entryMemberName: configuredMemberName,
+        entryMemberRouteKey: configuredMemberRouteKey,
+        entryMemberPath: target.entryMemberPath ?? event.memberPath,
       },
     };
   }
@@ -95,4 +102,17 @@ const normalizeOptionalString = (
   }
   const normalized = value.trim();
   return normalized.length > 0 ? normalized : null;
+};
+
+const normalizeRouteKeyFromPath = (
+  value: readonly string[] | null | undefined,
+): string | null => {
+  if (!Array.isArray(value) || value.length === 0) {
+    return null;
+  }
+  try {
+    return buildMemberRouteKeyFromPath(value);
+  } catch {
+    return null;
+  }
 };

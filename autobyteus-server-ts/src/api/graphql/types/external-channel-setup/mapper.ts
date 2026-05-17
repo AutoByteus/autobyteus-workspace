@@ -24,6 +24,8 @@ export const toGraphqlBinding = (
   launchPreset: toGraphqlLaunchPreset(binding.launchPreset),
   teamLaunchPreset: toGraphqlTeamLaunchPreset(binding.teamLaunchPreset),
   teamRunId: binding.teamRunId,
+  targetMemberRouteKey: binding.targetMemberRouteKey,
+  targetMemberPath: binding.targetMemberPath,
   updatedAt: binding.updatedAt,
 });
 

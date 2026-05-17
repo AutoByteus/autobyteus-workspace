@@ -26,7 +26,7 @@ const createBinding = (): ChannelBinding => ({
   teamDefinitionId: null,
   teamLaunchPreset: null,
   teamRunId: null,
-  targetNodeName: null,
+  targetMemberRouteKey: null,
   allowTransportFallback: false,
   createdAt: new Date("2026-03-09T00:00:00.000Z"),
   updatedAt: new Date("2026-03-09T00:00:00.000Z"),
@@ -48,7 +48,7 @@ const createTeamBinding = (): ChannelBinding => ({
     llmConfig: null,
   },
   teamRunId: "team-run-1",
-  targetNodeName: "coordinator",
+  targetMemberRouteKey: "coordinator",
 });
 
 const createActiveRun = (runId: string, runtimeKind = "AUTOBYTEUS") => ({

@@ -48,7 +48,7 @@ const createAgentBinding = (): ChannelBinding => ({
   teamDefinitionId: null,
   teamLaunchPreset: null,
   teamRunId: null,
-  targetNodeName: null,
+  targetMemberRouteKey: null,
   allowTransportFallback: false,
   createdAt: new Date("2026-02-08T00:00:00.000Z"),
   updatedAt: new Date("2026-02-08T00:00:00.000Z"),
@@ -70,7 +70,7 @@ const createTeamBinding = (): ChannelBinding => ({
     llmConfig: null,
   },
   teamRunId: "team-1",
-  targetNodeName: "support-node",
+  targetMemberRouteKey: "support-node",
 });
 
 describe("ChannelRunFacade", () => {

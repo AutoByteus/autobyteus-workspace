@@ -22,7 +22,10 @@ import {
 } from "../../agent-team-execution/domain/team-run-context.js";
 import {
   buildMemberRouteKeyFromPath,
+  selectorFromMemberPath,
   selectorFromMemberRouteKey,
+  selectorToRouteKey,
+  type TeamMemberSelector,
 } from "../../agent-team-execution/domain/team-run-member-identity.js";
 
 const logger = {
@@ -66,17 +69,18 @@ export class ChannelTeamRunFacade {
         if (!teamRun) {
           throw new Error(`Team run '${teamRunId}' is not active.`);
         }
+        const targetSelector = buildBindingTargetSelector(binding);
+        const targetMemberRouteKey = targetSelector ? selectorToRouteKey(targetSelector) : null;
         const subscribeToEvents = teamRun.subscribeToEvents.bind(teamRun);
         const turnCapture = startTeamDispatchTurnCapture(
           subscribeToEvents,
-          binding.targetNodeName ?? null,
+          targetMemberRouteKey,
         );
         let result;
         try {
-          const targetNodeName = normalizeOptionalString(binding.targetNodeName ?? null);
           result = await teamRun.postMessage(
             buildAgentInputMessage(envelope),
-            targetNodeName ? selectorFromMemberRouteKey(targetNodeName) : null,
+            targetSelector,
           );
         } catch (error) {
           turnCapture.dispose();
@@ -94,9 +98,8 @@ export class ChannelTeamRunFacade {
           capturedTurn = {
             turnId: directTurnId,
             memberRunId: directMemberRunId,
-            memberName:
-              normalizeOptionalString(result.memberName ?? null) ??
-              normalizeOptionalString(binding.targetNodeName ?? null),
+            memberRouteKey: targetMemberRouteKey,
+            memberPath: binding.targetMemberPath ?? routeKeyToMemberPath(targetMemberRouteKey),
           };
         } else {
           capturedTurn = await turnCapture.promise;
@@ -116,17 +119,15 @@ export class ChannelTeamRunFacade {
           lastActivityAt: new Date().toISOString(),
         });
         try {
-          const targetMemberRouteKey = normalizeOptionalString(binding.targetNodeName ?? null);
           this.teamLiveMessagePublisher.publishExternalUserMessage({
             teamRunId,
             envelope,
             ...resolveExternalDispatchMemberIdentity(teamRun, {
               memberRunId,
-              targetMemberRouteKey,
-              memberName:
-                normalizeOptionalString(capturedTurn?.memberName ?? null) ??
-                normalizeOptionalString(result.memberName ?? null) ??
+              targetMemberRouteKey:
+                normalizeOptionalString(capturedTurn?.memberRouteKey ?? null) ??
                 targetMemberRouteKey,
+              targetMemberPath: capturedTurn?.memberPath ?? binding.targetMemberPath ?? null,
             }),
           });
         } catch (error) {
@@ -140,10 +141,10 @@ export class ChannelTeamRunFacade {
           dispatchTargetType: "TEAM",
           teamRunId,
           memberRunId,
-          memberName:
-            normalizeOptionalString(capturedTurn?.memberName ?? null) ??
-            normalizeOptionalString(result.memberName ?? null) ??
-            normalizeOptionalString(binding.targetNodeName ?? null),
+          memberRouteKey:
+            normalizeOptionalString(capturedTurn?.memberRouteKey ?? null) ??
+            targetMemberRouteKey,
+          memberPath: capturedTurn?.memberPath ?? binding.targetMemberPath ?? routeKeyToMemberPath(targetMemberRouteKey),
           turnId,
           dispatchedAt: new Date(),
         };
@@ -165,7 +166,7 @@ const resolveExternalDispatchMemberIdentity = (
   input: {
     memberRunId: string | null;
     targetMemberRouteKey: string | null;
-    memberName: string | null;
+    targetMemberPath: string[] | null;
   },
 ): {
   agentName: string | null;
@@ -179,10 +180,10 @@ const resolveExternalDispatchMemberIdentity = (
   const routeKey =
     runtimeContext?.memberRouteKey ??
     normalizeRouteKey(input.targetMemberRouteKey);
-  const path = runtimeContext?.memberPath ?? routeKeyToMemberPath(routeKey);
+  const path = runtimeContext?.memberPath ?? input.targetMemberPath ?? routeKeyToMemberPath(routeKey);
 
   return {
-    agentName: runtimeContext?.memberName ?? input.memberName,
+    agentName: runtimeContext?.memberName ?? null,
     agentId: runtimeContext?.memberRunId ?? input.memberRunId,
     memberRouteKey: routeKey,
     memberPath: path,
@@ -196,6 +197,7 @@ const findRuntimeMemberContext = (
   input: {
     memberRunId: string | null;
     targetMemberRouteKey: string | null;
+    targetMemberPath?: string[] | null;
   },
 ): TeamMemberRuntimeContext | null => {
   const contexts = getRuntimeMemberContexts(teamRun.getRuntimeContext());
@@ -209,10 +211,29 @@ const findRuntimeMemberContext = (
   }
 
   const targetMemberRouteKey = normalizeRouteKey(input.targetMemberRouteKey);
-  if (!targetMemberRouteKey) {
+  const routeKeyFromPath = input.targetMemberPath?.length
+    ? normalizeRouteKey(buildMemberRouteKeyFromPath(input.targetMemberPath))
+    : null;
+  const routeKey = targetMemberRouteKey ?? routeKeyFromPath;
+  if (!routeKey) {
     return null;
   }
-  return contexts.find((context) => context.memberRouteKey === targetMemberRouteKey) ?? null;
+  return contexts.find((context) => context.memberRouteKey === routeKey) ?? null;
+};
+
+const buildBindingTargetSelector = (binding: ChannelBinding): TeamMemberSelector | null => {
+  const routeKey = normalizeRouteKey(binding.targetMemberRouteKey ?? null);
+  const memberPath = Array.isArray(binding.targetMemberPath) && binding.targetMemberPath.length > 0
+    ? binding.targetMemberPath
+    : null;
+  if (memberPath) {
+    const pathSelector = selectorFromMemberPath(memberPath);
+    if (routeKey && selectorToRouteKey(pathSelector) !== routeKey) {
+      throw new Error("Channel binding targetMemberPath and targetMemberRouteKey refer to different team members.");
+    }
+    return pathSelector;
+  }
+  return routeKey ? selectorFromMemberRouteKey(routeKey) : null;
 };
 
 const normalizeRouteKey = (routeKey: string | null): string | null => {

@@ -193,6 +193,57 @@ describe("TeamRunHistoryService", () => {
     });
   });
 
+  it("does not use bare agent_name as a team member status identity fallback", async () => {
+    const { TeamRunHistoryService } = await import(
+      "../../../../src/run-history/services/team-run-history-service.js"
+    );
+
+    const metadata = buildTeamMetadata("team-name-only-status");
+    teamRunManagerMock.getActiveRun.mockReturnValue({
+      getStatusSnapshot: () => ({ status: "running" }),
+      getMemberStatusSnapshots: () => [
+        {
+          agent_id: "unrelated-run-id",
+          agent_name: "Coordinator",
+          status: "running",
+          can_interrupt: true,
+        },
+      ],
+    });
+
+    const service = new TeamRunHistoryService(memoryDir, {
+      metadataStore: {
+        readMetadata: vi.fn().mockResolvedValue(metadata),
+      } as any,
+      indexService: {
+        listRows: vi.fn().mockResolvedValue([
+          {
+            teamRunId: "team-name-only-status",
+            teamDefinitionId: "team-def-1",
+            teamDefinitionName: "Team Alpha",
+            workspaceRootPath: "/ws/a",
+            summary: "active team",
+            lastActivityAt: "2026-04-11T20:05:00.000Z",
+            lastKnownStatus: "IDLE",
+            deleteLifecycle: "READY",
+          },
+        ]),
+        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
+        removeRow: vi.fn(),
+        recordRunActivity: vi.fn(),
+      } as any,
+      teamRunManager: teamRunManagerMock as any,
+    });
+
+    const result = await service.listTeamRunHistory();
+
+    expect(result[0]?.members[0]).toMatchObject({
+      memberRunId: "member-run-1",
+      memberName: "Coordinator",
+      status: "offline",
+    });
+  });
+
   it("skips unmigrated legacy team metadata from history rows with a migration diagnostic boundary", async () => {
     const { TeamRunHistoryService } = await import(
       "../../../../src/run-history/services/team-run-history-service.js"

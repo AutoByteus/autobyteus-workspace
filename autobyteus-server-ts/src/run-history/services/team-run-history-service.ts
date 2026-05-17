@@ -321,8 +321,7 @@ export class TeamRunHistoryService {
   ): AgentApiStatus {
     const snapshot = statusSnapshots.find((candidate) =>
       candidate.agent_id === member.memberRunId ||
-      candidate.agent_id === member.platformAgentRunId ||
-      candidate.agent_name === member.memberName,
+      candidate.agent_id === member.platformAgentRunId,
     );
     return snapshot?.status ?? "offline";
   }

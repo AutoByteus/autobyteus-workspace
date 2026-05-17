@@ -35,7 +35,7 @@ const createBinding = (): ChannelBinding => ({
   teamDefinitionId: "team-definition-1",
   teamLaunchPreset: null,
   teamRunId: "team-1",
-  targetNodeName: "coordinator",
+  targetMemberRouteKey: "coordinator",
   allowTransportFallback: false,
   createdAt: new Date("2026-04-26T00:00:00.000Z"),
   updatedAt: new Date("2026-04-26T00:00:00.000Z"),
@@ -58,7 +58,7 @@ const createAgentBinding = (): ChannelBinding => ({
   teamDefinitionId: null,
   teamLaunchPreset: null,
   teamRunId: null,
-  targetNodeName: null,
+  targetMemberRouteKey: null,
 });
 
 const createAgentRun = () => {
@@ -246,7 +246,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
         targetType: "TEAM",
         teamRunId: "team-1",
         entryMemberRunId: "run-coordinator",
-        entryMemberName: "coordinator",
+        entryMemberRouteKey: "coordinator",
       },
       turnId: "initial-turn",
     });
@@ -281,7 +281,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
         targetType: "TEAM",
         teamRunId: "team-1",
         entryMemberRunId: "run-coordinator",
-        entryMemberName: "coordinator",
+        entryMemberRouteKey: "coordinator",
       },
     });
 
@@ -326,7 +326,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
         targetType: "TEAM",
         teamRunId: "team-1",
         entryMemberRunId: "run-coordinator",
-        entryMemberName: "coordinator",
+        entryMemberRouteKey: "coordinator",
       },
       turnId: "initial-turn",
     });
@@ -379,7 +379,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       targetType: "TEAM" as const,
       teamRunId: "team-1",
       entryMemberRunId: "run-coordinator",
-      entryMemberName: "coordinator",
+      entryMemberRouteKey: "coordinator",
     };
 
     const observing = await deliveryService.upsertObservedTurn({
@@ -497,14 +497,14 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       targetType: "TEAM",
       teamDefinitionId: "team-definition-1",
       teamRunId: "team-1",
-      targetNodeName: "coordinator",
+      targetMemberRouteKey: "coordinator",
     });
     const reboundBinding = await bindingService.upsertBinding({
       ...route,
       targetType: "TEAM",
       teamDefinitionId: "team-definition-1",
       teamRunId: "team-1",
-      targetNodeName: "worker",
+      targetMemberRouteKey: "worker",
     });
     const staleCoordinatorRecord = await deliveryService.upsertObservedTurn({
       bindingId: reboundBinding.id,
@@ -513,7 +513,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
         targetType: "TEAM",
         teamRunId: "team-1",
         entryMemberRunId: "run-coordinator",
-        entryMemberName: "coordinator",
+        entryMemberRouteKey: "coordinator",
       },
       turnId: "stale-coordinator-turn",
       correlationMessageId: "telegram-message-1",
@@ -599,14 +599,14 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
       targetType: "TEAM",
       teamDefinitionId: "team-definition-1",
       teamRunId: "team-1",
-      targetNodeName: "worker",
+      targetMemberRouteKey: "worker",
     });
     const reboundBinding = await bindingService.upsertBinding({
       ...route,
       targetType: "TEAM",
       teamDefinitionId: "team-definition-1",
       teamRunId: "team-1",
-      targetNodeName: null,
+      targetMemberRouteKey: null,
     });
     const staleWorkerRecord = await deliveryService.upsertObservedTurn({
       bindingId: reboundBinding.id,
@@ -615,7 +615,7 @@ describe("ChannelRunOutputDeliveryRuntime", () => {
         targetType: "TEAM",
         teamRunId: "team-1",
         entryMemberRunId: "run-worker",
-        entryMemberName: "worker",
+        entryMemberRouteKey: "worker",
       },
       turnId: "stale-worker-turn",
       correlationMessageId: "telegram-message-1",

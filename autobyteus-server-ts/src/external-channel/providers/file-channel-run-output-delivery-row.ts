@@ -23,7 +23,8 @@ export type ChannelRunOutputTargetRow =
       targetType: "TEAM";
       teamRunId: string;
       entryMemberRunId: string | null;
-      entryMemberName: string | null;
+      entryMemberRouteKey: string | null;
+      entryMemberPath: string[] | null;
     };
 
 export type ChannelRunOutputDeliveryRow = {
@@ -83,7 +84,8 @@ export const targetToRow = (
         targetType: "TEAM",
         teamRunId: target.teamRunId,
         entryMemberRunId: normalizeNullableString(target.entryMemberRunId),
-        entryMemberName: normalizeNullableString(target.entryMemberName),
+        entryMemberRouteKey: normalizeNullableString(target.entryMemberRouteKey),
+        entryMemberPath: normalizeMemberPath(target.entryMemberPath),
       };
 
 export const rowToTarget = (
@@ -98,7 +100,8 @@ export const rowToTarget = (
         targetType: "TEAM",
         teamRunId: target.teamRunId,
         entryMemberRunId: normalizeNullableString(target.entryMemberRunId),
-        entryMemberName: normalizeNullableString(target.entryMemberName),
+        entryMemberRouteKey: normalizeNullableString(target.entryMemberRouteKey),
+        entryMemberPath: normalizeMemberPath(target.entryMemberPath),
       };
 
 export const toRecord = (
@@ -128,3 +131,13 @@ export const sortByUpdatedDesc = (
   [...rows].sort((a, b) => parseDate(b.updatedAt).getTime() - parseDate(a.updatedAt).getTime());
 
 export type { ExternalChannelProvider, ExternalChannelTransport };
+
+const normalizeMemberPath = (value: readonly string[] | null | undefined): string[] | null => {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+  const normalized = value
+    .map((segment) => normalizeNullableString(segment))
+    .filter((segment): segment is string => Boolean(segment));
+  return normalized.length > 0 ? normalized : null;
+};
