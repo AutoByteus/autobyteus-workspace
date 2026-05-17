@@ -10,6 +10,7 @@ import { buildConfiguredAgentToolExposure } from "../../../../../../src/agent-ex
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
 import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { buildTeamMemberAddress } from "../../../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 
 const {
   buildClaudeSessionMcpServersMock,
@@ -42,7 +43,9 @@ const createMemberTeamContext = () =>
     memberRunId: "run-1",
     members: [
       {
+        memberKind: "agent",
         memberName: "Professor",
+        memberPath: ["professor"],
         memberRouteKey: "professor",
         memberRunId: "run-1",
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
@@ -50,10 +53,39 @@ const createMemberTeamContext = () =>
         description: null,
       },
       {
+        memberKind: "agent",
         memberName: "Student",
+        memberPath: ["student"],
         memberRouteKey: "student",
         memberRunId: "run-2",
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        role: null,
+        description: null,
+      },
+    ],
+    communicationRecipients: [
+      {
+        recipientName: "Student",
+        scope: "local_agent",
+        participant: {
+          memberKind: "agent",
+          memberName: "Student",
+          memberPath: ["student"],
+          memberRouteKey: "student",
+          memberRunId: "run-2",
+          address: buildTeamMemberAddress({
+            teamRunId: "team-1",
+            memberPath: ["student"],
+            memberRouteKey: "student",
+          }),
+          platformRunId: null,
+          teamDefinitionId: null,
+          representedSubTeam: null,
+        },
+        delivery: {
+          teamRunId: "team-1",
+          selector: { kind: "route_key", memberRouteKey: "student" },
+        },
         role: null,
         description: null,
       },
@@ -173,7 +205,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
         prompt: expect.stringContaining(
-          "If you use `send_message_to`, set `recipient_name` to exactly match one teammate name from the list below.",
+          "If you use `send_message_to`, set `recipient_name` to exactly match one allowed recipient name from the team membership roster below.",
         ),
         allowedTools: expect.arrayContaining([
           "send_message_to",

@@ -211,12 +211,12 @@ const resolveDraftOwnerForContext = (targetContext: AgentContext | null) => {
     return null;
   }
 
-  const activeMember = activeTeam.members.get(activeTeam.focusedMemberName) ?? null;
+  const activeMember = activeTeam.leafAgentContextsByRouteKey.get(activeTeam.focusedMemberRouteKey) ?? null;
   if (activeMember !== targetContext) {
     return null;
   }
 
-  return buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, activeTeam.focusedMemberName);
+  return buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, activeTeam.focusedMemberRouteKey);
 };
 
 const getTargetForContext = (targetContext: AgentContext | null) => {
@@ -248,7 +248,10 @@ const {
   commitAttachments: (target, updater) => {
     target.subject.contextFilePaths = updater(target.subject.contextFilePaths);
   },
-  openWorkspaceFile: (locator, resolvedWorkspaceId) => fileExplorerStore.openFile(locator, resolvedWorkspaceId),
+  openWorkspaceFile: (locator, resolvedWorkspaceId) => {
+    if (!resolvedWorkspaceId) return;
+    fileExplorerStore.openFile(locator, resolvedWorkspaceId);
+  },
   getWorkspaceId: () => workspaceId.value,
   getIsEmbeddedElectronRuntime: () => isEmbeddedElectronRuntime.value,
 });

@@ -62,6 +62,10 @@ export interface SegmentStartPayload {
   segment_type: SegmentType;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
   metadata?: Record<string, any>;
 }
 
@@ -72,6 +76,10 @@ export interface SegmentContentPayload {
   segment_type?: SegmentType;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
 }
 
 export interface SegmentEndPayload {
@@ -79,6 +87,10 @@ export interface SegmentEndPayload {
   turn_id: string | null;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
   metadata?: Record<string, any>;
   interrupted?: boolean;
   reason?: string | null;
@@ -91,6 +103,14 @@ export interface AgentStatusPayload {
   can_interrupt: boolean;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
+  trigger?: string | null;
+  tool_name?: string | null;
+  error_message?: string | null;
+  error_details?: string | null;
 }
 
 export interface CompactionStatusPayload {
@@ -109,6 +129,10 @@ export interface CompactionStatusPayload {
   error_message?: string | null;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
 }
 
 export interface ExternalUserMessageContextFilePathPayload {
@@ -119,6 +143,9 @@ export interface ExternalUserMessageContextFilePathPayload {
 export interface ExternalUserMessagePayload {
   content: string;
   received_at?: string | null;
+  message_id?: string | null;
+  dedupe_key?: string | null;
+  input_origin?: 'user_message' | 'inter_agent_delivery' | string | null;
   provider?: string | null;
   transport?: string | null;
   account_id?: string | null;
@@ -128,10 +155,23 @@ export interface ExternalUserMessagePayload {
   context_file_paths?: ExternalUserMessageContextFilePathPayload[];
   agent_name?: string;
   agent_id?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
+  sender_agent_id?: string | null;
+  sender_agent_name?: string | null;
+  sender_member_route_key?: string | null;
+  sender_member_path?: string[] | null;
+  parent_communication_message_id?: string | null;
 }
 
 export interface TeamStatusPayload {
   status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
+  error_message?: string | null;
+  sub_team_node_name?: string | null;
+  source_route_key?: string;
+  source_path?: string[];
 }
 
 export interface ToolApprovalRequestedPayload {
@@ -142,6 +182,10 @@ export interface ToolApprovalRequestedPayload {
   approval_token?: ToolApprovalTokenPayload;
   agent_name?: string;
   agent_id?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
 }
 
 export interface ToolApprovedPayload {
@@ -166,10 +210,10 @@ export interface ToolDeniedPayload {
 
 export interface ToolApprovalTokenPayload {
   teamRunId: string;
-  runVersion: number;
   invocationId: string;
   invocationVersion: number;
-  targetMemberName: string;
+  targetMemberRouteKey?: string;
+  targetMemberPath?: string[];
 }
 
 export interface ToolExecutionStartedPayload {
@@ -286,18 +330,44 @@ export interface TeamCommunicationReferenceFilePayload {
   updatedAt: string;
 }
 
+export interface TeamCommunicationRepresentedSubTeamPayload {
+  memberKind: 'agent_team';
+  memberName: string;
+  memberPath: string[];
+  memberRouteKey: string;
+  memberRunId: string;
+  teamDefinitionId: string;
+  childTeamRunId?: string | null;
+  address: {
+    teamRunId: string;
+    memberPath: string[];
+    memberRouteKey: string;
+  };
+}
+
 export interface TeamCommunicationMessagePayload {
   messageId: string;
   teamRunId: string;
   senderRunId: string;
   senderMemberName?: string | null;
+  senderMemberKind?: 'agent' | 'agent_team' | null;
+  senderMemberPath?: string[] | null;
+  senderMemberRouteKey?: string | null;
+  senderRepresentedSubTeam?: TeamCommunicationRepresentedSubTeamPayload | null;
   receiverRunId: string;
   receiverMemberName?: string | null;
+  receiverMemberKind?: 'agent' | 'agent_team' | null;
+  receiverMemberPath?: string[] | null;
+  receiverMemberRouteKey?: string | null;
+  receiverRepresentedSubTeam?: TeamCommunicationRepresentedSubTeamPayload | null;
   content: string;
   messageType: string;
   createdAt: string;
   updatedAt: string;
   referenceFiles: TeamCommunicationReferenceFilePayload[];
+  source_path?: string[];
+  source_route_key?: string;
+  sub_team_node_name?: string | null;
 }
 
 export interface InterAgentMessagePayload {
@@ -405,31 +475,39 @@ export interface SendMessagePayload {
   content: string;
   context_file_paths?: string[];
   image_urls?: string[];
-  target_member_name?: string;
+  target_member_route_key?: string;
+  target_member_path?: string[];
+  targetMemberRouteKey?: string;
+  targetMemberPath?: string[];
+  message_id?: string;
+  dedupe_key?: string;
 }
 
 export interface ToolActionPayload {
   invocation_id: string;
-  agent_name?: string;
-  agent_id?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
+  memberRouteKey?: string;
+  memberPath?: string[];
+  sourceRouteKey?: string;
+  sourcePath?: string[];
+  target_member_route_key?: string;
+  target_member_path?: string[];
+  targetMemberRouteKey?: string;
+  targetMemberPath?: string[];
   reason?: string;
   approval_token?: ToolApprovalTokenPayload;
 }
 
 export interface InterruptGenerationPayload {
-  /**
-   * Stable team member route key.
-   *
-   * The wire field name is retained for compatibility with the existing
-   * focused-member send payload family, but callers must treat the value as a
-   * route key rather than a display-only member name.
-   */
-  target_member_name: string;
-  /**
-   * Optional member run id used only as a stale-target guard. It must never be
-   * used as the authoritative target selector.
-   */
-  agent_id?: string;
+  target_member_route_key?: string;
+  target_member_path?: string[];
+  targetMemberRouteKey?: string;
+  targetMemberPath?: string[];
+  target_member_run_id?: string;
+  targetMemberRunId?: string;
 }
 
 export type SendMessageClientMessage = {

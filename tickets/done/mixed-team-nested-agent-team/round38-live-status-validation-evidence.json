@@ -1,0 +1,2680 @@
+{
+  "validationId": "round38_mp9z81ze_8e4cfb",
+  "timestamp": "2026-05-17T16:15:26.475Z",
+  "head": "f231d0e2",
+  "graphqlUrl": "http://127.0.0.1:8000/graphql",
+  "wsBase": "ws://127.0.0.1:8000/ws",
+  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/round38_mp9z81ze_8e4cfb-workspace-TLZz1d",
+  "model": {
+    "selected": "qwen/qwen3-30b-a3b-2507:lmstudio@127.0.0.1:1234",
+    "available": [
+      "claude-haiku-4.5",
+      "claude-opus-4.6",
+      "claude-opus-4.7",
+      "claude-sonnet-4.6",
+      "claude-4-sonnet-rpa:autobyteus@localhost:51739",
+      "claude-4-sonnet-rpa:autobyteus@localhost:51740",
+      "claude-4-sonnet-thinking-rpa:autobyteus@localhost:51739",
+      "claude-4-sonnet-thinking-rpa:autobyteus@localhost:51740",
+      "claude-4.1-opus-rpa:autobyteus@localhost:51739",
+      "claude-4.1-opus-rpa:autobyteus@localhost:51740",
+      "claude-4.1-opus-thinking-rpa:autobyteus@localhost:51739",
+      "claude-4.1-opus-thinking-rpa:autobyteus@localhost:51740",
+      "deeperseek-chat-rpa:autobyteus@localhost:51739",
+      "deeperseek-chat-rpa:autobyteus@localhost:51740",
+      "deeperseek-chat-thinking-rpa:autobyteus@localhost:51739",
+      "deeperseek-chat-thinking-rpa:autobyteus@localhost:51740",
+      "ernie-5.0-preview-1022-rpa:autobyteus@localhost:51739",
+      "ernie-5.0-preview-1022-rpa:autobyteus@localhost:51740",
+      "ernie-5.0-preview-rpa:autobyteus@localhost:51739",
+      "ernie-5.0-preview-rpa:autobyteus@localhost:51740"
+    ]
+  },
+  "scenarios": {
+    "professorStudent": {
+      "teamRunId": "team_professor-student-team_fd9e1f0f",
+      "pass": true,
+      "professor": {
+        "routeKey": "Professor",
+        "token": "ROUND38_PROFESSOR_round38_mp9z81ze_8e4cfb",
+        "runningSeq": 8,
+        "terminalSeq": 37,
+        "settledSeq": 39,
+        "terminalType": "ASSISTANT_COMPLETE",
+        "prematureTeamIdleCount": 0,
+        "prematureTeamIdle": [],
+        "statusTimeline": [
+          {
+            "seq": 5,
+            "dtMs": 257,
+            "type": "TEAM_STATUS",
+            "status": "initializing",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          },
+          {
+            "seq": 6,
+            "dtMs": 263,
+            "type": "TEAM_STATUS",
+            "status": "offline",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          },
+          {
+            "seq": 8,
+            "dtMs": 273,
+            "type": "AGENT_STATUS",
+            "status": "running",
+            "member_route_key": "Professor",
+            "source_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "agent_name": "Professor"
+          },
+          {
+            "seq": 9,
+            "dtMs": 273,
+            "type": "TEAM_STATUS",
+            "status": "running",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          },
+          {
+            "seq": 10,
+            "dtMs": 274,
+            "type": "AGENT_STATUS",
+            "status": "running",
+            "member_route_key": "Professor",
+            "source_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "agent_name": "Professor"
+          },
+          {
+            "seq": 11,
+            "dtMs": 274,
+            "type": "AGENT_STATUS",
+            "status": "running",
+            "member_route_key": "Professor",
+            "source_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "agent_name": "Professor"
+          },
+          {
+            "seq": 12,
+            "dtMs": 274,
+            "type": "TEAM_STATUS",
+            "status": "running",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          },
+          {
+            "seq": 36,
+            "dtMs": 2121,
+            "type": "AGENT_STATUS",
+            "status": "running",
+            "member_route_key": "Professor",
+            "source_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "agent_name": "Professor"
+          },
+          {
+            "seq": 39,
+            "dtMs": 2122,
+            "type": "AGENT_STATUS",
+            "status": "idle",
+            "member_route_key": "Professor",
+            "source_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "agent_name": "Professor"
+          },
+          {
+            "seq": 40,
+            "dtMs": 2122,
+            "type": "TEAM_STATUS",
+            "status": "idle",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          },
+          {
+            "seq": 41,
+            "dtMs": 2122,
+            "type": "AGENT_STATUS",
+            "status": "offline",
+            "member_route_key": "Professor",
+            "source_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "agent_name": "Professor"
+          }
+        ]
+      },
+      "professorReconnect": {
+        "runningMemberSnapshotCount": 0,
+        "runningTeamSnapshotCount": 0,
+        "statuses": [
+          {
+            "seq": 2,
+            "dtMs": 2,
+            "type": "AGENT_STATUS",
+            "status": "offline",
+            "member_route_key": "Professor",
+            "source_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "agent_name": "Professor"
+          },
+          {
+            "seq": 3,
+            "dtMs": 2,
+            "type": "AGENT_STATUS",
+            "status": "offline",
+            "member_route_key": "Student",
+            "source_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "agent_name": "Student"
+          },
+          {
+            "seq": 4,
+            "dtMs": 2,
+            "type": "TEAM_STATUS",
+            "status": "idle",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          }
+        ],
+        "canonicalOnly": true
+      },
+      "student": {
+        "routeKey": "Student",
+        "token": "ROUND38_STUDENT_round38_mp9z81ze_8e4cfb",
+        "runningSeq": 48,
+        "terminalSeq": 75,
+        "settledSeq": 77,
+        "terminalType": "ASSISTANT_COMPLETE",
+        "prematureTeamIdleCount": 0,
+        "prematureTeamIdle": [],
+        "statusTimeline": [
+          {
+            "seq": 42,
+            "dtMs": 5028,
+            "type": "TEAM_STATUS",
+            "status": "initializing",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          },
+          {
+            "seq": 43,
+            "dtMs": 5031,
+            "type": "TEAM_STATUS",
+            "status": "offline",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          },
+          {
+            "seq": 44,
+            "dtMs": 5044,
+            "type": "AGENT_STATUS",
+            "status": "offline",
+            "member_route_key": "Student",
+            "source_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "agent_name": "Student"
+          },
+          {
+            "seq": 45,
+            "dtMs": 5044,
+            "type": "AGENT_STATUS",
+            "status": "offline",
+            "member_route_key": "Student",
+            "source_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "agent_name": "Student"
+          },
+          {
+            "seq": 46,
+            "dtMs": 5055,
+            "type": "TEAM_STATUS",
+            "status": "idle",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          },
+          {
+            "seq": 48,
+            "dtMs": 5055,
+            "type": "AGENT_STATUS",
+            "status": "running",
+            "member_route_key": "Student",
+            "source_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "agent_name": "Student"
+          },
+          {
+            "seq": 49,
+            "dtMs": 5055,
+            "type": "TEAM_STATUS",
+            "status": "running",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          },
+          {
+            "seq": 50,
+            "dtMs": 5055,
+            "type": "AGENT_STATUS",
+            "status": "running",
+            "member_route_key": "Student",
+            "source_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "agent_name": "Student"
+          },
+          {
+            "seq": 51,
+            "dtMs": 5055,
+            "type": "AGENT_STATUS",
+            "status": "running",
+            "member_route_key": "Student",
+            "source_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "agent_name": "Student"
+          },
+          {
+            "seq": 74,
+            "dtMs": 6738,
+            "type": "AGENT_STATUS",
+            "status": "running",
+            "member_route_key": "Student",
+            "source_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "agent_name": "Student"
+          },
+          {
+            "seq": 77,
+            "dtMs": 6739,
+            "type": "AGENT_STATUS",
+            "status": "idle",
+            "member_route_key": "Student",
+            "source_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "agent_name": "Student"
+          },
+          {
+            "seq": 78,
+            "dtMs": 6739,
+            "type": "TEAM_STATUS",
+            "status": "idle",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          },
+          {
+            "seq": 79,
+            "dtMs": 6739,
+            "type": "AGENT_STATUS",
+            "status": "offline",
+            "member_route_key": "Student",
+            "source_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "agent_name": "Student"
+          }
+        ]
+      },
+      "studentReconnect": {
+        "runningMemberSnapshotCount": 0,
+        "runningTeamSnapshotCount": 0,
+        "statuses": [
+          {
+            "seq": 2,
+            "dtMs": 1,
+            "type": "AGENT_STATUS",
+            "status": "offline",
+            "member_route_key": "Professor",
+            "source_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "agent_name": "Professor"
+          },
+          {
+            "seq": 3,
+            "dtMs": 1,
+            "type": "AGENT_STATUS",
+            "status": "offline",
+            "member_route_key": "Student",
+            "source_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "agent_name": "Student"
+          },
+          {
+            "seq": 4,
+            "dtMs": 1,
+            "type": "TEAM_STATUS",
+            "status": "idle",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          }
+        ],
+        "canonicalOnly": true
+      },
+      "canonicalOnly": true,
+      "fullStatusTimeline": [
+        {
+          "seq": 2,
+          "dtMs": 3,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 3,
+          "dtMs": 3,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 4,
+          "dtMs": 3,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 5,
+          "dtMs": 257,
+          "type": "TEAM_STATUS",
+          "status": "initializing",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 6,
+          "dtMs": 263,
+          "type": "TEAM_STATUS",
+          "status": "offline",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 8,
+          "dtMs": 273,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 9,
+          "dtMs": 273,
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 10,
+          "dtMs": 274,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 11,
+          "dtMs": 274,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 12,
+          "dtMs": 274,
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 36,
+          "dtMs": 2121,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 39,
+          "dtMs": 2122,
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 40,
+          "dtMs": 2122,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 41,
+          "dtMs": 2122,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 42,
+          "dtMs": 5028,
+          "type": "TEAM_STATUS",
+          "status": "initializing",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 43,
+          "dtMs": 5031,
+          "type": "TEAM_STATUS",
+          "status": "offline",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 44,
+          "dtMs": 5044,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 45,
+          "dtMs": 5044,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 46,
+          "dtMs": 5055,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 48,
+          "dtMs": 5055,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 49,
+          "dtMs": 5055,
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 50,
+          "dtMs": 5055,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 51,
+          "dtMs": 5055,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 74,
+          "dtMs": 6738,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 77,
+          "dtMs": 6739,
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 78,
+          "dtMs": 6739,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 79,
+          "dtMs": 6739,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        }
+      ],
+      "fullMessageTimeline": [
+        {
+          "seq": 1,
+          "dtMs": 3,
+          "type": "CONNECTED",
+          "status": null,
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": null,
+          "agent_name": null
+        },
+        {
+          "seq": 2,
+          "dtMs": 3,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 3,
+          "dtMs": 3,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 4,
+          "dtMs": 3,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 5,
+          "dtMs": 257,
+          "type": "TEAM_STATUS",
+          "status": "initializing",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 6,
+          "dtMs": 263,
+          "type": "TEAM_STATUS",
+          "status": "offline",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 7,
+          "dtMs": 273,
+          "type": "TURN_STARTED",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 8,
+          "dtMs": 273,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 9,
+          "dtMs": 273,
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 10,
+          "dtMs": 274,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 11,
+          "dtMs": 274,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 12,
+          "dtMs": 274,
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 13,
+          "dtMs": 1635,
+          "type": "SEGMENT_START",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 14,
+          "dtMs": 1635,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "ROUND"
+        },
+        {
+          "seq": 15,
+          "dtMs": 1658,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "3"
+        },
+        {
+          "seq": 16,
+          "dtMs": 1658,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "8"
+        },
+        {
+          "seq": 17,
+          "dtMs": 1681,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "_PROF"
+        },
+        {
+          "seq": 18,
+          "dtMs": 1730,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "ESS"
+        },
+        {
+          "seq": 19,
+          "dtMs": 1754,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "OR"
+        },
+        {
+          "seq": 20,
+          "dtMs": 1899,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "_round"
+        },
+        {
+          "seq": 21,
+          "dtMs": 1935,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "3"
+        },
+        {
+          "seq": 22,
+          "dtMs": 1957,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "8"
+        },
+        {
+          "seq": 23,
+          "dtMs": 2013,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "_mp"
+        },
+        {
+          "seq": 24,
+          "dtMs": 2051,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "9"
+        },
+        {
+          "seq": 25,
+          "dtMs": 2119,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "z"
+        },
+        {
+          "seq": 26,
+          "dtMs": 2120,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "8"
+        },
+        {
+          "seq": 27,
+          "dtMs": 2121,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "1"
+        },
+        {
+          "seq": 28,
+          "dtMs": 2121,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "ze"
+        },
+        {
+          "seq": 29,
+          "dtMs": 2121,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "_"
+        },
+        {
+          "seq": 30,
+          "dtMs": 2121,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "8"
+        },
+        {
+          "seq": 31,
+          "dtMs": 2121,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "e"
+        },
+        {
+          "seq": 32,
+          "dtMs": 2121,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "4"
+        },
+        {
+          "seq": 33,
+          "dtMs": 2121,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "cf"
+        },
+        {
+          "seq": 34,
+          "dtMs": 2121,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor",
+          "delta": "b"
+        },
+        {
+          "seq": 35,
+          "dtMs": 2121,
+          "type": "SEGMENT_END",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 36,
+          "dtMs": 2121,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 37,
+          "dtMs": 2122,
+          "type": "ASSISTANT_COMPLETE",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 38,
+          "dtMs": 2122,
+          "type": "TURN_COMPLETED",
+          "status": null,
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 39,
+          "dtMs": 2122,
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 40,
+          "dtMs": 2122,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 41,
+          "dtMs": 2122,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Professor",
+          "source_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_path": [
+            "Professor"
+          ],
+          "agent_name": "Professor"
+        },
+        {
+          "seq": 42,
+          "dtMs": 5028,
+          "type": "TEAM_STATUS",
+          "status": "initializing",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 43,
+          "dtMs": 5031,
+          "type": "TEAM_STATUS",
+          "status": "offline",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 44,
+          "dtMs": 5044,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 45,
+          "dtMs": 5044,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 46,
+          "dtMs": 5055,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 47,
+          "dtMs": 5055,
+          "type": "TURN_STARTED",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 48,
+          "dtMs": 5055,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 49,
+          "dtMs": 5055,
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 50,
+          "dtMs": 5055,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 51,
+          "dtMs": 5055,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 52,
+          "dtMs": 6325,
+          "type": "SEGMENT_START",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 53,
+          "dtMs": 6325,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "ROUND"
+        },
+        {
+          "seq": 54,
+          "dtMs": 6325,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "3"
+        },
+        {
+          "seq": 55,
+          "dtMs": 6325,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "8"
+        },
+        {
+          "seq": 56,
+          "dtMs": 6348,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "_ST"
+        },
+        {
+          "seq": 57,
+          "dtMs": 6428,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "UDENT"
+        },
+        {
+          "seq": 58,
+          "dtMs": 6559,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "_round"
+        },
+        {
+          "seq": 59,
+          "dtMs": 6584,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "3"
+        },
+        {
+          "seq": 60,
+          "dtMs": 6608,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "8"
+        },
+        {
+          "seq": 61,
+          "dtMs": 6667,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "_mp"
+        },
+        {
+          "seq": 62,
+          "dtMs": 6689,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "9"
+        },
+        {
+          "seq": 63,
+          "dtMs": 6738,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "z"
+        },
+        {
+          "seq": 64,
+          "dtMs": 6738,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "8"
+        },
+        {
+          "seq": 65,
+          "dtMs": 6738,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "1"
+        },
+        {
+          "seq": 66,
+          "dtMs": 6738,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "ze"
+        },
+        {
+          "seq": 67,
+          "dtMs": 6738,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "_"
+        },
+        {
+          "seq": 68,
+          "dtMs": 6738,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "8"
+        },
+        {
+          "seq": 69,
+          "dtMs": 6738,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "e"
+        },
+        {
+          "seq": 70,
+          "dtMs": 6738,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "4"
+        },
+        {
+          "seq": 71,
+          "dtMs": 6738,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "cf"
+        },
+        {
+          "seq": 72,
+          "dtMs": 6738,
+          "type": "SEGMENT_CONTENT",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student",
+          "delta": "b"
+        },
+        {
+          "seq": 73,
+          "dtMs": 6738,
+          "type": "SEGMENT_END",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 74,
+          "dtMs": 6738,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 75,
+          "dtMs": 6738,
+          "type": "ASSISTANT_COMPLETE",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 76,
+          "dtMs": 6739,
+          "type": "TURN_COMPLETED",
+          "status": null,
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 77,
+          "dtMs": 6739,
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        },
+        {
+          "seq": 78,
+          "dtMs": 6739,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 79,
+          "dtMs": 6739,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "Student",
+          "source_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_path": [
+            "Student"
+          ],
+          "agent_name": "Student"
+        }
+      ]
+    },
+    "nestedBuildSquad": {
+      "teamRunId": "team_nested-mixed-runtime-delivery-team_2860f378",
+      "token": "ROUND38_NESTED_round38_mp9z81ze_8e4cfb",
+      "pass": true,
+      "runningMessage": {
+        "seq": 16,
+        "dtMs": 285,
+        "socketLabel": "nested-buildsquad",
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "running",
+          "can_interrupt": false,
+          "agent_id": "buildsquad_review_lead_06a20c5f717bca3f",
+          "agent_name": "review_lead",
+          "member_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_route_key": "BuildSquad/review_lead",
+          "sub_team_node_name": "BuildSquad"
+        }
+      },
+      "terminalMessage": {
+        "seq": 43,
+        "dtMs": 2407,
+        "socketLabel": "nested-buildsquad",
+        "type": "ASSISTANT_COMPLETE",
+        "payload": {
+          "content": "ROUND38_NESTED_round38_mp9z81ze_8e4cfb",
+          "usage": {
+            "prompt_tokens": 669,
+            "completion_tokens": 22,
+            "total_tokens": 691
+          },
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "agent_name": "review_lead",
+          "agent_id": "buildsquad_review_lead_06a20c5f717bca3f",
+          "member_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_route_key": "BuildSquad/review_lead",
+          "sub_team_node_name": "BuildSquad"
+        }
+      },
+      "settledMessage": {
+        "seq": 47,
+        "dtMs": 2407,
+        "socketLabel": "nested-buildsquad",
+        "type": "AGENT_STATUS",
+        "payload": {
+          "status": "idle",
+          "can_interrupt": false,
+          "agent_id": "buildsquad_review_lead_06a20c5f717bca3f",
+          "agent_name": "review_lead",
+          "member_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_route_key": "BuildSquad/review_lead",
+          "sub_team_node_name": "BuildSquad"
+        }
+      },
+      "prematureTeamIdleCount": 0,
+      "prematureTeamIdle": [],
+      "reconnect": {
+        "runningMemberSnapshotCount": 0,
+        "runningTeamSnapshotCount": 0,
+        "statuses": [
+          {
+            "seq": 2,
+            "dtMs": 1,
+            "type": "AGENT_STATUS",
+            "status": "offline",
+            "member_route_key": "program_manager",
+            "source_route_key": "program_manager",
+            "member_path": [
+              "program_manager"
+            ],
+            "source_path": [
+              "program_manager"
+            ],
+            "agent_name": "program_manager"
+          },
+          {
+            "seq": 3,
+            "dtMs": 1,
+            "type": "AGENT_STATUS",
+            "status": "idle",
+            "member_route_key": "BuildSquad",
+            "source_route_key": "BuildSquad",
+            "member_path": [
+              "BuildSquad"
+            ],
+            "source_path": [
+              "BuildSquad"
+            ],
+            "agent_name": "BuildSquad"
+          },
+          {
+            "seq": 4,
+            "dtMs": 1,
+            "type": "TEAM_STATUS",
+            "status": "idle",
+            "member_route_key": null,
+            "source_route_key": null,
+            "member_path": null,
+            "source_path": [],
+            "agent_name": null
+          }
+        ],
+        "canonicalOnly": true
+      },
+      "canonicalOnly": true,
+      "statusTimeline": [
+        {
+          "seq": 5,
+          "dtMs": 256,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": "BuildSquad",
+          "member_path": null,
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": null
+        },
+        {
+          "seq": 6,
+          "dtMs": 256,
+          "type": "TEAM_STATUS",
+          "status": "offline",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 7,
+          "dtMs": 274,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": "BuildSquad",
+          "member_path": null,
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": null
+        },
+        {
+          "seq": 8,
+          "dtMs": 274,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 9,
+          "dtMs": 275,
+          "type": "AGENT_STATUS",
+          "status": "initializing",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 10,
+          "dtMs": 275,
+          "type": "TEAM_STATUS",
+          "status": "initializing",
+          "member_route_key": null,
+          "source_route_key": "BuildSquad",
+          "member_path": null,
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": null
+        },
+        {
+          "seq": 11,
+          "dtMs": 275,
+          "type": "TEAM_STATUS",
+          "status": "initializing",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 14,
+          "dtMs": 285,
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "member_route_key": null,
+          "source_route_key": "BuildSquad",
+          "member_path": null,
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": null
+        },
+        {
+          "seq": 15,
+          "dtMs": 285,
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 16,
+          "dtMs": 285,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 17,
+          "dtMs": 285,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 18,
+          "dtMs": 286,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 42,
+          "dtMs": 2407,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 45,
+          "dtMs": 2407,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": "BuildSquad",
+          "member_path": null,
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": null
+        },
+        {
+          "seq": 46,
+          "dtMs": 2407,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 47,
+          "dtMs": 2407,
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 48,
+          "dtMs": 2407,
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        }
+      ],
+      "fullStatusTimeline": [
+        {
+          "seq": 2,
+          "dtMs": 2,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "program_manager",
+          "source_route_key": "program_manager",
+          "member_path": [
+            "program_manager"
+          ],
+          "source_path": [
+            "program_manager"
+          ],
+          "agent_name": "program_manager"
+        },
+        {
+          "seq": 3,
+          "dtMs": 2,
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "member_route_key": "BuildSquad",
+          "source_route_key": "BuildSquad",
+          "member_path": [
+            "BuildSquad"
+          ],
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": "BuildSquad"
+        },
+        {
+          "seq": 4,
+          "dtMs": 2,
+          "type": "TEAM_STATUS",
+          "status": "offline",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 5,
+          "dtMs": 256,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": "BuildSquad",
+          "member_path": null,
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": null
+        },
+        {
+          "seq": 6,
+          "dtMs": 256,
+          "type": "TEAM_STATUS",
+          "status": "offline",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 7,
+          "dtMs": 274,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": "BuildSquad",
+          "member_path": null,
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": null
+        },
+        {
+          "seq": 8,
+          "dtMs": 274,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 9,
+          "dtMs": 275,
+          "type": "AGENT_STATUS",
+          "status": "initializing",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 10,
+          "dtMs": 275,
+          "type": "TEAM_STATUS",
+          "status": "initializing",
+          "member_route_key": null,
+          "source_route_key": "BuildSquad",
+          "member_path": null,
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": null
+        },
+        {
+          "seq": 11,
+          "dtMs": 275,
+          "type": "TEAM_STATUS",
+          "status": "initializing",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 14,
+          "dtMs": 285,
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "member_route_key": null,
+          "source_route_key": "BuildSquad",
+          "member_path": null,
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": null
+        },
+        {
+          "seq": 15,
+          "dtMs": 285,
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 16,
+          "dtMs": 285,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 17,
+          "dtMs": 285,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 18,
+          "dtMs": 286,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 42,
+          "dtMs": 2407,
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 45,
+          "dtMs": 2407,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": "BuildSquad",
+          "member_path": null,
+          "source_path": [
+            "BuildSquad"
+          ],
+          "agent_name": null
+        },
+        {
+          "seq": 46,
+          "dtMs": 2407,
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "member_route_key": null,
+          "source_route_key": null,
+          "member_path": null,
+          "source_path": [],
+          "agent_name": null
+        },
+        {
+          "seq": 47,
+          "dtMs": 2407,
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        },
+        {
+          "seq": 48,
+          "dtMs": 2407,
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "member_route_key": "BuildSquad/review_lead",
+          "source_route_key": "BuildSquad/review_lead",
+          "member_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "source_path": [
+            "BuildSquad",
+            "review_lead"
+          ],
+          "agent_name": "review_lead"
+        }
+      ]
+    }
+  },
+  "failures": [],
+  "pass": true
+}

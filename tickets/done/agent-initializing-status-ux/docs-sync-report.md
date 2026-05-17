@@ -70,4 +70,3 @@
 - Refresh check: `git diff --check` passed; evidence log is `tickets/done/agent-initializing-status-ux/delivery-checks/post-round5-refresh-check-20260517.log`.
 - Additional docs impact from `VAL-008`: `No further long-lived docs changes required`. The new live-runtime evidence validates the already-documented backend GraphQL/websocket/status/run-history behavior and does not change public behavior, ownership, status semantics, or integration guidance beyond the docs already updated in the earlier delivery pass.
 - Docs sync result remains `Updated`: prior long-lived docs changes are still required and still accurate; the round-3 live E2E evidence strengthens validation confidence without changing the durable documentation target.
-

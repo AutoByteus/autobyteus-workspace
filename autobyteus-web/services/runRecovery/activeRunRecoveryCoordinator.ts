@@ -71,7 +71,7 @@ const applyTeamHistoryStatusToExistingContext = (
   );
 
   existingTeamContext.currentStatus = normalizeTeamRuntimeStatus(teamRun.status);
-  existingTeamContext.members.forEach((memberContext, memberRouteKey) => {
+  existingTeamContext.leafAgentContextsByRouteKey.forEach((memberContext, memberRouteKey) => {
     memberContext.config.isLocked = true;
     const matchedStatus =
       statusByKey.get(memberRouteKey) ||
@@ -79,7 +79,10 @@ const applyTeamHistoryStatusToExistingContext = (
     applyMemberOrHistoryStatusSnapshot(
       memberContext,
       matchedStatus ? normalizeAgentRuntimeStatus(matchedStatus) : preserveCanonicalMemberStatus(memberContext.state.currentStatus),
-      { preserveLiveInterrupt: existingTeamContext.isSubscribed },
+      {
+        preserveLiveInterrupt: existingTeamContext.isSubscribed,
+        preserveCurrentStatus: existingTeamContext.isSubscribed,
+      },
     );
   });
 };

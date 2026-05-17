@@ -218,7 +218,8 @@ const normalizeTarget = (target: ChannelRunOutputTarget): ChannelRunOutputTarget
     targetType: "TEAM",
     teamRunId: normalizeRequiredString(target.teamRunId, "target.teamRunId"),
     entryMemberRunId: normalizeOptionalString(target.entryMemberRunId),
-    entryMemberName: normalizeOptionalString(target.entryMemberName),
+    entryMemberRouteKey: normalizeOptionalString(target.entryMemberRouteKey),
+    entryMemberPath: normalizeMemberPath(target.entryMemberPath),
   };
 };
 
@@ -241,7 +242,8 @@ const targetMetadata = (target: ChannelRunOutputTarget): Record<string, unknown>
     targetType: target.targetType,
     teamRunId: target.teamRunId,
     memberRunId: target.entryMemberRunId,
-    memberName: target.entryMemberName,
+    memberRouteKey: target.entryMemberRouteKey,
+    memberPath: target.entryMemberPath,
   };
 };
 
@@ -258,6 +260,16 @@ const normalizeOptionalString = (value: string | null | undefined): string | nul
     return null;
   }
   const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+};
+
+const normalizeMemberPath = (value: readonly string[] | null | undefined): string[] | null => {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+  const normalized = value
+    .map((segment) => normalizeOptionalString(segment))
+    .filter((segment): segment is string => Boolean(segment));
   return normalized.length > 0 ? normalized : null;
 };
 

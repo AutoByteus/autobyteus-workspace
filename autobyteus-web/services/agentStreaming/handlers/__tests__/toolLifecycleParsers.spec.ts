@@ -23,6 +23,7 @@ describe('toolLifecycleParsers', () => {
       toolName: 'read_file',
       turnId: null,
       arguments: { path: '/tmp/a.txt' },
+      approvalTarget: null,
     });
 
     expect(
@@ -129,6 +130,27 @@ describe('toolLifecycleParsers', () => {
       arguments: {
         prompt: 'cute fox',
         output_file_path: '/tmp/cute-fox.png',
+      },
+    });
+  });
+
+  it('parses approval source selectors from nested team payloads', () => {
+    expect(
+      parseToolApprovalRequestedPayload({
+        invocation_id: 'inv-nested',
+        tool_name: 'run_bash',
+        turn_id: null,
+        arguments: { command: 'pnpm test' },
+        source_path: ['BuildSquad', 'review_lead'],
+        member_path: ['BuildSquad', 'review_lead'],
+      } as any),
+    )?.toMatchObject({
+      invocationId: 'inv-nested',
+      approvalTarget: {
+        memberRouteKey: 'BuildSquad/review_lead',
+        memberPath: ['BuildSquad', 'review_lead'],
+        sourceRouteKey: 'BuildSquad/review_lead',
+        sourcePath: ['BuildSquad', 'review_lead'],
       },
     });
   });

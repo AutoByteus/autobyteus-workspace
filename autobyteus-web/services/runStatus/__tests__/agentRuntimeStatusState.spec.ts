@@ -1,12 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import {
-  applyAcceptedStartupStatus,
-  applyAcceptedTeamMemberStartupStatus,
   applyLiveAgentStatusEvent,
   applyLiveRuntimeActivityProjectionRepair,
-  applyLiveTeamMemberRuntimeActivityProjectionRepair,
 } from '../agentRuntimeStatusState';
 
 const buildContext = (status: AgentStatus = AgentStatus.Offline) => ({
@@ -21,16 +17,6 @@ const buildContext = (status: AgentStatus = AgentStatus.Offline) => ({
 }) as any;
 
 describe('agentRuntimeStatusState', () => {
-  it('marks accepted startup as active but not interruptible', () => {
-    const context = buildContext(AgentStatus.Offline);
-
-    applyAcceptedStartupStatus(context);
-
-    expect(context.state.currentStatus).toBe(AgentStatus.Initializing);
-    expect(context.state.canInterrupt).toBe(false);
-    expect(context.isSending).toBe(true);
-  });
-
   it('accepts initializing status events without granting interrupt permission or clearing sending', () => {
     const context = buildContext(AgentStatus.Running);
     context.isSending = true;
@@ -62,19 +48,14 @@ describe('agentRuntimeStatusState', () => {
     expect(context.isSending).toBe(false);
   });
 
-  it('applies team member startup and live recovery through the central status owner', () => {
-    const member = buildContext(AgentStatus.Offline);
-    const team = { currentStatus: AgentTeamStatus.Error } as any;
+  it('keeps pending submission separate from canonical backend status', () => {
+    const context = buildContext(AgentStatus.Offline);
+    context.isSending = true;
 
-    applyAcceptedTeamMemberStartupStatus(team, member);
-    expect(team.currentStatus).toBe(AgentTeamStatus.Initializing);
-    expect(member.state.currentStatus).toBe(AgentStatus.Initializing);
-    expect(member.state.canInterrupt).toBe(false);
+    expect(context.state.currentStatus).toBe(AgentStatus.Offline);
+    expect(context.isSending).toBe(true);
 
-    team.currentStatus = AgentTeamStatus.Error;
-    member.state.currentStatus = AgentStatus.Error;
-    applyLiveTeamMemberRuntimeActivityProjectionRepair(team, member);
-    expect(team.currentStatus).toBe(AgentTeamStatus.Running);
-    expect(member.state.currentStatus).toBe(AgentStatus.Running);
+    applyLiveAgentStatusEvent(context, { status: 'initializing', can_interrupt: false });
+    expect(context.state.currentStatus).toBe(AgentStatus.Initializing);
   });
 });

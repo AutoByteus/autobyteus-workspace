@@ -46,7 +46,7 @@ const sendTeamMessageOverSocket = (
   socket: WebSocket,
   input: {
     content: string;
-    targetMemberName?: string | null;
+    targetMemberRouteKey?: string | null;
     contextFilePaths?: string[];
     imageUrls?: string[];
   },
@@ -56,7 +56,7 @@ const sendTeamMessageOverSocket = (
       type: "SEND_MESSAGE",
       payload: {
         content: input.content,
-        target_member_name: input.targetMemberName ?? null,
+        target_member_route_key: input.targetMemberRouteKey ?? null,
         context_file_paths: input.contextFilePaths ?? [],
         image_urls: input.imageUrls ?? [],
       },
@@ -67,16 +67,16 @@ const sendTeamMessageOverSocket = (
 const sendInterruptGenerationOverSocket = (
   socket: WebSocket,
   input: {
-    targetMemberName: string;
-    targetAgentRunId?: string | null;
+    targetMemberRouteKey: string;
+    targetMemberRunId?: string | null;
   },
 ): void => {
   socket.send(
     JSON.stringify({
       type: "INTERRUPT_GENERATION",
       payload: {
-        target_member_name: input.targetMemberName,
-        ...(input.targetAgentRunId ? { agent_id: input.targetAgentRunId } : {}),
+        target_member_route_key: input.targetMemberRouteKey,
+        ...(input.targetMemberRunId ? { target_member_run_id: input.targetMemberRunId } : {}),
       },
     }),
   );
@@ -475,7 +475,7 @@ Rules:
       });
 
       const sendRelayInstruction = async (input: {
-        targetMemberName: "ping" | "pong";
+        targetMemberRouteKey: "ping" | "pong";
         recipientName: "ping" | "pong";
         messageType: string;
         content: string;
@@ -486,7 +486,7 @@ Rules:
           message_type: input.messageType,
         });
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberName: input.targetMemberName,
+          targetMemberRouteKey: input.targetMemberRouteKey,
           content:
             "Call send_message_to exactly once now with these exact JSON arguments: " +
             `${argsJson}. Do not call any other tool.`,
@@ -750,7 +750,7 @@ Rules:
 
       try {
         await sendRelayInstruction({
-          targetMemberName: "ping",
+          targetMemberRouteKey: "ping",
           recipientName: "pong",
           content: `PING-TO-PONG ${pingToken}`,
           messageType: "roundtrip_ping",
@@ -762,7 +762,7 @@ Rules:
         });
 
         await sendRelayInstruction({
-          targetMemberName: "pong",
+          targetMemberRouteKey: "pong",
           recipientName: "ping",
           content: `PONG-TO-PING ${pongToken}`,
           messageType: "roundtrip_pong",
@@ -916,7 +916,7 @@ Rules:
       try {
         const toolTurnStartIndex = streamMessages.length;
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberName: "worker",
+          targetMemberRouteKey: "worker",
           content:
             `Create the file ${approvalTargetRelativePath} with exactly this content: ${approvalContent}. ` +
             "Use the write_file tool exactly once, use a relative path, and do not answer with plain text.",
@@ -938,8 +938,8 @@ Rules:
 
         const interruptStartIndex = streamMessages.length;
         sendInterruptGenerationOverSocket(teamSocket, {
-          targetMemberName: "worker",
-          targetAgentRunId: workerRunId,
+          targetMemberRouteKey: "worker",
+          targetMemberRunId: workerRunId,
         });
 
         await waitForTeamStreamMessageAfter(
@@ -971,7 +971,7 @@ Rules:
 
         const followUpStartIndex = streamMessages.length;
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberName: "worker",
+          targetMemberRouteKey: "worker",
           content: `Reply with exactly ${followUpToken} and nothing else. Do not use tools.`,
         });
 
@@ -1222,7 +1222,7 @@ Rules:
           message_type: "nested_roundtrip",
         });
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberName: "parent",
+          targetMemberRouteKey: "parent",
           content:
             "Call send_message_to exactly once now with these exact JSON arguments: " +
             `${argsJson}. Do not call any other tool.`,

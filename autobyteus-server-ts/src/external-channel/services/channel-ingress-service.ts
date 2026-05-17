@@ -270,7 +270,8 @@ const normalizeDispatchTarget = (
       dispatchTargetType: "TEAM",
       teamRunId,
       memberRunId,
-      memberName: normalizeNullableString(dispatch.memberName ?? null),
+      memberRouteKey: normalizeNullableString(dispatch.memberRouteKey ?? null),
+      memberPath: normalizeMemberPath(dispatch.memberPath),
       turnId: normalizeRequiredString(dispatch.turnId, "dispatch.turnId"),
       dispatchedAt,
     },
@@ -290,9 +291,10 @@ const toRunOutputTarget = (
     targetType: "TEAM",
     teamRunId: dispatch.teamRunId,
     entryMemberRunId: normalizeNullableString(dispatch.memberRunId ?? null),
-    entryMemberName:
-      normalizeNullableString(dispatch.memberName ?? null) ??
-      normalizeNullableString(binding.targetNodeName ?? null),
+    entryMemberRouteKey:
+      normalizeNullableString(dispatch.memberRouteKey ?? null) ??
+      normalizeNullableString(binding.targetMemberRouteKey ?? null),
+    entryMemberPath: normalizeMemberPath(dispatch.memberPath) ?? normalizeMemberPath(binding.targetMemberPath),
   };
 };
 
@@ -312,7 +314,8 @@ const toRunOutputTargetFromReceipt = (
     targetType: "TEAM",
     teamRunId,
     entryMemberRunId: normalizeNullableString(receipt.agentRunId),
-    entryMemberName: normalizeNullableString(binding.targetNodeName ?? null),
+    entryMemberRouteKey: normalizeNullableString(binding.targetMemberRouteKey ?? null),
+    entryMemberPath: normalizeMemberPath(binding.targetMemberPath),
   };
 };
 
@@ -329,6 +332,16 @@ const normalizeNullableString = (value: string | null | undefined): string | nul
     return null;
   }
   const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+};
+
+const normalizeMemberPath = (value: readonly string[] | null | undefined): string[] | null => {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+  const normalized = value
+    .map((segment) => normalizeNullableString(segment))
+    .filter((segment): segment is string => Boolean(segment));
   return normalized.length > 0 ? normalized : null;
 };
 

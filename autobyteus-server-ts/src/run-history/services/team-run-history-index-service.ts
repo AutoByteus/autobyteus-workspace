@@ -8,14 +8,25 @@ import type {
 } from "../domain/team-run-history-index-types.js";
 import { TeamRunHistoryIndexStore } from "../store/team-run-history-index-store.js";
 import type {
-  TeamRunMemberMetadata,
   TeamRunMetadata,
 } from "../store/team-run-metadata-types.js";
-import { TeamRunMetadataStore } from "../store/team-run-metadata-store.js";
+import {
+  isUnsupportedLegacyTeamRunMetadataError,
+  TeamRunMetadataStore,
+} from "../store/team-run-metadata-store.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { compactSummary, extractSummaryFromRawTraces } from "./run-history-service-helpers.js";
+import {
+  getTeamRunLeafAgentMetadata,
+  resolveTeamRunLeafAgentByRouteKey,
+  resolveTeamWorkspaceRootPath as resolveMetadataWorkspaceRootPath,
+} from "./team-run-metadata-flattener.js";
 
 const nowIso = (): string => new Date().toISOString();
+
+const logger = {
+  warn: (...args: unknown[]) => console.warn(...args),
+};
 
 export class TeamRunHistoryIndexService {
   private readonly indexStore: TeamRunHistoryIndexStore;
@@ -120,7 +131,18 @@ export class TeamRunHistoryIndexService {
     const teamRunIds = await this.metadataStore.listTeamRunIds();
     const rows: TeamRunIndexRow[] = [];
     for (const teamRunId of teamRunIds) {
-      const metadata = await this.metadataStore.readMetadata(teamRunId);
+      let metadata: TeamRunMetadata | null = null;
+      try {
+        metadata = await this.metadataStore.readMetadata(teamRunId);
+      } catch (error) {
+        if (isUnsupportedLegacyTeamRunMetadataError(error)) {
+          logger.warn(
+            `Skipping unmigrated legacy team run metadata '${teamRunId}' while rebuilding history index. Open Settings -> Server -> Migrations for details.`,
+          );
+          continue;
+        }
+        throw error;
+      }
       if (!metadata) {
         continue;
       }
@@ -128,7 +150,7 @@ export class TeamRunHistoryIndexService {
         teamRunId,
         teamDefinitionId: metadata.teamDefinitionId,
         teamDefinitionName: metadata.teamDefinitionName,
-        workspaceRootPath: resolveTeamWorkspaceRootPath(metadata.memberMetadata),
+        workspaceRootPath: resolveTeamWorkspaceRootPath(metadata),
         summary: this.extractSummaryFromCoordinator(metadata),
         lastActivityAt: metadata.updatedAt || metadata.createdAt || nowIso(),
         lastKnownStatus: this.isTeamRunActive(teamRunId) ? "ACTIVE" : "IDLE",
@@ -153,7 +175,7 @@ export class TeamRunHistoryIndexService {
       teamRunId: input.teamRunId,
       teamDefinitionId: input.metadata.teamDefinitionId,
       teamDefinitionName: input.metadata.teamDefinitionName,
-      workspaceRootPath: resolveTeamWorkspaceRootPath(input.metadata.memberMetadata),
+      workspaceRootPath: resolveTeamWorkspaceRootPath(input.metadata),
       summary: compactSummary(input.summary),
       lastActivityAt: input.lastActivityAt,
       lastKnownStatus: input.lastKnownStatus,
@@ -181,9 +203,8 @@ export class TeamRunHistoryIndexService {
   private extractSummaryFromCoordinator(metadata: TeamRunMetadata): string {
     const coordinatorMemberRouteKey = metadata.coordinatorMemberRouteKey.trim();
     const coordinatorMember =
-      metadata.memberMetadata.find(
-        (member) => member.memberRouteKey.trim() === coordinatorMemberRouteKey,
-      ) ?? metadata.memberMetadata[0];
+      resolveTeamRunLeafAgentByRouteKey(metadata, coordinatorMemberRouteKey) ??
+      getTeamRunLeafAgentMetadata(metadata)[0];
 
     if (!coordinatorMember) {
       return "";
@@ -221,10 +242,7 @@ export const getTeamRunHistoryIndexService = (): TeamRunHistoryIndexService => {
   return cachedTeamRunHistoryIndexService;
 };
 
-const resolveTeamWorkspaceRootPath = (
-  memberMetadata: TeamRunMemberMetadata[],
-): string | null => {
-  const workspaceRootPath =
-    memberMetadata.find((member) => member.workspaceRootPath)?.workspaceRootPath ?? null;
+const resolveTeamWorkspaceRootPath = (metadata: TeamRunMetadata): string | null => {
+  const workspaceRootPath = resolveMetadataWorkspaceRootPath(metadata);
   return workspaceRootPath ? canonicalizeWorkspaceRootPath(workspaceRootPath) : null;
 };

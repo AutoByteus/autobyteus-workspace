@@ -2,11 +2,13 @@
  * TeamStreamingService - Facade for agent team WebSocket streaming.
  *
  * Connects to team endpoint and routes events to appropriate team members
- * based on runtime member run IDs (`agent_id`) in the message payload.
+ * by canonical nested source route/path identity, with run IDs used only
+ * after route resolution for runtime correlation.
  */
 
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { ToolApprovalTarget } from '~/types/segments';
 import { WebSocketClient, ConnectionState, type IWebSocketClient } from './transport';
 import {
   parseServerMessage,
@@ -43,7 +45,7 @@ import {
   handleFileChange,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
-import { applyLiveTeamMemberRuntimeActivityProjectionRepair } from '~/services/runStatus/agentRuntimeStatusState';
+import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -62,36 +64,17 @@ const summarizeDelta = (delta: string, maxLen = 120): string => {
   return clean.length > maxLen ? `${clean.slice(0, maxLen)}…` : clean;
 };
 
-const LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES = new Set<ServerMessage['type']>([
-  'TURN_STARTED',
-  'SEGMENT_START',
-  'SEGMENT_CONTENT',
-  'TOOL_APPROVAL_REQUESTED',
-  'TOOL_EXECUTION_STARTED',
-  'TOOL_EXECUTION_SUCCEEDED',
-  'TOOL_EXECUTION_FAILED',
-  'TOOL_EXECUTION_INTERRUPTED',
-  'TOOL_LOG',
-  'TODO_LIST_UPDATE',
-  'INTER_AGENT_MESSAGE',
-  'SYSTEM_TASK_NOTIFICATION',
-]);
-
-const isLiveRuntimeActivityMessage = (message: ServerMessage): boolean =>
-  LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES.has(message.type);
-
 export interface TeamStreamingServiceOptions {
   wsClient?: IWebSocketClient;
 }
 
 export interface TeamInterruptGenerationTarget {
   targetMemberRouteKey: string;
-  targetAgentRunId?: string | null;
+  targetMemberRunId?: string | null;
 }
 
 interface MemberContextResolution {
   context: AgentContext;
-  isExplicitIdentityMatch: boolean;
 }
 
 export class TeamStreamingService {
@@ -99,6 +82,7 @@ export class TeamStreamingService {
   private teamContext: AgentTeamContext | null = null;
   private wsEndpoint: string;
   private readonly approvalTokenByInvocationId = new Map<string, unknown>();
+  private readonly approvalTargetByInvocationId = new Map<string, ToolApprovalTarget>();
 
   /**
    * Create a TeamStreamingService.
@@ -143,13 +127,15 @@ export class TeamStreamingService {
     this.wsClient.disconnect();
     this.teamContext = null;
     this.approvalTokenByInvocationId.clear();
+    this.approvalTargetByInvocationId.clear();
   }
 
   sendMessage(
     content: string,
-    targetMemberName?: string,
+    targetMemberRouteKey?: string,
     contextFilePaths?: string[],
     imageUrls?: string[],
+    identity?: { messageId?: string; dedupeKey?: string },
   ): void {
     const message: TeamClientMessage = {
       type: 'SEND_MESSAGE',
@@ -157,30 +143,46 @@ export class TeamStreamingService {
         content,
         context_file_paths: contextFilePaths,
         image_urls: imageUrls,
-        target_member_name: targetMemberName,
+        target_member_route_key: targetMemberRouteKey,
+        message_id: identity?.messageId,
+        dedupe_key: identity?.dedupeKey,
       },
     };
     this.wsClient.send(serializeClientMessage(message));
   }
 
-  approveTool(invocationId: string, agentName?: string, reason?: string): void {
+  approveTool(invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
     const approvalToken = this.approvalTokenByInvocationId.get(invocationId);
+    const approvalTarget = this.resolveApprovalTarget(invocationId, target);
     const message: TeamClientMessage = {
       type: 'APPROVE_TOOL',
-      payload: { invocation_id: invocationId, agent_name: agentName, reason, approval_token: approvalToken as any },
+      payload: {
+        invocation_id: invocationId,
+        ...this.toToolActionSelectorPayload(approvalTarget),
+        reason,
+        approval_token: approvalToken as any,
+      },
     };
     this.wsClient.send(serializeClientMessage(message));
     this.approvalTokenByInvocationId.delete(invocationId);
+    this.approvalTargetByInvocationId.delete(invocationId);
   }
 
-  denyTool(invocationId: string, agentName?: string, reason?: string): void {
+  denyTool(invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
     const approvalToken = this.approvalTokenByInvocationId.get(invocationId);
+    const approvalTarget = this.resolveApprovalTarget(invocationId, target);
     const message: TeamClientMessage = {
       type: 'DENY_TOOL',
-      payload: { invocation_id: invocationId, agent_name: agentName, reason, approval_token: approvalToken as any },
+      payload: {
+        invocation_id: invocationId,
+        ...this.toToolActionSelectorPayload(approvalTarget),
+        reason,
+        approval_token: approvalToken as any,
+      },
     };
     this.wsClient.send(serializeClientMessage(message));
     this.approvalTokenByInvocationId.delete(invocationId);
+    this.approvalTargetByInvocationId.delete(invocationId);
   }
 
   interruptGeneration(target: TeamInterruptGenerationTarget): void {
@@ -190,11 +192,11 @@ export class TeamStreamingService {
     }
 
     const payload: InterruptGenerationPayload = {
-      target_member_name: targetMemberRouteKey,
+      target_member_route_key: targetMemberRouteKey,
     };
-    const targetAgentRunId = target.targetAgentRunId?.trim();
-    if (targetAgentRunId) {
-      payload.agent_id = targetAgentRunId;
+    const targetMemberRunId = target.targetMemberRunId?.trim();
+    if (targetMemberRunId) {
+      payload.target_member_run_id = targetMemberRunId;
     }
 
     const message: TeamClientMessage = {
@@ -209,7 +211,7 @@ export class TeamStreamingService {
 
     try {
       const message = parseServerMessage(raw);
-      this.trackApprovalToken(message);
+      this.trackApprovalRequest(message);
       this.logMessage(message);
       this.dispatchMessage(message, this.teamContext);
     } catch (e) {
@@ -266,58 +268,126 @@ export class TeamStreamingService {
     }
   }
 
-  private trackApprovalToken(message: ServerMessage): void {
+  private trackApprovalRequest(message: ServerMessage): void {
     if (message.type !== 'TOOL_APPROVAL_REQUESTED') return;
-    const payload = message.payload as { invocation_id?: string; approval_token?: unknown };
-    if (!payload?.invocation_id || !payload.approval_token) return;
-    this.approvalTokenByInvocationId.set(payload.invocation_id, payload.approval_token);
+    const payload = message.payload as {
+      invocation_id?: string;
+      approval_token?: unknown;
+      member_route_key?: string;
+      member_path?: string[];
+      source_route_key?: string;
+      source_path?: string[];
+    };
+    if (!payload?.invocation_id) return;
+    if (payload.approval_token) {
+      this.approvalTokenByInvocationId.set(payload.invocation_id, payload.approval_token);
+    }
+
+    const approvalTarget = this.normalizeApprovalTarget({
+      memberRouteKey: payload.member_route_key,
+      memberPath: payload.member_path,
+      sourceRouteKey: payload.source_route_key,
+      sourcePath: payload.source_path,
+    });
+    if (approvalTarget) {
+      this.approvalTargetByInvocationId.set(payload.invocation_id, approvalTarget);
+    }
+  }
+
+  private resolveApprovalTarget(
+    invocationId: string,
+    target?: ToolApprovalTarget | null,
+  ): ToolApprovalTarget | null {
+    return this.normalizeApprovalTarget(target ?? null)
+      ?? this.approvalTargetByInvocationId.get(invocationId)
+      ?? null;
+  }
+
+  private normalizeApprovalTarget(target: ToolApprovalTarget | null): ToolApprovalTarget | null {
+    if (!target) {
+      return null;
+    }
+    const memberPath = Array.isArray(target.memberPath)
+      ? target.memberPath.map((part) => String(part).trim()).filter(Boolean)
+      : null;
+    const sourcePath = Array.isArray(target.sourcePath)
+      ? target.sourcePath.map((part) => String(part).trim()).filter(Boolean)
+      : null;
+    const memberRouteKey = target.memberRouteKey?.trim() || memberPath?.join('/') || null;
+    const sourceRouteKey = target.sourceRouteKey?.trim() || sourcePath?.join('/') || null;
+
+    if (!memberRouteKey && !sourceRouteKey && !memberPath?.length && !sourcePath?.length) {
+      return null;
+    }
+
+    return {
+      memberRouteKey,
+      memberPath: memberPath?.length ? memberPath : null,
+      sourceRouteKey,
+      sourcePath: sourcePath?.length ? sourcePath : null,
+    };
+  }
+
+  private toToolActionSelectorPayload(target: ToolApprovalTarget | null): Partial<NonNullable<Extract<TeamClientMessage, { type: 'APPROVE_TOOL' }>['payload']>> {
+    if (!target) {
+      return {};
+    }
+    return {
+      member_route_key: target.memberRouteKey || undefined,
+      member_path: target.memberPath || undefined,
+      source_route_key: target.sourceRouteKey || undefined,
+      source_path: target.sourcePath || undefined,
+    };
   }
 
   /**
-   * Route message to the appropriate team member based on agent_id.
+   * Route message to the appropriate team member using canonical source route/path identity.
    */
   private getMemberContextResolution(message: ServerMessage): MemberContextResolution | null {
     if (!this.teamContext) return null;
 
-    // Extract agent_id from the message payload if present
-    // Use type assertion since not all message types have agent_id
-    const payload = 'payload' in message ? message.payload as { agent_id?: string; agent_name?: string } : null;
-    const agentName = payload?.agent_name;
+    // Use type assertion since route/source metadata is present only on team-scoped payloads.
+    const payload = 'payload' in message ? message.payload as {
+      agent_id?: string;
+      agent_name?: string;
+      member_route_key?: string;
+      source_route_key?: string;
+      source_path?: string[];
+      member_path?: string[];
+    } : null;
+    const sourceRouteKey = payload?.source_route_key || payload?.member_route_key;
+    const sourcePath = Array.isArray(payload?.source_path) && payload.source_path.length > 0
+      ? payload.source_path
+      : Array.isArray(payload?.member_path)
+        ? payload.member_path
+        : null;
+    const routeKeyFromPath = sourcePath?.map((segment) => String(segment).trim()).filter(Boolean).join('/') || '';
     const memberRunId = payload?.agent_id;
 
-    if (agentName) {
-      const directMatch = this.teamContext.members.get(agentName);
-      if (directMatch) {
-        if (memberRunId && directMatch.state.runId !== memberRunId) {
-          directMatch.state.runId = memberRunId;
-        }
-        return {
-          context: directMatch,
-          isExplicitIdentityMatch: true,
-        };
+    const canonicalRouteKey = String(sourceRouteKey || routeKeyFromPath || '').trim();
+    const routedMatch = canonicalRouteKey
+      ? this.teamContext.leafAgentContextsByRouteKey.get(canonicalRouteKey)
+      : null;
+    if (routedMatch) {
+      if (memberRunId && routedMatch.state.runId !== memberRunId) {
+        routedMatch.state.runId = memberRunId;
       }
+      return {
+        context: routedMatch,
+      };
     }
 
     if (memberRunId) {
-      // Find member by checking their runtime run id.
-      for (const [memberName, memberContext] of this.teamContext.members) {
-        if (memberContext.state.runId === memberRunId || memberName === memberRunId) {
+      for (const memberContext of this.teamContext.leafAgentContextsByRouteKey.values()) {
+        if (memberContext.state.runId === memberRunId) {
           return {
             context: memberContext,
-            isExplicitIdentityMatch: true,
           };
         }
       }
     }
 
-    // Fall back to focused member
-    const focusedContext = this.teamContext.members.get(this.teamContext.focusedMemberName) || null;
-    return focusedContext
-      ? {
-          context: focusedContext,
-          isExplicitIdentityMatch: false,
-        }
-      : null;
+    return null;
   }
 
   private dispatchMessage(message: ServerMessage, teamContext: AgentTeamContext): void {
@@ -339,16 +409,21 @@ export class TeamStreamingService {
     const memberResolution = this.getMemberContextResolution(message);
 
     if (!memberResolution) {
+      if (message.type === 'AGENT_STATUS') {
+        const payload = message.payload;
+        const routeKey = payload.member_route_key || payload.source_route_key || payload.member_path?.join('/') || payload.source_path?.join('/') || '';
+        const memberNode = routeKey ? teamContext.memberNodesByRouteKey.get(routeKey) : null;
+        if (memberNode?.memberKind === 'agent_team') {
+          memberNode.currentStatus = normalizeAgentRuntimeStatus(payload.status);
+          return;
+        }
+      }
       console.warn('No member context found for message, skipping');
       return;
     }
 
     const memberContext = memberResolution.context;
     memberContext.conversation.updatedAt = new Date().toISOString();
-    if (isLiveRuntimeActivityMessage(message) && memberResolution.isExplicitIdentityMatch) {
-      applyLiveTeamMemberRuntimeActivityProjectionRepair(teamContext, memberContext);
-    }
-
     switch (message.type) {
       case 'SEGMENT_START':
         handleSegmentStart(message.payload, memberContext);

@@ -1,0 +1,2702 @@
+{
+  "validationId": "171ae1c1_1a0f_4418_9d6e_795abf48adb6",
+  "timestamp": "2026-05-17T15:40:53.570Z",
+  "head": "902274e5",
+  "graphqlUrl": "http://127.0.0.1:8000/graphql",
+  "browserUrl": "http://127.0.0.1:3020/workspace",
+  "scenarios": {
+    "singleCompletion": {
+      "runId": "nested_program_manager_agent_program_manager_6264",
+      "token": "ROUND37_SINGLE_171ae1c1",
+      "initSeq": 2,
+      "runningSeq": 4,
+      "completeSeq": 22,
+      "firstContentSeq": 7,
+      "canonicalOnly": true,
+      "hasInitializing": true,
+      "hasRunning": true,
+      "runningBeforeCompletion": true,
+      "preCompleteIdleCount": 0,
+      "statusSequence": [
+        {
+          "seq": 2,
+          "globalDtMs": 150,
+          "socketLabel": "single-completion",
+          "type": "AGENT_STATUS",
+          "status": "initializing",
+          "agent_id": "nested_program_manager_agent_program_manager_6264",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 4,
+          "globalDtMs": 154,
+          "socketLabel": "single-completion",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "nested_program_manager_agent_program_manager_6264",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 5,
+          "globalDtMs": 154,
+          "socketLabel": "single-completion",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "nested_program_manager_agent_program_manager_6264",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 6,
+          "globalDtMs": 154,
+          "socketLabel": "single-completion",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "nested_program_manager_agent_program_manager_6264",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 21,
+          "globalDtMs": 1696,
+          "socketLabel": "single-completion",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "nested_program_manager_agent_program_manager_6264",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 24,
+          "globalDtMs": 1696,
+          "socketLabel": "single-completion",
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "agent_id": "nested_program_manager_agent_program_manager_6264",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 25,
+          "globalDtMs": 1696,
+          "socketLabel": "single-completion",
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "agent_id": "nested_program_manager_agent_program_manager_6264",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        }
+      ],
+      "compactTimeline": [
+        {
+          "seq": 2,
+          "dtMs": 57,
+          "globalDtMs": 150,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "initializing",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_6264"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 3,
+          "dtMs": 61,
+          "globalDtMs": 154,
+          "type": "TURN_STARTED",
+          "payload": {
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 4,
+          "dtMs": 61,
+          "globalDtMs": 154,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_6264"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 5,
+          "dtMs": 61,
+          "globalDtMs": 154,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_6264"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 6,
+          "dtMs": 61,
+          "globalDtMs": 154,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_6264"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 7,
+          "dtMs": 1424,
+          "globalDtMs": 1517,
+          "type": "SEGMENT_START",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "segment_type": "text",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 8,
+          "dtMs": 1424,
+          "globalDtMs": 1517,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "ROUND",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 9,
+          "dtMs": 1447,
+          "globalDtMs": 1540,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "3",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 10,
+          "dtMs": 1470,
+          "globalDtMs": 1563,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "7",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 11,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "_SINGLE",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 12,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "_",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 13,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "1",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 14,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "7",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 15,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "1",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 16,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "ae",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 17,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "1",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 18,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "c",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 19,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "delta": "1",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 20,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "SEGMENT_END",
+          "payload": {
+            "id": "turn_567e14fe09334abeabf95d667c371f3c:608d1025557942ce9c0330d5f51e3a20",
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 21,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_6264"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 22,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "ASSISTANT_COMPLETE",
+          "payload": {
+            "content": "ROUND37_SINGLE_171ae1c1",
+            "usage": {
+              "prompt_tokens": 629,
+              "completion_tokens": 13,
+              "total_tokens": 642
+            },
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": []
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 23,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "TURN_COMPLETED",
+          "payload": {
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 24,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "idle",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_6264"
+          },
+          "socketLabel": "single-completion"
+        },
+        {
+          "seq": 25,
+          "dtMs": 1603,
+          "globalDtMs": 1696,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "idle",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_6264"
+          },
+          "socketLabel": "single-completion"
+        }
+      ],
+      "assistantComplete": {
+        "content": "ROUND37_SINGLE_171ae1c1",
+        "usage": {
+          "prompt_tokens": 629,
+          "completion_tokens": 13,
+          "total_tokens": 642
+        },
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": []
+      }
+    },
+    "singleBackgroundReconnect": {
+      "runId": "nested_program_manager_agent_program_manager_4922",
+      "token": "ROUND37_BG_171ae1c1",
+      "runningSeq": 4,
+      "reconnectSnapshot": {
+        "status": "running",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_4922"
+      },
+      "backgroundSnapshot": {
+        "status": "running",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_4922"
+      },
+      "canonicalOnly": true,
+      "hasRunning": true,
+      "reconnectSnapshotWasRunning": true,
+      "backgroundSnapshotWasRunning": true,
+      "statusSequence": [
+        {
+          "seq": 1,
+          "globalDtMs": 2089,
+          "socketLabel": "single-background-primary",
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "agent_id": "nested_program_manager_agent_program_manager_4922",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 2,
+          "globalDtMs": 2144,
+          "socketLabel": "single-background-primary",
+          "type": "AGENT_STATUS",
+          "status": "initializing",
+          "agent_id": "nested_program_manager_agent_program_manager_4922",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 4,
+          "globalDtMs": 2151,
+          "socketLabel": "single-background-primary",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "nested_program_manager_agent_program_manager_4922",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 5,
+          "globalDtMs": 2151,
+          "socketLabel": "single-background-primary",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "nested_program_manager_agent_program_manager_4922",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 6,
+          "globalDtMs": 2151,
+          "socketLabel": "single-background-primary",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "nested_program_manager_agent_program_manager_4922",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 1,
+          "globalDtMs": 2197,
+          "socketLabel": "single-background-reconnect",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "nested_program_manager_agent_program_manager_4922",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 1,
+          "globalDtMs": 3001,
+          "socketLabel": "single-background-no-subscriber-reconnect",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "nested_program_manager_agent_program_manager_4922",
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": null,
+          "sub_team_node_name": null
+        }
+      ],
+      "compactTimeline": [
+        {
+          "seq": 0,
+          "dtMs": 2,
+          "globalDtMs": 2089,
+          "type": "CONNECTED",
+          "payload": {
+            "agent_id": "nested_program_manager_agent_program_manager_4922",
+            "session_id": "f31ce6de-fd8e-43f9-8c41-f07e8cc6b12f"
+          },
+          "socketLabel": "single-background-primary"
+        },
+        {
+          "seq": 1,
+          "dtMs": 2,
+          "globalDtMs": 2089,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "idle",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_4922"
+          },
+          "socketLabel": "single-background-primary"
+        },
+        {
+          "seq": 2,
+          "dtMs": 57,
+          "globalDtMs": 2144,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "initializing",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_4922"
+          },
+          "socketLabel": "single-background-primary"
+        },
+        {
+          "seq": 3,
+          "dtMs": 64,
+          "globalDtMs": 2151,
+          "type": "TURN_STARTED",
+          "payload": {
+            "turn_id": "turn_0001"
+          },
+          "socketLabel": "single-background-primary"
+        },
+        {
+          "seq": 4,
+          "dtMs": 64,
+          "globalDtMs": 2151,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_4922"
+          },
+          "socketLabel": "single-background-primary"
+        },
+        {
+          "seq": 5,
+          "dtMs": 64,
+          "globalDtMs": 2151,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_4922"
+          },
+          "socketLabel": "single-background-primary"
+        },
+        {
+          "seq": 6,
+          "dtMs": 64,
+          "globalDtMs": 2151,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_4922"
+          },
+          "socketLabel": "single-background-primary"
+        },
+        {
+          "seq": 0,
+          "dtMs": 2,
+          "globalDtMs": 2197,
+          "type": "CONNECTED",
+          "payload": {
+            "agent_id": "nested_program_manager_agent_program_manager_4922",
+            "session_id": "dfbe5505-76a7-45f8-be56-df38e939baf4"
+          },
+          "socketLabel": "single-background-reconnect"
+        },
+        {
+          "seq": 1,
+          "dtMs": 2,
+          "globalDtMs": 2197,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_4922"
+          },
+          "socketLabel": "single-background-reconnect"
+        },
+        {
+          "seq": 0,
+          "dtMs": 1,
+          "globalDtMs": 3001,
+          "type": "CONNECTED",
+          "payload": {
+            "agent_id": "nested_program_manager_agent_program_manager_4922",
+            "session_id": "9be86eb4-4800-4901-ac61-32f0bb3b5718"
+          },
+          "socketLabel": "single-background-no-subscriber-reconnect"
+        },
+        {
+          "seq": 1,
+          "dtMs": 1,
+          "globalDtMs": 3001,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "nested_program_manager_agent_program_manager_4922"
+          },
+          "socketLabel": "single-background-no-subscriber-reconnect"
+        }
+      ]
+    },
+    "professorStudentTeam": {
+      "teamRunId": "team_professor-student-team_90d1afe5",
+      "professor": {
+        "route": "Professor",
+        "token": "ROUND37_PROF_171ae1c1",
+        "start": 4,
+        "end": 34,
+        "runningSeq": 8,
+        "completeSeq": 29
+      },
+      "student": {
+        "route": "Student",
+        "token": "ROUND37_STUD_171ae1c1",
+        "start": 34,
+        "end": 67,
+        "runningSeq": 40,
+        "completeSeq": 62
+      },
+      "canonicalOnly": true,
+      "professorHasRunning": true,
+      "studentHasRunning": true,
+      "noStudentRunningDuringProfessorWindow": true,
+      "noProfessorRunningDuringStudentWindow": true,
+      "professorTeamIdleBeforeCompletionCount": 1,
+      "studentTeamIdleBeforeCompletionCount": 1,
+      "statusSequence": [
+        {
+          "seq": 1,
+          "globalDtMs": 3098,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "agent_id": "professor_349ab8098d03fb38",
+          "agent_name": "Professor",
+          "member_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_route_key": "Professor",
+          "source_path": [
+            "Professor"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 2,
+          "globalDtMs": 3098,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "agent_id": "student_8decdbd22b4a62e9",
+          "agent_name": "Student",
+          "member_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_route_key": "Student",
+          "source_path": [
+            "Student"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 3,
+          "globalDtMs": 3098,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 4,
+          "globalDtMs": 3150,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "initializing",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 5,
+          "globalDtMs": 3153,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 6,
+          "globalDtMs": 3153,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 8,
+          "globalDtMs": 3165,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "professor_349ab8098d03fb38",
+          "agent_name": "Professor",
+          "member_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_route_key": "Professor",
+          "source_path": [
+            "Professor"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 9,
+          "globalDtMs": 3165,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 10,
+          "globalDtMs": 3165,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "professor_349ab8098d03fb38",
+          "agent_name": "Professor",
+          "member_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_route_key": "Professor",
+          "source_path": [
+            "Professor"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 11,
+          "globalDtMs": 3165,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "professor_349ab8098d03fb38",
+          "agent_name": "Professor",
+          "member_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_route_key": "Professor",
+          "source_path": [
+            "Professor"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 13,
+          "globalDtMs": 4087,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 27,
+          "globalDtMs": 4313,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "professor_349ab8098d03fb38",
+          "agent_name": "Professor",
+          "member_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_route_key": "Professor",
+          "source_path": [
+            "Professor"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 28,
+          "globalDtMs": 4313,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 30,
+          "globalDtMs": 4313,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 32,
+          "globalDtMs": 4313,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "agent_id": "professor_349ab8098d03fb38",
+          "agent_name": "Professor",
+          "member_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_route_key": "Professor",
+          "source_path": [
+            "Professor"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 33,
+          "globalDtMs": 4313,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "agent_id": "professor_349ab8098d03fb38",
+          "agent_name": "Professor",
+          "member_route_key": "Professor",
+          "member_path": [
+            "Professor"
+          ],
+          "source_route_key": "Professor",
+          "source_path": [
+            "Professor"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 34,
+          "globalDtMs": 4645,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "initializing",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 35,
+          "globalDtMs": 4647,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "offline",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 36,
+          "globalDtMs": 4661,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "agent_id": "student_8decdbd22b4a62e9",
+          "agent_name": "Student",
+          "member_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_route_key": "Student",
+          "source_path": [
+            "Student"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 37,
+          "globalDtMs": 4661,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "agent_id": "student_8decdbd22b4a62e9",
+          "agent_name": "Student",
+          "member_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_route_key": "Student",
+          "source_path": [
+            "Student"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 38,
+          "globalDtMs": 4671,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 40,
+          "globalDtMs": 4671,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "student_8decdbd22b4a62e9",
+          "agent_name": "Student",
+          "member_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_route_key": "Student",
+          "source_path": [
+            "Student"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 41,
+          "globalDtMs": 4671,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 42,
+          "globalDtMs": 4671,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "student_8decdbd22b4a62e9",
+          "agent_name": "Student",
+          "member_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_route_key": "Student",
+          "source_path": [
+            "Student"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 43,
+          "globalDtMs": 4671,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "student_8decdbd22b4a62e9",
+          "agent_name": "Student",
+          "member_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_route_key": "Student",
+          "source_path": [
+            "Student"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 45,
+          "globalDtMs": 8033,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 60,
+          "globalDtMs": 8234,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "running",
+          "agent_id": "student_8decdbd22b4a62e9",
+          "agent_name": "Student",
+          "member_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_route_key": "Student",
+          "source_path": [
+            "Student"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 61,
+          "globalDtMs": 8234,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "running",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 63,
+          "globalDtMs": 8234,
+          "socketLabel": "professor-student-team",
+          "type": "TEAM_STATUS",
+          "status": "idle",
+          "agent_id": null,
+          "agent_name": null,
+          "member_route_key": null,
+          "member_path": null,
+          "source_route_key": null,
+          "source_path": [],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 65,
+          "globalDtMs": 8234,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "idle",
+          "agent_id": "student_8decdbd22b4a62e9",
+          "agent_name": "Student",
+          "member_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_route_key": "Student",
+          "source_path": [
+            "Student"
+          ],
+          "sub_team_node_name": null
+        },
+        {
+          "seq": 66,
+          "globalDtMs": 8234,
+          "socketLabel": "professor-student-team",
+          "type": "AGENT_STATUS",
+          "status": "offline",
+          "agent_id": "student_8decdbd22b4a62e9",
+          "agent_name": "Student",
+          "member_route_key": "Student",
+          "member_path": [
+            "Student"
+          ],
+          "source_route_key": "Student",
+          "source_path": [
+            "Student"
+          ],
+          "sub_team_node_name": null
+        }
+      ],
+      "compactTimeline": [
+        {
+          "seq": 0,
+          "dtMs": 2,
+          "globalDtMs": 3098,
+          "type": "CONNECTED",
+          "payload": {
+            "team_id": "team_professor-student-team_90d1afe5",
+            "session_id": "9a33b67e-2373-49f4-8b7f-1146aed36b29"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 1,
+          "dtMs": 2,
+          "globalDtMs": 3098,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "offline",
+            "can_interrupt": false,
+            "agent_id": "professor_349ab8098d03fb38",
+            "agent_name": "Professor",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor",
+            "source_path": [
+              "Professor"
+            ]
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 2,
+          "dtMs": 2,
+          "globalDtMs": 3098,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "offline",
+            "can_interrupt": false,
+            "agent_id": "student_8decdbd22b4a62e9",
+            "agent_name": "Student",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_route_key": "Student",
+            "source_path": [
+              "Student"
+            ]
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 3,
+          "dtMs": 2,
+          "globalDtMs": 3098,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "idle",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 4,
+          "dtMs": 54,
+          "globalDtMs": 3150,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "initializing",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 5,
+          "dtMs": 57,
+          "globalDtMs": 3153,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "idle",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 6,
+          "dtMs": 57,
+          "globalDtMs": 3153,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "idle",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 7,
+          "dtMs": 69,
+          "globalDtMs": 3165,
+          "type": "TURN_STARTED",
+          "payload": {
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 8,
+          "dtMs": 69,
+          "globalDtMs": 3165,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "professor_349ab8098d03fb38",
+            "agent_name": "Professor",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 9,
+          "dtMs": 69,
+          "globalDtMs": 3165,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "running",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 10,
+          "dtMs": 69,
+          "globalDtMs": 3165,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "professor_349ab8098d03fb38",
+            "agent_name": "Professor",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 11,
+          "dtMs": 69,
+          "globalDtMs": 3165,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "professor_349ab8098d03fb38",
+            "agent_name": "Professor",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 12,
+          "dtMs": 991,
+          "globalDtMs": 4087,
+          "type": "SEGMENT_START",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "segment_type": "text",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 13,
+          "dtMs": 991,
+          "globalDtMs": 4087,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "idle",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 14,
+          "dtMs": 991,
+          "globalDtMs": 4087,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "ROUND",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 15,
+          "dtMs": 991,
+          "globalDtMs": 4087,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "3",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 16,
+          "dtMs": 1040,
+          "globalDtMs": 4136,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "7",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 17,
+          "dtMs": 1216,
+          "globalDtMs": 4312,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "_PROF",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 18,
+          "dtMs": 1216,
+          "globalDtMs": 4312,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "_",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 19,
+          "dtMs": 1216,
+          "globalDtMs": 4312,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "1",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 20,
+          "dtMs": 1216,
+          "globalDtMs": 4312,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "7",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 21,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "1",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 22,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "ae",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 23,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "1",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 24,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "c",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 25,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "delta": "1",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 26,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "SEGMENT_END",
+          "payload": {
+            "id": "turn_4dcaf25e61ea4a508ffda33a2bee40b2:5f92fc6231a94d85953ddadff99520e0",
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 27,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "professor_349ab8098d03fb38",
+            "agent_name": "Professor",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 28,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "running",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 29,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "ASSISTANT_COMPLETE",
+          "payload": {
+            "content": "ROUND37_PROF_171ae1c1",
+            "usage": {
+              "prompt_tokens": 525,
+              "completion_tokens": 13,
+              "total_tokens": 538
+            },
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 30,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "idle",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 31,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "TURN_COMPLETED",
+          "payload": {
+            "turn_id": "turn_0001",
+            "agent_name": "Professor",
+            "agent_id": "professor_349ab8098d03fb38",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 32,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "idle",
+            "can_interrupt": false,
+            "agent_id": "professor_349ab8098d03fb38",
+            "agent_name": "Professor",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 33,
+          "dtMs": 1217,
+          "globalDtMs": 4313,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "offline",
+            "can_interrupt": false,
+            "agent_id": "professor_349ab8098d03fb38",
+            "agent_name": "Professor",
+            "member_route_key": "Professor",
+            "member_path": [
+              "Professor"
+            ],
+            "source_path": [
+              "Professor"
+            ],
+            "source_route_key": "Professor"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 34,
+          "dtMs": 1549,
+          "globalDtMs": 4645,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "initializing",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 35,
+          "dtMs": 1551,
+          "globalDtMs": 4647,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "offline",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 36,
+          "dtMs": 1565,
+          "globalDtMs": 4661,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "offline",
+            "can_interrupt": false,
+            "agent_id": "student_8decdbd22b4a62e9",
+            "agent_name": "Student",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 37,
+          "dtMs": 1565,
+          "globalDtMs": 4661,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "offline",
+            "can_interrupt": false,
+            "agent_id": "student_8decdbd22b4a62e9",
+            "agent_name": "Student",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 38,
+          "dtMs": 1575,
+          "globalDtMs": 4671,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "idle",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 39,
+          "dtMs": 1575,
+          "globalDtMs": 4671,
+          "type": "TURN_STARTED",
+          "payload": {
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 40,
+          "dtMs": 1575,
+          "globalDtMs": 4671,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "student_8decdbd22b4a62e9",
+            "agent_name": "Student",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 41,
+          "dtMs": 1575,
+          "globalDtMs": 4671,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "running",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 42,
+          "dtMs": 1575,
+          "globalDtMs": 4671,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "student_8decdbd22b4a62e9",
+            "agent_name": "Student",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 43,
+          "dtMs": 1575,
+          "globalDtMs": 4671,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "student_8decdbd22b4a62e9",
+            "agent_name": "Student",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 44,
+          "dtMs": 4937,
+          "globalDtMs": 8033,
+          "type": "SEGMENT_START",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "segment_type": "text",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 45,
+          "dtMs": 4937,
+          "globalDtMs": 8033,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "idle",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 46,
+          "dtMs": 4937,
+          "globalDtMs": 8033,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "ROUND",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 47,
+          "dtMs": 4937,
+          "globalDtMs": 8033,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "3",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 48,
+          "dtMs": 4971,
+          "globalDtMs": 8067,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "7",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 49,
+          "dtMs": 5137,
+          "globalDtMs": 8233,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "_ST",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 50,
+          "dtMs": 5137,
+          "globalDtMs": 8233,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "UD",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 51,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "_",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 52,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "1",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 53,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "7",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 54,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "1",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 55,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "ae",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 56,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "1",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 57,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "c",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 58,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "SEGMENT_CONTENT",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "delta": "1",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 59,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "SEGMENT_END",
+          "payload": {
+            "id": "turn_a88c1c4c83284e1a9ab29dd38f5ff32c:292dbb750b1d4fb79525dee884b86c2f",
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 60,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "running",
+            "can_interrupt": false,
+            "agent_id": "student_8decdbd22b4a62e9",
+            "agent_name": "Student",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 61,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "running",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 62,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "ASSISTANT_COMPLETE",
+          "payload": {
+            "content": "ROUND37_STUD_171ae1c1",
+            "usage": {
+              "prompt_tokens": 525,
+              "completion_tokens": 14,
+              "total_tokens": 539
+            },
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 63,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "TEAM_STATUS",
+          "payload": {
+            "status": "idle",
+            "source_path": []
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 64,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "TURN_COMPLETED",
+          "payload": {
+            "turn_id": "turn_0001",
+            "agent_name": "Student",
+            "agent_id": "student_8decdbd22b4a62e9",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 65,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "idle",
+            "can_interrupt": false,
+            "agent_id": "student_8decdbd22b4a62e9",
+            "agent_name": "Student",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        },
+        {
+          "seq": 66,
+          "dtMs": 5138,
+          "globalDtMs": 8234,
+          "type": "AGENT_STATUS",
+          "payload": {
+            "status": "offline",
+            "can_interrupt": false,
+            "agent_id": "student_8decdbd22b4a62e9",
+            "agent_name": "Student",
+            "member_route_key": "Student",
+            "member_path": [
+              "Student"
+            ],
+            "source_path": [
+              "Student"
+            ],
+            "source_route_key": "Student"
+          },
+          "socketLabel": "professor-student-team"
+        }
+      ]
+    },
+    "nestedMixedAutoByteusTeam": {
+      "exception": "Error: Timed out waiting for nested review_lead running\n    at waitFor (file:///private/tmp/round37-final-live-status-probe.mjs:20:162)\n    at async nestedMixedTeam (file:///private/tmp/round37-final-live-status-probe.mjs:80:17)\n    at async file:///private/tmp/round37-final-live-status-probe.mjs:90:48"
+    }
+  },
+  "failures": [
+    {
+      "scenario": "professorStudentTeamAggregate",
+      "reason": "TEAM_STATUS idle emitted before active member completion",
+      "details": {
+        "professorTeamIdleBeforeCompletionCount": 1,
+        "studentTeamIdleBeforeCompletionCount": 1
+      }
+    },
+    {
+      "scenario": "nestedMixedAutoByteusTeam",
+      "reason": "nested BuildSquad/review_lead running/source identity failed",
+      "details": {
+        "exception": "Error: Timed out waiting for nested review_lead running\n    at waitFor (file:///private/tmp/round37-final-live-status-probe.mjs:20:162)\n    at async nestedMixedTeam (file:///private/tmp/round37-final-live-status-probe.mjs:80:17)\n    at async file:///private/tmp/round37-final-live-status-probe.mjs:90:48"
+      }
+    }
+  ],
+  "cleanup": {
+    "terminatedAgentRuns": [
+      {
+        "runId": "nested_program_manager_agent_program_manager_6264",
+        "result": {
+          "terminateAgentRun": {
+            "success": true,
+            "message": "Agent run terminated successfully."
+          }
+        }
+      },
+      {
+        "runId": "nested_program_manager_agent_program_manager_4922",
+        "result": {
+          "terminateAgentRun": {
+            "success": true,
+            "message": "Agent run terminated successfully."
+          }
+        }
+      }
+    ],
+    "terminatedTeamRuns": [
+      {
+        "teamRunId": "team_nested-mixed-runtime-delivery-team_ba41bd83",
+        "result": {
+          "terminateAgentTeamRun": {
+            "success": true,
+            "message": "Agent team run terminated successfully."
+          }
+        }
+      },
+      {
+        "teamRunId": "team_professor-student-team_90d1afe5",
+        "result": {
+          "terminateAgentTeamRun": {
+            "success": true,
+            "message": "Agent team run terminated successfully."
+          }
+        }
+      }
+    ]
+  },
+  "models": {
+    "auto": "qwen/qwen3-30b-a3b-2507:lmstudio@127.0.0.1:1234"
+  },
+  "definitions": {
+    "agentByName": {
+      "Memory Compactor": "autobyteus-memory-compactor",
+      "external-channel-agent-108bcac3-fdb8-4720-891c-98e2dde96653": "external-channel-agent-108bcac3-fdb8-4720-891c-98e2dde96653",
+      "external-channel-agent-1178820d-3c46-4e85-baf7-c8ccaffc977d": "external-channel-agent-1178820d-3c46-4e85-baf7-c8ccaffc977d",
+      "external-channel-agent-1d78371f-2d08-44ea-beee-c02a2a4bf7df": "external-channel-agent-1d78371f-2d08-44ea-beee-c02a2a4bf7df",
+      "external-channel-agent-1f2ac983-35db-409a-89b6-535b1194b7e9": "external-channel-agent-1f2ac983-35db-409a-89b6-535b1194b7e9",
+      "external-channel-agent-25e99a3b-575b-4a62-926d-f686363c42be": "external-channel-agent-25e99a3b-575b-4a62-926d-f686363c42be",
+      "external-channel-agent-28689024-a45b-4efe-86c7-787e57f64ccd": "external-channel-agent-28689024-a45b-4efe-86c7-787e57f64ccd",
+      "external-channel-agent-3069dac5-6cc9-4526-8090-c4704e5f0343": "external-channel-agent-3069dac5-6cc9-4526-8090-c4704e5f0343",
+      "external-channel-agent-47d7c620-7e39-4fb3-bbd8-bf7ddb1540be": "external-channel-agent-47d7c620-7e39-4fb3-bbd8-bf7ddb1540be",
+      "external-channel-agent-56ee52ff-6533-4117-8a8a-1554632d2e66": "external-channel-agent-56ee52ff-6533-4117-8a8a-1554632d2e66",
+      "external-channel-agent-5fe3f0a0-0a51-4134-a56e-b7884255bb6c": "external-channel-agent-5fe3f0a0-0a51-4134-a56e-b7884255bb6c",
+      "external-channel-agent-627348d3-868e-4d44-b51c-6383124fe5cd": "external-channel-agent-627348d3-868e-4d44-b51c-6383124fe5cd",
+      "external-channel-agent-656e5aea-76be-41f9-abd3-221415717fdb": "external-channel-agent-656e5aea-76be-41f9-abd3-221415717fdb",
+      "external-channel-agent-725389da-6772-48b8-8bb4-df9eb5d27d3d": "external-channel-agent-725389da-6772-48b8-8bb4-df9eb5d27d3d",
+      "external-channel-agent-8329ff3f-6f9f-4d7c-8dee-5b2693035eb9": "external-channel-agent-8329ff3f-6f9f-4d7c-8dee-5b2693035eb9",
+      "external-channel-agent-881a62ed-cfd4-4beb-8150-28af4338a857": "external-channel-agent-881a62ed-cfd4-4beb-8150-28af4338a857",
+      "external-channel-agent-882a160e-268c-4a57-b8a1-10270642d218": "external-channel-agent-882a160e-268c-4a57-b8a1-10270642d218",
+      "external-channel-agent-8c4c2cb1-fce0-4259-8004-3878c44fa411": "external-channel-agent-8c4c2cb1-fce0-4259-8004-3878c44fa411",
+      "external-channel-agent-98491964-c35f-43e2-93b4-374bb01652c3": "external-channel-agent-98491964-c35f-43e2-93b4-374bb01652c3",
+      "external-channel-agent-9c7ae383-8260-41c6-8cbd-075fcc4e74b0": "external-channel-agent-9c7ae383-8260-41c6-8cbd-075fcc4e74b0",
+      "external-channel-agent-a5448b33-7ee5-4579-b64e-130d47989013": "external-channel-agent-a5448b33-7ee5-4579-b64e-130d47989013",
+      "external-channel-agent-b087cfbb-bf75-4bf6-9070-7d7da6391aa3": "external-channel-agent-b087cfbb-bf75-4bf6-9070-7d7da6391aa3",
+      "external-channel-agent-bb92bc47-1c01-44a3-afb0-adb6a00ffef9": "external-channel-agent-bb92bc47-1c01-44a3-afb0-adb6a00ffef9",
+      "external-channel-agent-c21f05af-3748-48c0-a504-efdac3c429aa": "external-channel-agent-c21f05af-3748-48c0-a504-efdac3c429aa",
+      "external-channel-agent-c3a4d915-c1ed-4889-affc-de52bc2764b7": "external-channel-agent-c3a4d915-c1ed-4889-affc-de52bc2764b7",
+      "external-channel-agent-c5446d52-3ffb-4d0e-9815-3ec7931837fb": "external-channel-agent-c5446d52-3ffb-4d0e-9815-3ec7931837fb",
+      "external-channel-agent-d4956f33-f02c-468e-9e62-2a98847bf577": "external-channel-agent-d4956f33-f02c-468e-9e62-2a98847bf577",
+      "external-channel-agent-e17df0e1-9c9b-4730-aef0-8b464b625e97": "external-channel-agent-e17df0e1-9c9b-4730-aef0-8b464b625e97",
+      "external-channel-agent-ee6c2e3e-32e3-46d9-8c48-e412f7df5dfb": "external-channel-agent-ee6c2e3e-32e3-46d9-8c48-e412f7df5dfb",
+      "external-channel-agent-f5764c16-09fa-4499-9873-520867042785": "external-channel-agent-f5764c16-09fa-4499-9873-520867042785",
+      "external-channel-agent-fe44f902-5f75-456a-90fb-6be60a1478e0": "external-channel-agent-fe44f902-5f75-456a-90fb-6be60a1478e0",
+      "Nested Program Manager Agent": "nested-program-manager-agent",
+      "Nested QA Specialist Agent": "nested-qa-specialist-agent",
+      "Nested Review Lead Agent": "nested-review-lead-agent",
+      "Professor Agent": "professor-agent",
+      "Student Agent": "student-agent",
+      "Pitch Practice Investor": "pitch-practice-investor",
+      "Resume Designer": "resume-designer",
+      "Software Tutorial Video Maker": "software-tutorial-video-maker",
+      "AudioGenerator": "audiogenerator",
+      "Chapter Slide Planner": "chapter-slide-planner",
+      "Chemistry Concept Visualizer": "chemistry-concept-visualizer",
+      "Chemistry homework grader": "chemistry-homework-grader",
+      "Chemistry Teacher Germany": "chemistry-teacher-germany",
+      "Cinematic Storybook Director": "cinematic-storybook-director",
+      "Clara’s Ocean Friends Story Creator": "claras-ocean-friends-story-creator",
+      "coding agent": "coding-agent",
+      "Daily Assistant": "daily-assistant",
+      "database manager": "database-manager",
+      "Dictionary Word Audio": "dictionary-word-audio",
+      "Gemini RPA PPT designer": "gemini-rpa-ppt-designer",
+      "Image Designer": "image-designer",
+      "Infographics Creator": "infographics-creator",
+      "Kid_Story_Teller": "kid-story-teller",
+      "MCP Tool Manager": "mcp-tool-manager",
+      "Media Editor": "media-editor",
+      "niuzhirui_production_db_manager": "niuzhirui-production-db-manager",
+      "PPT Creator": "ppt-creator",
+      "PPT Designer": "ppt-designer",
+      "Presentation Designer": "presentation-designer",
+      "project manager": "project-manager",
+      "prompt generator": "prompt-generator",
+      "prompt manager": "prompt-manager",
+      "Publisher": "publisher",
+      "ReflectionCards": "reflectioncards",
+      "Reflective Storyteller": "reflective-storyteller",
+      "requirement": "requirement",
+      "requirement engineer": "requirement-engineer",
+      "SlideImageGenerator": "slideimagegenerator",
+      "SlideNarrator": "slidenarrator",
+      "software architect": "software-architect",
+      "Software Developer": "software-developer",
+      "TutorialVideoCreator": "tutorialvideocreator",
+      "video subtitle burn in engineer": "video-subtitle-burn-in",
+      "Visual Book Storyteller": "visual-book-storyteller",
+      "Visual Dialogue Weaver": "visual-dialogue-weaver",
+      "VisualStoryteller": "visualstoryteller",
+      "WeChat Official Account Article Writer": "wechat-official-account-article-writer",
+      "Weixin Linux desktop operator": "weixin-linux-desktop-operator",
+      "article reviewer": "team-local:article-writing-team:article-reviewer",
+      "article writer": "team-local:article-writing-team:article-writer",
+      "manga illustrator": "team-local:manga-video-studio-team:manga-illustrator",
+      "manga showrunner": "team-local:manga-video-studio-team:manga-showrunner",
+      "storyboard director": "team-local:manga-video-studio-team:storyboard-director",
+      "voice and video producer": "team-local:manga-video-studio-team:voice-video-producer",
+      "narration-script-reviewer": "team-local:narrated-presentation-video-team:narration-script-reviewer",
+      "presentation-director": "team-local:narrated-presentation-video-team:presentation-director",
+      "slide-video-producer": "team-local:narrated-presentation-video-team:slide-video-producer",
+      "deck reviewer": "team-local:research-to-deck-team:deck-reviewer",
+      "deep researcher": "team-local:research-to-deck-team:deep-researcher",
+      "infographic PowerPoint designer": "team-local:research-to-deck-team:infographic-powerpoint-designer",
+      "api e2e engineer": "team-local:software-engineering-team:api-e2e-engineer",
+      "architecture reviewer": "team-local:software-engineering-team:architecture-reviewer",
+      "code reviewer": "team-local:software-engineering-team:code-reviewer",
+      "delivery engineer": "team-local:software-engineering-team:delivery-engineer",
+      "implementation engineer": "team-local:software-engineering-team:implementation-engineer",
+      "solution designer": "team-local:software-engineering-team:solution-designer",
+      "promo-director": "team-local:software-product-promo-video-team:promo-director",
+      "promo-video-producer": "team-local:software-product-promo-video-team:promo-video-producer",
+      "visual-director": "team-local:software-product-promo-video-team:visual-director",
+      "visual-reviewer": "team-local:software-product-promo-video-team:visual-reviewer",
+      "细读经文的组员": "team-local:bible-study-group:careful-reader",
+      "提供上下文的组员": "team-local:bible-study-group:context-guide",
+      "查经小组长": "team-local:bible-study-group:study-leader",
+      "Clara Story Orchestrator": "team-local:clara-ocean-friends:clara-story-orchestrator",
+      "Clara Storybook Builder": "team-local:clara-ocean-friends:clara-storybook-builder",
+      "LinkedIn marketer": "team-local:marketing-team:linkedin-marketer",
+      "Marketing Coordinator": "team-local:marketing-team:marketing-coordinator",
+      "Weixin gongzhonghao marketer": "team-local:marketing-team:weixin-gongzhonghao-marketer",
+      "X marketer": "team-local:marketing-team:x-marketer",
+      "Xiaohongshu marketer": "team-local:marketing-team:xiaohongshu-marketer",
+      "Cinematic Frame Artist": "team-local:movie-maker:cinematic-frame-artist",
+      "Cinematic Sound Designer": "team-local:movie-maker:cinematic-sound-designer",
+      "Cinematic Storyboard Architect": "team-local:movie-maker:cinematic-storyboard-architect",
+      "Cinematic Video Editor": "team-local:movie-maker:cinematic-video-editor",
+      "AnimationDeveloper": "team-local:socratic-math-team:animationdeveloper",
+      "GeniusMathResolver": "team-local:socratic-math-team:geniusmathresolver",
+      "SocraticMathTeacher": "team-local:socratic-math-team:socraticmathteacher",
+      "TutorialVideoAssembler": "team-local:video-tutorial-creation-team:tutorial-video-assembler",
+      "TutorialVoiceoverWriter": "team-local:video-tutorial-creation-team:tutorial-voiceover-writer",
+      "Brief Studio Researcher": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher",
+      "Brief Studio Writer": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer"
+    },
+    "teamByName": {
+      "Nested Build Squad Team": "nested-build-squad-team",
+      "Nested Mixed Runtime Delivery Team": "nested-mixed-runtime-delivery-team",
+      "Professor Student Team": "professor-student-team",
+      "Telegram Team-14c5e786-9318-4f79-9a3b-0a85face9731": "telegram-team-14c5e786-9318-4f79-9a3b-0a85face9731",
+      "Telegram Team-3b2dd7d7-2783-4d78-88f4-b494018236f9": "telegram-team-3b2dd7d7-2783-4d78-88f4-b494018236f9",
+      "Telegram Team-4ebc62c4-2f00-46c8-88a3-6bc3f03f9c3b": "telegram-team-4ebc62c4-2f00-46c8-88a3-6bc3f03f9c3b",
+      "Telegram Team-8643bde6-7d31-4945-9000-27ee952849b0": "telegram-team-8643bde6-7d31-4945-9000-27ee952849b0",
+      "Telegram Team-a1e15bd4-f9c9-4407-8e31-fabb658c3050": "telegram-team-a1e15bd4-f9c9-4407-8e31-fabb658c3050",
+      "Telegram Team-a51941a3-df90-4fcb-9b41-3565bad5b651": "telegram-team-a51941a3-df90-4fcb-9b41-3565bad5b651",
+      "Article Writing Team": "article-writing-team",
+      "Manga Video Studio Team": "manga-video-studio-team",
+      "Narrated Presentation Video Team": "narrated-presentation-video-team",
+      "Research To Deck Team": "research-to-deck-team",
+      "Software Engineering Team": "software-engineering-team",
+      "Software Product Promo Video Team": "software-product-promo-video-team",
+      "Bible Study Group": "bible-study-group",
+      "Clara Ocean Friends": "clara-ocean-friends",
+      "Marketing Team": "marketing-team",
+      "Movie Maker": "movie-maker",
+      "Presentation_Chemie": "presentation-chemie",
+      "Socratic Math Team": "socratic-math-team",
+      "Video Tutorial Creation Team": "video-tutorial-creation-team",
+      "Brief Studio Team": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d"
+    }
+  },
+  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/round37-final-171ae1c1_1a0f_4418_9d6e_795abf48adb6-4D0EhV",
+  "result": "fail"
+}

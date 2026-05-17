@@ -1,0 +1,321 @@
+{
+  "validationId": "020beb92_d077_44a6_b21a_86fdea952387",
+  "timestamp": "2026-05-17T12:23:54.365Z",
+  "head": "def22234",
+  "graphqlUrl": "http://127.0.0.1:8000/graphql",
+  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/round36-status-evidence-020beb92_d077_44a6_b21a_86fdea952387-fjJdM4",
+  "model": "qwen/qwen3-30b-a3b-2507:lmstudio@127.0.0.1:1234",
+  "runId": "nested_program_manager_agent_program_manager_8500",
+  "token": "ROUND36_STATUS_020beb92",
+  "expectedStatusSequence": [
+    "initializing",
+    "running",
+    "idle|error|offline"
+  ],
+  "observedStatusEvents": [
+    {
+      "dtMs": 3,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    },
+    {
+      "dtMs": 314,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "initializing",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    },
+    {
+      "dtMs": 321,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    },
+    {
+      "dtMs": 321,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    }
+  ],
+  "observedMessageTypes": [
+    "CONNECTED",
+    "AGENT_STATUS",
+    "AGENT_STATUS",
+    "TURN_STARTED",
+    "AGENT_STATUS",
+    "AGENT_STATUS",
+    "SEGMENT_START",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+    "AGENT_STATUS",
+    "ASSISTANT_COMPLETE",
+    "TURN_COMPLETED",
+    "AGENT_STATUS"
+  ],
+  "streamingStarted": true,
+  "assistantComplete": {
+    "content": "ROUND36_STATUS_020beb92",
+    "usage": {
+      "prompt_tokens": 628,
+      "completion_tokens": 12,
+      "total_tokens": 640
+    },
+    "image_urls": [],
+    "audio_urls": [],
+    "video_urls": []
+  },
+  "canonicalOnly": true,
+  "hasInitializing": true,
+  "hasRunning": false,
+  "failure": "No backend AGENT_STATUS running event was observed during a real AutoByteus/LM Studio streaming turn; public status returned to idle while TURN_STARTED and SEGMENT_CONTENT were streaming.",
+  "compactTimeline": [
+    {
+      "dtMs": 3,
+      "type": "CONNECTED",
+      "payload": {
+        "agent_id": "nested_program_manager_agent_program_manager_8500",
+        "session_id": "99e6e527-d48f-474a-b359-29093c33055a"
+      }
+    },
+    {
+      "dtMs": 3,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    },
+    {
+      "dtMs": 314,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "initializing",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    },
+    {
+      "dtMs": 321,
+      "type": "TURN_STARTED",
+      "payload": {
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 321,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    },
+    {
+      "dtMs": 321,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    },
+    {
+      "dtMs": 1875,
+      "type": "SEGMENT_START",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "segment_type": "text",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 1876,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "ROUND",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 1900,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "3",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 1922,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "6",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2023,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "_STATUS",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "_",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "0",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "2",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "0",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "beb",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "9",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "SEGMENT_CONTENT",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "delta": "2",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "SEGMENT_END",
+      "payload": {
+        "id": "turn_eb3ee70a4bbc4a87b7f87da1255143ec:5e1077cbfbab4304bca880b3dabf490a",
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "ASSISTANT_COMPLETE",
+      "payload": {
+        "content": "ROUND36_STATUS_020beb92",
+        "usage": {
+          "prompt_tokens": 628,
+          "completion_tokens": 12,
+          "total_tokens": 640
+        },
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": []
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "TURN_COMPLETED",
+      "payload": {
+        "turn_id": "turn_0001"
+      }
+    },
+    {
+      "dtMs": 2024,
+      "type": "AGENT_STATUS",
+      "payload": {
+        "status": "idle",
+        "can_interrupt": false,
+        "agent_id": "nested_program_manager_agent_program_manager_8500"
+      }
+    }
+  ]
+}

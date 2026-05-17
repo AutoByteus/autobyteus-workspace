@@ -1,0 +1,356 @@
+===== Delivery Round 7 post-integration checks (2026-05-13T21:40:10+02:00) =====
+HEAD: d76f8ee80390
+origin/personal: b056b5f809da
+Command: git diff --check origin/personal...HEAD
+
+Command: pnpm -C autobyteus-server-ts exec vitest run focused backend suite
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/unit/services/team-communication/team-communication-service.test.ts > TeamCommunicationService > persists normalized team communication messages with child reference files by message id
+[team-communication] projection inserted teamRunId=team-1 messageId=message-1 senderRunId=sender-run-1 receiverRunId=receiver-run-1 referenceCount=1 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-communication-service-d4pD1d/agent_teams/team-1/team_communication_messages.json
+
+stdout | tests/unit/services/team-communication/team-communication-service.test.ts > TeamCommunicationService > does not derive references by scanning natural message content
+[team-communication] projection inserted teamRunId=team-1 messageId=message-with-prose-path senderRunId=sender-run-1 receiverRunId=receiver-run-1 referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-communication-service-mnnapm/agent_teams/team-1/team_communication_messages.json
+
+stdout | tests/unit/services/team-communication/team-communication-service.test.ts > TeamCommunicationService > persists represented-subteam metadata from canonical communication events
+[team-communication] projection inserted teamRunId=team-1 messageId=message-representative senderRunId=program-manager-run receiverRunId=review-lead-run referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-communication-service-FcWa5V/agent_teams/team-1/team_communication_messages.json
+
+stdout | tests/unit/services/team-communication/team-communication-service.test.ts > TeamCommunicationService > keys bridged child communication projections by the outer parent team run
+[team-communication] projection inserted teamRunId=team-parent messageId=message-child-internal senderRunId=review-lead-run receiverRunId=qa-run referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-communication-service-hwFur4/agent_teams/team-parent/team_communication_messages.json
+
+····stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:24833) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > connects through TeamRunService.resolveTeamRun and sends CONNECTED plus initial status
+Created agent session f425650f-6897-4846-9007-82841f986e3f for run team-1
+Agent Team WebSocket connected: session=f425650f-6897-4846-9007-82841f986e3f, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE via the service-resolved TeamRun subject
+Created agent session 09f29706-5768-4466-81a7-79cc7b826a89 for run team-1
+Agent Team WebSocket connected: session=09f29706-5768-4466-81a7-79cc7b826a89, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > restores and rebinds a team run before SEND_MESSAGE when the active subject was removed
+Created agent session 2658e1d5-64e2-417a-8f0b-2b5287919ce8 for run team-1
+Agent Team WebSocket connected: session=2658e1d5-64e2-417a-8f0b-2b5287919ce8, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps stop-generation active-only and does not restore a stopped team run
+Created agent session 8d700067-c1ea-4977-99f7-6a6cc451285b for run team-1
+Agent Team WebSocket connected: session=8d700067-c1ea-4977-99f7-6a6cc451285b, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps stop-generation active-only and does not restore a stopped team run
+Team websocket session '8d700067-c1ea-4977-99f7-6a6cc451285b' lost its active team subscription for run 'team-1'.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > resolves approval target names from TeamRun member context instead of manager state
+Created agent session bf21c683-c863-45fa-aca3-acf742d9ae34 for run team-1
+Agent Team WebSocket connected: session=bf21c683-c863-45fa-aca3-acf742d9ae34, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > registers the websocket connection for team-scoped live message broadcasts
+Created agent session ef1c0bc4-1d98-470c-a6db-b46fa852f2d2 for run team-1
+Agent Team WebSocket connected: session=ef1c0bc4-1d98-470c-a6db-b46fa852f2d2, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > coalesces metadata refresh work across a burst of streamed team events
+Created agent session 0122ec38-7626-4ab3-9d7f-fbafa2fa1d05 for run team-1
+Agent Team WebSocket connected: session=0122ec38-7626-4ab3-9d7f-fbafa2fa1d05, run=team-1
+
+···········stdout | tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:24880) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+··stdout | tests/unit/agent-team-execution/member-team-context-builder.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/member-team-context-builder.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:24884) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/member-team-context-builder.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+····stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:24886) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+···············
+
+ Test Files  8 passed (8)
+      Tests  36 passed (36)
+   Start at  21:40:11
+   Duration  7.49s (transform 2.50s, setup 70ms, import 6.31s, tests 59ms, environment 1ms)
+
+
+Command: pnpm -C autobyteus-web exec vitest run focused frontend suite
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web
+
+stdout | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/teamCommunicationStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·······stderr | components/workspace/team/__tests__/TeamCommunicationPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > marks team subscription state on connect and disconnect callbacks
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > reattaches lifecycle callbacks to the latest team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+····················
+
+ Test Files  3 passed (3)
+      Tests  27 passed (27)
+   Start at  21:40:21
+   Duration  3.75s (transform 2.33s, setup 4.22s, collect 2.38s, tests 85ms, environment 855ms, prepare 579ms)
+
+
+Command: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false
+
+Command: pnpm -C autobyteus-web audit:localization-literals
+
+> autobyteus@1.3.7 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:24968) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+All Delivery Round 7 post-integration checks passed (2026-05-13T21:40:29+02:00).
+
+===== Delivery Round 7 Electron artifact verification (2026-05-13T21:44:37+02:00) =====
+Command: ls -lh autobyteus-web/electron-dist
+total 1510928
+-rw-r--r--@ 1 normy  staff   358M May 13 21:43 AutoByteus_personal_macos-arm64-1.3.7.dmg
+-rw-r--r--@ 1 normy  staff   385K May 13 21:43 AutoByteus_personal_macos-arm64-1.3.7.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   356M May 13 21:44 AutoByteus_personal_macos-arm64-1.3.7.zip
+-rw-r--r--@ 1 normy  staff   374K May 13 21:44 AutoByteus_personal_macos-arm64-1.3.7.zip.blockmap
+-rw-r--r--@ 1 normy  staff   813B May 13 21:44 builder-debug.yml
+-rw-r--r--@ 1 normy  staff   551B May 13 21:44 latest-mac.yml
+drwxr-xr-x@ 3 normy  staff    96B May 13 21:41 mac-arm64
+
+Command: PlistBuddy app version/bundle id
+1.3.7
+1.3.7
+com.autobyteus.app
+
+Command: zip -T autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.zip
+test of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.zip OK
+
+Command: hdiutil verify autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.dmg
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $AD85A587
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $096CF9D3
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $E2E0E8AE
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $AE95A957
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $E2E0E8AE
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $EA7FF2BD
+Die überprüfte CRC32-Prüfsumme ist $8E03AE2B
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.dmg" is VALID
+
+Command: du -sh artifacts
+1.2G	autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+368M	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.dmg
+369M	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.zip
+388K	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.dmg.blockmap
+376K	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.7.zip.blockmap

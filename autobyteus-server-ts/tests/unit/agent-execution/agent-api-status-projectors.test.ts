@@ -8,15 +8,36 @@ import { projectCodexAgentStatus } from "../../../src/agent-execution/backends/c
 import { projectClaudeAgentStatus } from "../../../src/agent-execution/backends/claude/events/claude-status-projector.js";
 
 describe("agent API status projectors", () => {
-  it("normalizes the public startup-aware vocabulary with offline as the no-runtime fallback", () => {
+  it("normalizes only canonical and current persisted API status tokens", () => {
     expect(normalizeAgentApiStatus(undefined)).toBe("offline");
-    expect(normalizeAgentApiStatus("shutdown_complete")).toBe("offline");
-    expect(normalizeAgentApiStatus("bootstrapping")).toBe("initializing");
-    expect(normalizeAgentApiStatus("uninitialized")).toBe("initializing");
-    expect(normalizeAgentApiStatus("starting")).toBe("initializing");
+    expect(normalizeAgentApiStatus("offline")).toBe("offline");
+    expect(normalizeAgentApiStatus("initializing")).toBe("initializing");
     expect(normalizeAgentApiStatus("idle")).toBe("idle");
-    expect(normalizeAgentApiStatus("awaiting_llm_response")).toBe("running");
-    expect(normalizeAgentApiStatus("failed")).toBe("error");
+    expect(normalizeAgentApiStatus("running")).toBe("running");
+    expect(normalizeAgentApiStatus("error")).toBe("error");
+    expect(normalizeAgentApiStatus("ACTIVE")).toBe("running");
+    expect(normalizeAgentApiStatus("TERMINATED")).toBe("offline");
+  });
+
+  it("does not preserve removed lifecycle status tokens", () => {
+    for (const removedStatus of [
+      "uninitialized",
+      "bootstrapping",
+      "starting",
+      "startup",
+      "processing_user_input",
+      "awaiting_llm_response",
+      "awaiting_tool_approval",
+      "executing_tool",
+      "tool_denied",
+      "interrupting",
+      "shutting_down",
+      "shutdown_complete",
+      "failed",
+      "failure",
+    ]) {
+      expect(normalizeAgentApiStatus(removedStatus, "idle")).toBe("idle");
+    }
   });
 
   it("never allows can_interrupt outside running status", () => {
@@ -39,7 +60,7 @@ describe("agent API status projectors", () => {
     });
 
     expect(projectAutoByteusAgentStatus({
-      currentStatus: "uninitialized",
+      currentStatus: "initializing",
       context: { state: { activeTurn: {} } },
       isActive: true,
     })).toMatchObject({
@@ -48,9 +69,71 @@ describe("agent API status projectors", () => {
     });
   });
 
+  it("maps provider startup lifecycle tokens to canonical initializing inside provider projectors", () => {
+    for (const currentStatus of ["uninitialized", "bootstrapping", "starting", "startup"]) {
+      expect(projectAutoByteusAgentStatus({
+        currentStatus,
+        context: { state: { activeTurn: {} } },
+        isActive: true,
+      })).toMatchObject({
+        status: "initializing",
+        can_interrupt: false,
+      });
+    }
+
+    expect(projectCodexAgentStatus({
+      currentStatus: "starting",
+      activeTurnId: "turn-1",
+      isActive: true,
+    })).toMatchObject({
+      status: "initializing",
+      can_interrupt: false,
+    });
+
+    expect(projectClaudeAgentStatus({
+      currentStatus: "startup",
+      activeTurnId: "turn-1",
+      isActive: true,
+    })).toMatchObject({
+      status: "initializing",
+      can_interrupt: false,
+    });
+  });
+
+  it("does not map removed non-startup lifecycle tokens through provider status projectors", () => {
+    for (const currentStatus of ["interrupting", "shutting_down"]) {
+      expect(projectAutoByteusAgentStatus({
+        currentStatus,
+        context: { state: { activeTurn: {} } },
+        isActive: true,
+      })).toMatchObject({
+        status: "idle",
+        can_interrupt: false,
+      });
+    }
+
+    expect(projectCodexAgentStatus({
+      currentStatus: "awaiting_llm_response",
+      activeTurnId: "turn-1",
+      isActive: true,
+    })).toMatchObject({
+      status: "idle",
+      can_interrupt: false,
+    });
+
+    expect(projectClaudeAgentStatus({
+      currentStatus: "failed",
+      activeTurnId: "turn-1",
+      isActive: true,
+    })).toMatchObject({
+      status: "idle",
+      can_interrupt: false,
+    });
+  });
+
   it("maps inactive runtime snapshots to offline", () => {
     expect(projectAutoByteusAgentStatus({
-      currentStatus: "processing_user_input",
+      currentStatus: "running",
       context: { state: { activeTurn: {} } },
       isActive: false,
     })).toMatchObject({

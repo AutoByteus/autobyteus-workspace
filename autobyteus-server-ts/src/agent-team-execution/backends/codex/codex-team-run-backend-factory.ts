@@ -58,7 +58,7 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
   ): TeamRunContext<CodexTeamRunContext> {
     const memberConfigs = this.toTeamMemberRunConfigs(config, teamRunId);
     const runtimeContext = new CodexTeamRunContext({
-      coordinatorMemberRouteKey: null,
+      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberContexts: memberConfigs.map(
         (memberConfig) => {
           const memberRunId =
@@ -66,6 +66,7 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
             buildTeamMemberRunId(teamRunId, memberConfig.memberRouteKey ?? memberConfig.memberName);
           return new CodexTeamMemberContext({
             memberName: memberConfig.memberName,
+            memberPath: memberConfig.memberPath,
             memberRouteKey: memberConfig.memberRouteKey ?? memberConfig.memberName,
             memberRunId,
             agentRunConfig: new AgentRunConfig({
@@ -87,10 +88,13 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
     return new TeamRunContext({
       runId: teamRunId,
       teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
-      coordinatorMemberName: null,
+      coordinatorMemberName: config.coordinatorMemberName,
+      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       config: new TeamRunConfig({
         teamDefinitionId: config.teamDefinitionId,
         teamBackendKind: TeamBackendKind.CODEX_APP_SERVER,
+        coordinatorMemberName: config.coordinatorMemberName,
+        coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
         memberConfigs,
       }),
       runtimeContext,
@@ -112,7 +116,9 @@ export class CodexTeamRunBackendFactory implements TeamRunBackendFactory {
       const memberRunId =
         memberConfig.memberRunId?.trim() || buildTeamMemberRunId(teamRunId, memberRouteKey);
       return {
+        memberKind: "agent",
         memberName: memberConfig.memberName,
+        memberPath: memberConfig.memberPath,
         memberRouteKey,
         memberRunId,
         memoryDir:

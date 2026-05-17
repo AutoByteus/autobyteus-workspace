@@ -58,6 +58,9 @@ describe("TeamCommunicationService", () => {
           },
         } as TeamRunEvent);
       },
+      emitTeamEvent(event: TeamRunEvent) {
+        listener?.(event);
+      },
     };
   };
 
@@ -155,6 +158,132 @@ describe("TeamCommunicationService", () => {
       expect.objectContaining({
         messageId: "message-with-prose-path",
         referenceFiles: [],
+      }),
+    ]);
+  });
+
+  it("persists represented-subteam metadata from canonical communication events", async () => {
+    const memoryDir = await createTempDir();
+    const service = new TeamCommunicationService({ memoryDir });
+    const { teamRun, emitTeamEvent } = createFakeTeamRun("team-1");
+    service.attachToTeamRun(teamRun);
+
+    emitTeamEvent({
+      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+      teamRunId: "team-1",
+      sourcePath: ["program_manager"],
+      data: {
+        messageId: "message-representative",
+        teamRunId: "team-1",
+        sender: {
+          memberKind: "agent",
+          memberName: "program_manager",
+          memberPath: ["program_manager"],
+          memberRouteKey: "program_manager",
+          memberRunId: "program-manager-run",
+          address: {
+            teamRunId: "team-1",
+            memberPath: ["program_manager"],
+            memberRouteKey: "program_manager",
+          },
+        },
+        receiver: {
+          memberKind: "agent",
+          memberName: "review_lead",
+          memberPath: ["BuildSquad", "review_lead"],
+          memberRouteKey: "BuildSquad/review_lead",
+          memberRunId: "review-lead-run",
+          address: {
+            teamRunId: "team-1",
+            memberPath: ["BuildSquad", "review_lead"],
+            memberRouteKey: "BuildSquad/review_lead",
+          },
+          representedSubTeam: {
+            memberKind: "agent_team",
+            memberName: "BuildSquad",
+            memberPath: ["BuildSquad"],
+            memberRouteKey: "BuildSquad",
+            memberRunId: "build-squad-run",
+            teamDefinitionId: "build-squad-team",
+            address: {
+              teamRunId: "team-1",
+              memberPath: ["BuildSquad"],
+              memberRouteKey: "BuildSquad",
+            },
+          },
+        },
+        content: "Please coordinate this build.",
+        messageType: "assignment",
+        referenceFiles: [],
+        createdAt: "2026-04-08T00:00:01.000Z",
+      },
+    });
+
+    const projection = await service.getProjectionForTeamRun(teamRun);
+    expect(projection.messages).toEqual([
+      expect.objectContaining({
+        messageId: "message-representative",
+        receiverMemberKind: "agent",
+        receiverMemberRouteKey: "BuildSquad/review_lead",
+        receiverRepresentedSubTeam: expect.objectContaining({
+          memberName: "BuildSquad",
+          memberRouteKey: "BuildSquad",
+        }),
+      }),
+    ]);
+  });
+
+  it("keys bridged child communication projections by the outer parent team run", async () => {
+    const memoryDir = await createTempDir();
+    const service = new TeamCommunicationService({ memoryDir });
+    const { teamRun, emitTeamEvent } = createFakeTeamRun("team-parent");
+    service.attachToTeamRun(teamRun);
+
+    emitTeamEvent({
+      eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+      teamRunId: "team-parent",
+      sourcePath: ["BuildSquad", "review_lead"],
+      data: {
+        messageId: "message-child-internal",
+        teamRunId: "team-child",
+        sender: {
+          memberKind: "agent",
+          memberName: "review_lead",
+          memberPath: ["BuildSquad", "review_lead"],
+          memberRouteKey: "BuildSquad/review_lead",
+          memberRunId: "review-lead-run",
+          address: {
+            teamRunId: "team-parent",
+            memberPath: ["BuildSquad", "review_lead"],
+            memberRouteKey: "BuildSquad/review_lead",
+          },
+        },
+        receiver: {
+          memberKind: "agent",
+          memberName: "qa_specialist",
+          memberPath: ["BuildSquad", "qa_specialist"],
+          memberRouteKey: "BuildSquad/qa_specialist",
+          memberRunId: "qa-run",
+          address: {
+            teamRunId: "team-parent",
+            memberPath: ["BuildSquad", "qa_specialist"],
+            memberRouteKey: "BuildSquad/qa_specialist",
+          },
+        },
+        content: "Please test this.",
+        messageType: "child_internal",
+        referenceFiles: [],
+        createdAt: "2026-04-08T00:00:02.000Z",
+      },
+    });
+
+    const parentProjection = await service.getProjectionForTeamRun(teamRun);
+    expect(parentProjection.messages).toEqual([
+      expect.objectContaining({
+        messageId: "message-child-internal",
+        teamRunId: "team-parent",
+        senderMemberRouteKey: "BuildSquad/review_lead",
+        receiverMemberRouteKey: "BuildSquad/qa_specialist",
       }),
     ]);
   });

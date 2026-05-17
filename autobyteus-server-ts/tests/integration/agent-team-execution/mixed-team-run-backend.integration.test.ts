@@ -4,7 +4,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { MixedTeamRunBackend } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-backend.js";
 import {
-  MixedTeamMemberContext,
+  MixedAgentMemberContext,
   MixedTeamRunContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -56,15 +56,17 @@ const createBackendContext = () => {
     runtimeContext: new MixedTeamRunContext({
       coordinatorMemberRouteKey: "coord-route",
       memberContexts: [
-        new MixedTeamMemberContext({
+        new MixedAgentMemberContext({
           memberName: "Coordinator",
+          memberPath: ["Coordinator"],
           memberRouteKey: "coord-route",
           memberRunId: "coord-run",
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           platformAgentRunId: "thread-coord-1",
         }),
-        new MixedTeamMemberContext({
+        new MixedAgentMemberContext({
           memberName: "Reviewer",
+          memberPath: ["Reviewer"],
           memberRouteKey: "reviewer-route",
           memberRunId: "reviewer-run",
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
@@ -122,35 +124,57 @@ describe("MixedTeamRunBackend integration", () => {
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
 
     const userMessage = new AgentInputUserMessage("coordinate the mixed task");
-    await expect(backend.postMessage(userMessage, "  Coordinator  ")).resolves.toEqual({
+    await expect(
+      backend.postMessage(userMessage, { kind: "route_key", memberRouteKey: "coord-route" }),
+    ).resolves.toEqual({
       accepted: true,
     });
-    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, "Coordinator");
+    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, {
+      kind: "route_key",
+      memberRouteKey: "coord-route",
+    });
 
     await expect(
       backend.deliverInterAgentMessage({
         senderRunId: "coord-run",
+        senderSelector: { kind: "route_key", memberRouteKey: "coord-route" },
         senderMemberName: "Coordinator",
+        senderPath: ["Coordinator"],
+        senderRouteKey: "coord-route",
         teamRunId: "team-mixed-1",
+        recipientSelector: { kind: "route_key", memberRouteKey: "reviewer-route" },
         recipientMemberName: "Reviewer",
+        recipientPath: ["Reviewer"],
+        recipientRouteKey: "reviewer-route",
         content: "Please continue.",
         messageType: "agent_message",
       }),
     ).resolves.toEqual({ accepted: true });
     expect(manager.deliverInterAgentMessage).toHaveBeenCalledWith({
       senderRunId: "coord-run",
+      senderSelector: { kind: "route_key", memberRouteKey: "coord-route" },
       senderMemberName: "Coordinator",
+      senderPath: ["Coordinator"],
+      senderRouteKey: "coord-route",
       teamRunId: "team-mixed-1",
+      recipientSelector: { kind: "route_key", memberRouteKey: "reviewer-route" },
       recipientMemberName: "Reviewer",
+      recipientPath: ["Reviewer"],
+      recipientRouteKey: "reviewer-route",
       content: "Please continue.",
       messageType: "agent_message",
     });
 
     await expect(
-      backend.approveToolInvocation("Reviewer", "inv-1", true, "approved"),
+      backend.approveToolInvocation(
+        { kind: "route_key", memberRouteKey: "reviewer-route" },
+        "inv-1",
+        true,
+        "approved",
+      ),
     ).resolves.toEqual({ accepted: true });
     expect(manager.approveToolInvocation).toHaveBeenCalledWith(
-      "Reviewer",
+      { kind: "route_key", memberRouteKey: "reviewer-route" },
       "inv-1",
       true,
       "approved",
@@ -178,7 +202,10 @@ describe("MixedTeamRunBackend integration", () => {
     manager.setActive(false);
 
     await expect(
-      backend.postMessage(new AgentInputUserMessage("hello"), "Coordinator"),
+      backend.postMessage(
+        new AgentInputUserMessage("hello"),
+        { kind: "route_key", memberRouteKey: "coord-route" },
+      ),
     ).resolves.toMatchObject({
       accepted: false,
       code: "RUN_NOT_FOUND",
@@ -186,8 +213,15 @@ describe("MixedTeamRunBackend integration", () => {
     await expect(
       backend.deliverInterAgentMessage({
         senderRunId: "coord-run",
+        senderSelector: { kind: "route_key", memberRouteKey: "coord-route" },
+        senderMemberName: "Coordinator",
+        senderPath: ["Coordinator"],
+        senderRouteKey: "coord-route",
         teamRunId: "team-mixed-1",
+        recipientSelector: { kind: "route_key", memberRouteKey: "reviewer-route" },
         recipientMemberName: "Reviewer",
+        recipientPath: ["Reviewer"],
+        recipientRouteKey: "reviewer-route",
         content: "hello",
       }),
     ).resolves.toMatchObject({
@@ -195,7 +229,11 @@ describe("MixedTeamRunBackend integration", () => {
       code: "RUN_NOT_FOUND",
     });
     await expect(
-      backend.approveToolInvocation("Reviewer", "inv-1", true),
+      backend.approveToolInvocation(
+        { kind: "route_key", memberRouteKey: "reviewer-route" },
+        "inv-1",
+        true,
+      ),
     ).resolves.toMatchObject({
       accepted: false,
       code: "RUN_NOT_FOUND",
@@ -223,9 +261,12 @@ describe("MixedTeamRunBackend integration", () => {
     manager.emit({
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: "team-mixed-1",
+      sourcePath: ["Coordinator"],
       data: {
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         memberName: "Coordinator",
+        memberPath: ["Coordinator"],
+        memberRouteKey: "coord-route",
         memberRunId: "coord-run",
         agentEvent: {
           eventType: AgentRunEventType.SEGMENT_CONTENT,
@@ -243,8 +284,11 @@ describe("MixedTeamRunBackend integration", () => {
     expect(observed[0]).toMatchObject({
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: "team-mixed-1",
+      sourcePath: ["Coordinator"],
       data: {
         memberName: "Coordinator",
+        memberPath: ["Coordinator"],
+        memberRouteKey: "coord-route",
         memberRunId: "coord-run",
         agentEvent: {
           eventType: AgentRunEventType.SEGMENT_CONTENT,
@@ -256,6 +300,7 @@ describe("MixedTeamRunBackend integration", () => {
     manager.emit({
       eventSourceType: TeamRunEventSourceType.TEAM,
       teamRunId: "team-mixed-1",
+      sourcePath: [],
       data: {
         status: "idle",
       },

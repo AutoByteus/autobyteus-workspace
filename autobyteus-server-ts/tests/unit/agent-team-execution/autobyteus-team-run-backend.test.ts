@@ -16,8 +16,11 @@ const buildAgentEvent = (
     runtimeKind: RuntimeKind.AUTOBYTEUS,
     memberName: "Worker",
     memberRunId: "member-run-1",
+    memberPath: ["Worker"],
+    memberRouteKey: "Worker",
     agentEvent,
   },
+  sourcePath: ["Worker"],
 });
 
 describe("AutoByteusTeamRunBackend", () => {
@@ -90,6 +93,100 @@ describe("AutoByteusTeamRunBackend", () => {
       data: {
         status: "running",
       },
+    });
+  });
+
+  it("keeps aggregate team status running during active member events until member completion", () => {
+    const backend = new AutoByteusTeamRunBackend({
+      teamId: "team-1",
+      currentStatus: "idle",
+      context: {
+        agents: [{
+          agentId: "native-member-run-1",
+          currentStatus: "idle",
+          context: {
+            config: {
+              name: "Worker",
+            },
+          },
+        }],
+      },
+    } as any, {
+      isActive: () => true,
+      removeTeamRun: vi.fn(),
+    });
+    const publishedEvents: TeamRunEvent[] = [];
+    (backend as any).listeners.add((event: TeamRunEvent) => {
+      publishedEvents.push(event);
+    });
+
+    (backend as any).fanOutProcessedEvents([
+      buildAgentEvent({
+        eventType: AgentRunEventType.AGENT_STATUS,
+        runId: "member-run-1",
+        payload: {
+          status: "running",
+          can_interrupt: false,
+          agent_id: "member-run-1",
+          agent_name: "Worker",
+        },
+        statusHint: "ACTIVE",
+      }),
+    ]);
+    expect((publishedEvents.at(-1)?.data as any).status).toBe("running");
+
+    publishedEvents.length = 0;
+    (backend as any).fanOutProcessedEvents([{
+      eventSourceType: TeamRunEventSourceType.TEAM,
+      teamRunId: "team-1",
+      sourcePath: [],
+      data: { status: "idle" },
+    } satisfies TeamRunEvent]);
+
+    expect(publishedEvents).toHaveLength(1);
+    expect(publishedEvents[0]).toMatchObject({
+      eventSourceType: TeamRunEventSourceType.TEAM,
+      data: { status: "running" },
+    });
+
+    publishedEvents.length = 0;
+    (backend as any).fanOutProcessedEvents([
+      buildAgentEvent({
+        eventType: AgentRunEventType.ASSISTANT_COMPLETE,
+        runId: "member-run-1",
+        payload: { content: "done" },
+        statusHint: null,
+      }),
+    ]);
+
+    expect(publishedEvents).toHaveLength(1);
+    expect(publishedEvents[0]).toMatchObject({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      data: {
+        agentEvent: {
+          eventType: AgentRunEventType.ASSISTANT_COMPLETE,
+        },
+      },
+    });
+
+    publishedEvents.length = 0;
+    (backend as any).fanOutProcessedEvents([
+      buildAgentEvent({
+        eventType: AgentRunEventType.AGENT_STATUS,
+        runId: "member-run-1",
+        payload: {
+          status: "idle",
+          can_interrupt: false,
+          agent_id: "member-run-1",
+          agent_name: "Worker",
+        },
+        statusHint: "IDLE",
+      }),
+    ]);
+
+    expect(publishedEvents.at(-1)).toMatchObject({
+      eventSourceType: TeamRunEventSourceType.TEAM,
+      data: { status: "idle" },
     });
   });
 });

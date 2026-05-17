@@ -22,6 +22,10 @@ type StatusPayload = {
   can_interrupt: boolean;
   agent_id?: string;
   agent_name?: string;
+  member_route_key?: string;
+  member_path?: string[];
+  source_route_key?: string;
+  source_path?: string[];
 };
 
 type WsMessage = {
@@ -208,12 +212,20 @@ class FakeTeamRun {
         can_interrupt: true,
         agent_id: "member-writer-1",
         agent_name: "writer",
+        member_route_key: "writer",
+        member_path: ["writer"],
+        source_route_key: "writer",
+        source_path: ["writer"],
       },
       {
         status: "idle",
         can_interrupt: false,
         agent_id: "member-reviewer-1",
         agent_name: "reviewer",
+        member_route_key: "reviewer",
+        member_path: ["reviewer"],
+        source_route_key: "reviewer",
+        source_path: ["reviewer"],
       },
     ];
   }
@@ -438,8 +450,8 @@ describe("Agent status websocket contract integration", () => {
       stream.push({
         runId: run.runId,
         eventType: AgentRunEventType.AGENT_STATUS,
-        payload: { status: "BOOTSTRAPPING", can_interrupt: true },
-        statusHint: "ACTIVE",
+        payload: { status: "initializing", can_interrupt: true },
+        statusHint: null,
       });
 
       const liveInitializing = await waitForBufferedMessage(messages, cursor++);
@@ -499,6 +511,10 @@ describe("Agent status websocket contract integration", () => {
           can_interrupt: true,
           agent_id: "member-writer-1",
           agent_name: "writer",
+          member_route_key: "writer",
+          member_path: ["writer"],
+          source_route_key: "writer",
+          source_path: ["writer"],
         },
       });
       expectNoLegacyStatusFields(writerStatus.payload);
@@ -511,6 +527,10 @@ describe("Agent status websocket contract integration", () => {
           can_interrupt: false,
           agent_id: "member-reviewer-1",
           agent_name: "reviewer",
+          member_route_key: "reviewer",
+          member_path: ["reviewer"],
+          source_route_key: "reviewer",
+          source_path: ["reviewer"],
         },
       });
       expectNoLegacyStatusFields(reviewerStatus.payload);
@@ -518,7 +538,7 @@ describe("Agent status websocket contract integration", () => {
       const teamStatus = await waitForBufferedMessage(messages, cursor++);
       expect(teamStatus).toEqual({
         type: "TEAM_STATUS",
-        payload: { status: "running" },
+        payload: { status: "running", source_path: [] },
       });
       expect(teamStatus.payload).not.toHaveProperty("can_interrupt");
       expectNoLegacyStatusFields(teamStatus.payload);
@@ -531,7 +551,7 @@ describe("Agent status websocket contract integration", () => {
       const liveTeamStatus = await waitForBufferedMessage(messages, cursor++);
       expect(liveTeamStatus).toEqual({
         type: "TEAM_STATUS",
-        payload: { status: "error" },
+        payload: { status: "error", source_path: [] },
       });
       expect(liveTeamStatus.payload).not.toHaveProperty("can_interrupt");
       expectNoLegacyStatusFields(liveTeamStatus.payload);
@@ -551,12 +571,20 @@ describe("Agent status websocket contract integration", () => {
           can_interrupt: false,
           agent_id: "member-writer-1",
           agent_name: "writer",
+          member_route_key: "writer",
+          member_path: ["writer"],
+          source_route_key: "writer",
+          source_path: ["writer"],
         },
         {
           status: "offline",
           can_interrupt: false,
           agent_id: "member-reviewer-1",
           agent_name: "reviewer",
+          member_route_key: "reviewer",
+          member_path: ["reviewer"],
+          source_route_key: "reviewer",
+          source_path: ["reviewer"],
         },
       ],
     });
@@ -597,6 +625,10 @@ describe("Agent status websocket contract integration", () => {
           can_interrupt: false,
           agent_id: "member-writer-1",
           agent_name: "writer",
+          member_route_key: "writer",
+          member_path: ["writer"],
+          source_route_key: "writer",
+          source_path: ["writer"],
         },
       });
       expectNoLegacyStatusFields(writerStatus.payload);
@@ -609,6 +641,10 @@ describe("Agent status websocket contract integration", () => {
           can_interrupt: false,
           agent_id: "member-reviewer-1",
           agent_name: "reviewer",
+          member_route_key: "reviewer",
+          member_path: ["reviewer"],
+          source_route_key: "reviewer",
+          source_path: ["reviewer"],
         },
       });
       expectNoLegacyStatusFields(reviewerStatus.payload);
@@ -616,22 +652,25 @@ describe("Agent status websocket contract integration", () => {
       const teamSnapshot = await waitForBufferedMessage(messages, cursor++);
       expect(teamSnapshot).toEqual({
         type: "TEAM_STATUS",
-        payload: { status: "initializing" },
+        payload: { status: "initializing", source_path: [] },
       });
       expectNoLegacyStatusFields(teamSnapshot.payload);
 
       stream.push({
         teamRunId: teamRun.runId,
         eventSourceType: TeamRunEventSourceType.AGENT,
+        sourcePath: ["reviewer"],
         data: {
           runtimeKind: RuntimeKind.AUTOBYTEUS,
           memberName: "reviewer",
           memberRunId: "member-reviewer-1",
+          memberPath: ["reviewer"],
+          memberRouteKey: "reviewer",
           agentEvent: {
             runId: "member-reviewer-1",
             eventType: AgentRunEventType.AGENT_STATUS,
-            payload: { status: "STARTING", can_interrupt: true },
-            statusHint: "ACTIVE",
+            payload: { status: "initializing", can_interrupt: true },
+            statusHint: null,
           },
         },
       });
@@ -644,6 +683,10 @@ describe("Agent status websocket contract integration", () => {
           can_interrupt: false,
           agent_name: "reviewer",
           agent_id: "member-reviewer-1",
+          member_route_key: "reviewer",
+          member_path: ["reviewer"],
+          source_route_key: "reviewer",
+          source_path: ["reviewer"],
         },
       });
       expectNoLegacyStatusFields(liveMemberInitializing.payload);
@@ -651,13 +694,14 @@ describe("Agent status websocket contract integration", () => {
       stream.push({
         teamRunId: teamRun.runId,
         eventSourceType: TeamRunEventSourceType.TEAM,
+        sourcePath: [],
         data: { status: "initializing" },
       });
 
       const liveTeamInitializing = await waitForBufferedMessage(messages, cursor++);
       expect(liveTeamInitializing).toEqual({
         type: "TEAM_STATUS",
-        payload: { status: "initializing" },
+        payload: { status: "initializing", source_path: [] },
       });
       expectNoLegacyStatusFields(liveTeamInitializing.payload);
     } finally {

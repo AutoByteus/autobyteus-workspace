@@ -272,6 +272,70 @@ describe("AgentRunViewProjectionService", () => {
     ]);
   });
 
+  it("deduplicates timestamped/null local replay duplicate rows", async () => {
+    const memoryDir = await createTempMemoryDir();
+    const runId = "run-local-duplicate-rows";
+    const localProvider = createProvider(
+      vi.fn(async (input) => ({
+        runId: input.source.runId,
+        conversation: [
+          { kind: "message", role: "user", content: "inbound child prompt", ts: null },
+          { kind: "message", role: "user", content: "inbound child prompt", ts: 100 },
+          { kind: "message", role: "assistant", content: "child reply", ts: null },
+          { kind: "message", role: "assistant", content: "child reply", ts: 101 },
+        ],
+        activities: [],
+        summary: "inbound child prompt",
+        lastActivityAt: "1970-01-01T00:01:41.000Z",
+      })),
+    );
+
+    const service = new AgentRunViewProjectionService(memoryDir, {
+      localProjectionProvider: localProvider,
+    });
+
+    const projection = await service.getProjectionFromMetadata({
+      runId,
+      metadata: createMetadata(RuntimeKind.CODEX_APP_SERVER, runId),
+    });
+
+    expect(projection.conversation).toEqual([
+      { kind: "message", role: "user", content: "inbound child prompt", ts: 100 },
+      { kind: "message", role: "assistant", content: "child reply", ts: 101 },
+    ]);
+  });
+
+  it("preserves repeated no-id no-timestamp local replay rows", async () => {
+    const memoryDir = await createTempMemoryDir();
+    const runId = "run-repeated-no-timestamp";
+    const localProvider = createProvider(
+      vi.fn(async (input) => ({
+        runId: input.source.runId,
+        conversation: [
+          { kind: "message", role: "user", content: "repeat this", ts: null },
+          { kind: "message", role: "user", content: "repeat this", ts: null },
+        ],
+        activities: [],
+        summary: "repeat this",
+        lastActivityAt: null,
+      })),
+    );
+
+    const service = new AgentRunViewProjectionService(memoryDir, {
+      localProjectionProvider: localProvider,
+    });
+
+    const projection = await service.getProjectionFromMetadata({
+      runId,
+      metadata: createMetadata(RuntimeKind.AUTOBYTEUS, runId),
+    });
+
+    expect(projection.conversation).toEqual([
+      { kind: "message", role: "user", content: "repeat this", ts: null },
+      { kind: "message", role: "user", content: "repeat this", ts: null },
+    ]);
+  });
+
   it("returns deterministic empty projection when the local replay provider fails", async () => {
     const memoryDir = await createTempMemoryDir();
     const runId = "run-local-provider-fails";

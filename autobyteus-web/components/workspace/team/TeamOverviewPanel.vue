@@ -85,8 +85,10 @@
       <TeamCommunicationPanel
         v-show="isMessagesExpanded"
         :team-run-id="activeTeamContext?.teamRunId || ''"
-        :focused-member-run-id="focusedMemberContext?.state.runId || ''"
-        :focused-member-name="focusedMemberName"
+        :focused-member-run-id="focusedMemberCommunicationRunId"
+        :focused-member-route-key="focusedMemberCommunicationRouteKey"
+        :focused-member-path="focusedMemberCommunicationPath"
+        :focused-member-kind="focusedMemberCommunicationKind"
         class="min-h-0 flex-1"
       />
     </section>
@@ -105,12 +107,22 @@ const teamCommunicationStore = useTeamCommunicationStore();
 const expandedSection = ref<'taskPlan' | 'messages' | null>('messages');
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const focusedMemberContext = computed(() => teamContextsStore.focusedMemberContext);
-const focusedMemberName = computed(() => activeTeamContext.value?.focusedMemberName || null);
+const focusedMemberNode = computed(() => teamContextsStore.focusedMemberNode);
+const focusedMemberCommunicationRunId = computed(() => (
+  focusedMemberContext.value?.state.runId || focusedMemberNode.value?.memberRunId || ''
+));
+const focusedMemberCommunicationRouteKey = computed(() => focusedMemberNode.value?.memberRouteKey || '');
+const focusedMemberCommunicationPath = computed(() => focusedMemberNode.value?.memberPath || []);
+const focusedMemberCommunicationKind = computed(() => focusedMemberNode.value?.memberKind || null);
 const taskCount = computed(() => activeTeamContext.value?.taskPlan?.length ?? 0);
 const messageCount = computed(() => {
   const teamRunId = activeTeamContext.value?.teamRunId || '';
-  const memberRunId = focusedMemberContext.value?.state.runId || '';
-  return teamCommunicationStore.getPerspectiveForMember(teamRunId, memberRunId).messages.length;
+  return teamCommunicationStore.getPerspectiveForMember(teamRunId, {
+    memberRunId: focusedMemberCommunicationRunId.value,
+    memberRouteKey: focusedMemberCommunicationRouteKey.value,
+    memberPath: focusedMemberCommunicationPath.value,
+    memberKind: focusedMemberCommunicationKind.value,
+  }).messages.length;
 });
 const isTaskPlanExpanded = computed(() => expandedSection.value === 'taskPlan');
 const isMessagesExpanded = computed(() => expandedSection.value === 'messages');

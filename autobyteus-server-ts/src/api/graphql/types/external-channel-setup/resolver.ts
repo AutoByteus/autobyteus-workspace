@@ -104,7 +104,8 @@ export class ExternalChannelSetupResolver {
         teamDefinitionId: targetTeamDefinitionId,
         teamLaunchPreset: normalizeTeamLaunchPreset(input.teamLaunchPreset),
         teamRunId: null,
-        targetNodeName: null,
+        targetMemberRouteKey: normalizeOptionalString(input.targetMemberRouteKey ?? null),
+        targetMemberPath: normalizeMemberPathInput(input.targetMemberPath ?? null),
       });
 
       return toGraphqlBinding(binding);
@@ -195,4 +196,14 @@ const normalizeTeamLaunchPreset = (
     skillAccessMode: input.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
     llmConfig: input.llmConfig ?? null,
   };
+};
+
+const normalizeMemberPathInput = (
+  value: readonly string[] | null | undefined,
+): string[] | null => {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+  const path = value.map((segment) => normalizeOptionalString(segment)).filter(Boolean) as string[];
+  return path.length > 0 ? path : null;
 };

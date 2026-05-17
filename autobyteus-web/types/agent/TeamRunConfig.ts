@@ -20,6 +20,7 @@ export interface TeamRunConfig {
   llmConfig?: Record<string, unknown> | null
   autoExecuteTools: boolean
   skillAccessMode: SkillAccessMode
+  /** Member overrides keyed by canonical member route key. */
   memberOverrides: Record<string, MemberConfigOverride>
   isLocked: boolean
 }

@@ -253,11 +253,12 @@
 
               <div v-if="state.isTeamExpanded(team.teamRunId)" class="ml-3 space-y-0.5">
                 <button
-                  v-for="member in team.members"
+                  v-for="member in flattenTeamMembers(team)"
                   :key="member.memberRouteKey"
                   type="button"
                   class="flex w-full items-center justify-between rounded-md px-2 py-1 text-left text-sm transition-colors"
-                  :class="member.memberRouteKey === team.focusedMemberName ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
+                  :class="member.memberRouteKey === team.focusedMemberRouteKey ? 'bg-indigo-50 text-indigo-900' : 'text-gray-600 hover:bg-gray-50'"
+                  :style="{ marginLeft: `${member.memberPath.length > 1 ? 12 : 0}px` }"
                   :data-test="`workspace-team-member-${team.teamRunId}-${member.memberRouteKey}`"
                   @click="actions.onSelectTeamMember(member)"
                 >
@@ -278,7 +279,11 @@
                       >
                       <span v-else>{{ avatars.getTeamMemberInitials(member) }}</span>
                     </span>
-                    <span class="truncate">{{ avatars.getTeamMemberDisplayName(member) }}</span>
+                    <span class="truncate">{{ member.displayName || avatars.getTeamMemberDisplayName(member) }}</span>
+                    <span
+                      v-if="member.memberKind === 'agent_team'"
+                      class="ml-1 rounded bg-slate-100 px-1 text-[0.625rem] font-semibold uppercase tracking-wide text-slate-500"
+                    >Team</span>
                   </div>
                   <span class="ml-2 text-xs text-gray-400">
                     {{ state.formatRelativeTime(team.lastActivityAt) }}
@@ -413,6 +418,12 @@ const groupedTeamDefinitions = computed<TeamDefinitionGroup[]>(() => {
   }
   return buildDisplayGroupsFromHistory(props.workspaceTeamHistoryGroups, props.workspaceTeams);
 });
+
+const flattenTeamMembers = (team: TeamTreeNode): TeamTreeNode['members'] => {
+  const flatten = (members: TeamTreeNode['memberTree']): TeamTreeNode['members'] =>
+    members.flatMap((member) => [member, ...flatten(member.children)]);
+  return flatten(team.memberTree.length > 0 ? team.memberTree : team.members);
+};
 
 const isTeamDefinitionExpanded = (groupKey: string): boolean =>
   expandedTeamDefinitions.value[groupKey] ?? true;

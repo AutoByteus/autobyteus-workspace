@@ -121,7 +121,30 @@ Content route ownership stays split:
 
 The focused frontend member decides whether a message is shown in the sent or
 received Team Communication perspective; sender/receiver identity is metadata on
-the message, not a receiver-owned route or projection owner.
+the message, not a receiver-owned route or projection owner. For represented
+subteam communication, `represented_sub_team` / `representedSubTeam` metadata
+travels with the sender or receiver participant so parent-to-representative and
+upward-report rows can display the responsible subteam while preserving the
+actual leaf path.
+
+Team events expose path-aware member identity:
+
+- `source_path` is the canonical event source path for nested teams.
+- `source_route_key` is the slash-delimited normalized form of `source_path`.
+- agent-sourced events also carry `member_path` and `member_route_key` for the
+  producing member.
+- `sub_team_node_name` is a deprecated display alias only and must not be used
+  as routing identity.
+
+Team member input is also emitted explicitly. When a user or inter-agent
+delivery is accepted for a concrete leaf member, the backend emits a
+`MEMBER_INPUT` team event and the WebSocket adapter forwards it as
+`EXTERNAL_USER_MESSAGE` for that member. The payload includes `message_id`,
+`dedupe_key`, `input_origin`, recipient member path/route identity, optional
+sender path/route identity, and context-file locators. This keeps child team
+transcripts truthful: an inbound parent-to-subteam prompt is rendered in the
+child coordinator transcript before the child assistant reply instead of being
+reconstructed from Team Communication rows after the fact.
 
 ## Connection And Command Recovery Contract
 
@@ -132,7 +155,24 @@ Connection establishment is restore-aware:
 3. If no active runtime exists, the service attempts to restore the persisted run.
 4. The handler creates a WebSocket session only after it has a runtime subject and can subscribe to that subject's event stream.
 
-`SEND_MESSAGE` follows the same restore-aware boundary. On every follow-up chat message, the handler resolves the session's run again, rebinds the WebSocket subscription if a stopped persisted run was restored, and posts the user input to the resolved runtime subject. For team runs, the payload's `target_member_name` / `target_agent_name` remains the member routing key for the restored team runtime.
+`SEND_MESSAGE` follows the same restore-aware boundary. On every follow-up chat
+message, the handler resolves the session's run again, rebinds the WebSocket
+subscription if a stopped persisted run was restored, and posts the user input
+to the resolved runtime subject.
+
+For team runs, the command target is a `TeamMemberSelector` normalized at the
+WebSocket edge from explicit path/route fields only:
+
+- `target_member_path` / `targetMemberPath`: array of path segments, for
+  example `["research", "writer"]`
+- `target_member_route_key` / `targetMemberRouteKey`: normalized route key, for
+  example `research/writer`
+
+Scalar command target aliases are not accepted. Payloads containing
+`target_member_name`, `targetMemberName`, `target_agent_name`,
+`targetAgentName`, command-side `agent_name`, command-side `agentName`,
+command-side `agent_id`, command-side `agentId`, or `member_name`/`memberName`
+as a target must fail with an invalid-target response.
 
 Control commands remain active-only:
 
@@ -142,14 +182,31 @@ Control commands remain active-only:
 
 Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat interrupt/approval messages as a way to resume a stopped run; stopped-run recovery is owned by connection setup, explicit restore mutations, and `SEND_MESSAGE`.
 
+Tool approval and denial target the agent that produced the pending approval
+request. Preferred team payload identity is the source identity emitted with the
+event:
+
+- `source_path` / `sourcePath`, `member_path` / `memberPath`, or
+  `target_member_path` / `targetMemberPath`
+- `source_route_key` / `sourceRouteKey`, `member_route_key` /
+  `memberRouteKey`, or `target_member_route_key` / `targetMemberRouteKey`
+
+Scalar name/id fields (`agent_name`, `agentName`, `member_name`,
+`memberName`, `target_member_name`, `targetMemberName`, `target_agent_name`,
+`targetAgentName`, `agent_id`, and `agentId`) are rejected as approval command
+targets. The client must round-trip the route/path identity emitted with the
+approval request event. An approval request aimed at a subteam member rather
+than a leaf agent is rejected by the runtime.
+
 Team interrupt uses a stricter command shape than single-agent interrupt. A
 client sending `INTERRUPT_GENERATION` to `/ws/agent-team/:teamRunId` must include
-`payload.target_member_name` as the stable focused-member route key. It may also
-include `payload.agent_id`, but that value is only a guard for the expected
-member run id; it is never the authoritative selector. The server rejects
-missing `target_member_name` and route-key/run-id mismatches without invoking a
-member runtime and without falling back to aggregate team interruption. The
-single-agent `/ws/agent/:runId` command remains a no-payload
+`payload.target_member_path` / `targetMemberPath` or
+`payload.target_member_route_key` / `targetMemberRouteKey`. It may also include
+`payload.target_member_run_id` / `targetMemberRunId`, but that value is only a
+guard for the expected member run id; it is never the authoritative selector.
+The server rejects missing target selectors and route-key/run-id mismatches
+without invoking a member runtime and without falling back to aggregate team
+interruption. The single-agent `/ws/agent/:runId` command remains a no-payload
 `INTERRUPT_GENERATION`.
 
 Approval commands are active-turn control commands, not queued runtime input.

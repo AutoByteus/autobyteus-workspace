@@ -2,6 +2,7 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { InterAgentMessageDeliveryRequest } from "../domain/inter-agent-message-delivery.js";
 import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
+import type { TeamMemberSelector } from "../domain/team-run-member-identity.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
 import type { TeamBackendKind } from "../domain/team-backend-kind.js";
 import type { AgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
@@ -18,13 +19,13 @@ export interface TeamRunBackend {
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe;
   postMessage(
     message: AgentInputUserMessage,
-    targetMemberName?: string | null,
+    target?: TeamMemberSelector | null,
   ): Promise<AgentOperationResult>;
   deliverInterAgentMessage(
     request: InterAgentMessageDeliveryRequest,
   ): Promise<AgentOperationResult>;
   approveToolInvocation(
-    targetMemberName: string,
+    target: TeamMemberSelector,
     invocationId: string,
     approved: boolean,
     reason?: string | null,

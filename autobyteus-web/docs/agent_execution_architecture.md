@@ -79,7 +79,10 @@ or interrupted approval attempts remain backend-rejected control outcomes. A
 visible tool row is not itself approval authority: approval buttons should be
 shown only for `awaiting-approval` rows, and backend rejection remains
 authoritative when a stale client attempts to approve an active-but-not-pending
-tool invocation.
+tool invocation. For team streams, approval dispatch must use the structured
+`ToolApprovalTarget` captured from the backend approval event, such as a member
+route key/path. The frontend must not rebuild approval targets from the current
+focused member, scalar aliases, or invocation-id fallbacks after focus changes.
 
 Interrupt dispatch is intentionally not a local completion event. The frontend must
 keep the affected single run or focused team member in its current sending
@@ -113,10 +116,11 @@ and active `uninitialized` project as active non-interruptible
 interrupt affordance. Active processing/tool/LLM tokens project as `running`.
 When the selected context is a team, stop/interrupt dispatch must resolve the
 same focused member as the composer send path at click time. The frontend sends
-team `INTERRUPT_GENERATION` with `target_member_name` set to the focused member
-route key and `agent_id` set only as an optional focused member run-id guard. If
-there is no focused member, the focused context is stale, or no active team
-streaming service exists, the frontend must not send a team interrupt command.
+team `INTERRUPT_GENERATION` with `target_member_route_key` set to the focused
+member route key and `target_member_run_id` set only as an optional focused
+member run-id guard. If there is no focused leaf member, the focused context is
+stale, or no active team streaming service exists, the frontend must not send a
+team interrupt command.
 Run-history refresh, active recovery, and run-open hydration must preserve an
 already-live `initializing/canInterrupt=false` or `running/canInterrupt=true`
 single run or focused team member while that live stream remains authoritative,
@@ -302,6 +306,7 @@ Incoming events are routed based on their `type`:
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
 | `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
 | `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the run-scoped Agent Artifact store. |
+| `EXTERNAL_USER_MESSAGE`   | `externalUserMessageHandler.handleExternalUserMessage` | Inserts or updates a user/input row by backend `message_id` / `dedupe_key`. In team streams this renders accepted member input, including parent-to-subteam delivery prompts, in the focused leaf transcript before assistant output. Repeated rows with no identity remain separate. |
 | `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
 | `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |
 | `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Syncs the agent's internal todo list with the UI.               |

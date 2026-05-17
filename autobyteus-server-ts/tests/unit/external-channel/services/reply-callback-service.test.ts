@@ -155,7 +155,8 @@ describe("ReplyCallbackService", () => {
       targetType: "TEAM" as const,
       teamRunId: "team-1",
       entryMemberRunId: "agent-member-1",
-      entryMemberName: "coordinator",
+      entryMemberRouteKey: "coordinator",
+      entryMemberPath: null,
     };
 
     const result = await service.publishRunOutputReply(publishInput({ target: teamTarget }));

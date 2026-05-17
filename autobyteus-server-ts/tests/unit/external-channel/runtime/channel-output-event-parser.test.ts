@@ -73,6 +73,8 @@ describe("channel output event parsing and eligibility", () => {
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberName: "worker",
         memberRunId: "worker-run-1",
+        memberRouteKey: "worker",
+        memberPath: ["worker"],
         agentEvent: {
           eventType: AgentRunEventType.SEGMENT_CONTENT,
           runId: "worker-run-1",
@@ -91,8 +93,9 @@ describe("channel output event parsing and eligibility", () => {
 
     expect(parsed).toMatchObject({
       teamRunId: "team-1",
-      memberName: "worker",
       memberRunId: "worker-run-1",
+      memberRouteKey: "worker",
+      memberPath: ["worker"],
       text: "internal",
       textKind: "STREAM_FRAGMENT",
     });
@@ -101,13 +104,14 @@ describe("channel output event parsing and eligibility", () => {
         targetType: "TEAM",
         teamRunId: "team-1",
         entryMemberRunId: "coordinator-run-1",
-        entryMemberName: "coordinator",
+        entryMemberRouteKey: "coordinator",
+        entryMemberPath: ["coordinator"],
       },
       event: parsed!,
     })).toBeNull();
   });
 
-  it("accepts restored coordinator links by member name and captures member run id", () => {
+  it("accepts restored coordinator links by route key and captures member run id", () => {
     const parsed = parseTeamChannelOutputEvent({
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: "team-1",
@@ -115,6 +119,8 @@ describe("channel output event parsing and eligibility", () => {
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberName: "coordinator",
         memberRunId: "coordinator-run-1",
+        memberRouteKey: "coordinator",
+        memberPath: ["coordinator"],
         agentEvent: {
           eventType: AgentRunEventType.TURN_COMPLETED,
           runId: "coordinator-run-1",
@@ -130,7 +136,8 @@ describe("channel output event parsing and eligibility", () => {
         targetType: "TEAM",
         teamRunId: "team-1",
         entryMemberRunId: null,
-        entryMemberName: "coordinator",
+        entryMemberRouteKey: "coordinator",
+        entryMemberPath: null,
       },
       event: parsed!,
     });
@@ -139,7 +146,8 @@ describe("channel output event parsing and eligibility", () => {
       targetType: "TEAM",
       teamRunId: "team-1",
       entryMemberRunId: "coordinator-run-1",
-      entryMemberName: "coordinator",
+      entryMemberRouteKey: "coordinator",
+      entryMemberPath: ["coordinator"],
     });
   });
 });

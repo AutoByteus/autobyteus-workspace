@@ -6,18 +6,53 @@ import {
   normalizeTeamRuntimeStatus,
 } from '../runtimeStatusNormalization';
 
-describe('runtime status normalization', () => {
-  it('preserves startup tokens as initializing for agents and teams', () => {
-    for (const token of ['bootstrapping', 'uninitialized', 'starting', 'initializing']) {
-      expect(normalizeAgentRuntimeStatus(token)).toBe(AgentStatus.Initializing);
-      expect(normalizeTeamRuntimeStatus(token)).toBe(AgentTeamStatus.Initializing);
+describe('runtimeStatusNormalization', () => {
+  it('accepts only canonical and current persisted agent status tokens', () => {
+    expect(normalizeAgentRuntimeStatus('running')).toBe(AgentStatus.Running);
+    expect(normalizeAgentRuntimeStatus('initializing')).toBe(AgentStatus.Initializing);
+    expect(normalizeAgentRuntimeStatus('idle')).toBe(AgentStatus.Idle);
+    expect(normalizeAgentRuntimeStatus('offline')).toBe(AgentStatus.Offline);
+    expect(normalizeAgentRuntimeStatus('error')).toBe(AgentStatus.Error);
+    expect(normalizeAgentRuntimeStatus('ACTIVE')).toBe(AgentStatus.Running);
+    expect(normalizeAgentRuntimeStatus('TERMINATED')).toBe(AgentStatus.Offline);
+  });
+
+  it('does not preserve removed agent lifecycle status tokens', () => {
+    for (const removedStatus of [
+      'uninitialized',
+      'bootstrapping',
+      'starting',
+      'startup',
+      'awaiting_llm_response',
+      'awaiting_tool_approval',
+      'executing_tool',
+      'tool_denied',
+      'shutdown_complete',
+    ]) {
+      expect(normalizeAgentRuntimeStatus(removedStatus, AgentStatus.Idle)).toBe(AgentStatus.Idle);
     }
   });
 
-  it('keeps active processing and terminal tokens distinct from initializing', () => {
-    expect(normalizeAgentRuntimeStatus('processing_user_input')).toBe(AgentStatus.Running);
-    expect(normalizeAgentRuntimeStatus('idle')).toBe(AgentStatus.Idle);
-    expect(normalizeAgentRuntimeStatus('inactive')).toBe(AgentStatus.Offline);
-    expect(normalizeAgentRuntimeStatus('failed')).toBe(AgentStatus.Error);
+  it('accepts only canonical and current persisted team status tokens', () => {
+    expect(normalizeTeamRuntimeStatus('running')).toBe(AgentTeamStatus.Running);
+    expect(normalizeTeamRuntimeStatus('initializing')).toBe(AgentTeamStatus.Initializing);
+    expect(normalizeTeamRuntimeStatus('ACTIVE')).toBe(AgentTeamStatus.Running);
+    expect(normalizeTeamRuntimeStatus('TERMINATED')).toBe(AgentTeamStatus.Offline);
+  });
+
+  it('does not preserve removed team lifecycle status tokens', () => {
+    for (const removedStatus of [
+      'uninitialized',
+      'bootstrapping',
+      'starting',
+      'startup',
+      'awaiting_llm_response',
+      'awaiting_tool_approval',
+      'executing_tool',
+      'tool_denied',
+      'shutdown_complete',
+    ]) {
+      expect(normalizeTeamRuntimeStatus(removedStatus, AgentTeamStatus.Idle)).toBe(AgentTeamStatus.Idle);
+    }
   });
 });

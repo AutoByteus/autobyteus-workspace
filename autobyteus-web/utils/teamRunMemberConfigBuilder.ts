@@ -30,7 +30,7 @@ export const buildTeamRunMemberConfigRecords = (params: {
   workspaceRootPath?: string | null
 }): TeamRunMemberConfigRecord[] =>
   params.leafMembers.map((member) => {
-    const override = params.config.memberOverrides[member.memberName]
+    const override = params.config.memberOverrides[member.memberRouteKey]
     const llmModelIdentifier = normalizeModelIdentifier(
       override?.llmModelIdentifier || params.config.llmModelIdentifier,
     )

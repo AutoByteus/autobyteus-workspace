@@ -12,7 +12,7 @@ import {
   TeamRunMetadataService,
   getTeamRunMetadataService,
 } from "./team-run-metadata-service.js";
-import type { TeamRunMemberMetadata } from "../store/team-run-metadata-types.js";
+import type { TeamRunAgentMemberMetadata } from "../store/team-run-metadata-types.js";
 import {
   RunFileChangeProjectionStore,
   getRunFileChangeProjectionStore,
@@ -30,6 +30,7 @@ import {
 import { normalizeRunFileChangeProjection } from "../../services/run-file-changes/run-file-change-projection-normalizer.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { resolveRunFileChangeWorkspaceRootPath } from "../../services/run-file-changes/run-file-change-runtime.js";
+import { getTeamRunLeafAgentMetadata } from "./team-run-metadata-flattener.js";
 
 export interface ResolvedRunFileChangeEntry {
   entry: RunFileChangeEntry;
@@ -158,7 +159,7 @@ export class RunFileChangeProjectionService {
 
   private async readHistoricalTeamMemberProjectionContext(input: {
     teamRunId: string;
-    member: TeamRunMemberMetadata;
+    member: TeamRunAgentMemberMetadata;
   }): Promise<ProjectionContext> {
     const workspaceRootPath = input.member.workspaceRootPath ?? null;
     const memoryDir = this.teamLayout.getMemberDirPath(
@@ -223,13 +224,13 @@ export class RunFileChangeProjectionService {
 
   private async findHistoricalTeamMember(
     memberRunId: string,
-  ): Promise<{ teamRunId: string; member: TeamRunMemberMetadata } | null> {
+  ): Promise<{ teamRunId: string; member: TeamRunAgentMemberMetadata } | null> {
     const teamMetadataService = this.getTeamMetadataService();
     for (const teamRunId of await teamMetadataService.listTeamRunIds()) {
       const metadata = await teamMetadataService.readMetadata(teamRunId);
-      const member = metadata?.memberMetadata.find(
+      const member = metadata ? getTeamRunLeafAgentMetadata(metadata).find(
         (candidate) => candidate.memberRunId === memberRunId,
-      ) ?? null;
+      ) ?? null : null;
       if (member) {
         return { teamRunId, member };
       }

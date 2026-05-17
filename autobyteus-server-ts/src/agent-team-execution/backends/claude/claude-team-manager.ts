@@ -43,6 +43,11 @@ import {
 import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
 import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
+import {
+  resolveTeamMemberSelector,
+  selectorToDisplayString,
+  type TeamMemberSelector,
+} from "../../domain/team-run-member-identity.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -126,6 +131,10 @@ export class ClaudeTeamManager implements TeamManager {
         ...snapshot,
         agent_name: memberContext.memberName,
         agent_id: memberContext.memberRunId,
+        member_route_key: memberContext.memberRouteKey,
+        member_path: memberContext.memberPath,
+        source_route_key: memberContext.memberRouteKey,
+        source_path: memberContext.memberPath,
       };
     });
   }
@@ -140,14 +149,14 @@ export class ClaudeTeamManager implements TeamManager {
 
   async postMessage(
     message: AgentInputUserMessage,
-    targetMemberName: string,
+    target: TeamMemberSelector,
   ): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
     }
-    const memberContext = this.findMemberContextByName(targetMemberName);
-    if (!memberContext) {
-      return buildTargetMemberNotFoundResult(targetMemberName);
+    const memberContext = this.resolveTargetMemberContext(target);
+    if ("accepted" in memberContext) {
+      return memberContext;
     }
     const memberRun = await this.ensureMemberReady(memberContext);
     const result = await memberRun.postUserMessage(message);
@@ -167,17 +176,24 @@ export class ClaudeTeamManager implements TeamManager {
     if (!teamContext) {
       return buildRunNotFoundResult("unknown");
     }
-    const memberContext = this.findMemberContextByName(request.recipientMemberName);
-    if (!memberContext) {
-      return buildTargetMemberNotFoundResult(request.recipientMemberName);
+    const memberContext = this.resolveTargetMemberContext(request.recipient.selector);
+    if ("accepted" in memberContext) {
+      return memberContext;
     }
     const memberRun = await this.ensureMemberReady(memberContext);
-    const senderMemberName =
-      request.senderMemberName ?? this.resolveSenderMemberContext(request.senderRunId)?.memberName ?? null;
-    const normalizedRequest: InterAgentMessageDeliveryRequest = {
-      ...request,
-      senderMemberName,
-    };
+    const senderContext = this.resolveSenderMemberContext(request.sender.participant.memberRunId);
+    const normalizedRequest: InterAgentMessageDeliveryRequest = senderContext
+      ? {
+          ...request,
+          sender: {
+            ...request.sender,
+            participant: {
+              ...request.sender.participant,
+              memberName: request.sender.participant.memberName || senderContext.memberName,
+            },
+          },
+        }
+      : request;
     const result = await memberRun.postUserMessage(
       buildInterAgentDeliveryInputMessage(normalizedRequest),
     );
@@ -189,6 +205,7 @@ export class ClaudeTeamManager implements TeamManager {
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
         memberName: memberContext.memberName,
         memberRunId: memberContext.memberRunId,
+        sourcePath: memberContext.memberPath,
         agentEvents: [
           buildInterAgentMessageAgentRunEvent({
             recipientRunId: memberContext.memberRunId,
@@ -207,7 +224,7 @@ export class ClaudeTeamManager implements TeamManager {
   }
 
   async approveToolInvocation(
-    targetMemberName: string,
+    target: TeamMemberSelector,
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
@@ -215,9 +232,9 @@ export class ClaudeTeamManager implements TeamManager {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
     }
-    const memberContext = this.findMemberContextByName(targetMemberName);
-    if (!memberContext) {
-      return buildTargetMemberNotFoundResult(targetMemberName);
+    const memberContext = this.resolveTargetMemberContext(target);
+    if ("accepted" in memberContext) {
+      return memberContext;
     }
     const memberRun = await this.ensureMemberReady(memberContext);
     return memberRun.approveToolInvocation(invocationId, approved, reason ?? null);
@@ -321,12 +338,15 @@ export class ClaudeTeamManager implements TeamManager {
     };
   }
 
-  private findMemberContextByName(targetMemberName: string): ClaudeTeamMemberContext | null {
-    return (
-      this.getRuntimeContext().memberContexts.find(
-        (memberContext) => memberContext.memberName === targetMemberName,
-      ) ?? null
-    );
+  private resolveTargetMemberContext(
+    target: TeamMemberSelector,
+  ): ClaudeTeamMemberContext | AgentOperationResult {
+    const resolution = resolveTeamMemberSelector(target, this.getRuntimeContext().memberContexts);
+    return resolution.ok
+      ? resolution.member
+      : buildTargetMemberNotFoundResult(
+          `${resolution.message} Selector: '${selectorToDisplayString(target)}'`,
+        );
   }
 
   private findMemberContextByRouteKey(memberRouteKey: string): ClaudeTeamMemberContext | null {
@@ -382,10 +402,13 @@ export class ClaudeTeamManager implements TeamManager {
       teamDefinitionId: config.teamDefinitionId,
       teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
       currentMemberName: memberContext.memberName,
+      currentMemberPath: memberContext.memberPath,
       currentMemberRouteKey: memberContext.memberRouteKey,
       currentMemberRunId: memberContext.memberRunId,
       members: this.getRuntimeContext().memberContexts.map((member) => ({
+        memberKind: "agent" as const,
         memberName: member.memberName,
+        memberPath: member.memberPath,
         memberRouteKey: member.memberRouteKey,
         memberRunId: member.memberRunId,
         runtimeKind: member.agentRunConfig.runtimeKind,
@@ -449,10 +472,13 @@ export class ClaudeTeamManager implements TeamManager {
     this.publish({
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: this.teamContext.runId,
+      sourcePath: memberContext.memberPath,
       data: {
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
         memberName: memberContext.memberName,
         memberRunId: memberContext.memberRunId,
+        memberPath: memberContext.memberPath,
+        memberRouteKey: memberContext.memberRouteKey,
         agentEvent,
       } satisfies TeamRunAgentEventPayload,
     });
@@ -471,6 +497,7 @@ export class ClaudeTeamManager implements TeamManager {
     this.publish({
       eventSourceType: TeamRunEventSourceType.TEAM,
       teamRunId: this.teamContext.runId,
+      sourcePath: [],
       data: {
         status: nextStatus,
       } satisfies TeamRunStatusUpdateData,

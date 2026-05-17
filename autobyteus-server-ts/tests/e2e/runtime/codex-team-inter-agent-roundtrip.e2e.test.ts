@@ -46,7 +46,7 @@ const sendTeamMessageOverSocket = (
   socket: WebSocket,
   input: {
     content: string;
-    targetMemberName?: string | null;
+    targetMemberRouteKey?: string | null;
     contextFilePaths?: string[];
     imageUrls?: string[];
   },
@@ -56,7 +56,7 @@ const sendTeamMessageOverSocket = (
       type: "SEND_MESSAGE",
       payload: {
         content: input.content,
-        target_member_name: input.targetMemberName ?? null,
+        target_member_route_key: input.targetMemberRouteKey ?? null,
         context_file_paths: input.contextFilePaths ?? [],
         image_urls: input.imageUrls ?? [],
       },
@@ -437,7 +437,7 @@ Rules:
       });
 
       const sendRelayInstruction = async (input: {
-        targetMemberName: "ping" | "pong";
+        targetMemberRouteKey: "ping" | "pong";
         recipientName: "ping" | "pong";
         messageType: string;
         content: string;
@@ -448,7 +448,7 @@ Rules:
           message_type: input.messageType,
         });
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberName: input.targetMemberName,
+          targetMemberRouteKey: input.targetMemberRouteKey,
           content:
             "Call send_message_to exactly once now with these exact JSON arguments: " +
             `${argsJson}. Do not call any other tool.`,
@@ -684,7 +684,7 @@ Rules:
 
       try {
         await sendRelayInstruction({
-          targetMemberName: "ping",
+          targetMemberRouteKey: "ping",
           recipientName: "pong",
           content: `PING-TO-PONG ${pingToken}`,
           messageType: "roundtrip_ping",
@@ -696,7 +696,7 @@ Rules:
         });
 
         await sendRelayInstruction({
-          targetMemberName: "pong",
+          targetMemberRouteKey: "pong",
           recipientName: "ping",
           content: `PONG-TO-PING ${pongToken}`,
           messageType: "roundtrip_pong",
@@ -924,7 +924,7 @@ Rules:
           message_type: "nested_roundtrip",
         });
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberName: "parent",
+          targetMemberRouteKey: "parent",
           content:
             "Call send_message_to exactly once now with these exact JSON arguments: " +
             `${argsJson}. Do not call any other tool.`,
@@ -1166,7 +1166,7 @@ Rules:
       try {
         const startIndex = streamMessages.length;
         sendTeamMessageOverSocket(teamSocket, {
-          targetMemberName: "professor",
+          targetMemberRouteKey: "professor",
           content:
             "Call send_message_to exactly once now with these exact JSON arguments: " +
             `${argsJson}. Do not call any other tool.`,
@@ -1627,7 +1627,7 @@ Rules:
       await waitForSocketOpen(teamSocket);
 
       sendTeamMessageOverSocket(teamSocket, {
-        targetMemberName: "professor",
+        targetMemberRouteKey: "professor",
         content: "Reply with exactly ACK professor.",
       });
 

@@ -169,4 +169,87 @@ describe('runProjectionConversation', () => {
       text: 'answer two',
     });
   });
+
+  it('deduplicates projection rows when timestamped entries also appear with null timestamps', () => {
+    const conversation = buildConversationFromProjection(
+      'run-4',
+      [
+        {
+          kind: 'message',
+          role: 'user',
+          content: 'You received a message from sender name: program_manager',
+          ts: 100,
+        },
+        {
+          kind: 'message',
+          role: 'user',
+          content: 'You received a message from sender name: program_manager',
+          ts: null,
+        },
+        {
+          kind: 'message',
+          role: 'assistant',
+          content: 'FRONTEND_PARENT_TO_SUBTEAM',
+          ts: 101,
+        },
+        {
+          kind: 'message',
+          role: 'assistant',
+          content: 'FRONTEND_PARENT_TO_SUBTEAM',
+          ts: null,
+        },
+      ],
+      {
+        agentDefinitionId: 'agent-4',
+        agentName: 'review_lead',
+        llmModelIdentifier: 'gpt-5.3-codex',
+      },
+    );
+
+    expect(conversation.messages).toHaveLength(2);
+    expect(conversation.messages[0]).toMatchObject({
+      type: 'user',
+      text: 'You received a message from sender name: program_manager',
+    });
+    expect(conversation.messages[0]?.timestamp.toISOString()).toBe('1970-01-01T00:01:40.000Z');
+    expect(conversation.messages[1]).toMatchObject({
+      type: 'ai',
+      text: 'FRONTEND_PARENT_TO_SUBTEAM',
+    });
+    expect(conversation.messages[1]?.timestamp.toISOString()).toBe('1970-01-01T00:01:41.000Z');
+  });
+
+  it('preserves repeated no-id no-timestamp projection rows', () => {
+    const conversation = buildConversationFromProjection(
+      'run-5',
+      [
+        {
+          kind: 'message',
+          role: 'user',
+          content: 'repeat this',
+          ts: null,
+        },
+        {
+          kind: 'message',
+          role: 'user',
+          content: 'repeat this',
+          ts: null,
+        },
+      ],
+      {
+        agentDefinitionId: 'agent-5',
+        agentName: 'review_lead',
+        llmModelIdentifier: 'gpt-5.3-codex',
+      },
+    );
+
+    expect(conversation.messages).toHaveLength(2);
+    expect(conversation.messages.map((message) => ({
+      type: message.type,
+      text: message.type === 'user' ? message.text : message.text,
+    }))).toEqual([
+      { type: 'user', text: 'repeat this' },
+      { type: 'user', text: 'repeat this' },
+    ]);
+  });
 });

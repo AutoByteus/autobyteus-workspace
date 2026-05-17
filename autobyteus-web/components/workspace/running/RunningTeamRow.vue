@@ -40,15 +40,18 @@
     <!-- Member List (when expanded) -->
     <div v-if="expanded" class="ml-5 mt-0.5">
       <TeamMemberRow
-        v-for="[memberName, memberContext] in teamRun.members"
-        :key="memberName"
-        :member-name="memberName"
-        :member-context="memberContext"
-        :is-focused="teamRun.focusedMemberName === memberName"
-        :is-coordinator="memberName === coordinatorName"
+        v-for="member in displayMembers"
+        :key="member.node.memberRouteKey"
+        :member-name="member.node.displayName || member.node.memberName"
+        :member-route-key="member.node.memberRouteKey"
+        :member-context="member.context"
+        :member-status="member.node.currentStatus"
+        :style="{ marginLeft: `${member.depth * 12}px` }"
+        :is-focused="teamRun.focusedMemberRouteKey === member.node.memberRouteKey"
+        :is-coordinator="member.node.memberRouteKey === coordinatorRouteKey"
         @select="handleMemberSelect"
       />
-      <div v-if="teamRun.members.size === 0" class="text-xs text-gray-400 py-1 px-2">{{ $t('workspace.components.workspace.running.RunningTeamRow.no_members_yet') }}</div>
+      <div v-if="displayMembers.length === 0" class="text-xs text-gray-400 py-1 px-2">{{ $t('workspace.components.workspace.running.RunningTeamRow.no_members_yet') }}</div>
     </div>
   </div>
 </template>
@@ -58,17 +61,18 @@ import { ref, computed, watch } from 'vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import TeamMemberRow from './TeamMemberRow.vue';
+import { flattenTeamMemberNodesForDisplay } from '~/utils/teamDefinitionMembers';
 
 const props = defineProps<{
   teamRun: AgentTeamContext;
   isSelected?: boolean;
-  coordinatorName?: string;
+  coordinatorRouteKey?: string;
 }>();
 
 const emit = defineEmits<{
   (e: 'select', id: string): void;
   (e: 'delete', id: string): void;
-  (e: 'select-member', teamRunId: string, memberName: string): void;
+  (e: 'select-member', teamRunId: string, memberRouteKey: string): void;
 }>();
 
 const expanded = ref(false);
@@ -78,11 +82,18 @@ watch(() => props.isSelected, (selected) => {
   if (selected) {
     expanded.value = true;
     // Auto-focus coordinator if no member is focused
-    if (!props.teamRun.focusedMemberName && props.coordinatorName) {
-      emit('select-member', props.teamRun.teamRunId, props.coordinatorName);
+    if (!props.teamRun.focusedMemberRouteKey && props.coordinatorRouteKey) {
+      emit('select-member', props.teamRun.teamRunId, props.coordinatorRouteKey);
     }
   }
 }, { immediate: true });
+
+const displayMembers = computed(() =>
+  flattenTeamMemberNodesForDisplay(props.teamRun.memberTree).map((entry) => ({
+    ...entry,
+    context: props.teamRun.leafAgentContextsByRouteKey.get(entry.node.memberRouteKey) || null,
+  })),
+);
 
 const handleTeamClick = () => {
   // Toggle expand/collapse
@@ -91,8 +102,8 @@ const handleTeamClick = () => {
   emit('select', props.teamRun.teamRunId);
 };
 
-const handleMemberSelect = (memberName: string) => {
-  emit('select-member', props.teamRun.teamRunId, memberName);
+const handleMemberSelect = (memberRouteKey: string) => {
+  emit('select-member', props.teamRun.teamRunId, memberRouteKey);
 };
 
 const formatId = (id: string) => {

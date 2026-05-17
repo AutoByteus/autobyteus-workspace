@@ -128,6 +128,36 @@ const createAgentContext = (routeKey: string): AgentContext => {
   return context;
 };
 
+const buildAgentNode = (memberRouteKey: string) => ({
+  memberKind: 'agent' as const,
+  memberName: memberRouteKey.split('/').at(-1) || memberRouteKey,
+  displayName: memberRouteKey.split('/').at(-1) || memberRouteKey,
+  memberPath: memberRouteKey.split('/'),
+  memberRouteKey,
+  agentDefinitionId: `def-${memberRouteKey}`,
+});
+
+const buildTeamContext = (
+  members: Array<[string, AgentContext]>,
+  focusedMemberRouteKey: string,
+) => {
+  const memberTree = members.map(([memberRouteKey]) => buildAgentNode(memberRouteKey));
+  return {
+    teamRunId: 'team-1',
+    config: { teamDefinitionId: 'team-def-1' } as any,
+    memberTree,
+    memberNodesByRouteKey: new Map(memberTree.map((member) => [member.memberRouteKey, member])),
+    leafAgentContextsByRouteKey: new Map(members),
+    coordinatorMemberRouteKey: 'solution_designer',
+    historicalHydration: null,
+    focusedMemberRouteKey,
+    currentStatus: AgentTeamStatus.Running,
+    isSubscribed: true,
+    taskPlan: null,
+    taskStatuses: null,
+  };
+};
+
 describe('focused team member interrupt UI-to-WebSocket e2e', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -146,20 +176,10 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
     const solutionDesigner = createAgentContext('solution_designer');
     const codeReviewer = createAgentContext('code_reviewer');
 
-    teamContextsStore.addTeamContext({
-      teamRunId: 'team-1',
-      config: { teamDefinitionId: 'team-def-1' } as any,
-      members: new Map([
-        ['solution_designer', solutionDesigner],
-        ['code_reviewer', codeReviewer],
-      ]),
-      coordinatorMemberRouteKey: 'solution_designer',
-      focusedMemberName: 'solution_designer',
-      currentStatus: AgentTeamStatus.Running,
-      isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
-    });
+    teamContextsStore.addTeamContext(buildTeamContext([
+      ['solution_designer', solutionDesigner],
+      ['code_reviewer', codeReviewer],
+    ], 'solution_designer'));
     selectionStore.selectRun('team-1', 'team');
     teamRunStore.connectToTeamStream('team-1');
 
@@ -185,8 +205,8 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
     expect(JSON.parse(mockWsSend.mock.calls[0][0])).toEqual({
       type: 'INTERRUPT_GENERATION',
       payload: {
-        target_member_name: 'code_reviewer',
-        agent_id: 'team-1::code_reviewer',
+        target_member_route_key: 'code_reviewer',
+        target_member_run_id: 'team-1::code_reviewer',
       },
     });
   });

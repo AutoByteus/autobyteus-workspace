@@ -27,6 +27,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
+import { selectorToRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import type { TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
@@ -519,8 +520,8 @@ const createClaudeTeamWebSocketHarness = async (input: {
         agent_name: input.memberName,
       },
     ],
-    postMessage: async (message, targetMemberName) => {
-      expect(targetMemberName).toBe(input.memberName);
+    postMessage: async (message, targetMemberSelector) => {
+      expect(selectorToRouteKey(targetMemberSelector)).toBe(input.memberName);
       const result = await agentRun.postUserMessage(message);
       memberContext.sessionId = agentRun.getPlatformAgentRunId() ?? memberContext.sessionId;
       return {
@@ -752,7 +753,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
           type: "SEND_MESSAGE",
           payload: {
             content: "start team member work",
-            target_member_name: memberName,
+            target_member_route_key: memberName,
           },
         }),
       );
@@ -769,8 +770,8 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
         JSON.stringify({
           type: "INTERRUPT_GENERATION",
           payload: {
-            target_member_name: memberName,
-            agent_id: memberRunId,
+            target_member_route_key: memberName,
+            target_member_run_id: memberRunId,
           },
         }),
       );
@@ -786,7 +787,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
           type: "SEND_MESSAGE",
           payload: {
             content: "continue team member work",
-            target_member_name: memberName,
+            target_member_route_key: memberName,
           },
         }),
       );

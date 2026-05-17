@@ -79,4 +79,3 @@ Verification:
 - `hdiutil imageinfo electron-dist/AutoByteus_enterprise_macos-arm64-1.3.15.dmg` succeeded; format `UDZO`.
 - App bundle metadata: version `1.3.15`, executable `AutoByteus`.
 - Build is unsigned/not notarized as expected for the documented local no-notarization command.
-

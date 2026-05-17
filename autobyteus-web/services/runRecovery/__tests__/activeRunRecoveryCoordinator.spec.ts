@@ -109,7 +109,7 @@ describe('recoverActiveRunsFromHistory', () => {
     teamContextsStoreMock.teams.set('team-live-1', {
       teamRunId: 'team-live-1',
       config: { isLocked: false },
-      members: new Map([
+      leafAgentContextsByRouteKey: new Map([
         ['solution_designer', {
           config: { isLocked: false },
           state: { runId: 'member-run-solution', currentStatus: 'offline', canInterrupt: true },
@@ -120,12 +120,12 @@ describe('recoverActiveRunsFromHistory', () => {
         }],
         ['code_reviewer', {
           config: { isLocked: false },
-          state: { runId: 'member-run-review', currentStatus: 'uninitialized', canInterrupt: false },
+          state: { runId: 'member-run-review', currentStatus: 'offline', canInterrupt: false },
         }],
       ]),
       coordinatorMemberRouteKey: 'solution_designer',
       historicalHydration: null,
-      focusedMemberName: 'solution_designer',
+      focusedMemberRouteKey: 'solution_designer',
       currentStatus: 'offline',
       isSubscribed: true,
       taskPlan: null,
@@ -142,12 +142,12 @@ describe('recoverActiveRunsFromHistory', () => {
 
     const context = teamContextsStoreMock.teams.get('team-live-1');
     expect(context.currentStatus).toBe('running');
-    expect(context.members.get('solution_designer')?.state.currentStatus).toBe('running');
-    expect(context.members.get('implementation_engineer')?.state.currentStatus).toBe('offline');
-    expect(context.members.get('code_reviewer')?.state.currentStatus).toBe('offline');
-    expect(context.members.get('solution_designer')?.state.canInterrupt).toBe(true);
-    expect(context.members.get('implementation_engineer')?.state.canInterrupt).toBe(false);
-    expect(context.members.get('code_reviewer')?.state.canInterrupt).toBe(false);
+    expect(context.leafAgentContextsByRouteKey.get('solution_designer')?.state.currentStatus).toBe('running');
+    expect(context.leafAgentContextsByRouteKey.get('implementation_engineer')?.state.currentStatus).toBe('offline');
+    expect(context.leafAgentContextsByRouteKey.get('code_reviewer')?.state.currentStatus).toBe('offline');
+    expect(context.leafAgentContextsByRouteKey.get('solution_designer')?.state.canInterrupt).toBe(true);
+    expect(context.leafAgentContextsByRouteKey.get('implementation_engineer')?.state.canInterrupt).toBe(false);
+    expect(context.leafAgentContextsByRouteKey.get('code_reviewer')?.state.canInterrupt).toBe(false);
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalledWith('team-live-1');
     expect(openTeamRunMock).not.toHaveBeenCalled();
   });

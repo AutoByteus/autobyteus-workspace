@@ -1,5 +1,8 @@
 import { TeamRun } from "../domain/team-run.js";
-import { TeamRunConfig } from "../domain/team-run-config.js";
+import {
+  TeamRunConfig,
+  type TeamRunMemberConfig,
+} from "../domain/team-run-config.js";
 import { TeamRunContext, type RuntimeTeamRunContext } from "../domain/team-run-context.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
 import { AgentTeamCreationError, AgentTeamTerminationError } from "../errors.js";
@@ -97,18 +100,8 @@ export class AgentTeamRunManager {
       teamDefinitionId: config.teamDefinitionId,
       teamBackendKind: config.teamBackendKind,
       coordinatorMemberName: config.coordinatorMemberName,
-      memberConfigs: config.memberConfigs.map((memberConfig) => {
-        const memberRouteKey = normalizeMemberRouteKey(
-          memberConfig.memberRouteKey ?? memberConfig.memberName,
-        );
-        return {
-          ...memberConfig,
-          memberRouteKey,
-          memberRunId:
-            memberConfig.memberRunId?.trim() ||
-            buildTeamMemberRunId(backend.runId, memberRouteKey),
-        };
-      }),
+      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
+      memberTree: this.attachRuntimeMemberIds(config.memberTree, backend.runId),
     });
     const activeRun = new TeamRun({
       context: new TeamRunContext({
@@ -260,5 +253,29 @@ export class AgentTeamRunManager {
       return this.mixedTeamRunBackendFactory;
     }
     return null;
+  }
+
+  private attachRuntimeMemberIds(
+    members: readonly TeamRunMemberConfig[],
+    teamRunId: string,
+  ): TeamRunMemberConfig[] {
+    return members.map((memberConfig) => {
+      const memberRouteKey = normalizeMemberRouteKey(memberConfig.memberRouteKey);
+      const memberRunId =
+        memberConfig.memberRunId?.trim() || buildTeamMemberRunId(teamRunId, memberRouteKey);
+      if (memberConfig.memberKind === "agent_team") {
+        return {
+          ...memberConfig,
+          memberRouteKey,
+          memberRunId,
+          memberConfigs: this.attachRuntimeMemberIds(memberConfig.memberConfigs, teamRunId),
+        };
+      }
+      return {
+        ...memberConfig,
+        memberRouteKey,
+        memberRunId,
+      };
+    });
   }
 }

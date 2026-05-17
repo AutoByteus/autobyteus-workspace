@@ -35,6 +35,13 @@ import {
   TeamRunMetadataService,
   getTeamRunMetadataService,
 } from "../../run-history/services/team-run-metadata-service.js";
+import { getTeamRunLeafAgentMetadata } from "../../run-history/services/team-run-metadata-flattener.js";
+import {
+  selectorFromMemberPath,
+  selectorFromMemberRouteKey,
+  selectorToRouteKey,
+  type TeamMemberSelector,
+} from "../../agent-team-execution/domain/team-run-member-identity.js";
 
 const cloneBinding = (binding: ApplicationRunBindingSummary): ApplicationRunBindingSummary => structuredClone(binding);
 
@@ -262,7 +269,8 @@ export class ApplicationOrchestrationHostService {
     input: {
       bindingId: string;
       text: string;
-      targetMemberName?: string | null;
+      targetMemberRouteKey?: string | null;
+      targetMemberPath?: string[] | null;
       contextFiles?: ApplicationRuntimeInputContextFile[] | null;
       metadata?: Record<string, unknown> | null;
     },
@@ -351,7 +359,7 @@ export class ApplicationOrchestrationHostService {
 
     const metadata = await this.teamRunMetadataService.readMetadata(binding.runtime.runId);
     const memberMetadata =
-      metadata?.memberMetadata.find((member) => member.memberRunId === runId) ?? null;
+      metadata ? getTeamRunLeafAgentMetadata(metadata).find((member) => member.memberRunId === runId) ?? null : null;
     if (!memberMetadata) {
       return null;
     }
@@ -366,6 +374,7 @@ export class ApplicationOrchestrationHostService {
     binding: ApplicationRunBindingSummary,
     input: ApplicationRuntimeInput,
   ): Promise<void> {
+    rejectUnsupportedApplicationRuntimeTargetName(input);
     const message = buildRuntimeInputMessage(input);
     if (binding.runtime.subject === "AGENT_RUN") {
       const run = await this.agentRunService.resolveAgentRun(binding.runtime.runId);
@@ -383,13 +392,40 @@ export class ApplicationOrchestrationHostService {
     if (!run) {
       throw new Error(`Application runtime '${binding.runtime.runId}' is not available.`);
     }
-    const targetMemberName = input.targetMemberName?.trim() || null;
-    const result = await run.postMessage(message, targetMemberName);
+    const result = await run.postMessage(message, buildApplicationRuntimeInputTargetSelector(input));
     if (!result.accepted) {
       throw new Error(result.message ?? "Application runtime rejected the input.");
     }
   }
 }
+
+const buildApplicationRuntimeInputTargetSelector = (
+  input: ApplicationRuntimeInput,
+): TeamMemberSelector | null => {
+  const targetMemberPath = Array.isArray(input.targetMemberPath)
+    ? input.targetMemberPath
+    : null;
+  const targetMemberRouteKey = input.targetMemberRouteKey?.trim() || null;
+  if (targetMemberPath && targetMemberPath.length > 0) {
+    const pathSelector = selectorFromMemberPath(targetMemberPath);
+    if (targetMemberRouteKey) {
+      const routeSelector = selectorFromMemberRouteKey(targetMemberRouteKey);
+      if (selectorToRouteKey(pathSelector) !== selectorToRouteKey(routeSelector)) {
+        throw new Error("targetMemberPath and targetMemberRouteKey refer to different team members.");
+      }
+    }
+    return pathSelector;
+  }
+  return targetMemberRouteKey ? selectorFromMemberRouteKey(targetMemberRouteKey) : null;
+};
+
+const rejectUnsupportedApplicationRuntimeTargetName = (
+  input: ApplicationRuntimeInput,
+): void => {
+  if (Object.prototype.hasOwnProperty.call(input as Record<string, unknown>, "targetMemberName")) {
+    throw new Error("targetMemberName is not supported; use targetMemberRouteKey or targetMemberPath.");
+  }
+};
 
 let cachedApplicationOrchestrationHostService: ApplicationOrchestrationHostService | null = null;
 

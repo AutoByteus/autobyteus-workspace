@@ -16,7 +16,7 @@ import {
   CodexTeamRunContext,
 } from "../../../src/agent-team-execution/backends/codex/codex-team-run-context.js";
 import {
-  MixedTeamMemberContext,
+  MixedAgentMemberContext,
   MixedTeamRunContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind, resolveSingleRuntimeTeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -37,7 +37,9 @@ const createMemberConfig = (input: {
   memberRouteKey?: string | null;
   memberRunId?: string | null;
 }): TeamMemberRunConfig => ({
+  memberKind: "agent",
   memberName: input.memberName,
+  memberPath: [input.memberName],
   memberRouteKey: input.memberRouteKey ?? input.memberName,
   memberRunId: input.memberRunId ?? null,
   agentDefinitionId: `agent-${input.memberName}`,
@@ -111,12 +113,13 @@ const createSingleRuntimeMetadata = (input: {
     teamDefinitionId: "team-def-1",
     teamDefinitionName: "Team One",
     coordinatorMemberRouteKey: memberRouteKey,
-    runVersion: 1,
     createdAt: "2026-03-28T00:00:00.000Z",
     updatedAt: "2026-03-28T00:00:00.000Z",
-    memberMetadata: [
+    memberTree: [
       {
+        memberKind: "agent",
         memberRouteKey,
+        memberPath: ["Coordinator"],
         memberName: "Coordinator",
         memberRunId,
         runtimeKind: input.runtimeKind,
@@ -137,12 +140,13 @@ const createMixedMetadata = (teamRunId: string): TeamRunMetadata => ({
   teamDefinitionId: "team-def-1",
   teamDefinitionName: "Team One",
   coordinatorMemberRouteKey: "Coordinator",
-  runVersion: 1,
   createdAt: "2026-03-28T00:00:00.000Z",
   updatedAt: "2026-03-28T00:00:00.000Z",
-  memberMetadata: [
+  memberTree: [
     {
+      memberKind: "agent",
       memberRouteKey: "Coordinator",
+      memberPath: ["Coordinator"],
       memberName: "Coordinator",
       memberRunId: buildTeamMemberRunId(teamRunId, "Coordinator"),
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -155,7 +159,9 @@ const createMixedMetadata = (teamRunId: string): TeamRunMetadata => ({
       workspaceRootPath: "/tmp/team-workspace",
     },
     {
+      memberKind: "agent",
       memberRouteKey: "Reviewer",
+      memberPath: ["Reviewer"],
       memberName: "Reviewer",
       memberRunId: buildTeamMemberRunId(teamRunId, "Reviewer"),
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
@@ -182,6 +188,7 @@ const buildSingleRuntimeContext = (input: {
       memberContexts: [
         new CodexTeamMemberContext({
           memberName: "Coordinator",
+          memberPath: ["Coordinator"],
           memberRouteKey: "Coordinator",
           memberRunId: input.memberRunId,
           agentRunConfig: new AgentRunConfig({
@@ -205,6 +212,7 @@ const buildSingleRuntimeContext = (input: {
       memberContexts: [
         new ClaudeTeamMemberContext({
           memberName: "Coordinator",
+          memberPath: ["Coordinator"],
           memberRouteKey: "Coordinator",
           memberRunId: input.memberRunId,
           agentRunConfig: new AgentRunConfig({
@@ -227,6 +235,7 @@ const buildSingleRuntimeContext = (input: {
     memberContexts: [
       new AutoByteusTeamMemberContext({
         memberName: "Coordinator",
+        memberPath: ["Coordinator"],
         memberRouteKey: "Coordinator",
         memberRunId: input.memberRunId,
         nativeAgentId: input.platformAgentRunId,
@@ -475,7 +484,7 @@ describe("TeamRunService integration", () => {
         expect.objectContaining({
           teamDefinitionId: "team-def-1",
           teamDefinitionName: "Team One",
-          memberMetadata: [
+          memberTree: [
             expect.objectContaining({
               platformAgentRunId,
               llmModelIdentifier,
@@ -511,15 +520,17 @@ describe("TeamRunService integration", () => {
     const runtimeContext = new MixedTeamRunContext({
       coordinatorMemberRouteKey: "Coordinator",
       memberContexts: [
-        new MixedTeamMemberContext({
+        new MixedAgentMemberContext({
           memberName: "Coordinator",
+          memberPath: ["Coordinator"],
           memberRouteKey: "Coordinator",
           memberRunId: buildTeamMemberRunId("team-run-mixed-1", "Coordinator"),
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           platformAgentRunId: "thread-mixed-1",
         }),
-        new MixedTeamMemberContext({
+        new MixedAgentMemberContext({
           memberName: "Reviewer",
+          memberPath: ["Reviewer"],
           memberRouteKey: "Reviewer",
           memberRunId: buildTeamMemberRunId("team-run-mixed-1", "Reviewer"),
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
@@ -594,7 +605,7 @@ describe("TeamRunService integration", () => {
     expect(metadataService.writeMetadata).toHaveBeenCalledWith(
       "team-run-mixed-1",
       expect.objectContaining({
-        memberMetadata: expect.arrayContaining([
+        memberTree: expect.arrayContaining([
           expect.objectContaining({
             memberName: "Coordinator",
             runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -702,7 +713,7 @@ describe("TeamRunService integration", () => {
       expect(metadataService.writeMetadata).toHaveBeenCalledWith(
         metadata.teamRunId,
         expect.objectContaining({
-          memberMetadata: [
+          memberTree: [
             expect.objectContaining({
               platformAgentRunId,
             }),
@@ -794,7 +805,7 @@ describe("TeamRunService integration", () => {
     expect(metadataService.writeMetadata).toHaveBeenCalledWith(
       metadata.teamRunId,
       expect.objectContaining({
-        memberMetadata: expect.arrayContaining([
+        memberTree: expect.arrayContaining([
           expect.objectContaining({
             memberName: "Coordinator",
             platformAgentRunId: "thread-mixed-1",

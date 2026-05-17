@@ -98,17 +98,34 @@ vi.mock('~/stores/teamWorkspaceViewStore', () => ({
   useTeamWorkspaceViewStore: () => teamWorkspaceViewStoreMock,
 }));
 
-const buildTeamContext = (overrides: Record<string, any> = {}) => ({
-  teamRunId: 'team-1',
-  config: {
-    teamDefinitionName: 'Class Room Simulation',
-    teamDefinitionId: 'team-def-1',
-  },
-  focusedMemberName: 'professor',
-  members: new Map<string, any>([
-    [
-      'professor',
-      {
+const buildAgentMemberNode = (memberRouteKey: string, displayName: string, memberRunId: string, agentDefinitionId: string) => ({
+  memberKind: 'agent',
+  memberName: memberRouteKey,
+  displayName,
+  memberPath: [memberRouteKey],
+  memberRouteKey,
+  memberRunId,
+  agentDefinitionId,
+});
+
+const buildTeamContext = (overrides: Record<string, any> = {}) => {
+  const professorNode = buildAgentMemberNode('professor', 'Professor', 'professor-run', 'agent-professor-def');
+  const studentNode = buildAgentMemberNode('student', 'Student', 'student-run', 'agent-student-def');
+
+  return {
+    teamRunId: 'team-1',
+    config: {
+      teamDefinitionName: 'Class Room Simulation',
+      teamDefinitionId: 'team-def-1',
+    },
+    focusedMemberRouteKey: 'professor',
+    memberTree: [professorNode, studentNode],
+    memberNodesByRouteKey: new Map<string, any>([
+      ['professor', professorNode],
+      ['student', studentNode],
+    ]),
+    leafAgentContextsByRouteKey: new Map<string, any>([
+      ['professor', {
         config: {
           agentDefinitionId: 'agent-professor-def',
           agentDefinitionName: 'Professor',
@@ -118,11 +135,8 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => ({
           currentStatus: AgentStatus.Running,
           conversation: { agentName: 'Professor', messages: [] },
         },
-      },
-    ],
-    [
-      'student',
-      {
+      }],
+      ['student', {
         config: {
           agentDefinitionId: 'agent-student-def',
           agentDefinitionName: 'Student',
@@ -132,12 +146,12 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => ({
           currentStatus: AgentStatus.Idle,
           conversation: { agentName: 'Student', messages: [] },
         },
-      },
-    ],
-  ]),
-  currentStatus: AgentTeamStatus.Idle,
-  ...overrides,
-});
+      }],
+    ]),
+    currentStatus: AgentTeamStatus.Idle,
+    ...overrides,
+  };
+};
 
 describe('TeamWorkspaceView', () => {
   beforeEach(() => {
@@ -196,8 +210,10 @@ describe('TeamWorkspaceView', () => {
 
   it('falls back to focused route key when focused member context is missing', () => {
     state.activeTeamContext = buildTeamContext({
-      focusedMemberName: 'missing-member',
-      members: new Map<string, any>(),
+      focusedMemberRouteKey: 'missing-member',
+      memberTree: [],
+      memberNodesByRouteKey: new Map<string, any>(),
+      leafAgentContextsByRouteKey: new Map<string, any>(),
     });
     const wrapper = mountComponent();
     expect(wrapper.find('h4').text()).toBe('missing-member');

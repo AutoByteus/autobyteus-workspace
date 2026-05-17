@@ -13,7 +13,7 @@ import {
 } from "../../../src/agent-team-execution/backends/claude/claude-team-run-context.js";
 import { MixedTeamManager } from "../../../src/agent-team-execution/backends/mixed/mixed-team-manager.js";
 import {
-  MixedTeamMemberContext,
+  MixedAgentMemberContext,
   MixedTeamRunContext,
 } from "../../../src/agent-team-execution/backends/mixed/mixed-team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -26,12 +26,14 @@ const teamRunId = "team-focused-interrupt-1";
 const memberInputs = [
   {
     memberName: "Solution Designer",
+    memberPath: ["solution_designer"],
     memberRouteKey: "solution_designer",
     memberRunId: "team-1::solution_designer",
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   },
   {
     memberName: "Code Reviewer",
+    memberPath: ["code_reviewer"],
     memberRouteKey: "code_reviewer",
     memberRunId: "team-1::code_reviewer",
     runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
@@ -75,10 +77,51 @@ const createFakeAgentRun = () => ({
 const attachMemberRuns = (manager: unknown) => {
   const solutionDesignerRun = createFakeAgentRun();
   const codeReviewerRun = createFakeAgentRun();
-  const memberRuns = (manager as { memberRuns: Map<string, unknown> }).memberRuns;
+  const memberRuns = (manager as { memberRuns?: Map<string, unknown> }).memberRuns;
 
-  memberRuns.set("solution_designer", solutionDesignerRun);
-  memberRuns.set("code_reviewer", codeReviewerRun);
+  if (memberRuns) {
+    memberRuns.set("solution_designer", solutionDesignerRun);
+    memberRuns.set("code_reviewer", codeReviewerRun);
+    return { solutionDesignerRun, codeReviewerRun };
+  }
+
+  const mixed = manager as {
+    teamContext: TeamRunContext<MixedTeamRunContext>;
+    memberRegistry: {
+      handles: Map<string, unknown>;
+    };
+  };
+  const contexts = mixed.teamContext.runtimeContext.memberContexts;
+  const makeHandle = (
+    context: MixedAgentMemberContext,
+    run: ReturnType<typeof createFakeAgentRun>,
+  ) => ({
+    context,
+    isActive: () => true,
+    getStatusSnapshot: run.getStatusSnapshot,
+    postMessage: vi.fn(),
+    deliverInterMemberMessage: vi.fn(),
+    approveToolInvocation: vi.fn(),
+    interrupt: vi.fn(async () => run.interrupt()),
+    terminate: vi.fn(),
+    dispose: vi.fn(),
+  });
+
+  const solutionDesignerContext = contexts.find(
+    (context) => context.memberRouteKey === "solution_designer",
+  ) as MixedAgentMemberContext;
+  const codeReviewerContext = contexts.find(
+    (context) => context.memberRouteKey === "code_reviewer",
+  ) as MixedAgentMemberContext;
+
+  mixed.memberRegistry.handles.set(
+    "solution_designer",
+    makeHandle(solutionDesignerContext, solutionDesignerRun),
+  );
+  mixed.memberRegistry.handles.set(
+    "code_reviewer",
+    makeHandle(codeReviewerContext, codeReviewerRun),
+  );
 
   return { solutionDesignerRun, codeReviewerRun };
 };
@@ -94,6 +137,7 @@ const createCodexManager = () => {
         (member) =>
           new CodexTeamMemberContext({
             memberName: member.memberName,
+            memberPath: member.memberPath,
             memberRouteKey: member.memberRouteKey,
             memberRunId: member.memberRunId,
             agentRunConfig: createAgentRunConfig({
@@ -123,6 +167,7 @@ const createClaudeManager = () => {
         (member) =>
           new ClaudeTeamMemberContext({
             memberName: member.memberName,
+            memberPath: member.memberPath,
             memberRouteKey: member.memberRouteKey,
             memberRunId: member.memberRunId,
             agentRunConfig: createAgentRunConfig({
@@ -151,8 +196,9 @@ const createMixedManager = () => {
       coordinatorMemberRouteKey: "solution_designer",
       memberContexts: memberInputs.map(
         (member) =>
-          new MixedTeamMemberContext({
+          new MixedAgentMemberContext({
             memberName: member.memberName,
+            memberPath: member.memberPath,
             memberRouteKey: member.memberRouteKey,
             memberRunId: member.memberRunId,
             runtimeKind: member.runtimeKind,
@@ -162,11 +208,7 @@ const createMixedManager = () => {
     }),
   });
 
-  return new MixedTeamManager(context, {
-    agentRunManager: {} as never,
-    memberTeamContextBuilder: {} as never,
-    interAgentMessageRouter: {} as never,
-  });
+  return new MixedTeamManager(context);
 };
 
 describe.each([

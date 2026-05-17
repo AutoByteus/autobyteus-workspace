@@ -37,7 +37,8 @@ export type ChannelBinding = {
   teamDefinitionId: string | null;
   teamLaunchPreset: ChannelBindingTeamLaunchPreset | null;
   teamRunId: string | null;
-  targetNodeName: string | null;
+  targetMemberRouteKey: string | null;
+  targetMemberPath: string[] | null;
   allowTransportFallback: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -71,7 +72,8 @@ export type UpsertChannelBindingInput = {
   teamDefinitionId?: string | null;
   teamLaunchPreset?: ChannelBindingTeamLaunchPreset | null;
   teamRunId?: string | null;
-  targetNodeName?: string | null;
+  targetMemberRouteKey?: string | null;
+  targetMemberPath?: string[] | null;
   allowTransportFallback?: boolean;
 };
 
@@ -152,7 +154,8 @@ export type ChannelTeamRunOutputTarget = {
   targetType: "TEAM";
   teamRunId: string;
   entryMemberRunId: string | null;
-  entryMemberName: string | null;
+  entryMemberRouteKey: string | null;
+  entryMemberPath: string[] | null;
 };
 
 export type ChannelRunOutputTarget =

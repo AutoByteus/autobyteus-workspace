@@ -39,13 +39,13 @@
         <TeamGridView
           v-else-if="currentMode === 'grid'"
           :team-context="activeTeamContext"
-          :focused-member-name="activeTeamContext.focusedMemberName"
+          :focused-member-route-key="activeTeamContext.focusedMemberRouteKey"
           @select-member="setFocusedMember"
         />
         <TeamSpotlightView
           v-else
           :team-context="activeTeamContext"
-          :focused-member-name="activeTeamContext.focusedMemberName"
+          :focused-member-route-key="activeTeamContext.focusedMemberRouteKey"
           @select-member="setFocusedMember"
         />
       </div>
@@ -53,7 +53,23 @@
       <div v-if="showSharedComposer" class="border-t border-gray-200 bg-white px-4 py-3">
         <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.replying_to') }}<span class="text-gray-800">{{ headerTitle }}</span>
         </p>
-        <AgentUserInputForm />
+        <AgentUserInputForm v-if="focusedMemberContext" />
+        <form v-else class="space-y-2" @submit.prevent="sendSubteamMessage">
+          <textarea
+            v-model="subteamDraft"
+            class="min-h-[88px] w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            :placeholder="$t('workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder')"
+          />
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              :disabled="!subteamDraft.trim() || isSendingSubteamDraft"
+            >
+              {{ $t('workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam') }}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -72,6 +88,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import { useTeamWorkspaceViewStore, type TeamWorkspaceViewMode } from '~/stores/teamWorkspaceViewStore';
@@ -87,6 +104,7 @@ import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeade
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 
 const teamContextsStore = useAgentTeamContextsStore();
+const teamRunStore = useAgentTeamRunStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const teamRunConfigStore = useTeamRunConfigStore();
 const agentRunConfigStore = useAgentRunConfigStore();
@@ -94,15 +112,24 @@ const selectionStore = useAgentSelectionStore();
 const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 const teamWorkspaceViewStore = useTeamWorkspaceViewStore();
 const headerAvatarLoadError = ref(false);
+const subteamDraft = ref('');
+const isSendingSubteamDraft = ref(false);
 const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamMemberPresentation();
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const focusedMemberContext = computed(() => {
   const team = activeTeamContext.value;
-  if (!team?.focusedMemberName) {
+  if (!team?.focusedMemberRouteKey) {
     return null;
   }
-  return team.members.get(team.focusedMemberName) ?? null;
+  return team.leafAgentContextsByRouteKey.get(team.focusedMemberRouteKey) ?? null;
+});
+const focusedMemberNode = computed(() => {
+  const team = activeTeamContext.value;
+  if (!team?.focusedMemberRouteKey) {
+    return null;
+  }
+  return team.memberNodesByRouteKey.get(team.focusedMemberRouteKey) ?? null;
 });
 
 const currentMode = computed<TeamWorkspaceViewMode>(() => {
@@ -110,11 +137,14 @@ const currentMode = computed<TeamWorkspaceViewMode>(() => {
 });
 
 const showSharedComposer = computed(() => {
-  return Boolean(activeTeamContext.value) && currentMode.value !== 'focus';
+  return Boolean(activeTeamContext.value) && (
+    currentMode.value !== 'focus' || focusedMemberNode.value?.memberKind === 'agent_team'
+  );
 });
 
 const headerStatus = computed(() => {
   return focusedMemberContext.value?.state.currentStatus
+    ?? focusedMemberNode.value?.currentStatus
     ?? activeTeamContext.value?.currentStatus
     ?? AgentStatus.Offline;
 });
@@ -125,23 +155,24 @@ const headerTitle = computed(() => {
     return '';
   }
 
-  const focusedMemberRouteKey = team.focusedMemberName?.trim();
+  const focusedMemberRouteKey = team.focusedMemberRouteKey?.trim();
   if (!focusedMemberRouteKey) {
     return team.config.teamDefinitionName || 'Team';
   }
 
-  return getMemberDisplayName(focusedMemberRouteKey, focusedMemberContext.value)
+  return focusedMemberNode.value?.displayName
+    || getMemberDisplayName(focusedMemberRouteKey, focusedMemberContext.value)
     || team.config.teamDefinitionName
     || 'Team';
 });
 
 const headerAvatarUrl = computed(() => {
   const team = activeTeamContext.value;
-  if (!team?.focusedMemberName) {
+  if (!team?.focusedMemberRouteKey || focusedMemberNode.value?.memberKind === 'agent_team') {
     return '';
   }
 
-  return getMemberAvatarUrl(team.focusedMemberName, focusedMemberContext.value);
+  return getMemberAvatarUrl(team.focusedMemberRouteKey, focusedMemberContext.value);
 });
 
 const showHeaderAvatarImage = computed(() => Boolean(headerAvatarUrl.value) && !headerAvatarLoadError.value);
@@ -158,12 +189,26 @@ const setCurrentMode = (mode: TeamWorkspaceViewMode) => {
   teamWorkspaceViewStore.setMode(activeTeamContext.value.teamRunId, mode);
 };
 
-const setFocusedMember = async (memberName: string) => {
+const setFocusedMember = async (memberRouteKey: string) => {
   const teamRunId = activeTeamContext.value?.teamRunId;
   if (!teamRunId) {
     return;
   }
-  await teamContextsStore.focusMemberAndEnsureHydrated?.(teamRunId, memberName);
+  await teamContextsStore.focusMemberAndEnsureHydrated?.(teamRunId, memberRouteKey);
+};
+
+const sendSubteamMessage = async () => {
+  const text = subteamDraft.value.trim();
+  if (!text) {
+    return;
+  }
+  isSendingSubteamDraft.value = true;
+  try {
+    await teamRunStore.sendMessageToFocusedMember(text, []);
+    subteamDraft.value = '';
+  } finally {
+    isSendingSubteamDraft.value = false;
+  }
 };
 
 const createNewTeamRun = () => {

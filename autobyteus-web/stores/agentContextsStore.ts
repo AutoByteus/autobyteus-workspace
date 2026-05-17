@@ -184,6 +184,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
         existing.state.conversation = options.conversation;
         applyMemberOrHistoryStatusSnapshot(existing, nextStatus, {
           preserveLiveInterrupt: existing.isSubscribed,
+          preserveCurrentStatus: existing.isSubscribed,
         });
         return;
       }

@@ -41,6 +41,36 @@ const createAgentContext = (runId: string): AgentContext => {
   return context;
 };
 
+const buildAgentNode = (memberRouteKey: string) => ({
+  memberKind: 'agent' as const,
+  memberName: memberRouteKey.split('/').at(-1) || memberRouteKey,
+  displayName: memberRouteKey.split('/').at(-1) || memberRouteKey,
+  memberPath: memberRouteKey.split('/'),
+  memberRouteKey,
+  agentDefinitionId: `def-${memberRouteKey}`,
+});
+
+const buildTeamContext = (
+  members: Array<[string, AgentContext]>,
+  focusedMemberRouteKey: string,
+) => {
+  const memberTree = members.map(([memberRouteKey]) => buildAgentNode(memberRouteKey));
+  return {
+    teamRunId: 'team-1',
+    config: { teamDefinitionId: 'team-def-1' } as any,
+    memberTree,
+    memberNodesByRouteKey: new Map(memberTree.map((member) => [member.memberRouteKey, member])),
+    leafAgentContextsByRouteKey: new Map(members),
+    coordinatorMemberRouteKey: 'solution_designer',
+    historicalHydration: null,
+    focusedMemberRouteKey,
+    currentStatus: AgentTeamStatus.Running,
+    isSubscribed: true,
+    taskPlan: null,
+    taskStatuses: null,
+  };
+};
+
 describe('activeContextStore interrupt routing', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -54,20 +84,10 @@ describe('activeContextStore interrupt routing', () => {
 
     const solutionDesigner = createAgentContext('team-1::solution_designer');
     const codeReviewer = createAgentContext('team-1::code_reviewer');
-    teamContextsStore.addTeamContext({
-      teamRunId: 'team-1',
-      config: { teamDefinitionId: 'team-def-1' } as any,
-      members: new Map([
-        ['solution_designer', solutionDesigner],
-        ['code_reviewer', codeReviewer],
-      ]),
-      coordinatorMemberRouteKey: 'solution_designer',
-      focusedMemberName: 'solution_designer',
-      currentStatus: AgentTeamStatus.Running,
-      isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
-    });
+    teamContextsStore.addTeamContext(buildTeamContext([
+      ['solution_designer', solutionDesigner],
+      ['code_reviewer', codeReviewer],
+    ], 'solution_designer'));
     selectionStore.selectRun('team-1', 'team');
 
     expect(activeContextStore.activeAgentContext?.state.runId).toBe('team-1::solution_designer');
@@ -83,7 +103,7 @@ describe('activeContextStore interrupt routing', () => {
     expect(interruptFocusedMember).toHaveBeenCalledWith({
       teamRunId: 'team-1',
       targetMemberRouteKey: 'code_reviewer',
-      targetAgentRunId: 'team-1::code_reviewer',
+      targetMemberRunId: 'team-1::code_reviewer',
     });
   });
 
@@ -115,21 +135,13 @@ describe('activeContextStore interrupt routing', () => {
     const activeContextStore = useActiveContextStore();
     const solutionDesigner = createAgentContext('team-1::solution_designer');
 
-    teamContextsStore.addTeamContext({
-      teamRunId: 'team-1',
-      config: { teamDefinitionId: 'team-def-1' } as any,
-      members: new Map([['solution_designer', solutionDesigner]]),
-      coordinatorMemberRouteKey: 'solution_designer',
-      focusedMemberName: 'solution_designer',
-      currentStatus: AgentTeamStatus.Running,
-      isSubscribed: true,
-      taskPlan: null,
-      taskStatuses: null,
-    });
+    teamContextsStore.addTeamContext(buildTeamContext([
+      ['solution_designer', solutionDesigner],
+    ], 'solution_designer'));
     selectionStore.selectRun('team-1', 'team');
 
     const activeTeam = teamContextsStore.activeTeamContext!;
-    activeTeam.focusedMemberName = 'missing_member';
+    activeTeam.focusedMemberRouteKey = 'missing_member';
     const interruptFocusedMember = vi.spyOn(teamRunStore, 'interruptFocusedMemberGeneration');
 
     expect(() => activeContextStore.interruptGeneration()).toThrow('No active agent context');

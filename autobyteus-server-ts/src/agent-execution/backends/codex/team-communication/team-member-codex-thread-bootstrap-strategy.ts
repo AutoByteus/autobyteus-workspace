@@ -45,9 +45,8 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
     const instructionComposition = composeMemberRunInstructions({
       teamInstruction: memberTeamContext.teamInstruction,
       agentInstruction: input.agentInstruction,
-      currentMemberName: memberTeamContext.memberName,
+      memberTeamContext,
       sendMessageToEnabled,
-      teammates: memberTeamContext.members,
     });
 
     return {
@@ -65,10 +64,8 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
       dynamicToolRegistrations:
         sendMessageToEnabled && memberTeamContext.deliverInterAgentMessage
           ? buildSendMessageToDynamicToolRegistrations({
-              allowedRecipientNames: memberTeamContext.allowedRecipientNames,
               deliverInterAgentMessage: memberTeamContext.deliverInterAgentMessage,
-              senderRunId: input.runContext.runId,
-              teamRunId: memberTeamContext.teamRunId,
+              memberTeamContext,
             })
           : null,
     };

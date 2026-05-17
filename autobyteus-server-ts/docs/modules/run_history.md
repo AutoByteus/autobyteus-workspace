@@ -98,12 +98,35 @@ Important identity/storage rules:
 - if the normalized standalone agent `name` and `role` collapse to the same value, the readable stem is written once instead of duplicating the segment
 - forward-only readable-id normalization does not rename historical persisted run ids; restore continues to use the stored run id
 - team members use deterministic `memberRunId` owned by the team aggregate
+- team member identity is path-based:
+  - `memberPath` is the canonical nested path array
+  - `memberRouteKey` is the normalized slash-delimited route key derived from
+    that path
+  - bare `memberName` is display/top-level identity and is not sufficient for
+    duplicate nested leaf names
 - `memberRunId` defaults to a readable route slug plus stable hash: `<route_slug>_<16-hex>`
 - Codex and Claude team members write storage-only local memory under the member run directory, including single-runtime Claude teams and mixed-runtime members
 - runtime-native identifiers remain separate from domain identifiers:
   - AutoByteus native agent id
   - Codex thread id
   - Claude session id
+
+Team metadata now stores a recursive `memberTree` instead of a flat member list.
+Each member has `memberKind`:
+
+- `agent` nodes hold runtime kind, runtime-native id, workspace/model/config
+  data, and the member storage id.
+- `agent_team` nodes hold the child team definition id, optional restored child
+  `teamRunId`, child coordinator route key, and another `memberTree`.
+
+Flat leaf-agent views are derived through `team-run-metadata-flattener.ts` for
+projection/search consumers. The derived flat view is not authoritative for
+restore topology.
+
+Nested child team runs are not independent workspace-history rows. Their child
+`teamRunId` is retained on the parent subteam metadata node for restore and
+projection, while default workspace history lists the parent team run and its
+recursive member tree.
 
 ## Projection Model
 
@@ -164,11 +187,64 @@ team member metadata -> member memoryDir -> raw trace corpus -> historical repla
 - Local replay is the only display source, so there is no local/native
   transcript reconciliation for focused history reload.
 
-Codex thread-history replay may still be useful for diagnostics and provider
-protocol investigation. It is not the display authority for normal Codex UI
-history; missing Codex display rows should be fixed by ensuring the live
-normalized events and local raw traces are written correctly, not by merging
-Codex native `thread/read` rows into UI projection.
+Team rows keep their existing opening/coordinator-title behavior. Team
+follow-up activity should refresh activity time/status without changing a
+stable non-empty title.
+
+Produced-file Artifacts are not part of the replay bundle, but their historical
+read path must resolve the same run identity. `RunFileChangeProjectionService`
+uses `AgentRunMetadataService` for standalone runs and team metadata plus
+`TeamMemberMemoryLayout` for team-member run ids. This lets
+`getRunFileChanges(runId)` and `/runs/:runId/file-change-content` read
+AutoByteus/native team-member `agent_teams/<teamRunId>/<memberRunId>/file_changes.json`
+without adding a separate team-file route or treating produced files as
+message-reference rows.
+
+Team Communication messages are also outside the member replay bundle. Accepted
+team communication events are processor input; derived
+`TEAM_COMMUNICATION_MESSAGE` events are projected once per team run into
+`agent_teams/<teamRunId>/team_communication_messages.json`. Historical Team tab
+hydration reads that projection through `getTeamCommunicationMessages(teamRunId)`,
+and referenced content opens by persisted message-owned identity at
+`/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
+The projection stores sender and receiver `memberKind`, `memberPath`,
+`memberRouteKey`, and optional `representedSubTeam` metadata. Messages to a
+subteam representative remain attributable to the actual leaf path while showing
+the represented subteam, and child-to-parent reports keep the sender's subteam
+representation in restored Team Messages. The member Artifacts tab must not
+hydrate those reference files as Sent/Received artifact rows.
+
+The `agent-memory` subsystem no longer owns the canonical replay DTO. It supplies
+raw traces and memory-inspector views only; run-history is the only subsystem
+that may normalize those raw traces into the historical replay bundle used by
+reopen/hydration.
+
+Local replay is the display authority for normal run-history UI. Codex
+thread-history replay and other runtime-native replay providers may still be
+useful for diagnostics and provider protocol investigation, but they are not
+reachable from normal `getRunProjection` / `getTeamMemberRunProjection` UI
+history and must not be used to recover missing display rows. Missing Codex,
+Claude, or AutoByteus display rows should be fixed by ensuring live normalized
+events and local raw traces are written correctly, not by merging native runtime
+history into UI projection.
+
+Projection dedupe is identity-aware at the run-history projection boundary. Rows
+with explicit message or tool invocation identity are merged by that identity;
+semantic duplicates with one missing timestamp may merge into the richer row.
+Repeated user/assistant rows that have no explicit identity and no timestamp are
+preserved as separate rows so repeated direct messages do not disappear during
+restore/open.
+
+Normalization model:
+
+- Local memory: raw trace rows -> historical replay events -> replay bundle
+
+Local-memory projection resolves the local run id from the basename of the
+explicit `memoryDir`, so a team-member replay reads `<memberRunId>` inside
+`memory/agent_teams/<teamRunId>/...` rather than confusing runtime-native ids
+with local storage ids. Provider-boundary marker traces are provenance and are
+ignored as conversation/activity content by the historical replay transformer.
+
 
 Frontend restore uses that bundle in two sibling hydration paths:
 
@@ -214,14 +290,25 @@ Segmented archives are not compression or retention. There is still no total-sto
 
 For team runs:
 
-1. Team metadata is the source of truth for member routing, member identity, and runtime kind.
-2. `memberRouteKey` selects the member within the team.
+1. Recursive `memberTree` metadata is the source of truth for member routing,
+   member identity, topology, and runtime kind.
+2. `memberPath` / `memberRouteKey` select the member within the team tree.
 3. `memberRunId` identifies the persisted child run/storage subtree.
 4. `platformAgentRunId` identifies the runtime-native session/thread/agent when the runtime requires one.
-5. Team-member projection resolves the member from team metadata first, then delegates metadata to `AgentRunViewProjectionService` for the local replay display path.
-6. Codex and Claude team-member projection use the same local member memory directory path as AutoByteus; they do not preload, merge, or fallback to runtime-native provider projection.
+5. `agent_team` nodes record the child `teamRunId` and child tree used to
+   restore nested mixed-team handles on demand.
+6. Team-member projection resolves the member from recursive team metadata first,
+   then delegates metadata, including the team-member memory directory, to
+   `AgentRunViewProjectionService` for the local replay display path.
+7. Codex and Claude team-member projection use the same local member memory
+   directory path as AutoByteus; they do not preload, merge, or fallback to
+   runtime-native provider projection.
 7. Team-member reopen uses the same replay bundle shape as standalone reopen, including both `conversation` and `activities`.
 
 This keeps create, restore, and projection aligned on the same persisted team/member contract instead of inferring storage or identity later.
+
+Unsupported historical flat team metadata is not migrated or inferred into a
+nested topology during restore. If the tree was not recorded, restore fails
+clearly instead of guessing path ownership.
 
 Team termination should update run-history activity state only after the backend confirms termination. The frontend then marks the team resume config inactive and refreshes the workspace history tree; failed backend termination should leave the local team runtime and active/inactive cache untouched.

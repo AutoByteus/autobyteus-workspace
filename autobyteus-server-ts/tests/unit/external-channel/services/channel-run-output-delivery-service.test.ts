@@ -31,7 +31,7 @@ const target = {
   targetType: "TEAM" as const,
   teamRunId: "team-1",
   entryMemberRunId: "coordinator-run-1",
-  entryMemberName: "coordinator",
+  entryMemberRouteKey: "coordinator",
 };
 
 describe("ChannelRunOutputDeliveryService", () => {
@@ -79,7 +79,7 @@ describe("ChannelRunOutputDeliveryService", () => {
         targetType: "TEAM",
         teamRunId: "team-1",
         entryMemberRunId: null,
-        entryMemberName: "coordinator",
+        entryMemberRouteKey: "coordinator",
       },
       turnId: "turn-1",
     });

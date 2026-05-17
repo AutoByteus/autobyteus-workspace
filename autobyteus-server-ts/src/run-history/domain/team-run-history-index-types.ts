@@ -1,11 +1,12 @@
-import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type {
   TeamRunDeleteLifecycleRecord,
   TeamRunIndexFileRecord,
   TeamRunIndexRowRecord,
   TeamRunStatusRecord,
 } from "../store/team-run-history-index-record-types.js";
+import type { TeamRunMemberMetadata } from "../store/team-run-metadata-types.js";
 export {
   TEAM_RUN_HISTORY_INDEX_RECORD_VERSION as TEAM_RUN_HISTORY_INDEX_VERSION,
 } from "../store/team-run-history-index-record-types.js";
@@ -45,4 +46,5 @@ export interface TeamRunHistoryItem {
   deleteLifecycle: TeamRunDeleteLifecycle;
   isActive: boolean;
   members: TeamRunMemberHistoryItem[];
+  memberTree: TeamRunMemberMetadata[];
 }

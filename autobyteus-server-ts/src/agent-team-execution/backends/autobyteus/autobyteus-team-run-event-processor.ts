@@ -69,6 +69,8 @@ const normalizeReferenceFilesPayload = (payload: Record<string, unknown>): strin
 };
 
 export class AutoByteusTeamRunEventProcessor {
+  private readonly agentEventConverters = new Map<string, AutoByteusStreamEventConverter>();
+
   constructor(
     private readonly teamRunId: string,
     private readonly options: AutoByteusTeamRunEventProcessorOptions,
@@ -93,6 +95,7 @@ export class AutoByteusTeamRunEventProcessor {
       return [{
         eventSourceType: TeamRunEventSourceType.TEAM,
         teamRunId: this.teamRunId,
+        sourcePath: this.resolveTeamSourcePath(subTeamNodeName),
         data: {
           status: this.options.getTeamStatusSnapshot?.().status ?? "offline",
           ...(typeof nativePayload.error_message === "string"
@@ -107,6 +110,7 @@ export class AutoByteusTeamRunEventProcessor {
       return [{
         eventSourceType: TeamRunEventSourceType.TASK_PLAN,
         teamRunId: this.teamRunId,
+        sourcePath: this.resolveTeamSourcePath(subTeamNodeName),
         data: asRecord(nativeEvent.data as TaskPlanEventPayload) as TeamRunTaskPlanEventPayload,
         subTeamNodeName,
       }];
@@ -162,17 +166,9 @@ export class AutoByteusTeamRunEventProcessor {
     if (runtimeMemberContext && nativeAgentId) {
       runtimeMemberContext.nativeAgentId = nativeAgentId;
     }
-    const converter = new AutoByteusStreamEventConverter(
+    const converter = this.getAgentEventConverter(
       resolvedMemberRunId,
-      () => this.options.getMemberStatusSnapshot?.(
-        resolvedMemberRunId,
-        agentPayload.agent_name,
-      ) ?? {
-        status: "offline",
-        can_interrupt: false,
-        agent_id: resolvedMemberRunId,
-        agent_name: agentPayload.agent_name,
-      },
+      agentPayload.agent_name,
     );
     const convertedEvent = converter.convert(agentPayload.agent_event);
     if (!convertedEvent) {
@@ -199,9 +195,39 @@ export class AutoByteusTeamRunEventProcessor {
       publishTeamEvent: (event) => {
         processedEvents.push(event);
       },
+      sourcePath: this.resolveSourcePath(
+        runtimeMemberContext?.memberPath ?? null,
+        agentPayload.agent_name,
+        subTeamNodeName,
+      ),
       subTeamNodeName,
     });
     return processedEvents;
+  }
+
+  private getAgentEventConverter(
+    memberRunId: string,
+    memberName: string | null,
+  ): AutoByteusStreamEventConverter {
+    const cached = this.agentEventConverters.get(memberRunId);
+    if (cached) {
+      return cached;
+    }
+
+    const converter = new AutoByteusStreamEventConverter(
+      memberRunId,
+      () => this.options.getMemberStatusSnapshot?.(
+        memberRunId,
+        memberName,
+      ) ?? {
+        status: "offline",
+        can_interrupt: false,
+        agent_id: memberRunId,
+        agent_name: memberName ?? undefined,
+      },
+    );
+    this.agentEventConverters.set(memberRunId, converter);
+    return converter;
   }
 
   private enrichConvertedEvent(input: {
@@ -344,5 +370,26 @@ export class AutoByteusTeamRunEventProcessor {
           memberContext.memberRouteKey === identity,
       ) ?? null
     );
+  }
+
+  private resolveSourcePath(
+    memberPath: string[] | null,
+    memberName: string | null,
+    subTeamNodeName: string | null,
+  ): string[] {
+    if (memberPath?.length) {
+      return [...memberPath];
+    }
+    const normalizedMemberName = normalizeOptionalString(memberName);
+    const normalizedSubTeamName = normalizeOptionalString(subTeamNodeName);
+    if (normalizedSubTeamName && normalizedMemberName) {
+      return [normalizedSubTeamName, normalizedMemberName];
+    }
+    return normalizedMemberName ? [normalizedMemberName] : this.resolveTeamSourcePath(subTeamNodeName);
+  }
+
+  private resolveTeamSourcePath(subTeamNodeName: string | null): string[] {
+    const normalizedSubTeamName = normalizeOptionalString(subTeamNodeName);
+    return normalizedSubTeamName ? [normalizedSubTeamName] : [];
   }
 }

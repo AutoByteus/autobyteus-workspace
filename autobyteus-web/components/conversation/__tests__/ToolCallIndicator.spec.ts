@@ -165,6 +165,6 @@ describe('ToolCallIndicator.vue', () => {
     expect(setHighlightedActivity).not.toHaveBeenCalled();
 
     await wrapper.get('button:last-of-type').trigger('click');
-    expect(postToolExecutionApproval).toHaveBeenCalledWith('abc123def456', true);
+    expect(postToolExecutionApproval).toHaveBeenCalledWith('abc123def456', true, null, null);
   });
 });

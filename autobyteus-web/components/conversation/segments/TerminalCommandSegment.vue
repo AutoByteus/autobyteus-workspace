@@ -5,6 +5,7 @@
     :status="segment.status"
     :args="displayArgs"
     :error-message="segment.error ?? undefined"
+    :approval-target="segment.approvalTarget ?? null"
   />
 </template>
 

@@ -9,7 +9,10 @@ export class TeamRuntimeStatusSnapshotService {
 
     return [
       ...memberMessages,
-      new ServerMessage(ServerMessageType.TEAM_STATUS, teamRun.getStatusSnapshot()),
+      new ServerMessage(ServerMessageType.TEAM_STATUS, {
+        ...teamRun.getStatusSnapshot(),
+        source_path: [],
+      }),
     ];
   }
 }

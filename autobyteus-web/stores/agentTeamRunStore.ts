@@ -10,7 +10,6 @@ import type {
 } from '~/generated/graphql';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming';
@@ -19,22 +18,20 @@ import type { ContextAttachment } from '~/types/conversation';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { ToolApprovalTarget } from '~/types/segments';
 import { partitionContextAttachmentsForStreaming } from '~/utils/contextFiles/contextAttachmentSend';
 import {
   buildTeamMemberDraftContextFileOwner,
   buildTeamMemberFinalContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner';
 import { loadRuntimeProviderGroupsForSelection } from '~/composables/useRuntimeScopedModelSelection';
-import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
+import { flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
 import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
 import {
-  applyAcceptedTeamMemberStartupStatus,
   applyOfflineOrTerminalCleanup,
-  applyTeamMemberTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
-import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 import {
   beginLocalUserSubmission,
   failLocalSubmission,
@@ -44,6 +41,20 @@ import {
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
+
+const buildClientMessageId = (): string => {
+  const randomId = globalThis.crypto?.randomUUID?.();
+  if (randomId) {
+    return `client_${randomId}`;
+  }
+  return `client_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+};
+
+const buildMemberInputDedupeKey = (
+  teamRunId: string,
+  memberRouteKey: string,
+  messageId: string,
+): string => `member_input:${teamRunId}:${memberRouteKey}:${messageId}`;
 
 interface CreateAgentTeamRunMutationPayload {
   createAgentTeamRun?: {
@@ -71,7 +82,7 @@ interface TerminateAgentTeamRunMutationPayload {
 export interface FocusedTeamMemberInterruptTarget {
   teamRunId: string;
   targetMemberRouteKey: string;
-  targetAgentRunId?: string | null;
+  targetMemberRunId?: string | null;
 }
 
 export const useAgentTeamRunStore = defineStore('agentTeamRun', {
@@ -176,7 +187,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (teamContext) {
           teamContext.isSubscribed = false;
           teamContext.currentStatus = AgentTeamStatus.Offline;
-          teamContext.members.forEach((member) => {
+          teamContext.leafAgentContextsByRouteKey.forEach((member) => {
             applyOfflineOrTerminalCleanup(member);
             useAgentActivityStore().clearActivities(member.state.runId);
           });
@@ -239,7 +250,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
       teamContext.isSubscribed = false;
       teamContext.currentStatus = AgentTeamStatus.Offline;
-      teamContext.members.forEach((member) => {
+      teamContext.leafAgentContextsByRouteKey.forEach((member) => {
         applyOfflineOrTerminalCleanup(member);
         useAgentActivityStore().clearActivities(member.state.runId);
       });
@@ -254,12 +265,13 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const contextFileUploadStore = useContextFileUploadStore();
       const activeTeam = teamContextsStore.activeTeamContext;
       const focusedMember = teamContextsStore.focusedMemberContext;
+      const focusedNode = teamContextsStore.focusedMemberNode;
 
-      if (!focusedMember || !activeTeam) throw new Error('No active team context.');
+      if (!activeTeam || !focusedNode) throw new Error('No active team context.');
 
       const isTemporary = activeTeam.teamRunId.startsWith('temp-');
       let finalTeamRunId = activeTeam.teamRunId;
-      const targetMemberRouteKey = activeTeam.focusedMemberName;
+      const targetMemberRouteKey = activeTeam.focusedMemberRouteKey;
       const teamResumeConfig = !isTemporary
         ? runHistoryStore.teamResumeConfigByTeamRunId[finalTeamRunId] || null
         : null;
@@ -271,13 +283,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (isTemporary) {
           this.isLaunching = true;
 
-          const teamDefinitionStore = useAgentTeamDefinitionStore();
-          const teamDef = teamDefinitionStore.getAgentTeamDefinitionById(activeTeam.config.teamDefinitionId);
-          if (!teamDef) throw new Error(`Team definition ${activeTeam.config.teamDefinitionId} not found.`);
-          const leafMembers = resolveLeafTeamMembers(teamDef, {
-            getTeamDefinitionById: (teamDefinitionId: string) =>
-              teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
-          });
+          const leafMembers = flattenLeafAgentMemberNodes(activeTeam.memberTree);
 
           const runtimeKinds = new Set<string>();
           runtimeKinds.add(activeTeam.config.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND);
@@ -309,20 +315,12 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           }));
         }
 
-        const memberStatus = normalizeAgentRuntimeStatus(focusedMember.state.currentStatus);
-        const shouldApplyStartupStatus =
-          isTemporary ||
-          teamResumeConfig?.isActive === false ||
-          memberStatus === AgentStatus.Offline ||
-          memberStatus === AgentStatus.Error ||
-          memberStatus === AgentStatus.Initializing;
-        localSubmission = beginLocalUserSubmission(focusedMember, {
-          text,
-          attachments: contextAttachments,
-          applyInitializing: shouldApplyStartupStatus
-            ? () => applyAcceptedTeamMemberStartupStatus(activeTeam, focusedMember)
-            : undefined,
-        });
+        if (focusedMember) {
+          localSubmission = beginLocalUserSubmission(focusedMember, {
+            text,
+            attachments: contextAttachments,
+          });
+        }
 
         if (isTemporary) {
           const client = getApolloClient()
@@ -392,11 +390,28 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           attachments: contextAttachments,
         });
 
-        const finalFocusedMember = finalTeamContext.members.get(targetMemberRouteKey);
-        if (!finalFocusedMember) {
+        const finalFocusedMember = finalTeamContext.leafAgentContextsByRouteKey.get(targetMemberRouteKey) || null;
+        if (focusedNode.memberKind === 'agent' && !finalFocusedMember) {
           throw new Error(`Focused member '${targetMemberRouteKey}' not found after team creation.`);
         }
-        finalizeLocalSubmissionAttachments(localSubmission, finalizedAttachments);
+
+        const messageId = buildClientMessageId();
+        const dedupeKey = buildMemberInputDedupeKey(finalTeamRunId, targetMemberRouteKey, messageId);
+        if (localSubmission) {
+          localSubmission.message.messageId = messageId;
+          localSubmission.message.dedupeKey = dedupeKey;
+          finalizeLocalSubmissionAttachments(localSubmission, finalizedAttachments);
+        } else if (finalFocusedMember) {
+          finalFocusedMember.state.conversation.messages.push({
+            type: 'user',
+            text,
+            timestamp: new Date(),
+            contextFilePaths: finalizedAttachments,
+            messageId,
+            dedupeKey,
+          });
+          finalFocusedMember.state.conversation.updatedAt = new Date().toISOString();
+        }
 
         const service = await this.ensureTeamStreamConnected(finalTeamRunId);
         const streamPayload = partitionContextAttachmentsForStreaming(finalizedAttachments);
@@ -405,13 +420,17 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           targetMemberRouteKey,
           streamPayload.contextFilePaths,
           streamPayload.imageUrls,
+          { messageId, dedupeKey },
         );
       } catch (error: any) {
-        console.error(`Failed to send message to member ${focusedMember.state.runId}:`, error);
+        console.error(`Failed to send message to member ${targetMemberRouteKey}:`, error);
         if (localSubmission) {
           failLocalSubmission(localSubmission, error);
-          applyTeamMemberTerminalCleanup(activeTeam, localSubmission.context, AgentStatus.Error);
+          applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
           return;
+        }
+        if (focusedMember) {
+          focusedMember.isSending = false;
         }
         throw new Error(`Failed to send message: ${error.message}`);
       } finally {
@@ -424,24 +443,27 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
     /**
      * Sends tool approval/denial to the active team stream.
      */
-    async postToolExecutionApproval(invocationId: string, isApproved: boolean, reason: string | null = null) {
+    async postToolExecutionApproval(
+      invocationId: string,
+      isApproved: boolean,
+      reason: string | null = null,
+      approvalTarget: ToolApprovalTarget | null = null,
+    ) {
       const teamContextsStore = useAgentTeamContextsStore();
       const activeTeam = teamContextsStore.activeTeamContext;
-      const focusedMember = teamContextsStore.focusedMemberContext;
 
-      if (!activeTeam || !focusedMember) {
-        console.warn('No active team or focused member for tool approval.');
+      if (!activeTeam) {
+        console.warn('No active team for tool approval.');
         return;
       }
 
       const service = teamStreamingServices.get(activeTeam.teamRunId);
-      const agentName = activeTeam.focusedMemberName || focusedMember.state.runId;
 
       if (service) {
         if (isApproved) {
-          service.approveTool(invocationId, agentName, reason || undefined);
+          service.approveTool(invocationId, approvalTarget, reason || undefined);
         } else {
-          service.denyTool(invocationId, agentName, reason || undefined);
+          service.denyTool(invocationId, approvalTarget, reason || undefined);
         }
       }
 
@@ -468,7 +490,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
       service.interruptGeneration({
         targetMemberRouteKey,
-        targetAgentRunId: target.targetAgentRunId,
+        targetMemberRunId: target.targetMemberRunId,
       });
       return true;
     },

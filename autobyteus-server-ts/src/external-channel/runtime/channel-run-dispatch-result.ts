@@ -9,7 +9,8 @@ export type AcceptedTeamDispatch = {
   dispatchTargetType: "TEAM";
   teamRunId: string;
   memberRunId: string | null;
-  memberName: string | null;
+  memberRouteKey: string | null;
+  memberPath: string[] | null;
   turnId: string;
   dispatchedAt: Date;
 };

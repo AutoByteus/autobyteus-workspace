@@ -3,6 +3,44 @@ import type { ClaudeRunContext } from "../../../../../../src/agent-execution/bac
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
 import { ClaudeSendMessageToolCallHandler } from "../../../../../../src/agent-execution/backends/claude/team-communication/claude-send-message-tool-call-handler.js";
 import type { ClaudeSessionEvent } from "../../../../../../src/agent-execution/backends/claude/claude-runtime-shared.js";
+import { MemberTeamContext } from "../../../../../../src/agent-team-execution/domain/member-team-context.js";
+import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
+
+const buildMemberTeamContext = (teamRunId: string): MemberTeamContext =>
+  new MemberTeamContext({
+    teamRunId,
+    teamDefinitionId: "team-classroom",
+    teamBackendKind: TeamBackendKind.CLAUDE_AGENT_SDK,
+    memberName: "professor",
+    memberPath: ["professor"],
+    memberRouteKey: "professor",
+    memberRunId: "run-professor",
+    members: [
+      {
+        memberKind: "agent",
+        memberName: "professor",
+        memberPath: ["professor"],
+        memberRouteKey: "professor",
+        memberRunId: "run-professor",
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        role: null,
+        description: null,
+      },
+      {
+        memberKind: "agent",
+        memberName: "student",
+        memberPath: ["student"],
+        memberRouteKey: "student",
+        memberRunId: "run-student",
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        role: null,
+        description: null,
+      },
+    ],
+    allowedRecipientNames: ["student"],
+    sendMessageToEnabled: true,
+  });
 
 const buildRunContext = (input: {
   runId?: string;
@@ -16,9 +54,7 @@ const buildRunContext = (input: {
     autoExecuteTools: input.autoExecuteTools ?? true,
     memberTeamContext: input.teamRunId === null
       ? null
-      : {
-          teamRunId: input.teamRunId ?? "team-classroom-1",
-        },
+      : buildMemberTeamContext(input.teamRunId ?? "team-classroom-1"),
   },
 }) as ClaudeRunContext;
 
@@ -79,8 +115,15 @@ describe("ClaudeSendMessageToolCallHandler", () => {
     });
     expect(deliverInterAgentMessage).toHaveBeenCalledWith({
       senderRunId: "run-professor",
+      senderSelector: { kind: "path", memberPath: ["professor"] },
+      senderMemberName: "professor",
+      senderPath: ["professor"],
+      senderRouteKey: "professor",
       teamRunId: "team-classroom-1",
+      recipientSelector: { kind: "path", memberPath: ["student"] },
       recipientMemberName: "student",
+      recipientPath: ["student"],
+      recipientRouteKey: "student",
       content: "hello class",
       messageType: "classroom_update",
       referenceFiles: [],

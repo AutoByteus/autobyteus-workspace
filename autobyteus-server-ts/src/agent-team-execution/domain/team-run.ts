@@ -1,5 +1,9 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import {
+  normalizeAgentApiStatus,
+  type AgentApiStatus,
+} from "../../agent-execution/domain/agent-status-payload.js";
 import type { InterAgentMessageDeliveryRequest } from "./inter-agent-message-delivery.js";
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
@@ -8,7 +12,18 @@ import {
   type RuntimeTeamRunContext,
   type TeamRunContext,
 } from "./team-run-context.js";
-import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "./team-run-event.js";
+import {
+  selectorFromMemberRouteKey,
+  type TeamMemberSelector,
+} from "./team-run-member-identity.js";
+import {
+  TeamRunEventSourceType,
+  type TeamRunEvent,
+  type TeamRunEventListener,
+  type TeamRunEventUnsubscribe,
+  type TeamRunStatusUpdateData,
+} from "./team-run-event.js";
+import type { TeamStatusPayload } from "./team-status-payload.js";
 
 type TeamRunOptions = {
   context?: TeamRunContext<RuntimeTeamRunContext>;
@@ -21,6 +36,8 @@ export class TeamRun {
   readonly context: TeamRunContext<RuntimeTeamRunContext> | null;
   private readonly backend: TeamRunBackend;
   private readonly configValue: TeamRunConfig | null;
+  private readonly localEventListeners = new Set<TeamRunEventListener>();
+  private statusOverride: TeamStatusPayload | null = null;
 
   constructor(options: TeamRunOptions) {
     this.context = options.context ?? null;
@@ -49,11 +66,20 @@ export class TeamRun {
   }
 
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {
-    return this.backend.subscribeToEvents(listener);
+    const wrappedListener: TeamRunEventListener = (event) => {
+      this.observeBackendEvent(event);
+      listener(event);
+    };
+    const unsubscribeBackend = this.backend.subscribeToEvents(wrappedListener);
+    this.localEventListeners.add(listener);
+    return () => {
+      unsubscribeBackend();
+      this.localEventListeners.delete(listener);
+    };
   }
 
   getStatusSnapshot() {
-    return this.backend.getStatusSnapshot();
+    return this.statusOverride ?? this.backend.getStatusSnapshot();
   }
 
   getMemberStatusSnapshots() {
@@ -62,28 +88,36 @@ export class TeamRun {
 
   async postMessage(
     message: AgentInputUserMessage,
-    targetMemberName: string | null = null,
+    target: TeamMemberSelector | null = null,
   ): Promise<AgentOperationResult> {
-    return this.backend.postMessage(
+    const result = await this.backend.postMessage(
       message,
-      this.resolvePostMessageTarget(targetMemberName),
+      this.resolvePostMessageTarget(target),
     );
+    if (result.accepted) {
+      this.applyAcceptedStartupStatus();
+    }
+    return result;
   }
 
   async deliverInterAgentMessage(
     request: InterAgentMessageDeliveryRequest,
   ): Promise<AgentOperationResult> {
-    return this.backend.deliverInterAgentMessage(request);
+    const result = await this.backend.deliverInterAgentMessage(request);
+    if (result.accepted) {
+      this.applyAcceptedStartupStatus();
+    }
+    return result;
   }
 
   async approveToolInvocation(
-    targetMemberName: string,
+    target: TeamMemberSelector,
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
   ): Promise<AgentOperationResult> {
     return this.backend.approveToolInvocation(
-      targetMemberName,
+      target,
       invocationId,
       approved,
       reason,
@@ -112,28 +146,67 @@ export class TeamRun {
     return this.backend.terminate();
   }
 
-  private resolvePostMessageTarget(targetMemberName: string | null): string | null {
-    if (typeof targetMemberName === "string" && targetMemberName.trim().length > 0) {
-      return targetMemberName.trim();
+  private applyAcceptedStartupStatus(): void {
+    const currentStatus = normalizeAgentApiStatus(this.getStatusSnapshot().status);
+    if (currentStatus !== "offline" && currentStatus !== "idle") {
+      return;
+    }
+    this.statusOverride = {
+      status: "initializing",
+      source_path: [],
+    };
+    this.emitLocalEvent({
+      eventSourceType: TeamRunEventSourceType.TEAM,
+      teamRunId: this.runId,
+      sourcePath: [],
+      data: {
+        status: "initializing",
+      } satisfies TeamRunStatusUpdateData,
+    });
+  }
+
+  private emitLocalEvent(event: TeamRunEvent): void {
+    for (const listener of this.localEventListeners) {
+      listener(event);
+    }
+  }
+
+  private observeBackendEvent(event: TeamRunEvent): void {
+    if (event.eventSourceType !== TeamRunEventSourceType.TEAM || event.sourcePath.length > 0) {
+      return;
+    }
+    const data = event.data as TeamRunStatusUpdateData;
+    const status: AgentApiStatus = normalizeAgentApiStatus(data.status);
+    this.statusOverride = {
+      status,
+      source_path: event.sourcePath,
+    };
+  }
+
+  private resolvePostMessageTarget(
+    target: TeamMemberSelector | null,
+  ): TeamMemberSelector | null {
+    if (target) {
+      return target;
     }
 
-    const coordinatorMemberName =
-      typeof this.context?.coordinatorMemberName === "string" &&
-      this.context.coordinatorMemberName.trim().length > 0
-        ? this.context.coordinatorMemberName.trim()
-        : typeof this.configValue?.coordinatorMemberName === "string" &&
-            this.configValue.coordinatorMemberName.trim().length > 0
-          ? this.configValue.coordinatorMemberName.trim()
-        : null;
-    if (coordinatorMemberName) {
-      return coordinatorMemberName;
+    const coordinatorMemberRouteKey =
+      typeof this.context?.coordinatorMemberRouteKey === "string" &&
+      this.context.coordinatorMemberRouteKey.trim().length > 0
+        ? this.context.coordinatorMemberRouteKey.trim()
+        : typeof this.configValue?.coordinatorMemberRouteKey === "string" &&
+            this.configValue.coordinatorMemberRouteKey.trim().length > 0
+          ? this.configValue.coordinatorMemberRouteKey.trim()
+          : null;
+    if (coordinatorMemberRouteKey) {
+      return selectorFromMemberRouteKey(coordinatorMemberRouteKey);
     }
 
     const memberContexts = getRuntimeMemberContexts(this.context?.runtimeContext ?? null);
     if (memberContexts.length === 1) {
-      const soleMemberName = memberContexts[0]?.memberName;
-      return typeof soleMemberName === "string" && soleMemberName.trim().length > 0
-        ? soleMemberName.trim()
+      const soleMemberRouteKey = memberContexts[0]?.memberRouteKey;
+      return typeof soleMemberRouteKey === "string" && soleMemberRouteKey.trim().length > 0
+        ? selectorFromMemberRouteKey(soleMemberRouteKey.trim())
         : null;
     }
 

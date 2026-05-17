@@ -10,16 +10,25 @@ type AutoByteusAgentContextLike = {
   } | null;
 } | null;
 
-const LOCKED_RUNNING_STATUSES = new Set([
-  "interrupting",
-  "shutting_down",
-]);
-
-const normalizeStatusToken = (value: unknown): string =>
-  typeof value === "string" ? value.trim().toLowerCase().replace(/[-\s]+/g, "_") : "";
-
 const hasActiveTurn = (context: AutoByteusAgentContextLike): boolean =>
   Boolean(context?.state?.activeTurn);
+
+const normalizeToken = (value: unknown): string | null =>
+  typeof value === "string"
+    ? value.trim().toLowerCase().replace(/[-\s]+/g, "_") || null
+    : null;
+
+const AUTOBYTEUS_STARTUP_STATUS_TOKENS = new Set([
+  "bootstrapping",
+  "starting",
+  "startup",
+  "uninitialized",
+]);
+
+const normalizeAutoByteusAgentStatus = (value: unknown): AgentStatusPayload["status"] =>
+  AUTOBYTEUS_STARTUP_STATUS_TOKENS.has(normalizeToken(value) ?? "")
+    ? "initializing"
+    : normalizeAgentApiStatus(value, "idle");
 
 export const projectAutoByteusAgentStatus = (input: {
   currentStatus?: unknown;
@@ -28,15 +37,13 @@ export const projectAutoByteusAgentStatus = (input: {
   agentId?: string | null;
   agentName?: string | null;
 }): AgentStatusPayload => {
-  const statusToken = normalizeStatusToken(input.currentStatus);
   const status =
     input.isActive === false
       ? "offline"
-      : normalizeAgentApiStatus(input.currentStatus, "idle");
+      : normalizeAutoByteusAgentStatus(input.currentStatus);
   const canInterrupt =
     status === "running" &&
-    hasActiveTurn(input.context ?? null) &&
-    !LOCKED_RUNNING_STATUSES.has(statusToken);
+    hasActiveTurn(input.context ?? null);
 
   return buildAgentStatusPayload({
     status,

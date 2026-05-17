@@ -1,5 +1,5 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
-import type { EditFileSegment, TerminalCommandSegment, ToolCallSegment, ToolInvocationStatus, WriteFileSegment } from '~/types/segments';
+import type { EditFileSegment, TerminalCommandSegment, ToolApprovalTarget, ToolCallSegment, ToolInvocationStatus, WriteFileSegment } from '~/types/segments';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 
@@ -136,6 +136,7 @@ export const upsertActivityFromToolSegment = (
       status: segment.status,
       contextText: getContextText(toolName, mergedArguments),
       arguments: mergedArguments,
+      approvalTarget: segment.approvalTarget ?? null,
       logs: [...segment.logs],
       result: segment.result,
       error: segment.error,
@@ -177,6 +178,15 @@ export const updateActivityStatus = (
 ): void => {
   const activityStore = useAgentActivityStore();
   activityStore.updateActivityStatus(context.state.runId, invocationId, status);
+};
+
+export const updateActivityApprovalTarget = (
+  context: AgentContext,
+  invocationId: string,
+  approvalTarget: ToolApprovalTarget | null,
+): void => {
+  const activityStore = useAgentActivityStore();
+  activityStore.updateActivityApprovalTarget(context.state.runId, invocationId, approvalTarget);
 };
 
 export const setActivityResult = (
