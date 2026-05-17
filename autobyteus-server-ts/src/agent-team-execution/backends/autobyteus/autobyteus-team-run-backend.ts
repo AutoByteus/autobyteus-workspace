@@ -1,8 +1,12 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentTeamEventStream } from "autobyteus-ts";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+import { AgentRunEventType } from "../../../agent-execution/domain/agent-run-event.js";
 import { projectAutoByteusAgentStatus } from "../../../agent-execution/backends/autobyteus/events/autobyteus-status-projector.js";
-import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
+import {
+  buildAgentStatusPayload,
+  type AgentStatusPayload,
+} from "../../../agent-execution/domain/agent-status-payload.js";
 import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
 import type { RuntimeTeamRunContext } from "../../domain/team-run-context.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
@@ -14,9 +18,12 @@ import {
 } from "../../domain/team-run-member-identity.js";
 import type {
   TeamRunEvent,
+  TeamRunAgentEventPayload,
   TeamRunEventListener,
   TeamRunEventUnsubscribe,
+  TeamRunStatusUpdateData,
 } from "../../domain/team-run-event.js";
+import { TeamRunEventSourceType } from "../../domain/team-run-event.js";
 import { buildInterAgentDeliveryInputMessage } from "../../services/inter-agent-message-runtime-builders.js";
 import { AutoByteusTeamRunEventProcessor } from "./autobyteus-team-run-event-processor.js";
 import {
@@ -37,6 +44,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   private readonly listeners = new Set<TeamRunEventListener>();
   private readonly eventProcessor: AutoByteusTeamRunEventProcessor;
   private nativeEventStream: AgentTeamEventStream | null = null;
+  private lastTeamStatus: AgentStatusPayload["status"] | null = null;
 
   constructor(
     private readonly team: AutoByteusTeamLike,
@@ -337,8 +345,9 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       return;
     }
 
+    const eventsToPublish = this.withTeamStatusUpdate(events);
     const listeners = Array.from(this.listeners);
-    for (const event of events) {
+    for (const event of eventsToPublish) {
       for (const listener of listeners) {
         if (!this.listeners.has(listener)) {
           continue;
@@ -362,4 +371,109 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     }
     return resolution.member;
   }
+
+  private withTeamStatusUpdate(events: TeamRunEvent[]): TeamRunEvent[] {
+    let observedTeamStatus: AgentStatusPayload["status"] | null = null;
+    for (const event of events) {
+      if (event.eventSourceType !== TeamRunEventSourceType.TEAM) {
+        continue;
+      }
+      const status = (event.data as TeamRunStatusUpdateData).status;
+      observedTeamStatus = status;
+    }
+
+    if (observedTeamStatus) {
+      this.lastTeamStatus = observedTeamStatus;
+      return events;
+    }
+
+    const nextStatus = this.getStatusSnapshotForEvents(events).status;
+    if (nextStatus === this.lastTeamStatus) {
+      return events;
+    }
+
+    this.lastTeamStatus = nextStatus;
+    return [
+      ...events,
+      {
+        eventSourceType: TeamRunEventSourceType.TEAM,
+        teamRunId: this.runId,
+        sourcePath: [],
+        data: {
+          status: nextStatus,
+        } satisfies TeamRunStatusUpdateData,
+      },
+    ];
+  }
+
+  private getStatusSnapshotForEvents(events: TeamRunEvent[]) {
+    if (!this.isActive()) {
+      return { status: "offline" as const };
+    }
+
+    return {
+      status: deriveTeamApiStatus({
+        memberStatuses: this.getMemberStatusSnapshotsWithOverrides(events),
+        nativeTeamStatus: this.team.currentStatus,
+      }),
+    };
+  }
+
+  private getMemberStatusSnapshotsWithOverrides(events: TeamRunEvent[]): AgentStatusPayload[] {
+    const overrides = this.collectMemberStatusOverrides(events);
+    if (overrides.byRunId.size === 0) {
+      return this.getMemberStatusSnapshots();
+    }
+
+    const applied = new Set<AgentStatusPayload>();
+    const snapshots = this.getMemberStatusSnapshots().map((snapshot) => {
+      const override =
+        snapshot.agent_id ? overrides.byRunId.get(snapshot.agent_id) : undefined;
+      if (!override) {
+        return snapshot;
+      }
+      applied.add(override);
+      return {
+        ...snapshot,
+        status: override.status,
+        can_interrupt: override.can_interrupt,
+      };
+    });
+
+    for (const override of overrides.byRunId.values()) {
+      if (!applied.has(override)) {
+        snapshots.push(override);
+        applied.add(override);
+      }
+    }
+
+    return snapshots;
+  }
+
+  private collectMemberStatusOverrides(events: TeamRunEvent[]): {
+    byRunId: Map<string, AgentStatusPayload>;
+  } {
+    const byRunId = new Map<string, AgentStatusPayload>();
+
+    for (const event of events) {
+      if (event.eventSourceType !== TeamRunEventSourceType.AGENT) {
+        continue;
+      }
+      const payload = event.data as TeamRunAgentEventPayload;
+      if (payload.agentEvent.eventType !== AgentRunEventType.AGENT_STATUS) {
+        continue;
+      }
+
+      const statusPayload = buildAgentStatusPayload({
+        status: payload.agentEvent.payload.status,
+        canInterrupt: payload.agentEvent.payload.can_interrupt === true,
+        agentId: payload.memberRunId,
+        agentName: payload.memberName,
+      });
+      byRunId.set(payload.memberRunId, statusPayload);
+    }
+
+    return { byRunId };
+  }
+
 }

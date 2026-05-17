@@ -119,6 +119,8 @@ export const useWorkspaceHistoryTreeState = (params: {
 
   const teamStatusClass = (status: AgentTeamStatus): string => {
     switch (status) {
+      case AgentTeamStatus.Initializing:
+        return 'bg-amber-500 animate-pulse';
       case AgentTeamStatus.Running:
         return 'bg-blue-500 animate-pulse';
       case AgentTeamStatus.Idle:
@@ -134,6 +136,8 @@ export const useWorkspaceHistoryTreeState = (params: {
 
   const runStatusClass = (status: AgentStatus): string => {
     switch (status) {
+      case AgentStatus.Initializing:
+        return 'bg-amber-500 animate-pulse';
       case AgentStatus.Running:
         return 'bg-blue-500 animate-pulse';
       case AgentStatus.Idle:

@@ -14,6 +14,7 @@ export const normalizeAgentRuntimeStatus = (
   const normalized = normalizeToken(status);
   if (!normalized) return fallback;
   if (normalized === AgentStatus.Error) return AgentStatus.Error;
+  if (normalized === AgentStatus.Initializing) return AgentStatus.Initializing;
   if (normalized === AgentStatus.Running || normalized === 'active') return AgentStatus.Running;
   if (normalized === AgentStatus.Idle) return AgentStatus.Idle;
   if (normalized === AgentStatus.Offline || normalized === 'terminated') return AgentStatus.Offline;
@@ -27,6 +28,7 @@ export const normalizeTeamRuntimeStatus = (
   const normalized = normalizeToken(status);
   if (!normalized) return fallback;
   if (normalized === AgentTeamStatus.Error) return AgentTeamStatus.Error;
+  if (normalized === AgentTeamStatus.Initializing) return AgentTeamStatus.Initializing;
   if (normalized === AgentTeamStatus.Running || normalized === 'active') return AgentTeamStatus.Running;
   if (normalized === AgentTeamStatus.Idle) return AgentTeamStatus.Idle;
   if (normalized === AgentTeamStatus.Offline || normalized === 'terminated') return AgentTeamStatus.Offline;

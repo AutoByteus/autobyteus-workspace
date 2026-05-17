@@ -9,18 +9,20 @@ export function deriveTeamApiStatus(input: {
   nativeTeamStatus?: unknown;
 }): AgentApiStatus {
   const nativeStatus = normalizeAgentApiStatus(input.nativeTeamStatus, "offline");
-  if (nativeStatus === "error") {
-    return "error";
-  }
 
   let hasRunningMember = false;
+  let hasInitializingMember = false;
   let hasIdleMember = false;
+  let hasErrorMember = false;
   for (const memberStatus of input.memberStatuses) {
     if (memberStatus.status === "error") {
-      return "error";
+      hasErrorMember = true;
     }
     if (memberStatus.status === "running") {
       hasRunningMember = true;
+    }
+    if (memberStatus.status === "initializing") {
+      hasInitializingMember = true;
     }
     if (memberStatus.status === "idle") {
       hasIdleMember = true;
@@ -29,6 +31,12 @@ export function deriveTeamApiStatus(input: {
 
   if (hasRunningMember || nativeStatus === "running") {
     return "running";
+  }
+  if (hasInitializingMember || nativeStatus === "initializing") {
+    return "initializing";
+  }
+  if (hasErrorMember || nativeStatus === "error") {
+    return "error";
   }
   if (hasIdleMember || nativeStatus === "idle") {
     return "idle";

@@ -45,6 +45,7 @@ import {
   handleFileChange,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
+import { applyLiveTeamMemberRuntimeActivityProjectionRepair } from '~/services/runStatus/agentRuntimeStatusState';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -63,6 +64,24 @@ const summarizeDelta = (delta: string, maxLen = 120): string => {
   return clean.length > maxLen ? `${clean.slice(0, maxLen)}…` : clean;
 };
 
+const LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES = new Set<ServerMessage['type']>([
+  'TURN_STARTED',
+  'SEGMENT_START',
+  'SEGMENT_CONTENT',
+  'TOOL_APPROVAL_REQUESTED',
+  'TOOL_EXECUTION_STARTED',
+  'TOOL_EXECUTION_SUCCEEDED',
+  'TOOL_EXECUTION_FAILED',
+  'TOOL_EXECUTION_INTERRUPTED',
+  'TOOL_LOG',
+  'TODO_LIST_UPDATE',
+  'INTER_AGENT_MESSAGE',
+  'SYSTEM_TASK_NOTIFICATION',
+]);
+
+const isLiveRuntimeActivityMessage = (message: ServerMessage): boolean =>
+  LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES.has(message.type);
+
 export interface TeamStreamingServiceOptions {
   wsClient?: IWebSocketClient;
 }
@@ -70,6 +89,11 @@ export interface TeamStreamingServiceOptions {
 export interface TeamInterruptGenerationTarget {
   targetMemberRouteKey: string;
   targetMemberRunId?: string | null;
+}
+
+interface MemberContextResolution {
+  context: AgentContext;
+  isExplicitIdentityMatch: boolean;
 }
 
 export class TeamStreamingService {
@@ -338,7 +362,7 @@ export class TeamStreamingService {
   /**
    * Route message to the appropriate team member using canonical source route/path identity.
    */
-  private getMemberContext(message: ServerMessage): AgentContext | null {
+  private getMemberContextResolution(message: ServerMessage): MemberContextResolution | null {
     if (!this.teamContext) return null;
 
     // Use type assertion since route/source metadata is present only on team-scoped payloads.
@@ -359,14 +383,29 @@ export class TeamStreamingService {
     const routeKeyFromPath = sourcePath?.map((segment) => String(segment).trim()).filter(Boolean).join('/') || '';
     const memberRunId = payload?.agent_id;
 
-    const routedMatch = (sourceRouteKey || routeKeyFromPath)
-      ? this.teamContext.leafAgentContextsByRouteKey.get(sourceRouteKey || routeKeyFromPath)
+    const canonicalRouteKey = String(sourceRouteKey || routeKeyFromPath || '').trim();
+    const routedMatch = canonicalRouteKey
+      ? this.teamContext.leafAgentContextsByRouteKey.get(canonicalRouteKey)
       : null;
     if (routedMatch) {
       if (memberRunId && routedMatch.state.runId !== memberRunId) {
         routedMatch.state.runId = memberRunId;
       }
-      return routedMatch;
+      return {
+        context: routedMatch,
+        isExplicitIdentityMatch: true,
+      };
+    }
+
+    if (memberRunId) {
+      for (const memberContext of this.teamContext.leafAgentContextsByRouteKey.values()) {
+        if (memberContext.state.runId === memberRunId) {
+          return {
+            context: memberContext,
+            isExplicitIdentityMatch: true,
+          };
+        }
+      }
     }
 
     return null;
@@ -388,14 +427,18 @@ export class TeamStreamingService {
       return;
     }
 
-    const memberContext = this.getMemberContext(message);
+    const memberResolution = this.getMemberContextResolution(message);
 
-    if (!memberContext) {
+    if (!memberResolution) {
       console.warn('No member context found for message, skipping');
       return;
     }
 
+    const memberContext = memberResolution.context;
     memberContext.conversation.updatedAt = new Date().toISOString();
+    if (isLiveRuntimeActivityMessage(message) && memberResolution.isExplicitIdentityMatch) {
+      applyLiveTeamMemberRuntimeActivityProjectionRepair(teamContext, memberContext);
+    }
 
     switch (message.type) {
       case 'SEGMENT_START':

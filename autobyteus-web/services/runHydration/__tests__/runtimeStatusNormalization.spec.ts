@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'vitest';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import {
   normalizeAgentRuntimeStatus,
   normalizeTeamRuntimeStatus,
 } from '../runtimeStatusNormalization';
-import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 describe('runtimeStatusNormalization', () => {
   it('accepts only canonical and current persisted agent status tokens', () => {
     expect(normalizeAgentRuntimeStatus('running')).toBe(AgentStatus.Running);
+    expect(normalizeAgentRuntimeStatus('initializing')).toBe(AgentStatus.Initializing);
     expect(normalizeAgentRuntimeStatus('idle')).toBe(AgentStatus.Idle);
     expect(normalizeAgentRuntimeStatus('offline')).toBe(AgentStatus.Offline);
     expect(normalizeAgentRuntimeStatus('error')).toBe(AgentStatus.Error);
@@ -20,6 +21,8 @@ describe('runtimeStatusNormalization', () => {
     for (const removedStatus of [
       'uninitialized',
       'bootstrapping',
+      'starting',
+      'startup',
       'awaiting_llm_response',
       'awaiting_tool_approval',
       'executing_tool',
@@ -32,6 +35,7 @@ describe('runtimeStatusNormalization', () => {
 
   it('accepts only canonical and current persisted team status tokens', () => {
     expect(normalizeTeamRuntimeStatus('running')).toBe(AgentTeamStatus.Running);
+    expect(normalizeTeamRuntimeStatus('initializing')).toBe(AgentTeamStatus.Initializing);
     expect(normalizeTeamRuntimeStatus('ACTIVE')).toBe(AgentTeamStatus.Running);
     expect(normalizeTeamRuntimeStatus('TERMINATED')).toBe(AgentTeamStatus.Offline);
   });
@@ -40,6 +44,8 @@ describe('runtimeStatusNormalization', () => {
     for (const removedStatus of [
       'uninitialized',
       'bootstrapping',
+      'starting',
+      'startup',
       'awaiting_llm_response',
       'awaiting_tool_approval',
       'executing_tool',

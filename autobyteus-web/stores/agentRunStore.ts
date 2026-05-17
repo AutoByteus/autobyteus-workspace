@@ -15,8 +15,18 @@ import {
   buildAgentFinalContextFileOwner,
 } from '~/utils/contextFiles/contextFileOwner';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 import { ConnectionState } from '~/services/agentStreaming';
-import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
+import {
+  applyAcceptedStartupStatus,
+  applyOfflineOrTerminalCleanup,
+} from '~/services/runStatus/agentRuntimeStatusState';
+import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
+import {
+  beginLocalUserSubmission,
+  failLocalSubmission,
+  finalizeLocalSubmissionAttachments,
+} from '~/services/runSubmission/localUserSubmission';
 
 interface CreateAgentRunMutationResultPayload {
   createAgentRun: {
@@ -109,8 +119,20 @@ export const useAgentRunStore = defineStore('agentRun', {
       const messageContent = currentAgent.requirement;
       const draftAttachments = [...currentAgent.contextFilePaths];
       const draftOwner = buildAgentDraftContextFileOwner(runId);
-
-      currentAgent.isSending = true;
+      const currentStatus = normalizeAgentRuntimeStatus(state.currentStatus);
+      const shouldApplyStartupStatus =
+        isNewAgent ||
+        resumeConfig?.isActive === false ||
+        currentStatus === AgentStatus.Offline ||
+        currentStatus === AgentStatus.Error ||
+        currentStatus === AgentStatus.Initializing;
+      const localSubmission = beginLocalUserSubmission(currentAgent, {
+        text: messageContent,
+        attachments: draftAttachments,
+        applyInitializing: shouldApplyStartupStatus
+          ? () => applyAcceptedStartupStatus(currentAgent)
+          : undefined,
+      });
 
       try {
         let finalRunId = runId;
@@ -184,38 +206,19 @@ export const useAgentRunStore = defineStore('agentRun', {
           attachments: draftAttachments,
         });
 
-        const finalAgent = agentContextsStore.getRun(finalRunId)!;
-        finalAgent.state.conversation.messages.push({
-          type: 'user',
-          text: messageContent,
-          timestamp: new Date(),
-          contextFilePaths: finalizedAttachments,
-        });
-        finalAgent.state.conversation.updatedAt = new Date().toISOString();
-        finalAgent.requirement = '';
-        finalAgent.contextFilePaths = [];
+        const finalAgent = agentContextsStore.getRun(finalRunId);
+        if (!finalAgent) {
+          throw new Error(`Agent run '${finalRunId}' not found after startup.`);
+        }
+        finalizeLocalSubmissionAttachments(localSubmission, finalizedAttachments);
 
         const service = await this.ensureAgentStreamConnected(finalRunId);
         const streamPayload = partitionContextAttachmentsForStreaming(finalizedAttachments);
         service.sendMessage(messageContent, streamPayload.contextFilePaths, streamPayload.imageUrls);
       } catch (error: any) {
         console.error('Error sending user input:', error);
-        currentAgent.isSending = false;
-
-        // Push error segment to conversation
-        currentAgent.state.conversation.messages.push({
-          type: 'ai',
-          text: 'Error Occurred',
-          timestamp: new Date(),
-          isComplete: true,
-          segments: [{
-            type: 'error',
-            source: 'System',
-            message: error.message || 'An unexpected error occurred.',
-            details: error.toString()
-          }]
-        });
-        currentAgent.state.conversation.updatedAt = new Date().toISOString();
+        failLocalSubmission(localSubmission, error);
+        applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
 
         // We do NOT re-throw here because we've handled it by showing it in the UI.
         // If we re-throw, parent catch blocks might try to handle it again (e.g. log it).

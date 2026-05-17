@@ -64,6 +64,8 @@ const statusColor = computed(() => {
   switch (props.run.state.currentStatus) {
     case AgentStatus.Offline:
       return 'bg-gray-300';
+    case AgentStatus.Initializing:
+      return 'bg-amber-400 animate-pulse';
     case AgentStatus.Idle: return 'bg-green-400';
     case AgentStatus.Running:
       return 'bg-blue-400 animate-pulse';

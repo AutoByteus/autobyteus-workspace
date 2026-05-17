@@ -31,6 +31,7 @@ import {
   handleFileChange,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
+import { applyLiveRuntimeActivityProjectionRepair } from '~/services/runStatus/agentRuntimeStatusState';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -48,6 +49,24 @@ const summarizeDelta = (delta: string, maxLen = 120): string => {
   const clean = delta.replace(/\n/g, '\\n');
   return clean.length > maxLen ? `${clean.slice(0, maxLen)}…` : clean;
 };
+
+const LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES = new Set<ServerMessage['type']>([
+  'TURN_STARTED',
+  'SEGMENT_START',
+  'SEGMENT_CONTENT',
+  'TOOL_APPROVAL_REQUESTED',
+  'TOOL_EXECUTION_STARTED',
+  'TOOL_EXECUTION_SUCCEEDED',
+  'TOOL_EXECUTION_FAILED',
+  'TOOL_EXECUTION_INTERRUPTED',
+  'TOOL_LOG',
+  'TODO_LIST_UPDATE',
+  'INTER_AGENT_MESSAGE',
+  'SYSTEM_TASK_NOTIFICATION',
+]);
+
+const isLiveRuntimeActivityMessage = (message: ServerMessage): boolean =>
+  LIVE_RUNTIME_ACTIVITY_MESSAGE_TYPES.has(message.type);
 
 export interface AgentStreamingServiceOptions {
   /** Custom WebSocket client for testing */
@@ -223,6 +242,9 @@ export class AgentStreamingService {
   private dispatchMessage(message: ServerMessage, context: AgentContext): void {
     // Update timestamp
     context.conversation.updatedAt = new Date().toISOString();
+    if (isLiveRuntimeActivityMessage(message)) {
+      applyLiveRuntimeActivityProjectionRepair(context);
+    }
 
     switch (message.type) {
       case 'SEGMENT_START':

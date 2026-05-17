@@ -198,6 +198,44 @@ describe('AgentUserInputTextArea', () => {
     expect(wrapper.find('[data-icon="heroicons:paper-airplane-solid"]').exists()).toBe(true)
   })
 
+  it('clears the visible composer when the active send is locally acknowledged while send remains pending', async () => {
+    const context = createContext('ctx-local-ack')
+    selectContext(context)
+    let resolveSend: (() => void) | undefined
+    let requirementAtSend = ''
+    activeContextStoreMock.send.mockImplementation(() => {
+      requirementAtSend = activeContextStoreMock.activeAgentContext?.requirement ?? ''
+      if (activeContextStoreMock.activeAgentContext) {
+        activeContextStoreMock.activeAgentContext.requirement = ''
+      }
+      activeContextStoreMock.currentRequirement = ''
+      activeContextStoreMock.isSending = true
+      return new Promise<void>((resolve) => {
+        resolveSend = resolve
+      })
+    })
+
+    const wrapper = mount(AgentUserInputTextArea)
+    const textarea = wrapper.find('textarea')
+
+    await textarea.setValue('launch this offline agent')
+    const sendButton = wrapper.find('button[title="Send message"]')
+    await sendButton.trigger('click')
+    await nextTick()
+
+    expect(requirementAtSend).toBe('launch this offline agent')
+    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
+      context,
+      'launch this offline agent',
+    )
+    expect((textarea.element as HTMLTextAreaElement).value).toBe('')
+    expect(wrapper.find('button[title="Send message"]').attributes('disabled')).toBeDefined()
+
+    resolveSend?.()
+    activeContextStoreMock.isSending = false
+    await nextTick()
+  })
+
   it('keeps a debounced draft with the member that typed it when focus changes', async () => {
     vi.useFakeTimers()
 

@@ -99,7 +99,7 @@ export interface SegmentEndPayload {
 }
 
 export interface AgentStatusPayload {
-  status: 'offline' | 'idle' | 'running' | 'error';
+  status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
   can_interrupt: boolean;
   agent_id?: string;
   agent_name?: string;
@@ -167,7 +167,7 @@ export interface ExternalUserMessagePayload {
 }
 
 export interface TeamStatusPayload {
-  status: 'offline' | 'idle' | 'running' | 'error';
+  status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
   error_message?: string | null;
   sub_team_node_name?: string | null;
   source_route_key?: string;

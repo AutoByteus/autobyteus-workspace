@@ -1077,3 +1077,43 @@ Passed:
   - Result: `314` changed paths checked; no changed source implementation file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes the Round 30 no-legacy local fix.
+
+## Delivery Round 16 Latest-Base Integration Update
+
+Resolved the Delivery Round 16 `origin/personal` refresh blocker against latest base `5f6e8ddec70d365dcb4021e573c37e439e3dc4fb` (`v1.3.16`). The integration preserves the reviewed/API-E2E-passed route/path-only runtime-target implementation while incorporating the latest agent initializing status UX release.
+
+Conflict-resolution details:
+
+- `autobyteus-team-run-backend.ts` now publishes aggregate team status events from the AutoByteus native event bridge with canonical root `sourcePath: []` and same-batch member status override support. Overrides are keyed by member run id only; the base branch's name-map override fallback was not reintroduced.
+- `TeamStreamingService.ts` retains canonical live event routing by `source_route_key` / `member_route_key` / `source_path` / `member_path`, with run-id correlation only after explicit identity. The base branch's `agent_name` and focused-member fallback routing paths were not reintroduced.
+- `messageTypes.ts` accepts the new canonical `initializing` team status while preserving nested route/path status metadata.
+- `runtimeStatusNormalization.ts` accepts canonical `initializing` status but keeps removed lifecycle tokens rejected; broad legacy token sets from the base branch were not reintroduced.
+- `agentTeamRunStore.ts` integrates local optimistic submission / initializing UX while preserving focused subteam sends and route-key message dedupe (`member_input:<teamRunId>:<memberRouteKey>:<messageId>`).
+- Focused tests were updated to use `focusedMemberRouteKey` and `leafAgentContextsByRouteKey` for active team contexts in the touched suites.
+
+## Delivery Round 16 Integration Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts --reporter=dot`
+  - Result: `5` files passed, `37` tests passed.
+- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runHydration/__tests__/runtimeStatusNormalization.spec.ts stores/__tests__/agentTeamRunStore.spec.ts --reporter=dot`
+  - Result: `3` files passed, `37` tests passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `pnpm -C autobyteus-server-ts exec prisma validate`
+  - Result: passed.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- `git diff --check origin/personal...HEAD`
+  - Result: passed.
+- Conflict marker scan over active source/docs excluding historical ticket logs:
+  - Result: no conflict markers found.
+- Focused no-legacy scans on touched stream/status files:
+  - Result: no `TeamStreamingService` focused-member or `members` routing fallback; no broad legacy runtime-status token sets in implementation. Removed lifecycle tokens remain only in negative regression assertions.
+
+API/E2E/full-stack validation and delivery packaging remain paused until this latest-base integration passes code review.

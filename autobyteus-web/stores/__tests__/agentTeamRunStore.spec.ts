@@ -213,7 +213,7 @@ describe('agentTeamRunStore', () => {
     expect(mockDisconnect).toHaveBeenCalledTimes(1);
   });
 
-  it('marks team as idle but keeps context for history restore after terminate', async () => {
+  it('marks team as offline but keeps context for history restore after terminate', async () => {
     const teamContext = {
       teamRunId: 'team-1',
       isSubscribed: true,
@@ -511,6 +511,79 @@ describe('agentTeamRunStore', () => {
     }));
   });
 
+  it('acknowledges a restored team-member send locally before restore resolves', () => {
+    let resolveRestore: (value: any) => void = () => {};
+    const focusedMember = {
+      requirement: 'restore pending',
+      contextFilePaths: [] as any[],
+      isSending: false,
+      state: {
+        runId: 'member-1',
+        currentStatus: AgentStatus.Offline,
+        canInterrupt: true,
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-02-21T00:00:00.000Z',
+        },
+      },
+    };
+    const teamContext = buildTeamContext({
+      teamRunId: 'team-restore-pending-1',
+      focusedMemberRouteKey: 'professor',
+      currentStatus: AgentTeamStatus.Offline,
+      config: {
+        teamDefinitionId: 'team-def-1',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        llmConfig: null,
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        memberOverrides: {},
+      },
+      memberContexts: {
+        professor: focusedMember,
+      },
+    });
+
+    setActiveTeamContext(teamContext);
+    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
+      teamRunId === 'team-restore-pending-1' ? teamContext : null,
+    );
+    runHistoryStoreMock.teamResumeConfigByTeamRunId = {
+      'team-restore-pending-1': { isActive: false },
+    };
+    mockMutate.mockReturnValueOnce(new Promise((resolve) => {
+      resolveRestore = resolve;
+    }));
+
+    const store = useAgentTeamRunStore();
+    const sendPromise = store.sendMessageToFocusedMember('restore pending', []);
+
+    expect(focusedMember.state.conversation.messages).toHaveLength(1);
+    expect(focusedMember.state.conversation.messages[0]).toMatchObject({
+      type: 'user',
+      text: 'restore pending',
+    });
+    expect(focusedMember.requirement).toBe('');
+    expect(focusedMember.contextFilePaths).toEqual([]);
+    expect(focusedMember.isSending).toBe(true);
+    expect(focusedMember.state.currentStatus).toBe(AgentStatus.Initializing);
+    expect(focusedMember.state.canInterrupt).toBe(false);
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Initializing);
+
+    resolveRestore({
+      data: {
+        restoreAgentTeamRun: {
+          success: true,
+          teamRunId: 'team-restore-pending-1',
+          message: 'restored',
+        },
+      },
+      errors: [],
+    });
+    return sendPromise;
+  });
+
   it('reconnects stale disconnected team stream after successful send', async () => {
     const teamRunId = `team-reconnect-${Date.now()}`;
     const focusedMember = {
@@ -639,12 +712,11 @@ describe('agentTeamRunStore', () => {
   });
 
   it('interruptFocusedMemberGeneration rejects missing member target without using active-team fallback', () => {
-    const teamContext = {
+    const teamContext = buildTeamContext({
       teamRunId: 'team-1',
-      focusedMemberName: 'professor',
-      isSubscribed: false,
-      members: new Map(),
-    };
+      focusedMemberRouteKey: 'professor',
+      memberContexts: {},
+    });
 
     teamContextsStoreMock.activeTeamContext = teamContext;
     teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
