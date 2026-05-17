@@ -1,5 +1,12 @@
 # Docs Sync Report
 
+## Delivery Round 16 Latest-Base Blocker
+
+- Current docs-sync status: `Blocked / needs recheck after integration`
+- Reason: API/E2E Round 16 passed at `b06a74cd`, but delivery's latest-base refresh found `origin/personal @ 5f6e8ddec70d365dcb4021e573c37e439e3dc4fb` ahead of the ticket branch with backend/frontend source/test merge conflicts.
+- The docs sync content below records the prior candidate. It must be rechecked after implementation resolves the conflicts and the integrated branch passes review/validation.
+- Blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round16-latest-base-integration-blocker.md`
+
 ## Delivery Round 27 Latest-Base Blocker
 
 - Current docs-sync status: `Blocked / needs recheck after integration`
