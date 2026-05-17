@@ -11,9 +11,7 @@ const RUNNING_TOKENS = new Set([
   'active',
   'processing',
   'running',
-  'bootstrapping',
   'shutting_down',
-  'uninitialized',
   'processing_user_input',
   'awaiting_llm_response',
   'analyzing_llm_response',
@@ -24,6 +22,14 @@ const RUNNING_TOKENS = new Set([
   'tool_denied',
   'inprogress',
   'in_progress',
+]);
+
+const INITIALIZING_TOKENS = new Set([
+  'bootstrapping',
+  'initializing',
+  'starting',
+  'startup',
+  'uninitialized',
 ]);
 
 const IDLE_TOKENS = new Set([
@@ -48,6 +54,7 @@ export const normalizeAgentRuntimeStatus = (
   const normalized = normalizeToken(status);
   if (!normalized) return fallback;
   if (ERROR_TOKENS.has(normalized)) return AgentStatus.Error;
+  if (INITIALIZING_TOKENS.has(normalized)) return AgentStatus.Initializing;
   if (RUNNING_TOKENS.has(normalized)) return AgentStatus.Running;
   if (IDLE_TOKENS.has(normalized)) return AgentStatus.Idle;
   if (OFFLINE_TOKENS.has(normalized)) return AgentStatus.Offline;
@@ -61,6 +68,7 @@ export const normalizeTeamRuntimeStatus = (
   const normalized = normalizeToken(status);
   if (!normalized) return fallback;
   if (ERROR_TOKENS.has(normalized)) return AgentTeamStatus.Error;
+  if (INITIALIZING_TOKENS.has(normalized)) return AgentTeamStatus.Initializing;
   if (RUNNING_TOKENS.has(normalized)) return AgentTeamStatus.Running;
   if (IDLE_TOKENS.has(normalized)) return AgentTeamStatus.Idle;
   if (OFFLINE_TOKENS.has(normalized)) return AgentTeamStatus.Offline;

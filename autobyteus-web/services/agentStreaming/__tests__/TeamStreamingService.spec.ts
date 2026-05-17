@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TeamStreamingService } from '../TeamStreamingService';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 const { handleBrowserToolExecutionSucceededMock, upsertTeamCommunicationMessageMock } = vi.hoisted(() => ({
   handleBrowserToolExecutionSucceededMock: vi.fn(),
@@ -339,6 +341,217 @@ describe('TeamStreamingService', () => {
       },
       agent_name: 'worker-a',
     });
+  });
+
+  it('clears stale team/member error only for the member receiving live non-error activity', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const professorContext = {
+      state: {
+        runId: 'prof-run-1',
+        currentStatus: AgentStatus.Error,
+        canInterrupt: true,
+        compactionStatus: null,
+      },
+      conversation: { messages: [], updatedAt: '' },
+      isSending: false,
+    };
+    const studentContext = {
+      state: {
+        runId: 'student-run-1',
+        currentStatus: AgentStatus.Error,
+        canInterrupt: true,
+        compactionStatus: null,
+      },
+      conversation: { messages: [], updatedAt: '' },
+      isSending: false,
+    };
+    const teamContext = {
+      currentStatus: AgentTeamStatus.Error,
+      focusedMemberName: 'Student',
+      members: new Map([
+        ['Professor', professorContext],
+        ['Student', studentContext],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'SEGMENT_START',
+        payload: {
+          id: 'segment-1',
+          turn_id: 'turn-1',
+          segment_type: 'text',
+          agent_name: 'Professor',
+          agent_id: 'prof-run-1',
+        },
+      }),
+    );
+
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Running);
+    expect(professorContext.state.currentStatus).toBe(AgentStatus.Running);
+    expect(professorContext.state.canInterrupt).toBe(false);
+    expect(professorContext.isSending).toBe(true);
+    expect(studentContext.state.currentStatus).toBe(AgentStatus.Error);
+    expect(studentContext.state.canInterrupt).toBe(true);
+  });
+
+  it('does not repair stale member error from focused-member fallback without explicit identity', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const focusedContext = {
+      state: {
+        runId: 'focused-run-1',
+        currentStatus: AgentStatus.Error,
+        canInterrupt: true,
+        compactionStatus: null,
+      },
+      conversation: { messages: [], updatedAt: '' },
+      isSending: false,
+    };
+    const teamContext = {
+      currentStatus: AgentTeamStatus.Error,
+      focusedMemberName: 'Focused',
+      members: new Map([
+        ['Focused', focusedContext],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'SEGMENT_START',
+        payload: {
+          id: 'segment-without-member-id',
+          turn_id: 'turn-1',
+          segment_type: 'text',
+        },
+      }),
+    );
+
+    expect(focusedContext.state.currentStatus).toBe(AgentStatus.Error);
+    expect(focusedContext.state.canInterrupt).toBe(true);
+    expect(focusedContext.isSending).toBe(false);
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Error);
+    expect(focusedContext.conversation.messages).toHaveLength(1);
+  });
+
+  it('does not promote non-error team/member lifecycle status from live activity alone', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const memberContext = {
+      state: {
+        runId: 'member-run-1',
+        currentStatus: AgentStatus.Idle,
+        canInterrupt: false,
+        compactionStatus: null,
+      },
+      conversation: { messages: [], updatedAt: '' },
+      isSending: false,
+    };
+    const teamContext = {
+      currentStatus: AgentTeamStatus.Idle,
+      focusedMemberName: 'worker-a',
+      members: new Map([
+        ['worker-a', memberContext],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'SEGMENT_START',
+        payload: {
+          id: 'segment-1',
+          turn_id: 'turn-1',
+          segment_type: 'text',
+          agent_name: 'worker-a',
+          agent_id: 'member-run-1',
+        },
+      }),
+    );
+
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Idle);
+    expect(memberContext.state.currentStatus).toBe(AgentStatus.Idle);
+    expect(memberContext.isSending).toBe(false);
+  });
+
+  it('does not convert team transport errors into lifecycle errors', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const teamContext = {
+      isSubscribed: false,
+      currentStatus: AgentTeamStatus.Running,
+      focusedMemberName: 'worker-a',
+      members: new Map([
+        [
+          'worker-a',
+          {
+            state: {
+              runId: 'member-run-1',
+              currentStatus: AgentStatus.Running,
+              canInterrupt: true,
+              compactionStatus: null,
+            },
+            conversation: { messages: [], updatedAt: '' },
+          },
+        ],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onConnect')?.();
+    callbacks.get('onError')?.(new Error('socket failed'));
+    callbacks.get('onDisconnect')?.('network reset');
+
+    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Running);
+    expect(teamContext.members.get('worker-a').state.currentStatus).toBe(AgentStatus.Running);
+    expect(teamContext.isSubscribed).toBe(false);
   });
 
   it('routes raw inter-agent messages only to the targeted member conversation', () => {

@@ -6,6 +6,7 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
+import type { AgentApiStatus } from "../../../src/agent-execution/domain/agent-status-payload.js";
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
@@ -17,7 +18,7 @@ import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 type StatusPayload = {
-  status: "idle" | "running" | "error";
+  status: AgentApiStatus;
   can_interrupt: boolean;
   agent_id?: string;
   agent_name?: string;
@@ -188,14 +189,20 @@ class FakeTeamRun {
     ],
   };
 
-  constructor(private readonly stream: FakeTeamEventStream) {}
+  constructor(
+    private readonly stream: FakeTeamEventStream,
+    private readonly options: {
+      teamStatus?: AgentApiStatus;
+      memberStatuses?: StatusPayload[];
+    } = {},
+  ) {}
 
   getStatusSnapshot() {
-    return { status: "running" as const };
+    return { status: this.options.teamStatus ?? "running" };
   }
 
   getMemberStatusSnapshots(): StatusPayload[] {
-    return [
+    return this.options.memberStatuses ?? [
       {
         status: "running",
         can_interrupt: true,
@@ -405,6 +412,48 @@ describe("Agent status websocket contract integration", () => {
     },
   );
 
+  it("carries initializing single-agent snapshots and normalizes startup live status over the real websocket", async () => {
+    const stream = new FakeAgentEventStream();
+    const run = new FakeAgentRun(
+      "single-initializing-1",
+      RuntimeKind.AUTOBYTEUS,
+      stream,
+      { status: "initializing", can_interrupt: false },
+    );
+    const { app, baseUrl } = await openAgentApp(run);
+    const socket = new WebSocket(`${baseUrl}/ws/agent/${run.runId}`);
+    const messages = captureMessages(socket);
+    let cursor = 0;
+    try {
+      await waitForOpen(socket);
+      await waitForBufferedMessage(messages, cursor++); // CONNECTED
+
+      const snapshot = await waitForBufferedMessage(messages, cursor++);
+      expect(snapshot).toEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "initializing", can_interrupt: false },
+      });
+      expectNoLegacyStatusFields(snapshot.payload);
+
+      stream.push({
+        runId: run.runId,
+        eventType: AgentRunEventType.AGENT_STATUS,
+        payload: { status: "BOOTSTRAPPING", can_interrupt: true },
+        statusHint: "ACTIVE",
+      });
+
+      const liveInitializing = await waitForBufferedMessage(messages, cursor++);
+      expect(liveInitializing).toEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "initializing", can_interrupt: false },
+      });
+      expectNoLegacyStatusFields(liveInitializing.payload);
+    } finally {
+      socket.close();
+      await app.close();
+    }
+  });
+
   it("sends team member AGENT_STATUS snapshots before aggregate TEAM_STATUS without legacy fields", async () => {
     const stream = new FakeTeamEventStream();
     const teamRun = new FakeTeamRun(stream);
@@ -486,6 +535,131 @@ describe("Agent status websocket contract integration", () => {
       });
       expect(liveTeamStatus.payload).not.toHaveProperty("can_interrupt");
       expectNoLegacyStatusFields(liveTeamStatus.payload);
+    } finally {
+      socket.close();
+      await app.close();
+    }
+  });
+
+  it("carries initializing team member and aggregate statuses over the real websocket", async () => {
+    const stream = new FakeTeamEventStream();
+    const teamRun = new FakeTeamRun(stream, {
+      teamStatus: "initializing",
+      memberStatuses: [
+        {
+          status: "initializing",
+          can_interrupt: false,
+          agent_id: "member-writer-1",
+          agent_name: "writer",
+        },
+        {
+          status: "offline",
+          can_interrupt: false,
+          agent_id: "member-reviewer-1",
+          agent_name: "reviewer",
+        },
+      ],
+    });
+    const teamHandler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      {
+        getTeamRun: (teamRunId: string) => (teamRunId === teamRun.runId ? teamRun : null),
+        resolveTeamRun: async (teamRunId: string) => (teamRunId === teamRun.runId ? teamRun : null),
+        recordRunActivity: async () => {},
+        refreshRunMetadata: async () => {},
+      } as any,
+    );
+    const app = fastify();
+    await app.register(websocket);
+    await registerAgentWebsocket(
+      app,
+      {
+        connect: async () => null,
+        handleMessage: async () => {},
+        disconnect: async () => {},
+      } as any,
+      teamHandler,
+    );
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${teamRun.runId}`);
+    const messages = captureMessages(socket);
+    let cursor = 0;
+    try {
+      await waitForOpen(socket);
+      await waitForBufferedMessage(messages, cursor++); // CONNECTED
+
+      const writerStatus = await waitForBufferedMessage(messages, cursor++);
+      expect(writerStatus).toEqual({
+        type: "AGENT_STATUS",
+        payload: {
+          status: "initializing",
+          can_interrupt: false,
+          agent_id: "member-writer-1",
+          agent_name: "writer",
+        },
+      });
+      expectNoLegacyStatusFields(writerStatus.payload);
+
+      const reviewerStatus = await waitForBufferedMessage(messages, cursor++);
+      expect(reviewerStatus).toEqual({
+        type: "AGENT_STATUS",
+        payload: {
+          status: "offline",
+          can_interrupt: false,
+          agent_id: "member-reviewer-1",
+          agent_name: "reviewer",
+        },
+      });
+      expectNoLegacyStatusFields(reviewerStatus.payload);
+
+      const teamSnapshot = await waitForBufferedMessage(messages, cursor++);
+      expect(teamSnapshot).toEqual({
+        type: "TEAM_STATUS",
+        payload: { status: "initializing" },
+      });
+      expectNoLegacyStatusFields(teamSnapshot.payload);
+
+      stream.push({
+        teamRunId: teamRun.runId,
+        eventSourceType: TeamRunEventSourceType.AGENT,
+        data: {
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          memberName: "reviewer",
+          memberRunId: "member-reviewer-1",
+          agentEvent: {
+            runId: "member-reviewer-1",
+            eventType: AgentRunEventType.AGENT_STATUS,
+            payload: { status: "STARTING", can_interrupt: true },
+            statusHint: "ACTIVE",
+          },
+        },
+      });
+
+      const liveMemberInitializing = await waitForBufferedMessage(messages, cursor++);
+      expect(liveMemberInitializing).toEqual({
+        type: "AGENT_STATUS",
+        payload: {
+          status: "initializing",
+          can_interrupt: false,
+          agent_name: "reviewer",
+          agent_id: "member-reviewer-1",
+        },
+      });
+      expectNoLegacyStatusFields(liveMemberInitializing.payload);
+
+      stream.push({
+        teamRunId: teamRun.runId,
+        eventSourceType: TeamRunEventSourceType.TEAM,
+        data: { status: "initializing" },
+      });
+
+      const liveTeamInitializing = await waitForBufferedMessage(messages, cursor++);
+      expect(liveTeamInitializing).toEqual({
+        type: "TEAM_STATUS",
+        payload: { status: "initializing" },
+      });
+      expectNoLegacyStatusFields(liveTeamInitializing.payload);
     } finally {
       socket.close();
       await app.close();

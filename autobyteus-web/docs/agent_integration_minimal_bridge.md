@@ -56,7 +56,7 @@ These handlers update the agent context and mark messages complete. In the curre
 - `TURN_STARTED` is a turn-scoped lifecycle marker that clients can observe directly.
 - `TURN_COMPLETED` is the preferred completion signal for one specific turn.
 - `AGENT_STATUS` is run-level state with payload
-  `{ status: "offline" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
+  `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
   It does not contain legacy `new_status` / `old_status` fields.
 - The interrupt/stop affordance should use backend-owned `can_interrupt`. `isSending`
   is only local submit-flight state and must not grant interrupt authority by itself.
@@ -119,7 +119,7 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 - Handles core events: `SEGMENT_*`, `TURN_*`, `AGENT_STATUS`, `ASSISTANT_COMPLETE`, `TEAM_STATUS`, `ERROR`
 - Treats member `AGENT_STATUS` as the source for each member's status and
   `canInterrupt`; aggregate `TEAM_STATUS` has payload
-  `{ status: "offline" | "idle" | "running" | "error" }` only.
+  `{ status: "offline" | "initializing" | "idle" | "running" | "error" }` only.
 - Preserves a focused member's live `running/canInterrupt=true` interrupt
   affordance across refresh/reconcile until that member receives a terminal
   projection or a later live non-interruptible status.

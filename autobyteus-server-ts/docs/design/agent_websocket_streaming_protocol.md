@@ -32,14 +32,14 @@ clients receive only these status messages:
 
 ```ts
 type AgentStatusPayload = {
-  status: "offline" | "idle" | "running" | "error";
+  status: "offline" | "initializing" | "idle" | "running" | "error";
   can_interrupt: boolean;
   agent_id?: string;
   agent_name?: string;
 };
 
 type TeamStatusPayload = {
-  status: "offline" | "idle" | "running" | "error";
+  status: "offline" | "initializing" | "idle" | "running" | "error";
 };
 ```
 

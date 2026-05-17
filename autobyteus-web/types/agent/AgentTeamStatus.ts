@@ -1,5 +1,6 @@
 export enum AgentTeamStatus {
   Offline = 'offline',
+  Initializing = 'initializing',
   Idle = 'idle',
   Running = 'running',
   Error = 'error',

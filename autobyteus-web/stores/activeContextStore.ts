@@ -153,8 +153,6 @@ export const useActiveContextStore = defineStore('activeContext', () => {
         await agentRunStore.sendUserInputAndSubscribe();
       } else if (selectionStore.selectedType === 'team') {
         await agentTeamRunStore.sendMessageToFocusedMember(context.requirement, context.contextFilePaths);
-        context.requirement = '';
-        context.contextFilePaths = [];
       } else {
         throw new Error('Cannot send: Unknown selection type.');
       }

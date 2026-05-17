@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AgentStreamingService } from '../AgentStreamingService';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 // import { AgentContext } from '~/types/agent/AgentContext'; // We can just mock the context interface for testing
 
 const { handleBrowserToolExecutionSucceededMock } = vi.hoisted(() => ({
@@ -47,6 +48,8 @@ describe('AgentStreamingService', () => {
                 runId: 'test-agent-id',
                 conversation: mockConversation,
                 compactionStatus: null,
+                currentStatus: AgentStatus.Idle,
+                canInterrupt: false,
             },
             conversation: mockConversation,
             isSending: false,
@@ -134,6 +137,62 @@ describe('AgentStreamingService', () => {
         );
 
         expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith(payload);
+    });
+
+    it('clears stale error when live non-error activity arrives for the same run', () => {
+        mockAgentContext.state.currentStatus = AgentStatus.Error;
+        mockAgentContext.state.canInterrupt = true;
+        mockAgentContext.isSending = false;
+
+        (service as any).dispatchMessage(
+            {
+                type: 'SEGMENT_START',
+                payload: {
+                    id: 'segment-1',
+                    turn_id: 'turn-1',
+                    segment_type: 'text',
+                },
+            },
+            mockAgentContext,
+        );
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
+        expect(mockAgentContext.state.canInterrupt).toBe(false);
+        expect(mockAgentContext.isSending).toBe(true);
+    });
+
+    it('keeps lifecycle status event-driven for non-error live activity', () => {
+        mockAgentContext.state.currentStatus = AgentStatus.Idle;
+        mockAgentContext.state.canInterrupt = false;
+        mockAgentContext.isSending = false;
+
+        (service as any).dispatchMessage(
+            {
+                type: 'SEGMENT_START',
+                payload: {
+                    id: 'segment-1',
+                    turn_id: 'turn-1',
+                    segment_type: 'text',
+                },
+            },
+            mockAgentContext,
+        );
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
+        expect(mockAgentContext.isSending).toBe(false);
+    });
+
+    it('does not convert transport errors into lifecycle errors', () => {
+        mockAgentContext.state.currentStatus = AgentStatus.Running;
+        mockAgentContext.state.canInterrupt = true;
+        (service as any).attachContext(mockAgentContext);
+
+        (service as any).handleError(new Error('socket failed'));
+        (service as any).handleDisconnect('network reset');
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
+        expect(mockAgentContext.state.canInterrupt).toBe(true);
+        expect(mockAgentContext.isSubscribed).toBe(false);
     });
 
     it('serializes single-agent interrupt without a team target payload', () => {

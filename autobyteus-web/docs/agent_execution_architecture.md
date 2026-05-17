@@ -94,8 +94,8 @@ The frontend runtime status model is intentionally coarse:
 
 - single-agent and team status enums expose only `offline`, `idle`, `running`, and `error`;
 - single-agent `AGENT_STATUS` payloads are
-  `{ status: "offline" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
-- aggregate `TEAM_STATUS` payloads are `{ status: "offline" | "idle" | "running" | "error" }`;
+  `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
+- aggregate `TEAM_STATUS` payloads are `{ status: "offline" | "initializing" | "idle" | "running" | "error" }`;
 - team member interrupt authority comes from the selected member's most recent
   `AGENT_STATUS.can_interrupt` value, not from aggregate `TEAM_STATUS`; and
 - legacy target fields such as `new_status` / `old_status` and detailed runtime

@@ -18,6 +18,7 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type { ContextAttachment } from '~/types/conversation';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import { AgentStatus } from '~/types/agent/AgentStatus';
 import { partitionContextAttachmentsForStreaming } from '~/utils/contextFiles/contextAttachmentSend';
 import {
   buildTeamMemberDraftContextFileOwner,
@@ -28,7 +29,18 @@ import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
 import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
-import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
+import {
+  applyAcceptedTeamMemberStartupStatus,
+  applyOfflineOrTerminalCleanup,
+  applyTeamMemberTerminalCleanup,
+} from '~/services/runStatus/agentRuntimeStatusState';
+import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
+import {
+  beginLocalUserSubmission,
+  failLocalSubmission,
+  finalizeLocalSubmissionAttachments,
+  type LocalUserSubmissionHandle,
+} from '~/services/runSubmission/localUserSubmission';
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
@@ -244,7 +256,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const focusedMember = teamContextsStore.focusedMemberContext;
 
       if (!focusedMember || !activeTeam) throw new Error('No active team context.');
-      focusedMember.isSending = true;
 
       const isTemporary = activeTeam.teamRunId.startsWith('temp-');
       let finalTeamRunId = activeTeam.teamRunId;
@@ -253,8 +264,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         ? runHistoryStore.teamResumeConfigByTeamRunId[finalTeamRunId] || null
         : null;
       const draftOwner = buildTeamMemberDraftContextFileOwner(activeTeam.teamRunId, targetMemberRouteKey);
+      let localSubmission: LocalUserSubmissionHandle | null = null;
 
       try {
+        let memberConfigs: TeamMemberConfigInput[] | null = null;
         if (isTemporary) {
           this.isLaunching = true;
 
@@ -287,21 +300,38 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
             throw new Error(readiness.blockingIssues[0]?.message || 'Team configuration is not launch-ready.');
           }
 
-          const memberConfigs: TeamMemberConfigInput[] = buildTeamRunMemberConfigRecords({
+          memberConfigs = buildTeamRunMemberConfigRecords({
             config: activeTeam.config,
             leafMembers,
           }).map((memberConfig) => ({
             ...memberConfig,
             skillAccessMode: memberConfig.skillAccessMode as TeamMemberConfigInput['skillAccessMode'],
           }));
+        }
 
+        const memberStatus = normalizeAgentRuntimeStatus(focusedMember.state.currentStatus);
+        const shouldApplyStartupStatus =
+          isTemporary ||
+          teamResumeConfig?.isActive === false ||
+          memberStatus === AgentStatus.Offline ||
+          memberStatus === AgentStatus.Error ||
+          memberStatus === AgentStatus.Initializing;
+        localSubmission = beginLocalUserSubmission(focusedMember, {
+          text,
+          attachments: contextAttachments,
+          applyInitializing: shouldApplyStartupStatus
+            ? () => applyAcceptedTeamMemberStartupStatus(activeTeam, focusedMember)
+            : undefined,
+        });
+
+        if (isTemporary) {
           const client = getApolloClient()
           const { data, errors } = await client.mutate<CreateAgentTeamRunMutationPayload>({
             mutation: CreateAgentTeamRun,
             variables: {
               input: {
                 teamDefinitionId: activeTeam.config.teamDefinitionId,
-                memberConfigs,
+                memberConfigs: memberConfigs ?? [],
               }
             }
           });
@@ -366,13 +396,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (!finalFocusedMember) {
           throw new Error(`Focused member '${targetMemberRouteKey}' not found after team creation.`);
         }
-        finalFocusedMember.state.conversation.messages.push({
-          type: 'user',
-          text,
-          timestamp: new Date(),
-          contextFilePaths: finalizedAttachments,
-        });
-        finalFocusedMember.state.conversation.updatedAt = new Date().toISOString();
+        finalizeLocalSubmissionAttachments(localSubmission, finalizedAttachments);
 
         const service = await this.ensureTeamStreamConnected(finalTeamRunId);
         const streamPayload = partitionContextAttachmentsForStreaming(finalizedAttachments);
@@ -384,7 +408,11 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         );
       } catch (error: any) {
         console.error(`Failed to send message to member ${focusedMember.state.runId}:`, error);
-        focusedMember.isSending = false;
+        if (localSubmission) {
+          failLocalSubmission(localSubmission, error);
+          applyTeamMemberTerminalCleanup(activeTeam, localSubmission.context, AgentStatus.Error);
+          return;
+        }
         throw new Error(`Failed to send message: ${error.message}`);
       } finally {
         if (isTemporary) {
