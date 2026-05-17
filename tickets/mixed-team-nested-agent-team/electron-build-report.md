@@ -1,5 +1,12 @@
 # Local Electron Build Report
 
+## Delivery Round 27 Latest-Base Supersession Notice
+
+- Current build status: `Superseded for final delivery / available for ad hoc inspection only`
+- Reason: delivery refreshed `origin/personal` after code review Round 27 and found it advanced to `720f46940841a2b407bb65428095fe5435f5238d` with source/docs/test merge conflicts and a workspace version bump to `1.3.15`.
+- A fresh Electron build is required after implementation resolves the latest-base integration conflicts, code review passes, and API/E2E validation reruns.
+- Blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round27-latest-base-integration-blocker.md`
+
 ## Scope
 
 - Ticket: `mixed-team-nested-agent-team`

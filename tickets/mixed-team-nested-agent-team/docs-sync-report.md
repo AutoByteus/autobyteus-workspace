@@ -1,5 +1,12 @@
 # Docs Sync Report
 
+## Delivery Round 27 Latest-Base Blocker
+
+- Current docs-sync status: `Blocked / needs recheck after integration`
+- Reason: code review Round 27 passed at `49470432`, but delivery's latest-base refresh found `origin/personal @ 720f46940841a2b407bb65428095fe5435f5238d` ahead of the ticket branch with run-history source/docs/test merge conflicts.
+- The docs sync content below records the prior candidate. It must be rechecked after implementation resolves the conflicts and the integrated branch passes review/validation.
+- Blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round27-latest-base-integration-blocker.md`
+
 ## Scope
 
 - Ticket: `mixed-team-nested-agent-team`

@@ -1,10 +1,19 @@
 # Handoff Summary
 
+## Delivery Round 27 Latest-Base Blocker
+
+- Current delivery status: `Blocked`
+- Reason: after code review Round 27 passed at `49470432`, delivery refreshed `origin/personal` and found it advanced to `720f46940841a2b407bb65428095fe5435f5238d`; the ticket branch is now `behind 7`, `ahead 19` after delivery safety checkpoint `1981d8eb`.
+- Merge preview result: run-history source/docs/test content conflicts; no real merge was applied by delivery.
+- Blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round27-latest-base-integration-blocker.md`
+- Routed owner: `implementation_engineer` for local integration conflict resolution, then code review and API/E2E before delivery rebuilds Electron and resumes final handoff.
+- The prior Electron build remains available for ad hoc inspection only; it is not a final current-base verification candidate.
+
 ## Summary Meta
 
 - Ticket: `mixed-team-nested-agent-team`
 - Date: `2026-05-16`
-- Current status: `Ready for user verification; finalization is blocked until explicit user completion/verification`
+- Current status: `Blocked by latest-base integration conflicts; implementation local fix required`
 - Task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`
 - Ticket branch: `codex/mixed-team-nested-agent-team`
 - Tracked base/finalization target: `origin/personal` / local `personal`
