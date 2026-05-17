@@ -875,3 +875,836 @@ Routing note: This is a pass from the API/E2E validation-code re-review entry po
 - Review Decision: `Pass`
 - Score Summary: `9.4 / 10` (`94 / 100`) for Round 27 durable-validation re-review.
 - Notes: API/E2E Round 15 passed. The repository-resident validation additions are appropriate, no implementation source was changed, and delivery can resume.
+
+---
+
+# Review Report — Round 28 Latest-Base Integration Re-Review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Code Review`
+- Current Review Round: `28`
+- Trigger: Delivery Round 27 latest-base integration merge `c843c5a3` against `origin/personal @ 720f46940841a2b407bb65428095fe5435f5238d`.
+- User Clarification Applied: `No backward compatibility / no legacy runtime paths. Route/path identity must remain authoritative; historical flat metadata handling is allowed only inside the app-data migration subsystem.`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Command API Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- App Data Migration Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
+- API / E2E Validation Started Yet For This Integrated State: `No; paused pending this review`
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No; this is an implementation latest-base integration review`
+
+## Review Scope
+
+Reviewed the latest-base conflict resolution and adjacent identity/projection paths, especially:
+
+- `autobyteus-server-ts/docs/modules/run_history.md`
+- `autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts`
+- `autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts`
+- `autobyteus-server-ts/src/run-history/services/team-run-metadata-flattener.ts`
+- `autobyteus-server-ts/tests/unit/run-history/services/agent-run-view-projection-service.test.ts`
+- `autobyteus-server-ts/tests/unit/run-history/team-member-run-view-projection-service.test.ts`
+- `autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts`
+
+Review focus:
+
+- Verify the merge preserved the latest-base local-memory replay authority and did not reintroduce runtime-native projection fallback as normal UI behavior.
+- Verify recursive `memberTree` remains the team projection/restore source of truth.
+- Verify app-data migration remains isolated and no runtime legacy metadata dual-read path was introduced.
+- Re-audit for legacy/name fallback paths after the old branch merged into current base.
+
+## Prior Findings Resolution Check (Mandatory On Round >1)
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 25-27 | App-data migration isolation | High | Preserved in inspected latest-base integration scope | `TeamRunHistoryIndexService` degraded skip behavior remains covered by focused tests; normal metadata store still rejects legacy flat metadata outside migration. | No new app-data migration blocker found. |
+| 21-24 | No-legacy command identity | High | Mostly preserved in WebSocket command paths, but adjacent run-history projection/opening paths still contain bare-name fallbacks | See `CR-ROUND28-001`. | The blocker is not command parser acceptance; it is run-history/team-member identity resolution. |
+| 27 | Durable validation additions | N/A | Still appropriate | Latest implementation merge did not invalidate the reviewed app-data migration durable validation in the inspected scope. | No action. |
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by implementation | Fail | Design and requirements repeatedly require route/path identity and reject bare `memberName` as authoritative nested identity. Current run-history/team-member selection still accepts bare `memberName` as a route-key fallback. | Remove the fallback paths in `CR-ROUND28-001`. |
+| Data-flow spine inventory clarity and preservation | Partial | Local replay projection spine is good: `AgentRunViewProjectionService` delegates to `LocalMemoryRunViewProjectionProvider` and no longer selects runtime-native provider fallback for UI display. | Keep this direction; fix member identity lookup. |
+| Ownership boundary preservation and clarity | Partial | App-data migration boundary remains isolated; runtime metadata schema rejection remains current-schema-only. | Remove run-history bare-name compatibility branches. |
+| Shared-structure/data-model tightness | Fail | Recursive `memberTree` data is flattened correctly, but resolver helpers still allow `memberName` to stand in for `memberRouteKey`, weakening path identity and duplicate leaf-name safety. | Route-key/path only. |
+| API / query / command boundary clarity | Fail | GraphQL query argument is named `memberRouteKey`, but backend service accepts a bare display/member name and the unit test locks that behavior in. | Make the query/service strict. |
+| Patch-on-patch complexity control | Partial | Conflict resolution removed stale provider-registry/team-member-local reader path cleanly. | Do not retain old name fallback as a convenience patch. |
+| Dead/obsolete/legacy cleanup completeness | Fail | Active source still has name-based fallback branches in team-member run projection and history opening selection. | Remove, update tests. |
+| Test quality for changed behavior | Fail | `team-member-run-view-projection-service.test.ts` includes a regression named `falls back to member name match when route key differs`, which encodes the legacy behavior contrary to current no-legacy policy. | Replace with a rejection test for mismatched route key/member name. |
+| Validation readiness | Fail | Focused tests/typecheck pass, but the no-legacy identity invariant fails. | Local fix before API/E2E resumes. |
+| No backward-compatibility mechanisms / no legacy retention | Fail | Active run-history/projection path accepts bare `memberName` as route-key fallback outside the migration subsystem. | Remove fallback. |
+
+## Review Scorecard (Mandatory)
+
+- Overall score (`/10`): `7.1`
+- Overall score (`/100`): `71`
+- Review decision: `Fail — Local Fix Required`
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | --- | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.2 | Local-memory replay authority is clear and well integrated. | Member selection identity is not strict. | Route-key/path-only projection lookup. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 7.8 | Migration isolation is preserved. | Run-history resolver helpers still act as compatibility layers for display names. | Remove compatibility lookup branches. |
+| `3` | `API / Interface / Query / Command Clarity` | 6.8 | Public GraphQL uses `memberRouteKey`. | Backend accepts a non-route display name behind that API. | Match implementation to the API name exactly. |
+| `4` | `Separation of Concerns and File Placement` | 8.0 | Provider-registry conflict path was removed cleanly. | Identity matching helper mixes display and routing concerns. | Keep display names out of route-key lookup. |
+| `5` | `Shared-Structure / Data-Model Tightness` | 6.7 | Recursive `memberTree` remains present. | Duplicate leaf-name safety is undermined by `memberName` matching. | Normalize/compare route keys and paths only. |
+| `6` | `Naming Quality and Local Readability` | 7.0 | Many names are clear. | `memberRouteKey` parameter can be satisfied by `memberName`, violating naming truthfulness. | Make names and behavior align. |
+| `7` | `Validation Readiness` | 6.9 | Focused tests pass. | One passing test asserts legacy fallback behavior. | Add strict rejection/duplicate-name tests. |
+| `8` | `Runtime Correctness Under Edge Cases` | 6.7 | Normal single-level route-key cases work. | Nested duplicate leaf names can misroute to the first display-name match. | Require exact route/path. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 5.8 | Command parser appears clean in this scan. | Active run-history/projection path still contains bare-name compatibility. | Remove all non-migration compatibility branches. |
+| `10` | `Cleanup Completeness` | 7.1 | Stale provider-registry conflict path was cleaned. | Name fallback and its test remain. | Delete fallback and test. |
+
+## Findings
+
+### CR-ROUND28-001 — Team-member projection/history selection still accepts bare `memberName` as a route-key fallback
+
+- Severity: `High`
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+- Files:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/src/run-history/services/team-run-metadata-flattener.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/unit/run-history/team-member-run-view-projection-service.test.ts`
+- Evidence:
+  - `team-member-run-view-projection-service.ts:49` returns a binding when `binding.memberName.trim() === memberRouteKey.trim()`.
+  - `team-run-metadata-flattener.ts:48` resolves a member when `member.memberName === memberRouteKey`.
+  - `useWorkspaceHistorySelectionActions.ts:34` matches a focused member by `member.memberRouteKey === focusedMemberKey || member.memberName === focusedMemberKey`.
+  - `team-member-run-view-projection-service.test.ts:131` explicitly asserts `falls back to member name match when route key differs`.
+- Why this is blocking:
+  - Requirements require path-based nested identity and say public command/selection paths must use `memberPath` / `memberRouteKey`; bare `memberName` is not sufficient for duplicate nested leaf names.
+  - The GraphQL boundary is named `getTeamMemberRunProjection(teamRunId, memberRouteKey)`, so accepting a display/member name behind that argument is a hidden compatibility alias.
+  - In nested teams with repeated leaf names, a bare-name fallback can select the first matching leaf instead of the intended route, reintroducing exactly the old flat/top-level-name ambiguity the design removed.
+  - The user explicitly clarified that we should not keep backward compatibility or legacy code except isolated app-data migrations. These branches are active runtime/history/projection paths, not migration code.
+- Required action:
+  1. Remove `memberName` fallback matching from `TeamMemberRunViewProjectionService` and `team-run-metadata-flattener` resolver helpers.
+  2. Remove frontend history selection fallback by `memberName`; `focusedMemberRouteKey` must be route-key/path identity only.
+  3. Replace the current fallback-positive unit test with a negative test proving a mismatched bare member name is rejected / not selected when it is not the exact route key.
+  4. Add or update a duplicate-leaf-name regression proving `BuildSquad/review_lead` and another `review_lead`-named leaf cannot be opened/hydrated by the bare `review_lead` name.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Validation Readiness | Ready for API/E2E/full-stack validation | Fail | No-legacy identity invariant fails. |
+| Tests | Test quality is acceptable | Fail | One unit test locks in bare-name fallback behavior. |
+| Tests | Test maintainability is acceptable | Partial | Existing tests are readable, but the fallback test should become a strict rejection/duplicate-name test. |
+| Findings clarity | Findings are clear enough for local fix | Pass | The required changes are bounded to run-history/team-member selection identity. |
+
+## Verification Evidence
+
+Commands/checks run during Round 28 review:
+
+- Reloaded `code-reviewer` skill and canonical `design-principles.md`.
+- Inspected latest merge status and parent commits: `c843c5a3` merging `origin/personal @ 720f46940841a2b407bb65428095fe5435f5238d`.
+- Inspected conflict-resolution files and run-history docs.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/agent-run-view-projection-service.test.ts tests/unit/run-history/team-member-run-view-projection-service.test.ts tests/unit/run-history/services/team-run-history-index-service.test.ts tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts --reporter=dot` — passed, `4` files / `23` tests.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+- `git diff --check` — passed.
+- `git diff --cached --check` — passed.
+- `git diff --check origin/personal...HEAD` — passed.
+- No-legacy blocking scan:
+  - `autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts:34`
+  - `autobyteus-server-ts/src/run-history/services/team-run-metadata-flattener.ts:48`
+  - `autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts:49`
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in active runtime/history paths | Fail | Team-member projection/history selection accepts bare `memberName` as a fallback for route-key APIs. |
+| No legacy old-behavior retention in changed/integrated scope | Fail | The fallback test explicitly preserves old member-name behavior. |
+| Dead/obsolete code cleanup completeness | Fail | The fallback branches and test must be removed or inverted to strict rejection. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
+
+| Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| `binding.memberName.trim() === memberRouteKey.trim()` in `team-member-run-view-projection-service.ts` | `LegacyBranch` | Accepts a display/member name for a route-key parameter. | Violates route/path identity and duplicate leaf-name safety. | Remove and require exact normalized route key/path. |
+| `member.memberName === memberRouteKey` in `team-run-metadata-flattener.ts` | `LegacyBranch` | Resolver helper treats member name as route key. | Can misresolve nested duplicate member names and undermines current metadata identity. | Remove; compare route key/path only. |
+| `member.memberName === focusedMemberKey` in `useWorkspaceHistorySelectionActions.ts` | `LegacyBranch` | Frontend opening path falls back from focused route key to display/member name. | Reintroduces hidden display-name targeting in history opening. | Remove; focused key must be route key only. |
+| Fallback-positive unit test in `team-member-run-view-projection-service.test.ts` | `UnusedTest` / `LegacyBranch` | Test name: `falls back to member name match when route key differs`. | Locks in the old behavior. | Replace with rejection/duplicate-name regression. |
+
+## Docs-Impact Verdict
+
+- Docs impact: `No docs update required for this local fix unless implementation discovers a broader API change.`
+- Why: Current docs already state `memberPath` / `memberRouteKey` are canonical and that bare `memberName` is not sufficient for duplicate nested leaf names. The code must be brought back into alignment with the docs.
+- Files or areas likely affected: run-history/team-member projection tests and possibly history selection tests.
+
+## Classification
+
+- Classification: `Local Fix`
+- Rationale: The blocker is implementation/source-test behavior in active runtime/history/projection paths. It does not require a design reset; the design already says route/path identity only.
+
+## Recommended Recipient
+
+- `implementation_engineer`
+
+Routing note: API/E2E/full-stack validation and delivery packaging should remain paused until the name-fallback branches and their positive test are removed.
+
+## Residual Risks
+
+- I did not complete a full repository-wide elimination of every `memberName` display usage; display labels and LLM communication roster names are legitimate in their own domains. The blocker is specifically where display/member names are accepted as routing/projection identity.
+- After the local fix, rerun a targeted no-legacy scan for `memberName === memberRouteKey`, `member.memberName === focusedMemberKey`, and fallback-positive tests, then rerun the focused run-history suites.
+
+## Latest Authoritative Result
+
+- Review Decision: `Fail — Local Fix Required`
+- Score Summary: `7.1 / 10` (`71 / 100`) for Round 28 latest-base integration re-review.
+- Notes: The local-memory replay merge direction is mostly sound, but route-key APIs still retain bare-name fallback behavior in active run-history/projection selection paths. This must be removed before API/E2E resumes.
+
+---
+
+# Review Report — Round 29 Route-Key Selection Local-Fix Re-Review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Code Review`
+- Current Review Round: `29`
+- Trigger: Round 28 local fix commit `68e2d15e fix(history): require route-key team member selection`.
+- Prior Finding Rechecked: `CR-ROUND28-001`
+- User Clarification Applied: `No backward compatibility / no legacy runtime paths. Route/path identity must remain authoritative; historical flat metadata handling is allowed only inside the app-data migration subsystem.`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Command API Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
+- API / E2E Validation Started Yet For This Integrated State: `No; paused pending this review`
+
+## Review Scope
+
+Reviewed the Round 28 local fix plus adjacent route-key identity surfaces touched or implicated by the fix:
+
+- `autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts`
+- `autobyteus-server-ts/src/run-history/services/team-run-metadata-flattener.ts`
+- `autobyteus-server-ts/tests/unit/run-history/team-member-run-view-projection-service.test.ts`
+- `autobyteus-server-ts/tests/unit/run-history/services/team-run-metadata-flattener.test.ts`
+- `autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts`
+- `autobyteus-web/composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts`
+- `autobyteus-web/stores/runHistoryMetadata.ts`
+- `autobyteus-web/stores/__tests__/runHistoryMetadata.spec.ts`
+- Adjacent frontend team-run config reconstruction in `autobyteus-web/utils/teamRunConfigUtils.ts`
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 28 | `CR-ROUND28-001` | High | Partially resolved | The exact backend projection/flattener/frontend selection fallbacks identified in Round 28 were removed, and duplicate `review_lead` route-key regressions were added. | A same-pattern fallback remains in adjacent frontend config reconstruction; see `CR-ROUND29-001`. |
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment preserved | Partial | The direct Round 28 run-history/projection fallback was removed. | Remove remaining same-pattern fallback in frontend config reconstruction. |
+| Data-flow spine clarity | Partial | Historical team-member projection now resolves by canonical route key only. | Launch/config reconstruction must also key by canonical route key only. |
+| Ownership and boundary clarity | Partial | Backend route-key projection boundary is now strict. | Frontend metadata/config helper still accepts a display name as substitute identity. |
+| Shared model tightness | Fail | `TeamRunConfig.memberOverrides` is documented as keyed by canonical route key, but `teamRunConfigUtils` still derives keys with `memberRouteKey || memberName`. | Remove `memberName` fallback and reject/ignore invalid missing route-key metadata instead of synthesizing. |
+| API / query / command clarity | Pass for prior finding | `getTeamMemberRunProjection` path no longer accepts bare name. | No action for that path. |
+| No backward compatibility / legacy retention | Fail | Active frontend reconstruction still has member-name fallback outside migration code. | See `CR-ROUND29-001`. |
+| Test quality | Partial | Duplicate-leaf tests were added for projection/history selection. | Add coverage for config reconstruction not synthesizing override keys from `memberName`. |
+| Validation readiness | Fail | Focused tests pass, but no-legacy invariant is not clean across adjacent route-key config reconstruction. | Local fix before API/E2E resumes. |
+
+## Review Scorecard
+
+- Overall score (`/10`): `8.0`
+- Overall score (`/100`): `80`
+- Review decision: `Fail — Local Fix Required`
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | --- | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.4 | Team-member projection spine is now route-key strict. | Config reconstruction spine still has a name fallback. | Route-key-only reconstruction. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.2 | Backend projection boundary improved. | Frontend helper owns identity fallback it should not own. | Current-schema parser/helper should enforce canonical route-key presence. |
+| `3` | `API / Interface / Query / Command Clarity` | 8.6 | Projection query now matches route-key semantics. | Adjacent config utility key shape remains looser than `memberOverrides` contract. | Key overrides by route key only. |
+| `4` | `Separation of Concerns and File Placement` | 8.1 | Fix placement is mostly appropriate. | Compatibility logic remains embedded in config utility. | Remove compatibility branch. |
+| `5` | `Shared-Structure / Data-Model Tightness` | 7.3 | Metadata helper `toTeamMemberKey` was tightened. | `teamRunConfigUtils` still has a parallel looser key helper. | Use one strict route-key policy. |
+| `6` | `Naming Quality and Local Readability` | 8.1 | Names are mostly aligned. | A helper named `memberRouteKey` can return `memberName`. | Make helper behavior truthful. |
+| `7` | `Validation Readiness` | 8.0 | Focused tests and typecheck passed. | Missing regression around config reconstruction fallback. | Add regression. |
+| `8` | `Runtime Correctness Under Edge Cases` | 7.8 | Duplicate leaf projection/history selection is covered. | Missing route key in metadata/config can still be silently converted to a member-name key. | Reject/skip invalid identity instead. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 7.0 | Major identified fallbacks were removed. | One active same-pattern fallback remains outside migration subsystem. | Remove it. |
+| `10` | `Cleanup Completeness` | 8.2 | Prior fallback test was inverted. | Adjacent helper cleanup incomplete. | Complete cleanup. |
+
+## Findings
+
+### CR-ROUND29-001 — Frontend team-run config reconstruction still synthesizes member override keys from `memberName`
+
+- Severity: `High`
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+- File: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/utils/teamRunConfigUtils.ts`
+- Evidence:
+  - `teamRunConfigUtils.ts:38-39` defines `memberRouteKey(member)` as `member.memberRouteKey?.trim() || member.memberName.trim()`.
+  - `reconstructTeamRunConfigFromMetadata(...)` uses that helper for the preferred route key and for `memberOverrides[...]` keys.
+- Why this is blocking:
+  - `TeamRunConfig.memberOverrides` is explicitly keyed by canonical `memberRouteKey`.
+  - The requirements/design say nested identity is path/route-key based and `memberName` must not be authoritative for duplicate nested leaves.
+  - This fallback is outside the isolated app-data migration subsystem and outside display-only code. It can silently turn invalid or legacy-shaped metadata with a missing route key into a bare-name override key, reintroducing the same class of fallback that Round 28 removed from projection/history selection.
+- Required action:
+  1. Remove the `memberName` fallback in `teamRunConfigUtils.ts`; a helper named `memberRouteKey` must return only a canonical route key.
+  2. Ensure missing/blank member route keys in current-schema metadata are rejected, skipped, or produce no override rather than synthesized from `memberName`.
+  3. Add a frontend regression proving `reconstructTeamRunConfigFromMetadata(...)` does not create `memberOverrides.review_lead` from a member whose `memberRouteKey` is blank but `memberName` is `review_lead`, while exact nested route keys still produce route-keyed overrides.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Validation Readiness | Ready for API/E2E/full-stack validation | Fail | Remaining no-legacy route-key fallback in config reconstruction. |
+| Tests | Test quality is acceptable for fixed projection/history paths | Pass | Duplicate leaf route-key regressions are good. |
+| Tests | Test coverage complete for adjacent same-pattern route-key fallback | Fail | Missing `teamRunConfigUtils` regression. |
+| Findings clarity | Findings are clear enough for local fix | Pass | One bounded frontend utility fix plus test. |
+
+## Verification Evidence
+
+Commands/checks run during Round 29 review:
+
+- Reloaded `code-reviewer` skill and canonical `design-principles.md`.
+- Inspected commit `68e2d15e fix(history): require route-key team member selection`.
+- Focused no-legacy scan for Round 28 fallback shapes across run-history source/tests and frontend history/hydration/composable paths: no matches.
+- Broader route/name fallback scan found the remaining `teamRunConfigUtils.ts` fallback documented above.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/agent-run-view-projection-service.test.ts tests/unit/run-history/services/team-run-metadata-flattener.test.ts tests/unit/run-history/team-member-run-view-projection-service.test.ts tests/unit/run-history/services/team-run-history-index-service.test.ts tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts --reporter=dot` — passed, `5` files / `24` tests.
+- `pnpm -C autobyteus-web exec vitest run composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts stores/__tests__/runHistoryMetadata.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts --reporter=dot` — passed, `4` files / `9` tests.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+- `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings.
+- `git diff --check` — passed.
+- `git diff --cached --check` — passed.
+- `git diff --check origin/personal...HEAD` — passed.
+- Changed non-test TS/Vue source-size audit for current local-fix delta: `4` files checked, no file over `500` non-empty lines.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in active runtime/history/config paths | Fail | `teamRunConfigUtils` still substitutes `memberName` for missing route key. |
+| No legacy old-behavior retention in changed/integrated scope | Fail | The prior identified paths are fixed, but adjacent config reconstruction retained the same old-name fallback pattern. |
+| Dead/obsolete code cleanup completeness | Fail | Remove the fallback helper behavior and add strict regression. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| `member.memberRouteKey?.trim() || member.memberName.trim()` in `autobyteus-web/utils/teamRunConfigUtils.ts` | `LegacyBranch` / `CompatWrapper` | Active config reconstruction can key overrides by bare name. | Violates canonical route-key identity and can mis-handle duplicate nested leaf names. | Remove fallback; add strict regression. |
+
+## Docs-Impact Verdict
+
+- Docs impact: `No docs update required for the local fix.`
+- Why: Current docs/design already say member overrides and nested identity use canonical route keys.
+- Files or areas likely affected: frontend utility tests around `reconstructTeamRunConfigFromMetadata`.
+
+## Classification
+
+- Classification: `Local Fix`
+- Rationale: The remaining issue is a bounded frontend implementation cleanup and regression; the design already specifies route-key-only identity.
+
+## Recommended Recipient
+
+- `implementation_engineer`
+
+Routing note: API/E2E/full-stack validation and delivery packaging should remain paused until this route-key fallback is removed and re-reviewed.
+
+## Residual Risks
+
+- A broader active-source scan also shows route-key derivation from `memberName` in definition/config construction code. Some of those are legitimate current-definition route-key creation boundaries; this finding is limited to a helper that reconstructs override keys from already-persisted team metadata, where route keys should already be canonical and non-empty.
+
+## Latest Authoritative Result
+
+- Review Decision: `Fail — Local Fix Required`
+- Score Summary: `8.0 / 10` (`80 / 100`) for Round 29 route-key selection local-fix re-review.
+- Notes: `CR-ROUND28-001` is partially resolved, but adjacent frontend config reconstruction still contains the same class of member-name fallback outside the migration subsystem.
+
+---
+
+# Review Report — Round 30 Fresh Integrated-State No-Legacy Review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Code Review`
+- Current Review Round: `30`
+- Trigger: User-requested fresh refresh review after Round 29 local fix commit `68cd8750 fix(team): keep config overrides route-keyed`; review must not be limited to the latest delta because the ticket is large and latest-base merges can reintroduce old/legacy paths.
+- User Clarification Applied: `No backward compatibility / no legacy runtime paths. Route/path identity must remain authoritative. Historical flat metadata handling is allowed only inside the isolated app-data migration subsystem.`
+- Prior Review Round Reviewed: `29`
+- Latest Authoritative Round: `30`
+- Branch Reviewed: `codex/mixed-team-nested-agent-team`
+- HEAD Reviewed: `68cd8750 fix(team): keep config overrides route-keyed`
+- Worktree Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Command API Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- App Data Migration Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/app-data-migration-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- API / E2E Validation Started Yet For This Integrated State: `No; paused pending this fresh review`
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No; this is implementation/source review after local fixes`
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 28 | Latest-base integration re-review | Earlier no-legacy command findings | `CR-ROUND28-001` | Fail | No | Run-history/team-member projection accepted bare `memberName` fallback. |
+| 29 | Route-key selection local fix | `CR-ROUND28-001` | `CR-ROUND29-001` | Fail | No | Frontend config reconstruction still synthesized override keys from `memberName`. |
+| 30 | Fresh integrated-state no-legacy review after Round 29 local fix | `CR-ROUND28-001`, `CR-ROUND29-001` | `CR-ROUND30-001`, `CR-ROUND30-002`, `CR-ROUND30-003` | Fail | Yes | Delta fixes are resolved, but refresh review found adjacent active public/runtime surfaces still retaining name-based target compatibility. |
+
+## Review Scope
+
+This was intentionally broader than a delta review. I reloaded the code-reviewer criteria and shared design principles, re-read the requirements/design/rework docs, and re-inspected the integrated source state for no-legacy identity violations after the latest-base merge.
+
+Reviewed areas included:
+
+- WebSocket/team command route/path parsing and rejection behavior:
+  - `autobyteus-server-ts/src/services/agent-streaming/team-command-selector-parser.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts`
+  - `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
+- Run-history/projection/config route-key identity fixes from Rounds 28-29:
+  - `autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts`
+  - `autobyteus-server-ts/src/run-history/services/team-run-metadata-flattener.ts`
+  - `autobyteus-web/composables/useWorkspaceHistorySelectionActions.ts`
+  - `autobyteus-web/stores/runHistoryMetadata.ts`
+  - `autobyteus-web/utils/teamRunConfigUtils.ts`
+- App-data migration isolation and normal runtime current-schema-only behavior.
+- Adjacent public/runtime command surfaces that can post to team members:
+  - `autobyteus-application-sdk-contracts/src/index.ts`
+  - `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts`
+  - vendored app SDK contract copies under `applications/*/ui/vendor/application-sdk-contracts/index.d.ts`
+  - `autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts`
+  - `autobyteus-server-ts/src/external-channel/domain/models.ts`
+  - `autobyteus-server-ts/src/external-channel/services/channel-team-output-target-identity.ts`
+- Status/presentation correlation paths in run history:
+  - `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
+
+## Prior Findings Resolution Check (Mandatory On Round >1)
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 28 | `CR-ROUND28-001` | High | Resolved | No remaining matches for the prior backend projection/flattener/frontend history fallback shapes; duplicate-leaf regressions exist and focused run-history suites pass. | Exact route-key projection/history selection is now strict. |
+| 29 | `CR-ROUND29-001` | High | Resolved | `autobyteus-web/utils/teamRunConfigUtils.ts` now treats `memberRouteKey` as the only persisted route identity; blank-route metadata leaves are filtered before launch defaults/overrides; regression proves `memberName: review_lead` does not create `memberOverrides.review_lead`. | Delta local fix is good. |
+| 21-29 | WebSocket command scalar aliases | High | Still resolved for WebSocket/team-streaming command path | `team-command-selector-parser.ts` centralizes scalar aliases only as rejection keys; focused unit/integration tests pass and assert invalid-target errors. | The new blockers are adjacent public/runtime surfaces, not the WebSocket parser. |
+| 25-27 | App-data migration isolation | High | Still preserved | Legacy flat metadata handling remains isolated to app-data migrations/current-schema diagnostics; normal metadata store/runtime paths reject unsupported legacy metadata. | No app-data migration blocker found in this round. |
+
+## Source File Size And Structure Audit (If Applicable)
+
+Changed non-test `.ts` / `.vue` implementation source files across `origin/personal...HEAD` and local review-report delta were audited by effective non-empty lines. No file exceeds the `500` hard limit.
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` | 497 | Pass, close to limit | Watch | Pass | Pass | Residual watch | Split before future protocol growth. |
+| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | 488 | Pass, close to limit | Watch | Pass | Pass | Residual watch | Keep future hydration helpers extracted. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-manager.ts` | 479 | Pass, close to limit | Watch | Pass | Pass | Residual watch | Avoid adding more routing policy here. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-team-manager.ts` | 474 | Pass, close to limit | Watch | Pass | Pass | Residual watch | Avoid adding more routing policy here. |
+| `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts` | 461 | Pass, close to limit | Watch | Pass | Pass | None | Keep command parsing in owned parser files. |
+| `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts` | 362 | Pass | Watch | Fail for naming/API identity, not size | Pass | Local Fix | See `CR-ROUND30-001`. |
+| `autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts` | below hard limit | Pass | Watch | Fail for target identity compatibility | Pass | Local Fix | See `CR-ROUND30-002`. |
+| `autobyteus-web/utils/teamRunConfigUtils.ts` | 264 | Pass | Pass | Pass after Round 29 fix | Pass | None | None. |
+
+Full audit result: `155` changed non-test TS/Vue source files checked; `0` files over `500` effective non-empty lines.
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by implementation | Fail | Core WebSocket and run-history fixes are preserved, but public/application/external-channel team input surfaces still expose name-shaped targets. | Remove/reshape active name-target surfaces. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | WebSocket spine is clean, but application runtime-control and external-channel dispatch spines enter `TeamRun.postMessage` through `targetMemberName`/`targetNodeName` fields. | All external/public team input spines must accept route/path selectors before entering `TeamRun`. |
+| Ownership boundary preservation and clarity | Partial | `TeamRun` domain boundary uses `TeamMemberSelector`, but callers immediately above it keep name-shaped input fields and normalize them into route-key selectors. | Move the clean route/path contract to those edges; do not hide aliases behind `selectorFromMemberRouteKey`. |
+| Off-spine concern clarity | Partial | App-data migration remains isolated; command parser is clean. | External-channel binding/dispatch and application runtime-control need the same selector policy. |
+| Existing capability/subsystem reuse check | Pass | Existing `TeamMemberSelector` helper can be reused. | Use it from route/path fields only. |
+| Reusable owned structures check | Partial | `TeamMemberSelector` remains tight. | Application/external-channel contracts should expose the same explicit identity rather than parallel name/node fields. |
+| Shared-structure/data-model tightness check | Fail | `targetMemberName` and `targetNodeName` are overlapping parallel representations for team member route identity. | Replace with route-key/path fields; reject old fields. |
+| Repeated coordination ownership check | Fail | No-legacy target policy is enforced in WebSocket parser but not in application runtime-control or external-channel binding/dispatch. | Centralize or reuse route/path selector parsing/validation across public team input edges. |
+| Empty indirection check | Pass | No new empty indirection found. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Partial | Most extracted helpers are well placed. | The application runtime-control contract must not preserve old naming as a convenience facade. |
+| Ownership-driven dependency check | Partial | Domain/backend commands remain selector-based. | Edge callers must not bypass the route/path API by supplying bare/name-shaped fields. |
+| Authoritative Boundary Rule check | Fail | Public/application/external-channel callers depend on name/node fields and `TeamRun` selector conversion at the same time, blurring who owns target identity validation. | Edges must own route/path validation; domain receives only `TeamMemberSelector`. |
+| File placement check | Pass | Problematic code is in the expected subsystem files. | Fix in place unless a shared selector adapter is extracted. |
+| Flat-vs-over-split layout judgment | Pass | Layout is readable. | None. |
+| Interface/API/query/command/service-method boundary clarity | Fail | `runtimeControl.postRunInput` and external-channel `ChannelBinding.targetNodeName` are team-member command target surfaces but do not expose route/path selector names. | Rename/reshape to `targetMemberRouteKey`/`targetMemberPath` or an explicit selector object and reject old fields. |
+| Naming quality and naming-to-responsibility alignment check | Fail | `targetMemberName` is treated as a route key in `ApplicationOrchestrationHostService`; `targetNodeName` is treated as a route key in `ChannelTeamRunFacade`. | Names must match actual route/path authority. |
+| No unjustified duplication of code / repeated structures in changed scope | Partial | WebSocket scalar rejection is centralized. | Adjacent edges repeat name-to-route conversion instead of reusing the clean selector contract. |
+| Patch-on-patch complexity control | Fail | The latest-base merge fixed local symptoms, but legacy-adjacent public surfaces were left in place. | Complete clean-cut removal across active team input surfaces. |
+| Dead/obsolete code cleanup completeness in changed scope | Fail | Active `targetMemberName`, `targetNodeName`, and `agent_name === member.memberName` fallback remain outside migration/display-only code. | Remove or isolate as explicit migration-only/test-only data. |
+| Test quality is acceptable for the changed behavior | Fail | Tests cover WebSocket rejection, but durable tests still use `targetNodeName` and there is no test rejecting application `targetMemberName`. | Add negative/positive tests for application and external-channel route/path-only contracts. |
+| Test maintainability is acceptable for the changed behavior | Partial | Existing tests are behavior-focused where present. | Update stale name-target fixtures and add duplicate-leaf coverage. |
+| Validation or delivery readiness for the next workflow stage | Fail | Static/focused checks pass, but no-legacy architecture invariant fails. | Local fix before API/E2E/full-stack validation resumes. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Fail | Active public/runtime surfaces still accept name-shaped fields and convert them to route-key selectors. | Remove compatibility inputs, reject old fields. |
+| No legacy code retention for old behavior | Fail | External channel and application runtime-control retain old name/node target terminology and history status fallback still matches by `agent_name`. | See findings. |
+
+## Review Scorecard (Mandatory)
+
+- Overall score (`/10`): `7.2`
+- Overall score (`/100`): `72`
+- Score calculation note: Simple average for trend visibility only. The review decision is fail because categories 3, 5, 6, 8, 9, and 10 are below the clean-pass target and there are concrete no-legacy findings.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | --- | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 7.8 | Main WebSocket/team-command spine is clean and app-data migration is isolated. | Application runtime-control and external-channel team-input spines still use name-shaped target fields. | Route/path selectors across every public/runtime team input edge. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 7.6 | `TeamRun` and backend commands receive `TeamMemberSelector`. | Edge APIs hide old names by converting them to route-key selectors. | Make the edge contract explicit and reject aliases before domain calls. |
+| `3` | `API / Interface / Query / Command Clarity` | 6.4 | WebSocket command API is clear. | `ApplicationRuntimeInput.targetMemberName` and `ChannelBinding.targetNodeName` contradict route-key/path authority. | Rename/reshape API fields; reject old fields. |
+| `4` | `Separation of Concerns and File Placement` | 8.0 | Most code is in appropriate subsystem files. | The public contract cleanup was not applied consistently across adjacent team input subsystems. | Apply one clean-cut selector policy. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 6.8 | `TeamMemberSelector` itself is tight. | Parallel name/node target fields remain active. | Use a single selector/route-path representation. |
+| `6` | `Naming Quality and Local Readability` | 6.5 | Route-key naming is good in fixed WebSocket/history/config code. | Two active public/runtime surfaces have names that say `Name`/`NodeName` but are used as route keys. | Names must be truthful and identity-specific. |
+| `7` | `Validation Readiness` | 7.0 | Focused tests/typecheck/localization/diff checks pass. | Missing coverage for app runtime-control/external-channel no-legacy rejection and duplicate-leaf behavior. | Add tests before API/E2E resumes. |
+| `8` | `Runtime Correctness Under Edge Cases` | 6.8 | Nested route-key paths work in core WebSocket/history/config paths. | App/external-channel name targets and history status `agent_name` fallback can mis-handle duplicate leaf names. | Require route key/path or run-id identity. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 5.5 | WebSocket scalar aliases are rejection-only. | Other active team input/status paths still retain name compatibility. | Remove all active non-migration compatibility branches. |
+| `10` | `Cleanup Completeness` | 6.9 | Round 28/29 blockers were fixed. | Refresh review found adjacent leftovers not cleaned in the integrated state. | Complete cleanup across application/external-channel/history status. |
+
+## Findings
+
+### CR-ROUND30-001 — Application runtime-control team input still exposes and accepts `targetMemberName`
+
+- Severity: `High`
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+- Files:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-application-sdk-contracts/src/index.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-application-sdk-contracts/dist/index.d.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts`
+- Evidence:
+  - `autobyteus-application-sdk-contracts/src/index.ts:83-86` defines `ApplicationRuntimeInput.targetMemberName`.
+  - `autobyteus-application-sdk-contracts/src/index.ts:265-269` defines `runtimeControl.postRunInput(... targetMemberName ...)`.
+  - The vendored app SDK contract copies expose the same field at `applications/socratic-math-teacher/ui/vendor/application-sdk-contracts/index.d.ts:59-62` / `:205-209` and `applications/brief-studio/ui/vendor/application-sdk-contracts/index.d.ts:59-62` / `:205-209`.
+  - `ApplicationOrchestrationHostService.postRunInput(...)` accepts `targetMemberName` at `application-orchestration-host-service.ts:262-270` and then uses `input.targetMemberName` as if it were a route key at `:388-392` via `selectorFromMemberRouteKey(targetMemberName)`.
+- Why this is blocking:
+  - The requirements state that public runtime command targets must use path/route identity, and the clean-cut command rework says `targetMemberName` / `memberName` are invalid command target aliases except for LLM roster `send_message_to.recipient_name`.
+  - `runtimeControl.postRunInput` is a public application runtime command surface. Keeping `targetMemberName` as the only targeting field either invites bare-name usage or hides route-key semantics behind a legacy name.
+  - This is not display metadata and not app-data migration. It is active runtime input that can reach `TeamRun.postMessage`.
+- Required action:
+  1. Replace the application runtime-control target contract with explicit route/path identity, e.g. `targetMemberRouteKey` and/or `targetMemberPath`, or a small selector object with the same semantics.
+  2. Remove `targetMemberName` from source contracts, generated `dist` declarations, vendored app contract copies, and backend handler input types. Do not keep it as a compatibility alias.
+  3. Update `ApplicationOrchestrationHostService` to construct `TeamMemberSelector` only from the explicit route/path fields. If raw/unknown runtime-control input contains `targetMemberName`, reject it with a clear invalid-target style error rather than normalizing it.
+  4. Update application code/tests to use the new route/path field names.
+  5. Add regression coverage proving `targetMemberName` is rejected and exact nested route keys such as `BuildSquad/review_lead` work through the application runtime-control path.
+
+### CR-ROUND30-002 — External-channel team binding/dispatch still uses `targetNodeName` and member-name matching for team member targeting
+
+- Severity: `High`
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+- Files:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/src/external-channel/domain/models.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/src/external-channel/services/channel-team-output-target-identity.ts`
+  - external-channel provider/service tests that still use `targetNodeName`
+- Evidence:
+  - `ChannelBinding.targetNodeName` and `UpsertChannelBindingInput.targetNodeName` are still active model fields in `external-channel/domain/models.ts:40` and `:74`.
+  - `ChannelTeamRunFacade.dispatchToTeamBinding(...)` passes `binding.targetNodeName` to `startTeamDispatchTurnCapture(...)` and then converts it with `selectorFromMemberRouteKey(targetNodeName)` at `channel-team-run-facade.ts:69-80`.
+  - The same facade later renames `binding.targetNodeName` into `targetMemberRouteKey` at `channel-team-run-facade.ts:119-126`, which confirms the value is being used as route identity while retaining old target naming.
+  - `channel-team-output-target-identity.ts:53-70` resolves output target identity through `entryMemberName` / `memberName` matching, not canonical route/path identity.
+  - Tests still create bindings such as `targetNodeName: "coordinator"` in external-channel unit/integration/E2E fixtures.
+- Why this is blocking:
+  - External-channel dispatch is another runtime input spine into a team run. It currently preserves a name/node target field outside the isolated migration subsystem and outside display-only projection.
+  - A nested team can have duplicate leaf names, so output/dispatch correlation by `memberName` is not safe. The fact that the facade converts `targetNodeName` through `selectorFromMemberRouteKey(...)` makes the naming/contract mismatch explicit.
+  - The current shape can make old top-level/coordinator-style targets appear valid while the rest of the ticket deliberately removed bare-name targeting.
+- Required action:
+  1. Replace `targetNodeName` for team bindings with explicit `targetMemberRouteKey` / `targetMemberPath` or a route/path selector shape.
+  2. Update channel binding persistence/provider inputs, GraphQL/setup surfaces, runtime facade, dispatch turn capture, output target identity, and tests to use the canonical field(s).
+  3. Do not keep `targetNodeName` as an accepted runtime compatibility alias. If existing persisted channel-binding data needs conversion, isolate it in a one-time data migration/diagnostic path rather than dual-reading in runtime dispatch.
+  4. Remove `memberName` matching from external-channel team output/turn correlation where it is acting as identity. Prefer member run id and/or member route key/path.
+  5. Add duplicate-leaf regressions proving a bare `review_lead`/old `targetNodeName` cannot target either nested leaf, while exact `BuildSquad/review_lead` works.
+
+### CR-ROUND30-003 — Team history member status resolution still falls back from run IDs to `agent_name === member.memberName`
+
+- Severity: `Medium-High`
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+- File: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
+- Evidence:
+  - `team-run-history-service.ts:318-326` resolves a member status snapshot by `candidate.agent_id === member.memberRunId`, `candidate.agent_id === member.platformAgentRunId`, **or** `candidate.agent_name === member.memberName`.
+  - The focused test fixture still includes `agent_name: "Coordinator"` in `team-run-history-service.test.ts:146-150`.
+- Why this is blocking:
+  - This is an active history/status path, not display-only output or migration. A status snapshot without a run id can be matched to a duplicate nested leaf solely by display/member name.
+  - The ticket's presentation/status rows must be route/path stable. Allowing `agent_name` to identify a member weakens the same duplicate-leaf invariant fixed in Rounds 28-29.
+- Required action:
+  1. Remove the `candidate.agent_name === member.memberName` identity fallback.
+  2. If a status source can lack run id but still needs member matching, extend the status payload with canonical `memberRouteKey` / `memberPath` and match those explicitly; otherwise leave the member status at the safe fallback (`offline`).
+  3. Add a duplicate-leaf regression proving `agent_name: "review_lead"` cannot assign status to either `BuildSquad/review_lead` or `AuditSquad/review_lead` without route/run identity.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Validation Readiness | Ready for API/E2E/full-stack validation | Fail | Static/focused tests pass, but active no-legacy identity blockers remain. |
+| Tests | Test quality is acceptable for already-fixed WebSocket/history/config paths | Pass | Existing focused tests are behavior-oriented and passed. |
+| Tests | Test coverage complete for refreshed no-legacy scope | Fail | Missing application runtime-control and external-channel rejection/route-key tests; status duplicate-name fallback not covered negatively. |
+| Findings clarity | Findings are clear enough for local fix | Pass | Findings list exact files/lines and required route/path replacement behavior. |
+
+## Verification Evidence
+
+Commands/checks run during Round 30 review:
+
+- Reloaded `code-reviewer` skill, template, and canonical `design-principles.md`.
+- Re-read requirements/design/rework/handoff context listed above.
+- `git status --short` — only code-review-owned `tickets/mixed-team-nested-agent-team/review-report.md` modified.
+- `git log --oneline --decorate -8` — confirmed HEAD `68cd8750` after Round 29 fix.
+- Focused command/external-channel backend suite:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts tests/unit/services/agent-streaming/team-live-message-publisher.test.ts tests/unit/external-channel/runtime/channel-team-run-facade.test.ts tests/integration/agent/agent-team-websocket.integration.test.ts tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts --reporter=dot` — passed, `5` files / `43` tests.
+- Focused run-history/app-data/projection backend suite:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/agent-run-view-projection-service.test.ts tests/unit/run-history/services/team-run-metadata-flattener.test.ts tests/unit/run-history/team-member-run-view-projection-service.test.ts tests/unit/run-history/services/team-run-history-index-service.test.ts tests/unit/run-history/services/team-run-history-service.test.ts tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts --reporter=dot` — passed, `9` files / `43` tests.
+- Focused frontend route/history/streaming/recovery suite:
+  - `pnpm -C autobyteus-web exec vitest run utils/__tests__/teamRunConfigUtils.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts stores/__tests__/runHistoryMetadata.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts stores/__tests__/agentTeamRunStore.spec.ts --reporter=dot` — passed, `8` files / `47` tests.
+- Static/diff checks:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+  - `pnpm -C autobyteus-server-ts exec prisma validate` — passed.
+  - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings.
+  - `git diff --check` — passed.
+  - `git diff --cached --check` — passed.
+  - `git diff --check origin/personal...HEAD` — passed.
+- Conflict-marker scan:
+  - Anchored scan excluding logs/build/dependencies found no conflict markers.
+  - A broader scan hit decorative `================================================================================` lines in `electron-build.log`; these are not conflict markers.
+- Source-size audit:
+  - `155` changed non-test TS/Vue source files checked; `0` over `500` non-empty lines.
+- No-legacy scans:
+  - WebSocket command scalar aliases appear only in rejection keys/negative tests for the reviewed WebSocket path.
+  - Active public/runtime adjacent hits remain for `ApplicationRuntimeInput.targetMemberName`, `runtimeControl.postRunInput(... targetMemberName ...)`, vendored app contracts, external-channel `targetNodeName`, and history status `agent_name` fallback as listed in the findings.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed/integrated scope | Fail | Application runtime-control and external-channel team input still expose/accept name-shaped target fields that are converted into route-key selectors. |
+| No legacy old-behavior retention in changed/integrated scope | Fail | `targetMemberName`, `targetNodeName`, and `agent_name === member.memberName` identity fallback remain active outside migration/display-only code. |
+| Dead/obsolete code cleanup completeness in changed/integrated scope | Fail | Round 28/29 local fixes are clean, but refresh review found adjacent legacy retention that must be removed before validation. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| `ApplicationRuntimeInput.targetMemberName` and `runtimeControl.postRunInput(... targetMemberName ...)` | `LegacyBranch` / `CompatWrapper` | SDK contracts and host service still use `targetMemberName`. | Public runtime team input target must be route/path explicit. | Replace with `targetMemberRouteKey`/`targetMemberPath`; reject old field. |
+| `ChannelBinding.targetNodeName` for team dispatch | `LegacyBranch` / `ObsoleteAdapter` | External-channel model/facade converts `targetNodeName` to `selectorFromMemberRouteKey`. | Keeps old name/node target terminology in active runtime dispatch. | Replace with route/path selector fields and remove runtime acceptance of `targetNodeName`. |
+| `entryMemberName` / `memberName` matching in external-channel output identity | `LegacyBranch` | `channel-team-output-target-identity.ts` resolves by `memberName`. | Duplicate nested leaf names can mis-correlate output. | Match by member run id and/or canonical route/path identity only. |
+| `candidate.agent_name === member.memberName` in `TeamRunHistoryService.resolveMemberHistoryStatus` | `LegacyBranch` | Active history status code matches by display/member name. | Duplicate nested leaf names can receive wrong status. | Remove or replace with route/path status identity. |
+
+## Docs-Impact Verdict
+
+- Docs impact: `Yes, after local fix`.
+- Why: If application runtime-control and external-channel public/binding fields are renamed to route/path identity, SDK docs, vendored contracts, external-channel setup docs/tests, and final delivery docs should reflect the clean-cut API.
+- Files or areas likely affected:
+  - `autobyteus-application-sdk-contracts/README.md` if it documents runtime control input.
+  - Application vendored SDK contract copies.
+  - External-channel setup docs/tests if they mention `targetNodeName`.
+  - Final delivery handoff/release notes.
+
+## Classification
+
+- Classification: `Local Fix`
+- Rationale: The design/requirements already state no-legacy path/route identity. The blockers are bounded implementation/source-contract cleanup items in application runtime-control, external-channel dispatch, and history status matching. If implementation discovers that external-channel persisted data needs a formal migration policy, route that narrow migration-design question back to `solution_designer`; do not solve it with runtime dual-read compatibility.
+
+## Recommended Recipient
+
+- `implementation_engineer`
+
+Routing note: API/E2E/full-stack validation and delivery packaging should remain paused until these active name/legacy surfaces are removed and re-reviewed.
+
+## Residual Risks
+
+- Some provider/native adapter fields still use `agent_name` / `targetMemberName` as provider-specific display/adapter metadata. That is acceptable only when the value is outbound/display/provider-contract data after canonical route/path resolution. It must not be accepted as a public/runtime team command target or member identity fallback.
+- The app-data migration subsystem intentionally contains legacy flat metadata fixture/input handling. That remains acceptable because it is isolated and converts to current schema before normal runtime/history usage.
+- Several source files remain close to the `500` effective-line hard limit; future fixes should avoid adding more responsibilities to `messageTypes.ts`, `TeamStreamingService.ts`, `AgentTeamStreamHandler.ts`, and backend team managers.
+
+## Latest Authoritative Result
+
+- Review Decision: `Fail — Local Fix Required`
+- Score Summary: `7.2 / 10` (`72 / 100`) for Round 30 fresh integrated-state no-legacy review.
+- Notes: Round 28 and Round 29 findings are resolved, and focused/static checks pass. However, a fresh integrated-state review found active adjacent public/runtime paths still retaining name-shaped team targets (`targetMemberName`, `targetNodeName`) and member-name status fallback outside migration/display-only contexts. These must be removed before API/E2E resumes.
+
+---
+
+# Review Report — Round 31 Refresh Re-Review After Round 30 Local Fix
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Current Review Round: `31`
+- Trigger: Round 30 local fix commit `b06a74cd fix(team): remove name-based runtime targets`, plus user request for a refresh review under the strict no-backward-compatibility/no-legacy rule.
+- Prior Review Round Reviewed: `30`
+- Latest Authoritative Round: `31`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/api-e2e-validation-report.md`
+- API / E2E Validation Started Yet: `No` for the current Round 30 local-fix state.
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`; this entry point is implementation-source re-review.
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 31 | Round 30 local fix `b06a74cd` after Round 30 no-legacy failure | `CR-ROUND30-001`, `CR-ROUND30-002`, `CR-ROUND30-003` | None | Pass | Yes | Prior active name-based runtime/application/external-channel/status target paths were removed or converted to rejection-only diagnostics. |
+
+## Review Scope
+
+Fresh review of the current integrated implementation state at HEAD `b06a74cd`, focused on:
+
+- Rechecking all Round 30 unresolved findings.
+- Re-applying the canonical design-principles no-legacy rule across the adjacent application runtime-control, external-channel binding/dispatch/output, and run-history status paths.
+- Confirming the route/path-only runtime command identity remains preserved after latest-base merges and local fixes.
+- Checking source-size pressure, file responsibility, and validation readiness before API/E2E resumes.
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 30 | `CR-ROUND30-001` | High | Resolved | `ApplicationRuntimeInput` and `runtimeControl.postRunInput` now expose `targetMemberRouteKey` / `targetMemberPath` instead of `targetMemberName`; `ApplicationOrchestrationHostService.postRunInputInternal(...)` rejects raw `targetMemberName` before dispatch and builds selectors only from route/path fields. Focused application orchestration tests cover structured route-key dispatch and legacy rejection. | Native AutoByteus provider adapter terminology still contains `targetMemberName` because the native provider API is name-based after canonical selector resolution; this is not a public/application command target. |
+| 30 | `CR-ROUND30-002` | High | Resolved | External-channel domain, GraphQL setup, file binding provider, runtime facade, output target identity, delivery rows, binding service, ingress, and callback paths now use `targetMemberRouteKey` / `targetMemberPath` and `entryMemberRouteKey` / `entryMemberPath`; `targetNodeName` and `entryMemberName` scans across active external-channel source/tests returned no matches. | Route/path fields are now authoritative. Old persisted extra JSON fields are not read as compatibility aliases. |
+| 30 | `CR-ROUND30-003` | Medium-High | Resolved | `TeamRunHistoryService.resolveMemberHistoryStatus(...)` now matches member status snapshots only by `memberRunId` or `platformAgentRunId`; the `candidate.agent_name === member.memberName` fallback is removed. Added regression asserts bare `agent_name` does not assign status. | `agent_name` remains acceptable as display metadata in stream/status payloads where it is not used as member identity. |
+
+## Source File Size And Structure Audit
+
+Changed non-test TS/Vue implementation files were audited against `origin/personal...HEAD`; no file exceeds the `500` effective non-empty-line hard limit. Notable pressure points:
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/external-channel/providers/file-channel-binding-provider.ts` | 497 | Pass, close to limit | Watch | Pass; persistence concern remains coherent | Pass | Residual watch | Split before any future provider persistence growth. |
+| `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` | 497 | Pass, close to limit | Watch | Pass for protocol typing but close to capacity | Pass | Residual watch | Continue extracting specialized protocol types before future growth. |
+| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | 488 | Pass, close to limit | Watch | Pass | Pass | Residual watch | Keep future hydration helpers extracted. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-manager.ts` | 479 | Pass, close to limit | Watch | Pass | Pass | Residual watch | Avoid adding routing policy here. |
+| `autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-team-manager.ts` | 474 | Pass, close to limit | Watch | Pass | Pass | Residual watch | Avoid adding routing policy here. |
+| `autobyteus-server-ts/src/application-orchestration/services/application-orchestration-host-service.ts` | 391 | Pass | Watch | Pass after route/path target extraction and legacy rejection helper | Pass | None | None. |
+| `autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts` | 238 | Pass | Watch | Pass; runtime dispatch uses canonical binding selector | Pass | None | None. |
+| `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts` | 387 | Pass | Watch | Pass after removing name-based status identity | Pass | None | None. |
+
+Full audit result: `0` changed non-test implementation TS/Vue files over `500` effective non-empty lines.
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by implementation | Pass | Requirements identify boundary/ownership and legacy-pressure risks; current implementation keeps canonical recursive member identity and isolates app-data migration. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | WebSocket, application runtime-control, external-channel dispatch, history restore/status, and migration spines now route through route/path identity or isolated migration boundaries. | None. |
+| Ownership boundary preservation and clarity | Pass | `TeamRun`/backend command boundaries receive `TeamMemberSelector`; public/application/external-channel callers now expose route/path fields rather than name-shaped targets. | None. |
+| Off-spine concern clarity | Pass | App-data migration, selector parsing, external-channel persistence, output target identity, and stream message mapping remain owned off-spine concerns. | None. |
+| Existing capability/subsystem reuse check | Pass | Route/path selector helpers are reused; no duplicate name-target parser was introduced. | None. |
+| Reusable owned structures check | Pass | `TeamMemberSelector` remains the shared domain shape; external-channel and app-runtime contracts now align with route/path identity. | None. |
+| Shared-structure/data-model tightness check | Pass | Prior overlapping `targetMemberName`, `targetNodeName`, and `entryMemberName` active shapes were removed from the reviewed public/runtime paths. | None. |
+| Repeated coordination ownership check | Pass | Legacy scalar command rejection is centralized in command parser; application runtime-control has explicit rejection; external-channel uses route/path binding fields consistently. | None. |
+| Empty indirection check | Pass | Added/modified helpers own validation or mapping behavior; no pass-through-only layer found. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Round 30 changes stayed in SDK contract, application orchestration, external-channel binding/dispatch/output identity, and run-history status owners. | None. |
+| Ownership-driven dependency check | Pass | Public/runtime edges no longer depend on name-shaped targets while also relying on the selector domain. | None. |
+| Authoritative Boundary Rule check | Pass | Callers above `TeamRun` depend on selector-bearing edge contracts and do not bypass with parallel name/member identity. | None. |
+| File placement check | Pass | Changed files match their owning subsystems. | None. |
+| Flat-vs-over-split layout judgment | Pass | External-channel route/path changes are not artificially over-split; one provider file is close to the limit but still coherent. | Watch only. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Runtime input fields are explicit (`targetMemberRouteKey`, `targetMemberPath`, `entryMemberRouteKey`, `entryMemberPath`); command selectors are route/path-only. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Active public/runtime target names now describe route/path identity truthfully. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No repeated active name-to-route fallback policy remains in reviewed paths. | None. |
+| Patch-on-patch complexity control | Pass | Round 30 fixes remove compatibility surfaces rather than adding another fallback layer. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete active `targetMemberName`, `targetNodeName`, `entryMemberName`, and run-history name fallback are gone from reviewed active paths. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Focused application, external-channel, history, SDK, and e2e tests cover route/path positive paths and legacy rejection/status-no-name fallback. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests assert behavior at API/service boundaries rather than private implementation details. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Local checks pass; API/E2E/full-stack validation can resume. | None. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | Active runtime/application/external-channel command target surfaces no longer accept old scalar name/node fields. | None. |
+| No legacy code retention for old behavior | Pass | Remaining legacy handling is either rejection-only diagnostics, migration-only data conversion, display metadata, negative tests, or provider-native adapter terminology after selector resolution. | None. |
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.2`
+- Overall score (`/100`): `92`
+- Score calculation note: Simple average for trend visibility only; the pass decision is based on the resolved findings and mandatory checks.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | --- | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | The main command/input/history/migration spines are clear and route through their owners. | External-channel provider persistence remains a large file, though still coherent. | Split if future provider persistence grows. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.2 | Edge contracts now produce canonical selectors and domain/backend receives selector identity. | Native AutoByteus adapter still translates to provider name API internally. | Keep this translation quarantined to the provider adapter. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Public runtime command fields now use route/path names; legacy scalar fields are rejection-only. | Some event/display payloads still carry `agent_name` for UI/provider compatibility as non-authoritative metadata. | Continue preventing those display fields from being accepted as command targets. |
+| `4` | `Separation of Concerns and File Placement` | 9.1 | Round 30 changes landed in the right subsystem owners. | Several files are near the source-size limit. | Continue extraction before future feature work. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.1 | Target identity representations were tightened around route/path and run-id identity. | Launch/config authoring still derives route keys from member names at normalization boundaries, which is allowed but must not leak into runtime command APIs. | Keep launch authoring normalization separate from runtime command selectors. |
+| `6` | `Naming Quality and Local Readability` | 9.2 | Names now say route/path where route/path is authoritative. | Provider-native `targetMemberName` terms remain in AutoByteus adapter contracts. | Keep provider vocabulary local and do not expose it at public runtime edges. |
+| `7` | `Validation Readiness` | 9.2 | SDK build, focused suites, typecheck, Prisma validate, localization audit, diff checks, scans, and size audit passed. | Full API/E2E/browser validation still needs to rerun after this review. | API/E2E should exercise current integrated state. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.1 | History status no longer assigns by bare name; external-channel output identity uses run id/route/path. | Cross-field route/path mismatch is caught at some runtime edges; future tightening could reject it earlier at GraphQL/setup boundaries. | Optional future hardening: centralize route/path pair validation for all edge inputs. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.2 | Previous active compatibility targets are removed; old names survive only as rejection keys, negative tests, migration fixtures, display metadata, or native adapter internals. | Legacy display/provider terms require continued discipline. | Keep no-legacy scans in delivery/API validation. |
+| `10` | `Cleanup Completeness` | 9.1 | Prior obsolete active paths were cleaned. | Source-size pressure means cleanup should continue opportunistically. | Split near-limit files before adding new responsibilities. |
+
+## Findings
+
+No new blocking findings.
+
+Prior findings resolved:
+
+- `CR-ROUND30-001` — Resolved.
+- `CR-ROUND30-002` — Resolved.
+- `CR-ROUND30-003` — Resolved.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Validation Readiness | Ready for API/E2E/full-stack validation | Pass | Code review passes current integrated state. |
+| Tests | Test quality is acceptable | Pass | Tests cover structured application runtime-control target, legacy app target rejection, external-channel route/path binding/output identity, and no run-history status fallback by name. |
+| Tests | Test maintainability is acceptable | Pass | Focused tests are boundary-oriented. |
+| Findings clarity | Review findings are clear enough for next owner | Pass | No implementation fix findings remain; API/E2E should validate product behavior. |
+
+## Verification Evidence
+
+Commands/checks run during Round 31 review:
+
+- Reloaded `code-reviewer` skill, `design-principles.md`, and the review report template.
+- Re-read requirements, design spec, command API clean-cut rework note, app-data migration design note, and implementation handoff.
+- `git status --short` — only code-review-owned `tickets/mixed-team-nested-agent-team/review-report.md` modified.
+- `git log --oneline --decorate -12` — confirmed HEAD `b06a74cd fix(team): remove name-based runtime targets`.
+- Reviewed `git show --stat --find-renames b06a74cd` and focused diffs for SDK contracts, application orchestration, external-channel binding/dispatch/output, and run-history status code.
+- Focused implementation suite:
+  - `pnpm -C autobyteus-application-sdk-contracts build` — passed.
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-orchestration/application-orchestration-host-service.test.ts tests/integration/application-backend/brief-studio-imported-package.integration.test.ts tests/unit/external-channel/runtime/channel-team-run-facade.test.ts tests/unit/external-channel/runtime/channel-run-output-delivery-runtime.test.ts tests/unit/external-channel/runtime/channel-output-event-parser.test.ts tests/unit/external-channel/services/channel-binding-service.test.ts tests/unit/external-channel/services/channel-ingress-service.test.ts tests/unit/external-channel/services/channel-run-output-delivery-service.test.ts tests/unit/external-channel/services/reply-callback-service.test.ts tests/unit/run-history/services/team-run-history-service.test.ts tests/e2e/external-channel/external-channel-setup-graphql.e2e.test.ts tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts --reporter=dot` — passed, `12` files / `67` tests.
+- Static/diff checks:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+  - `pnpm -C autobyteus-server-ts exec prisma validate` — passed.
+  - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings.
+  - `git diff --check` — passed.
+  - `git diff --cached --check` — passed.
+  - `git diff --check origin/personal...HEAD` — passed.
+- No-legacy scans:
+  - Active application/external-channel source/contracts scan for `targetNodeName`, `entryMemberName`, accepted `targetMemberName`, and snake_case equivalents — no matches in active reviewed paths.
+  - Active run-history/frontend selection/config paths scan for `candidate.agent_name`, `agent_name === member.memberName`, `memberRouteKey || memberName`, `|| member.memberName`, and old focused/memberName fallback shapes — no matches.
+  - Removed selector helper/compatibility scan for `top_level_name`, `selectorFromMemberName`, `selectorFromOptionalTargetName`, scalar tool approval target compatibility, invocation alias fallback, and focused-member approval fallback — no matches.
+  - Broader `targetMemberName` scan leaves only rejection keys/negative tests and provider-native AutoByteus adapter terminology; none are active public/application/external-channel command target acceptance paths.
+- Conflict-marker scan:
+  - Anchored scan over backend/frontend/contracts/applications/tickets excluding dependency/build/log dirs found no conflict markers.
+- Source-size audit:
+  - Changed non-test TS/Vue implementation files checked; `0` over `500` effective non-empty lines.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed/integrated scope | Pass | Old active command target surfaces were removed; raw `targetMemberName` is rejected at application runtime-control, and old WebSocket scalar aliases remain rejection-only. |
+| No legacy old-behavior retention in changed/integrated scope | Pass | `targetNodeName`, `entryMemberName`, and name-based history status identity are removed from active source. Legacy flat team metadata handling remains isolated to the app-data migration subsystem. |
+| Dead/obsolete code cleanup completeness in changed/integrated scope | Pass | No active dead compatibility paths found in reviewed scope. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None for the current Round 31 implementation-review scope.
+
+## Docs-Impact Verdict
+
+- Docs impact: `Yes, already expected for delivery verification`.
+- Why: SDK/runtime-control and external-channel setup docs should present the clean route/path contract, not the removed name/node fields.
+- Files or areas likely affected:
+  - Application SDK/runtime-control docs if present.
+  - External-channel setup docs and delivery notes.
+  - Final handoff/release notes.
+
+## Classification
+
+- Classification: `Pass`
+- Rationale: Round 30 fixed the bounded implementation-source blockers identified in Round 30. No new design-impact, requirement-gap, or local-fix finding remains for code review.
+
+## Recommended Recipient
+
+- `api_e2e_engineer`
+
+Routing note: This is an implementation-review pass, so API/E2E/full-stack validation should resume from HEAD `b06a74cd` with the cumulative artifact package.
+
+## Residual Risks
+
+- Native AutoByteus team adapter contracts still contain provider vocabulary such as `targetMemberName` because the native provider API remains name-based. This is acceptable only inside that adapter after canonical `TeamMemberSelector` resolution; it must not be re-exposed as a public/application/runtime command field.
+- Event/display payloads still include fields such as `agent_name` for UI/provider display and run-id correlation. They remain acceptable only as outbound/display metadata and must never be accepted back as command target identity.
+- Launch/config authoring normalization can still derive a route key from `memberName` at the configuration construction boundary. This was scoped outside runtime command/approval APIs by the command API rework; keep it quarantined and do not use it as a runtime target fallback.
+- Several files are close to the source-size limit, especially `file-channel-binding-provider.ts` and `messageTypes.ts`; future work should split before adding responsibilities.
+- API/E2E should still validate the latest integrated behavior, especially application runtime-control posting, external-channel team routing/output delivery, and nested run-history status under duplicate visible names.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass — Ready for API/E2E Validation`
+- Score Summary: `9.2 / 10` (`92 / 100`) for Round 31 refresh re-review.
+- Notes: Round 30 no-legacy blockers are resolved. API/E2E/full-stack validation may resume from current HEAD `b06a74cd`.
