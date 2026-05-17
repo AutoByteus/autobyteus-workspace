@@ -367,3 +367,39 @@ Revision response:
 - Confirmed `selectorFromMemberName` and `selectorFromOptionalTargetName` must be deleted or replaced for public/domain command paths rather than preserved as adapters.
 - Clarified that any authoring-time launch-config convenience is outside runtime command/approval APIs and cannot reintroduce runtime command aliases.
 - Preserved only `send_message_to.recipient_name` as a scoped LLM roster label, not a command selector.
+
+## App Data Migration Design Reset (2026-05-17)
+
+User validation of the delivery-built Electron app exposed a release-blocking upgrade UX issue: historical team-run metadata written as `runVersion: 1` plus flat `memberMetadata[]` is now surfaced as raw red text in the left sidebar (`Unsupported legacy team run metadata ... flat memberMetadata/runVersion schema would lose topology`). The user clarified that the correct long-term approach is not runtime backward compatibility, but explicit data migrations with durable status and frontend visibility.
+
+Current-state evidence consulted in the task worktree:
+
+| Date | Source Type | Exact Source / Command | Purpose | Observation | Design Impact? |
+| --- | --- | --- | --- | --- | --- |
+| 2026-05-17 | Code | `autobyteus-server-ts/src/run-history/store/team-run-metadata-store.ts` | Inspect metadata parser/validator. | `UnsupportedLegacyTeamRunMetadataError` is thrown when `memberMetadata` or `runVersion` appears. `readMetadata()` rethrows that typed error, so callers that do not catch it can leak the raw message. | Yes: store should remain current-schema-only, but migration/history callers need typed diagnostics and UI must not show raw parser text. |
+| 2026-05-17 | Code | `autobyteus-web/stores/runHistoryMetadata.ts` | Inspect frontend metadata parser. | Frontend parser throws `unsupported legacy-metadata/topology-lost` for `memberMetadata`/`runVersion`. | Yes: frontend current-schema parser should stay strict, while legacy conversion belongs to migration, not normal UI parsing. |
+| 2026-05-17 | Code | `autobyteus-server-ts/src/server-runtime.ts`, `autobyteus-server-ts/src/startup/migrations.ts` | Inspect startup ordering. | Server already runs Prisma/database schema migrations before bootstrapping built-ins and exposing GraphQL/WebSocket routes. | Yes: app data migrations should run after Prisma schema migrations and before normal services expose run history. |
+| 2026-05-17 | Code | `autobyteus-server-ts/prisma/schema.prisma` | Inspect persistence store for migration status. | Existing Prisma DB has app tables such as token usage/artifacts but no app-data migration record table. | Yes: add `AppDataMigrationRecord` via Prisma migration to record data migration status/attempts/results. |
+| 2026-05-17 | Code | `autobyteus-server-ts/src/api/graphql/schema.ts`, `types/server-settings.ts` | Inspect GraphQL settings API pattern. | TypeGraphQL resolvers are registered centrally; server settings resolver is the existing Settings-adjacent API pattern. | Yes: add an `app-data-migrations` resolver for status and retry rather than overloading key/value server settings. |
+| 2026-05-17 | Code | `autobyteus-web/pages/settings.vue`, `components/settings/ServerSettingsManager.vue` | Inspect Settings UI navigation. | Settings has a `server-settings` parent with `quick` and `advanced` subitems; the advanced server panel also has tabs for raw settings and server status/logs. | Yes: add a Server -> Migrations subitem/section and a dedicated `ServerMigrationsManager` component. |
+
+Design conclusion:
+
+- The new recursive metadata model is a semantic superset of old non-nested flat team metadata, but normal runtime parsers should not become backward-compatible dual readers.
+- Add an app data migration subsystem distinct from Prisma schema migrations. It owns one-time persisted-data conversion, durable DB status, retry, item-level summaries, stale-running recovery, and logs.
+- Add the first migration for team-run metadata: convert `runVersion` + flat `memberMetadata[]` to canonical `memberTree[]` with `memberKind: "agent"` and top-level `memberPath` derived from `memberRouteKey`/`memberName`; validate with the current canonical metadata validator; back up the original; write atomically.
+- Normal runtime metadata store/mapper/frontend parser remain current-schema-only. They may expose typed legacy-unmigrated diagnostics, but they must not inline-convert old schema.
+- Normal Agents/workspace/sidebar/history hydration must not display raw metadata parser errors. If unmigrated legacy data is encountered, skip/friendly-scope the affected historical run and point detailed diagnostics to Settings -> Server -> Migrations.
+- Add frontend Settings -> Server -> Migrations to show registered migrations, statuses, attempts, timestamps, counts, error details, logs, refresh, and retry.
+
+## Architecture Review Round 15 Spine-Audit Response (2026-05-17)
+
+Architecture review Round 15 accepted the app-data-migration boundary direction but failed the design because migration spines were not integrated deeply enough into the mandatory narrative/ownership sections. The review specifically required DS-025 through DS-028 narratives, explicit manual retry/concurrency flow, and explicit direct restore/open degraded UX flow.
+
+Revision response:
+
+- Added DS-025 through DS-028 to the mandatory Spine Narratives table with main subject nodes, governing owners, and off-spine concerns.
+- Added DS-029 for manual migration retry/concurrency: Settings retry click -> frontend store -> GraphQL mutation -> runner lock/stale-RUNNING handling -> DB status transition -> migration execute/skip/fail -> status refresh.
+- Added DS-030 for direct restore/open of unmigrated legacy metadata: frontend/GraphQL restore/open -> TeamRunService/metadata reader -> typed legacy-unmigrated diagnostic -> no runtime start/topology guessing -> friendly UI result -> Migrations details/retry.
+- Added migration owners to Spine Actors and Ownership Map: registry, runner, record repository, concrete migration, GraphQL resolver, frontend migration store/component, and direct restore/open degraded-result owner.
+- Added thin-facade entries for migration status/retry GraphQL APIs, bounded local spines for runner locking and frontend restore degraded handling, and off-spine concerns for migration registry/status/friendly diagnostics.

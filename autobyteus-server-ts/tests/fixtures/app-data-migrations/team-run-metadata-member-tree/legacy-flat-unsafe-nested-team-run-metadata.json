@@ -1,0 +1,26 @@
+{
+  "teamRunId": "team-run-legacy-flat-unsafe",
+  "teamDefinitionId": "team-def-legacy-flat-unsafe",
+  "teamDefinitionName": "Historical Unsafe Nested Team",
+  "coordinatorMemberRouteKey": "BuildSquad/review_lead",
+  "runVersion": 1,
+  "createdAt": "2026-05-01T11:00:00.000Z",
+  "updatedAt": "2026-05-01T11:05:00.000Z",
+  "archivedAt": null,
+  "memberMetadata": [
+    {
+      "memberRouteKey": "BuildSquad/review_lead",
+      "memberName": "Review Lead",
+      "memberRunId": "review-lead-run",
+      "runtimeKind": "codex_app_server",
+      "platformAgentRunId": null,
+      "agentDefinitionId": "agent-review-lead",
+      "llmModelIdentifier": "codex:test-model",
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "llmConfig": null,
+      "workspaceRootPath": "/tmp/autobyteus/legacy-flat-workspace",
+      "applicationExecutionContext": null
+    }
+  ]
+}

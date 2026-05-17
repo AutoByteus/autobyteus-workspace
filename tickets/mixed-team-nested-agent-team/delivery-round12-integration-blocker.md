@@ -2,9 +2,9 @@
 
 ## Status
 
-Delivery is `Blocked` as of `2026-05-16` after the supplemental browser/API-E2E Round 12 pass.
+Delivery Round 12 is `Resolved / Historical` as of `2026-05-16`.
 
-API/E2E Round 12 validated commit `bc2cb3c3 fix(team): enforce structured live command identity`, but delivery's required latest-base refresh found that `origin/personal` advanced afterward. The ticket branch is no longer current with the tracked finalization target.
+API/E2E Round 12 validated commit `bc2cb3c3 fix(team): enforce structured live command identity`, but delivery's required latest-base refresh found that `origin/personal` advanced afterward. Implementation resolved that latest-base integration through merge commit `6aa36cd6` and final integration commit `3fa327bb fix(team): finalize latest-base command integration`. API/E2E Round 13 and code review Round 24 passed afterward, so delivery resumed.
 
 ## Branch State Checked
 
@@ -61,3 +61,14 @@ Conflicted files reported by the merge preview:
 ## Required Next Step
 
 Implementation should integrate the latest `origin/personal` into `codex/mixed-team-nested-agent-team`, resolve the listed source/docs/test conflicts, and rerun implementation-scoped checks. The resolved integrated state should then return through code review and API/E2E before delivery rebuilds Electron and resumes final handoff.
+
+
+## Resolution Evidence
+
+- Merge commit: `6aa36cd6 Merge remote-tracking branch 'origin/personal' into codex/mixed-team-nested-agent-team`
+- Latest integrated commit: `3fa327bb fix(team): finalize latest-base command integration`
+- Latest tracked base: `origin/personal @ 29c872bbae3f20a492701443b62a0e13a8924966`
+- Branch state after resolution: `ahead 15`, `behind 0`
+- API/E2E Round 13: `Pass`
+- Code review Round 24: `Pass`
+- Delivery Round 13 Electron build: `Pass`, version `1.3.14`

@@ -1,12 +1,5 @@
 # Local Electron Build Report
 
-## Delivery Round 12 Latest-Base Supersession Notice
-
-- Current build status: `Superseded for final delivery / available for ad hoc inspection only`
-- Reason: after this app was built at `bc2cb3c3`, delivery refreshed `origin/personal` and found it advanced to `29c872bbae3f20a492701443b62a0e13a8924966` with source/docs/test merge conflicts and a workspace version bump to `1.3.14`.
-- The artifacts below remain on disk, but a fresh Electron build is required after implementation resolves the latest-base integration conflicts, code review passes, and API/E2E validation reruns.
-- Blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round12-integration-blocker.md`
-
 ## Scope
 
 - Ticket: `mixed-team-nested-agent-team`
@@ -14,16 +7,17 @@
 - Purpose: Build a local macOS Electron artifact for user testing before repository finalization.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team`
 - Branch: `codex/mixed-team-nested-agent-team`
-- Integrated base checked before build: `origin/personal @ a51d3abd8bb620bb984c9c9f24209e4d32eb167b`
-- Ticket branch HEAD for this build: `bc2cb3c3fdff7eb89157d43fa0018bf0caf89ea4 fix(team): enforce structured live command identity`
-- Branch state against tracked base: `ahead 13`, `behind 0`
-- App/package version: `1.3.13`
+- Integrated base checked before build: `origin/personal @ 29c872bbae3f20a492701443b62a0e13a8924966`
+- Ticket branch HEAD for this build: `3fa327bb71a21cf63e32afadc7981c141e66e2a8 fix(team): finalize latest-base command integration`
+- Branch state against tracked base: `ahead 15`, `behind 0`
+- App/package version: `1.3.14`
 
 ## Supersession Status
 
-- Prior Round 9 Electron artifacts were superseded by code review/API-E2E pause in Round 19.
-- API/E2E Round 11 and code review Round 22 lift that pause for current commit `bc2cb3c3`.
-- This Round 11 build is the current user-verification candidate.
+- Prior `1.3.13` Electron artifacts are superseded for final delivery.
+- Delivery Round 12 latest-base blocker is resolved by merge commit `6aa36cd6` and final integration commit `3fa327bb`.
+- API/E2E Round 13 and code review Round 24 passed at the current integrated state.
+- This Round 13 `1.3.14` build is the current user-verification candidate.
 
 ## README Instructions Read
 
@@ -66,10 +60,10 @@ Full log:
 ## Testable Artifacts
 
 - Direct app path: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg`
-- DMG blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg.blockmap`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip`
-- ZIP blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip.blockmap`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.14.dmg`
+- DMG blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.14.dmg.blockmap`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.14.zip`
+- ZIP blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.14.zip.blockmap`
 
 ## Artifact Verification
 
@@ -79,9 +73,9 @@ Commands run from repository root:
 /usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Info.plist
 /usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Info.plist
 /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Info.plist
-zip -T autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip
-hdiutil verify autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg
-du -sh autobyteus-web/electron-dist/mac-arm64/AutoByteus.app autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip
+zip -T autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.14.zip
+hdiutil verify autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.14.dmg
+du -sh autobyteus-web/electron-dist/mac-arm64/AutoByteus.app autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.14.dmg autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.14.zip
 ```
 
 Results:
@@ -89,14 +83,14 @@ Results:
 - `AutoByteus.app`: `1.2G`
 - DMG: `368M`
 - ZIP: `369M`
-- App version: `1.3.13`
+- App version: `1.3.14`
 - Bundle id: `com.autobyteus.app`
 - ZIP integrity: `OK`
 - DMG checksum verification: `VALID`
-- Verification log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round11-post-refresh-checks.log`
+- Verification log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/delivery-round13-post-refresh-checks.log`
 
 ## User Testing Notes
 
 - This local build is unsigned because signing/notarization credentials were intentionally not provided; macOS may require right-click / Control-click -> Open.
 - To avoid embedded backend port conflicts, quit any currently running AutoByteus app before opening this app bundle.
-- This Round 11 build includes the current code-review/API-E2E-passed structured live command identity fixes, route/path-only team command selectors, invalid-target scalar alias rejection, canonical live external-message identity, runtime status no-legacy behavior, and prior nested mixed-team roster/communication/restore work.
+- This Round 13 build includes the latest-base command integration, focused member interrupt routing from `origin/personal`, structured route/path team command identity, invalid-target scalar alias rejection, canonical live external-message identity, runtime status no-legacy behavior, and prior nested mixed-team roster/communication/restore work.

@@ -23,13 +23,15 @@ The frontend must also treat nested teams as first-class team members. The visib
 
 Nested communication is not allowed to remain top-down only, and normal `send_message_to` visibility should not expose abstract subteam node names as if they were agents. Parent-to-subteam delegation exposes the subteam coordinator/representative as the visible recipient while routing through the structural subteam boundary. A child coordinator also has a controlled upward reporting path to immediate parent-boundary recipients such as the parent delegator. This is a bounded communication roster, not arbitrary cross-level messaging: child members do not become top-level parent members and cannot message unrelated grandparents, sibling internals, or global runs. The LLM-facing roster must be rendered as a named team membership manifest so the agent sees which real teams it belongs to, its role in each team, and the exact `recipient_name` values it may use; implementation scope labels remain internal. Command API clean-cut decision: team member command targets and tool approvals accept structured path/route selector fields only; scalar command target aliases are rejected at transport/GraphQL edges rather than retained as compatibility inputs.
 
+The 2026-05-17 Electron upgrade finding adds a data-migration requirement for historical flat team-run metadata. This is not a reversal of the clean runtime schema policy: normal runtime/read/restore code still accepts only canonical recursive `TeamRunMetadata.memberTree`. Known old `runVersion` + flat `memberMetadata[]` files are converted by a registered app data migration before normal history hydration, with durable database status and a Settings -> Server -> Migrations UI. If migration fails, the normal app UI must remain usable and raw parser errors must stay out of the sidebar/workspace.
+
 ## Design-Owner Recheck Decisions
 
 Architecture review paused for design-owner confirmation. The refined decisions are:
 
 1. **Nested backend selection:** any newly launched definition containing `agent_team` nodes routes to `TeamBackendKind.MIXED`. The previous flattening behavior remains only a description of current/legacy behavior, not a compatibility mode for new nested launches.
 2. **Child run ownership:** child team member handles are parent-owned internal `TeamRun` instances created by `MixedSubTeamRunFactory`; they are not registered as top-level active/history runs through `AgentTeamRunManager`. A team definition launched directly by the user still creates a normal top-level run.
-3. **Metadata schema policy:** use one canonical recursive `TeamRunMetadata` schema. Do not introduce a version-suffixed metadata type and do not keep a `runVersion` field. Legacy flat metadata must never be guessed back into nested topology; restore should fail with an explicit unsupported legacy-metadata/topology-lost error.
+3. **Metadata schema policy:** use one canonical recursive `TeamRunMetadata` schema. Do not introduce a version-suffixed metadata type and do not keep a `runVersion` field. Normal restore must never guess legacy flat metadata into nested topology. Known historical flat metadata is handled only by an isolated app data migration that rewrites it to canonical `memberTree`; after migration, runtime readers remain current-schema-only.
 4. **Event identity:** `TeamRunEvent.sourcePath` is the single canonical runtime-source identity. `memberRouteKey`, `source_route_key`, `sub_team_node_name`, display names, and other aliases are derived from `sourcePath` only at transport/projection edges.
 5. **Command/tool approval identity:** GraphQL, WebSocket, and tool-approval command paths must use path/route `TeamMemberSelector` identity only (`memberPath` or `memberRouteKey`). Bare `memberName`, command-side `agent_name`, command-side `agent_id`, top-level-name selectors, and scalar transport strings are invalid command targets. Tool approval request events must include `sourcePath`/route identity so approval can target the exact nested leaf.
 6. **Naming:** Use `TeamMemberNode` / `TeamMemberTreeNode` for frontend or definition tree data. Use `MixedTeamMemberHandle` for backend live command/lifecycle adapters. Avoid `TeamRuntimeNode`; `runtime` stays only where it describes actual runtime state, such as `TeamRunContext` or `runtimeKind`.
@@ -89,7 +91,7 @@ Target storage responsibilities:
 - `team-run-metadata-types.ts` defines canonical recursive `TeamRunMetadata` and `TeamRunMemberMetadata` discriminated unions.
 - `team-run-metadata-store.ts` validates, normalizes, reads, and writes only canonical recursive metadata with `memberTree`.
 - `team-run-metadata-store.ts` removes support for `runVersion` and top-level flat `memberMetadata` as valid schema fields.
-- If a stored payload has old flat markers such as `memberMetadata` or `runVersion`, the store throws or reports an explicit unsupported legacy-metadata/topology-lost error. It must not silently return `null`, migrate, fallback-read, dual-read, or infer topology.
+- If a stored payload has old flat markers such as `memberMetadata` or `runVersion`, normal runtime readers throw/report a typed legacy-unmigrated diagnostic. They must not silently return `null`, migrate in place, fallback-read, dual-read, or infer topology. Conversion of known legacy flat metadata belongs only to the app data migration subsystem before normal history/restore hydration.
 - `team-run-metadata-mapper.ts` maps runtime config/context to canonical recursive metadata and restore context. It does not validate JSON file shape directly.
 
 Derived flat consumers must use a single owned flattener:
@@ -961,6 +963,52 @@ Target command contract:
 
 This does not prevent outbound events from carrying display metadata such as member names or runtime IDs. The rule is specifically that outbound/display aliases are never accepted back as command target inputs. Frontend services, runtime E2E helpers, and protocol docs must send structured selectors only.
 
+### CR-007b: App Data Migration Boundary For Legacy Team Metadata
+
+The Electron build surfaced old flat team-run metadata in user data:
+
+```json
+{
+  "teamRunId": "team_software-engineering-team_eefd62ea",
+  "runVersion": 1,
+  "memberMetadata": [
+    { "memberRouteKey": "solution_designer", "memberName": "solution_designer", "memberRunId": "..." }
+  ]
+}
+```
+
+The target recursive schema can represent this old non-nested team as a one-level `memberTree`, so the product should migrate the data rather than leak a raw unsupported parser error. The architectural boundary is:
+
+- Normal runtime/read/restore/frontend parser code accepts only canonical `TeamRunMetadata.memberTree`.
+- A separate app data migration subsystem owns one-time conversion of known historical persisted data.
+- Migration status is recorded in the application database and exposed in Settings -> Server -> Migrations.
+- Failed migration attempts are visible and retryable; normal Agents/workspace/sidebar UI remains usable and does not render raw metadata exception text.
+
+Specific migration: `20260517_team_run_metadata_member_tree` (or project timestamp equivalent).
+
+Conversion rule for each legacy member:
+
+```ts
+const memberTreeEntry = {
+  memberKind: 'agent',
+  memberPath: [legacy.memberRouteKey || legacy.memberName],
+  memberRouteKey: legacy.memberRouteKey || normalize(legacy.memberName),
+  memberName: legacy.memberName,
+  memberRunId: legacy.memberRunId,
+  runtimeKind: legacy.runtimeKind,
+  platformAgentRunId: legacy.platformAgentRunId ?? null,
+  agentDefinitionId: legacy.agentDefinitionId,
+  llmModelIdentifier: legacy.llmModelIdentifier,
+  autoExecuteTools: legacy.autoExecuteTools,
+  skillAccessMode: legacy.skillAccessMode,
+  llmConfig: legacy.llmConfig ?? null,
+  workspaceRootPath: legacy.workspaceRootPath ?? null,
+  applicationExecutionContext: legacy.applicationExecutionContext ?? null,
+};
+```
+
+The output removes `runVersion`, renames `memberMetadata` to `memberTree`, preserves root fields (`teamRunId`, definition fields, coordinator route, timestamps, `archivedAt`), validates the converted payload with the current canonical validator, writes a backup, then atomically replaces `team_run_metadata.json`. Current-format files are skipped. Invalid files are recorded as failed items without corrupting source data.
+
 ### CR-008: UI And Projection Perspective Rules
 
 The structural UI stays nested:
@@ -1029,10 +1077,10 @@ Add or update tests to prove:
 
 ## Legacy Removal Policy (Mandatory)
 
-- Policy: `No backward compatibility and no legacy restore paths for this change.`
+- Policy: `No runtime backward compatibility and no legacy restore paths for this change; use explicit data migrations for known historical persisted data.`
 - Required action: replace flat-only team-run config/metadata as the authoritative mixed nested representation. Do not preserve a mixed nested execution mode that flattens subteams into leaf agents.
 - Existing single-runtime flat managers may stay for non-nested teams, but they must not be used as the nested-team implementation.
-- Canonical recursive `TeamRunMetadata` is the only authoritative restore schema. Do not add a version-suffixed metadata type or `runVersion`. Do not retain dual schemas, migrations, fallback readers, topology guessing from current definitions, or recovery paths for old flat metadata; unsupported historical metadata fails fast with a clear error.
+- Canonical recursive `TeamRunMetadata` is the only authoritative restore schema. Do not add a version-suffixed metadata type or `runVersion`. Do not retain dual schemas, fallback readers, topology guessing from current definitions, or runtime recovery paths for old flat metadata. Known historical flat metadata is upgraded by registered app data migration before normal runtime/history hydration; if unmigrated legacy data appears at runtime, it is classified as legacy-unmigrated/unavailable and surfaced only through controlled diagnostics/UI, not raw sidebar errors.
 
 ## Data-Flow Spine Inventory
 
@@ -1064,6 +1112,12 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-022 | Bounded Local | UC-003, UC-007, UC-012 | `send_message_to` recipient name inside any member run | Communication recipient descriptor or clear rejection | `MemberCommunicationRosterBuilder` + `MemberTeamContextBuilder` + manager recipient resolver | Prevents representative/downward/upward communication from becoming an unsafe flat organization-wide recipient list. |
 | DS-023 | Bounded Local | UC-003, UC-012 | Current member context plus `communicationRecipients` descriptors and team display names | LLM prompt contains a named team membership roster manifest plus exact allowed recipient names | `MemberRunInstructionComposer` + roster-manifest renderer | Keeps LLM mental model aligned with real organization membership while preserving descriptor-owned routing. |
 | DS-024 | Primary End-to-End | UC-003, UC-005, UC-007, UC-009, UC-012 | WebSocket/GraphQL team command payload | Domain call receives a `TeamMemberSelector` built only from path/route fields, or edge rejects invalid scalar alias input | Transport/GraphQL command adapters + `team-member-selector-payload-adapter` | Settles the no-legacy API contract and prevents ambiguous name/id targeting from re-entering nested command paths. |
+| DS-025 | Primary End-to-End | UC-013 | Server startup after Prisma schema migrations | Required app data migrations have durable status and normal services start against current persisted data | `AppDataMigrationRunner` + `AppDataMigrationRecordRepository` | Prevents user-data upgrade failures from surfacing as broken app UI while keeping runtime code current-schema-only. |
+| DS-026 | Bounded Local | UC-013 | Legacy `team_run_metadata.json` with `runVersion`/`memberMetadata[]` | Canonical `TeamRunMetadata.memberTree` file plus backup, or a recorded failed item | `TeamRunMetadataMemberTreeMigration` | Converts the known old flat schema once without adding a runtime dual parser. |
+| DS-027 | Primary End-to-End | UC-013 | Settings -> Server -> Migrations opened or refreshed | User sees registered migration statuses, summaries, errors, and retry actions | `AppDataMigrationResolver` + frontend migrations store/component | Makes migration health visible to app creators and users instead of hidden startup work. |
+| DS-028 | Return-Event / Degraded UX | UC-008, UC-013 | Unmigrated legacy metadata encountered during history/sidebar hydration | Normal UI skips or friendly-scopes the affected run and points diagnostics to Migrations | `TeamRunHistoryService` + migration diagnostics | Raw metadata parser exceptions must not render in the left sidebar/main app. |
+| DS-029 | Primary End-to-End / Bounded Concurrency | UC-013 | Settings retry click for one migration | Retry either runs once with locked status transition and refreshed UI, or is rejected as already running | `AppDataMigrationRunner` + `AppDataMigrationRecordRepository` + GraphQL migration resolver | AC-037/AC-038 require retry execution and duplicate-run prevention, not only status display. |
+| DS-030 | Primary End-to-End / Degraded UX | UC-006, UC-013 | Direct open/restore of a historical team run with unmigrated legacy metadata | No runtime starts; user gets friendly legacy-unmigrated result pointing to Migrations details/retry | `TeamRunService` + `TeamRunMetadataStore` typed diagnostics + frontend restore/open coordinator | Prevents direct restore from bypassing the history/sidebar degraded path and leaking raw parser text or guessing topology. |
 
 ### Use-Case-To-Spine Coverage
 
@@ -1074,13 +1128,14 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | UC-003 Parent agent sends to subteam representative | DS-004, DS-007, DS-009, DS-011, DS-023, DS-024 |
 | UC-004 Child team coordinates internally | DS-008, DS-010 |
 | UC-005 Parent stream has nested attribution | DS-010, DS-011, DS-012, DS-024 |
-| UC-006 Interrupt/terminate/restore parent run | DS-013, DS-014, DS-015, DS-018, DS-019 |
+| UC-006 Interrupt/terminate/restore parent run | DS-013, DS-014, DS-015, DS-018, DS-019, DS-030 |
 | UC-007 Reject cycles/duplicates/ambiguous targets | DS-001, DS-004, DS-012, DS-024 |
 | UC-008 Display active/history recursive teams | DS-011, DS-016, DS-017, DS-019 |
 | UC-009 Select/focus subteam and leaf nodes | DS-004, DS-005, DS-006, DS-016, DS-024 |
 | UC-010 Configure nested launches | DS-002 |
 | UC-011 Live/restored transcript, dedupe, labels | DS-005, DS-006, DS-007, DS-009, DS-015, DS-017 |
 | UC-012 Child reports upward to parent boundary | DS-004, DS-020, DS-021, DS-022, DS-023, DS-024 |
+| UC-013 Upgrade legacy flat team metadata safely | DS-025, DS-026, DS-027, DS-028, DS-029, DS-030 |
 
 ## Primary Execution Spine(s)
 
@@ -1098,6 +1153,11 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 - Presentation-label spine (UC-011): `TeamMemberNode + optional AgentContext -> useTeamMemberPresentation -> active/history row/header/grid labels + secondary route/definition metadata`
 - Roster-manifest instruction spine (UC-003/UC-012): `MemberTeamContext.communicationRecipients + team display metadata -> TeamMembershipRosterManifest -> MemberRunInstructionComposer -> runtime instructions/tool schema -> LLM uses exact recipient_name values`
 - Command API selector spine (UC-003/UC-005/UC-007/UC-009/UC-012): `WebSocket/GraphQL payload -> reject scalar target aliases or parse path/route fields -> TeamMemberSelector -> TeamRun/TeamManager command`
+- App data migration startup spine (UC-013): `Server startup -> Prisma schema migrations -> AppDataMigrationRunner -> migration registry -> AppDataMigrationRecordRepository -> required migration execution -> normal services expose current-schema history`
+- Legacy team metadata conversion spine (UC-013): `agent_teams/*/team_run_metadata.json -> TeamRunMetadataMemberTreeMigration -> legacy shape detection -> canonical memberTree conversion -> canonical validation -> backup -> atomic write -> DB summary/log`
+- Migrations settings UI spine (UC-013): `Settings -> Server -> Migrations -> frontend appDataMigrationsStore -> GraphQL getAppDataMigrations -> DB records + registry definitions -> status table/details/retry`
+- Manual migration retry/concurrency spine (UC-013): `Settings retry click -> appDataMigrationsStore.runMigration(id) -> GraphQL runAppDataMigration(id) -> AppDataMigrationRunner acquire per-migration lock -> resolve stale RUNNING or reject live duplicate -> AppDataMigrationRecordRepository RUNNING transition -> migration execute/skip/fail -> DB summary/log -> GraphQL result -> status refresh -> Settings UI`
+- Direct legacy restore degraded spine (UC-006/UC-013): `User opens/restores historical team run -> frontend run-open/restore coordinator -> GraphQL restore/open request -> TeamRunService -> TeamRunMetadataStore typed legacy-unmigrated diagnostic -> no runtime start/no topology guessing -> friendly operation result/toast/dialog -> link to Settings -> Server -> Migrations details/retry`
 
 ## Return Or Event Spine(s) (High-Level)
 
@@ -1107,6 +1167,10 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 - Team communication event spine: `MixedTeamManager communication payload -> TeamCommunicationService projection -> WebSocket TEAM_COMMUNICATION_MESSAGE -> TeamCommunicationStore participant-aware upsert`
 - Upward reporting event spine: `Child parent-boundary delivery -> parent Communication payload with nested sender sourcePath -> TeamCommunicationStore perspectives -> parent recipient MEMBER_INPUT -> TeamStreamingService program_manager conversation upsert`
 - Metadata refresh spine: `TeamRun event/status change -> debounced TeamRunService.refreshRunMetadata -> TeamRunMetadataMapper -> TeamRunMetadataStore.writeMetadata(memberTree)`
+- Migration failure/status spine: `Migration item failure -> AppDataMigrationRunner aggregates result -> AppDataMigrationRecordRepository writes FAILED/SUCCEEDED_WITH_WARNINGS -> GraphQL status -> Settings Migrations view -> user retry or inspect logs`
+- Legacy history degradation spine: `TeamRunHistoryService reads legacy-unmigrated metadata -> typed diagnostic -> skip/friendly unavailable run row -> no raw parser text in left sidebar -> Migrations view owns detailed error`
+- Migration retry completion spine: `Manual retry result -> AppDataMigrationRecordRepository writes SUCCEEDED/FAILED/SUCCEEDED_WITH_WARNINGS -> GraphQL mutation response -> appDataMigrationsStore refreshes list -> Settings row updates status/details/retry availability`
+- Direct restore degraded return spine: `TeamRunService legacy-unmigrated result -> GraphQL restore/open payload with friendly code/message -> frontend restore/open coordinator prevents workspace activation -> user sees actionable message and Migrations navigation`
 
 ## Spine Narratives (Mandatory)
 
@@ -1124,7 +1188,7 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-010 | Agent runtime output is published as agent events with canonical source path. Child events are prefixed before reaching parent clients. | AgentRun event, TeamRunEvent, WebSocket message | `MixedAgentMemberHandle` / event bridge | Event pipeline processors, transport aliases |
 | DS-011 | Parent-level team communication is stored and rendered as participant-aware communication, including actual representative participants plus represented-subteam metadata. It does not impersonate a structural `agent_team` node as an agent run. | Communication event, projection row, frontend message | `TeamCommunicationService` + `TeamCommunicationStore` | Reference files, perspective/grouping logic, represented-subteam fields |
 | DS-012 | Tool approval request events carry route/path identity from the requesting leaf. Approval commands round-trip that identity into selectors and reject subteam targets plus every scalar/bare-name or agent-id/name target alias. | Tool lifecycle event, approval token, selector command | Stream handler + `MixedTeamManager` | Approval token serialization, frontend target cache |
-| DS-013 | Recursive metadata is refreshed from runtime context and stored as the parent run's canonical `memberTree`. Legacy flat metadata is rejected, not migrated. | Runtime context, metadata mapper, metadata store | `TeamRunMetadataMapper` + `TeamRunMetadataStore` | Debounce timers, history summaries, derived flattener |
+| DS-013 | Recursive metadata is refreshed from runtime context and stored as the parent run's canonical `memberTree`. Runtime readers reject/diagnose legacy flat metadata rather than converting it inline. | Runtime context, metadata mapper, metadata store | `TeamRunMetadataMapper` + `TeamRunMetadataStore` | Debounce timers, history summaries, derived flattener, migration diagnostics |
 | DS-014 | Restore reconstructs the same recursive topology and lazy handle contexts from canonical metadata. Child team run IDs remain inside parent member metadata. | Resume config, recursive runtime context, backend factory | `TeamRunService` + `MixedTeamRunBackendFactory` | Workspace root resolution, platform IDs |
 | DS-015 | Durable projection reads local and provider projections, merges them semantically, removes null-timestamp duplicates, and returns one logical conversation for a leaf route key. Frontend hydration defensively dedupes again. | Projection sources, dedupe normalizer, conversation hydration | `AgentRunViewProjectionService` | Provider-specific projection differences, sort stability |
 | DS-016 | The frontend state owner keeps recursive `memberTree` plus indexes. UI modes render the tree/group/leaf shape from this state instead of flattening. | `AgentTeamContext`, row/tree/grid/spotlight views | `AgentTeamContextsStore` | Expand/collapse state, status summaries |
@@ -1136,6 +1200,12 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | DS-022 | A `send_message_to` argument is resolved against the current member's scoped communication roster: local teammates, subteam representatives, or parent-boundary recipients as applicable. Non-exposed or ambiguous targets fail before delivery. | Tool recipient name, communication recipient descriptor, selector | `MemberCommunicationRosterBuilder` + `MemberTeamContextBuilder` + manager recipient resolver | Visible-name uniqueness, instruction/schema enum generation |
 | DS-023 | The instruction composer turns scoped descriptors into an organization-style team membership manifest. It groups rows by human team name and role, marks the current member, shows represented subteam context, and separately lists exact allowed `recipient_name` values. | Member context, descriptors, team display metadata, prompt text | `MemberRunInstructionComposer` + roster-manifest renderer | Prompt formatting, recipient enum text, localization-safe wording |
 | DS-024 | Command edge adapters parse only explicit path/route target fields. If a payload supplies scalar alias target fields, the edge returns invalid-target before any domain/backend call. | WebSocket/GraphQL payload, selector adapter, domain command | Transport/GraphQL command adapters + `team-member-selector-payload-adapter` | Error payload wording, tests/E2E helper payload shape |
+| DS-025 | Server startup runs Prisma/database schema migrations first, then executes registered required app data migrations before normal services expose run-history data. The runner records every attempt and keeps runtime readers current-schema-only. | Startup sequence, migration registry, migration runner, migration record | `AppDataMigrationRunner` | Startup ordering, stale running recovery, failure policy, normal service gating |
+| DS-026 | The concrete team-run metadata migration scans existing team metadata files, detects known flat legacy payloads, converts them to canonical one-level `memberTree`, validates output, backs up originals, writes atomically, and records per-file results. | Legacy metadata file, converter, canonical validator, backup/write result | `TeamRunMetadataMemberTreeMigration` | File scanning, backup naming, atomic write, item detail aggregation |
+| DS-027 | The Settings migration screen lists registry-defined migrations merged with database records so users can see not-run/running/succeeded/failed states, summaries, details, and retry availability without reading logs. | Settings UI, frontend migration store, GraphQL status query, migration records | `ServerMigrationsManager` + `appDataMigrationsStore` + GraphQL migration resolver | Status DTO mapping, friendly/technical detail split, refresh state |
+| DS-028 | History/sidebar hydration catches typed legacy-unmigrated metadata diagnostics, avoids raw parser errors, skips or friendly-scopes affected historical runs, and points details to the migration screen. | History query, metadata diagnostic, history read model, sidebar row | `TeamRunHistoryService` + frontend history/read-model owners | Friendly unavailable row text, logging, migration-detail link |
+| DS-029 | Manual retry starts from the Settings retry button and flows through the frontend store and GraphQL mutation into the runner. The runner handles stale `RUNNING`, rejects true concurrent duplicate runs, transitions status through `RUNNING`, executes the migration idempotently, records summary/logs, and returns a refreshed status. | Retry action, GraphQL mutation, runner lock, migration record, migration execution | `AppDataMigrationRunner` + GraphQL migration resolver + `appDataMigrationsStore` | Per-migration locking, stale-running timeout, duplicate-run error, idempotent skip of already-current files |
+| DS-030 | Direct open/restore of an unmigrated legacy team run uses the same typed metadata diagnostic as history, but returns a controlled operation result: no runtime starts, no topology is guessed, and the frontend shows a friendly message with navigation to Settings -> Server -> Migrations. | Restore/open request, metadata diagnostic, operation result, frontend restore/open coordinator | `TeamRunService` + GraphQL team-run restore/open resolver + frontend run-open/restore coordinator | Error code mapping, toast/dialog copy, migration detail routing |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -1160,6 +1230,14 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 - Frontend `TeamStreamingService` and `TeamCommunicationStore`
 - Frontend `runProjectionConversation` hydration
 - Frontend `useTeamMemberPresentation`
+- `AppDataMigrationRunner`
+- `AppDataMigrationRegistry` / migration definition list
+- `AppDataMigrationRecordRepository`
+- `TeamRunMetadataMemberTreeMigration`
+- GraphQL `AppDataMigrationResolver` / migration status and retry DTOs
+- Frontend `appDataMigrationsStore`
+- Frontend `ServerMigrationsManager`
+- Team-run restore/open degraded-result owner (`TeamRunService` + GraphQL restore/open resolver + frontend run-open/restore coordinator)
 
 ## Ownership Map
 
@@ -1187,6 +1265,14 @@ The spine inventory is intentionally complete across the approved use cases. Imp
 | `TeamCommunicationStore` | Frontend communication projection with sender/receiver member kind/path/route. |
 | `runProjectionConversation` | Frontend conversion from projection rows to `Conversation`, including defensive dedupe of stale duplicate rows. |
 | `useTeamMemberPresentation` | Single frontend presentation policy for primary labels, route breadcrumbs, definition subtitles, and initials/avatar lookup. |
+| `AppDataMigrationRegistry` | Registered migration definitions, IDs, display metadata, required/startup policy, and concrete migration binding. |
+| `AppDataMigrationRunner` | Pending/startup/manual migration execution, per-migration concurrency lock, stale `RUNNING` handling, status transitions, result aggregation, and retry semantics. |
+| `AppDataMigrationRecordRepository` | Durable database records for migration status, attempts, timestamps, summary JSON, error message, and log path. |
+| `TeamRunMetadataMemberTreeMigration` | The only owner of legacy flat team metadata conversion to canonical `memberTree`; file scanning, conversion, validation, backup, atomic write, and per-item details. |
+| GraphQL `AppDataMigrationResolver` | Migration status query and retry mutation boundary; maps runner/repository state to frontend-safe DTOs and rejects duplicate-run attempts clearly. |
+| Frontend `appDataMigrationsStore` | Migration Settings state, status refresh, retry action execution, loading/error state, and post-retry refresh. |
+| `ServerMigrationsManager` | User-facing Settings -> Server -> Migrations table, friendly status/errors, technical detail expansion, refresh, and retry controls. |
+| Direct restore/open degraded-result owner | `TeamRunService` and GraphQL restore/open resolver convert typed legacy-unmigrated metadata diagnostics into a controlled operation result; frontend run-open/restore coordinator prevents workspace activation and shows friendly migration guidance. |
 
 If `MixedTeamRunBackend` remains a public runtime facade, it is a thin entry wrapper; `MixedTeamManager` is the governing owner behind it.
 
@@ -1196,6 +1282,8 @@ If `MixedTeamRunBackend` remains a public runtime facade, it is a thin entry wra
 | --- | --- | --- | --- |
 | `MixedTeamRunBackend` | `MixedTeamManager` | Adapts common `TeamRunBackend` API to mixed manager commands. | Member handle creation, routing policy, event bridging. |
 | GraphQL `createAgentTeamRun` mutation | `TeamRunService` | Transport entrypoint. | Topology planning or backend selection. |
+| GraphQL `getAppDataMigrations` query | `AppDataMigrationRecordRepository` + `AppDataMigrationRegistry` | Settings status entrypoint. | Migration execution or filesystem access. |
+| GraphQL `runAppDataMigration(id)` mutation | `AppDataMigrationRunner` | Settings retry/run entrypoint. | Locking, stale-running resolution, conversion, or DB status policy. |
 
 ## Removal / Decommission Plan (Mandatory)
 
@@ -1205,12 +1293,13 @@ If `MixedTeamRunBackend` remains a public runtime facade, it is a thin entry wra
 | Flat launch traversal as execution topology (`collectLeafAgentMembers` used as run plan) | Loses subteam boundaries. | `TeamDefinitionTopologyPlanner`. | In This Change | A leaf collector can remain only as a view/helper if not authoritative. |
 | Agent-only `TeamMemberRunConfig` as universal member shape | Forces subteams into invalid agent fields. | Discriminated `TeamRunMemberConfig` union. | In This Change | Update consumers to narrow by `memberKind`. |
 | Agent-only `MixedTeamMemberContext` | Cannot persist child team IDs/context. | `MixedAgentMemberContext` + `MixedSubTeamMemberContext`. | In This Change | Common base includes path/route identity. |
-| Flat `TeamRunMemberMetadata` as authoritative restore schema | Cannot restore topology. | Canonical recursive `TeamRunMetadata` with a `memberTree`. | In This Change | Do not introduce a version-suffixed metadata type or `runVersion`; legacy flat metadata restore fails clearly instead of guessing topology. |
+| Flat `TeamRunMemberMetadata` as authoritative restore schema | Cannot restore topology. | Canonical recursive `TeamRunMetadata` with a `memberTree`. | In This Change | Do not introduce a version-suffixed metadata type or `runVersion`; normal restore reads only current schema. Known old flat files are upgraded by app data migration, not runtime fallback. |
 | `subTeamNodeName` as the only nested event identity | Ambiguous for deep nesting. | Canonical `sourcePath` on `TeamRunEvent`. | In This Change | WebSocket/GraphQL mappers may derive legacy/display aliases from `sourcePath`; old single-name field must not remain domain source of truth. |
 | `INTER_AGENT_MESSAGE` as the canonical mixed recipient transcript event | It carries original communication content and agent-shaped fields, not the actual recipient-visible user prompt or child leaf route. | `TeamRunEventSourceType.MEMBER_INPUT` mapped to `EXTERNAL_USER_MESSAGE` for leaf transcripts, plus `COMMUNICATION` for parent team messages. | In This Change | Existing legacy/non-mixed handling can remain only if it does not own mixed nested communication or duplicate transcript rows. |
 | Exact JSON row merge for run projections | Cannot dedupe the same logical message when one source has a timestamp and another has `ts: null`. | Semantic projection dedupe normalizer under run-history projection. | In This Change | GraphQL must return deduped rows; frontend dedupe is defensive only. |
 | Frontend flat-only active team display (`resolveLeafTeamMembers` -> `members` map as UI topology) | Omits subteam nodes such as `BuildSquad`. | Recursive `TeamMemberNode` tree with derived leaf indexes. | In This Change | This is the validation-blocking UI failure. |
 | Frontend flat metadata schema (`runVersion` + `memberMetadata`) as current restore type | Conflicts with canonical backend `memberTree`. | Recursive frontend metadata parser/types. | In This Change | No frontend compatibility parser for old flat schema. |
+| Raw unsupported legacy metadata errors in normal app UI | Makes existing installations look broken after upgrade. | App data migration status plus controlled history degradation/friendly diagnostics. | In This Change | Settings -> Server -> Migrations owns detailed technical errors and retry. |
 | Flat `allowedRecipientNames` as the authoritative communication model | Cannot distinguish local teammates, subteam representatives, and parent-boundary report recipients and would flatten hierarchy. | `communicationRecipients: MemberTeamRecipientDescriptor[]` with derived `allowedRecipientNames` for tool schema only. | In This Change | Do not append parent recipients to `members` as fake local teammates. |
 | Technical routing-scope labels as LLM roster headings | The LLM needs a real organization manifest, not internal labels like `local_agent` or `parent_boundary_agent`. | Team membership roster manifest grouped by team names and roles, with exact allowed recipient names. | In This Change | Scope names stay internal descriptor metadata only. |
 | Scalar command target aliases | They keep ambiguous bare-name routing alive at the API edge and conflict with the no-legacy policy. | Explicit path/route selector fields for command input. | In This Change | Remove `target_member_name`, `target_agent_name`, command-side `agent_name`, command-side `agent_id`, and camelCase equivalents as accepted command targets. |
@@ -1258,6 +1347,18 @@ Parent owner: frontend `TeamStreamingService`
 
 This local spine prevents nested live events from falling back to whichever member is currently focused.
 
+Parent owner: `AppDataMigrationRunner`
+
+`Run request -> load registry definition -> acquire per-migration lock -> normalize stale RUNNING record -> transition to RUNNING -> execute migration -> aggregate item results -> write SUCCEEDED/FAILED/SUCCEEDED_WITH_WARNINGS -> release lock`
+
+This local spine is important because startup and manual retry use the same concurrency/idempotency policy.
+
+Parent owner: frontend run-open/restore coordinator
+
+`Restore/open result -> if legacy-unmigrated code -> do not activate workspace/run -> show friendly migration message -> offer Settings -> Server -> Migrations navigation`
+
+This local spine prevents direct restore/open from leaking backend parser errors or partially activating an invalid runtime.
+
 ## Off-Spine Concerns Around The Spine
 
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
@@ -1267,6 +1368,9 @@ This local spine prevents nested live events from falling back to whichever memb
 | Workspace normalization | DS-001 | TeamRunService | Resolve workspace IDs/root paths for leaf agents. | Existing service already owns workspace setup. | Topology planner would mix graph planning with workspace persistence. |
 | Event pipeline | DS-010 | Member handle/event bridge | Normalize agent events before parent publication. | Existing event projection expects processed events. | Raw provider events leak to parent consumers. |
 | Metadata projection | DS-004 | TeamRunMetadataMapper | Recursive runtime/context <-> durable metadata. | Restore needs one owner for schema. | Runtime manager would own persistence mapping. |
+| Migration record persistence | DS-025, DS-027, DS-029 | `AppDataMigrationRunner` / GraphQL migration resolver | Persist migration status, attempts, timestamps, summary JSON, error message, and log path. | Runner and UI need durable shared truth. | Status would be inferred from logs/files and become unreliable. |
+| Migration registry lookup | DS-025, DS-027, DS-029 | `AppDataMigrationRunner` / GraphQL status resolver | Merge code-defined migration definitions with DB records, including not-run migrations. | Settings must show migrations before first run. | UI would only show previously-run records and hide pending work. |
+| Migration friendly diagnostics | DS-028, DS-030 | `TeamRunHistoryService` / restore-open result mapper | Convert typed legacy-unmigrated diagnostics into skip/friendly unavailable messages. | Keeps raw parser text out of normal UI. | Sidebar/direct restore would look broken. |
 | WebSocket mapping | DS-009, DS-010, DS-011 | AgentTeamStreamHandler | Convert `TeamRunEvent` to client messages. | Transport-specific shaping. | Mixed manager would become transport-aware. |
 | Member input event mapping | DS-005, DS-006, DS-007, DS-009 | Leaf member handle / stream handler | Publish accepted recipient inputs as `MEMBER_INPUT` and map them to live `EXTERNAL_USER_MESSAGE` payloads. | Live transcript must show the actual receiving leaf input. | Frontend would guess child coordinator from parent communication. |
 | Delivery trace identity | DS-007, DS-009, DS-015 | Mixed delivery and projection owners | Link parent communication message, recipient input event, and projection row IDs. | Prevents conflating or duplicating related records. | Rows would be deduped only by brittle content guesses. |
@@ -1375,10 +1479,21 @@ This local spine prevents nested live events from falling back to whichever memb
 | `autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts` | Team run domain | Public team-run command facade | Accept/resolve `TeamMemberSelector` for `postMessage` and `approveToolInvocation`; default coordinator resolution returns selector. | Prevent raw string targeting from remaining the public domain command shape. |
 | `autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts` | Team run backend contract | Backend command interface | Change command signatures from raw member strings to `TeamMemberSelector`. | Keeps all backend implementations behind one selector-aware contract. |
 | `autobyteus-server-ts/src/agent-team-execution/backends/team-manager.ts` | Team run backend contract | Manager command interface | Change manager command signatures to `TeamMemberSelector`; flat managers reject unsupported nested selectors. | Prevents mixed-only selector handling from being bypassed by older manager interface. |
-| `autobyteus-server-ts/src/run-history/store/team-run-metadata-store.ts` | Run history metadata | Persistence schema boundary | Validate/write canonical recursive `memberTree`; remove `runVersion`/flat `memberMetadata`; throw explicit unsupported legacy-metadata/topology-lost for old flat payloads. | Store is the JSON schema gate, not only the mapper. |
+| `autobyteus-server-ts/src/run-history/store/team-run-metadata-store.ts` | Run history metadata | Persistence schema boundary | Validate/write canonical recursive `memberTree`; remove `runVersion`/flat `memberMetadata` as valid runtime schema; expose typed legacy-unmigrated diagnostics for migration/history callers. | Store is the JSON schema gate, not a migration owner. |
+| `autobyteus-server-ts/src/run-history/store/team-run-metadata-schema.ts` (extract if needed) | Run history metadata | Canonical metadata schema/validator | Shared current-schema normalization/validation used by store and by migration output validation. | Lets migration validate converted output without putting legacy conversion inside the store. |
+| `autobyteus-server-ts/src/app-data-migrations/domain/app-data-migration-types.ts` | App data migration | Migration contract | Migration definition/result/status/item-detail types. | Gives all migrations one status/result vocabulary. |
+| `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts` | App data migration | Registry | Register migration definitions and startup policy. | Keeps migrations discoverable for runner and GraphQL. |
+| `autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts` | App data migration | Runner/orchestrator | Run pending/explicit migrations, lock per migration, handle stale RUNNING, aggregate results, update DB records. | Owns sequencing and idempotent retry policy. |
+| `autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-record-repository.ts` | App data migration | DB record store | Persist status, attempts, timestamps, summary JSON, errors, and log paths in the application database. | Satisfies durable migration visibility. |
+| `autobyteus-server-ts/src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.ts` | App data migration | Concrete metadata migration | Scan legacy team metadata, convert to canonical memberTree, backup, atomic write, per-item result details. | Keeps legacy schema knowledge isolated to one migration. |
 | `autobyteus-server-ts/src/run-history/services/team-run-metadata-flattener.ts` | Run history metadata projections | Derived metadata view owner | Flatten canonical `memberTree` into leaf-agent and top-level member views for projection consumers. | Avoids every consumer rediscovering recursive traversal and prevents old flat schema from remaining authoritative. |
 | `autobyteus-server-ts/src/run-history/services/team-run-history-index-service.ts` | Run history projection | History index projection consumer | Use flattener-derived workspace/member summaries instead of `metadata.memberMetadata`. | Current code reads flat metadata directly. |
-| `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts` | Run history projection | Resume/history DTO consumer | Use flattener-derived views for resume config and summaries; expose tree where needed. | Current code reads flat metadata directly. |
+| `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts` | Run history projection | Resume/history DTO consumer | Use flattener-derived views for resume config and summaries; expose tree where needed; catch typed legacy-unmigrated diagnostics so normal history/sidebar queries do not fail with raw metadata errors. | Current code reads flat metadata directly and can leak parser failures to UI. |
+| `autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts` / restore mutation result DTO | GraphQL API | Restore/open degraded result boundary | Map typed legacy-unmigrated metadata diagnostics to a friendly result/error code without starting runtime. | Direct restore/open needs controlled UX, not raw exceptions. |
+| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` / restore caller | Frontend restore/open | Operation result handling | Handle legacy-unmigrated result by preventing activation and routing user toward Settings -> Server -> Migrations. | Direct open/restore can bypass history/sidebar hydration. |
+| `autobyteus-server-ts/prisma/schema.prisma` + migration SQL | Persistence | Migration record schema | Add `AppDataMigrationRecord` table/model with unique migration ID, status, attempts, timestamps, summary/error/log fields. | Database records which app data migrations ran. |
+| `autobyteus-server-ts/src/api/graphql/types/app-data-migrations.ts` | GraphQL API | Migration status/retry boundary | Query registered migration statuses and retry/run a migration by ID. | Frontend Settings needs observable migration state. |
+| `autobyteus-server-ts/src/api/graphql/schema.ts` | GraphQL API | Resolver registration | Register the app-data migration resolver. | Exposes the new settings surface. |
 | `autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts` | Run history projection | Leaf member projection consumer | Resolve only agent leaf metadata from the flattener by route key/path. Reject subteam route keys when an agent projection is requested. | Current code assumes every metadata member is an agent. |
 | `autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts` | Run history projection | File-change projection consumer | Resolve leaf agent members through flattener-derived agent metadata. | Current code searches flat `memberMetadata`. |
 | `autobyteus-server-ts/src/agent-team-execution/domain/member-team-context.ts` | Team communication domain | Member/recipient descriptor contract | Keep structural `members` as same-boundary descriptors and add scoped `communicationRecipients` for local agents, subteam representatives, and parent-boundary recipients. | Parent and child agents need representative/upward communication without fake local teammates or flat name-only routing. |
@@ -1434,7 +1549,10 @@ This local spine prevents nested live events from falling back to whichever memb
 | `TeamDefinitionTopologyPlanner` | Recursive traversal, cycle checks, route identity. | `TeamRunService`, metadata restore helpers. | Mixed factory re-loads definitions and computes routes itself. | Add planner output field. |
 | `MixedTeamManager` | Member handle registry, member handles, event subscriptions. | `MixedTeamRunBackend`, child member handles. | Backend or transport directly calls `AgentRunManager` for mixed members. | Add manager command. |
 | `MixedTeamMemberHandle` | Concrete AgentRun/TeamRun command mapping. | `MixedTeamManager`. | Manager stores `AgentRun` and `TeamRun` in parallel maps and switches everywhere. | Extend handle interface. |
-| `TeamRunMetadataStore` | Canonical recursive metadata validation/read/write. | `TeamRunService`, run-history services. | Store accepts `runVersion`/flat `memberMetadata`, silently returns `null`, or migrates old schema. | Strengthen store schema validation and explicit unsupported-legacy errors. |
+| `TeamRunMetadataStore` | Canonical recursive metadata validation/read/write plus typed legacy-unmigrated diagnostics. | `TeamRunService`, run-history services, app data migration output validation. | Store accepts `runVersion`/flat `memberMetadata`, silently returns `null`, or migrates old schema inline. | Keep store current-schema-only; expose diagnostics, not conversion. |
+| `AppDataMigrationRunner` | App data migration sequencing, locking, status recording, and retry. | Server startup, GraphQL migration retry resolver. | Startup scripts or UI components modify metadata files directly. | Add a registered migration and runner API. |
+| `TeamRunMetadataMemberTreeMigration` | Legacy flat team metadata conversion only. | `AppDataMigrationRunner`. | Runtime restore/frontend parsers convert old `memberMetadata`. | Keep legacy schema knowledge isolated to this migration. |
+| `AppDataMigrationRecordRepository` | Durable migration status in DB. | Runner and GraphQL status resolver. | Migration status inferred from files or logs only. | Persist per-migration records. |
 | `TeamRunMetadataMapper` | Runtime config/context <-> canonical metadata conversion. | `TeamRunService`. | Mapper reads raw JSON files, validates old schemas, or guesses topology from definitions. | Add mapper helper over canonical `TeamRunMetadata`. |
 | `team-run-metadata-flattener.ts` | Derived flat views from `memberTree`. | Run-history/member/file-change projections. | Projections read `metadata.memberMetadata` or each duplicate recursive traversal. | Add flattener helper for the needed derived view. |
 | `ParentBoundaryBridge` | Parent mixed manager delivery handler and scoped parent-boundary communication recipients. | Child `MixedTeamManager` / child member contexts. | Child manager looks up global runs or treats parent members as local teammates. | Add scoped bridge API and communication recipient descriptors. |
@@ -1480,13 +1598,15 @@ Forbidden:
 - Runtime event consumers guessing nested identity from member names; use `sourcePath`/route key.
 - Frontend or stream handlers deriving child leaf user prompts from `TEAM_COMMUNICATION_MESSAGE`; backend `MEMBER_INPUT` owns recipient transcript rows.
 - Mixed nested delivery relying on `INTER_AGENT_MESSAGE` as the canonical leaf transcript event; use `MEMBER_INPUT` for recipient-visible prompts and `COMMUNICATION` for team messages.
-- Metadata store or mapper keeps old flat restore support, migration branches, dual schemas, silent `null` fallback, or recovery for historical team metadata.
+- Metadata store, mapper, frontend parser, or restore path keeps old flat restore support, inline migration branches, dual schemas, silent `null` fallback, or runtime recovery for historical team metadata. Legacy conversion belongs only to app data migrations.
 - Run-history projection consumers read `metadata.memberMetadata` directly; use flattener-derived views over `memberTree`.
 - Projection consumers or components suppress duplicate projection rows locally while backend `getTeamMemberRunProjection` still returns duplicate logical messages.
 - Child team members bypassing the parent-boundary bridge to directly send to arbitrary parent/grandparent/sibling leaf agents. Controlled immediate-parent reporting must use scoped `communicationRecipients`.
 - Frontend components using `resolveLeafTeamMembers` or `AgentTeamContext.members` as the display topology.
 - Frontend launch config lookup by flat child `memberName` for nested leaves.
 - Frontend current metadata parser accepting `runVersion`/flat `memberMetadata` as the canonical restore schema.
+- Normal Agents/workspace/sidebar components displaying raw migration/parser exception text for legacy team metadata instead of relying on migration status/friendly unavailable handling.
+- Migration scripts running secretly without durable database status, retry behavior, or Settings -> Server -> Migrations visibility.
 - Frontend stream handlers routing canonical nested events to the focused member because `agent_name` is missing or ambiguous.
 - Frontend components independently choosing primary labels from `agentDefinitionName` for active rows and `memberName` for history rows.
 - Instruction composers deriving allowed recipients from structural `members`, or using implementation scope names such as `parent_boundary_agent` as LLM-facing roster headings.
@@ -1507,14 +1627,19 @@ Forbidden:
 | `MixedTeamMemberHandle.deliverInterMemberMessage(request)` | Member handle | Deliver teammate message to resolved executable handle. | Participant-shaped request. For subteam handles, a nested recipient address under the subteam path is stripped into a child-local selector. | Agent and subteam map differently, but event identity stays on request participants. |
 | `TeamRunEventSourceType.MEMBER_INPUT` | Team run live transcript event | Represent accepted recipient-side user/inbound input for the actual leaf recipient. | `sourcePath`/`memberRouteKey` of recipient leaf + `messageId`/`dedupeKey`. | Maps to WebSocket `EXTERNAL_USER_MESSAGE`; distinct from parent `COMMUNICATION`. |
 | `InterAgentDeliveryTrace` / delivery message IDs | Inter-agent delivery identity | Link parent communication and child/leaf transcript input without conflating them. | `communicationMessageId`, `recipientInputMessageId`, `createdAt`. | Required for dedupe/live/projection consistency. |
-| `TeamRunMetadataStore.readMetadata/writeMetadata` | Metadata persistence schema | Persist and validate only canonical recursive metadata. | `TeamRunMetadata.memberTree`; no `runVersion`, no flat `memberMetadata`. | Unsupported historical flat metadata raises explicit unsupported-legacy/topology-lost instead of null/migration/fallback. |
-| `TeamRunMetadataMapper.buildRestoreContext(metadata)` | Metadata restore | Rebuild recursive context. | `teamRunId` + recursive `memberTree` shape. | No version field; legacy flat metadata is rejected and never inflated into nested topology. |
+| `TeamRunMetadataStore.readMetadata/writeMetadata` | Metadata persistence schema | Persist and validate only canonical recursive metadata. | `TeamRunMetadata.memberTree`; no `runVersion`, no flat `memberMetadata`. | Unmigrated historical flat metadata raises/returns typed legacy-unmigrated diagnostics instead of null, inline migration, or fallback. |
+| `TeamRunMetadataMapper.buildRestoreContext(metadata)` | Metadata restore | Rebuild recursive context. | `teamRunId` + recursive `memberTree` shape. | No version field; legacy flat metadata is never inflated by restore. |
 | `RunProjectionDedupe.normalize(conversation)` | Run projection normalization | Return one row per logical conversation message. | `messageId`/`dedupeKey` first, semantic fallback keys second. | Timestamped/richer rows win over `ts: null` duplicates. |
 | `getTeamMemberRunProjection(teamRunId, memberRouteKey)` | Leaf projection query | Return deduped projection for a leaf agent route. | Parent `teamRunId` + leaf `memberRouteKey`. | Reject subteam route keys for leaf conversation projection. |
 | `TeamCommunicationService` canonical communication projection | Team communication projection | Store parent-level member communication including representative participants and represented-subteam metadata. | Sender/receiver participant kind/path/route/run IDs plus `representedSubTeam`. | Does not project an abstract `agent_team` recipient as an agent runtime. |
 | GraphQL/WebSocket team communication DTOs | Communication transport projection | Expose backend communication participants, including `sender.representedSubTeam` and `receiver.representedSubTeam`, without flattening or string-only aliases. | DTO fields mirror `TeamCommunicationParticipant` plus represented-subteam object. | Transport may add display aliases, but must not drop represented-subteam identity. |
 | Frontend `AgentTeamContextsStore.focusMember(routeKey)` | Active team UI selection | Focus agent leaf or subteam node. | Canonical `memberRouteKey`; may be `agent` or `agent_team`. | Subteam focus opens group view/composer, not `AgentContext` hydration. |
 | Frontend launch config builder | Team launch config | Build `TeamMemberConfigInput[]` for leaf agents. | Leaf `memberRouteKey` from recursive tree. | No flat child-name override lookup. |
+| `AppDataMigrationRunner.runPending()/runMigration(id)` | App data migration | Execute and record data migrations. | Registered migration ID, startup policy, DB record. | Owns idempotency, stale RUNNING handling, status transitions, and result aggregation. |
+| `TeamRunMetadataMemberTreeMigration.execute()` | App data migration | Convert legacy flat team metadata files to canonical metadata. | File path/teamRunId plus current canonical validator. | Backup before write; atomic replace; per-file details. |
+| GraphQL `getAppDataMigrations` / `runAppDataMigration(id)` | Settings API | Expose migration status and retry. | Migration ID. | Does not expose raw filesystem write APIs. |
+| `AppDataMigrationRunner.runMigration(id)` | App data migration | Manual retry/concurrency execution. | Registered migration ID. | Acquires lock, handles stale `RUNNING`, rejects true duplicate concurrent runs, executes idempotently, records summary/logs. |
+| `TeamRunService.restore/open` legacy-unmigrated result | Team run restore/open | Controlled degraded result for old data. | Team run ID with typed metadata diagnostic. | Must not start runtime or guess topology; GraphQL/frontend map to friendly message and migration navigation. |
 | Frontend run-history metadata parser | Historical/restore UI | Parse authoritative recursive metadata. | `metadata.memberTree`. | No `runVersion`/`memberMetadata` current schema. |
 | Frontend `TeamStreamingService.sendMessage` | Transport command | Send to selected agent leaf or subteam. | `target_member_route_key`/`target_member_path` only. | Selecting `BuildSquad` targets the subteam route key. |
 | Frontend `TeamStreamingService.getMemberContext` | Stream dispatch | Attach events to exact node/leaf context. | `source_path`/`member_route_key` are authoritative; display aliases may be read only as non-authoritative presentation metadata. | Prevents nested events attaching to focused parent member. |
@@ -1580,7 +1705,15 @@ Forbidden:
 | `autobyteus-server-ts/src/agent-team-execution/backends/mixed/events/` | Folder | Mixed event bridge module | Child event bridge/path rewriting. | Keeps event bridge separate from lifecycle. | Provider event parsing unrelated to team events. |
 | `autobyteus-server-ts/src/run-history/store/team-run-metadata-types.ts` | File | Durable metadata schema | Canonical recursive `TeamRunMetadata`. | Existing schema owner. | Mapper logic. |
 | `autobyteus-server-ts/src/agent-team-execution/services/team-run-metadata-mapper.ts` | File | Metadata mapper | Recursive metadata/context conversion. | Existing mapper owner. | Member handle command logic or raw JSON schema validation. |
-| `autobyteus-server-ts/src/run-history/store/team-run-metadata-store.ts` | File | Metadata persistence boundary | Validate/read/write canonical `memberTree`; reject `runVersion`/flat `memberMetadata` explicitly. | Store owns persisted JSON shape. | Migration, fallback, topology guessing, or silent invalid-metadata nulling for old schema. |
+| `autobyteus-server-ts/src/run-history/store/team-run-metadata-store.ts` | File | Metadata persistence boundary | Validate/read/write canonical `memberTree`; reject/diagnose `runVersion`/flat `memberMetadata` explicitly for runtime callers. | Store owns current persisted JSON shape. | Inline migration, fallback, topology guessing, or silent invalid-metadata nulling for old schema. |
+| `autobyteus-server-ts/src/run-history/store/team-run-metadata-schema.ts` | File | Canonical metadata validation | Shared current-schema validator/normalizer for store and migration output validation. | Prevents migration from importing private store internals or duplicating canonical validation. | Legacy conversion rules. |
+| `autobyteus-server-ts/src/app-data-migrations/` | Folder | App data migration subsystem | Registry, runner, repository, types, concrete migrations. | Distinct from Prisma schema migrations and runtime stores. | Normal runtime restore logic. |
+| `autobyteus-server-ts/src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.ts` | File | Legacy metadata migration | Convert `runVersion` + flat `memberMetadata[]` to canonical `memberTree` with backup/atomic write. | Isolates old schema knowledge to one registered migration. | Current runtime parser. |
+| `autobyteus-server-ts/src/api/graphql/types/app-data-migrations.ts` | File | Migration GraphQL API | Query migration statuses and run/retry one migration. | Settings UI needs a server-owned boundary. | Server settings raw key/value API. |
+| `autobyteus-web/stores/appDataMigrationsStore.ts` | File | Frontend migration state | Fetch migration statuses, run retry, expose loading/error state. | Keeps Settings component thin. | Reusing serverSettingsStore for unrelated migration data. |
+| `autobyteus-web/graphql/queries/app_data_migrations_queries.ts` / `mutations/app_data_migrations_mutations.ts` | Files | Frontend migration API documents | GraphQL operations for status and retry. | Follows existing settings GraphQL file pattern. | Inline gql in component. |
+| `autobyteus-web/components/settings/ServerMigrationsManager.vue` | File | Migration settings UI | List statuses, summaries, details, refresh, retry. | User-visible migration health belongs under server settings. | Main sidebar raw errors. |
+| `autobyteus-web/pages/settings.vue` | File | Settings navigation | Add Server -> Migrations subitem/section mode. | Exposes migration UI where user expects server maintenance. | Hidden route only. |
 | `autobyteus-server-ts/src/run-history/services/team-run-metadata-flattener.ts` | File | Metadata derived projections | Produce leaf-agent and top-level member views from canonical `memberTree`. | Keeps projection consumers off the canonical schema internals. | Compatibility reading historical flat metadata. |
 | `autobyteus-server-ts/src/run-history/projection/run-projection-dedupe.ts` | File | Run projection normalization | Semantic dedupe for conversation rows from multiple projection sources. | Projection package owns cross-provider projection row semantics. | Frontend display policy or provider-specific parsing. |
 | `autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts` | File | Run projection merge service | Merge local/primary/fallback projections through semantic dedupe before returning. | Existing owner of projection source merging. | UI-level suppression of duplicates. |
@@ -1633,7 +1766,8 @@ Forbidden:
 | Add optional subteam fields onto agent `TeamMemberRunConfig` | Minimizes compile changes. | Rejected | Use discriminated union so agent/team fields do not overlap. |
 | Keep `subTeamNodeName` as authoritative nested identity | Existing AutoByteus backend uses it. | Rejected as authoritative | Replace with path-based source identity; derive any one-name display only at transport edge if absolutely necessary. |
 | Use global `AgentTeamRunManager` as the child subteam registry | Easy reuse. | Rejected for internal members | Use mixed-owned child factory/handles; parent owns internal child lifecycle and metadata. |
-| Restore, migrate, or recover old flat team metadata | Avoids breaking historical data. | Rejected | Use canonical recursive `TeamRunMetadata`; unsupported historical flat metadata fails fast. Do not add migration/fallback/dual-schema/topology-guessing code. |
+| Runtime restore/parser migrates or recovers old flat team metadata inline | Avoids a separate migration subsystem. | Rejected | Runtime restore/parsers stay current-schema-only; known old persisted data is converted by registered app data migration before normal hydration. |
+| Secret best-effort startup migration with only logs | Faster to implement. | Rejected | Record app data migration status in the database and expose Settings -> Server -> Migrations with retry/details. |
 | Keep frontend flatten-only member display while backend is recursive | Minimizes frontend changes. | Rejected | Use recursive `TeamMemberNode` tree and derived leaf indexes. The seeded browser validation proves flattening is user-visible wrong. |
 | Keep frontend flat `runVersion`/`memberMetadata` parser as current schema | Avoids frontend history type updates. | Rejected | Parse/display canonical `memberTree`; do not add current-schema fallback for historical flat data. |
 | Derive live child coordinator prompts from `TEAM_COMMUNICATION_MESSAGE` on the frontend | Smaller local patch. | Rejected | Backend `MEMBER_INPUT` event owns recipient leaf transcript because only backend knows actual child target and recipient-visible prompt. |
@@ -1660,7 +1794,8 @@ Layering is explanatory only; ownership boundaries above are authoritative.
 6. Add mixed member handle contract, agent handle, subteam handle, registry, child run factory, and event bridge.
 7. Refactor `MixedTeamManager` to depend on member handles and remove direct `AgentRun` maps/agent-only command paths.
 8. Update member-team context, inter-agent delivery DTOs/builders, and team communication projection/service to use participant-shaped descriptors, absolute-route selector/path identities, and represented-subteam communication events.
-9. Update metadata types/store/mapper to canonical recursive `TeamRunMetadata` with no version suffix/field, delete/replace old flat metadata restore code, reject unsupported historical metadata immediately, and update flattener-based projection consumers to use canonical `sourcePath` with derived transport aliases.
+9. Update metadata types/store/mapper to canonical recursive `TeamRunMetadata` with no version suffix/field, delete/replace old flat metadata restore code, keep runtime readers current-schema-only with typed legacy-unmigrated diagnostics, and update flattener-based projection consumers to use canonical `sourcePath` with derived transport aliases.
+9a. Add the app data migration framework: Prisma `AppDataMigrationRecord`, registry, runner, status repository, startup execution after Prisma schema migrations, GraphQL status/retry API, and `20260517_team_run_metadata_member_tree` conversion with backup/atomic write. Implement the manual retry/concurrency spine (`runAppDataMigration(id)` -> runner lock/stale RUNNING handling -> DB summary/log -> frontend refresh). Update history/sidebar hydration and direct restore/open handling to skip or friendly-handle unmigrated legacy diagnostics without raw UI errors or runtime start.
 10. Update frontend topology/types: `TeamMemberNode`, `AgentTeamContext.memberTree`, route-key member-node indexes, leaf agent context map, and `focusedMemberRouteKey`.
 11. Update frontend draft/launch path to build recursive definition trees and leaf launch configs keyed by canonical nested route keys; remove flat child-name override lookup.
 12. Update frontend run history/restore parsing and read models to consume `metadata.memberTree` and render nested member rows recursively.
@@ -1680,14 +1815,17 @@ Layering is explanatory only; ownership boundaries above are authoritative.
 - Choosing mixed for any nested definition may route same-runtime nested teams away from existing Codex/Claude team managers, but that matches the product direction that mixed is the superset manager.
 - Path-based identity is required for organization-like structures where departments repeat role names; public runtime commands do not accept bare-name shortcuts.
 - Supporting controlled child-to-immediate-parent reporting is more complex than top-down-only delegation, but it is required for realistic delegation. The design keeps the boundary clean by using explicit parent-boundary recipient descriptors and rejecting arbitrary cross-level/global messaging.
+- Adding an app data migration subsystem is more work than allowing the runtime parser to read both old and new metadata, but it keeps the runtime model clean while making real-user upgrades robust and observable. Migration code is isolated, recorded, and retryable instead of becoming permanent compatibility logic.
 
 ## Risks
 
 - Many current consumers assume flat `memberConfigs` and flat `memberMetadata`; implementation must update all type errors rather than patching with casts.
-- Existing run history restore for old flat metadata should fail clearly with an unsupported legacy-metadata/topology-lost error; do not infer nested topology and do not add migration, fallback, dual-schema, or compatibility branches.
+- Existing run history restore for old flat metadata should normally be preceded by the app data migration. Do not infer topology or add runtime dual-schema compatibility branches; if migration fails, history/sidebar must degrade gracefully and direct restore should show a friendly legacy-unmigrated message pointing to Settings -> Server -> Migrations.
 - Stream clients need updates to consume canonical `sourcePath` or derived route aliases instead of a single subteam name.
 - Tool-approval clients must round-trip nested source path/route identity from approval-request event to approval command.
 - Frontend currently has tests and types that assert flat nested display; those must be replaced, not preserved as compatibility coverage.
+- Data migration failures must be visible in the migration screen and release validation; hidden startup warnings are insufficient because existing users may otherwise receive a visually broken app.
+- Migration status uses the application database while team metadata lives in file storage; implementation must keep these two stores coordinated but not make normal runtime history depend on migration logs for current-schema metadata.
 - Subteam focus must not accidentally call leaf-only projection APIs for `agent_team` route keys; group nodes require separate rendering and communication/activity summaries.
 - Activity and team communication display can become confusing if sender/receiver participant paths are not shown as breadcrumbs.
 - Upward reporting can become unsafe if implemented by flattening parent members into child teammates. Keep parent-boundary recipients as explicit scoped descriptors and reject non-exposed targets.
