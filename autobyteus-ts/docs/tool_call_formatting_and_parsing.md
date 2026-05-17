@@ -232,8 +232,11 @@ then depends on the selected mode:
 - `api_tool_call`: `ToolResultContinuationBuilder` marks the continuation
   `tool_history_only`, `AgentTurnRunner` emits `ToolContinuationReadyEvent`, and
   `LlmPhase` renders the current working context without appending a synthetic
-  user message. Provider-visible history carries structured
-  `assistant.tool_calls` plus matching `role: "tool"` messages only.
+  user message. Provider-visible history carries provider-native structured
+  tool-call and result items only: for OpenAI-compatible Chat this is
+  `assistant.tool_calls` plus matching `role: "tool"` messages, while OpenAI
+  Responses replays captured `response.output` items including required
+  `reasoning` entries before matching `function_call_output` items.
 - `xml`, `json`, `sentinel`: preserve the aggregate textual
   `SenderType.TOOL` continuation message, because these parser modes do not
   have a provider-native `role: "tool"` channel.

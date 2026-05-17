@@ -171,6 +171,30 @@ const nativeContextFor = (
     };
   }
   if (provider === 'openai_responses') {
+    const responseOutputItems = [
+      {
+        type: 'reasoning',
+        id: 'rs_shared',
+        summary: [{ type: 'summary_text', text: 'need weather and time' }],
+        encrypted_content: 'encrypted-reasoning'
+      },
+      {
+        type: 'function_call',
+        id: 'fc_a',
+        call_id: 'call_a',
+        name: 'get_weather',
+        arguments: '{"stale":true}',
+        status: 'completed'
+      },
+      {
+        type: 'function_call',
+        id: 'fc_b',
+        call_id: 'call_b',
+        name: 'get_time',
+        arguments: '{"stale":true}',
+        status: 'completed'
+      }
+    ];
     return {
       provider: 'openai_responses',
       functionCallItem: {
@@ -180,7 +204,8 @@ const nativeContextFor = (
         name,
         arguments: '{"stale":true}',
         status: 'completed'
-      }
+      },
+      responseOutputItems
     };
   }
   return undefined;
@@ -313,7 +338,13 @@ const assertProviderNativeToolResults = (provider: ProviderCase['name'], rendere
   const userMessages = rendered.filter((item: any) =>
     item.type === 'message' && item.role === 'user'
   );
+  const reasoningItems = rendered.filter((item: any) => item.type === 'reasoning');
+  const functionCalls = rendered.filter((item: any) => item.type === 'function_call');
   const outputs = rendered.filter((item: any) => item.type === 'function_call_output');
+  expect(reasoningItems.map((item: any) => item.id)).toEqual(['rs_shared']);
+  expect(functionCalls.map((item: any) => item.id)).toEqual(['fc_a', 'fc_b']);
+  expect(functionCalls.map((item: any) => item.call_id)).toEqual(['call_a', 'call_b']);
+  expect(functionCalls.map((item: any) => JSON.parse(item.arguments).city)).toEqual(['Berlin', 'Berlin']);
   expect(userMessages.map((item: any) => item.content)).toEqual(['Use both tools.']);
   expect(outputs.map((item: any) => item.call_id)).toEqual(['call_a', 'call_b']);
 };

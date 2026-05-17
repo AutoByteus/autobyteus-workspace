@@ -207,14 +207,19 @@ entries to the provider's wire format only when `resolveToolCallFormat()` is
 | Ollama | assistant messages with `tool_calls` followed by `role: "tool"` result messages containing `tool_name`. |
 | Anthropic | assistant `tool_use` blocks followed immediately by user `tool_result` blocks, with result blocks first in that user message. |
 | Mistral | assistant `tool_calls` followed by `role: "tool"` messages containing `name`, `content`, and `tool_call_id`. |
-| OpenAI Responses | `function_call` input items followed by `function_call_output` items keyed by `call_id`. |
+| OpenAI Responses | Captured `response.output` input items replayed once when available, including required `reasoning` items before `function_call` items, followed by `function_call_output` items keyed by `call_id`. Matching function calls keep provider item metadata but use final normalized `ToolCallSpec` id/name/arguments. |
 
 Streaming converters can attach `nativeToolCallContext` to normalized tool calls
 for provider metadata that must survive stateless continuation, such as Gemini
 model parts, Anthropic tool-use blocks, Mistral/Ollama native call records, and
-OpenAI Responses function-call items. The normalized final `id`, `name`, and
-arguments remain authoritative during replay so stale preserved metadata cannot
-override the tool invocation stored in working context.
+OpenAI Responses output items. For OpenAI Responses, the completed
+`response.output` sequence is replayed as the authoritative provider order so
+reasoning items required by a following function call are not dropped. The
+normalized final `id`, `name`, and arguments remain authoritative during replay
+so stale preserved metadata cannot override the tool invocation stored in working
+context. `OpenAIResponsesLLM` requests `reasoning.encrypted_content` when tools
+or prior Responses tool/reasoning items are present and merges that include with
+caller-supplied `include` entries.
 
 If tool results settle in a different order than the assistant's tool-call
 batch, native renderers replay those results in the original assistant
