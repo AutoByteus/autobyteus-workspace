@@ -183,6 +183,72 @@ describe('teamRunConfigUtils', () => {
     })
   })
 
+  it('does not synthesize member override keys from bare member names', () => {
+    const config = reconstructTeamRunConfigFromMetadata({
+      metadata: {
+        teamRunId: 'team-duplicate-leaf',
+        teamDefinitionId: 'team-def-duplicate-leaf',
+        teamDefinitionName: 'Duplicate Leaf Team',
+        coordinatorMemberRouteKey: 'program_manager',
+        createdAt: '2026-05-17T00:00:00.000Z',
+        updatedAt: '2026-05-17T00:00:00.000Z',
+        archivedAt: null,
+        memberTree: [
+          agentMetadataMember({
+            memberRouteKey: 'program_manager',
+            memberName: 'program_manager',
+            memberRunId: 'program-manager-run',
+            runtimeKind: 'codex_app_server',
+            platformAgentRunId: null,
+            agentDefinitionId: 'agent-program-manager',
+            llmModelIdentifier: 'gpt-5.4',
+            autoExecuteTools: false,
+            skillAccessMode: 'PRELOADED_ONLY',
+            llmConfig: null,
+            workspaceRootPath: '/tmp/workspace',
+          }),
+          agentMetadataMember({
+            memberRouteKey: '',
+            memberName: 'review_lead',
+            memberRunId: 'missing-route-review-lead-run',
+            runtimeKind: 'claude_agent_sdk',
+            platformAgentRunId: null,
+            agentDefinitionId: 'agent-missing-route-review-lead',
+            llmModelIdentifier: 'claude-sonnet',
+            autoExecuteTools: false,
+            skillAccessMode: 'PRELOADED_ONLY',
+            llmConfig: null,
+            workspaceRootPath: '/tmp/workspace',
+          }),
+          agentMetadataMember({
+            memberRouteKey: 'BuildSquad/review_lead',
+            memberName: 'review_lead',
+            memberRunId: 'build-review-lead-run',
+            runtimeKind: 'claude_agent_sdk',
+            platformAgentRunId: null,
+            agentDefinitionId: 'agent-build-review-lead',
+            llmModelIdentifier: 'claude-sonnet',
+            autoExecuteTools: false,
+            skillAccessMode: 'PRELOADED_ONLY',
+            llmConfig: null,
+            workspaceRootPath: '/tmp/workspace',
+          }),
+        ],
+      },
+      firstWorkspaceId: 'ws-duplicate-leaf',
+      isLocked: false,
+    })
+
+    expect(config.memberOverrides).not.toHaveProperty('review_lead')
+    expect(config.memberOverrides).toEqual({
+      'BuildSquad/review_lead': {
+        agentDefinitionId: 'agent-build-review-lead',
+        runtimeKind: 'claude_agent_sdk',
+        llmModelIdentifier: 'claude-sonnet',
+      },
+    })
+  })
+
   it('reconstructs a coherent default runtime/model/config tuple for mixed metadata and stays launch-ready', () => {
     const config = reconstructTeamRunConfigFromMetadata({
       metadata: {

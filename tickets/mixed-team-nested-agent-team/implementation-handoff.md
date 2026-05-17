@@ -995,3 +995,39 @@ Passed:
   - Result: `4` changed/untracked non-test source files checked; no file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this no-legacy identity cleanup.
+
+## Code Review Round 29 Local Fix Update
+
+Addressed `CR-ROUND29-001`, where frontend team-run config reconstruction could still synthesize `memberOverrides` keys from bare `memberName` when `memberRouteKey` was blank.
+
+Implementation updates:
+
+- `teamRunConfigUtils.ts` now treats `memberRouteKey` as the only route identity for reconstructed team config.
+- `reconstructTeamRunConfigFromMetadata(...)` filters out metadata leaves with blank route keys before computing launch defaults and member overrides, so blank-route current-schema rows are skipped rather than converted into bare-name override keys.
+- Member override emission now requires a non-empty canonical route key; no override can be stored under a synthesized `memberName` key.
+- Added a frontend regression proving blank `memberRouteKey` + `memberName: review_lead` does not create `memberOverrides.review_lead`, while exact nested `BuildSquad/review_lead` still produces a route-keyed override.
+
+No app-data migration behavior was changed or broadened.
+
+## Code Review Round 29 Local Fix Checks
+
+Passed:
+
+- `pnpm -C autobyteus-web exec vitest run utils/__tests__/teamRunConfigUtils.spec.ts --reporter=dot`
+  - Result: `1` file passed, `8` tests passed.
+- `pnpm -C autobyteus-web exec vitest run utils/__tests__/teamRunConfigUtils.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts stores/__tests__/runHistoryMetadata.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts --reporter=dot`
+  - Result: `5` files passed, `17` tests passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- `git diff --check origin/personal...HEAD`
+  - Result: passed.
+- No-legacy route-key fallback scans over frontend utils/stores/composables/hydration and backend run-history source/tests.
+  - Result: no matches for `memberRouteKey || memberName`, `|| member.memberName`, `memberOverrides[...]` from `memberName`, prior Round 28 fallback shapes, or the old member-name fallback test title. Remaining matches were route-key null-to-empty normalization only, not member-name fallback.
+- Custom changed/untracked non-test `.ts` / `.vue` source size audit.
+  - Result: `1` changed non-test source file checked; no file exceeded `500` non-empty lines (`teamRunConfigUtils.ts` is `264` non-empty lines).
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this no-legacy config reconstruction cleanup.

@@ -35,8 +35,8 @@ const normalizeModelConfig = (
 const modelConfigKey = (config: Record<string, unknown> | null | undefined): string =>
   JSON.stringify(normalizeModelConfig(config) ?? null)
 
-const memberRouteKey = (member: { memberRouteKey: string; memberName: string }): string =>
-  member.memberRouteKey?.trim() || member.memberName.trim()
+const memberRouteKey = (member: { memberRouteKey: string }): string =>
+  member.memberRouteKey?.trim() || ''
 
 type TeamMetadataMember = ReturnType<typeof flattenTeamRunAgentMetadata>[number]
 
@@ -221,7 +221,9 @@ export const reconstructTeamRunConfigFromMetadata = (params: {
   firstWorkspaceId: string | null
   isLocked: boolean
 }): TeamRunConfig => {
-  const members = flattenTeamRunAgentMetadata(params.metadata.memberTree)
+  const members = flattenTeamRunAgentMetadata(params.metadata.memberTree).filter((member) =>
+    Boolean(memberRouteKey(member)),
+  )
   if (members.length === 0) {
     return {
       teamDefinitionId: params.metadata.teamDefinitionId,
@@ -286,8 +288,9 @@ export const reconstructTeamRunConfigFromMetadata = (params: {
       override.llmConfig = memberConfig
     }
 
-    if (hasMeaningfulMemberOverride(override)) {
-      memberOverrides[memberRouteKey(member)] = override
+    const routeKey = memberRouteKey(member)
+    if (routeKey && hasMeaningfulMemberOverride(override)) {
+      memberOverrides[routeKey] = override
     }
   })
 
