@@ -1156,3 +1156,41 @@ Passed:
   - Result: clean.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 32 backend status no-legacy fix.
+
+## Code Review Round 33 Local Fix Update
+
+Addressed `CR-ROUND33-001`, the remaining provider-level residue from the backend status no-legacy cleanup.
+
+Implementation updates:
+
+- Removed `LOCKED_RUNNING_STATUSES` from `autobyteus-status-projector.ts`.
+- Removed the provider-local `statusToken` / token-normalization branch from the AutoByteus status projector.
+- Simplified AutoByteus `can_interrupt` derivation to canonical API status only: `running` plus active-turn evidence.
+- Extended backend negative regressions so `interrupting` and `shutting_down` fall back like the other removed lifecycle tokens and do not act as provider-level locked-running statuses.
+
+## Code Review Round 33 Local Fix Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts --reporter=dot`
+  - Result: `2` files passed, `15` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts --reporter=dot`
+  - Result: `5` files passed, `40` tests passed.
+- `pnpm -C autobyteus-web exec vitest run services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot`
+  - Result: `1` file passed, `4` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-server-ts exec prisma validate`
+  - Result: passed.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- `git diff --check origin/personal...HEAD`
+  - Result: passed.
+- Provider/status no-legacy implementation scan over AutoByteus/Codex/Claude projectors, shared backend status normalizer, and team status aggregation.
+  - Result: no implementation matches for removed lifecycle tokens or `LOCKED_RUNNING_STATUSES`; removed tokens remain only in negative regressions.
+- Conflict-marker scan over active source/docs excluding historical ticket logs.
+  - Result: clean.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this Round 33 provider status cleanup.

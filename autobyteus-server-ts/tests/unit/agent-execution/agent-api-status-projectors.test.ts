@@ -30,6 +30,8 @@ describe("agent API status projectors", () => {
       "awaiting_tool_approval",
       "executing_tool",
       "tool_denied",
+      "interrupting",
+      "shutting_down",
       "shutdown_complete",
       "failed",
       "failure",
@@ -68,14 +70,16 @@ describe("agent API status projectors", () => {
   });
 
   it("does not map removed lifecycle tokens through provider status projectors", () => {
-    expect(projectAutoByteusAgentStatus({
-      currentStatus: "uninitialized",
-      context: { state: { activeTurn: {} } },
-      isActive: true,
-    })).toMatchObject({
-      status: "idle",
-      can_interrupt: false,
-    });
+    for (const currentStatus of ["uninitialized", "interrupting", "shutting_down"]) {
+      expect(projectAutoByteusAgentStatus({
+        currentStatus,
+        context: { state: { activeTurn: {} } },
+        isActive: true,
+      })).toMatchObject({
+        status: "idle",
+        can_interrupt: false,
+      });
+    }
 
     expect(projectCodexAgentStatus({
       currentStatus: "awaiting_llm_response",

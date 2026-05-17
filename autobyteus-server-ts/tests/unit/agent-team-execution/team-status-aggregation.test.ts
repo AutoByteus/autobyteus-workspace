@@ -52,6 +52,8 @@ describe("deriveTeamApiStatus", () => {
       "awaiting_tool_approval",
       "executing_tool",
       "tool_denied",
+      "interrupting",
+      "shutting_down",
       "shutdown_complete",
       "failed",
       "failure",

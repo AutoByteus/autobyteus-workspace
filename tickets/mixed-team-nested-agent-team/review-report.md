@@ -1930,3 +1930,187 @@ Routing note: API/E2E/full-stack validation and delivery packaging should remain
 - Review Decision: `Fail — Local Fix Required`
 - Score Summary: `8.0 / 10` (`80 / 100`) for Round 32 latest-base integration review.
 - Notes: Latest-base merge preserved route/path command identity, but reintroduced active backend legacy lifecycle status-token normalization. This must be cleaned before API/E2E resumes.
+
+---
+
+# Review Report — Round 33 Backend Status Local-Fix Re-Review
+
+## Review Round Meta
+
+- Review Entry Point: `Implementation Review`
+- Current Review Round: `33`
+- Trigger: Round 32 local-fix commit `7ce0ea49 fix(status): reject removed lifecycle tokens`.
+- Prior Review Round Reviewed: `32`
+- Latest Authoritative Round: `33`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-spec.md`
+- Command API Clean-Cut Design Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/command-api-clean-cut-design-rework-note.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/tickets/mixed-team-nested-agent-team/implementation-handoff.md`
+- API / E2E Validation Started Yet: `No` for this post-latest-base local-fix state.
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`; this is implementation-source local-fix re-review.
+
+## Round History
+
+| Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 32 | Latest-base merge `af9a99b8` | N/A | `CR-ROUND32-001` | Fail — Local Fix Required | No | Shared backend status normalizer accepted removed lifecycle tokens. |
+| 33 | Local fix `7ce0ea49` | `CR-ROUND32-001` | Same finding remains partially unresolved | Fail — Local Fix Required | Yes | Shared normalizer is fixed, but provider status projector still retains active-source removed lifecycle-token policy/dead code. |
+
+## Review Scope
+
+Round 33 re-reviewed the backend status local fix against the no-legacy rule:
+
+- `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts`
+- `autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts`
+- Updated backend status projector and team aggregation tests.
+- Frontend runtime status normalization tests for alignment.
+
+## Prior Findings Resolution Check
+
+| Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 32 | `CR-ROUND32-001` | High | Partially resolved, still blocking | `normalizeAgentApiStatus(...)` now accepts only canonical statuses plus current persisted `active`/`terminated`, and backend tests now assert fallback for many removed tokens. However `autobyteus-status-projector.ts` still contains `LOCKED_RUNNING_STATUSES` with removed tokens `interrupting` and `shutting_down` in active source. | Same no-legacy finding remains open until provider projector cleanup is complete. |
+
+## Structural / Design Checks
+
+| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by implementation | Partial | The local fix corrected the shared domain normalizer, which is the right ownership direction. | Finish removal of provider-level removed-token residue. |
+| Data-flow spine inventory clarity and preservation under shared principles | Partial | Status flow is now mostly canonical: provider status -> provider projector -> shared canonical payload. | Remove dead provider branch that still references removed lifecycle tokens. |
+| Ownership boundary preservation and clarity | Partial | Shared domain status model is now tighter. Provider projector still owns a stale compatibility/dead-code set for removed lifecycle tokens. | Do not keep old tokens in provider code unless they are current provider-native statuses with live tests; here they are not. |
+| Reusable owned structures / shared model tightness | Pass | `AgentApiStatus` and `normalizeAgentApiStatus(...)` are now canonical/current-only. | None for shared normalizer. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Partial | Provider status projector is the correct file for provider-specific status policy, but the retained `LOCKED_RUNNING_STATUSES` policy is no longer reachable under the tightened normalizer. | Remove it rather than keeping dead legacy code. |
+| Interface/API/query/command clarity | Pass | No command/route-path identity regression was found in this local status fix. | None. |
+| Patch-on-patch complexity control | Partial | Most of the previous latest-base compatibility patch was removed. | Avoid leaving inert compatibility sets behind. |
+| Dead/obsolete code cleanup completeness in changed scope | Fail | Active source still contains `LOCKED_RUNNING_STATUSES = new Set(["interrupting", "shutting_down"])`. These tokens are no longer accepted as running, so the branch is dead and legacy-retentive. | Remove the set and simplify `canInterrupt`. |
+| Test quality is acceptable for changed behavior | Partial | Focused status tests pass and cover many removed tokens. | Add/extend negative coverage for `interrupting` and `shutting_down` or otherwise prove no retained provider token policy exists. |
+| Validation readiness for next workflow stage | Fail | Tests/typecheck pass, but active-source no-legacy scan fails. | Local fix before API/E2E resumes. |
+| No backward-compatibility mechanisms / no legacy retention | Fail | Removed lifecycle tokens remain in active provider status implementation. | Remove them from active source; keep removed-token strings only in negative tests if needed. |
+
+## Review Scorecard
+
+- Overall score (`/10`): `8.7`
+- Overall score (`/100`): `87`
+- Score calculation note: The main shared-normalizer defect is fixed, but the result remains a fail because no-legacy cleanup is incomplete in active provider status source.
+
+| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | ---: | --- | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.9 | The canonical status spine is clearer after the normalizer cleanup. | Provider projector still contains stale lifecycle-token policy. | Remove residual provider dead code. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.8 | Shared domain status authority is now canonical. | Provider-local status policy retains removed tokens without current behavior. | Keep provider policy current-only. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.2 | No command API regression in this local fix. | N/A. | None. |
+| `4` | `Separation of Concerns and File Placement` | 8.8 | Files are placed correctly. | The AutoByteus projector contains obsolete token handling. | Delete the obsolete set/branch. |
+| `5` | `Shared-Structure / Data-Model Tightness` | 9.1 | Shared `AgentApiStatus` and normalizer are tight. | Tests do not cover all removed tokens found in active source. | Add coverage for `interrupting`/`shutting_down` if retained only as negative tests. |
+| `6` | `Naming Quality and Local Readability` | 8.7 | Most naming is clear. | `LOCKED_RUNNING_STATUSES` is misleading because those statuses no longer normalize to running. | Remove or replace with a current-state concept if one truly exists. |
+| `7` | `Validation Readiness` | 8.1 | Focused suites, typecheck, Prisma validate, localization, and diff checks passed. | No-legacy static review still fails. | Local fix before API/E2E. |
+| `8` | `Runtime Correctness Under Edge Cases` | 8.8 | Removed tokens mostly fall back now. | `interrupting`/`shutting_down` retention is dead today but risky for future reactivation. | Remove and add negative coverage. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 6.8 | Shared compatibility token sets were removed. | Active provider source still retains removed lifecycle tokens. | Eliminate residual legacy strings/policy. |
+| `10` | `Cleanup Completeness` | 7.6 | Main cleanup is substantially done. | One provider-level residue remains and the handoff scan missed it. | Complete scan and fix. |
+
+## Findings
+
+### CR-ROUND32-001 — Partially resolved: AutoByteus status projector still retains removed lifecycle-token dead code
+
+- Severity: `Medium-High`
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+- File:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts`
+- Evidence:
+  - `autobyteus-status-projector.ts:13-15` defines `LOCKED_RUNNING_STATUSES` with removed lifecycle tokens `"interrupting"` and `"shutting_down"`.
+  - `autobyteus-status-projector.ts:39` still applies this set in `canInterrupt` computation.
+  - After the Round 32 local fix, `normalizeAgentApiStatus(...)` no longer maps those tokens to `running`; therefore this set is not meaningful current behavior. It is active-source residue from the removed broad lifecycle-token compatibility path.
+  - The updated negative tests cover many removed tokens but not `interrupting` / `shutting_down`, so the handoff claim that removed tokens remain only in negative tests is not true for active source.
+- Why this is blocking:
+  - The user explicitly required no backward-compatible or legacy code retention, not merely no effective mapping in the shared normalizer.
+  - Leaving inert removed-token sets in provider code makes future regression likely: a later maintainer could re-enable those tokens by changing the shared normalizer or adapter path and treat the stale set as intentional current policy.
+  - This is active runtime status implementation, not a migration converter, not a display-only field, and not a negative-test rejection key.
+- Required action:
+  1. Remove `LOCKED_RUNNING_STATUSES` and the `statusToken` branch from `projectAutoByteusAgentStatus(...)` unless `interrupting` / `shutting_down` are documented current AutoByteus provider-native statuses with live adapter semantics. Based on the current design and tests, they should be removed.
+  2. Simplify `canInterrupt` to current canonical status plus active-turn evidence, or replace it only with a current canonical/provider-current invariant.
+  3. Add or extend negative backend coverage proving `interrupting` and `shutting_down` fall back and are not provider-level accepted/locked-running behavior.
+  4. Rerun the focused backend status suites, frontend runtime status normalization suite, server typecheck, and a no-legacy scan that includes provider projectors.
+
+## Test Quality And Validation-Readiness Verdict
+
+| Area | Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- | --- |
+| Validation Readiness | Ready for API/E2E/full-stack validation | Fail | Runtime behavior tests pass, but active-source no-legacy review still fails. |
+| Tests | Focused status regression quality | Partial | Tests cover canonical/current statuses and many removed tokens. Missing `interrupting`/`shutting_down` allowed active-source residue to remain. |
+| Findings clarity | Clear enough for local fix | Pass | The remaining fix is localized to one provider status projector plus tests. |
+
+## Verification Evidence
+
+Commands/checks run during Round 33 review:
+
+- Reloaded `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/code-reviewer/SKILL.md` and canonical `design-principles.md`.
+- Confirmed worktree state and HEAD:
+  - `git status --short` — clean before review-report update.
+  - `git branch --show-current` — `codex/mixed-team-nested-agent-team`.
+  - `git rev-parse --short HEAD` — `7ce0ea49`.
+- Inspected local-fix diff:
+  - `git show --stat --find-renames 7ce0ea49`.
+  - `git show --find-renames --unified=90 7ce0ea49 -- autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts autobyteus-server-ts/tests/unit/agent-execution/agent-api-status-projectors.test.ts autobyteus-server-ts/tests/unit/agent-team-execution/team-status-aggregation.test.ts`.
+- Inspected current status source/projectors:
+  - `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts`.
+  - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts`.
+  - `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-status-projector.ts`.
+  - `autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-status-projector.ts`.
+  - `autobyteus-server-ts/src/agent-team-execution/domain/team-status-aggregation.ts`.
+- Focused checks passed:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts --reporter=dot` — `2` files / `15` tests passed.
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/events/lifecycle-status-event-processor.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts tests/unit/agent-team-execution/team-status-aggregation.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts --reporter=dot` — `5` files / `40` tests passed.
+  - `pnpm -C autobyteus-web exec vitest run services/runHydration/__tests__/runtimeStatusNormalization.spec.ts --reporter=dot` — `1` file / `4` tests passed.
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+  - `pnpm -C autobyteus-server-ts exec prisma validate` — passed.
+  - `pnpm -C autobyteus-web audit:localization-literals` — passed with zero unresolved findings.
+  - `git diff --check`, `git diff --cached --check`, and `git diff --check origin/personal...HEAD` — passed.
+- No-legacy scans:
+  - Exact active-source scan found `LOCKED_RUNNING_STATUSES`, `"interrupting"`, and `"shutting_down"` in `autobyteus-status-projector.ts:13-15,39`.
+  - Relevant updated status tests had no `interrupting` / `shutting_down` negative coverage.
+- Source-size spot check:
+  - `agent-status-payload.ts`: `60` non-empty lines.
+  - `autobyteus-status-projector.ts`: `41` non-empty lines.
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result (`Pass`/`Fail`) | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed/integrated status scope | Fail | Shared normalizer is fixed, but provider projector still retains removed lifecycle-token policy. |
+| No legacy old-behavior retention in active source | Fail | `interrupting` and `shutting_down` remain in active implementation source. |
+| Dead/obsolete code cleanup completeness | Fail | `LOCKED_RUNNING_STATUSES` is dead after the normalizer cleanup and should be removed. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
+| --- | --- | --- | --- | --- |
+| `LOCKED_RUNNING_STATUSES` in `autobyteus-status-projector.ts` | `LegacyBranch` / `DeadCode` | Lines `13-15` define removed lifecycle tokens; line `39` applies them. | These tokens no longer normalize to `running`, so the branch is stale active-source legacy residue. | Delete the set and simplify `canInterrupt`; add negative coverage for those tokens if needed. |
+
+## Docs-Impact Verdict
+
+- Docs impact: `No new docs impact expected after local fix`.
+- Why: The remaining change is source/test cleanup to enforce the existing no-legacy status contract.
+
+## Classification
+
+- Classification: `Local Fix`
+- Rationale: The remaining issue is bounded implementation cleanup in one provider status projector plus missing negative test coverage. No requirement gap or design impact is needed.
+
+## Recommended Recipient
+
+- `implementation_engineer`
+
+Routing note: API/E2E/full-stack validation and delivery packaging should remain paused until this residual status no-legacy fix returns to code review.
+
+## Residual Risks
+
+- Provider-native status vocabulary may change in the future. If a non-canonical provider state is truly current, it must be documented and mapped locally with tests as current provider vocabulary, not retained as historical compatibility residue.
+- The current handoff no-legacy scan missed the provider projector; future local-fix scans should include provider projectors as well as shared normalizers and team aggregation.
+
+## Latest Authoritative Result
+
+- Review Decision: `Fail — Local Fix Required`
+- Score Summary: `8.7 / 10` (`87 / 100`) for Round 33 local-fix re-review.
+- Notes: The shared backend status normalizer is fixed, but active provider source still retains removed `interrupting` / `shutting_down` lifecycle-token dead code. Remove it before API/E2E resumes.
