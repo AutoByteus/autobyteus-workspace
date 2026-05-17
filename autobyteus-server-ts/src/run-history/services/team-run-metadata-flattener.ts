@@ -45,7 +45,7 @@ export const resolveTeamRunMemberByRouteKey = (
   const stack = [...metadata.memberTree];
   while (stack.length > 0) {
     const member = stack.shift()!;
-    if (member.memberRouteKey === memberRouteKey || member.memberName === memberRouteKey) {
+    if (member.memberRouteKey === memberRouteKey) {
       return member;
     }
     if (member.memberKind === "agent_team") {

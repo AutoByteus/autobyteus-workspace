@@ -128,30 +128,62 @@ describe("TeamMemberRunViewProjectionService", () => {
     expect(result.summary).toBe("nested summary");
   });
 
-  it("falls back to member name match when route key differs", async () => {
+  it("rejects bare member names when duplicate nested leaves require route keys", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
       metadata: buildTeamMetadata([
-        buildAgentMember({
-          memberRouteKey: "root/professor",
-          memberPath: ["root", "professor"],
-          memberName: "professor",
-        }),
+        {
+          memberKind: "agent_team",
+          memberRouteKey: "BuildSquad",
+          memberPath: ["BuildSquad"],
+          memberName: "BuildSquad",
+          memberRunId: "build-squad-handle",
+          role: null,
+          description: null,
+          teamDefinitionId: "build-team",
+          teamRunId: "child-team-run-1",
+          coordinatorMemberRouteKey: "review_lead",
+          memberTree: [
+            buildAgentMember({
+              memberRouteKey: "BuildSquad/review_lead",
+              memberPath: ["BuildSquad", "review_lead"],
+              memberName: "review_lead",
+              memberRunId: "build-review-lead-run",
+            }),
+          ],
+        },
+        {
+          memberKind: "agent_team",
+          memberRouteKey: "AuditSquad",
+          memberPath: ["AuditSquad"],
+          memberName: "AuditSquad",
+          memberRunId: "audit-squad-handle",
+          role: null,
+          description: null,
+          teamDefinitionId: "audit-team",
+          teamRunId: "child-team-run-2",
+          coordinatorMemberRouteKey: "review_lead",
+          memberTree: [
+            buildAgentMember({
+              memberRouteKey: "AuditSquad/review_lead",
+              memberPath: ["AuditSquad", "review_lead"],
+              memberName: "review_lead",
+              memberRunId: "audit-review-lead-run",
+            }),
+          ],
+        },
       ]),
     });
+    const getProjectionFromMetadata = vi.fn();
     const service = new TeamMemberRunViewProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
-      agentRunViewProjectionService: createAgentRunViewProjectionService({
-        runId: "member-1",
-        summary: null,
-        lastActivityAt: null,
-        conversation: [],
-        activities: [],
-      }) as any,
+      agentRunViewProjectionService: { getProjectionFromMetadata } as any,
     });
 
-    const result = await service.getProjection("team-1", "professor");
-    expect(result.agentRunId).toBe("member-1");
+    await expect(service.getProjection("team-1", "review_lead")).rejects.toThrow(
+      "Member route key 'review_lead' not found for team run 'team-1'.",
+    );
+    expect(getProjectionFromMetadata).not.toHaveBeenCalled();
   });
 
   it("delegates member metadata through the unified local replay projection path", async () => {

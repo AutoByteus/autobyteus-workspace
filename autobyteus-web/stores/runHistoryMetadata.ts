@@ -53,7 +53,7 @@ const parseMemberMetadata = (value: unknown): TeamRunMetadataMember => {
   const memberKind = member.memberKind === 'agent_team' ? 'agent_team' : 'agent';
   const memberRouteKey = readString(member.memberRouteKey);
   const memberName = readString(member.memberName);
-  const memberPath = normalizePath(member.memberPath, memberRouteKey || memberName);
+  const memberPath = normalizePath(member.memberPath, memberRouteKey);
 
   if (memberKind === 'agent_team') {
     return {
@@ -135,5 +135,5 @@ export const parseTeamRunMetadata = (value: unknown): TeamRunMetadataPayload => 
   };
 };
 
-export const toTeamMemberKey = (member: { memberRouteKey: string; memberName: string }): string =>
-  member.memberRouteKey || member.memberName;
+export const toTeamMemberKey = (member: { memberRouteKey: string }): string =>
+  member.memberRouteKey;

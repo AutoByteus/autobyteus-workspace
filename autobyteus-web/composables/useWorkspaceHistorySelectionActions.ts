@@ -31,7 +31,7 @@ export const useWorkspaceHistorySelectionActions = (params: {
     const rows = flattenTeamRows(team.memberTree.length > 0 ? team.memberTree : team.members);
     if (focusedMemberKey) {
       const focusedMember = rows.find((member) =>
-        member.memberRouteKey === focusedMemberKey || member.memberName === focusedMemberKey,
+        member.memberRouteKey === focusedMemberKey,
       );
       if (focusedMember) {
         return focusedMember;

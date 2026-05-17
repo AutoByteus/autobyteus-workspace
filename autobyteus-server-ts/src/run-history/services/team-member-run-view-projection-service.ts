@@ -46,9 +46,6 @@ const resolveMemberBinding = (
     if (routeKey === normalizedTarget) {
       return binding;
     }
-    if (binding.memberName.trim() === memberRouteKey.trim()) {
-      return binding;
-    }
   }
 
   return null;

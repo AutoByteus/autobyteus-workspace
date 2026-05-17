@@ -950,3 +950,48 @@ Passed:
   - Result: `155` changed/untracked non-test source files checked; no file exceeded `500` non-empty lines.
 
 API/E2E/full-stack validation and delivery packaging remain paused until code review passes this latest-base integrated state.
+
+## Code Review Round 28 Local Fix Update
+
+Addressed `CR-ROUND28-001`, where active history/projection identity paths could still treat bare `memberName` as a route-key fallback.
+
+Implementation updates:
+
+- Removed `binding.memberName` fallback matching from `TeamMemberRunViewProjectionService`; member projection now resolves only canonical `memberRouteKey` identity.
+- Removed `member.memberName` fallback matching from `team-run-metadata-flattener` route-key resolver helpers.
+- Removed frontend workspace history selection fallback from `focusedMemberRouteKey` to `memberName`; selection now matches exact `memberRouteKey` only.
+- Tightened frontend history metadata helper `toTeamMemberKey(...)` and parsed member path fallback so member-route-key identity is no longer synthesized from `memberName`.
+- Replaced the prior positive member-name fallback test with a rejection test using duplicate nested `review_lead` leaves.
+- Added backend and frontend duplicate-leaf regressions proving bare `review_lead` does not select either `BuildSquad/review_lead` or `AuditSquad/review_lead`, while exact nested route keys still resolve.
+
+No app-data migration behavior was broadened; the only historical legacy conversion path remains the isolated app-data migration subsystem.
+
+## Code Review Round 28 Local Fix Checks
+
+Passed:
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/team-run-metadata-flattener.test.ts tests/unit/run-history/team-member-run-view-projection-service.test.ts --reporter=dot`
+  - Result: `2` files passed, `8` tests passed.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/services/agent-run-view-projection-service.test.ts tests/unit/run-history/services/team-run-metadata-flattener.test.ts tests/unit/run-history/team-member-run-view-projection-service.test.ts tests/unit/run-history/services/team-run-history-index-service.test.ts tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts --reporter=dot`
+  - Result: `5` files passed, `24` tests passed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
+  - Result: passed.
+- `pnpm -C autobyteus-web exec vitest run composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts --reporter=dot`
+  - Result: `1` file passed, `2` tests passed.
+- `pnpm -C autobyteus-web exec vitest run composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts stores/__tests__/runHistoryMetadata.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts --reporter=dot`
+  - Result: `4` files passed, `9` tests passed.
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: passed with zero unresolved findings.
+- `git diff --check`
+  - Result: passed.
+- `git diff --cached --check`
+  - Result: passed.
+- `git diff --check origin/personal...HEAD`
+  - Result: passed.
+- No-legacy grep for the removed fallback shapes:
+  - Command scanned `binding.memberName`, `member.memberName === memberRouteKey`, `member.memberName === focusedMemberKey`, `memberRouteKey || memberName`, `|| member.memberName`, and the old fallback test title across run-history source/tests and frontend history/hydration/composable paths.
+  - Result: no matches.
+- Custom changed/untracked non-test `.ts` / `.vue` source size audit.
+  - Result: `4` changed/untracked non-test source files checked; no file exceeded `500` non-empty lines.
+
+API/E2E/full-stack validation and delivery packaging remain paused until code review passes this no-legacy identity cleanup.
