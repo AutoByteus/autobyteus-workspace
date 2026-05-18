@@ -65,6 +65,7 @@ describe('CodexFullAccessCard', () => {
     expect(wrapper.text()).toContain('danger-full-access')
     expect(wrapper.text()).toContain('Applies to new sessions.')
     expect(wrapper.find('[data-testid="codex-full-access-toggle"]').attributes('role')).toBe('switch')
+    expect(wrapper.find('[data-testid="codex-full-access-save"]').exists()).toBe(false)
     expect(wrapper.findAll('input[type="checkbox"]')).toHaveLength(0)
     expect(wrapper.findAll('input[type="radio"]')).toHaveLength(0)
     expect(wrapper.text()).not.toContain('Read only')
@@ -85,8 +86,12 @@ describe('CodexFullAccessCard', () => {
     expect(wrapper.find('[data-testid="codex-full-access-dirty"]').exists()).toBe(false)
   })
 
-  it('preserves unsaved local edits when settings refresh from the store', async () => {
+  it('preserves an in-flight local toggle when settings refresh from the store', async () => {
     const { wrapper, serverSettingsStore } = await mountComponent([sandboxSetting('workspace-write')])
+    let resolveUpdate: (value: boolean) => void = () => undefined
+    serverSettingsStore.updateServerSetting = vi.fn().mockReturnValue(new Promise((resolve) => {
+      resolveUpdate = resolve
+    }))
 
     await wrapper.get('[data-testid="codex-full-access-toggle"]').trigger('click')
     await wrapper.vm.$nextTick()
@@ -96,17 +101,20 @@ describe('CodexFullAccessCard', () => {
     })
 
     await wrapper.vm.$nextTick()
-    await flushPromises()
 
     expect(isFullAccessChecked(wrapper)).toBe(true)
-    expect(wrapper.find('[data-testid="codex-full-access-dirty"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="codex-full-access-toggle"]').attributes('disabled')).toBeDefined()
+
+    resolveUpdate(true)
+    await flushPromises()
+
+    expect(wrapper.get('[data-testid="codex-full-access-toggle"]').attributes('disabled')).toBeUndefined()
   })
 
-  it('saves danger-full-access when the toggle is turned on', async () => {
+  it('auto-saves danger-full-access when the toggle is turned on', async () => {
     const { wrapper, serverSettingsStore } = await mountComponent([sandboxSetting('workspace-write')])
 
     await wrapper.get('[data-testid="codex-full-access-toggle"]').trigger('click')
-    await wrapper.get('[data-testid="codex-full-access-save"]').trigger('click')
     await flushPromises()
 
     expect(serverSettingsStore.updateServerSetting).toHaveBeenCalledWith(
@@ -115,11 +123,10 @@ describe('CodexFullAccessCard', () => {
     )
   })
 
-  it('saves workspace-write when the toggle is turned off', async () => {
+  it('auto-saves workspace-write when the toggle is turned off', async () => {
     const { wrapper, serverSettingsStore } = await mountComponent([sandboxSetting('danger-full-access')])
 
     await wrapper.get('[data-testid="codex-full-access-toggle"]').trigger('click')
-    await wrapper.get('[data-testid="codex-full-access-save"]').trigger('click')
     await flushPromises()
 
     expect(serverSettingsStore.updateServerSetting).toHaveBeenCalledWith(

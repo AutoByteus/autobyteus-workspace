@@ -12,7 +12,7 @@
       <div class="shrink-0">
         <button
           type="button"
-          class="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-slate-200 bg-white text-blue-700 hover:bg-blue-50 hover:border-blue-100 disabled:bg-slate-50 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed transition-colors duration-150"
+          :class="saveButtonClass"
           :disabled="isSaving"
           data-testid="compaction-config-save"
           @click="save"
@@ -94,6 +94,13 @@ const compactionAgentDefinitionId = ref('')
 const activeContextTokensOverride = ref('')
 const detailedLogsEnabled = ref(false)
 const isSaving = ref(false)
+
+const saveButtonClass = computed(() => [
+  'inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none disabled:ring-0',
+  isSaving.value
+    ? 'border-slate-200 bg-white text-slate-400'
+    : 'border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-600/25 ring-2 ring-blue-200 hover:border-blue-700 hover:bg-blue-700',
+])
 
 const agentOptions = computed(() => agentDefinitionStore.agentDefinitions
   .map((definition) => ({

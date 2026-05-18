@@ -124,7 +124,6 @@ const parseWarning = ref<string | null>(null)
 
 const secondaryButtonClass = 'inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400'
 const iconActionButtonClass = 'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-colors hover:border-blue-100 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-300'
-const iconSaveButtonClass = 'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-blue-700 transition-colors hover:border-blue-100 hover:bg-blue-50 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400'
 const iconRemoveButtonClass = 'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-white text-red-700 transition-colors hover:border-red-100 hover:bg-red-50 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400'
 
 const createRowId = (): string => `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
@@ -163,6 +162,12 @@ const validationMessage = computed(() => {
 const hasChanges = computed(() => serializedRows.value !== originalSerialized.value)
 const isBusy = computed(() => isSaving.value || settingsStore.isUpdating)
 const canSave = computed(() => hasChanges.value && validationErrors.value.length === 0 && !isBusy.value)
+const iconSaveButtonClass = computed(() => [
+  'inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none disabled:ring-0',
+  canSave.value
+    ? 'border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-600/25 ring-2 ring-blue-200 hover:border-blue-700 hover:bg-blue-700'
+    : 'border-slate-200 bg-white text-slate-400 hover:border-slate-200 hover:bg-white',
+])
 
 const getOptions = (kind: FeaturedCatalogResourceKind): DefinitionOption[] => (
   kind === 'AGENT' ? sortedAgentOptions.value : sortedTeamOptions.value

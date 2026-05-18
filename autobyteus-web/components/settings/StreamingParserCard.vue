@@ -9,20 +9,6 @@
           {{ t('settings.components.settings.StreamingParserCard.description') }}
         </p>
       </div>
-      <div class="shrink-0">
-        <button
-          type="button"
-          class="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-slate-200 bg-white text-blue-700 hover:bg-blue-50 hover:border-blue-100 disabled:bg-slate-50 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed transition-colors duration-150"
-          :disabled="!isDirty || isSaving"
-          :aria-label="t('settings.components.settings.StreamingParserCard.save')"
-          :title="t('settings.components.settings.StreamingParserCard.save')"
-          data-testid="streaming-parser-save"
-          @click="save"
-        >
-          <span v-if="isSaving" class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-700 inline-block"></span>
-          <Icon v-else icon="heroicons:check" class="w-4 h-4" />
-        </button>
-      </div>
     </div>
 
     <div
@@ -61,9 +47,6 @@
       <p class="text-xs text-gray-500" data-testid="streaming-parser-note">
         {{ t('settings.components.settings.StreamingParserCard.futureSessionNote') }}
       </p>
-      <p v-if="isDirty" class="text-sm text-slate-500" data-testid="streaming-parser-dirty">
-        {{ t('settings.components.settings.StreamingParserCard.unsavedChanges') }}
-      </p>
       <p v-if="errorMessage" class="text-sm text-red-600" data-testid="streaming-parser-error">
         {{ errorMessage }}
       </p>
@@ -72,7 +55,6 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { computed, ref, watch } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useServerSettingsStore } from '~/stores/serverSettings'
@@ -113,24 +95,28 @@ const syncFromStore = (): void => {
 
 watch(() => store.settings, syncFromStore, { deep: true, immediate: true })
 
-const toggleXmlParser = (): void => {
+const persistXmlParser = async (enabled: boolean): Promise<void> => {
   if (isSaving.value) return
-  xmlParserEnabled.value = !xmlParserEnabled.value
-}
 
-const save = async (): Promise<void> => {
-  if (!isDirty.value || isSaving.value) return
+  const previousEnabled = originalXmlParserEnabled.value
+  xmlParserEnabled.value = enabled
 
   isSaving.value = true
   errorMessage.value = ''
   try {
-    const canonicalValue = toStreamParserSettingValue(xmlParserEnabled.value)
+    const canonicalValue = toStreamParserSettingValue(enabled)
     await store.updateServerSetting(STREAM_PARSER_SETTING_KEY, canonicalValue)
-    originalXmlParserEnabled.value = xmlParserEnabled.value
+    originalXmlParserEnabled.value = enabled
   } catch (error: any) {
+    xmlParserEnabled.value = previousEnabled
     errorMessage.value = error?.message || t('settings.components.settings.StreamingParserCard.saveFailed')
   } finally {
     isSaving.value = false
   }
+}
+
+const toggleXmlParser = (): void => {
+  if (isSaving.value) return
+  void persistXmlParser(!xmlParserEnabled.value)
 }
 </script>
