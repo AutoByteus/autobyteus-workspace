@@ -103,6 +103,7 @@ async function mountComponent(options?: {
   nodes?: any[];
   agentDefinitions?: any[];
   extraTeamDefinitions?: any[];
+  returnToTeamId?: string;
 }) {
   const pinia = createTestingPinia({
     createSpy: vi.fn,
@@ -155,6 +156,7 @@ async function mountComponent(options?: {
   const wrapper = mount(AgentTeamDetail, {
     props: {
       teamDefinitionId: 'team-1',
+      returnToTeamId: options?.returnToTeamId,
     },
     global: {
       plugins: [pinia],
@@ -642,6 +644,7 @@ describe('AgentTeamDetail', () => {
       {
         view: 'team-detail',
         id: childTeamId,
+        returnToTeam: 'team-1',
       },
     ]]);
   });
@@ -677,6 +680,25 @@ describe('AgentTeamDetail', () => {
       {
         view: 'team-detail',
         id: 'shared-team',
+        returnToTeam: 'team-1',
+      },
+    ]]);
+  });
+
+  it('returns from nested team detail to the parent team context', async () => {
+    const wrapper = await mountComponent({
+      returnToTeamId: 'parent-team',
+    });
+
+    expect(wrapper.text()).toContain('Back to Parent Team');
+
+    await wrapper.find('button').trigger('click');
+
+    expect(wrapper.emitted('navigate')).toEqual([[
+      {
+        view: 'team-detail',
+        id: 'parent-team',
+        clearReturnToTeam: true,
       },
     ]]);
   });

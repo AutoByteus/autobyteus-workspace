@@ -12,7 +12,7 @@
             d="M17 10a.75.75 0 0 1-.75.75H5.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 1 1 1.06 1.06L5.56 9.25h10.69A.75.75 0 0 1 17 10Z"
             clip-rule="evenodd"
           />
-        </svg>{{ $t('agentTeams.components.agentTeams.AgentTeamDetail.back_to_agent_teams') }}</button>
+        </svg>{{ backButtonLabel }}</button>
 
       <div v-if="loading" class="rounded-lg border border-slate-200 bg-white py-20 text-center shadow-sm">
         <div class="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-b-2 border-blue-600"></div>
@@ -261,8 +261,11 @@ import TeamLocalAgentMemberDetails from '~/components/agentTeams/TeamLocalAgentM
 import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
 import { buildTeamLocalAgentDefinitionId, buildTeamLocalTeamDefinitionId } from '~/utils/teamLocalDefinitionId';
 
-const props = defineProps<{ teamDefinitionId: string }>();
-const { teamDefinitionId } = toRefs(props);
+const props = defineProps<{
+  teamDefinitionId: string;
+  returnToTeamId?: string;
+}>();
+const { teamDefinitionId, returnToTeamId } = toRefs(props);
 
 const emit = defineEmits(['navigate']);
 
@@ -322,6 +325,9 @@ const applicationLabel = computed(() => (
     ? formatApplicationOwnershipLabel(teamDef.value)
     : ''
 ));
+const backButtonLabel = computed(() => (returnToTeamId.value
+  ? $t('agentTeams.components.agentTeams.AgentTeamDetail.backToParentTeam')
+  : $t('agentTeams.components.agentTeams.AgentTeamDetail.back_to_agent_teams')));
 
 onMounted(async () => {
   loading.value = true;
@@ -482,6 +488,7 @@ const viewNestedTeamMember = (node: TeamMemberNode): void => {
   emit('navigate', {
     view: 'team-detail',
     id: resolvedChildTeamId,
+    returnToTeam: teamDef.value?.id,
   });
 };
 
@@ -537,6 +544,10 @@ const handleTeamLocalMemberError = (payload: { message: string }) => {
 };
 
 const goBackToList = () => {
+  if (returnToTeamId.value) {
+    emit('navigate', { view: 'team-detail', id: returnToTeamId.value, clearReturnToTeam: true });
+    return;
+  }
   emit('navigate', { view: 'team-list' });
 };
 </script>

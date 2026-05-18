@@ -5,6 +5,7 @@
     <AgentTeamDetail
       v-else-if="currentView === 'team-detail' && currentId"
       :team-definition-id="currentId"
+      :return-to-team-id="returnToTeamId"
       @navigate="handleNavigation"
     />
     <AgentTeamEdit
@@ -66,9 +67,10 @@ const currentView = computed((): View => {
 });
 
 const currentId = computed(() => route.query.id as string | undefined);
+const returnToTeamId = computed(() => route.query.returnToTeam as string | undefined);
 
 type AgentTeamNavigationPayload =
-  | { view: View; id?: string }
+  | { view: View; id?: string; returnToTeam?: string; clearReturnToTeam?: boolean }
   | { target: 'agents'; view: 'detail'; id: string; returnToTeam: string };
 
 const handleNavigation = (payload: AgentTeamNavigationPayload) => {
@@ -88,6 +90,11 @@ const handleNavigation = (payload: AgentTeamNavigationPayload) => {
   const query: Record<string, string> = { view };
   if (id) {
     query.id = id;
+  }
+  if (payload.returnToTeam) {
+    query.returnToTeam = payload.returnToTeam;
+  } else if (!payload.clearReturnToTeam && returnToTeamId.value && view !== 'team-list') {
+    query.returnToTeam = returnToTeamId.value;
   }
   router.push({ path: '/agent-teams', query });
 };
