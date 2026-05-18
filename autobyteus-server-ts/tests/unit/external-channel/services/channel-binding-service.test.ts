@@ -15,34 +15,54 @@ const createBinding = (transport: ExternalChannelTransport): ChannelBinding => (
   targetType: "AGENT",
   agentRunId: "agent-1",
   teamRunId: null,
-  targetNodeName: null,
+  targetMemberRouteKey: null,
+  targetMemberPath: null,
   allowTransportFallback: false,
   createdAt: new Date("2026-02-08T00:00:00.000Z"),
   updatedAt: new Date("2026-02-08T00:00:00.000Z"),
 });
 
-const createTeamBinding = (targetNodeName: string | null): ChannelBinding => ({
+const createTeamBinding = (targetMemberRouteKey: string | null): ChannelBinding => ({
   ...createBinding(ExternalChannelTransport.PERSONAL_SESSION),
-  id: `binding-team-${targetNodeName ?? "default"}`,
+  id: `binding-team-${targetMemberRouteKey ?? "default"}`,
   targetType: "TEAM",
   agentRunId: null,
   teamRunId: "team-1",
-  targetNodeName,
+  targetMemberRouteKey,
+  targetMemberPath: targetMemberRouteKey ? [targetMemberRouteKey] : null,
 });
 
 const createTeamRun = () => {
   const runtimeContext = {
     memberContexts: [
-      { memberName: "coordinator", memberRunId: "run-coordinator" },
-      { memberName: "worker", memberRunId: "run-worker" },
+      {
+        memberName: "coordinator",
+        memberPath: ["coordinator"],
+        memberRouteKey: "coordinator",
+        memberRunId: "run-coordinator",
+      },
+      {
+        memberName: "worker",
+        memberPath: ["worker"],
+        memberRouteKey: "worker",
+        memberRunId: "run-worker",
+      },
     ],
   };
   return {
     runId: "team-1",
-    context: { coordinatorMemberName: "coordinator", runtimeContext },
+    context: {
+      coordinatorMemberName: "coordinator",
+      coordinatorMemberRouteKey: "coordinator",
+      runtimeContext,
+    },
     config: {
       coordinatorMemberName: "coordinator",
-      memberConfigs: [{ memberName: "coordinator" }, { memberName: "worker" }],
+      coordinatorMemberRouteKey: "coordinator",
+      memberConfigs: [
+        { memberName: "coordinator", memberRouteKey: "coordinator" },
+        { memberName: "worker", memberRouteKey: "worker" },
+      ],
     },
     getRuntimeContext: () => runtimeContext,
   };
@@ -287,19 +307,19 @@ describe("ChannelBindingService", () => {
       targetType: "TEAM" as const,
       teamRunId: "team-1",
       entryMemberRunId: "run-coordinator",
-      entryMemberName: "coordinator",
+      entryMemberRouteKey: "coordinator",
     };
     const workerTarget = {
       targetType: "TEAM" as const,
       teamRunId: "team-1",
       entryMemberRunId: "run-worker",
-      entryMemberName: "worker",
+      entryMemberRouteKey: "worker",
     };
     const workerRunIdOnlyTarget = {
       targetType: "TEAM" as const,
       teamRunId: "team-1",
       entryMemberRunId: "run-worker",
-      entryMemberName: null,
+      entryMemberRouteKey: null,
     };
 
     vi.mocked(provider.findBinding).mockResolvedValue(createTeamBinding("worker"));

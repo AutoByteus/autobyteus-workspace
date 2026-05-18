@@ -11,11 +11,19 @@
         {{ $t('workspace.components.workspace.config.MemberOverrideItem.overridden') }}
       </span>
     </div>
+    <p
+      v-if="memberBreadcrumb && memberBreadcrumb !== memberName"
+      class="-mt-2 mb-3 truncate font-mono text-xs text-gray-500"
+      :title="memberRouteKey"
+      data-test="member-override-breadcrumb"
+    >
+      {{ memberBreadcrumb }}
+    </p>
 
     <div class="mb-3">
       <label class="mb-1 block text-xs text-gray-500">{{ $t('workspace.components.workspace.config.MemberOverrideItem.runtime_override') }}</label>
       <select
-        :id="`override-runtime-${memberName}`"
+        :id="`override-runtime-${inputIdSuffix}`"
         :value="storedRuntimeOverrideValue"
         :disabled="disabled"
         class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
@@ -55,7 +63,7 @@
 
     <div class="mb-3 flex items-center">
       <input
-        :id="`override-auto-${memberName}`"
+        :id="`override-auto-${inputIdSuffix}`"
         type="checkbox"
         :checked="override?.autoExecuteTools === true"
         :indeterminate="override?.autoExecuteTools === undefined"
@@ -63,7 +71,7 @@
         :disabled="disabled"
         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
       />
-      <label :for="`override-auto-${memberName}`" class="ml-2 select-none text-xs text-gray-600">
+      <label :for="`override-auto-${inputIdSuffix}`" class="ml-2 select-none text-xs text-gray-600">
         {{ autoExecuteLabel }}
       </label>
     </div>
@@ -75,7 +83,7 @@
       :disabled="disabled"
       :read-only="disabled"
       :compact="true"
-      :id-prefix="`config-${memberName}`"
+      :id-prefix="`config-${inputIdSuffix}`"
       :advanced-initially-expanded="advancedInitiallyExpanded"
       :missing-historical-config="missingHistoricalConfig"
       @update:config="emitOverrideWithConfig"
@@ -105,6 +113,8 @@ import {
 
 const props = defineProps<{
   memberName: string
+  memberRouteKey: string
+  memberBreadcrumb?: string
   agentDefinitionId: string
   override: MemberConfigOverride | undefined
   globalRuntimeKind: string
@@ -117,7 +127,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:override', memberName: string, override: MemberConfigOverride | null): void
+  (e: 'update:override', memberRouteKey: string, override: MemberConfigOverride | null): void
 }>()
 const { t: $t } = useLocalization()
 
@@ -133,6 +143,7 @@ const {
 })
 
 const storedRuntimeOverrideValue = computed(() => props.override?.runtimeKind || '')
+const inputIdSuffix = computed(() => props.memberRouteKey.replace(/[^a-zA-Z0-9_-]+/g, '-'))
 const explicitModelIdentifier = computed(() => props.override?.llmModelIdentifier || '')
 const hasOverride = computed(() => hasMeaningfulMemberOverride(props.override))
 const globalModelIdentifier = computed(() => props.globalLlmModel || '')
@@ -243,7 +254,7 @@ watch(
 
     emit(
       'update:override',
-      props.memberName,
+      props.memberRouteKey,
       buildOverride({
         runtimeKind: props.override?.runtimeKind,
         autoExecuteTools: props.override?.autoExecuteTools,
@@ -265,7 +276,7 @@ const handleRuntimeChange = async (value: string) => {
 
   emit(
     'update:override',
-    props.memberName,
+    props.memberRouteKey,
     buildOverride({
       runtimeKind: nextRuntimeKind,
       llmModelIdentifier: retainedExplicitModel,
@@ -286,7 +297,7 @@ const emitOverrideWithConfig = (nextConfig: Record<string, unknown> | null | und
 
   emit(
     'update:override',
-    props.memberName,
+    props.memberRouteKey,
     buildOverride({
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: props.override?.llmModelIdentifier,
@@ -302,7 +313,7 @@ const handleModelChange = (value: string) => {
 
   emit(
     'update:override',
-    props.memberName,
+    props.memberRouteKey,
     buildOverride({
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: value || undefined,
@@ -328,7 +339,7 @@ const handleAutoExecuteChange = () => {
 
   emit(
     'update:override',
-    props.memberName,
+    props.memberRouteKey,
     buildOverride({
       runtimeKind: props.override?.runtimeKind,
       llmModelIdentifier: props.override?.llmModelIdentifier,

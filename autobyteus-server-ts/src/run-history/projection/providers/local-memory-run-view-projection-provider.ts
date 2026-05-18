@@ -1,21 +1,23 @@
 import path from "node:path";
 import { AgentMemoryService } from "../../../agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../agent-memory/store/memory-file-store.js";
-import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type {
   RunProjectionProvider,
   RunProjectionProviderInput,
   RunProjection,
 } from "../run-projection-types.js";
 import { buildRunProjectionBundleFromEvents } from "../run-projection-utils.js";
-import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { buildHistoricalReplayEvents } from "../transformers/raw-trace-to-historical-replay-events.js";
 
 const asString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
 export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvider {
-  readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
+  /**
+   * Local application-owned replay trace display authority. The runtime kind in
+   * the source descriptor is metadata only; normal UI history for Codex, Claude
+   * Agent SDK, and AutoByteus is hydrated through this provider.
+   */
   private readonly defaultMemoryService: AgentMemoryService;
 
   constructor(
@@ -47,14 +49,3 @@ export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvid
     );
   }
 }
-
-let cachedLocalMemoryRunViewProjectionProvider: LocalMemoryRunViewProjectionProvider | null = null;
-
-export const getLocalMemoryRunViewProjectionProvider = (): LocalMemoryRunViewProjectionProvider => {
-  if (!cachedLocalMemoryRunViewProjectionProvider) {
-    cachedLocalMemoryRunViewProjectionProvider = new LocalMemoryRunViewProjectionProvider(
-      appConfigProvider.config.getMemoryDir(),
-    );
-  }
-  return cachedLocalMemoryRunViewProjectionProvider;
-};

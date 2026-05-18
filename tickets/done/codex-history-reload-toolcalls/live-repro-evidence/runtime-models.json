@@ -1,0 +1,1432 @@
+{
+  "runtimeAvailabilities": {
+    "data": {
+      "runtimeAvailabilities": [
+        {
+          "runtimeKind": "autobyteus",
+          "enabled": true,
+          "reason": null
+        },
+        {
+          "runtimeKind": "codex_app_server",
+          "enabled": true,
+          "reason": null
+        },
+        {
+          "runtimeKind": "claude_agent_sdk",
+          "enabled": true,
+          "reason": null
+        }
+      ]
+    }
+  },
+  "providersCodexApp": {
+    "data": {
+      "availableLlmProvidersWithModels": [
+        {
+          "provider": {
+            "id": "ANTHROPIC",
+            "name": "Anthropic",
+            "providerType": "ANTHROPIC",
+            "apiKeyConfigured": false,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "AUTOBYTEUS",
+            "name": "AutoByteus",
+            "providerType": "AUTOBYTEUS",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "DEEPSEEK",
+            "name": "DeepSeek",
+            "providerType": "DEEPSEEK",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "GEMINI",
+            "name": "Gemini",
+            "providerType": "GEMINI",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "GLM",
+            "name": "GLM",
+            "providerType": "GLM",
+            "apiKeyConfigured": false,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "GROK",
+            "name": "Grok",
+            "providerType": "GROK",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "KIMI",
+            "name": "Kimi",
+            "providerType": "KIMI",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "LMSTUDIO",
+            "name": "LM Studio",
+            "providerType": "LMSTUDIO",
+            "apiKeyConfigured": false,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "MINIMAX",
+            "name": "MiniMax",
+            "providerType": "MINIMAX",
+            "apiKeyConfigured": false,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "MISTRAL",
+            "name": "Mistral",
+            "providerType": "MISTRAL",
+            "apiKeyConfigured": false,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "OLLAMA",
+            "name": "Ollama",
+            "providerType": "OLLAMA",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "OPENAI",
+            "name": "OpenAI",
+            "providerType": "OPENAI",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "gpt-5.2",
+              "name": "gpt-5.2 (default reasoning: medium)",
+              "value": "gpt-5.2",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.3-codex",
+              "name": "gpt-5.3-codex (default reasoning: medium)",
+              "value": "gpt-5.3-codex",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.3-codex-spark",
+              "name": "GPT-5.3-Codex-Spark (default reasoning: high)",
+              "value": "gpt-5.3-codex-spark",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "high",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.4",
+              "name": "gpt-5.4 (default reasoning: medium)",
+              "value": "gpt-5.4",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.4-mini",
+              "name": "GPT-5.4-Mini (default reasoning: medium)",
+              "value": "gpt-5.4-mini",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.5",
+              "name": "GPT-5.5 (default reasoning: medium)",
+              "value": "gpt-5.5",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "runtime": "api",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "QWEN",
+            "name": "Qwen",
+            "providerType": "QWEN",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        }
+      ]
+    }
+  },
+  "providersAll": {
+    "data": {
+      "availableLlmProvidersWithModels": [
+        {
+          "provider": {
+            "id": "ANTHROPIC",
+            "name": "Anthropic",
+            "providerType": "ANTHROPIC",
+            "apiKeyConfigured": false,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "claude-haiku-4.5",
+              "name": "claude-haiku-4.5",
+              "value": "claude-haiku-4-5",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "runtime": "api"
+            },
+            {
+              "modelIdentifier": "claude-opus-4.6",
+              "name": "claude-opus-4.6",
+              "value": "claude-opus-4-6",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "runtime": "api"
+            },
+            {
+              "modelIdentifier": "claude-opus-4.7",
+              "name": "claude-opus-4.7",
+              "value": "claude-opus-4-7",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "runtime": "api"
+            },
+            {
+              "modelIdentifier": "claude-sonnet-4.6",
+              "name": "claude-sonnet-4.6",
+              "value": "claude-sonnet-4-6",
+              "providerId": "ANTHROPIC",
+              "providerName": "Anthropic",
+              "runtime": "api"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "AUTOBYTEUS",
+            "name": "AutoByteus",
+            "providerType": "AUTOBYTEUS",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "claude-4-sonnet-rpa:autobyteus@localhost:51739",
+              "name": "claude-4-sonnet-rpa",
+              "value": "claude-sonnet-4-20250514",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "claude-4-sonnet-rpa:autobyteus@localhost:51740",
+              "name": "claude-4-sonnet-rpa",
+              "value": "claude-sonnet-4-20250514",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "claude-4-sonnet-thinking-rpa:autobyteus@localhost:51739",
+              "name": "claude-4-sonnet-thinking-rpa",
+              "value": "claude-sonnet-4-20250514",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "claude-4-sonnet-thinking-rpa:autobyteus@localhost:51740",
+              "name": "claude-4-sonnet-thinking-rpa",
+              "value": "claude-sonnet-4-20250514",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "claude-4.1-opus-rpa:autobyteus@localhost:51739",
+              "name": "claude-4.1-opus-rpa",
+              "value": "claude-opus-4-1-20250805",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "claude-4.1-opus-rpa:autobyteus@localhost:51740",
+              "name": "claude-4.1-opus-rpa",
+              "value": "claude-opus-4-1-20250805",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "claude-4.1-opus-thinking-rpa:autobyteus@localhost:51739",
+              "name": "claude-4.1-opus-thinking-rpa",
+              "value": "claude-opus-4-1-20250805",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "claude-4.1-opus-thinking-rpa:autobyteus@localhost:51740",
+              "name": "claude-4.1-opus-thinking-rpa",
+              "value": "claude-opus-4-1-20250805",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "deeperseek-chat-rpa:autobyteus@localhost:51739",
+              "name": "deeperseek-chat-rpa",
+              "value": "deepseek-chat",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "deeperseek-chat-rpa:autobyteus@localhost:51740",
+              "name": "deeperseek-chat-rpa",
+              "value": "deepseek-chat",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "deeperseek-chat-thinking-rpa:autobyteus@localhost:51739",
+              "name": "deeperseek-chat-thinking-rpa",
+              "value": "deepseek-chat",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "deeperseek-chat-thinking-rpa:autobyteus@localhost:51740",
+              "name": "deeperseek-chat-thinking-rpa",
+              "value": "deepseek-chat",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "ernie-5.0-preview-1022-rpa:autobyteus@localhost:51739",
+              "name": "ernie-5.0-preview-1022-rpa",
+              "value": "ernie-5.0-preview-1022",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "ernie-5.0-preview-1022-rpa:autobyteus@localhost:51740",
+              "name": "ernie-5.0-preview-1022-rpa",
+              "value": "ernie-5.0-preview-1022",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "ernie-5.0-preview-rpa:autobyteus@localhost:51739",
+              "name": "ernie-5.0-preview-rpa",
+              "value": "ernie-5.0-preview",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "ernie-5.0-preview-rpa:autobyteus@localhost:51740",
+              "name": "ernie-5.0-preview-rpa",
+              "value": "ernie-5.0-preview",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gemini-3-flash-preview-rpa:autobyteus@localhost:51739",
+              "name": "gemini-3-flash-preview-rpa",
+              "value": "gemini-3-flash-preview",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gemini-3-flash-preview-rpa:autobyteus@localhost:51740",
+              "name": "gemini-3-flash-preview-rpa",
+              "value": "gemini-3-flash-preview",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gemini-3-pro-app-rpa:autobyteus@localhost:51739",
+              "name": "gemini-3-pro-app-rpa",
+              "value": "gemini-3-pro-app",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gemini-3-pro-app-rpa:autobyteus@localhost:51740",
+              "name": "gemini-3-pro-app-rpa",
+              "value": "gemini-3-pro-app",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gemini-3-pro-preview-rpa:autobyteus@localhost:51739",
+              "name": "gemini-3-pro-preview-rpa",
+              "value": "gemini-3-pro-preview",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gemini-3-pro-preview-rpa:autobyteus@localhost:51740",
+              "name": "gemini-3-pro-preview-rpa",
+              "value": "gemini-3-pro-preview",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gemini-3.1-pro-preview-rpa:autobyteus@localhost:51739",
+              "name": "gemini-3.1-pro-preview-rpa",
+              "value": "gemini-3.1-pro-preview",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gemini-3.1-pro-preview-rpa:autobyteus@localhost:51740",
+              "name": "gemini-3.1-pro-preview-rpa",
+              "value": "gemini-3.1-pro-preview",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gemini-deep-research-app-rpa:autobyteus@localhost:51739",
+              "name": "gemini-deep-research-app-rpa",
+              "value": "gemini-deep-research-app",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gemini-deep-research-app-rpa:autobyteus@localhost:51740",
+              "name": "gemini-deep-research-app-rpa",
+              "value": "gemini-deep-research-app",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gpt-5-instant-rpa:autobyteus@localhost:51739",
+              "name": "gpt-5-instant-rpa",
+              "value": "gpt-5-instant",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gpt-5-instant-rpa:autobyteus@localhost:51740",
+              "name": "gpt-5-instant-rpa",
+              "value": "gpt-5-instant",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gpt-5-pro-rpa:autobyteus@localhost:51739",
+              "name": "gpt-5-pro-rpa",
+              "value": "gpt-5-pro",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gpt-5-pro-rpa:autobyteus@localhost:51740",
+              "name": "gpt-5-pro-rpa",
+              "value": "gpt-5-pro",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gpt-5-thinking-rpa:autobyteus@localhost:51739",
+              "name": "gpt-5-thinking-rpa",
+              "value": "gpt-5-thinking",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "gpt-5-thinking-rpa:autobyteus@localhost:51740",
+              "name": "gpt-5-thinking-rpa",
+              "value": "gpt-5-thinking",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "kimi-latest-rpa:autobyteus@localhost:51739",
+              "name": "kimi-latest-rpa",
+              "value": "kimi-latest",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "kimi-latest-rpa:autobyteus@localhost:51740",
+              "name": "kimi-latest-rpa",
+              "value": "kimi-latest",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "kimi-latest-thinking-rpa:autobyteus@localhost:51739",
+              "name": "kimi-latest-thinking-rpa",
+              "value": "kimi-latest",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "kimi-latest-thinking-rpa:autobyteus@localhost:51740",
+              "name": "kimi-latest-thinking-rpa",
+              "value": "kimi-latest",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "ling-1t-rpa:autobyteus@localhost:51739",
+              "name": "ling-1t-rpa",
+              "value": "Ling-1T",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "ling-1t-rpa:autobyteus@localhost:51740",
+              "name": "ling-1t-rpa",
+              "value": "Ling-1T",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "mistral-large-rpa:autobyteus@localhost:51739",
+              "name": "mistral-large-rpa",
+              "value": "mistral-large-latest",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "mistral-large-rpa:autobyteus@localhost:51740",
+              "name": "mistral-large-rpa",
+              "value": "mistral-large-latest",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "nano-banana-pro-app-rpa:autobyteus@localhost:51739",
+              "name": "nano-banana-pro-app-rpa",
+              "value": "nano-banana-pro-app",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "nano-banana-pro-app-rpa:autobyteus@localhost:51740",
+              "name": "nano-banana-pro-app-rpa",
+              "value": "nano-banana-pro-app",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-235b-a22b-2507-rpa:autobyteus@localhost:51739",
+              "name": "qwen3-235b-a22b-2507-rpa",
+              "value": "qwen3-235b-a22b-2507",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-235b-a22b-2507-rpa:autobyteus@localhost:51740",
+              "name": "qwen3-235b-a22b-2507-rpa",
+              "value": "qwen3-235b-a22b-2507",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-30b-a3b-2507-rpa:autobyteus@localhost:51739",
+              "name": "qwen3-30b-a3b-2507-rpa",
+              "value": "qwen3-30b-a3b-2507",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-30b-a3b-2507-rpa:autobyteus@localhost:51740",
+              "name": "qwen3-30b-a3b-2507-rpa",
+              "value": "qwen3-30b-a3b-2507",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-coder-flash-rpa:autobyteus@localhost:51739",
+              "name": "qwen3-coder-flash-rpa",
+              "value": "qwen3-coder-flash",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-coder-flash-rpa:autobyteus@localhost:51740",
+              "name": "qwen3-coder-flash-rpa",
+              "value": "qwen3-coder-flash",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-coder-rpa:autobyteus@localhost:51739",
+              "name": "qwen3-coder-rpa",
+              "value": "qwen3-coder",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-coder-rpa:autobyteus@localhost:51740",
+              "name": "qwen3-coder-rpa",
+              "value": "qwen3-coder",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-max-rpa:autobyteus@localhost:51739",
+              "name": "qwen3-max-rpa",
+              "value": "qwen3-max",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-max-rpa:autobyteus@localhost:51740",
+              "name": "qwen3-max-rpa",
+              "value": "qwen3-max",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-next-80b-a3b-rpa:autobyteus@localhost:51739",
+              "name": "qwen3-next-80b-a3b-rpa",
+              "value": "qwen3-next-80b-a3b",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-next-80b-a3b-rpa:autobyteus@localhost:51740",
+              "name": "qwen3-next-80b-a3b-rpa",
+              "value": "qwen3-next-80b-a3b",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-omni-flash-rpa:autobyteus@localhost:51739",
+              "name": "qwen3-omni-flash-rpa",
+              "value": "qwen3-omni-flash",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-omni-flash-rpa:autobyteus@localhost:51740",
+              "name": "qwen3-omni-flash-rpa",
+              "value": "qwen3-omni-flash",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-vl-235b-a22b-rpa:autobyteus@localhost:51739",
+              "name": "qwen3-vl-235b-a22b-rpa",
+              "value": "qwen3-vl-235b-a22b",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "qwen3-vl-235b-a22b-rpa:autobyteus@localhost:51740",
+              "name": "qwen3-vl-235b-a22b-rpa",
+              "value": "qwen3-vl-235b-a22b",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "ring-1t-rpa:autobyteus@localhost:51739",
+              "name": "ring-1t-rpa",
+              "value": "Ring-1T",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "ring-1t-rpa:autobyteus@localhost:51740",
+              "name": "ring-1t-rpa",
+              "value": "Ring-1T",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "ring-1t-thinking-rpa:autobyteus@localhost:51739",
+              "name": "ring-1t-thinking-rpa",
+              "value": "Ring-1T",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "ring-1t-thinking-rpa:autobyteus@localhost:51740",
+              "name": "ring-1t-thinking-rpa",
+              "value": "Ring-1T",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "veo-app-rpa:autobyteus@localhost:51739",
+              "name": "veo-app-rpa",
+              "value": "veo-app",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "veo-app-rpa:autobyteus@localhost:51740",
+              "name": "veo-app-rpa",
+              "value": "veo-app",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "zhipu-glm-4.6-rpa:autobyteus@localhost:51739",
+              "name": "zhipu-glm-4.6-rpa",
+              "value": "glm-4.6",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "zhipu-glm-4.6-rpa:autobyteus@localhost:51740",
+              "name": "zhipu-glm-4.6-rpa",
+              "value": "glm-4.6",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "zhipu-glm-4.6-thinking-rpa:autobyteus@localhost:51739",
+              "name": "zhipu-glm-4.6-thinking-rpa",
+              "value": "glm-4.6",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            },
+            {
+              "modelIdentifier": "zhipu-glm-4.6-thinking-rpa:autobyteus@localhost:51740",
+              "name": "zhipu-glm-4.6-thinking-rpa",
+              "value": "glm-4.6",
+              "providerId": "AUTOBYTEUS",
+              "providerName": "AutoByteus",
+              "runtime": "autobyteus"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "DEEPSEEK",
+            "name": "DeepSeek",
+            "providerType": "DEEPSEEK",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "deepseek-v4-flash",
+              "name": "deepseek-v4-flash",
+              "value": "deepseek-v4-flash",
+              "providerId": "DEEPSEEK",
+              "providerName": "DeepSeek",
+              "runtime": "api"
+            },
+            {
+              "modelIdentifier": "deepseek-v4-pro",
+              "name": "deepseek-v4-pro",
+              "value": "deepseek-v4-pro",
+              "providerId": "DEEPSEEK",
+              "providerName": "DeepSeek",
+              "runtime": "api"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "GEMINI",
+            "name": "Gemini",
+            "providerType": "GEMINI",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "gemini-3-flash-preview",
+              "name": "gemini-3-flash-preview",
+              "value": "gemini-3-flash-preview",
+              "providerId": "GEMINI",
+              "providerName": "Gemini",
+              "runtime": "api"
+            },
+            {
+              "modelIdentifier": "gemini-3.1-pro-preview",
+              "name": "gemini-3.1-pro-preview",
+              "value": "gemini-3.1-pro-preview",
+              "providerId": "GEMINI",
+              "providerName": "Gemini",
+              "runtime": "api"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "GLM",
+            "name": "GLM",
+            "providerType": "GLM",
+            "apiKeyConfigured": false,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "glm-5.1",
+              "name": "glm-5.1",
+              "value": "glm-5.1",
+              "providerId": "GLM",
+              "providerName": "GLM",
+              "runtime": "api"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "GROK",
+            "name": "Grok",
+            "providerType": "GROK",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "grok-4-1-fast-reasoning",
+              "name": "grok-4-1-fast-reasoning",
+              "value": "grok-4-1-fast-reasoning",
+              "providerId": "GROK",
+              "providerName": "Grok",
+              "runtime": "api"
+            },
+            {
+              "modelIdentifier": "grok-code-fast-1",
+              "name": "grok-code-fast-1",
+              "value": "grok-code-fast-1",
+              "providerId": "GROK",
+              "providerName": "Grok",
+              "runtime": "api"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "KIMI",
+            "name": "Kimi",
+            "providerType": "KIMI",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "kimi-k2-thinking",
+              "name": "kimi-k2-thinking",
+              "value": "kimi-k2-thinking",
+              "providerId": "KIMI",
+              "providerName": "Kimi",
+              "runtime": "api"
+            },
+            {
+              "modelIdentifier": "kimi-k2.6",
+              "name": "kimi-k2.6",
+              "value": "kimi-k2.6",
+              "providerId": "KIMI",
+              "providerName": "Kimi",
+              "runtime": "api"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "LMSTUDIO",
+            "name": "LM Studio",
+            "providerType": "LMSTUDIO",
+            "apiKeyConfigured": false,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "bu-30b-a3b-preview:lmstudio@127.0.0.1:1234",
+              "name": "bu-30b-a3b-preview",
+              "value": "bu-30b-a3b-preview",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "deepseek-ocr:lmstudio@127.0.0.1:1234",
+              "name": "deepseek-ocr",
+              "value": "deepseek-ocr",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "gemma-4-31b-it:lmstudio@127.0.0.1:1234",
+              "name": "gemma-4-31b-it",
+              "value": "gemma-4-31b-it",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "google/gemma-4-26b-a4b:lmstudio@127.0.0.1:1234",
+              "name": "google/gemma-4-26b-a4b",
+              "value": "google/gemma-4-26b-a4b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "kimi-linear-48b-a3b-instruct@4bit:lmstudio@127.0.0.1:1234",
+              "name": "kimi-linear-48b-a3b-instruct@4bit",
+              "value": "kimi-linear-48b-a3b-instruct@4bit",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "kimi-linear-48b-a3b-instruct@6bit:lmstudio@127.0.0.1:1234",
+              "name": "kimi-linear-48b-a3b-instruct@6bit",
+              "value": "kimi-linear-48b-a3b-instruct@6bit",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "lmstudio-community/qwen3-next-80b-a3b-thinking:lmstudio@127.0.0.1:1234",
+              "name": "lmstudio-community/qwen3-next-80b-a3b-thinking",
+              "value": "lmstudio-community/qwen3-next-80b-a3b-thinking",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "mistralai/devstral-small-2-2512:lmstudio@127.0.0.1:1234",
+              "name": "mistralai/devstral-small-2-2512",
+              "value": "mistralai/devstral-small-2-2512",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@127.0.0.1:1234",
+              "name": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+              "value": "mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "nemotron-3-nano-omni-30b-a3b-reasoning:lmstudio@127.0.0.1:1234",
+              "name": "nemotron-3-nano-omni-30b-a3b-reasoning",
+              "value": "nemotron-3-nano-omni-30b-a3b-reasoning",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "nvidia/nemotron-3-nano:lmstudio@127.0.0.1:1234",
+              "name": "nvidia/nemotron-3-nano",
+              "value": "nvidia/nemotron-3-nano",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "openai/gpt-oss-20b:lmstudio@127.0.0.1:1234",
+              "name": "openai/gpt-oss-20b",
+              "value": "openai/gpt-oss-20b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen/qwen3-30b-a3b-2507:lmstudio@127.0.0.1:1234",
+              "name": "qwen/qwen3-30b-a3b-2507",
+              "value": "qwen/qwen3-30b-a3b-2507",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen/qwen3-coder-next:lmstudio@127.0.0.1:1234",
+              "name": "qwen/qwen3-coder-next",
+              "value": "qwen/qwen3-coder-next",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen/qwen3-next-80b:lmstudio@127.0.0.1:1234",
+              "name": "qwen/qwen3-next-80b",
+              "value": "qwen/qwen3-next-80b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen/qwen3-vl-30b:lmstudio@127.0.0.1:1234",
+              "name": "qwen/qwen3-vl-30b",
+              "value": "qwen/qwen3-vl-30b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen/qwen3.5-35b-a3b:lmstudio@127.0.0.1:1234",
+              "name": "qwen/qwen3.5-35b-a3b",
+              "value": "qwen/qwen3.5-35b-a3b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen3.5-27b:lmstudio@127.0.0.1:1234",
+              "name": "qwen3.5-27b",
+              "value": "qwen3.5-27b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen3.5-27b-claude-4.6-opus-distilled-mlx:lmstudio@127.0.0.1:1234",
+              "name": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+              "value": "qwen3.5-27b-claude-4.6-opus-distilled-mlx",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen3.6-27b:lmstudio@127.0.0.1:1234",
+              "name": "qwen3.6-27b",
+              "value": "qwen3.6-27b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen3.6-27b-ud-mlx:lmstudio@127.0.0.1:1234",
+              "name": "qwen3.6-27b-ud-mlx",
+              "value": "qwen3.6-27b-ud-mlx",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+              "name": "qwen3.6-35b-a3b",
+              "value": "qwen3.6-35b-a3b",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwen3.6-35b-a3b-nvfp4:lmstudio@127.0.0.1:1234",
+              "name": "qwen3.6-35b-a3b-nvfp4",
+              "value": "qwen3.6-35b-a3b-nvfp4",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "qwenlong-l1.5-30b-a3b-i1:lmstudio@127.0.0.1:1234",
+              "name": "qwenlong-l1.5-30b-a3b-i1",
+              "value": "qwenlong-l1.5-30b-a3b-i1",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "text-embedding-nomic-embed-text-v1.5:lmstudio@127.0.0.1:1234",
+              "name": "text-embedding-nomic-embed-text-v1.5",
+              "value": "text-embedding-nomic-embed-text-v1.5",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "unsloth/qwen3-next-80b-a3b-thinking:lmstudio@127.0.0.1:1234",
+              "name": "unsloth/qwen3-next-80b-a3b-thinking",
+              "value": "unsloth/qwen3-next-80b-a3b-thinking",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "zai-org/glm-4.6v-flash:lmstudio@127.0.0.1:1234",
+              "name": "zai-org/glm-4.6v-flash",
+              "value": "zai-org/glm-4.6v-flash",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            },
+            {
+              "modelIdentifier": "zai-org/glm-4.7-flash:lmstudio@127.0.0.1:1234",
+              "name": "zai-org/glm-4.7-flash",
+              "value": "zai-org/glm-4.7-flash",
+              "providerId": "LMSTUDIO",
+              "providerName": "LM Studio",
+              "runtime": "lmstudio"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "MINIMAX",
+            "name": "MiniMax",
+            "providerType": "MINIMAX",
+            "apiKeyConfigured": false,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "minimax-m2.7",
+              "name": "minimax-m2.7",
+              "value": "MiniMax-M2.7",
+              "providerId": "MINIMAX",
+              "providerName": "MiniMax",
+              "runtime": "api"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "MISTRAL",
+            "name": "Mistral",
+            "providerType": "MISTRAL",
+            "apiKeyConfigured": false,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "devstral-2",
+              "name": "devstral-2",
+              "value": "devstral-2512",
+              "providerId": "MISTRAL",
+              "providerName": "Mistral",
+              "runtime": "api"
+            },
+            {
+              "modelIdentifier": "mistral-large-3",
+              "name": "mistral-large-3",
+              "value": "mistral-large-2512",
+              "providerId": "MISTRAL",
+              "providerName": "Mistral",
+              "runtime": "api"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "OLLAMA",
+            "name": "Ollama",
+            "providerType": "OLLAMA",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": []
+        },
+        {
+          "provider": {
+            "id": "OPENAI",
+            "name": "OpenAI",
+            "providerType": "OPENAI",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "gpt-5.4",
+              "name": "gpt-5.4",
+              "value": "gpt-5.4",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "runtime": "api"
+            },
+            {
+              "modelIdentifier": "gpt-5.4-mini",
+              "name": "gpt-5.4-mini",
+              "value": "gpt-5.4-mini",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "runtime": "api"
+            },
+            {
+              "modelIdentifier": "gpt-5.5",
+              "name": "gpt-5.5",
+              "value": "gpt-5.5",
+              "providerId": "OPENAI",
+              "providerName": "OpenAI",
+              "runtime": "api"
+            }
+          ]
+        },
+        {
+          "provider": {
+            "id": "QWEN",
+            "name": "Qwen",
+            "providerType": "QWEN",
+            "apiKeyConfigured": true,
+            "status": "NOT_APPLICABLE",
+            "statusMessage": null
+          },
+          "models": [
+            {
+              "modelIdentifier": "qwen3-max",
+              "name": "qwen3-max",
+              "value": "qwen3-max",
+              "providerId": "QWEN",
+              "providerName": "Qwen",
+              "runtime": "api"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

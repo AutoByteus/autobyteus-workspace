@@ -6,6 +6,7 @@ import type {
 import { ApplicationExecutionEventIngressService } from "../../../src/application-orchestration/services/application-execution-event-ingress-service.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationRunObserverService } from "../../../src/application-orchestration/services/application-run-observer-service.js";
+import { selectorToRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 
 const applicationId = "app-1";
 const runId = "run-1";
@@ -271,12 +272,13 @@ describe("ApplicationOrchestrationHostService startRun", () => {
         teamDefinitionId: "team-def-1",
         teamDefinitionName: "Brief Team",
         coordinatorMemberRouteKey: "researcher",
-        runVersion: 1,
         createdAt: "2026-04-19T09:10:00.000Z",
         updatedAt: "2026-04-19T09:10:00.000Z",
-        memberMetadata: [
+        memberTree: [
           {
+            memberKind: "agent",
             memberRouteKey: "researcher",
+            memberPath: ["Researcher"],
             memberName: "Researcher",
             memberRunId: "researcher-member-run-1",
             runtimeKind: "AUTOBYTEUS",
@@ -350,5 +352,66 @@ describe("ApplicationOrchestrationHostService startRun", () => {
     });
     expect(publishedArtifactProjectionService.getRunPublishedArtifacts).not.toHaveBeenCalled();
     expect(publishedArtifactProjectionService.getPublishedArtifactRevisionText).not.toHaveBeenCalled();
+  });
+
+  it("posts application team input with structured route-key target identity", async () => {
+    const binding = buildTeamBinding();
+    const postMessage = vi.fn(async (_message, target) => ({
+      accepted: true,
+      targetRouteKey: target ? selectorToRouteKey(target) : null,
+    }));
+    const hostService = new ApplicationOrchestrationHostService({
+      startupGate: {
+        awaitReady: vi.fn(async () => undefined),
+      } as never,
+      availabilityService: {
+        requireApplicationActive: vi.fn(async () => undefined),
+      } as never,
+      bindingStore: {
+        getBinding: vi.fn(async () => cloneBinding(binding)),
+      } as never,
+      teamRunService: {
+        resolveTeamRun: vi.fn(async () => ({ postMessage })),
+      } as never,
+    });
+
+    await hostService.postRunInput(applicationId, {
+      bindingId,
+      text: "please research",
+      targetMemberRouteKey: "researcher",
+    });
+
+    expect(postMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ content: "please research" }),
+      { kind: "route_key", memberRouteKey: "researcher" },
+    );
+  });
+
+  it("rejects legacy targetMemberName application runtime input before dispatch", async () => {
+    const binding = buildTeamBinding();
+    const postMessage = vi.fn(async () => ({ accepted: true }));
+    const hostService = new ApplicationOrchestrationHostService({
+      startupGate: {
+        awaitReady: vi.fn(async () => undefined),
+      } as never,
+      availabilityService: {
+        requireApplicationActive: vi.fn(async () => undefined),
+      } as never,
+      bindingStore: {
+        getBinding: vi.fn(async () => cloneBinding(binding)),
+      } as never,
+      teamRunService: {
+        resolveTeamRun: vi.fn(async () => ({ postMessage })),
+      } as never,
+    });
+
+    await expect(
+      hostService.postRunInput(applicationId, {
+        bindingId,
+        text: "please research",
+        targetMemberName: "researcher",
+      } as never),
+    ).rejects.toThrow("targetMemberName is not supported");
+    expect(postMessage).not.toHaveBeenCalled();
   });
 });

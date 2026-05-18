@@ -34,10 +34,10 @@
             :key="teamRun.teamRunId"
             :team-run="teamRun"
             :is-selected="teamRun.teamRunId === selectedRunId"
-            :coordinator-name="coordinatorName"
+            :coordinator-route-key="coordinatorRouteKey"
             @select="$emit('select', $event)"
             @delete="$emit('delete', $event)"
-            @select-member="(teamRunId, memberName) => $emit('select-member', teamRunId, memberName)"
+            @select-member="(teamRunId, memberRouteKey) => $emit('select-member', teamRunId, memberRouteKey)"
         />
     </div>
   </div>
@@ -54,14 +54,14 @@ defineProps<{
     definitionId: string;
     runs: AgentTeamContext[];
     selectedRunId: string | null;
-    coordinatorName?: string;
+    coordinatorRouteKey?: string;
 }>();
 
 defineEmits<{
     (e: 'create', definitionId: string): void;
     (e: 'select', runId: string): void;
     (e: 'delete', runId: string): void;
-    (e: 'select-member', teamRunId: string, memberName: string): void;
+    (e: 'select-member', teamRunId: string, memberRouteKey: string): void;
 }>();
 
 const isExpanded = ref(true);

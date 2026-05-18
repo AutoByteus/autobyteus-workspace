@@ -10,6 +10,10 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { InterAgentMessageSegment, SystemTaskNotificationSegment } from '~/types/segments';
 import { TaskStatus, type Task, type FileDeliverable } from '~/types/taskManagement';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import {
+  normalizeAgentRuntimeStatus,
+  normalizeTeamRuntimeStatus,
+} from '~/services/runHydration/runtimeStatusNormalization';
 import type { 
   InterAgentMessagePayload, 
   SystemTaskNotificationPayload,
@@ -76,7 +80,16 @@ export function handleTeamStatus(
   payload: TeamStatusPayload,
   context: AgentTeamContext
 ): void {
-  context.currentStatus = payload.status as AgentTeamStatus;
+  const sourceRouteKey = payload.source_route_key?.trim() || payload.source_path?.join('/') || '';
+  if (sourceRouteKey) {
+    const sourceNode = context.memberNodesByRouteKey.get(sourceRouteKey) || null;
+    if (sourceNode?.memberKind === 'agent_team') {
+      sourceNode.currentStatus = normalizeAgentRuntimeStatus(payload.status);
+    }
+    return;
+  }
+
+  context.currentStatus = normalizeTeamRuntimeStatus(payload.status) as AgentTeamStatus;
 }
 
 function normalizeTaskStatus(status?: string): TaskStatus {

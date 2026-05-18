@@ -9,6 +9,7 @@ import { useRunHistoryStore } from './runHistoryStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { ContextFilePath } from '~/types/conversation';
+import type { ToolApprovalTarget } from '~/types/segments';
 
 /**
  * @store useActiveContextStore
@@ -126,14 +127,18 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     }
   };
 
-  const postToolExecutionApproval = async (invocationId: string, isApproved: boolean, reason: string | null = null) => {
-    const context = activeAgentContext.value;
-    _assertContext(context);
-
+  const postToolExecutionApproval = async (
+    invocationId: string,
+    isApproved: boolean,
+    reason: string | null = null,
+    approvalTarget: ToolApprovalTarget | null = null,
+  ) => {
     if (selectionStore.selectedType === 'agent') {
+      const context = activeAgentContext.value;
+      _assertContext(context);
       await agentRunStore.postToolExecutionApproval(context.state.runId, invocationId, isApproved, reason);
     } else if (selectionStore.selectedType === 'team') {
-      await agentTeamRunStore.postToolExecutionApproval(invocationId, isApproved, reason);
+      await agentTeamRunStore.postToolExecutionApproval(invocationId, isApproved, reason, approvalTarget);
     } else {
       throw new Error('Cannot approve tool: Unknown selection type.');
     }
@@ -153,8 +158,6 @@ export const useActiveContextStore = defineStore('activeContext', () => {
         await agentRunStore.sendUserInputAndSubscribe();
       } else if (selectionStore.selectedType === 'team') {
         await agentTeamRunStore.sendMessageToFocusedMember(context.requirement, context.contextFilePaths);
-        context.requirement = '';
-        context.contextFilePaths = [];
       } else {
         throw new Error('Cannot send: Unknown selection type.');
       }
@@ -173,11 +176,23 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     }
 
     if (selectionStore.selectedType === 'team') {
-      const activeTeamRunId = agentTeamContextsStore.activeTeamContext?.teamRunId;
-      if (!activeTeamRunId) {
+      const activeTeam = agentTeamContextsStore.activeTeamContext;
+      if (!activeTeam) {
         throw new Error('Cannot interrupt generation: No active team context.');
       }
-      return agentTeamRunStore.interruptGeneration(activeTeamRunId);
+      const targetMemberRouteKey = activeTeam.focusedMemberRouteKey?.trim() ?? '';
+      if (!targetMemberRouteKey || !activeTeam.leafAgentContextsByRouteKey.has(targetMemberRouteKey)) {
+        throw new Error('Cannot interrupt generation: No focused team member target.');
+      }
+      const focusedMember = activeTeam.leafAgentContextsByRouteKey.get(targetMemberRouteKey);
+      if (!focusedMember || focusedMember !== context) {
+        throw new Error('Cannot interrupt generation: Focused team member target is stale.');
+      }
+      return agentTeamRunStore.interruptFocusedMemberGeneration({
+        teamRunId: activeTeam.teamRunId,
+        targetMemberRouteKey,
+        targetMemberRunId: context.state.runId,
+      });
     }
 
     throw new Error('Cannot interrupt generation: Unknown selection type.');

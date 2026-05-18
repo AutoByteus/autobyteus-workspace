@@ -14,6 +14,7 @@ const resolveState = (target: RuntimeStatusTarget): AgentRunState =>
 
 export const isCanonicalAgentStatus = (status: unknown): status is AgentStatus =>
   status === AgentStatus.Offline ||
+  status === AgentStatus.Initializing ||
   status === AgentStatus.Idle ||
   status === AgentStatus.Running ||
   status === AgentStatus.Error;
@@ -29,9 +30,20 @@ export const applyLiveAgentStatusEvent = (
   context.state.currentStatus = status;
   context.state.canInterrupt = status === AgentStatus.Running && payload.can_interrupt === true;
 
-  if (status !== AgentStatus.Running) {
+  if (status !== AgentStatus.Running && status !== AgentStatus.Initializing) {
     context.isSending = false;
   }
+};
+
+export const applyLiveRuntimeActivityProjectionRepair = (context: AgentContext): void => {
+  const status = normalizeAgentRuntimeStatus(context.state.currentStatus);
+  if (status !== AgentStatus.Error) {
+    return;
+  }
+
+  context.state.currentStatus = AgentStatus.Running;
+  context.state.canInterrupt = false;
+  context.isSending = true;
 };
 
 export const applyActiveRuntimePlaceholder = (
@@ -62,6 +74,7 @@ export const applyMemberOrHistoryStatusSnapshot = (
 
   const isTerminalProjection =
     normalizedStatus === AgentStatus.Offline ||
+    normalizedStatus === AgentStatus.Initializing ||
     normalizedStatus === AgentStatus.Error;
   if (isTerminalProjection || options.preserveLiveInterrupt !== true) {
     state.canInterrupt = false;

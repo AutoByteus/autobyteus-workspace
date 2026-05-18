@@ -87,4 +87,44 @@ describe('TeamMemberMonitorTile', () => {
     expect(wrapper.classes()).toContain('min-h-[420px]');
     expect(wrapper.text()).not.toContain('professor');
   });
+
+  it('falls back to canonical offline status for focused subteam tiles without a member context', () => {
+    const subteamNode = {
+      memberKind: 'agent_team',
+      memberName: 'BuildSquad',
+      displayName: 'BuildSquad',
+      memberPath: ['BuildSquad'],
+      memberRouteKey: 'BuildSquad',
+      teamDefinitionId: 'build-squad-team',
+      children: [
+        {
+          memberKind: 'agent',
+          memberName: 'review_lead',
+          displayName: 'review_lead',
+          memberPath: ['BuildSquad', 'review_lead'],
+          memberRouteKey: 'BuildSquad/review_lead',
+          agentDefinitionId: 'review-lead-agent',
+        },
+      ],
+    };
+
+    const wrapper = mount(TeamMemberMonitorTile, {
+      props: {
+        memberNode: subteamNode as any,
+        memberContext: null,
+        isFocused: true,
+        teamContext: {
+          focusedMemberRouteKey: 'BuildSquad',
+          leafAgentContextsByRouteKey: new Map(),
+        } as any,
+      },
+    });
+
+    const status = wrapper.find('[data-test="team-member-status"]');
+    expect(status.exists()).toBe(true);
+    expect(status.text()).toContain('Offline');
+    expect(wrapper.text()).toContain('BuildSquad');
+    expect(wrapper.text()).toContain('Team');
+  });
+
 });

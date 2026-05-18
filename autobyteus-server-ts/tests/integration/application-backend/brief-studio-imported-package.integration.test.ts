@@ -43,6 +43,7 @@ import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-
 import { registerApplicationBackendRoutes } from "../../../src/api/rest/application-backends.js";
 import { registerApplicationBackendNotificationWebsocket } from "../../../src/api/websocket/application-backend-notifications.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
+import type { TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
@@ -405,7 +406,7 @@ describe("Brief Studio imported package integration", () => {
   let latestTeamRunId: string | null;
   let executionContextByRouteKey: Map<string, ApplicationExecutionContext>;
   let memberRunIdByRouteKey: Map<string, string>;
-  let teamRunById: Map<string, { postMessage: (message: unknown, targetMemberName: string | null) => Promise<{ accepted: boolean; message?: string | null }> }>;
+  let teamRunById: Map<string, { postMessage: (message: unknown, target: TeamMemberSelector | null) => Promise<{ accepted: boolean; message?: string | null }> }>;
   let lifecycleListenersByRunId: Map<string, (event: {
     runtimeSubject: "TEAM_RUN";
     runId: string;

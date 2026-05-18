@@ -50,7 +50,7 @@ type TestServerSetting = {
 const mountComponent = async (
   initialSettings: TestServerSetting[] = [],
   options: {
-    sectionMode?: 'quick' | 'advanced'
+    sectionMode?: 'quick' | 'advanced' | 'migrations'
     isLoading?: boolean
     error?: string | null
   } = {},
@@ -95,6 +95,9 @@ const mountComponent = async (
         },
         ServerSettingsBasicsPanel: {
           template: '<div data-testid="server-settings-basics-panel-stub">Basics Panel Stub</div>',
+        },
+        ServerMigrationsManager: {
+          template: '<div data-testid="server-migrations-manager-stub">Migrations Panel Stub</div>',
         },
       },
     },
@@ -143,6 +146,14 @@ describe('ServerSettingsManager', () => {
     expect(wrapper.find('[data-testid="server-settings-basics-panel-stub"]').exists()).toBe(false)
     expect(wrapper.text()).toContain('Setting')
     expect(wrapper.text()).toContain('Value')
+  })
+
+
+  it('routes Migrations mode to the migrations panel shell', async () => {
+    const { wrapper } = await mountComponent([], { sectionMode: 'migrations' })
+
+    expect(wrapper.find('[data-testid="server-migrations-manager-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="server-settings-basics-panel-stub"]').exists()).toBe(false)
   })
 
   it('shows server monitor panel in Advanced / Developer tab for embedded windows', async () => {

@@ -9,14 +9,14 @@ import {
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { getRuntimeMemberContexts } from "../../agent-team-execution/domain/team-run-context.js";
 import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
-import {
-  TeamMemberLocalRunProjectionReader,
-  getTeamMemberLocalRunProjectionReader,
-} from "./team-member-local-run-projection-reader.js";
 import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import type { TeamRunMemberMetadata } from "../store/team-run-metadata-types.js";
+import type { TeamRunAgentMemberMetadata } from "../store/team-run-metadata-types.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
+import {
+  getTeamRunLeafAgentMetadata,
+  resolveTeamWorkspaceRootPath,
+} from "./team-run-metadata-flattener.js";
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -35,18 +35,15 @@ const toNormalizedMemberRouteKey = (value: string): string | null => {
 };
 
 const resolveMemberBinding = (
-  bindings: TeamRunMemberMetadata[],
+  bindings: TeamRunAgentMemberMetadata[],
   memberRouteKey: string,
-): TeamRunMemberMetadata | null => {
+): TeamRunAgentMemberMetadata | null => {
   const normalizedTarget = toNormalizedMemberRouteKey(memberRouteKey) ?? memberRouteKey.trim();
 
   for (const binding of bindings) {
     const routeKey =
       toNormalizedMemberRouteKey(binding.memberRouteKey) ?? binding.memberRouteKey.trim();
     if (routeKey === normalizedTarget) {
-      return binding;
-    }
-    if (binding.memberName.trim() === memberRouteKey.trim()) {
       return binding;
     }
   }
@@ -63,23 +60,20 @@ export interface TeamMemberRunProjection {
 }
 
 const resolveMemberWorkspaceRootPath = (
-  member: TeamRunMemberMetadata,
+  member: TeamRunAgentMemberMetadata,
   teamWorkspaceRootPath: string | null | undefined,
 ): string =>
   member.workspaceRootPath ?? teamWorkspaceRootPath ?? process.cwd();
 
-const resolveTeamMemberMemoryLayout = (): TeamMemberMemoryLayout =>
-  new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
-
 const toMemberRunMetadata = (
-  teamRunId: string,
-  member: TeamRunMemberMetadata,
+  member: TeamRunAgentMemberMetadata,
   teamWorkspaceRootPath: string | null | undefined,
+  memberMemoryDir: string,
 ): AgentRunMetadata => ({
   runId: member.memberRunId,
   agentDefinitionId: member.agentDefinitionId,
   workspaceRootPath: resolveMemberWorkspaceRootPath(member, teamWorkspaceRootPath),
-  memoryDir: resolveTeamMemberMemoryLayout().getMemberDirPath(teamRunId, member.memberRunId),
+  memoryDir: memberMemoryDir,
   llmModelIdentifier: member.llmModelIdentifier,
   llmConfig: member.llmConfig ?? null,
   autoExecuteTools: member.autoExecuteTools,
@@ -91,7 +85,7 @@ const toMemberRunMetadata = (
 
 const resolveLivePlatformAgentRunId = (
   teamRunId: string,
-  member: TeamRunMemberMetadata,
+  member: TeamRunAgentMemberMetadata,
 ): string | null => {
   const activeTeamRun = AgentTeamRunManager.getInstance().getActiveRun(teamRunId);
   if (!activeTeamRun) {
@@ -108,28 +102,31 @@ const resolveLivePlatformAgentRunId = (
 
 export class TeamMemberRunViewProjectionService {
   private readonly teamRunHistoryService: TeamRunHistoryService;
-  private readonly projectionReader: TeamMemberLocalRunProjectionReader;
   private readonly agentRunViewProjectionService: AgentRunViewProjectionService;
+  private readonly memberLayout: TeamMemberMemoryLayout;
 
   constructor(options: {
+    memoryDir?: string;
     teamRunHistoryService?: TeamRunHistoryService;
-    projectionReader?: TeamMemberLocalRunProjectionReader;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
+    memberMemoryLayout?: TeamMemberMemoryLayout;
   } = {}) {
     this.teamRunHistoryService = options.teamRunHistoryService ?? getTeamRunHistoryService();
-    this.projectionReader =
-      options.projectionReader ?? getTeamMemberLocalRunProjectionReader();
     this.agentRunViewProjectionService =
       options.agentRunViewProjectionService ??
       new AgentRunViewProjectionService(appConfigProvider.config.getMemoryDir());
+    this.memberLayout =
+      options.memberMemoryLayout ??
+      new TeamMemberMemoryLayout(options.memoryDir ?? appConfigProvider.config.getMemoryDir());
   }
 
   async getProjection(teamRunId: string, memberRouteKey: string): Promise<TeamMemberRunProjection> {
     const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
     const normalizedMemberRouteKey = normalizeRequiredString(memberRouteKey, "memberRouteKey");
     const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(normalizedTeamRunId);
+    const leafMembers = getTeamRunLeafAgentMetadata(resumeConfig.metadata);
     const binding = resolveMemberBinding(
-      resumeConfig.metadata.memberMetadata,
+      leafMembers,
       normalizedMemberRouteKey,
     );
 
@@ -138,36 +135,23 @@ export class TeamMemberRunViewProjectionService {
         `Member route key '${normalizedMemberRouteKey}' not found for team run '${normalizedTeamRunId}'.`,
       );
     }
-    const memberMetadataWithLivePlatformId: TeamRunMemberMetadata = {
+    const memberMetadataWithLivePlatformId: TeamRunAgentMemberMetadata = {
       ...binding,
       platformAgentRunId:
         resolveLivePlatformAgentRunId(normalizedTeamRunId, binding) ?? binding.platformAgentRunId,
     };
 
-    let projection: RunProjection | null = null;
-    let projectionReadError: unknown = null;
-    try {
-      projection = await this.projectionReader.getProjection(
-        normalizedTeamRunId,
-        binding.memberRunId,
-      );
-    } catch (error) {
-      projectionReadError = error;
-    }
-    projection = await this.agentRunViewProjectionService.getProjectionFromMetadata({
+    const projection = await this.agentRunViewProjectionService.getProjectionFromMetadata({
       runId: binding.memberRunId,
       metadata: toMemberRunMetadata(
-        normalizedTeamRunId,
         memberMetadataWithLivePlatformId,
-        resumeConfig.metadata.memberMetadata.find((member) => member.workspaceRootPath)?.workspaceRootPath ?? null,
+        resolveTeamWorkspaceRootPath(resumeConfig.metadata),
+        this.memberLayout.getMemberDirPath(
+          normalizedTeamRunId,
+          memberMetadataWithLivePlatformId.memberRunId,
+        ),
       ),
-      localProjection: projection,
-      allowFallbackProvider: false,
     });
-
-    if (projection.conversation.length === 0 && projection.activities.length === 0 && projectionReadError) {
-      throw projectionReadError;
-    }
 
     return {
       agentRunId: projection.runId,

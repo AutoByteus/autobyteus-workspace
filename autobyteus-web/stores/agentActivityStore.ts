@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { ToolInvocationStatus } from '~/types/segments';
+import type { ToolApprovalTarget, ToolInvocationStatus } from '~/types/segments';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { canTransitionToolInvocationStatus } from '~/utils/toolInvocationStatus';
 
@@ -10,6 +10,7 @@ export interface ToolActivity {
   status: ToolInvocationStatus;
   contextText: string; // e.g. "file.py" or "npm install"
   arguments: Record<string, any>;
+  approvalTarget?: ToolApprovalTarget | null;
   logs: string[];
   result: any | null;
   error: string | null;
@@ -117,6 +118,14 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       const activity = state.activities.find((a) => a.invocationId === invocationId);
       if (activity) {
         activity.arguments = { ...activity.arguments, ...args };
+      }
+    },
+
+    updateActivityApprovalTarget(runId: string, invocationId: string, approvalTarget: ToolApprovalTarget | null) {
+      const state = this._ensureRunState(runId);
+      const activity = state.activities.find((a) => a.invocationId === invocationId);
+      if (activity) {
+        activity.approvalTarget = approvalTarget;
       }
     },
 

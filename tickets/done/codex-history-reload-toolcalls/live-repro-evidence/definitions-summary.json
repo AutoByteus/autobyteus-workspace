@@ -1,0 +1,2005 @@
+{
+  "data": {
+    "agentDefinitions": [
+      {
+        "id": "autobyteus-memory-compactor",
+        "name": "Memory Compactor",
+        "description": "Condenses settled AutoByteus interaction history into compact JSON memory.",
+        "category": "memory",
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "professor-agent",
+        "name": "Professor Agent",
+        "description": "Fixture professor agent.",
+        "category": "seeded",
+        "toolNames": [
+          "send_message_to"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "student-agent",
+        "name": "Student Agent",
+        "description": "Fixture student agent.",
+        "category": "seeded",
+        "toolNames": [
+          "send_message_to"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "pitch-practice-investor",
+        "name": "Pitch Practice Investor",
+        "description": "Simulates a startup investor for spoken pitch practice after studying user-provided startup materials.",
+        "category": "startup-practice",
+        "toolNames": [
+          "speak"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "resume-designer",
+        "name": "Resume Designer",
+        "description": "Creates frontend-based resume packages from user input or supplied resume sources, renders them, and exports print-ready PDFs.",
+        "category": "career-documents",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "read_url",
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot"
+        ],
+        "skillNames": [
+          "resume-designer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "software-tutorial-video-maker",
+        "name": "Software Tutorial Video Maker",
+        "description": "Turns supplied software screenshots and rough teaching notes into a short narrated tutorial video package using TTS narration and ffmpeg.",
+        "category": "tutorials-and-demos",
+        "toolNames": [
+          "read_file",
+          "write_file",
+          "run_bash",
+          "speak"
+        ],
+        "skillNames": [
+          "software-tutorial-video-maker"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "audiogenerator",
+        "name": "AudioGenerator",
+        "description": "An AI agent that converts text scripts into high-quality spoken audio.",
+        "category": null,
+        "toolNames": [
+          "GenerateSpeech"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "chapter-slide-planner",
+        "name": "Chapter Slide Planner",
+        "description": "Plans chapter-level teaching slides as a structured raw JSON package.",
+        "category": null,
+        "toolNames": [
+          "write_file",
+          "assign_task_to"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "chemistry-concept-visualizer",
+        "name": "Chemistry Concept Visualizer",
+        "description": "Chemistry Concept Visualizer",
+        "category": null,
+        "toolNames": [
+          "FileWriter"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "chemistry-homework-grader",
+        "name": "Chemistry homework grader",
+        "description": "Chemistry homework grader",
+        "category": null,
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "chemistry-teacher-germany",
+        "name": "Chemistry Teacher Germany",
+        "description": "Chemistry Teacher Germany",
+        "category": null,
+        "toolNames": [
+          "FileWriter",
+          "read_pdf_pages",
+          "pdf_metadata",
+          "render_pdf_pages"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "cinematic-storybook-director",
+        "name": "Cinematic Storybook Director",
+        "description": "Cinematic Storybook Director",
+        "category": null,
+        "toolNames": [
+          "write_file"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "claras-ocean-friends-story-creator",
+        "name": "Clara\u2019s Ocean Friends Story Creator",
+        "description": "Clara\u2019s Ocean Friends Story Creator",
+        "category": null,
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "coding-agent",
+        "name": "coding agent",
+        "description": "coding agent",
+        "category": null,
+        "toolNames": [
+          "patch_file",
+          "read_file",
+          "write_file",
+          "run_bash"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "daily-assistant",
+        "name": "Daily Assistant",
+        "description": "General Agent",
+        "category": null,
+        "toolNames": [
+          "run_bash",
+          "read_url",
+          "search_web",
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot",
+          "get_process_output",
+          "start_background_process",
+          "stop_background_process",
+          "read_media_file"
+        ],
+        "skillNames": [
+          "unix-filesystem-practice"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "database-manager",
+        "name": "database manager",
+        "description": "dsb",
+        "category": null,
+        "toolNames": [
+          "read_query",
+          "write_query",
+          "create_table",
+          "alter_table",
+          "drop_table",
+          "export_query",
+          "list_tables",
+          "describe_table",
+          "append_insight",
+          "list_insights"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "dictionary-word-audio",
+        "name": "Dictionary Word Audio",
+        "description": "Generates dictionary-style audio clips for individual words by creating one clear paused speech recording and cutting it into per-word files.",
+        "category": "language-learning-audio",
+        "toolNames": [
+          "generate_speech",
+          "get_media_duration",
+          "run_bash",
+          "read_file",
+          "write_file"
+        ],
+        "skillNames": [
+          "dictionary-word-audio"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "gemini-rpa-ppt-designer",
+        "name": "Gemini RPA PPT designer",
+        "description": "PPT Designer",
+        "category": null,
+        "toolNames": [
+          "generate_image",
+          "edit_image"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "image-designer",
+        "name": "Image Designer",
+        "description": "Image Designer",
+        "category": null,
+        "toolNames": [
+          "edit_image",
+          "generate_image"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "infographics-creator",
+        "name": "Infographics Creator",
+        "description": "Infographics Creator",
+        "category": null,
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "kid-story-teller",
+        "name": "Kid_Story_Teller",
+        "description": "Kid_Story_Teller",
+        "category": null,
+        "toolNames": [
+          "write_file",
+          "generate_image",
+          "generate_speech"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "mcp-tool-manager",
+        "name": "MCP Tool Manager",
+        "description": "An agent designed to manage Model Context Protocol (MCP) server configurations and discover their tools.",
+        "category": null,
+        "toolNames": [
+          "ApplyMcpServerConfigurations",
+          "DeleteMcpServerConfiguration",
+          "DiscoverMcpServerTools",
+          "GetMcpServerConfiguration",
+          "ListMcpServerConfigurations",
+          "PreviewMcpServerTools"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "media-editor",
+        "name": "Media Editor",
+        "description": "Media Editor",
+        "category": null,
+        "toolNames": [
+          "edit_image",
+          "generate_image",
+          "generate_speech",
+          "get_media_duration",
+          "convert_audio_properties",
+          "convert_video_properties",
+          "change_aspect_ratio",
+          "convert_audio_format",
+          "set_audio_bitrate",
+          "set_audio_sample_rate",
+          "set_audio_channels",
+          "convert_video_format",
+          "set_video_resolution",
+          "set_video_codec",
+          "set_video_bitrate",
+          "set_video_frame_rate",
+          "set_video_audio_track_codec",
+          "set_video_audio_track_bitrate",
+          "set_video_audio_track_sample_rate",
+          "set_video_audio_track_channels",
+          "trim_video",
+          "concatenate_videos",
+          "concatenate_audios",
+          "change_video_speed",
+          "remove_silence",
+          "extract_audio_from_video",
+          "replace_audio_track",
+          "add_subtitles",
+          "add_text_overlay",
+          "add_image_overlay",
+          "create_video_from_image_and_audio",
+          "extract_frame_from_video",
+          "add_b_roll",
+          "add_basic_transitions",
+          "health_check"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "niuzhirui-production-db-manager",
+        "name": "niuzhirui_production_db_manager",
+        "description": "niuzhirui_production_db_manager",
+        "category": null,
+        "toolNames": [
+          "read_query",
+          "write_query",
+          "create_table",
+          "alter_table",
+          "drop_table",
+          "export_query",
+          "list_tables",
+          "describe_table",
+          "append_insight",
+          "list_insights"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "ppt-creator",
+        "name": "PPT Creator",
+        "description": "PPT Creator",
+        "category": null,
+        "toolNames": [
+          "generate_image",
+          "create_ppt_from_images",
+          "replace_slide_with_image",
+          "append_images_as_slides"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "ppt-designer",
+        "name": "PPT Designer",
+        "description": "Designs narrative-first slide decks using the bundled ppt-designer skill.",
+        "category": null,
+        "toolNames": [
+          "generate_image",
+          "edit_image"
+        ],
+        "skillNames": [
+          "ppt-designer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "presentation-designer",
+        "name": "Presentation Designer",
+        "description": "Presentation Designer",
+        "category": null,
+        "toolNames": [
+          "generate_image",
+          "create_ppt_from_images",
+          "run_bash",
+          "append_images_as_slides",
+          "replace_slide_with_image"
+        ],
+        "skillNames": [
+          "presentation-designer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "project-manager",
+        "name": "project manager",
+        "description": "demo project manager",
+        "category": null,
+        "toolNames": [
+          "CreateTask",
+          "CreateTasks"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "prompt-generator",
+        "name": "prompt generator",
+        "description": "prompt generator",
+        "category": null,
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "prompt-manager",
+        "name": "prompt manager",
+        "description": "prompt manager",
+        "category": null,
+        "toolNames": [
+          "activate_prompt",
+          "create_prompt",
+          "delete_prompt",
+          "get_prompt",
+          "list_prompts",
+          "patch_prompt",
+          "update_prompt",
+          "update_prompt_metadata"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "publisher",
+        "name": "Publisher",
+        "description": "Publisher on wechat, xiaohongshu, tiktok and youtube short",
+        "category": null,
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "reflectioncards",
+        "name": "ReflectionCards",
+        "description": "ReflectionCards",
+        "category": null,
+        "toolNames": [
+          "write_file",
+          "generate_image",
+          "generate_speech"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "reflective-storyteller",
+        "name": "Reflective Storyteller",
+        "description": "Reflective Storyteller",
+        "category": null,
+        "toolNames": [
+          "write_file",
+          "generate_image",
+          "generate_speech"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "requirement",
+        "name": "requirement",
+        "description": "nks",
+        "category": null,
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "requirement-engineer",
+        "name": "requirement engineer",
+        "description": "requirement engineer",
+        "category": null,
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "slideimagegenerator",
+        "name": "SlideImageGenerator",
+        "description": "SlideImageGenerator",
+        "category": null,
+        "toolNames": [
+          "send_message_to",
+          "read_file",
+          "write_file"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "slidenarrator",
+        "name": "SlideNarrator",
+        "description": "SlideNarrator",
+        "category": null,
+        "toolNames": [
+          "read_file",
+          "write_file",
+          "assign_task_to"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "software-architect",
+        "name": "software architect",
+        "description": "Ryan is senior software architect",
+        "category": null,
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "software-developer",
+        "name": "Software Developer",
+        "description": "Software Developer",
+        "category": null,
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "software-engineering-workflow-skill"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "tutorialvideocreator",
+        "name": "TutorialVideoCreator",
+        "description": "An agent that transforms a series of screenshots into a polished tutorial video. It analyzes and orders the images, writes a script, generates a voiceover, and compiles everything into a final video file.",
+        "category": null,
+        "toolNames": [
+          "FileWriter",
+          "BashExecutor",
+          "GenerateSpeech",
+          "video_editing_create_video_from_image_and_audio",
+          "video_editing_concatenate_videos",
+          "video_editing_add_subtitles",
+          "video_editing_add_text_overlay"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "video-subtitle-burn-in",
+        "name": "video subtitle burn in engineer",
+        "description": "Owns subtitle generation for existing recordings by normalizing media, transcribing audio, saving timestamped transcript artifacts, generating subtitle files, and producing subtitled videos.",
+        "category": "media-processing",
+        "toolNames": [
+          "read_file",
+          "write_file",
+          "run_bash",
+          "read_media_file"
+        ],
+        "skillNames": [
+          "video-subtitle-burn-in"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "visual-book-storyteller",
+        "name": "Visual Book Storyteller",
+        "description": "Visual Book Storyteller",
+        "category": null,
+        "toolNames": [
+          "generate_image",
+          "generate_speech",
+          "write_file",
+          "run_bash"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "visual-dialogue-weaver",
+        "name": "Visual Dialogue Weaver",
+        "description": "Visual Dialogue Weaver",
+        "category": null,
+        "toolNames": [
+          "write_file",
+          "read_media_file",
+          "generate_speech",
+          "generate_image"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "visualstoryteller",
+        "name": "VisualStoryteller",
+        "description": "This agent writes stories by breaking them down into scenes. For each scene, it provides a narrative description and a detailed prompt for an accompanying image. It does not use any tools.",
+        "category": null,
+        "toolNames": [
+          "generate_image",
+          "generate_speech",
+          "write_file"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "wechat-official-account-article-writer",
+        "name": "WeChat Official Account Article Writer",
+        "description": "WeChat Official Account Article Writer",
+        "category": null,
+        "toolNames": [
+          "write_file"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "weixin-linux-desktop-operator",
+        "name": "Weixin Linux desktop operator",
+        "description": "Safely operates the Ubuntu desktop Weixin client for verified group messaging, link sharing, image sharing, and setup checks after explicit user approval.",
+        "category": "desktop-sharing-automation",
+        "toolNames": [
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot",
+          "run_bash",
+          "read_file",
+          "write_file",
+          "edit_file",
+          "read_media_file"
+        ],
+        "skillNames": [
+          "weixin-linux-desktop-operator"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:article-writing-team:article-reviewer",
+        "name": "article reviewer",
+        "description": "Critically reviews outlines and article drafts for structure, style fit, fidelity, and publication readiness.",
+        "category": "writing-and-editing",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "article-reviewer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:article-writing-team:article-writer",
+        "name": "article writer",
+        "description": "Builds a style-aware article package from brief through outline, draft, and revision handoff.",
+        "category": "writing-and-editing",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "article-writer",
+          "bilingual-style-article-writer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:manga-video-studio-team:manga-illustrator",
+        "name": "manga illustrator",
+        "description": "Locks the visual language, creates character reference sheets, and generates video-frame imagery by default, with page/panel imagery only when explicitly requested.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "generate_image",
+          "edit_image",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "manga-illustrator"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:manga-video-studio-team:manga-showrunner",
+        "name": "manga showrunner",
+        "description": "Creates the canonical story and character package for an original manga project and coordinates upstream creative direction.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "manga-showrunner"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:manga-video-studio-team:storyboard-director",
+        "name": "storyboard director",
+        "description": "Turns the approved manga canon package into a production-ready storyboard and continuity ledger.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "storyboard-director"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:manga-video-studio-team:voice-video-producer",
+        "name": "voice and video producer",
+        "description": "Adapts the approved manga visual package into speech assets, subtitles, and a motion-comic style final video.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "list_audio_models",
+          "generate_speech",
+          "speak",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "voice-video-producer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:narrated-presentation-video-team:narration-script-reviewer",
+        "name": "narration-script-reviewer",
+        "description": "Performs full review of narrated presentation scripts and slide storyboards for logic, support, redundancy, spoken clarity, and readiness for slide production.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "narration-script-reviewer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:narrated-presentation-video-team:presentation-director",
+        "name": "presentation-director",
+        "description": "Coordinates narrated presentation video projects and owns research, explanation structure, narration script, slide storyboard, and final explanation coherence.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to",
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot"
+        ],
+        "skillNames": [
+          "presentation-director"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:narrated-presentation-video-team:slide-video-producer",
+        "name": "slide-video-producer",
+        "description": "Produces still-slide visuals, narration audio, subtitles when needed, and final simple narrated presentation video exports.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "send_message_to",
+          "generate_image",
+          "edit_image",
+          "list_audio_models",
+          "generate_speech",
+          "create_video_from_image_and_audio",
+          "concatenate_videos",
+          "add_subtitles",
+          "extract_frame_from_video"
+        ],
+        "skillNames": [
+          "slide-video-producer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:research-to-deck-team:deck-reviewer",
+        "name": "deck reviewer",
+        "description": "Reviews image-only pitch/research deck slides for research fidelity, readability, prompt-output quality, and readiness before final deck assembly.",
+        "category": "content-and-presentations",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "deck-reviewer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:research-to-deck-team:deep-researcher",
+        "name": "deep researcher",
+        "description": "Performs deep research, writes the reasoning artifact, and prepares the evidence-backed handoff for deck planning.",
+        "category": "content-and-presentations",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "deep-researcher"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:research-to-deck-team:infographic-powerpoint-designer",
+        "name": "infographic PowerPoint designer",
+        "description": "Turns an evidence-backed research handoff into an infographic-style slide deck and images-only PowerPoint package.",
+        "category": "content-and-presentations",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "generate_image",
+          "edit_image",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "infographic-powerpoint-designer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:software-engineering-team:api-e2e-engineer",
+        "name": "api e2e engineer",
+        "description": "Owns API, E2E, and broader executable validation work, including coverage design, environment setup, and evidence needed to prove real behavior across the actual system boundaries.",
+        "category": "software-engineering",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to",
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot"
+        ],
+        "skillNames": [
+          "api-e2e-engineer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:software-engineering-team:architecture-reviewer",
+        "name": "architecture reviewer",
+        "description": "Reviews the design spec before implementation and checks spine inventory, ownership, naming, interface boundaries, decoupling, and migration safety.",
+        "category": "software-engineering",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "architecture-reviewer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:software-engineering-team:code-reviewer",
+        "name": "code reviewer",
+        "description": "Performs the engineering source review pass before API/E2E validation begins, and re-reviews repository-resident durable validation added during API/E2E.",
+        "category": "software-engineering",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "code-reviewer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:software-engineering-team:delivery-engineer",
+        "name": "delivery engineer",
+        "description": "Owns post-validation docs sync, final handoff, repository finalization, release/publication preparation, deployment execution, and rollout verification.",
+        "category": "software-engineering",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "delivery-engineer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:software-engineering-team:implementation-engineer",
+        "name": "implementation engineer",
+        "description": "Executes the agreed design with a bias toward concrete delivery and clean change scope.",
+        "category": "software-engineering",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to",
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot"
+        ],
+        "skillNames": [
+          "implementation-engineer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:software-engineering-team:solution-designer",
+        "name": "solution designer",
+        "description": "Bootstraps task context, investigates requests, refines requirements, and produces the design spec for review before implementation.",
+        "category": "software-engineering",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to",
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot"
+        ],
+        "skillNames": [
+          "solution-designer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:software-product-promo-video-team:promo-director",
+        "name": "promo-director",
+        "description": "Coordinates software product promo video projects and owns product positioning, script, voiceover, measured timing, storyboard, CTA, and final message alignment.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to",
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot",
+          "list_audio_models",
+          "generate_speech",
+          "speak"
+        ],
+        "skillNames": [
+          "promo-director"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:software-product-promo-video-team:promo-video-producer",
+        "name": "promo-video-producer",
+        "description": "Produces optional captions, audio-led segments, motion graphics, edit assembly, final export, and QA for software product promotional videos.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "promo-video-producer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:software-product-promo-video-team:visual-director",
+        "name": "visual-director",
+        "description": "Plans, generates, edits, polishes, and logs truthful promo visuals for software product promotional videos.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "send_message_to",
+          "generate_image",
+          "edit_image"
+        ],
+        "skillNames": [
+          "visual-director"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:software-product-promo-video-team:visual-reviewer",
+        "name": "visual-reviewer",
+        "description": "Reviews produced promo visuals for truthfulness, non-text callout/highlight accuracy, UI readability, no-added-text discipline, aspect ratio, sensitive data, and readiness before video assembly.",
+        "category": "creative-media",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "visual-reviewer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:bible-study-group:careful-reader",
+        "name": "\u7ec6\u8bfb\u7ecf\u6587\u7684\u7ec4\u5458",
+        "description": "\u4ee5\u4e2d\u6587\u7d27\u6263\u7ecf\u6587\u672c\u8eab\u56de\u5e94\u67e5\u7ecf\u95ee\u9898\uff0c\u5728\u591a\u8f6e\u8ba8\u8bba\u4e2d\u4e0d\u65ad\u628a\u5c0f\u7ec4\u62c9\u56de\u6587\u5b57\u672c\u8eab\u3002",
+        "category": "faith-and-teaching",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "careful-reader"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:bible-study-group:context-guide",
+        "name": "\u63d0\u4f9b\u4e0a\u4e0b\u6587\u7684\u7ec4\u5458",
+        "description": "\u4ee5\u4e2d\u6587\u8865\u5145\u6bb5\u843d\u80cc\u666f\u3001\u5386\u53f2\u6587\u5316\u4fe1\u606f\u548c\u5e73\u884c\u7ecf\u6587\uff0c\u5e76\u5728\u5c0f\u7ec4\u8ba8\u8bba\u4e2d\u6821\u6b63\u8fc7\u5ea6\u63a8\u8bba\u3002",
+        "category": "faith-and-teaching",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "context-guide"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:bible-study-group:study-leader",
+        "name": "\u67e5\u7ecf\u5c0f\u7ec4\u957f",
+        "description": "\u4ee5\u4e2d\u6587\u5e26\u9886\u771f\u5b9e\u67e5\u7ecf\u5c0f\u7ec4\u7684\u591a\u8f6e\u8ba8\u8bba\uff0c\u63d0\u51fa\u95ee\u9898\u3001\u63a8\u52a8\u6df1\u5165\uff0c\u5e76\u5728\u6700\u540e\u6574\u7406\u5c0f\u7ec4\u5171\u8bc6\u3002",
+        "category": "faith-and-teaching",
+        "toolNames": [
+          "edit_file",
+          "read_file",
+          "write_file",
+          "run_bash",
+          "start_background_process",
+          "get_process_output",
+          "stop_background_process",
+          "search_web",
+          "read_url",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "study-leader"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:clara-ocean-friends:clara-story-orchestrator",
+        "name": "Clara Story Orchestrator",
+        "description": "Creates the canonical Clara story package and hands it to the Clara storybook builder.",
+        "category": null,
+        "toolNames": [
+          "write_file",
+          "send_message_to"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:clara-ocean-friends:clara-storybook-builder",
+        "name": "Clara Storybook Builder",
+        "description": "Turns a saved Clara story package into a German-Chinese illustrated storybook without changing the canonical story.",
+        "category": null,
+        "toolNames": [
+          "read_file",
+          "generate_image",
+          "generate_speech",
+          "write_file",
+          "run_bash"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:marketing-team:linkedin-marketer",
+        "name": "LinkedIn marketer",
+        "description": "Creates LinkedIn-native posts and articles, adapts them to the marketer's voice and goal, and publishes them when requested.",
+        "category": "professional-content-publishing",
+        "toolNames": [
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot",
+          "run_bash",
+          "edit_file",
+          "read_file",
+          "write_file",
+          "read_media_file",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "linkedin-marketer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:marketing-team:marketing-coordinator",
+        "name": "Marketing Coordinator",
+        "description": "Routes marketing and publishing requests to the right platform specialist and coordinates cross-platform campaigns.",
+        "category": "marketing-and-publishing",
+        "toolNames": [
+          "send_message_to"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:marketing-team:weixin-gongzhonghao-marketer",
+        "name": "Weixin gongzhonghao marketer",
+        "description": "Translates, drafts, refines, publishes, and corrects Weixin Official Account articles after explicit user approval.",
+        "category": "owned-media-publishing",
+        "toolNames": [
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot",
+          "run_bash",
+          "read_file",
+          "write_file",
+          "edit_file",
+          "read_media_file",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "weixin-gongzhonghao-marketer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:marketing-team:x-marketer",
+        "name": "X marketer",
+        "description": "Drafts, refines, publishes, researches, and handles X/Twitter-native engagement outreach with explicit approval before any live post or reply action.",
+        "category": "social-content-publishing",
+        "toolNames": [
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "run_script",
+          "screenshot",
+          "run_bash",
+          "edit_file",
+          "read_file",
+          "write_file",
+          "read_media_file",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "x-marketer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:marketing-team:xiaohongshu-marketer",
+        "name": "Xiaohongshu marketer",
+        "description": "Drafts, refines, publishes, and researches Xiaohongshu-native content and accounts with explicit approval required before any publish action.",
+        "category": "creator-content-publishing",
+        "toolNames": [
+          "close_tab",
+          "dom_snapshot",
+          "list_tabs",
+          "navigate_to",
+          "open_tab",
+          "read_page",
+          "read_media_file",
+          "run_script",
+          "screenshot",
+          "run_bash",
+          "read_file",
+          "write_file",
+          "edit_file",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "xiaohongshu-marketer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:movie-maker:cinematic-frame-artist",
+        "name": "Cinematic Frame Artist",
+        "description": "Cinematic Frame Artist",
+        "category": null,
+        "toolNames": [
+          "write_file",
+          "send_message_to",
+          "read_file",
+          "generate_image"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:movie-maker:cinematic-sound-designer",
+        "name": "Cinematic Sound Designer",
+        "description": "Cinematic Sound Designer",
+        "category": null,
+        "toolNames": [
+          "read_file",
+          "write_file",
+          "send_message_to",
+          "generate_speech"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:movie-maker:cinematic-storyboard-architect",
+        "name": "Cinematic Storyboard Architect",
+        "description": "Cinematic Storyboard Architect",
+        "category": null,
+        "toolNames": [
+          "write_file",
+          "send_message_to"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:movie-maker:cinematic-video-editor",
+        "name": "Cinematic Video Editor",
+        "description": "Cinematic Video Editor",
+        "category": null,
+        "toolNames": [
+          "read_file",
+          "write_file",
+          "send_message_to"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:socratic-math-team:animationdeveloper",
+        "name": "AnimationDeveloper",
+        "description": "AnimationDeveloper",
+        "category": null,
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:socratic-math-team:geniusmathresolver",
+        "name": "GeniusMathResolver",
+        "description": "GeniusMathResolver",
+        "category": null,
+        "toolNames": [],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:socratic-math-team:socraticmathteacher",
+        "name": "SocraticMathTeacher",
+        "description": "SocraticMathTeacher",
+        "category": null,
+        "toolNames": [
+          "edit_file",
+          "list_directory",
+          "read_file",
+          "search_files",
+          "write_file"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:video-tutorial-creation-team:tutorial-video-assembler",
+        "name": "TutorialVideoAssembler",
+        "description": "Build the final tutorial video from a source video and a saved voiceover spec.",
+        "category": null,
+        "toolNames": [
+          "video_editing_trim_video",
+          "video_editing_extract_frame_from_video",
+          "video_editing_create_video_from_image_and_audio",
+          "video_editing_replace_audio_track",
+          "video_editing_concatenate_videos",
+          "generate_speech",
+          "read_file",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "tutorial-video-assembler"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:video-tutorial-creation-team:tutorial-voiceover-writer",
+        "name": "TutorialVoiceoverWriter",
+        "description": "Analyze a silent screen recording, write the canonical voiceover spec, and hand it to the tutorial video assembler.",
+        "category": null,
+        "toolNames": [
+          "read_media_file",
+          "write_file",
+          "send_message_to"
+        ],
+        "skillNames": [
+          "tutorial-voiceover-writer"
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher",
+        "name": "Brief Studio Researcher",
+        "description": "Researches source material for Brief Studio and publishes research files for projection.",
+        "category": "Writing",
+        "toolNames": [
+          "write_file",
+          "publish_artifacts",
+          "send_message_to"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": null,
+          "llmConfig": null
+        }
+      },
+      {
+        "id": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer",
+        "name": "Brief Studio Writer",
+        "description": "Drafts the reviewable Brief Studio brief and publishes brief files for projection.",
+        "category": "Writing",
+        "toolNames": [
+          "read_file",
+          "write_file",
+          "publish_artifacts",
+          "send_message_to"
+        ],
+        "skillNames": [],
+        "defaultLaunchConfig": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": null,
+          "llmConfig": null
+        }
+      }
+    ],
+    "agentTeamDefinitions": [
+      {
+        "id": "article-writing-team",
+        "name": "Article Writing Team",
+        "description": "A style-aware article-writing team for outline-first drafting, critical review, and revision until publication-ready quality.",
+        "category": "writing-and-editing",
+        "coordinatorMemberName": "article_writer",
+        "nodes": [
+          {
+            "memberName": "article_writer",
+            "ref": "article-writer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "article_reviewer",
+            "ref": "article-reviewer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "manga-video-studio-team",
+        "name": "Manga Video Studio Team",
+        "description": "A story-first creative production team for original manga canon design, consistent image generation, and optional narrated motion-comic video delivery.",
+        "category": "creative-media",
+        "coordinatorMemberName": "manga_showrunner",
+        "nodes": [
+          {
+            "memberName": "manga_showrunner",
+            "ref": "manga-showrunner",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "storyboard_director",
+            "ref": "storyboard-director",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "manga_illustrator",
+            "ref": "manga-illustrator",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "voice_video_producer",
+            "ref": "voice-video-producer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "narrated-presentation-video-team",
+        "name": "Narrated Presentation Video Team",
+        "description": "A slide-based explainer and teaching-style video team for researched narration scripts, clean presentation visuals, voiceover, and simple still-slide video assembly.",
+        "category": "creative-media",
+        "coordinatorMemberName": "presentation_director",
+        "nodes": [
+          {
+            "memberName": "presentation_director",
+            "ref": "presentation-director",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "narration_script_reviewer",
+            "ref": "narration-script-reviewer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "slide_video_producer",
+            "ref": "slide-video-producer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "research-to-deck-team",
+        "name": "Research To Deck Team",
+        "description": "A three-specialist team for deep research, user-approved slide planning, image-only slide production, and independent deck review.",
+        "category": "content-and-presentations",
+        "coordinatorMemberName": "deep_researcher",
+        "nodes": [
+          {
+            "memberName": "deep_researcher",
+            "ref": "deep-researcher",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "infographic_powerpoint_designer",
+            "ref": "infographic-powerpoint-designer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "deck_reviewer",
+            "ref": "deck-reviewer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "software-engineering-team",
+        "name": "Software Engineering Team",
+        "description": "A lightweight self-operating software engineering team for upstream solution design, implementation, validation, review, documentation sync, and final handoff.",
+        "category": "software-engineering",
+        "coordinatorMemberName": "solution_designer",
+        "nodes": [
+          {
+            "memberName": "solution_designer",
+            "ref": "solution-designer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "architecture_reviewer",
+            "ref": "architecture-reviewer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "implementation_engineer",
+            "ref": "implementation-engineer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "code_reviewer",
+            "ref": "code-reviewer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "api_e2e_engineer",
+            "ref": "api-e2e-engineer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "delivery_engineer",
+            "ref": "delivery-engineer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "software-product-promo-video-team",
+        "name": "Software Product Promo Video Team",
+        "description": "A product-marketing video team for software products, mobile apps, websites, SaaS tools, and digital services.",
+        "category": "creative-media",
+        "coordinatorMemberName": "promo_director",
+        "nodes": [
+          {
+            "memberName": "promo_director",
+            "ref": "promo-director",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "visual_director",
+            "ref": "visual-director",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "visual_reviewer",
+            "ref": "visual-reviewer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "promo_video_producer",
+            "ref": "promo-video-producer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "bible-study-group",
+        "name": "Bible Study Group",
+        "description": "\u4e00\u4e2a\u4e2d\u6587\u4f18\u5148\u7684\u4e09\u4eba\u67e5\u7ecf\u5c0f\u7ec4\uff0c\u56f4\u7ed5\u5355\u8282\u6216\u77ed\u6bb5\u7ecf\u6587\u8fdb\u884c\u771f\u5b9e\u7684\u5c0f\u7ec4\u5f0f\u6765\u56de\u8ba8\u8bba\uff0c\u76f4\u5230\u5f62\u6210\u66f4\u6df1\u5165\u7684\u5171\u540c\u7406\u89e3\u3002",
+        "category": "faith-and-teaching",
+        "coordinatorMemberName": "study_leader",
+        "nodes": [
+          {
+            "memberName": "study_leader",
+            "ref": "study-leader",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "careful_reader",
+            "ref": "careful-reader",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "context_guide",
+            "ref": "context-guide",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "clara-ocean-friends",
+        "name": "Clara Ocean Friends",
+        "description": "Clara Ocean Friends story creation team",
+        "category": "children-storybook-production",
+        "coordinatorMemberName": "ClaraStoryOrchestrator",
+        "nodes": [
+          {
+            "memberName": "ClaraStoryOrchestrator",
+            "ref": "clara-story-orchestrator",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "ClaraStorybookBuilder",
+            "ref": "clara-storybook-builder",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "marketing-team",
+        "name": "Marketing Team",
+        "description": "Coordinates platform-native drafting, review, publishing, and research across LinkedIn, X, Xiaohongshu, and Weixin Official Account.",
+        "category": "marketing-and-publishing",
+        "coordinatorMemberName": "marketing_coordinator",
+        "nodes": [
+          {
+            "memberName": "marketing_coordinator",
+            "ref": "marketing-coordinator",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "linkedin_marketer",
+            "ref": "linkedin-marketer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "x_marketer",
+            "ref": "x-marketer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "xiaohongshu_marketer",
+            "ref": "xiaohongshu-marketer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "weixin_gongzhonghao_marketer",
+            "ref": "weixin-gongzhonghao-marketer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "movie-maker",
+        "name": "Movie Maker",
+        "description": "cinematic stage play generation team",
+        "category": "cinematic stage play generation team",
+        "coordinatorMemberName": "storyboard_designer",
+        "nodes": [
+          {
+            "memberName": "storyboard_designer",
+            "ref": "cinematic-storyboard-architect",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "image_generator",
+            "ref": "cinematic-frame-artist",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "audio_generator",
+            "ref": "cinematic-sound-designer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "video_assembler",
+            "ref": "cinematic-video-editor",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "presentation-chemie",
+        "name": "Presentation_Chemie",
+        "description": "Presentation",
+        "category": "Presentation",
+        "coordinatorMemberName": "SlideNarrator Agent",
+        "nodes": [
+          {
+            "memberName": "SlideDesigner Agent",
+            "ref": "chapter-slide-planner",
+            "refType": "AGENT",
+            "refScope": "SHARED"
+          },
+          {
+            "memberName": "SlideNarrator Agent",
+            "ref": "slidenarrator",
+            "refType": "AGENT",
+            "refScope": "SHARED"
+          },
+          {
+            "memberName": "SlideImageGenerator Agent",
+            "ref": "slideimagegenerator",
+            "refType": "AGENT",
+            "refScope": "SHARED"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "socratic-math-team",
+        "name": "Socratic Math Team",
+        "description": "Socratic Math Team",
+        "category": "Socratic Math Team",
+        "coordinatorMemberName": "SocraticMathTeacher",
+        "nodes": [
+          {
+            "memberName": "SocraticMathTeacher",
+            "ref": "socraticmathteacher",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "GeniusMathResolver",
+            "ref": "geniusmathresolver",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "AnimationDeveloper",
+            "ref": "animationdeveloper",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "video-tutorial-creation-team",
+        "name": "Video Tutorial Creation Team",
+        "description": "Create narrated software tutorial videos from source screen recordings.",
+        "category": "VideoTutorialCreationTeam",
+        "coordinatorMemberName": "TutorialVoiceoverWriter",
+        "nodes": [
+          {
+            "memberName": "TutorialVoiceoverWriter",
+            "ref": "tutorial-voiceover-writer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "TutorialVideoAssembler",
+            "ref": "tutorial-video-assembler",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+        "name": "Brief Studio Team",
+        "description": "Coordinates a researcher and writer to produce one reviewable brief.",
+        "category": "Writing",
+        "coordinatorMemberName": "researcher",
+        "nodes": [
+          {
+            "memberName": "researcher",
+            "ref": "researcher",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          },
+          {
+            "memberName": "writer",
+            "ref": "writer",
+            "refType": "AGENT",
+            "refScope": "TEAM_LOCAL"
+          }
+        ],
+        "defaultLaunchConfig": null
+      },
+      {
+        "id": "professor-student-team",
+        "name": "Professor Student Team",
+        "description": "Fixture team for Professor/Student communication tests.",
+        "category": "seeded",
+        "coordinatorMemberName": "Professor",
+        "nodes": [
+          {
+            "memberName": "Professor",
+            "ref": "professor-agent",
+            "refType": "AGENT",
+            "refScope": "SHARED"
+          },
+          {
+            "memberName": "Student",
+            "ref": "student-agent",
+            "refType": "AGENT",
+            "refScope": "SHARED"
+          }
+        ],
+        "defaultLaunchConfig": null
+      }
+    ]
+  }
+}

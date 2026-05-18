@@ -9,8 +9,9 @@ export type RuntimeEventSubscription = (
 
 export type TeamDispatchTurnCapture = {
   turnId: string;
-  memberName: string | null;
   memberRunId: string | null;
+  memberRouteKey: string | null;
+  memberPath: string[] | null;
 };
 
 export const startDirectDispatchTurnCapture = (
@@ -29,27 +30,28 @@ export const startDirectDispatchTurnCapture = (
 
 export const startTeamDispatchTurnCapture = (
   subscribeToEvents: RuntimeEventSubscription,
-  targetMemberName: string | null,
+  targetMemberRouteKey: string | null,
 ): {
   promise: Promise<TeamDispatchTurnCapture | null>;
   dispose: () => void;
 } => {
-  const normalizedTargetMemberName = normalizeOptionalString(targetMemberName);
+  const normalizedTargetMemberRouteKey = normalizeOptionalString(targetMemberRouteKey);
   return createScopedCapture(subscribeToEvents, (event) => {
     const parsed = parseTeamChannelOutputEvent(event);
     if (!parsed || !parsed.turnId || parsed.eventType !== AgentRunEventType.TURN_STARTED) {
       return null;
     }
-    const memberName = normalizeOptionalString(parsed.memberName);
-    if (normalizedTargetMemberName) {
-      if (!memberName || memberName !== normalizedTargetMemberName) {
+    const memberRouteKey = normalizeOptionalString(parsed.memberRouteKey);
+    if (normalizedTargetMemberRouteKey) {
+      if (!memberRouteKey || memberRouteKey !== normalizedTargetMemberRouteKey) {
         return null;
       }
     }
     return {
       turnId: parsed.turnId,
-      memberName,
       memberRunId: normalizeOptionalString(parsed.memberRunId),
+      memberRouteKey,
+      memberPath: parsed.memberPath ?? null,
     };
   });
 };

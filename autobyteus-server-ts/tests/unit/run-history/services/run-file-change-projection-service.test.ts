@@ -402,11 +402,13 @@ describe("RunFileChangeProjectionService", () => {
         listTeamRunIds: vi.fn().mockResolvedValue(["team-history"]),
         readMetadata: vi.fn().mockResolvedValue({
           teamRunId: "team-history",
-          memberMetadata: [
+          memberTree: [
             {
+              memberKind: "agent",
               memberRunId: "student-run",
               memberName: "Student",
               memberRouteKey: "student",
+              memberPath: ["Student"],
               workspaceRootPath: workspaceRoot,
             },
           ],

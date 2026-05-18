@@ -12,12 +12,18 @@ import {
   isValidMediaPath
 } from '../utils/media-payload-formatter.js';
 import {
+  cloneJsonObject,
   stringifyJsonArguments,
   stringifyToolResultForProvider,
 } from './native-tool-payload-format.js';
 
 export type OpenAIResponsesRenderedItem = Record<string, any>;
 type OrderedResultGroup = { results: ToolResultPayload[]; consumed: number };
+type CapturedOutputSequence = {
+  items: Record<string, unknown>[];
+  matchedCallCount: number;
+  index: number;
+};
 
 export class OpenAIResponsesRenderer extends BasePromptRenderer {
   async render(messages: Message[]): Promise<OpenAIResponsesRenderedItem[]> {
@@ -28,9 +34,7 @@ export class OpenAIResponsesRenderer extends BasePromptRenderer {
 
       if (msg.tool_payload instanceof ToolCallPayload) {
         const payload = msg.tool_payload;
-        for (const call of payload.toolCalls) {
-          rendered.push(this.renderToolCall(call));
-        }
+        rendered.push(...this.renderToolCallPayload(payload));
 
         const group = this.collectFollowingResults(messages, index + 1, payload.toolCalls);
         for (const result of group.results) {
@@ -97,6 +101,107 @@ export class OpenAIResponsesRenderer extends BasePromptRenderer {
     }
 
     return rendered;
+  }
+
+  private renderToolCallPayload(payload: ToolCallPayload): OpenAIResponsesRenderedItem[] {
+    const capturedOutputItems = this.selectCapturedOutputSequence(payload.toolCalls);
+    if (!capturedOutputItems) {
+      return payload.toolCalls.map((call) => this.renderToolCall(call));
+    }
+
+    const callsById = new Map(payload.toolCalls.map((call) => [call.id, call]));
+    const renderedCallIds = new Set<string>();
+    const renderedItems = capturedOutputItems.map((item) =>
+      this.renderCapturedOutputItem(item, callsById, renderedCallIds)
+    );
+
+    for (const call of payload.toolCalls) {
+      if (!renderedCallIds.has(call.id)) {
+        renderedItems.push(this.renderToolCall(call));
+      }
+    }
+
+    return renderedItems;
+  }
+
+  private selectCapturedOutputSequence(toolCalls: ToolCallSpec[]): Record<string, unknown>[] | null {
+    const callIds = new Set(toolCalls.map((call) => call.id));
+    const candidates: CapturedOutputSequence[] = [];
+
+    for (const [index, call] of toolCalls.entries()) {
+      const nativeContext = call.nativeToolCallContext;
+      if (
+        nativeContext?.provider !== 'openai_responses' ||
+        !Array.isArray(nativeContext.responseOutputItems) ||
+        nativeContext.responseOutputItems.length === 0
+      ) {
+        continue;
+      }
+
+      const matchedCallIds = new Set<string>();
+      for (const item of nativeContext.responseOutputItems) {
+        const callId = item.type === 'function_call' ? item.call_id : undefined;
+        if (typeof callId === 'string' && callIds.has(callId)) {
+          matchedCallIds.add(callId);
+        }
+      }
+
+      candidates.push({
+        items: nativeContext.responseOutputItems,
+        matchedCallCount: matchedCallIds.size,
+        index
+      });
+    }
+
+    if (!candidates.length) {
+      return null;
+    }
+
+    candidates.sort((left, right) => {
+      if (right.matchedCallCount !== left.matchedCallCount) {
+        return right.matchedCallCount - left.matchedCallCount;
+      }
+      if (right.items.length !== left.items.length) {
+        return right.items.length - left.items.length;
+      }
+      return left.index - right.index;
+    });
+
+    return candidates[0].items;
+  }
+
+  private renderCapturedOutputItem(
+    item: Record<string, unknown>,
+    callsById: Map<string, ToolCallSpec>,
+    renderedCallIds: Set<string>
+  ): OpenAIResponsesRenderedItem {
+    if (item.type !== 'function_call' || typeof item.call_id !== 'string') {
+      return cloneJsonObject(item);
+    }
+
+    const call = callsById.get(item.call_id);
+    if (!call) {
+      return cloneJsonObject(item);
+    }
+
+    renderedCallIds.add(call.id);
+    return this.renderCapturedFunctionCall(item, call);
+  }
+
+  private renderCapturedFunctionCall(
+    item: Record<string, unknown>,
+    call: ToolCallSpec
+  ): OpenAIResponsesRenderedItem {
+    const cloned = cloneJsonObject(item);
+    return {
+      ...cloned,
+      type: 'function_call',
+      id: cloned.id ?? call.id,
+      call_id: call.id,
+      name: call.name,
+      arguments: stringifyJsonArguments(call.arguments),
+      status: cloned.status ?? 'completed'
+    };
   }
 
   private renderToolCall(call: ToolCallSpec): OpenAIResponsesRenderedItem {

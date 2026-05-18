@@ -5,6 +5,7 @@
     :status="segment.status"
     :args="{ path: segment.path }"
     :error-message="segment.error ?? undefined"
+    :approval-target="segment.approvalTarget ?? null"
   />
 </template>
 

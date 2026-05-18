@@ -78,7 +78,9 @@ const createMemberTeamContext = (
     memberRunId: "run-professor",
     members: [
       {
+        memberKind: "agent",
         memberName: "Professor",
+        memberPath: ["Professor"],
         memberRouteKey: "professor",
         memberRunId: "run-professor",
         runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -86,7 +88,9 @@ const createMemberTeamContext = (
         description: "Leads the work.",
       },
       {
+        memberKind: "agent",
         memberName: "Writer",
+        memberPath: ["Writer"],
         memberRouteKey: "writer",
         memberRunId: "run-writer",
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,

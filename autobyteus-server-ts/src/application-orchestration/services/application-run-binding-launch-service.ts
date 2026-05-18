@@ -17,6 +17,7 @@ import { AgentRunService, getAgentRunService } from "../../agent-execution/servi
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { TeamMemberRunConfig } from "../../agent-team-execution/domain/team-run-config.js";
+import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import type { ApplicationExecutionContext } from "../domain/models.js";
 import {
   ApplicationExecutionResourceResolver,
@@ -340,7 +341,9 @@ export class ApplicationRunBindingLaunchService {
         );
       }
       return {
+        memberKind: "agent" as const,
         memberName: descriptor.memberName,
+        memberPath: [...descriptor.teamPath, descriptor.memberName],
         memberRouteKey: descriptor.memberRouteKey,
         agentDefinitionId: descriptor.agentDefinitionId,
         llmModelIdentifier: memberConfig.llmModelIdentifier,
@@ -366,9 +369,10 @@ export class ApplicationRunBindingLaunchService {
     const descriptors: TeamMemberDescriptor[] = [];
     for (const node of definition.nodes) {
       if (node.refType === "agent") {
+        const memberPath = [...teamPath, node.memberName.trim()];
         descriptors.push({
           memberName: node.memberName,
-          memberRouteKey: normalizeMemberRouteKey(node.memberName),
+          memberRouteKey: buildMemberRouteKeyFromPath(memberPath),
           displayName: node.memberName,
           teamPath: [...teamPath],
           agentDefinitionId: node.refScope === "team_local"

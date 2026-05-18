@@ -21,6 +21,10 @@ export class TeamLiveMessagePublisher {
     envelope: ExternalMessageEnvelope;
     agentName?: string | null;
     agentId?: string | null;
+    memberRouteKey?: string | null;
+    memberPath?: readonly string[] | null;
+    sourceRouteKey?: string | null;
+    sourcePath?: readonly string[] | null;
   }): number {
     return this.broadcaster.publishToTeamRun(
       input.teamRunId,
@@ -28,6 +32,10 @@ export class TeamLiveMessagePublisher {
         envelope: input.envelope,
         agentName: input.agentName ?? null,
         agentId: input.agentId ?? null,
+        memberRouteKey: input.memberRouteKey ?? null,
+        memberPath: input.memberPath ?? null,
+        sourceRouteKey: input.sourceRouteKey ?? null,
+        sourcePath: input.sourcePath ?? null,
       }),
     );
   }

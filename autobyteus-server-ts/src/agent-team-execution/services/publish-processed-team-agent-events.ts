@@ -8,6 +8,7 @@ import {
   type TeamRunAgentEventPayload,
   type TeamRunEvent,
 } from "../domain/team-run-event.js";
+import { buildMemberRouteKeyFromPath } from "../domain/team-run-member-identity.js";
 
 export const publishProcessedTeamAgentEvents = async (input: {
   teamRunId: string;
@@ -18,12 +19,15 @@ export const publishProcessedTeamAgentEvents = async (input: {
   agentEvents: readonly AgentRunEvent[];
   publishTeamEvent: (event: TeamRunEvent) => void;
   pipeline?: AgentRunEventPipeline;
+  sourcePath?: string[] | null;
   subTeamNodeName?: string | null;
 }): Promise<void> => {
   if (input.agentEvents.length === 0) {
     return;
   }
 
+  const sourcePath = input.sourcePath?.length ? [...input.sourcePath] : [input.memberName];
+  const memberRouteKey = buildMemberRouteKeyFromPath(sourcePath);
   const processedEvents = await (input.pipeline ?? getDefaultAgentRunEventPipeline()).process({
     runContext: input.runContext as AgentRunContext<RuntimeAgentRunContext>,
     events: input.agentEvents,
@@ -33,10 +37,13 @@ export const publishProcessedTeamAgentEvents = async (input: {
     const teamEvent: TeamRunEvent = {
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: input.teamRunId,
+      sourcePath,
       data: {
         runtimeKind: input.runtimeKind,
         memberName: input.memberName,
         memberRunId: input.memberRunId,
+        memberPath: sourcePath,
+        memberRouteKey,
         agentEvent,
       } satisfies TeamRunAgentEventPayload,
     };

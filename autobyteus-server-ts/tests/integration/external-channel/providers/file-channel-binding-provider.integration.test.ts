@@ -237,7 +237,7 @@ describe("FileChannelBindingProvider", () => {
       threadId: null,
       targetType: "TEAM",
       teamRunId: "team-1",
-      targetNodeName: "coordinator",
+      targetMemberRouteKey: "coordinator",
     });
 
     const teamLookup = await provider.findBindingByDispatchTarget({

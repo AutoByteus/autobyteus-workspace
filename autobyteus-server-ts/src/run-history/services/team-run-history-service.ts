@@ -14,16 +14,24 @@ import {
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import {
   TeamRunMetadata,
-  type TeamRunMemberMetadata,
+  type TeamRunAgentMemberMetadata,
 } from "../store/team-run-metadata-types.js";
-import { TeamRunMetadataStore } from "../store/team-run-metadata-store.js";
+import {
+  isUnsupportedLegacyTeamRunMetadataError,
+  TeamRunMetadataStore,
+  toLegacyTeamRunMetadataUpgradeRequiredError,
+} from "../store/team-run-metadata-store.js";
 import { extractSummaryFromRawTraces } from "./run-history-service-helpers.js";
 import { AgentRunViewProjectionService } from "./agent-run-view-projection-service.js";
-import { TeamMemberLocalRunProjectionReader } from "./team-member-local-run-projection-reader.js";
 import {
   TeamRunHistoryIndexService,
   getTeamRunHistoryIndexService,
 } from "./team-run-history-index-service.js";
+import {
+  getTeamRunLeafAgentMetadata,
+  resolveTeamRunLeafAgentByRouteKey,
+  resolveTeamWorkspaceRootPath,
+} from "./team-run-metadata-flattener.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -50,7 +58,6 @@ export class TeamRunHistoryService {
   private readonly indexService: TeamRunHistoryIndexService;
   private readonly teamRunManager: AgentTeamRunManager;
   private readonly memberLayout: TeamMemberMemoryLayout;
-  private readonly projectionReader: TeamMemberLocalRunProjectionReader;
   private readonly agentRunViewProjectionService: AgentRunViewProjectionService;
 
   constructor(
@@ -59,7 +66,6 @@ export class TeamRunHistoryService {
       metadataStore?: TeamRunMetadataStore;
       indexService?: TeamRunHistoryIndexService;
       teamRunManager?: AgentTeamRunManager;
-      projectionReader?: TeamMemberLocalRunProjectionReader;
       agentRunViewProjectionService?: AgentRunViewProjectionService;
     } = {},
   ) {
@@ -68,8 +74,6 @@ export class TeamRunHistoryService {
       options.indexService ?? getTeamRunHistoryIndexService();
     this.teamRunManager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
     this.memberLayout = new TeamMemberMemoryLayout(memoryDir);
-    this.projectionReader =
-      options.projectionReader ?? new TeamMemberLocalRunProjectionReader(memoryDir);
     this.agentRunViewProjectionService =
       options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
   }
@@ -83,7 +87,18 @@ export class TeamRunHistoryService {
     const items: TeamRunHistoryItem[] = [];
     const staleTeamRunIds: string[] = [];
     for (const row of rows) {
-      const metadata = await this.metadataStore.readMetadata(row.teamRunId);
+      let metadata: TeamRunMetadata | null = null;
+      try {
+        metadata = await this.metadataStore.readMetadata(row.teamRunId);
+      } catch (error) {
+        if (isUnsupportedLegacyTeamRunMetadataError(error)) {
+          logger.warn(
+            `Skipping unmigrated legacy team run metadata '${row.teamRunId}'. Open Settings -> Server -> Migrations for details.`,
+          );
+          continue;
+        }
+        throw error;
+      }
       if (!metadata) {
         staleTeamRunIds.push(row.teamRunId);
         continue;
@@ -118,7 +133,7 @@ export class TeamRunHistoryService {
         lastKnownStatus: isActive ? "ACTIVE" : row.lastKnownStatus,
         deleteLifecycle: row.deleteLifecycle,
         isActive,
-        members: metadata.memberMetadata.map((member) => ({
+        members: getTeamRunLeafAgentMetadata(metadata).map((member) => ({
           memberRouteKey: member.memberRouteKey,
           memberName: member.memberName,
           memberRunId: member.memberRunId,
@@ -131,6 +146,7 @@ export class TeamRunHistoryService {
           llmConfig: member.llmConfig ?? null,
           workspaceRootPath: member.workspaceRootPath,
         })),
+        memberTree: metadata.memberTree,
       });
     }
 
@@ -143,7 +159,15 @@ export class TeamRunHistoryService {
   }
 
   async getTeamRunResumeConfig(teamRunId: string): Promise<TeamRunResumeConfig> {
-    const metadata = await this.metadataStore.readMetadata(teamRunId);
+    let metadata: TeamRunMetadata | null = null;
+    try {
+      metadata = await this.metadataStore.readMetadata(teamRunId);
+    } catch (error) {
+      if (isUnsupportedLegacyTeamRunMetadataError(error)) {
+        throw toLegacyTeamRunMetadataUpgradeRequiredError(error);
+      }
+      throw error;
+    }
     if (!metadata) {
       throw new Error(`Team run metadata not found for '${teamRunId}'.`);
     }
@@ -292,13 +316,12 @@ export class TeamRunHistoryService {
   }
 
   private resolveMemberHistoryStatus(
-    member: TeamRunMemberMetadata,
+    member: TeamRunAgentMemberMetadata,
     statusSnapshots: AgentStatusPayload[],
   ): AgentApiStatus {
     const snapshot = statusSnapshots.find((candidate) =>
       candidate.agent_id === member.memberRunId ||
-      candidate.agent_id === member.platformAgentRunId ||
-      candidate.agent_name === member.memberName,
+      candidate.agent_id === member.platformAgentRunId,
     );
     return snapshot?.status ?? "offline";
   }
@@ -333,9 +356,8 @@ export class TeamRunHistoryService {
   private async extractSummaryFromCoordinator(metadata: TeamRunMetadata): Promise<string> {
     const coordinatorMemberRouteKey = resolveCoordinatorMemberRouteKey(metadata);
     const coordinatorMember =
-      metadata.memberMetadata.find(
-        (member) => member.memberRouteKey.trim() === coordinatorMemberRouteKey,
-      ) ?? metadata.memberMetadata[0];
+      resolveTeamRunLeafAgentByRouteKey(metadata, coordinatorMemberRouteKey) ??
+      getTeamRunLeafAgentMetadata(metadata)[0];
 
     if (!coordinatorMember) {
       return "";
@@ -355,29 +377,23 @@ export class TeamRunHistoryService {
       return rawTraceSummary;
     }
 
-    const localProjection = await this.projectionReader.getProjection(
-      metadata.teamRunId,
-      coordinatorMember.memberRunId,
-    );
     const resolvedProjection = await this.agentRunViewProjectionService.getProjectionFromMetadata({
       runId: coordinatorMember.memberRunId,
       metadata: this.toMemberRunMetadata(metadata, coordinatorMember),
-      localProjection,
-      allowFallbackProvider: false,
     });
     return resolvedProjection.summary?.trim() || "";
   }
 
   private toMemberRunMetadata(
     metadata: TeamRunMetadata,
-    member: TeamRunMemberMetadata,
+    member: TeamRunAgentMemberMetadata,
   ): AgentRunMetadata {
     return {
       runId: member.memberRunId,
       agentDefinitionId: member.agentDefinitionId,
       workspaceRootPath:
         member.workspaceRootPath ??
-        metadata.memberMetadata.find((candidate) => candidate.workspaceRootPath)?.workspaceRootPath ??
+        resolveTeamWorkspaceRootPath(metadata) ??
         process.cwd(),
       memoryDir: this.memberLayout.getMemberDirPath(metadata.teamRunId, member.memberRunId),
       llmModelIdentifier: member.llmModelIdentifier,
@@ -393,7 +409,9 @@ export class TeamRunHistoryService {
 }
 
 const resolveCoordinatorMemberRouteKey = (metadata: TeamRunMetadata): string =>
-  metadata.coordinatorMemberRouteKey.trim() || metadata.memberMetadata[0]?.memberRouteKey?.trim() || "";
+  metadata.coordinatorMemberRouteKey.trim() ||
+  getTeamRunLeafAgentMetadata(metadata)[0]?.memberRouteKey?.trim() ||
+  "";
 
 let cachedTeamRunHistoryService: TeamRunHistoryService | null = null;
 
@@ -405,8 +423,3 @@ export const getTeamRunHistoryService = (): TeamRunHistoryService => {
   }
   return cachedTeamRunHistoryService;
 };
-
-const resolveTeamWorkspaceRootPath = (
-  metadata: TeamRunMetadata,
-): string | null =>
-  metadata.memberMetadata.find((member) => member.workspaceRootPath)?.workspaceRootPath ?? null;

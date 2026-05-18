@@ -12,8 +12,9 @@ export type ParsedChannelOutputEvent = {
   statusHint: string | null;
   agentRunId: string;
   teamRunId: string | null;
-  memberName: string | null;
   memberRunId: string | null;
+  memberRouteKey: string | null;
+  memberPath: string[] | null;
   turnId: string | null;
   text: string | null;
   textKind: ChannelOutputEventTextKind | null;
@@ -33,8 +34,9 @@ export const parseDirectChannelOutputEvent = (
     statusHint: event.statusHint ?? null,
     agentRunId: event.runId,
     teamRunId: null,
-    memberName: null,
     memberRunId: null,
+    memberRouteKey: null,
+    memberPath: null,
     turnId: resolveTurnIdFromPayload(event.payload),
     text: text.text,
     textKind: text.kind,
@@ -55,8 +57,11 @@ export const parseTeamChannelOutputEvent = (
     ...parsedAgentEvent,
     agentRunId: asNonEmptyString(event.data.memberRunId) ?? parsedAgentEvent.agentRunId,
     teamRunId: asNonEmptyString(event.teamRunId),
-    memberName: asNonEmptyString(event.data.memberName),
     memberRunId: asNonEmptyString(event.data.memberRunId),
+    memberRouteKey: asNonEmptyString(event.data.memberRouteKey),
+    memberPath: Array.isArray(event.data.memberPath)
+      ? event.data.memberPath.map(asNonEmptyString).filter((value): value is string => Boolean(value))
+      : null,
   };
 };
 
@@ -64,8 +69,9 @@ const isTeamAgentEvent = (
   event: unknown,
 ): event is TeamRunEvent & {
   data: {
-    memberName: string;
     memberRunId: string;
+    memberRouteKey?: string;
+    memberPath?: string[];
     agentEvent: unknown;
   };
 } => {

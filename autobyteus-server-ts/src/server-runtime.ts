@@ -16,6 +16,7 @@ import {
 } from "./logging/runtime-logger-bootstrap.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "./api/fastify-runtime-config.js";
 import { runMigrations } from "./startup/migrations.js";
+import { getAppDataMigrationRunner } from "./app-data-migrations/app-data-migration-runner.js";
 import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { bootstrapBuiltInAgents } from "./built-in-agents/built-in-agent-bootstrapper.js";
 import { registerRestRoutes } from "./api/rest/index.js";
@@ -129,6 +130,12 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   } catch (error) {
     logger.error(`Failed to run database migrations: ${String(error)}`);
     process.exit(1);
+  }
+
+  try {
+    await getAppDataMigrationRunner().runPending();
+  } catch (error) {
+    logger.error(`Failed to run app data migrations: ${String(error)}`);
   }
 
   try {

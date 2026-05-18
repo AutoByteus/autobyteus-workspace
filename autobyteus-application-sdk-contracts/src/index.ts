@@ -82,7 +82,8 @@ export type ApplicationRuntimeInputContextFile = {
 
 export type ApplicationRuntimeInput = {
   text: string;
-  targetMemberName?: string | null;
+  targetMemberRouteKey?: string | null;
+  targetMemberPath?: string[] | null;
   contextFiles?: ApplicationRuntimeInputContextFile[] | null;
   metadata?: Record<string, unknown> | null;
 };
@@ -265,7 +266,8 @@ export type ApplicationRuntimeControl = {
   postRunInput: (input: {
     bindingId: string;
     text: string;
-    targetMemberName?: string | null;
+    targetMemberRouteKey?: string | null;
+    targetMemberPath?: string[] | null;
     contextFiles?: ApplicationRuntimeInputContextFile[] | null;
     metadata?: Record<string, unknown> | null;
   }) => Promise<ApplicationRunBindingSummary>;

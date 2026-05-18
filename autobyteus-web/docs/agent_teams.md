@@ -78,10 +78,14 @@ That surface owns:
 
 - the team-level default runtime/model/config selection,
 - shared workspace / auto-execute / skill-access fields,
-- leaf-member override rows flattened from nested team definitions, and
+- a recursive member override tree for nested team definitions, with subteam
+  group rows and leaf-member override controls keyed by backend
+  `memberRouteKey`, and
 - runtime-scoped model catalog loading for the team default plus any explicit member runtime overrides.
 
-`MemberOverrideItem.vue` is the authoritative row owner for per-member launch overrides. Each leaf member can:
+`MemberOverrideTree.vue` owns nested grouping and forwards leaf updates to
+`MemberOverrideItem.vue`, the authoritative row owner for per-member launch
+overrides. Each leaf member can:
 
 - inherit the global runtime/model/config,
 - choose an explicit runtime override,
@@ -148,6 +152,31 @@ The frontend still creates a local temporary team context first, but mixed-runti
 
 This is the frontend contract that makes the backend `TeamBackendKind.MIXED` path reachable from the actual app UX rather than only from backend/API-only proof.
 
+For nested team definitions, the backend launches through the mixed topology
+path even when all leaf members use the same runtime. Leaf launch configs must
+therefore preserve `memberRouteKey` so duplicate leaf names under different
+subteams stay distinguishable. A top-level subteam is a first-class runtime
+target: sending to that member routes into the child team default/coordinator
+instead of flattening to an arbitrary child leaf. Team communication uses a
+separate scoped roster: parent members can address exposed subteam
+representatives such as `review_lead`, which routes to `BuildSquad/review_lead`,
+while that represented coordinator can report upward to exposed immediate
+parent-boundary recipients such as `program_manager`.
+
+The focused-member routing contract also applies to the shared composer stop
+control. Text send and team interrupt both resolve the current
+`focusedMemberRouteKey` at action time. Team interrupt dispatch sends
+`target_member_route_key` as that member route key, includes
+`target_member_run_id` only as a stale-target guard, and does not use a
+team-run-only fallback when the member target is missing or stale.
+
+For focused-member sends to an offline or idle member, the backend status stream
+is the visible-status authority: once the command is accepted and the member
+target is known, the team backend publishes member-scoped
+`AGENT_STATUS initializing` before lazy member startup or send work finishes.
+If no concrete member target exists for a true team-level/native command, the
+backend may publish root `TEAM_STATUS initializing` without a member event.
+
 ## Stopped Team Follow-Up And Termination State
 
 `agentTeamRunStore.sendMessageToFocusedMember()` supports follow-up chat against existing team runs after local stop/termination:
@@ -176,6 +205,29 @@ Reopen/hydration supplies the values that selected read-only team config
 displays. The frontend treats non-null metadata from the backend as authoritative
 for inspection and treats null metadata as not recorded; backend recovery,
 materialization, or backfill is outside the Agent Teams frontend module.
+
+Backend team-run metadata is recursive for nested teams. Frontend history and
+selected-run surfaces use that tree for subteam grouping while deriving flat
+leaf-agent maps only where a leaf runtime context is required. `AgentTeamContext`
+therefore carries `memberTree`, `memberNodesByRouteKey`,
+`leafAgentContextsByRouteKey`, and `focusedMemberRouteKey`.
+Route-key/path identity from metadata remains authoritative for reconnect,
+stream attribution, focus changes, and command targeting. Stream payloads for
+nested activity can include `member_path`, `member_route_key`, `source_path`,
+and `source_route_key`; one-name aliases are display compatibility only.
+
+Subteam focus is a real UI state. Focusing a subteam such as `BuildSquad`
+shows the subteam Team Messages perspective, while focusing a leaf such as
+`BuildSquad/review_lead` shows that member transcript. Team Messages can carry
+represented-subteam metadata, so parent-to-representative and upward-report
+rows display the responsible subteam badge/breadcrumb while still targeting the
+actual leaf participant path. Display labels use the membership label at the
+current boundary (`BuildSquad`, `review_lead`, `qa_specialist`) rather than
+stale flattened route copies. A subteam/group tile that has no leaf runtime
+context uses the canonical offline status fallback rather than reintroducing
+removed initialization-only statuses. Internal child team runs are opened
+through their parent subteam node and should not appear as separate top-level
+history rows.
 
 ## Store Ownership
 

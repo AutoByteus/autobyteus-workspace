@@ -5,41 +5,7 @@ const normalizeToken = (status?: string | null): string =>
   String(status || '')
     .trim()
     .toLowerCase()
-    .replace(/[\s-]+/g, '_');
-
-const RUNNING_TOKENS = new Set([
-  'active',
-  'processing',
-  'running',
-  'bootstrapping',
-  'shutting_down',
-  'uninitialized',
-  'processing_user_input',
-  'awaiting_llm_response',
-  'analyzing_llm_response',
-  'awaiting_tool_approval',
-  'executing_tool',
-  'processing_tool_result',
-  'interrupting',
-  'tool_denied',
-  'inprogress',
-  'in_progress',
-]);
-
-const IDLE_TOKENS = new Set([
-  'idle',
-]);
-
-const OFFLINE_TOKENS = new Set([
-  'shutdown_complete',
-  'offline',
-  'terminated',
-  'missing',
-  'inactive',
-  'stopped',
-]);
-
-const ERROR_TOKENS = new Set(['error', 'failed', 'failure']);
+    .replace(/[_\s-]+/g, '_');
 
 export const normalizeAgentRuntimeStatus = (
   status?: string | null,
@@ -47,10 +13,11 @@ export const normalizeAgentRuntimeStatus = (
 ): AgentStatus => {
   const normalized = normalizeToken(status);
   if (!normalized) return fallback;
-  if (ERROR_TOKENS.has(normalized)) return AgentStatus.Error;
-  if (RUNNING_TOKENS.has(normalized)) return AgentStatus.Running;
-  if (IDLE_TOKENS.has(normalized)) return AgentStatus.Idle;
-  if (OFFLINE_TOKENS.has(normalized)) return AgentStatus.Offline;
+  if (normalized === AgentStatus.Error) return AgentStatus.Error;
+  if (normalized === AgentStatus.Initializing) return AgentStatus.Initializing;
+  if (normalized === AgentStatus.Running || normalized === 'active') return AgentStatus.Running;
+  if (normalized === AgentStatus.Idle) return AgentStatus.Idle;
+  if (normalized === AgentStatus.Offline || normalized === 'terminated') return AgentStatus.Offline;
   return fallback;
 };
 
@@ -60,9 +27,10 @@ export const normalizeTeamRuntimeStatus = (
 ): AgentTeamStatus => {
   const normalized = normalizeToken(status);
   if (!normalized) return fallback;
-  if (ERROR_TOKENS.has(normalized)) return AgentTeamStatus.Error;
-  if (RUNNING_TOKENS.has(normalized)) return AgentTeamStatus.Running;
-  if (IDLE_TOKENS.has(normalized)) return AgentTeamStatus.Idle;
-  if (OFFLINE_TOKENS.has(normalized)) return AgentTeamStatus.Offline;
+  if (normalized === AgentTeamStatus.Error) return AgentTeamStatus.Error;
+  if (normalized === AgentTeamStatus.Initializing) return AgentTeamStatus.Initializing;
+  if (normalized === AgentTeamStatus.Running || normalized === 'active') return AgentTeamStatus.Running;
+  if (normalized === AgentTeamStatus.Idle) return AgentTeamStatus.Idle;
+  if (normalized === AgentTeamStatus.Offline || normalized === 'terminated') return AgentTeamStatus.Offline;
   return fallback;
 };

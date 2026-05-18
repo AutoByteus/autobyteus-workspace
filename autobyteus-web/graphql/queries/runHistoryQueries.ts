@@ -32,6 +32,7 @@ export const ListWorkspaceRunHistory = gql`
           lastKnownStatus
           deleteLifecycle
           isActive
+          memberTree
           members {
             memberRouteKey
             memberName
@@ -104,9 +105,43 @@ export const GetTeamCommunicationMessages = gql`
       messageId
       teamRunId
       senderRunId
+      senderMemberKind
       senderMemberName
+      senderMemberPath
+      senderMemberRouteKey
+      senderRepresentedSubTeam {
+        memberKind
+        memberName
+        memberPath
+        memberRouteKey
+        memberRunId
+        teamDefinitionId
+        childTeamRunId
+        address {
+          teamRunId
+          memberPath
+          memberRouteKey
+        }
+      }
       receiverRunId
+      receiverMemberKind
       receiverMemberName
+      receiverMemberPath
+      receiverMemberRouteKey
+      receiverRepresentedSubTeam {
+        memberKind
+        memberName
+        memberPath
+        memberRouteKey
+        memberRunId
+        teamDefinitionId
+        childTeamRunId
+        address {
+          teamRunId
+          memberPath
+          memberRouteKey
+        }
+      }
       content
       messageType
       createdAt

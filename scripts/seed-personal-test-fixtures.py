@@ -27,6 +27,30 @@ TEAM_INSTRUCTIONS = (
     "You are the Professor Student Team coordinator. Route explanations to Professor and follow-up questions to Student."
 )
 
+NESTED_PROGRAM_MANAGER_AGENT_NAME = "Nested Program Manager Agent"
+NESTED_REVIEW_LEAD_AGENT_NAME = "Nested Review Lead Agent"
+NESTED_QA_SPECIALIST_AGENT_NAME = "Nested QA Specialist Agent"
+NESTED_BUILD_SQUAD_TEAM_NAME = "Nested Build Squad Team"
+NESTED_PARENT_TEAM_NAME = "Nested Mixed Runtime Delivery Team"
+NESTED_COMMON_INSTRUCTIONS = """
+You are participating in a seeded full-stack nested mixed-runtime team validation.
+
+Rules:
+1. Follow direct user instructions exactly.
+2. Do not explore the environment or run diagnostics.
+3. The only tool you may execute is send_message_to.
+4. If the user asks you to call send_message_to with explicit JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
+5. If you receive a teammate message that asks for an exact token, reply in plain assistant text with that exact token and nothing else.
+6. Do not use send_message_to unless the current direct user instruction explicitly provides JSON arguments for it.
+7. Otherwise keep assistant text responses very short.
+""".strip()
+NESTED_BUILD_SQUAD_INSTRUCTIONS = (
+    "Review Lead coordinates with QA Specialist for seeded nested team validation."
+)
+NESTED_PARENT_TEAM_INSTRUCTIONS = (
+    "Program Manager delegates seeded validation tasks to the nested BuildSquad team."
+)
+
 
 def log(message: str) -> None:
     print(message, flush=True)
@@ -193,7 +217,30 @@ def ensure_agent(
     return str(current["id"])
 
 
-def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id: str) -> None:
+def normalize_nodes(nodes: List[Dict[str, Any]]) -> List[tuple]:
+    return sorted(
+        [
+            (
+                node.get("memberName"),
+                node.get("ref"),
+                node.get("refType"),
+                node.get("refScope"),
+            )
+            for node in nodes
+        ]
+    )
+
+
+def ensure_team_definition(
+    client: GraphqlClient,
+    *,
+    name: str,
+    description: str,
+    instructions: str,
+    category: str,
+    coordinator_member_name: str,
+    nodes: List[Dict[str, Any]],
+) -> str:
     teams = client.execute(
         """
         query SeedAgentTeamDefinitions {
@@ -214,29 +261,10 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
         }
         """
     ).get("agentTeamDefinitions") or []
-    current = first_by_name(teams, TEAM_NAME)
-
-    expected_nodes = [
-        {
-            "memberName": "Professor",
-            "ref": professor_agent_id,
-            "refType": "AGENT",
-            "refScope": "SHARED",
-        },
-        {
-            "memberName": "Student",
-            "ref": student_agent_id,
-            "refType": "AGENT",
-            "refScope": "SHARED",
-        },
-    ]
-    expected_description = "Fixture team for Professor/Student communication tests."
-    expected_instructions = TEAM_INSTRUCTIONS
-    expected_category = "seeded"
-    expected_coordinator = "Professor"
+    current = first_by_name(teams, name)
 
     if current is None:
-        client.execute(
+        data = client.execute(
             """
             mutation SeedCreateTeam($input: CreateAgentTeamDefinitionInput!) {
               createAgentTeamDefinition(input: $input) { id name }
@@ -244,39 +272,25 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
             """,
             {
                 "input": {
-                    "name": TEAM_NAME,
-                    "description": expected_description,
-                    "instructions": expected_instructions,
-                    "category": expected_category,
-                    "coordinatorMemberName": expected_coordinator,
-                    "nodes": expected_nodes,
+                    "name": name,
+                    "description": description,
+                    "instructions": instructions,
+                    "category": category,
+                    "coordinatorMemberName": coordinator_member_name,
+                    "nodes": nodes,
                 }
             },
         )
-        log(f"Team created: {TEAM_NAME}")
-        return
-
-    nodes_normalized = sorted(
-        [
-            (
-                node.get("memberName"),
-                node.get("ref"),
-                node.get("refType"),
-                node.get("refScope"),
-            )
-            for node in (current.get("nodes") or [])
-        ]
-    )
-    expected_nodes_normalized = sorted(
-        [(node["memberName"], node["ref"], node["refType"], node["refScope"]) for node in expected_nodes]
-    )
+        team_id = str(data["createAgentTeamDefinition"]["id"])
+        log(f"Team created: {name} (id={team_id})")
+        return team_id
 
     update_needed = (
-        current.get("description") != expected_description
-        or current.get("instructions") != expected_instructions
-        or current.get("category") != expected_category
-        or current.get("coordinatorMemberName") != expected_coordinator
-        or nodes_normalized != expected_nodes_normalized
+        current.get("description") != description
+        or current.get("instructions") != instructions
+        or current.get("category") != category
+        or current.get("coordinatorMemberName") != coordinator_member_name
+        or normalize_nodes(current.get("nodes") or []) != normalize_nodes(nodes)
     )
 
     if update_needed:
@@ -289,17 +303,98 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
             {
                 "input": {
                     "id": current.get("id"),
-                    "description": expected_description,
-                    "instructions": expected_instructions,
-                    "category": expected_category,
-                    "coordinatorMemberName": expected_coordinator,
-                    "nodes": expected_nodes,
+                    "description": description,
+                    "instructions": instructions,
+                    "category": category,
+                    "coordinatorMemberName": coordinator_member_name,
+                    "nodes": nodes,
                 }
             },
         )
-        log(f"Team updated: {TEAM_NAME} (id={current.get('id')})")
+        log(f"Team updated: {name} (id={current.get('id')})")
     else:
-        log(f"Team unchanged: {TEAM_NAME} (id={current.get('id')})")
+        log(f"Team unchanged: {name} (id={current.get('id')})")
+
+    return str(current["id"])
+
+
+def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id: str) -> None:
+    ensure_team_definition(
+        client,
+        name=TEAM_NAME,
+        description="Fixture team for Professor/Student communication tests.",
+        instructions=TEAM_INSTRUCTIONS,
+        category="seeded",
+        coordinator_member_name="Professor",
+        nodes=[
+            {
+                "memberName": "Professor",
+                "ref": professor_agent_id,
+                "refType": "AGENT",
+                "refScope": "SHARED",
+            },
+            {
+                "memberName": "Student",
+                "ref": student_agent_id,
+                "refType": "AGENT",
+                "refScope": "SHARED",
+            },
+        ],
+    )
+
+
+def ensure_nested_mixed_team(
+    client: GraphqlClient,
+    *,
+    program_manager_agent_id: str,
+    review_lead_agent_id: str,
+    qa_specialist_agent_id: str,
+) -> None:
+    child_team_id = ensure_team_definition(
+        client,
+        name=NESTED_BUILD_SQUAD_TEAM_NAME,
+        description="Seeded nested child squad with Codex review lead and Claude QA specialist.",
+        instructions=NESTED_BUILD_SQUAD_INSTRUCTIONS,
+        category="seeded",
+        coordinator_member_name="review_lead",
+        nodes=[
+            {
+                "memberName": "review_lead",
+                "ref": review_lead_agent_id,
+                "refType": "AGENT",
+                "refScope": "SHARED",
+            },
+            {
+                "memberName": "qa_specialist",
+                "ref": qa_specialist_agent_id,
+                "refType": "AGENT",
+                "refScope": "SHARED",
+            },
+        ],
+    )
+
+    ensure_team_definition(
+        client,
+        name=NESTED_PARENT_TEAM_NAME,
+        description="Seeded full-stack fixture with AutoByteus parent and nested mixed-runtime BuildSquad.",
+        instructions=NESTED_PARENT_TEAM_INSTRUCTIONS,
+        category="seeded",
+        coordinator_member_name="program_manager",
+        nodes=[
+            {
+                "memberName": "program_manager",
+                "ref": program_manager_agent_id,
+                "refType": "AGENT",
+                "refScope": "SHARED",
+            },
+            {
+                "memberName": "BuildSquad",
+                "ref": child_team_id,
+                "refType": "AGENT_TEAM",
+                "refScope": None,
+            },
+        ],
+    )
 
 
 def parse_args(argv: List[str]) -> argparse.Namespace:
@@ -332,6 +427,34 @@ def main(argv: List[str]) -> int:
     )
 
     ensure_team(client, professor_agent_id=professor_id, student_agent_id=student_id)
+
+    program_manager_id = ensure_agent(
+        client,
+        name=NESTED_PROGRAM_MANAGER_AGENT_NAME,
+        role="Program Manager",
+        description="Seeded AutoByteus parent coordinator for nested mixed-runtime full-stack validation.",
+        instructions=NESTED_COMMON_INSTRUCTIONS,
+    )
+    review_lead_id = ensure_agent(
+        client,
+        name=NESTED_REVIEW_LEAD_AGENT_NAME,
+        role="Review Lead",
+        description="Seeded Codex child coordinator for nested mixed-runtime full-stack validation.",
+        instructions=NESTED_COMMON_INSTRUCTIONS,
+    )
+    qa_specialist_id = ensure_agent(
+        client,
+        name=NESTED_QA_SPECIALIST_AGENT_NAME,
+        role="QA Specialist",
+        description="Seeded Claude child teammate for nested mixed-runtime full-stack validation.",
+        instructions=NESTED_COMMON_INSTRUCTIONS,
+    )
+    ensure_nested_mixed_team(
+        client,
+        program_manager_agent_id=program_manager_id,
+        review_lead_agent_id=review_lead_id,
+        qa_specialist_agent_id=qa_specialist_id,
+    )
 
     log("Fixture seed completed.")
     return 0

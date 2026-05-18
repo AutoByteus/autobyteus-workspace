@@ -172,6 +172,15 @@
                 >
                   {{ $t('settings.page.serverSettings.advanced') }}
                 </button>
+                <button
+                  type="button"
+                  data-testid="settings-nav-server-settings-migrations"
+                  class="w-full text-left px-3 py-1.5 text-base rounded-md transition-colors duration-200"
+                  :class="serverSettingsMode === 'migrations' ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'"
+                  @click="selectServerSettings('migrations')"
+                >
+                  {{ $t('settings.page.serverSettings.migrations') }}
+                </button>
               </div>
             </li>
             <li class="w-full">
@@ -276,7 +285,7 @@ type SettingsSection =
   | 'application-packages'
   | 'agent-packages'
   | 'server-settings';
-type ServerSettingsMode = 'quick' | 'advanced';
+type ServerSettingsMode = 'quick' | 'advanced' | 'migrations';
 
 const route = useRoute();
 const router = useRouter();
@@ -311,7 +320,7 @@ const normalizeSection = (section: string | undefined): SettingsSection | null =
 };
 
 const normalizeServerSettingsMode = (mode: string | undefined): ServerSettingsMode =>
-  mode === 'advanced' ? 'advanced' : 'quick';
+  mode === 'advanced' || mode === 'migrations' ? mode : 'quick';
 
 const selectServerSettings = (mode: ServerSettingsMode = 'quick') => {
   activeSection.value = 'server-settings';

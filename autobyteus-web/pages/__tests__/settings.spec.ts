@@ -23,6 +23,7 @@ const translationMap: Record<string, string> = {
   'settings.page.sections.updates': 'Updates',
   'settings.page.serverSettings.quick': 'Basics',
   'settings.page.serverSettings.advanced': 'Advanced',
+  'settings.page.serverSettings.migrations': 'Migrations',
 }
 
 const {
@@ -149,6 +150,15 @@ describe('settings page', () => {
     const setupState = (wrapper.vm as any).$?.setupState
 
     expect(setupState.activeSection).toBe('server-settings')
+  })
+
+
+  it('supports server settings migrations mode query', async () => {
+    routeMock.query = { section: 'server-settings', mode: 'migrations' }
+    const wrapper = mountSettings()
+    await nextTick()
+
+    expect(wrapper.get('[data-testid="section-server-settings"]').text()).toContain('mode=migrations')
   })
 
   it('supports messaging section query and activates messaging section', async () => {

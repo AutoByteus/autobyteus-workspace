@@ -32,12 +32,13 @@ describe("TeamMemoryIndexService", () => {
       teamDefinitionId: "team-def-1",
       teamDefinitionName: "Alpha Team",
       coordinatorMemberRouteKey: "coordinator",
-      runVersion: 1,
       createdAt: "2026-03-07T00:00:00Z",
       updatedAt: "2026-03-07T00:00:00Z",
-      memberMetadata: [
+      memberTree: [
         {
+          memberKind: "agent",
           memberRouteKey: "coordinator",
+          memberPath: ["Coordinator"],
           memberName: "Coordinator",
           memberRunId: "member-1",
           runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -73,12 +74,13 @@ describe("TeamMemoryIndexService", () => {
       teamDefinitionId: "team-def-a",
       teamDefinitionName: "Alpha",
       coordinatorMemberRouteKey: "lead",
-      runVersion: 1,
       createdAt: "2026-03-07T00:00:00Z",
       updatedAt: "2026-03-07T00:00:00Z",
-      memberMetadata: [
+      memberTree: [
         {
+          memberKind: "agent",
           memberRouteKey: "lead",
+          memberPath: ["Lead"],
           memberName: "Lead",
           memberRunId: "a-run",
           runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -98,12 +100,13 @@ describe("TeamMemoryIndexService", () => {
       teamDefinitionId: "team-def-b",
       teamDefinitionName: "Beta",
       coordinatorMemberRouteKey: "dev",
-      runVersion: 1,
       createdAt: "2026-03-07T00:00:00Z",
       updatedAt: "2026-03-07T00:00:00Z",
-      memberMetadata: [
+      memberTree: [
         {
+          memberKind: "agent",
           memberRouteKey: "dev",
+          memberPath: ["Developer"],
           memberName: "Developer",
           memberRunId: "b-run",
           runtimeKind: RuntimeKind.AUTOBYTEUS,

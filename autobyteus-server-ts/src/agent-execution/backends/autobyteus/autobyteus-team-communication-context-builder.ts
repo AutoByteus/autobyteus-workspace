@@ -4,6 +4,7 @@ import type {
   TeamCommunicationMember,
 } from "autobyteus-ts/agent-team/context/team-communication-context.js";
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+import { buildInterAgentMessageDeliveryRequestFromRecipientName } from "../../../agent-team-execution/services/inter-agent-message-delivery-request-builder.js";
 
 export type AutoByteusStandaloneTeamContext = {
   teamRunId: string;
@@ -15,17 +16,17 @@ export type AutoByteusStandaloneTeamContext = {
 export const buildAutoByteusStandaloneTeamContext = (
   memberTeamContext: MemberTeamContext,
 ): AutoByteusStandaloneTeamContext => {
-  const members: TeamCommunicationMember[] = memberTeamContext.members.map((member) => ({
-    memberName: member.memberName,
-    memberRunId: member.memberRunId,
-    agentId: member.memberRunId,
-    role: member.role,
-    description: member.description,
+  const members: TeamCommunicationMember[] = memberTeamContext.communicationRecipients.map((recipient) => ({
+    memberName: recipient.recipientName,
+    memberRunId: recipient.participant.memberRunId,
+    agentId: recipient.participant.memberRunId,
+    role: recipient.role,
+    description: recipient.description,
   }));
 
   const memberNameByAgentId = new Map<string, string>();
-  for (const member of memberTeamContext.members) {
-    memberNameByAgentId.set(member.memberRunId, member.memberName);
+  for (const recipient of memberTeamContext.communicationRecipients) {
+    memberNameByAgentId.set(recipient.participant.memberRunId, recipient.recipientName);
   }
 
   const communicationContext: TeamCommunicationContext = {
@@ -34,19 +35,17 @@ export const buildAutoByteusStandaloneTeamContext = (
       if (!memberTeamContext.deliverInterAgentMessage) {
         throw new Error("Team communication is not configured for this standalone AutoByteus run.");
       }
-      const result = await memberTeamContext.deliverInterAgentMessage({
-        senderRunId: event.senderAgentId,
-        senderMemberName:
-          memberNameByAgentId.get(event.senderAgentId) ??
-          (event.senderAgentId === memberTeamContext.memberRunId
-            ? memberTeamContext.memberName
-            : null),
-        teamRunId: memberTeamContext.teamRunId,
-        recipientMemberName: event.recipientName,
+      const requestResult = buildInterAgentMessageDeliveryRequestFromRecipientName({
+        memberTeamContext,
+        recipientName: event.recipientName,
         content: event.content,
         messageType: event.messageType,
         referenceFiles: event.referenceFiles,
       });
+      if (!requestResult.ok) {
+        throw new Error(requestResult.message);
+      }
+      const result = await memberTeamContext.deliverInterAgentMessage(requestResult.request);
       if (!result.accepted) {
         const failureMessage =
           (typeof result.message === "string" && result.message.trim().length > 0

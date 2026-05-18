@@ -19,7 +19,9 @@ const createMemberTeamContext = () =>
     teamInstruction: "Coordinate carefully.",
     members: [
       {
+        memberKind: "agent",
         memberName: "Professor",
+        memberPath: ["Professor"],
         memberRouteKey: "professor",
         memberRunId: "run-professor",
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -27,7 +29,9 @@ const createMemberTeamContext = () =>
         description: "Leads the work.",
       },
       {
+        memberKind: "agent",
         memberName: "Writer",
+        memberPath: ["Writer"],
         memberRouteKey: "writer",
         memberRunId: "run-writer",
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,

@@ -1,0 +1,19 @@
+# compatibility/legacy source-scope checks
+2026-05-17T20:05:23Z
+applyAcceptedStartupStatus references in changed source:
+frontend optimistic initializing send references:
+autobyteus-web/services/agentStreaming/protocol/messageTypes.ts:102:  status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
+autobyteus-web/services/agentStreaming/protocol/messageTypes.ts:170:  status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
+autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:696:          status: 'initializing',
+autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:747:          status: 'initializing',
+autobyteus-web/services/runHydration/__tests__/runtimeStatusNormalization.spec.ts:12:    expect(normalizeAgentRuntimeStatus('initializing')).toBe(AgentStatus.Initializing);
+autobyteus-web/services/runHydration/__tests__/runtimeStatusNormalization.spec.ts:38:    expect(normalizeTeamRuntimeStatus('initializing')).toBe(AgentTeamStatus.Initializing);
+autobyteus-web/services/runStatus/__tests__/agentRuntimeStatusState.spec.ts:20:  it('accepts initializing status events without granting interrupt permission or clearing sending', () => {
+autobyteus-web/services/runStatus/__tests__/agentRuntimeStatusState.spec.ts:24:    applyLiveAgentStatusEvent(context, { status: 'initializing', can_interrupt: true });
+autobyteus-web/services/runStatus/__tests__/agentRuntimeStatusState.spec.ts:58:    applyLiveAgentStatusEvent(context, { status: 'initializing', can_interrupt: false });
+autobyteus-web/components/server/ServerLoading.vue:18:          <p class="text-gray-600 text-sm">{{ $t('server.components.server.ServerLoading.backend_service_initializing') }}</p>
+autobyteus-web/components/fileExplorer/viewers/ExcelViewer.vue:95:      // Just clear state, don't error immediately if it's just initializing
+autobyteus-web/components/applications/ApplicationSurface.vue:54:          <p class="text-sm font-medium text-white">{{ $t('applications.components.applications.ApplicationIframeHost.initializingApplication') }}</p>
+autobyteus-web/components/applications/__tests__/ApplicationSurface.spec.ts:29:        'applications.components.applications.ApplicationIframeHost.initializingApplication': 'Initializing application…',
+TeamRun delayed local event fields:
+2026-05-17T20:05:23Z

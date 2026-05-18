@@ -142,6 +142,7 @@ describe('toolLifecycleHandler', () => {
       }),
       updateActivityStatus: vi.fn(),
       updateActivityArguments: vi.fn(),
+      updateActivityApprovalTarget: vi.fn(),
       updateActivityToolName: vi.fn(),
       setHighlightedActivity: vi.fn(),
       addActivityLog: vi.fn(),
@@ -198,6 +199,7 @@ describe('toolLifecycleHandler', () => {
     expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(runId, invocationId, 'edit_file');
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'awaiting-approval');
     expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(runId, invocationId, payload.arguments);
+    expect(mockActivityStore.updateActivityApprovalTarget).toHaveBeenCalledWith(runId, invocationId, null);
     expect(mockActivityStore.setHighlightedActivity).not.toHaveBeenCalled();
   });
 

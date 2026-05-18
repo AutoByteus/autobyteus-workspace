@@ -24,12 +24,13 @@ const buildMetadata = (
   teamDefinitionId: "team-def-1",
   teamDefinitionName: "Team One",
   coordinatorMemberRouteKey: "planner",
-  runVersion: 1,
   createdAt: "2026-03-26T10:00:00.000Z",
   updatedAt: "2026-03-26T10:00:00.000Z",
-  memberMetadata: [
+  memberTree: [
     {
+      memberKind: "agent",
       memberRouteKey: "planner",
+      memberPath: ["Planner"],
       memberName: "Planner",
       memberRunId: "planner-run",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -184,6 +185,65 @@ describe("TeamRunHistoryIndexService", () => {
     expect(rows[0]?.workspaceRootPath).toBe("/tmp/workspace");
   });
 
+  it("skips unmigrated legacy team metadata during disk rebuild without blocking current rows", async () => {
+    const { TeamRunHistoryIndexService } = await import(
+      "../../../../src/run-history/services/team-run-history-index-service.js"
+    );
+    const metadataStore = new TeamRunMetadataStore(memoryDir);
+    const indexStore = new TeamRunHistoryIndexStore(memoryDir);
+    await metadataStore.writeMetadata("team-current-canonical", buildMetadata({
+      teamRunId: "team-current-canonical",
+      teamDefinitionName: "Current Team",
+    }));
+    const legacyDir = path.join(memoryDir, "agent_teams", "team-run-legacy-flat-unsafe");
+    await fs.mkdir(legacyDir, { recursive: true });
+    await fs.writeFile(
+      path.join(legacyDir, "team_run_metadata.json"),
+      JSON.stringify({
+        teamRunId: "team-run-legacy-flat-unsafe",
+        teamDefinitionId: "team-def-legacy",
+        teamDefinitionName: "Unsafe Legacy Team",
+        coordinatorMemberRouteKey: "BuildSquad/review_lead",
+        runVersion: 1,
+        createdAt: "2026-03-26T10:00:00.000Z",
+        updatedAt: "2026-03-26T10:00:00.000Z",
+        archivedAt: null,
+        memberMetadata: [
+          {
+            memberRouteKey: "BuildSquad/review_lead",
+            memberName: "review_lead",
+            memberRunId: "review-lead-run",
+            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+            platformAgentRunId: null,
+            agentDefinitionId: "agent-def-review",
+            llmModelIdentifier: "model-1",
+            autoExecuteTools: false,
+            skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+            llmConfig: null,
+            workspaceRootPath: "/tmp/workspace",
+            applicationExecutionContext: null,
+          },
+        ],
+      }, null, 2),
+      "utf-8",
+    );
+    const service = new TeamRunHistoryIndexService(memoryDir, {
+      metadataStore,
+      indexStore,
+      teamRunManager: {
+        getTeamRun: vi.fn().mockReturnValue(null),
+        listActiveRuns: vi.fn().mockReturnValue([]),
+      },
+    });
+
+    const rows = await service.rebuildIndexFromDisk();
+
+    expect(rows.map((row) => row.teamRunId)).toEqual(["team-current-canonical"]);
+    expect((await indexStore.listRows()).map((row) => row.teamRunId)).toEqual([
+      "team-current-canonical",
+    ]);
+  });
+
   it("rebuilds team summary from the coordinator's first user trace", async () => {
     const { TeamRunHistoryIndexService } = await import(
       "../../../../src/run-history/services/team-run-history-index-service.js"
@@ -191,11 +251,12 @@ describe("TeamRunHistoryIndexService", () => {
     const metadataStore = new TeamRunMetadataStore(memoryDir);
     await metadataStore.writeMetadata("team-1", buildMetadata({
       coordinatorMemberRouteKey: "planner",
-      memberMetadata: [
-        buildMetadata().memberMetadata[0],
+      memberTree: [
+        buildMetadata().memberTree[0],
         {
-          ...buildMetadata().memberMetadata[0],
+          ...buildMetadata().memberTree[0],
           memberRouteKey: "reviewer",
+          memberPath: ["Reviewer"],
           memberName: "Reviewer",
           memberRunId: "reviewer-run",
         },

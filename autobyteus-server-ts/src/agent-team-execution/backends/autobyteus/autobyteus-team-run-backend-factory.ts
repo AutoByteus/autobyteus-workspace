@@ -220,6 +220,8 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
     return new TeamRunConfig({
       teamDefinitionId: config.teamDefinitionId,
       teamBackendKind: config.teamBackendKind,
+      coordinatorMemberName: config.coordinatorMemberName,
+      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberConfigs: config.memberConfigs.map((memberConfig) => {
         const memberRouteKey = normalizeMemberRouteKey(
           memberConfig.memberRouteKey ?? memberConfig.memberName,
@@ -293,6 +295,7 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
         )?.agentId ?? null;
       return new AutoByteusTeamMemberContext({
         memberName: memberConfig.memberName,
+        memberPath: memberConfig.memberPath,
         memberRouteKey,
         memberRunId,
         nativeAgentId: typeof nativeAgentId === "string" && nativeAgentId.trim().length > 0
@@ -302,7 +305,7 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
     });
 
     return new AutoByteusTeamRunContext({
-      coordinatorMemberRouteKey: null,
+      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberContexts,
     });
   }

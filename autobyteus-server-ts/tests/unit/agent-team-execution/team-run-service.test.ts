@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
-import type { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 
 describe("TeamRunService", () => {
@@ -32,6 +32,10 @@ describe("TeamRunService", () => {
       getDefinitionById: vi.fn().mockResolvedValue({
         name: "Support Team",
         coordinatorMemberName: "Coordinator",
+        nodes: [
+          { memberName: "Coordinator", refType: "agent", refScope: "shared", ref: "agent-def-1" },
+          { memberName: "Reviewer", refType: "agent", refScope: "shared", ref: "agent-def-2" },
+        ],
       }),
     } as any;
     const service = new TeamRunService({
@@ -81,11 +85,11 @@ describe("TeamRunService", () => {
     const { service, mocks } = createSubject();
     const createdRun = {
       runId: "team-mixed-1",
-      config: {
+      config: new TeamRunConfig({
         teamDefinitionId: "team-def-1",
         teamBackendKind: TeamBackendKind.MIXED,
         memberConfigs: [],
-      } as TeamRunConfig,
+      }),
       getRuntimeContext: vi.fn().mockReturnValue({ memberContexts: [] }),
     } as any;
     mocks.agentTeamRunManager.createTeamRun.mockResolvedValue(createdRun);
@@ -129,12 +133,14 @@ describe("TeamRunService", () => {
     const { service, mocks } = createSubject();
     const restoredRun = {
       runId: "team-mixed-restore-1",
-      config: {
+      config: new TeamRunConfig({
         teamDefinitionId: "team-def-1",
         teamBackendKind: TeamBackendKind.MIXED,
         memberConfigs: [
           {
+            memberKind: "agent",
             memberName: "Coordinator",
+            memberPath: ["Coordinator"],
             memberRouteKey: "coordinator",
             memberRunId: "run-1",
             agentDefinitionId: "agent-def-1",
@@ -146,7 +152,9 @@ describe("TeamRunService", () => {
             llmConfig: null,
           },
           {
+            memberKind: "agent",
             memberName: "Reviewer",
+            memberPath: ["Reviewer"],
             memberRouteKey: "reviewer",
             memberRunId: "run-2",
             agentDefinitionId: "agent-def-2",
@@ -157,12 +165,26 @@ describe("TeamRunService", () => {
             workspaceRootPath: "/tmp/workspace",
             llmConfig: null,
           },
+          {
+            memberKind: "agent",
+            memberName: "Reviewer",
+            memberPath: ["Reviewer"],
+            memberRouteKey: "reviewer",
+            memberRunId: "team-1/reviewer",
+            agentDefinitionId: "agent-def-2",
+            llmModelIdentifier: "gpt-test",
+            autoExecuteTools: false,
+            skillAccessMode: "PRELOADED_ONLY",
+            runtimeKind: RuntimeKind.AUTOBYTEUS,
+            workspaceRootPath: "/tmp/workspace",
+            llmConfig: null,
+          },
         ],
-      } as TeamRunConfig,
+      }),
       getRuntimeContext: vi.fn().mockReturnValue({
         memberContexts: [
-          { memberRunId: "run-1", getPlatformAgentRunId: () => "platform-1" },
-          { memberRunId: "run-2", getPlatformAgentRunId: () => "platform-2" },
+          { memberKind: "agent", memberName: "Coordinator", memberPath: ["Coordinator"], memberRouteKey: "coordinator", memberRunId: "run-1", getPlatformAgentRunId: () => "platform-1" },
+          { memberKind: "agent", memberName: "Reviewer", memberPath: ["Reviewer"], memberRouteKey: "reviewer", memberRunId: "run-2", getPlatformAgentRunId: () => "platform-2" },
         ],
       }),
     } as any;
@@ -171,10 +193,13 @@ describe("TeamRunService", () => {
       teamDefinitionId: "team-def-1",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      teamDefinitionName: "Support Team",
       coordinatorMemberRouteKey: "coordinator",
-      memberMetadata: [
+      memberTree: [
         {
+          memberKind: "agent",
           memberRouteKey: "coordinator",
+          memberPath: ["Coordinator"],
           memberName: "Coordinator",
           memberRunId: "run-1",
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -187,7 +212,9 @@ describe("TeamRunService", () => {
           workspaceRootPath: "/tmp/workspace",
         },
         {
+          memberKind: "agent",
           memberRouteKey: "reviewer",
+          memberPath: ["Reviewer"],
           memberName: "Reviewer",
           memberRunId: "run-2",
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
@@ -224,11 +251,15 @@ describe("TeamRunService", () => {
     const { service, mocks } = createSubject();
     const createdRun = {
       runId: "team-1",
-      config: {
+      config: new TeamRunConfig({
         teamDefinitionId: "team-def-1",
+        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
+        coordinatorMemberName: "Coordinator",
         memberConfigs: [
           {
+            memberKind: "agent",
             memberName: "Coordinator",
+            memberPath: ["Coordinator"],
             memberRouteKey: "coordinator",
             memberRunId: "team-1/coordinator",
             agentDefinitionId: "agent-def-1",
@@ -240,7 +271,7 @@ describe("TeamRunService", () => {
             llmConfig: null,
           },
         ],
-      } as TeamRunConfig,
+      }),
       getRuntimeContext: vi.fn().mockReturnValue({ memberContexts: [] }),
     } as any;
     mocks.agentTeamRunManager.createTeamRun.mockResolvedValue(createdRun);
@@ -252,6 +283,17 @@ describe("TeamRunService", () => {
           memberName: "Coordinator",
           memberRouteKey: "coordinator",
           agentDefinitionId: "agent-def-1",
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          skillAccessMode: "PRELOADED_ONLY" as any,
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          workspaceRootPath: "/tmp/workspace",
+          llmConfig: null,
+        },
+        {
+          memberName: "Reviewer",
+          memberRouteKey: "reviewer",
+          agentDefinitionId: "agent-def-2",
           llmModelIdentifier: "gpt-test",
           autoExecuteTools: false,
           skillAccessMode: "PRELOADED_ONLY" as any,
@@ -281,11 +323,14 @@ describe("TeamRunService", () => {
     const { service, mocks } = createSubject();
     const activeRun = {
       runId: "team-1",
-      config: {
+      config: new TeamRunConfig({
         teamDefinitionId: "team-def-1",
+        teamBackendKind: TeamBackendKind.AUTOBYTEUS,
         memberConfigs: [
           {
+            memberKind: "agent",
             memberName: "Coordinator",
+            memberPath: ["Coordinator"],
             memberRouteKey: "coordinator",
             memberRunId: "team-1/coordinator",
             agentDefinitionId: "agent-def-1",
@@ -297,7 +342,7 @@ describe("TeamRunService", () => {
             llmConfig: null,
           },
         ],
-      } as TeamRunConfig,
+      }),
       getRuntimeContext: vi.fn().mockReturnValue({ memberContexts: [] }),
     } as any;
 
@@ -374,15 +419,16 @@ describe("TeamRunService", () => {
     ]);
   });
 
-  it("resolves a nested team coordinator to the leaf member before creating the run", async () => {
+  it("rejects a subteam node as the root coordinator", async () => {
     const { service, mocks } = createSubject();
     const createdRun = {
       runId: "team-1",
-      config: {
+      config: new TeamRunConfig({
         teamDefinitionId: "root-team",
+        teamBackendKind: TeamBackendKind.MIXED,
         coordinatorMemberName: "Specialist",
         memberConfigs: [],
-      } as TeamRunConfig,
+      }),
       getRuntimeContext: vi.fn().mockReturnValue({ memberContexts: [] }),
     } as any;
     mocks.agentTeamRunManager.createTeamRun.mockResolvedValue(createdRun);
@@ -407,7 +453,7 @@ describe("TeamRunService", () => {
       }),
     } as any;
 
-    await service.createTeamRun({
+    await expect(service.createTeamRun({
       teamDefinitionId: "root-team",
       memberConfigs: [
         {
@@ -422,12 +468,7 @@ describe("TeamRunService", () => {
           llmConfig: null,
         },
       ],
-    });
-
-    expect(mocks.agentTeamRunManager.createTeamRun).toHaveBeenCalledWith(
-      expect.objectContaining({
-        coordinatorMemberName: "Specialist",
-      }),
-    );
+    })).rejects.toThrow("must be an agent member");
+    expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
   });
 });

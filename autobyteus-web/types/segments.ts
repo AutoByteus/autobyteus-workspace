@@ -29,9 +29,17 @@ export interface ToolInvocationLifecycle {
   toolName: string;
   arguments: Record<string, any>;
   status: ToolInvocationStatus;
+  approvalTarget?: ToolApprovalTarget | null;
   logs: string[];
   result: any | null;
   error: string | null;
+}
+
+export interface ToolApprovalTarget {
+  memberRouteKey?: string | null;
+  memberPath?: string[] | null;
+  sourceRouteKey?: string | null;
+  sourcePath?: string[] | null;
 }
 
 export interface AIResponseTextSegment {

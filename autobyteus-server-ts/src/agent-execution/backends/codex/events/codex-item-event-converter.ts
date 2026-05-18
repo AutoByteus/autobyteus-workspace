@@ -2,6 +2,7 @@ import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
+import { resolveCodexToolItemFamily } from "../items/codex-tool-item-family.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
 
 const isSendMessageToToolName = (value: string | null): boolean => {
@@ -36,7 +37,6 @@ export type CodexItemEventConverterContext = {
   resolveItemType: (payload: JsonObject) => string | null;
   isUserMessageItem: (itemType: string | null) => boolean;
   isReasoningItem: (itemType: string | null) => boolean;
-  isWebSearchItem: (itemType: string | null) => boolean;
   resolveWebSearchMetadata: (payload: JsonObject) => Record<string, unknown>;
   resolveWebSearchArguments: (payload: JsonObject) => Record<string, unknown>;
   resolveWebSearchResult: (payload: JsonObject) => unknown;
@@ -273,10 +273,11 @@ export const convertCodexItemEvent = (
   switch (codexEventName) {
     case CodexThreadEventName.ITEM_STARTED: {
       const itemType = context.resolveItemType(payload);
+      const itemFamily = resolveCodexToolItemFamily(itemType);
       if (context.isUserMessageItem(itemType) || context.isReasoningItem(itemType)) {
         return [];
       }
-      if (itemType === "commandexecution") {
+      if (itemFamily === "command_execution") {
         context.clearReasoningSegmentForTurn(payload);
         const invocationId = context.resolveInvocationId(payload);
         const toolName = normalizeToolNameForEvent(context.resolveToolName(payload, "run_bash"));
@@ -294,25 +295,19 @@ export const convertCodexItemEvent = (
         ];
       }
       context.clearReasoningSegmentForTurn(payload);
-      if (context.isWebSearchItem(itemType)) {
+      if (itemFamily === "web_search") {
         return [
           createWebSearchSegmentStartEvent(context, codexEventName, payload),
           createWebSearchLifecycleStartedEvent(context, codexEventName, payload),
         ];
       }
-      if (itemType === "filechange") {
+      if (itemFamily === "file_change") {
         return [
           createFileChangeSegmentStartEvent(context, codexEventName, payload),
           createFileChangeLifecycleStartedEvent(context, codexEventName, payload),
         ];
       }
-      if (itemType === "mcptoolcall") {
-        return [
-          createDynamicToolSegmentStartEvent(context, codexEventName, payload),
-          createDynamicToolLifecycleStartedEvent(context, codexEventName, payload),
-        ];
-      }
-      if (itemType === "dynamictoolcall") {
+      if (itemFamily === "mcp_tool_call" || itemFamily === "dynamic_tool_call") {
         return [
           createDynamicToolSegmentStartEvent(context, codexEventName, payload),
           createDynamicToolLifecycleStartedEvent(context, codexEventName, payload),
@@ -343,6 +338,7 @@ export const convertCodexItemEvent = (
     }
     case CodexThreadEventName.ITEM_COMPLETED: {
       const itemType = context.resolveItemType(payload);
+      const itemFamily = resolveCodexToolItemFamily(itemType);
       if (context.isUserMessageItem(itemType)) {
         return [];
       }
@@ -360,7 +356,7 @@ export const convertCodexItemEvent = (
           }),
         ];
       }
-      if (itemType === "commandexecution") {
+      if (itemFamily === "command_execution") {
         const toolName = normalizeToolNameForEvent(context.resolveToolName(payload, "run_bash"));
         const commandValue = context.resolveCommandValue(payload);
         if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
@@ -368,7 +364,7 @@ export const convertCodexItemEvent = (
         }
         return [createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash")];
       }
-      if (itemType === "filechange") {
+      if (itemFamily === "file_change") {
         const invocationId = context.resolveInvocationId(payload);
         const serializedPayload = serializePayload(payload);
         const events: AgentRunEvent[] = [];
@@ -408,13 +404,13 @@ export const convertCodexItemEvent = (
         events.push(createFileChangeSegmentEndEvent(context, codexEventName, payload));
         return events;
       }
-      if (itemType === "dynamictoolcall") {
+      if (itemFamily === "dynamic_tool_call") {
         return [
           createTerminalToolExecutionEvent(context, codexEventName, payload),
           createSegmentEndEvent(context, codexEventName, payload),
         ];
       }
-      if (context.isWebSearchItem(itemType)) {
+      if (itemFamily === "web_search") {
         return [
           createWebSearchTerminalLifecycleEvent(context, codexEventName, payload),
           createWebSearchSegmentEndEvent(context, codexEventName, payload),

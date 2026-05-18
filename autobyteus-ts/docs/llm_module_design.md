@@ -246,7 +246,7 @@ Current native mappings are:
 | Ollama | assistant `tool_calls` plus `role: "tool"` result messages with `tool_name`. |
 | Anthropic | assistant `tool_use` blocks plus immediately-following user `tool_result` blocks. |
 | Mistral | assistant `tool_calls` plus `role: "tool"` messages with `tool_call_id` and `name`. |
-| OpenAI Responses | `function_call` items plus `function_call_output` items keyed by `call_id`. |
+| OpenAI Responses | Captured `response.output` items replayed once when available, including required `reasoning` items before `function_call` items, followed by `function_call_output` items keyed by `call_id`. Matching function calls keep provider item metadata but use the final normalized `ToolCallSpec` id/name/arguments. |
 
 Renderer selection is mode-aware. `api_tool_call` selects the native provider
 renderer; `xml`, `json`, and `sentinel` select explicit text-history renderers
@@ -257,6 +257,16 @@ does not append an additional aggregate user message such as
 `Tool: <name> (ID: ...)` lines, or aggregate `Status: Success` markers; the
 next LLM request is assembled from the existing working context and rendered
 through the provider's native channel.
+
+OpenAI Responses is stricter than Chat Completions-style history for reasoning
+models. When a streamed Responses turn records `responseOutputItems` on the
+native tool-call context, `OpenAIResponsesRenderer` treats that completed
+provider sequence as authoritative for replay ordering. It preserves reasoning
+items and replayable encrypted reasoning content, normalizes only the matching
+function-call `call_id`/`name`/`arguments` from the final `ToolCallSpec`, and then
+adds matching `function_call_output` items. `OpenAIResponsesLLM` requests
+`reasoning.encrypted_content` whenever tools or prior Responses tool/reasoning
+items are present, while preserving caller-supplied `include` entries.
 
 For parallel tool-call batches, renderers replay results in the original
 assistant tool-call order rather than result completion order. Gemini and

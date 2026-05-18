@@ -1,0 +1,916 @@
+===== Delivery Round 11 post-refresh checks (2026-05-16T12:47:24+02:00) =====
+HEAD: bc2cb3c3fdff
+origin/personal: a51d3abd8bb6
+Base refresh result: origin/personal unchanged and branch is behind 0; no additional merge required.
+Command: git diff --check
+
+Command: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false
+
+Command: backend command/external-channel/WebSocket focused suite
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:60207) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+Agent team websocket attached for team run team-1
+Created agent session 8491690c-b6af-4099-8610-626ff60ff811 for run team-1
+Agent Team WebSocket connected: session=8491690c-b6af-4099-8610-626ff60ff811, run=team-1
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+Closed agent session 8491690c-b6af-4099-8610-626ff60ff811
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+Agent Team WebSocket disconnected: 8491690c-b6af-4099-8610-626ff60ff811
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+Agent team websocket attached for team run team-recover
+Created agent session 1f697d08-acc7-44d9-bf9e-9d1dc5b1f289 for run team-recover
+Agent Team WebSocket connected: session=1f697d08-acc7-44d9-bf9e-9d1dc5b1f289, run=team-recover
+
+·stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run
+Closed agent session 1f697d08-acc7-44d9-bf9e-9d1dc5b1f289
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run
+Agent Team WebSocket disconnected: 1f697d08-acc7-44d9-bf9e-9d1dc5b1f289
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run
+Agent team websocket attached for team run missing-team
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Agent team websocket attached for team run team-send-missing
+Created agent session f75629b5-4561-4a1f-9b7c-fd18792d901d for run team-send-missing
+Agent Team WebSocket connected: session=f75629b5-4561-4a1f-9b7c-fd18792d901d, run=team-send-missing
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Team websocket session 'f75629b5-4561-4a1f-9b7c-fd18792d901d' could not resolve run 'team-send-missing'.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Closed agent session f75629b5-4561-4a1f-9b7c-fd18792d901d
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Agent Team WebSocket disconnected: f75629b5-4561-4a1f-9b7c-fd18792d901d
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run
+Agent team websocket attached for team run team-stop-active-only
+Created agent session 0e1d56dd-56f2-42da-ae6f-f50d5b9e3ee1 for run team-stop-active-only
+Agent Team WebSocket connected: session=0e1d56dd-56f2-42da-ae6f-f50d5b9e3ee1, run=team-stop-active-only
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run
+Team websocket session '0e1d56dd-56f2-42da-ae6f-f50d5b9e3ee1' lost its active team subscription for run 'team-stop-active-only'.
+
+····stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Closed agent session 0e1d56dd-56f2-42da-ae6f-f50d5b9e3ee1
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Agent Team WebSocket disconnected: 0e1d56dd-56f2-42da-ae6f-f50d5b9e3ee1
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Agent team websocket attached for team run team-live-1
+Created agent session de1e1311-032c-457d-bfae-9d9a6b6d0d55 for run team-live-1
+Agent Team WebSocket connected: session=de1e1311-032c-457d-bfae-9d9a6b6d0d55, run=team-live-1
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > returns SESSION_NOT_READY for team command before connect handshake
+Closed agent session de1e1311-032c-457d-bfae-9d9a6b6d0d55
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > returns SESSION_NOT_READY for team command before connect handshake
+Agent Team WebSocket disconnected: de1e1311-032c-457d-bfae-9d9a6b6d0d55
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > returns SESSION_NOT_READY for team command before connect handshake
+Agent team websocket attached for team run any-team
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+Agent team websocket attached for team run team-approvals
+Created agent session 829453dc-092f-4c22-9141-cae8eb7aa93a for run team-approvals
+Agent Team WebSocket connected: session=829453dc-092f-4c22-9141-cae8eb7aa93a, run=team-approvals
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+TOOL_APPROVAL rejected for team run team-approvals: Tool approval target missing; include member/source/target path or route selector fields.
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+TOOL_APPROVAL rejected for team run team-approvals: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Closed agent session 829453dc-092f-4c22-9141-cae8eb7aa93a
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Agent Team WebSocket disconnected: 829453dc-092f-4c22-9141-cae8eb7aa93a
+
+···stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:60214) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > connects through TeamRunService.resolveTeamRun and sends CONNECTED plus initial status
+Created agent session 60a56fce-2db1-4e12-9898-99537dfede1a for run team-1
+Agent Team WebSocket connected: session=60a56fce-2db1-4e12-9898-99537dfede1a, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE via the service-resolved TeamRun subject
+Created agent session d3b55756-904a-429e-ba8f-b7d216765d65 for run team-1
+Agent Team WebSocket connected: session=d3b55756-904a-429e-ba8f-b7d216765d65, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE with structured camelCase route and path selectors
+Created agent session 9506e8e8-6963-450b-8506-ed513264a1f3 for run team-1
+Agent Team WebSocket connected: session=9506e8e8-6963-450b-8506-ed513264a1f3, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Created agent session c52ac70b-5f04-4720-9ba5-03026ba6f245 for run team-1
+Agent Team WebSocket connected: session=c52ac70b-5f04-4720-9ba5-03026ba6f245, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > restores and rebinds a team run before SEND_MESSAGE when the active subject was removed
+Created agent session 5238f331-9240-4221-bc54-bc37fc404eb3 for run team-1
+Agent Team WebSocket connected: session=5238f331-9240-4221-bc54-bc37fc404eb3, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps interrupt-generation active-only and does not restore a stopped team run
+Created agent session fb32870f-d573-4754-96f0-ecac2cae3655 for run team-1
+Agent Team WebSocket connected: session=fb32870f-d573-4754-96f0-ecac2cae3655, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps interrupt-generation active-only and does not restore a stopped team run
+Team websocket session 'fb32870f-d573-4754-96f0-ecac2cae3655' lost its active team subscription for run 'team-1'.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with explicit member path selectors
+Created agent session ca1a4162-fdb3-4b41-9012-47291529dc29 for run team-1
+Agent Team WebSocket connected: session=ca1a4162-fdb3-4b41-9012-47291529dc29, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with structured camelCase selector fields
+Created agent session ca2f439a-0ae5-4b94-9f11-dce391adce0e for run team-1
+Agent Team WebSocket connected: session=ca2f439a-0ae5-4b94-9f11-dce391adce0e, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Created agent session cf30f472-96c0-4e4c-8112-6e7e7d99701d for run team-1
+Agent Team WebSocket connected: session=cf30f472-96c0-4e4c-8112-6e7e7d99701d, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors
+Created agent session 41a85fad-bf43-4f1d-902b-1372ef3c1d2a for run team-1
+Agent Team WebSocket connected: session=41a85fad-bf43-4f1d-902b-1372ef3c1d2a, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target missing; include member/source/target path or route selector fields.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > registers the websocket connection for team-scoped live message broadcasts
+Created agent session 2ff9d464-4c09-4a33-bbb3-0b83f696f9c9 for run team-1
+Agent Team WebSocket connected: session=2ff9d464-4c09-4a33-bbb3-0b83f696f9c9, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > coalesces metadata refresh work across a burst of streamed team events
+Created agent session 03874b5a-0e92-4b5d-a2ef-4578aefdec4f for run team-1
+Agent Team WebSocket connected: session=03874b5a-0e92-4b5d-a2ef-4578aefdec4f, run=team-1
+
+················stdout | tests/unit/external-channel/runtime/channel-team-run-facade.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/external-channel/runtime/channel-team-run-facade.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:60215) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/external-channel/runtime/channel-team-run-facade.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+········
+
+ Test Files  4 passed (4)
+      Tests  32 passed (32)
+   Start at  12:47:28
+   Duration  5.86s (transform 2.24s, setup 33ms, import 4.83s, tests 333ms, environment 0ms)
+
+
+Command: backend nested/restore focused suite
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:60241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > connects through TeamRunService.resolveTeamRun and sends CONNECTED plus initial status
+Created agent session be5e5287-22d9-472e-a1c0-9000c28dd536 for run team-1
+Agent Team WebSocket connected: session=be5e5287-22d9-472e-a1c0-9000c28dd536, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE via the service-resolved TeamRun subject
+Created agent session 39dcaea8-34e7-40bc-994a-b18b93a0485e for run team-1
+Agent Team WebSocket connected: session=39dcaea8-34e7-40bc-994a-b18b93a0485e, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE with structured camelCase route and path selectors
+Created agent session ddbff57c-25f4-4d5a-84ad-82701f8287c8 for run team-1
+Agent Team WebSocket connected: session=ddbff57c-25f4-4d5a-84ad-82701f8287c8, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Created agent session fbb1ff68-9999-48f9-b7fc-0c4c2f71e94c for run team-1
+Agent Team WebSocket connected: session=fbb1ff68-9999-48f9-b7fc-0c4c2f71e94c, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > restores and rebinds a team run before SEND_MESSAGE when the active subject was removed
+Created agent session ce882775-e3cd-40a7-af26-8fc0520cdfc3 for run team-1
+Agent Team WebSocket connected: session=ce882775-e3cd-40a7-af26-8fc0520cdfc3, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps interrupt-generation active-only and does not restore a stopped team run
+Created agent session 63cdc266-07e0-4bc0-9889-c2a9c9ec64b9 for run team-1
+Agent Team WebSocket connected: session=63cdc266-07e0-4bc0-9889-c2a9c9ec64b9, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps interrupt-generation active-only and does not restore a stopped team run
+Team websocket session '63cdc266-07e0-4bc0-9889-c2a9c9ec64b9' lost its active team subscription for run 'team-1'.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with explicit member path selectors
+Created agent session d02374c7-b4a6-4595-9c05-dd454c9b4a7f for run team-1
+Agent Team WebSocket connected: session=d02374c7-b4a6-4595-9c05-dd454c9b4a7f, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with structured camelCase selector fields
+Created agent session 51edeff7-950c-470d-943d-192ba62e46f3 for run team-1
+Agent Team WebSocket connected: session=51edeff7-950c-470d-943d-192ba62e46f3, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Created agent session 3a517cad-02d5-4f17-ac1b-44731172f071 for run team-1
+Agent Team WebSocket connected: session=3a517cad-02d5-4f17-ac1b-44731172f071, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors
+Created agent session 88455745-b8d6-4556-9607-b602a4e1ec08 for run team-1
+Agent Team WebSocket connected: session=88455745-b8d6-4556-9607-b602a4e1ec08, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target missing; include member/source/target path or route selector fields.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > registers the websocket connection for team-scoped live message broadcasts
+Created agent session df95e4eb-d837-42e1-ac94-4766e0c97011 for run team-1
+Agent Team WebSocket connected: session=df95e4eb-d837-42e1-ac94-4766e0c97011, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > coalesces metadata refresh work across a burst of streamed team events
+Created agent session 94e17a0a-bfff-48a7-9940-d55ac93320ea for run team-1
+Agent Team WebSocket connected: session=94e17a0a-bfff-48a7-9940-d55ac93320ea, run=team-1
+
+················stdout | tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:60247) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+··stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:60248) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+·······
+
+ Test Files  4 passed (4)
+      Tests  25 passed (25)
+   Start at  12:47:34
+   Duration  5.22s (transform 2.17s, setup 34ms, import 4.52s, tests 27ms, environment 0ms)
+
+
+Command: backend mixed-team-run integration suite
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+
+···
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  12:47:40
+   Duration  503ms (transform 88ms, setup 14ms, import 100ms, tests 6ms, environment 0ms)
+
+
+Command: frontend focused status/recovery/history/streaming suite
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runtimeStatusNormalization.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·······stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > marks team subscription state on connect and disconnect callbacks
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > reattaches lifecycle callbacks to the latest team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+············
+
+ Test Files  4 passed (4)
+      Tests  19 passed (19)
+   Start at  12:47:43
+   Duration  2.04s (transform 1.17s, setup 5.12s, collect 560ms, tests 18ms, environment 831ms, prepare 535ms)
+
+
+Command: pnpm -C autobyteus-web audit:localization-literals
+
+> autobyteus@1.3.13 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:60338) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Command: refined no-legacy command-authority scan 1
+
+Command: refined no-legacy command-authority scan 2
+17:  "agent_name",
+19:  "agentName",
+21:  "member_name",
+23:  "memberName",
+25:  "target_agent_name",
+27:  "target_member_name",
+29:  "targetAgentName",
+31:  "targetMemberName",
+
+Command: git diff --cached --check
+
+All Delivery Round 11 post-refresh checks passed (2026-05-16T12:47:45+02:00).
+
+## Electron artifact verification
+UTC 2026-05-16T10:51:31Z
+bc2cb3c3fdff7eb89157d43fa0018bf0caf89ea4
+a51d3abd8bb620bb984c9c9f24209e4d32eb167b
+total 1510928
+-rw-r--r--@ 1 normy  staff   359M May 16 12:50 AutoByteus_personal_macos-arm64-1.3.13.dmg
+-rw-r--r--@ 1 normy  staff   385K May 16 12:50 AutoByteus_personal_macos-arm64-1.3.13.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   356M May 16 12:51 AutoByteus_personal_macos-arm64-1.3.13.zip
+-rw-r--r--@ 1 normy  staff   375K May 16 12:51 AutoByteus_personal_macos-arm64-1.3.13.zip.blockmap
+-rw-r--r--@ 1 normy  staff   813B May 16 12:51 builder-debug.yml
+-rw-r--r--@ 1 normy  staff   555B May 16 12:51 latest-mac.yml
+drwxr-xr-x@ 3 normy  staff    96B May 16 12:49 mac-arm64
+
+Info.plist version fields:
+1.3.13
+1.3.13
+com.autobyteus.app
+
+zip -T:
+test of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip OK
+
+hdiutil verify:
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $08F00880
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $CD1F87B6
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $7B053C36
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $F86440C1
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $7B053C36
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $48D260B4
+Die überprüfte CRC32-Prüfsumme ist $E6326A69
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg" is VALID
+
+Artifact sizes:
+1.2G	autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+368M	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg
+369M	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip

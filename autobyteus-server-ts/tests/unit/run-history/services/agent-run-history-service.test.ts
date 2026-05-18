@@ -10,7 +10,7 @@ import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-r
 
 const agentRunManagerMock = {
   hasActiveRun: vi.fn<(runId: string) => boolean>(),
-  getActiveRun: vi.fn<(runId: string) => { getStatusSnapshot: () => { status: "offline" | "idle" | "running" | "error" } } | null>(),
+  getActiveRun: vi.fn<(runId: string) => { getStatusSnapshot: () => { status: "offline" | "initializing" | "idle" | "running" | "error" } } | null>(),
   listActiveRuns: vi.fn<() => string[]>(),
 };
 

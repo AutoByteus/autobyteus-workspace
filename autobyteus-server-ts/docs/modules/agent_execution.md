@@ -21,6 +21,21 @@ Runtime managers compose definitions, prompts, tools, processors, and workspace 
 
 See [Agent Memory](./agent_memory.md) for the storage-only recorder contract and memory-file boundaries.
 
+## Command-Start Status
+
+`AgentRun.postUserMessage(...)` is the runtime-neutral status authority for a
+standalone message command. When the current status is `offline` or `idle`, it
+publishes an `AGENT_STATUS` payload with `status: "initializing"` and
+`can_interrupt: false` before awaiting provider/native startup, restore, first
+turn creation, or backend `postUserMessage(...)` work. Later backend runtime
+events replace that temporary command-start status with `running`, `idle`,
+`offline`, or `error`.
+
+If the backend rejects the command without accepting it, `AgentRun` restores the
+previous terminal status. If the backend throws after command-start status was
+published, `AgentRun` publishes non-interruptible `error` so clients are not
+left stuck in `initializing`.
+
 ## Runtime Segment Identity And Ordering
 
 Provider adapters own the stream segment identities they emit. Text segments must

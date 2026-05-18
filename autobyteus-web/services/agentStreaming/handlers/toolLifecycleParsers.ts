@@ -8,6 +8,7 @@ import type {
   ToolExecutionSucceededPayload,
   ToolLogPayload,
 } from '../protocol/messageTypes';
+import type { ToolApprovalTarget } from '~/types/segments';
 
 export interface ParsedToolLifecycleBase {
   invocationId: string;
@@ -17,6 +18,7 @@ export interface ParsedToolLifecycleBase {
 
 export interface ParsedToolApprovalRequestedPayload extends ParsedToolLifecycleBase {
   arguments: Record<string, any>;
+  approvalTarget: ToolApprovalTarget | null;
 }
 
 export interface ParsedToolApprovedPayload extends ParsedToolLifecycleBase {
@@ -91,6 +93,42 @@ const normalizeArguments = (value: unknown): Record<string, any> => {
   return {};
 };
 
+const normalizePathSegments = (value: unknown): string[] | null => {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+  const path = value
+    .map((segment) => normalizeString(segment))
+    .filter((segment): segment is string => Boolean(segment));
+  return path.length > 0 ? path : null;
+};
+
+const routeKeyFromPath = (path: string[] | null): string | null =>
+  path && path.length > 0 ? path.join('/') : null;
+
+export const parseToolApprovalTarget = (payload: {
+  member_route_key?: unknown;
+  member_path?: unknown;
+  source_route_key?: unknown;
+  source_path?: unknown;
+}): ToolApprovalTarget | null => {
+  const memberPath = normalizePathSegments(payload.member_path);
+  const sourcePath = normalizePathSegments(payload.source_path);
+  const memberRouteKey = normalizeOptionalString(payload.member_route_key) ?? routeKeyFromPath(memberPath);
+  const sourceRouteKey = normalizeOptionalString(payload.source_route_key) ?? routeKeyFromPath(sourcePath);
+
+  if (!memberRouteKey && !sourceRouteKey && !memberPath && !sourcePath) {
+    return null;
+  }
+
+  return {
+    memberRouteKey,
+    memberPath,
+    sourceRouteKey,
+    sourcePath,
+  };
+};
+
 const parseBase = (
   payload: { invocation_id?: unknown; tool_name?: unknown; turn_id?: unknown },
 ): ParsedToolLifecycleBase | null => {
@@ -118,6 +156,7 @@ export const parseToolApprovalRequestedPayload = (
   return {
     ...base,
     arguments: normalizeArguments(payload.arguments),
+    approvalTarget: parseToolApprovalTarget(payload),
   };
 };
 

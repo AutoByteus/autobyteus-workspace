@@ -1,15 +1,14 @@
-type MemberRunTeammate = {
-  memberName: string;
-  role: string | null;
-  description: string | null;
-};
+import type { MemberTeamContext } from "../domain/member-team-context.js";
+import {
+  buildTeamMembershipRosterManifest,
+  renderTeamMembershipRosterManifest,
+} from "./member-team-roster-manifest.js";
 
 type MemberRunInstructionComposerInput = {
   teamInstruction: string | null;
   agentInstruction: string | null;
-  currentMemberName: string | null;
+  memberTeamContext: MemberTeamContext | null;
   sendMessageToEnabled: boolean;
-  teammates: MemberRunTeammate[];
 };
 
 export type MemberRunInstructionComposition = {
@@ -18,44 +17,21 @@ export type MemberRunInstructionComposition = {
   runtimeInstruction: string | null;
 };
 
-const asTrimmedString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
-const toLowerTrimmed = (value: string): string => value.trim().toLowerCase();
-
-const formatTeammate = (member: MemberRunTeammate): string => {
-  const detailParts = [member.role, member.description].filter(
-    (value): value is string => Boolean(value),
-  );
-  if (detailParts.length === 0) {
-    return `- ${member.memberName}`;
-  }
-  return `- ${member.memberName}: ${detailParts.join(" | ")}`;
-};
-
 export const composeMemberRunInstructions = (
   input: MemberRunInstructionComposerInput,
 ): MemberRunInstructionComposition => {
-  const teammates = input.teammates.filter((member) => {
-    const memberName = asTrimmedString(member.memberName);
-    if (!memberName) {
-      return false;
-    }
-    if (!input.currentMemberName) {
-      return true;
-    }
-    return toLowerTrimmed(memberName) !== toLowerTrimmed(input.currentMemberName);
-  });
-  const sendMessageToAvailable = input.sendMessageToEnabled && teammates.length > 0;
+  const memberTeamContext = input.memberTeamContext;
+  const communicationRecipients = memberTeamContext?.communicationRecipients ?? [];
+  const sendMessageToAvailable = input.sendMessageToEnabled && communicationRecipients.length > 0;
 
   const runtimeLines: string[] = [];
-  if (input.currentMemberName) {
-    runtimeLines.push(`Current team member: ${input.currentMemberName}`);
+  if (memberTeamContext?.memberName) {
+    runtimeLines.push(`Current team member: ${memberTeamContext.memberName}`);
   }
 
   if (sendMessageToAvailable) {
     runtimeLines.push(
-      "If you use `send_message_to`, set `recipient_name` to exactly match one teammate name from the list below.",
+      "If you use `send_message_to`, set `recipient_name` to exactly match one allowed recipient name from the team membership roster below.",
     );
     runtimeLines.push(
       "Use `send_message_to` only for actual teammate delivery; plain text does not deliver a teammate message.",
@@ -67,9 +43,14 @@ export const composeMemberRunInstructions = (
       "Example: content explains the handoff and may mention `/Users/me/project/implementation-handoff.md`; reference_files includes [`/Users/me/project/implementation-handoff.md`].",
     );
     runtimeLines.push("Do not claim teammate delivery unless the tool call succeeds.");
-    runtimeLines.push("Teammates:");
-    runtimeLines.push(...teammates.map((member) => formatTeammate(member)));
-  } else if (input.teammates.length > 0) {
+    const manifestText = renderTeamMembershipRosterManifest(
+      buildTeamMembershipRosterManifest(memberTeamContext!),
+    );
+    if (manifestText) {
+      runtimeLines.push("");
+      runtimeLines.push(manifestText);
+    }
+  } else if (communicationRecipients.length > 0) {
     runtimeLines.push(
       "Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.",
     );

@@ -404,7 +404,7 @@ const seedReplyContext = async (deps: {
     targetType: "AGENT",
     agentRunId: "agent-run-1",
     teamRunId: null,
-    targetNodeName: null,
+    targetMemberRouteKey: null,
     allowTransportFallback: false,
   });
 };

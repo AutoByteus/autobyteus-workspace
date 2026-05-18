@@ -1,0 +1,109 @@
+{
+  "data": {
+    "getTeamMemberRunProjection": {
+      "agentRunId": "worker_517c3afd25fff88f",
+      "summary": "This is a history reload reproduction. Please use bash tool calls, not just prose. Run these comm...",
+      "lastActivityAt": "2026-05-16T07:24:59.348Z",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "This is a history reload reproduction. Please use bash tool calls, not just prose. Run these commands in order: pwd; ls -la | head -20; git status --short. Then answer with a concise summary. Do not modify files.",
+          "media": null,
+          "ts": 1778916292.085
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "call_UIeSeK5X7lnC5TMZLUaYJ6x7",
+          "role": null,
+          "content": "",
+          "toolName": "run_bash",
+          "toolArgs": {
+            "command": "/bin/bash -lc 'pwd; ls -la | head -20; git status --short'"
+          },
+          "toolResult": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls\ntotal 1272\ndrwxr-xr-x@  29 normy  staff     928 May 16 08:51 .\ndrwxr-xr-x@ 109 normy  staff    3488 May 16 07:32 ..\n-rw-r--r--@   1 normy  staff     240 May 16 07:32 .dockerignore\n-rw-r--r--@   1 normy  staff     113 May 16 07:32 .git\ndrwxr-xr-x@   4 normy  staff     128 May 16 07:32 .github\n-rw-r--r--@   1 normy  staff     244 May 16 07:32 .gitignore\ndrwxr-xr-x@   4 normy  staff     128 May 16 08:56 .local\n-rw-r--r--@   1 normy  staff   10174 May 16 07:32 LICENSE\n-rw-r--r--@   1 normy  staff     355 May 16 07:32 NOTICE\n-rw-r--r--@   1 normy  staff   10198 May 16 07:32 README.md\ndrwxr-xr-x@   4 normy  staff     128 May 16 07:32 applications\ndrwxr-xr-x@   9 normy  staff     288 May 16 07:35 autobyteus-application-backend-sdk\ndrwxr-xr-x@  10 normy  staff     320 May 16 07:35 autobyteus-application-devkit\ndrwxr-xr-x@  11 normy  staff     352 May 16 07:35 autobyteus-application-frontend-sdk\ndrwxr-xr-x@  10 normy  staff     320 May 16 07:35 autobyteus-application-sdk-contracts\ndrwxr-xr-x@  15 normy  staff     480 May 16 07:35 autobyteus-message-gateway\ndrwxr-xr-x@  27 normy  staff     864 May 16 09:16 autobyteus-server-ts\ndrwxr-xr-x@  20 normy  staff     640 May 16 08:50 autobyteus-ts\ndrwxr-xr-x@  66 normy  staff    2112 May 16 09:16 autobyteus-web\n M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md\n M autobyteus-server-ts/docs/modules/codex_integration.md\n M autobyteus-server-ts/docs/modules/run_history.md\n?? tickets/in-progress/codex-history-reload-toolcalls/docs-sync-report.md\n?? tickets/in-progress/codex-history-reload-toolcalls/electron-test-build-report.md\n?? tickets/in-progress/codex-history-reload-toolcalls/handoff-summary.md\n?? tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/\n?? tickets/in-progress/codex-history-reload-toolcalls/release-deployment-report.md\n",
+          "toolError": null,
+          "media": null,
+          "ts": 1778916297.7
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "Done \u2014 ran exactly as requested:\n\n1. `pwd`\n2. `ls -la | head -20`\n3. `git status --short`\n\nSummary:\n- Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls`\n- `ls -la | head -20` succeeded (repo root contents shown).\n- `git status --short` shows:\n  - **Modified**:\n    - `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`\n    - `autobyteus-server-ts/docs/modules/codex_integration.md`\n    - `autobyteus-server-ts/docs/modules/run_history.md`\n  - **Untracked**:\n    - `tickets/in-progress/codex-history-reload-toolcalls/docs-sync-report.md`\n    - `tickets/in-progress/codex-history-reload-toolcalls/electron-test-build-report.md`\n    - `tickets/in-progress/codex-history-reload-toolcalls/handoff-summary.md`\n    - `tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/`\n    - `tickets/in-progress/codex-history-reload-toolcalls/release-deployment-report.md`\n\nNo files were modified by me.",
+          "media": null,
+          "ts": 1778916299.348
+        },
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "This is a history reload reproduction. Please use bash tool calls, not just prose. Run these commands in order: pwd; ls -la | head -20; git status --short. Then answer with a concise summary. Do not modify files.",
+          "media": null,
+          "ts": null
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "Got it \u2014 I\u2019ll run the requested shell commands in that exact order and then report back with a concise summary.",
+          "media": null,
+          "ts": null
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "Done \u2014 ran exactly as requested:\n\n1. `pwd`\n2. `ls -la | head -20`\n3. `git status --short`\n\nSummary:\n- Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls`\n- `ls -la | head -20` succeeded (repo root contents shown).\n- `git status --short` shows:\n  - **Modified**:\n    - `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`\n    - `autobyteus-server-ts/docs/modules/codex_integration.md`\n    - `autobyteus-server-ts/docs/modules/run_history.md`\n  - **Untracked**:\n    - `tickets/in-progress/codex-history-reload-toolcalls/docs-sync-report.md`\n    - `tickets/in-progress/codex-history-reload-toolcalls/electron-test-build-report.md`\n    - `tickets/in-progress/codex-history-reload-toolcalls/handoff-summary.md`\n    - `tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/`\n    - `tickets/in-progress/codex-history-reload-toolcalls/release-deployment-report.md`\n\nNo files were modified by me.",
+          "media": null,
+          "ts": null
+        }
+      ],
+      "activities": [
+        {
+          "invocationId": "call_UIeSeK5X7lnC5TMZLUaYJ6x7",
+          "toolName": "run_bash",
+          "type": "terminal_command",
+          "status": "success",
+          "contextText": "/bin/bash -lc 'pwd; ls -la | head -20; git status --short'",
+          "arguments": {
+            "command": "/bin/bash -lc 'pwd; ls -la | head -20; git status --short'"
+          },
+          "logs": [],
+          "result": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls\ntotal 1272\ndrwxr-xr-x@  29 normy  staff     928 May 16 08:51 .\ndrwxr-xr-x@ 109 normy  staff    3488 May 16 07:32 ..\n-rw-r--r--@   1 normy  staff     240 May 16 07:32 .dockerignore\n-rw-r--r--@   1 normy  staff     113 May 16 07:32 .git\ndrwxr-xr-x@   4 normy  staff     128 May 16 07:32 .github\n-rw-r--r--@   1 normy  staff     244 May 16 07:32 .gitignore\ndrwxr-xr-x@   4 normy  staff     128 May 16 08:56 .local\n-rw-r--r--@   1 normy  staff   10174 May 16 07:32 LICENSE\n-rw-r--r--@   1 normy  staff     355 May 16 07:32 NOTICE\n-rw-r--r--@   1 normy  staff   10198 May 16 07:32 README.md\ndrwxr-xr-x@   4 normy  staff     128 May 16 07:32 applications\ndrwxr-xr-x@   9 normy  staff     288 May 16 07:35 autobyteus-application-backend-sdk\ndrwxr-xr-x@  10 normy  staff     320 May 16 07:35 autobyteus-application-devkit\ndrwxr-xr-x@  11 normy  staff     352 May 16 07:35 autobyteus-application-frontend-sdk\ndrwxr-xr-x@  10 normy  staff     320 May 16 07:35 autobyteus-application-sdk-contracts\ndrwxr-xr-x@  15 normy  staff     480 May 16 07:35 autobyteus-message-gateway\ndrwxr-xr-x@  27 normy  staff     864 May 16 09:16 autobyteus-server-ts\ndrwxr-xr-x@  20 normy  staff     640 May 16 08:50 autobyteus-ts\ndrwxr-xr-x@  66 normy  staff    2112 May 16 09:16 autobyteus-web\n M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md\n M autobyteus-server-ts/docs/modules/codex_integration.md\n M autobyteus-server-ts/docs/modules/run_history.md\n?? tickets/in-progress/codex-history-reload-toolcalls/docs-sync-report.md\n?? tickets/in-progress/codex-history-reload-toolcalls/electron-test-build-report.md\n?? tickets/in-progress/codex-history-reload-toolcalls/handoff-summary.md\n?? tickets/in-progress/codex-history-reload-toolcalls/live-repro-evidence/\n?? tickets/in-progress/codex-history-reload-toolcalls/release-deployment-report.md\n",
+          "error": null,
+          "ts": 1778916297.7,
+          "detailLevel": "source_limited"
+        }
+      ]
+    },
+    "listWorkspaceRunHistory": [
+      {
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls",
+        "workspaceName": "codex-history-reload-toolcalls",
+        "teamDefinitions": [
+          {
+            "teamDefinitionId": "codex-history-toolcall-repro-team-20260516072451",
+            "teamDefinitionName": "Codex History Toolcall Repro Team 20260516072451",
+            "runs": [
+              {
+                "teamRunId": "team_codex-history-toolcall-repro-team-202605_6086dd85",
+                "summary": "This is a history reload reproduction. Please use bash tool calls, not just prose. Run these comm...",
+                "status": "idle",
+                "lastKnownStatus": "ACTIVE",
+                "isActive": true,
+                "coordinatorMemberRouteKey": "worker",
+                "members": [
+                  {
+                    "memberRouteKey": "worker",
+                    "memberName": "worker",
+                    "memberRunId": "worker_517c3afd25fff88f",
+                    "status": "idle",
+                    "runtimeKind": "codex_app_server",
+                    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

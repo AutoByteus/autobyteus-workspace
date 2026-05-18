@@ -12,6 +12,8 @@ export function useStatusVisuals(status: Ref<string | undefined>) {
     const currentStatus = String(status.value || AgentStatus.Offline).toLowerCase();
 
     switch (currentStatus) {
+      case AgentStatus.Initializing:
+        return { text: 'Initializing', colorClass: 'bg-amber-500 animate-pulse', iconName: 'heroicons:clock-solid' };
       case AgentStatus.Running:
         return { text: 'Running', colorClass: 'bg-blue-500 animate-pulse', iconName: 'heroicons:arrow-path-solid' };
       case AgentStatus.Error:

@@ -470,7 +470,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         JSON.stringify({
           type: "SEND_MESSAGE",
           payload: {
-            target_member_name: "worker",
+            target_member_route_key: "worker",
             content:
               `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
               "Use a relative path and perform the real tool call.",
@@ -637,7 +637,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         JSON.stringify({
           type: "SEND_MESSAGE",
           payload: {
-            target_member_name: "worker",
+            target_member_route_key: "worker",
             content:
               `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
               "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
@@ -654,8 +654,21 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       );
       const invocationId = resolveInvocationId(approvalRequested.payload);
       expect(invocationId).toBeTruthy();
+      const workerRunId =
+        typeof approvalRequested.payload.agent_id === "string" &&
+        approvalRequested.payload.agent_id.trim().length > 0
+          ? approvalRequested.payload.agent_id.trim()
+          : undefined;
 
-      socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+      socket.send(
+        JSON.stringify({
+          type: "INTERRUPT_GENERATION",
+          payload: {
+            target_member_route_key: "worker",
+            ...(workerRunId ? { target_member_run_id: workerRunId } : {}),
+          },
+        }),
+      );
 
       await waitForMessageAfter(
         messages,
@@ -691,7 +704,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         JSON.stringify({
           type: "SEND_MESSAGE",
           payload: {
-            target_member_name: "worker",
+            target_member_route_key: "worker",
             content: `Reply with exactly ${followUpToken} and nothing else.`,
           },
         }),
@@ -760,7 +773,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         JSON.stringify({
           type: "SEND_MESSAGE",
           payload: {
-            target_member_name: "worker",
+            target_member_route_key: "worker",
             content:
               `Create the file ${targetRelativePath} with exactly this content: ${expectedContent}. ` +
               "Use the write_file tool exactly once, perform the real tool call, and do not answer with plain text.",
@@ -796,7 +809,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         JSON.stringify({
           type: "SEND_MESSAGE",
           payload: {
-            target_member_name: "worker",
+            target_member_route_key: "worker",
             content: `Reply with exactly ${followUpToken} and nothing else.`,
           },
         }),

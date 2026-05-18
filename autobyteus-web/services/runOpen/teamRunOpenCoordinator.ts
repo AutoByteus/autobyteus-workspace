@@ -15,10 +15,13 @@ import {
 } from '~/services/runHydration/teamRunContextHydrationService';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRuntimeStatusState';
+import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
+import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
 
 const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
   if (
     status === AgentStatus.Running ||
+    status === AgentStatus.Initializing ||
     status === AgentStatus.Idle ||
     status === AgentStatus.Error ||
     status === AgentStatus.Offline
@@ -89,6 +92,7 @@ export const openTeamRun = async (
   } = await loadTeamRunContextHydrationPayload(input);
 
   const shouldTreatAsLive = resumeConfig.isActive;
+  const memberTree = teamMemberNodesFromMetadata(metadata.memberTree);
 
   const teamContextsStore = useAgentTeamContextsStore();
   const hydratedContext: AgentTeamContext = {
@@ -98,10 +102,12 @@ export const openTeamRun = async (
       firstWorkspaceId,
       isLocked: shouldTreatAsLive,
     }),
-    members,
+    memberTree,
+    memberNodesByRouteKey: indexTeamMemberNodesByRouteKey(memberTree),
+    leafAgentContextsByRouteKey: members,
     coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
     historicalHydration,
-    focusedMemberName: focusedMemberRouteKey,
+    focusedMemberRouteKey,
     currentStatus: shouldTreatAsLive
       ? AgentTeamStatus.Running
       : AgentTeamStatus.Offline,
@@ -122,19 +128,21 @@ export const openTeamRun = async (
     existingTeamContext.config = hydratedContext.config;
     existingTeamContext.coordinatorMemberRouteKey = metadata.coordinatorMemberRouteKey;
     existingTeamContext.historicalHydration = historicalHydration;
-    existingTeamContext.focusedMemberName = focusedMemberRouteKey;
+    existingTeamContext.memberTree = memberTree;
+    existingTeamContext.memberNodesByRouteKey = indexTeamMemberNodesByRouteKey(memberTree);
+    existingTeamContext.focusedMemberRouteKey = focusedMemberRouteKey;
 
     if (shouldKeepLiveContext) {
-      const existingMemberKeys = new Set(existingTeamContext.members.keys());
+      const existingMemberKeys = new Set(existingTeamContext.leafAgentContextsByRouteKey.keys());
       liveProjectionActivityMemberKeys = Array.from(members.keys()).filter(
         (memberRouteKey) => !existingMemberKeys.has(memberRouteKey),
       );
-      existingTeamContext.members = mergeHydratedMembers(existingTeamContext.members, members, {
+      existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingTeamContext.leafAgentContextsByRouteKey, members, {
         preserveLiveRuntimeState: true,
         preserveMemberStatus: true,
       });
     } else {
-      existingTeamContext.members = mergeHydratedMembers(existingTeamContext.members, members, {
+      existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingTeamContext.leafAgentContextsByRouteKey, members, {
         preserveLiveRuntimeState: false,
         preserveMemberStatus: shouldTreatAsLive,
       });
@@ -151,7 +159,7 @@ export const openTeamRun = async (
   if (shouldTreatAsLive && liveProjectionActivityMemberKeys.length > 0) {
     const teamContext = teamContextsStore.getTeamContextById(metadata.teamRunId) || hydratedContext;
     hydrateTeamMemberActivitiesFromProjection({
-      members: teamContext.members,
+      members: teamContext.leafAgentContextsByRouteKey,
       projectionByMemberRouteKey,
       memberRouteKeys: liveProjectionActivityMemberKeys,
     });

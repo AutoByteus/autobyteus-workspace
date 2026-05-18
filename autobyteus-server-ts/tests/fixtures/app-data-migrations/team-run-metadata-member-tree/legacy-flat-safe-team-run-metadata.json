@@ -1,0 +1,40 @@
+{
+  "teamRunId": "team-run-legacy-flat-safe",
+  "teamDefinitionId": "team-def-legacy-flat-safe",
+  "teamDefinitionName": "Historical Flat Delivery Team",
+  "coordinatorMemberRouteKey": "program_manager",
+  "runVersion": 1,
+  "createdAt": "2026-05-01T10:00:00.000Z",
+  "updatedAt": "2026-05-01T10:05:00.000Z",
+  "archivedAt": null,
+  "memberMetadata": [
+    {
+      "memberRouteKey": "program_manager",
+      "memberName": "Program Manager",
+      "memberRunId": "program-manager-run",
+      "runtimeKind": "codex_app_server",
+      "platformAgentRunId": null,
+      "agentDefinitionId": "agent-program-manager",
+      "llmModelIdentifier": "codex:test-model",
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "llmConfig": { "temperature": 0 },
+      "workspaceRootPath": "/tmp/autobyteus/legacy-flat-workspace",
+      "applicationExecutionContext": null
+    },
+    {
+      "memberRouteKey": "qa_specialist",
+      "memberName": "QA Specialist",
+      "memberRunId": "qa-specialist-run",
+      "runtimeKind": "claude_agent_sdk",
+      "platformAgentRunId": null,
+      "agentDefinitionId": "agent-qa-specialist",
+      "llmModelIdentifier": "claude:test-model",
+      "autoExecuteTools": true,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "llmConfig": { "temperature": 0.1 },
+      "workspaceRootPath": "/tmp/autobyteus/legacy-flat-workspace",
+      "applicationExecutionContext": null
+    }
+  ]
+}

@@ -159,7 +159,7 @@ const sendTeamMessageOverSocket = (
   socket: WebSocket,
   input: {
     content: string;
-    targetMemberName?: string | null;
+    targetMemberRouteKey?: string | null;
     contextFilePaths?: string[];
     imageUrls?: string[];
   },
@@ -169,7 +169,7 @@ const sendTeamMessageOverSocket = (
       type: "SEND_MESSAGE",
       payload: {
         content: input.content,
-        target_member_name: input.targetMemberName ?? null,
+        target_member_route_key: input.targetMemberRouteKey ?? null,
         context_file_paths: input.contextFilePaths ?? [],
         image_urls: input.imageUrls ?? [],
       },
@@ -727,7 +727,7 @@ Rules:
       try {
         const autoToCodexStartIndex = firstConnection.messages.length;
         sendTeamMessageOverSocket(firstConnection.socket, {
-          targetMemberName: "coordinator",
+          targetMemberRouteKey: "coordinator",
           content: autoToCodexInstruction(preRestoreAutoToCodexReplyToken, "mixed_a2c_before_restore"),
         });
         await waitForInterAgentDeliveryTurn({
@@ -740,7 +740,7 @@ Rules:
 
         const codexToAutoStartIndex = firstConnection.messages.length;
         sendTeamMessageOverSocket(firstConnection.socket, {
-          targetMemberName: "specialist",
+          targetMemberRouteKey: "specialist",
           content: codexToAutoInstruction(preRestoreCodexToAutoReplyToken, "mixed_c2a_before_restore"),
         });
         await waitForInterAgentDeliveryTurn({
@@ -821,7 +821,7 @@ Rules:
       try {
         const autoToCodexAfterRestoreStartIndex = secondConnection.messages.length;
         sendTeamMessageOverSocket(secondConnection.socket, {
-          targetMemberName: "coordinator",
+          targetMemberRouteKey: "coordinator",
           content: autoToCodexInstruction(postRestoreAutoToCodexReplyToken, "mixed_a2c_after_restore"),
         });
         await waitForInterAgentDeliveryTurn({
@@ -834,7 +834,7 @@ Rules:
 
         const codexToAutoAfterRestoreStartIndex = secondConnection.messages.length;
         sendTeamMessageOverSocket(secondConnection.socket, {
-          targetMemberName: "specialist",
+          targetMemberRouteKey: "specialist",
           content: codexToAutoInstruction(postRestoreCodexToAutoReplyToken, "mixed_c2a_after_restore"),
         });
         await waitForInterAgentDeliveryTurn({

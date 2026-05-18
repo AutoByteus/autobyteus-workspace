@@ -106,6 +106,9 @@ class WorkspaceHistoryTeamRunItemObject {
 
   @Field(() => [WorkspaceHistoryTeamRunMemberObject])
   members!: WorkspaceHistoryTeamRunMemberObject[];
+
+  @Field(() => GraphQLJSON)
+  memberTree!: unknown[];
 }
 
 @ObjectType("WorkspaceHistoryTeamDefinitionObject")

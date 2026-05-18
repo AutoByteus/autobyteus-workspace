@@ -17,9 +17,9 @@ export function useTeamMemberPresentation() {
     memberRouteKey: string,
     memberContext?: AgentContext | null,
   ): string => {
-    return memberContext?.config.agentDefinitionName?.trim()
+    return getRouteLeaf(memberRouteKey)
       || memberContext?.state.conversation.agentName?.trim()
-      || getRouteLeaf(memberRouteKey)
+      || memberContext?.config.agentDefinitionName?.trim()
       || memberRouteKey
       || 'Team member';
   };
@@ -73,7 +73,7 @@ export function useTeamMemberPresentation() {
     }
 
     const mapping: Record<string, string> = {};
-    team.members.forEach((memberContext, memberRouteKey) => {
+    team.leafAgentContextsByRouteKey.forEach((memberContext, memberRouteKey) => {
       const memberRunId = String(memberContext.state.runId || '').trim();
       if (!memberRunId || mapping[memberRunId]) {
         return;

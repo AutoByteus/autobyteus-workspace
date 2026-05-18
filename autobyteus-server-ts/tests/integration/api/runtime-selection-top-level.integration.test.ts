@@ -312,7 +312,7 @@ class FakeAgentRunManager {
 
 type CapturedTeamMessage = {
   teamRunId: string;
-  targetMemberName: string | null;
+  targetMemberRouteKey: string | null;
   content: string;
   source: "create" | "restore";
 };
@@ -354,13 +354,13 @@ const createAutoByteusTeamBackendFactory = () => {
           listeners.delete(listener);
         };
       },
-      postMessage: vi.fn(async (message: { content: string }, targetMemberName: string | null) => {
+      postMessage: vi.fn(async (message: { content: string }, targetMemberRouteKey: string | null) => {
         turnCounter += 1;
-        const targetName = targetMemberName?.trim() || memberContexts[0]?.memberName || null;
+        const targetName = targetMemberRouteKey?.trim() || memberContexts[0]?.memberName || null;
         const targetRouteKey = normalizeMemberRouteKey(targetName ?? memberContexts[0]?.memberName ?? "Coordinator");
         messages.push({
           teamRunId: runId,
-          targetMemberName: targetName,
+          targetMemberRouteKey: targetName,
           content: message.content,
           source,
         });
@@ -732,7 +732,7 @@ describe("runtime-selection top-level integration", () => {
             type: "SEND_MESSAGE",
             payload: {
               content: "hello native team",
-              target_member_name: "Reviewer",
+              target_member_route_key: "Reviewer",
             },
           }),
         );
@@ -740,7 +740,7 @@ describe("runtime-selection top-level integration", () => {
         await waitForCondition(() => harness.autoByteusTeamFactory.messages.length === 1);
         expect(harness.autoByteusTeamFactory.messages[0]).toMatchObject({
           teamRunId,
-          targetMemberName: "Reviewer",
+          targetMemberRouteKey: "Reviewer",
           content: "hello native team",
           source: "create",
         });
@@ -816,7 +816,7 @@ describe("runtime-selection top-level integration", () => {
             type: "SEND_MESSAGE",
             payload: {
               content: "coordinate the mixed fix",
-              target_member_name: "Coordinator",
+              target_member_route_key: "Coordinator",
             },
           }),
         );
@@ -908,7 +908,7 @@ describe("runtime-selection top-level integration", () => {
               type: "SEND_MESSAGE",
               payload: {
                 content: "resume mixed coordination",
-                target_member_name: "Coordinator",
+                target_member_route_key: "Coordinator",
               },
             }),
           );

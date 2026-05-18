@@ -50,7 +50,8 @@ const createTeamBinding = (): ChannelBinding => ({
     llmConfig: null,
   },
   teamRunId: "team-1",
-  targetNodeName: "support-node",
+  targetMemberRouteKey: "support-node",
+  targetMemberPath: ["support-node"],
   allowTransportFallback: false,
   createdAt: new Date("2026-02-08T00:00:00.000Z"),
   updatedAt: new Date("2026-02-08T00:00:00.000Z"),
@@ -58,6 +59,18 @@ const createTeamBinding = (): ChannelBinding => ({
 
 const createTeamRun = () => ({
   runId: "team-1",
+  getRuntimeContext: vi.fn().mockReturnValue({
+    memberContexts: [
+      {
+        memberKind: "agent",
+        memberName: "support-node",
+        memberPath: ["support-node"],
+        memberRouteKey: "support-node",
+        memberRunId: "member-1",
+        getPlatformAgentRunId: () => null,
+      },
+    ],
+  }),
   subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
   postMessage: vi.fn().mockResolvedValue({
     accepted: true,
@@ -91,7 +104,8 @@ describe("ChannelTeamRunFacade", () => {
     expect(result.dispatchTargetType).toBe("TEAM");
     expect(result.memberRunId).toBe("member-1");
     expect(result.teamRunId).toBe("team-1");
-    expect(result.memberName).toBe("support-node");
+    expect(result.memberRouteKey).toBe("support-node");
+    expect(result.memberPath).toEqual(["support-node"]);
     expect(result.turnId).toBe("turn-1");
     expect(resolveOrStartTeamRun).toHaveBeenCalledWith(binding);
     expect(resolveTeamRun).toHaveBeenCalledWith("team-1");
@@ -111,13 +125,20 @@ describe("ChannelTeamRunFacade", () => {
           externalSource: expect.any(Object),
         }),
       }),
-      "support-node",
+      {
+        kind: "path",
+        memberPath: ["support-node"],
+      },
     );
     expect(publishExternalUserMessage).toHaveBeenCalledWith({
       teamRunId: "team-1",
       envelope,
       agentName: "support-node",
-      agentId: null,
+      agentId: "member-1",
+      memberRouteKey: "support-node",
+      memberPath: ["support-node"],
+      sourceRouteKey: "support-node",
+      sourcePath: ["support-node"],
     });
   });
 
@@ -200,7 +221,7 @@ describe("ChannelTeamRunFacade", () => {
     );
   });
 
-  it("falls back to the binding target name when runtime member naming metadata is absent", async () => {
+  it("uses the binding route key when runtime member route metadata is absent", async () => {
     const teamRun = {
       ...createTeamRun(),
       postMessage: vi.fn().mockResolvedValue({
@@ -229,7 +250,8 @@ describe("ChannelTeamRunFacade", () => {
     expect(result.dispatchTargetType).toBe("TEAM");
     expect(result.memberRunId).toBe("member-1");
     expect(result.teamRunId).toBe("team-1");
-    expect(result.memberName).toBe("support-node");
+    expect(result.memberRouteKey).toBe("support-node");
+    expect(result.memberPath).toEqual(["support-node"]);
   });
 
   it("throws when TeamRunService cannot resolve the team run", async () => {
@@ -270,6 +292,8 @@ describe("ChannelTeamRunFacade", () => {
               runtimeKind: "AUTOBYTEUS",
               memberName: "support-node",
               memberRunId: "member-42",
+              memberRouteKey: "support-node",
+              memberPath: ["support-node"],
               agentEvent: {
                 eventType: AgentRunEventType.TURN_STARTED,
                 runId: "member-42",
@@ -286,7 +310,6 @@ describe("ChannelTeamRunFacade", () => {
           accepted: true,
           message: null,
           memberRunId: null,
-          memberName: null,
           turnId: null,
         };
       }),
@@ -308,6 +331,7 @@ describe("ChannelTeamRunFacade", () => {
 
     expect(result.turnId).toBe("turn-99");
     expect(result.memberRunId).toBe("member-42");
-    expect(result.memberName).toBe("support-node");
+    expect(result.memberRouteKey).toBe("support-node");
+    expect(result.memberPath).toEqual(["support-node"]);
   });
 });

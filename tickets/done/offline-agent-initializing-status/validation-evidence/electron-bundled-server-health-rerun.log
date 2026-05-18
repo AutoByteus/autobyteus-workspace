@@ -1,0 +1,131 @@
+# electron bundled server health smoke rerun with app-data .env
+2026-05-17T20:04:54Z
+port=58676
+data_dir=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T//autobyteus-electron-server-validate.cEqRee
+entry=/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-web/resources/server/dist/app.js
+pid=75667
+health_response={"status":"ok","message":"Server is running"}
+health_ok_attempt=6
+server_process_log=/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/offline-agent-initializing-status/validation-evidence/electron-bundled-server-process-rerun.log
+--- server output head ---
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-web/resources/server
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:58676
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-web/resources/server/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:58676
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-web/resources/server
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+(node:75669) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/.autobyteus/server-data/db/production.db"
+
+13 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 7.8.0                       │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 44 items.
+AgentRunManager initialized.
+[2026-05-17T20:04:56.780Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+{"level":30,"time":1779048296847,"pid":75669,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58676"}
+[2026-05-17T20:04:56.847Z] [INFO] [server.runtime] Server listening on 127.0.0.1:58676
+[2026-05-17T20:04:56.848Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:58676
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace. Call initialize() to build file tree.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace with fixed ID 'temp_ws_default'
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace' with max_depth=1
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace' completed in 0.0010 seconds.
+Initialized FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace (Shallow). Starting background full scan...
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace' with max_depth=null
+Temp workspace created and cached with ID: temp_ws_default
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace' completed in 0.0010 seconds.
+FileNameIndexer starting...
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace
+FileNameIndexer started monitoring
+Background full initialization for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.cEqRee/temp_workspace completed.
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+2026-05-17T20:04:57Z

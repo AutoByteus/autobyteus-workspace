@@ -27,6 +27,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
+import { selectorToRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import type { TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
@@ -509,8 +510,18 @@ const createClaudeTeamWebSocketHarness = async (input: {
   });
   const fakeTeamManager: TeamManager = {
     hasActiveMembers: () => true,
-    postMessage: async (message, targetMemberName) => {
-      expect(targetMemberName).toBe(input.memberName);
+    getStatusSnapshot: () => ({
+      status: agentRun.getStatusSnapshot().status,
+    }),
+    getMemberStatusSnapshots: () => [
+      {
+        ...agentRun.getStatusSnapshot(),
+        agent_id: input.memberRunId,
+        agent_name: input.memberName,
+      },
+    ],
+    postMessage: async (message, targetMemberSelector) => {
+      expect(selectorToRouteKey(targetMemberSelector)).toBe(input.memberName);
       const result = await agentRun.postUserMessage(message);
       memberContext.sessionId = agentRun.getPlatformAgentRunId() ?? memberContext.sessionId;
       return {
@@ -521,7 +532,11 @@ const createClaudeTeamWebSocketHarness = async (input: {
     },
     deliverInterAgentMessage: async () => ({ accepted: true }),
     approveToolInvocation: async () => ({ accepted: true }),
-    interrupt: async () => agentRun.interrupt(),
+    interruptMember: async (targetMemberRouteKey, targetMemberRunId) => {
+      expect(targetMemberRouteKey).toBe(input.memberName);
+      expect(targetMemberRunId).toBe(input.memberRunId);
+      return agentRun.interrupt();
+    },
     terminate: async () => agentRun.terminate(),
     subscribeToEvents: (_listener: TeamRunEventListener) => () => {},
   };
@@ -738,7 +753,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
           type: "SEND_MESSAGE",
           payload: {
             content: "start team member work",
-            target_member_name: memberName,
+            target_member_route_key: memberName,
           },
         }),
       );
@@ -751,7 +766,15 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
       );
       expect(harness.sdkCalls[0]?.options?.resume).toBeUndefined();
 
-      harness.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+      harness.socket.send(
+        JSON.stringify({
+          type: "INTERRUPT_GENERATION",
+          payload: {
+            target_member_route_key: memberName,
+            target_member_run_id: memberRunId,
+          },
+        }),
+      );
       await waitForCondition(
         () =>
           firstQuery.close.mock.calls.length === 1 &&
@@ -764,7 +787,7 @@ describe("Claude Agent SDK websocket interrupt/resume integration", () => {
           type: "SEND_MESSAGE",
           payload: {
             content: "continue team member work",
-            target_member_name: memberName,
+            target_member_route_key: memberName,
           },
         }),
       );

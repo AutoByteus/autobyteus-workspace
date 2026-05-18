@@ -1,0 +1,147 @@
+===== Delivery Round 9 post-refresh checks (2026-05-16T09:44:05+02:00) =====
+HEAD: 9ae1ab54a765
+origin/personal: a51d3abd8bb6
+Base refresh result: origin/personal unchanged and branch is behind 0; no additional merge required.
+Command: git diff --check
+
+Command: pnpm -C autobyteus-web exec vitest run focused Round 9 frontend suite
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamGridView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamSpotlightView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+······stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore > does not mark a persisted team inactive when backend termination fails
+Error terminating team team-terminate-fails-1 on backend: Error: not found
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/stores/agentTeamRunStore.ts:200:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:282:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+····················stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > marks team subscription state on connect and disconnect callbacks
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > reattaches lifecycle callbacks to the latest team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+···········stderr | components/workspace/team/__tests__/TeamGridView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamMemberMonitorTile.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamSpotlightView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryTeamRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··················
+
+ Test Files  10 passed (10)
+      Tests  55 passed (55)
+   Start at  09:44:07
+   Duration  4.57s (transform 5.96s, setup 18.35s, collect 9.88s, tests 151ms, environment 3.39s, prepare 2.58s)
+
+
+Command: pnpm -C autobyteus-web audit:localization-literals
+
+> autobyteus@1.3.13 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:66104) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/mixed-team-nested-agent-team/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Command: pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false
+
+All Delivery Round 9 post-refresh checks passed (2026-05-16T09:44:17+02:00).
+
+===== Delivery Round 9 Electron artifact verification (2026-05-16T09:48:24+02:00) =====
+Command: ls -lh autobyteus-web/electron-dist
+total 1510920
+-rw-r--r--@ 1 normy  staff   358M May 16 09:46 AutoByteus_personal_macos-arm64-1.3.13.dmg
+-rw-r--r--@ 1 normy  staff   383K May 16 09:46 AutoByteus_personal_macos-arm64-1.3.13.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   356M May 16 09:48 AutoByteus_personal_macos-arm64-1.3.13.zip
+-rw-r--r--@ 1 normy  staff   375K May 16 09:48 AutoByteus_personal_macos-arm64-1.3.13.zip.blockmap
+-rw-r--r--@ 1 normy  staff   813B May 16 09:48 builder-debug.yml
+-rw-r--r--@ 1 normy  staff   555B May 16 09:48 latest-mac.yml
+drwxr-xr-x@ 3 normy  staff    96B May 16 09:45 mac-arm64
+
+Command: PlistBuddy app version/bundle id
+1.3.13
+1.3.13
+com.autobyteus.app
+
+Command: zip -T autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip
+test of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip OK
+
+Command: hdiutil verify autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $9BAEA921
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $194B034F
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $8EC3E271
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $DBB0CC79
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $8EC3E271
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $D294E664
+Die überprüfte CRC32-Prüfsumme ist $C8B5100A
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg" is VALID
+
+Command: du -sh artifacts
+1.2G	autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+368M	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg
+369M	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip
+384K	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.dmg.blockmap
+376K	autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.13.zip.blockmap

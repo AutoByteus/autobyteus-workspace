@@ -48,20 +48,17 @@
         Team Members Override ({{ leafMembers.length }})
       </button>
 
-      <div v-show="overridesExpanded" class="mt-3 space-y-2">
-        <MemberOverrideItem
-          v-for="member in leafMembers"
-          :key="member.memberRouteKey"
-          :member-name="member.memberName"
-          :agent-definition-id="member.agentDefinitionId"
-          :override="config.memberOverrides[member.memberName]"
+      <div v-show="overridesExpanded" class="mt-3">
+        <MemberOverrideTree
+          :member-nodes="memberTree"
+          :config="config"
           :global-runtime-kind="config.runtimeKind"
           :global-llm-model="config.llmModelIdentifier"
           :global-llm-config="config.llmConfig"
-          :is-coordinator="member.memberName === teamDefinition.coordinatorMemberName"
+          :coordinator-member-route-key="coordinatorMemberRouteKey"
           :disabled="isFormReadOnly"
           :advanced-initially-expanded="readOnlyMode"
-          :missing-historical-config="memberMissingHistoricalConfig(member.memberName)"
+          :read-only-mode="readOnlyMode"
           @update:override="handleOverrideUpdate"
         />
       </div>
@@ -121,11 +118,14 @@ import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunC
 import type { SkillAccessMode } from '~/types/agent/AgentRunConfig'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
-import MemberOverrideItem from './MemberOverrideItem.vue'
+import MemberOverrideTree from './MemberOverrideTree.vue'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { loadRuntimeProviderGroupsForSelection } from '~/composables/useRuntimeScopedModelSelection'
-import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
+import {
+  buildTeamMemberTreeFromDefinition,
+  flattenLeafAgentMemberNodes,
+} from '~/utils/teamDefinitionMembers'
 import {
   hasExplicitMemberLlmConfigOverride,
   hasExplicitMemberLlmModelOverride,
@@ -163,12 +163,18 @@ const missingHistoricalGlobalConfig = computed(() =>
   props.config.llmConfig == null,
 )
 const runtimeSelectionLocked = computed(() => isFormReadOnly.value)
-const leafMembers = computed(() =>
-  resolveLeafTeamMembers(props.teamDefinition, {
+const memberTree = computed(() =>
+  buildTeamMemberTreeFromDefinition(props.teamDefinition, {
     getTeamDefinitionById: (teamDefinitionId: string) =>
       teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
   }),
 )
+const leafMembers = computed(() => flattenLeafAgentMemberNodes(memberTree.value))
+const coordinatorMemberRouteKey = computed(() => {
+  const coordinatorMemberName = props.teamDefinition.coordinatorMemberName?.trim() || ''
+  if (!coordinatorMemberName) return ''
+  return memberTree.value.find((node) => node.memberName === coordinatorMemberName)?.memberRouteKey || coordinatorMemberName
+})
 
 watch(
   () => [
@@ -198,24 +204,15 @@ watch(
   { immediate: true },
 )
 
-const handleOverrideUpdate = (memberName: string, override: MemberConfigOverride | null) => {
+const handleOverrideUpdate = (memberRouteKey: string, override: MemberConfigOverride | null) => {
   if (isFormReadOnly.value) return
   const overrides = { ...(props.config.memberOverrides || {}) }
   if (override && hasMeaningfulMemberOverride(override)) {
-    overrides[memberName] = override
+    overrides[memberRouteKey] = override
   } else {
-    delete overrides[memberName]
+    delete overrides[memberRouteKey]
   }
   props.config.memberOverrides = overrides
-}
-
-const memberMissingHistoricalConfig = (memberName: string) => {
-  if (!readOnlyMode.value) return false
-  const override = props.config.memberOverrides[memberName]
-  if (hasExplicitMemberLlmConfigOverride(override)) {
-    return override?.llmConfig == null
-  }
-  return props.config.llmConfig == null
 }
 
 const updateAutoExecute = (checked: boolean) => {

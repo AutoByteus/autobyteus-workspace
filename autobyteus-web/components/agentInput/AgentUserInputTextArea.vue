@@ -137,6 +137,7 @@ const textareaHeight = ref(MIN_TEXTAREA_HEIGHT);
 const recordingElapsedSeconds = ref(0);
 let recordingStartedAt = 0;
 let recordingTimer: ReturnType<typeof setInterval> | null = null;
+let pendingLocalAcknowledgementContext: AgentContext | null = null;
 
 const recordingDurationLabel = computed(() => {
   const minutes = Math.floor(recordingElapsedSeconds.value / 60);
@@ -230,6 +231,27 @@ watch(storeCurrentRequirement, (newValFromStore) => {
   syncInternalRequirement(newValFromStore);
 });
 
+const syncPendingLocalAcknowledgement = () => {
+  const activeContext = activeContextStore.activeAgentContext;
+  if (
+    !pendingLocalAcknowledgementContext
+    || activeContext !== pendingLocalAcknowledgementContext
+    || !isSending.value
+  ) {
+    return;
+  }
+
+  cancelDebouncedUpdateStore();
+  syncInternalRequirement(activeContext.requirement);
+  pendingLocalAcknowledgementContext = null;
+};
+
+watch(isSending, (sending) => {
+  if (sending) {
+    syncPendingLocalAcknowledgement();
+  }
+});
+
 const handleInput = (event: Event) => {
   const target = event.target as HTMLTextAreaElement;
   internalRequirement.value = target.value;
@@ -254,10 +276,18 @@ const handleBlur = () => {
 
 const handleSend = async () => {
   syncStoreImmediately();
+  const submittedContext = activeContextStore.activeAgentContext;
+  pendingLocalAcknowledgementContext = submittedContext;
   try {
-    await activeContextStore.send();
+    const sendPromise = activeContextStore.send();
+    syncPendingLocalAcknowledgement();
+    await sendPromise;
   } catch (error) {
     console.error('Error sending requirement:', error);
+  } finally {
+    if (pendingLocalAcknowledgementContext === submittedContext) {
+      pendingLocalAcknowledgementContext = null;
+    }
   }
 };
 
