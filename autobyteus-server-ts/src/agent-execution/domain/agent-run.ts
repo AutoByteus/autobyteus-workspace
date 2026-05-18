@@ -80,18 +80,33 @@ export class AgentRun {
   }
 
   async postUserMessage(message: Parameters<AgentRunBackend["postUserMessage"]>[0]) {
-    const result = await this.backend.postUserMessage(message);
+    const startupStatus = this.applyCommandStartStatus();
+    let result: Awaited<ReturnType<AgentRunBackend["postUserMessage"]>>;
+    try {
+      result = await this.backend.postUserMessage(message);
+    } catch (error) {
+      if (startupStatus.applied) {
+        this.emitErrorStatus();
+      }
+      throw error;
+    }
+    if (!result.accepted && startupStatus.applied) {
+      this.emitStatusPayload(startupStatus.previousStatus);
+    }
     if (result.accepted) {
-      this.applyAcceptedStartupStatus();
       this.notifyUserMessageAccepted(message, result);
     }
     return result;
   }
 
-  private applyAcceptedStartupStatus(): void {
+  private applyCommandStartStatus(): {
+    applied: boolean;
+    previousStatus: AgentStatusPayload;
+  } {
+    const previousStatus = this.getStatusSnapshot();
     const currentStatus = normalizeAgentApiStatus(this.getStatusSnapshot().status);
     if (currentStatus !== "offline" && currentStatus !== "idle") {
-      return;
+      return { applied: false, previousStatus };
     }
 
     const payload = buildAgentStatusPayload({
@@ -99,13 +114,39 @@ export class AgentRun {
       canInterrupt: false,
       agentId: this.runId,
     });
+    this.emitStatusPayload(payload);
+    return { applied: true, previousStatus };
+  }
+
+  private emitErrorStatus(): void {
+    this.emitStatusPayload(buildAgentStatusPayload({
+      status: "error",
+      canInterrupt: false,
+      agentId: this.runId,
+    }));
+  }
+
+  private emitStatusPayload(payload: AgentStatusPayload): void {
     this.statusOverride = payload;
     this.emitLocalEvent({
       eventType: AgentRunEventType.AGENT_STATUS,
       runId: this.runId,
       payload,
-      statusHint: null,
+      statusHint: this.statusHintFor(payload.status),
     });
+  }
+
+  private statusHintFor(status: AgentApiStatus) {
+    if (status === "running") {
+      return "ACTIVE";
+    }
+    if (status === "idle" || status === "offline") {
+      return "IDLE";
+    }
+    if (status === "error") {
+      return "ERROR";
+    }
+    return null;
   }
 
   private observeBackendEvent(event: AgentRunEvent): void {

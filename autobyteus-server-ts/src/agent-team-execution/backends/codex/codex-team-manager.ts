@@ -2,6 +2,7 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentRun } from "../../../agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
 import {
+  AgentRunEventType,
   isAgentRunEvent,
   type AgentRunEvent,
 } from "../../../agent-execution/domain/agent-run-event.js";
@@ -37,6 +38,10 @@ import {
 } from "../../services/inter-agent-message-runtime-builders.js";
 import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
 import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
+import {
+  getCommandStatusSnapshot,
+  publishTeamMemberCommandStatus,
+} from "../../services/team-member-command-start-status-overlays.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import {
   resolveTeamMemberSelector,
@@ -92,6 +97,7 @@ export class CodexTeamManager implements TeamManager {
   private teamContext: TeamRunContext<CodexTeamRunContext> | null;
   private readonly memberRuns = new Map<string, AgentRun>();
   private readonly memberRunUnsubscribers = new Map<string, () => void>();
+  private readonly commandStatusByMemberRouteKey = new Map<string, AgentStatusPayload>();
   private readonly eventListeners = new Set<TeamRunEventListener>();
   private lastTeamStatus: string | null = "INITIALIZING";
 
@@ -120,10 +126,10 @@ export class CodexTeamManager implements TeamManager {
 
     return runtimeContext.memberContexts.map((memberContext) => {
       const memberRun = this.memberRuns.get(memberContext.memberRouteKey) ?? null;
-      const snapshot = memberRun?.getStatusSnapshot() ?? {
-        status: "offline" as const,
-        can_interrupt: false,
-      };
+      const snapshot = getCommandStatusSnapshot({
+        commandStatuses: this.commandStatusByMemberRouteKey, memberRouteKey: memberContext.memberRouteKey,
+        fallback: () => memberRun?.getStatusSnapshot() ?? { status: "offline" as const, can_interrupt: false },
+      });
       return {
         ...snapshot,
         agent_name: memberContext.memberName,
@@ -156,15 +162,13 @@ export class CodexTeamManager implements TeamManager {
     if ("accepted" in memberContext) {
       return memberContext;
     }
-    const memberRun = await this.ensureMemberReady(memberContext);
-    const result = await memberRun.postUserMessage(message);
-    memberContext.threadId = memberRun.getPlatformAgentRunId() ?? memberContext.threadId;
+    this.publishMemberCommandStatus(memberContext, "initializing");
+    let result: AgentOperationResult;
+    try { const memberRun = await this.ensureMemberReady(memberContext); result = await memberRun.postUserMessage(message); memberContext.threadId = memberRun.getPlatformAgentRunId() ?? memberContext.threadId; }
+    catch (error) { this.publishMemberCommandStatus(memberContext, "error", String(error)); throw error; }
+    if (!result.accepted) this.publishMemberCommandStatus(memberContext, "error", result.message ?? null);
     this.publishTeamStatusIfChanged();
-    return {
-      ...result,
-      memberRunId: memberContext.memberRunId,
-      memberName: memberContext.memberName,
-    };
+    return { ...result, memberRunId: memberContext.memberRunId, memberName: memberContext.memberName };
   }
 
   async deliverInterAgentMessage(
@@ -178,24 +182,18 @@ export class CodexTeamManager implements TeamManager {
     if ("accepted" in memberContext) {
       return memberContext;
     }
-    const memberRun = await this.ensureMemberReady(memberContext);
-    const senderContext = this.resolveSenderMemberContext(request.sender.participant.memberRunId);
-    const normalizedRequest: InterAgentMessageDeliveryRequest = senderContext
-      ? {
-          ...request,
-          sender: {
-            ...request.sender,
-            participant: {
-              ...request.sender.participant,
-              memberName: request.sender.participant.memberName || senderContext.memberName,
-            },
-          },
-        }
-      : request;
-    const result = await memberRun.postUserMessage(
-      buildInterAgentDeliveryInputMessage(normalizedRequest),
-    );
-    memberContext.threadId = memberRun.getPlatformAgentRunId() ?? memberContext.threadId;
+    this.publishMemberCommandStatus(memberContext, "initializing");
+    let memberRun: AgentRun;
+    let result: AgentOperationResult;
+    let normalizedRequest: InterAgentMessageDeliveryRequest;
+    try {
+      memberRun = await this.ensureMemberReady(memberContext);
+      const senderContext = this.resolveSenderMemberContext(request.sender.participant.memberRunId);
+      normalizedRequest = senderContext ? { ...request, sender: { ...request.sender, participant: { ...request.sender.participant, memberName: request.sender.participant.memberName || senderContext.memberName } } } : request;
+      result = await memberRun.postUserMessage(buildInterAgentDeliveryInputMessage(normalizedRequest));
+      memberContext.threadId = memberRun.getPlatformAgentRunId() ?? memberContext.threadId;
+    } catch (error) { this.publishMemberCommandStatus(memberContext, "error", String(error)); throw error; }
+    if (!result.accepted) this.publishMemberCommandStatus(memberContext, "error", result.message ?? null);
     if (result.accepted) {
       await publishProcessedTeamAgentEvents({
         teamRunId: teamContext.runId,
@@ -285,6 +283,7 @@ export class CodexTeamManager implements TeamManager {
     }
     this.clearMemberSubscriptions();
     this.memberRuns.clear();
+    this.commandStatusByMemberRouteKey.clear();
     this.teamContext = null;
     this.eventListeners.clear();
     this.lastTeamStatus = null;
@@ -458,6 +457,9 @@ export class CodexTeamManager implements TeamManager {
       if (!isAgentRunEvent(event) || !this.teamContext) {
         return;
       }
+      if (event.eventType === AgentRunEventType.AGENT_STATUS) {
+        this.commandStatusByMemberRouteKey.delete(memberContext.memberRouteKey);
+      }
       memberContext.threadId = memberRun.getPlatformAgentRunId() ?? memberContext.threadId;
       this.publishMemberAgentEvent(memberContext, event);
       this.publishTeamStatusIfChanged();
@@ -507,6 +509,15 @@ export class CodexTeamManager implements TeamManager {
       } satisfies TeamRunStatusUpdateData,
     });
     this.lastTeamStatus = nextStatus;
+  }
+
+  private publishMemberCommandStatus(memberContext: CodexTeamMemberContext, status: "initializing" | "error", errorMessage: string | null = null): void {
+    publishTeamMemberCommandStatus({
+      teamRunId: this.teamContext?.runId ?? null, runtimeKind: RuntimeKind.CODEX_APP_SERVER, memberContext,
+      commandStatuses: this.commandStatusByMemberRouteKey, status, errorMessage,
+      currentStatus: () => this.commandStatusByMemberRouteKey.get(memberContext.memberRouteKey)?.status ?? this.memberRuns.get(memberContext.memberRouteKey)?.getStatusSnapshot().status ?? "offline",
+      publishEvent: (event) => this.publish(event), publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    });
   }
 
   private clearMemberSubscriptions(): void {

@@ -1,9 +1,6 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import {
-  normalizeAgentApiStatus,
-  type AgentApiStatus,
-} from "../../agent-execution/domain/agent-status-payload.js";
+import { normalizeAgentApiStatus, type AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type { InterAgentMessageDeliveryRequest } from "./inter-agent-message-delivery.js";
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
@@ -36,7 +33,6 @@ export class TeamRun {
   readonly context: TeamRunContext<RuntimeTeamRunContext> | null;
   private readonly backend: TeamRunBackend;
   private readonly configValue: TeamRunConfig | null;
-  private readonly localEventListeners = new Set<TeamRunEventListener>();
   private statusOverride: TeamStatusPayload | null = null;
 
   constructor(options: TeamRunOptions) {
@@ -71,10 +67,8 @@ export class TeamRun {
       listener(event);
     };
     const unsubscribeBackend = this.backend.subscribeToEvents(wrappedListener);
-    this.localEventListeners.add(listener);
     return () => {
       unsubscribeBackend();
-      this.localEventListeners.delete(listener);
     };
   }
 
@@ -90,24 +84,16 @@ export class TeamRun {
     message: AgentInputUserMessage,
     target: TeamMemberSelector | null = null,
   ): Promise<AgentOperationResult> {
-    const result = await this.backend.postMessage(
+    return this.backend.postMessage(
       message,
       this.resolvePostMessageTarget(target),
     );
-    if (result.accepted) {
-      this.applyAcceptedStartupStatus();
-    }
-    return result;
   }
 
   async deliverInterAgentMessage(
     request: InterAgentMessageDeliveryRequest,
   ): Promise<AgentOperationResult> {
-    const result = await this.backend.deliverInterAgentMessage(request);
-    if (result.accepted) {
-      this.applyAcceptedStartupStatus();
-    }
-    return result;
+    return this.backend.deliverInterAgentMessage(request);
   }
 
   async approveToolInvocation(
@@ -144,31 +130,6 @@ export class TeamRun {
 
   async terminate(): Promise<AgentOperationResult> {
     return this.backend.terminate();
-  }
-
-  private applyAcceptedStartupStatus(): void {
-    const currentStatus = normalizeAgentApiStatus(this.getStatusSnapshot().status);
-    if (currentStatus !== "offline" && currentStatus !== "idle") {
-      return;
-    }
-    this.statusOverride = {
-      status: "initializing",
-      source_path: [],
-    };
-    this.emitLocalEvent({
-      eventSourceType: TeamRunEventSourceType.TEAM,
-      teamRunId: this.runId,
-      sourcePath: [],
-      data: {
-        status: "initializing",
-      } satisfies TeamRunStatusUpdateData,
-    });
-  }
-
-  private emitLocalEvent(event: TeamRunEvent): void {
-    for (const listener of this.localEventListeners) {
-      listener(event);
-    }
   }
 
   private observeBackendEvent(event: TeamRunEvent): void {

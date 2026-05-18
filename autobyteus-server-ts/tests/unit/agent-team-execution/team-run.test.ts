@@ -144,7 +144,7 @@ describe("TeamRun", () => {
     expect(backend.interruptMember).not.toHaveBeenCalled();
   });
 
-  it("publishes backend-owned initializing status after an accepted idle team send", async () => {
+  it("does not reintroduce delayed aggregate initializing after a backend command completes", async () => {
     let listener: ((event: TeamRunEvent) => void) | null = null;
     const observedEvents: TeamRunEvent[] = [];
     const backend = {
@@ -152,9 +152,7 @@ describe("TeamRun", () => {
       getStatusSnapshot: () => ({ status: "idle" as const }),
       subscribeToEvents: vi.fn().mockImplementation((next: (event: TeamRunEvent) => void) => {
         listener = next;
-        return () => {
-          listener = null;
-        };
+        return () => { listener = null; };
       }),
     };
     const run = new TeamRun({
@@ -171,16 +169,8 @@ describe("TeamRun", () => {
     run.subscribeToEvents((event) => observedEvents.push(event));
     await run.postMessage(new AgentInputUserMessage("continue"));
 
-    expect(run.getStatusSnapshot()).toEqual({
-      status: "initializing",
-      source_path: [],
-    });
-    expect(observedEvents).toContainEqual(expect.objectContaining({
-      eventSourceType: TeamRunEventSourceType.TEAM,
-      teamRunId: "team-run-1",
-      sourcePath: [],
-      data: { status: "initializing" },
-    }));
+    expect(observedEvents).toEqual([]);
+    expect(run.getStatusSnapshot()).toEqual({ status: "idle" });
 
     listener?.({
       eventSourceType: TeamRunEventSourceType.TEAM,
@@ -189,9 +179,6 @@ describe("TeamRun", () => {
       data: { status: "running" },
     });
 
-    expect(run.getStatusSnapshot()).toEqual({
-      status: "running",
-      source_path: [],
-    });
+    expect(run.getStatusSnapshot()).toEqual({ status: "running", source_path: [] });
   });
 });

@@ -170,6 +170,13 @@ control. Text send and team interrupt both resolve the current
 `target_member_run_id` only as a stale-target guard, and does not use a
 team-run-only fallback when the member target is missing or stale.
 
+For focused-member sends to an offline or idle member, the backend status stream
+is the visible-status authority: once the command is accepted and the member
+target is known, the team backend publishes member-scoped
+`AGENT_STATUS initializing` before lazy member startup or send work finishes.
+If no concrete member target exists for a true team-level/native command, the
+backend may publish root `TEAM_STATUS initializing` without a member event.
+
 ## Stopped Team Follow-Up And Termination State
 
 `agentTeamRunStore.sendMessageToFocusedMember()` supports follow-up chat against existing team runs after local stop/termination:
