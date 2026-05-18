@@ -1,0 +1,231 @@
+Electron macOS build evidence (compact log)
+Date: 2026-05-18
+Workdir: /Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web
+Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal DEBUG=electron-builder,electron-builder:*,app-builder-lib*,builder-util* pnpm build:electron:mac
+Result: Pass
+Finished: 2026-05-18T08:09:25Z
+Exit code: 0
+
+Full debug output was intentionally compacted before repository finalization to avoid committing a large electron-builder trace; final artifact manifest and SHA-256 evidence are stored next to this log.
+
+Final output tail:
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/file-explorer-streaming/file-explorer-session-manager.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/file-explorer-streaming/file-explorer-session.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/file-explorer-streaming/models.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/file-explorer-streaming/models.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/media-storage-service.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/media-storage-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/published-artifacts/published-artifact-path-identity.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/published-artifacts/published-artifact-publication-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/run-file-changes/run-file-change-path-identity.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/run-file-changes/run-file-change-projection-store.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/run-file-changes/run-file-change-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/server-settings-service.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/server-settings-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/team-communication/team-communication-content-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/team-communication/team-communication-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/terminal/pty-session-manager.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/terminal/pty-session-manager.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/terminal/terminal-handler.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/services/terminal/terminal-handler.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/disabled-skills-store.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/disabled-skills-store.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/domain/models.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/domain/models.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/loader.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/loader.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/services/skill-service.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/services/skill-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/services/skill-sources-management.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/services/skill-sources-management.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/services/skill-versioning-service.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/skills/services/skill-versioning-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/startup/agent-customization-loader.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/startup/migrations-prisma-engine-env.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/sync/node-sync-coordinator-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/sync/node-sync-preflight-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/sync/node-sync-reporting-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/sync/node-sync-selection-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/sync/node-sync-service.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/utils/artifact-utils.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/utils/artifact-utils.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/utils/download-path-resolver.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/utils/download-path-resolver.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/utils/download-utils.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/utils/download-utils.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/utils/downloader.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/utils/downloader.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/workspaces/filesystem-workspace-id.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/workspaces/filesystem-workspace-id.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/workspaces/skill-workspace.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/workspaces/skill-workspace.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/workspaces/temp-workspace.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/workspaces/temp-workspace.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/workspaces/workspace-manager-skill-integration.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/workspaces/workspace-manager-skill-integration.test.ts
++ AutoByteus.app/Contents/Resources/server/tests/unit/workspaces/workspace-manager.test.js
++ AutoByteus.app/Contents/Resources/server/tests/unit/workspaces/workspace-manager.test.ts
++ AutoByteus.app/Contents/Resources/server/tickets/codex-runtime-server-owned-redesign/implementation-plan.md
++ AutoByteus.app/Contents/Resources/server/tickets/codex-runtime-server-owned-redesign/implementation-progress.md
++ AutoByteus.app/Contents/Resources/server/tickets/codex-runtime-server-owned-redesign/investigation-notes.md
++ AutoByteus.app/Contents/Resources/server/tickets/codex-runtime-server-owned-redesign/proposed-design-based-runtime-call-stack.md
++ AutoByteus.app/Contents/Resources/server/tickets/codex-runtime-server-owned-redesign/proposed-design.md
++ AutoByteus.app/Contents/Resources/server/tickets/codex-runtime-server-owned-redesign/requirements.md
++ AutoByteus.app/Contents/Resources/server/tickets/codex-runtime-server-owned-redesign/runtime-call-stack-review.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/provider-wording-cleanup/future-state-runtime-call-stack-review.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/provider-wording-cleanup/future-state-runtime-call-stack.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/provider-wording-cleanup/implementation-plan.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/provider-wording-cleanup/implementation-progress.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/provider-wording-cleanup/investigation-notes.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/provider-wording-cleanup/requirements.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/api-e2e-validation-report.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/design-review-report.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/design-spec.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/docs-sync-report.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/handoff-summary.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/implementation-handoff.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/implementation-pause-requirement-gap.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/investigation-notes.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/logs/delivery/electron-build-mac-20260506T094425Z.log
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/release-deployment-report.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/release-notes.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/requirements.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/review-report.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/remove-media-output-path-restriction/solution-design-rework-input-paths.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/team-run-history-real-lmstudio-e2e/future-state-runtime-call-stack-review.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/team-run-history-real-lmstudio-e2e/future-state-runtime-call-stack.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/team-run-history-real-lmstudio-e2e/implementation-plan.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/team-run-history-real-lmstudio-e2e/implementation-progress.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/team-run-history-real-lmstudio-e2e/investigation-notes.md
++ AutoByteus.app/Contents/Resources/server/tickets/done/team-run-history-real-lmstudio-e2e/requirements.md
++ AutoByteus.app/Contents/Resources/server/tickets/external_messaging_binding_ux_ticket/EXTERNAL_CHANNEL_BINDING_TARGET_OPTIONS_DESIGN.md
++ AutoByteus.app/Contents/Resources/server/tickets/external_messaging_binding_ux_ticket/EXTERNAL_CHANNEL_BINDING_TARGET_OPTIONS_RUNTIME_SIMULATION.md
++ AutoByteus.app/Contents/Resources/server/tickets/external_messaging_channel_bridge_ticket/EXTERNAL_CHANNEL_INGRESS_DESIGN.md
++ AutoByteus.app/Contents/Resources/server/tickets/external_messaging_channel_bridge_ticket/EXTERNAL_CHANNEL_INGRESS_DESIGN_GAP_REVIEW.md
++ AutoByteus.app/Contents/Resources/server/tickets/external_messaging_channel_bridge_ticket/EXTERNAL_CHANNEL_INGRESS_RUNTIME_SIMULATION.md
++ AutoByteus.app/Contents/Resources/server/tickets/external_messaging_outbound_reply_ticket/EXTERNAL_CHANNEL_OUTBOUND_REPLY_DESIGN.md
++ AutoByteus.app/Contents/Resources/server/tickets/external_messaging_outbound_reply_ticket/EXTERNAL_CHANNEL_OUTBOUND_REPLY_RUNTIME_SIMULATION.md
++ AutoByteus.app/Contents/Resources/server/tickets/external_messaging_outbound_reply_ticket/IMPLEMENTATION_PLAN.md
++ AutoByteus.app/Contents/Resources/server/tickets/external_messaging_outbound_reply_ticket/IMPLEMENTATION_PROGRESS.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/claude-session-team-context-separation/future-state-runtime-call-stack-review.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/claude-session-team-context-separation/future-state-runtime-call-stack.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/claude-session-team-context-separation/implementation-plan.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/claude-session-team-context-separation/investigation-notes.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/claude-session-team-context-separation/proposed-design.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/claude-session-team-context-separation/requirements.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/claude-session-team-context-separation/workflow-state.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/persistence-provider-file-mode/README.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/persistence-provider-file-mode/future-state-runtime-call-stack-review.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/persistence-provider-file-mode/future-state-runtime-call-stack.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/persistence-provider-file-mode/implementation-plan.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/persistence-provider-file-mode/implementation-progress.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/persistence-provider-file-mode/investigation-notes.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/persistence-provider-file-mode/proposed-design.md
++ AutoByteus.app/Contents/Resources/server/tickets/in-progress/persistence-provider-file-mode/requirements.md
++ AutoByteus.app/Contents/Resources/server/tickets/memory_view_api_ticket/MEMORY_VIEW_API_DESIGN.md
++ AutoByteus.app/Contents/Resources/server/tickets/memory_view_api_ticket/MEMORY_VIEW_API_IMPLEMENTATION_PLAN.md
++ AutoByteus.app/Contents/Resources/server/tickets/memory_view_api_ticket/MEMORY_VIEW_API_PROGRESS.md
++ AutoByteus.app/Contents/Resources/server/tickets/memory_view_api_ticket/MEMORY_VIEW_API_RUNTIME_SIMULATION.md
++ AutoByteus.app/Contents/Resources/server/tickets/multi_tool_incremental_ui_feedback_ticket/design-based-runtime-call-stack.md
++ AutoByteus.app/Contents/Resources/server/tickets/multi_tool_incremental_ui_feedback_ticket/implementation-plan.md
++ AutoByteus.app/Contents/Resources/server/tickets/multi_tool_incremental_ui_feedback_ticket/implementation-progress.md
++ AutoByteus.app/Contents/Resources/server/tickets/multi_tool_incremental_ui_feedback_ticket/proposed-design.md
++ AutoByteus.app/Contents/Resources/server/tickets/multi_tool_incremental_ui_feedback_ticket/runtime-call-stack-review.md
++ AutoByteus.app/Contents/Resources/server/tickets/real_whatsapp_personal_integration_ticket/EXTERNAL_CHANNEL_REAL_WHATSAPP_DESIGN.md
++ AutoByteus.app/Contents/Resources/server/tickets/real_whatsapp_personal_integration_ticket/EXTERNAL_CHANNEL_REAL_WHATSAPP_DESIGN_GAP_REVIEW.md
++ AutoByteus.app/Contents/Resources/server/tickets/real_whatsapp_personal_integration_ticket/EXTERNAL_CHANNEL_REAL_WHATSAPP_RUNTIME_SIMULATION.md
++ AutoByteus.app/Contents/Resources/server/tickets/remove-prompt-synchronization/design-based-runtime-call-stack.md
++ AutoByteus.app/Contents/Resources/server/tickets/remove-prompt-synchronization/implementation-plan.md
++ AutoByteus.app/Contents/Resources/server/tickets/remove-prompt-synchronization/implementation-progress.md
++ AutoByteus.app/Contents/Resources/server/tickets/remove-prompt-synchronization/proposed-design.md
++ AutoByteus.app/Contents/Resources/server/tickets/remove-prompt-synchronization/runtime-call-stack-review.md
++ AutoByteus.app/Contents/Resources/server/tickets/unbound_peer_discovery_ticket/EXTERNAL_CHANNEL_UNBOUND_DISCOVERY_DESIGN.md
++ AutoByteus.app/Contents/Resources/server/tickets/unbound_peer_discovery_ticket/EXTERNAL_CHANNEL_UNBOUND_DISCOVERY_RUNTIME_SIMULATION.md
++ AutoByteus.app/Contents/Resources/server/tickets/unbound_peer_discovery_ticket/IMPLEMENTATION_PROGRESS.md
++ AutoByteus.app/Contents/Resources/server/tickets/wechat_personal_integration_ticket/EXTERNAL_CHANNEL_WECHAT_DESIGN.md
++ AutoByteus.app/Contents/Resources/server/tickets/wechat_personal_integration_ticket/EXTERNAL_CHANNEL_WECHAT_DESIGN_GAP_REVIEW.md
++ AutoByteus.app/Contents/Resources/server/tickets/wechat_personal_integration_ticket/EXTERNAL_CHANNEL_WECHAT_RUNTIME_SIMULATION.md
++ AutoByteus.app/Contents/Resources/server/tsconfig.build.json
++ AutoByteus.app/Contents/Resources/server/tsconfig.json
++ AutoByteus.app/Contents/Resources/server/vitest.config.ts
+                      Files read from disk: 31383
+Archive size: 373476706 bytes (357 MiB)
+Everything is Ok
+
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip.blockmap
+  • spawning        command=/Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/node_modules/.pnpm/app-builder-bin@5.0.0-alpha.10/node_modules/app-builder-bin/mac/app-builder_arm64 blockmap --input /Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip --output /Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip.blockmap
+  • exited          command=app-builder_arm64 code=0 pid=3896 out={"size":373476706,"sha512":"HaV1GnRLqFiZXbqWj434WHTsEZYI26sdwTEQsu/rRSITUzjQ/hEtHi2LdmlOmMQCmwWTPTcuI7XRMDtgL9bZhQ=="}
+2026-05-18T08:09:25.268Z electron-builder:publish Explicit publish provider: [
+  {
+    "provider": "github",
+    "owner": "AutoByteus",
+    "repo": "autobyteus-workspace"
+  }
+]
+2026-05-18T08:09:25.268Z electron-builder:publish Explicit publish provider: [
+  {
+    "provider": "github",
+    "owner": "AutoByteus",
+    "repo": "autobyteus-workspace"
+  }
+]
+2026-05-18T08:09:25.269Z electron-builder:publish artifactCreated (isPublish: false): {
+  "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip.blockmap",
+  "safeArtifactName": "AutoByteus_personal_macos-arm64-1.3.16.zip.blockmap",
+  "target": {
+    "name": "zip",
+    "isAsyncSupported": true,
+    "outDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web/electron-dist",
+    "packager": "<stripped sensitive data>",
+    "isWriteUpdateInfo": true
+  },
+  "arch": null,
+  "packager": "<stripped sensitive data>",
+  "updateInfo": {
+    "size": 373476706,
+    "sha512": "HaV1GnRLqFiZXbqWj434WHTsEZYI26sdwTEQsu/rRSITUzjQ/hEtHi2LdmlOmMQCmwWTPTcuI7XRMDtgL9bZhQ=="
+  }
+},
+  publishConfigs: [
+  {
+    "owner": "AutoByteus",
+    "repo": "autobyteus-workspace",
+    "provider": "github"
+  }
+]
+2026-05-18T08:09:25.269Z electron-builder:publish artifactCreated (isPublish: false): {
+  "updateInfo": {
+    "size": 373476706,
+    "sha512": "HaV1GnRLqFiZXbqWj434WHTsEZYI26sdwTEQsu/rRSITUzjQ/hEtHi2LdmlOmMQCmwWTPTcuI7XRMDtgL9bZhQ=="
+  },
+  "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip",
+  "safeArtifactName": null,
+  "target": {
+    "name": "zip",
+    "isAsyncSupported": true,
+    "outDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web/electron-dist",
+    "packager": "<stripped sensitive data>",
+    "isWriteUpdateInfo": true
+  },
+  "arch": 3,
+  "packager": "<stripped sensitive data>",
+  "isWriteUpdateInfo": true
+},
+  publishConfigs: [
+  {
+    "owner": "AutoByteus",
+    "repo": "autobyteus-workspace",
+    "provider": "github"
+  }
+]
+Build completed: [
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip'
+]
+Finished: 2026-05-18T08:09:25Z
+Exit code: 0

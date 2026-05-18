@@ -1,12 +1,7 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentTeamEventStream } from "autobyteus-ts";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import { AgentRunEventType } from "../../../agent-execution/domain/agent-run-event.js";
-import { projectAutoByteusAgentStatus } from "../../../agent-execution/backends/autobyteus/events/autobyteus-status-projector.js";
-import {
-  buildAgentStatusPayload,
-  type AgentStatusPayload,
-} from "../../../agent-execution/domain/agent-status-payload.js";
+import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
 import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
 import type { RuntimeTeamRunContext } from "../../domain/team-run-context.js";
 import type { AutoByteusTeamMemberContext } from "./autobyteus-team-run-context.js";
@@ -20,19 +15,16 @@ import {
 } from "../../domain/team-run-member-identity.js";
 import type {
   TeamRunEvent,
-  TeamRunAgentEventPayload,
   TeamRunEventListener,
   TeamRunEventUnsubscribe,
   TeamRunStatusUpdateData,
 } from "../../domain/team-run-event.js";
 import { TeamRunEventSourceType } from "../../domain/team-run-event.js";
 import { buildInterAgentDeliveryInputMessage } from "../../services/inter-agent-message-runtime-builders.js";
-import {
-  buildAgentMemberCommandStartStatusEvent,
-  buildAgentMemberCommandStatusPayload,
-  buildTeamCommandStartStatusEvent,
-} from "../../services/team-member-command-start-status-events.js";
+import { buildTeamCommandStartStatusEvent } from "../../services/team-member-command-start-status-events.js";
+import { TeamCommandStatusOverlayStore } from "../../services/team-command-status-overlay-store.js";
 import { AutoByteusTeamRunEventProcessor } from "./autobyteus-team-run-event-processor.js";
+import { AutoByteusTeamMemberStatusProjector } from "./autobyteus-team-member-status-projector.js";
 import {
   autoByteusTeamRunBackendLogger as logger,
   buildCommandFailure,
@@ -50,23 +42,29 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   readonly teamBackendKind = TeamBackendKind.AUTOBYTEUS;
   private readonly listeners = new Set<TeamRunEventListener>();
   private readonly eventProcessor: AutoByteusTeamRunEventProcessor;
+  private readonly commandStatusOverlayStore: TeamCommandStatusOverlayStore;
+  private readonly memberStatusProjector: AutoByteusTeamMemberStatusProjector;
   private nativeEventStream: AgentTeamEventStream | null = null;
   private lastTeamStatus: AgentStatusPayload["status"] | null = null;
-  private pendingRootCommandStartStatus: AgentStatusPayload["status"] | null = null;
-  private readonly lastMemberStatusByRunId = new Map<string, AgentStatusPayload>();
-  private readonly pendingCommandStartStatusByRunId = new Map<string, AgentStatusPayload>();
 
   constructor(
     private readonly team: AutoByteusTeamLike,
     private readonly options: AutoByteusTeamRunBackendOptions,
   ) {
     this.runId = team.teamId;
-    this.eventProcessor = new AutoByteusTeamRunEventProcessor(this.runId, {
+    this.memberStatusProjector = new AutoByteusTeamMemberStatusProjector(this.team, {
       memberRunIdsByName: options.memberRunIdsByName,
       runtimeContext: options.runtimeContext ?? null,
+      isActive: () => this.isActive(),
+    });
+    this.commandStatusOverlayStore = new TeamCommandStatusOverlayStore({
+      getTeamRunId: () => this.runId,
+      publishEvent: (event) => this.publishEvents([event]),
+      publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    });
+    this.eventProcessor = new AutoByteusTeamRunEventProcessor(this.runId, {
+      projector: this.memberStatusProjector,
       teamRunConfig: options.teamRunConfig ?? null,
-      getMemberStatusSnapshot: (memberRunId, memberName) =>
-        this.getMemberStatusSnapshotFor(memberRunId, memberName),
       getTeamStatusSnapshot: () => this.getStatusSnapshot(),
     });
   }
@@ -98,99 +96,18 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     return {
       status: deriveTeamApiStatus({
         memberStatuses: this.getMemberStatusSnapshots(),
-        nativeTeamStatus: this.pendingRootCommandStartStatus ?? this.team.currentStatus,
+        nativeTeamStatus: this.commandStatusOverlayStore.getTeamStatus({
+          sourcePath: [],
+          fallbackStatus: () => this.team.currentStatus,
+        }),
       }),
     };
   }
 
   getMemberStatusSnapshots() {
-    const runtimeMemberContexts = this.options.runtimeContext?.memberContexts ?? [];
-    if (runtimeMemberContexts.length > 0) {
-      const snapshots = runtimeMemberContexts.map((memberContext) =>
-        this.getMemberStatusSnapshotFor(
-          memberContext.memberRunId,
-          memberContext.memberName,
-          memberContext,
-        ),
-      );
-      return this.applyCachedMemberStatusOverrides(snapshots);
-    }
-
-    const members = this.team.context?.agents ?? [];
-    const snapshots = members.flatMap((member) => {
-      const memberName = member.context?.config?.name?.trim() ?? "";
-      if (!memberName) {
-        return [];
-      }
-      const configuredMemberRunId = this.options.memberRunIdsByName?.get(memberName)?.trim();
-      return [projectAutoByteusAgentStatus({
-        currentStatus: member.currentStatus,
-        context: member.context ?? null,
-        isActive: this.isActive(),
-        agentId: configuredMemberRunId || member.agentId || null,
-        agentName: memberName,
-      })];
-    });
-    return this.applyCachedMemberStatusOverrides(snapshots);
-  }
-
-  private getMemberStatusSnapshotFor(
-    memberRunId: string,
-    memberName: string | null,
-    knownRuntimeMemberContext: AutoByteusTeamMemberContext | null = null,
-  ): AgentStatusPayload {
-    const normalizedMemberName = memberName?.trim() ?? "";
-    const runtimeMemberContext = knownRuntimeMemberContext ?? this.options.runtimeContext?.memberContexts.find(
-      (context) =>
-        context.memberRunId === memberRunId ||
-        context.memberName === normalizedMemberName ||
-        context.nativeAgentId === memberRunId,
-    ) ?? null;
-    const nativeAgentId = runtimeMemberContext?.nativeAgentId ?? null;
-    const nativeMember = (this.team.context?.agents ?? []).find((member) => {
-      const nativeMemberName = member.context?.config?.name?.trim() ?? "";
-      return (
-        member.agentId === memberRunId ||
-        (nativeAgentId !== null && member.agentId === nativeAgentId) ||
-        (normalizedMemberName.length > 0 && nativeMemberName === normalizedMemberName)
-      );
-    }) ?? null;
-
-    const canonicalMemberRunId = runtimeMemberContext?.memberRunId
-      ?? (normalizedMemberName ? this.options.memberRunIdsByName?.get(normalizedMemberName)?.trim() : undefined)
-      ?? memberRunId;
-
-    if (!nativeMember) {
-      return {
-        status: "offline",
-        can_interrupt: false,
-        agent_id: canonicalMemberRunId,
-        ...(normalizedMemberName ? { agent_name: normalizedMemberName } : {}),
-        ...(runtimeMemberContext ? {
-          member_route_key: runtimeMemberContext.memberRouteKey,
-          member_path: runtimeMemberContext.memberPath,
-          source_route_key: runtimeMemberContext.memberRouteKey,
-          source_path: runtimeMemberContext.memberPath,
-        } : {}),
-      };
-    }
-
-    const snapshot = projectAutoByteusAgentStatus({
-      currentStatus: nativeMember.currentStatus,
-      context: nativeMember.context ?? null,
-      isActive: this.isActive(),
-      agentId: canonicalMemberRunId,
-      agentName: normalizedMemberName || nativeMember.context?.config?.name || null,
-    });
-    return {
-      ...snapshot,
-      ...(runtimeMemberContext ? {
-        member_route_key: runtimeMemberContext.memberRouteKey,
-        member_path: runtimeMemberContext.memberPath,
-        source_route_key: runtimeMemberContext.memberRouteKey,
-        source_path: runtimeMemberContext.memberPath,
-      } : {}),
-    };
+    return this.commandStatusOverlayStore.applyMemberStatusOverlays(
+      this.memberStatusProjector.projectMemberStatusSnapshots(),
+    );
   }
 
   async postMessage(
@@ -341,7 +258,8 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     try {
       const removed = await this.options.removeTeamRun(this.runId);
       if (removed) {
-        this.clearCommandStatusOverrides();
+        this.commandStatusOverlayStore.clear();
+        this.memberStatusProjector.clearObservedStatuses();
       }
       return removed ? { accepted: true } : buildRunNotFoundResult(this.runId);
     } catch (error) {
@@ -403,9 +321,9 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
   }
 
   private withTeamStatusUpdate(events: TeamRunEvent[]): TeamRunEvent[] {
-    this.recordCommandStatusReplacements(events);
-    this.recordMemberStatusOverrides(events);
-    const nextStatus = this.getStatusSnapshotForEvents(events).status;
+    this.commandStatusOverlayStore.recordReplacementEvents(events);
+    this.memberStatusProjector.recordStatusEvents(events);
+    const nextStatus = this.getStatusSnapshotForEvents().status;
     let hasTeamStatus = false;
     const normalizedEvents = events.map((event) => {
       if (event.eventSourceType !== TeamRunEventSourceType.TEAM) return event;
@@ -418,70 +336,44 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     return [...normalizedEvents, { eventSourceType: TeamRunEventSourceType.TEAM, teamRunId: this.runId, sourcePath: [], data: { status: nextStatus } satisfies TeamRunStatusUpdateData }];
   }
 
-  private getStatusSnapshotForEvents(events: TeamRunEvent[]) {
+  private getStatusSnapshotForEvents() {
     return !this.isActive() ? { status: "offline" as const } : { status: deriveTeamApiStatus({
-      memberStatuses: this.getMemberStatusSnapshotsWithOverrides(events),
-      nativeTeamStatus: this.pendingRootCommandStartStatus ?? this.team.currentStatus,
+      memberStatuses: this.getMemberStatusSnapshots(),
+      nativeTeamStatus: this.commandStatusOverlayStore.getTeamStatus({
+        sourcePath: [],
+        fallbackStatus: () => this.team.currentStatus,
+      }),
     }) };
   }
 
-  private applyCachedMemberStatusOverrides(snapshots: AgentStatusPayload[]): AgentStatusPayload[] {
-    return this.applyMemberStatusOverrides(snapshots, this.combinedMemberStatusOverrides());
-  }
-
-  private getMemberStatusSnapshotsWithOverrides(events: TeamRunEvent[]): AgentStatusPayload[] {
-    return this.applyMemberStatusOverrides(this.getMemberStatusSnapshots(), this.combinedMemberStatusOverrides(this.collectMemberStatusOverrides(events)));
-  }
-
-  private combinedMemberStatusOverrides(extra = new Map<string, AgentStatusPayload>()): Map<string, AgentStatusPayload> {
-    const combined = new Map(this.lastMemberStatusByRunId);
-    for (const source of [this.pendingCommandStartStatusByRunId, extra]) {
-      for (const [memberRunId, statusPayload] of source.entries()) combined.set(memberRunId, statusPayload);
-    }
-    return combined;
-  }
-
-  private applyMemberStatusOverrides(snapshots: AgentStatusPayload[], byRunId: ReadonlyMap<string, AgentStatusPayload>): AgentStatusPayload[] {
-    if (byRunId.size === 0) return snapshots;
-    const applied = new Set<AgentStatusPayload>();
-    const resolved = snapshots.map((snapshot) => {
-      const override = snapshot.agent_id ? byRunId.get(snapshot.agent_id) : undefined;
-      if (!override) return snapshot;
-      applied.add(override);
-      return { ...snapshot, status: override.status, can_interrupt: override.can_interrupt };
-    });
-    for (const override of byRunId.values()) if (!applied.has(override)) resolved.push(override);
-    return resolved;
-  }
-
-  private recordMemberStatusOverrides(events: TeamRunEvent[]): void {
-    for (const [memberRunId, statusPayload] of this.collectMemberStatusOverrides(events).entries()) {
-      this.pendingCommandStartStatusByRunId.delete(memberRunId);
-      this.lastMemberStatusByRunId.set(memberRunId, statusPayload);
-    }
-  }
-
-  private recordCommandStatusReplacements(events: TeamRunEvent[]): void {
-    for (const event of events) if (event.eventSourceType === TeamRunEventSourceType.TEAM && event.sourcePath.length === 0) this.pendingRootCommandStartStatus = null;
-  }
-
   private publishMemberCommandStatus(memberContext: AutoByteusTeamMemberContext, status: "initializing" | "error", errorMessage: string | null = null): void {
-    const currentStatus = this.pendingCommandStartStatusByRunId.get(memberContext.memberRunId)?.status ?? this.lastMemberStatusByRunId.get(memberContext.memberRunId)?.status ?? this.getMemberStatusSnapshotFor(memberContext.memberRunId, memberContext.memberName, memberContext).status;
-    if (status === "initializing" && currentStatus !== "offline" && currentStatus !== "idle") return;
-    const eventInput = { teamRunId: this.runId, runtimeKind: RuntimeKind.AUTOBYTEUS, memberName: memberContext.memberName, memberRunId: memberContext.memberRunId, memberPath: memberContext.memberPath, memberRouteKey: memberContext.memberRouteKey, status, errorMessage };
-    const statusPayload = buildAgentMemberCommandStatusPayload(eventInput);
-    if (status === "initializing") this.pendingCommandStartStatusByRunId.set(memberContext.memberRunId, statusPayload);
-    else { this.pendingCommandStartStatusByRunId.delete(memberContext.memberRunId); this.lastMemberStatusByRunId.set(memberContext.memberRunId, statusPayload); }
-    this.publishEvents([buildAgentMemberCommandStartStatusEvent(eventInput)]);
-    this.publishTeamStatusIfChanged();
+    this.commandStatusOverlayStore.publishMemberCommandStatus({
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+      memberContext,
+      status,
+      errorMessage,
+      currentStatus: () => this.commandStatusOverlayStore.getMemberStatusSnapshot({
+        memberContext,
+        fallback: () => this.memberStatusProjector.projectMemberStatusSnapshot({
+          memberRunId: memberContext.memberRunId,
+          memberName: memberContext.memberName,
+          knownRuntimeMemberContext: memberContext,
+        }),
+      }).status,
+    });
   }
 
   private publishRootCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): void {
-    const currentStatus = this.pendingRootCommandStartStatus ?? this.getStatusSnapshot().status;
-    if (status === "initializing" && currentStatus !== "offline" && currentStatus !== "idle") return;
-    this.pendingRootCommandStartStatus = status;
-    this.lastTeamStatus = status;
-    this.publishEvents([buildTeamCommandStartStatusEvent({ teamRunId: this.runId, sourcePath: [], status, errorMessage })]);
+    const published = this.commandStatusOverlayStore.publishTeamCommandStatus({
+      sourcePath: [],
+      status,
+      errorMessage,
+      currentStatus: () => this.getStatusSnapshot().status,
+      notifyStatusChange: false,
+    });
+    if (published) {
+      this.lastTeamStatus = status;
+    }
   }
 
   private publishTeamStatusIfChanged(): void {
@@ -498,26 +390,6 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       try { listener(event); }
       catch (error) { logger.warn(`AutoByteusTeamRunBackend: team event listener failed for '${this.runId}': ${String(error)}`); }
     }
-  }
-
-  private clearCommandStatusOverrides(): void {
-    this.pendingRootCommandStartStatus = null;
-    this.pendingCommandStartStatusByRunId.clear();
-  }
-
-  private collectMemberStatusOverrides(events: TeamRunEvent[]): Map<string, AgentStatusPayload> {
-    const byRunId = new Map<string, AgentStatusPayload>();
-    for (const event of events) {
-      if (event.eventSourceType !== TeamRunEventSourceType.AGENT) continue;
-      const payload = event.data as TeamRunAgentEventPayload;
-      if (payload.agentEvent.eventType !== AgentRunEventType.AGENT_STATUS) continue;
-      byRunId.set(payload.memberRunId, buildAgentStatusPayload({
-        status: payload.agentEvent.payload.status, canInterrupt: payload.agentEvent.payload.can_interrupt === true,
-        agentId: payload.memberRunId, agentName: payload.memberName, memberRouteKey: payload.memberRouteKey,
-        memberPath: payload.memberPath, sourceRouteKey: payload.memberRouteKey, sourcePath: payload.memberPath,
-      }));
-    }
-    return byRunId;
   }
 
 }

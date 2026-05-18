@@ -11,12 +11,12 @@ const waitLoop = async (streamer: AgentTeamEventStream, teamId: string): Promise
     if (event.event_source_type !== 'TEAM') {
       continue;
     }
-    const data = event.data as { new_status?: AgentTeamStatus; error_message?: string } | undefined;
-    if (data?.new_status === AgentTeamStatus.IDLE) {
+    const data = event.data as { status?: AgentTeamStatus; error_message?: string } | undefined;
+    if (data?.status === AgentTeamStatus.IDLE) {
       console.info(`Team '${teamId}' has become idle.`);
       return;
     }
-    if (data?.new_status === AgentTeamStatus.ERROR) {
+    if (data?.status === AgentTeamStatus.ERROR) {
       const errorMessage =
         `Team '${teamId}' entered an error state while waiting for idle: ${data?.error_message ?? ''}`;
       console.error(errorMessage);

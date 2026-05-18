@@ -289,9 +289,20 @@ const waitForBufferedMessage = async (
   throw new Error(`Timed out waiting for websocket message at index ${String(index)}`);
 };
 
-const expectNoLegacyStatusFields = (payload: Record<string, unknown>) => {
-  expect(payload).not.toHaveProperty("new_status");
-  expect(payload).not.toHaveProperty("old_status");
+const expectCanonicalStatusPayloadFields = (payload: Record<string, unknown>) => {
+  expect(payload).toHaveProperty("status");
+  for (const key of Object.keys(payload)) {
+    expect([
+      "status",
+      "can_interrupt",
+      "agent_id",
+      "agent_name",
+      "member_route_key",
+      "member_path",
+      "source_route_key",
+      "source_path",
+    ]).toContain(key);
+  }
 };
 
 const openAgentApp = async (run: FakeAgentRun) => {
@@ -353,7 +364,7 @@ describe("Agent status websocket contract integration", () => {
           type: "AGENT_STATUS",
           payload: { status: "idle", can_interrupt: false },
         });
-        expectNoLegacyStatusFields(status.payload);
+        expectCanonicalStatusPayloadFields(status.payload);
       } finally {
         socket.close();
         await app.close();
@@ -391,7 +402,7 @@ describe("Agent status websocket contract integration", () => {
           type: "AGENT_STATUS",
           payload: { status: "running", can_interrupt: true },
         });
-        expectNoLegacyStatusFields(running.payload);
+        expectCanonicalStatusPayloadFields(running.payload);
 
         stream.push({
           runId: run.runId,
@@ -416,7 +427,7 @@ describe("Agent status websocket contract integration", () => {
           type: "AGENT_STATUS",
           payload: { status: "idle", can_interrupt: false },
         });
-        expectNoLegacyStatusFields(idle.payload);
+        expectCanonicalStatusPayloadFields(idle.payload);
       } finally {
         socket.close();
         await app.close();
@@ -445,7 +456,7 @@ describe("Agent status websocket contract integration", () => {
         type: "AGENT_STATUS",
         payload: { status: "initializing", can_interrupt: false },
       });
-      expectNoLegacyStatusFields(snapshot.payload);
+      expectCanonicalStatusPayloadFields(snapshot.payload);
 
       stream.push({
         runId: run.runId,
@@ -459,7 +470,7 @@ describe("Agent status websocket contract integration", () => {
         type: "AGENT_STATUS",
         payload: { status: "initializing", can_interrupt: false },
       });
-      expectNoLegacyStatusFields(liveInitializing.payload);
+      expectCanonicalStatusPayloadFields(liveInitializing.payload);
     } finally {
       socket.close();
       await app.close();
@@ -517,7 +528,7 @@ describe("Agent status websocket contract integration", () => {
           source_path: ["writer"],
         },
       });
-      expectNoLegacyStatusFields(writerStatus.payload);
+      expectCanonicalStatusPayloadFields(writerStatus.payload);
 
       const reviewerStatus = await waitForBufferedMessage(messages, cursor++);
       expect(reviewerStatus).toEqual({
@@ -533,7 +544,7 @@ describe("Agent status websocket contract integration", () => {
           source_path: ["reviewer"],
         },
       });
-      expectNoLegacyStatusFields(reviewerStatus.payload);
+      expectCanonicalStatusPayloadFields(reviewerStatus.payload);
 
       const teamStatus = await waitForBufferedMessage(messages, cursor++);
       expect(teamStatus).toEqual({
@@ -541,7 +552,7 @@ describe("Agent status websocket contract integration", () => {
         payload: { status: "running", source_path: [] },
       });
       expect(teamStatus.payload).not.toHaveProperty("can_interrupt");
-      expectNoLegacyStatusFields(teamStatus.payload);
+      expectCanonicalStatusPayloadFields(teamStatus.payload);
 
       stream.push({
         teamRunId: teamRun.runId,
@@ -554,7 +565,7 @@ describe("Agent status websocket contract integration", () => {
         payload: { status: "error", source_path: [] },
       });
       expect(liveTeamStatus.payload).not.toHaveProperty("can_interrupt");
-      expectNoLegacyStatusFields(liveTeamStatus.payload);
+      expectCanonicalStatusPayloadFields(liveTeamStatus.payload);
     } finally {
       socket.close();
       await app.close();
@@ -631,7 +642,7 @@ describe("Agent status websocket contract integration", () => {
           source_path: ["writer"],
         },
       });
-      expectNoLegacyStatusFields(writerStatus.payload);
+      expectCanonicalStatusPayloadFields(writerStatus.payload);
 
       const reviewerStatus = await waitForBufferedMessage(messages, cursor++);
       expect(reviewerStatus).toEqual({
@@ -647,14 +658,14 @@ describe("Agent status websocket contract integration", () => {
           source_path: ["reviewer"],
         },
       });
-      expectNoLegacyStatusFields(reviewerStatus.payload);
+      expectCanonicalStatusPayloadFields(reviewerStatus.payload);
 
       const teamSnapshot = await waitForBufferedMessage(messages, cursor++);
       expect(teamSnapshot).toEqual({
         type: "TEAM_STATUS",
         payload: { status: "initializing", source_path: [] },
       });
-      expectNoLegacyStatusFields(teamSnapshot.payload);
+      expectCanonicalStatusPayloadFields(teamSnapshot.payload);
 
       stream.push({
         teamRunId: teamRun.runId,
@@ -689,7 +700,7 @@ describe("Agent status websocket contract integration", () => {
           source_path: ["reviewer"],
         },
       });
-      expectNoLegacyStatusFields(liveMemberInitializing.payload);
+      expectCanonicalStatusPayloadFields(liveMemberInitializing.payload);
 
       stream.push({
         teamRunId: teamRun.runId,
@@ -703,7 +714,7 @@ describe("Agent status websocket contract integration", () => {
         type: "TEAM_STATUS",
         payload: { status: "initializing", source_path: [] },
       });
-      expectNoLegacyStatusFields(liveTeamInitializing.payload);
+      expectCanonicalStatusPayloadFields(liveTeamInitializing.payload);
     } finally {
       socket.close();
       await app.close();

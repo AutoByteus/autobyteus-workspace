@@ -30,12 +30,12 @@ describe('AgentTeamEventStream', () => {
     const correct_event = new AgentTeamStreamEvent({
       team_id: stream.teamId,
       event_source_type: 'TEAM',
-      data: new AgentTeamStatusUpdateData({ new_status: AgentTeamStatus.IDLE })
+      data: new AgentTeamStatusUpdateData({ status: AgentTeamStatus.IDLE })
     });
     const wrong_event = new AgentTeamStreamEvent({
       team_id: 'other-team',
       event_source_type: 'TEAM',
-      data: new AgentTeamStatusUpdateData({ new_status: AgentTeamStatus.IDLE })
+      data: new AgentTeamStatusUpdateData({ status: AgentTeamStatus.IDLE })
     });
 
     (stream as any).handleEvent(correct_event);
@@ -52,12 +52,12 @@ describe('AgentTeamEventStream', () => {
     const event1 = new AgentTeamStreamEvent({
       team_id: stream.teamId,
       event_source_type: 'TEAM',
-      data: new AgentTeamStatusUpdateData({ new_status: AgentTeamStatus.IDLE })
+      data: new AgentTeamStatusUpdateData({ status: AgentTeamStatus.IDLE })
     });
     const agent_event = new StreamEvent({
       agent_id: 'agent-1',
-      event_type: StreamEventType.AGENT_STATUS_UPDATED,
-      data: { new_status: AgentStatus.IDLE }
+      event_type: StreamEventType.AGENT_STATUS,
+      data: { status: AgentStatus.IDLE }
     });
     const event2 = new AgentTeamStreamEvent({
       team_id: stream.teamId,

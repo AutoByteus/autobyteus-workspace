@@ -1,0 +1,69 @@
+$ git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+
+$ git rev-parse HEAD
+d2b4f4331e95e49a3109b851463b8bae0d48ecae
+$ git rev-parse origin/personal
+d2b4f4331e95e49a3109b851463b8bae0d48ecae
+$ git merge-base HEAD origin/personal
+d2b4f4331e95e49a3109b851463b8bae0d48ecae
+$ git rev-list --left-right --count HEAD...origin/personal
+0	0
+$ git status --short --branch
+## codex/status-lifecycle-hardening...origin/personal
+ M autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+ M autobyteus-server-ts/docs/design/codex_raw_event_mapping.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts
+ M autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-backend.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-run-event-processor.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-team-manager.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-manager.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts
+ M autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-sub-team-member-handle.ts
+ D autobyteus-server-ts/src/agent-team-execution/services/team-member-command-start-status-overlays.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/autobyteus-team-run-backend.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/claude-team-run-backend.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/codex-team-run-backend.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/autobyteus-team-run-event-processor.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-command-start-status.test.ts
+ M autobyteus-ts/docs/agent_team_design.md
+ M autobyteus-ts/docs/agent_team_streaming_protocol.md
+ M autobyteus-ts/docs/lifecycle_event_sourced_engine_design.md
+ M autobyteus-ts/src/agent-team/status/agent-team-status-manager.ts
+ M autobyteus-ts/src/agent-team/streaming/agent-team-event-notifier.ts
+ M autobyteus-ts/src/agent-team/streaming/agent-team-stream-event-payloads.ts
+ M autobyteus-ts/src/agent-team/utils/wait-for-idle.ts
+ M autobyteus-ts/src/agent/events/notifiers.ts
+ M autobyteus-ts/src/agent/streaming/events/stream-event-payload-lifecycle.ts
+ M autobyteus-ts/src/agent/streaming/events/stream-event-payloads.ts
+ M autobyteus-ts/src/agent/streaming/events/stream-events.ts
+ M autobyteus-ts/src/agent/streaming/streams/agent-event-stream.ts
+ M autobyteus-ts/src/agent/utils/wait-for-idle.ts
+ M autobyteus-ts/src/cli/agent-team/state-store.ts
+ M autobyteus-ts/src/cli/agent/cli-display.ts
+ M autobyteus-ts/src/events/event-types.ts
+ M autobyteus-ts/tests/integration/agent-team/streaming/agent-team-streaming-flow.test.ts
+ M autobyteus-ts/tests/unit/agent-team/streaming/agent-event-bridge.test.ts
+ M autobyteus-ts/tests/unit/agent-team/streaming/agent-team-event-notifier.test.ts
+ M autobyteus-ts/tests/unit/agent-team/streaming/agent-team-event-stream.test.ts
+ M autobyteus-ts/tests/unit/agent-team/streaming/agent-team-stream-events.test.ts
+ M autobyteus-ts/tests/unit/agent-team/streaming/team-event-bridge.test.ts
+ M autobyteus-ts/tests/unit/agent/events/notifiers.test.ts
+ M autobyteus-ts/tests/unit/agent/streaming/events/stream-event-payloads.test.ts
+ M autobyteus-ts/tests/unit/agent/streaming/streams/agent-event-stream.test.ts
+ M autobyteus-ts/tests/unit/cli/agent-team-state-store.test.ts
+ M autobyteus-ts/tests/unit/events/event-types.test.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_integration_minimal_bridge.md
+?? autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-team-member-status-projector.ts
+?? autobyteus-server-ts/src/agent-team-execution/services/team-command-status-overlay-store.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/events/autobyteus-status-projector.test.ts
+?? autobyteus-server-ts/tests/unit/agent-team-execution/autobyteus-team-member-status-projector.test.ts
+?? tickets/status-lifecycle-hardening/

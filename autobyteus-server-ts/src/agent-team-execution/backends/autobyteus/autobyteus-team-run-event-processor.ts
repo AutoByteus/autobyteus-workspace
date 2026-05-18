@@ -15,7 +15,6 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../agent-execution/domain/agent-run-event.js";
-import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
 import { AutoByteusStreamEventConverter } from "../../../agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { TeamStatusPayload } from "../../domain/team-status-payload.js";
@@ -31,19 +30,16 @@ import {
 } from "../../services/inter-agent-message-runtime-builders.js";
 import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
 import { buildTeamCommunicationMessageId } from "../../../services/team-communication/team-communication-identity.js";
-import type { AutoByteusTeamRunContext } from "./autobyteus-team-run-context.js";
+import type { AutoByteusTeamMemberStatusProjector } from "./autobyteus-team-member-status-projector.js";
 import {
   asRecord,
-  extractMemberRunId,
   normalizeOptionalString,
   toReferenceFilesPayload,
 } from "./autobyteus-team-run-backend-utils.js";
 
 type AutoByteusTeamRunEventProcessorOptions = {
-  memberRunIdsByName?: ReadonlyMap<string, string>;
-  runtimeContext?: AutoByteusTeamRunContext | null;
+  projector: AutoByteusTeamMemberStatusProjector;
   teamRunConfig?: TeamRunConfig | null;
-  getMemberStatusSnapshot?: (memberRunId: string, memberName: string | null) => AgentStatusPayload;
   getTeamStatusSnapshot?: () => TeamStatusPayload;
 };
 
@@ -134,7 +130,7 @@ export class AutoByteusTeamRunEventProcessor {
     agentEvent: { agent_id?: unknown; data?: unknown } | null,
     memberName: string | null,
   ): string | null {
-    return extractMemberRunId(agentEvent, memberName, this.options.memberRunIdsByName);
+    return this.options.projector.extractMemberRunId(agentEvent, memberName);
   }
 
   normalizeMemberName(value: unknown): string | null {
@@ -149,28 +145,15 @@ export class AutoByteusTeamRunEventProcessor {
       agentPayload.agent_event as { agent_id?: unknown; data?: unknown },
       agentPayload.agent_name,
     );
-    const nativeAgentId =
-      typeof agentPayload.agent_event.agent_id === "string" &&
-      agentPayload.agent_event.agent_id.trim().length > 0
-        ? agentPayload.agent_event.agent_id.trim()
-        : null;
-    const fallbackMemberRunId =
-      extractedMemberRunId ??
-      normalizeOptionalString(agentPayload.agent_name) ??
-      this.teamRunId;
-    const runtimeMemberContext = this.options.runtimeContext?.memberContexts.find(
-      (memberContext) =>
-        memberContext.memberRunId === fallbackMemberRunId ||
-        memberContext.memberName === agentPayload.agent_name ||
-        (nativeAgentId !== null && memberContext.nativeAgentId === nativeAgentId),
-    );
-    if (runtimeMemberContext && nativeAgentId) {
-      runtimeMemberContext.nativeAgentId = nativeAgentId;
-    }
-    const resolvedMemberRunId = runtimeMemberContext?.memberRunId ?? fallbackMemberRunId;
+    const memberIdentity = this.options.projector.resolveAgentEventMember({
+      agentEvent: agentPayload.agent_event as { agent_id?: unknown; data?: unknown },
+      memberName: agentPayload.agent_name,
+      fallbackMemberRunId: extractedMemberRunId ?? this.teamRunId,
+    });
+    const resolvedMemberName = memberIdentity.memberName ?? agentPayload.agent_name;
     const converter = this.getAgentEventConverter(
-      resolvedMemberRunId,
-      agentPayload.agent_name,
+      memberIdentity.memberRunId,
+      resolvedMemberName,
     );
     const convertedEvent = converter.convert(agentPayload.agent_event);
     if (!convertedEvent) {
@@ -181,25 +164,25 @@ export class AutoByteusTeamRunEventProcessor {
     await publishProcessedTeamAgentEvents({
       teamRunId: this.teamRunId,
       runContext: this.buildMemberRunContext(
-        agentPayload.agent_name,
-        resolvedMemberRunId,
+        resolvedMemberName,
+        memberIdentity.memberRunId,
       ),
       runtimeKind: RuntimeKind.AUTOBYTEUS,
-      memberName: agentPayload.agent_name,
-      memberRunId: resolvedMemberRunId,
+      memberName: resolvedMemberName,
+      memberRunId: memberIdentity.memberRunId,
       agentEvents: [
         this.enrichConvertedEvent({
           event: convertedEvent,
-          memberName: agentPayload.agent_name,
-          memberRunId: resolvedMemberRunId,
+          memberName: resolvedMemberName,
+          memberRunId: memberIdentity.memberRunId,
         }),
       ],
       publishTeamEvent: (event) => {
         processedEvents.push(event);
       },
       sourcePath: this.resolveSourcePath(
-        runtimeMemberContext?.memberPath ?? null,
-        agentPayload.agent_name,
+        memberIdentity.memberPath ?? null,
+        resolvedMemberName,
         subTeamNodeName,
       ),
       subTeamNodeName,
@@ -218,15 +201,10 @@ export class AutoByteusTeamRunEventProcessor {
 
     const converter = new AutoByteusStreamEventConverter(
       memberRunId,
-      () => this.options.getMemberStatusSnapshot?.(
+      () => this.options.projector.projectMemberStatusSnapshot({
         memberRunId,
         memberName,
-      ) ?? {
-        status: "offline",
-        can_interrupt: false,
-        agent_id: memberRunId,
-        agent_name: memberName ?? undefined,
-      },
+      }),
     );
     this.agentEventConverters.set(memberRunId, converter);
     return converter;
@@ -349,29 +327,14 @@ export class AutoByteusTeamRunEventProcessor {
     memberRunId: string,
     memberName: string | null,
   ) {
-    return (
-      this.options.runtimeContext?.memberContexts.find(
-        (memberContext) =>
-          memberContext.memberRunId === memberRunId ||
-          memberContext.memberName === memberName ||
-          memberContext.nativeAgentId === memberRunId,
-      ) ?? null
-    );
+    return this.options.projector.resolveMemberContextByRunIdOrName(memberRunId, memberName);
   }
 
   private resolveMemberContextByIdentity(identity: string | null) {
     if (!identity) {
       return null;
     }
-    return (
-      this.options.runtimeContext?.memberContexts.find(
-        (memberContext) =>
-          memberContext.memberRunId === identity ||
-          memberContext.nativeAgentId === identity ||
-          memberContext.memberName === identity ||
-          memberContext.memberRouteKey === identity,
-      ) ?? null
-    );
+    return this.options.projector.resolveMemberContextByIdentity(identity);
   }
 
   private resolveSourcePath(

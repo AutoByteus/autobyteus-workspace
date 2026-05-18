@@ -9,7 +9,7 @@ import {
   ToolExecutionFailedData,
   ToolDeniedData,
   ToolInteractionLogEntryData,
-  AgentStatusUpdateData,
+  AgentStatusData,
   ErrorEventData,
   SegmentEventData
 } from '../../agent/streaming/events/stream-event-payloads.js';
@@ -183,9 +183,9 @@ export class InteractiveCliDisplay {
       return;
     }
 
-    if (event.event_type === StreamEventType.AGENT_STATUS_UPDATED && event.data instanceof AgentStatusUpdateData) {
-      this.currentStatus = event.data.new_status;
-      if (event.data.new_status === AgentStatus.AWAITING_TOOL_APPROVAL) {
+    if (event.event_type === StreamEventType.AGENT_STATUS && event.data instanceof AgentStatusData) {
+      this.currentStatus = event.data.status;
+      if (event.data.status === AgentStatus.AWAITING_TOOL_APPROVAL) {
         this.awaitingApproval = true;
         if (this.pendingApprovalData) {
           this.onTurnComplete?.();
@@ -194,24 +194,24 @@ export class InteractiveCliDisplay {
         this.awaitingApproval = false;
       }
 
-      if ([AgentStatus.IDLE, AgentStatus.ERROR].includes(event.data.new_status)) {
+      if ([AgentStatus.IDLE, AgentStatus.ERROR].includes(event.data.status)) {
         this.onTurnComplete?.();
       }
 
-      if (event.data.new_status === AgentStatus.EXECUTING_TOOL) {
+      if (event.data.status === AgentStatus.EXECUTING_TOOL) {
         const toolName = event.data.tool_name ?? 'a tool';
         this.write(`Agent: Waiting for tool '${toolName}' to complete...\n`);
         this.currentLineEmpty = true;
         this.agentHasSpokenThisTurn = true;
-      } else if (event.data.new_status === AgentStatus.IDLE) {
+      } else if (event.data.status === AgentStatus.IDLE) {
         console.info('[Agent is now idle.]');
-      } else if (event.data.new_status === AgentStatus.BOOTSTRAPPING) {
+      } else if (event.data.status === AgentStatus.BOOTSTRAPPING) {
         console.info('[Agent is initializing...]');
-      } else if (event.data.new_status === AgentStatus.TOOL_DENIED) {
+      } else if (event.data.status === AgentStatus.TOOL_DENIED) {
         const toolName = event.data.tool_name ?? 'a tool';
         console.info(`[Tool '${toolName}' was denied by user. Agent is reconsidering.]`);
       } else {
-        let statusMsg = `[Agent Status: ${event.data.new_status}`;
+        let statusMsg = `[Agent Status: ${event.data.status}`;
         if (event.data.tool_name) {
           statusMsg += ` (${event.data.tool_name})`;
         }

@@ -15,6 +15,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { TeamRunConfig, type TeamMemberRunConfig, type TeamSubTeamMemberRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { TeamCommandStatusOverlayStore } from "../../../src/agent-team-execution/services/team-command-status-overlay-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const createDeferred = <T>() => {
@@ -31,6 +32,166 @@ const createAgentConfig = (runtimeKind: RuntimeKind) => new AgentRunConfig({
   workspaceId: null,
   llmConfig: null,
   skillAccessMode: SkillAccessMode.NONE,
+});
+
+describe("TeamCommandStatusOverlayStore", () => {
+  const memberContext = {
+    memberName: "Worker",
+    memberPath: ["Worker"],
+    memberRouteKey: "Worker",
+    memberRunId: "member-run-1",
+  };
+
+  const createStore = () => {
+    const events: TeamRunEvent[] = [];
+    const notifyStatusChange = vi.fn();
+    const store = new TeamCommandStatusOverlayStore({
+      getTeamRunId: () => "team-run-1",
+      publishEvent: (event) => events.push(event),
+      publishTeamStatusIfChanged: notifyStatusChange,
+    });
+    return { store, events, notifyStatusChange };
+  };
+
+  it("gates member initializing to offline or idle and stores applied snapshots", () => {
+    const { store, events, notifyStatusChange } = createStore();
+
+    expect(store.publishMemberCommandStatus({
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      memberContext,
+      status: "initializing",
+      currentStatus: () => "running",
+    })).toBe(false);
+    expect(events).toHaveLength(0);
+
+    expect(store.publishMemberCommandStatus({
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      memberContext,
+      status: "initializing",
+      currentStatus: () => "offline",
+    })).toBe(true);
+    expect(events[0]).toMatchObject({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      sourcePath: ["Worker"],
+      data: { agentEvent: { eventType: AgentRunEventType.AGENT_STATUS, payload: { status: "initializing" } } },
+    });
+    expect(store.getMemberStatusSnapshot({
+      memberContext,
+      fallback: () => ({ status: "offline", can_interrupt: false }),
+    })).toMatchObject({ status: "initializing", agent_id: "member-run-1" });
+    expect(store.applyMemberStatusOverlays([
+      { status: "offline", can_interrupt: false, agent_id: "member-run-1", member_route_key: "Worker" },
+    ])).toEqual([
+      expect.objectContaining({ status: "initializing", agent_id: "member-run-1" }),
+    ]);
+    expect(notifyStatusChange).toHaveBeenCalledTimes(1);
+  });
+
+  it("replaces member failure and clears only matching replacement member status events", () => {
+    const { store } = createStore();
+    store.publishMemberCommandStatus({
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      memberContext,
+      status: "initializing",
+      currentStatus: () => "idle",
+    });
+    store.publishMemberCommandStatus({
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      memberContext,
+      status: "error",
+      errorMessage: "failed",
+      currentStatus: () => "initializing",
+    });
+    expect(store.getMemberStatusSnapshot({
+      memberContext,
+      fallback: () => ({ status: "offline", can_interrupt: false }),
+    })).toMatchObject({ status: "error", agent_id: "member-run-1" });
+
+    store.recordReplacementEvents([{
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-run-1",
+      sourcePath: ["Other"],
+      data: {
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        memberName: "Other",
+        memberRunId: "other-run",
+        memberPath: ["Other"],
+        memberRouteKey: "Other",
+        agentEvent: {
+          eventType: AgentRunEventType.AGENT_STATUS,
+          runId: "other-run",
+          payload: { status: "running", can_interrupt: false },
+          statusHint: "ACTIVE",
+        },
+      },
+    }]);
+    expect(store.getMemberStatusSnapshot({
+      memberContext,
+      fallback: () => ({ status: "offline", can_interrupt: false }),
+    })).toMatchObject({ status: "error" });
+
+    store.recordReplacementEvents([{
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-run-1",
+      sourcePath: ["Worker"],
+      data: {
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        memberName: "Worker",
+        memberRunId: "member-run-1",
+        memberPath: ["Worker"],
+        memberRouteKey: "Worker",
+        agentEvent: {
+          eventType: AgentRunEventType.AGENT_STATUS,
+          runId: "member-run-1",
+          payload: { status: "running", can_interrupt: false },
+          statusHint: "ACTIVE",
+        },
+      },
+    }]);
+    expect(store.getMemberStatusSnapshot({
+      memberContext,
+      fallback: () => ({ status: "offline", can_interrupt: false }),
+    })).toEqual({ status: "offline", can_interrupt: false });
+  });
+
+  it("keeps root and sub-team source-path overlays isolated and clears all on dispose", () => {
+    const { store, events } = createStore();
+    expect(store.publishTeamCommandStatus({
+      sourcePath: [],
+      status: "initializing",
+      currentStatus: () => "idle",
+    })).toBe(true);
+    expect(store.publishTeamCommandStatus({
+      sourcePath: ["ReviewTeam"],
+      status: "initializing",
+      currentStatus: () => "offline",
+    })).toBe(true);
+    expect(events).toEqual([
+      expect.objectContaining({ eventSourceType: TeamRunEventSourceType.TEAM, sourcePath: [], data: { status: "initializing" } }),
+      expect.objectContaining({ eventSourceType: TeamRunEventSourceType.TEAM, sourcePath: ["ReviewTeam"], data: { status: "initializing" } }),
+    ]);
+
+    store.recordReplacementEvents([{
+      eventSourceType: TeamRunEventSourceType.TEAM,
+      teamRunId: "team-run-1",
+      sourcePath: [],
+      data: { status: "running" },
+    }]);
+    expect(store.getTeamStatus({ sourcePath: [], fallbackStatus: () => "idle" })).toBe("idle");
+    expect(store.getRepresentedTeamStatusSnapshot({
+      sourcePath: ["ReviewTeam"],
+      representedMember: {
+        memberName: "ReviewTeam",
+        memberPath: ["ReviewTeam"],
+        memberRouteKey: "ReviewTeam",
+        memberRunId: "review-team-run",
+      },
+      fallback: () => ({ status: "offline", can_interrupt: false }),
+    })).toMatchObject({ status: "initializing", agent_id: "review-team-run" });
+
+    store.clear();
+    expect(store.getTeamStatus({ sourcePath: ["ReviewTeam"], fallbackStatus: () => "idle" })).toBe("idle");
+  });
 });
 
 const createAgentMemberRunConfig = (runtimeKind: RuntimeKind): TeamMemberRunConfig => ({
