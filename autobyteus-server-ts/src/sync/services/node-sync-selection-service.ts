@@ -1,4 +1,8 @@
-import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import {
+  buildScopedMemberResolutionContext,
+  resolveScopedAgentMemberRef,
+  resolveScopedTeamMemberRef,
+} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
 
 export interface NodeSyncSelectionSpec {
   agentDefinitionIds?: string[] | null;
@@ -41,6 +45,8 @@ type AgentTeamDefinitionSnapshot = {
   id?: string | null;
   name: string;
   nodes: TeamNodeSnapshot[];
+  ownershipScope?: "shared" | "team_local" | "application_owned" | null;
+  ownerApplicationId?: string | null;
 };
 
 type AgentDefinitionServiceLike = {
@@ -124,7 +130,7 @@ export class NodeSyncSelectionService {
     );
 
     for (const agentDefinitionId of requestedAgentDefinitionIds) {
-      if (!agentsById.has(agentDefinitionId)) {
+      if (!agentsById.has(agentDefinitionId) && !(await this.lookupAgentDefinition(agentDefinitionId))) {
         throw new NodeSyncSelectionValidationError(
           "invalid-selection-agent-id",
           `Selected agent definition ID was not found on source node: ${agentDefinitionId}`,
@@ -145,7 +151,7 @@ export class NodeSyncSelectionService {
     const resolvedAgentTeamDefinitionIds = new Set(requestedAgentTeamDefinitionIds);
 
     if (includeDependencies) {
-      this.expandTeamDependencies(
+      await this.expandTeamDependencies(
         resolvedAgentTeamDefinitionIds,
         resolvedAgentDefinitionIds,
         teamsById,
@@ -165,12 +171,12 @@ export class NodeSyncSelectionService {
     };
   }
 
-  private expandTeamDependencies(
+  private async expandTeamDependencies(
     resolvedAgentTeamDefinitionIds: Set<string>,
     resolvedAgentDefinitionIds: Set<string>,
     teamsById: Map<string, AgentTeamDefinitionSnapshot>,
     agentsById: Map<string, AgentDefinitionSnapshot>,
-  ): void {
+  ): Promise<void> {
     const queue = Array.from(resolvedAgentTeamDefinitionIds);
     while (queue.length > 0) {
       const teamDefinitionId = queue.shift();
@@ -185,31 +191,31 @@ export class NodeSyncSelectionService {
         );
       }
 
+      const resolutionContext = buildScopedMemberResolutionContext(team, teamDefinitionId);
       for (const member of team.nodes) {
         if (member.refType === "agent") {
-          if (member.refScope === "team_local") {
-            continue;
-          }
-          if (!agentsById.has(member.ref)) {
+          const agentDefinitionId = resolveScopedAgentMemberRef(resolutionContext, member);
+          if (!agentsById.has(agentDefinitionId) && !(await this.lookupAgentDefinition(agentDefinitionId))) {
             throw new NodeSyncSelectionValidationError(
-              "team-member-missing",
+              member.refScope === "team_local" ? "team-local-member-missing" : "team-member-missing",
               `Team '${team.name}' references missing agent '${member.ref}'.`,
             );
           }
-          resolvedAgentDefinitionIds.add(member.ref);
+          resolvedAgentDefinitionIds.add(agentDefinitionId);
           continue;
         }
 
         if (member.refType === "agent_team") {
-          if (!teamsById.has(member.ref)) {
+          const nestedTeamId = resolveScopedTeamMemberRef(resolutionContext, member);
+          if (!teamsById.has(nestedTeamId)) {
             throw new NodeSyncSelectionValidationError(
               "nested-team-missing",
               `Team '${team.name}' references missing team '${member.ref}'.`,
             );
           }
-          if (!resolvedAgentTeamDefinitionIds.has(member.ref)) {
-            resolvedAgentTeamDefinitionIds.add(member.ref);
-            queue.push(member.ref);
+          if (!resolvedAgentTeamDefinitionIds.has(nestedTeamId)) {
+            resolvedAgentTeamDefinitionIds.add(nestedTeamId);
+            queue.push(nestedTeamId);
           }
         }
       }
@@ -229,15 +235,13 @@ export class NodeSyncSelectionService {
         );
       }
 
+      const resolutionContext = buildScopedMemberResolutionContext(team, teamDefinitionId);
       for (const member of team.nodes) {
         if (member.refType !== "agent" || member.refScope !== "team_local") {
           continue;
         }
 
-        const localAgentDefinitionId = buildTeamLocalAgentDefinitionId(
-          teamDefinitionId,
-          member.ref,
-        );
+        const localAgentDefinitionId = resolveScopedAgentMemberRef(resolutionContext, member);
         const localAgent = await this.lookupAgentDefinition(localAgentDefinitionId);
         if (!localAgent) {
           throw new NodeSyncSelectionValidationError(

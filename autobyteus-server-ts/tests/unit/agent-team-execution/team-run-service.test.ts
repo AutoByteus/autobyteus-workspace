@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -371,7 +371,7 @@ describe("TeamRunService", () => {
           nodes: [
             { memberName: "sharedLead", refType: "agent", refScope: "shared", ref: "shared-reviewer" },
             { memberName: "localLead", refType: "agent", refScope: "team_local", ref: "reviewer" },
-            { memberName: "subTeam", refType: "agent_team", ref: "sub-team" },
+            { memberName: "subTeam", refType: "agent_team", ref: "sub-team" , refScope: "shared" },
           ],
         },
       ],
@@ -439,14 +439,14 @@ describe("TeamRunService", () => {
           return {
             name: "Root Team",
             coordinatorMemberName: "SubTeam",
-            nodes: [{ memberName: "SubTeam", refType: "agent_team", ref: "sub-team" }],
+            nodes: [{ memberName: "SubTeam", refType: "agent_team", ref: "sub-team" , refScope: "shared" }],
           };
         }
         if (id === "sub-team") {
           return {
             name: "Sub Team",
             coordinatorMemberName: "Specialist",
-            nodes: [{ memberName: "Specialist", refType: "agent", ref: "agent-specialist" }],
+            nodes: [{ memberName: "Specialist", refType: "agent", ref: "agent-specialist" , refScope: "shared" }],
           };
         }
         return null;

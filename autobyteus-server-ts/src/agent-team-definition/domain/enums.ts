@@ -11,5 +11,6 @@ export enum AgentMemberRefScope {
 
 export enum AgentTeamDefinitionOwnershipScope {
   SHARED = "SHARED",
+  TEAM_LOCAL = "TEAM_LOCAL",
   APPLICATION_OWNED = "APPLICATION_OWNED",
 }

@@ -9,9 +9,13 @@ type ResolvedLocalAgentRef = {
   exists: boolean;
 };
 
-type ResolvedOwnedRef = {
+type ResolvedApplicationOwnedRef = {
   exists: boolean;
   ownerApplicationId: string | null;
+};
+
+type ResolvedLocalTeamRef = {
+  exists: boolean;
 };
 
 export type ApplicationOwnedTeamIntegrityValidationInput = {
@@ -19,7 +23,8 @@ export type ApplicationOwnedTeamIntegrityValidationInput = {
   teamId: string;
   nodes: ApplicationOwnedTeamIntegrityNode[];
   resolveLocalAgentRef: (ref: string) => Promise<ResolvedLocalAgentRef> | ResolvedLocalAgentRef;
-  resolveNestedTeamRef: (ref: string) => Promise<ResolvedOwnedRef> | ResolvedOwnedRef;
+  resolveApplicationOwnedTeamRef: (ref: string) => Promise<ResolvedApplicationOwnedRef> | ResolvedApplicationOwnedRef;
+  resolveLocalTeamRef: (ref: string) => Promise<ResolvedLocalTeamRef> | ResolvedLocalTeamRef;
 };
 
 export const validateApplicationOwnedTeamIntegrity = async (
@@ -45,9 +50,16 @@ export const validateApplicationOwnedTeamIntegrity = async (
       continue;
     }
 
-    if (node.refScope !== null && node.refScope !== undefined) {
+    if (!node.refScope) {
       errors.push(
-        `Application-owned team '${input.teamId}' member '${node.memberName}' must not include refScope for nested teams.`,
+        `Application-owned team '${input.teamId}' member '${node.memberName}' must include explicit refScope 'application_owned' or 'team_local'.`,
+      );
+      continue;
+    }
+
+    if (node.refScope === "shared") {
+      errors.push(
+        `Application-owned team '${input.teamId}' member '${node.memberName}' cannot reference shared nested team '${node.ref}'.`,
       );
       continue;
     }
@@ -59,7 +71,17 @@ export const validateApplicationOwnedTeamIntegrity = async (
       continue;
     }
 
-    const resolved = await input.resolveNestedTeamRef(node.ref);
+    if (node.refScope === "team_local") {
+      const resolved = await input.resolveLocalTeamRef(node.ref);
+      if (!resolved.exists) {
+        errors.push(
+          `Application-owned team '${input.teamId}' member '${node.memberName}' must reference a child team inside its own agent-teams/ folder.`,
+        );
+      }
+      continue;
+    }
+
+    const resolved = await input.resolveApplicationOwnedTeamRef(node.ref);
     if (!resolved.exists || resolved.ownerApplicationId !== input.owningApplicationId) {
       errors.push(
         `Application-owned team '${input.teamId}' member '${node.memberName}' must reference a team inside the same application bundle.`,

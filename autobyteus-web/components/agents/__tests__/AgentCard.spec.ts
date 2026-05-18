@@ -31,7 +31,7 @@ describe('AgentCard', () => {
     const wrapper = mount(AgentCard, {
       props: {
         agentDef: buildAgentDefinition({
-          id: 'team-local:software-engineering:architect-designer',
+          id: 'team-local-agent:software-engineering:architect-designer',
           ownershipScope: 'TEAM_LOCAL',
           ownerTeamId: 'software-engineering',
           ownerTeamName: 'Software Engineering Team',
@@ -58,7 +58,7 @@ describe('AgentCard', () => {
     const wrapper = mount(AgentCard, {
       props: {
         agentDef: buildAgentDefinition({
-          id: 'team-local:bundle-team__pkg-1__brief-studio__launch-team:writer',
+          id: 'team-local-agent:bundle-team__pkg-1__brief-studio__launch-team:writer',
           ownershipScope: 'TEAM_LOCAL',
           ownerTeamId: 'bundle-team__pkg-1__brief-studio__launch-team',
           ownerTeamName: 'Launch Team',

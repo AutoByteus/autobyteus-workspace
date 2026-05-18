@@ -1,4 +1,8 @@
-import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import {
+  buildScopedMemberResolutionContext,
+  resolveScopedAgentMemberRef,
+  resolveScopedTeamMemberRef,
+} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
 import type { AgentTeamDefinition, TeamMember } from "../../agent-team-definition/domain/models.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { TeamBackendKind, resolveSingleRuntimeTeamBackendKind } from "../domain/team-backend-kind.js";
@@ -173,6 +177,10 @@ export class TeamDefinitionTopologyPlanner {
 
     const teamNodes = Array.isArray(definition.nodes) ? definition.nodes : [];
     this.assertUniqueBoundaryMemberNames(definition, teamNodes);
+    const resolutionContext = buildScopedMemberResolutionContext(
+      definition,
+      normalizedTeamDefinitionId,
+    );
     const memberTree: MemberSkeleton[] = [];
     for (const node of teamNodes) {
       const memberName = normalizeRequiredString(node.memberName, "memberName");
@@ -184,20 +192,19 @@ export class TeamDefinitionTopologyPlanner {
           memberName,
           memberPath,
           memberRouteKey,
-          agentDefinitionId: node.refScope === "team_local"
-            ? buildTeamLocalAgentDefinitionId(normalizedTeamDefinitionId, node.ref)
-            : normalizeRequiredString(node.ref, "agentDefinitionId"),
+          agentDefinitionId: resolveScopedAgentMemberRef(resolutionContext, node),
         });
         continue;
       }
 
-      const child = await this.buildSkeleton(node.ref, memberPath, new Set(visited));
+      const childTeamDefinitionId = resolveScopedTeamMemberRef(resolutionContext, node);
+      const child = await this.buildSkeleton(childTeamDefinitionId, memberPath, new Set(visited));
       memberTree.push({
         kind: "agent_team",
         memberName,
         memberPath,
         memberRouteKey,
-        teamDefinitionId: normalizeRequiredString(node.ref, "teamDefinitionId"),
+        teamDefinitionId: childTeamDefinitionId,
         coordinatorMemberRouteKey: child.coordinatorMemberRouteKey,
         memberTree: child.memberTree,
       });

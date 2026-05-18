@@ -1,0 +1,48 @@
+{
+  "validatedAt": "2026-05-18T07:38:55.287Z",
+  "endpoint": "http://127.0.0.1:18181/graphql",
+  "parent": {
+    "id": "northstar-operating-company-team",
+    "name": "Northstar Operating Company Team",
+    "ownershipScope": "SHARED",
+    "memberCount": 13
+  },
+  "totalTeamDefinitions": 12,
+  "totalAgentDefinitions": 59,
+  "rootCatalogContainsParent": true,
+  "rootCatalogChildLeakCount": 0,
+  "flatDepartmentIdLeakCount": 0,
+  "childTeams": [
+    {
+      "id": "team-local-team:northstar-operating-company-team:engineering-org",
+      "name": "Northstar Engineering Org Team",
+      "ownerTeamId": "northstar-operating-company-team",
+      "localAgentCount": 5
+    },
+    {
+      "id": "team-local-team:northstar-operating-company-team:product-org",
+      "name": "Northstar Product Org Team",
+      "ownerTeamId": "northstar-operating-company-team",
+      "localAgentCount": 5
+    },
+    {
+      "id": "team-local-team:northstar-operating-company-team:revenue-org",
+      "name": "Northstar Revenue Org Team",
+      "ownerTeamId": "northstar-operating-company-team",
+      "localAgentCount": 5
+    },
+    {
+      "id": "team-local-team:northstar-operating-company-team:operations-org",
+      "name": "Northstar Operations Org Team",
+      "ownerTeamId": "northstar-operating-company-team",
+      "localAgentCount": 5
+    },
+    {
+      "id": "team-local-team:northstar-operating-company-team:finance-people-org",
+      "name": "Northstar Finance & People Org Team",
+      "ownerTeamId": "northstar-operating-company-team",
+      "localAgentCount": 5
+    }
+  ],
+  "parentLocalAgentCount": 8
+}

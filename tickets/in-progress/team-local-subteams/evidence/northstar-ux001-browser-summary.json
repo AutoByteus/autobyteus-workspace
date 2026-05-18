@@ -1,0 +1,35 @@
+{
+  "validatedAt": "2026-05-18T08:09:42Z",
+  "frontendUrl": "http://127.0.0.1:13002/agent-teams",
+  "backendUrl": "http://127.0.0.1:18182/graphql",
+  "agentPackageRoot": "/Users/normy/autobyteus_org/autobyteus-agents",
+  "rootCatalog": {
+    "filteredSearch": "Northstar",
+    "visibleTeamHeadings": ["Northstar Operating Company Team"],
+    "childNameLeaks": []
+  },
+  "parentDetail": {
+    "teamId": "northstar-operating-company-team",
+    "nestedTeamActionCount": 5,
+    "nestedTeamActions": [
+      { "memberName": "engineering_org", "label": "View Details ↗", "ariaLabel": "Open team details for engineering_org" },
+      { "memberName": "product_org", "label": "View Details ↗", "ariaLabel": "Open team details for product_org" },
+      { "memberName": "revenue_org", "label": "View Details ↗", "ariaLabel": "Open team details for revenue_org" },
+      { "memberName": "operations_org", "label": "View Details ↗", "ariaLabel": "Open team details for operations_org" },
+      { "memberName": "finance_people_org", "label": "View Details ↗", "ariaLabel": "Open team details for finance_people_org" }
+    ]
+  },
+  "activatedAction": {
+    "memberName": "engineering_org",
+    "resultDecodedUrl": "http://127.0.0.1:13002/agent-teams?view=team-detail&id=team-local-team:northstar-operating-company-team:engineering-org",
+    "routeHasCanonicalTeamLocalChildId": true,
+    "childDetailRendered": "Northstar Engineering Org Team",
+    "childDetailShowsTeamLocalBadge": true,
+    "childDetailShowsLocalAgents": ["vp_engineering", "platform_engineering_manager"]
+  },
+  "unresolvedNestedTeamSuppression": {
+    "validatedBy": "autobyteus-web/components/agentTeams/__tests__/AgentTeamDetail.spec.ts",
+    "testName": "does not show nested team view action when the child team is unresolved",
+    "result": "passed in 14-test AgentTeamDetail focused run and 48-test focused web suite"
+  }
+}

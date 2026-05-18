@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
@@ -78,7 +79,7 @@ describe("AgentDefinitionService integration", () => {
 
       const sharedOnly = await service.getAllAgentDefinitions();
       const visible = await service.getVisibleAgentDefinitions();
-      const localDefinitionId = `team-local:${teamId}:${localAgentId}`;
+      const localDefinitionId = buildTeamLocalAgentDefinitionId(teamId, localAgentId);
 
       expect(sharedOnly.some((definition) => definition.id === localDefinitionId)).toBe(false);
 

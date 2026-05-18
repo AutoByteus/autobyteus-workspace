@@ -21,7 +21,7 @@ Defines agent blueprints for shared standalone agents, team-local agents, and ap
 | Ownership scope | Backing source shape | Notes |
 | --- | --- | --- |
 | `SHARED` | `agents/<agent-id>/` | normal standalone agent path |
-| `TEAM_LOCAL` | `agent-teams/<team-id>/agents/<agent-id>/` or `applications/<application-id>/agent-teams/<team-id>/agents/<agent-id>/` | surfaced in the generic Agents UI with owning-team provenance and optional owning-application provenance |
+| `TEAM_LOCAL` | `<owner-team>/agents/<agent-id>/`, including nested owners such as `agent-teams/<parent>/agent-teams/<child>/agents/<agent-id>/` and `applications/<application-id>/agent-teams/<team-id>/agent-teams/<child>/agents/<agent-id>/` | excluded from normal Agents browse/search; surfaced through owning-team provenance and direct known-id routes |
 | `APPLICATION_OWNED` | `applications/<application-id>/agents/<agent-id>/` | surfaced in the generic Agents UI with owning-application / package provenance |
 
 ## Default Launch Config
@@ -62,6 +62,7 @@ Do not add separate one-off built-in-agent bootstrappers or scatter platform tem
 ## Notes
 
 - Canonical ids encode ownership provenance so callers can resolve application-owned and team-local agents deterministically.
+- Team-local agent ids use the subject-specific nested-safe shape `team-local-agent:<encoded-owner-team-id>:<encoded-local-agent-id>`. The owner team id can itself be a canonical team-local team id, so local agents owned by local subteams resolve under the local subteam's `agents/` folder rather than the root parent team's `agents/` folder.
 - `AgentDefinitionService` and the file provider remain the authoritative read/write boundary; callers should not reimplement ownership-path resolution.
 - Application-owned agents can be edited in place when the owning bundle source is writable.
 - Application-owned agents are not created, deleted, or duplicated through the shared standalone provider path.

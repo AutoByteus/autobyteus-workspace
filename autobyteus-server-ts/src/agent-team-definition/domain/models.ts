@@ -1,7 +1,7 @@
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
 
 export type TeamMemberRefScope = "shared" | "team_local" | "application_owned";
-export type AgentTeamDefinitionOwnershipScope = "shared" | "application_owned";
+export type AgentTeamDefinitionOwnershipScope = "shared" | "team_local" | "application_owned";
 
 export class TeamMember {
   memberName: string;
@@ -18,7 +18,7 @@ export class TeamMember {
     this.memberName = options.memberName;
     this.ref = options.ref;
     this.refType = options.refType;
-    this.refScope = options.refType === "agent" ? options.refScope ?? null : null;
+    this.refScope = options.refScope ?? null;
   }
 }
 
@@ -33,6 +33,8 @@ export class AgentTeamDefinition {
   avatarUrl?: string | null;
   defaultLaunchConfig: DefaultLaunchConfig | null;
   ownershipScope: AgentTeamDefinitionOwnershipScope;
+  ownerTeamId?: string | null;
+  ownerTeamName?: string | null;
   ownerApplicationId?: string | null;
   ownerApplicationName?: string | null;
   ownerPackageId?: string | null;
@@ -49,6 +51,8 @@ export class AgentTeamDefinition {
     avatarUrl?: string | null;
     defaultLaunchConfig?: DefaultLaunchConfig | null;
     ownershipScope?: AgentTeamDefinitionOwnershipScope;
+    ownerTeamId?: string | null;
+    ownerTeamName?: string | null;
     ownerApplicationId?: string | null;
     ownerApplicationName?: string | null;
     ownerPackageId?: string | null;
@@ -64,6 +68,8 @@ export class AgentTeamDefinition {
     this.avatarUrl = options.avatarUrl ?? null;
     this.defaultLaunchConfig = options.defaultLaunchConfig ?? null;
     this.ownershipScope = options.ownershipScope ?? "shared";
+    this.ownerTeamId = options.ownerTeamId ?? null;
+    this.ownerTeamName = options.ownerTeamName ?? null;
     this.ownerApplicationId = options.ownerApplicationId ?? null;
     this.ownerApplicationName = options.ownerApplicationName ?? null;
     this.ownerPackageId = options.ownerPackageId ?? null;

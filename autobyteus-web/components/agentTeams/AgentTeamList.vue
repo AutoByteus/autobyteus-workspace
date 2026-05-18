@@ -170,7 +170,7 @@ const nodeSyncStore = useNodeSyncStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const serverSettingsStore = useServerSettingsStore();
 
-const teamDefinitions = computed(() => store.agentTeamDefinitions);
+const teamDefinitions = computed(() => store.rootAgentTeamDefinitions);
 const loading = computed(() => store.loading);
 const error = computed<Error | null>(() => store.error instanceof Error ? store.error : store.error ? new Error(String(store.error)) : null);
 const errorMessage = computed(() => error.value?.message || '');

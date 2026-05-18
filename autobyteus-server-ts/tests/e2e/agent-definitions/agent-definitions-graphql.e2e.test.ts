@@ -3,6 +3,10 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import {
+  buildTeamLocalAgentDefinitionId,
+  buildTeamLocalTeamDefinitionId,
+} from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -284,7 +288,7 @@ describe("Agent definitions GraphQL e2e", () => {
     const dataDir = appConfigProvider.config.getAppDataDir();
     const teamId = `team_${unique}`;
     const agentId = `agent_${unique}`;
-    const resolvedAgentId = `team-local:${teamId}:${agentId}`;
+    const resolvedAgentId = buildTeamLocalAgentDefinitionId(teamId, agentId);
     const teamDir = path.join(dataDir, "agent-teams", teamId);
     const localAgentDir = path.join(teamDir, "agents", agentId);
     cleanupPaths.add(teamDir);
@@ -414,6 +418,164 @@ describe("Agent definitions GraphQL e2e", () => {
       "Deleting non-shared agent definitions is not supported.",
     );
     await expect(fs.access(localAgentDir)).resolves.toBeUndefined();
+  });
+
+  it("lists local agents owned by team-local subteams with canonical owner team metadata", async () => {
+    const unique = uniqueId("nested_team_local_agent");
+    const dataDir = appConfigProvider.config.getAppDataDir();
+    const parentTeamId = `parent_${unique}`;
+    const localTeamId = `department_${unique}`;
+    const localAgentId = `planner_${unique}`;
+    const canonicalLocalTeamId = buildTeamLocalTeamDefinitionId(parentTeamId, localTeamId);
+    const canonicalLocalAgentId = buildTeamLocalAgentDefinitionId(
+      canonicalLocalTeamId,
+      localAgentId,
+    );
+    const parentTeamDir = path.join(dataDir, "agent-teams", parentTeamId);
+    const localTeamDir = path.join(parentTeamDir, "agent-teams", localTeamId);
+    const localAgentDir = path.join(localTeamDir, "agents", localAgentId);
+    cleanupPaths.add(parentTeamDir);
+
+    await fs.mkdir(localAgentDir, { recursive: true });
+    await fs.writeFile(
+      path.join(parentTeamDir, "team.md"),
+      [
+        "---",
+        `name: Parent ${unique}`,
+        "description: Parent team",
+        "---",
+        "",
+        "Parent instructions",
+      ].join("\n"),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(parentTeamDir, "team-config.json"),
+      JSON.stringify(
+        {
+          coordinatorMemberName: "department",
+          members: [
+            {
+              memberName: "department",
+              ref: localTeamId,
+              refType: "agent_team",
+              refScope: "team_local",
+            },
+          ],
+          avatarUrl: null,
+        },
+        null,
+        2,
+      ),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(localTeamDir, "team.md"),
+      [
+        "---",
+        `name: Department ${unique}`,
+        "description: Department local subteam",
+        "---",
+        "",
+        "Department instructions",
+      ].join("\n"),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(localTeamDir, "team-config.json"),
+      JSON.stringify(
+        {
+          coordinatorMemberName: "planner",
+          members: [
+            {
+              memberName: "planner",
+              ref: localAgentId,
+              refType: "agent",
+              refScope: "team_local",
+            },
+          ],
+          avatarUrl: null,
+        },
+        null,
+        2,
+      ),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(localAgentDir, "agent.md"),
+      [
+        "---",
+        `name: Planner ${unique}`,
+        "description: Nested local planner",
+        "category: nested-local",
+        "---",
+        "",
+        "Plan from the nested local subteam.",
+      ].join("\n"),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(localAgentDir, "agent-config.json"),
+      JSON.stringify({ toolNames: ["nested_tool"], skillNames: [] }, null, 2),
+      "utf-8",
+    );
+
+    const listed = await execGraphql<{
+      agentDefinitions: Array<{
+        id: string;
+        name: string;
+        ownershipScope: "SHARED" | "TEAM_LOCAL";
+        ownerTeamId: string | null;
+        ownerTeamName: string | null;
+      }>;
+      agentDefinition: {
+        id: string;
+        name: string;
+        description: string;
+        instructions: string;
+        ownershipScope: "SHARED" | "TEAM_LOCAL";
+        ownerTeamId: string | null;
+        ownerTeamName: string | null;
+      } | null;
+    }>(`
+      query NestedTeamLocalAgentDefinitions($id: String!) {
+        agentDefinitions {
+          id
+          name
+          ownershipScope
+          ownerTeamId
+          ownerTeamName
+        }
+        agentDefinition(id: $id) {
+          id
+          name
+          description
+          instructions
+          ownershipScope
+          ownerTeamId
+          ownerTeamName
+        }
+      }
+    `, { id: canonicalLocalAgentId });
+
+    const listedLocalAgent = listed.agentDefinitions.find(
+      (entry) => entry.id === canonicalLocalAgentId,
+    );
+    expect(listedLocalAgent).toMatchObject({
+      id: canonicalLocalAgentId,
+      name: `Planner ${unique}`,
+      ownershipScope: "TEAM_LOCAL",
+      ownerTeamId: canonicalLocalTeamId,
+      ownerTeamName: `Department ${unique}`,
+    });
+    expect(listed.agentDefinition).toMatchObject({
+      id: canonicalLocalAgentId,
+      description: "Nested local planner",
+      instructions: "Plan from the nested local subteam.",
+      ownershipScope: "TEAM_LOCAL",
+      ownerTeamId: canonicalLocalTeamId,
+      ownerTeamName: `Department ${unique}`,
+    });
   });
 
   it("exposes md-centric agent GraphQL/output and input contracts", async () => {

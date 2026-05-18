@@ -39,6 +39,7 @@ import {
 import { parseAgentMd } from "../../agent-definition/utils/agent-md-parser.js";
 import { readJsonFile } from "../../persistence/file/store-utils.js";
 import { buildTeamLocalAgentFilePaths } from "../../agent-definition/providers/team-local-agent-discovery.js";
+import { validateApplicationOwnedLocalTeamTree } from "./application-owned-local-team-validator.js";
 
 export const BUILT_IN_APPLICATION_PACKAGE_ID = "built-in:applications";
 
@@ -297,23 +298,25 @@ export class FileApplicationBundleProvider {
 
     for (const localTeamId of record.bundle.localTeamIds) {
       const teamDir = path.join(record.bundle.applicationRootPath, "agent-teams", localTeamId);
-      const definition = await readApplicationOwnedTeamDefinitionFromSource({
-        sourcePaths: {
-          teamDir,
-          mdPath: path.join(teamDir, "team.md"),
-          configPath: path.join(teamDir, "team-config.json"),
-          rootPath: record.bundle.applicationRootPath,
-          definitionId: buildCanonicalApplicationOwnedTeamId(
-            record.packageId,
-            record.bundle.localApplicationId,
-            localTeamId,
-          ),
-          applicationId,
-          applicationName: record.bundle.name,
-          packageId: record.packageId,
-          localApplicationId: record.bundle.localApplicationId,
+      const sourcePaths = {
+        kind: "application_owned" as const,
+        teamDir,
+        mdPath: path.join(teamDir, "team.md"),
+        configPath: path.join(teamDir, "team-config.json"),
+        rootPath: record.bundle.applicationRootPath,
+        definitionId: buildCanonicalApplicationOwnedTeamId(
+          record.packageId,
+          record.bundle.localApplicationId,
           localTeamId,
-        },
+        ),
+        applicationId,
+        applicationName: record.bundle.name,
+        packageId: record.packageId,
+        localApplicationId: record.bundle.localApplicationId,
+        localTeamId,
+      };
+      const definition = await readApplicationOwnedTeamDefinitionFromSource({
+        sourcePaths,
         canonicalizeTeamRef: (localNestedTeamId) =>
           buildCanonicalApplicationOwnedTeamId(
             record.packageId,
@@ -346,11 +349,25 @@ export class FileApplicationBundleProvider {
             throw error;
           }
         },
-        resolveNestedTeamRef: (ref) => ({
+        resolveApplicationOwnedTeamRef: (ref) => ({
           exists: applicationIdByTeamId.has(ref),
           ownerApplicationId: applicationIdByTeamId.get(ref) ?? null,
         }),
+        resolveLocalTeamRef: (localTeamId) => ({
+          exists: fs.existsSync(path.join(teamDir, "agent-teams", localTeamId, "team.md")),
+        }),
       });
+
+      for (const node of definition.nodes) {
+        if (node.refType === "agent_team" && node.refScope === "team_local") {
+          await validateApplicationOwnedLocalTeamTree({
+            owningApplicationId: applicationId,
+            applicationIdByTeamId,
+            parentSourcePaths: sourcePaths,
+            localTeamId: node.ref,
+          });
+        }
+      }
     }
   }
 

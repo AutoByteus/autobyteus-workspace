@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import {
+  buildTeamLocalAgentDefinitionId,
+  buildTeamLocalTeamDefinitionId,
+} from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamDefinitionTopologyPlanner } from "../../../src/agent-team-execution/services/team-definition-topology-planner.js";
@@ -31,7 +35,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
           coordinatorMemberName: "Lead",
           nodes: [
             { memberName: "Lead", refType: "agent", refScope: "shared", ref: "agent-lead" },
-            { memberName: "ReviewTeam", refType: "agent_team", ref: "review-team" },
+            { memberName: "ReviewTeam", refType: "agent_team", refScope: "shared", ref: "review-team" },
           ],
         },
       ],
@@ -95,7 +99,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
           coordinatorMemberName: "Worker",
           nodes: [
             { memberName: "Worker", refType: "agent", refScope: "shared", ref: "agent-root-worker" },
-            { memberName: "SubTeam", refType: "agent_team", ref: "sub-team" },
+            { memberName: "SubTeam", refType: "agent_team", refScope: "shared", ref: "sub-team" },
           ],
         },
       ],
@@ -115,5 +119,53 @@ describe("TeamDefinitionTopologyPlanner", () => {
       teamDefinitionId: "root-team",
       memberConfigs: [buildLeafConfig("Worker")],
     })).rejects.toThrow("ambiguous");
+  });
+
+  it("resolves team-local subteams and their local agents from the containing team id", async () => {
+    const localTeamId = buildTeamLocalTeamDefinitionId("root-team", "review-team");
+    const localAgentId = buildTeamLocalAgentDefinitionId(localTeamId, "reviewer");
+    const planner = buildPlanner(new Map([
+      [
+        "root-team",
+        {
+          name: "Root Team",
+          coordinatorMemberName: "Lead",
+          nodes: [
+            { memberName: "Lead", refType: "agent", refScope: "shared", ref: "agent-lead" },
+            { memberName: "ReviewTeam", refType: "agent_team", refScope: "team_local", ref: "review-team" },
+          ],
+        },
+      ],
+      [
+        localTeamId,
+        {
+          name: "Review Team",
+          coordinatorMemberName: "Reviewer",
+          nodes: [
+            { memberName: "Reviewer", refType: "agent", refScope: "team_local", ref: "reviewer" },
+          ],
+        },
+      ],
+    ]));
+
+    const plan = await planner.buildPlan({
+      teamDefinitionId: "root-team",
+      memberConfigs: [
+        buildLeafConfig("Lead", "Lead"),
+        buildLeafConfig("Reviewer", "ReviewTeam/Reviewer"),
+      ],
+    });
+
+    expect(plan.memberTree[1]).toEqual(expect.objectContaining({
+      memberKind: "agent_team",
+      teamDefinitionId: localTeamId,
+      memberRouteKey: "ReviewTeam",
+    }));
+    expect(plan.config.memberConfigs.find((member) => member.memberName === "Reviewer")).toEqual(
+      expect.objectContaining({
+        memberRouteKey: "ReviewTeam/Reviewer",
+        agentDefinitionId: localAgentId,
+      }),
+    );
   });
 });

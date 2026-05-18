@@ -206,7 +206,7 @@ describe('AgentDetail', () => {
 
   it('shows team ownership and hides shared-only actions for team-local agents', async () => {
     const localAgent = {
-      id: 'team-local:software-engineering:planner',
+      id: 'team-local-agent:software-engineering:planner',
       name: 'Planner',
       role: 'assistant',
       description: 'Plans work',
@@ -252,7 +252,7 @@ describe('AgentDetail', () => {
 
   it('shows application provenance for team-local agents owned by an application bundle', async () => {
     const localAgent = {
-      id: 'team-local:bundle-team__pkg-1__brief-studio__launch-team:planner',
+      id: 'team-local-agent:bundle-team__pkg-1__brief-studio__launch-team:planner',
       name: 'Planner',
       role: 'assistant',
       description: 'Plans work',

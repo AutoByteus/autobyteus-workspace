@@ -104,7 +104,7 @@ describe('agentDefinitionStore', () => {
             ownerTeamName: null,
           },
           {
-            id: 'team-local:team-a:local-agent',
+            id: 'team-local-agent:team-a:local-agent',
             name: 'Local Agent',
             description: 'Local',
             instructions: 'Local instructions',
@@ -133,7 +133,7 @@ describe('agentDefinitionStore', () => {
     expect(store.sharedAgentDefinitions[0].id).toBe('shared-agent');
     expect(store.getTeamLocalAgentDefinitionsByOwnerTeamId('team-a')).toEqual([
       expect.objectContaining({
-        id: 'team-local:team-a:local-agent',
+        id: 'team-local-agent:team-a:local-agent',
       }),
     ]);
   });

@@ -4,7 +4,7 @@ export type ApplicationOwnedTeamConfigMember = {
   memberName: string;
   ref: string;
   refType: "agent" | "agent_team";
-  refScope?: "team_local" | null;
+  refScope: "shared" | "team_local" | "application_owned";
 };
 
 export const canonicalizeApplicationOwnedTeamMembers = (
@@ -13,17 +13,15 @@ export const canonicalizeApplicationOwnedTeamMembers = (
     canonicalizeTeamRef: (localTeamId: string) => string;
   },
 ): TeamMember[] =>
-  nodes.map(
-    (node) =>
-      new TeamMember({
-        memberName: node.memberName,
-        refType: node.refType,
-        ref: node.refType === "agent"
-          ? node.ref
-          : options.canonicalizeTeamRef(node.ref),
-        refScope: node.refType === "agent" ? "team_local" : null,
-      }),
-  );
+  nodes.map((node) => {
+    const isApplicationOwnedTeamRef = node.refType === "agent_team" && node.refScope === "application_owned";
+    return new TeamMember({
+      memberName: node.memberName,
+      refType: node.refType,
+      ref: isApplicationOwnedTeamRef ? options.canonicalizeTeamRef(node.ref) : node.ref,
+      refScope: node.refScope,
+    });
+  });
 
 export const localizeApplicationOwnedTeamMembers = (
   nodes: TeamMember[],
@@ -31,11 +29,19 @@ export const localizeApplicationOwnedTeamMembers = (
     localizeTeamRef: (canonicalTeamId: string) => string;
   },
 ): ApplicationOwnedTeamConfigMember[] =>
-  nodes.map((node) => ({
-    memberName: node.memberName,
-    refType: node.refType,
-    ref: node.refType === "agent"
-      ? node.ref
-      : options.localizeTeamRef(node.ref),
-    refScope: node.refType === "agent" ? "team_local" : null,
-  }));
+  nodes.map((node) => {
+    if (!node.refScope) {
+      throw new Error(
+        `Application-owned team member '${node.memberName}' must include explicit refScope.`,
+      );
+    }
+    const refScope = node.refScope;
+    return {
+      memberName: node.memberName,
+      refType: node.refType,
+      ref: node.refType === "agent_team" && refScope === "application_owned"
+        ? options.localizeTeamRef(node.ref)
+        : node.ref,
+      refScope,
+    };
+  });

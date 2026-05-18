@@ -56,6 +56,11 @@ The list/detail/card surfaces show provenance badges and owner labels so users c
 
 For team-local agents whose owning team belongs to an application bundle, direct detail surfaces and team-member details show both the owning team and the owning application/package provenance when available.
 
+Team-local agents can be owned by nested team-local subteams as well as root
+teams. Their canonical ids encode the actual owner team id, so lookups by owner
+team should use the canonical team-local subteam id when the agent lives under a
+local subteam's `agents/` folder.
+
 ## Browse Layout
 
 When the search box is empty, `AgentList.vue` renders the agent catalog as origin-aware browse sections in this order:

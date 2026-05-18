@@ -20,15 +20,25 @@ Defines team blueprints, nested-team graph metadata, ownership provenance, and t
 | Ownership scope | Backing source shape | Notes |
 | --- | --- | --- |
 | `SHARED` | `agent-teams/<team-id>/` | normal standalone team definition path |
+| `TEAM_LOCAL` | `<owner-team>/agent-teams/<local-team-id>/` | parent-owned child team; discovered through its owning team and excluded from root/catalog listing |
 | `APPLICATION_OWNED` | `applications/<application-id>/agent-teams/<team-id>/` | surfaced in the generic Agent Teams UI with owning-application / package provenance |
 
 ## Member Reference Model
 
-- Team members store `ref`, `refType`, and (for agent members) `refScope`.
-- Agent member `refScope` can distinguish shared, team-local, and application-owned agent references.
-- Nested team members do not carry `refScope`.
+- Team members store `ref`, `refType`, and explicit `refScope`.
+- Missing `refScope` is invalid for both `agent` and `agent_team` members in current canonical team configs.
+- Agent member `refScope = team_local` means `ref` is a local agent id under the containing team's `agents/<agent-id>/` folder; `refScope = shared` means `ref` is a shared/root agent id.
+- Nested team member `refScope = team_local` means `ref` is a local child team id under the containing team's `agent-teams/<local-team-id>/` folder. The domain model resolves that file shape to a canonical team-local team id such as `team-local-team:<encoded-owner-team-id>:<encoded-local-team-id>`.
+- Nested team member `refScope = shared` keeps `ref` as a reusable shared/root team id.
+- Nested team member `refScope = application_owned` is only valid in an application-owned team context and represents a same-application sibling team. Application-owned package files persist the local sibling id and the loaded domain model canonicalizes it.
 - Application-owned teams persist their private agent members as `refScope = team_local` with local agent ids under `applications/<application-id>/agent-teams/<team-id>/agents/<agent-id>/`.
-- Application-owned teams keep nested team refs inside the same bundle, localized in file shape and canonicalized in the loaded domain model.
+- Application-owned teams use `refScope = team_local` for child teams under the current team and `refScope = application_owned` for sibling teams under the same bundle.
+
+Team-local identity is subject-specific and nested-safe:
+
+- local agent ids use `team-local-agent:<encoded-owner-team-id>:<encoded-local-agent-id>`;
+- local team ids use `team-local-team:<encoded-owner-team-id>:<encoded-local-team-id>`;
+- callers should use the shared identity helpers rather than manually splitting or constructing id strings.
 
 ## Default Launch Preferences
 
@@ -43,7 +53,10 @@ The generic Applications host no longer treats one embedded team as the mandator
 - Import-time bundle validation rejects application-owned teams whose members point outside the same owning application bundle.
 - Update persistence rechecks the same invariant; frontend filtering is only UX guidance.
 - Application-owned team agent members must use `team_local` refs that resolve inside the owning team folder.
-- Application-owned nested team refs must stay inside the same bundle and cannot self-reference.
+- Application-owned nested sibling team refs must use `application_owned`, stay inside the same bundle, and cannot self-reference.
+- Parent-owned child team refs must use `team_local` and resolve below the containing team's `agent-teams/` folder.
+- Graph validation rejects missing scoped refs, direct self-reference, and cycles across shared, team-local, and application-owned team definitions.
+- File-backed discovery returns root shared/application-owned teams for catalog surfaces and recursively discovers team-local subteams with owner-team metadata for detail, runtime, sync, and known-id lookup.
 
 ## Notes
 

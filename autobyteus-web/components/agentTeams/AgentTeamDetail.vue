@@ -192,6 +192,17 @@
                 >
                   {{ $t('agentTeams.components.agentTeams.AgentTeamDetail.viewAgentAction') }}
                 </button>
+                <button
+                  v-else-if="canViewNestedTeamMember(node)"
+                  type="button"
+                  class="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-violet-200 bg-white px-3 text-sm font-semibold text-violet-700 transition-colors hover:bg-violet-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/40 focus-visible:ring-offset-1"
+                  :aria-label="$t('agentTeams.components.agentTeams.AgentTeamDetail.viewNestedTeamLabel', { name: node.memberName })"
+                  :title="$t('agentTeams.components.agentTeams.AgentTeamDetail.viewNestedTeamLabel', { name: node.memberName })"
+                  data-test="nested-team-view-link"
+                  @click="viewNestedTeamMember(node)"
+                >
+                  {{ $t('agentTeams.components.agentTeams.AgentTeamDetail.viewTeamAction') }}
+                </button>
               </div>
 
               <div v-if="isTeamLocalAgentNode(node) && (!canExpandTeamLocalMember(node) || isMemberExpanded(node))" class="mt-3 border-t border-slate-100 pt-3">
@@ -248,7 +259,7 @@ import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDial
 import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
 import TeamLocalAgentMemberDetails from '~/components/agentTeams/TeamLocalAgentMemberDetails.vue';
 import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
-import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalAgentDefinitionId';
+import { buildTeamLocalAgentDefinitionId, buildTeamLocalTeamDefinitionId } from '~/utils/teamLocalDefinitionId';
 
 const props = defineProps<{ teamDefinitionId: string }>();
 const { teamDefinitionId } = toRefs(props);
@@ -304,7 +315,8 @@ const agentCount = computed(() => teamDef.value?.nodes.filter((node) => node.ref
 const ownershipScope = computed(() => teamDef.value?.ownershipScope ?? 'SHARED');
 const isShared = computed(() => ownershipScope.value === 'SHARED');
 const isApplicationOwned = computed(() => ownershipScope.value === 'APPLICATION_OWNED');
-const ownershipBadge = computed(() => (isApplicationOwned.value ? 'Application-owned' : ''));
+const isTeamLocal = computed(() => ownershipScope.value === 'TEAM_LOCAL');
+const ownershipBadge = computed(() => (isApplicationOwned.value ? 'Application-owned' : isTeamLocal.value ? 'Team-local' : ''));
 const applicationLabel = computed(() => (
   isApplicationOwned.value && teamDef.value
     ? formatApplicationOwnershipLabel(teamDef.value)
@@ -347,6 +359,19 @@ const isSharedAgentMemberNode = (node: TeamMemberNode): boolean => (
   node.refType === 'AGENT' && (!node.refScope || node.refScope === 'SHARED')
 );
 
+const getTeamDefinitionIdForNode = (node: TeamMemberNode): string => {
+  if (!teamDef.value || node.refType !== 'AGENT_TEAM') {
+    return '';
+  }
+  try {
+    return node.refScope === 'TEAM_LOCAL'
+      ? buildTeamLocalTeamDefinitionId(teamDef.value.id, node.ref)
+      : node.ref.trim();
+  } catch {
+    return '';
+  }
+};
+
 const getTeamLocalDefinitionId = (node: TeamMemberNode): string => {
   if (!teamDef.value || !isTeamLocalAgentNode(node)) {
     return '';
@@ -369,6 +394,15 @@ const getAgentDefinitionForNode = (node: TeamMemberNode): AgentDefinition | null
 const canViewSharedAgentMember = (node: TeamMemberNode): boolean => (
   isSharedAgentMemberNode(node) && Boolean(getAgentDefinitionForNode(node))
 );
+
+const getResolvedNestedTeamDefinitionId = (node: TeamMemberNode): string => (
+  node.refType === 'AGENT_TEAM' ? getTeamDefinitionIdForNode(node) : ''
+);
+
+const canViewNestedTeamMember = (node: TeamMemberNode): boolean => {
+  const teamDefinitionId = getResolvedNestedTeamDefinitionId(node);
+  return Boolean(teamDefinitionId && teamStore.getAgentTeamDefinitionById(teamDefinitionId));
+};
 
 const canExpandTeamLocalMember = (node: TeamMemberNode): boolean => (
   isTeamLocalAgentNode(node) && Boolean(getAgentDefinitionForNode(node))
@@ -395,7 +429,8 @@ const getMemberAvatarUrl = (node: TeamMemberNode): string => {
   if (node.refType === 'AGENT') {
     return (getAgentDefinitionForNode(node)?.avatarUrl || '').trim();
   }
-  return (teamStore.getAgentTeamDefinitionById(node.ref)?.avatarUrl || '').trim();
+  const teamDefinitionId = getTeamDefinitionIdForNode(node);
+  return (teamDefinitionId ? teamStore.getAgentTeamDefinitionById(teamDefinitionId)?.avatarUrl || '' : '').trim();
 };
 
 const showMemberAvatarImage = (node: TeamMemberNode): boolean => {
@@ -420,7 +455,8 @@ const getBlueprintNameForNode = (node: TeamMemberNode): string => {
         ? $t('agentTeams.components.agentTeams.AgentTeamDetail.localAgent', { id: node.ref })
         : $t('agentTeams.components.agentTeams.AgentTeamDetail.unknownAgent', { id: node.ref }));
   }
-  return teamStore.getAgentTeamDefinitionById(node.ref)?.name || $t('agentTeams.components.agentTeams.AgentTeamDetail.unknownTeam', { id: node.ref });
+  const teamDefinitionId = getTeamDefinitionIdForNode(node);
+  return (teamDefinitionId ? teamStore.getAgentTeamDefinitionById(teamDefinitionId)?.name : null) || $t('agentTeams.components.agentTeams.AgentTeamDetail.unknownTeam', { id: teamDefinitionId || node.ref });
 };
 
 const viewSharedAgentMember = (node: TeamMemberNode): void => {
@@ -432,6 +468,20 @@ const viewSharedAgentMember = (node: TeamMemberNode): void => {
     view: 'detail',
     id: node.ref,
     returnToTeam: teamDef.value.id,
+  });
+};
+
+const viewNestedTeamMember = (node: TeamMemberNode): void => {
+  if (!canViewNestedTeamMember(node)) {
+    return;
+  }
+  const resolvedChildTeamId = getResolvedNestedTeamDefinitionId(node);
+  if (!resolvedChildTeamId) {
+    return;
+  }
+  emit('navigate', {
+    view: 'team-detail',
+    id: resolvedChildTeamId,
   });
 };
 
