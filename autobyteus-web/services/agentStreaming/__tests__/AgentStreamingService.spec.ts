@@ -205,6 +205,61 @@ describe('AgentStreamingService', () => {
         });
     });
 
+    it('serializes standalone send command identity on SEND_MESSAGE', () => {
+        service.sendMessage('hello', ['ctx-1'], ['img-1'], {
+            messageId: 'client-msg-1',
+            dedupeKey: 'agent_run_input:run-1:client-msg-1',
+        });
+
+        const clientMock = (service as any).wsClient;
+        expect(clientMock.send).toHaveBeenCalledTimes(1);
+        expect(JSON.parse(clientMock.send.mock.calls[0][0])).toEqual({
+            type: 'SEND_MESSAGE',
+            payload: {
+                content: 'hello',
+                context_file_paths: ['ctx-1'],
+                image_urls: ['img-1'],
+                message_id: 'client-msg-1',
+                dedupe_key: 'agent_run_input:run-1:client-msg-1',
+            },
+        });
+    });
+
+    it('applies command ack status and surfaces rejected commands as errors', () => {
+        (service as any).dispatchMessage(
+            {
+                type: 'AGENT_COMMAND_ACK',
+                payload: {
+                    command_type: 'SEND_MESSAGE',
+                    run_id: 'test-agent-id',
+                    message_id: 'client-msg-1',
+                    dedupe_key: 'agent_run_input:test-agent-id:client-msg-1',
+                    state: 'rejected',
+                    accepted: false,
+                    duplicate: false,
+                    code: 'RUN_COMMAND_IN_PROGRESS',
+                    message: 'Another command is already running.',
+                    status: {
+                        status: 'initializing',
+                        can_interrupt: false,
+                    },
+                },
+            },
+            mockAgentContext,
+        );
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Initializing);
+        expect(mockAgentContext.state.canInterrupt).toBe(false);
+        expect(mockConversation.messages).toHaveLength(1);
+        expect(mockConversation.messages[0].segments).toContainEqual(
+            expect.objectContaining({
+                type: 'error',
+                source: 'RUN_COMMAND_IN_PROGRESS',
+                message: 'Another command is already running.',
+            }),
+        );
+    });
+
     it('routes compaction lifecycle messages through the compaction status handler', () => {
         (service as any).dispatchMessage(
             {

@@ -71,25 +71,18 @@ export class ChannelBindingRunLauncher {
     if (
       cachedAgentRunId &&
       this.bindingRunRegistry.ownsAgentRun(binding.id, cachedAgentRunId) &&
-      this.agentRunService.getAgentRun(cachedAgentRunId)
+      await this.agentRunService.hasRunIdentity(cachedAgentRunId)
     ) {
       return cachedAgentRunId;
     }
 
-    if (cachedAgentRunId) {
-      try {
-        const restoreResult = await this.agentRunService.restoreAgentRun(
-          cachedAgentRunId,
-        );
-        await this.bindingService.upsertBindingAgentRunId(binding.id, restoreResult.run.runId);
-        this.bindingRunRegistry.claimAgentRun(binding.id, restoreResult.run.runId);
-        return restoreResult.run.runId;
-      } catch {
-        // Fall through to lazy-create a fresh run for this binding.
-      }
+    if (cachedAgentRunId && await this.agentRunService.hasRunIdentity(cachedAgentRunId)) {
+      await this.bindingService.upsertBindingAgentRunId(binding.id, cachedAgentRunId);
+      this.bindingRunRegistry.claimAgentRun(binding.id, cachedAgentRunId);
+      return cachedAgentRunId;
     }
 
-    const { runId } = await this.agentRunService.createAgentRun({
+    const { runId } = await this.agentRunService.prepareAgentRun({
       runtimeKind: launchTarget.launchPreset.runtimeKind,
       agentDefinitionId: launchTarget.agentDefinitionId,
       workspaceRootPath: launchTarget.launchPreset.workspaceRootPath,
@@ -97,6 +90,7 @@ export class ChannelBindingRunLauncher {
       autoExecuteTools: launchTarget.launchPreset.autoExecuteTools,
       llmConfig: launchTarget.launchPreset.llmConfig,
       skillAccessMode: launchTarget.launchPreset.skillAccessMode,
+      initialSummary: "",
     });
     await this.bindingService.upsertBindingAgentRunId(binding.id, runId);
     this.bindingRunRegistry.claimAgentRun(binding.id, runId);

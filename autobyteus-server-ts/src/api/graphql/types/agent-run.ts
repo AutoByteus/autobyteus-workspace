@@ -56,6 +56,9 @@ export class CreateAgentRunInput {
 
   @Field(() => String)
   runtimeKind!: string;
+
+  @Field(() => String, { nullable: true })
+  initialSummary?: string | null;
 }
 
 @ObjectType()
@@ -80,6 +83,33 @@ export class RestoreAgentRunResult {
 
   @Field(() => String, { nullable: true })
   runId?: string | null;
+}
+
+@ObjectType()
+export class PrepareAgentRunResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  message!: string;
+
+  @Field(() => String, { nullable: true })
+  runId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  activationState?: string | null;
+
+  @Field(() => String, { nullable: true })
+  preparedExpiresAt?: string | null;
+}
+
+@ObjectType()
+export class CancelPreparedAgentRunResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  message!: string;
 }
 
 @InputType()
@@ -155,6 +185,57 @@ export class AgentRunResolver {
         success: false,
         message: String(error),
         runId: null,
+      };
+    }
+  }
+
+  @Mutation(() => PrepareAgentRunResult)
+  async prepareAgentRun(
+    @Arg("input", () => CreateAgentRunInput) input: CreateAgentRunInput,
+  ): Promise<PrepareAgentRunResult> {
+    try {
+      const result = await this.agentRunService.prepareAgentRun({
+        agentDefinitionId: input.agentDefinitionId.trim(),
+        workspaceRootPath: input.workspaceRootPath.trim(),
+        workspaceId: input.workspaceId ?? null,
+        llmModelIdentifier: input.llmModelIdentifier.trim(),
+        autoExecuteTools: input.autoExecuteTools,
+        llmConfig: input.llmConfig ?? null,
+        skillAccessMode: input.skillAccessMode,
+        runtimeKind: input.runtimeKind.trim(),
+        initialSummary: input.initialSummary ?? null,
+      });
+
+      return {
+        success: true,
+        message: "Agent run prepared successfully.",
+        runId: result.runId,
+        activationState: result.activationState,
+        preparedExpiresAt: result.preparedExpiresAt,
+      };
+    } catch (error) {
+      logger.error(`Error in prepareAgentRun: ${String(error)}`);
+      return {
+        success: false,
+        message: String(error),
+        runId: null,
+        activationState: null,
+        preparedExpiresAt: null,
+      };
+    }
+  }
+
+  @Mutation(() => CancelPreparedAgentRunResult)
+  async cancelPreparedAgentRun(
+    @Arg("agentRunId", () => String) agentRunId: string,
+  ): Promise<CancelPreparedAgentRunResult> {
+    try {
+      return await this.agentRunService.cancelPreparedAgentRun(agentRunId);
+    } catch (error) {
+      logger.error(`Error cancelling prepared agent run with ID ${agentRunId}: ${String(error)}`);
+      return {
+        success: false,
+        message: String(error),
       };
     }
   }

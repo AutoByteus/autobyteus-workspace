@@ -7,6 +7,11 @@ Manages runtime agent runs and message execution flow.
 ## TS Source
 
 - `src/agent-execution/services/agent-run-manager.ts` (`AgentRunManager`)
+- `src/agent-execution/services/agent-run-command-coordinator.ts`
+- `src/agent-execution/services/agent-run-command-registry.ts`
+- `src/agent-execution/services/agent-run-command-status-overlay-store.ts`
+- `src/agent-execution/services/agent-run-provisioning-service.ts`
+- `src/agent-execution/services/agent-run-status-projection-service.ts`
 - `src/api/graphql/types/agent-run.ts`
 - `src/services/agent-streaming/agent-stream-handler.ts`
 - `src/api/websocket/agent.ts`
@@ -21,20 +26,50 @@ Runtime managers compose definitions, prompts, tools, processors, and workspace 
 
 See [Agent Memory](./agent_memory.md) for the storage-only recorder contract and memory-file boundaries.
 
-## Command-Start Status
+## Standalone Command Lifecycle
 
-`AgentRun.postUserMessage(...)` is the runtime-neutral status authority for a
-standalone message command. When the current status is `offline` or `idle`, it
-publishes an `AGENT_STATUS` payload with `status: "initializing"` and
-`can_interrupt: false` before awaiting provider/native startup, restore, first
-turn creation, or backend `postUserMessage(...)` work. Later backend runtime
-events replace that temporary command-start status with `running`, `idle`,
-`offline`, or `error`.
+Standalone user-message dispatch is owned by the backend command boundary, not
+by frontend restore/start orchestration. `AgentRunCommandCoordinator` accepts
+`SEND_MESSAGE` commands for a durable `runId`, validates required
+`message_id` and `dedupe_key`, publishes command-level lifecycle status when an
+inactive run must be activated, resolves the active runtime, forwards the
+message, records activity, and returns an `AGENT_COMMAND_ACK`.
 
-If the backend rejects the command without accepting it, `AgentRun` restores the
-previous terminal status. If the backend throws after command-start status was
-published, `AgentRun` publishes non-interruptible `error` so clients are not
-left stuck in `initializing`.
+The command registry is scoped by `(runId, message_id)`. A retry with the same
+message id is idempotent and returns the current/original acknowledgement state.
+A different message id while the run already has a `STARTING` or `FORWARDED`
+command is rejected with `RUN_COMMAND_IN_PROGRESS` instead of being queued.
+Terminal command records are retained in process for at least 15 minutes.
+
+For inactive historical runs and prepared-new identities, the coordinator
+publishes a command overlay `AGENT_STATUS { status: "initializing",
+can_interrupt: false }` before runtime restore/start work. During an
+inactive-start command, runtime readiness remains an internal fact until the
+accepted message has been handed to the runtime. The overlay is replaced only by
+command-correlated post-handoff lifecycle signals: command-start `AGENT_STATUS
+initializing`, explicit `TURN_STARTED`, command-correlated `AGENT_STATUS`,
+terminal/error events after handoff, or coordinator activation/post failure
+handling. Restored runtime snapshots/readiness, WebSocket bind success,
+`statusHint=ACTIVE` alone, metadata `lastKnownStatus=ACTIVE`, and active runtime
+snapshot availability do not clear or replace the overlay. If activation fails
+before runtime command evidence is available, the overlay moves to
+non-interruptible `error` and the acknowledgement includes the failure
+code/message.
+
+New standalone first-message flow uses `prepareAgentRun(...)`, not
+`createAgentRun(...)`, before the WebSocket command. Preparation creates a
+durable run identity, run metadata, history row, and memory directory with
+`activationState: "PREPARED"`, `platformAgentRunId: null`, and no active
+runtime. The first accepted `SEND_MESSAGE` activates that prepared identity
+through `activatePreparedRun(...)`, transitions metadata through `ACTIVATING`
+to `ACTIVATED`, and records the platform run id when one exists. Prepared runs
+can be explicitly cancelled before activation, and stale prepared identities are
+eligible for TTL cleanup without affecting activated or historical runs.
+
+`AgentRun.postUserMessage(...)` remains the runtime-level status and turn
+authority once an `AgentRun` exists. Its runtime events are the source that
+replaces command overlays and drives later `running`, `idle`, `offline`, and
+`error` projections.
 
 ## Runtime Segment Identity And Ordering
 

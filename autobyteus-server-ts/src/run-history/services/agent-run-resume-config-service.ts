@@ -1,5 +1,8 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import {
+  AgentRunStatusProjectionService,
+  getAgentRunStatusProjectionService,
+} from "../../agent-execution/services/agent-run-status-projection-service.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
@@ -32,12 +35,12 @@ type RunResumeConfig = {
 };
 
 export class AgentRunResumeConfigService {
-  private readonly agentRunManager: AgentRunManager;
   private readonly metadataStore: AgentRunMetadataStore;
+  private readonly statusProjectionService: AgentRunStatusProjectionService;
 
   constructor(memoryDir: string) {
-    this.agentRunManager = AgentRunManager.getInstance();
     this.metadataStore = new AgentRunMetadataStore(memoryDir);
+    this.statusProjectionService = getAgentRunStatusProjectionService();
   }
 
   async getAgentRunResumeConfig(runId: string): Promise<RunResumeConfig> {
@@ -46,7 +49,8 @@ export class AgentRunResumeConfigService {
       throw new Error(`Run metadata not found for '${runId}'.`);
     }
 
-    const isActive = this.agentRunManager.hasActiveRun(runId);
+    const projection = await this.statusProjectionService.getRunStatusProjection(runId);
+    const isActive = projection.isActive;
     const editableFields: RunEditableFieldFlags = {
       llmModelIdentifier: !isActive,
       llmConfig: !isActive,

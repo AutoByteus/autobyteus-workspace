@@ -1,175 +1,132 @@
 import fastify from "fastify";
 import websocket from "@fastify/websocket";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import WebSocket from "ws";
 import { AgentInputUserMessage } from "autobyteus-ts";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
+import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
+import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
+import { AgentRunStatusProjectionService } from "../../../src/agent-execution/services/agent-run-status-projection-service.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
+import { AgentStreamBroadcaster } from "../../../src/services/agent-streaming/agent-stream-broadcaster.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 
-class FakeEventStream {
-  private queue: Array<AgentRunEvent | null> = [];
-  private waiters: Array<(value: AgentRunEvent | null) => void> = [];
-  private closed = false;
-
-  push(event: AgentRunEvent): void {
-    if (this.closed) {
-      return;
-    }
-    const waiter = this.waiters.shift();
-    if (waiter) {
-      waiter(event);
-      return;
-    }
-    this.queue.push(event);
-  }
-
-  async close(): Promise<void> {
-    if (this.closed) {
-      return;
-    }
-    this.closed = true;
-    const waiter = this.waiters.shift();
-    if (waiter) {
-      waiter(null);
-    } else {
-      this.queue.push(null);
-    }
-  }
-
-  private async next(): Promise<AgentRunEvent | null> {
-    if (this.queue.length > 0) {
-      return this.queue.shift() ?? null;
-    }
-    return new Promise((resolve) => this.waiters.push(resolve));
-  }
-
-  async *allEvents(): AsyncGenerator<AgentRunEvent, void, unknown> {
-    while (true) {
-      const event = await this.next();
-      if (!event) {
-        break;
-      }
-      yield event;
-    }
-  }
-}
-
-class FakeAgent {
-  agentRunId: string;
-  messages: AgentInputUserMessage[] = [];
-  approvals: Array<{ invocationId: string; approved: boolean; reason: string | null }> = [];
+class FakeRuntimeRun {
+  readonly runtimeKind = RuntimeKind.CODEX_APP_SERVER;
+  readonly isActive = () => true;
+  readonly messages: AgentInputUserMessage[] = [];
+  readonly approvals: Array<{ invocationId: string; approved: boolean; reason: string | null }> = [];
   interruptCalls = 0;
-  stopCalls = 0;
+  private readonly listeners = new Set<(event: AgentRunEvent) => void>();
+  private snapshot: { status: "offline" | "initializing" | "idle" | "running" | "error"; can_interrupt: boolean; agent_id: string };
 
-  constructor(agentRunId: string) {
-    this.agentRunId = agentRunId;
+  constructor(
+    readonly runId: string,
+    options: {
+      initialStatus?: "offline" | "initializing" | "idle" | "running" | "error";
+      canInterrupt?: boolean;
+      postUserMessage?: (message: AgentInputUserMessage) => Promise<{ accepted: boolean; turnId?: string | null; message?: string | null }>;
+    } = {},
+  ) {
+    this.snapshot = {
+      status: options.initialStatus ?? "running",
+      can_interrupt: options.canInterrupt ?? false,
+      agent_id: runId,
+    };
+    if (options.postUserMessage) {
+      this.postUserMessage = vi.fn(async (message: AgentInputUserMessage) => {
+        this.messages.push(message);
+        return options.postUserMessage!(message);
+      });
+    }
   }
 
-  async postUserMessage(message: AgentInputUserMessage): Promise<void> {
-    this.messages.push(message);
+  getPlatformAgentRunId(): string {
+    return `platform-${this.runId}`;
   }
 
-  async postToolExecutionApproval(
-    invocationId: string,
-    approved: boolean,
-    reason?: string | null,
-  ): Promise<void> {
-    this.approvals.push({ invocationId, approved, reason: reason ?? null });
+  getStatusSnapshot() {
+    return this.snapshot;
   }
 
-  async stop(): Promise<void> {
-    this.stopCalls += 1;
-  }
-
-  async interrupt(): Promise<void> {
-    this.interruptCalls += 1;
-  }
-}
-
-class FakeAgentManager {
-  private agent: FakeAgent;
-  private stream: FakeEventStream;
-  private readonly activeRun: {
-    runId: string;
-    runtimeKind: string;
-    getStatusSnapshot: () => { status: "running"; can_interrupt: boolean };
-    isActive: () => boolean;
-    subscribeToEvents: (listener: (event: unknown) => void) => () => void;
-    postUserMessage: (message: AgentInputUserMessage) => Promise<{ accepted: true; runtimeReference: null }>;
-    approveToolInvocation: (
-      invocationId: string,
-      approved: boolean,
-      reason?: string | null,
-    ) => Promise<{ accepted: true }>;
-    interrupt: () => Promise<{ accepted: true }>;
-  };
-
-  constructor(agent: FakeAgent, stream: FakeEventStream) {
-    this.agent = agent;
-    this.stream = stream;
-    this.activeRun = {
-      runId: this.agent.agentRunId,
-      runtimeKind: "autobyteus",
-      getStatusSnapshot: () => ({ status: "running", can_interrupt: true }),
-      isActive: () => true,
-      subscribeToEvents: (listener: (event: unknown) => void) => {
-        void (async () => {
-          for await (const event of this.stream.allEvents()) {
-            listener(event);
-          }
-        })();
-        return () => {
-          void this.stream.close();
-        };
-      },
-      postUserMessage: async (message: AgentInputUserMessage) => {
-        await this.agent.postUserMessage(message);
-        return { accepted: true, runtimeReference: null };
-      },
-      approveToolInvocation: async (
-        invocationId: string,
-        approved: boolean,
-        reason?: string | null,
-      ) => {
-        await this.agent.postToolExecutionApproval(invocationId, approved, reason ?? null);
-        return { accepted: true };
-      },
-      interrupt: async () => {
-        await this.agent.interrupt();
-        return { accepted: true };
-      },
+  setStatus(status: "offline" | "initializing" | "idle" | "running" | "error", canInterrupt = false): void {
+    this.snapshot = {
+      status,
+      can_interrupt: canInterrupt,
+      agent_id: this.runId,
     };
   }
 
-  getActiveRun(agentRunId: string) {
-    if (agentRunId !== this.agent.agentRunId) {
-      return null;
-    }
-    return this.activeRun;
+  subscribeToEvents(listener: (event: AgentRunEvent) => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
   }
+
+  emit(event: AgentRunEvent): void {
+    if (event.eventType === AgentRunEventType.AGENT_STATUS) {
+      const payload = event.payload as { status?: unknown; can_interrupt?: unknown };
+      if (
+        payload.status === "offline" ||
+        payload.status === "initializing" ||
+        payload.status === "idle" ||
+        payload.status === "running" ||
+        payload.status === "error"
+      ) {
+        this.setStatus(payload.status, payload.can_interrupt === true);
+      }
+    }
+    for (const listener of this.listeners) {
+      listener(event);
+    }
+  }
+
+  postUserMessage = vi.fn(async (message: AgentInputUserMessage) => {
+    this.messages.push(message);
+    return { accepted: true, turnId: `turn-${this.messages.length}` };
+  });
+
+  approveToolInvocation = vi.fn(async (invocationId: string, approved: boolean, reason?: string | null) => {
+    this.approvals.push({ invocationId, approved, reason: reason ?? null });
+    return { accepted: true };
+  });
+
+  interrupt = vi.fn(async () => {
+    this.interruptCalls += 1;
+    return { accepted: true };
+  });
 }
 
-const waitForMessage = (socket: WebSocket, timeoutMs: number = 2000): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket message")), timeoutMs);
-    socket.once("message", (data) => {
-      clearTimeout(timer);
-      resolve(data.toString());
-    });
-  });
+type WsMessage = {
+  type: string;
+  payload: Record<string, unknown>;
+};
 
-const waitForClose = (socket: WebSocket, timeoutMs: number = 2000): Promise<number> =>
-  new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket close")), timeoutMs);
-    socket.once("close", (code) => {
-      clearTimeout(timer);
-      resolve(code);
-    });
-  });
+const buildMetadata = (runId: string, overrides: Partial<AgentRunMetadata> = {}): AgentRunMetadata => ({
+  runId,
+  agentDefinitionId: "agent-def-1",
+  workspaceRootPath: "/tmp/workspace-one",
+  memoryDir: `/tmp/autobyteus-test-memory/agents/${runId}`,
+  llmModelIdentifier: "model-1",
+  llmConfig: null,
+  autoExecuteTools: false,
+  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+  platformAgentRunId: "platform-existing",
+  lastKnownStatus: "IDLE",
+  activationState: "ACTIVATED",
+  preparedAt: null,
+  preparedExpiresAt: null,
+  applicationExecutionContext: null,
+  archivedAt: null,
+  ...overrides,
+});
 
-const waitForOpen = (socket: WebSocket, timeoutMs: number = 2000): Promise<void> =>
+const waitForOpen = (socket: WebSocket, timeoutMs = 2_000): Promise<void> =>
   new Promise<void>((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), timeoutMs);
     socket.once("open", () => {
@@ -182,354 +139,462 @@ const waitForOpen = (socket: WebSocket, timeoutMs: number = 2000): Promise<void>
     });
   });
 
-const waitForCondition = async (fn: () => boolean, timeoutMs = 2000): Promise<void> => {
+const captureMessages = (socket: WebSocket): WsMessage[] => {
+  const messages: WsMessage[] = [];
+  socket.on("message", (data) => {
+    messages.push(JSON.parse(data.toString()) as WsMessage);
+  });
+  return messages;
+};
+
+const waitForBufferedMessage = async (
+  messages: WsMessage[],
+  index: number,
+  timeoutMs = 2_000,
+): Promise<WsMessage> => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const message = messages[index];
+    if (message) {
+      return message;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+  throw new Error(`Timed out waiting for websocket message at index ${String(index)}`);
+};
+
+const waitForMessageMatching = async (
+  messages: WsMessage[],
+  predicate: (message: WsMessage) => boolean,
+  startIndex = 0,
+  timeoutMs = 2_000,
+): Promise<WsMessage> => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const match = messages.slice(startIndex).find(predicate);
+    if (match) {
+      return match;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+  throw new Error("Timed out waiting for matching websocket message");
+};
+
+const waitForCondition = async (fn: () => boolean, timeoutMs = 2_000): Promise<void> => {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (fn()) {
       return;
     }
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    await new Promise((resolve) => setTimeout(resolve, 10));
   }
   throw new Error("Timed out waiting for condition");
 };
 
-describe("Agent websocket integration", () => {
-  it("streams events and handles client messages", async () => {
-    const agent = new FakeAgent("agent-1");
-    const stream = new FakeEventStream();
-    const manager = new FakeAgentManager(agent, stream);
-    const agentRunService = {
-      getAgentRun: (runId: string) => manager.getActiveRun(runId),
-      resolveAgentRun: async (runId: string) => manager.getActiveRun(runId),
-      recordRunActivity: async () => {},
-    };
-    const handler = new AgentStreamHandler(
-      new AgentSessionManager(),
-      agentRunService as unknown as any,
-    );
+const createSendCommand = (content: string, messageId: string) => ({
+  type: "SEND_MESSAGE",
+  payload: {
+    content,
+    context_file_paths: ["/tmp/note.txt"],
+    image_urls: ["https://example.com/cat.png"],
+    message_id: messageId,
+    dedupe_key: `agent_run_input:agent-e2e:${messageId}`,
+  },
+});
 
-    const app = fastify();
-    await app.register(websocket);
-    const dummyTeamHandler = {
+const startAgentWsHarness = async (options: {
+  runId: string;
+  activeRun?: FakeRuntimeRun | null;
+  metadata?: AgentRunMetadata | null;
+  restoreAgentRun?: ReturnType<typeof vi.fn>;
+  activatePreparedRun?: ReturnType<typeof vi.fn>;
+}) => {
+  const activeRuns = new Map<string, FakeRuntimeRun>();
+  if (options.activeRun) {
+    activeRuns.set(options.runId, options.activeRun);
+  }
+  const metadataByRunId = new Map<string, AgentRunMetadata>();
+  if (options.metadata) {
+    metadataByRunId.set(options.runId, options.metadata);
+  }
+  const recordActivities: Array<{ runId: string; summary?: string | null }> = [];
+  const restoreAgentRun = options.restoreAgentRun ?? vi.fn(async (runId: string) => {
+    const restored = new FakeRuntimeRun(runId, { initialStatus: "idle" });
+    activeRuns.set(runId, restored);
+    return { run: restored, metadata: metadataByRunId.get(runId) ?? buildMetadata(runId) };
+  });
+  const activatePreparedRun = options.activatePreparedRun ?? vi.fn(async (runId: string) => {
+    const activated = new FakeRuntimeRun(runId, { initialStatus: "idle" });
+    activeRuns.set(runId, activated);
+    return activated;
+  });
+  const agentRunService = {
+    getAgentRun: vi.fn((runId: string) => activeRuns.get(runId) ?? null),
+    getRunMetadata: vi.fn(async (runId: string) => metadataByRunId.get(runId) ?? null),
+    restoreAgentRun,
+    activatePreparedRun,
+    recordRunActivity: vi.fn(async (run: { runId: string }, activity: { summary?: string | null }) => {
+      recordActivities.push({ runId: run.runId, summary: activity.summary });
+    }),
+  };
+  const registry = new AgentRunCommandRegistry();
+  const overlayStore = new AgentRunCommandStatusOverlayStore();
+  const broadcaster = new AgentStreamBroadcaster();
+  const projectionService = new AgentRunStatusProjectionService({
+    agentRunManager: {
+      getActiveRun: (runId: string) => activeRuns.get(runId) ?? null,
+    } as any,
+    metadataService: {
+      readMetadata: async (runId: string) => metadataByRunId.get(runId) ?? null,
+    },
+    overlayStore,
+    commandRegistry: registry,
+  });
+  const commandCoordinator = new AgentRunCommandCoordinator({
+    agentRunService: agentRunService as any,
+    registry,
+    overlayStore,
+    projectionService,
+    broadcaster,
+  });
+  const handler = new AgentStreamHandler(
+    new AgentSessionManager(),
+    agentRunService as any,
+    undefined,
+    broadcaster,
+    commandCoordinator,
+    projectionService,
+  );
+  const app = fastify();
+  await app.register(websocket);
+  await registerAgentWebsocket(
+    app,
+    handler,
+    {
       connect: async () => null,
       handleMessage: async () => {},
       disconnect: async () => {},
-    } as unknown as Parameters<typeof registerAgentWebsocket>[2];
+    } as any,
+  );
+  const address = await app.listen({ port: 0, host: "127.0.0.1" });
+  const url = new URL(address);
+  return {
+    app,
+    baseUrl: `ws://${url.hostname}:${url.port}`,
+    activeRuns,
+    metadataByRunId,
+    recordActivities,
+    agentRunService,
+    registry,
+    overlayStore,
+  };
+};
 
-    await registerAgentWebsocket(app, handler, dummyTeamHandler);
-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
-    const url = new URL(address);
-    const localBaseUrl = `ws://${url.hostname}:${url.port}`;
+describe("Agent websocket backend-owned command lifecycle integration", () => {
+  it("connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK", async () => {
+    const runId = "agent-e2e";
+    const metadata = buildMetadata(runId);
+    const restoredRun = new FakeRuntimeRun(runId, { initialStatus: "idle" });
+    let resolveRestore!: (value: { run: FakeRuntimeRun; metadata: AgentRunMetadata }) => void;
+    const restorePromise = new Promise<{ run: FakeRuntimeRun; metadata: AgentRunMetadata }>((resolve) => {
+      resolveRestore = resolve;
+    });
+    const restoreAgentRun = vi.fn(() => restorePromise);
+    const harness = await startAgentWsHarness({ runId, metadata, restoreAgentRun });
+    const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
+    const messages = captureMessages(socket);
+    try {
+      await waitForOpen(socket);
+      expect(await waitForBufferedMessage(messages, 0)).toMatchObject({
+        type: "CONNECTED",
+        payload: { agent_id: runId },
+      });
+      expect(await waitForBufferedMessage(messages, 1)).toEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "offline", can_interrupt: false, agent_id: runId },
+      });
+      expect(restoreAgentRun).not.toHaveBeenCalled();
 
-    const socket = new WebSocket(`${localBaseUrl}/ws/agent/${agent.agentRunId}`);
-    const connectedPromise = waitForMessage(socket);
+      socket.send(JSON.stringify(createSendCommand("hello after restore", "msg-restore-1")));
+      const initializing = await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_STATUS" && message.payload.status === "initializing",
+        2,
+      );
+      expect(initializing).toEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "initializing", can_interrupt: false, agent_id: runId },
+      });
+      expect(restoreAgentRun).toHaveBeenCalledWith(runId);
+      expect(restoredRun.messages).toHaveLength(0);
 
-    await waitForOpen(socket);
+      resolveRestore({ run: restoredRun, metadata });
+      const ack = await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-restore-1",
+        2,
+      );
+      expect(ack.payload).toMatchObject({
+        command_type: "SEND_MESSAGE",
+        run_id: runId,
+        message_id: "msg-restore-1",
+        dedupe_key: "agent_run_input:agent-e2e:msg-restore-1",
+        state: "accepted",
+        accepted: true,
+        duplicate: false,
+        status: { status: "initializing", can_interrupt: false, agent_id: runId },
+      });
+      expect(restoredRun.messages).toHaveLength(1);
+      expect(restoredRun.messages[0].content).toBe("hello after restore");
+      expect(restoredRun.messages[0].metadata).toMatchObject({
+        message_id: "msg-restore-1",
+        dedupe_key: "agent_run_input:agent-e2e:msg-restore-1",
+      });
+      expect(restoredRun.messages[0].contextFiles?.map((file) => file.toDict())).toEqual([
+        expect.objectContaining({ uri: "/tmp/note.txt" }),
+        expect.objectContaining({ uri: "https://example.com/cat.png", file_type: "image" }),
+      ]);
 
-    const connectedMessage = JSON.parse(await connectedPromise) as {
-      type: string;
-      payload: { agent_id: string; session_id: string };
-    };
+      restoredRun.emit({
+        runId,
+        eventType: AgentRunEventType.AGENT_STATUS,
+        payload: { status: "running", can_interrupt: true, agent_id: runId },
+        statusHint: "ACTIVE",
+      });
+      const running = await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_STATUS" && message.payload.status === "running",
+        2,
+      );
+      expect(running.payload).toMatchObject({ status: "running", can_interrupt: true, agent_id: runId });
+      expect(harness.overlayStore.getOverlay(runId)).toBeNull();
+    } finally {
+      socket.close();
+      await harness.app.close();
+    }
+  });
 
-    expect(connectedMessage.type).toBe("CONNECTED");
-    expect(connectedMessage.payload.agent_id).toBe(agent.agentRunId);
+  it("does not downgrade an already-running standalone send to initializing", async () => {
+    const runId = "agent-e2e";
+    const activeRun = new FakeRuntimeRun(runId, { initialStatus: "running", canInterrupt: true });
+    const harness = await startAgentWsHarness({ runId, activeRun, metadata: buildMetadata(runId) });
+    const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
+    const messages = captureMessages(socket);
+    try {
+      await waitForOpen(socket);
+      await waitForBufferedMessage(messages, 0); // CONNECTED
+      expect(await waitForBufferedMessage(messages, 1)).toEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "running", can_interrupt: true, agent_id: runId },
+      });
 
-    socket.send(
-      JSON.stringify({
-        type: "SEND_MESSAGE",
-        payload: {
-          content: "hello",
-          context_file_paths: ["/tmp/note.txt"],
-          image_urls: ["https://example.com/cat.png"],
-        },
+      socket.send(JSON.stringify(createSendCommand("hello while running", "msg-running-1")));
+      const ack = await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-running-1",
+        2,
+      );
+      expect(ack.payload).toMatchObject({
+        state: "accepted",
+        accepted: true,
+        status: { status: "running", can_interrupt: true, agent_id: runId },
+      });
+      expect(messages.slice(2)).not.toContainEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "initializing", can_interrupt: false, agent_id: runId },
+      });
+      expect(activeRun.messages).toHaveLength(1);
+      expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
+      expect(harness.agentRunService.activatePreparedRun).not.toHaveBeenCalled();
+    } finally {
+      socket.close();
+      await harness.app.close();
+    }
+  });
+
+  it("activates a prepared identity through SEND_MESSAGE rather than websocket connect", async () => {
+    const runId = "agent-e2e";
+    const metadata = buildMetadata(runId, {
+      activationState: "PREPARED",
+      platformAgentRunId: null,
+      preparedAt: "2026-05-18T00:00:00.000Z",
+      preparedExpiresAt: "2026-05-19T00:00:00.000Z",
+    });
+    const activatedRun = new FakeRuntimeRun(runId, { initialStatus: "idle" });
+    let resolveActivation!: (run: FakeRuntimeRun) => void;
+    const activationPromise = new Promise<FakeRuntimeRun>((resolve) => {
+      resolveActivation = resolve;
+    });
+    const activatePreparedRun = vi.fn(() => activationPromise);
+    const harness = await startAgentWsHarness({ runId, metadata, activatePreparedRun });
+    const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
+    const messages = captureMessages(socket);
+    try {
+      await waitForOpen(socket);
+      await waitForBufferedMessage(messages, 0); // CONNECTED
+      expect(await waitForBufferedMessage(messages, 1)).toEqual({
+        type: "AGENT_STATUS",
+        payload: { status: "offline", can_interrupt: false, agent_id: runId },
+      });
+      expect(activatePreparedRun).not.toHaveBeenCalled();
+
+      socket.send(JSON.stringify(createSendCommand("first prepared message", "msg-prepared-1")));
+      await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_STATUS" && message.payload.status === "initializing",
+        2,
+      );
+      expect(activatePreparedRun).toHaveBeenCalledWith(runId);
+      expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
+
+      resolveActivation(activatedRun);
+      const ack = await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-prepared-1",
+        2,
+      );
+      expect(ack.payload).toMatchObject({ state: "accepted", accepted: true, duplicate: false });
+      expect(activatedRun.messages).toHaveLength(1);
+    } finally {
+      socket.close();
+      await harness.app.close();
+    }
+  });
+
+  it("returns duplicate and busy ACKs for same and different in-flight command ids", async () => {
+    const runId = "agent-e2e";
+    let resolvePost!: (value: { accepted: true; turnId: string }) => void;
+    const activeRun = new FakeRuntimeRun(runId, {
+      initialStatus: "running",
+      canInterrupt: true,
+      postUserMessage: async () => new Promise((resolve) => {
+        resolvePost = resolve;
       }),
-    );
+    });
+    const harness = await startAgentWsHarness({ runId, activeRun, metadata: buildMetadata(runId) });
+    const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
+    const messages = captureMessages(socket);
+    try {
+      await waitForOpen(socket);
+      await waitForBufferedMessage(messages, 0);
+      await waitForBufferedMessage(messages, 1);
 
-    await waitForCondition(() => agent.messages.length === 1);
-    expect(agent.messages[0].constructor?.name).toBe("AgentInputUserMessage");
-    expect(agent.messages[0].content).toBe("hello");
-    expect(agent.messages[0].contextFiles?.length).toBe(2);
+      socket.send(JSON.stringify(createSendCommand("first", "msg-busy-1")));
+      await waitForCondition(() => activeRun.messages.length === 1);
+      socket.send(JSON.stringify(createSendCommand("duplicate", "msg-busy-1")));
+      socket.send(JSON.stringify(createSendCommand("second", "msg-busy-2")));
 
-    socket.send(
-      JSON.stringify({
-        type: "APPROVE_TOOL",
-        payload: { invocation_id: "inv-123", reason: "ok" },
-      }),
-    );
+      const duplicateAck = await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-busy-1" && message.payload.duplicate === true,
+        2,
+      );
+      expect(duplicateAck.payload).toMatchObject({
+        state: "duplicate_in_progress",
+        accepted: true,
+        duplicate: true,
+      });
 
-    await waitForCondition(() => agent.approvals.length === 1);
-    expect(agent.approvals[0]).toEqual({ invocationId: "inv-123", approved: true, reason: "ok" });
+      const busyAck = await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-busy-2",
+        2,
+      );
+      expect(busyAck.payload).toMatchObject({
+        state: "rejected",
+        accepted: false,
+        duplicate: false,
+        code: "RUN_COMMAND_IN_PROGRESS",
+      });
+      expect(activeRun.messages).toHaveLength(1);
 
-    socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
-    await waitForCondition(() => agent.interruptCalls === 1);
-    expect(agent.interruptCalls).toBe(1);
-    expect(agent.stopCalls).toBe(0);
-
-    const segmentPromise = waitForMessage(socket);
-    const event: AgentRunEvent = {
-      runId: agent.agentRunId,
-      eventType: AgentRunEventType.SEGMENT_START,
-      payload: {
-        id: "seg-1",
-        segment_type: "text",
-        metadata: { foo: "bar" },
-      },
-      statusHint: null,
-    };
-    stream.push(event);
-
-    const segmentMessage = JSON.parse(await segmentPromise) as {
-      type: string;
-      payload: { id: string; segment_type?: string; metadata?: unknown };
-    };
-
-    expect(segmentMessage.type).toBe("SEGMENT_START");
-    expect(segmentMessage.payload.id).toBe("seg-1");
-    expect(segmentMessage.payload.segment_type).toBe("text");
-
-    socket.close();
-    await app.close();
+      resolvePost({ accepted: true, turnId: "turn-busy-1" });
+      const acceptedAck = await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-busy-1" && message.payload.duplicate === false,
+        2,
+      );
+      expect(acceptedAck.payload).toMatchObject({
+        state: "accepted",
+        accepted: true,
+        duplicate: false,
+      });
+    } finally {
+      socket.close();
+      await harness.app.close();
+    }
   });
 
-  it("restores a stopped run on websocket connect and rebinds before follow-up SEND_MESSAGE", async () => {
-    const initialAgent = new FakeAgent("agent-recover");
-    const restoredAgent = new FakeAgent("agent-recover");
-    const initialStream = new FakeEventStream();
-    const restoredStream = new FakeEventStream();
-    const initialManager = new FakeAgentManager(initialAgent, initialStream);
-    const restoredManager = new FakeAgentManager(restoredAgent, restoredStream);
-    const resolvedRuns = [
-      initialManager.getActiveRun("agent-recover"),
-      restoredManager.getActiveRun("agent-recover"),
-    ];
-    let resolveCalls = 0;
-    const recordActivities: Array<{ runId: string; summary?: string }> = [];
-    const agentRunService = {
-      getAgentRun: () => null,
-      resolveAgentRun: async () => resolvedRuns[resolveCalls++] ?? null,
-      recordRunActivity: async (run: { runId: string }, activity: { summary?: string }) => {
-        recordActivities.push({ runId: run.runId, summary: activity.summary });
-      },
-    };
-    const handler = new AgentStreamHandler(
-      new AgentSessionManager(),
-      agentRunService as unknown as any,
-    );
-
-    const app = fastify();
-    await app.register(websocket);
-    await registerAgentWebsocket(
-      app,
-      handler,
-      {
-        connect: async () => null,
-        handleMessage: async () => {},
-        disconnect: async () => {},
-      } as unknown as Parameters<typeof registerAgentWebsocket>[2],
-    );
-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
-    const url = new URL(address);
-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/agent-recover`);
-    const connectedPromise = waitForMessage(socket);
-
-    await waitForOpen(socket);
-    const connectedMessage = JSON.parse(await connectedPromise) as {
-      type: string;
-      payload: { agent_id: string };
-    };
-    expect(connectedMessage.type).toBe("CONNECTED");
-    expect(connectedMessage.payload.agent_id).toBe("agent-recover");
-
-    socket.send(
-      JSON.stringify({
-        type: "SEND_MESSAGE",
-        payload: {
-          content: "resume agent after stop",
-        },
-      }),
-    );
-
-    await waitForCondition(() => restoredAgent.messages.length === 1);
-    expect(initialAgent.messages).toHaveLength(0);
-    expect(restoredAgent.messages[0].content).toBe("resume agent after stop");
-    expect(resolveCalls).toBe(2);
-    expect(recordActivities).toContainEqual({
-      runId: "agent-recover",
-      summary: "resume agent after stop",
+  it("publishes error status and failed ACK when prepared activation fails", async () => {
+    const runId = "agent-e2e";
+    const metadata = buildMetadata(runId, {
+      activationState: "PREPARED",
+      platformAgentRunId: null,
+      preparedAt: "2026-05-18T00:00:00.000Z",
+      preparedExpiresAt: "2026-05-19T00:00:00.000Z",
     });
-
-    const segmentPromise = waitForMessage(socket);
-    restoredStream.push({
-      runId: "agent-recover",
-      eventType: AgentRunEventType.SEGMENT_CONTENT,
-      payload: {
-        id: "restored-seg-1",
-        segment_type: "text",
-        delta: "restored",
-      },
-      statusHint: null,
+    const activatePreparedRun = vi.fn(async () => {
+      throw new Error("activation exploded");
     });
-    const restoredMessage = JSON.parse(await segmentPromise) as {
-      type: string;
-      payload: { id?: string; delta?: string };
-    };
-    expect(restoredMessage.type).toBe("SEGMENT_CONTENT");
-    expect(restoredMessage.payload).toMatchObject({
-      id: "restored-seg-1",
-      delta: "restored",
-    });
+    const harness = await startAgentWsHarness({ runId, metadata, activatePreparedRun });
+    const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
+    const messages = captureMessages(socket);
+    try {
+      await waitForOpen(socket);
+      await waitForBufferedMessage(messages, 0);
+      await waitForBufferedMessage(messages, 1);
 
-    socket.close();
-    await app.close();
+      socket.send(JSON.stringify(createSendCommand("will fail", "msg-fail-1")));
+      await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_STATUS" && message.payload.status === "initializing",
+        2,
+      );
+      const errorStatus = await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_STATUS" && message.payload.status === "error",
+        2,
+      );
+      expect(errorStatus.payload).toMatchObject({ status: "error", can_interrupt: false, agent_id: runId, error_message: "activation exploded" });
+      const ack = await waitForMessageMatching(
+        messages,
+        (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-fail-1",
+        2,
+      );
+      expect(ack.payload).toMatchObject({
+        state: "failed",
+        accepted: false,
+        duplicate: false,
+        code: "ACTIVATION_FAILED",
+        message: "activation exploded",
+        status: { status: "error", can_interrupt: false, agent_id: runId },
+      });
+    } finally {
+      socket.close();
+      await harness.app.close();
+    }
   });
 
-  it("closes with AGENT_NOT_FOUND when a websocket connect cannot resolve a missing run", async () => {
-    const handler = new AgentStreamHandler(
-      new AgentSessionManager(),
-      {
-        getAgentRun: () => null,
-        resolveAgentRun: async () => null,
-        recordRunActivity: async () => {},
-      } as unknown as any,
-    );
+  it("keeps non-SEND commands active-only after identity-only connect", async () => {
+    const runId = "agent-e2e";
+    const metadata = buildMetadata(runId);
+    const harness = await startAgentWsHarness({ runId, metadata });
+    const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
+    const messages = captureMessages(socket);
+    try {
+      await waitForOpen(socket);
+      await waitForBufferedMessage(messages, 0);
+      await waitForBufferedMessage(messages, 1);
+      socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+      await new Promise((resolve) => setTimeout(resolve, 80));
 
-    const app = fastify();
-    await app.register(websocket);
-    await registerAgentWebsocket(
-      app,
-      handler,
-      {
-        connect: async () => null,
-        handleMessage: async () => {},
-        disconnect: async () => {},
-      } as unknown as Parameters<typeof registerAgentWebsocket>[2],
-    );
-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
-    const url = new URL(address);
-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/missing-agent`);
-    const errorPromise = waitForMessage(socket);
-    const closePromise = waitForClose(socket);
-
-    await waitForOpen(socket);
-    const errorMessage = JSON.parse(await errorPromise) as {
-      type: string;
-      payload: { code?: string; message?: string };
-    };
-    expect(errorMessage).toMatchObject({
-      type: "ERROR",
-      payload: {
-        code: "AGENT_NOT_FOUND",
-        message: "Agent run 'missing-agent' not found",
-      },
-    });
-    await expect(closePromise).resolves.toBe(4004);
-
-    await app.close();
-  });
-
-  it("closes with AGENT_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the run", async () => {
-    const agent = new FakeAgent("agent-send-missing");
-    const stream = new FakeEventStream();
-    const manager = new FakeAgentManager(agent, stream);
-    let resolveCalls = 0;
-    const agentRunService = {
-      getAgentRun: () => null,
-      resolveAgentRun: async () => {
-        resolveCalls += 1;
-        return resolveCalls === 1 ? manager.getActiveRun("agent-send-missing") : null;
-      },
-      recordRunActivity: async () => {},
-    };
-    const handler = new AgentStreamHandler(
-      new AgentSessionManager(),
-      agentRunService as unknown as any,
-    );
-
-    const app = fastify();
-    await app.register(websocket);
-    await registerAgentWebsocket(
-      app,
-      handler,
-      {
-        connect: async () => null,
-        handleMessage: async () => {},
-        disconnect: async () => {},
-      } as unknown as Parameters<typeof registerAgentWebsocket>[2],
-    );
-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
-    const url = new URL(address);
-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/agent-send-missing`);
-    const connectedPromise = waitForMessage(socket);
-
-    await waitForOpen(socket);
-    await connectedPromise;
-
-    const errorPromise = waitForMessage(socket);
-    const closePromise = waitForClose(socket);
-    socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "still there?" } }));
-
-    const errorMessage = JSON.parse(await errorPromise) as {
-      type: string;
-      payload: { code?: string; message?: string };
-    };
-    expect(errorMessage).toMatchObject({
-      type: "ERROR",
-      payload: {
-        code: "AGENT_NOT_FOUND",
-        message: "Agent run 'agent-send-missing' not found",
-      },
-    });
-    await expect(closePromise).resolves.toBe(4004);
-    expect(agent.messages).toHaveLength(0);
-
-    await app.close();
-  });
-
-  it("keeps INTERRUPT_GENERATION active-only and does not restore a stopped run", async () => {
-    const agent = new FakeAgent("agent-stop-active-only");
-    const stream = new FakeEventStream();
-    const manager = new FakeAgentManager(agent, stream);
-    let resolveCalls = 0;
-    const agentRunService = {
-      getAgentRun: () => null,
-      resolveAgentRun: async () => {
-        resolveCalls += 1;
-        return manager.getActiveRun("agent-stop-active-only");
-      },
-      recordRunActivity: async () => {},
-    };
-    const handler = new AgentStreamHandler(
-      new AgentSessionManager(),
-      agentRunService as unknown as any,
-    );
-
-    const app = fastify();
-    await app.register(websocket);
-    await registerAgentWebsocket(
-      app,
-      handler,
-      {
-        connect: async () => null,
-        handleMessage: async () => {},
-        disconnect: async () => {},
-      } as unknown as Parameters<typeof registerAgentWebsocket>[2],
-    );
-    const address = await app.listen({ port: 0, host: "127.0.0.1" });
-    const url = new URL(address);
-    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/agent-stop-active-only`);
-    const connectedPromise = waitForMessage(socket);
-
-    await waitForOpen(socket);
-    await connectedPromise;
-
-    socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
-    await new Promise((resolve) => setTimeout(resolve, 80));
-    expect(agent.interruptCalls).toBe(0);
-    expect(agent.stopCalls).toBe(0);
-    expect(resolveCalls).toBe(1);
-
-    socket.close();
-    await app.close();
+      expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
+      expect(harness.agentRunService.activatePreparedRun).not.toHaveBeenCalled();
+      expect(messages).toHaveLength(2);
+    } finally {
+      socket.close();
+      await harness.app.close();
+    }
   });
 
   it("returns SESSION_NOT_READY when command arrives before connect handshake", async () => {
@@ -557,19 +622,18 @@ describe("Agent websocket integration", () => {
     const address = await app.listen({ port: 0, host: "127.0.0.1" });
     const url = new URL(address);
     const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/any-agent`);
+    const messages = captureMessages(socket);
+    try {
+      await waitForOpen(socket);
 
-    await waitForOpen(socket);
+      socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "too early" } }));
+      const earlyResponse = await waitForBufferedMessage(messages, 0);
 
-    socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { content: "too early" } }));
-    const earlyResponse = JSON.parse(await waitForMessage(socket)) as {
-      type: string;
-      payload: { code?: string };
-    };
-
-    expect(earlyResponse.type).toBe("ERROR");
-    expect(earlyResponse.payload.code).toBe("SESSION_NOT_READY");
-
-    socket.close();
-    await app.close();
+      expect(earlyResponse.type).toBe("ERROR");
+      expect(earlyResponse.payload.code).toBe("SESSION_NOT_READY");
+    } finally {
+      socket.close();
+      await app.close();
+    }
   });
 });

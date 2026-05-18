@@ -41,8 +41,8 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 - **Role**: Manages the execution lifecycle of individual agents.
 - **Key Actions**:
-  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible local message rather than appended as a duplicate. The visible runtime status remains backend-owned and comes from streamed `AGENT_STATUS` events.
-  - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. The backend WebSocket boundary is also restore-aware for connect and `SEND_MESSAGE`, so a stale/missing frontend resume cache does not have to be the only recovery path.
+  - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`. Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators are reconciled onto the already-visible local message rather than appended as a duplicate. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
+  - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. For standalone runs, connect attaches to a durable run identity and receives backend status projection without forcing runtime restore; the later `SEND_MESSAGE` command performs backend-owned activation/restore when needed.
   - `interruptGeneration()`: Sends the backend `INTERRUPT_GENERATION` control command without locally marking the run send-ready. `isSending` is cleared by backend lifecycle/status/error stream handling after the runtime has settled the active turn.
   - `terminateRun(runId)`: Sends backend `TerminateAgentRun` for persisted runs before local teardown, then disconnects the stream, marks the run inactive in history, and refreshes the history tree. Row-level terminate actions delegate here without selecting the row; follow-up chat recovery still uses the restore-aware send path rather than treating terminate as a local-only close.
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls through the backend active-runtime approval command; it is not a restore or turn-starting operation.
@@ -61,10 +61,13 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 ### Stopped-Run Follow-Up Recovery
 
-Single-agent and team follow-up chat share the same recovery model:
+Single-agent and team follow-up chat share the same backend-owned recovery
+principle, but the standalone runtime activation boundary is now the
+`SEND_MESSAGE` command:
 
-- frontend stores use cached resume config to eagerly call explicit restore mutations when they know a selected run/team is inactive;
-- WebSocket connect and `SEND_MESSAGE` are restore-aware on the backend, so follow-up chat can still recover stopped-but-persisted runs when the frontend cache is stale, missing, or was updated after a local stop;
+- frontend single-agent stores do not call `RestoreAgentRun` as a send precondition; team stores may still use the team restore/resolve path owned by the team container;
+- standalone WebSocket connect can attach to an inactive durable run identity without restoring it, and standalone `SEND_MESSAGE` is the backend-owned recoverable command that publishes `initializing`, restores/activates, and forwards the message;
+- team WebSocket connect and `SEND_MESSAGE` remain restore-aware through the team container, so follow-up chat can still recover stopped-but-persisted team runs when the frontend cache is stale, missing, or was updated after a local stop;
 - accepted follow-up messages mark the run/team active in run history and refresh the history tree; and
 - interrupt/tool-approval control messages are active-only and should not be used as implicit restore operations.
 
@@ -110,10 +113,14 @@ server boundary projects those details into the coarse API status and computes
 `can_interrupt` from the runtime-owned active-turn/snapshot source. `isSending`
 remains a local submit-flight and disabled-input signal only; it must not be
 used to show the stop button or to infer that an interrupt can be accepted.
-When the backend accepts a message command for an `offline` or `idle` single
-run or focused team member, it is responsible for publishing non-interruptible
-`initializing` before slow runtime startup/send work; the frontend displays that
-streamed status instead of inventing a status-only optimistic override.
+When the backend accepts a standalone `SEND_MESSAGE` command for an inactive or
+prepared run identity, `AgentRunCommandCoordinator` is responsible for
+publishing non-interruptible `initializing` before slow restore/start/activation
+work; the frontend displays that streamed status or `AGENT_COMMAND_ACK.status`
+instead of inventing a lifecycle placeholder. When the backend accepts a
+focused team-member command for an `offline` or `idle` member, the team backend
+publishes member-scoped non-interruptible `initializing` before slow member
+startup/send work.
 Startup tokens such as `bootstrapping`, `starting`, `startup`, `initializing`,
 and active `uninitialized` project as active non-interruptible
 `initializing`; they keep send readiness blocked without granting the red
@@ -297,6 +304,7 @@ Incoming events are routed based on their `type`:
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
 | `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. |
+| `AGENT_COMMAND_ACK`       | inline command acknowledgement handling            | Confirms standalone `SEND_MESSAGE` command acceptance/duplicate/rejection/failure and applies the included backend status payload; rejected/failed commands flow to the normal error handler. |
 | `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `initializing`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into banner-ready run state (`requested`, `started`, `completed`, `failed`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |

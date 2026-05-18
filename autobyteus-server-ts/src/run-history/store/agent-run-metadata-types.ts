@@ -3,6 +3,12 @@ import type { ApplicationExecutionContext } from "../../application-orchestratio
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunStatusRecord } from "./agent-run-history-index-record-types.js";
 
+export type AgentRunActivationState =
+  | "PREPARED"
+  | "ACTIVATING"
+  | "ACTIVATED"
+  | "ACTIVATION_FAILED";
+
 export type AgentRunMetadata = {
   runId: string;
   agentDefinitionId: string;
@@ -15,6 +21,9 @@ export type AgentRunMetadata = {
   runtimeKind: RuntimeKind;
   platformAgentRunId: string | null;
   lastKnownStatus: AgentRunStatusRecord;
+  activationState?: AgentRunActivationState;
+  preparedAt?: string | null;
+  preparedExpiresAt?: string | null;
   archivedAt?: string | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
 };

@@ -12,6 +12,9 @@ import {
   type TeamRunEvent,
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
+import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
+import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
+import { AgentRunStatusProjectionService } from "../../../src/agent-execution/services/agent-run-status-projection-service.js";
 import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
@@ -306,13 +309,28 @@ const expectCanonicalStatusPayloadFields = (payload: Record<string, unknown>) =>
 };
 
 const openAgentApp = async (run: FakeAgentRun) => {
+  const commandRegistry = new AgentRunCommandRegistry();
+  const overlayStore = new AgentRunCommandStatusOverlayStore();
+  const statusProjectionService = new AgentRunStatusProjectionService({
+    agentRunManager: {
+      getActiveRun: (runId: string) => (runId === run.runId ? run : null),
+    } as any,
+    metadataService: {
+      readMetadata: async () => null,
+    },
+    overlayStore,
+    commandRegistry,
+  });
   const streamHandler = new AgentStreamHandler(
     new AgentSessionManager(),
     {
       getAgentRun: (runId: string) => (runId === run.runId ? run : null),
-      resolveAgentRun: async (runId: string) => (runId === run.runId ? run : null),
       recordRunActivity: async () => {},
     } as any,
+    undefined,
+    undefined,
+    undefined,
+    statusProjectionService,
   );
   const app = fastify();
   await app.register(websocket);

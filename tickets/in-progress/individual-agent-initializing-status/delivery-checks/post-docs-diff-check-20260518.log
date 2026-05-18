@@ -1,0 +1,3 @@
+# Delivery post-docs diff check — 2026-05-18 updated backend-owned package
+$ git diff --check
+exit_status=0

@@ -34,6 +34,12 @@ class RunHistoryItemObject {
 
   @Field(() => Boolean)
   isActive!: boolean;
+
+  @Field(() => Boolean)
+  shouldConnectStream!: boolean;
+
+  @Field(() => String)
+  statusSource!: string;
 }
 
 @ObjectType()

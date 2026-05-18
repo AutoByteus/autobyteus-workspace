@@ -36,7 +36,7 @@ import {
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import {
-  applyActiveRuntimePlaceholder,
+  applyMemberOrHistoryStatusSnapshot,
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
 
@@ -101,19 +101,24 @@ export const fetchRunHistoryTree = async (
   }
 };
 
-const listActiveAgentRunIds = (
+const listActiveAgentRuns = (
   workspaceGroups: RunHistoryWorkspaceGroup[],
-): Set<string> =>
-  new Set(
-    workspaceGroups.flatMap((workspaceGroup) =>
-      workspaceGroup.agentDefinitions.flatMap((agentGroup) =>
-        agentGroup.runs
-          .filter((run) => run.isActive)
-          .map((run) => run.runId.trim())
-          .filter(Boolean),
-      ),
-    ),
-  );
+): Map<string, RunHistoryWorkspaceGroup['agentDefinitions'][number]['runs'][number]> => {
+  const activeRuns = new Map<string, RunHistoryWorkspaceGroup['agentDefinitions'][number]['runs'][number]>();
+  workspaceGroups.forEach((workspaceGroup) => {
+    workspaceGroup.agentDefinitions.forEach((agentGroup) => {
+      agentGroup.runs
+        .filter((run) => run.isActive || run.shouldConnectStream === true)
+        .forEach((run) => {
+          const runId = run.runId.trim();
+          if (runId) {
+            activeRuns.set(runId, run);
+          }
+        });
+    });
+  });
+  return activeRuns;
+};
 
 const listActiveTeamRuns = (
   workspaceGroups: RunHistoryWorkspaceGroup[],
@@ -133,7 +138,8 @@ const buildMemberStatusSnapshotsFromHistory = (
 const reconcileDiscoveredActiveRuns = async (
   store: RunHistoryFetchStoreLike,
 ): Promise<void> => {
-  const activeAgentRunIds = listActiveAgentRunIds(store.workspaceGroups);
+  const activeAgentRunById = listActiveAgentRuns(store.workspaceGroups);
+  const activeAgentRunIds = new Set(activeAgentRunById.keys());
   const activeTeamRuns = listActiveTeamRuns(store.workspaceGroups);
   const activeTeamRunById = new Map<string, TeamRunHistoryItem>();
   activeTeamRuns.forEach((teamRun) => {
@@ -164,10 +170,13 @@ const reconcileDiscoveredActiveRuns = async (
   }
 
   for (const runId of activeAgentRunIds) {
+    const activeRun = activeAgentRunById.get(runId);
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
       existingContext.config.isLocked = true;
-      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true });
+      applyMemberOrHistoryStatusSnapshot(existingContext, activeRun?.status ?? AgentStatus.Running, {
+        preserveLiveInterrupt: existingContext.isSubscribed,
+      });
       if (!existingContext.isSubscribed) {
         agentRunStore.connectToAgentStream(runId);
       }
@@ -179,7 +188,7 @@ const reconcileDiscoveredActiveRuns = async (
         runId,
         fallbackAgentName: findAgentNameByRunId(store.workspaceGroups, runId),
         ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
-        currentStatus: 'ACTIVE',
+        currentStatus: activeRun?.status ?? AgentStatus.Running,
       });
       agentRunStore.connectToAgentStream(runId);
     } catch (error) {

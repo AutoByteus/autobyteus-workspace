@@ -15,6 +15,8 @@ export const ListWorkspaceRunHistory = gql`
           status
           lastKnownStatus
           isActive
+          shouldConnectStream
+          statusSource
         }
       }
       teamDefinitions {

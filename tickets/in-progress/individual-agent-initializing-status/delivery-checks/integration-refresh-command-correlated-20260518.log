@@ -1,0 +1,247 @@
+# Delivery integration refresh after command-correlated overlay package — 2026-05-18
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status
+before_branch=codex/individual-agent-initializing-status
+before_head=bea1185cde5b77dde7a565983f103085cba8178a
+before_origin_personal=83d077d3f035f8517a80dd2a8470fa819e835f20
+--- git status --short before fetch ---
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+ M autobyteus-server-ts/docs/modules/agent_execution.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+ M autobyteus-server-ts/src/api/graphql/types/agent-run.ts
+ M autobyteus-server-ts/src/api/graphql/types/run-history.ts
+ M autobyteus-server-ts/src/external-channel/runtime/channel-agent-run-facade.ts
+ M autobyteus-server-ts/src/external-channel/runtime/channel-binding-run-launcher.ts
+ M autobyteus-server-ts/src/run-history/domain/agent-run-history-index-types.ts
+ M autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts
+ M autobyteus-server-ts/src/run-history/services/agent-run-resume-config-service.ts
+ M autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts
+ M autobyteus-server-ts/src/run-history/store/agent-run-metadata-types.ts
+ M autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts
+ M autobyteus-server-ts/src/services/agent-streaming/models.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts
+ M autobyteus-server-ts/tests/unit/external-channel/runtime/channel-binding-run-launcher.test.ts
+ M autobyteus-server-ts/tests/unit/run-history/services/agent-run-history-service.test.ts
+ M autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_integration_minimal_bridge.md
+ M autobyteus-web/graphql/mutations/agentMutations.ts
+ M autobyteus-web/graphql/queries/runHistoryQueries.ts
+ M autobyteus-web/services/agentStreaming/AgentStreamingService.ts
+ M autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+ M autobyteus-web/services/agentStreaming/protocol/index.ts
+ M autobyteus-web/services/agentStreaming/protocol/messageTypes.ts
+ M autobyteus-web/stores/__tests__/agentRunStore.spec.ts
+ M autobyteus-web/stores/agentRunStore.ts
+ M autobyteus-web/stores/runHistoryLoadActions.ts
+ M autobyteus-web/stores/runHistoryTypes.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-status-overlay-store.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-status-projection-service.ts
+?? autobyteus-server-ts/tests/e2e/agent/
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-coordinator.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-registry.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-provisioning-service.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-status-projection-service.test.ts
+?? autobyteus-web/services/agentStreaming/protocol/agentCommandTypes.ts
+?? autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts
+?? autobyteus-web/services/agentStreaming/protocol/externalUserMessageTypes.ts
+?? tickets/in-progress/individual-agent-initializing-status/
+--- git fetch origin --prune ---
+fetch_exit_status=0
+after_head=bea1185cde5b77dde7a565983f103085cba8178a
+after_origin_personal=83d077d3f035f8517a80dd2a8470fa819e835f20
+ahead_behind_HEAD_origin_personal=0	3
+merge_base_HEAD_origin_personal=bea1185cde5b77dde7a565983f103085cba8178a
+--- git branch -vv ---
+  backup/round12-integration-before-merge-20260516221041              bc2cb3c3 fix(team): enforce structured live command identity
++ codex/agent-based-compaction                                        b2aa635d (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-based-compaction) [origin/personal: behind 341] chore(ticket): finalize agent-based compaction
++ codex/agent-skill-runtime-support-investigation                     f2d8074e (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-skill-runtime-support-investigation) Add agent configured skill support for Codex and Claude
++ codex/agent-status-event-analysis                                   953992ea (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-status-event-analysis) [origin/personal: behind 75] feat(status): finalize agent status event analysis
+  codex/agent-team-mcp-runtime-bug                                    515ed72a [origin/personal: behind 436] docs(ticket): finalize api-key-save-false-failure handoff
++ codex/agent-team-mcp-runtime-regression                             515ed72a (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-mcp-runtime-regression) [origin/personal: behind 436] docs(ticket): finalize api-key-save-false-failure handoff
+  codex/agent-turn-controller-refactor                                d86ec274 Ignore generated output artifacts
++ codex/agent-web-preview-tools                                       688b5e73 (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-web-preview-tools) fix(electron): avoid duplicate ipc handler registration
+  codex/analyze-turn-id-events                                        4642965e docs(workflow): finalize archived artifact redesign tickets
+  codex/application-bundle-agent-architecture-analysis                1caeec5d [origin/personal: behind 480] Finalize server settings basics loading fix ticket
++ codex/application-execution-resource-naming                         263e89c5 (/Users/normy/autobyteus_org/autobyteus-worktrees/application-execution-resource-naming) [origin/personal: behind 188] feat: rename application execution resources
++ codex/application-runtime-streaming                                 4df1f718 (/Users/normy/autobyteus_org/autobyteus-worktrees/application-runtime-streaming) [origin/personal: behind 225] fix(web): simplify media model settings copy
++ codex/artifact-edit-file-external-path-view-bug                     544f32c4 (/Users/normy/autobyteus_org/autobyteus-worktrees/artifact-edit-file-external-path-view-bug) [origin/personal: behind 558] fix(artifacts): unify run file change rendering
++ codex/artifact-tab-missing-reference-files                          1bed2087 (/Users/normy/autobyteus_org/autobyteus-worktrees/artifact-tab-missing-reference-files) [origin/personal: behind 277] docs(ticket): record claude text order release finalization
++ codex/artifacts-tab-resizer-disappears                              ea1892db (/Users/normy/autobyteus_org/autobyteus-worktrees/artifacts-tab-resizer-disappears) [origin/personal: behind 433] chore(ticket): finalize xml-tool-array-parser-fix
++ codex/autobyteus-ts-bash-html-corruption                            9426b1f0 (/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-bash-html-corruption) [origin/codex/autobyteus-ts-bash-html-corruption] fix(terminal): make agent run_bash stateless
++ codex/autobyteus-ts-custom-openai-compatible-endpoint-support       7e042bd9 (/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-custom-openai-compatible-endpoint-support) [origin/personal: behind 454] chore(ticket): archive custom openai provider support
++ codex/autobyteus-ts-google-genai-tts-upgrade                        63077fc7 (/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-google-genai-tts-upgrade) [origin/personal: behind 457] chore(release): bump workspace release version to 1.2.79
++ codex/backend-flat-application-folders-analysis                     4f58a9f8 (/Users/normy/autobyteus_org/autobyteus-worktrees/backend-flat-application-folders-analysis) [origin/personal: behind 420] refactor(applications): finalize remove built-in sample applications
+  codex/backup-claude-agent-sdk-runtime-workflow-20260228-133731      e82db83a fix(web): render inter-agent math messages with markdown
++ codex/clarify-agent-definition-id-vs-run-id                         12ba48c9 (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-clarify-agent-definition-id-vs-run-id) Clarify definition-vs-run IDs and stabilize server test suites
++ codex/claude-agent-sdk-custom-settings                              6aaa3721 (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-custom-settings) [origin/personal: behind 317] docs(ticket): record claude settings finalization
++ codex/claude-agent-sdk-runtime-support                              c21a9682 (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-runtime-support) [origin/codex/claude-agent-sdk-runtime-support] fix(claude): restore session history across SDK signature variants
++ codex/claude-agent-sdk-runtime-workflow                             4d9853ab (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-agent-sdk-runtime-workflow) fix(web): render inter-agent math messages with markdown
++ codex/claude-read-artifacts                                         8593442d (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-read-artifacts) [origin/codex/claude-read-artifacts] fix(artifacts): normalize file change events
++ codex/claude-sdk-interrupt-followup-ebadf                           1a326f85 (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-interrupt-followup-ebadf) [origin/codex/claude-sdk-interrupt-followup-ebadf] fix(claude): settle sdk interrupts before follow-up
++ codex/claude-sdk-interrupt-resume-session                           be0a814a (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-interrupt-resume-session) [origin/codex/claude-sdk-interrupt-resume-session] fix(claude): resume SDK sessions after interrupt
+  codex/claude-sdk-partial-messages-streaming                         b02a6a78 docs: rename desktop release commands
++ codex/claude-sdk-partial-messages-streaming-restart                 50455091 (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-partial-messages-streaming-restart) chore(release): bump desktop app version to 1.2.32
++ codex/claude-sdk-tool-arguments-activity                            d132acaf (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-tool-arguments-activity) [origin/codex/claude-sdk-tool-arguments-activity] docs(ticket): finalize claude tool arguments delivery
+  codex/clickable-message-file-paths                                  35694b0a [origin/personal: ahead 5, behind 277] chore(ticket): checkpoint round 6 team-run referenced content
++ codex/codex-history-reload-toolcalls                                389e72e9 (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-history-reload-toolcalls) [origin/personal: behind 63] fix(history): persist codex local replay tool calls
+  codex/codex-installed-skill-dedup                                   c20262dd Implement Codex skill dedupe and startup fixes
++ codex/codex-live-websocket-stabilization                            7546f39d (/Users/normy/autobyteus_org/autobyteus-worktrees/personal-codex-baseline) chore(release): bump desktop app version to 1.2.26
++ codex/codex-run-history-e2e-artifact-leakage                        f93a3cf1 (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-team-runtime) Prevent Codex E2E run-history pollution and add cleanup utility
+  codex/codex-runtime-image-input-support                             8636cd0d [origin/codex/codex-runtime-image-input-support] Add Codex image input support with live E2E coverage
+  codex/codex-team-member-runtime-communication                       8d3944e4 [origin/codex/codex-team-member-runtime-communication] Fix send_message_to approval-path lifecycle events and harden live codex roundtrip assertions
+  codex/codex-team-student-history-hydration                          a3b1bdac Merge remote-tracking branch 'origin/personal' into codex/codex-team-student-history-hydration
+  codex/codex-thinking-output-segment-bug                             b02a6a78 docs: rename desktop release commands
+  codex/codex-thinking-segment-identity-hardening                     b02a6a78 docs: rename desktop release commands
+  codex/context-image-drop-electron-regression                        5c7e560c fix(web): restore Electron image drag context preview guard
+  codex/desktop-auto-update-restart-errors                            14030b51 chore(release): bump desktop app version to 1.2.11
++ codex/desktop-invalid-package-agent-definitions                     d1023e2f (/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-invalid-package-agent-definitions) [origin/personal: behind 459] fix(desktop): avoid matching macOS Applications as built-in apps
+  codex/desktop-release-linux-macos-arm64                             eb898fca [origin/codex/desktop-release-linux-macos-arm64] docs(ticket): record successful tagged release validation evidence
++ codex/docker-guide-command-hotfix                                   0cc92171 (/Users/normy/autobyteus_org/autobyteus-worktrees/docker-guide-command-hotfix) [origin/codex/docker-guide-command-hotfix] fix: update Docker guide launcher commands
+  codex/draggable-left-panel-divider                                  5f6db46d [origin/codex/draggable-left-panel-divider] Remove agent team updated footer metadata
++ codex/edit-file-tool-success-mapping                                ecd466ff (/Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-tool-success-mapping) [origin/personal: behind 674] chore(ticket): finalize stream-handler-service-layering handoff
++ codex/electron-agent-prompt-file-resolution                         9762a12d (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-agent-prompt-file-resolution) [origin/codex/electron-agent-prompt-file-resolution] fix(runtime): refresh agent definition instructions per run
+  codex/electron-auto-update                                          71389da7 [origin/codex/electron-auto-update] feat(settings): add About section with manual update check
++ codex/electron-language-settings                                    7546f39d (/Users/normy/autobyteus_org/autobyteus-worktrees/electron-language-settings) chore(release): bump desktop app version to 1.2.26
+  codex/event-monitor-tool-text-ux                                    9e99520f [origin/codex/event-monitor-tool-text-ux] Make zh server docker publish manual
++ codex/external-channel-receipt-state-machine                        e9a11a3f (/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-receipt-state-machine) [origin/personal: behind 529] chore(ticket): archive external channel receipt state machine
++ codex/external-turn-reply-aggregation                               0158b932 (/Users/normy/autobyteus_org/autobyteus-worktrees/external-turn-reply-aggregation) [origin/codex/external-turn-reply-aggregation: ahead 2] chore(release): bump workspace release version to 1.2.63
++ codex/featured-default-assistant                                    327d9433 (/Users/normy/autobyteus_org/autobyteus-worktrees/featured-default-assistant) [origin/personal: behind 205] feat(catalog): add featured default assistant
++ codex/file-explorer-move-stale-children                             719386da (/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-move-stale-children) fix: stabilize file explorer moves and workspace watching
++ codex/focused-agent-interrupt-routing                               c71a879b (/Users/normy/autobyteus_org/autobyteus-worktrees/focused-agent-interrupt-routing) [origin/codex/focused-agent-interrupt-routing] fix(team): target focused member interrupts
++ codex/fruit-website                                                 44131e70 (/Users/normy/autobyteus_worktrees/codex-fruit-website) docs(ticket): close team history grouped runs handoff
++ codex/general-chat-entry                                            11865cf8 (/Users/normy/autobyteus_org/autobyteus-worktrees/general-chat-entry) [origin/personal: ahead 4, behind 222] Merge remote-tracking branch 'origin/personal' into codex/general-chat-entry
++ codex/generate-media-artifact-regression-analysis                   b6802dc8 (/Users/normy/autobyteus_org/autobyteus-worktrees/generate-media-artifact-regression-analysis) [origin/personal: behind 402] Merge whole skill symlink materialization
++ codex/historical-run-config-readonly                                0ee19d1c (/Users/normy/autobyteus_org/autobyteus-worktrees/historical-run-config-readonly) [origin/personal: behind 396] docs(ticket): finalize application-runtime-configuration-ux-cleanup
+  codex/imported-definition-editability-skill-import                  d62763ce docs: archive imported definition ticket
++ codex/independent-agent-instruction-codex-runtime                   814a80bb (/Users/normy/autobyteus_org/autobyteus-worktrees/independent-agent-instruction-codex-runtime) [origin/personal: behind 363] docs(ticket): record stream output dedupe finalization
+* codex/individual-agent-initializing-status                          bea1185c [origin/personal: behind 3] chore(release): bump workspace release version to 1.3.18
++ codex/interagent-message-interrupt-ui                               1bed2087 (/Users/normy/autobyteus_org/autobyteus-worktrees/interagent-message-interrupt-ui) [origin/personal: behind 277] docs(ticket): record claude text order release finalization
++ codex/kimi-tool-stream-visibility                                   565ebb35 (/Users/normy/autobyteus_org/autobyteus-worktrees/kimi-tool-stream-visibility) [origin/codex/kimi-tool-stream-visibility] fix(streaming): use canonical tool invocation identity
++ codex/live-run-stream-reconnect-after-reload                        76eeed2e (/Users/normy/autobyteus_org/autobyteus-worktrees/live-run-stream-reconnect-after-reload) [origin/codex/live-run-stream-reconnect-after-reload] fix(web): recover live runs after reload
++ codex/llm-runtime-compaction-top-layer-e2e                          f7278160 (/Users/normy/autobyteus_org/autobyteus-worktrees/llm-runtime-compaction-top-layer-e2e) chore(ticket): finalize artifact maximize button delivery
+  codex/llm-tool-call-ordering-multi-provider                         24fb4377 fix: enforce tool-call ordering for deepseek/kimi/glm and close ticket
+  codex/managed-gateway-runtime-versioning                            63e37d17 [origin/codex/managed-gateway-runtime-versioning] docs: fix managed gateway runtime versioning handoff summary
+  codex/markdown-render-math-regression                               ddcd60e1 fix: harden markdown math rendering
++ codex/mental-health-assessment-frontend                             396366dc (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-mental-health-assessment-frontend) Merge remote-tracking branch 'origin/personal' into codex/reopen-run-config
++ codex/message-delivery-robustness                                   a3da1a68 (/Users/normy/autobyteus_org/autobyteus-worktrees/messaging-delivery-robustness) [origin/codex/message-delivery-robustness] feat: harden messaging gateway delivery
+  codex/message-gateway-quality-review                                373cbd93 [origin/personal: behind 729] Refine gateway review findings and archive ticket
+  codex/message-gateway-quality-review-finalize                       5a9ac16c [origin/personal: behind 727] Finalize message gateway review ticket closure
+  codex/messaging-agent-team-support                                  9666518b fix: reduce workspace reconnect churn after restart
++ codex/messaging-gateway-404-install-start                           5996e5d3 (/Users/normy/autobyteus_org/autobyteus-worktrees/messaging-gateway-404-install-start) [origin/codex/messaging-gateway-404-install-start] fix(release): sync managed messaging manifest with desktop tag
++ codex/messaging-gateway-distribution-analysis                       11029239 (/Users/normy/autobyteus_org/autobyteus-worktrees/messaging-gateway-desktop-distribution) [origin/codex/messaging-gateway-distribution-analysis] chore(release): bump desktop app version to 1.2.30
++ codex/messaging-gateway-release-hotfix                              92473e05 (/Users/normy/autobyteus_org/autobyteus-worktrees/messaging-gateway-release-hotfix) [origin/codex/messaging-gateway-release-hotfix] chore(ticket): archive gateway release hotfix
++ codex/messaging-runtime-visibility                                  46b172d0 (/Users/normy/autobyteus_org/autobyteus-worktrees/messaging-runtime-visibility) [origin/codex/messaging-runtime-visibility] chore: ignore generated messaging gateway artifacts
++ codex/mobile-client-tailscale-feasibility                           97871321 (/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-client-tailscale-feasibility) [origin/personal: behind 84] docs(ticket): finalize compression compactor runtime release
++ codex/mobile-remote-access-requirements                             d7f047f7 (/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements) [origin/personal: ahead 5, behind 3] Merge remote-tracking branch 'origin/personal' into codex/mobile-remote-access-requirements
++ codex/multi-agent-team-bootstrap-analysis                           d8a341e9 (/Users/normy/autobyteus_org/autobyteus-worktrees/multi-agent-team-bootstrap-analysis) docs(ticket): close runtime termination release workflow
++ codex/ollama-api-image-input                                        7f6396af (/Users/normy/autobyteus_org/autobyteus-worktrees/ollama-api-image-input) [origin/personal: behind 628] chore(release): bump workspace release version to 1.2.59
+  codex/ollama-api-tool-call-mode                                     527e9199 [origin/personal: behind 629] fix(ollama): enable api-mode tool calling
+  codex/personal-docker-setup                                         2ba0b7f6 [origin/codex/personal-docker-setup] feat(personal): add enterprise-style docker workflow with seed and remote sync
++ codex/personal-finalize-team-agent-instruction-composition-20260309 50455091 (/Users/normy/autobyteus_org/autobyteus-worktrees/personal-finalize-team-agent-instruction-composition-20260309) [origin/personal: behind 784] chore(release): bump desktop app version to 1.2.32
++ codex/personal-merge-release-server-dockerhub-publish               11029239 (/Users/normy/autobyteus_org/autobyteus-worktrees/release-server-dockerhub-publish) [origin/personal: behind 792] chore(release): bump desktop app version to 1.2.30
++ codex/personal-release-notes-finalize                               41ee2405 (/Users/normy/autobyteus_org/autobyteus-worktrees/personal-release-notes-finalize) [origin/personal: behind 777] docs(release): add curated release notes workflow
+  codex/port-team-memory-layout-to-superrepo                          b5e82c53 [origin/codex/port-team-memory-layout-to-superrepo] feat(run-history): use team-name slug for team memory folder ids
++ codex/provider-native-tool-history-rendering                        d3d7980c (/Users/normy/autobyteus_org/autobyteus-worktrees/provider-native-tool-history-rendering/autobyteus-ts) [origin/personal: behind 184] feat: render provider-native tool history
++ codex/publish-artifacts-plural-refactor                             7ec850f4 (/Users/normy/autobyteus_org/autobyteus-worktrees/publish-artifacts-plural-refactor) [origin/codex/publish-artifacts-plural-refactor] refactor(artifacts): pluralize publish artifacts tool
++ codex/read-media-file-investigation                                 2e3fe9e3 (/Users/normy/autobyteus_org/autobyteus-worktrees/read-media-file-investigation) [origin/personal: behind 476] Remove idle divider from server settings cards
++ codex/release-notes-workflow                                        56beeb00 (/Users/normy/autobyteus_org/autobyteus-worktrees/release-notes-workflow) docs(release): add curated release notes workflow
+  codex/release-server-dockerhub-publish                              5f40d81b [origin/codex/release-server-dockerhub-publish] feat(release): publish server docker on release
++ codex/remote-node-telegram-agent-delivery                           ebbfbdab (/Users/normy/autobyteus_org/autobyteus-worktrees/remote-node-telegram-agent-delivery) [origin/codex/remote-node-telegram-agent-delivery] fix(messaging): use internal server base url for managed gateway
++ codex/remove-media-output-path-restriction                          3adb737a (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-media-output-path-restriction) [origin/codex/remove-media-output-path-restriction] fix(media): allow external media paths
++ codex/reopen-run-config                                             2f0a2d94 (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo-codex-reopen-run-config) Merge remote-tracking branch 'origin/personal' into codex/reopen-run-config
++ codex/resume-run-reasoning-effort                                   63077fc7 (/Users/normy/autobyteus_org/autobyteus-worktrees/resume-run-reasoning-effort) [origin/personal: behind 457] chore(release): bump workspace release version to 1.2.79
+  codex/right-panel-scroll-decoupling                                 10a94925 Fix right panel scroll decoupling
++ codex/run-bash-posix-spawn-failure                                  320f9af6 (/Users/normy/autobyteus_org/autobyteus-worktrees/run-bash-posix-spawn-failure) [origin/codex/run-bash-posix-spawn-failure] fix(packaging): ship autobyteus-ts postinstall helper
+  codex/run-history-reload-after-stop                                 94b6e941 chore(release): close run-history ticket and bump desktop to 1.2.5
++ codex/run-history-worktree-live-stream-loss                         666ef0d0 (/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-worktree-live-stream-loss) [origin/codex/run-history-worktree-live-stream-loss] fix(workspace): stabilize team history selection
++ codex/runtime-decoupling-refactor                                   5f8fcfa9 (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-decoupling-refactor) Archive runtime decoupling refactor ticket
+  codex/runtime-domain-subject-refactor                               dd9538c7 chore(ticket): finalize runtime-domain-subject-refactor handoff
++ codex/runtime-interrupt-functionality                               8ce265a9 (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-interrupt-functionality) [origin/personal: behind 90] chore(ticket): archive runtime interrupt functionality
++ codex/runtime-model-identifier-dropdown                             87d99ddc (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-model-identifier-dropdown) [origin/codex/runtime-model-identifier-dropdown] fix(web): use model identifiers for autobyteus runtime dropdowns
++ codex/runtime-termination-separation-of-concerns                    46ee7b00 (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-termination-separation-of-concerns) [origin/codex/runtime-termination-separation-of-concerns] docs(ticket): add release notes for runtime termination ticket
++ codex/send-message-to-all-duplicate-ui                              bad2d718 (/Users/normy/autobyteus_org/autobyteus-worktrees/send-message-to-all-duplicate-ui) fix(web): render inter-agent math messages with markdown
+  codex/server-default-log-file-port                                  05d3356f feat(personal): port enterprise runtime logger state parity
++ codex/server-docker-codex-claude-cli                                a743237d (/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-codex-claude-cli) [origin/codex/server-docker-codex-claude-cli] feat(docker): bundle codex and claude cli in server image
++ codex/server-settings-basics-applications-card-toggle               cd72f52b (/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-basics-applications-card-toggle) [origin/personal: behind 482] docs(ticket): finalize applications basics ticket state
++ codex/server-settings-basics-runtime-controls                       ff918464 (/Users/normy/autobyteus_org/autobyteus-worktrees/server-settings-basics-runtime-controls) [origin/personal: behind 477] docs(ticket): finalize medium write flow electron detection handoff
++ codex/shooting-jet-html                                             88bd4da5 (/Users/normy/autobyteus_org/autobyteus-worktrees/shooting-jet-html) [origin/personal: behind 389] Merge iframe launch id contract refactor
++ codex/simplify-agent-workspace-to-path-string                       9fa76564 (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-workspace-path) refactor(workspace): simplify runtime workspace path and remove legacy base workspace
++ codex/solution-engineering-ticket-app                               4f5db14d (/Users/normy/autobyteus_org/autobyteus-worktrees/solution-engineering-ticket-app) [origin/personal: ahead 2, behind 225] Merge remote-tracking branch 'origin/personal' into codex/solution-engineering-ticket-app
++ codex/status-lifecycle-hardening                                    76934cf1 (/Users/normy/autobyteus_org/autobyteus-worktrees/status-lifecycle-hardening) [origin/personal: behind 15] fix(status): harden agent team lifecycle statuses
++ codex/team-agent-instruction-composition                            7c0a7a75 (/Users/normy/autobyteus_org/autobyteus-worktrees/team-agent-instruction-composition) [origin/codex/team-agent-instruction-composition] Compose team and agent instructions across runtimes
+  codex/team-communication-white-gap                                  f706e987 [origin/personal: behind 179] docs(ticket): finalize team-communication-white-gap ticket
+  codex/team-math-message-rendering                                   d9eb1a9f fix(web): render inter-agent math messages with markdown
+  codex/team-member-runtime-codex                                     09a909f9 chore(personal): drop runtime memory artifacts from flat repo
++ codex/team-run-expanded-team-view                                   ea1892db (/Users/normy/autobyteus_org/autobyteus-worktrees/team-run-expanded-team-view) [origin/personal: behind 433] chore(ticket): finalize xml-tool-array-parser-fix
+  codex/telegram-image-outbound-reply                                 d9a10b1f docs(ticket): finalize messaging runtime visibility
++ codex/telegram-streaming-support                                    d9a10b1f (/Users/normy/autobyteus_org/autobyteus-worktrees/telegram-streaming-support) [origin/personal: behind 780] docs(ticket): finalize messaging runtime visibility
+  codex/temp-workspace-app-config-root                                2c43da68 Fix temp workspace default root under server data
++ codex/voice-input-audio-source-selection                            ad7e12d0 (/Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-audio-source-selection-wt) [origin/codex/voice-input-audio-source-selection] feat(voice-input): add audio source selection
++ codex/voice-input-bilingual-runtime                                 7c08c09a (/Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime) [origin/codex/voice-input-bilingual-runtime] feat(voice-input): improve install telemetry and diagnostics
+  codex/voice-input-extension-flow                                    32abb881 [origin/codex/voice-input-extension-flow] Fix formatting in voice input textarea
++ codex/voice-input-feasibility-analysis                              d1f6b528 (/Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-personal-analysis) chore(release): bump desktop app version to 1.2.22
++ codex/voice-input-mac-recording                                     1e63398d (/Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-mac-recording) [origin/codex/voice-input-mac-recording] fix(voice-input): add mac recording recovery
++ codex/voice-input-transcription-architecture                        b02a6a78 (/Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-transcription-architecture) docs: rename desktop release commands
+  enterprise                                                          8f937334 [origin/enterprise] Adopt Apache-2.0 license and NOTICE attribution
+  main                                                                7074a868 [origin/main: gone] chore: install shared hooks into worktree-local git hooks dir (#11)
++ personal                                                            83d077d3 (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo) [origin/personal] docs(ticket): record browser mobile finalization
+--- git status --short after fetch ---
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+ M autobyteus-server-ts/docs/modules/agent_execution.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+ M autobyteus-server-ts/src/api/graphql/types/agent-run.ts
+ M autobyteus-server-ts/src/api/graphql/types/run-history.ts
+ M autobyteus-server-ts/src/external-channel/runtime/channel-agent-run-facade.ts
+ M autobyteus-server-ts/src/external-channel/runtime/channel-binding-run-launcher.ts
+ M autobyteus-server-ts/src/run-history/domain/agent-run-history-index-types.ts
+ M autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts
+ M autobyteus-server-ts/src/run-history/services/agent-run-resume-config-service.ts
+ M autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts
+ M autobyteus-server-ts/src/run-history/store/agent-run-metadata-types.ts
+ M autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts
+ M autobyteus-server-ts/src/services/agent-streaming/models.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts
+ M autobyteus-server-ts/tests/unit/external-channel/runtime/channel-binding-run-launcher.test.ts
+ M autobyteus-server-ts/tests/unit/run-history/services/agent-run-history-service.test.ts
+ M autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_integration_minimal_bridge.md
+ M autobyteus-web/graphql/mutations/agentMutations.ts
+ M autobyteus-web/graphql/queries/runHistoryQueries.ts
+ M autobyteus-web/services/agentStreaming/AgentStreamingService.ts
+ M autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+ M autobyteus-web/services/agentStreaming/protocol/index.ts
+ M autobyteus-web/services/agentStreaming/protocol/messageTypes.ts
+ M autobyteus-web/stores/__tests__/agentRunStore.spec.ts
+ M autobyteus-web/stores/agentRunStore.ts
+ M autobyteus-web/stores/runHistoryLoadActions.ts
+ M autobyteus-web/stores/runHistoryTypes.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-status-overlay-store.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-status-projection-service.ts
+?? autobyteus-server-ts/tests/e2e/agent/
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-coordinator.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-registry.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-provisioning-service.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-status-projection-service.test.ts
+?? autobyteus-web/services/agentStreaming/protocol/agentCommandTypes.ts
+?? autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts
+?? autobyteus-web/services/agentStreaming/protocol/externalUserMessageTypes.ts
+?? tickets/in-progress/individual-agent-initializing-status/
