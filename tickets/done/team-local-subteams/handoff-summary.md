@@ -1,3 +1,24 @@
+# Final Correction Update — 2026-05-18 Main Personal Rebuild And Cleanup
+
+- User clarified that the definitive final build should be produced from the main repository `personal` checkout, not from the ticket worktree, and that the ticket worktree should be cleaned up.
+- Main repository checkout refreshed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` on branch `personal`.
+- Before this evidence update, `personal` and `origin/personal` both pointed at `2a2d3bd44a91be35b896fe16efbac840a3f77fef`.
+- Definitive Electron macOS rebuild command passed from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web` with exit status `0`: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal DEBUG=electron-builder,electron-builder:*,app-builder-lib*,builder-util* pnpm build:electron:mac`.
+- Definitive build artifact paths:
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.dmg`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.dmg.blockmap`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip.blockmap`
+- Evidence recorded in the archived ticket:
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-local-subteams/evidence/delivery-electron-build-mac-from-final-personal.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-local-subteams/evidence/delivery-electron-build-mac-from-final-personal-artifacts.txt`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-local-subteams/evidence/delivery-electron-build-mac-from-final-personal-sha256.txt`
+- Cleanup completed: removed `/Users/normy/autobyteus_org/autobyteus-worktrees/team-local-subteams`, pruned worktrees, and deleted local branch `codex/team-local-subteams`. The remote ticket branch had already been deleted during finalization.
+- No release, deployment, tag, or version bump was performed per user direction.
+- This section supersedes the earlier ticket-worktree Electron rebuild evidence as the authoritative final delivery build record.
+
+---
+
 # Finalization Update — 2026-05-18
 
 - User verification received in chat after local testing: "i just tested. its working. lets finalize the ticket, no need to release".
@@ -22,9 +43,9 @@
   - `AutoByteus_personal_macos-arm64-1.3.16.zip`
   - `AutoByteus_personal_macos-arm64-1.3.16.zip.blockmap`
 - Evidence files recorded:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-local-subteams/tickets/in-progress/team-local-subteams/evidence/delivery-electron-build-mac-after-origin-refresh.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-local-subteams/tickets/in-progress/team-local-subteams/evidence/delivery-electron-build-mac-after-origin-refresh-artifacts.txt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/team-local-subteams/tickets/in-progress/team-local-subteams/evidence/delivery-electron-build-mac-after-origin-refresh-sha256.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-local-subteams/evidence/delivery-electron-build-mac-after-origin-refresh.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-local-subteams/evidence/delivery-electron-build-mac-after-origin-refresh-artifacts.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-local-subteams/evidence/delivery-electron-build-mac-after-origin-refresh-sha256.txt`
 - `git diff --check` passed after the rebuild evidence was written.
 - Repository finalization is still intentionally on hold until explicit user approval.
 
@@ -38,7 +59,7 @@
 - Branch: `codex/team-local-subteams`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-local-subteams`
 - Finalization target recorded by bootstrap: `personal` / `origin/personal`
-- Current delivery state: Ready for user verification after UX-001 revalidation; repository finalization is intentionally on hold until explicit user approval.
+- Current delivery state: Complete. User verification was received, the ticket was archived/finalized into `personal`, Electron was rebuilt from the main `personal` checkout, and the ticket worktree/local branch were cleaned up. No release/deployment was performed.
 
 ## Integrated-State Refresh
 
@@ -67,9 +88,9 @@
 
 Authoritative upstream validation/review results:
 
-- Post-validation durable-validation re-review: Pass — `/Users/normy/autobyteus_org/autobyteus-worktrees/team-local-subteams/tickets/in-progress/team-local-subteams/review-report.md`
+- Post-validation durable-validation re-review: Pass — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-local-subteams/review-report.md`
 - UX-001 code review round 4: Pass — same review report, latest authoritative review round is round 4 for the frontend follow-up.
-- API/E2E revalidation after UX-001: Pass — `/Users/normy/autobyteus_org/autobyteus-worktrees/team-local-subteams/tickets/in-progress/team-local-subteams/api-e2e-validation-report.md`
+- API/E2E revalidation after UX-001: Pass — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-local-subteams/api-e2e-validation-report.md`
 
 Latest API/E2E pass covered:
 
@@ -92,7 +113,7 @@ Known baseline/config failures preserved from implementation handoff:
 
 ## Docs Sync
 
-Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-local-subteams/tickets/in-progress/team-local-subteams/docs-sync-report.md`
+Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-local-subteams/docs-sync-report.md`
 
 Long-lived docs updated:
 
@@ -119,17 +140,8 @@ Delivery inspection found no remaining ignored sync fixture folders under `autob
 - Browser-level validation evidence exists in the ticket, but committed durable browser coverage is not a full automated browser suite.
 - `AgentTeamDetail.vue` is near the 500 effective-line hard limit from code review; delivery/finalization did not expand it further beyond the accepted UX-001 change.
 - Existing E2E files are broad aggregate suites; future ownership scenarios may warrant split fixtures/builders.
-- Release/publication/deployment is not in the current pre-verification scope.
+- Release/publication/deployment was explicitly not requested and was not performed.
 
-## User Verification Hold
+## Final Repository State
 
-Delivery is intentionally stopped before repository finalization. Await explicit user verification/approval before:
-
-1. moving the ticket from `tickets/in-progress/team-local-subteams/` to `tickets/done/team-local-subteams/`,
-2. committing the ticket branch,
-3. pushing the ticket branch,
-4. refreshing and merging into `personal`,
-5. pushing the finalization target, or
-6. performing any release/deployment work.
-
-If the finalization target advances before approval, delivery must refresh again, protect delivery-owned edits, reintegrate, rerun required checks, update docs/handoff if behavior changes, and obtain renewed verification if the user-facing handoff state materially changes.
+Finalization is complete after user verification and the later correction requested by the user. The main repository checkout `personal` was refreshed to latest `origin/personal`, rebuilt from that checkout, and the dedicated ticket worktree/local ticket branch were removed. No release, deployment, tag, or version bump was performed.
