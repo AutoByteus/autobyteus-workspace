@@ -62,6 +62,10 @@ These handlers update the agent context and mark messages complete. In the curre
 - `AGENT_STATUS` is run-level state with payload
   `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
   It does not contain legacy `new_status` / `old_status` fields.
+- After an accepted message command for an `offline` or `idle` run, the backend
+  publishes non-interruptible `initializing` before slow provider/native startup
+  or first-turn send work. Client bridges should display that streamed
+  `AGENT_STATUS` and keep local `isSending` as submit-flight state only.
 - Startup tokens such as `bootstrapping`, `starting`, `startup`,
   `initializing`, and active `uninitialized` should be treated as
   non-interruptible `initializing`, not as `running` or `offline`.
@@ -128,6 +132,10 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 - Treats member `AGENT_STATUS` as the source for each member's status and
   `canInterrupt`; aggregate `TEAM_STATUS` has payload
   `{ status: "offline" | "initializing" | "idle" | "running" | "error" }` only.
+- Expects targeted/offline member sends to surface member-scoped
+  `AGENT_STATUS initializing` before backend startup/send waits. True
+  no-target team commands may surface root `TEAM_STATUS initializing` without a
+  member event.
 - Preserves a focused member's live `initializing/canInterrupt=false` startup
   state or `running/canInterrupt=true` interrupt affordance across
   refresh/reconcile until that member receives a terminal projection or a later

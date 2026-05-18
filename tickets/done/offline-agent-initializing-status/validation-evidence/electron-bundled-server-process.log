@@ -1,0 +1,6 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-web/resources/server
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.lPieAj
+AppConfig instance created.
+ERROR: Configuration file not found: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.lPieAj/.env
+Failed to initialize AppConfig: AppConfigError: Configuration file not found: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-electron-server-validate.lPieAj/.env

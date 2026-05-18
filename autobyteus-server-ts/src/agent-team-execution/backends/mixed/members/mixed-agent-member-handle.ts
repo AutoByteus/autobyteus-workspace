@@ -23,6 +23,7 @@ import {
   type TeamRunAgentEventPayload,
   type TeamRunMemberInputEventPayload,
 } from "../../../domain/team-run-event.js";
+import { normalizeAgentApiStatus, type AgentStatusPayload } from "../../../../agent-execution/domain/agent-status-payload.js";
 import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
 import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
@@ -36,6 +37,10 @@ import {
   buildInterAgentDeliveryInputMessage,
 } from "../../../services/inter-agent-message-runtime-builders.js";
 import { buildTeamMemberInputEventPayload } from "../../../services/team-member-input-event-builder.js";
+import {
+  buildAgentMemberCommandStartStatusEvent,
+  buildAgentMemberCommandStatusPayload,
+} from "../../../services/team-member-command-start-status-events.js";
 import type { MixedTeamRunContext, MixedAgentMemberContext } from "../mixed-team-run-context.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 
@@ -43,6 +48,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   readonly context: MixedAgentMemberContext;
   private agentRun: AgentRun | null = null;
   private unsubscribe: (() => void) | null = null;
+  private commandStatusOverride: AgentStatusPayload | null = null;
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
@@ -63,7 +69,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   }
 
   getStatusSnapshot() {
-    return this.agentRun?.getStatusSnapshot() ?? {
+    return this.commandStatusOverride ?? this.agentRun?.getStatusSnapshot() ?? {
       status: "offline" as const,
       can_interrupt: false,
       agent_id: this.context.memberRunId,
@@ -72,28 +78,44 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   }
 
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
-    const run = await this.ensureReady();
-    const result = await run.postUserMessage(message);
-    this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
-    if (result.accepted) {
-      this.publishMemberInput(message);
+    this.publishCommandStatus("initializing");
+    try {
+      const run = await this.ensureReady();
+      const result = await run.postUserMessage(message);
+      this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
+      if (result.accepted) {
+        this.publishMemberInput(message);
+      } else {
+        this.publishCommandStatus("error", result.message ?? null);
+      }
+      this.options.notifyStatusChange();
+      return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
+    } catch (error) {
+      this.publishCommandStatus("error", String(error));
+      throw error;
     }
-    this.options.notifyStatusChange();
-    return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
   }
 
   async deliverInterMemberMessage(request: InterAgentMessageDeliveryRequest): Promise<AgentOperationResult> {
-    const run = await this.ensureReady();
-    const result = await (this.options.interAgentMessageRouter ?? getInterAgentMessageRouter()).deliver({
-      recipientRun: run,
-      request,
-    });
-    this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
-    if (result.accepted) {
-      this.publishMemberInput(buildInterAgentDeliveryInputMessage(request));
+    this.publishCommandStatus("initializing");
+    try {
+      const run = await this.ensureReady();
+      const result = await (this.options.interAgentMessageRouter ?? getInterAgentMessageRouter()).deliver({
+        recipientRun: run,
+        request,
+      });
+      this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
+      if (result.accepted) {
+        this.publishMemberInput(buildInterAgentDeliveryInputMessage(request));
+      } else {
+        this.publishCommandStatus("error", result.message ?? null);
+      }
+      this.options.notifyStatusChange();
+      return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
+    } catch (error) {
+      this.publishCommandStatus("error", String(error));
+      throw error;
     }
-    this.options.notifyStatusChange();
-    return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
   }
 
   private publishMemberInput(message: AgentInputUserMessage): void {
@@ -144,13 +166,16 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     this.unsubscribe?.();
     this.unsubscribe = null;
     this.agentRun = null;
+    this.commandStatusOverride = null;
   }
 
   private async ensureReady(): Promise<AgentRun> {
     if (this.agentRun?.isActive()) {
       return this.agentRun;
     }
+    const commandStatusOverride = this.commandStatusOverride;
     this.dispose();
+    this.commandStatusOverride = commandStatusOverride;
     const memberRunConfig = await this.buildMemberRunConfig();
     const manager = this.options.agentRunManager ?? AgentRunManager.getInstance();
     this.agentRun = typeof this.context.platformAgentRunId === "string" && this.context.platformAgentRunId.trim().length > 0
@@ -300,6 +325,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       if (!isAgentRunEvent(event)) {
         return;
       }
+      this.commandStatusOverride = null;
       this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
       this.options.publish({
         eventSourceType: TeamRunEventSourceType.AGENT,
@@ -316,5 +342,33 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       });
       this.options.notifyStatusChange();
     });
+  }
+
+  private publishCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): void {
+    const currentStatus = normalizeAgentApiStatus(this.getStatusSnapshot().status);
+    if (status === "initializing" && currentStatus !== "offline" && currentStatus !== "idle") {
+      return;
+    }
+    this.commandStatusOverride = buildAgentMemberCommandStatusPayload({
+      teamRunId: this.options.teamContext.runId,
+      runtimeKind: this.context.runtimeKind,
+      memberName: this.context.memberName,
+      memberRunId: this.context.memberRunId,
+      memberPath: this.context.memberPath,
+      memberRouteKey: this.context.memberRouteKey,
+      status,
+      errorMessage,
+    });
+    this.options.publish(buildAgentMemberCommandStartStatusEvent({
+      teamRunId: this.options.teamContext.runId,
+      runtimeKind: this.context.runtimeKind,
+      memberName: this.context.memberName,
+      memberRunId: this.context.memberRunId,
+      memberPath: this.context.memberPath,
+      memberRouteKey: this.context.memberRouteKey,
+      status,
+      errorMessage,
+    }));
+    this.options.notifyStatusChange();
   }
 }

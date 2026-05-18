@@ -1,0 +1,118 @@
+{
+  "command": "codex",
+  "args": [
+    "app-server"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status",
+  "model": null,
+  "timingsMs": {
+    "spawnToInitializeResponse": 65.7,
+    "initializeRequestDuration": 63.1,
+    "threadStartDuration": 29196.5,
+    "spawnToThreadStartResponse": 29262.2,
+    "totalBeforeClose": 29268.7
+  },
+  "notifications": [
+    {
+      "atMs": 65.8,
+      "method": "remoteControl/status/changed",
+      "paramsKeys": [
+        "status",
+        "environmentId"
+      ]
+    },
+    {
+      "atMs": 29262.4,
+      "method": "thread/started",
+      "paramsKeys": [
+        "thread"
+      ]
+    },
+    {
+      "atMs": 29262.4,
+      "method": "mcpServer/startupStatus/updated",
+      "paramsKeys": [
+        "name",
+        "status",
+        "error"
+      ]
+    },
+    {
+      "atMs": 29262.4,
+      "method": "mcpServer/startupStatus/updated",
+      "paramsKeys": [
+        "name",
+        "status",
+        "error"
+      ]
+    },
+    {
+      "atMs": 29262.5,
+      "method": "mcpServer/startupStatus/updated",
+      "paramsKeys": [
+        "name",
+        "status",
+        "error"
+      ]
+    },
+    {
+      "atMs": 29262.5,
+      "method": "mcpServer/startupStatus/updated",
+      "paramsKeys": [
+        "name",
+        "status",
+        "error"
+      ]
+    },
+    {
+      "atMs": 29262.5,
+      "method": "mcpServer/startupStatus/updated",
+      "paramsKeys": [
+        "name",
+        "status",
+        "error"
+      ]
+    }
+  ],
+  "stderrLines": [],
+  "threadResponse": {
+    "thread": {
+      "id": "019e372c-f375-72c3-9d11-f5f82238d604",
+      "sessionId": "019e372c-f375-72c3-9d11-f5f82238d604",
+      "forkedFromId": null,
+      "preview": "",
+      "ephemeral": true,
+      "modelProvider": "openai",
+      "createdAt": 1779042153,
+      "updatedAt": 1779042153,
+      "status": {
+        "type": "idle"
+      },
+      "path": null,
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status",
+      "cliVersion": "0.130.0",
+      "source": "vscode",
+      "threadSource": null,
+      "agentNickname": null,
+      "agentRole": null,
+      "gitInfo": null,
+      "name": null,
+      "turns": []
+    },
+    "model": "gpt-5.5",
+    "modelProvider": "openai",
+    "serviceTier": null,
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status",
+    "instructionSources": [],
+    "approvalPolicy": "on-request",
+    "approvalsReviewer": "user",
+    "sandbox": {
+      "type": "dangerFullAccess"
+    },
+    "permissionProfile": {
+      "type": "disabled"
+    },
+    "activePermissionProfile": null,
+    "reasoningEffort": "high"
+  }
+}

@@ -1,0 +1,27 @@
+# electron bundled backend source check
+2026-05-17T20:04:00Z
+platform=Darwin MacBookPro 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:40 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T6000 arm64
+electron_manager_dev_root_expected=/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-web/resources/server
+52:        const startupStatus = this.applyCommandStartStatus();
+71:    applyCommandStartStatus() {
+55:            result = await this.backend.postUserMessage(message);
+26:export const buildAgentMemberCommandStartStatusEvent = (input) => {
+11:import { buildAgentMemberCommandStartStatusEvent, buildAgentMemberCommandStatusPayload, buildTeamCommandStartStatusEvent, } from "../../services/team-member-command-start-status-events.js";
+23:    pendingRootCommandStartStatus = null;
+25:    pendingCommandStartStatusByRunId = new Map();
+61:                nativeTeamStatus: this.pendingRootCommandStartStatus ?? this.team.currentStatus,
+336:                nativeTeamStatus: this.pendingRootCommandStartStatus ?? this.team.currentStatus,
+347:        for (const source of [this.pendingCommandStartStatusByRunId, extra]) {
+371:            this.pendingCommandStartStatusByRunId.delete(memberRunId);
+378:                this.pendingRootCommandStartStatus = null;
+381:        const currentStatus = this.pendingCommandStartStatusByRunId.get(memberContext.memberRunId)?.status ?? this.lastMemberStatusByRunId.get(memberContext.memberRunId)?.status ?? this.getMemberStatusSnapshotFor(memberContext.memberRunId, memberContext.memberName, memberContext).status;
+387:            this.pendingCommandStartStatusByRunId.set(memberContext.memberRunId, statusPayload);
+389:            this.pendingCommandStartStatusByRunId.delete(memberContext.memberRunId);
+396:        const currentStatus = this.pendingRootCommandStartStatus ?? this.getStatusSnapshot().status;
+399:        this.pendingRootCommandStartStatus = status;
+401:        this.publishEvents([buildTeamCommandStartStatusEvent({ teamRunId: this.runId, sourcePath: [], status, errorMessage })]);
+408:        this.publishEvents([buildTeamCommandStartStatusEvent({ teamRunId: this.runId, sourcePath: [], status: nextStatus })]);
+425:        this.pendingRootCommandStartStatus = null;
+426:        this.pendingCommandStartStatusByRunId.clear();
+{"agentRunCompiledOrdering":"applyCommandStartStatus before backend postUserMessage await","apply":1607,"awaitPost":1707}
+2026-05-17T20:04:00Z

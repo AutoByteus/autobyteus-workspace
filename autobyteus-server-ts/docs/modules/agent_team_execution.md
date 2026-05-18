@@ -46,12 +46,39 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 - Posting a message to a top-level subteam member creates/restores the child
   `TeamRun` and posts to that child team's default/coordinator target. The
   parent runtime does not choose an arbitrary flattened child leaf.
+- `TeamRun.postMessage(...)` defaults an omitted target to the configured
+  coordinator route key or sole member route key when one exists. A remaining
+  `null` target means a true team-level/no-target command and must not be
+  converted into a guessed member identity.
 - Tool approval targets must resolve to an agent member. A request aimed only
   at a subteam member is rejected; approval clients must use the
   `source_path` / `source_route_key` or member path/route emitted with the
   approval request event.
 - Team events carry canonical `sourcePath`. Any display aliases are derived
   transport metadata only and are not accepted as command target inputs.
+
+## Command-Start Status
+
+Team message commands publish backend-owned `initializing` as soon as a concrete
+target is resolved and before slow member startup, child-team restore, provider
+session/thread startup, native `team.postMessage(...)`, or first-turn send work
+is awaited.
+
+- Codex and Claude single-runtime teams publish member-scoped `AGENT_STATUS`
+  through their team managers before lazy member `AgentRun` creation or send.
+- Mixed leaf-agent handles and mixed subteam handles publish the same
+  member-scoped command-start status before creating/restoring their child
+  `AgentRun` or `TeamRun`.
+- Native AutoByteus teams publish member-scoped `AGENT_STATUS` for explicit or
+  default-resolved member targets before native `team.postMessage(...)`.
+- True native no-target commands publish root `TEAM_STATUS initializing` only;
+  they do not invent a member-scoped event.
+
+Pending member/root command-start overlays are reflected in status snapshots and
+aggregate team status while the command is still in startup. Runtime/native
+status events, command rejection, thrown failures, termination, or disposal must
+replace or clear those overlays so clients cannot remain indefinitely in
+`initializing`.
 
 ## Mixed-Team Communication Contract
 

@@ -1,0 +1,157 @@
+# targeted server tests
+2026-05-17T20:01:37Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/unit/agent-team-execution/team-command-start-status.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/team-command-start-status.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:70213) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/team-command-start-status.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/autobyteus-server-ts
+
+stdout | tests/unit/agent-team-execution/team-command-start-status.test.ts > team command-start status overlays > publishes Claude managed member initializing before delayed member run creation resolves
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+ ✓ tests/unit/agent-team-execution/team-command-start-status.test.ts (4 tests) 218ms
+stdout | tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts > AutoByteusTeamRunBackend > emits target member initializing before delayed native postMessage resolves and reflects pending snapshots
+AgentTeamEventStream for 'team-1': Notifier not available. No events will be streamed.
+
+stderr | tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts > AutoByteusTeamRunBackend > emits recipient initializing before delayed native inter-agent delivery resolves
+AgentTeamEventStream for 'team-1': Notifier not available. No events will be streamed.
+
+stderr | tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts > AutoByteusTeamRunBackend > emits root initializing only for true no-target native postMessage
+AgentTeamEventStream for 'team-1': Notifier not available. No events will be streamed.
+
+stderr | tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts > AutoByteusTeamRunBackend > clears pending member overlay when matching native member status arrives
+AgentTeamEventStream for 'team-1': Notifier not available. No events will be streamed.
+
+stderr | tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts > AutoByteusTeamRunBackend > replaces pending member overlay with error when native postMessage fails
+AgentTeamEventStream for 'team-1': Notifier not available. No events will be streamed.
+
+stderr | tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts > AutoByteusTeamRunBackend > clears pending root overlay when native root team status arrives
+AgentTeamEventStream for 'team-1': Notifier not available. No events will be streamed.
+
+ ✓ tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts (8 tests) 8ms
+ ✓ tests/unit/agent-team-execution/team-run.test.ts (6 tests) 4ms
+ ✓ tests/unit/agent-execution/agent-run.test.ts (3 tests) 4ms
+
+ Test Files  4 passed (4)
+      Tests  21 passed (21)
+   Start at  22:01:38
+   Duration  4.71s (transform 2.18s, setup 35ms, import 3.76s, tests 233ms, environment 0ms)
+
+2026-05-17T20:01:42Z

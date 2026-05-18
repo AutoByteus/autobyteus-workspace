@@ -145,27 +145,29 @@ export class AutoByteusTeamRunEventProcessor {
     agentPayload: AgentEventRebroadcastPayload,
     subTeamNodeName: string | null,
   ): Promise<TeamRunEvent[]> {
-    const memberRunId = this.extractMemberRunId(
+    const extractedMemberRunId = this.extractMemberRunId(
       agentPayload.agent_event as { agent_id?: unknown; data?: unknown },
       agentPayload.agent_name,
     );
-    const resolvedMemberRunId =
-      memberRunId ??
-      normalizeOptionalString(agentPayload.agent_name) ??
-      this.teamRunId;
     const nativeAgentId =
       typeof agentPayload.agent_event.agent_id === "string" &&
       agentPayload.agent_event.agent_id.trim().length > 0
         ? agentPayload.agent_event.agent_id.trim()
         : null;
+    const fallbackMemberRunId =
+      extractedMemberRunId ??
+      normalizeOptionalString(agentPayload.agent_name) ??
+      this.teamRunId;
     const runtimeMemberContext = this.options.runtimeContext?.memberContexts.find(
       (memberContext) =>
-        memberContext.memberRunId === resolvedMemberRunId ||
-        memberContext.memberName === agentPayload.agent_name,
+        memberContext.memberRunId === fallbackMemberRunId ||
+        memberContext.memberName === agentPayload.agent_name ||
+        (nativeAgentId !== null && memberContext.nativeAgentId === nativeAgentId),
     );
     if (runtimeMemberContext && nativeAgentId) {
       runtimeMemberContext.nativeAgentId = nativeAgentId;
     }
+    const resolvedMemberRunId = runtimeMemberContext?.memberRunId ?? fallbackMemberRunId;
     const converter = this.getAgentEventConverter(
       resolvedMemberRunId,
       agentPayload.agent_name,

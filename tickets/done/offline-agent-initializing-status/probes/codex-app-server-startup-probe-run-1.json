@@ -1,0 +1,82 @@
+{
+  "command": "codex",
+  "args": [
+    "app-server"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status",
+  "model": null,
+  "timingsMs": {
+    "spawnToInitializeResponse": 70,
+    "initializeRequestDuration": 68.2,
+    "threadStartDuration": 24483,
+    "spawnToThreadStartResponse": 24553,
+    "totalBeforeClose": 24560.8
+  },
+  "notifications": [
+    {
+      "atMs": 70.1,
+      "method": "remoteControl/status/changed",
+      "paramsKeys": [
+        "status",
+        "environmentId"
+      ]
+    },
+    {
+      "atMs": 24553.3,
+      "method": "thread/started",
+      "paramsKeys": [
+        "thread"
+      ]
+    },
+    {
+      "atMs": 24554.5,
+      "method": "mcpServer/startupStatus/updated",
+      "paramsKeys": [
+        "name",
+        "status",
+        "error"
+      ]
+    }
+  ],
+  "stderrLines": [],
+  "threadResponse": {
+    "thread": {
+      "id": "019e372c-6d6a-7411-9a64-a2cc4de0d699",
+      "sessionId": "019e372c-6d6a-7411-9a64-a2cc4de0d699",
+      "forkedFromId": null,
+      "preview": "",
+      "ephemeral": true,
+      "modelProvider": "openai",
+      "createdAt": 1779042119,
+      "updatedAt": 1779042119,
+      "status": {
+        "type": "idle"
+      },
+      "path": null,
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status",
+      "cliVersion": "0.130.0",
+      "source": "vscode",
+      "threadSource": null,
+      "agentNickname": null,
+      "agentRole": null,
+      "gitInfo": null,
+      "name": null,
+      "turns": []
+    },
+    "model": "gpt-5.5",
+    "modelProvider": "openai",
+    "serviceTier": null,
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status",
+    "instructionSources": [],
+    "approvalPolicy": "on-request",
+    "approvalsReviewer": "user",
+    "sandbox": {
+      "type": "dangerFullAccess"
+    },
+    "permissionProfile": {
+      "type": "disabled"
+    },
+    "activePermissionProfile": null,
+    "reasoningEffort": "high"
+  }
+}
