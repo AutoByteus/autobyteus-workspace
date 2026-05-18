@@ -8,6 +8,8 @@ class FakeWebContents extends EventEmitter {
   private windowOpenHandler: ((details: any) => any) | null = null;
   private currentUrl = '';
   focusCount = 0;
+  readonly deviceEmulationCalls: unknown[] = [];
+  disableDeviceEmulationCallCount = 0;
 
   constructor(readonly session: object = { id: 'browser-session' }) {
     super();
@@ -42,6 +44,14 @@ class FakeWebContents extends EventEmitter {
 
   async executeJavaScript() {
     return { width: 1200, height: 800 };
+  }
+
+  enableDeviceEmulation(parameters: unknown): void {
+    this.deviceEmulationCalls.push(parameters);
+  }
+
+  disableDeviceEmulation(): void {
+    this.disableDeviceEmulationCallCount += 1;
   }
 
   setWindowOpenHandler(handler: (details: any) => any): void {
@@ -99,6 +109,7 @@ class FakeWebContents extends EventEmitter {
 class FakeWebContentsView {
   readonly webContents: FakeWebContents;
   bounds = { x: 0, y: 0, width: 0, height: 0 };
+  readonly boundsCalls: Array<{ x: number; y: number; width: number; height: number }> = [];
 
   constructor(webContents?: FakeWebContents) {
     this.webContents = webContents ?? new FakeWebContents();
@@ -106,6 +117,7 @@ class FakeWebContentsView {
 
   setBounds(bounds: { x: number; y: number; width: number; height: number }): void {
     this.bounds = { ...bounds };
+    this.boundsCalls.push({ ...bounds });
   }
 }
 
@@ -277,6 +289,7 @@ describe("BrowserShellController", () => {
           tab_id: opened.tab_id,
           title: "Browser",
           url: "http://localhost:3000/demo",
+          deviceEmulation: { mode: "desktop", profile: null },
         },
       ],
     });
@@ -346,6 +359,63 @@ describe("BrowserShellController", () => {
     expect(views[0]!.webContents.focusCount).toBe(focusCountAfterFirstBounds);
   });
 
+  it("sets active tab device emulation through the shell snapshot path", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new BrowserTabManager({
+      viewFactory: createViewFactory(views) as any,
+      screenshotWriter: {
+        write: async () => "/tmp/browser.png",
+      } as any,
+    });
+    const controller = new BrowserShellController(manager);
+    const shell = new FakeShellWindow(108);
+    controller.registerShell(shell as any);
+
+    const openPromise = manager.openSession({ url: "http://localhost:3000/demo", wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad("http://localhost:3000/demo");
+    const opened = await openPromise;
+
+    controller.focusSession(shell.shellId, opened.tab_id);
+    controller.updateHostBounds(shell.shellId, { x: 0, y: 0, width: 1000, height: 900 });
+    const snapshot = await controller.setDeviceEmulation(shell.shellId, {
+      tabId: opened.tab_id,
+      mode: "mobile",
+      width: 390,
+      height: 844,
+      deviceScaleFactor: 3,
+    });
+
+    expect(snapshot.sessions[0]?.deviceEmulation).toEqual({
+      mode: "mobile",
+      profile: {
+        width: 390,
+        height: 844,
+        deviceScaleFactor: 3,
+      },
+    });
+    expect(views[0]!.webContents.deviceEmulationCalls).toHaveLength(2);
+    expect(views[0]!.webContents.deviceEmulationCalls[1]).toMatchObject({
+      screenPosition: "mobile",
+      screenSize: { width: 390, height: 844 },
+      viewSize: { width: 390, height: 844 },
+      deviceScaleFactor: 3,
+      scale: 1,
+    });
+    expect(views[0]!.bounds).toEqual({ x: 305, y: 28, width: 390, height: 844 });
+    expect(views[0]!.boundsCalls).toContainEqual({ x: 305, y: 28, width: 390, height: 844 });
+    expect(shell.lastSnapshot).toMatchObject({
+      sessions: [
+        {
+          tab_id: opened.tab_id,
+          deviceEmulation: {
+            mode: "mobile",
+          },
+        },
+      ],
+    });
+  });
+
   it("activates popup-created sessions in the same shell as the opener and allows closing them", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new BrowserTabManager({
@@ -391,6 +461,7 @@ describe("BrowserShellController", () => {
           tab_id: opener.tab_id,
           title: "Browser",
           url: "https://x.com/",
+          deviceEmulation: { mode: "desktop", profile: null },
         },
       ],
     });

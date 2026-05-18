@@ -3,6 +3,7 @@ import { BrowserToolError } from "../../../../src/agent-tools/browser/browser-to
 import {
   assertOpenTabSemantics,
   assertDomSnapshotSemantics,
+  assertSetDeviceEmulationSemantics,
 } from "../../../../src/agent-tools/browser/browser-tool-semantic-validators.js";
 
 describe("browser-tool-semantic-validators", () => {
@@ -29,5 +30,41 @@ describe("browser-tool-semantic-validators", () => {
         max_elements: 0,
       }),
     ).toThrowError(/max_elements to be between 1 and 2000/);
+  });
+
+  it("accepts valid mobile and desktop device-emulation requests", () => {
+    expect(() =>
+      assertSetDeviceEmulationSemantics({
+        tab_id: "browser-session-1",
+        mode: "mobile",
+        width: 390,
+        height: 844,
+        device_scale_factor: 3,
+      }),
+    ).not.toThrow();
+
+    expect(() =>
+      assertSetDeviceEmulationSemantics({
+        tab_id: "browser-session-1",
+        mode: "desktop",
+      }),
+    ).not.toThrow();
+  });
+
+  it("rejects invalid device-emulation mode and profile bounds", () => {
+    expect(() =>
+      assertSetDeviceEmulationSemantics({
+        tab_id: "browser-session-1",
+        mode: "tablet" as any,
+      }),
+    ).toThrowError(/mode to be one of/);
+
+    expect(() =>
+      assertSetDeviceEmulationSemantics({
+        tab_id: "browser-session-1",
+        mode: "mobile",
+        width: 99,
+      }),
+    ).toThrowError(/width to be between 100 and 4096/);
   });
 });

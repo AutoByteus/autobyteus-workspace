@@ -1,0 +1,789 @@
+{
+  "meta": {
+    "date": "2026-05-18T17:41:39.574Z",
+    "electron": "38.8.2",
+    "chrome": "140.0.7339.249",
+    "node": "22.22.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "fixtureBaseUrl": "http://127.0.0.1:53631",
+  "assertions": [
+    {
+      "name": "desktop_before_width_host_bound",
+      "value": {
+        "innerWidth": 1000,
+        "innerHeight": 900,
+        "dpr": 2,
+        "modeContent": "DESKTOP",
+        "mobileMedia": false,
+        "bodyBackground": "rgb(255, 211, 155)",
+        "probeWidth": 899,
+        "layoutWidth": 960,
+        "scrollHeight": 1945,
+        "title": "Mobile Probe /tab-one"
+      }
+    },
+    {
+      "name": "mobile_inner_width_and_layout",
+      "value": {
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "dpr": 3,
+        "modeContent": "MOBILE",
+        "mobileMedia": true,
+        "bodyBackground": "rgb(155, 209, 255)",
+        "probeWidth": 329,
+        "layoutWidth": 390,
+        "scrollHeight": 1982,
+        "title": "Mobile Probe /tab-one"
+      }
+    },
+    {
+      "name": "tab_local_state_preserved",
+      "value": {
+        "tab1AfterSwitch": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "dpr": 3,
+          "modeContent": "MOBILE",
+          "mobileMedia": true,
+          "bodyBackground": "rgb(155, 209, 255)",
+          "probeWidth": 329,
+          "layoutWidth": 390,
+          "scrollHeight": 1982,
+          "title": "Mobile Probe /tab-one"
+        },
+        "tab2AfterSwitch": {
+          "innerWidth": 1000,
+          "innerHeight": 900,
+          "dpr": 2,
+          "modeContent": "DESKTOP",
+          "mobileMedia": false,
+          "bodyBackground": "rgb(255, 211, 155)",
+          "probeWidth": 899,
+          "layoutWidth": 960,
+          "scrollHeight": 1945,
+          "title": "Mobile Probe /tab-two"
+        }
+      }
+    },
+    {
+      "name": "desktop_restore_host_bound",
+      "value": {
+        "innerWidth": 1000,
+        "innerHeight": 900,
+        "dpr": 2,
+        "modeContent": "DESKTOP",
+        "mobileMedia": false,
+        "bodyBackground": "rgb(255, 211, 155)",
+        "probeWidth": 899,
+        "layoutWidth": 960,
+        "scrollHeight": 1945,
+        "title": "Mobile Probe /tab-two"
+      }
+    },
+    {
+      "name": "screenshot_pixels_distinguish_desktop_and_mobile_layout",
+      "value": [
+        {
+          "label": "desktop-before-mobile",
+          "imageSize": {
+            "width": 2000,
+            "height": 1800
+          },
+          "samplesRgb": {
+            "10,10": [
+              248,
+              213,
+              162
+            ],
+            "100,100": [
+              248,
+              213,
+              162
+            ],
+            "800,100": [
+              248,
+              213,
+              162
+            ],
+            "1500,100": [
+              248,
+              213,
+              162
+            ],
+            "10,1700": [
+              248,
+              213,
+              162
+            ]
+          }
+        },
+        {
+          "label": "mobile-normal",
+          "imageSize": {
+            "width": 2000,
+            "height": 1800
+          },
+          "samplesRgb": {
+            "10,10": [
+              167,
+              208,
+              251
+            ],
+            "100,100": [
+              167,
+              208,
+              251
+            ],
+            "800,100": [
+              167,
+              208,
+              251
+            ],
+            "1500,100": [
+              167,
+              208,
+              251
+            ],
+            "10,1700": [
+              167,
+              208,
+              251
+            ]
+          }
+        },
+        {
+          "label": "mobile-full-page",
+          "imageSize": {
+            "width": 2000,
+            "height": 3964
+          },
+          "samplesRgb": {
+            "10,10": [
+              167,
+              208,
+              251
+            ],
+            "100,100": [
+              167,
+              208,
+              251
+            ],
+            "800,100": [
+              167,
+              208,
+              251
+            ],
+            "1500,100": [
+              167,
+              208,
+              251
+            ],
+            "10,1700": [
+              167,
+              208,
+              251
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "measurements": {
+    "desktopBefore": {
+      "innerWidth": 1000,
+      "innerHeight": 900,
+      "dpr": 2,
+      "modeContent": "DESKTOP",
+      "mobileMedia": false,
+      "bodyBackground": "rgb(255, 211, 155)",
+      "probeWidth": 899,
+      "layoutWidth": 960,
+      "scrollHeight": 1945,
+      "title": "Mobile Probe /tab-one"
+    },
+    "mobileResult": {
+      "tab_id": "e32e9e",
+      "mode": "mobile",
+      "profile": {
+        "width": 390,
+        "height": 844,
+        "device_scale_factor": 3
+      }
+    },
+    "mobileProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 1982,
+      "title": "Mobile Probe /tab-one"
+    },
+    "listAfterMobile": {
+      "sessions": [
+        {
+          "tab_id": "e32e9e",
+          "title": "Validation Tab One",
+          "url": "http://127.0.0.1:53631/tab-one",
+          "device_emulation": {
+            "mode": "mobile",
+            "profile": {
+              "width": 390,
+              "height": 844,
+              "device_scale_factor": 3
+            }
+          }
+        }
+      ]
+    },
+    "normalPostShotProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 1982,
+      "title": "Mobile Probe /tab-one"
+    },
+    "fullPagePostProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 1982,
+      "title": "Mobile Probe /tab-one"
+    },
+    "tab2Desktop": {
+      "innerWidth": 1000,
+      "innerHeight": 900,
+      "dpr": 2,
+      "modeContent": "DESKTOP",
+      "mobileMedia": false,
+      "bodyBackground": "rgb(255, 211, 155)",
+      "probeWidth": 899,
+      "layoutWidth": 960,
+      "scrollHeight": 1945,
+      "title": "Mobile Probe /tab-two"
+    },
+    "tab1AfterSwitch": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 1982,
+      "title": "Mobile Probe /tab-one"
+    },
+    "tab2AfterSwitch": {
+      "innerWidth": 1000,
+      "innerHeight": 900,
+      "dpr": 2,
+      "modeContent": "DESKTOP",
+      "mobileMedia": false,
+      "bodyBackground": "rgb(255, 211, 155)",
+      "probeWidth": 899,
+      "layoutWidth": 960,
+      "scrollHeight": 1945,
+      "title": "Mobile Probe /tab-two"
+    },
+    "shellSnapshotMobile": {
+      "activeTabId": "a1a431",
+      "sessions": [
+        {
+          "tab_id": "e32e9e",
+          "title": "Validation Tab One",
+          "url": "http://127.0.0.1:53631/tab-one",
+          "deviceEmulation": {
+            "mode": "mobile",
+            "profile": {
+              "width": 390,
+              "height": 844,
+              "deviceScaleFactor": 3
+            }
+          }
+        },
+        {
+          "tab_id": "a1a431",
+          "title": "Validation Tab Two",
+          "url": "http://127.0.0.1:53631/tab-two",
+          "deviceEmulation": {
+            "mode": "mobile",
+            "profile": {
+              "width": 390,
+              "height": 844,
+              "deviceScaleFactor": 3
+            }
+          }
+        }
+      ]
+    },
+    "tab2ShellMobile": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 1982,
+      "title": "Mobile Probe /tab-two"
+    },
+    "desktopResult": {
+      "tab_id": "a1a431",
+      "mode": "desktop",
+      "profile": null
+    },
+    "tab2Restored": {
+      "innerWidth": 1000,
+      "innerHeight": 900,
+      "dpr": 2,
+      "modeContent": "DESKTOP",
+      "mobileMedia": false,
+      "bodyBackground": "rgb(255, 211, 155)",
+      "probeWidth": 899,
+      "layoutWidth": 960,
+      "scrollHeight": 1945,
+      "title": "Mobile Probe /tab-two"
+    },
+    "closeResults": {
+      "close1": {
+        "tab_id": "e32e9e",
+        "status": "closed"
+      },
+      "close2": {
+        "tab_id": "a1a431",
+        "status": "closed"
+      }
+    }
+  },
+  "screenshots": [
+    {
+      "label": "desktop-before-mobile",
+      "tab_id": "e32e9e",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/screenshots/e32e9e-1779126100624.png",
+      "mime_type": "image/png",
+      "bytes": 30046,
+      "imageSize": {
+        "width": 2000,
+        "height": 1800
+      }
+    },
+    {
+      "label": "mobile-normal",
+      "tab_id": "e32e9e",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/screenshots/e32e9e-1779126101517.png",
+      "mime_type": "image/png",
+      "bytes": 30279,
+      "imageSize": {
+        "width": 2000,
+        "height": 1800
+      }
+    },
+    {
+      "label": "mobile-full-page",
+      "tab_id": "e32e9e",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/screenshots/e32e9e-1779126101831.png",
+      "mime_type": "image/png",
+      "bytes": 47797,
+      "imageSize": {
+        "width": 2000,
+        "height": 3964
+      }
+    }
+  ],
+  "snapshots": [
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": "e32e9e",
+        "sessions": [
+          {
+            "tab_id": "e32e9e",
+            "title": "Validation Tab One",
+            "url": "http://127.0.0.1:53631/tab-one",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": "e32e9e",
+        "sessions": [
+          {
+            "tab_id": "e32e9e",
+            "title": "Validation Tab One",
+            "url": "http://127.0.0.1:53631/tab-one",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": "e32e9e",
+        "sessions": [
+          {
+            "tab_id": "e32e9e",
+            "title": "Validation Tab One",
+            "url": "http://127.0.0.1:53631/tab-one",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": "a1a431",
+        "sessions": [
+          {
+            "tab_id": "e32e9e",
+            "title": "Validation Tab One",
+            "url": "http://127.0.0.1:53631/tab-one",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          },
+          {
+            "tab_id": "a1a431",
+            "title": "Validation Tab Two",
+            "url": "http://127.0.0.1:53631/tab-two",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": "e32e9e",
+        "sessions": [
+          {
+            "tab_id": "e32e9e",
+            "title": "Validation Tab One",
+            "url": "http://127.0.0.1:53631/tab-one",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          },
+          {
+            "tab_id": "a1a431",
+            "title": "Validation Tab Two",
+            "url": "http://127.0.0.1:53631/tab-two",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": "a1a431",
+        "sessions": [
+          {
+            "tab_id": "e32e9e",
+            "title": "Validation Tab One",
+            "url": "http://127.0.0.1:53631/tab-one",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          },
+          {
+            "tab_id": "a1a431",
+            "title": "Validation Tab Two",
+            "url": "http://127.0.0.1:53631/tab-two",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": "a1a431",
+        "sessions": [
+          {
+            "tab_id": "e32e9e",
+            "title": "Validation Tab One",
+            "url": "http://127.0.0.1:53631/tab-one",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          },
+          {
+            "tab_id": "a1a431",
+            "title": "Validation Tab Two",
+            "url": "http://127.0.0.1:53631/tab-two",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": "a1a431",
+        "sessions": [
+          {
+            "tab_id": "e32e9e",
+            "title": "Validation Tab One",
+            "url": "http://127.0.0.1:53631/tab-one",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          },
+          {
+            "tab_id": "a1a431",
+            "title": "Validation Tab Two",
+            "url": "http://127.0.0.1:53631/tab-two",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": "a1a431",
+        "sessions": [
+          {
+            "tab_id": "e32e9e",
+            "title": "Validation Tab One",
+            "url": "http://127.0.0.1:53631/tab-one",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          },
+          {
+            "tab_id": "a1a431",
+            "title": "Validation Tab Two",
+            "url": "http://127.0.0.1:53631/tab-two",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": "e32e9e",
+        "sessions": [
+          {
+            "tab_id": "e32e9e",
+            "title": "Validation Tab One",
+            "url": "http://127.0.0.1:53631/tab-one",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "channel": "browser-shell:snapshot-updated",
+      "payload": {
+        "activeTabId": null,
+        "sessions": []
+      }
+    }
+  ],
+  "result": "pass",
+  "pixelAnalysis": [
+    {
+      "label": "desktop-before-mobile",
+      "imageSize": {
+        "width": 2000,
+        "height": 1800
+      },
+      "samplesRgb": {
+        "10,10": [
+          248,
+          213,
+          162
+        ],
+        "100,100": [
+          248,
+          213,
+          162
+        ],
+        "800,100": [
+          248,
+          213,
+          162
+        ],
+        "1500,100": [
+          248,
+          213,
+          162
+        ],
+        "10,1700": [
+          248,
+          213,
+          162
+        ]
+      }
+    },
+    {
+      "label": "mobile-normal",
+      "imageSize": {
+        "width": 2000,
+        "height": 1800
+      },
+      "samplesRgb": {
+        "10,10": [
+          167,
+          208,
+          251
+        ],
+        "100,100": [
+          167,
+          208,
+          251
+        ],
+        "800,100": [
+          167,
+          208,
+          251
+        ],
+        "1500,100": [
+          167,
+          208,
+          251
+        ],
+        "10,1700": [
+          167,
+          208,
+          251
+        ]
+      }
+    },
+    {
+      "label": "mobile-full-page",
+      "imageSize": {
+        "width": 2000,
+        "height": 3964
+      },
+      "samplesRgb": {
+        "10,10": [
+          167,
+          208,
+          251
+        ],
+        "100,100": [
+          167,
+          208,
+          251
+        ],
+        "800,100": [
+          167,
+          208,
+          251
+        ],
+        "1500,100": [
+          167,
+          208,
+          251
+        ],
+        "10,1700": [
+          167,
+          208,
+          251
+        ]
+      }
+    }
+  ]
+}

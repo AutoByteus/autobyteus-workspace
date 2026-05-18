@@ -9,8 +9,16 @@ import type {
   BrowserToolName,
   BrowserToolParameterSpec,
   ReadPageInput,
+  SetDeviceEmulationInput,
 } from "./browser-tool-contract.js";
 import {
+  BROWSER_DEVICE_EMULATION_MAX_DEVICE_SCALE_FACTOR,
+  BROWSER_DEVICE_EMULATION_MAX_HEIGHT,
+  BROWSER_DEVICE_EMULATION_MAX_WIDTH,
+  BROWSER_DEVICE_EMULATION_MIN_DEVICE_SCALE_FACTOR,
+  BROWSER_DEVICE_EMULATION_MIN_HEIGHT,
+  BROWSER_DEVICE_EMULATION_MIN_WIDTH,
+  BROWSER_DEVICE_EMULATION_MODES,
   SCREENSHOT_TOOL_NAME,
   CLOSE_TAB_TOOL_NAME,
   RUN_SCRIPT_TOOL_NAME,
@@ -21,6 +29,7 @@ import {
   BROWSER_READ_PAGE_CLEANING_MODES,
   BROWSER_WAIT_UNTIL_VALUES,
   READ_PAGE_TOOL_NAME,
+  SET_DEVICE_EMULATION_TOOL_NAME,
 } from "./browser-tool-contract.js";
 import {
   parseScreenshotInput,
@@ -31,6 +40,7 @@ import {
   parseOpenTabInput,
   parseDomSnapshotInput,
   parseReadPageInput,
+  parseSetDeviceEmulationInput,
 } from "./browser-tool-input-parsers.js";
 import type { BrowserToolService } from "./browser-tool-service.js";
 
@@ -212,6 +222,52 @@ const manifestEntries: BrowserToolManifestEntry[] = [
       parseRunScriptInput(rawArguments),
     execute: (service, input) =>
       service.runScript(input as RunScriptInput),
+  },
+  {
+    name: SET_DEVICE_EMULATION_TOOL_NAME,
+    description:
+      "Set desktop or mobile device emulation for an existing browser tab.",
+    parameters: [
+      buildBrowserTabIdParameter(),
+      {
+        name: "mode",
+        type: "enum",
+        description: "Device emulation mode to apply. Allowed values: desktop or mobile.",
+        required: true,
+        enum_values: BROWSER_DEVICE_EMULATION_MODES,
+      },
+      {
+        name: "width",
+        type: "integer",
+        description:
+          "Optional mobile viewport width in CSS pixels. Applies only when mode is mobile.",
+        required: false,
+        minimum: BROWSER_DEVICE_EMULATION_MIN_WIDTH,
+        maximum: BROWSER_DEVICE_EMULATION_MAX_WIDTH,
+      },
+      {
+        name: "height",
+        type: "integer",
+        description:
+          "Optional mobile viewport height in CSS pixels. Applies only when mode is mobile.",
+        required: false,
+        minimum: BROWSER_DEVICE_EMULATION_MIN_HEIGHT,
+        maximum: BROWSER_DEVICE_EMULATION_MAX_HEIGHT,
+      },
+      {
+        name: "device_scale_factor",
+        type: "integer",
+        description:
+          "Optional mobile device scale factor. Applies only when mode is mobile.",
+        required: false,
+        minimum: BROWSER_DEVICE_EMULATION_MIN_DEVICE_SCALE_FACTOR,
+        maximum: BROWSER_DEVICE_EMULATION_MAX_DEVICE_SCALE_FACTOR,
+      },
+    ],
+    parseInput: (rawArguments): SetDeviceEmulationInput =>
+      parseSetDeviceEmulationInput(rawArguments),
+    execute: (service, input) =>
+      service.setDeviceEmulation(input as SetDeviceEmulationInput),
   },
 ];
 

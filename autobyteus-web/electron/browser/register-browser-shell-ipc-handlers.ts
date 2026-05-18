@@ -5,6 +5,7 @@ import type {
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
   BrowserShellReloadTabRequest,
+  BrowserShellSetDeviceEmulationRequest,
   BrowserShellSnapshot,
 } from '../../types/browserShell';
 
@@ -72,6 +73,14 @@ export const registerBrowserShellIpcHandlers = (
     async (event, bounds: BrowserHostBounds | null): Promise<BrowserShellSnapshot> => {
       const browserRuntime = getBrowserRuntimeOrThrow(getBrowserRuntime);
       return browserRuntime.getShellController().updateHostBounds(event.sender.id, bounds);
+    },
+  );
+
+  ipcMain.handle(
+    'browser-shell:set-device-emulation',
+    async (event, request: BrowserShellSetDeviceEmulationRequest): Promise<BrowserShellSnapshot> => {
+      const browserRuntime = getBrowserRuntimeOrThrow(getBrowserRuntime);
+      return browserRuntime.getShellController().setDeviceEmulation(event.sender.id, request);
     },
   );
 

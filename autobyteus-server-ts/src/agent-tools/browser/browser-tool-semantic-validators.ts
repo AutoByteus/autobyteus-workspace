@@ -6,8 +6,16 @@ import {
   NAVIGATE_TO_TOOL_NAME,
   OPEN_TAB_TOOL_NAME,
   DOM_SNAPSHOT_TOOL_NAME,
+  BROWSER_DEVICE_EMULATION_MAX_DEVICE_SCALE_FACTOR,
+  BROWSER_DEVICE_EMULATION_MAX_HEIGHT,
+  BROWSER_DEVICE_EMULATION_MAX_WIDTH,
+  BROWSER_DEVICE_EMULATION_MIN_DEVICE_SCALE_FACTOR,
+  BROWSER_DEVICE_EMULATION_MIN_HEIGHT,
+  BROWSER_DEVICE_EMULATION_MIN_WIDTH,
+  BROWSER_DEVICE_EMULATION_MODES,
   BrowserToolError,
   READ_PAGE_TOOL_NAME,
+  SET_DEVICE_EMULATION_TOOL_NAME,
   type ScreenshotInput,
   type CloseTabInput,
   type RunScriptInput,
@@ -16,6 +24,7 @@ import {
   type OpenTabInput,
   type DomSnapshotInput,
   type ReadPageInput,
+  type SetDeviceEmulationInput,
 } from "./browser-tool-contract.js";
 import {
   asTrimmedString,
@@ -137,4 +146,67 @@ export const assertRunScriptSemantics = (
       `${RUN_SCRIPT_TOOL_NAME} requires a non-empty javascript string.`,
     );
   }
+};
+
+const assertIntegerRange = (
+  value: number | undefined,
+  key: string,
+  minimum: number,
+  maximum: number,
+): void => {
+  if (value === undefined) {
+    return;
+  }
+  if (value < minimum || value > maximum) {
+    throw new BrowserToolError(
+      "browser_device_emulation_failed",
+      `${SET_DEVICE_EMULATION_TOOL_NAME} requires ${key} to be between ${minimum} and ${maximum}.`,
+    );
+  }
+};
+
+export const assertSetDeviceEmulationSemantics = (
+  input: SetDeviceEmulationInput,
+): void => {
+  assertBrowserTabId(
+    SET_DEVICE_EMULATION_TOOL_NAME,
+    asTrimmedString(input.tab_id),
+  );
+
+  if (!BROWSER_DEVICE_EMULATION_MODES.includes(input.mode)) {
+    throw new BrowserToolError(
+      "browser_device_emulation_failed",
+      `${SET_DEVICE_EMULATION_TOOL_NAME} requires mode to be one of: ${BROWSER_DEVICE_EMULATION_MODES.join(", ")}.`,
+    );
+  }
+
+  const hasMobileProfile =
+    input.width !== undefined ||
+    input.height !== undefined ||
+    input.device_scale_factor !== undefined;
+  if (input.mode === "desktop" && hasMobileProfile) {
+    throw new BrowserToolError(
+      "browser_device_emulation_failed",
+      `${SET_DEVICE_EMULATION_TOOL_NAME} does not accept mobile profile fields when mode is desktop.`,
+    );
+  }
+
+  assertIntegerRange(
+    input.width,
+    "width",
+    BROWSER_DEVICE_EMULATION_MIN_WIDTH,
+    BROWSER_DEVICE_EMULATION_MAX_WIDTH,
+  );
+  assertIntegerRange(
+    input.height,
+    "height",
+    BROWSER_DEVICE_EMULATION_MIN_HEIGHT,
+    BROWSER_DEVICE_EMULATION_MAX_HEIGHT,
+  );
+  assertIntegerRange(
+    input.device_scale_factor,
+    "device_scale_factor",
+    BROWSER_DEVICE_EMULATION_MIN_DEVICE_SCALE_FACTOR,
+    BROWSER_DEVICE_EMULATION_MAX_DEVICE_SCALE_FACTOR,
+  );
 };

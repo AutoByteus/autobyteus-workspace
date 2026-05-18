@@ -136,6 +136,64 @@ describe('browserShellStore', () => {
     expect(store.activeSession?.title).toBe('Demo Reloaded')
   })
 
+  it('setDeviceEmulation applies the Electron snapshot and preserves mobile state', async () => {
+    const setBrowserDeviceEmulation = vi.fn().mockResolvedValue({
+      activeTabId: 'browser-session-1',
+      sessions: [
+        {
+          tab_id: 'browser-session-1',
+          title: 'Demo',
+          url: 'http://localhost:3000/demo',
+          deviceEmulation: {
+            mode: 'mobile',
+            profile: {
+              width: 390,
+              height: 844,
+              deviceScaleFactor: 3,
+            },
+          },
+        },
+      ],
+    })
+    Object.defineProperty(window, 'electronAPI', {
+      configurable: true,
+      value: {
+        getBrowserShellSnapshot: vi.fn().mockResolvedValue({
+          activeTabId: 'browser-session-1',
+          sessions: [
+            {
+              tab_id: 'browser-session-1',
+              title: 'Demo',
+              url: 'http://localhost:3000/demo',
+            },
+          ],
+        }),
+        onBrowserShellSnapshotUpdated: vi.fn(() => vi.fn()),
+        setBrowserDeviceEmulation,
+      },
+      writable: true,
+    })
+
+    const store = useBrowserShellStore()
+    await store.setDeviceEmulation({
+      tabId: 'browser-session-1',
+      mode: 'mobile',
+    })
+
+    expect(setBrowserDeviceEmulation).toHaveBeenCalledWith({
+      tabId: 'browser-session-1',
+      mode: 'mobile',
+    })
+    expect(store.activeSession?.deviceEmulation).toEqual({
+      mode: 'mobile',
+      profile: {
+        width: 390,
+        height: 844,
+        deviceScaleFactor: 3,
+      },
+    })
+  })
+
   it('ignores identical snapshot updates from Electron', async () => {
     let snapshotListener: ((snapshot: {
       activeTabId: string | null;

@@ -1,4 +1,5 @@
 export type BrowserShellReadyState = 'domcontentloaded' | 'load';
+export type BrowserShellDeviceEmulationMode = 'desktop' | 'mobile';
 
 export type BrowserHostBounds = {
   x: number;
@@ -7,10 +8,27 @@ export type BrowserHostBounds = {
   height: number;
 };
 
+export type BrowserShellDeviceEmulationProfile = {
+  width: number;
+  height: number;
+  deviceScaleFactor: number;
+};
+
+export type BrowserShellDeviceEmulationState =
+  | {
+      mode: 'desktop';
+      profile: null;
+    }
+  | {
+      mode: 'mobile';
+      profile: BrowserShellDeviceEmulationProfile;
+    };
+
 export type BrowserShellTabSummary = {
   tab_id: string;
   title: string | null;
   url: string;
+  deviceEmulation?: BrowserShellDeviceEmulationState;
 };
 
 export type BrowserShellOpenTabRequest = {
@@ -29,6 +47,14 @@ export type BrowserShellNavigateTabRequest = {
 export type BrowserShellReloadTabRequest = {
   tabId: string;
   waitUntil?: BrowserShellReadyState;
+};
+
+export type BrowserShellSetDeviceEmulationRequest = {
+  tabId: string;
+  mode: BrowserShellDeviceEmulationMode;
+  width?: number;
+  height?: number;
+  deviceScaleFactor?: number;
 };
 
 export type BrowserShellSnapshot = {

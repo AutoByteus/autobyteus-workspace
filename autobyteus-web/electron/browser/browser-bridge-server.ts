@@ -1,16 +1,19 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from 'http'
 import type { AddressInfo } from 'net'
 import {
+  BrowserTabError,
+  BrowserTabManager,
+} from './browser-tab-manager'
+import type {
+  BrowserDomSnapshotRequest,
   CaptureBrowserScreenshotRequest,
   CloseBrowserRequest,
   ExecuteBrowserJavascriptRequest,
   NavigateBrowserRequest,
   OpenBrowserRequest,
-  BrowserDomSnapshotRequest,
-  BrowserTabError,
-  BrowserTabManager,
   ReadBrowserPageRequest,
-} from './browser-tab-manager'
+  SetBrowserDeviceEmulationRequest,
+} from './browser-tab-types'
 import { logger } from '../logger'
 import { BrowserBridgeAuthRegistry } from './browser-bridge-auth-registry'
 
@@ -183,6 +186,14 @@ export class BrowserBridgeServer {
             ok: true,
             result: await this.browserSessionManager.domSnapshot(
               body as BrowserDomSnapshotRequest,
+            ),
+          })
+          return
+        case '/browser/device-emulation':
+          this.writeJson(response, 200, {
+            ok: true,
+            result: await this.browserSessionManager.setDeviceEmulation(
+              body as SetBrowserDeviceEmulationRequest,
             ),
           })
           return

@@ -81,7 +81,19 @@ describe('BrowserPanel', () => {
             },
           ],
         }),
-        updateBrowserHostBounds: vi.fn().mockResolvedValue({
+        updateBrowserHostBounds: vi.fn()
+          .mockResolvedValueOnce({
+            activeTabId: 'tab-1',
+            sessions: [
+              {
+                tab_id: 'tab-1',
+                title: 'Example',
+                url: 'https://example.com/',
+                deviceEmulation: { mode: 'desktop', profile: null },
+              },
+            ],
+          })
+          .mockResolvedValue({
           activeTabId: 'tab-1',
           sessions: [
             {
@@ -206,6 +218,68 @@ describe('BrowserPanel', () => {
     expect(window.electronAPI?.reloadBrowserTab).toHaveBeenCalledWith({
       tabId: 'tab-1',
       waitUntil: 'load',
+    })
+  })
+
+  it('toggles mobile device emulation for the active browser tab', async () => {
+    Object.defineProperty(window, 'electronAPI', {
+      configurable: true,
+      value: {
+        getBrowserShellSnapshot: vi.fn().mockResolvedValue({
+          activeTabId: 'tab-1',
+          sessions: [
+            {
+              tab_id: 'tab-1',
+              title: 'Example',
+              url: 'https://example.com/',
+              deviceEmulation: { mode: 'desktop', profile: null },
+            },
+          ],
+        }),
+        onBrowserShellSnapshotUpdated: vi.fn(() => vi.fn()),
+        setBrowserDeviceEmulation: vi.fn().mockResolvedValue({
+          activeTabId: 'tab-1',
+          sessions: [
+            {
+              tab_id: 'tab-1',
+              title: 'Example',
+              url: 'https://example.com/',
+              deviceEmulation: {
+                mode: 'mobile',
+                profile: {
+                  width: 390,
+                  height: 844,
+                  deviceScaleFactor: 3,
+                },
+              },
+            },
+          ],
+        }),
+        updateBrowserHostBounds: vi.fn().mockResolvedValue({
+          activeTabId: 'tab-1',
+          sessions: [
+            {
+              tab_id: 'tab-1',
+              title: 'Example',
+              url: 'https://example.com/',
+              deviceEmulation: { mode: 'desktop', profile: null },
+            },
+          ],
+        }),
+      },
+      writable: true,
+    })
+
+    const wrapper = mount(BrowserPanel)
+    await nextTick()
+    await flushPromises()
+
+    await wrapper.get('button[title="Switch to mobile view"]').trigger('click')
+    await flushPromises()
+
+    expect(window.electronAPI?.setBrowserDeviceEmulation).toHaveBeenCalledWith({
+      tabId: 'tab-1',
+      mode: 'mobile',
     })
   })
 

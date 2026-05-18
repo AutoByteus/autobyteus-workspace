@@ -4,6 +4,7 @@ import {
   parseOpenTabInput,
   parseDomSnapshotInput,
   parseReadPageInput,
+  parseSetDeviceEmulationInput,
 } from "../../../../src/agent-tools/browser/browser-tool-input-parsers.js";
 
 describe("browser-tool-input-parsers", () => {
@@ -69,5 +70,33 @@ describe("browser-tool-input-parsers", () => {
         max_elements: "200",
       }),
     ).toThrowError(/requires 'max_elements' to be an integer/);
+  });
+
+  it("parses set_device_emulation inputs with strict snake_case profile fields", () => {
+    expect(
+      parseSetDeviceEmulationInput({
+        tab_id: "browser-session-1",
+        mode: "mobile",
+        width: 390,
+        height: 844,
+        device_scale_factor: 3,
+      }),
+    ).toEqual({
+      tab_id: "browser-session-1",
+      mode: "mobile",
+      width: 390,
+      height: 844,
+      device_scale_factor: 3,
+    });
+  });
+
+  it("rejects set_device_emulation compatibility aliases", () => {
+    expect(() =>
+      parseSetDeviceEmulationInput({
+        tab_id: "browser-session-1",
+        mode: "mobile",
+        deviceScaleFactor: 3,
+      }),
+    ).toThrowError(/does not accept 'deviceScaleFactor'/);
   });
 });
