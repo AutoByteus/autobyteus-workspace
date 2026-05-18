@@ -128,9 +128,6 @@ const searchProviderOptions: Array<{ value: SearchProvider; label: string }> = [
   { value: 'vertex_ai_search', label: 'Vertex AI Search' },
 ]
 
-const iconSaveButtonClass =
-  'inline-flex items-center justify-center h-9 w-9 rounded-lg border border-slate-200 bg-white text-blue-700 hover:bg-blue-50 hover:border-blue-100 disabled:bg-slate-50 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed transition-colors duration-150'
-
 const store = useServerSettingsStore()
 const isSavingSearchConfig = ref(false)
 const hasAttemptedSearchSave = ref(false)
@@ -181,6 +178,13 @@ const canSaveSearchConfig = computed(() =>
   !searchConfigValidationError.value &&
   hasSearchConfigChanges.value,
 )
+
+const iconSaveButtonClass = computed(() => [
+  'inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none disabled:ring-0',
+  canSaveSearchConfig.value && !isSavingSearchConfig.value
+    ? 'border-blue-600 bg-blue-600 text-white shadow-md shadow-blue-600/25 ring-2 ring-blue-200 hover:border-blue-700 hover:bg-blue-700'
+    : 'border-slate-200 bg-white text-slate-400 hover:border-slate-200 hover:bg-white',
+])
 
 const displayedSearchConfigValidationError = computed(() => {
   if (!hasAttemptedSearchSave.value && !isSearchFormTouched.value) return ''

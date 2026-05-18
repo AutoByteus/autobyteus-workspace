@@ -109,7 +109,7 @@ describe('ServerSettingsBasicsPanel', () => {
     expect(wrapper.get('[data-testid="server-settings-basics-notification"]').text()).toContain('Search save failed')
   })
 
-  it('wires the real streaming parser card in Basics and saves XML through the settings store', async () => {
+  it('wires the real streaming parser card in Basics and auto-saves XML through the settings store', async () => {
     const { wrapper, store } = await mountComponentWithRealStreamingParser([
       streamParserSetting('api_tool_call'),
     ])
@@ -118,7 +118,6 @@ describe('ServerSettingsBasicsPanel', () => {
     expect(wrapper.get('[data-testid="streaming-parser-toggle"]').attributes('aria-checked')).toBe('false')
 
     await wrapper.get('[data-testid="streaming-parser-toggle"]').trigger('click')
-    await wrapper.get('[data-testid="streaming-parser-save"]').trigger('click')
     await flushPromises()
 
     expect(store.updateServerSetting).toHaveBeenCalledWith(

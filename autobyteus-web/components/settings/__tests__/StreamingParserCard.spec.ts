@@ -66,6 +66,7 @@ describe('StreamingParserCard', () => {
     expect(wrapper.text()).toContain('Otherwise, stores provider-native tool calls')
     expect(wrapper.text()).toContain('Applies to new streamed responses.')
     expect(wrapper.find('[data-testid="streaming-parser-toggle"]').attributes('role')).toBe('switch')
+    expect(wrapper.find('[data-testid="streaming-parser-save"]').exists()).toBe(false)
     expect(wrapper.findAll('input[type="checkbox"]')).toHaveLength(0)
     expect(wrapper.findAll('input[type="radio"]')).toHaveLength(0)
     expect(wrapper.text()).not.toContain('json')
@@ -88,8 +89,12 @@ describe('StreamingParserCard', () => {
     expect(wrapper.find('[data-testid="streaming-parser-dirty"]').exists()).toBe(false)
   })
 
-  it('preserves unsaved local edits when settings refresh from the store', async () => {
+  it('preserves an in-flight local toggle when settings refresh from the store', async () => {
     const { wrapper, serverSettingsStore } = await mountComponent([streamParserSetting('api_tool_call')])
+    let resolveUpdate: (value: boolean) => void = () => undefined
+    serverSettingsStore.updateServerSetting = vi.fn().mockReturnValue(new Promise((resolve) => {
+      resolveUpdate = resolve
+    }))
 
     await wrapper.get('[data-testid="streaming-parser-toggle"]').trigger('click')
     await wrapper.vm.$nextTick()
@@ -99,17 +104,20 @@ describe('StreamingParserCard', () => {
     })
 
     await wrapper.vm.$nextTick()
-    await flushPromises()
 
     expect(isXmlParserChecked(wrapper)).toBe(true)
-    expect(wrapper.find('[data-testid="streaming-parser-dirty"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="streaming-parser-toggle"]').attributes('disabled')).toBeDefined()
+
+    resolveUpdate(true)
+    await flushPromises()
+
+    expect(wrapper.get('[data-testid="streaming-parser-toggle"]').attributes('disabled')).toBeUndefined()
   })
 
-  it('saves xml when the toggle is turned on', async () => {
+  it('auto-saves xml when the toggle is turned on', async () => {
     const { wrapper, serverSettingsStore } = await mountComponent([streamParserSetting('api_tool_call')])
 
     await wrapper.get('[data-testid="streaming-parser-toggle"]').trigger('click')
-    await wrapper.get('[data-testid="streaming-parser-save"]').trigger('click')
     await flushPromises()
 
     expect(serverSettingsStore.updateServerSetting).toHaveBeenCalledWith(
@@ -118,11 +126,10 @@ describe('StreamingParserCard', () => {
     )
   })
 
-  it('saves api_tool_call when the toggle is turned off', async () => {
+  it('auto-saves api_tool_call when the toggle is turned off', async () => {
     const { wrapper, serverSettingsStore } = await mountComponent([streamParserSetting('xml')])
 
     await wrapper.get('[data-testid="streaming-parser-toggle"]').trigger('click')
-    await wrapper.get('[data-testid="streaming-parser-save"]').trigger('click')
     await flushPromises()
 
     expect(serverSettingsStore.updateServerSetting).toHaveBeenCalledWith(
