@@ -120,7 +120,7 @@ See detailed findings below.
 
 ## Notes For Architect Reviewer
 
-Design spec is available at `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/design-spec.md`. Key review focus: the design places early status publication at `AgentRun` for all standalone runtimes and at team command-owner boundaries for all team runtimes: `TeamManager`/member handles for Mixed/Codex/Claude and `AutoByteusTeamRunBackend` for native AutoByteus. Pending overlays are needed for inactive or not-yet-updated members.
+Design spec is available at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/design-spec.md`. Key review focus: the design places early status publication at `AgentRun` for all standalone runtimes and at team command-owner boundaries for all team runtimes: `TeamManager`/member handles for Mixed/Codex/Claude and `AutoByteusTeamRunBackend` for native AutoByteus. Pending overlays are needed for inactive or not-yet-updated members.
 
 ## Findings From Code / Docs / Data / Logs
 

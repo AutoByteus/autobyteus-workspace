@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/requirements.md`
 - Current Review Round: 2
 - Trigger: Local-fix re-review from `implementation_engineer` for CR-001/CR-002 on ticket `offline-agent-initializing-status`.
 - Prior Review Round Reviewed: 1
 - Latest Authoritative Round: 2
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/investigation.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/investigation.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/implementation-handoff.md`
 - Validation Report Reviewed As Context: N/A
 - API / E2E Validation Started Yet: `No`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`

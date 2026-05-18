@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/investigation.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/investigation.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/review-report.md`
 - Current Validation Round: 1
 - Trigger: Code review round 2 passed for ticket `offline-agent-initializing-status`; proceed with API/E2E/executable validation including Electron backend-source verification.
 - Prior Round Reviewed: N/A
@@ -42,7 +42,7 @@ Validation covered the reviewed requirement that backend-owned command-start `in
 
 Evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/legacy-scope-source-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/legacy-scope-source-check.log`
 - No `applyAcceptedStartupStatus` references remain in the changed backend execution/team execution source scope.
 - `TeamRun` no longer has local delayed aggregate startup event machinery.
 - Frontend references to `initializing` are protocol/state/rendering/tests, not optimistic SEND_MESSAGE status overrides.
@@ -95,45 +95,45 @@ Commands run and final outcomes:
 
 1. `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-team-execution/team-run.test.ts tests/unit/agent-team-execution/team-command-start-status.test.ts tests/unit/agent-team-execution/autobyteus-team-run-backend.test.ts`
    - Result: Pass (`4` files, `21` tests).
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/targeted-server-tests.log`
+   - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/targeted-server-tests.log`
 2. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit --pretty false`
    - Result: Pass.
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/server-typecheck.log`
+   - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/server-typecheck.log`
 3. `git diff --check`
    - Result: Pass.
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/git-diff-check.log`
+   - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/git-diff-check.log`
 4. `pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent/agent-status-websocket.integration.test.ts tests/integration/agent/agent-websocket.integration.test.ts tests/integration/agent/agent-team-websocket.integration.test.ts`
    - Result: Pass (`3` files, `24` tests).
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/server-websocket-integration.log`
+   - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/server-websocket-integration.log`
 5. Initial frontend command failed before collection because `.nuxt/tsconfig.json` had not been generated in this worktree:
    - `pnpm -C autobyteus-web exec cross-env NUXT_TEST=true vitest run services/runStatus/__tests__/agentRuntimeStatusState.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts`
-   - Setup failure log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/web-status-tests.log`
+   - Setup failure log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/web-status-tests.log`
 6. `pnpm -C autobyteus-web exec nuxi prepare`
    - Result: Pass; generated `.nuxt` types.
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/web-nuxi-prepare.log`
+   - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/web-nuxi-prepare.log`
 7. Frontend status command rerun after `nuxi prepare`
    - Result: Pass (`5` files, `54` tests).
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/web-status-tests-rerun.log`
+   - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/web-status-tests-rerun.log`
 8. `pnpm -C autobyteus-web prepare-server`
    - Result: Pass; built and deployed Electron resource server from this worktree.
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/electron-prepare-server.log`
+   - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/electron-prepare-server.log`
 9. Compiled Electron bundled backend source check
    - Result: Pass; resource `agent-run.js` calls `applyCommandStartStatus()` before awaiting `backend.postUserMessage`; native command-start overlay code is present in the resource server.
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/electron-bundled-backend-source-check.log`
+   - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/electron-bundled-backend-source-check.log`
 10. `pnpm -C autobyteus-web exec vitest --config ./electron/vitest.config.ts run electron/server/__tests__/BaseServerManager.spec.ts electron/server/__tests__/serverRuntimeEnv.spec.ts electron/server/services/__tests__/AppDataService.spec.ts electron/server/services/__tests__/HealthChecker.spec.ts`
     - Result: Pass (`4` files, `27` tests).
-    - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/electron-server-manager-tests.log`
+    - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/electron-server-manager-tests.log`
 11. Electron bundled server health smoke, first attempt without app-data `.env`
     - Result: Setup failure as expected for missing config file, then rerun with proper `.env`.
-    - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/electron-bundled-server-health.log`
+    - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/electron-bundled-server-health.log`
 12. Electron bundled server health smoke rerun with app-data `.env`
     - Result: Pass; `/rest/health` returned status `ok`.
     - Logs:
-      - `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/electron-bundled-server-health-rerun.log`
-      - `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/electron-bundled-server-process-rerun.log`
+      - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/electron-bundled-server-health-rerun.log`
+      - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/electron-bundled-server-process-rerun.log`
 13. Source compatibility/legacy scope checks
     - Result: Pass.
-    - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/legacy-scope-source-check.log`
+    - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/legacy-scope-source-check.log`
 
 ## Validation Setup / Environment
 
@@ -167,8 +167,8 @@ The durable validation added before code review was exercised as-is:
 
 Validation report and evidence logs produced under:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/api-e2e-validation-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/validation-evidence/`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/api-e2e-validation-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/validation-evidence/`
 
 ## Temporary Validation Methods / Scaffolding
 

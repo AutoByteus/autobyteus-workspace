@@ -4,7 +4,7 @@
 
 Architecture review round 2 failed with `Design Impact` because native AutoByteus was acknowledged in high-level design text but not consistently represented in implementation-facing design sections.
 
-Review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/design-review-report.md`
+Review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/design-review-report.md`
 
 ## Rework Summary
 
@@ -61,7 +61,7 @@ Updated `investigation.md` and `design-spec.md` with code evidence and target be
 
 ## Updated Artifact Paths
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/investigation.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/design-spec.md`
-- Prior review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/design-review-report.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/investigation.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/design-spec.md`
+- Prior review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/design-review-report.md`

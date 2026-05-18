@@ -2,11 +2,11 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/investigation.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/investigation.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/design-spec.md`
 - Current Review Round: 3
-- Trigger: Re-review after round-2 `Design Impact` findings were addressed in `/Users/normy/autobyteus_org/autobyteus-worktrees/offline-agent-initializing-status/tickets/done/offline-agent-initializing-status/design-rework-response-round-2.md`.
+- Trigger: Re-review after round-2 `Design Impact` findings were addressed in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/offline-agent-initializing-status/design-rework-response-round-2.md`.
 - Prior Review Round Reviewed: Round 2
 - Latest Authoritative Round: 3
 - Current-State Evidence Basis: Updated requirements, investigation notes, design spec, rework response, prior round-2 review report, and spot checks of current `AgentRun`, `TeamRun`, managed team managers/handles, `AutoByteusTeamRunBackend`, team status aggregation, and event mapping paths.
