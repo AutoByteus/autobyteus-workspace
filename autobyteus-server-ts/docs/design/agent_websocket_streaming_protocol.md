@@ -72,10 +72,7 @@ rows are driven by member `AGENT_STATUS` snapshots/events or member-scoped
 history; an active running or initializing team can legitimately contain one
 active member and other offline members.
 
-Status payloads do not expose legacy target fields such as `new_status` or
-`old_status`. Those names may still exist in native runtime-internal packages
-for their own streams, but they are not part of the server WebSocket status
-contract.
+Status payloads expose only normalized `status` plus documented metadata. Native runtime transition-field names are not part of the server WebSocket status contract.
 
 Segment payloads use snake-case `turn_id` as the canonical transport field for
 all `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END` messages. Native

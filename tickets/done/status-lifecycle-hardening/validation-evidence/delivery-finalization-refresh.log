@@ -1,0 +1,11 @@
+$ git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+$ git rev-parse HEAD
+d2b4f4331e95e49a3109b851463b8bae0d48ecae
+$ git rev-parse origin/personal
+d2b4f4331e95e49a3109b851463b8bae0d48ecae
+$ git merge-base HEAD origin/personal
+d2b4f4331e95e49a3109b851463b8bae0d48ecae
+$ git rev-list --left-right --count HEAD...origin/personal
+0	0

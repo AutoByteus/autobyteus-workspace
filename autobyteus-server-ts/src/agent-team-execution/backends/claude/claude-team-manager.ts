@@ -2,7 +2,6 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentRun } from "../../../agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
 import {
-  AgentRunEventType,
   isAgentRunEvent,
   type AgentRunEvent,
 } from "../../../agent-execution/domain/agent-run-event.js";
@@ -43,10 +42,7 @@ import {
 } from "../../../agent-execution/shared/configured-agent-tool-exposure.js";
 import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../services/member-team-context-builder.js";
 import { publishProcessedTeamAgentEvents } from "../../services/publish-processed-team-agent-events.js";
-import {
-  getCommandStatusSnapshot,
-  publishTeamMemberCommandStatus,
-} from "../../services/team-member-command-start-status-overlays.js";
+import { TeamCommandStatusOverlayStore } from "../../services/team-command-status-overlay-store.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import {
   resolveTeamMemberSelector,
@@ -97,7 +93,7 @@ export class ClaudeTeamManager implements TeamManager {
   private teamContext: TeamRunContext<ClaudeTeamRunContext> | null;
   private readonly memberRuns = new Map<string, AgentRun>();
   private readonly memberRunUnsubscribers = new Map<string, () => void>();
-  private readonly commandStatusByMemberRouteKey = new Map<string, AgentStatusPayload>();
+  private readonly commandStatusOverlayStore: TeamCommandStatusOverlayStore;
   private readonly eventListeners = new Set<TeamRunEventListener>();
   private lastTeamStatus: string | null = "INITIALIZING";
 
@@ -115,6 +111,11 @@ export class ClaudeTeamManager implements TeamManager {
       options.agentDefinitionService ?? AgentDefinitionService.getInstance();
     this.memberTeamContextBuilder =
       options.memberTeamContextBuilder ?? getMemberTeamContextBuilder();
+    this.commandStatusOverlayStore = new TeamCommandStatusOverlayStore({
+      getTeamRunId: () => this.teamContext?.runId ?? null,
+      publishEvent: (event) => this.publish(event),
+      publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    });
   }
 
   hasActiveMembers(): boolean {
@@ -129,8 +130,8 @@ export class ClaudeTeamManager implements TeamManager {
 
     return runtimeContext.memberContexts.map((memberContext) => {
       const memberRun = this.memberRuns.get(memberContext.memberRouteKey) ?? null;
-      const snapshot = getCommandStatusSnapshot({
-        commandStatuses: this.commandStatusByMemberRouteKey, memberRouteKey: memberContext.memberRouteKey,
+      const snapshot = this.commandStatusOverlayStore.getMemberStatusSnapshot({
+        memberContext,
         fallback: () => memberRun?.getStatusSnapshot() ?? { status: "offline" as const, can_interrupt: false },
       });
       return {
@@ -285,7 +286,7 @@ export class ClaudeTeamManager implements TeamManager {
     }
     this.clearMemberSubscriptions();
     this.memberRuns.clear();
-    this.commandStatusByMemberRouteKey.clear();
+    this.commandStatusOverlayStore.clear();
     this.teamContext = null;
     this.eventListeners.clear();
     this.lastTeamStatus = null;
@@ -453,27 +454,23 @@ export class ClaudeTeamManager implements TeamManager {
       if (!isAgentRunEvent(event) || !this.teamContext) {
         return;
       }
-      if (event.eventType === AgentRunEventType.AGENT_STATUS) {
-        this.commandStatusByMemberRouteKey.delete(memberContext.memberRouteKey);
-      }
       memberContext.sessionId = memberRun.getPlatformAgentRunId() ?? memberContext.sessionId;
-      this.publishMemberAgentEvent(memberContext, event);
+      const teamEvent = this.buildMemberAgentEvent(memberContext, event);
+      this.commandStatusOverlayStore.recordReplacementEvents([teamEvent]);
+      this.publish(teamEvent);
       this.publishTeamStatusIfChanged();
     });
 
     this.memberRunUnsubscribers.set(memberContext.memberRouteKey, unsubscribe);
   }
 
-  private publishMemberAgentEvent(
+  private buildMemberAgentEvent(
     memberContext: ClaudeTeamMemberContext,
     agentEvent: AgentRunEvent,
-  ): void {
-    if (!this.teamContext) {
-      return;
-    }
-    this.publish({
+  ): TeamRunEvent {
+    return {
       eventSourceType: TeamRunEventSourceType.AGENT,
-      teamRunId: this.teamContext.runId,
+      teamRunId: this.teamContext?.runId ?? "",
       sourcePath: memberContext.memberPath,
       data: {
         runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
@@ -483,7 +480,7 @@ export class ClaudeTeamManager implements TeamManager {
         memberRouteKey: memberContext.memberRouteKey,
         agentEvent,
       } satisfies TeamRunAgentEventPayload,
-    });
+    };
   }
 
   private publishTeamStatusIfChanged(): void {
@@ -508,11 +505,16 @@ export class ClaudeTeamManager implements TeamManager {
   }
 
   private publishMemberCommandStatus(memberContext: ClaudeTeamMemberContext, status: "initializing" | "error", errorMessage: string | null = null): void {
-    publishTeamMemberCommandStatus({
-      teamRunId: this.teamContext?.runId ?? null, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, memberContext,
-      commandStatuses: this.commandStatusByMemberRouteKey, status, errorMessage,
-      currentStatus: () => this.commandStatusByMemberRouteKey.get(memberContext.memberRouteKey)?.status ?? this.memberRuns.get(memberContext.memberRouteKey)?.getStatusSnapshot().status ?? "offline",
-      publishEvent: (event) => this.publish(event), publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    this.commandStatusOverlayStore.publishMemberCommandStatus({
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      memberContext,
+      status,
+      errorMessage,
+      currentStatus: () => this.commandStatusOverlayStore.getMemberStatusSnapshot({
+        memberContext,
+        fallback: () => this.memberRuns.get(memberContext.memberRouteKey)?.getStatusSnapshot()
+          ?? { status: "offline" as const, can_interrupt: false },
+      }).status,
     });
   }
 

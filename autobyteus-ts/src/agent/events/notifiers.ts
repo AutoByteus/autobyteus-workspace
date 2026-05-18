@@ -91,13 +91,11 @@ export class AgentExternalEventNotifier extends EventEmitter {
     additionalData?: Record<string, any> | null
   ): void {
     const statusPayload: Record<string, any> = {
-      new_status: newStatus,
-      old_status: oldStatus ?? null
+      ...(additionalData ?? {}),
+      status: newStatus,
+      previous_status: oldStatus ?? null
     };
-    if (additionalData) {
-      Object.assign(statusPayload, additionalData);
-    }
-    this.emitEvent(EventType.AGENT_STATUS_UPDATED, statusPayload);
+    this.emitEvent(EventType.AGENT_STATUS, statusPayload);
   }
 
   notifyStatusUpdated(

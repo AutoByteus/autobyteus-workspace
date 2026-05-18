@@ -45,8 +45,8 @@ describe('TuiStateStore', () => {
   it('tracks agent status updates and adds agent nodes', () => {
     const store = new TuiStateStore(buildTeam());
     const agentEvent = new StreamEvent({
-      event_type: StreamEventType.AGENT_STATUS_UPDATED,
-      data: { new_status: AgentStatus.IDLE }
+      event_type: StreamEventType.AGENT_STATUS,
+      data: { status: AgentStatus.IDLE }
     });
     const payload = new AgentEventRebroadcastPayload({ agent_name: 'AgentOne', agent_event: agentEvent });
     const teamEvent = new AgentTeamStreamEvent({
@@ -150,7 +150,7 @@ describe('TuiStateStore', () => {
     const subTeamInner = new AgentTeamStreamEvent({
       team_id: 'sub_team',
       event_source_type: 'TEAM',
-      data: new AgentTeamStatusUpdateData({ new_status: AgentTeamStatus.IDLE })
+      data: new AgentTeamStatusUpdateData({ status: AgentTeamStatus.IDLE })
     });
     const subPayload = new SubTeamEventRebroadcastPayload({
       sub_team_node_name: 'SubTeamA',

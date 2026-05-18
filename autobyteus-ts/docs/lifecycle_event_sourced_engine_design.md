@@ -394,11 +394,11 @@ event store, status deriver, and `AgentEventInbox`.
 
 Clients receive status changes through a single external event:
 
-- **EventType**: `AGENT_STATUS_UPDATED`
-- **StreamEventType**: `AGENT_STATUS_UPDATED`
-- **Payload**: `AgentStatusUpdateData`
-  - `new_status` (required)
-  - `old_status` (optional)
+- **EventType**: `AGENT_STATUS`
+- **StreamEventType**: `AGENT_STATUS`
+- **Payload**: `AgentStatusData`
+  - `status` (required)
+  - `previous_status` (optional metadata)
   - `trigger` (optional, schema field)
   - `tool_name` (optional, when tool-related)
   - `error_message` / `error_details` (optional, on error)

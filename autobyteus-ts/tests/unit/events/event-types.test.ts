@@ -6,7 +6,7 @@ describe('EventType', () => {
     expect(EventType.AGENT_TURN_STARTED).toBe('agent_turn_started');
     expect(EventType.AGENT_TURN_COMPLETED).toBe('agent_turn_completed');
     expect(EventType.AGENT_TURN_INTERRUPTED).toBe('agent_turn_interrupted');
-    expect(EventType.AGENT_STATUS_UPDATED).toBe('agent_status_updated');
+    expect(EventType.AGENT_STATUS).toBe('agent_status');
     expect(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE).toBe('agent_data_assistant_complete_response');
     expect(EventType.AGENT_DATA_SEGMENT_EVENT).toBe('agent_data_segment_event');
     expect(EventType.AGENT_DATA_TOOL_LOG).toBe('agent_data_tool_log');

@@ -26,13 +26,13 @@ export class AgentTeamExternalEventNotifier extends EventEmitter {
   }
 
   notifyStatusUpdated(
-    new_status: AgentTeamStatus,
-    old_status: AgentTeamStatus | null | undefined,
+    status: AgentTeamStatus,
+    previousStatus: AgentTeamStatus | null | undefined,
     extra_data?: Record<string, any> | null
   ): void {
     const payload: Record<string, any> = {
-      new_status,
-      old_status,
+      status,
+      previous_status: previousStatus,
       error_message: extra_data?.error_message ?? undefined
     };
 

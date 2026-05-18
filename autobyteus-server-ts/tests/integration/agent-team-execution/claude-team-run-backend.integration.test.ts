@@ -26,6 +26,7 @@ const createMemberContext = (input: {
 }) =>
   new ClaudeTeamMemberContext({
     memberName: input.memberName,
+    memberPath: [input.memberName],
     memberRouteKey: input.memberRouteKey ?? input.memberName,
     memberRunId: input.memberRunId ?? input.memberName,
     sessionId: input.sessionId ?? null,
@@ -126,10 +127,11 @@ describe("ClaudeTeamRunBackend integration", () => {
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
 
     const userMessage = new AgentInputUserMessage("coordinate the task");
-    await expect(backend.postMessage(userMessage, "  Coordinator  ")).resolves.toEqual({
+    const coordinatorTarget = { kind: "route_key" as const, memberRouteKey: "coord-route" };
+    await expect(backend.postMessage(userMessage, coordinatorTarget)).resolves.toEqual({
       accepted: true,
     });
-    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, "Coordinator");
+    expect(manager.postMessage).toHaveBeenCalledWith(userMessage, coordinatorTarget);
 
     await expect(
       backend.deliverInterAgentMessage({
@@ -151,10 +153,10 @@ describe("ClaudeTeamRunBackend integration", () => {
     });
 
     await expect(
-      backend.approveToolInvocation("Coordinator", "inv-1", true, "approved"),
+      backend.approveToolInvocation(coordinatorTarget, "inv-1", true, "approved"),
     ).resolves.toEqual({ accepted: true });
     expect(manager.approveToolInvocation).toHaveBeenCalledWith(
-      "Coordinator",
+      coordinatorTarget,
       "inv-1",
       true,
       "approved",
@@ -184,7 +186,7 @@ describe("ClaudeTeamRunBackend integration", () => {
     manager.setActive(false);
 
     await expect(
-      backend.postMessage(new AgentInputUserMessage("hello"), "Coordinator"),
+      backend.postMessage(new AgentInputUserMessage("hello"), { kind: "route_key", memberRouteKey: "coord-route" }),
     ).resolves.toMatchObject({
       accepted: false,
       code: "RUN_NOT_FOUND",
@@ -201,7 +203,7 @@ describe("ClaudeTeamRunBackend integration", () => {
       code: "RUN_NOT_FOUND",
     });
     await expect(
-      backend.approveToolInvocation("Coordinator", "inv-1", true),
+      backend.approveToolInvocation({ kind: "route_key", memberRouteKey: "coord-route" }, "inv-1", true),
     ).resolves.toMatchObject({
       accepted: false,
       code: "RUN_NOT_FOUND",

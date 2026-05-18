@@ -5,19 +5,19 @@ import {
   isRecord
 } from './stream-event-payload-utils.js';
 
-export class AgentStatusUpdateData extends BaseStreamPayload {
-  new_status: AgentStatus;
-  old_status?: AgentStatus;
+export class AgentStatusData extends BaseStreamPayload {
+  status: AgentStatus;
+  previous_status?: AgentStatus | null;
   trigger?: string;
   tool_name?: string;
   error_message?: string;
   error_details?: string;
 
   constructor(data: Record<string, any>) {
-    assertRequiredKeys(data, ['new_status'], 'AgentStatusUpdateData');
+    assertRequiredKeys(data, ['status'], 'AgentStatusData');
     super(data);
-    this.new_status = data.new_status;
-    this.old_status = data.old_status ?? undefined;
+    this.status = data.status;
+    this.previous_status = data.previous_status ?? undefined;
     this.trigger = data.trigger ?? undefined;
     this.tool_name = data.tool_name ?? undefined;
     this.error_message = data.error_message ?? undefined;
@@ -201,11 +201,11 @@ export class ArtifactUpdatedData extends BaseStreamPayload {
 
 export class EmptyData extends BaseStreamPayload {}
 
-export const createAgentStatusUpdateData = (statusData: unknown): AgentStatusUpdateData => {
+export const createAgentStatusData = (statusData: unknown): AgentStatusData => {
   if (!isRecord(statusData)) {
-    throw new Error('Cannot create AgentStatusUpdateData from non-object');
+    throw new Error('Cannot create AgentStatusData from non-object');
   }
-  return new AgentStatusUpdateData(statusData);
+  return new AgentStatusData(statusData);
 };
 
 export const createTurnLifecycleData = (turnData: unknown): TurnLifecycleData => {

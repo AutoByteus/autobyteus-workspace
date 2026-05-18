@@ -6,8 +6,8 @@ import {
   createArtifactUpdatedData,
   ToDoListUpdateData,
   createTodoListUpdateData,
-  AgentStatusUpdateData,
-  createAgentStatusUpdateData,
+  AgentStatusData,
+  createAgentStatusData,
   TurnLifecycleData,
   createTurnLifecycleData,
   ErrorEventData,
@@ -109,10 +109,10 @@ describe('Stream payload factories', () => {
     expect(() => createTodoListUpdateData({ todos: 'not a list' })).toThrow(/Expected 'todos' to be a list/);
   });
 
-  it('creates AgentStatusUpdateData', () => {
-    const payload = createAgentStatusUpdateData({ new_status: AgentStatus.IDLE });
-    expect(payload).toBeInstanceOf(AgentStatusUpdateData);
-    expect(payload.new_status).toBe(AgentStatus.IDLE);
+  it('creates AgentStatusData', () => {
+    const payload = createAgentStatusData({ status: AgentStatus.IDLE });
+    expect(payload).toBeInstanceOf(AgentStatusData);
+    expect(payload.status).toBe(AgentStatus.IDLE);
   });
 
   it('creates TurnLifecycleData', () => {

@@ -18,15 +18,15 @@ export class BaseTeamSpecificPayload {
 }
 
 export class AgentTeamStatusUpdateData extends BaseTeamSpecificPayload {
-  new_status: AgentTeamStatus;
-  old_status?: AgentTeamStatus;
+  status: AgentTeamStatus;
+  previous_status?: AgentTeamStatus;
   error_message?: string;
 
   constructor(data: Record<string, unknown>) {
-    assertRequiredKeys(data, ['new_status'], 'AgentTeamStatusUpdateData');
+    assertRequiredKeys(data, ['status'], 'AgentTeamStatusUpdateData');
     super(data);
-    this.new_status = data.new_status as AgentTeamStatus;
-    this.old_status = data.old_status as AgentTeamStatus | undefined;
+    this.status = data.status as AgentTeamStatus;
+    this.previous_status = data.previous_status as AgentTeamStatus | undefined;
     this.error_message = data.error_message ? String(data.error_message) : undefined;
   }
 }

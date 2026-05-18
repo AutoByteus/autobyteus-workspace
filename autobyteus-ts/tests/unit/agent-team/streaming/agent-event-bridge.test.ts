@@ -65,8 +65,8 @@ describe('AgentEventBridge', () => {
     });
     const event2 = new StreamEvent({
       agent_id: 'a1',
-      event_type: StreamEventType.AGENT_STATUS_UPDATED,
-      data: { new_status: AgentStatus.IDLE, old_status: AgentStatus.BOOTSTRAPPING }
+      event_type: StreamEventType.AGENT_STATUS,
+      data: { status: AgentStatus.IDLE, previous_status: AgentStatus.BOOTSTRAPPING }
     });
 
     stream.put(event1);
