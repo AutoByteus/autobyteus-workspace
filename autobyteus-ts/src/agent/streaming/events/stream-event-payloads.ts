@@ -25,7 +25,7 @@ export {
 } from './stream-event-payload-tool.js';
 
 export {
-  AgentStatusUpdateData,
+  AgentStatusData,
   TurnLifecycleData,
   ErrorEventData,
   CompactionStatusData,
@@ -37,7 +37,7 @@ export {
   ArtifactPersistedData,
   ArtifactUpdatedData,
   EmptyData,
-  createAgentStatusUpdateData,
+  createAgentStatusData,
   createTurnLifecycleData,
   createErrorEventData,
   createCompactionStatusData,
@@ -63,7 +63,7 @@ import type {
   ToolExecutionInterruptedData
 } from './stream-event-payload-tool.js';
 import type {
-  AgentStatusUpdateData,
+  AgentStatusData,
   TurnLifecycleData,
   ErrorEventData,
   CompactionStatusData,
@@ -80,7 +80,7 @@ export type StreamDataPayload =
   | AssistantCompleteResponseData
   | ToolInteractionLogEntryData
   | TurnLifecycleData
-  | AgentStatusUpdateData
+  | AgentStatusData
   | ErrorEventData
   | CompactionStatusData
   | ToolApprovalRequestedData

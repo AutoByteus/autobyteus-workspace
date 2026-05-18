@@ -23,7 +23,7 @@ import {
   type TeamRunAgentEventPayload,
   type TeamRunMemberInputEventPayload,
 } from "../../../domain/team-run-event.js";
-import { normalizeAgentApiStatus, type AgentStatusPayload } from "../../../../agent-execution/domain/agent-status-payload.js";
+import type { AgentStatusPayload } from "../../../../agent-execution/domain/agent-status-payload.js";
 import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
 import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
@@ -37,10 +37,7 @@ import {
   buildInterAgentDeliveryInputMessage,
 } from "../../../services/inter-agent-message-runtime-builders.js";
 import { buildTeamMemberInputEventPayload } from "../../../services/team-member-input-event-builder.js";
-import {
-  buildAgentMemberCommandStartStatusEvent,
-  buildAgentMemberCommandStatusPayload,
-} from "../../../services/team-member-command-start-status-events.js";
+import { TeamCommandStatusOverlayStore } from "../../../services/team-command-status-overlay-store.js";
 import type { MixedTeamRunContext, MixedAgentMemberContext } from "../mixed-team-run-context.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 
@@ -48,7 +45,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   readonly context: MixedAgentMemberContext;
   private agentRun: AgentRun | null = null;
   private unsubscribe: (() => void) | null = null;
-  private commandStatusOverride: AgentStatusPayload | null = null;
+  private readonly commandStatusOverlayStore: TeamCommandStatusOverlayStore;
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
@@ -62,6 +59,11 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryRequest) => Promise<AgentOperationResult>;
   }) {
     this.context = options.context;
+    this.commandStatusOverlayStore = new TeamCommandStatusOverlayStore({
+      getTeamRunId: () => this.options.teamContext.runId,
+      publishEvent: this.options.publish,
+      publishTeamStatusIfChanged: this.options.notifyStatusChange,
+    });
   }
 
   isActive(): boolean {
@@ -69,12 +71,24 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   }
 
   getStatusSnapshot() {
-    return this.commandStatusOverride ?? this.agentRun?.getStatusSnapshot() ?? {
+    const snapshot = this.commandStatusOverlayStore.getMemberStatusSnapshot({
+      memberContext: this.context,
+      fallback: () => this.agentRun?.getStatusSnapshot() ?? {
       status: "offline" as const,
       can_interrupt: false,
       agent_id: this.context.memberRunId,
       agent_name: this.context.memberName,
-    };
+      },
+    });
+    return {
+      ...snapshot,
+      agent_id: this.context.memberRunId,
+      agent_name: this.context.memberName,
+      member_route_key: this.context.memberRouteKey,
+      member_path: this.context.memberPath,
+      source_route_key: this.context.memberRouteKey,
+      source_path: this.context.memberPath,
+    } satisfies AgentStatusPayload;
   }
 
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
@@ -166,16 +180,16 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     this.unsubscribe?.();
     this.unsubscribe = null;
     this.agentRun = null;
-    this.commandStatusOverride = null;
+    this.commandStatusOverlayStore.clear();
   }
 
   private async ensureReady(): Promise<AgentRun> {
     if (this.agentRun?.isActive()) {
       return this.agentRun;
     }
-    const commandStatusOverride = this.commandStatusOverride;
-    this.dispose();
-    this.commandStatusOverride = commandStatusOverride;
+    this.unsubscribe?.();
+    this.unsubscribe = null;
+    this.agentRun = null;
     const memberRunConfig = await this.buildMemberRunConfig();
     const manager = this.options.agentRunManager ?? AgentRunManager.getInstance();
     this.agentRun = typeof this.context.platformAgentRunId === "string" && this.context.platformAgentRunId.trim().length > 0
@@ -325,9 +339,8 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       if (!isAgentRunEvent(event)) {
         return;
       }
-      this.commandStatusOverride = null;
       this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
-      this.options.publish({
+      const teamEvent = {
         eventSourceType: TeamRunEventSourceType.AGENT,
         teamRunId: this.options.teamContext.runId,
         sourcePath: this.context.memberPath,
@@ -339,36 +352,20 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
           memberRouteKey: this.context.memberRouteKey,
           agentEvent: event,
         } satisfies TeamRunAgentEventPayload,
-      });
+      };
+      this.commandStatusOverlayStore.recordReplacementEvents([teamEvent]);
+      this.options.publish(teamEvent);
       this.options.notifyStatusChange();
     });
   }
 
   private publishCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): void {
-    const currentStatus = normalizeAgentApiStatus(this.getStatusSnapshot().status);
-    if (status === "initializing" && currentStatus !== "offline" && currentStatus !== "idle") {
-      return;
-    }
-    this.commandStatusOverride = buildAgentMemberCommandStatusPayload({
-      teamRunId: this.options.teamContext.runId,
+    this.commandStatusOverlayStore.publishMemberCommandStatus({
       runtimeKind: this.context.runtimeKind,
-      memberName: this.context.memberName,
-      memberRunId: this.context.memberRunId,
-      memberPath: this.context.memberPath,
-      memberRouteKey: this.context.memberRouteKey,
+      memberContext: this.context,
       status,
       errorMessage,
+      currentStatus: () => this.getStatusSnapshot().status,
     });
-    this.options.publish(buildAgentMemberCommandStartStatusEvent({
-      teamRunId: this.options.teamContext.runId,
-      runtimeKind: this.context.runtimeKind,
-      memberName: this.context.memberName,
-      memberRunId: this.context.memberRunId,
-      memberPath: this.context.memberPath,
-      memberRouteKey: this.context.memberRouteKey,
-      status,
-      errorMessage,
-    }));
-    this.options.notifyStatusChange();
   }
 }

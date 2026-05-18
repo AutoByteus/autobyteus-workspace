@@ -35,8 +35,8 @@ describe('AgentTeamExternalEventNotifier', () => {
 
     const data = emittedEvent.data as AgentTeamStatusUpdateData;
     expect(data).toBeInstanceOf(AgentTeamStatusUpdateData);
-    expect(data.new_status).toBe(AgentTeamStatus.IDLE);
-    expect(data.old_status).toBe(AgentTeamStatus.BOOTSTRAPPING);
+    expect(data.status).toBe(AgentTeamStatus.IDLE);
+    expect(data.previous_status).toBe(AgentTeamStatus.BOOTSTRAPPING);
     expect(data.error_message).toBe('An error');
   });
 
@@ -76,7 +76,7 @@ describe('AgentTeamExternalEventNotifier', () => {
     const mock_sub_team_event = new AgentTeamStreamEvent({
       team_id: 'sub-team-456',
       event_source_type: 'TEAM',
-      data: new AgentTeamStatusUpdateData({ new_status: AgentTeamStatus.IDLE })
+      data: new AgentTeamStatusUpdateData({ status: AgentTeamStatus.IDLE })
     });
 
     notifier.publishSubTeamEvent('ResearchTeam', mock_sub_team_event);

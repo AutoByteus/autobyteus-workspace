@@ -20,15 +20,41 @@ const normalizeToken = (value: unknown): string | null =>
 
 const AUTOBYTEUS_STARTUP_STATUS_TOKENS = new Set([
   "bootstrapping",
+  "initializing",
   "starting",
   "startup",
   "uninitialized",
 ]);
 
-const normalizeAutoByteusAgentStatus = (value: unknown): AgentStatusPayload["status"] =>
-  AUTOBYTEUS_STARTUP_STATUS_TOKENS.has(normalizeToken(value) ?? "")
-    ? "initializing"
-    : normalizeAgentApiStatus(value, "idle");
+const AUTOBYTEUS_RUNNING_STATUS_TOKENS = new Set([
+  "processing_user_input",
+  "awaiting_llm_response",
+  "analyzing_llm_response",
+  "awaiting_tool_approval",
+  "tool_denied",
+  "executing_tool",
+  "processing_tool_result",
+  "interrupting",
+]);
+
+const AUTOBYTEUS_OFFLINE_STATUS_TOKENS = new Set([
+  "shutdown_complete",
+  "shutting_down",
+]);
+
+const normalizeAutoByteusAgentStatus = (value: unknown): AgentStatusPayload["status"] => {
+  const token = normalizeToken(value) ?? "";
+  if (AUTOBYTEUS_STARTUP_STATUS_TOKENS.has(token)) {
+    return "initializing";
+  }
+  if (AUTOBYTEUS_RUNNING_STATUS_TOKENS.has(token)) {
+    return "running";
+  }
+  if (AUTOBYTEUS_OFFLINE_STATUS_TOKENS.has(token)) {
+    return "offline";
+  }
+  return normalizeAgentApiStatus(value, "idle");
+};
 
 export const projectAutoByteusAgentStatus = (input: {
   currentStatus?: unknown;

@@ -4,11 +4,11 @@ import { AgentStatus } from '../status/status-enum.js';
 
 const waitLoop = async (streamer: AgentEventStream, agentId: string): Promise<void> => {
   for await (const statusUpdate of streamer.streamStatusUpdates()) {
-    if (statusUpdate.new_status === AgentStatus.IDLE) {
+    if (statusUpdate.status === AgentStatus.IDLE) {
       console.info(`Agent '${agentId}' has become idle.`);
       return;
     }
-    if (statusUpdate.new_status === AgentStatus.ERROR) {
+    if (statusUpdate.status === AgentStatus.ERROR) {
       const errorMessage =
         `Agent '${agentId}' entered an error state while waiting for idle: ${statusUpdate}`;
       console.error(errorMessage);

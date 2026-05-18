@@ -2,7 +2,6 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import {
   buildAgentStatusPayload,
-  normalizeAgentApiStatus,
   type AgentStatusPayload,
 } from "../../../../agent-execution/domain/agent-status-payload.js";
 import type { TeamRun } from "../../../domain/team-run.js";
@@ -24,7 +23,7 @@ import type { TeamSubTeamMemberRunConfig } from "../../../domain/team-run-config
 import type { MixedTeamRunContext, MixedSubTeamMemberContext } from "../mixed-team-run-context.js";
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
 import { buildInterAgentDeliveryInputMessage } from "../../../services/inter-agent-message-runtime-builders.js";
-import { buildTeamCommandStartStatusEvent } from "../../../services/team-member-command-start-status-events.js";
+import { TeamCommandStatusOverlayStore } from "../../../services/team-command-status-overlay-store.js";
 import { prefixMixedSubTeamEvent } from "../events/mixed-team-event-bridge.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 
@@ -46,7 +45,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
   readonly context: MixedSubTeamMemberContext;
   private childRun: TeamRun | null = null;
   private unsubscribe: (() => void) | null = null;
-  private commandStatusOverride: AgentStatusPayload | null = null;
+  private readonly commandStatusOverlayStore: TeamCommandStatusOverlayStore;
 
   constructor(private readonly options: {
     parentContext: TeamRunContext<MixedTeamRunContext>;
@@ -58,6 +57,11 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
   }) {
     this.context = options.context;
+    this.commandStatusOverlayStore = new TeamCommandStatusOverlayStore({
+      getTeamRunId: () => this.options.parentContext.runId,
+      publishEvent: this.options.publish,
+      publishTeamStatusIfChanged: this.options.notifyStatusChange,
+    });
   }
 
   isActive(): boolean {
@@ -65,14 +69,19 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
   }
 
   getStatusSnapshot() {
-    if (this.commandStatusOverride) {
-      return this.commandStatusOverride;
-    }
-    return buildAgentStatusPayload({
-      status: this.childRun?.getStatusSnapshot().status ?? "offline",
-      canInterrupt: false,
-      agentId: this.context.memberRunId,
-      agentName: this.context.memberName,
+    return this.commandStatusOverlayStore.getRepresentedTeamStatusSnapshot({
+      sourcePath: this.context.memberPath,
+      representedMember: this.context,
+      fallback: () => buildAgentStatusPayload({
+        status: this.childRun?.getStatusSnapshot().status ?? "offline",
+        canInterrupt: false,
+        agentId: this.context.memberRunId,
+        agentName: this.context.memberName,
+        memberRouteKey: this.context.memberRouteKey,
+        memberPath: this.context.memberPath,
+        sourceRouteKey: this.context.memberRouteKey,
+        sourcePath: this.context.memberPath,
+      }),
     });
   }
 
@@ -163,7 +172,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     this.unsubscribe = null;
     this.childRun = null;
     this.context.childRuntimeContext = null;
-    this.commandStatusOverride = null;
+    this.commandStatusOverlayStore.clear();
   }
 
   private async ensureReady(): Promise<TeamRun> {
@@ -171,9 +180,10 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
       return this.childRun;
     }
     const restoreRuntimeContext = this.context.childRuntimeContext;
-    const commandStatusOverride = this.commandStatusOverride;
-    this.dispose();
-    this.commandStatusOverride = commandStatusOverride;
+    this.unsubscribe?.();
+    this.unsubscribe = null;
+    this.childRun = null;
+    this.context.childRuntimeContext = null;
     this.childRun = await this.options.subTeamRunFactory.createOrRestore({
       parentTeamRunId: this.options.parentContext.runId,
       subTeamConfig: this.options.config,
@@ -203,7 +213,10 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     this.context.childTeamRunId = this.childRun.runId;
     this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;
     this.bindEvents(this.childRun);
-    if (!this.commandStatusOverride) {
+    if (this.commandStatusOverlayStore.getTeamStatus({
+      sourcePath: this.context.memberPath,
+      fallbackStatus: () => "offline",
+    }) !== "initializing") {
       this.publishStatus("idle");
     }
     return this.childRun;
@@ -260,13 +273,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
         sourcePrefix: this.context.memberPath,
         event,
       });
-      if (
-        prefixedEvent.eventSourceType === TeamRunEventSourceType.TEAM &&
-        prefixedEvent.sourcePath.length === this.context.memberPath.length &&
-        prefixedEvent.sourcePath.every((part, index) => part === this.context.memberPath[index])
-      ) {
-        this.commandStatusOverride = null;
-      }
+      this.commandStatusOverlayStore.recordReplacementEvents([prefixedEvent]);
       this.options.publish(prefixedEvent);
       this.options.notifyStatusChange();
     });
@@ -283,26 +290,11 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
   }
 
   private publishCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): void {
-    const currentStatus = normalizeAgentApiStatus(this.getStatusSnapshot().status);
-    if (status === "initializing" && currentStatus !== "offline" && currentStatus !== "idle") {
-      return;
-    }
-    this.commandStatusOverride = buildAgentStatusPayload({
-      status,
-      canInterrupt: false,
-      agentId: this.context.memberRunId,
-      agentName: this.context.memberName,
-      memberRouteKey: this.context.memberRouteKey,
-      memberPath: this.context.memberPath,
-      sourceRouteKey: this.context.memberRouteKey,
-      sourcePath: this.context.memberPath,
-    });
-    this.options.publish(buildTeamCommandStartStatusEvent({
-      teamRunId: this.options.parentContext.runId,
+    this.commandStatusOverlayStore.publishTeamCommandStatus({
       sourcePath: this.context.memberPath,
       status,
       errorMessage,
-    }));
-    this.options.notifyStatusChange();
+      currentStatus: () => this.getStatusSnapshot().status,
+    });
   }
 }

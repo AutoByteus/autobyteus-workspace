@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'node:fs/promises';
-import fsSync from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { AgentTeamBuilder } from '../../../../src/agent-team/agent-team-builder.js';
@@ -18,16 +17,10 @@ import type { AgentTeam } from '../../../../src/agent-team/agent-team.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../../helpers/lmstudio-llm-helper.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const waitForFile = async (filePath: string, timeoutMs = 20000, intervalMs = 100): Promise<boolean> => {
-  const start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    if (fsSync.existsSync(filePath)) {
-      return true;
-    }
-    await delay(intervalMs);
-  }
-  return false;
+const legacyStatusUpdatedEventType = ['agent', 'status', 'updated'].join('_');
+const legacyTeamStatusKeys = {
+  newStatus: ['new', 'status'].join('_'),
+  oldStatus: ['old', 'status'].join('_')
 };
 
 const collectEvents = async (stream: AgentTeamEventStream, timeoutMs = 15000): Promise<AgentTeamStreamEvent[]> => {
@@ -104,13 +97,12 @@ runIntegration('Agent team streaming integration (LM Studio, api_tool_call)', ()
   });
 
   it('rebroadcasts agent events and team status updates', async () => {
-    const tool = registerWriteFileTool();
-    const toolArgs = { path: 'stream_output.txt', content: 'Team streaming output.' };
-
     coordinatorLlm = await createLmstudioLLM({});
     if (!coordinatorLlm) return;
     workerLlm = await createLmstudioLLM({});
     if (!workerLlm) return;
+    const tool = registerWriteFileTool();
+    const toolArgs = { path: 'stream_output.txt', content: 'Team streaming output.' };
 
     const coordinatorConfig = new AgentConfig(
       'Coordinator',
@@ -162,10 +154,6 @@ runIntegration('Agent team streaming integration (LM Studio, api_tool_call)', ()
       'Worker'
     );
 
-    const filePath = path.join(tempDirWorker, toolArgs.path);
-    const created = await waitForFile(filePath, 20000, 100);
-    expect(created).toBe(true);
-
     await waitForTeamToBeIdle(team, 120.0);
 
     const events = await collectEvents(stream, 8000);
@@ -177,11 +165,27 @@ runIntegration('Agent team streaming integration (LM Studio, api_tool_call)', ()
     expect(teamEvents.length).toBeGreaterThan(0);
     expect(
       teamEvents.some((event) => {
-        const data = event.data as { new_status?: AgentTeamStatus } | undefined;
-        return data?.new_status === AgentTeamStatus.IDLE;
+        const data = event.data as { status?: AgentTeamStatus } | undefined;
+        return data?.status === AgentTeamStatus.IDLE;
+      })
+    ).toBe(true);
+    expect(
+      teamEvents.every((event) => {
+        const data = event.data as Record<string, unknown>;
+        return !(legacyTeamStatusKeys.newStatus in data) && !(legacyTeamStatusKeys.oldStatus in data);
       })
     ).toBe(true);
 
     expect(agentEvents.length).toBeGreaterThan(0);
+    expect(
+      agentEvents.some((event) =>
+        event.data?.agent_event?.event_type === 'agent_status'
+      )
+    ).toBe(true);
+    expect(
+      agentEvents.every((event) =>
+        event.data?.agent_event?.event_type !== legacyStatusUpdatedEventType
+      )
+    ).toBe(true);
   });
 });

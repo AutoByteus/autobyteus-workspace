@@ -44,6 +44,18 @@ const createDelayedBackend = (postMessage: ReturnType<typeof vi.fn>) => new Auto
   runtimeContext: createRuntimeContext(),
 });
 
+const createBackendWithMutableActiveState = (activeState: { active: boolean }) => new AutoByteusTeamRunBackend({
+  teamId: "team-1",
+  currentStatus: "idle",
+  postMessage: vi.fn(),
+  context: { agents: [] },
+} as any, {
+  isActive: () => activeState.active,
+  removeTeamRun: vi.fn(),
+  memberRunIdsByName: new Map([["Worker", "member-run-1"]]),
+  runtimeContext: createRuntimeContext(),
+});
+
 const createInterAgentRequest = (): InterAgentMessageDeliveryRequest => ({
   teamRunId: "team-1",
   sender: {
@@ -371,6 +383,41 @@ describe("AutoByteusTeamRunBackend", () => {
 
     expect(backend.getStatusSnapshot()).toEqual({ status: "running" });
     deferred.resolve();
+  });
+
+  it("does not expose observed live member status in snapshots after backend becomes inactive", () => {
+    const activeState = { active: true };
+    const backend = createBackendWithMutableActiveState(activeState);
+    backend.subscribeToEvents(() => undefined);
+
+    (backend as any).fanOutProcessedEvents([buildAgentEvent({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      runId: "member-run-1",
+      payload: {
+        status: "running",
+        can_interrupt: true,
+        agent_id: "member-run-1",
+        agent_name: "Worker",
+      },
+      statusHint: "ACTIVE",
+    })]);
+    expect(backend.getMemberStatusSnapshots()).toEqual([
+      expect.objectContaining({ agent_id: "member-run-1", status: "running" }),
+    ]);
+
+    activeState.active = false;
+
+    expect(backend.getMemberStatusSnapshots()).toEqual([
+      expect.objectContaining({
+        agent_id: "member-run-1",
+        agent_name: "Worker",
+        member_route_key: "Worker",
+        member_path: ["Worker"],
+        status: "offline",
+        can_interrupt: false,
+      }),
+    ]);
+    expect(backend.getStatusSnapshot()).toEqual({ status: "offline" });
   });
 
 });

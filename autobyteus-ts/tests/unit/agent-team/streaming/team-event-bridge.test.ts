@@ -56,12 +56,12 @@ describe('TeamEventBridge', () => {
     const event1 = new AgentTeamStreamEvent({
       team_id: 'sub-team-1',
       event_source_type: 'TEAM',
-      data: new AgentTeamStatusUpdateData({ new_status: AgentTeamStatus.IDLE })
+      data: new AgentTeamStatusUpdateData({ status: AgentTeamStatus.IDLE })
     });
     const event2 = new AgentTeamStreamEvent({
       team_id: 'sub-team-1',
       event_source_type: 'TEAM',
-      data: new AgentTeamStatusUpdateData({ new_status: AgentTeamStatus.PROCESSING })
+      data: new AgentTeamStatusUpdateData({ status: AgentTeamStatus.PROCESSING })
     });
 
     stream.put(event1);

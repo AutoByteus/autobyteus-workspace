@@ -39,7 +39,7 @@ const isTeamStatusPayload = (data: unknown): data is AgentTeamStatusUpdateData =
   if (!data || typeof data !== 'object') {
     return false;
   }
-  return 'new_status' in (data as Record<string, unknown>);
+  return 'status' in (data as Record<string, unknown>);
 };
 
 export type NodeData = {
@@ -101,7 +101,7 @@ export class TuiStateStore {
     this.dirty = true;
 
     if (event.event_source_type === 'TEAM' && isTeamStatusPayload(event.data)) {
-      this.teamStatuses[this.teamName] = event.data.new_status as AgentTeamStatus;
+      this.teamStatuses[this.teamName] = event.data.status as AgentTeamStatus;
     }
 
     this.processEventRecursively(event, this.teamName);
@@ -247,10 +247,10 @@ export class TuiStateStore {
 
       this.agentEventHistory[agentName].push(agentEvent);
 
-      if (agentEvent.event_type === StreamEventType.AGENT_STATUS_UPDATED) {
-        const data = agentEvent.data as { new_status?: AgentStatus };
-        if (data?.new_status) {
-          this.agentStatuses[agentName] = data.new_status;
+      if (agentEvent.event_type === StreamEventType.AGENT_STATUS) {
+        const data = agentEvent.data as { status?: AgentStatus };
+        if (data?.status) {
+          this.agentStatuses[agentName] = data.status;
           delete this.pendingApprovals[agentName];
         }
       } else if (agentEvent.event_type === StreamEventType.SEGMENT_EVENT) {
@@ -277,7 +277,7 @@ export class TuiStateStore {
       }
 
       if (subTeamEvent?.event_source_type === 'TEAM' && isTeamStatusPayload(subTeamEvent.data)) {
-        this.teamStatuses[subTeamName] = subTeamEvent.data.new_status;
+        this.teamStatuses[subTeamName] = subTeamEvent.data.status;
       }
 
       if (subTeamEvent) {

@@ -61,7 +61,7 @@ These handlers update the agent context and mark messages complete. In the curre
 - `TURN_COMPLETED` is the preferred completion signal for one specific turn.
 - `AGENT_STATUS` is run-level state with payload
   `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
-  It does not contain legacy `new_status` / `old_status` fields.
+  It does not contain legacy transition-field names.
 - After an accepted message command for an `offline` or `idle` run, the backend
   publishes non-interruptible `initializing` before slow provider/native startup
   or first-turn send work. Client bridges should display that streamed

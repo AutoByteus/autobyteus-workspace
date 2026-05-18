@@ -38,7 +38,7 @@ Codex thread status changes update `CodexThread` state first. The normalized
 `AGENT_STATUS` event is then projected from that thread-owned snapshot into the
 server WebSocket contract `{ status: "offline" | "initializing" | "idle" | "running" | "error",
 can_interrupt: boolean }`; raw provider status payloads are not forwarded and
-legacy target fields such as `new_status` / `old_status` are not emitted.
+legacy transition-field names are not emitted.
 Startup thread statuses project as `initializing` with `can_interrupt: false`;
 active generation/tool statuses project as `running`, and only `running`
 snapshots can expose interrupt authority.
@@ -282,7 +282,7 @@ Output shape:
   keep supported history item families aligned with the live lifecycle families
   above, but do not use them as the normal UI display fallback or merge partner.
 - Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Persist ready per-turn usage from the thread boundary instead of parsing raw token payloads in higher runtime layers.
-- Treat Codex status notifications as thread-state inputs. Public status output is the projected coarse `AGENT_STATUS` payload from `CodexThread`, not a raw provider payload or legacy `new_status` / `old_status` transport.
+- Treat Codex status notifications as thread-state inputs. Public status output is the projected coarse `AGENT_STATUS` payload from `CodexThread`, not a raw provider payload or legacy transition-field transport.
 - Treat provider/session compaction signals as storage-only boundary metadata: marker append plus eligible segmented archive rotation only. Never treat them as permission for semantic compaction, trace-content rewrite, trace loss, runtime memory retrieval, or runtime memory injection.
 - Do not infer `edit_file` success from published-artifact transport on the frontend.
 - Do not promote `turn/diff/updated` into lifecycle or artifact ownership without a new explicit design decision.

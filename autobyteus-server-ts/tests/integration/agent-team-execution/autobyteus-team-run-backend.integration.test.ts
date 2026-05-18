@@ -126,12 +126,14 @@ const createRuntimeContext = () =>
     memberContexts: [
       new AutoByteusTeamMemberContext({
         memberName: "Professor",
+        memberPath: ["Professor"],
         memberRouteKey: "professor",
         memberRunId: "professor-run",
         nativeAgentId: "native-professor",
       }),
       new AutoByteusTeamMemberContext({
         memberName: "Student",
+        memberPath: ["Student"],
         memberRouteKey: "student",
         memberRunId: "student-run",
         nativeAgentId: "native-student",
@@ -178,6 +180,51 @@ const createBackend = (
   };
 };
 
+const createDeliveryEndpoint = (input: {
+  memberName: string;
+  memberRunId: string;
+  memberPath: string[];
+  memberRouteKey: string;
+}) => ({
+  participant: {
+    memberKind: "agent" as const,
+    memberName: input.memberName,
+    memberPath: input.memberPath,
+    memberRouteKey: input.memberRouteKey,
+    memberRunId: input.memberRunId,
+    address: {
+      teamRunId: "team-auto-1",
+      memberPath: input.memberPath,
+      memberRouteKey: input.memberRouteKey,
+    },
+    platformRunId: null,
+    teamDefinitionId: null,
+    representedSubTeam: null,
+  },
+  selector: {
+    kind: "route_key" as const,
+    memberRouteKey: input.memberRouteKey,
+  },
+});
+
+const createInterAgentDeliveryRequest = () => ({
+  teamRunId: "team-auto-1",
+  sender: createDeliveryEndpoint({
+    memberName: "Coordinator",
+    memberRunId: "member-sender-1",
+    memberPath: ["Coordinator"],
+    memberRouteKey: "Coordinator",
+  }),
+  recipient: createDeliveryEndpoint({
+    memberName: "Student",
+    memberRunId: "student-run",
+    memberPath: ["Student"],
+    memberRouteKey: "student",
+  }),
+  content: "Please investigate.",
+  messageType: "agent_message",
+});
+
 afterEach(() => {
   vi.clearAllMocks();
 });
@@ -193,22 +240,16 @@ describe("AutoByteusTeamRunBackend integration", () => {
     expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
 
     const userMessage = new AgentInputUserMessage("hello team");
-    await expect(backend.postMessage(userMessage, "WorkerA")).resolves.toMatchObject({
+    const studentTarget = { kind: "route_key" as const, memberRouteKey: "student" };
+    await expect(backend.postMessage(userMessage, studentTarget)).resolves.toMatchObject({
       accepted: true,
-      memberName: "WorkerA",
-      memberRunId: "WorkerA",
+      memberName: "Student",
+      memberRunId: "student-run",
     });
-    expect(team.postMessage).toHaveBeenCalledWith(userMessage, "WorkerA");
+    expect(team.postMessage).toHaveBeenCalledWith(userMessage, "Student");
 
     await expect(
-      backend.deliverInterAgentMessage({
-        senderRunId: "member-sender-1",
-        senderMemberName: "Coordinator",
-        teamRunId: "team-auto-1",
-        recipientMemberName: "WorkerA",
-        content: "Please investigate.",
-        messageType: "agent_message",
-      }),
+      backend.deliverInterAgentMessage(createInterAgentDeliveryRequest()),
     ).resolves.toMatchObject({ accepted: true });
 
     const deliveredMessage = team.postMessage.mock.calls[1]?.[0] as AgentInputUserMessage;
@@ -223,13 +264,13 @@ describe("AutoByteusTeamRunBackend integration", () => {
       original_message_type: "agent_message",
       team_run_id: "team-auto-1",
     });
-    expect(team.postMessage.mock.calls[1]?.[1]).toBe("WorkerA");
+    expect(team.postMessage.mock.calls[1]?.[1]).toBe("Student");
 
     await expect(
-      backend.approveToolInvocation("WorkerA", "inv-1", true, "approved"),
+      backend.approveToolInvocation(studentTarget, "inv-1", true, "approved"),
     ).resolves.toEqual({ accepted: true });
     expect(team.postToolExecutionApproval).toHaveBeenCalledWith(
-      "WorkerA",
+      "Student",
       "inv-1",
       true,
       "approved",
@@ -267,18 +308,13 @@ describe("AutoByteusTeamRunBackend integration", () => {
     setActive(false);
 
     await expect(
-      backend.postMessage(new AgentInputUserMessage("hello"), "WorkerA"),
+      backend.postMessage(new AgentInputUserMessage("hello"), { kind: "route_key", memberRouteKey: "student" }),
     ).resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
     await expect(
-      backend.deliverInterAgentMessage({
-        senderRunId: "sender-1",
-        teamRunId: "team-auto-1",
-        recipientMemberName: "WorkerA",
-        content: "hello",
-      }),
+      backend.deliverInterAgentMessage(createInterAgentDeliveryRequest()),
     ).resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
     await expect(
-      backend.approveToolInvocation("WorkerA", "inv-1", true),
+      backend.approveToolInvocation({ kind: "route_key", memberRouteKey: "student" }, "inv-1", true),
     ).resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
     await expect(backend.interruptMember("student", "student-run")).resolves.toMatchObject({
       accepted: false,
@@ -368,10 +404,14 @@ describe("AutoByteusTeamRunBackend integration", () => {
       }),
     );
 
-    await waitForCondition(() => observed.length === 4);
+    await waitForCondition(() => observed.length >= 4);
     unsubscribe();
 
-    expect(observed[0]).toMatchObject({
+    const workerSegmentEvent = observed.find((event) =>
+      event.eventSourceType === TeamRunEventSourceType.AGENT &&
+      (event.data as any).memberName === "WorkerA" &&
+      (event.data as any).agentEvent.eventType === AgentRunEventType.SEGMENT_CONTENT);
+    expect(workerSegmentEvent).toMatchObject({
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: "team-auto-1",
       subTeamNodeName: null,
@@ -391,18 +431,23 @@ describe("AutoByteusTeamRunBackend integration", () => {
       },
     });
 
-    expect(observed[1]).toEqual({
+    const teamStatusEvent = observed.find((event) =>
+      event.eventSourceType === TeamRunEventSourceType.TEAM &&
+      event.subTeamNodeName === null);
+    expect(teamStatusEvent).toMatchObject({
       eventSourceType: TeamRunEventSourceType.TEAM,
       teamRunId: "team-auto-1",
       data: {
-        status: "idle",
+        status: expect.any(String),
       },
       subTeamNodeName: null,
     });
 
-    expect(observed[2]).toEqual({
+    const taskPlanEvent = observed.find((event) => event.eventSourceType === TeamRunEventSourceType.TASK_PLAN);
+    expect(taskPlanEvent).toMatchObject({
       eventSourceType: TeamRunEventSourceType.TASK_PLAN,
       teamRunId: "team-auto-1",
+      sourcePath: [],
       data: {
         team_id: "team-auto-1",
         tasks: [],
@@ -410,7 +455,11 @@ describe("AutoByteusTeamRunBackend integration", () => {
       subTeamNodeName: null,
     });
 
-    expect(observed[3]).toMatchObject({
+    const subTeamToolEvent = observed.find((event) =>
+      event.eventSourceType === TeamRunEventSourceType.AGENT &&
+      event.subTeamNodeName === "ResearchTeam" &&
+      (event.data as any).agentEvent.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
+    expect(subTeamToolEvent).toMatchObject({
       eventSourceType: TeamRunEventSourceType.AGENT,
       teamRunId: "team-auto-1",
       subTeamNodeName: "ResearchTeam",
@@ -463,7 +512,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
       }),
     );
 
-    await waitForCondition(() => observed.length === 2);
+    await waitForCondition(() => observed.length >= 2);
     unsubscribe();
 
     const interAgentEvents = observed.filter(

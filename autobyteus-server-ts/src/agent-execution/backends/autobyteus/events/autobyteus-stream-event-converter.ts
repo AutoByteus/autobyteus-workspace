@@ -7,8 +7,10 @@ import {
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import {
   buildAgentStatusPayload,
+  type AgentApiStatus,
   type AgentStatusPayload,
 } from "../../../domain/agent-status-payload.js";
+import { projectAutoByteusAgentStatus } from "./autobyteus-status-projector.js";
 
 const resolveStatusHint = (
   eventType: StreamEventType,
@@ -26,7 +28,7 @@ const resolveStatusHint = (
   if (eventType === StreamEventType.TURN_INTERRUPTED) {
     return "IDLE";
   }
-  if (eventType === StreamEventType.AGENT_STATUS_UPDATED) {
+  if (eventType === StreamEventType.AGENT_STATUS) {
     if (statusPayload?.status === "offline" || statusPayload?.status === "idle") {
       return "IDLE";
     }
@@ -62,7 +64,7 @@ const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
   [StreamEventType.TURN_STARTED, AgentRunEventType.TURN_STARTED],
   [StreamEventType.TURN_COMPLETED, AgentRunEventType.TURN_COMPLETED],
   [StreamEventType.TURN_INTERRUPTED, AgentRunEventType.TURN_INTERRUPTED],
-  [StreamEventType.AGENT_STATUS_UPDATED, AgentRunEventType.AGENT_STATUS],
+  [StreamEventType.AGENT_STATUS, AgentRunEventType.AGENT_STATUS],
   [StreamEventType.COMPACTION_STATUS, AgentRunEventType.COMPACTION_STATUS],
   [StreamEventType.ASSISTANT_COMPLETE_RESPONSE, AgentRunEventType.ASSISTANT_COMPLETE],
   [StreamEventType.TOOL_APPROVAL_REQUESTED, AgentRunEventType.TOOL_APPROVAL_REQUESTED],
@@ -99,8 +101,8 @@ export class AutoByteusStreamEventConverter {
     this.observeTurnLifecycle(event.event_type);
     const payload = serializePayload(event.data);
     const statusPayload =
-      event.event_type === StreamEventType.AGENT_STATUS_UPDATED
-        ? this.getCanonicalStatusPayload()
+      event.event_type === StreamEventType.AGENT_STATUS
+        ? this.getCanonicalStatusPayload(payload.status)
         : undefined;
     const statusHint = resolveStatusHint(event.event_type, statusPayload);
 
@@ -172,19 +174,56 @@ export class AutoByteusStreamEventConverter {
     }
   }
 
-  private getCanonicalStatusPayload(): AgentStatusPayload {
+  private getCanonicalStatusPayload(explicitStatus?: unknown): AgentStatusPayload {
     const snapshot = this.getStatusPayload();
+    const snapshotStatus = snapshot.status;
+    const eventStatus = explicitStatus === undefined || explicitStatus === null
+      ? snapshotStatus
+      : this.projectExplicitStatus(explicitStatus, snapshotStatus);
+    const status = this.hasActiveTurn &&
+      (eventStatus === "idle" || eventStatus === "offline" || eventStatus === "initializing")
+      ? "running"
+      : eventStatus;
+
+    const canonical = buildAgentStatusPayload({
+      status,
+      canInterrupt: snapshot.can_interrupt === true,
+      agentId: snapshot.agent_id,
+      agentName: snapshot.agent_name,
+      memberRouteKey: snapshot.member_route_key,
+      memberPath: snapshot.member_path,
+      sourceRouteKey: snapshot.source_route_key,
+      sourcePath: snapshot.source_path,
+    });
+
     if (
-      this.hasActiveTurn &&
-      (snapshot.status === "idle" || snapshot.status === "offline" || snapshot.status === "initializing")
+      snapshot.member_route_key &&
+      snapshot.member_path &&
+      !canonical.member_route_key &&
+      !canonical.member_path
     ) {
-      return buildAgentStatusPayload({
-        status: "running",
-        canInterrupt: snapshot.can_interrupt === true,
-        agentId: snapshot.agent_id,
-        agentName: snapshot.agent_name,
-      });
+      return {
+        ...canonical,
+        member_route_key: snapshot.member_route_key,
+        member_path: [...snapshot.member_path],
+        source_route_key: snapshot.source_route_key ?? snapshot.member_route_key,
+        source_path: snapshot.source_path ? [...snapshot.source_path] : [...snapshot.member_path],
+      };
     }
-    return snapshot;
+    return canonical;
+  }
+
+  private projectExplicitStatus(
+    explicitStatus: unknown,
+    fallbackStatus: AgentApiStatus,
+  ): AgentApiStatus {
+    if (typeof explicitStatus !== "string" || explicitStatus.trim().length === 0) {
+      return fallbackStatus;
+    }
+    const projected = projectAutoByteusAgentStatus({
+      currentStatus: explicitStatus,
+      isActive: true,
+    }).status;
+    return projected ?? fallbackStatus;
   }
 }

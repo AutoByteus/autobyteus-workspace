@@ -7,7 +7,7 @@ describe("AutoByteusStreamEventConverter", () => {
   it.each([
     [StreamEventType.TURN_STARTED, AgentRunEventType.TURN_STARTED],
     [StreamEventType.TURN_COMPLETED, AgentRunEventType.TURN_COMPLETED],
-    [StreamEventType.AGENT_STATUS_UPDATED, AgentRunEventType.AGENT_STATUS],
+    [StreamEventType.AGENT_STATUS, AgentRunEventType.AGENT_STATUS],
     [StreamEventType.COMPACTION_STATUS, AgentRunEventType.COMPACTION_STATUS],
     [StreamEventType.ASSISTANT_COMPLETE_RESPONSE, AgentRunEventType.ASSISTANT_COMPLETE],
     [StreamEventType.TOOL_APPROVAL_REQUESTED, AgentRunEventType.TOOL_APPROVAL_REQUESTED],
@@ -28,7 +28,7 @@ describe("AutoByteusStreamEventConverter", () => {
       event_type: streamEventType,
       data: { invocation_id: "inv-1", detail: "ok" },
     } as any);
-    const isStatusEvent = streamEventType === StreamEventType.AGENT_STATUS_UPDATED;
+    const isStatusEvent = streamEventType === StreamEventType.AGENT_STATUS;
 
     expect(event).toEqual({
       eventType: agentRunEventType,
@@ -49,33 +49,51 @@ describe("AutoByteusStreamEventConverter", () => {
     });
   });
 
-  it("treats idle and error agent status updates as explicit status hints", () => {
+  it("uses explicit current status payloads before stale snapshots", () => {
     expect(
       new AutoByteusStreamEventConverter("run-1", () => ({
-        status: "idle",
+        status: "offline",
         can_interrupt: false,
+        agent_id: "run-1",
       })).convert({
-        event_type: StreamEventType.AGENT_STATUS_UPDATED,
-        data: {},
+        event_type: StreamEventType.AGENT_STATUS,
+        data: { status: "idle" },
       } as any),
     )?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
-      payload: { status: "idle", can_interrupt: false },
+      payload: { status: "idle", can_interrupt: false, agent_id: "run-1" },
       statusHint: "IDLE",
     });
 
     expect(
       new AutoByteusStreamEventConverter("run-1", () => ({
-        status: "error",
+        status: "offline",
         can_interrupt: false,
       })).convert({
-        event_type: StreamEventType.AGENT_STATUS_UPDATED,
-        data: {},
+        event_type: StreamEventType.AGENT_STATUS,
+        data: { status: "error" },
       } as any),
     )?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
       payload: { status: "error", can_interrupt: false },
       statusHint: "ERROR",
+    });
+  });
+
+  it("normalizes explicit fine-grained native statuses through the AutoByteus status projector", () => {
+    expect(
+      new AutoByteusStreamEventConverter("run-1", () => ({
+        status: "offline",
+        can_interrupt: false,
+        agent_id: "run-1",
+      })).convert({
+        event_type: StreamEventType.AGENT_STATUS,
+        data: { status: "awaiting_tool_approval" },
+      } as any),
+    )?.toMatchObject({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: { status: "running", can_interrupt: false, agent_id: "run-1" },
+      statusHint: "ACTIVE",
     });
   });
 
@@ -96,7 +114,7 @@ describe("AutoByteusStreamEventConverter", () => {
     });
 
     expect(converter.convert({
-      event_type: StreamEventType.AGENT_STATUS_UPDATED,
+      event_type: StreamEventType.AGENT_STATUS,
       data: {},
     } as any))?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
@@ -110,7 +128,7 @@ describe("AutoByteusStreamEventConverter", () => {
 
     snapshotStatus = "initializing";
     expect(converter.convert({
-      event_type: StreamEventType.AGENT_STATUS_UPDATED,
+      event_type: StreamEventType.AGENT_STATUS,
       data: {},
     } as any))?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
@@ -132,7 +150,7 @@ describe("AutoByteusStreamEventConverter", () => {
     });
 
     expect(converter.convert({
-      event_type: StreamEventType.AGENT_STATUS_UPDATED,
+      event_type: StreamEventType.AGENT_STATUS,
       data: {},
     } as any))?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,

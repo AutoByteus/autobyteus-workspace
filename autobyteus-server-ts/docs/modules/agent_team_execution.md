@@ -66,19 +66,53 @@ is awaited.
 
 - Codex and Claude single-runtime teams publish member-scoped `AGENT_STATUS`
   through their team managers before lazy member `AgentRun` creation or send.
-- Mixed leaf-agent handles and mixed subteam handles publish the same
-  member-scoped command-start status before creating/restoring their child
-  `AgentRun` or `TeamRun`.
+- Mixed leaf-agent handles publish member-scoped `AGENT_STATUS` before creating
+  or restoring their child `AgentRun`.
+- Mixed subteam handles publish represented-team/source-path `TEAM_STATUS`
+  before creating or restoring their child `TeamRun`; the parent member-row
+  snapshot projects that represented team status for display without inventing a
+  leaf-agent identity.
 - Native AutoByteus teams publish member-scoped `AGENT_STATUS` for explicit or
   default-resolved member targets before native `team.postMessage(...)`.
 - True native no-target commands publish root `TEAM_STATUS initializing` only;
   they do not invent a member-scoped event.
 
-Pending member/root command-start overlays are reflected in status snapshots and
-aggregate team status while the command is still in startup. Runtime/native
-status events, command rejection, thrown failures, termination, or disposal must
-replace or clear those overlays so clients cannot remain indefinitely in
-`initializing`.
+`TeamCommandStatusOverlayStore` is the only shared owner for pending
+command-start overlays. Each backend/handle owns its own store instance; it is
+not a global status authority. The store gates `initializing` publication to
+current effective `offline`/`idle`, stores pending member route-key overlays and
+team `sourcePath` overlays, applies them to snapshots and aggregate inputs,
+replaces pending startup with `error` on command failure, clears overlays when
+matching runtime/native `AGENT_STATUS` or team `TEAM_STATUS` replacement events
+arrive, and clears all pending state on termination/disposal. Command owners
+still own target resolution, lazy runtime creation/restoration, child-team
+creation, provider/native send sequencing, and failure handling.
+
+Native AutoByteus member status identity/projection is owned by
+`AutoByteusTeamMemberStatusProjector`. The projector canonicalizes configured
+member run id, native agent id, member name, route key, member path, and runtime
+member context for both backend snapshots and native event processing. This
+keeps native status projection from creating duplicate snapshot identities for
+one member and keeps `AutoByteusTeamRunBackend` /
+`AutoByteusTeamRunEventProcessor` aligned on the same identity policy.
+
+For native AutoByteus steady-state status, explicit runtime `AGENT_STATUS`
+payloads are the primary status edge. Mutable native `team.context.agents`
+snapshots may enrich identity/can-interrupt or provide fallback status, but a
+stale or missing snapshot must not turn a known live member into `offline` while
+the backend remains active. The projector keeps the last observed live status
+for known active members and skips that observed overlay only for inactive
+backend/terminal cleanup. Native fine-grained runtime statuses stay internal to
+`autobyteus-ts`; the server projects them to the public coarse status vocabulary
+before WebSocket/frontend emission. The old `AGENT_STATUS_UPDATED`/
+`agent_status_updated` liveness event name is not part of the canonical runtime
+or server status path.
+
+Pending command-start overlays are reflected in member/represented-team status
+snapshots and aggregate team status while the command is still in startup.
+Runtime/native status events, command rejection, thrown failures, termination,
+or disposal must replace or clear those overlays so clients cannot remain
+indefinitely in `initializing`.
 
 ## Mixed-Team Communication Contract
 
@@ -181,7 +215,10 @@ replace or clear those overlays so clients cannot remain indefinitely in
 - `src/agent-team-execution/services/team-definition-topology-planner.ts`
 - `src/agent-team-execution/services/member-team-context-builder.ts`
 - `src/agent-team-execution/services/inter-agent-message-router.ts`
+- `src/agent-team-execution/services/team-command-status-overlay-store.ts`
+- `src/agent-team-execution/services/team-member-command-start-status-events.ts`
 - `src/agent-team-execution/domain/team-run-member-identity.ts`
+- `src/agent-team-execution/backends/autobyteus/autobyteus-team-member-status-projector.ts`
 - `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
 - `src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts`
 - `src/agent-team-execution/backends/mixed/members/*`

@@ -90,7 +90,7 @@ The loop waits on both using a `Promise.race(...)`-style wait for the first read
 
 Teams emit status via the unified team stream. The payload is:
 
-- `AgentTeamStatusUpdateData` with `new_status`, optional `old_status`, and optional `error_message`.
+- `AgentTeamStatusUpdateData` with `status`, optional `previous_status`, and optional `error_message`.
 
 ---
 
