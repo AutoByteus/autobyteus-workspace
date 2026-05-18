@@ -881,6 +881,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
         toolNames: [
           "open_tab",
           "navigate_to",
+          "set_device_emulation",
           "list_tabs",
           "read_page",
           "screenshot",
@@ -946,6 +947,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           expect.arrayContaining([
             "open_tab",
             "navigate_to",
+            "set_device_emulation",
             "list_tabs",
             "read_page",
             "screenshot",
@@ -960,6 +962,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
         expect(browserBridgeServer.requests.map((request) => request.path)).toEqual([
           "/browser/open",
           "/browser/navigate",
+          "/browser/device-emulation",
           "/browser/list",
           "/browser/read-page",
           "/browser/screenshot",

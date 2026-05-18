@@ -7,6 +7,14 @@ import type {
   WindowNodeContext,
 } from './node';
 import type {
+  BrowserHostBounds,
+  BrowserShellNavigateTabRequest,
+  BrowserShellOpenTabRequest,
+  BrowserShellReloadTabRequest,
+  BrowserShellSetDeviceEmulationRequest,
+  BrowserShellSnapshot,
+} from './browserShell';
+import type {
   ExtensionId,
   ManagedExtensionState,
   UpdateVoiceInputSettingsPayload,
@@ -85,6 +93,18 @@ declare global {
         state: 'revoked' | 'expired' | 'rejected',
         errorMessage?: string | null,
       ) => Promise<{ ok: true }>;
+      getBrowserShellSnapshot: () => Promise<BrowserShellSnapshot>;
+      openBrowserTab: (request: BrowserShellOpenTabRequest) => Promise<BrowserShellSnapshot>;
+      navigateBrowserTab: (request: BrowserShellNavigateTabRequest) => Promise<BrowserShellSnapshot>;
+      reloadBrowserTab: (request: BrowserShellReloadTabRequest) => Promise<BrowserShellSnapshot>;
+      focusBrowserTab: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
+      setActiveBrowserTab: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
+      updateBrowserHostBounds: (bounds: BrowserHostBounds | null) => Promise<BrowserShellSnapshot>;
+      setBrowserDeviceEmulation: (
+        request: BrowserShellSetDeviceEmulationRequest,
+      ) => Promise<BrowserShellSnapshot>;
+      closeBrowserShellSession: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
+      onBrowserShellSnapshotUpdated: (callback: (snapshot: BrowserShellSnapshot) => void) => Cleanup;
       getAppUpdateState: () => Promise<AppUpdateState>;
       checkForAppUpdates: () => Promise<AppUpdateState>;
       downloadAppUpdate: () => Promise<AppUpdateState>;

@@ -1,0 +1,328 @@
+{
+  "meta": {
+    "date": "2026-05-18T18:50:09.353Z",
+    "electron": "38.8.2",
+    "chrome": "140.0.7339.249",
+    "node": "22.22.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "fixtureBaseUrl": "http://127.0.0.1:55710",
+  "expected": {
+    "profile": {
+      "width": 390,
+      "height": 844,
+      "device_scale_factor": 3
+    },
+    "largeHost": {
+      "x": 0,
+      "y": 0,
+      "width": 1000,
+      "height": 900
+    },
+    "offsetLargeHost": {
+      "x": 12,
+      "y": 18,
+      "width": 1000,
+      "height": 900
+    },
+    "smallHost": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 500
+    },
+    "expectedLarge": {
+      "bounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "scale": 1
+    },
+    "expectedOffsetLarge": {
+      "bounds": {
+        "x": 317,
+        "y": 46,
+        "width": 390,
+        "height": 844
+      },
+      "scale": 1
+    },
+    "expectedSmall": {
+      "bounds": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "scale": 0.5924170616113744
+    }
+  },
+  "measurements": {
+    "desktopBefore": {
+      "innerWidth": 1000,
+      "innerHeight": 900,
+      "dpr": 2,
+      "modeContent": "DESKTOP",
+      "mobileMedia": false,
+      "bodyBackground": "rgb(255, 211, 155)",
+      "probeWidth": 899,
+      "layoutWidth": 960,
+      "scrollHeight": 1995,
+      "title": "Round2 Mobile Probe /tab-one"
+    },
+    "mobileResult": {
+      "tab_id": "6535eb",
+      "mode": "mobile",
+      "profile": {
+        "width": 390,
+        "height": 844,
+        "device_scale_factor": 3
+      }
+    },
+    "mobileLargeProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 2032,
+      "title": "Round2 Mobile Probe /tab-one"
+    },
+    "largeWindow": {
+      "label": "large-centered",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/round2/screenshots/window-large-centered-1779130210828.png",
+      "imageSize": {
+        "width": 0,
+        "height": 0
+      },
+      "samplePoints": {
+        "outsideLeftMargin": {
+          "x": 50,
+          "y": 78
+        },
+        "insideMobileView": {
+          "x": 355,
+          "y": 78
+        },
+        "outsideRightMargin": {
+          "x": 745,
+          "y": 78
+        }
+      },
+      "sampleRgba": {
+        "outsideLeftMargin": [],
+        "insideMobileView": [],
+        "outsideRightMargin": []
+      }
+    },
+    "postNormalLargeProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 2032,
+      "title": "Round2 Mobile Probe /tab-one"
+    },
+    "largeFullPageBoundsMutation": [
+      {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 2032
+      },
+      {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "postFullLargeProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 2032,
+      "title": "Round2 Mobile Probe /tab-one"
+    }
+  },
+  "screenshots": [
+    {
+      "label": "round2-large-mobile-normal",
+      "input": {
+        "tab_id": "6535eb",
+        "full_page": false
+      },
+      "beforeBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "afterBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "expectedBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "tab_id": "6535eb",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/round2/screenshots/6535eb-1779130210883.png",
+      "mime_type": "image/png",
+      "bytes": 26825,
+      "imageSize": {
+        "width": 780,
+        "height": 1688
+      }
+    },
+    {
+      "label": "round2-large-mobile-full-page",
+      "input": {
+        "tab_id": "6535eb",
+        "full_page": true
+      },
+      "beforeBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "afterBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "expectedBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "tab_id": "6535eb",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/round2/screenshots/6535eb-1779130211036.png",
+      "mime_type": "image/png",
+      "bytes": 36901,
+      "imageSize": {
+        "width": 780,
+        "height": 4064
+      }
+    }
+  ],
+  "windowScreenshots": [
+    {
+      "label": "large-centered",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/round2/screenshots/window-large-centered-1779130210828.png",
+      "imageSize": {
+        "width": 0,
+        "height": 0
+      },
+      "samplePoints": {
+        "outsideLeftMargin": {
+          "x": 50,
+          "y": 78
+        },
+        "insideMobileView": {
+          "x": 355,
+          "y": 78
+        },
+        "outsideRightMargin": {
+          "x": 745,
+          "y": 78
+        }
+      },
+      "sampleRgba": {
+        "outsideLeftMargin": [],
+        "insideMobileView": [],
+        "outsideRightMargin": []
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "name": "large_host_centered_finite_mobile_presentation",
+      "value": {
+        "bounds": {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        "expected": {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        "params": {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 1
+        },
+        "probe": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "dpr": 3,
+          "modeContent": "MOBILE",
+          "mobileMedia": true,
+          "bodyBackground": "rgb(155, 209, 255)",
+          "probeWidth": 329,
+          "layoutWidth": 390,
+          "scrollHeight": 2032,
+          "title": "Round2 Mobile Probe /tab-one"
+        }
+      }
+    }
+  ],
+  "snapshots": [],
+  "result": "fail",
+  "error": {
+    "message": "small-host mobile presentation bounds were not fit-scaled and centered",
+    "stack": "Error: small-host mobile presentation bounds were not fit-scaled and centered\n    at assert (/private/tmp/autobyteus-browser-mobile-e2e-round2.cjs:26:19)\n    at main (/private/tmp/autobyteus-browser-mobile-e2e-round2.cjs:379:5)",
+    "details": {
+      "lastBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 500
+      },
+      "expected": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      }
+    }
+  }
+}

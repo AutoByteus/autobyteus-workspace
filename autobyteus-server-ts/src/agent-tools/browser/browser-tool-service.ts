@@ -15,6 +15,8 @@ import {
   DomSnapshotResult,
   ReadPageInput,
   ReadPageResult,
+  SetDeviceEmulationInput,
+  SetDeviceEmulationResult,
   BrowserToolError,
 } from "./browser-tool-contract.js";
 import {
@@ -26,6 +28,7 @@ import {
   assertOpenTabSemantics,
   assertDomSnapshotSemantics,
   assertReadPageSemantics,
+  assertSetDeviceEmulationSemantics,
 } from "./browser-tool-semantic-validators.js";
 import { BrowserBridgeClient } from "./browser-bridge-client.js";
 import { getBrowserBridgeConfigResolver } from "./browser-bridge-config-resolver.js";
@@ -91,6 +94,14 @@ export class BrowserToolService {
     this.assertBrowserSupported();
     assertCloseTabSemantics(input);
     return this.getBridgeClient().closeTab(input);
+  }
+
+  async setDeviceEmulation(
+    input: SetDeviceEmulationInput,
+  ): Promise<SetDeviceEmulationResult> {
+    this.assertBrowserSupported();
+    assertSetDeviceEmulationSemantics(input);
+    return this.getBridgeClient().setDeviceEmulation(input);
   }
 
   private assertBrowserSupported(): void {

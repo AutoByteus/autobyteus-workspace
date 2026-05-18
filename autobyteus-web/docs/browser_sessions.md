@@ -17,6 +17,7 @@ The stable browser tools are:
 - `screenshot`
 - `dom_snapshot`
 - `run_script`
+- `set_device_emulation`
 
 The contract is strict:
 
@@ -35,6 +36,7 @@ Electron main is the authoritative owner for:
 - `WebContentsView` creation and destruction
 - browser shell projection
 - shell-host attachment and bounds
+- per-tab browser device emulation state
 
 Main-process owners:
 
@@ -46,6 +48,13 @@ Main-process owners:
   - session registry
   - session lifecycle
   - lease state storage
+  - per-tab device emulation state
+  - available host bounds vs actual native presentation bounds
+- `BrowserDeviceEmulationController`
+  - mobile profile defaults and normalization
+  - mobile presentation bounds and fit-scale computation
+  - device metrics vs presentation scale separation
+  - Electron `webContents.enableDeviceEmulation` / `disableDeviceEmulation` application
 - `BrowserTabNavigation`
   - URL normalization
   - load/readiness waits
@@ -100,6 +109,7 @@ The renderer does not own:
 - session lifecycle
 - shell lease policy
 - native browser surface creation
+- native device emulation state
 
 ## Shell Lease Model
 
@@ -156,6 +166,7 @@ All follow-up tools operate by `tab_id`.
 Examples:
 
 - `navigate_to`
+- `set_device_emulation`
 - `read_page`
 - `screenshot`
 - `dom_snapshot`
@@ -164,6 +175,27 @@ Examples:
 
 These operations go through the server browser boundary to Electron main.
 They do not depend on renderer DOM ownership.
+
+### Device emulation
+
+`set_device_emulation` changes an existing tab's native device-emulation mode.
+
+Examples:
+
+- enable the default mobile profile: `set_device_emulation({ "tab_id": "...", "mode": "mobile" })`
+- enable a custom mobile viewport: `set_device_emulation({ "tab_id": "...", "mode": "mobile", "width": 390, "height": 844, "device_scale_factor": 3 })`
+- restore desktop projection: `set_device_emulation({ "tab_id": "...", "mode": "desktop" })`
+
+Device emulation is tab-local state owned by Electron main.
+Its device metrics are separate from native presentation bounds:
+
+- `screenSize`, `viewSize`, and `device_scale_factor` stay equal to the selected mobile profile.
+- In desktop mode, the native `WebContentsView` uses the full Browser host rectangle.
+- In mobile mode, Electron main computes a centered finite device presentation rectangle from the host rectangle and profile size. If the host is smaller than the profile, the presentation is fit-scaled while the emulated CSS/device metrics remain unchanged.
+- `hostBounds` records the available Browser host rectangle; `viewportBounds` records the actual native `WebContentsView` presentation bounds.
+- `WorkspaceShellWindow` attaches or detaches the selected Browser view, but must not overwrite the Browser session manager's computed presentation bounds.
+
+Resizing the Browser panel or switching tabs must not overwrite a tab's `deviceEmulation` state.
 
 ### Popup-created tabs
 
@@ -183,9 +215,11 @@ Instead:
 
 1. the renderer displays browser tab chrome and a rectangular host area
 2. the renderer reports that host area bounds to Electron main
-3. Electron main attaches the active session's `WebContentsView` at those bounds
+3. Electron main computes the active session's native presentation bounds
+4. Electron main attaches the active session's `WebContentsView` at those bounds
 
 This is why browser content can appear inside the right-side tab while still preserving full `webContents` capabilities.
+The renderer does not compute or own mobile device centering, fit scale, or native `webContents` emulation.
 
 ## Browser Shell UX
 
@@ -196,12 +230,14 @@ The Browser shell UI owns:
 - the internal browser tab strip
 - manual URL entry
 - manual new-tab creation
+- mobile/desktop toggle for the active tab
 - refresh
 - close-current-tab
 - full-view / restore toggle
 
 These controls do not create a second browser model.
 They reuse the same Browser shell store and the same Browser-shell IPC/controller path that agent-driven `open_tab` uses.
+The mobile/desktop toggle calls the Browser shell IPC path and reflects the returned snapshot; it does not emulate mobile mode with renderer CSS.
 
 When no tabs exist, the Browser shell stays visible and shows an empty state instead of disappearing.
 

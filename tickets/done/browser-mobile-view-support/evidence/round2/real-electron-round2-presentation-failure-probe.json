@@ -1,0 +1,195 @@
+{
+  "host": {
+    "x": 0,
+    "y": 0,
+    "width": 1000,
+    "height": 900
+  },
+  "small": {
+    "x": 0,
+    "y": 0,
+    "width": 320,
+    "height": 500
+  },
+  "expectedLarge": {
+    "x": 305,
+    "y": 28,
+    "width": 390,
+    "height": 844
+  },
+  "expectedSmall": {
+    "x": 44,
+    "y": 0,
+    "width": 231,
+    "height": 500
+  },
+  "steps": [
+    {
+      "name": "desktop-host",
+      "lastBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1000,
+        "height": 900
+      }
+    },
+    {
+      "name": "after-shell-setDeviceEmulation-large-host",
+      "lastBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1000,
+        "height": 900
+      },
+      "expected": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "snapshot": {
+        "activeTabId": "932a90",
+        "sessions": [
+          {
+            "tab_id": "932a90",
+            "title": "failure probe",
+            "url": "http://127.0.0.1:55720/probe",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          }
+        ]
+      },
+      "enableCall": {
+        "screenPosition": "mobile",
+        "screenSize": {
+          "width": 390,
+          "height": 844
+        },
+        "viewPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "deviceScaleFactor": 3,
+        "viewSize": {
+          "width": 390,
+          "height": 844
+        },
+        "scale": 1
+      },
+      "setBoundsTail": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        }
+      ]
+    },
+    {
+      "name": "after-shell-updateHostBounds-small-host",
+      "lastBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 320,
+        "height": 500
+      },
+      "expected": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "enableCall": {
+        "screenPosition": "mobile",
+        "screenSize": {
+          "width": 390,
+          "height": 844
+        },
+        "viewPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "deviceScaleFactor": 3,
+        "viewSize": {
+          "width": 390,
+          "height": 844
+        },
+        "scale": 0.5924170616113744
+      },
+      "setBoundsTail": [
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 44,
+          "y": 0,
+          "width": 231,
+          "height": 500
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 500
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 500
+        }
+      ]
+    }
+  ]
+}
