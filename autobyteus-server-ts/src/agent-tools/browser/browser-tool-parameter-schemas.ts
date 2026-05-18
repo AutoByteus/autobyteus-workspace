@@ -11,6 +11,7 @@ import {
   NAVIGATE_TO_TOOL_NAME,
   OPEN_TAB_TOOL_NAME,
   DOM_SNAPSHOT_TOOL_NAME,
+  SET_DEVICE_EMULATION_TOOL_NAME,
   type BrowserToolName,
   type BrowserToolParameterSpec,
   READ_PAGE_TOOL_NAME,
@@ -72,3 +73,6 @@ export const buildDomSnapshotParameterSchema = (): ParameterSchema =>
 
 export const buildRunScriptParameterSchema = (): ParameterSchema =>
   buildBrowserToolParameterSchema(RUN_SCRIPT_TOOL_NAME);
+
+export const buildSetDeviceEmulationParameterSchema = (): ParameterSchema =>
+  buildBrowserToolParameterSchema(SET_DEVICE_EMULATION_TOOL_NAME);

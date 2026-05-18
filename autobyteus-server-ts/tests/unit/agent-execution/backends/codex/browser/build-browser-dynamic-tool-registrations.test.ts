@@ -10,6 +10,7 @@ import {
   BROWSER_BRIDGE_TOKEN_ENV,
   DOM_SNAPSHOT_TOOL_NAME,
   READ_PAGE_TOOL_NAME,
+  SET_DEVICE_EMULATION_TOOL_NAME,
 } from "../../../../../../src/agent-tools/browser/browser-tool-contract.js";
 import { buildBrowserDynamicToolRegistrations } from "../../../../../../src/agent-execution/backends/codex/browser/build-browser-dynamic-tool-registrations.js";
 
@@ -153,12 +154,28 @@ describe("buildBrowserDynamicToolRegistrations", () => {
           }),
         };
       }
+      if (url.endsWith("/browser/device-emulation")) {
+        return {
+          json: async () => ({
+            ok: true,
+            result: {
+              tab_id: "browser-session-1",
+              mode: "mobile",
+              profile: {
+                width: 390,
+                height: 844,
+                device_scale_factor: 3,
+              },
+            },
+          }),
+        };
+      }
       throw new Error(`Unexpected browser bridge url: ${url}`);
     }) as typeof globalThis.fetch;
 
     const registrations = buildBrowserDynamicToolRegistrations();
     expect(registrations).not.toBeNull();
-    expect(registrations).toHaveLength(8);
+    expect(registrations).toHaveLength(9);
 
     const openTabRegistration = registrations!.find(
       (registration) => registration.spec.name === OPEN_TAB_TOOL_NAME,
@@ -205,6 +222,9 @@ describe("buildBrowserDynamicToolRegistrations", () => {
     );
     const closeTabRegistration = registrations!.find(
       (registration) => registration.spec.name === CLOSE_TAB_TOOL_NAME,
+    );
+    const setDeviceEmulationRegistration = registrations!.find(
+      (registration) => registration.spec.name === SET_DEVICE_EMULATION_TOOL_NAME,
     );
 
     const navigateResult = await navigateToRegistration!.handler({
@@ -337,6 +357,27 @@ describe("buildBrowserDynamicToolRegistrations", () => {
     expect(JSON.parse(closeResult.contentItems[0]!.text)).toEqual({
       tab_id: "browser-session-1",
       status: "closed",
+    });
+
+    const deviceResult = await setDeviceEmulationRegistration!.handler({
+      runId: "run-1",
+      threadId: "thread-1",
+      turnId: null,
+      callId: "call-9",
+      toolName: SET_DEVICE_EMULATION_TOOL_NAME,
+      arguments: {
+        tab_id: "browser-session-1",
+        mode: "mobile",
+      },
+    });
+    expect(JSON.parse(deviceResult.contentItems[0]!.text)).toEqual({
+      tab_id: "browser-session-1",
+      mode: "mobile",
+      profile: {
+        width: 390,
+        height: 844,
+        device_scale_factor: 3,
+      },
     });
   });
 });

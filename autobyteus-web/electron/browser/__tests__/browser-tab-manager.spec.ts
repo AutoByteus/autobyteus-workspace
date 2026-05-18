@@ -12,6 +12,8 @@ class FakeWebContents extends EventEmitter {
   private readonly html = "<html><body><main>Demo</main><button>Run</button></body></html>";
   private windowOpenHandler: ((details: any) => any) | null = null;
   private currentUrl = "";
+  readonly deviceEmulationCalls: unknown[] = [];
+  disableDeviceEmulationCallCount = 0;
 
   constructor(readonly session: object = { id: "browser-session" }) {
     super();
@@ -97,6 +99,14 @@ class FakeWebContents extends EventEmitter {
     return { width: 1200, height: 800 };
   }
 
+  enableDeviceEmulation(parameters: unknown): void {
+    this.deviceEmulationCalls.push(parameters);
+  }
+
+  disableDeviceEmulation(): void {
+    this.disableDeviceEmulationCallCount += 1;
+  }
+
   close(): void {
     this.destroyed = true;
     this.emit("destroyed");
@@ -153,6 +163,7 @@ class FakeWebContents extends EventEmitter {
 class FakeWebContentsView {
   readonly webContents: FakeWebContents;
   bounds = { x: 0, y: 0, width: 0, height: 0 };
+  readonly boundsCalls: Array<{ x: number; y: number; width: number; height: number }> = [];
 
   constructor(webContents?: FakeWebContents) {
     this.webContents = webContents ?? new FakeWebContents();
@@ -160,6 +171,7 @@ class FakeWebContentsView {
 
   setBounds(bounds: { x: number; y: number; width: number; height: number }): void {
     this.bounds = { ...bounds };
+    this.boundsCalls.push({ ...bounds });
   }
 }
 
@@ -352,6 +364,7 @@ describe("BrowserTabManager", () => {
           tab_id: opened.tab_id,
           title: new URL(targetUrl).toString(),
           url: new URL(targetUrl).toString(),
+          device_emulation: { mode: "desktop", profile: null },
         },
       ],
     });
@@ -397,6 +410,7 @@ describe("BrowserTabManager", () => {
           tab_id: opened.tab_id,
           title: new URL(targetUrl).toString(),
           url: new URL(targetUrl).toString(),
+          device_emulation: { mode: "desktop", profile: null },
         },
       ],
     });
@@ -499,6 +513,7 @@ describe("BrowserTabManager", () => {
           tab_id: opened.tab_id,
           title: "http://localhost:3000/demo",
           url: "http://localhost:3000/demo",
+          device_emulation: { mode: "desktop", profile: null },
         },
       ],
     });
@@ -522,6 +537,154 @@ describe("BrowserTabManager", () => {
       tab_id: opened.tab_id,
       schema_version: "autobyteus-browser-dom-snapshot-v1",
       returned_elements: 1,
+    });
+  });
+
+  it("stores per-tab mobile emulation state and restores desktop mode", async () => {
+    const view = new FakeWebContentsView();
+    const manager = new BrowserTabManager({
+      viewFactory: createViewFactory([], { id: "browser-session" }, {
+        createBrowserView: () => {
+          const originalLoadURL = view.webContents.loadURL.bind(view.webContents);
+          view.webContents.loadURL = async (url: string) => {
+            const loadPromise = originalLoadURL(url);
+            view.webContents.finishLoad(url);
+            return loadPromise;
+          };
+          return view as any;
+        },
+      }) as any,
+      screenshotWriter: {
+        write: async () => "/tmp/browser.png",
+      } as any,
+    });
+
+    const opened = await manager.openSession({
+      url: "http://localhost:3000/demo",
+      wait_until: "load",
+    });
+
+    await expect(
+      manager.setDeviceEmulation({
+        tab_id: opened.tab_id,
+        mode: "mobile",
+        width: 375,
+        height: 812,
+        device_scale_factor: 3,
+      }),
+    ).resolves.toEqual({
+      tab_id: opened.tab_id,
+      mode: "mobile",
+      profile: {
+        width: 375,
+        height: 812,
+        device_scale_factor: 3,
+      },
+    });
+    expect(view.webContents.deviceEmulationCalls).toHaveLength(1);
+    expect(view.webContents.deviceEmulationCalls[0]).toMatchObject({
+      screenPosition: "mobile",
+      screenSize: { width: 375, height: 812 },
+      viewSize: { width: 375, height: 812 },
+      deviceScaleFactor: 3,
+      scale: 1,
+    });
+    expect(view.bounds).toEqual({ x: 452, y: 44, width: 375, height: 812 });
+
+    manager.updateSessionViewportBounds(opened.tab_id, {
+      x: 0,
+      y: 0,
+      width: 1200,
+      height: 900,
+    });
+    expect(view.webContents.deviceEmulationCalls).toHaveLength(2);
+    expect(view.webContents.deviceEmulationCalls[1]).toMatchObject({
+      screenPosition: "mobile",
+      screenSize: { width: 375, height: 812 },
+      viewSize: { width: 375, height: 812 },
+      deviceScaleFactor: 3,
+      scale: 1,
+    });
+    expect(view.bounds).toEqual({ x: 412, y: 44, width: 375, height: 812 });
+
+    await manager.captureScreenshot({ tab_id: opened.tab_id, full_page: true });
+    expect(view.webContents.deviceEmulationCalls).toHaveLength(3);
+    expect(view.boundsCalls).toContainEqual({ x: 412, y: 44, width: 1200, height: 812 });
+    expect(view.bounds).toEqual({ x: 412, y: 44, width: 375, height: 812 });
+    expect(manager.getSessionSummaryOrThrow(opened.tab_id).device_emulation).toEqual({
+      mode: "mobile",
+      profile: {
+        width: 375,
+        height: 812,
+        device_scale_factor: 3,
+      },
+    });
+
+    await expect(
+      manager.setDeviceEmulation({
+        tab_id: opened.tab_id,
+        mode: "desktop",
+      }),
+    ).resolves.toEqual({
+      tab_id: opened.tab_id,
+      mode: "desktop",
+      profile: null,
+    });
+    expect(view.webContents.disableDeviceEmulationCallCount).toBe(1);
+    expect(view.bounds).toEqual({ x: 0, y: 0, width: 1200, height: 900 });
+    expect(manager.getSessionSummaryOrThrow(opened.tab_id).device_emulation).toEqual({
+      mode: "desktop",
+      profile: null,
+    });
+  });
+
+  it("fit-scales centered mobile presentation inside a small host without changing profile metrics", async () => {
+    const view = new FakeWebContentsView();
+    const manager = new BrowserTabManager({
+      viewFactory: createViewFactory([], { id: "browser-session" }, {
+        createBrowserView: () => {
+          const originalLoadURL = view.webContents.loadURL.bind(view.webContents);
+          view.webContents.loadURL = async (url: string) => {
+            const loadPromise = originalLoadURL(url);
+            view.webContents.finishLoad(url);
+            return loadPromise;
+          };
+          return view as any;
+        },
+      }) as any,
+      screenshotWriter: {
+        write: async () => "/tmp/browser.png",
+      } as any,
+    });
+
+    const opened = await manager.openSession({
+      url: "http://localhost:3000/demo",
+      wait_until: "load",
+    });
+    await manager.setDeviceEmulation({
+      tab_id: opened.tab_id,
+      mode: "mobile",
+      width: 400,
+      height: 800,
+      device_scale_factor: 2,
+    });
+
+    manager.updateSessionViewportBounds(opened.tab_id, {
+      x: 10,
+      y: 20,
+      width: 300,
+      height: 300,
+    });
+
+    expect(view.bounds).toEqual({ x: 85, y: 20, width: 150, height: 300 });
+    expect(
+      view.webContents.deviceEmulationCalls[view.webContents.deviceEmulationCalls.length - 1],
+    ).toMatchObject({
+      screenPosition: "mobile",
+      screenSize: { width: 400, height: 800 },
+      viewSize: { width: 400, height: 800 },
+      deviceScaleFactor: 2,
+      scale: 0.375,
     });
   });
 
@@ -629,6 +792,7 @@ describe("BrowserTabManager", () => {
           tab_id: opener.tab_id,
           title: "https://x.com/",
           url: "https://x.com/",
+          device_emulation: { mode: "desktop", profile: null },
         },
       ],
     });
@@ -659,6 +823,7 @@ describe("BrowserTabManager", () => {
           tab_id: manager.listSessions().sessions[0]!.tab_id,
           title: "https://x.com/",
           url: "https://x.com/",
+          device_emulation: { mode: "desktop", profile: null },
         },
       ],
     });

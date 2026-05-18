@@ -11,6 +11,7 @@ import type {
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
   BrowserShellReloadTabRequest,
+  BrowserShellSetDeviceEmulationRequest,
   BrowserShellSnapshot,
 } from '../types/browserShell';
 
@@ -74,6 +75,9 @@ interface Window {
     focusBrowserTab: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
     setActiveBrowserTab: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
     updateBrowserHostBounds: (bounds: BrowserHostBounds | null) => Promise<BrowserShellSnapshot>;
+    setBrowserDeviceEmulation: (
+      request: BrowserShellSetDeviceEmulationRequest,
+    ) => Promise<BrowserShellSnapshot>;
     closeBrowserShellSession: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
     onBrowserShellSnapshotUpdated: (callback: (snapshot: BrowserShellSnapshot) => void) => Cleanup;
     getAppUpdateState: () => Promise<AppUpdateState>;

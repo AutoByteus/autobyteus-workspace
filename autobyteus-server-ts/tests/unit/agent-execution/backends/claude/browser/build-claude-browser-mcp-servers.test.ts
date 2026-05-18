@@ -10,6 +10,7 @@ import {
   BROWSER_BRIDGE_TOKEN_ENV,
   DOM_SNAPSHOT_TOOL_NAME,
   READ_PAGE_TOOL_NAME,
+  SET_DEVICE_EMULATION_TOOL_NAME,
 } from "../../../../../../src/agent-tools/browser/browser-tool-contract.js";
 import { buildClaudeBrowserMcpServers } from "../../../../../../src/agent-execution/backends/claude/browser/build-claude-browser-mcp-servers.js";
 
@@ -162,6 +163,22 @@ describe("buildClaudeBrowserMcpServers", () => {
           }),
         };
       }
+      if (url.endsWith("/browser/device-emulation")) {
+        return {
+          json: async () => ({
+            ok: true,
+            result: {
+              tab_id: "browser-session-1",
+              mode: "mobile",
+              profile: {
+                width: 390,
+                height: 844,
+                device_scale_factor: 3,
+              },
+            },
+          }),
+        };
+      }
       throw new Error(`Unexpected browser bridge url: ${url}`);
     }) as typeof globalThis.fetch;
 
@@ -178,12 +195,12 @@ describe("buildClaudeBrowserMcpServers", () => {
 
     const servers = await buildClaudeBrowserMcpServers({ sdkClient });
 
-    expect(createToolDefinition).toHaveBeenCalledTimes(8);
+    expect(createToolDefinition).toHaveBeenCalledTimes(9);
     expect(createMcpServer).toHaveBeenCalledTimes(1);
     expect(servers).toMatchObject({
       autobyteus_browser: {
         name: "autobyteus_browser",
-        toolCount: 8,
+        toolCount: 9,
       },
     });
 
@@ -220,6 +237,9 @@ describe("buildClaudeBrowserMcpServers", () => {
     const executeJavascriptTool = tools.find((tool) => tool.name === RUN_SCRIPT_TOOL_NAME);
     const domSnapshotTool = tools.find((tool) => tool.name === DOM_SNAPSHOT_TOOL_NAME);
     const closeTabTool = tools.find((tool) => tool.name === CLOSE_TAB_TOOL_NAME);
+    const setDeviceEmulationTool = tools.find(
+      (tool) => tool.name === SET_DEVICE_EMULATION_TOOL_NAME,
+    );
 
     await expect(
       (navigateToTool!.handler as (input: unknown) => Promise<Record<string, unknown>>)({
@@ -380,6 +400,32 @@ describe("buildClaudeBrowserMcpServers", () => {
             {
               tab_id: "browser-session-1",
               status: "closed",
+            },
+            null,
+            2,
+          ),
+        },
+      ],
+    });
+
+    await expect(
+      (setDeviceEmulationTool!.handler as (input: unknown) => Promise<Record<string, unknown>>)({
+        tab_id: "browser-session-1",
+        mode: "mobile",
+      }),
+    ).resolves.toEqual({
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(
+            {
+              tab_id: "browser-session-1",
+              mode: "mobile",
+              profile: {
+                width: 390,
+                height: 844,
+                device_scale_factor: 3,
+              },
             },
             null,
             2,

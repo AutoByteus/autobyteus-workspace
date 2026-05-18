@@ -1631,6 +1631,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       toolNames: [
         "open_tab",
         "navigate_to",
+        "set_device_emulation",
         "list_tabs",
         "read_page",
         "screenshot",
@@ -1701,6 +1702,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         expect.arrayContaining([
           "open_tab",
           "navigate_to",
+          "set_device_emulation",
           "list_tabs",
           "read_page",
           "screenshot",
@@ -1715,6 +1717,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       expect(browserBridgeServer.requests.map((request) => request.path)).toEqual([
         "/browser/open",
         "/browser/navigate",
+        "/browser/device-emulation",
         "/browser/list",
         "/browser/read-page",
         "/browser/screenshot",

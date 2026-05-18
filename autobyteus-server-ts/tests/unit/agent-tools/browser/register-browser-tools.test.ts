@@ -10,6 +10,7 @@ const {
   registerScreenshotToolMock,
   registerDomSnapshotToolMock,
   registerRunScriptToolMock,
+  registerSetDeviceEmulationToolMock,
 } = vi.hoisted(() => ({
   isBrowserSupportedMock: vi.fn(),
   registerOpenTabToolMock: vi.fn(),
@@ -20,6 +21,7 @@ const {
   registerScreenshotToolMock: vi.fn(),
   registerDomSnapshotToolMock: vi.fn(),
   registerRunScriptToolMock: vi.fn(),
+  registerSetDeviceEmulationToolMock: vi.fn(),
 }));
 
 vi.mock("../../../../src/agent-tools/browser/browser-tool-service.js", () => ({
@@ -60,6 +62,10 @@ vi.mock("../../../../src/agent-tools/browser/run-script.js", () => ({
   registerRunScriptTool: registerRunScriptToolMock,
 }));
 
+vi.mock("../../../../src/agent-tools/browser/set-device-emulation.js", () => ({
+  registerSetDeviceEmulationTool: registerSetDeviceEmulationToolMock,
+}));
+
 import { registerBrowserTools } from "../../../../src/agent-tools/browser/register-browser-tools.js";
 
 describe("registerBrowserTools", () => {
@@ -80,6 +86,7 @@ describe("registerBrowserTools", () => {
     expect(registerScreenshotToolMock).not.toHaveBeenCalled();
     expect(registerDomSnapshotToolMock).not.toHaveBeenCalled();
     expect(registerRunScriptToolMock).not.toHaveBeenCalled();
+    expect(registerSetDeviceEmulationToolMock).not.toHaveBeenCalled();
   });
 
   it("registers the full browser tool surface when the browser bridge is configured", () => {
@@ -95,5 +102,6 @@ describe("registerBrowserTools", () => {
     expect(registerScreenshotToolMock).toHaveBeenCalledTimes(1);
     expect(registerDomSnapshotToolMock).toHaveBeenCalledTimes(1);
     expect(registerRunScriptToolMock).toHaveBeenCalledTimes(1);
+    expect(registerSetDeviceEmulationToolMock).toHaveBeenCalledTimes(1);
   });
 });

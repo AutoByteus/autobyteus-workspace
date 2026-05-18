@@ -90,6 +90,55 @@ describe("BrowserBridgeClient", () => {
     });
   });
 
+  it("posts set_device_emulation requests to the explicit bridge route", async () => {
+    const client = new BrowserBridgeClient({
+      baseUrl: "http://127.0.0.1:39001/",
+      authToken: "browser-token",
+    });
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: async () => ({
+        ok: true,
+        result: {
+          tab_id: "browser-session-1",
+          mode: "mobile",
+          profile: {
+            width: 390,
+            height: 844,
+            device_scale_factor: 3,
+          },
+        },
+      }),
+    });
+    globalThis.fetch = fetchMock as typeof globalThis.fetch;
+
+    await expect(
+      client.setDeviceEmulation({
+        tab_id: "browser-session-1",
+        mode: "mobile",
+        width: 390,
+        height: 844,
+        device_scale_factor: 3,
+      }),
+    ).resolves.toMatchObject({
+      tab_id: "browser-session-1",
+      mode: "mobile",
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://127.0.0.1:39001/browser/device-emulation",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({
+          tab_id: "browser-session-1",
+          mode: "mobile",
+          width: 390,
+          height: 844,
+          device_scale_factor: 3,
+        }),
+      }),
+    );
+  });
+
   it("normalizes non-canonical bridge transport errors into browser_bridge_unavailable", async () => {
     const client = new BrowserBridgeClient({
       baseUrl: "http://127.0.0.1:39001",

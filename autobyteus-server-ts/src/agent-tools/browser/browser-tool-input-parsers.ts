@@ -14,6 +14,8 @@ import {
   type DomSnapshotInput,
   READ_PAGE_TOOL_NAME,
   type ReadPageInput,
+  SET_DEVICE_EMULATION_TOOL_NAME,
+  type SetDeviceEmulationInput,
   type CloseTabInput,
 } from "./browser-tool-contract.js";
 import {
@@ -23,6 +25,7 @@ import {
   readOptionalBoolean,
   readOptionalCleaningMode,
   readOptionalInteger,
+  readOptionalIntegerOrUndefined,
   readOptionalWaitUntil,
 } from "./browser-tool-input-primitives.js";
 
@@ -153,5 +156,37 @@ export const parseRunScriptInput = (
   return {
     tab_id: asTrimmedString(rawArguments.tab_id) ?? "",
     javascript: asString(rawArguments.javascript) ?? "",
+  };
+};
+
+export const parseSetDeviceEmulationInput = (
+  rawArguments: Record<string, unknown>,
+): SetDeviceEmulationInput => {
+  assertNoAliasKeys(SET_DEVICE_EMULATION_TOOL_NAME, rawArguments, {
+    tabId: "tab_id",
+    browserSessionId: "tab_id",
+    mobileView: "mode",
+    isMobile: "mode",
+    deviceScaleFactor: "device_scale_factor",
+  });
+
+  return {
+    tab_id: asTrimmedString(rawArguments.tab_id) ?? "",
+    mode: (asTrimmedString(rawArguments.mode) ?? "") as SetDeviceEmulationInput["mode"],
+    width: readOptionalIntegerOrUndefined(
+      SET_DEVICE_EMULATION_TOOL_NAME,
+      rawArguments,
+      "width",
+    ),
+    height: readOptionalIntegerOrUndefined(
+      SET_DEVICE_EMULATION_TOOL_NAME,
+      rawArguments,
+      "height",
+    ),
+    device_scale_factor: readOptionalIntegerOrUndefined(
+      SET_DEVICE_EMULATION_TOOL_NAME,
+      rawArguments,
+      "device_scale_factor",
+    ),
   };
 };

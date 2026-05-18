@@ -4,15 +4,17 @@ import type {
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
   BrowserShellReloadTabRequest,
+  BrowserShellSetDeviceEmulationRequest,
   BrowserShellSnapshot,
   BrowserShellTabSummary,
 } from '../../types/browserShell';
 import type { WorkspaceShellWindow } from '../shell/workspace-shell-window';
-import {
-  BrowserTabManager,
-  type BrowserPopupOpenedEvent,
-  type BrowserTabSummary,
-} from './browser-tab-manager';
+import { BrowserTabManager } from './browser-tab-manager';
+import type {
+  BrowserDeviceEmulationState,
+  BrowserPopupOpenedEvent,
+  BrowserTabSummary,
+} from './browser-tab-types';
 
 export const BROWSER_SHELL_SNAPSHOT_UPDATED_CHANNEL = 'browser-shell:snapshot-updated';
 
@@ -47,7 +49,22 @@ const cloneSummary = (summary: BrowserTabSummary): BrowserShellTabSummary => ({
   tab_id: summary.tab_id,
   title: summary.title,
   url: summary.url,
+  deviceEmulation: cloneDeviceEmulation(summary.device_emulation),
 });
+
+const cloneDeviceEmulation = (
+  state: BrowserDeviceEmulationState,
+): BrowserShellTabSummary['deviceEmulation'] =>
+  state.mode === 'mobile'
+    ? {
+        mode: 'mobile',
+        profile: {
+          width: state.profile.width,
+          height: state.profile.height,
+          deviceScaleFactor: state.profile.device_scale_factor,
+        },
+      }
+    : { mode: 'desktop', profile: null };
 
 const rectanglesEqual = (left: Rectangle | null, right: Rectangle | null): boolean => {
   if (!left || !right) {
@@ -227,6 +244,28 @@ export class BrowserShellController {
     }
 
     state.hostBounds = nextBounds;
+    this.applyShellProjection(state);
+    this.publishSnapshot(shellId);
+    return this.buildSnapshot(state);
+  }
+
+  async setDeviceEmulation(
+    shellId: number,
+    request: BrowserShellSetDeviceEmulationRequest,
+  ): Promise<BrowserShellSnapshot> {
+    const state = this.getStateOrThrow(shellId);
+    if (!state.sessionIds.includes(request.tabId)) {
+      throw new Error(`Browser session '${request.tabId}' is not attached to shell '${shellId}'.`);
+    }
+
+    await this.browserSessionManager.setDeviceEmulation({
+      tab_id: request.tabId,
+      mode: request.mode,
+      width: request.width,
+      height: request.height,
+      device_scale_factor: request.deviceScaleFactor,
+    });
+    state.activeSessionId = request.tabId;
     this.applyShellProjection(state);
     this.publishSnapshot(shellId);
     return this.buildSnapshot(state);

@@ -9,6 +9,7 @@ export const READ_PAGE_TOOL_NAME = "read_page";
 export const SCREENSHOT_TOOL_NAME = "screenshot";
 export const DOM_SNAPSHOT_TOOL_NAME = "dom_snapshot";
 export const RUN_SCRIPT_TOOL_NAME = "run_script";
+export const SET_DEVICE_EMULATION_TOOL_NAME = "set_device_emulation";
 
 export const BROWSER_TOOL_NAME_LIST = [
   OPEN_TAB_TOOL_NAME,
@@ -19,6 +20,7 @@ export const BROWSER_TOOL_NAME_LIST = [
   SCREENSHOT_TOOL_NAME,
   DOM_SNAPSHOT_TOOL_NAME,
   RUN_SCRIPT_TOOL_NAME,
+  SET_DEVICE_EMULATION_TOOL_NAME,
 ] as const;
 
 export type BrowserToolName = (typeof BROWSER_TOOL_NAME_LIST)[number];
@@ -30,10 +32,20 @@ export const isBrowserToolName = (value: string | null | undefined): boolean =>
 
 export const BROWSER_WAIT_UNTIL_VALUES = ["domcontentloaded", "load"] as const;
 export const BROWSER_READ_PAGE_CLEANING_MODES = ["none", "light", "thorough"] as const;
+export const BROWSER_DEVICE_EMULATION_MODES = ["desktop", "mobile"] as const;
+
+export const BROWSER_DEVICE_EMULATION_MIN_WIDTH = 100;
+export const BROWSER_DEVICE_EMULATION_MAX_WIDTH = 4096;
+export const BROWSER_DEVICE_EMULATION_MIN_HEIGHT = 100;
+export const BROWSER_DEVICE_EMULATION_MAX_HEIGHT = 4096;
+export const BROWSER_DEVICE_EMULATION_MIN_DEVICE_SCALE_FACTOR = 1;
+export const BROWSER_DEVICE_EMULATION_MAX_DEVICE_SCALE_FACTOR = 4;
 
 export type BrowserReadyState = (typeof BROWSER_WAIT_UNTIL_VALUES)[number];
 export type BrowserReadPageCleaningMode =
   (typeof BROWSER_READ_PAGE_CLEANING_MODES)[number];
+export type BrowserDeviceEmulationMode =
+  (typeof BROWSER_DEVICE_EMULATION_MODES)[number];
 
 export type BrowserToolParameterType = "string" | "boolean" | "integer" | "enum";
 
@@ -52,7 +64,24 @@ export type BrowserTabSummary = {
   tab_id: string;
   title: string | null;
   url: string;
+  device_emulation?: BrowserDeviceEmulationState;
 };
+
+export type BrowserDeviceEmulationProfile = {
+  width: number;
+  height: number;
+  device_scale_factor: number;
+};
+
+export type BrowserDeviceEmulationState =
+  | {
+      mode: "desktop";
+      profile: null;
+    }
+  | {
+      mode: "mobile";
+      profile: BrowserDeviceEmulationProfile;
+    };
 
 export type OpenTabInput = {
   url: string;
@@ -165,6 +194,20 @@ export type RunScriptResult = {
   result_json: string;
 };
 
+export type SetDeviceEmulationInput = {
+  tab_id: string;
+  mode: BrowserDeviceEmulationMode;
+  width?: number;
+  height?: number;
+  device_scale_factor?: number;
+};
+
+export type SetDeviceEmulationResult = {
+  tab_id: string;
+  mode: BrowserDeviceEmulationMode;
+  profile: BrowserDeviceEmulationProfile | null;
+};
+
 export type BrowserToolErrorCode =
   | "browser_unsupported_in_current_environment"
   | "browser_tab_closed"
@@ -173,6 +216,7 @@ export type BrowserToolErrorCode =
   | "browser_page_read_failed"
   | "dom_snapshot_failed"
   | "browser_javascript_execution_failed"
+  | "browser_device_emulation_failed"
   | "browser_bridge_unavailable";
 
 export type BrowserToolErrorPayload = {
