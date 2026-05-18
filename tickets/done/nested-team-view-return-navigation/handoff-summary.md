@@ -49,10 +49,10 @@
 - Ticket branch: `personal`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: Pending
-- Push status: Pending
+- Commit status: Complete: implementation commit `4d5ff814`; release commit `dd61714c`.
+- Push status: Complete: `origin/personal` pushed.
 - Merge status: Not applicable; work is already on target branch `personal`.
-- Release/publication/deployment status: Pending `pnpm release 1.3.17 -- --release-notes tickets/done/nested-team-view-return-navigation/release-notes.md`
+- Release/publication/deployment status: Complete: `pnpm release 1.3.17 -- --release-notes tickets/done/nested-team-view-return-navigation/release-notes.md`; tag `v1.3.17` pushed.
 - Worktree cleanup status: Not applicable; no dedicated ticket worktree was created.
 - Local branch cleanup status: Not applicable; no dedicated ticket branch was created.
-- Blockers / notes: Retroactive workflow record due to small direct implementation before workflow bootstrap.
+- Blockers / notes: No blockers. Retroactive workflow record due to small direct implementation before workflow bootstrap.
