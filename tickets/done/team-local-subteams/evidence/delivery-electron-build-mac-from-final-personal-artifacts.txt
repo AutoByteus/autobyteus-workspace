@@ -1,0 +1,12 @@
+# Electron macOS rebuild artifacts from finalized personal
+Generated: 2026-05-18T09:07:45Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Branch: personal
+HEAD: 2a2d3bd44a91be35b896fe16efbac840a3f77fef
+origin/personal: 2a2d3bd44a91be35b896fe16efbac840a3f77fef
+Command log: tickets/done/team-local-subteams/evidence/delivery-electron-build-mac-from-final-personal.log
+
+-rw-r--r--@ 1 normy  staff   359M May 18 11:05 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.dmg
+-rw-r--r--@ 1 normy  staff   383K May 18 11:05 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   356M May 18 11:07 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip
+-rw-r--r--@ 1 normy  staff   375K May 18 11:07 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip.blockmap

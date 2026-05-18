@@ -35,7 +35,7 @@ argumentSchema.addParameter(
   new ParameterDefinition({
     name: "nodes",
     type: ParameterType.STRING,
-    description: "A JSON string representing team members (member_name, ref, ref_type).",
+    description: "A JSON string representing team members (member_name, ref, ref_type, ref_scope).",
     required: true,
   }),
 );
@@ -104,6 +104,9 @@ const toRefScope = (value: unknown): TeamMemberRefScope | null => {
   if (normalized === "team_local" || normalized === "team-local") {
     return "team_local";
   }
+  if (normalized === "application_owned" || normalized === "application-owned") {
+    return "application_owned";
+  }
   return null;
 };
 
@@ -127,12 +130,9 @@ const parseTeamMembers = (nodes: string): TeamMember[] => {
     if (!refType) {
       throw new Error("ref_type must be 'agent' or 'agent_team'.");
     }
-    const refScope = toRefType(refTypeRaw) === "agent" ? toRefScope(refScopeRaw) : null;
-    if (refType === "agent" && !refScope) {
-      throw new Error("Agent nodes must include ref_scope 'shared' or 'team_local'.");
-    }
-    if (refType === "agent_team" && refScopeRaw !== undefined) {
-      throw new Error("Nested team nodes must not include ref_scope.");
+    const refScope = toRefScope(refScopeRaw);
+    if (!refScope) {
+      throw new Error("Team nodes must include ref_scope 'shared', 'team_local', or 'application_owned'.");
     }
 
     return new TeamMember({
@@ -183,7 +183,8 @@ export async function createAgentTeamDefinition(
     if (
       error instanceof SyntaxError ||
       message.includes("member_name") ||
-      message.includes("ref_type")
+      message.includes("ref_type") ||
+      message.includes("ref_scope")
     ) {
       logger.error(`Error creating agent team definition '${name}' due to invalid input: ${message}`);
       throw new Error(`Invalid input for agent team definition: ${message}`);

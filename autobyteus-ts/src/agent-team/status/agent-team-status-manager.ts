@@ -22,14 +22,14 @@ export class AgentTeamStatusManager {
   }
 
   async emitStatusUpdate(
-    old_status: AgentTeamStatus,
-    new_status: AgentTeamStatus,
+    previousStatus: AgentTeamStatus,
+    status: AgentTeamStatus,
     additional_data: Record<string, any> | null = null
   ): Promise<void> {
-    if (old_status === new_status) {
+    if (previousStatus === status) {
       return;
     }
 
-    this.notifier.notifyStatusUpdated(new_status, old_status, additional_data ?? null);
+    this.notifier.notifyStatusUpdated(status, previousStatus, additional_data ?? null);
   }
 }

@@ -172,26 +172,28 @@ export class NodeSyncService {
 
     if (scope.has("agent_definition")) {
       const definitions = await this.agentDefinitionService.getAllAgentDefinitions();
-      const selectedDefinitions = this.filterAgentDefinitionsBySelection(definitions, selection);
+      const selectedAgentIds = selection
+        ? Array.from(selection.agentDefinitionIds)
+        : definitions
+            .map((definition) => definition.id)
+            .filter((id): id is string => typeof id === "string" && id.length > 0);
       const payloads: SyncAgentDefinition[] = [];
-      for (const definition of selectedDefinitions) {
-        if (!definition.id) {
-          continue;
-        }
-        payloads.push(await readAgentDefinitionPayload(definition.id));
+      for (const agentId of selectedAgentIds) {
+        payloads.push(await readAgentDefinitionPayload(agentId));
       }
       entities.agent_definition = payloads;
     }
 
     if (scope.has("agent_team_definition")) {
       const teams = await this.agentTeamDefinitionService.getAllDefinitions();
-      const selectedTeams = this.filterAgentTeamDefinitionsBySelection(teams, selection);
+      const selectedTeamIds = selection
+        ? Array.from(selection.agentTeamDefinitionIds)
+        : teams
+            .map((team) => team.id)
+            .filter((id): id is string => typeof id === "string" && id.length > 0);
       const payloads: SyncAgentTeamDefinition[] = [];
-      for (const team of selectedTeams) {
-        if (!team.id) {
-          continue;
-        }
-        payloads.push(await readAgentTeamDefinitionPayload(team.id));
+      for (const teamId of selectedTeamIds) {
+        payloads.push(await readAgentTeamDefinitionPayload(teamId));
       }
       entities.agent_team_definition = payloads;
     }

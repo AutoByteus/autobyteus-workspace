@@ -57,9 +57,13 @@ const normalizeMembers = (value: unknown): ApplicationOwnedTeamConfigMember[] =>
         : null;
     const refScope = candidate.refScope === "team_local"
       ? "team_local"
-      : candidate.refScope === undefined || candidate.refScope === null
-        ? null
-        : "invalid";
+      : candidate.refScope === "application_owned"
+        ? "application_owned"
+        : candidate.refScope === "shared"
+          ? "shared"
+          : candidate.refScope === undefined || candidate.refScope === null
+            ? null
+            : "invalid";
 
     if (!memberName || !ref || !refType) {
       throw new ApplicationOwnedTeamConfigParseError(
@@ -71,9 +75,14 @@ const normalizeMembers = (value: unknown): ApplicationOwnedTeamConfigMember[] =>
         `members[${index}] with refType 'agent' must include refScope 'team_local'.`,
       );
     }
-    if (refType === "agent_team" && refScope) {
+    if (refType === "agent_team" && !refScope) {
       throw new ApplicationOwnedTeamConfigParseError(
-        `members[${index}] with refType 'agent_team' must not include refScope.`,
+        `members[${index}] with refType 'agent_team' must include refScope 'application_owned' or 'team_local'.`,
+      );
+    }
+    if (refScope === "invalid") {
+      throw new ApplicationOwnedTeamConfigParseError(
+        `members[${index}] must include a valid refScope.`,
       );
     }
 
@@ -81,7 +90,7 @@ const normalizeMembers = (value: unknown): ApplicationOwnedTeamConfigMember[] =>
       memberName,
       ref,
       refType,
-      refScope: refType === "agent" ? "team_local" : null,
+      refScope: refScope as "shared" | "team_local" | "application_owned",
     };
   });
 };

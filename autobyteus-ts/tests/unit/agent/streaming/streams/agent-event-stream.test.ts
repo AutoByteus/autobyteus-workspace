@@ -5,7 +5,7 @@ import { StreamEvent, StreamEventType } from '../../../../../src/agent/streaming
 import {
   AssistantCompleteResponseData,
   ErrorEventData,
-  AgentStatusUpdateData,
+  AgentStatusData,
   TurnLifecycleData,
   SegmentEventData
 } from '../../../../../src/agent/streaming/events/stream-event-payloads.js';
@@ -71,11 +71,11 @@ describe('AgentEventStream', () => {
     expect(results).toHaveLength(1);
     const event = results[0] as StreamEvent;
     expect(event.agent_id).toBe(agentId);
-    expect(event.event_type).toBe(StreamEventType.AGENT_STATUS_UPDATED);
-    expect(event.data).toBeInstanceOf(AgentStatusUpdateData);
-    const payload = event.data as AgentStatusUpdateData;
-    expect(payload.new_status).toBe(AgentStatus.IDLE);
-    expect(payload.old_status).toBe(AgentStatus.BOOTSTRAPPING);
+    expect(event.event_type).toBe(StreamEventType.AGENT_STATUS);
+    expect(event.data).toBeInstanceOf(AgentStatusData);
+    const payload = event.data as AgentStatusData;
+    expect(payload.status).toBe(AgentStatus.IDLE);
+    expect(payload.previous_status).toBe(AgentStatus.BOOTSTRAPPING);
   });
 
   it('allEvents receives turn lifecycle events in order', async () => {
@@ -182,7 +182,7 @@ describe('AgentEventStream', () => {
 
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(3);
-    expect(results[0].event_type).toBe(StreamEventType.AGENT_STATUS_UPDATED);
+    expect(results[0].event_type).toBe(StreamEventType.AGENT_STATUS);
     expect(results[1].event_type).toBe(StreamEventType.SEGMENT_EVENT);
     expect(results[2].event_type).toBe(StreamEventType.ASSISTANT_COMPLETE_RESPONSE);
   });

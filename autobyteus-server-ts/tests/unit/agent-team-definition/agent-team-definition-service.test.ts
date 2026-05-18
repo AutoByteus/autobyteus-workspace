@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { AgentTeamDefinition, AgentTeamDefinitionUpdate, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
+import {
+  buildCanonicalApplicationId,
+  buildCanonicalApplicationOwnedTeamId,
+} from "../../../src/application-bundles/utils/application-bundle-identity.js";
 
 describe("AgentTeamDefinitionService", () => {
   let provider: {
@@ -10,6 +14,10 @@ describe("AgentTeamDefinitionService", () => {
     getTemplates: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
+  };
+  let agentDefinitionService: {
+    getAgentDefinitionById: ReturnType<typeof vi.fn>;
+    getFreshAgentDefinitionById: ReturnType<typeof vi.fn>;
   };
 
   const buildDefinition = (id?: string) =>
@@ -30,10 +38,41 @@ describe("AgentTeamDefinitionService", () => {
           memberName: "subteam2",
           ref: "team2",
           refType: "agent_team",
+          refScope: "shared",
         }),
       ],
       coordinatorMemberName: "coord1",
     });
+
+  const buildLeafDefinition = (id: string) =>
+    new AgentTeamDefinition({
+      id,
+      name: "Leaf Team",
+      description: "Leaf Desc",
+      instructions: "Leaf instructions",
+      nodes: [
+        new TeamMember({
+          memberName: "leaf",
+          ref: "agent2",
+          refType: "agent",
+          refScope: "shared",
+        }),
+      ],
+      coordinatorMemberName: "leaf",
+    });
+
+  const mockDefinitionGraph = (root: AgentTeamDefinition) => {
+    const leaf = buildLeafDefinition("team2");
+    provider.getById.mockImplementation(async (id: string) => {
+      if (id === root.id) {
+        return root;
+      }
+      if (id === leaf.id) {
+        return leaf;
+      }
+      return null;
+    });
+  };
 
   beforeEach(() => {
     provider = {
@@ -49,15 +88,19 @@ describe("AgentTeamDefinitionService", () => {
             coordinatorMemberName: definition.coordinatorMemberName,
           }),
       ),
-      getById: vi.fn(async () => null),
+      getById: vi.fn(async (id: string) => id === "team2" ? buildLeafDefinition("team2") : null),
       getAll: vi.fn(async () => []),
       getTemplates: vi.fn(async () => []),
       update: vi.fn(async (definition: AgentTeamDefinition) => definition),
       delete: vi.fn(async () => true),
     };
+    agentDefinitionService = {
+      getAgentDefinitionById: vi.fn(async () => ({ id: "agent" })),
+      getFreshAgentDefinitionById: vi.fn(async () => ({ id: "agent" })),
+    };
   });
 
-  const buildService = () => new AgentTeamDefinitionService({ provider });
+  const buildService = () => new AgentTeamDefinitionService({ provider, agentDefinitionService });
 
   it("creates agent team definitions", async () => {
     const service = buildService();
@@ -80,10 +123,39 @@ describe("AgentTeamDefinitionService", () => {
     );
   });
 
+  it("rolls back a created definition when graph validation fails", async () => {
+    const service = buildService();
+    const definition = new AgentTeamDefinition({
+      name: "Invalid Team",
+      description: "Self-reference",
+      instructions: "Invalid",
+      nodes: [
+        new TeamMember({
+          memberName: "coord1",
+          ref: "agent1",
+          refType: "agent",
+          refScope: "shared",
+        }),
+        new TeamMember({
+          memberName: "self",
+          ref: "def-123",
+          refType: "agent_team",
+          refScope: "shared",
+        }),
+      ],
+      coordinatorMemberName: "coord1",
+    });
+
+    await expect(service.createDefinition(definition)).rejects.toThrow(
+      "cannot reference itself",
+    );
+    expect(provider.delete).toHaveBeenCalledWith("def-123");
+  });
+
   it("gets definitions by id", async () => {
     const service = buildService();
     const existing = buildDefinition("def-123");
-    provider.getById.mockResolvedValue(existing);
+    mockDefinitionGraph(existing);
 
     const retrieved = await service.getDefinitionById("def-123");
 
@@ -115,7 +187,7 @@ describe("AgentTeamDefinitionService", () => {
   it("updates definitions with provided fields", async () => {
     const service = buildService();
     const existing = buildDefinition("def-123");
-    provider.getById.mockResolvedValue(existing);
+    mockDefinitionGraph(existing);
     provider.update.mockImplementation(async (definition: AgentTeamDefinition) => definition);
 
     const updateData = new AgentTeamDefinitionUpdate({
@@ -144,7 +216,7 @@ describe("AgentTeamDefinitionService", () => {
       llmModelIdentifier: "gpt-5.4-mini",
       llmConfig: { reasoning_effort: "medium" },
     };
-    provider.getById.mockResolvedValue(existing);
+    mockDefinitionGraph(existing);
     provider.update.mockImplementation(async (definition: AgentTeamDefinition) => definition);
 
     const updated = await service.updateDefinition(
@@ -166,7 +238,7 @@ describe("AgentTeamDefinitionService", () => {
       llmModelIdentifier: "gpt-5.4-mini",
       llmConfig: { reasoning_effort: "medium" },
     };
-    provider.getById.mockResolvedValue(existing);
+    mockDefinitionGraph(existing);
     provider.update.mockImplementation(async (definition: AgentTeamDefinition) => definition);
 
     const updateData = new AgentTeamDefinitionUpdate({
@@ -182,6 +254,165 @@ describe("AgentTeamDefinitionService", () => {
       llmModelIdentifier: "gpt-5.4-mini",
       llmConfig: { reasoning_effort: "medium" },
     });
+  });
+
+  it("rejects application-owned nested team refs from shared definitions", async () => {
+    const service = buildService();
+    const applicationId = buildCanonicalApplicationId("built-in:applications", "sample-app");
+    const siblingTeamId = buildCanonicalApplicationOwnedTeamId(
+      "built-in:applications",
+      "sample-app",
+      "review-team",
+    );
+    const existing = new AgentTeamDefinition({
+      id: "def-123",
+      name: "Shared Team",
+      description: "Desc",
+      instructions: "Instructions",
+      nodes: [
+        new TeamMember({
+          memberName: "coord1",
+          ref: "agent1",
+          refType: "agent",
+          refScope: "shared",
+        }),
+        new TeamMember({
+          memberName: "review",
+          ref: siblingTeamId,
+          refType: "agent_team",
+          refScope: "application_owned",
+        }),
+      ],
+      coordinatorMemberName: "coord1",
+      ownershipScope: "shared",
+    });
+    const sibling = buildLeafDefinition(siblingTeamId);
+    sibling.ownershipScope = "application_owned";
+    sibling.ownerApplicationId = applicationId;
+    provider.getById.mockImplementation(async (id: string) => {
+      if (id === existing.id) {
+        return existing;
+      }
+      if (id === sibling.id) {
+        return sibling;
+      }
+      return null;
+    });
+
+    await expect(
+      service.updateDefinition("def-123", new AgentTeamDefinitionUpdate({ description: "Updated" })),
+    ).rejects.toThrow("outside an application-owned team context");
+  });
+
+  it("allows same-application application-owned team refs from application-owned definitions", async () => {
+    const service = buildService();
+    const applicationId = buildCanonicalApplicationId("built-in:applications", "sample-app");
+    const rootTeamId = buildCanonicalApplicationOwnedTeamId(
+      "built-in:applications",
+      "sample-app",
+      "main-team",
+    );
+    const siblingTeamId = buildCanonicalApplicationOwnedTeamId(
+      "built-in:applications",
+      "sample-app",
+      "review-team",
+    );
+    const existing = new AgentTeamDefinition({
+      id: rootTeamId,
+      name: "Application Team",
+      description: "Desc",
+      instructions: "Instructions",
+      nodes: [
+        new TeamMember({
+          memberName: "coord1",
+          ref: "agent1",
+          refType: "agent",
+          refScope: "team_local",
+        }),
+        new TeamMember({
+          memberName: "review",
+          ref: siblingTeamId,
+          refType: "agent_team",
+          refScope: "application_owned",
+        }),
+      ],
+      coordinatorMemberName: "coord1",
+      ownershipScope: "application_owned",
+      ownerApplicationId: applicationId,
+    });
+    const sibling = buildLeafDefinition(siblingTeamId);
+    sibling.ownershipScope = "application_owned";
+    sibling.ownerApplicationId = applicationId;
+    provider.getById.mockImplementation(async (id: string) => {
+      if (id === existing.id) {
+        return existing;
+      }
+      if (id === sibling.id) {
+        return sibling;
+      }
+      return null;
+    });
+    provider.update.mockImplementation(async (definition: AgentTeamDefinition) => definition);
+
+    const updated = await service.updateDefinition(
+      rootTeamId,
+      new AgentTeamDefinitionUpdate({ description: "Updated" }),
+    );
+
+    expect(updated.description).toBe("Updated");
+    expect(provider.update).toHaveBeenCalledOnce();
+  });
+
+  it("rejects application-owned refs from team-local definitions without inherited application context", async () => {
+    const service = buildService();
+    const applicationId = buildCanonicalApplicationId("built-in:applications", "sample-app");
+    const siblingTeamId = buildCanonicalApplicationOwnedTeamId(
+      "built-in:applications",
+      "sample-app",
+      "review-team",
+    );
+    const existing = new AgentTeamDefinition({
+      id: "team-local-team:shared-parent:review-cell",
+      name: "Local Team",
+      description: "Desc",
+      instructions: "Instructions",
+      nodes: [
+        new TeamMember({
+          memberName: "coord1",
+          ref: "agent1",
+          refType: "agent",
+          refScope: "shared",
+        }),
+        new TeamMember({
+          memberName: "review",
+          ref: siblingTeamId,
+          refType: "agent_team",
+          refScope: "application_owned",
+        }),
+      ],
+      coordinatorMemberName: "coord1",
+      ownershipScope: "team_local",
+      ownerTeamId: "shared-parent",
+    });
+    const sibling = buildLeafDefinition(siblingTeamId);
+    sibling.ownershipScope = "application_owned";
+    sibling.ownerApplicationId = applicationId;
+    provider.getById.mockImplementation(async (id: string) => {
+      if (id === existing.id) {
+        return existing;
+      }
+      if (id === sibling.id) {
+        return sibling;
+      }
+      return null;
+    });
+
+    await expect(
+      service.updateDefinition(
+        existing.id!,
+        new AgentTeamDefinitionUpdate({ description: "Updated" }),
+      ),
+    ).rejects.toThrow("outside an application-owned team context");
   });
 
   it("throws when updating missing definitions", async () => {

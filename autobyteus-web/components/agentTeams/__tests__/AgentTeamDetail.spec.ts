@@ -5,7 +5,10 @@ import { createTestingPinia } from '@pinia/testing';
 import AgentTeamDetail from '../AgentTeamDetail.vue';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
-import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalAgentDefinitionId';
+import {
+  buildTeamLocalAgentDefinitionId,
+  buildTeamLocalTeamDefinitionId,
+} from '~/utils/teamLocalDefinitionId';
 
 const { mockApolloClient, routerPushMock } = vi.hoisted(() => ({
   mockApolloClient: {
@@ -95,7 +98,13 @@ const setInstructionOverflow = async (
   await flushMeasurement();
 };
 
-async function mountComponent(options?: { memberAvatarUrl?: string | null; nodes?: any[]; agentDefinitions?: any[] }) {
+async function mountComponent(options?: {
+  memberAvatarUrl?: string | null;
+  nodes?: any[];
+  agentDefinitions?: any[];
+  extraTeamDefinitions?: any[];
+  returnToTeamId?: string;
+}) {
   const pinia = createTestingPinia({
     createSpy: vi.fn,
     stubActions: true,
@@ -120,6 +129,7 @@ async function mountComponent(options?: { memberAvatarUrl?: string | null; nodes
         },
       ],
     },
+    ...(options?.extraTeamDefinitions ?? []),
   ] as any;
 
   const agentStore = useAgentDefinitionStore();
@@ -146,6 +156,7 @@ async function mountComponent(options?: { memberAvatarUrl?: string | null; nodes
   const wrapper = mount(AgentTeamDetail, {
     props: {
       teamDefinitionId: 'team-1',
+      returnToTeamId: options?.returnToTeamId,
     },
     global: {
       plugins: [pinia],
@@ -595,6 +606,118 @@ describe('AgentTeamDetail', () => {
         returnToTeam: 'team-1',
       },
     ]]);
+  });
+
+  it('routes team-local nested team members to canonical child team detail', async () => {
+    const childTeamId = buildTeamLocalTeamDefinitionId('team-1', 'engineering-org');
+    const wrapper = await mountComponent({
+      nodes: [
+        {
+          memberName: 'engineering_org',
+          ref: 'engineering-org',
+          refType: 'AGENT_TEAM',
+          refScope: 'TEAM_LOCAL',
+        },
+      ],
+      extraTeamDefinitions: [
+        {
+          id: childTeamId,
+          name: 'Engineering Org',
+          description: 'Engineering department',
+          instructions: 'Build the product.',
+          category: 'engineering',
+          avatarUrl: null,
+          coordinatorMemberName: 'vp_engineering',
+          nodes: [],
+          ownershipScope: 'TEAM_LOCAL',
+          ownerTeamId: 'team-1',
+        },
+      ],
+    });
+
+    const viewAction = wrapper.get('[data-test="nested-team-view-link"]');
+    expect(viewAction.text()).toContain('View');
+
+    await viewAction.trigger('click');
+
+    expect(wrapper.emitted('navigate')).toEqual([[
+      {
+        view: 'team-detail',
+        id: childTeamId,
+        returnToTeam: 'team-1',
+      },
+    ]]);
+  });
+
+  it('routes shared nested team members using the canonical team ref', async () => {
+    const wrapper = await mountComponent({
+      nodes: [
+        {
+          memberName: 'shared_team',
+          ref: 'shared-team',
+          refType: 'AGENT_TEAM',
+          refScope: 'SHARED',
+        },
+      ],
+      extraTeamDefinitions: [
+        {
+          id: 'shared-team',
+          name: 'Shared Team',
+          description: 'Shared nested team',
+          instructions: 'Coordinate shared work.',
+          category: 'coordination',
+          avatarUrl: null,
+          coordinatorMemberName: 'shared_lead',
+          nodes: [],
+          ownershipScope: 'SHARED',
+        },
+      ],
+    });
+
+    await wrapper.get('[data-test="nested-team-view-link"]').trigger('click');
+
+    expect(wrapper.emitted('navigate')).toEqual([[
+      {
+        view: 'team-detail',
+        id: 'shared-team',
+        returnToTeam: 'team-1',
+      },
+    ]]);
+  });
+
+  it('returns from nested team detail to the parent team context', async () => {
+    const wrapper = await mountComponent({
+      returnToTeamId: 'parent-team',
+    });
+
+    expect(wrapper.text()).toContain('Back to Parent Team');
+
+    await wrapper.find('button').trigger('click');
+
+    expect(wrapper.emitted('navigate')).toEqual([[
+      {
+        view: 'team-detail',
+        id: 'parent-team',
+        clearReturnToTeam: true,
+      },
+    ]]);
+  });
+
+  it('does not show nested team view action when the child team is unresolved', async () => {
+    const wrapper = await mountComponent({
+      nodes: [
+        {
+          memberName: 'missing_team',
+          ref: 'missing-team',
+          refType: 'AGENT_TEAM',
+          refScope: 'TEAM_LOCAL',
+        },
+      ],
+      extraTeamDefinitions: [],
+    });
+
+    expect(wrapper.find('[data-test="nested-team-view-link"]').exists()).toBe(false);
+    expect(wrapper.emitted('navigate')).toBeUndefined();
   });
 
   it('does not show shared agent view action or team-local controls when shared/global member definitions are unresolved', async () => {

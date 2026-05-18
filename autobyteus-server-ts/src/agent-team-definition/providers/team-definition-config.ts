@@ -49,21 +49,16 @@ export const normalizeMembers = (value: unknown): TeamConfigMember[] => {
         `members[${index}] must include non-empty memberName, ref, and refType.`,
       );
     }
-    if (refType === "agent" && !refScope) {
+    if (!refScope) {
       throw new TeamConfigParseError(
-        `members[${index}] with refType 'agent' must include refScope 'shared', 'team_local', or 'application_owned'.`,
-      );
-    }
-    if (refType === "agent_team" && candidate.refScope !== undefined && candidate.refScope !== null) {
-      throw new TeamConfigParseError(
-        `members[${index}] with refType 'agent_team' must not include refScope.`,
+        `members[${index}] must include refScope 'shared', 'team_local', or 'application_owned'.`,
       );
     }
     members.push({
       memberName,
       ref,
       refType,
-      ...(refType === "agent" ? { refScope: refScope ?? undefined } : {}),
+      refScope,
     });
   });
   return members;
@@ -90,10 +85,18 @@ export const buildTeamConfigRecord = (domainObj: AgentTeamDefinition): TeamConfi
   coordinatorMemberName: domainObj.coordinatorMemberName,
   avatarUrl: domainObj.avatarUrl ?? null,
   defaultLaunchConfig: domainObj.defaultLaunchConfig ?? null,
-  members: domainObj.nodes.map((member) => ({
-    memberName: member.memberName,
-    ref: member.ref,
-    refType: member.refType,
-    ...(member.refType === "agent" ? { refScope: member.refScope ?? "shared" } : {}),
-  })),
+  members: domainObj.nodes.map((member) => {
+    if (!member.refScope) {
+      throw new TeamConfigParseError(
+        `Team member '${member.memberName}' must include refScope 'shared', 'team_local', or 'application_owned'.`,
+      );
+    }
+
+    return {
+      memberName: member.memberName,
+      ref: member.ref,
+      refType: member.refType,
+      refScope: member.refScope,
+    };
+  }),
 });

@@ -264,8 +264,8 @@ describe("TeamRunService integration", () => {
               name: "Root Team",
               coordinatorMemberName: "Lead",
               nodes: [
-                new TeamMember({ memberName: "Lead", ref: "agent-1", refType: "agent" }),
-                new TeamMember({ memberName: "SubTeam", ref: "sub-team", refType: "agent_team" }),
+                new TeamMember({ memberName: "Lead", ref: "agent-1", refType: "agent" , refScope: "shared"}),
+                new TeamMember({ memberName: "SubTeam", ref: "sub-team", refType: "agent_team" , refScope: "shared"}),
               ],
             });
           }
@@ -274,7 +274,7 @@ describe("TeamRunService integration", () => {
               id: "sub-team",
               name: "Sub Team",
               coordinatorMemberName: "Specialist",
-              nodes: [new TeamMember({ memberName: "Specialist", ref: "agent-2", refType: "agent" })],
+              nodes: [new TeamMember({ memberName: "Specialist", ref: "agent-2", refType: "agent" , refScope: "shared"})],
             });
           }
           return null;
@@ -332,7 +332,7 @@ describe("TeamRunService integration", () => {
             id: "A",
             name: "Team A",
             coordinatorMemberName: "TeamB",
-            nodes: [new TeamMember({ memberName: "TeamB", ref: "B", refType: "agent_team" })],
+            nodes: [new TeamMember({ memberName: "TeamB", ref: "B", refType: "agent_team" , refScope: "shared"})],
           });
         }
         if (id === "B") {
@@ -340,7 +340,7 @@ describe("TeamRunService integration", () => {
             id: "B",
             name: "Team B",
             coordinatorMemberName: "TeamA",
-            nodes: [new TeamMember({ memberName: "TeamA", ref: "A", refType: "agent_team" })],
+            nodes: [new TeamMember({ memberName: "TeamA", ref: "A", refType: "agent_team" , refScope: "shared"})],
           });
         }
         return null;
@@ -448,7 +448,7 @@ describe("TeamRunService integration", () => {
             id: "team-def-1",
             name: "Team One",
             coordinatorMemberName: "Coordinator",
-            nodes: [new TeamMember({ memberName: "Coordinator", ref: "agent-Coordinator", refType: "agent" })],
+            nodes: [new TeamMember({ memberName: "Coordinator", ref: "agent-Coordinator", refType: "agent" , refScope: "shared"})],
           }),
         ),
       };
@@ -568,8 +568,8 @@ describe("TeamRunService integration", () => {
           name: "Team One",
           coordinatorMemberName: "Coordinator",
           nodes: [
-            new TeamMember({ memberName: "Coordinator", ref: "agent-Coordinator", refType: "agent" }),
-            new TeamMember({ memberName: "Reviewer", ref: "agent-Reviewer", refType: "agent" }),
+            new TeamMember({ memberName: "Coordinator", ref: "agent-Coordinator", refType: "agent" , refScope: "shared"}),
+            new TeamMember({ memberName: "Reviewer", ref: "agent-Reviewer", refType: "agent" , refScope: "shared"}),
           ],
         }),
       ),
@@ -667,7 +667,7 @@ describe("TeamRunService integration", () => {
             id: "team-def-1",
             name: "Team One",
             coordinatorMemberName: "Coordinator",
-            nodes: [new TeamMember({ memberName: "Coordinator", ref: "agent-Coordinator", refType: "agent" })],
+            nodes: [new TeamMember({ memberName: "Coordinator", ref: "agent-Coordinator", refType: "agent" , refScope: "shared"})],
           }),
         ),
       };
@@ -759,8 +759,8 @@ describe("TeamRunService integration", () => {
           name: "Team One",
           coordinatorMemberName: "Coordinator",
           nodes: [
-            new TeamMember({ memberName: "Coordinator", ref: "agent-Coordinator", refType: "agent" }),
-            new TeamMember({ memberName: "Reviewer", ref: "agent-Reviewer", refType: "agent" }),
+            new TeamMember({ memberName: "Coordinator", ref: "agent-Coordinator", refType: "agent" , refScope: "shared"}),
+            new TeamMember({ memberName: "Reviewer", ref: "agent-Reviewer", refType: "agent" , refScope: "shared"}),
           ],
         }),
       ),

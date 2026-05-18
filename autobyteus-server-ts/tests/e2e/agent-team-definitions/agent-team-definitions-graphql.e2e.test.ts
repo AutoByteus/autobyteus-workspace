@@ -4,13 +4,114 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+import {
+  buildTeamLocalAgentDefinitionId,
+  buildTeamLocalTeamDefinitionId,
+} from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { ApplicationBundleService } from "../../../src/application-bundles/services/application-bundle-service.js";
+import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
 function uniqueId(prefix: string): string {
   return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+}
+
+async function writeSharedAgentFixture(dataDir: string, agentId: string, name = agentId) {
+  const agentDir = path.join(dataDir, "agents", agentId);
+  await fs.mkdir(agentDir, { recursive: true });
+  await fs.writeFile(
+    path.join(agentDir, "agent.md"),
+    [
+      "---",
+      `name: ${name}`,
+      "description: GraphQL e2e fixture agent",
+      "role: assistant",
+      "---",
+      "",
+      "Support team-definition GraphQL validation.",
+    ].join("\n"),
+    "utf-8",
+  );
+  await fs.writeFile(
+    path.join(agentDir, "agent-config.json"),
+    JSON.stringify({ toolNames: [], skillNames: [] }, null, 2),
+    "utf-8",
+  );
+  return agentDir;
+}
+
+async function writeRootTeamFixture(input: {
+  dataDir: string;
+  teamId: string;
+  name: string;
+  description?: string;
+  instructions?: string;
+  coordinatorMemberName?: string;
+  members?: Array<{
+    memberName: string;
+    ref: string;
+    refType: "agent" | "agent_team";
+    refScope: "shared" | "team_local" | "application_owned";
+  }>;
+}) {
+  const teamDir = path.join(input.dataDir, "agent-teams", input.teamId);
+  await fs.mkdir(teamDir, { recursive: true });
+  await fs.writeFile(
+    path.join(teamDir, "team.md"),
+    [
+      "---",
+      `name: ${input.name}`,
+      `description: ${input.description ?? "GraphQL e2e fixture team"}`,
+      "---",
+      "",
+      input.instructions ?? "Coordinate fixture work.",
+    ].join("\n"),
+    "utf-8",
+  );
+  await fs.writeFile(
+    path.join(teamDir, "team-config.json"),
+    JSON.stringify(
+      {
+        coordinatorMemberName: input.coordinatorMemberName ?? "",
+        members: input.members ?? [],
+        avatarUrl: null,
+      },
+      null,
+      2,
+    ),
+    "utf-8",
+  );
+  return teamDir;
+}
+
+async function writeLocalAgentFixture(input: {
+  ownerTeamDir: string;
+  agentId: string;
+  name: string;
+}) {
+  const agentDir = path.join(input.ownerTeamDir, "agents", input.agentId);
+  await fs.mkdir(agentDir, { recursive: true });
+  await fs.writeFile(
+    path.join(agentDir, "agent.md"),
+    [
+      "---",
+      `name: ${input.name}`,
+      "description: Local fixture agent",
+      "role: assistant",
+      "---",
+      "",
+      "Handle local fixture work.",
+    ].join("\n"),
+    "utf-8",
+  );
+  await fs.writeFile(
+    path.join(agentDir, "agent-config.json"),
+    JSON.stringify({ toolNames: [], skillNames: [] }, null, 2),
+    "utf-8",
+  );
+  return agentDir;
 }
 
 describe("Agent team definitions GraphQL e2e", () => {
@@ -33,6 +134,7 @@ describe("Agent team definitions GraphQL e2e", () => {
         getBundledSourceRootPath: () => appConfigProvider.config.getAppRootDir(),
       },
     });
+    (AgentDefinitionService as unknown as { instance: AgentDefinitionService | null }).instance = null;
     (AgentTeamDefinitionService as unknown as { instance: AgentTeamDefinitionService | null }).instance = null;
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
@@ -55,6 +157,7 @@ describe("Agent team definitions GraphQL e2e", () => {
         getBundledSourceRootPath: () => appConfigProvider.config.getAppRootDir(),
       },
     });
+    (AgentDefinitionService as unknown as { instance: AgentDefinitionService | null }).instance = null;
     (AgentTeamDefinitionService as unknown as { instance: AgentTeamDefinitionService | null }).instance = null;
   });
 
@@ -83,6 +186,27 @@ describe("Agent team definitions GraphQL e2e", () => {
   it("creates, updates, lists templates, and deletes agent team definitions", async () => {
     const unique = uniqueId("team_def");
     const dataDir = appConfigProvider.config.getAppDataDir();
+    const initialAgentId = `agent_a_${unique}`;
+    const updatedAgentId = `agent_b_${unique}`;
+    const initialNestedTeamId = `nested_team_a_${unique}`;
+    const updatedNestedTeamId = `nested_team_b_${unique}`;
+
+    for (const supportPath of [
+      await writeSharedAgentFixture(dataDir, initialAgentId, `Agent A ${unique}`),
+      await writeSharedAgentFixture(dataDir, updatedAgentId, `Agent B ${unique}`),
+      await writeRootTeamFixture({
+        dataDir,
+        teamId: initialNestedTeamId,
+        name: `Nested Team A ${unique}`,
+      }),
+      await writeRootTeamFixture({
+        dataDir,
+        teamId: updatedNestedTeamId,
+        name: `Nested Team B ${unique}`,
+      }),
+    ]) {
+      cleanupPaths.add(supportPath);
+    }
 
     const createMutation = `
       mutation CreateTeam($input: CreateAgentTeamDefinitionInput!) {
@@ -148,14 +272,15 @@ describe("Agent team definitions GraphQL e2e", () => {
         nodes: [
           {
             memberName: "leader",
-            ref: "agent-1",
+            ref: initialAgentId,
             refType: "AGENT",
             refScope: "SHARED",
           },
           {
             memberName: "helper",
-            ref: "team-2",
+            ref: initialNestedTeamId,
             refType: "AGENT_TEAM",
+            refScope: "SHARED",
           },
         ],
       },
@@ -173,7 +298,7 @@ describe("Agent team definitions GraphQL e2e", () => {
       },
     });
     expect(created.createAgentTeamDefinition.nodes).toHaveLength(2);
-    expect(created.createAgentTeamDefinition.nodes[0]?.ref).toBe("agent-1");
+    expect(created.createAgentTeamDefinition.nodes[0]?.ref).toBe(initialAgentId);
 
     const teamDir = path.join(dataDir, "agent-teams", created.createAgentTeamDefinition.id);
     const [teamMdRaw, teamConfigRaw] = await Promise.all([
@@ -194,8 +319,8 @@ describe("Agent team definitions GraphQL e2e", () => {
         },
       },
       members: [
-        { memberName: "leader", ref: "agent-1", refType: "agent", refScope: "shared" },
-        { memberName: "helper", ref: "team-2", refType: "agent_team" },
+        { memberName: "leader", ref: initialAgentId, refType: "agent", refScope: "shared" },
+        { memberName: "helper", ref: initialNestedTeamId, refType: "agent_team", refScope: "shared" },
       ],
     });
 
@@ -260,14 +385,15 @@ describe("Agent team definitions GraphQL e2e", () => {
         nodes: [
           {
             memberName: "helper",
-            ref: "agent-2",
+            ref: updatedAgentId,
             refType: "AGENT",
             refScope: "SHARED",
           },
           {
             memberName: "subteam",
-            ref: "team-3",
+            ref: updatedNestedTeamId,
             refType: "AGENT_TEAM",
+            refScope: "SHARED",
           },
         ],
       },
@@ -464,67 +590,39 @@ describe("Agent team definitions GraphQL e2e", () => {
     expect(afterDelete.agentTeamDefinition).toBeNull();
   });
 
-  it("round-trips TEAM_LOCAL members through create, read, and update GraphQL flows", async () => {
+  it("round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows", async () => {
     const unique = uniqueId("team_local_graphql");
     const dataDir = appConfigProvider.config.getAppDataDir();
-
-    const createMutation = `
-      mutation CreateTeam($input: CreateAgentTeamDefinitionInput!) {
-        createAgentTeamDefinition(input: $input) {
-          id
-          name
-          coordinatorMemberName
-          nodes {
-            memberName
-            ref
-            refType
-            refScope
-          }
-        }
-      }
-    `;
-
-    const created = await execGraphql<{
-      createAgentTeamDefinition: {
-        id: string;
-        name: string;
-        coordinatorMemberName: string;
-        nodes: Array<{
-          memberName: string;
-          ref: string;
-          refType: "AGENT" | "AGENT_TEAM";
-          refScope?: "SHARED" | "TEAM_LOCAL" | null;
-        }>;
-      };
-    }>(createMutation, {
-      input: {
-        name: `team_local_${unique}`,
-        description: "team-local persistence",
-        instructions: "Use the team-local reviewer when coordinating work.",
-        coordinatorMemberName: "local_reviewer",
-        nodes: [
-          {
-            memberName: "local_reviewer",
-            ref: "reviewer",
-            refType: "AGENT",
-            refScope: "TEAM_LOCAL",
-          },
-        ],
-      },
+    const teamId = `team_local_${unique}`;
+    const teamDir = await writeRootTeamFixture({
+      dataDir,
+      teamId,
+      name: `Team Local ${unique}`,
+      description: "team-local persistence",
+      instructions: "Use the team-local reviewer when coordinating work.",
+      coordinatorMemberName: "local_reviewer",
+      members: [
+        {
+          memberName: "local_reviewer",
+          ref: "reviewer",
+          refType: "agent",
+          refScope: "team_local",
+        },
+      ],
     });
-
-    const teamId = created.createAgentTeamDefinition.id;
-    const teamDir = path.join(dataDir, "agent-teams", teamId);
     cleanupPaths.add(teamDir);
-
-    expect(created.createAgentTeamDefinition.nodes).toEqual([
-      {
-        memberName: "local_reviewer",
-        ref: "reviewer",
-        refType: "AGENT",
-        refScope: "TEAM_LOCAL",
-      },
-    ]);
+    await writeLocalAgentFixture({
+      ownerTeamDir: teamDir,
+      agentId: "reviewer",
+      name: `Local Reviewer ${unique}`,
+    });
+    await writeLocalAgentFixture({
+      ownerTeamDir: teamDir,
+      agentId: "reviewer_v2",
+      name: `Local Reviewer V2 ${unique}`,
+    });
+    const sharedLeadAgentId = `shared_lead_${unique}`;
+    cleanupPaths.add(await writeSharedAgentFixture(dataDir, sharedLeadAgentId, `Shared Lead ${unique}`));
 
     const createdConfig = JSON.parse(
       await fs.readFile(path.join(teamDir, "team-config.json"), "utf-8"),
@@ -620,7 +718,7 @@ describe("Agent team definitions GraphQL e2e", () => {
         nodes: [
           {
             memberName: "shared_lead",
-            ref: "agent-1",
+            ref: sharedLeadAgentId,
             refType: "AGENT",
             refScope: "SHARED",
           },
@@ -638,7 +736,7 @@ describe("Agent team definitions GraphQL e2e", () => {
     expect(updated.updateAgentTeamDefinition.nodes).toEqual([
       {
         memberName: "shared_lead",
-        ref: "agent-1",
+        ref: sharedLeadAgentId,
         refType: "AGENT",
         refScope: "SHARED",
       },
@@ -667,7 +765,7 @@ describe("Agent team definitions GraphQL e2e", () => {
       members: [
         {
           memberName: "shared_lead",
-          ref: "agent-1",
+          ref: sharedLeadAgentId,
           refType: "agent",
           refScope: "shared",
         },
@@ -679,6 +777,424 @@ describe("Agent team definitions GraphQL e2e", () => {
         },
       ],
     });
+  });
+
+  it("exposes team-local subteams in GraphQL with ownership metadata and local member scopes", async () => {
+    const unique = uniqueId("team_local_subteam_graphql");
+    const dataDir = appConfigProvider.config.getAppDataDir();
+    const parentTeamId = `company_${unique}`;
+    const localTeamId = `department_${unique}`;
+    const canonicalLocalTeamId = buildTeamLocalTeamDefinitionId(parentTeamId, localTeamId);
+
+    const parentTeamDir = await writeRootTeamFixture({
+      dataDir,
+      teamId: parentTeamId,
+      name: `Company ${unique}`,
+      description: "Company root team",
+      instructions: "Coordinate company work.",
+      coordinatorMemberName: "department",
+      members: [
+        {
+          memberName: "department",
+          ref: localTeamId,
+          refType: "agent_team",
+          refScope: "team_local",
+        },
+      ],
+    });
+    cleanupPaths.add(parentTeamDir);
+
+    const localTeamDir = path.join(parentTeamDir, "agent-teams", localTeamId);
+    await fs.mkdir(localTeamDir, { recursive: true });
+    await fs.writeFile(
+      path.join(localTeamDir, "team.md"),
+      [
+        "---",
+        `name: Department ${unique}`,
+        "description: Local department team",
+        "---",
+        "",
+        "Coordinate department work.",
+      ].join("\n"),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(localTeamDir, "team-config.json"),
+      JSON.stringify(
+        {
+          coordinatorMemberName: "planner",
+          members: [
+            {
+              memberName: "planner",
+              ref: "planner",
+              refType: "agent",
+              refScope: "team_local",
+            },
+          ],
+          avatarUrl: null,
+        },
+        null,
+        2,
+      ),
+      "utf-8",
+    );
+    await writeLocalAgentFixture({
+      ownerTeamDir: localTeamDir,
+      agentId: "planner",
+      name: `Department Planner ${unique}`,
+    });
+
+    const result = await execGraphql<{
+      agentTeamDefinitions: Array<{
+        id: string;
+        name: string;
+        ownershipScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED";
+        ownerTeamId: string | null;
+        ownerTeamName: string | null;
+        nodes: Array<{
+          memberName: string;
+          ref: string;
+          refType: "AGENT" | "AGENT_TEAM";
+          refScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED" | null;
+        }>;
+      }>;
+      agentTeamDefinition: {
+        id: string;
+        ownershipScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED";
+        ownerTeamId: string | null;
+        ownerTeamName: string | null;
+        nodes: Array<{
+          memberName: string;
+          ref: string;
+          refType: "AGENT" | "AGENT_TEAM";
+          refScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED" | null;
+        }>;
+      } | null;
+    }>(`
+      query TeamLocalSubteams($id: String!) {
+        agentTeamDefinitions {
+          id
+          name
+          ownershipScope
+          ownerTeamId
+          ownerTeamName
+          nodes {
+            memberName
+            ref
+            refType
+            refScope
+          }
+        }
+        agentTeamDefinition(id: $id) {
+          id
+          ownershipScope
+          ownerTeamId
+          ownerTeamName
+          nodes {
+            memberName
+            ref
+            refType
+            refScope
+          }
+        }
+      }
+    `, { id: canonicalLocalTeamId });
+
+    const parent = result.agentTeamDefinitions.find((team) => team.id === parentTeamId);
+    const local = result.agentTeamDefinitions.find((team) => team.id === canonicalLocalTeamId);
+
+    expect(parent).toMatchObject({
+      id: parentTeamId,
+      ownershipScope: "SHARED",
+      ownerTeamId: null,
+      nodes: [
+        {
+          memberName: "department",
+          ref: localTeamId,
+          refType: "AGENT_TEAM",
+          refScope: "TEAM_LOCAL",
+        },
+      ],
+    });
+    expect(local).toMatchObject({
+      id: canonicalLocalTeamId,
+      ownershipScope: "TEAM_LOCAL",
+      ownerTeamId: parentTeamId,
+      ownerTeamName: `Company ${unique}`,
+      nodes: [
+        {
+          memberName: "planner",
+          ref: "planner",
+          refType: "AGENT",
+          refScope: "TEAM_LOCAL",
+        },
+      ],
+    });
+    expect(result.agentTeamDefinition).toMatchObject({
+      id: canonicalLocalTeamId,
+      ownershipScope: "TEAM_LOCAL",
+      ownerTeamId: parentTeamId,
+      ownerTeamName: `Company ${unique}`,
+    });
+  });
+
+  it("exposes company-level team-local departments and their local agents without promoting departments to root catalog entries", async () => {
+    const unique = uniqueId("company_local_departments_graphql");
+    const dataDir = appConfigProvider.config.getAppDataDir();
+    const parentTeamId = `northstar_${unique}`;
+    const parentTeamName = `Northstar Operating Company ${unique}`;
+    const departments = [
+      {
+        localId: "engineering-org",
+        memberName: "engineering_org",
+        name: `Northstar Engineering Org ${unique}`,
+        coordinator: "vp_engineering",
+        agents: [
+          { memberName: "vp_engineering", localId: "vp-engineering" },
+          { memberName: "platform_engineering_manager", localId: "platform-engineering-manager" },
+        ],
+      },
+      {
+        localId: "product-org",
+        memberName: "product_org",
+        name: `Northstar Product Org ${unique}`,
+        coordinator: "vp_product",
+        agents: [
+          { memberName: "vp_product", localId: "vp-product" },
+          { memberName: "ux_research_lead", localId: "ux-research-lead" },
+        ],
+      },
+      {
+        localId: "revenue-org",
+        memberName: "revenue_org",
+        name: `Northstar Revenue Org ${unique}`,
+        coordinator: "vp_sales",
+        agents: [
+          { memberName: "vp_sales", localId: "vp-sales" },
+          { memberName: "customer_success_lead", localId: "customer-success-lead" },
+        ],
+      },
+      {
+        localId: "operations-org",
+        memberName: "operations_org",
+        name: `Northstar Operations Org ${unique}`,
+        coordinator: "vp_operations",
+        agents: [
+          { memberName: "vp_operations", localId: "vp-operations" },
+          { memberName: "data_analytics_lead", localId: "data-analytics-lead" },
+        ],
+      },
+      {
+        localId: "finance-people-org",
+        memberName: "finance_people_org",
+        name: `Northstar Finance People Org ${unique}`,
+        coordinator: "vp_finance",
+        agents: [
+          { memberName: "vp_finance", localId: "vp-finance" },
+          { memberName: "people_ops_lead", localId: "people-ops-lead" },
+        ],
+      },
+    ];
+
+    const parentTeamDir = await writeRootTeamFixture({
+      dataDir,
+      teamId: parentTeamId,
+      name: parentTeamName,
+      description: "Company root with local department teams",
+      instructions: "Coordinate company work across local departments.",
+      coordinatorMemberName: "ceo",
+      members: [
+        {
+          memberName: "ceo",
+          ref: "ceo",
+          refType: "agent",
+          refScope: "team_local",
+        },
+        ...departments.map((department) => ({
+          memberName: department.memberName,
+          ref: department.localId,
+          refType: "agent_team" as const,
+          refScope: "team_local" as const,
+        })),
+      ],
+    });
+    cleanupPaths.add(parentTeamDir);
+
+    await writeLocalAgentFixture({
+      ownerTeamDir: parentTeamDir,
+      agentId: "ceo",
+      name: `Northstar CEO ${unique}`,
+    });
+
+    for (const department of departments) {
+      const localTeamDir = path.join(parentTeamDir, "agent-teams", department.localId);
+      await fs.mkdir(localTeamDir, { recursive: true });
+      await fs.writeFile(
+        path.join(localTeamDir, "team.md"),
+        [
+          "---",
+          `name: ${department.name}`,
+          "description: Local company department team",
+          "---",
+          "",
+          "Coordinate department work.",
+        ].join("\n"),
+        "utf-8",
+      );
+      await fs.writeFile(
+        path.join(localTeamDir, "team-config.json"),
+        JSON.stringify(
+          {
+            coordinatorMemberName: department.coordinator,
+            members: department.agents.map((agent) => ({
+              memberName: agent.memberName,
+              ref: agent.localId,
+              refType: "agent",
+              refScope: "team_local",
+            })),
+            avatarUrl: null,
+          },
+          null,
+          2,
+        ),
+        "utf-8",
+      );
+
+      for (const agent of department.agents) {
+        await writeLocalAgentFixture({
+          ownerTeamDir: localTeamDir,
+          agentId: agent.localId,
+          name: `${department.name} ${agent.memberName}`,
+        });
+      }
+    }
+
+    const result = await execGraphql<{
+      agentTeamDefinitions: Array<{
+        id: string;
+        name: string;
+        ownershipScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED";
+        ownerTeamId: string | null;
+        ownerTeamName: string | null;
+        nodes: Array<{
+          memberName: string;
+          ref: string;
+          refType: "AGENT" | "AGENT_TEAM";
+          refScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED" | null;
+        }>;
+      }>;
+      agentDefinitions: Array<{
+        id: string;
+        name: string;
+        ownershipScope: "SHARED" | "TEAM_LOCAL";
+        ownerTeamId: string | null;
+        ownerTeamName: string | null;
+      }>;
+    }>(`
+      query CompanyLocalDepartmentDefinitions {
+        agentTeamDefinitions {
+          id
+          name
+          ownershipScope
+          ownerTeamId
+          ownerTeamName
+          nodes {
+            memberName
+            ref
+            refType
+            refScope
+          }
+        }
+        agentDefinitions {
+          id
+          name
+          ownershipScope
+          ownerTeamId
+          ownerTeamName
+        }
+      }
+    `);
+
+    const parent = result.agentTeamDefinitions.find((team) => team.id === parentTeamId);
+    expect(parent).toMatchObject({
+      id: parentTeamId,
+      name: parentTeamName,
+      ownershipScope: "SHARED",
+      ownerTeamId: null,
+      ownerTeamName: null,
+    });
+    expect(parent?.nodes).toEqual([
+      {
+        memberName: "ceo",
+        ref: "ceo",
+        refType: "AGENT",
+        refScope: "TEAM_LOCAL",
+      },
+      ...departments.map((department) => ({
+        memberName: department.memberName,
+        ref: department.localId,
+        refType: "AGENT_TEAM" as const,
+        refScope: "TEAM_LOCAL" as const,
+      })),
+    ]);
+
+    const rootCatalogTeamIds = result.agentTeamDefinitions
+      .filter((team) => team.ownershipScope !== "TEAM_LOCAL")
+      .map((team) => team.id);
+    expect(rootCatalogTeamIds).toContain(parentTeamId);
+
+    const parentLocalCeoId = buildTeamLocalAgentDefinitionId(parentTeamId, "ceo");
+    expect(result.agentDefinitions.find((agent) => agent.id === parentLocalCeoId)).toMatchObject({
+      id: parentLocalCeoId,
+      name: `Northstar CEO ${unique}`,
+      ownershipScope: "TEAM_LOCAL",
+      ownerTeamId: parentTeamId,
+      ownerTeamName: parentTeamName,
+    });
+
+    for (const department of departments) {
+      const canonicalDepartmentId = buildTeamLocalTeamDefinitionId(
+        parentTeamId,
+        department.localId,
+      );
+      const localTeam = result.agentTeamDefinitions.find(
+        (team) => team.id === canonicalDepartmentId,
+      );
+
+      expect(rootCatalogTeamIds).not.toContain(canonicalDepartmentId);
+      expect(result.agentTeamDefinitions.find((team) => team.id === department.localId)).toBeUndefined();
+      expect(localTeam).toMatchObject({
+        id: canonicalDepartmentId,
+        name: department.name,
+        ownershipScope: "TEAM_LOCAL",
+        ownerTeamId: parentTeamId,
+        ownerTeamName: parentTeamName,
+      });
+      expect(localTeam?.nodes).toEqual(
+        department.agents.map((agent) => ({
+          memberName: agent.memberName,
+          ref: agent.localId,
+          refType: "AGENT" as const,
+          refScope: "TEAM_LOCAL" as const,
+        })),
+      );
+
+      for (const agent of department.agents) {
+        const canonicalLocalAgentId = buildTeamLocalAgentDefinitionId(
+          canonicalDepartmentId,
+          agent.localId,
+        );
+        expect(
+          result.agentDefinitions.find((definition) => definition.id === canonicalLocalAgentId),
+        ).toMatchObject({
+          id: canonicalLocalAgentId,
+          name: `${department.name} ${agent.memberName}`,
+          ownershipScope: "TEAM_LOCAL",
+          ownerTeamId: canonicalDepartmentId,
+          ownerTeamName: department.name,
+        });
+      }
+    }
   });
 
   it("exposes md-centric team GraphQL output contract", async () => {

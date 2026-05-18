@@ -37,7 +37,9 @@ const toGraphqlOwnershipScope = (
 ): AgentTeamDefinitionOwnershipScope =>
   value === "application_owned"
     ? AgentTeamDefinitionOwnershipScope.APPLICATION_OWNED
-    : AgentTeamDefinitionOwnershipScope.SHARED;
+    : value === "team_local"
+      ? AgentTeamDefinitionOwnershipScope.TEAM_LOCAL
+      : AgentTeamDefinitionOwnershipScope.SHARED;
 
 export class AgentTeamDefinitionConverter {
   static toGraphql(domainDefinition: DomainAgentTeamDefinition): GraphqlAgentTeamDefinition {
@@ -59,6 +61,8 @@ export class AgentTeamDefinitionConverter {
         nodes: graphqlNodes,
         coordinatorMemberName: domainDefinition.coordinatorMemberName,
         ownershipScope: toGraphqlOwnershipScope(domainDefinition.ownershipScope),
+        ownerTeamId: domainDefinition.ownerTeamId ?? null,
+        ownerTeamName: domainDefinition.ownerTeamName ?? null,
         ownerApplicationId: domainDefinition.ownerApplicationId ?? null,
         ownerApplicationName: domainDefinition.ownerApplicationName ?? null,
         ownerPackageId: domainDefinition.ownerPackageId ?? null,

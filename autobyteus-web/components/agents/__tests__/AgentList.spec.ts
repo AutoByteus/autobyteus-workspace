@@ -320,7 +320,7 @@ describe('AgentList', () => {
     const setupState = (wrapper.vm as any).$?.setupState;
 
     await setupState.syncAgent({
-      id: 'team-local:software-engineering:architect-designer',
+      id: 'team-local-agent:software-engineering:architect-designer',
       name: 'Architect Designer',
       description: 'Team-owned architect.',
       ownershipScope: 'TEAM_LOCAL',

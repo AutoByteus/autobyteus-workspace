@@ -26,7 +26,7 @@ describe('AgentExternalEventNotifier', () => {
     let receivedPayload: any;
     let receivedMeta: any;
 
-    notifier.subscribe(EventType.AGENT_STATUS_UPDATED, (payload, metadata) => {
+    notifier.subscribe(EventType.AGENT_STATUS, (payload, metadata) => {
       receivedPayload = payload;
       receivedMeta = metadata;
     });
@@ -34,12 +34,12 @@ describe('AgentExternalEventNotifier', () => {
     notifier.notifyStatusUpdated(AgentStatus.IDLE, AgentStatus.BOOTSTRAPPING);
 
     expect(receivedPayload).toEqual({
-      new_status: AgentStatus.IDLE,
-      old_status: AgentStatus.BOOTSTRAPPING
+      status: AgentStatus.IDLE,
+      previous_status: AgentStatus.BOOTSTRAPPING
     });
     expect(receivedMeta.agent_id).toBe('agent-1');
-    expect(receivedMeta.event_type).toBe(EventType.AGENT_STATUS_UPDATED);
-    expect(infoSpy).toHaveBeenCalledWith(expect.stringContaining('emitted agent_status_updated'));
+    expect(receivedMeta.event_type).toBe(EventType.AGENT_STATUS);
+    expect(infoSpy).toHaveBeenCalledWith(expect.stringContaining('emitted agent_status'));
   });
 
   it('emits turn lifecycle payloads with turn identifiers', () => {

@@ -325,12 +325,21 @@ const agentDefinitions = computed(() => {
   );
 });
 const teamDefinitions = computed(() => {
+  const localChildren = currentTeamDefinitionId.value
+    ? agentTeamDefStore.getTeamLocalTeamDefinitionsByOwnerTeamId(currentTeamDefinitionId.value)
+    : [];
   if (!isApplicationOwnedTeam.value || !currentOwnerApplicationId.value) {
-    return agentTeamDefStore.sharedAgentTeamDefinitions || [];
+    return [
+      ...(agentTeamDefStore.sharedAgentTeamDefinitions || []),
+      ...localChildren,
+    ];
   }
-  return agentTeamDefStore.getApplicationOwnedTeamDefinitionsByOwnerApplicationId(
-    currentOwnerApplicationId.value,
-  );
+  return [
+    ...agentTeamDefStore.getApplicationOwnedTeamDefinitionsByOwnerApplicationId(
+      currentOwnerApplicationId.value,
+    ),
+    ...localChildren,
+  ];
 });
 
 const nameValid = computed(() => Boolean(formData.name.trim()));

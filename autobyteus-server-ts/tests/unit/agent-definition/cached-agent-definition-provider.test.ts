@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 import { CachedAgentDefinitionProvider } from "../../../src/agent-definition/providers/cached-agent-definition-provider.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 
@@ -114,8 +115,9 @@ describe("CachedAgentDefinitionProvider", () => {
 
   it("bypasses the shared cache for team-local ids", async () => {
     const provider = new CachedAgentDefinitionProvider(persistenceProvider as never);
+    const localDefinitionId = buildTeamLocalAgentDefinitionId("team-a", "local-agent");
     const localDefinition = new AgentDefinition({
-      id: "team-local:team-a:local-agent",
+      id: localDefinitionId,
       name: "Local Agent",
       description: "Local Desc",
       ownershipScope: "team_local",
@@ -124,10 +126,10 @@ describe("CachedAgentDefinitionProvider", () => {
     });
     persistenceProvider.getById.mockResolvedValue(localDefinition);
 
-    const result = await provider.getById("team-local:team-a:local-agent");
+    const result = await provider.getById(localDefinitionId);
 
     expect(result).toEqual(localDefinition);
-    expect(persistenceProvider.getById).toHaveBeenCalledWith("team-local:team-a:local-agent");
+    expect(persistenceProvider.getById).toHaveBeenCalledWith(localDefinitionId);
     expect(persistenceProvider.getAll).not.toHaveBeenCalled();
   });
 });

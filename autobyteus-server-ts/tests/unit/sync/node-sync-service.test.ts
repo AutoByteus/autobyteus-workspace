@@ -60,6 +60,7 @@ function buildService(options?: {
             memberName: 'member-1',
             ref: 'agent-1',
             refType: 'agent',
+            refScope: 'shared',
           },
         ],
       },

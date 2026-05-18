@@ -12,15 +12,15 @@ import { AgentTeamStatus } from '../../../../src/agent-team/status/agent-team-st
 const makeAgentStreamEvent = (): StreamEvent =>
   new StreamEvent({
     agent_id: 'agent-1',
-    event_type: StreamEventType.AGENT_STATUS_UPDATED,
-    data: { new_status: AgentStatus.IDLE }
+    event_type: StreamEventType.AGENT_STATUS,
+    data: { status: AgentStatus.IDLE }
   });
 
 describe('AgentTeamStreamEvent', () => {
   it('creates TEAM-sourced event', () => {
     const data = new AgentTeamStatusUpdateData({
-      new_status: AgentTeamStatus.IDLE,
-      old_status: AgentTeamStatus.PROCESSING
+      status: AgentTeamStatus.IDLE,
+      previous_status: AgentTeamStatus.PROCESSING
     });
 
     const event = new AgentTeamStreamEvent({
@@ -30,7 +30,7 @@ describe('AgentTeamStreamEvent', () => {
     });
 
     expect(event.data).toBeInstanceOf(AgentTeamStatusUpdateData);
-    expect((event.data as AgentTeamStatusUpdateData).new_status).toBe(AgentTeamStatus.IDLE);
+    expect((event.data as AgentTeamStatusUpdateData).status).toBe(AgentTeamStatus.IDLE);
   });
 
   it('creates AGENT-sourced event', () => {
@@ -54,7 +54,7 @@ describe('AgentTeamStreamEvent', () => {
     const mock_sub_team_event = new AgentTeamStreamEvent({
       team_id: 'sub-team-2',
       event_source_type: 'TEAM',
-      data: new AgentTeamStatusUpdateData({ new_status: AgentTeamStatus.IDLE })
+      data: new AgentTeamStatusUpdateData({ status: AgentTeamStatus.IDLE })
     });
 
     const data = new SubTeamEventRebroadcastPayload({
@@ -86,7 +86,7 @@ describe('AgentTeamStreamEvent', () => {
       new AgentTeamStreamEvent({
         team_id: 'team-1',
         event_source_type: 'AGENT',
-        data: { new_status: 'idle' } as any
+        data: { status: 'idle' } as any
       })
     ).toThrow();
 

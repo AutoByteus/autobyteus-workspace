@@ -2,7 +2,7 @@ import { promises as fs } from "node:fs";
 import { constants as fsConstants } from "node:fs";
 import path from "node:path";
 import type { AgentDefinitionOwnershipScope } from "../domain/models.js";
-import { parseTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import { parseTeamLocalDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 import type { ApplicationOwnedDefinitionSource } from "../../application-bundles/domain/models.js";
 import { parseCanonicalApplicationOwnedAgentId } from "../../application-bundles/utils/application-bundle-identity.js";
 import { findTeamSourcePaths } from "../../agent-team-definition/providers/team-definition-source-paths.js";
@@ -151,11 +151,11 @@ export const findAgentSourcePaths = async ({
   applicationBundleService,
   warn,
 }: FindAgentSourcePathInput): Promise<AgentSourcePaths | null> => {
-  const parsedTeamLocalId = parseTeamLocalAgentDefinitionId(agentId);
-  if (parsedTeamLocalId) {
+  const parsedTeamLocalId = parseTeamLocalDefinitionId(agentId);
+  if (parsedTeamLocalId?.subject === "agent") {
     return findTeamLocalAgentSourcePaths(
-      parsedTeamLocalId.teamId,
-      parsedTeamLocalId.agentId,
+      parsedTeamLocalId.ownerTeamId,
+      parsedTeamLocalId.localDefinitionId,
       readTeamRoots,
       applicationBundleService,
       warn,

@@ -99,6 +99,12 @@ export class AgentTeamDefinition {
   ownershipScope!: AgentTeamDefinitionOwnershipScope;
 
   @Field(() => String, { nullable: true })
+  ownerTeamId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerTeamName?: string | null;
+
+  @Field(() => String, { nullable: true })
   ownerApplicationId?: string | null;
 
   @Field(() => String, { nullable: true })

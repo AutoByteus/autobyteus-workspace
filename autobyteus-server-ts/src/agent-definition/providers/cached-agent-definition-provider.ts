@@ -1,6 +1,6 @@
 import { AgentDefinition } from "../domain/models.js";
 import { AgentDefinitionPersistenceProvider } from "./agent-definition-persistence-provider.js";
-import { parseTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import { parseTeamLocalDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -54,7 +54,7 @@ export class CachedAgentDefinitionProvider {
   }
 
   async getById(objId: string): Promise<AgentDefinition | null> {
-    if (parseTeamLocalAgentDefinitionId(objId)) {
+    if (parseTeamLocalDefinitionId(objId)?.subject === "agent") {
       return this.persistenceProvider.getById(objId);
     }
 
@@ -87,7 +87,7 @@ export class CachedAgentDefinitionProvider {
 
   async update(domainObj: AgentDefinition): Promise<AgentDefinition> {
     const updated = await this.persistenceProvider.update(domainObj);
-    if (this.cachePopulated && updated.id && !parseTeamLocalAgentDefinitionId(updated.id)) {
+    if (this.cachePopulated && updated.id && parseTeamLocalDefinitionId(updated.id)?.subject !== "agent") {
       this.cache.set(updated.id, updated);
       logger.info(`In-memory cache: Updated agent definition with ID ${updated.id}.`);
     }

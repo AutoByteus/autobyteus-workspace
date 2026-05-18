@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { parseTeamLocalDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 
 export type SyncAgentDefinition = {
   agentId: string;
@@ -29,20 +30,37 @@ export type SyncAgentTeamDefinition = {
 };
 
 const getDataDir = (): string => appConfigProvider.config.getAppDataDir();
-const getAgentDir = (agentId: string): string => path.join(getDataDir(), "agents", agentId);
-const getTeamDir = (teamId: string): string => path.join(getDataDir(), "agent-teams", teamId);
-const getTeamLocalAgentDir = (teamId: string, agentId: string): string =>
-  path.join(getTeamDir(teamId), "agents", agentId);
+const getRootAgentDir = (agentId: string): string => path.join(getDataDir(), "agents", agentId);
+const getRootTeamDir = (teamId: string): string => path.join(getDataDir(), "agent-teams", teamId);
 
-const getAgentMdPath = (agentId: string): string => appConfigProvider.config.getAgentMdPath(agentId);
-const getAgentConfigPath = (agentId: string): string =>
-  appConfigProvider.config.getAgentConfigPath(agentId);
-const getTeamMdPath = (teamId: string): string => appConfigProvider.config.getTeamMdPath(teamId);
-const getTeamConfigPath = (teamId: string): string => appConfigProvider.config.getTeamConfigPath(teamId);
-const getTeamLocalAgentMdPath = (teamId: string, agentId: string): string =>
-  appConfigProvider.config.getTeamLocalAgentMdPath(teamId, agentId);
-const getTeamLocalAgentConfigPath = (teamId: string, agentId: string): string =>
-  appConfigProvider.config.getTeamLocalAgentConfigPath(teamId, agentId);
+const getTeamDirForDefinitionId = (teamId: string): string => {
+  const parsed = parseTeamLocalDefinitionId(teamId);
+  if (parsed?.subject === "agent_team") {
+    return path.join(
+      getTeamDirForDefinitionId(parsed.ownerTeamId),
+      "agent-teams",
+      parsed.localDefinitionId,
+    );
+  }
+  return getRootTeamDir(teamId);
+};
+
+const getAgentDirForDefinitionId = (agentId: string): string => {
+  const parsed = parseTeamLocalDefinitionId(agentId);
+  if (parsed?.subject === "agent") {
+    return path.join(
+      getTeamDirForDefinitionId(parsed.ownerTeamId),
+      "agents",
+      parsed.localDefinitionId,
+    );
+  }
+  return getRootAgentDir(agentId);
+};
+
+const getAgentMdPath = (agentId: string): string => path.join(getAgentDirForDefinitionId(agentId), "agent.md");
+const getAgentConfigPath = (agentId: string): string => path.join(getAgentDirForDefinitionId(agentId), "agent-config.json");
+const getTeamMdPath = (teamId: string): string => path.join(getTeamDirForDefinitionId(teamId), "team.md");
+const getTeamConfigPath = (teamId: string): string => path.join(getTeamDirForDefinitionId(teamId), "team-config.json");
 
 async function readTextFile(filePath: string, fallback: string): Promise<string> {
   try {
@@ -53,7 +71,7 @@ async function readTextFile(filePath: string, fallback: string): Promise<string>
 }
 
 async function readLocalAgentPayloads(teamId: string): Promise<SyncLocalAgentDefinition[]> {
-  const localAgentsDir = path.join(getTeamDir(teamId), "agents");
+  const localAgentsDir = path.join(getTeamDirForDefinitionId(teamId), "agents");
   let entries: Dirent[] = [];
   try {
     entries = await fs.readdir(localAgentsDir, { withFileTypes: true });
@@ -63,7 +81,7 @@ async function readLocalAgentPayloads(teamId: string): Promise<SyncLocalAgentDef
 
   const payloads: SyncLocalAgentDefinition[] = [];
   for (const entry of entries) {
-    if (!entry.isDirectory()) {
+    if (!entry.isDirectory() || entry.name.startsWith("_")) {
       continue;
     }
     payloads.push({
@@ -105,7 +123,7 @@ export async function readAgentTeamDefinitionPayload(
 }
 
 export async function writeAgentDefinitionPayload(payload: SyncAgentDefinition): Promise<void> {
-  const agentDir = getAgentDir(payload.agentId);
+  const agentDir = getAgentDirForDefinitionId(payload.agentId);
   await fs.mkdir(agentDir, { recursive: true });
   await fs.writeFile(getAgentMdPath(payload.agentId), payload.files.agentMd ?? "", "utf-8");
   await fs.writeFile(
@@ -118,7 +136,7 @@ export async function writeAgentDefinitionPayload(payload: SyncAgentDefinition):
 export async function writeAgentTeamDefinitionPayload(
   payload: SyncAgentTeamDefinition,
 ): Promise<void> {
-  const teamDir = getTeamDir(payload.teamId);
+  const teamDir = getTeamDirForDefinitionId(payload.teamId);
   await fs.mkdir(teamDir, { recursive: true });
   await fs.writeFile(getTeamMdPath(payload.teamId), payload.files.teamMd ?? "", "utf-8");
   await fs.writeFile(
@@ -129,15 +147,15 @@ export async function writeAgentTeamDefinitionPayload(
 
   await fs.rm(path.join(teamDir, "agents"), { recursive: true, force: true });
   for (const localAgent of payload.localAgents ?? []) {
-    const localAgentDir = getTeamLocalAgentDir(payload.teamId, localAgent.agentId);
+    const localAgentDir = path.join(teamDir, "agents", localAgent.agentId);
     await fs.mkdir(localAgentDir, { recursive: true });
     await fs.writeFile(
-      getTeamLocalAgentMdPath(payload.teamId, localAgent.agentId),
+      path.join(localAgentDir, "agent.md"),
       localAgent.files.agentMd ?? "",
       "utf-8",
     );
     await fs.writeFile(
-      getTeamLocalAgentConfigPath(payload.teamId, localAgent.agentId),
+      path.join(localAgentDir, "agent-config.json"),
       localAgent.files.agentConfigJson ?? "{}\n",
       "utf-8",
     );

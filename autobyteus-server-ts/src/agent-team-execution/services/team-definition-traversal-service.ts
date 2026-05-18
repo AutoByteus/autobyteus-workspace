@@ -1,4 +1,8 @@
-import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import {
+  buildScopedMemberResolutionContext,
+  resolveScopedAgentMemberRef,
+  resolveScopedTeamMemberRef,
+} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import type { TeamMemberRunConfig } from "../domain/team-run-config.js";
@@ -60,12 +64,13 @@ export class TeamDefinitionTraversalService {
 
     const members: TeamLeafAgentMember[] = [];
     const teamNodes = Array.isArray(teamDefinition.nodes) ? teamDefinition.nodes : [];
+    const resolutionContext = buildScopedMemberResolutionContext(
+      teamDefinition,
+      normalizedTeamDefinitionId,
+    );
     for (const node of teamNodes) {
       if (node.refType === "agent") {
-        const agentDefinitionId =
-          node.refScope === "team_local"
-            ? buildTeamLocalAgentDefinitionId(normalizedTeamDefinitionId, node.ref)
-            : normalizeRequiredString(node.ref, "agentDefinitionId");
+        const agentDefinitionId = resolveScopedAgentMemberRef(resolutionContext, node);
         members.push({
           memberName: node.memberName.trim(),
           memberRouteKey: normalizeMemberRouteKey(node.memberName),
@@ -74,7 +79,10 @@ export class TeamDefinitionTraversalService {
         continue;
       }
 
-      members.push(...(await this.collectLeafAgentMembersRecursive(node.ref, new Set(visited))));
+      members.push(...(await this.collectLeafAgentMembersRecursive(
+        resolveScopedTeamMemberRef(resolutionContext, node),
+        new Set(visited),
+      )));
     }
 
     return members;
@@ -110,8 +118,15 @@ export class TeamDefinitionTraversalService {
     if (!coordinatorNode || coordinatorNode.refType === "agent") {
       return coordinatorMemberName;
     }
+    const resolutionContext = buildScopedMemberResolutionContext(
+      teamDefinition,
+      normalizedTeamDefinitionId,
+    );
 
-    return this.resolveLeafCoordinatorMemberNameRecursive(coordinatorNode.ref, new Set(visited));
+    return this.resolveLeafCoordinatorMemberNameRecursive(
+      resolveScopedTeamMemberRef(resolutionContext, coordinatorNode),
+      new Set(visited),
+    );
   }
 }
 

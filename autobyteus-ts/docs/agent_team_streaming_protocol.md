@@ -74,8 +74,8 @@ Used for status updates of the team coordinator itself.
 - **Payload (`data`)**:
   ```json
   {
-    "new_status": "IDLE", // Enum: IDLE, RUNNING, PAUSED, ERROR, SHUTTING_DOWN
-    "old_status": "STARTING", // Optional
+    "status": "IDLE", // Enum: IDLE, RUNNING, PAUSED, ERROR, SHUTTING_DOWN
+    "previous_status": "STARTING", // Optional
     "error_message": null // Optional string
   }
   ```

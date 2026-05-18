@@ -1,4 +1,9 @@
 import {
+  buildScopedMemberResolutionContext,
+  resolveScopedAgentMemberRef,
+  resolveScopedTeamMemberRef,
+} from "../../../agent-team-definition/utils/scoped-team-member-resolution.js";
+import {
   AgentConfig,
   AgentTeamConfig,
   TeamNodeConfig,
@@ -12,7 +17,6 @@ import {
   LLMFactory,
 } from "autobyteus-ts";
 import { waitForTeamToBeIdle } from "autobyteus-ts/agent-team/utils/wait-for-idle.js";
-import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinition } from "../../../agent-team-definition/domain/models.js";
@@ -335,6 +339,7 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
       throw new Error(`AgentTeamDefinition with ID ${teamDefinitionId} not found.`);
     }
 
+    const resolutionContext = buildScopedMemberResolutionContext(teamDef, teamDefinitionId);
     const hydratedConfigs: Record<string, AgentConfig | AgentTeamConfig> = {};
     for (const member of teamDef.nodes) {
       if (member.refType === "agent") {
@@ -346,9 +351,7 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
             `Configuration for team member '${member.memberName}' was not provided.`,
           );
         }
-        const resolvedAgentDefinitionId = member.refScope === "team_local"
-          ? buildTeamLocalAgentDefinitionId(teamDefinitionId, member.ref)
-          : member.ref;
+        const resolvedAgentDefinitionId = resolveScopedAgentMemberRef(resolutionContext, member);
         hydratedConfigs[member.memberName] = await this.agentConfigBuilder.build(
           member.memberName,
           resolvedAgentDefinitionId,
@@ -356,7 +359,7 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
         );
       } else if (member.refType === "agent_team") {
         const nestedConfig = await this.buildTeamConfigFromDefinition(
-          member.ref,
+          resolveScopedTeamMemberRef(resolutionContext, member),
           memberConfigsMap,
           new Set(visited),
         );

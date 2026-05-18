@@ -1,12 +1,13 @@
 import { promises as fs } from "node:fs";
 import type { Dirent } from "node:fs";
 import path from "node:path";
-import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 import type { ApplicationOwnedDefinitionSource } from "../../application-bundles/domain/models.js";
-import type {
-  ResolvedTeamSourcePaths,
-  SharedTeamSourcePaths,
+import {
+  getCanonicalTeamDefinitionIdFromSourcePaths,
+  type ResolvedTeamSourcePaths,
 } from "../../agent-team-definition/providers/team-definition-source-paths.js";
+import { listAllTeamSourcePaths } from "../../agent-team-definition/providers/team-local-team-discovery.js";
 import { parseTeamMd, TeamMdParseError } from "../../agent-team-definition/utils/team-md-parser.js";
 import type {
   AgentDefinition,
@@ -74,44 +75,36 @@ const normalizeLocalAgentId = (value: string): string => {
   return normalized;
 };
 
-const buildSharedTeamSourcePaths = (
-  teamRoot: string,
-  teamId: string,
-): SharedTeamSourcePaths => {
-  const teamDir = path.join(teamRoot, teamId);
-  return {
-    kind: "shared",
-    teamDir,
-    mdPath: path.join(teamDir, "team.md"),
-    configPath: path.join(teamDir, "team-config.json"),
-    rootPath: teamRoot,
-  };
-};
-
-const buildApplicationOwnedTeamSourcePaths = (
-  source: ApplicationOwnedDefinitionSource,
-): Extract<ResolvedTeamSourcePaths, { kind: "application_owned" }> => {
-  const teamDir = path.join(source.applicationRootPath, "agent-teams", source.localDefinitionId);
-  return {
-    kind: "application_owned",
-    definitionId: source.definitionId,
-    teamDir,
-    mdPath: path.join(teamDir, "team.md"),
-    configPath: path.join(teamDir, "team-config.json"),
-    rootPath: source.applicationRootPath,
-    applicationId: source.applicationId,
-    applicationName: source.applicationName,
-    packageId: source.packageId,
-    localApplicationId: source.localApplicationId,
-    localTeamId: source.localDefinitionId,
-  };
-};
-
 const getOwnerTeamId = (teamSourcePaths: ResolvedTeamSourcePaths): string => (
-  teamSourcePaths.kind === "application_owned"
-    ? teamSourcePaths.definitionId
-    : path.basename(teamSourcePaths.teamDir)
+  getCanonicalTeamDefinitionIdFromSourcePaths(teamSourcePaths)
 );
+
+const readInheritedApplicationOwnership = (teamSourcePaths: ResolvedTeamSourcePaths) => ({
+  ownerApplicationId:
+    teamSourcePaths.kind === "application_owned"
+      ? teamSourcePaths.applicationId
+      : teamSourcePaths.kind === "team_local"
+        ? teamSourcePaths.ownerApplicationId ?? null
+        : null,
+  ownerApplicationName:
+    teamSourcePaths.kind === "application_owned"
+      ? teamSourcePaths.applicationName
+      : teamSourcePaths.kind === "team_local"
+        ? teamSourcePaths.ownerApplicationName ?? null
+        : null,
+  ownerPackageId:
+    teamSourcePaths.kind === "application_owned"
+      ? teamSourcePaths.packageId
+      : teamSourcePaths.kind === "team_local"
+        ? teamSourcePaths.ownerPackageId ?? null
+        : null,
+  ownerLocalApplicationId:
+    teamSourcePaths.kind === "application_owned"
+      ? teamSourcePaths.localApplicationId
+      : teamSourcePaths.kind === "team_local"
+        ? teamSourcePaths.ownerLocalApplicationId ?? null
+        : null,
+});
 
 export const buildTeamLocalAgentFilePaths = (
   teamDir: string,
@@ -143,14 +136,7 @@ export async function readTeamOwnership(
     return {
       ownerTeamId,
       ownerTeamName: parsed.name,
-      ownerApplicationId:
-        teamSourcePaths.kind === "application_owned" ? teamSourcePaths.applicationId : null,
-      ownerApplicationName:
-        teamSourcePaths.kind === "application_owned" ? teamSourcePaths.applicationName : null,
-      ownerPackageId:
-        teamSourcePaths.kind === "application_owned" ? teamSourcePaths.packageId : null,
-      ownerLocalApplicationId:
-        teamSourcePaths.kind === "application_owned" ? teamSourcePaths.localApplicationId : null,
+      ...readInheritedApplicationOwnership(teamSourcePaths),
     };
   } catch (error) {
     if (error instanceof TeamMdParseError || (error as NodeJS.ErrnoException).code === "ENOENT") {
@@ -160,14 +146,7 @@ export async function readTeamOwnership(
       return {
         ownerTeamId,
         ownerTeamName: ownerTeamId,
-        ownerApplicationId:
-          teamSourcePaths.kind === "application_owned" ? teamSourcePaths.applicationId : null,
-        ownerApplicationName:
-          teamSourcePaths.kind === "application_owned" ? teamSourcePaths.applicationName : null,
-        ownerPackageId:
-          teamSourcePaths.kind === "application_owned" ? teamSourcePaths.packageId : null,
-        ownerLocalApplicationId:
-          teamSourcePaths.kind === "application_owned" ? teamSourcePaths.localApplicationId : null,
+        ...readInheritedApplicationOwnership(teamSourcePaths),
       };
     }
     throw error;
@@ -199,39 +178,6 @@ export async function readTeamLocalAgentFromSourcePaths(
   );
 }
 
-const listSharedTeamSourcePaths = async (
-  sharedTeamRoots: string[],
-): Promise<ResolvedTeamSourcePaths[]> => {
-  const teamSourcePaths: ResolvedTeamSourcePaths[] = [];
-  const seenIds = new Set<string>();
-
-  for (const teamRoot of sharedTeamRoots) {
-    let teamEntries: Dirent[] = [];
-    try {
-      teamEntries = await fs.readdir(teamRoot, { withFileTypes: true });
-    } catch {
-      continue;
-    }
-
-    for (const teamEntry of teamEntries) {
-      if (!teamEntry.isDirectory() || seenIds.has(teamEntry.name)) {
-        continue;
-      }
-
-      const sourcePaths = buildSharedTeamSourcePaths(teamRoot, teamEntry.name);
-      try {
-        await fs.access(sourcePaths.mdPath);
-        teamSourcePaths.push(sourcePaths);
-        seenIds.add(teamEntry.name);
-      } catch {
-        continue;
-      }
-    }
-  }
-
-  return teamSourcePaths;
-};
-
 export async function listTeamLocalAgentDefinitions(
   options: TeamLocalAgentListOptions,
 ): Promise<AgentDefinition[]> {
@@ -242,10 +188,10 @@ export async function listTeamLocalAgentDefinitions(
       .filter((definitionId): definitionId is string => typeof definitionId === "string"),
   );
 
-  const teamSourcePaths = [
-    ...(await listSharedTeamSourcePaths(options.sharedTeamRoots)),
-    ...options.applicationOwnedTeamSources.map(buildApplicationOwnedTeamSourcePaths),
-  ];
+  const teamSourcePaths = await listAllTeamSourcePaths({
+    sharedTeamRoots: options.sharedTeamRoots,
+    applicationOwnedTeamSources: options.applicationOwnedTeamSources,
+  });
 
   for (const sourcePaths of teamSourcePaths) {
     let localAgentEntries: Dirent[] = [];

@@ -250,6 +250,84 @@ describe("FileApplicationBundleProvider", () => {
     );
   };
 
+  const sampleTeamDir = (): string =>
+    path.join(builtInRoot, "applications", "sample-app", "agent-teams", "sample-team");
+
+  const writeTeamMd = async (teamDir: string, name: string): Promise<void> => {
+    await writeFile(
+      path.join(teamDir, "team.md"),
+      [
+        "---",
+        `name: ${name}`,
+        `description: ${name}`,
+        "category: Demo",
+        "---",
+        "",
+        `Coordinate ${name}.`,
+      ].join("\n"),
+    );
+  };
+
+  const writeTeamLocalAgent = async (
+    teamDir: string,
+    localAgentId: string,
+    name: string,
+  ): Promise<void> => {
+    await writeFile(
+      path.join(teamDir, "agents", localAgentId, "agent.md"),
+      [
+        "---",
+        `name: ${name}`,
+        `description: ${name}`,
+        "category: Demo",
+        "role: Helper",
+        "---",
+        "",
+        `Help ${name}.`,
+      ].join("\n"),
+    );
+    await writeFile(
+      path.join(teamDir, "agents", localAgentId, "agent-config.json"),
+      JSON.stringify({ defaultLaunchConfig: { runtimeKind: "autobyteus" } }, null, 2),
+    );
+  };
+
+  const writeTeamConfig = async (
+    teamDir: string,
+    members: Array<Record<string, unknown>>,
+    coordinatorMemberName = "lead",
+  ): Promise<void> => {
+    await writeFile(
+      path.join(teamDir, "team-config.json"),
+      JSON.stringify(
+        {
+          coordinatorMemberName,
+          defaultLaunchConfig: { runtimeKind: "autobyteus" },
+          members,
+        },
+        null,
+        2,
+      ),
+    );
+  };
+
+  const addSampleTeamLocalChildRef = async (localTeamId = "drafting-cell"): Promise<void> => {
+    await writeTeamConfig(sampleTeamDir(), [
+      {
+        memberName: "lead",
+        ref: "sample-agent",
+        refType: "agent",
+        refScope: "team_local",
+      },
+      {
+        memberName: "draftingCell",
+        ref: localTeamId,
+        refType: "agent_team",
+        refScope: "team_local",
+      },
+    ]);
+  };
+
   it("treats an empty managed built-in application root as a valid steady state", async () => {
     const provider = buildProvider();
 
@@ -528,6 +606,89 @@ describe("FileApplicationBundleProvider", () => {
     await expect(provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID)).rejects.toThrow(
       "must reference a local agent inside its own agents/ folder",
     );
+  });
+
+  it("recursively validates team-local child teams without cataloging them as app-owned roots", async () => {
+    await writeBundle();
+    await addSampleTeamLocalChildRef();
+    const childDir = path.join(sampleTeamDir(), "agent-teams", "drafting-cell");
+    await writeTeamMd(childDir, "Drafting Cell");
+    await writeTeamLocalAgent(childDir, "writer-agent", "Writer Agent");
+    await writeTeamConfig(childDir, [
+      {
+        memberName: "writer",
+        ref: "writer-agent",
+        refType: "agent",
+        refScope: "team_local",
+      },
+      {
+        memberName: "qaCell",
+        ref: "qa-cell",
+        refType: "agent_team",
+        refScope: "team_local",
+      },
+    ], "writer");
+    const grandchildDir = path.join(childDir, "agent-teams", "qa-cell");
+    await writeTeamMd(grandchildDir, "QA Cell");
+    await writeTeamLocalAgent(grandchildDir, "qa-agent", "QA Agent");
+    await writeTeamConfig(grandchildDir, [
+      {
+        memberName: "qa",
+        ref: "qa-agent",
+        refType: "agent",
+        refScope: "team_local",
+      },
+    ], "qa");
+    const provider = buildProvider();
+
+    await expect(
+      provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID),
+    ).resolves.toBeUndefined();
+    await expect(provider.listBundles()).resolves.toMatchObject([
+      {
+        localTeamIds: ["sample-team"],
+      },
+    ]);
+  });
+
+  it("rejects malformed team-local child team configs during application bundle validation", async () => {
+    await writeBundle();
+    await addSampleTeamLocalChildRef();
+    const childDir = path.join(sampleTeamDir(), "agent-teams", "drafting-cell");
+    await writeTeamMd(childDir, "Drafting Cell");
+    await writeTeamLocalAgent(childDir, "writer-agent", "Writer Agent");
+    await writeTeamConfig(childDir, [
+      {
+        memberName: "writer",
+        ref: "writer-agent",
+        refType: "agent",
+      },
+    ], "writer");
+    const provider = buildProvider();
+
+    await expect(
+      provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID),
+    ).rejects.toThrow("must include refScope 'shared', 'team_local', or 'application_owned'");
+  });
+
+  it("rejects team-local child teams whose own local agents are missing", async () => {
+    await writeBundle();
+    await addSampleTeamLocalChildRef();
+    const childDir = path.join(sampleTeamDir(), "agent-teams", "drafting-cell");
+    await writeTeamMd(childDir, "Drafting Cell");
+    await writeTeamConfig(childDir, [
+      {
+        memberName: "writer",
+        ref: "missing-writer",
+        refType: "agent",
+        refScope: "team_local",
+      },
+    ], "writer");
+    const provider = buildProvider();
+
+    await expect(
+      provider.validatePackageRoot(builtInRoot, BUILT_IN_APPLICATION_PACKAGE_ID),
+    ).rejects.toThrow("must reference a local agent inside its own agents/ folder");
   });
 
   it("ignores nested packaging mirrors under a discovered package root", async () => {
