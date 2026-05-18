@@ -35,15 +35,21 @@ The Agent Teams list can also present a server-configured **Featured teams** sec
 
 Team definitions now include:
 
-- `ownershipScope` (`SHARED` or `APPLICATION_OWNED`),
+- `ownershipScope` (`SHARED`, `TEAM_LOCAL`, or `APPLICATION_OWNED`),
 - owning application/package provenance, and
 - persisted launch defaults:
   - `defaultLaunchConfig.llmModelIdentifier`
   - `defaultLaunchConfig.runtimeKind`
   - `defaultLaunchConfig.llmConfig`
-- per-member `refScope` for agent members (`SHARED`, `TEAM_LOCAL`, or `APPLICATION_OWNED`).
+- per-member `refScope` for both agent and nested-team members (`SHARED`, `TEAM_LOCAL`, or `APPLICATION_OWNED`).
 
-Nested team members continue to use `refType: 'AGENT_TEAM'` without `refScope`.
+Nested team members now use `refType: 'AGENT_TEAM'` with explicit `refScope`.
+For a parent-owned local subteam, the persisted config keeps the local child id
+in `ref` and sets `refScope: 'TEAM_LOCAL'`; the loaded definition graph resolves
+that child to a canonical team-local team id. Shared nested teams stay
+`refScope: 'SHARED'`, and application-owned sibling team refs use
+`refScope: 'APPLICATION_OWNED'` when the containing team belongs to an
+application bundle. Missing nested-team scope is invalid in current team config.
 
 `defaultLaunchConfig.llmConfig` carries schema-driven runtime/model parameters
 for the selected model. This includes thinking settings such as
@@ -55,9 +61,17 @@ for the selected model. This includes thinking settings such as
 | Scope | Shown in generic Agent Teams list | Editable from generic team detail/edit | Generic delete / sync |
 | --- | --- | --- | --- |
 | `SHARED` | Yes | Yes | Allowed |
+| `TEAM_LOCAL` | No in the root catalog; discover through the owning team detail/member tree | Direct known-id routes can inspect/edit when the backing source is writable | Not allowed as an independent generic root workflow |
 | `APPLICATION_OWNED` | Yes | Yes when backed by a writable source | Not allowed in the generic shared workflow |
 
-The list/detail/card surfaces show ownership badges and application/package provenance so embedded teams remain distinguishable from standalone shared teams.
+The root Agent Teams catalog is based on ownership scope: it renders shared and
+application-owned root definitions and excludes `TEAM_LOCAL` child definitions.
+This is intentionally not a "referenced by another team" filter, because a
+shared nested team can still be an independent reusable catalog team.
+
+The list/detail/card surfaces show ownership badges, owner-team labels, and
+application/package provenance so embedded teams remain distinguishable from
+standalone shared teams.
 
 ## Default Launch Preferences
 
@@ -235,7 +249,7 @@ history rows.
 
 - fetch and reload of the full team catalog,
 - create/update/delete mutations,
-- ownership-aware getters such as `sharedAgentTeamDefinitions` and `getApplicationOwnedTeamDefinitionsByOwnerApplicationId(...)`, and
+- ownership-aware getters such as `rootAgentTeamDefinitions`, `sharedAgentTeamDefinitions`, `teamLocalAgentTeamDefinitions`, `getTeamLocalTeamDefinitionsByOwnerTeamId(...)`, and `getApplicationOwnedTeamDefinitionsByOwnerApplicationId(...)`, and
 - cache invalidation via `invalidateAgentTeamDefinitions()`.
 
 `teamRunConfigStore` owns:
@@ -257,7 +271,7 @@ Package import/remove flows invalidate and reload Agent Teams together with Appl
 
 - Featured teams render with the same `AgentTeamCard` component and the same view, sync, and run actions as the regular grid.
 - When the featured section is visible, the same team is removed from the regular grid to avoid duplicate cards.
-- Search mode hides featured grouping and searches the full team catalog normally, including featured teams that match the query.
+- Search mode hides featured grouping and searches the root team catalog normally, including featured teams that match the query while still excluding `TEAM_LOCAL` child definitions from the root page.
 - Unknown or removed definition ids in the setting are ignored on the catalog page; Settings keeps unresolved rows visible for operator cleanup.
 - Frontend code must not hard-code featured team ids. Change featured placement through the server setting instead.
 
@@ -265,10 +279,13 @@ Package import/remove flows invalidate and reload Agent Teams together with Appl
 
 - The generic create flow still creates shared standalone teams.
 - Application-owned teams are surfaced for inspection/testing and in-place editing, not for shared-path deletion or sync.
+- Team-local subteams are stored under the owning team at `agent-teams/<local-team-id>/`, can own their own `agents/` and deeper `agent-teams/` folders, and are hidden from the root catalog by `ownershipScope: 'TEAM_LOCAL'`.
+- Team member configs must preserve explicit `refScope` for all members. Use `TEAM_LOCAL` for parent-owned local agents/subteams, `SHARED` for reusable catalog definitions, and `APPLICATION_OWNED` for same-application sibling team references from application-owned teams.
+- Resolvable nested team members show a visible `View Details ↗` action in the parent team detail row. The action routes through the existing Agent Teams page detail view with the resolved canonical child team id, including canonical team-local child ids such as `team-local-team:<encoded-owner-team-id>:<encoded-local-team-id>`. Unresolved nested team rows do not show a broken navigation action.
 - Team detail cards surface team-local member badges for embedded private agents. Resolvable team-local agent members use compact `Details ▾` / `Hide ▴` actions and can be expanded in the team detail page to inspect the member agent's name, role, description, instructions, skills, tools, default runtime/model, and optional processor configuration without leaving team context.
 - Expanded team-local member panels provide in-place editing through the canonical agent definition form and persist through `agentDefinitionStore.updateAgentDefinition(...)`; canceling edit returns to the expanded read view without saving draft changes.
 - Shared/global individual-agent members (`refType === 'AGENT'` with absent/`SHARED` scope) use a compact `View ↗` action that opens the existing Agent Detail route with `returnToTeam=<teamId>` so the Agent Detail back action returns to the originating team. Shared/global members do not get inline team-local details/editing.
-- Application-owned member behavior remains unchanged in this ticket.
+- Application-owned team forms preserve the distinction between same-application sibling teams (`APPLICATION_OWNED`) and parent-owned child teams (`TEAM_LOCAL`) instead of writing no-scope nested-team refs.
 - Generic Agents browse/search excludes team-local definitions, so the owning Agent Team detail page is the primary team-local discovery and edit surface. Direct known-id agent detail/edit routes are still available for debugging.
 - Agent cards/details show both team and application provenance when the owning team belongs to an application bundle.
 - The workspace run-config flow now truthfully supports mixed-runtime teams; any future team-launch UX must preserve the same per-member runtime/model/readiness invariants.

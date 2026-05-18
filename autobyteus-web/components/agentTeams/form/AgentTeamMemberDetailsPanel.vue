@@ -25,7 +25,7 @@
           <p class="mt-1 text-sm text-slate-900">{{ referenceName }}</p>
         </div>
 
-        <div v-if="selectedNode.refType === 'AGENT'">
+        <div>
           <p class="text-xs font-medium text-slate-600">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.scope') }}</p>
           <p class="mt-1 text-sm text-slate-900">{{ scopeLabel }}</p>
         </div>
@@ -80,7 +80,7 @@ const emit = defineEmits<{
 }>()
 
 const scopeLabel = computed(() => {
-  if (!props.selectedNode || props.selectedNode.refType !== 'AGENT') {
+  if (!props.selectedNode) {
     return ''
   }
   if (props.selectedNode.refScope === 'TEAM_LOCAL') {

@@ -11,6 +11,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamCreationError } from "../../../src/agent-team-execution/errors.js";
+import { selectorFromMemberRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import { buildTeamMemberRunId } from "../../../src/run-history/utils/team-member-run-id.js";
 
 type ProcessorRegistry<T> = {
@@ -166,6 +167,7 @@ const createSimpleTeamDefinition = () =>
         memberName: "Coordinator",
         ref: "agent-def-1",
         refType: "agent",
+        refScope: "shared",
       }),
     ],
     coordinatorMemberName: "Coordinator",
@@ -265,7 +267,7 @@ describe("AutoByteusTeamRunBackendFactory integration", () => {
     );
 
     await expect(
-      backend.postMessage(new AgentInputUserMessage("hello"), "Coordinator"),
+      backend.postMessage(new AgentInputUserMessage("hello"), selectorFromMemberRouteKey("coordinator")),
     ).resolves.toMatchObject({ accepted: true });
     expect(createdTeam.postMessage).toHaveBeenCalledTimes(1);
   });
@@ -352,6 +354,7 @@ describe("AutoByteusTeamRunBackendFactory integration", () => {
             memberName: "WorkerA",
             ref: "agent-def-1",
             refType: "agent",
+            refScope: "shared",
           }),
         ],
         coordinatorMemberName: "WorkerA",

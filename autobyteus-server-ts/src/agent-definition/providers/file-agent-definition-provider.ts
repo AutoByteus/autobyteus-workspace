@@ -14,7 +14,7 @@ import { ApplicationBundleService } from "../../application-bundles/services/app
 import {
   parseCanonicalApplicationOwnedAgentId,
 } from "../../application-bundles/utils/application-bundle-identity.js";
-import { parseTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import { parseTeamLocalDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 import {
   buildApplicationOwnedAgentSourcePaths,
   type ApplicationOwnedAgentSourcePaths,
@@ -223,9 +223,13 @@ export class FileAgentDefinitionProvider {
     if (id.startsWith("_")) {
       return null;
     }
-    const parsedTeamLocalId = parseTeamLocalAgentDefinitionId(id);
-    if (parsedTeamLocalId) {
-      return this.readTeamLocalAgent(parsedTeamLocalId.teamId, parsedTeamLocalId.agentId, id);
+    const parsedTeamLocalId = parseTeamLocalDefinitionId(id);
+    if (parsedTeamLocalId?.subject === "agent") {
+      return this.readTeamLocalAgent(
+        parsedTeamLocalId.ownerTeamId,
+        parsedTeamLocalId.localDefinitionId,
+        id,
+      );
     }
     if (parseCanonicalApplicationOwnedAgentId(id)) {
       const source = await this.applicationBundleService.getApplicationOwnedAgentSourceById(id);

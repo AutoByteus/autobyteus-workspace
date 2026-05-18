@@ -1,6 +1,10 @@
+import {
+  buildScopedMemberResolutionContext,
+  resolveScopedAgentMemberRef,
+  resolveScopedTeamMemberRef,
+} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
 import { randomUUID } from "node:crypto";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
 import type {
   ApplicationAgentRunLaunch,
   ApplicationRunBindingMemberSummary,
@@ -366,6 +370,7 @@ export class ApplicationRunBindingLaunchService {
       throw new Error(`Agent team definition '${teamDefinitionId}' was not found.`);
     }
 
+    const resolutionContext = buildScopedMemberResolutionContext(definition, teamDefinitionId);
     const descriptors: TeamMemberDescriptor[] = [];
     for (const node of definition.nodes) {
       if (node.refType === "agent") {
@@ -375,14 +380,15 @@ export class ApplicationRunBindingLaunchService {
           memberRouteKey: buildMemberRouteKeyFromPath(memberPath),
           displayName: node.memberName,
           teamPath: [...teamPath],
-          agentDefinitionId: node.refScope === "team_local"
-            ? buildTeamLocalAgentDefinitionId(teamDefinitionId, node.ref)
-            : node.ref,
+          agentDefinitionId: resolveScopedAgentMemberRef(resolutionContext, node),
         });
         continue;
       }
       descriptors.push(
-        ...(await this.collectTeamMemberDescriptors(node.ref, [...teamPath, node.memberName.trim()])),
+        ...(await this.collectTeamMemberDescriptors(
+          resolveScopedTeamMemberRef(resolutionContext, node),
+          [...teamPath, node.memberName.trim()],
+        )),
       );
     }
     return descriptors;

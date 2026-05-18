@@ -6,7 +6,7 @@ import type {
   SubTeamMemberNode,
   TeamMemberNode,
 } from '~/types/agent/AgentTeamContext';
-import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalAgentDefinitionId';
+import { buildTeamLocalAgentDefinitionId, buildTeamLocalTeamDefinitionId } from '~/utils/teamLocalDefinitionId';
 
 export interface TeamDefinitionLeafMember {
   memberName: string;
@@ -53,6 +53,15 @@ const resolveAgentDefinitionId = (
     : node.ref.trim()
 );
 
+const resolveTeamDefinitionId = (
+  definitionId: string,
+  node: { ref: string; refScope?: string | null },
+): string => (
+  node.refScope === 'TEAM_LOCAL'
+    ? buildTeamLocalTeamDefinitionId(definitionId, node.ref)
+    : node.ref.trim()
+);
+
 export const buildTeamMemberTreeFromDefinition = (
   teamDefinition: AgentTeamDefinition,
   options: ResolveLeafMembersOptions,
@@ -94,9 +103,10 @@ export const buildTeamMemberTreeFromDefinition = (
         continue;
       }
 
-      const nestedDefinition = options.getTeamDefinitionById(node.ref.trim());
+      const nestedDefinitionId = resolveTeamDefinitionId(normalizedDefinitionId, node);
+      const nestedDefinition = options.getTeamDefinitionById(nestedDefinitionId);
       if (!nestedDefinition) {
-        throw new Error(`Nested team definition '${node.ref}' not found.`);
+        throw new Error(`Nested team definition '${nestedDefinitionId}' not found.`);
       }
 
       members.push({

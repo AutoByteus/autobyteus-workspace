@@ -1,5 +1,4 @@
 import { promises as fs } from "node:fs";
-import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonFile, writeJsonFile, writeRawFile } from "../../persistence/file/store-utils.js";
@@ -26,9 +25,10 @@ import {
 import {
   ensureWritableTeamSourcePaths,
   findTeamSourcePaths,
-  pathExists,
+  getCanonicalTeamDefinitionIdFromSourcePaths,
   type ResolvedTeamSourcePaths,
 } from "./team-definition-source-paths.js";
+import { listAllTeamSourcePaths } from "./team-local-team-discovery.js";
 import { buildTeamLocalAgentFilePaths } from "../../agent-definition/providers/team-local-agent-discovery.js";
 import {
   type AgentConfigRecord,
@@ -71,19 +71,18 @@ export class FileAgentTeamDefinitionProvider {
     return roots;
   }
 
-  private async readSharedTeamFromRoot(teamRoot: string, teamId: string): Promise<AgentTeamDefinition | null> {
-    const mdPath = path.join(teamRoot, teamId, "team.md");
-    const configPath = path.join(teamRoot, teamId, "team-config.json");
-
+  private async readTeamFromSourcePaths(
+    sourcePaths: ResolvedTeamSourcePaths,
+  ): Promise<AgentTeamDefinition | null> {
     try {
-      const mdContent = await fs.readFile(mdPath, "utf-8");
-      const parsed = parseTeamMd(mdContent, mdPath);
+      const mdContent = await fs.readFile(sourcePaths.mdPath, "utf-8");
+      const parsed = parseTeamMd(mdContent, sourcePaths.mdPath);
       const config = normalizeTeamConfigRecord(
-        await readJsonFile<TeamConfigRecord>(configPath, defaultTeamConfig()),
+        await readJsonFile<TeamConfigRecord>(sourcePaths.configPath, defaultTeamConfig()),
       );
 
       return new AgentTeamDefinition({
-        id: teamId,
+        id: getCanonicalTeamDefinitionIdFromSourcePaths(sourcePaths),
         name: parsed.name,
         description: parsed.description,
         instructions: parsed.instructions,
@@ -101,7 +100,33 @@ export class FileAgentTeamDefinitionProvider {
               refScope: member.refScope ?? null,
             }),
         ) ?? [],
-        ownershipScope: "shared",
+        ownershipScope: sourcePaths.kind,
+        ownerTeamId: sourcePaths.kind === "team_local" ? sourcePaths.ownerTeamId : null,
+        ownerTeamName: sourcePaths.kind === "team_local" ? sourcePaths.ownerTeamName ?? null : null,
+        ownerApplicationId:
+          sourcePaths.kind === "application_owned"
+            ? sourcePaths.applicationId
+            : sourcePaths.kind === "team_local"
+              ? sourcePaths.ownerApplicationId ?? null
+              : null,
+        ownerApplicationName:
+          sourcePaths.kind === "application_owned"
+            ? sourcePaths.applicationName
+            : sourcePaths.kind === "team_local"
+              ? sourcePaths.ownerApplicationName ?? null
+              : null,
+        ownerPackageId:
+          sourcePaths.kind === "application_owned"
+            ? sourcePaths.packageId
+            : sourcePaths.kind === "team_local"
+              ? sourcePaths.ownerPackageId ?? null
+              : null,
+        ownerLocalApplicationId:
+          sourcePaths.kind === "application_owned"
+            ? sourcePaths.localApplicationId
+            : sourcePaths.kind === "team_local"
+              ? sourcePaths.ownerLocalApplicationId ?? null
+              : null,
       });
     } catch (error) {
       if (error instanceof TeamMdParseError || error instanceof TeamConfigParseError) {
@@ -128,11 +153,20 @@ export class FileAgentTeamDefinitionProvider {
     });
   }
 
+  private async readDefinitionFromSourcePaths(
+    sourcePaths: ResolvedTeamSourcePaths,
+  ): Promise<AgentTeamDefinition | null> {
+    if (sourcePaths.kind === "application_owned") {
+      return this.readApplicationOwnedTeamFromSource(sourcePaths);
+    }
+    return this.readTeamFromSourcePaths(sourcePaths);
+  }
+
   private async nextTeamId(name: string): Promise<string> {
     const base = slugify(name);
     let candidate = base;
     let index = 2;
-    while (await pathExists(this.getTeamDir(candidate))) {
+    while (await fs.access(this.getTeamDir(candidate)).then(() => true).catch(() => false)) {
       candidate = `${base}-${index}`;
       index += 1;
     }
@@ -163,7 +197,7 @@ export class FileAgentTeamDefinitionProvider {
           throw error;
         }
       },
-      resolveNestedTeamRef: async (canonicalTeamId) => {
+      resolveApplicationOwnedTeamRef: async (canonicalTeamId) => {
         const nestedTeamSource = await this.applicationBundleService.getApplicationOwnedTeamSourceById(
           canonicalTeamId,
         );
@@ -172,12 +206,21 @@ export class FileAgentTeamDefinitionProvider {
           ownerApplicationId: nestedTeamSource?.applicationId ?? null,
         };
       },
+      resolveLocalTeamRef: async (localTeamId) => {
+        const teamDir = path.join(sourcePaths.teamDir, "agent-teams", localTeamId);
+        try {
+          await fs.access(path.join(teamDir, "team.md"));
+          return { exists: true };
+        } catch {
+          return { exists: false };
+        }
+      },
     });
   }
 
   async create(domainObj: AgentTeamDefinition): Promise<AgentTeamDefinition> {
     if ((domainObj.ownershipScope ?? "shared") !== "shared") {
-      throw new Error("Application-owned team definitions cannot be created from the shared team provider.");
+      throw new Error("Non-shared team definitions cannot be created from the shared team provider.");
     }
 
     const teamId = domainObj.id ?? (await this.nextTeamId(domainObj.name));
@@ -208,100 +251,43 @@ export class FileAgentTeamDefinitionProvider {
       return null;
     }
 
-    if (parseCanonicalApplicationOwnedTeamId(id)) {
-      const sourcePaths = await findTeamSourcePaths(
-        id,
-        this.getReadTeamRoots(),
-        this.applicationBundleService,
-      );
-      if (!sourcePaths || sourcePaths.kind !== "application_owned") {
-        return null;
-      }
-      return this.readApplicationOwnedTeamFromSource(sourcePaths);
+    const sourcePaths = await findTeamSourcePaths(
+      id,
+      this.getReadTeamRoots(),
+      this.applicationBundleService,
+    );
+    if (!sourcePaths) {
+      return null;
     }
-
-    for (const rootPath of this.getReadTeamRoots()) {
-      const definition = await this.readSharedTeamFromRoot(rootPath, id);
-      if (definition) {
-        return definition;
-      }
-    }
-    return null;
+    return this.readDefinitionFromSourcePaths(sourcePaths);
   }
 
   async getAll(): Promise<AgentTeamDefinition[]> {
     const definitions: AgentTeamDefinition[] = [];
     const seenIds = new Set<string>();
+    const sourcePathsList = await listAllTeamSourcePaths({
+      sharedTeamRoots: this.getReadTeamRoots(),
+      applicationOwnedTeamSources: await this.applicationBundleService.listApplicationOwnedTeamSources(),
+    });
 
-    for (const rootPath of this.getReadTeamRoots()) {
-      let entries: Dirent[] = [];
-      try {
-        entries = await fs.readdir(rootPath, { withFileTypes: true });
-      } catch {
-        continue;
-      }
-
-      for (const entry of entries) {
-        if (!entry.isDirectory()) {
-          continue;
-        }
-        const teamId = entry.name;
-        if (teamId.startsWith("_") || seenIds.has(teamId)) {
-          continue;
-        }
-        try {
-          const definition = await this.readSharedTeamFromRoot(rootPath, teamId);
-          if (definition) {
-            definitions.push(definition);
-            seenIds.add(teamId);
-          }
-        } catch (error) {
-          if (error instanceof TeamMdParseError || error instanceof TeamConfigParseError) {
-            logger.warn(`Skipping team '${teamId}' due to parse error: ${error.message}`);
-            continue;
-          }
-          throw error;
-        }
-      }
-    }
-
-    const applicationOwnedSources = await this.applicationBundleService.listApplicationOwnedTeamSources();
-    for (const source of applicationOwnedSources) {
-      if (seenIds.has(source.definitionId)) {
+    for (const sourcePaths of sourcePathsList) {
+      const definitionId = getCanonicalTeamDefinitionIdFromSourcePaths(sourcePaths);
+      if (definitionId.startsWith("_") || seenIds.has(definitionId)) {
         continue;
       }
       try {
-        const teamDir = path.join(source.applicationRootPath, "agent-teams", source.localDefinitionId);
-        const definition = await readApplicationOwnedTeamDefinitionFromSource({
-          sourcePaths: {
-            definitionId: source.definitionId,
-            teamDir,
-            mdPath: path.join(teamDir, "team.md"),
-            configPath: path.join(teamDir, "team-config.json"),
-            rootPath: source.applicationRootPath,
-            applicationId: source.applicationId,
-            applicationName: source.applicationName,
-            packageId: source.packageId,
-            localApplicationId: source.localApplicationId,
-            localTeamId: source.localDefinitionId,
-          },
-          canonicalizeTeamRef: (localTeamId) =>
-            buildCanonicalApplicationOwnedTeamId(
-              source.packageId,
-              source.localApplicationId,
-              localTeamId,
-            ),
-        });
-        if (definition) {
+        const definition = await this.readDefinitionFromSourcePaths(sourcePaths);
+        if (definition?.id) {
           definitions.push(definition);
-          seenIds.add(source.definitionId);
+          seenIds.add(definition.id);
         }
       } catch (error) {
         if (
           error instanceof TeamMdParseError ||
+          error instanceof TeamConfigParseError ||
           error instanceof ApplicationOwnedTeamConfigParseError
         ) {
-          logger.warn(`Skipping application-owned team '${source.definitionId}' due to parse error: ${(error as Error).message}`);
+          logger.warn(`Skipping team '${definitionId}' due to parse error: ${(error as Error).message}`);
           continue;
         }
         throw error;
@@ -316,7 +302,7 @@ export class FileAgentTeamDefinitionProvider {
     const seenIds = new Set<string>();
 
     for (const rootPath of this.getReadTeamRoots()) {
-      let entries: Dirent[] = [];
+      let entries: import("node:fs").Dirent[] = [];
       try {
         entries = await fs.readdir(rootPath, { withFileTypes: true });
       } catch {
@@ -332,7 +318,12 @@ export class FileAgentTeamDefinitionProvider {
           continue;
         }
         try {
-          const definition = await this.readSharedTeamFromRoot(rootPath, teamId);
+          const sourcePaths = await findTeamSourcePaths(
+            teamId,
+            [rootPath],
+            this.applicationBundleService,
+          );
+          const definition = sourcePaths ? await this.readDefinitionFromSourcePaths(sourcePaths) : null;
           if (definition) {
             definitions.push(definition);
             seenIds.add(teamId);

@@ -6,6 +6,8 @@ import {
 import { AgentTeamDefinitionPersistenceProvider } from "../providers/agent-team-definition-persistence-provider.js";
 import { CachedAgentTeamDefinitionProvider } from "../providers/cached-agent-team-definition-provider.js";
 import { normalizeDefaultLaunchConfigInput } from "../../launch-preferences/default-launch-config.js";
+import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { assertValidTeamDefinitionGraph } from "./team-definition-graph-validator.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -27,6 +29,7 @@ type AgentTeamDefinitionFreshProvider = Pick<AgentTeamDefinitionPersistenceProvi
 type AgentTeamDefinitionServiceOptions = {
   provider?: AgentTeamDefinitionProvider;
   persistenceProvider?: AgentTeamDefinitionPersistenceProvider;
+  agentDefinitionService?: Pick<AgentDefinitionService, "getAgentDefinitionById" | "getFreshAgentDefinitionById">;
 };
 
 const normalizeOptionalString = (value: unknown): string | null => {
@@ -51,13 +54,10 @@ const assertValidTeamMembers = (
   nodes: Array<{ refType: "agent" | "agent_team"; refScope?: TeamMemberRefScope | null }>,
 ): void => {
   for (const node of nodes) {
-    if (node.refType === "agent" && !node.refScope) {
+    if (!node.refScope) {
       throw new Error(
-        "Agent members must include refScope 'shared', 'team_local', or 'application_owned'.",
+        "Team members must include refScope 'shared', 'team_local', or 'application_owned'.",
       );
-    }
-    if (node.refType === "agent_team" && node.refScope) {
-      throw new Error("Nested team members must not include refScope.");
     }
   }
 };
@@ -74,12 +74,14 @@ export class AgentTeamDefinitionService {
 
   readonly provider: AgentTeamDefinitionProvider;
   private readonly freshProvider: AgentTeamDefinitionFreshProvider;
+  private readonly agentDefinitionService: Pick<AgentDefinitionService, "getAgentDefinitionById" | "getFreshAgentDefinitionById">;
 
   constructor(options: AgentTeamDefinitionServiceOptions = {}) {
     const persistenceProvider =
       options.persistenceProvider ?? new AgentTeamDefinitionPersistenceProvider();
     this.provider = options.provider ?? new CachedAgentTeamDefinitionProvider(persistenceProvider);
     this.freshProvider = options.persistenceProvider ?? persistenceProvider;
+    this.agentDefinitionService = options.agentDefinitionService ?? AgentDefinitionService.getInstance();
   }
 
   async createDefinition(definition: AgentTeamDefinition): Promise<AgentTeamDefinition> {
@@ -93,6 +95,7 @@ export class AgentTeamDefinitionService {
     definition.defaultLaunchConfig =
       normalizeDefaultLaunchConfigInput(definition.defaultLaunchConfig) ?? null;
     const created = await this.provider.create(definition);
+    await this.assertDefinitionGraphOrRollback(created);
     logger.info(`Agent Team Definition created successfully with ID: ${created.id}`);
     return created;
   }
@@ -153,6 +156,13 @@ export class AgentTeamDefinitionService {
 
     assertValidTeamMembers(existing.nodes);
     assertValidCoordinatorMember(existing.coordinatorMemberName, existing.nodes);
+    await assertValidTeamDefinitionGraph({
+      rootDefinition: existing,
+      lookup: {
+        getTeamById: async (id) => id === existing.id ? existing : this.provider.getById(id),
+        getAgentById: async (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id),
+      },
+    });
 
     const updated = await this.provider.update(existing);
     logger.info(`Agent Team Definition with ID ${definitionId} updated successfully.`);
@@ -179,6 +189,29 @@ export class AgentTeamDefinitionService {
   async refreshCache(): Promise<void> {
     if (typeof this.provider.refresh === "function") {
       await this.provider.refresh();
+    }
+  }
+
+  private async assertDefinitionGraphOrRollback(definition: AgentTeamDefinition): Promise<void> {
+    try {
+      await assertValidTeamDefinitionGraph({
+        rootDefinition: definition,
+        lookup: {
+          getTeamById: async (id) => id === definition.id ? definition : this.provider.getById(id),
+          getAgentById: async (id) => this.agentDefinitionService.getFreshAgentDefinitionById(id),
+        },
+      });
+    } catch (error) {
+      if (definition.id) {
+        await this.provider.delete(definition.id).catch((rollbackError) => {
+          logger.warn(
+            `Failed to roll back invalid agent team definition '${definition.id}': ${
+              rollbackError instanceof Error ? rollbackError.message : String(rollbackError)
+            }`,
+          );
+        });
+      }
+      throw error;
     }
   }
 }

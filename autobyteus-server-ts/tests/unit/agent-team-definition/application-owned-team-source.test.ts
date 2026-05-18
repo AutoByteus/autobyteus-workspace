@@ -143,6 +143,7 @@ describe("application-owned-team-source", () => {
           memberName: "subteam",
           ref: "canonical-team:review-team",
           refType: "agent_team",
+          refScope: "application_owned",
         }),
       ],
     });
@@ -174,9 +175,48 @@ describe("application-owned-team-source", () => {
           memberName: "subteam",
           ref: "review-team",
           refType: "agent_team",
-          refScope: null,
+          refScope: "application_owned",
         },
       ],
     });
+  });
+
+  it("rejects legacy application-owned nested team refs without explicit refScope", async () => {
+    const sourcePaths = await createSourcePaths();
+    await fs.writeFile(
+      sourcePaths.mdPath,
+      [
+        "---",
+        "name: Launch Team",
+        "description: Coordinates the application launch",
+        "---",
+        "",
+        "Coordinate the launch.",
+      ].join("\n"),
+      "utf-8",
+    );
+    await fs.writeFile(
+      sourcePaths.configPath,
+      JSON.stringify(
+        {
+          coordinatorMemberName: "subteam",
+          members: [
+            {
+              memberName: "subteam",
+              ref: "review-team",
+              refType: "agent_team",
+            },
+          ],
+        },
+        null,
+        2,
+      ),
+      "utf-8",
+    );
+
+    await expect(readApplicationOwnedTeamDefinitionFromSource({
+      sourcePaths,
+      canonicalizeTeamRef: (localTeamId) => `canonical-team:${localTeamId}`,
+    })).rejects.toThrow("must include refScope 'application_owned' or 'team_local'");
   });
 });

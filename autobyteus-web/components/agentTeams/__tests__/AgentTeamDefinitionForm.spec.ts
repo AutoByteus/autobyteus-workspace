@@ -17,7 +17,7 @@ const {
 } = vi.hoisted(() => {
   const applicationOwnedTeamId = 'bundle-team__pkg-1__brief-studio__launch-team'
   const applicationOwnedTeamLocalAgent = {
-    id: `team-local:${applicationOwnedTeamId}:reviewer`,
+    id: `team-local-agent:${applicationOwnedTeamId}:reviewer`,
     name: 'Bundled Reviewer',
     ownershipScope: 'TEAM_LOCAL',
   }
@@ -66,6 +66,7 @@ const {
       fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
       getAgentTeamDefinitionById: vi.fn(() => null),
       getApplicationOwnedTeamDefinitionsByOwnerApplicationId: vi.fn(() => []),
+      getTeamLocalTeamDefinitionsByOwnerTeamId: vi.fn(() => []),
     },
   }
 })

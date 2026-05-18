@@ -2,7 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   NodeSyncSelectionService,
 } from '../../../src/sync/services/node-sync-selection-service.js';
-import { buildTeamLocalAgentDefinitionId } from 'autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js';
+import {
+  buildTeamLocalAgentDefinitionId,
+  buildTeamLocalTeamDefinitionId,
+} from 'autobyteus-ts/agent-team/utils/team-local-definition-id.js';
 
 function toSortedArray(values: Set<string>): string[] {
   return Array.from(values).sort((a, b) => a.localeCompare(b));
@@ -45,11 +48,13 @@ describe('NodeSyncSelectionService', () => {
               memberName: 'member-a',
               ref: 'agent-2',
               refType: 'agent',
+              refScope: 'shared',
             },
             {
               memberName: 'member-b',
               ref: 'team-2',
               refType: 'agent_team',
+              refScope: 'shared',
             },
           ],
         },
@@ -61,6 +66,7 @@ describe('NodeSyncSelectionService', () => {
               memberName: 'member-c',
               ref: 'agent-1',
               refType: 'agent',
+              refScope: 'shared',
             },
           ],
         },
@@ -160,5 +166,52 @@ describe('NodeSyncSelectionService', () => {
     expect(agentDefinitionService.getFreshAgentDefinitionById).toHaveBeenCalledWith(
       buildTeamLocalAgentDefinitionId('team-1', 'reviewer'),
     );
+  });
+
+  it('expands team-local nested teams and local agents with canonical ids', async () => {
+    const localTeamId = buildTeamLocalTeamDefinitionId('team-1', 'review-team');
+    const localAgentId = buildTeamLocalAgentDefinitionId(localTeamId, 'reviewer');
+    agentDefinitionService.getFreshAgentDefinitionById.mockImplementation(async (definitionId: string) => (
+      definitionId === localAgentId ? { id: localAgentId, name: 'Local Reviewer' } : null
+    ));
+    agentTeamDefinitionService.getAllDefinitions.mockResolvedValue([
+      {
+        id: 'team-1',
+        name: 'Team One',
+        nodes: [
+          {
+            memberName: 'review-team',
+            ref: 'review-team',
+            refType: 'agent_team',
+            refScope: 'team_local',
+          },
+        ],
+      },
+      {
+        id: localTeamId,
+        name: 'Review Team',
+        nodes: [
+          {
+            memberName: 'reviewer',
+            ref: 'reviewer',
+            refType: 'agent',
+            refScope: 'team_local',
+          },
+        ],
+      },
+    ]);
+
+    const service = buildService();
+    const resolved = await service.resolveSelection({
+      agentTeamDefinitionIds: ['team-1'],
+      includeDependencies: true,
+    });
+
+    expect(resolved).not.toBeNull();
+    if (!resolved) {
+      return;
+    }
+    expect(toSortedArray(resolved.agentTeamDefinitionIds)).toEqual(['team-1', localTeamId].sort());
+    expect(toSortedArray(resolved.agentDefinitionIds)).toEqual([localAgentId]);
   });
 });

@@ -12,6 +12,8 @@ export const GetAgentTeamDefinitions = gql`
       avatarUrl
       coordinatorMemberName
       ownershipScope
+      ownerTeamId
+      ownerTeamName
       ownerApplicationId
       ownerApplicationName
       ownerPackageId

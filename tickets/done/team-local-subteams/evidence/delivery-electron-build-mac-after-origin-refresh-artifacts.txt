@@ -1,0 +1,8 @@
+# Electron macOS rebuild artifacts after origin/personal refresh
+Generated: 2026-05-18T08:38:23Z
+Command log: tickets/in-progress/team-local-subteams/evidence/delivery-electron-build-mac-after-origin-refresh.log
+
+-rw-r--r--@ 1 normy  staff   359M May 18 10:36 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.dmg
+-rw-r--r--@ 1 normy  staff   384K May 18 10:36 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   356M May 18 10:38 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip
+-rw-r--r--@ 1 normy  staff   374K May 18 10:38 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.16.zip.blockmap

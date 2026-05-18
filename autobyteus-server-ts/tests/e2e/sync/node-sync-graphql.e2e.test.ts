@@ -1,9 +1,15 @@
 import "reflect-metadata";
+import { promises as fs } from "node:fs";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+import {
+  buildTeamLocalAgentDefinitionId,
+  buildTeamLocalTeamDefinitionId,
+} from "autobyteus-ts/agent-team/utils/team-local-definition-id.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
 function uniqueId(prefix: string): string {
   return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
@@ -977,5 +983,211 @@ describe("Node sync GraphQL endpoint e2e", () => {
     expect(typeof files?.teamMd).toBe("string");
     expect(typeof files?.teamConfigJson).toBe("string");
     expect(files?.teamMd).toContain("team sync instructions");
+  });
+
+  it("imports nested team-local subteam payloads and exports the selected parent dependency closure", async () => {
+    const unique = uniqueId("sync_team_local_subteam");
+    const parentTeamId = `company_${unique}`;
+    const localTeamLocalId = `department_${unique}`;
+    const localAgentLocalId = `planner_${unique}`;
+    const canonicalLocalTeamId = buildTeamLocalTeamDefinitionId(parentTeamId, localTeamLocalId);
+    const canonicalLocalAgentId = buildTeamLocalAgentDefinitionId(
+      canonicalLocalTeamId,
+      localAgentLocalId,
+    );
+    const parentTeamDir = path.join(
+      appConfigProvider.config.getAppDataDir(),
+      "agent-teams",
+      parentTeamId,
+    );
+
+    try {
+      const importMutation = `
+        mutation ImportSyncBundle($input: ImportNodeSyncBundleInput!) {
+          importSyncBundle(input: $input) {
+            success
+            summary {
+              processed
+              created
+              updated
+              skipped
+            }
+            failures {
+              entityType
+              key
+              message
+            }
+          }
+        }
+      `;
+
+      const importResult = await execGraphql<{
+        importSyncBundle: {
+          success: boolean;
+          summary: { processed: number; created: number; updated: number; skipped: number };
+          failures: Array<{ entityType: string; key: string; message: string }>;
+        };
+      }>(importMutation, {
+        input: {
+          scope: ["AGENT_TEAM_DEFINITION"],
+          conflictPolicy: "SOURCE_WINS",
+          tombstonePolicy: "SOURCE_DELETE_WINS",
+          bundle: {
+            watermark: new Date().toISOString(),
+            entities: {
+              agent_team_definition: [
+                {
+                  teamId: parentTeamId,
+                  files: {
+                    teamMd: buildTeamMd({
+                      name: `Company ${unique}`,
+                      description: "company with local department",
+                      category: "sync",
+                      instructions: "company sync instructions",
+                    }),
+                    teamConfigJson: JSON.stringify({
+                      coordinatorMemberName: "department",
+                      members: [
+                        {
+                          memberName: "department",
+                          ref: localTeamLocalId,
+                          refType: "agent_team",
+                          refScope: "team_local",
+                        },
+                      ],
+                      avatarUrl: null,
+                    }),
+                  },
+                  localAgents: [],
+                },
+                {
+                  teamId: canonicalLocalTeamId,
+                  files: {
+                    teamMd: buildTeamMd({
+                      name: `Department ${unique}`,
+                      description: "local department",
+                      category: "sync",
+                      instructions: "department sync instructions",
+                    }),
+                    teamConfigJson: JSON.stringify({
+                      coordinatorMemberName: "planner",
+                      members: [
+                        {
+                          memberName: "planner",
+                          ref: localAgentLocalId,
+                          refType: "agent",
+                          refScope: "team_local",
+                        },
+                      ],
+                      avatarUrl: null,
+                    }),
+                  },
+                  localAgents: [
+                    {
+                      agentId: localAgentLocalId,
+                      files: {
+                        agentMd: buildAgentMd({
+                          name: `Planner ${unique}`,
+                          role: "assistant",
+                          description: "nested local planner",
+                          category: "sync",
+                          instructions: "nested local planner instructions",
+                        }),
+                        agentConfigJson: JSON.stringify({
+                          toolNames: ["planning_tool"],
+                          skillNames: [],
+                          inputProcessorNames: [],
+                          llmResponseProcessorNames: [],
+                          systemPromptProcessorNames: [],
+                          toolExecutionResultProcessorNames: [],
+                          toolInvocationPreprocessorNames: [],
+                          lifecycleProcessorNames: [],
+                          avatarUrl: null,
+                        }),
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            tombstones: {},
+          },
+        },
+      });
+
+      expect(importResult.importSyncBundle).toMatchObject({
+        success: true,
+        summary: {
+          processed: 2,
+          created: 2,
+          skipped: 0,
+        },
+        failures: [],
+      });
+
+      const nestedAgentMdPath = path.join(
+        parentTeamDir,
+        "agent-teams",
+        localTeamLocalId,
+        "agents",
+        localAgentLocalId,
+        "agent.md",
+      );
+      await expect(fs.readFile(nestedAgentMdPath, "utf-8")).resolves.toContain(
+        "nested local planner instructions",
+      );
+
+      const exportQuery = `
+        query ExportSyncBundle($input: ExportNodeSyncBundleInput!) {
+          exportSyncBundle(input: $input) {
+            entities
+          }
+        }
+      `;
+
+      const exported = await execGraphql<{
+        exportSyncBundle: {
+          entities: Record<string, Array<Record<string, unknown>>>;
+        };
+      }>(exportQuery, {
+        input: {
+          scope: ["AGENT_DEFINITION", "AGENT_TEAM_DEFINITION"],
+          selection: {
+            agentTeamDefinitionIds: [parentTeamId],
+            includeDependencies: true,
+          },
+        },
+      });
+
+      const teamEntities = exported.exportSyncBundle.entities.agent_team_definition ?? [];
+      const agentEntities = exported.exportSyncBundle.entities.agent_definition ?? [];
+      const parentPayload = teamEntities.find((entity) => entity.teamId === parentTeamId);
+      const localTeamPayload = teamEntities.find(
+        (entity) => entity.teamId === canonicalLocalTeamId,
+      );
+      const localAgentPayload = agentEntities.find(
+        (entity) => entity.agentId === canonicalLocalAgentId,
+      );
+
+      expect(teamEntities.map((entity) => entity.teamId).sort()).toEqual(
+        [parentTeamId, canonicalLocalTeamId].sort(),
+      );
+      expect(parentPayload?.files).toMatchObject({
+        teamConfigJson: expect.stringContaining(`"refScope":"team_local"`),
+      });
+      expect(localTeamPayload?.localAgents).toEqual([
+        expect.objectContaining({
+          agentId: localAgentLocalId,
+          files: expect.objectContaining({
+            agentMd: expect.stringContaining("nested local planner instructions"),
+          }),
+        }),
+      ]);
+      expect(localAgentPayload?.files).toMatchObject({
+        agentMd: expect.stringContaining("nested local planner instructions"),
+      });
+    } finally {
+      await fs.rm(parentTeamDir, { recursive: true, force: true }).catch(() => undefined);
+    }
   });
 });
