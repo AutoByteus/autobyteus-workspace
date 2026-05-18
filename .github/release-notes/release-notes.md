@@ -1,3 +1,6 @@
+# Release Notes
+
 ## Improvements
-- Nested agent-team members now use the same compact `View ↗` action style as shared agent members.
-- Opening a nested team from a parent team now lets you return directly to the parent team detail page.
+- Codex full access and Streaming parser toggles now save immediately when switched, matching the Applications toggle behavior.
+- Removed redundant save buttons from the Codex full access and Streaming parser cards.
+- Made active save buttons on other settings cards easier to notice when changes need to be saved.
