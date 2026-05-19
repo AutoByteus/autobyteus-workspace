@@ -90,6 +90,11 @@ The server registers `/mobile` and `/mobile/*` as public static routes. It searc
 
 The route safely resolves files under the selected root and falls back to `index.html` for mobile SPA deep links such as `/mobile/workspace`.
 
+
+## Desktop Route Boundary
+
+Remote Access static serving is limited to `/mobile` and `/mobile/*`. Normal desktop web routes such as `/workspace` remain owned by the desktop/web shell and must not render the mobile shell. A stale phone deep link such as `/mobile/workspace` is handled by the mobile SPA as an unsupported desktop-workspace notice, preserving the desktop route behavior for regular browser and Electron users.
+
 ## Persistence and Disable Behavior
 
 Remote Access data lives under the app data directory:

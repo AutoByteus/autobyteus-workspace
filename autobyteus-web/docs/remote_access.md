@@ -10,6 +10,13 @@ Phone Access lets a phone browser or PWA connect to the desktop-owned AutoByteus
 - After pairing, the phone stores a mobile node session locally and uses the same node endpoint model as the desktop web app to derive REST, GraphQL, and WebSocket URLs from the paired base URL.
 - Supported mobile routes run in a phone shell; desktop-only routes redirect back to the mobile shell with an explicit unsupported-feature notice.
 
+
+## Mobile Shell and Desktop Boundary
+
+Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, and Activity views. Normal desktop routes, including desktop `/workspace` and browser desktop flows, continue to use the regular desktop shell and must not be rewritten to the mobile shell.
+
+Stale or unsupported phone links such as `/mobile/workspace` stay inside the mobile experience and show an explicit unsupported-feature notice. Desktop-only workflows remain available from desktop/Electron and should not be forked or degraded by mobile journey refinements.
+
 ## Network Model
 
 AutoByteus does not require or special-case a VPN vendor. Phone Access only requires that the phone can reach the desktop/server node URL selected during pairing.
