@@ -1,0 +1,13 @@
+## cleanup 2026-05-19T22:01:28+02:00
+delete_remote_branch:
+remote: 
+remote: GitHub found 405 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (5 critical, 173 high, 200 moderate, 27 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]           codex/mobile-launch-config-member-focus
+remove_worktree:
+delete_local_branch:
+Deleted branch codex/mobile-launch-config-member-focus (was ab5fbdf1).
+worktree_prune:
+remaining_worktree_entry:

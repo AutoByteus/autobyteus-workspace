@@ -2,15 +2,15 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-review-report.md`
-- Design-impact rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-impact-rework-mobile-ux-focus-scope.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/review-report.md`
-- Canonical API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/api-e2e-validation-report.md`
-- Round 1 live validation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations.md`
-- Round 2 live validation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations-round2.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-launch-config-member-focus/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-launch-config-member-focus/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-launch-config-member-focus/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-launch-config-member-focus/design-review-report.md`
+- Design-impact rework note: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-launch-config-member-focus/design-impact-rework-mobile-ux-focus-scope.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-launch-config-member-focus/review-report.md`
+- Canonical API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-launch-config-member-focus/api-e2e-validation-report.md`
+- Round 1 live validation evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations.md`
+- Round 2 live validation evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations-round2.md`
 
 ## What Changed
 
@@ -38,25 +38,25 @@
 ## Key Files Or Areas
 
 - Added:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/MobileLaunchRuntimeModelCard.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/MobileTeamLaunchFocusPicker.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/MobileTeamMemberFocusBar.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/composables/mobile/useMobileTeamMemberFocusCoordinator.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/composables/useTeamRunRuntimeCatalogSync.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/MobileLaunchRuntimeModelCard.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/MobileTeamLaunchFocusPicker.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/MobileTeamMemberFocusBar.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/composables/mobile/useMobileTeamMemberFocusCoordinator.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/composables/useTeamRunRuntimeCatalogSync.ts`
 - Modified:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/MobilePairingBootstrap.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/MobileRemoteAccessShell.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/MobileRunSetup.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/MobileLaunchSummary.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/MobileRuns.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/MobileWorkShell.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/composables/mobile/useMobileWorkCatalog.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/stores/mobileWorkStore.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/MobilePairingBootstrap.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/MobileRemoteAccessShell.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/MobileRunSetup.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/MobileLaunchSummary.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/MobileRuns.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/MobileWorkShell.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/composables/mobile/useMobileWorkCatalog.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/mobileWorkStore.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts`
 
 ## Important Assumptions
 

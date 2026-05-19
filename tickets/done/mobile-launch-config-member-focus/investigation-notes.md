@@ -28,10 +28,10 @@ Screenshots were supplied in the task prompt. The first screenshot is Android Ch
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-launch-config-member-focus`
 - Current Branch: `codex/mobile-launch-config-member-focus`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin --prune` succeeded on 2026-05-19.
 - Task Branch: `codex/mobile-launch-config-member-focus`
@@ -46,7 +46,7 @@ Screenshots were supplied in the task prompt. The first screenshot is Android Ch
 | --- | --- | --- | --- | --- | --- |
 | 2026-05-19 | Command | `pwd && git rev-parse --show-toplevel && git status --short --branch && git remote -v` | Bootstrap repository context | Original checkout was `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` on branch `personal` tracking `origin/personal`; remote is `git@github.com-ryan:AutoByteus/autobyteus-workspace.git`. | No |
 | 2026-05-19 | Command | `git fetch origin --prune` | Refresh tracked remote refs before creating task branch/worktree | Fetch succeeded. | No |
-| 2026-05-19 | Command | `git worktree add -b codex/mobile-launch-config-member-focus /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus origin/personal` | Create mandatory dedicated task worktree/branch | Worktree created at commit `4aae26b4`, branch tracks `origin/personal`. | No |
+| 2026-05-19 | Command | `git worktree add -b codex/mobile-launch-config-member-focus /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Create mandatory dedicated task worktree/branch | Worktree created at commit `4aae26b4`, branch tracks `origin/personal`. | No |
 | 2026-05-19 | Other | User screenshots in prompt | Understand reported mobile behavior | Mobile Runs launch card is visible but runtime/model row is read-only summary; launch blocked by `Needs choices`; no obvious member focus control shown. | No |
 | 2026-05-19 | Command | `rg -n "Existing desktop defaults|Needs choices|Launch summary|Launch run|Start new|runtime/model|Runtime/model" -S .` | Locate current mobile launch implementation | Found `MobileRunSetup.vue`, `MobileLaunchSummary.vue`, and `MobileUxRefinement.spec.ts` intentionally asserting current hardcoded default copy. | Update implementation/tests |
 | 2026-05-19 | Code | `autobyteus-web/components/mobile/MobileRunSetup.vue` | Inspect mobile launch UI owner | Text says advanced desktop panels stay hidden; component renders target/workspace/prompt only; `selectedModelLabel` is hardcoded to `Existing desktop defaults`; `canLaunch` ignores runtime/model readiness. | Fix needed |

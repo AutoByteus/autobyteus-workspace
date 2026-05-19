@@ -1,7 +1,7 @@
 # Delivery Integration Checks
 
 Date: 2026-05-19T20:51:35+02:00
-Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus
+Worktree: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
 Branch: codex/mobile-launch-config-member-focus
 HEAD: a32530af4a88458976361b58e500af2f810d0c79
 Base: origin/personal 4f2bd7fcffb2f26d9e90ad2deeb5873613d2d9a8
@@ -11,7 +11,7 @@ pnpm -C autobyteus-web exec vitest run components/mobile/__tests__/MobileUxRefin
 isElectronBuild false
 [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
 
- RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
 
 stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
 Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
@@ -65,7 +65,7 @@ pnpm -C autobyteus-web exec vitest run stores/__tests__/agentTeamContextsStore.s
 isElectronBuild false
 [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
 
- RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
 
 stderr | stores/__tests__/activeContextStore.spec.ts
 Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
@@ -91,10 +91,10 @@ serverStore: Not in Electron environment. Skipping server initialization.
  ✓ stores/__tests__/agentTeamContextsStore.spec.ts (7 tests) 9ms
 stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore > does not mark a persisted team inactive when backend termination fails
 Error terminating team team-terminate-fails-1 on backend: Error: not found
-    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/stores/agentTeamRunStore.ts:215:17)
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/agentTeamRunStore.ts:215:17)
     at processTicksAndRejections (node:internal/process/task_queues:105:5)
-    at /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:282:20
-    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+    at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:282:20
+    at file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
 
 stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore > interruptFocusedMemberGeneration rejects missing member target without using active-team fallback
 Cannot interrupt generation: target member route key is required.
