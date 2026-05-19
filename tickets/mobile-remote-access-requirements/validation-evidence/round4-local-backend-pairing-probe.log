@@ -1,0 +1,30 @@
+--- status before
+HTTP/1.1 404 Not Found
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 97
+Date: Tue, 19 May 2026 05:16:36 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"message":"Route GET:/rest/remote-access/status not found","error":"Not Found","statusCode":404}
+--- enable
+HTTP/1.1 404 Not Found
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 99
+Date: Tue, 19 May 2026 05:16:36 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"message":"Route PUT:/rest/remote-access/settings not found","error":"Not Found","statusCode":404}
+--- create pairing
+HTTP/1.1 404 Not Found
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 108
+Date: Tue, 19 May 2026 05:16:36 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"message":"Route POST:/rest/remote-access/pairing-sessions not found","error":"Not Found","statusCode":404}

@@ -24,6 +24,27 @@ Current coupling / fragmentation pressure:
 4. Serving a PWA without addressing generated URL/base URL policy would leak `127.0.0.1` URLs to remote clients.
 5. Building Android first would not solve the shared Remote Access boundary; native wrappers should consume the same PWA pairing/auth protocol.
 
+
+Round 3 mobile implementation read after API/E2E return:
+
+- The phone-first shell exists: `MobileHome`, `MobileWorkShell`, `MobileContextSwitcher`, `MobileChat`, `MobileRuns`, `MobileFiles`, and `MobileActivity` are present under `autobyteus-web/components/mobile`.
+- The implementation removed the default compressed desktop shell from `/mobile`, but it still leaves functional journey gaps: `MobileRuns.vue` has a start-new guidance placeholder instead of a runnable setup/launch path; `MobileFiles.vue` has a file-preview placeholder and `attachFile()` only closes the preview; `MobileActivity.vue` has an enabled `Open team messages` button without visible state change; mobile list rows use horizontal title + shrink metadata layouts that fail with real data.
+- Existing authoritative owners for the missing functionality already exist in desktop/shared code: `agentRunStore`, `agentTeamRunStore`, `fileExplorerStore`, context attachment models, run/team hydration/activity stores, and bound-node auth transports. The mobile design should reuse or refactor those owners instead of forking mobile-only business logic.
+- Shared-state caveat: `agentSelectionStore.selectRun()` currently mutates desktop workspace center-view state via `workspaceCenterViewStore.showChat()`. Mobile expansion exposes this as a desktop-shell coupling that should be split or adapter-isolated before mobile launch flows depend on it.
+- Desktop/web no-regression is mandatory: normal desktop routes and shell layout must remain unaffected by mobile feature gates and mobile navigation refactors.
+
+Round 4 mobile UX validation read after Code Review Round 8:
+
+- Functional parity is substantially improved: readable rows, existing run continuation, new agent/team launch, file preview/attach, Activity details, context isolation, unsupported mobile workspace redirect, and desktop `/workspace` no-regression all passed or mostly passed in realistic browser validation.
+- Remaining delivery blockers are UX/journey refinement, not a return to the broad functional gap: composite status semantics, intentional launch target selection, launch summary/context clarity, scannable Activity density, large-workspace file discovery, and context visibility next to send/launch. Provider/API-key errors after launch are desktop-equivalent runtime behavior and are not a mobile UX blocker when visible.
+- Current code evidence: `MobileHome.vue` can label status as Offline from a missing status endpoint; `MobileRunSetup.vue` uses native selects and arbitrary first-choice defaults; `MobileActivity`/`MobileTeamMessages`/`MobileToolActivityList` can render dense real data; `MobileFiles.vue` remains visible-folder-first; `mobileWorkStore` owns draft attachments but decision-adjacent context presentation needs tightening.
+
+Round 10 branch-currency read after real Codex/GPT-5.5 validation:
+
+- API/E2E originally isolated a single-agent command-identity failure to the shared frontend streaming path, not the mobile shell and not the backend runtime/provider. A mobile-created Codex/GPT-5.5 run responded when the WebSocket `SEND_MESSAGE` included command identity.
+- User scope decision: because this was shared single-agent frontend/platform behavior and likely affected normal desktop/web single-agent sends too, it must not be fixed as a mobile UX local fix.
+- Branch refresh result: on latest `origin/personal` `98cfdc24`, the issue is already fixed. `AgentStreamingService.sendMessage(...)` sends identity, `agentRunStore` generates `client_...` message IDs and `agent_run_input:<runId>:<messageId>` dedupe keys, `AGENT_COMMAND_ACK` rejection handling exists, and focused tests pass. Mobile implementation should rebase onto that base rather than reimplementing the fix.
+
 Constraints the target design must respect:
 
 - Existing desktop loopback behavior must remain simple and reliable.
@@ -31,6 +52,8 @@ Constraints the target design must respect:
 - iOS/Android cannot use Electron preload APIs.
 - Browser WebSocket cannot set arbitrary auth headers; the WebSocket auth mechanism must account for this.
 - First milestone should cover a selected mobile-supported slice, not the entire desktop UI.
+- The selected mobile-supported slice must now cover the practical work journeys in the mobile functional parity matrix, not just layout/navigation.
+- Mobile fixes must not change the normal desktop/web workspace journey unless the change is an explicitly reviewed shared-core refactor with desktop regression coverage.
 
 ## Intended Change
 
@@ -46,26 +69,34 @@ First implementation target:
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Larger Requirement / Feature
+- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Larger Requirement / Feature with same-ticket mobile functional parity rework.
 - Current design issue found (`Yes`/`No`/`Unclear`): Yes
-- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue; Missing Invariant; Duplicated Policy Or Coordination risk
-- Refactor needed now (`Yes`/`No`/`Deferred`/`Unclear`): Yes for production-supported Remote Access; no for a throwaway network smoke test.
+- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue; Missing Invariant; Duplicated Policy Or Coordination risk; File Placement Or Responsibility Drift in mobile shell/component reuse; Legacy Or Compatibility Pressure if placeholder or compressed-desktop mobile paths are retained.
+- Refactor needed now (`Yes`/`No`/`Deferred`/`Unclear`): Yes for production-supported Remote Access and yes for the same-ticket mobile functional parity rework; no for a throwaway network smoke test.
 - Evidence:
   - `server-runtime.ts` registers REST/GraphQL/WebSocket without shared auth.
   - `api/rest/index.ts`, `api/graphql/index.ts`, and `api/websocket/index.ts` expose separate route families.
   - Frontend API clients do not share auth propagation.
   - Electron sets `AUTOBYTEUS_SERVER_HOST` to loopback while remote clients need private-network URLs.
   - Nuxt static output exists, but server package does not serve mobile assets.
+  - Round 3 mobile validation found unreadable real-data rows, run setup/file preview placeholders, attach-to-chat with no visible context, and activity/team-message controls without visible state change.
+  - `agentSelectionStore` mixes shared run selection with desktop center-view navigation, creating a shell-boundary smell for mobile reuse.
 - Design response:
   - Add a server Remote Access capability area that owns pairing sessions, paired devices, credential verification, route policy, and address candidates.
   - Add a web mobile access capability area that owns mobile bootstrap, credential storage, auth transports, and Electron feature gating.
+  - Add a Mobile Work Experience owner for mobile context selection, readable work rows, run setup/launch, file preview/attach, and activity/team-message views.
+  - Refactor shared run-selection/content owners where needed so mobile and desktop shells consume the same domain state without mobile depending on desktop panel navigation or desktop depending on mobile feature gates.
   - Extend packaging to build/copy mobile web assets into server resources and serve them under `/mobile`.
 - Refactor rationale:
   - Route protection, auth token handling, and node binding are cross-cutting. They need authoritative boundaries rather than scattered checks.
 - Intentional deferrals and residual risk, if any:
   - Native Android/iOS wrappers are deferred until PWA MVP protocol is proven.
   - HTTPS/certificate polish is deferred; MVP can run over private network HTTP with app-level auth and explicit documentation.
-  - Full desktop UI mobile parity is deferred; MVP gates unsupported features.
+  - Full desktop UI cloning is rejected, not deferred. Mobile MVP supports the practical parity matrix through phone-first screens; explicitly unsupported desktop panes are disabled/noticed rather than exposed as broken UI.
+  - Interactive terminal/tool/browser panes may remain unsupported for mobile MVP, but task/tool/history visibility required by the parity matrix is in scope.
+  - Any shared-store refactor carries desktop/web regression risk and therefore requires desktop-focused verification.
+  - Round 4 UX refinement should stay bounded to mobile work-experience polishing and should not reopen backend pairing/auth. It also should not add provider/API-key preflight behavior that desktop does not have; post-launch runtime errors are acceptable when visible on mobile.
+  - The Round 10 command-identity finding is now confirmed to be a stale-branch/shared-base issue already resolved on latest `origin/personal` `98cfdc24`. Do not implement shared single-agent command identity or ACK rejection handling as a mobile UX local fix; merge/refresh onto the latest base.
 
 ## Terminology
 
@@ -123,6 +154,11 @@ Tiny single-component UI interactions do not need their own spine, but every pro
 | DS-MRA-012 | Primary End-to-End | Mobile user enters supported/unsupported app area | Supported UI executes or unsupported state appears without Electron calls | Mobile Feature Gates | Prevents mobile runtime crashes and accidental desktop-only controls. |
 | DS-MRA-013 | Primary End-to-End | Desktop revoke-all paired phones action | Every existing phone credential fails | Paired Device Service | Covers user emergency reset and R-MRA-076. |
 | DS-MRA-014 | Primary End-to-End | User/admin follows private-network setup profile | Reachable provider-agnostic node URL is available for pairing/manual entry | Remote Access Documentation Profile | Ensures Tailscale is validation/docs convenience, not a core dependency. |
+| DS-MRA-015 | Primary End-to-End | Mobile user opens or continues an existing run | Chat composer sends authorized message / stream updates | Mobile Work Experience | Makes the phone useful for the core continue-work journey. |
+| DS-MRA-016 | Primary End-to-End | Mobile user starts a new agent/team run | New run is launched and selected in Chat/Runs | Mobile Run Launch Coordinator | Closes the critical desktop-equivalent start-work gap. |
+| DS-MRA-017 | Primary End-to-End | Mobile user opens/attaches workspace file | Supported preview renders and context appears in composer/send payload | Mobile File Context Coordinator | Makes files a real supporting task instead of a placeholder. |
+| DS-MRA-018 | Primary End-to-End | Mobile user opens Activity/team/tool history | Task plan/team messages/tool history render or explicit unsupported state appears | Mobile Activity Coordinator | Replaces required desktop right-panel information on phone. |
+| DS-MRA-019 | Primary End-to-End | Desktop user opens normal workspace/web journey | Desktop shell and workflows remain unchanged | Desktop Shell Boundary | Prevents mobile route/gate/refactor work from breaking normal web. |
 | RS-MRA-001 | Return-Event | Server rejects HTTP/GraphQL auth | Mobile connection diagnostic displays actionable reason | Mobile Connection Diagnostics | Distinguishes auth-required, revoked, disabled, and incompatible states. |
 | RS-MRA-002 | Return-Event | Server rejects WebSocket auth/connection | Mobile stream UI maps close code to recovery action | Mobile Connection Diagnostics | Prevents silent stream failure and covers WebSocket-blocked/auth failures. |
 | RS-MRA-003 | Return-Event | Pairing session expires or is consumed | Desktop QR and phone pairing UI show expired/retry state | Pairing Session Registry | Keeps one-time QR lifecycle understandable and safe. |
@@ -148,6 +184,12 @@ Tiny single-component UI interactions do not need their own spine, but every pro
 | UC-MRA-009: User sees understandable connection diagnostics | RS-MRA-001, RS-MRA-002, RS-MRA-004, RS-MRA-005 | N/A | Diagnostics are return/event spines because they originate from rejected/failed primary spines. |
 | UC-MRA-010: Desktop user views/revokes paired phone clients | DS-MRA-005, DS-MRA-013, DS-MRA-009 | RS-MRA-001, RS-MRA-002 | Covers per-device revoke, revoke-all, and disabled state. |
 | UC-MRA-011: Mobile user uses supported server-owned flows | DS-MRA-003, DS-MRA-004, DS-MRA-007, DS-MRA-012 | RS-MRA-001, RS-MRA-002, RS-MRA-005 | REST/GraphQL/WS execution, generated URLs, and mobile gating all participate. |
+| UC-MRA-013: Mobile user continues existing agent/team runs and sends messages | DS-MRA-015, DS-MRA-003, DS-MRA-004 | RS-MRA-001, RS-MRA-002 | Continue-work and message-send must use authorized transports and existing run/team owners. |
+| UC-MRA-014: Mobile user starts a new agent run | DS-MRA-016, DS-MRA-003, DS-MRA-004 | RS-MRA-001, RS-MRA-002, RS-MRA-005 | Mobile run setup must satisfy required config/defaults and launch through existing agent run owner. |
+| UC-MRA-015: Mobile user starts a new team run | DS-MRA-016, DS-MRA-003, DS-MRA-004, DS-MRA-018 | RS-MRA-001, RS-MRA-002, RS-MRA-005 | Team launch follows existing desktop defaults/config behavior and focused-member chat must be mobile-capable. |
+| UC-MRA-016: Mobile user browses/previews/attaches files | DS-MRA-017, DS-MRA-007, DS-MRA-003 | RS-MRA-001, RS-MRA-005 | File preview/attach must use authorized file/context owners and visible composer context. |
+| UC-MRA-017: Mobile user views task/team/tool activity | DS-MRA-018, DS-MRA-004, DS-MRA-012 | RS-MRA-002, RS-MRA-005 | Activity replaces right-panel information without exposing broken desktop panes. |
+| UC-MRA-018: Desktop/web user keeps normal journey | DS-MRA-019 | N/A | Mobile route/component work must not regress `/workspace` or desktop shell behavior. |
 | UC-MRA-012: Mobile user is not shown broken desktop/Electron-only controls | DS-MRA-012 | RS-MRA-005 | Feature gates are the governing owner; no direct Electron API access in mobile paths. |
 
 ## Primary Execution Spine(s)
@@ -167,6 +209,12 @@ Tiny single-component UI interactions do not need their own spine, but every pro
 - DS-MRA-013: `Desktop Revoke All -> PhoneAccessStore -> DELETE /rest/remote-access/devices -> PairedDeviceService.revokeAllDevices -> Auth Cache Invalidation -> All Future Mobile Requests Rejected`
 - DS-MRA-014: `Docs/Profile Setup -> User/Admin obtains reachable private URL -> Manual/Candidate URL Entry -> Same Pairing/Auth Spines`
 
+- DS-MRA-015: `Mobile Home/Context Switcher -> MobileWorkStore selection -> Existing Run/Team Context Store -> MobileChat -> Authorized WS/HTTP Send -> Stream/Conversation Update`
+- DS-MRA-016: `Mobile Runs Start New -> MobileRunSetup -> Existing Launch Defaults/Config Stores -> AgentRunStore or AgentTeamRunStore -> GraphQL Create + WS First Message -> Mobile Chat/Runs Selection`
+- DS-MRA-017: `Mobile Files -> FileExplorerStore.openFilePreview / authorized content URL -> MobileFileViewer -> createWorkspaceContextAttachment -> Mobile Composer Attachment Tray -> Agent/Team Send Payload`
+- DS-MRA-018: `Mobile Activity -> Team/Run Hydration Stores + AgentActivityStore -> Task Plan / Team Messages / Tool History Detail -> Unsupported Notice only for out-of-MVP panes`
+- DS-MRA-019: `Desktop /workspace Route -> Desktop Shell Boundary -> AppLeftPanel + Workspace Center + Right Panels -> Existing Desktop Stores -> Desktop User Workflow`
+
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
@@ -185,6 +233,12 @@ Tiny single-component UI interactions do not need their own spine, but every pro
 | DS-MRA-012 | The mobile shell checks feature gates before rendering server-owned flows. Supported flows use authorized transports; unsupported/Electron-only areas show safe states and never call preload APIs. | Mobile Shell, Feature Gates, Supported Flow Components | Mobile Feature Gates | Responsive layout, unsupported copy, telemetry later |
 | DS-MRA-013 | Desktop performs revoke-all. The device service marks every active device revoked, invalidates auth caches, and every phone must pair again. | Phone Access UI, Revoke-All API, Device Service, Auth Service | Paired Device Service | Dangerous-action confirmation, result count |
 | DS-MRA-014 | Documentation/setup profiles help users obtain a reachable private URL via LAN, Tailscale, Headscale, company VPN, NetBird, Netmaker, or WireGuard. That URL feeds the same candidate/manual pairing flow. | Setup Guide, Private Network URL, Candidate/Manual Entry | Remote Access Documentation Profile | Provider drift, firewall guidance, no core SDK dependency |
+
+| DS-MRA-015 | Mobile user continues an existing run from Home, Runs, or Context Switcher. The mobile shell selects the run, opens Chat, sends a message through the existing authorized transport/stream owner, and displays updates without desktop navigation. Single-agent live execution should be revalidated after merging `origin/personal` `98cfdc24` or newer, which already contains the shared command-identity fix. | Mobile Home/Picker, Mobile Work Store, Existing Run/Team Context, Mobile Chat, Stream Service | Mobile Work Experience | Readable rows, composer attachments, diagnostics, latest-base single-agent stream reuse |
+| DS-MRA-016 | Mobile user starts new work. A mobile run setup owner gathers target, workspace, existing desktop-equivalent defaults/config, and initial prompt, then delegates launch to the existing agent/team run owners and lands in Chat/Runs. Single-agent send execution is not owned by the mobile shell; it must use the refreshed base `origin/personal` `98cfdc24` or newer where shared command identity is already handled. | Mobile Runs, Run Setup, Launch Defaults, Agent/Team Run Store, Stream Service | Mobile Run Launch Coordinator | Launch summary, advanced config collapse, desktop selection side-effect isolation, post-launch error visibility, latest-base single-agent stream reuse |
+| DS-MRA-017 | Mobile user browses a workspace file, opens a supported preview through the existing file explorer/content owner, attaches it as a context attachment, and sees it in the composer before send. | Mobile Files, File Preview, FileExplorerStore, ContextAttachment model, Composer Tray | Mobile File Context Coordinator | Size/type limits, unsupported states, remove action |
+| DS-MRA-018 | Mobile user opens Activity for the selected run/team and sees task plan, team messages, and tool/run history as cards/details. Unsupported terminal/tool panes are explicit and disabled. | Mobile Activity, Team Context Store, AgentActivityStore, Activity Detail Views | Mobile Activity Coordinator | Empty states, read-only history, unsupported terminal notice |
+| DS-MRA-019 | Desktop user opens the normal web workspace and stays on the desktop shell. Mobile feature gates and mobile components do not become desktop route owners. | Desktop Route, Desktop Shell, AppLeftPanel, Workspace Center, Right Panels | Desktop Shell Boundary | Desktop regression tests, shared-core adapter isolation |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -414,6 +468,24 @@ Tiny single-component UI interactions do not need their own spine, but every pro
 | `autobyteus-web/scripts/build-mobile-web.mjs` | Packaging | Build helper | Generate mobile Nuxt static output | Build step isolated | Nuxt config |
 | `autobyteus-web/scripts/prepare-server.*` | Packaging | Resource copy | Copy mobile assets into server bundle | Existing server packaging owner | build output |
 
+| `autobyteus-web/stores/mobileWorkStore.ts` | Mobile Work Experience | Mobile work selection/tab/session UI state | Current mobile context, active tab, selected workspace scope, mobile draft context attachments, and shell-only state | Mobile shell state one owner; must not own server/domain business logic | `MobileWorkContext`, `ContextAttachment` |
+| `autobyteus-web/components/mobile/MobileReadableWorkRow.vue` | Mobile Work Experience | Mobile row presentation | Vertical, title-first row layout for Home/Runs/Context Switcher with bounded metadata | Fixes real-data readability once instead of repeating CSS | `MobileWorkListItem` |
+| `autobyteus-web/components/mobile/MobileRunSetup.vue` | Mobile Work Experience | Mobile run setup UI | Agent/team target, workspace/defaults, launch summary, initial prompt, launch/cancel | Setup is a distinct phone flow, not a placeholder inside run list | launch coordinator, config stores |
+| `autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts` | Mobile Work Experience | Mobile Run Launch Coordinator | Bridges mobile setup to existing launch defaults/config stores and `agentRunStore`/`agentTeamRunStore` without duplicating launch protocol | Separates mobile UI from run business owners | existing run stores, launch defaults, selection adapter |
+| `autobyteus-web/utils/mobile/mobileSelectionAdapter.ts` or equivalent refactor | Mobile/Desktop Shell Boundary | Run selection adapter | Separates shared run selection from desktop center-view navigation side effects | Prevents mobile from relying on `workspaceCenterViewStore.showChat()` and protects desktop shell | `agentSelectionStore` / desktop shell callers |
+| `autobyteus-web/components/mobile/MobileFileViewer.vue` | Mobile Work Experience | Mobile file preview | Full-screen preview for supported text/code/markdown, loading/error/size/unsupported states, attach action | Replaces placeholder preview with real file task | `fileExplorerStore`, `OpenFileState` |
+| `autobyteus-web/composables/mobile/useMobileFileContextCoordinator.ts` | Mobile Work Experience | Mobile File Context Coordinator | Opens files through existing authorized file owner and creates/removes visible chat context attachments | One owner for preview-to-composer path | `fileExplorerStore`, `createWorkspaceContextAttachment`, `mobileWorkStore` |
+| `autobyteus-web/components/mobile/MobileComposerContextTray.vue` | Mobile Work Experience | Composer context presentation | Shows attached context count/names/remove action in mobile Chat/run setup | Makes attach state visible and testable | `ContextAttachment` |
+| `autobyteus-web/components/mobile/MobileTeamMessages.vue` | Mobile Work Experience | Team messages detail | Opens team messages from Activity and renders list/detail/empty states | Replaces no-op activity button | team context/hydration stores |
+| `autobyteus-web/components/mobile/MobileToolActivityList.vue` | Mobile Work Experience | Tool/run activity detail | Read-only tool-call/activity cards including terminal-command outputs where available | Provides right-panel parity without live terminal pane | `agentActivityStore`, hydration projections |
+
+| `autobyteus-web/composables/mobile/useMobileConnectivityStatus.ts` or equivalent | Mobile Work Experience | Composite mobile status owner | Combines Remote Access status endpoint result with other successful/failed API signals so Home copy distinguishes true offline from status/version mismatch | Prevents misleading Offline state without spreading ad-hoc checks | mobile session store, diagnostics |
+| `autobyteus-web/components/mobile/MobileLaunchTargetPicker.vue` | Mobile Work Experience | Intentional target picker | Searchable phone picker/sheet for agents, teams, and workspaces with Recent/Current/Favorites/All grouping | Replaces huge native selects and arbitrary defaults | mobile work catalog |
+| `autobyteus-web/components/mobile/MobileLaunchSummary.vue` | Mobile Work Experience | Launch decision summary | Adjacent target/workspace/model/context summary next to launch button | Reduces wrong-target/context confusion | context attachment model, launch setup state |
+| `autobyteus-web/components/mobile/MobileActivityDigest.vue` | Mobile Work Experience | Scannable activity digest | Counts/latest/error-priority rows with filters/chips and expand/detail actions | Keeps Activity useful at real data density | team/activity stores |
+| `autobyteus-web/components/mobile/MobileFileDiscoveryControls.vue` | Mobile Work Experience | File discovery controls | Sticky breadcrumb plus recent/attached/type/deep-search controls for large folders | Keeps file browsing mobile-oriented | file explorer/search owner |
+| `autobyteus-web/components/mobile/MobileDecisionContextSummary.vue` | Mobile Work Experience | Send/launch context visibility | Single context attachment summary adjacent to composer send and launch decision | Avoids conflicting context trays | mobileWorkStore, shared composer/context owners |
+
 ## Ownership Boundaries
 
 - Server Remote Access is the authoritative owner for pairing, credentials, request authentication, and device revocation. Route handlers must not implement their own mobile auth rules.
@@ -459,6 +531,7 @@ Forbidden:
 - No server-generated mobile URL may be loopback-only unless the request is loopback-local.
 - No local trust decision may use `Host`, `Origin`, `Forwarded`, `X-Forwarded-For`, or `X-Real-IP`.
 - No mobile-supported WebSocket caller may append `access_token` outside `websocketAuth.ts` / `AuthorizedTransport`.
+- No mobile UX component may introduce a private single-agent `SEND_MESSAGE` payload builder, command-identity generator, or mobile-only dedupe workaround to bypass `AgentStreamingService` / `agentRunStore`; use the shared implementation from the refreshed base.
 - No URL producer in the mobile-supported slice may call `appConfigProvider.config.getBaseUrl()` directly for a client-visible URL.
 - No remote client may access GraphiQL/IDE, even with a valid mobile credential.
 
@@ -836,6 +909,138 @@ Temporary seams not allowed:
 - **WebSocket query token vs subprotocol:** Query token is the chosen MVP mechanism because it is browser-portable and simple for existing clients; mandatory URL redaction and one helper on each side control the leakage risk. Subprotocol auth is deferred, not an alternative in this MVP.
 - **Tailscale first vs provider matrix first:** Tailscale gives fast validation with low setup. Provider-agnostic design and docs prevent lock-in.
 
+
+## Same-Ticket Mobile UX Redesign Rework
+
+User validation of the implemented PWA showed that pairing/connectivity works, but the first post-pairing mobile workspace compressed desktop panels into a phone viewport. Round 2/3 rework created a phone-first shell, but Round 3 API/E2E validation on 2026-05-19 proved the product is still incomplete because practical desktop-web-equivalent mobile journeys are missing or ambiguous.
+
+Authoritative UX and validation artifacts:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/mobile-ux-redesign-addendum.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/ui-prototypes/mobile-pwa-navigation/experience-story.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/api-e2e-validation-report.md`
+
+Implementation boundary:
+
+- Keep desktop layout unchanged. Desktop `/workspace` remains left panel + center workspace + right-side surfaces.
+- Keep `/mobile` phone-first: Mobile Home, Work Shell, Context Switcher, Chat, Runs, Files, Activity.
+- Reuse stores/API/auth transports and refactor shared domain/content owners when needed, but do not reuse the desktop left panel/tree/top tabs/right panel as default mobile navigation.
+- Treat this as primarily frontend/mobile-work-experience work unless a required mobile parity row exposes a missing API. Pairing/auth/route policy should remain as implemented.
+
+## Mobile Functional Parity Design Contract
+
+| Journey | Design Decision | Target Shape |
+| --- | --- | --- |
+| Real-data work selection | Must work | Extract/use a title-first mobile row component. Put title and run/team identity first, summary second, and status/workspace metadata below or bounded. No horizontal pill may shrink the title to unreadable text. |
+| Continue existing agent/team run | Must work | Home, Runs, or Context Switcher selects a run, opens Mobile Chat, hydrates existing conversation, shows composer, and sends through existing authorized Agent/Team stream owners. |
+| Start new agent run | Must work | MobileRunSetup gathers agent, workspace, desktop-equivalent defaults/config, initial prompt, then delegates to existing agent run launch owner and lands in Chat/Runs; post-launch runtime/provider errors remain visible like desktop. |
+| Start new team run | Must work | MobileRunSetup gathers team, workspace/defaults, desktop-equivalent member/runtime/model configuration, initial prompt for focused/coordinator member, delegates to existing team run launch owner, then lands in team Chat/Runs; post-launch runtime/provider errors remain visible like desktop. |
+| Browse/preview files | Must work, simplified | Mobile Files uses drill-in/search and `fileExplorerStore`/authorized APIs for supported text/code/markdown previews with clear size/binary/unsupported states. |
+| Attach file/context | Must work | Preview/attach creates a `ContextAttachment` via existing context attachment model, stores it in mobile composer/run setup state, shows a visible tray/count/name/remove action, and includes it in send/launch. |
+| Activity/team/tool history | Must work, read-oriented | Activity opens task plan, team messages, and tool/run history detail states. Terminal/tool panes may be unsupported, but terminal-command/tool outputs that already exist in conversation/activity history should be readable. |
+| Unsupported mobile capabilities | Must be explicit | Buttons are disabled or route to an unsupported state. Enabled no-op controls are forbidden. |
+| Normal desktop/web journey | Must not regress | Desktop route tests/spot-checks verify `/workspace` still uses desktop shell and shared run/team/file/activity refactors do not change desktop workflows. |
+
+## Round 4 Mobile UX Refinement Contract
+
+Round 4 proved that the core mobile functional parity paths mostly work. The remaining design response is a final mobile journey-smoothing pass with six bounded owners.
+
+| Refinement | Owner / Boundary | Target Design | Desktop/Web Guardrail |
+| --- | --- | --- | --- |
+| Composite mobile status | Mobile Connection Diagnostics / MobileNodeSessionStore | Track signals separately: status endpoint, GraphQL/API reachability, auth result, file/run data success, WebSocket result when known. `Offline/Cannot reach desktop` is reserved for true network failure. If status endpoint is 404/unavailable but other APIs succeed, show `Node reachable · Phone Access status unavailable` with update/re-pair guidance. | Do not change desktop status surfaces except through shared diagnostic model if explicitly tested. |
+| Intentional launch target selection | MobileRunSetup / MobileLaunchTargetPicker | No arbitrary first item auto-selection. Preselect only from explicit context or user prior choice; otherwise require selecting Agent/Team and Workspace through searchable sheets grouped by Recent, Current workspace, Favorites if available, and All. | Desktop run configuration keeps its existing controls. |
+| Launch summary and desktop-equivalent runtime behavior | MobileRunSetup / MobileRunLaunchCoordinator | Keep target/workspace/runtime-model-source/context summary adjacent to Launch. Mobile MVP may rely on desktop/agent defaults instead of exposing full runtime/model selectors, but must show the resolved runtime/model when available or clearly state that desktop defaults will be used. Do not add mobile-only provider/API-key preflight. If the launched agent/team reports a runtime/provider error after creation, show it clearly in mobile Chat/Activity just as desktop does. | Reuse existing launch stores and run protocol; do not change desktop semantics. |
+| Scannable Activity | MobileActivityCoordinator | Activity defaults to digest cards with counts/latest/error priority and chips for `Messages`, `Tools`, `Errors`, `Approvals`. Long messages/commands/logs are 1-2 line summaries with expand/detail sheet. | Desktop right panel remains dense/power-user capable; mobile compaction does not change desktop panel rendering. |
+| Mobile file discovery | MobileFileContextCoordinator / MobileFiles | Keep drill-in list, but add sticky breadcrumb/current folder, quick filters for Recent / Attached or Current Run / Markdown-Code, and explicit Deep Search for workspace-wide search. Visible-folder search remains labeled as local filtering. | Desktop file explorer remains unchanged. |
+| Decision-adjacent context visibility | MobileComposerContextSummary / MobileRunSetup | Context files are shown directly above or inside the composer/send area and launch summary. Top trays may exist only as supplemental; duplicate indicators must share one data source and agree on count/names. | Shared context attachment model remains authoritative for both desktop and mobile. |
+
+Design rule: these refinements are not compatibility wrappers. They replace risky mobile defaults and dense mobile presentations while preserving the existing functional paths that passed Round 4.
+
+Implementation should prefer local mobile UI/component changes. If current shared stores lack a needed search/status signal, add the smallest authoritative query/selector under the existing owner rather than inventing a mobile-only backend protocol. Do not add new provider/API-key readiness APIs for this ticket.
+
+
+## Round 10 Non-WebSocket Mobile UX Triage
+
+API/E2E provided `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/mobile-ux-validation-findings-round10.md` after excluding the stale shared command-identity finding. Solution-design classification: these findings are valid mobile UX polish/product-scope items, but they do not create a new immediate implementation blocker for the phone-first MVP.
+
+Triage decisions:
+
+| Finding | Design Classification | Decision |
+| --- | --- | --- |
+| Runtime/model visibility in Run Setup | Clarification to existing launch-summary requirement | Keep MVP simplified: do not require full runtime/model selectors on phone. The launch summary must show the resolved runtime/model when available or explicit copy such as `Uses the agent's desktop default runtime/model`; full advanced runtime/model editing can be a later product decision. |
+| Activity density | Already covered by Round 4 UX refinement | Keep compact summaries, chips, error priority, and drill-in as the desired design. Not a new blocker if the current implementation is functionally usable and not showing broken/no-op controls. |
+| Large-folder file browsing | Already covered by Round 4 UX refinement | Keep sticky breadcrumb, recent/attached/type filters, and explicit deep search as polish direction. Not a new backend/API requirement unless current file owners cannot provide needed data. |
+| Attachment/context visibility | Already covered by Round 4 UX refinement | Keep one authoritative context source and decision-adjacent summary near composer/send and Run Setup launch. |
+| New-run target selection | Already covered by intentional target picker requirement | Keep Recent/Favorites/Current context emphasis and no arbitrary first-item defaults. Continue desktop no-regression guardrail. |
+
+This triage preserves the product boundary: mobile makes the practical work journey usable on phone without cloning every desktop power-user configuration panel and without changing the normal desktop/web journey.
+
+## Round 10 Latest-Base Command Identity Refresh
+
+Decision: the Round 10 single-agent command-identity finding is not a mobile component local fix and is not an open dependency after branch refresh. Latest `origin/personal` `98cfdc24` already contains the shared single-agent command-identity and ACK rejection behavior. The mobile ticket should merge/refresh onto that fixed base and must not create a separate command-identity ticket or mobile workaround.
+
+Evidence basis:
+
+- Historical stale-worktree evidence showed missing single-agent identity; Round 10 direct WebSocket evidence showed the same mobile-created Codex/GPT-5.5 run can stream when command identity is present.
+- Latest `origin/personal` `98cfdc24` has identity-bearing `AgentStreamingService.sendMessage(...)`.
+- Latest `origin/personal` `98cfdc24` has `agentRunStore` command identity generation.
+- Latest `origin/personal` `98cfdc24` has `AGENT_COMMAND_ACK` rejection handling and focused tests.
+
+Mobile-ticket boundary:
+
+- In scope for this mobile UX ticket: keep mobile launch/setup, context visibility, and Chat surfaces delegated to existing shared run owners; surface post-launch/runtime or stream errors that the shared owner exposes; preserve desktop `/workspace` and desktop run journeys.
+- Out of scope for this mobile UX ticket: adding command identity to `AgentStreamingService`, changing `agentRunStore` shared single-agent send semantics, inventing a mobile-only `SEND_MESSAGE` sender, or adding mobile-only ACK rejection handling that bypasses the shared store.
+- Delivery posture: mobile UX can be considered implementation-complete for its own shell/journey work after the branch includes `origin/personal` `98cfdc24` or newer and real single-agent launch/send is revalidated there. No separate command-identity ticket remains.
+
+Resolved shared platform behavior on latest base:
+
+- Shared single-agent `SEND_MESSAGE` command identity generation/propagation with non-empty identity and stable dedupe exists on `origin/personal` `98cfdc24`.
+- ACK rejection handling exists in shared single-agent logic.
+- Focused tests passed on the latest personal worktree.
+- Do not duplicate this work in the mobile ticket; if a future regression appears, treat it as a shared-base regression from the latest branch state.
+
+
+## Desktop/Web Non-Regression Boundary
+
+- `/mobile` is the only owner of the mobile shell. Mobile feature gates apply to mobile routes and explicit unsupported mobile redirects; they must not become global desktop route policy.
+- Desktop workspace shell remains authoritative for desktop navigation: `AppLeftPanel`, center workspace, and right-side team/tool/activity panels are desktop concerns.
+- Shared stores/services must expose domain/content operations, not shell navigation assumptions. If a store needs to notify a desktop panel, that should happen through a desktop-shell adapter/caller, not inside the shared domain operation used by mobile.
+- Known refactor trigger: `agentSelectionStore.selectRun()` currently calls `workspaceCenterViewStore.showChat()`. For mobile run launch/continue work, split pure selection from desktop center-view navigation or add explicit desktop/mobile adapters before relying on it.
+- Desktop regression coverage is required for shared-core changes: existing desktop workspace tests, route spot-check, and focused component/store tests where changed.
+
+## Legacy Removal / Refactor Plan For Mobile
+
+Remove from the mobile runtime rather than preserve as compatibility behavior:
+
+1. desktop left panel/tree as default mobile navigation;
+2. top `Running / Files / Team / Tools` desktop tabs in mobile work shell;
+3. nested running/configuration tab bars visible by default;
+4. duplicate Team concepts at different navigation levels;
+5. right-panel-as-panel layout on phone;
+6. placeholder `Start new` run setup that cannot launch;
+7. placeholder file preview text and attach action that does not attach;
+8. enabled activity/team-message controls that do not change visible state.
+
+Refactor rule: desktop components may be reused only when they own content rendering independent of desktop shell navigation. If a component combines content with desktop panel layout or desktop-only controls, extract the content owner/presenter or create a mobile-specific wrapper against the same store/service.
+
+## Mobile Work Experience Validation Expectations
+
+Implementation handoff after this design refresh should require validation of:
+
+- mobile shell/auth regression tests that already passed;
+- real-data 390x844 readability for Home/Runs/Context Switcher;
+- complete new agent-run and team-run launch paths using fixture/test data or explicitly approved live mutation; if single-agent live execution fails with missing command identity after merging `origin/personal` `98cfdc24` or newer, classify it as a shared-base regression rather than a mobile local fix;
+- file browse, supported text/code/markdown preview, visible attach-to-chat context, and send/launch inclusion;
+- Activity team messages/task plan/tool history visible states and no enabled no-op controls;
+- `/mobile/workspace` unsupported redirect remains correct;
+- normal desktop `/workspace` shell remains unchanged after shared refactors;
+- composite status does not show `Cannot reach desktop` when other authorized APIs succeed;
+- Run Setup requires intentional target/workspace choice unless context-derived and shows searchable picker behavior;
+- mobile launch summary is adjacent to Launch, shows resolved runtime/model or explicit desktop-default source copy, and post-launch runtime/provider errors remain visible in mobile Chat/Activity;
+- Activity shows compact summaries/filter/detail behavior under long real messages/logs;
+- Files expose sticky breadcrumb and mobile discovery aids for large folders;
+- context files remain visible next to send/launch and indicators agree on count/names.
+
 ## Risks
 
 - Auth route policy may accidentally break existing desktop flows if loopback/local policy is too broad or too narrow.
@@ -845,11 +1050,12 @@ Temporary seams not allowed:
 - Some mobile-supported flows may still call `getServerUrls()` or Electron APIs unless audited with tests.
 - Server-generated URL correction can be broader than expected because artifacts/media/context/application flows each compose URLs differently.
 - Tailscale validation success may hide company VPN proxy/WebSocket restrictions; docs/diagnostics must not overfit to Tailscale.
+- Stale branches behind `origin/personal` `98cfdc24` can still show the old missing-command-identity failure. Treat that as a branch freshness problem and merge/refresh before validating mobile real single-agent execution.
 
 ## Guidance For Implementation
 
 - Build the server auth/pairing skeleton before polishing mobile UI. A beautiful mobile shell without route auth is not a valid milestone.
-- Keep the first mobile slice small: pairing, health/status, one agent run flow, one run history view, and one WebSocket stream are enough to prove the architecture.
+- Keep the first mobile slice focused but product-usable: pairing, health/status, existing agent/team run continuation, new agent/team run launch, files browse/preview/attach, activity/team/tool history read views, and one WebSocket stream are the minimum clarified mobile work journeys. Do not treat layout-only mobile shell as sufficient.
 - Use `windowNodeContextStore` and `deriveNodeEndpoints`; do not invent a second endpoint system for mobile.
 - Add tests at the boundaries most likely to regress:
   - pairing code expiry and single-use behavior,
@@ -864,6 +1070,17 @@ Temporary seams not allowed:
   - WebSocket `access_token` helper used and close codes mapped,
   - HTTP/WS logs redact `access_token` and pairing codes,
   - mobile shell avoids `window.electronAPI`,
+  - real-data mobile rows keep titles readable at 390x844,
+  - mobile run setup launches new agent/team runs through existing run owners on refreshed base and does not add a mobile-only single-agent stream workaround,
+  - mobile file preview loads supported content and attach-to-chat produces visible context,
+  - mobile Activity opens team messages/task/tool history or disabled unsupported notices,
+  - desktop `/workspace` route still renders desktop shell after shared refactors,
+  - mobile status distinguishes node reachable/status unknown from true desktop unreachable,
+  - mobile run setup does not arbitrary-default first target/workspace and exposes searchable picker/summary,
+  - mobile launch summary shows resolved runtime/model or clear desktop-default source copy, does not add API-key/provider preflight, and visibly surfaces desktop-equivalent post-launch runtime errors,
+  - mobile Activity clamps long messages/logs and uses filters/detail expansion,
+  - mobile Files has sticky breadcrumb/discovery controls/deep-search behavior,
+  - context file indicators stay adjacent to send/launch and agree on count/names,
   - generated URLs are root-relative or paired-base URLs, not loopback for remote context,
   - every UC-MRA row remains mapped to at least one DS/RS/BLS spine.
 - Treat Tailscale as Phase 0/1 validation profile and record the actual desktop tailnet URL/IP used in validation evidence.

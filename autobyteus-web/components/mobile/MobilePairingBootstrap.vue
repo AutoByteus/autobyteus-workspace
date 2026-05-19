@@ -1,14 +1,20 @@
 <template>
-  <div class="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-5 py-8">
+  <div class="mx-auto flex min-h-screen max-w-xl flex-col justify-center px-5 py-8" data-testid="mobile-pairing-bootstrap">
     <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
       <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">AutoByteus Remote Access</p>
       <h1 class="mt-3 text-2xl font-bold text-slate-950">Connect this phone</h1>
       <p class="mt-2 text-sm text-slate-600">
-        Scan the Phone Access QR from desktop settings, or paste the copied pairing link below.
+        Scan the Phone Access QR from desktop settings. The normal QR journey is one tap.
       </p>
 
       <div v-if="$slots.notice" class="mt-4">
         <slot name="notice" />
+      </div>
+
+      <div v-if="localError" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+        <p class="font-semibold">Pairing problem</p>
+        <p class="mt-1">{{ localError }}</p>
+        <p class="mt-1 text-xs">Create a new QR code on desktop or paste the complete pairing link.</p>
       </div>
 
       <div v-if="sessionStore.lastDiagnostic" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
@@ -17,13 +23,30 @@
         <p class="mt-1 text-xs">{{ sessionStore.lastDiagnostic.recoveryAction }}</p>
       </div>
 
-      <label class="mt-5 block text-xs font-semibold uppercase tracking-wide text-slate-600">Pairing link or JSON payload</label>
-      <textarea
-        v-model="pairingText"
-        class="mt-2 h-32 w-full rounded-xl border border-slate-300 p-3 font-mono text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
-        placeholder="Paste the Phone Access QR payload here"
-        data-testid="mobile-pairing-text"
-      />
+      <div v-if="hasDetectedPairingPayload" class="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4" data-testid="mobile-pairing-detected">
+        <p class="font-semibold text-blue-950">Pairing link detected from desktop.</p>
+        <p class="mt-1 text-sm text-blue-800">Pair this phone with the selected AutoByteus node.</p>
+        <button type="button" class="mt-3 text-xs font-semibold text-blue-700 underline" @click="showPairingText = !showPairingText">
+          {{ showPairingText ? 'Hide pairing payload' : 'Show pairing payload' }}
+        </button>
+      </div>
+      <div v-else class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4" data-testid="mobile-pairing-instructions">
+        <p class="font-semibold text-slate-900">Scan the QR code from Desktop &gt; Settings &gt; Nodes &gt; Phone Access.</p>
+        <p class="mt-1 text-sm text-slate-600">No server URL, port, or token setup is needed in the normal flow.</p>
+        <button type="button" class="mt-3 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700" data-testid="mobile-show-pairing-text" @click="showPairingText = true">
+          Paste pairing link
+        </button>
+      </div>
+
+      <div v-if="showPairingText" class="mt-5" data-testid="mobile-pairing-text-section">
+        <label class="block text-xs font-semibold uppercase tracking-wide text-slate-600">Pairing link or JSON payload</label>
+        <textarea
+          v-model="pairingText"
+          class="mt-2 h-28 w-full rounded-xl border border-slate-300 p-3 font-mono text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          placeholder="Paste the Phone Access QR payload here"
+          data-testid="mobile-pairing-text"
+        />
+      </div>
 
       <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-600">This device name</label>
       <input
@@ -40,11 +63,12 @@
         data-testid="mobile-pair-button"
         @click="pair"
       >
-        {{ sessionStore.isPairing ? 'Pairing…' : 'Pair phone' }}
+        {{ sessionStore.isPairing ? 'Pairing…' : 'Pair this phone' }}
       </button>
 
-      <div class="mt-5 border-t border-slate-100 pt-5">
-        <label class="block text-xs font-semibold uppercase tracking-wide text-slate-600">Manual server URL check</label>
+      <details class="mt-5 border-t border-slate-100 pt-5" data-testid="mobile-manual-url-details">
+        <summary class="cursor-pointer text-sm font-semibold text-slate-700">Troubleshoot connection</summary>
+        <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-600">Manual server URL check</label>
         <div class="mt-2 flex gap-2">
           <input
             v-model="manualUrl"
@@ -59,13 +83,13 @@
         <p v-if="sessionStore.lastStatus" class="mt-2 text-xs text-slate-600">
           Server reachable. Phone Access: {{ sessionStore.lastStatus.phoneAccessEnabled ? 'enabled' : 'disabled' }}.
         </p>
-      </div>
+      </details>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 
 const emit = defineEmits<{ paired: [] }>();
@@ -73,6 +97,10 @@ const sessionStore = useMobileNodeSessionStore();
 const pairingText = ref('');
 const manualUrl = ref('');
 const deviceName = ref('Phone');
+const showPairingText = ref(false);
+const localError = ref<string | null>(null);
+
+const hasDetectedPairingPayload = computed(() => Boolean(pairingText.value.trim()) && !showPairingText.value);
 
 const readInitialPairingText = (): string => {
   if (typeof window === 'undefined') {
@@ -82,8 +110,13 @@ const readInitialPairingText = (): string => {
 };
 
 async function pair(): Promise<void> {
-  await sessionStore.pairWithQrText(pairingText.value, deviceName.value || 'Phone');
-  emit('paired');
+  localError.value = null;
+  try {
+    await sessionStore.pairWithQrText(pairingText.value, deviceName.value || 'Phone');
+    emit('paired');
+  } catch (error) {
+    localError.value = error instanceof Error ? error.message : 'Pairing failed.';
+  }
 }
 
 async function checkManualUrl(): Promise<void> {
@@ -92,5 +125,6 @@ async function checkManualUrl(): Promise<void> {
 
 onMounted(() => {
   pairingText.value = readInitialPairingText();
+  showPairingText.value = false;
 });
 </script>

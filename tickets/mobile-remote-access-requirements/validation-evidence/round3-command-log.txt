@@ -1,0 +1,19 @@
+Round 3 validation command log started at 2026-05-18T22:15:22+02:00
+
+[2026-05-18T22:15:32+02:00] pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access
+
+[2026-05-18T22:15:39+02:00] pnpm -C autobyteus-web build:mobile-web
+
+[2026-05-18T22:17:13+02:00] pnpm -C autobyteus-web exec vitest run utils/remoteAccess/__tests__ utils/__tests__/nodeEndpoints.spec.ts stores/__tests__/windowNodeContextStore.spec.ts
+
+[2026-05-18T22:17:23+02:00] git diff --check
+
+[2026-05-18T22:15:23+02:00] pnpm -C autobyteus-web exec vitest run components/mobile/__tests__/MobileRemoteAccessShell.spec.ts pages/__tests__/mobile-root-shell.spec.ts pages/__tests__/mobile-root.spec.ts middleware/__tests__/mobileFeatureGate.global.spec.ts utils/__tests__/mobileFeatureGates.spec.ts
+
+[2026-05-19T05:19:41+02:00] Browser harness: built mobile static app served from autobyteus-web/dist-mobile/public via /tmp/round3-mobile-validation-server.mjs on http://127.0.0.1:63479/mobile/ with authorization-recording fixtures.
+
+[2026-05-19T05:22:00+02:00] Browser manual validation: current worktree Nuxt dev server on http://127.0.0.1:3030/mobile with 390x844 mobile viewport and local paired-session fixture targeting http://127.0.0.1:29695.
+
+[2026-05-19T05:32:00+02:00] Cleanup: stopped temporary harness/dev server, cleared local validation session storage, closed validation browser tabs, removed autobyteus-web/dist and autobyteus-web/dist-mobile.
+
+[2026-05-19T05:34:00+02:00] Wrote canonical Round 3 API/E2E validation report and ran git diff --check again after report/evidence updates; output in round3-git-diff-check-after-report.log.

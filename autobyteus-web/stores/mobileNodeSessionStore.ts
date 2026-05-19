@@ -78,6 +78,7 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
   const isCheckingStatus = ref(false);
   const lastDiagnostic = ref<MobileConnectionDiagnostic | null>(null);
   const lastStatus = ref<RemoteAccessStatus | null>(null);
+  const authorizedApiReachable = ref(false);
 
   const activeCredential = computed(() => session.value?.credential ?? null);
   const isPaired = computed(() => Boolean(session.value));
@@ -109,12 +110,17 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
       if (!response.ok) {
         const code = await readServerErrorCode(response);
         lastDiagnostic.value = diagnosticFromHttpStatus(response.status, code);
+        lastStatus.value = null;
+        authorizedApiReachable.value = false;
         return null;
       }
       lastStatus.value = await response.json() as RemoteAccessStatus;
+      authorizedApiReachable.value = true;
       return lastStatus.value;
     } catch (error) {
       lastDiagnostic.value = diagnosticFromUnknownError(error);
+      lastStatus.value = null;
+      authorizedApiReachable.value = false;
       return null;
     } finally {
       isCheckingStatus.value = false;
@@ -179,10 +185,16 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     }
   }
 
+  function recordAuthorizedApiReachability(reachable: boolean): void {
+    authorizedApiReachable.value = reachable;
+  }
+
   function deleteLocalSession(): void {
     mobileCredentialStorage.clear();
     session.value = null;
     lastDiagnostic.value = null;
+    lastStatus.value = null;
+    authorizedApiReachable.value = false;
   }
 
   return {
@@ -192,6 +204,7 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     isCheckingStatus,
     lastDiagnostic,
     lastStatus,
+    authorizedApiReachable,
     activeCredential,
     isPaired,
     serverBaseUrl,
@@ -200,6 +213,7 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     pairWithPayload,
     pairWithQrText,
     pairWithManualUrl,
+    recordAuthorizedApiReachability,
     deleteLocalSession,
   };
 });

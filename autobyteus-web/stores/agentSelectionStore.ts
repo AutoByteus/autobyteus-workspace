@@ -6,7 +6,7 @@ export type SelectionType = 'agent' | 'team';
 interface AgentSelectionState {
   /** Currently selected run ID */
   selectedRunId: string | null;
-  
+
   /** Type of the selected run */
   selectedType: SelectionType | null;
 }
@@ -22,30 +22,50 @@ export const useAgentSelectionStore = defineStore('agentSelection', {
 
   getters: {
     isAgentSelected(): boolean {
-        return this.selectedType === 'agent';
+      return this.selectedType === 'agent';
     },
 
     isTeamSelected(): boolean {
-        return this.selectedType === 'team';
+      return this.selectedType === 'team';
     },
   },
 
   actions: {
-    /**
-     * Select a run (agent or team).
-     */
-    selectRun(runId: string, type: SelectionType = 'agent') {
+    setRunSelection(runId: string, type: SelectionType = 'agent') {
       this.selectedRunId = runId;
       this.selectedType = type;
+    },
+
+    clearRunSelection() {
+      this.selectedRunId = null;
+      this.selectedType = null;
+    },
+
+    /**
+     * Select a run without invoking a shell navigation side effect.
+     * Mobile and other non-desktop shells use this pure domain selection path.
+     */
+    selectRunWithoutShellNavigation(runId: string, type: SelectionType = 'agent') {
+      this.setRunSelection(runId, type);
+    },
+
+    clearSelectionWithoutShellNavigation() {
+      this.clearRunSelection();
+    },
+
+    /**
+     * Select a run (agent or team) for the desktop workspace shell.
+     */
+    selectRun(runId: string, type: SelectionType = 'agent') {
+      this.setRunSelection(runId, type);
       useWorkspaceCenterViewStore().showChat();
     },
 
     /**
-     * Clear the current selection.
+     * Clear the current desktop workspace selection.
      */
     clearSelection() {
-      this.selectedRunId = null;
-      this.selectedType = null;
+      this.clearRunSelection();
       useWorkspaceCenterViewStore().showChat();
     },
   },

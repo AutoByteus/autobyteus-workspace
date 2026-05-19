@@ -37,6 +37,7 @@ import {
   ensureRunHistoryWorkspaceByRootPath,
   fetchRunHistoryTree,
   openHistoricalRun,
+  type RunHistorySelectionMode,
 } from '~/stores/runHistoryLoadActions';
 import {
   archiveRunInHistoryStore,
@@ -104,8 +105,8 @@ export const useRunHistoryStore = defineStore('runHistory', {
       await fetchRunHistoryTree(this, limitPerAgent, options);
     },
 
-    async openRun(runId: string): Promise<void> {
-      await openHistoricalRun(this, runId);
+    async openRun(runId: string, options: { selectionMode?: RunHistorySelectionMode } = {}): Promise<void> {
+      await openHistoricalRun(this, runId, options);
     },
 
     async createDraftRun(options: {
@@ -466,8 +467,12 @@ export const useRunHistoryStore = defineStore('runHistory', {
       });
     },
 
-    async openTeamMemberRun(teamRunId: string, memberRouteKey: string): Promise<void> {
-      await openTeamMemberRunFromHistory(this, teamRunId, memberRouteKey);
+    async openTeamMemberRun(
+      teamRunId: string,
+      memberRouteKey: string,
+      options: { selectionMode?: RunHistorySelectionMode } = {},
+    ): Promise<void> {
+      await openTeamMemberRunFromHistory(this, teamRunId, memberRouteKey, options);
     },
 
     async selectTreeRun(

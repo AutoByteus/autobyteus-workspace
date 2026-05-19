@@ -69,7 +69,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
      * Create a new agent run from the current run config template.
      * Sets it as the selected run.
      */
-    createRunFromTemplate(): string {
+    createRunFromTemplate(options: { selectionMode?: 'desktop' | 'mobile' } = {}): string {
       const configStore = useAgentRunConfigStore();
       const template = configStore.config;
 
@@ -97,7 +97,11 @@ export const useAgentContextsStore = defineStore('agentContexts', {
       this.runs.set(tempId, runContext);
 
       const selectionStore = useAgentSelectionStore();
-      selectionStore.selectRun(tempId, 'agent');
+      if (options.selectionMode === 'mobile') {
+        selectionStore.selectRunWithoutShellNavigation(tempId, 'agent');
+      } else {
+        selectionStore.selectRun(tempId, 'agent');
+      }
 
       return tempId;
     },
@@ -147,7 +151,7 @@ export const useAgentContextsStore = defineStore('agentContexts', {
 
       const selectionStore = useAgentSelectionStore();
       if (selectionStore.selectedType === 'agent' && selectionStore.selectedRunId === tempId) {
-        selectionStore.selectRun(permanentId, 'agent');
+        selectionStore.selectRunWithoutShellNavigation(permanentId, 'agent');
       }
     },
 
@@ -182,9 +186,10 @@ export const useAgentContextsStore = defineStore('agentContexts', {
         };
         existing.state.runId = options.runId;
         existing.state.conversation = options.conversation;
+        const shouldPreserveSubscribedLiveStatus = existing.isSubscribed && nextStatus === AgentStatus.Running;
         applyMemberOrHistoryStatusSnapshot(existing, nextStatus, {
-          preserveLiveInterrupt: existing.isSubscribed,
-          preserveCurrentStatus: existing.isSubscribed,
+          preserveLiveInterrupt: shouldPreserveSubscribedLiveStatus,
+          preserveCurrentStatus: shouldPreserveSubscribedLiveStatus,
         });
         return;
       }

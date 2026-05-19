@@ -8,6 +8,7 @@ export type MobileFeatureId =
   | 'runHistory'
   | 'workspaceFiles'
   | 'terminal'
+  | 'desktopWorkspace'
   | 'desktopSettings'
   | 'desktopUpdates'
   | 'localFolderPicker'
@@ -44,6 +45,9 @@ export function mobileFeatureForRouteLocation(input: {
   query?: Record<string, unknown>;
 }): MobileFeatureId | null {
   const path = stripMobileRuntimePrefix(input.path);
+  if (path.startsWith('/workspace')) {
+    return 'desktopWorkspace';
+  }
   if (path.startsWith('/applications')) {
     return 'applicationIframe';
   }

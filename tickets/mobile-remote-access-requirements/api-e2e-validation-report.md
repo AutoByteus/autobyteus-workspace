@@ -6,36 +6,41 @@
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/design-spec.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/design-review-report.md`
+- UX Addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/mobile-ux-redesign-addendum.md`
+- Experience Story: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/ui-prototypes/mobile-pwa-navigation/experience-story.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/review-report.md`
-- Current Validation Round: 2
-- Trigger: Code review Round 4 pass after the MRA-E2E-016 Local Fix.
-- Prior Round Reviewed: Round 1 failed on backend-generated mobile pairing/static-base routing.
-- Latest Authoritative Round: 2
-- Latest Authoritative Result: **Pass — ready for delivery handoff.**
+- Current Validation Round: 10
+- Trigger: Code review Round 10 pass after CR-MRA-007 Local Fix, followed by the user's explicit instruction to run real mobile agent execution using Codex runtime and GPT-5.5 instead of Anthropic/default runtime.
+- Prior Round Reviewed: Round 4 browser validation plus code-review Round 10 requested focus.
+- Latest Authoritative Round: 10 plus solution-design branch-currency correction
+- Latest Authoritative Result: **Superseded stale-base failure — revalidate after branch refresh.** Round 10 correctly proved the command-identity symptom was not mobile-only; subsequent solution-design refresh against latest `origin/personal` `98cfdc24` found the shared single-agent command-identity and ACK rejection fix already present on base. No separate command-identity ticket remains. The mobile branch must merge latest `origin/personal` and API/E2E should re-run real Codex/GPT-5.5 single-agent validation on that refreshed branch.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Code review Round 2 pass after Local Fix | N/A | Yes: backend-generated `/mobile?pairing=...` loaded the desktop agent shell at `/mobile/agents` instead of the phone pairing bootstrap. Unsupported redirect also double-based into `/mobile/mobile?...`. | Fail | No | Server/API auth spine largely passed, but mobile bootstrap/static-base behavior blocked Remote Access MVP sign-off. |
-| 2 | Code review Round 4 pass after MRA-E2E-003 and MRA-E2E-016 fixes | Yes: MRA-E2E-003 and MRA-E2E-016 | No blocking failures found | **Pass** | **Yes** | Backend-served `/mobile?pairing=...` now enters the phone pairing bootstrap, unpaired/paired unsupported-state redirects render correctly, seeded mobile routes load, and REST/GraphQL/WebSocket/resource auth plus revoke flows pass over the private/LAN base. |
+| 1 | Code review Round 2 pass after Local Fix | N/A | Backend-generated `/mobile?pairing=...` routed to desktop shell; unsupported route double-based. | Fail | No | Pairing/static-base blocker. |
+| 2 | Code review Round 4 pass after Round 1 fixes | MRA-E2E-003, MRA-E2E-016 | None blocking. | Pass | No | Remote Access bootstrap/static/auth spine passed. |
+| 3 | Mobile UX Redesign Local Fix validation plus user clarification that mobile must support desktop-web-equivalent journeys | Prior route/auth blockers | Yes: unreadable real-data rows, no complete new-run launch, placeholder file preview/attach, Activity no-op/limited behavior, broader functional parity requirement gap. | Fail | No | Routed to solution design. |
+| 4 | Code review Round 8 pass after functional-parity rework and CR-MRA-006 | Round 3 findings MRA-E2E-025..030 | UX/design frictions only; provider-key runtime errors clarified by user as expected when runtime is not configured. | Fail / Design Impact | No | Functional paths mostly existed, but UX refinement was requested. |
+| 10 | Code review Round 10 pass after CR-MRA-007 and user instruction to test real Codex/GPT-5.5 mobile execution | Round 4 UX/functionality paths; CR-MRA-007 composite status | Yes, on stale branch: shared single-agent command identity was missing. Latest-base refresh found this already fixed on `origin/personal` `98cfdc24`. | **Superseded / branch refresh required** | **Yes** | Not mobile-only and not a backend runtime/provider issue; do not fix inside the mobile ticket. Merge latest base and revalidate. |
+
+
+## User Scope Clarification And Latest-Base Correction After Round 10 Handoff
+
+After the initial Round 10 handoff, the user asked whether the command-identity symptom was mobile-only or a general backend/platform issue and clarified that a general issue should not be fixed inside this mobile UX ticket. Runtime evidence showed it was **not mobile-only** and **not a backend runtime/provider bug**: the backend accepted the same mobile-created Codex/GPT-5.5 run when command identity was present. Solution design then checked latest `origin/personal` `98cfdc24` and found the shared frontend fix already present. Current posture: no separate command-identity ticket remains; merge latest base into the mobile branch and revalidate real single-agent execution there.
 
 ## Validation Basis
 
-Validated against the reviewed Remote Access MVP requirements and design, with special focus on the residual review risks called out by `code_reviewer`:
+Validated against:
 
-- backend-served mobile static app under `/mobile`
-- backend-generated QR/mobile URL `/mobile?pairing=...`
-- mobile first-run pairing bootstrap and stored paired-node session behavior
-- persisted-session reload and deep links such as `/mobile/workspace`
-- REST, GraphQL, and WebSocket auth for a non-loopback private/LAN address
-- protected resource rendering/download authorization
-- unsupported-feature redirects/gates for unpaired and paired mobile states
-- per-device revoke and revoke-all credential invalidation
-- seeded agent/team visibility through the paired mobile path
-
-The implementation handoff's `Legacy / Compatibility Removal Check` was reviewed. It stated that no compatibility shim or legacy old-behavior retention was introduced. No compatibility-only behavior, dual URL fallback, `/mobile/mobile` compatibility route, or legacy wrapper was observed during API/E2E.
+- AC-MRA-020 through AC-MRA-024: phone-first shell, Home status/action/recent work, one-task-at-a-time mobile work shell, stale `/mobile/workspace` handling, and desktop `/workspace` no regression.
+- AC-MRA-025 through AC-MRA-031: readable real-data rows, existing and new run journeys, files, attachments, Activity/team/tool history, and no enabled no-op controls.
+- AC-MRA-032 through AC-MRA-036: legacy compressed-mobile removal, desktop journey protection, authoritative shared-owner reuse, and shared-state refactor safety.
+- Code review Round 10 focus: CR-MRA-007 composite status behavior, existing-run continuation, new agent/team setup/launch, file preview/attach/send, composer context tray, Activity/team/tool history, desktop `/workspace` no-regression.
+- User clarification: runtime/API-key errors after launch are not mobile problems when the selected runtime/provider is not configured.
+- User runtime instruction: real mobile agent execution validation must use Codex runtime and `gpt-5.5`, not Anthropic/default runtime.
 
 ## Compatibility / Legacy Scope Check
 
@@ -45,112 +50,111 @@ The implementation handoff's `Legacy / Compatibility Removal Check` was reviewed
 - If compatibility-related invalid scope was observed, reroute classification used: N/A
 - Upstream recipient notified: N/A
 
+No compressed desktop mobile shell, default desktop left tree, stacked desktop top tabs, or mobile compatibility wrapper was observed in `/mobile`. Desktop `/workspace` still rendered the desktop shell outside mobile runtime.
+
 ## Validation Surfaces / Modes
 
-- Built mobile static asset generation.
-- Real built backend Fastify app serving generated mobile assets under `/mobile`.
-- LAN/private-address HTTP API probes using `192.168.2.158` as the simulated phone/private-network peer path.
-- Browser automation against backend-served mobile URLs, not a standalone mobile dev server.
-- Browser pairing by clicking the actual mobile `Pair phone` control.
-- Browser persisted-session reload/deep-link checks with PWA `localStorage` retained.
-- Browser-origin REST/GraphQL/WebSocket/resource checks using the paired mobile credential.
-- WebSocket client probes with and without `access_token` query credential.
-- Protected resource probe using a real file under the isolated server app-data media directory.
-- Backend restart with the same isolated app-data directory to verify Phone Access and paired credential persistence.
-- Seeded fixture validation through `scripts/seed-personal-test-fixtures.py` and backend-served mobile routes.
+- Focused repository tests after code review.
+- Static mobile build.
+- GraphQL/runtime model probe against the live local backend.
+- Direct browser testing using the Browser tool against current worktree mobile PWA at `http://127.0.0.1:3030/mobile`.
+- 390x844 mobile viewport with device scale factor 3.
+- Real local backend data from `http://127.0.0.1:29695` for GraphQL/workspace/file/run APIs.
+- Temporary direct WebSocket probes against the same mobile-created Codex run to isolate whether the failure was backend/runtime or frontend command payload.
 
 ## Platform / Runtime Targets
 
-- Host: macOS laptop, shell timezone Europe/Berlin, validation date 2026-05-16.
-- Node: `v22.21.1`.
-- pnpm: `10.28.2`.
-- Browser: Codex in-app browser automation.
-- Backend harness: built `autobyteus-server-ts/dist` loaded through `buildApp()` with isolated temp app-data and real Fastify route registration; full configured startup was intentionally not used because earlier direct `startConfiguredServer` attempts hit local environment Prisma-engine/startup issues unrelated to Remote Access, and the focused harness still exercised the real server app, REST, GraphQL, WebSocket, auth, stores, and static routes.
-- Backend listener: `0.0.0.0:49216`.
-- Loopback base: `http://127.0.0.1:49216`.
-- LAN/private-peer base used for phone simulation: `http://192.168.2.158:49216`.
+- Host: macOS laptop, timezone Europe/Berlin.
+- Validation date: 2026-05-19.
+- Browser: Codex in-app browser, mobile viewport 390x844.
+- Frontend target: current worktree Nuxt dev server at `http://127.0.0.1:3030`.
+- Backend target: user's local AutoByteus backend at `http://127.0.0.1:29695`.
+- Real execution runtime required by user: `codex_app_server` with model `gpt-5.5`.
+- Codex model availability probe: OpenAI provider under `codex_app_server` had `apiKeyConfigured=true` and included `gpt-5.5`.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
 
-- Restart persistence check completed in Round 2: the backend harness was stopped and restarted with the same isolated app-data directory.
-- After restart, Phone Access status still returned `phoneAccessEnabled: true` and `pairingAvailable: true`.
-- The already-paired browser session restored from PWA storage and continued to authorize REST and GraphQL through the private/LAN base.
-- Seeded definitions remained available after restart.
-- Native installer/updater, native Android/iOS wrapper, and production migration checks remain outside this PWA-first validation scope.
+No native installer/updater/restart/migration scenario was introduced by the Round 10 rework. Round 10 focused on live mobile UX, route gates, status reachability, shared selection isolation, file/activity journeys, and runtime execution boundaries.
 
 ## Coverage Matrix
 
 | Scenario ID | Requirement / Risk | Mode | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| MRA-E2E-001 | Mobile static assets build under `/mobile/` base | `pnpm -C autobyteus-web build:mobile-web` | Pass | Build passed; generated `dist-mobile`/`dist` removed after evidence capture. `round2-static-mobile-web-probes.txt` records `mobileRemoteAccessBuild` and `/mobile/` base. |
-| MRA-E2E-002 | Backend serves `/mobile`, `/mobile/`, `/mobile/settings`, `/mobile/workspace`, and generated static assets | Fastify HTTP static probes | Pass | HTTP 200 HTML for mobile SPA paths; generated static file listing in `round2-static-mobile-web-probes.txt`. |
-| MRA-E2E-003 | QR/generated `/mobile?pairing=...` opens phone pairing bootstrap | Browser against real backend-generated mobile URL | **Pass** | URL normalized to `/mobile/?pairing=<redacted>`, rendered `Connect this phone`, had `data-testid="mobile-pairing-text"`, enabled `Pair phone`, and had no desktop shell indicators. `round2-browser-validation.redacted.json`, `round2-mobile-pairing-url.png`. |
-| MRA-E2E-004 | Browser can complete pairing from backend-generated mobile URL | Browser click through phone UI | Pass | Clicking `Pair phone` exchanged the code, rendered `Connected to AutoByteus`, and persisted a redacted session for `http://192.168.2.158:49216`. `round2-browser-validation.redacted.json`, `round2-mobile-connected.png`. |
-| MRA-E2E-005 | Public Remote Access status reachable over loopback and LAN/private base | HTTP API + browser-origin fetch | Pass | 200 status over both bases. Round 2 API/browser evidence. |
-| MRA-E2E-006 | Local-only management endpoints rejected over LAN/private base | HTTP API | Pass | `GET /rest/remote-access/settings` over LAN returned 403 `REMOTE_ACCESS_LOCAL_ONLY`. `round2-api-probe-output.redacted.json`. |
-| MRA-E2E-007 | Protected REST rejects missing credential over LAN/private base | HTTP API + browser-origin fetch | Pass | `GET /rest/media` no token returned 401 `REMOTE_ACCESS_AUTH_REQUIRED`; with paired token returned 200. |
-| MRA-E2E-008 | Loopback can enable Phone Access and create pairing sessions | HTTP API | Pass | `PUT /rest/remote-access/settings` 200; `POST /rest/remote-access/pairing-sessions` 201. |
-| MRA-E2E-009 | LAN/private phone can exchange pairing code for per-device credential | HTTP API + browser UI | Pass | Pairing exchange returned 201 in API probe; browser UI pairing also succeeded. Credentials redacted. |
-| MRA-E2E-010 | Protected REST succeeds with paired credential | HTTP API + browser-origin fetch | Pass | `GET /rest/media` with bearer credential returned 200. |
-| MRA-E2E-011 | GraphQL rejects missing credential and accepts paired credential | HTTP API + browser-origin fetch | Pass | No token: 401; paired token: 200; seeded `Professor Agent`, `Student Agent`, and `Professor Student Team` visible in GraphQL data. |
-| MRA-E2E-012 | WebSocket rejects missing credential and accepts paired query token | WebSocket API + browser WebSocket | Pass | No token closed 4401 `REMOTE_ACCESS_AUTH_REQUIRED`; token reached handler and returned `AGENT_NOT_FOUND`, proving auth passed. |
-| MRA-E2E-013 | Protected resource/download path rejects unauthenticated and serves with credential | HTTP API + browser-origin fetch + file fixture | Pass | `/rest/files/images/round2.txt` no token 401; with bearer token 200 body `round2 protected resource`. |
-| MRA-E2E-014 | Per-device revoke invalidates credential | HTTP API | Pass | Device revoke succeeded; old token returned 403 `REMOTE_ACCESS_DEVICE_REVOKED`. |
-| MRA-E2E-015 | Revoke-all invalidates all remaining credentials | HTTP API | Pass | Re-paired second API device, `DELETE /rest/remote-access/devices` succeeded, subsequent token use returned 403 `REMOTE_ACCESS_DEVICE_REVOKED`. |
-| MRA-E2E-016 | Unsupported-feature redirect/gate from mobile route works before and after pairing | Browser | **Pass** | Unpaired `/mobile/settings` redirected to `/mobile/?unsupported=desktopSettings`, rendered `data-testid="mobile-unsupported-feature"` and still rendered `data-testid="mobile-pairing-text"`; paired state rendered unsupported notice with connected shell. `round2-mobile-unsupported-unpaired.png`, `round2-mobile-unsupported-paired.png`. |
-| MRA-E2E-017 | Seeded agent/team data available through paired mobile path | Seed script + GraphQL + browser mobile routes | Pass | Seed script created/updated Professor/Student fixtures; paired mobile GraphQL and `/mobile/agents`/`/mobile/agent-teams` displayed the seeded definitions. `round2-seed.log`, `round2-mobile-agents-seeded.png`, `round2-mobile-agent-teams-seeded.png`. |
-| MRA-E2E-018 | Persisted-session reload and deep links | Browser reload/deep link | Pass | `/mobile` reload restored connected state; `/mobile/workspace` loaded the existing workspace slice under the paired mobile session without returning to the pairing screen or desktop `/agents` redirect. `round2-mobile-workspace-deeplink.png`. |
-| MRA-E2E-019 | Restart persistence for Phone Access and paired browser credential | Backend harness restart + browser fetch/reload | Pass | After backend restart with same app-data directory, status remained enabled, mobile root restored connected state, and browser REST/GraphQL requests with the persisted credential returned 200. `round2-browser-validation.redacted.json`. |
+| MRA-E2E-001 | Mobile static assets build under `/mobile/` base | `pnpm -C autobyteus-web build:mobile-web` | Pass | `round10-mobile-web-build.log` |
+| MRA-E2E-007..013 | Remote Access route/auth/server utility regressions | Focused backend/web tests | Pass | `round10-remote-access-unit-vitest.log`, `round10-remote-access-web-vitest.log` |
+| MRA-E2E-016 | Stale `/mobile/workspace` mobile route does not expose desktop workspace UI | Browser | Pass | `round10-mobile-workspace-unsupported.png` |
+| MRA-E2E-020 / CR-MRA-007 | Status endpoint unavailable while authorized catalog/work data succeeds shows reachable/unknown status, not true offline | Browser | Pass | `round10-mobile-home-mixed-status-real-data.png` |
+| MRA-E2E-020B / CR-MRA-007 | Later true current-cycle network/catalog failure clears stale reachability and shows true offline | Browser | Pass | `round10-mobile-home-true-offline-after-current-failure.png` |
+| MRA-E2E-021 | Existing agent/team run continuation with visible conversation/composer | Browser | Pass | `round10-mobile-existing-run-chat.png` |
+| MRA-E2E-022 | One task surface at a time, bottom nav only | Browser | Pass | Chat/Runs/Files/Activity surfaces were navigated one at a time. |
+| MRA-E2E-024 / 033 | Desktop `/workspace` no-regression | Browser spot-check | Pass | `round10-desktop-workspace-no-mobile-shell.png` |
+| MRA-E2E-025 | Real-data mobile rows readable at 390x844 with long names | Browser | Pass | Home/recent rows remained readable in Round 10 browser pass. |
+| MRA-E2E-026 | New single-agent mobile launch using requested Codex runtime and GPT-5.5 | Browser + WebSocket isolation probe | Superseded stale-base fail / revalidate after branch refresh | Mobile Run Setup selected Codex/workspace/prompt and created run `b0d24431-207a-4833-87d7-4caf2bcb6c8b` with observed config `{ runtimeKind: codex_app_server, llmModelIdentifier: gpt-5.5 }`, but the mobile first message did not execute. Direct WebSocket command without identity reproduced backend rejection: `INVALID_COMMAND_ID`. Direct WebSocket command with identity was accepted and streamed a Codex/GPT-5.5 response visible in mobile. `round10-browser-validation-notes.json`, `round10-codex-direct-websocket-probe.log`, `round10-codex-direct-websocket-with-identity.log`, `round10-mobile-codex-gpt55-response-after-identity-probe.png` |
+| MRA-E2E-027 | New team-run setup/launch path | Browser route check; focused tests | Partial Pass / Not re-forced with Codex after MRA-E2E-026 blocker | Prior Round 10 browser setup showed team launch route reaches Chat and runtime errors are surfaced after launch when provider config fails. Team streaming already carries command identity; full real Codex team response should be revalidated after branch refresh. `round10-mobile-team-provider-error-visible.png` |
+| MRA-E2E-028 | Mobile Files preview supported text/code/markdown through authorized file APIs | Browser | Pass | `README.md` preview rendered real content. `round10-mobile-file-preview-attach.png` |
+| MRA-E2E-029 | Attach file/context visibly to Chat or next launch | Browser | Pass for preview/attach/tray; live send with attachment not forced after launch blocker | Attach showed `Attached · 1` and `1 file attached to Chat context`. `round10-mobile-file-preview-attach.png` |
+| MRA-E2E-030 | Activity shows task plan/team messages/tool history/unsupported terminal notice | Browser | Pass | Activity filters/digest/error rows rendered. `round10-mobile-activity-filtered-errors.png` |
+| MRA-E2E-031 | Enabled mobile controls complete action or are disabled/explained | Browser | Superseded stale-base hidden rejection; revalidate after branch refresh | The stale-branch launch button completed local UI transition while the backend rejected the WebSocket command; latest base has shared ACK rejection handling, so revalidate on the merged branch. |
+| MRA-E2E-036 / CR-MRA-006 | Shared selection isolation prevents stale run state in non-run mobile contexts | Focused tests + browser routes | Pass | `round10-focused-mobile-vitest.log`, `round10-shared-selection-run-open-vitest.log` |
 
 ## Test Scope
 
 Completed:
 
-- Mobile static build and backend static serving under `/mobile`.
-- Backend-generated pairing URL bootstrap in a real browser against backend-served assets.
-- Browser pairing flow and persisted mobile session storage.
-- Unpaired and paired unsupported-feature redirects/gates.
-- Persisted-session reload and `/mobile/workspace` deep link.
-- HTTP/GraphQL/WebSocket Remote Access auth probes over loopback and LAN/private-address paths.
-- Protected resource fetch/download auth probe.
-- Pairing, credential use, per-device revoke, and revoke-all API flows.
-- Seeded agent/team fixture creation and paired mobile visibility.
-- Backend restart persistence for Phone Access enabled state and paired credential usability.
+- `pnpm -C autobyteus-web exec nuxi prepare` — pass.
+- Focused mobile/route/feature-gate Vitest — pass, 7 files / 29 tests.
+- Shared selection/run-open Vitest — pass, 5 files / 28 tests.
+- Remote Access backend unit Vitest — pass, 5 files / 27 tests.
+- Remote Access web/session/auth utility Vitest — pass, 6 files / 21 tests.
+- `pnpm -C autobyteus-web build:mobile-web` — pass.
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm -C autobyteus-web exec nuxi typecheck` — fails only on unrelated repo-wide baseline errors; changed mobile/rework path grep had no hits.
+- `git diff --check` — pass.
+- Browser mobile validation of Home, composite status, Continue latest run, Chat, Activity, Files preview/attach, new agent setup/launch, `/mobile/workspace`, and desktop `/workspace`.
+- Codex runtime/model GraphQL probe for `codex_app_server` + `gpt-5.5`.
+- Direct WebSocket isolation probes against the mobile-created Codex run.
 
-Not forced because not necessary to resolve the reviewed residual risks:
+Not fully forced:
 
-- A second standalone mobile dev server was not used as the primary validation path. The release-relevant path is the backend serving the built mobile app at `/mobile`; validating a separate mobile dev server would not catch the base/static URL regression found in Round 1.
-- A desktop Nuxt dev frontend was not required for the authoritative API/E2E pass. Desktop Phone Access controls were exercised through loopback management APIs, and mobile UX was exercised through backend-served `/mobile`. A two-frontend setup remains useful for manual product demos, but it is supplementary to this validation.
-- Agent/team run execution was not forced because run behavior can depend on model/tool runtime availability. The validation instead proved seeded definitions, paired mobile visibility, and the REST/GraphQL/WebSocket/resource transport/auth boundaries that the Remote Access change owns.
+- I did not add or update repository-resident durable validation code in API/E2E.
+- Full real Codex team response was not forced after the single-agent `SEND_MESSAGE` identity blocker was isolated; team stream implementation already includes identity and should be revalidated after the single-agent local fix.
+- Live send with a file attachment was not forced after the stale-branch command rejection; preview/attach/tray behavior was validated and send should be rechecked after branch refresh.
 
 ## Validation Setup / Environment
 
-Commands and setup used:
+Validation server command:
 
 ```bash
-pnpm -C autobyteus-web build:mobile-web
-pnpm -C autobyteus-server-ts build
-node /tmp/autobyteus-mra-round2-harness.mjs
-python3 scripts/seed-personal-test-fixtures.py \
-  --graphql-url http://127.0.0.1:49216/graphql \
-  --wait-retries 10 \
-  --wait-delay 0.2
-node /tmp/autobyteus-mra-round2-api-probe.mjs
+BACKEND_NODE_BASE_URL=http://127.0.0.1:29695 pnpm -C autobyteus-web exec nuxi dev --host 127.0.0.1 --port 3030
 ```
 
-The focused backend harness loaded the built server app from `autobyteus-server-ts/dist/server-runtime.js`, initialized app config against a temporary app-data directory, and listened on `0.0.0.0:49216`. This avoided mutating the user's default app data and allowed LAN/private-peer simulation through `http://192.168.2.158:49216`.
-
-Browser validation used the backend-generated URL shape:
+Browser target:
 
 ```text
-http://192.168.2.158:49216/mobile?pairing=<redacted>
+http://127.0.0.1:3030/mobile
 ```
 
-All persisted evidence redacts pairing payloads and credentials.
+Live backend Remote Access REST probe result:
+
+```text
+GET  /rest/remote-access/status            -> 404
+PUT  /rest/remote-access/settings          -> 404
+POST /rest/remote-access/pairing-sessions  -> 404
+```
+
+Because the currently running local backend did not expose the Round 10 Remote Access pairing/status REST endpoints, the browser was paired by a temporary localStorage mobile-session fixture. GraphQL/workspace/file/run flows still exercised real local backend data.
+
+Codex model probe result:
+
+```text
+runtimeKind=codex_app_server
+provider=OPENAI apiKeyConfigured=True
+models include: gpt-5.2, gpt-5.3-codex, gpt-5.3-codex-spark, gpt-5.4, gpt-5.4-mini, gpt-5.5
+gpt-5.5_available: True
+```
 
 ## Tests Implemented Or Updated
 
-None. No repository-resident durable validation code was added or updated during this validation round.
+None by API/E2E. No repository-resident durable validation code was added or updated during this validation round.
 
 ## Durable Validation Added To The Codebase
 
@@ -161,101 +165,138 @@ None. No repository-resident durable validation code was added or updated during
 
 ## Other Validation Artifacts
 
-Round 1 failure evidence retained:
+Round 10 evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/api-probe-output.redacted.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/browser-routing-evidence.redacted.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/mobile-pairing-url-loads-agent-shell.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/static-and-resource-probes.txt`
-
-Round 2 pass evidence:
-
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-api-probe-output.redacted.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-browser-validation.redacted.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-static-mobile-web-probes.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-seed.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-pairing-url.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-connected.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-unsupported-unpaired.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-unsupported-paired.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-workspace-deeplink.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-agents-seeded.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-agent-teams-seeded.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-command-log.txt`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-nuxi-prepare.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-focused-mobile-vitest.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-shared-selection-run-open-vitest.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-remote-access-unit-vitest.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-remote-access-web-vitest.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-web-build.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-nuxi-typecheck-baseline.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-typecheck-changed-path-grep.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-git-diff-check.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-local-backend-pairing-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-codex-runtime-model-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-browser-validation-notes.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-codex-direct-websocket-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-codex-direct-websocket-with-identity.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-home-mixed-status-real-data.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-home-true-offline-after-current-failure.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-existing-run-chat.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-activity-filtered-errors.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-file-preview-attach.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-agent-run-setup-ready.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-agent-provider-error-visible.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-team-provider-error-visible.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-codex-gpt55-response-after-identity-probe.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-desktop-workspace-no-mobile-shell.png`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-mobile-workspace-unsupported.png`
 
 ## Temporary Validation Methods / Scaffolding
 
-Temporary only; removed after evidence capture:
-
-- Node backend harness script under `/tmp`.
-- Node API/WebSocket probe script under `/tmp`.
-- Temporary app-data directory under macOS temp path.
-- Temporary browser pairing/session files under `/tmp`.
-- Generated `autobyteus-web/dist-mobile/` and `autobyteus-web/dist/` outputs.
+- Temporary current-branch Nuxt dev server on port 3030.
+- Temporary browser localStorage mobile-session fixture.
+- Browser-only Pinia `defaultLaunchConfig` fixture for the Codex agent definition to simulate the requested desktop default `{ runtimeKind: codex_app_server, llmModelIdentifier: gpt-5.5 }` because mobile Run Setup exposes only “Existing desktop defaults” and no visible runtime/model selector. This did **not** change repository code or backend definition data.
+- Temporary direct WebSocket probes in `/tmp` to isolate backend command acceptance and real Codex/GPT-5.5 response behavior.
+- Generated `autobyteus-web/dist/` and `autobyteus-web/dist-mobile/` from mobile build.
 
 ## Dependencies Mocked Or Emulated
 
-- No Remote Access auth behavior was mocked; probes used the real route policy, stores, pairing service, auth service, Fastify REST/GraphQL/WebSocket routes, and generated mobile assets.
-- The phone peer was emulated by connecting to the host's LAN/private IP rather than loopback. This exercised peer-address-based local trust rejection for HTTP and WebSocket paths; `GET /rest/remote-access/settings` over that path returned 403 as expected.
-- A real phone/Tailscale device was not used in Round 2. LAN private-address browser simulation was sufficient for the reviewed residual risks and for rechecking the Round 1 blockers.
+- Pairing/session persistence was emulated by a browser-local mobile session fixture because the running local backend did not expose the Remote Access pairing/status routes.
+- GraphQL/workspace/file/run APIs were not mocked; they used the user's local backend data.
+- Codex/GPT-5.5 runtime/model availability and response were not mocked. The direct WebSocket identity probe used the real backend and real Codex app-server path.
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | MRA-E2E-003 — Generated `/mobile?pairing=...` loaded desktop `/mobile/agents` shell instead of phone bootstrap | Local Fix | **Resolved / Pass** | `round2-browser-validation.redacted.json`, `round2-mobile-pairing-url.png` | Backend-generated URL now renders `Connect this phone`, preloads `data-testid="mobile-pairing-text"`, keeps the generated `/mobile/?pairing=<redacted>` route, and has no desktop shell indicators. |
-| 1 | MRA-E2E-016 — `/mobile/settings` redirected to double-based `/mobile/mobile?unsupported=...` and did not show unsupported state correctly | Local Fix secondary to MRA-E2E-003 | **Resolved / Pass** | `round2-mobile-unsupported-unpaired.png`, `round2-mobile-unsupported-paired.png` | `/mobile/settings` now lands on `/mobile/?unsupported=desktopSettings`; unpaired phones see both unsupported notice and pairing form, paired phones see unsupported notice in connected shell. |
-| 1 | MRA-E2E-017 — Seeded agent/team UX deferred by pairing URL blocker | Blocked by MRA-E2E-003 | **Unblocked / Pass for owned Remote Access surface** | `round2-seed.log`, `round2-mobile-agents-seeded.png`, `round2-mobile-agent-teams-seeded.png` | Seed script ran, paired browser GraphQL saw seeded entities, and backend-served mobile routes displayed them. |
+| 3 | MRA-E2E-025 — real-data rows unreadable | Design Impact / Local Fix candidate | Resolved / Pass | Round 10 browser Home/recent rows | Vertical row layout remains readable. |
+| 3 | MRA-E2E-026 — no complete new agent/team launch path | Requirement Gap / Design Impact | Superseded stale-base fail / revalidate | `round10-codex-direct-websocket-probe.log` | UI path exists and run is created/configured; stale-base single-agent command rejection is already fixed on latest `origin/personal`, so revalidate after merge. |
+| 3 | MRA-E2E-027 — file preview/attach placeholder | Requirement Gap / Design Impact | Resolved / Pass for preview/attach | `round10-mobile-file-preview-attach.png` | Live send with attachment waits for single-agent send fix. |
+| 3 | MRA-E2E-028 — Activity/team messages/tool history incomplete/no-op | Requirement Gap / Design Impact | Resolved / Pass | `round10-mobile-activity-filtered-errors.png` | Activity/filter/tool rows render. |
+| 4 | UX-MRA-040 — status mismatch messaging | Design Impact | Resolved for CR-MRA-007 target | `round10-mobile-home-mixed-status-real-data.png`, `round10-mobile-home-true-offline-after-current-failure.png` | Current-cycle status behavior is correct. |
+| 7 / CR-MRA-006 | Stale shared run selection leaked into non-run mobile contexts | Local Fix | Resolved / Pass | `round10-focused-mobile-vitest.log`, `round10-shared-selection-run-open-vitest.log` | Focused regression coverage passed. |
+| 9 / CR-MRA-007 | Stale authorized reachability could mask true current-cycle status/catalog failure | Local Fix | Resolved / Pass | Round 10 composite status browser evidence | Mixed status and later true failure both behaved correctly. |
 
 ## Scenarios Checked
 
-See Coverage Matrix.
+- Mobile Home in paired-node fixture with real local backend data.
+- Mixed current-cycle status: status endpoint unavailable, catalog/work data authorized.
+- Later true network/catalog failure after a prior reachable state.
+- Existing team-run continuation from Home.
+- Bottom navigation one-task-at-a-time behavior for Chat, Runs, Files, Activity.
+- Activity digest/filter/detail rows.
+- File preview and attach to active Chat context.
+- New agent Run Setup and launch using Codex/GPT-5.5 default fixture.
+- Direct backend WebSocket command acceptance/rejection for the mobile-created Codex run.
+- Desktop `/workspace` no-regression.
+- Stale `/mobile/workspace` unsupported redirect/notice.
+- Existing route, auth, remote access, shared selection, and build checks.
 
 ## Passed
 
-- Mobile asset generation completed successfully with `/mobile/` base and `mobileRemoteAccessBuild:true`.
-- Backend-served `/mobile?pairing=<redacted>` entered the phone pairing bootstrap instead of the desktop shell.
-- Browser pairing flow completed and persisted a paired mobile session.
-- Browser reload of `/mobile` restored connected state without re-entering backend URL or token.
-- `/mobile/workspace` loaded under the paired session without bouncing to pairing or desktop `/agents` redirect.
-- `/mobile/settings` rendered explicit unsupported-state messaging before and after pairing.
-- Public Remote Access status endpoint worked over loopback and LAN/private base.
-- Local-only Phone Access management endpoint rejected LAN/private-base requests.
-- Protected REST, GraphQL, WebSocket, and file/resource routes rejected missing credentials over LAN/private base.
-- Pairing session creation from loopback and pairing exchange from LAN/private base worked.
-- Paired bearer credential authorized protected REST and GraphQL.
-- Paired WebSocket query token passed auth and reached the stream handler.
-- Protected resource fetch/download required and honored paired bearer auth.
-- Per-device revoke and revoke-all invalidated credentials consistently.
-- Seeded Professor/Student agents and Professor Student Team were visible through paired mobile GraphQL/routes.
-- Backend restart with the same app-data preserved Phone Access enabled state and browser credential usability.
+- Focused mobile/route/feature-gate Vitest passed.
+- Shared selection/run-open Vitest passed.
+- Remote Access backend unit and web/session/auth utility tests passed.
+- Mobile static build passed.
+- CR-MRA-007 composite status is resolved: reachable work data with missing status endpoint renders `Node reachable · Phone Access status unavailable`; later true current-cycle failure renders true Offline/Cannot reach desktop.
+- Home, existing-run continuation, one-task bottom nav, Activity, Files preview/attach, `/mobile/workspace`, and desktop `/workspace` behaved as expected in browser testing.
+- Codex App Server + `gpt-5.5` was available through the live local backend (`OPENAI apiKeyConfigured=True`).
+- The backend/runtime successfully streamed a real Codex/GPT-5.5 response on the mobile-created run when the WebSocket `SEND_MESSAGE` included command identity. Latest `origin/personal` now provides that identity in the shared single-agent path.
+- Missing provider/API-key runtime errors from prior default-runtime launches are not treated as mobile problems per user clarification.
 
-## Failed
+## Superseded Stale-Base Finding
 
-None in Round 2.
+### Round 10 command-identity finding — already fixed on latest base
+
+**Classification:** Shared frontend behavior discovered by mobile validation; not mobile-only; superseded by latest-base refresh. It is not a mobile-component local fix and no separate command-identity ticket remains.
+
+**Historical observed behavior:** the stale branch could create a mobile Codex/GPT-5.5 run, but the first single-agent WebSocket command was rejected without command identity. A direct WebSocket probe with identity against the same mobile-created run was accepted and streamed a response, proving the backend/runtime path worked.
+
+**Latest-base correction:** solution-design inspection and focused tests on latest `origin/personal` `98cfdc24` found identity-bearing `AgentStreamingService.sendMessage(...)`, stable command identity generation in `agentRunStore`, and shared ACK rejection handling already present.
+
+**Current impact:** no separate shared/platform ticket is needed. The mobile branch must merge/latest-base and API/E2E should re-run real Codex/GPT-5.5 single-agent launch/send, including send-with-attachment, on the refreshed branch.
 
 ## Not Tested / Out Of Scope
 
-- Full native Android/iOS wrapper validation: out of scope for this PWA-first MVP round.
-- Real phone on Tailscale/Headscale/company VPN: not used in this round; LAN/private-address browser simulation covered the non-loopback transport/auth and backend static risks under review.
-- Model-backed agent/team run completion: not forced because it can depend on LLM/tool runtime availability. Remote Access owned surfaces for seeded definitions, UI visibility, REST/GraphQL/WebSocket/resource auth, and session persistence were validated.
-- Production installer/updater lifecycle: out of scope for this API/E2E pass.
+- Full real Codex team run response after the stale single-agent blocker was isolated. Team streaming appears to have the required identity plumbing and should be included in the next API/E2E pass after branch refresh.
+- Native installer/updater/restart/migration flows.
+- Public remote-device network conditions outside the local browser/backend setup.
 
 ## Blocked
 
-None.
+- Delivery should not proceed from the stale Round 10 validation result alone.
+- The command-identity failure is superseded by latest-base refresh; the branch must merge `origin/personal` `98cfdc24` or newer and API/E2E must revalidate real mobile single-agent execution on that integrated state.
 
 ## Cleanup Performed
 
-- Stopped temporary backend harness.
-- Closed browser validation tabs.
-- Removed temporary scripts and probe outputs under `/tmp` after copying redacted evidence.
-- Removed temporary app-data directory used by the harness.
-- Removed generated `autobyteus-web/dist-mobile/` and `autobyteus-web/dist/` outputs after evidence capture.
-- Verified no listener remained on port `49216`.
-- Redacted credentials and pairing payloads in persisted evidence artifacts.
+- No repository-resident validation code was added.
+- Temporary WebSocket probe scripts were kept only in `/tmp` and are not repository artifacts.
+- Removed generated `autobyteus-web/dist/` and `autobyteus-web/dist-mobile/` after `build:mobile-web`.
+- Cleared the browser local mobile-session fixture from validation tabs.
+- Closed Round 10 validation browser tabs and stopped the temporary Nuxt dev server on port 3030.
 
 ## Classification
 
-- `Pass`: ready for delivery handoff.
+- `Superseded stale-base validation finding`: the command-identity symptom is not mobile-only and latest `origin/personal` already contains the shared fix. Do not implement it inside the mobile UX ticket; merge latest base and revalidate.
 
-Rationale: The Round 1 blocker and secondary unsupported-gate defect are fixed in observable backend-served browser behavior. The remaining reviewed Remote Access integration risks — static serving, pairing bootstrap, persisted session reload/deep links, REST/GraphQL/WebSocket authorization, protected resources, unsupported mobile gates, seeded data visibility, and revoke/revoke-all behavior — passed against the real built backend/mobile app using a private/LAN base. No repository-resident durable validation code was added or updated during API/E2E, so the next team handoff is to `delivery_engineer` rather than back through code review.
+## Recommended Recipient
+
+`implementation_engineer` after branch refresh, then `code_reviewer`/`api_e2e_engineer` for normal review and revalidation on the merged branch.
+
+## Evidence / Notes
+
+Key evidence proving the blocker and isolating root cause:
+
+- `round10-browser-validation-notes.json` — summarizes the mobile Codex/GPT-5.5 launch, run id, observed config, and classification.
+- `round10-codex-runtime-model-probe.log` — confirms live backend exposes `codex_app_server` / OpenAI / `gpt-5.5` with API key configured.
+- `round10-codex-direct-websocket-probe.log` — reproduces backend rejection of a no-identity `SEND_MESSAGE` on the mobile-created run.
+- `round10-codex-direct-websocket-with-identity.log` — proves the same run and runtime respond when `command identity` / `dedupe identity` are present.
+- `round10-mobile-codex-gpt55-response-after-identity-probe.png` — shows the mobile Chat rendering the real Codex/GPT-5.5 response after the accepted identity-bearing probe.
+
+## Latest Authoritative Result
+
+- Result: **Superseded stale-base failure / branch refresh required before final validation**
+- Notes: Do not count default-runtime Anthropic API-key errors as mobile problems. The prior command-identity finding was not mobile-only and latest `origin/personal` already contains the shared fix. Do not implement a mobile-only fix; merge latest `origin/personal` and revalidate real mobile single-agent execution.

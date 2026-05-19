@@ -8,7 +8,11 @@
       :agent-avatar-url="focusedMemberAvatarUrl"
       :inter-agent-sender-name-by-id="interAgentSenderNameById"
       class="h-full"
-    />
+    >
+      <template #composerContext>
+        <slot name="composerContext" />
+      </template>
+    </AgentEventMonitor>
     <div
       v-else-if="focusedMemberNode?.memberKind === 'agent_team'"
       class="h-full overflow-y-auto p-6"

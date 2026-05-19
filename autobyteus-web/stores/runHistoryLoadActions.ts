@@ -40,6 +40,12 @@ import {
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
 
+export type RunHistorySelectionMode = 'desktop' | 'mobile';
+
+interface RunHistoryOpenOptions {
+  selectionMode?: RunHistorySelectionMode;
+}
+
 interface RunHistoryFetchStoreLike {
   loading: boolean;
   error: string | null;
@@ -251,6 +257,7 @@ const reconcileDiscoveredActiveRuns = async (
 export const openHistoricalRun = async (
   store: RunHistoryFetchStoreLike,
   runId: string,
+  options: RunHistoryOpenOptions = {},
 ): Promise<void> => {
   store.openingRun = true;
   store.error = null;
@@ -260,6 +267,7 @@ export const openHistoricalRun = async (
       runId,
       fallbackAgentName: store.findAgentNameByRunId(runId),
       ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
+      selectionMode: options.selectionMode,
     });
 
     store.resumeConfigByRunId[runId] = result.resumeConfig;

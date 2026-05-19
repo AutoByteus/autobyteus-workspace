@@ -25,6 +25,20 @@ vi.stubGlobal('defineNuxtRouteMiddleware', vi.fn((fn: any) => fn));
 
 import middleware from '../mobileFeatureGate.global';
 
+type MiddlewareRoute = Parameters<typeof middleware>[0];
+
+const routeLocation = (
+  path: string,
+  query: Record<string, unknown> = {},
+): MiddlewareRoute => ({ path, query }) as MiddlewareRoute;
+
+const runMiddleware = async (
+  path: string,
+  query: Record<string, unknown> = {},
+) => {
+  await middleware(routeLocation(path, query), routeLocation('/previous'));
+};
+
 describe('mobileFeatureGate.global middleware', () => {
   beforeEach(() => {
     mobileRuntimeState.runtime = true;
@@ -33,7 +47,7 @@ describe('mobileFeatureGate.global middleware', () => {
   });
 
   it('redirects unsupported desktop routes to the mobile build root in the static phone app', async () => {
-    await middleware({ path: '/settings', query: {} } as any);
+    await runMiddleware('/settings');
 
     expect(navigateToMock).toHaveBeenCalledWith({
       path: '/',
@@ -41,16 +55,19 @@ describe('mobileFeatureGate.global middleware', () => {
     });
   });
 
-  it('keeps mobile-safe workspace routes reachable', async () => {
-    await middleware({ path: '/workspace', query: {} } as any);
+  it('redirects the stale desktop workspace route to the phone-first mobile shell', async () => {
+    await runMiddleware('/workspace');
 
-    expect(navigateToMock).not.toHaveBeenCalled();
+    expect(navigateToMock).toHaveBeenCalledWith({
+      path: '/',
+      query: { unsupported: 'desktopWorkspace' },
+    });
   });
 
   it('uses the standalone /mobile page as home outside the mobile static build', async () => {
     mobileRuntimeState.homePath = '/mobile';
 
-    await middleware({ path: '/settings', query: {} } as any);
+    await runMiddleware('/settings');
 
     expect(navigateToMock).toHaveBeenCalledWith({
       path: '/mobile',

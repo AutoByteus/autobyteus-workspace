@@ -38,7 +38,6 @@ Prior discussion established:
 - Notes For Downstream Agents: This is requirements-only at this stage. Do not implement before requirements approval and design review.
 
 ## Source Log
-
 | Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
 | 2026-05-16 | Command | `pwd && git status --short --branch && git remote -v && git symbolic-ref refs/remotes/origin/HEAD` | Bootstrap environment discovery | Shared checkout was on `personal`; remote default is `origin/personal` | No |
@@ -56,7 +55,6 @@ Prior discussion established:
 | 2026-05-16 | Web | `https://headscale.net/0.25.0/` | Verify Headscale positioning | Headscale describes itself as open-source, self-hosted implementation of Tailscale control server | Closest open/self-hosted Tailscale-like recommendation |
 | 2026-05-16 | Web | `https://docs.netbird.io/about-netbird/how-netbird-works`, `https://docs.netbird.io/` | Verify NetBird as self-hosted WireGuard mesh option | NetBird docs describe WireGuard peer-to-peer tunnels and self-hosting availability | Include as open/private-network guide profile |
 | 2026-05-16 | Web | `https://docs.netmaker.io/` | Verify Netmaker as self-hosted WireGuard option | Netmaker docs describe open-source WireGuard virtual networking that can be self-hosted or SaaS | Include as open/private-network guide profile |
-
 | 2026-05-16 | Code | `autobyteus-server-ts/src/api/rest/index.ts` | Inspect REST route registration and auth seam | REST routes are registered under `/rest`; health/files/media/workspaces/upload/context-files/run-file-changes/team-communication/application routes have no shared auth wrapper today | Add route policy/auth hook before route registration |
 | 2026-05-16 | Code | `autobyteus-server-ts/src/api/graphql/index.ts`, `schema.ts` | Inspect GraphQL auth/context seam | Mercurius registers `/graphql` with GraphiQL and subscriptions; TypeGraphQL resolvers are not decorated with authorization | Use Fastify-level auth policy for GraphQL route; restrict GraphiQL to loopback or development |
 | 2026-05-16 | Code | `autobyteus-server-ts/src/api/websocket/*.ts` | Inspect WebSocket auth seam | WebSocket handlers directly attach `/ws/agent`, `/ws/agent-team`, `/ws/terminal`, `/ws/file-explorer`, app backend notifications; no auth check before connection | Add shared websocket auth policy before handler connection; browser WebSocket needs token query/subprotocol path |
@@ -66,7 +64,17 @@ Prior discussion established:
 | 2026-05-16 | Code | `autobyteus-web/package.json`, `nuxt.config.ts`, `autobyteus-server-ts/package.json` | Inspect PWA/static serving packaging | Nuxt can generate static output; server does not currently depend on `@fastify/static`; mobile build target does not exist | Design needs mobile-web build target plus Fastify static serving under `/mobile` |
 | 2026-05-16 | Code | `autobyteus-web/build/scripts/build.ts`, `scripts/prepare-server.*` | Inspect desktop package resource flow | Electron bundles `resources/server` as extraResources; server package is prepared independently from renderer | Mobile web assets need explicit build/copy/package path into server resources |
 | 2026-05-16 | Code | `autobyteus-web/utils/serverConfig.ts`, `utils/contextFiles/contextAttachmentPresentation.ts`, `utils/application/applicationAssetUrl.ts`, `autobyteus-server-ts/src/services/media-storage-service.ts` | Inspect generated URL and bound-node URL behavior | Some flows already accept bound REST base URL; others still use global runtime config or server `AUTOBYTEUS_SERVER_HOST`, which is loopback in Electron | Design must remove mobile-supported dependence on loopback/global URLs |
+| 2026-05-19 | Existing artifact | `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/api-e2e-validation-report.md` | Understand Round 3 API/E2E failure and reroute classification | Validation failed on mobile functional parity: unreadable rows, incomplete new-run, file preview/attach, and Activity/team/tool journeys | Requirements/design refreshed and routed back to architecture review |
+| 2026-05-19 | Code | `autobyteus-web/components/mobile/MobileRuns.vue`, `MobileFiles.vue`, `MobileActivity.vue`, `MobileContextSwitcher.vue`, `composables/mobile/useMobileWorkCatalog.ts` | Inspect current mobile implementation behind validation failures | Found run setup guidance placeholder, file preview placeholder/attach no-op, activity team-message no-op, and horizontal row layout/metadata that matches truncation evidence | Design now names Mobile Work Experience owners and required removals/refactors |
+| 2026-05-19 | Code | `autobyteus-web/stores/agentRunStore.ts`, `agentTeamRunStore.ts`, `fileExplorer.ts`, `agentSelectionStore.ts`, `types/conversation.ts`, `utils/contextFiles/contextAttachmentModel.ts` | Identify authoritative owners to reuse/refactor for mobile parity without breaking desktop | Existing run/file/context owners can support mobile if used via a mobile adapter; `agentSelectionStore` mixes selection with desktop center-view navigation and needs isolation/refactor | Implementation must reuse/refactor shared owners and protect desktop route behavior |
+| 2026-05-19 | Command | `rg -n "Start new|Full content|Attach to chat|Open team messages|Context Files|workspace|Running|Activity|terminal|unsupported|placeholder" autobyteus-web/components/mobile autobyteus-web/stores/mobileWorkStore.ts autobyteus-web/composables/mobile autobyteus-web/types/mobileWork.ts` | Locate mobile placeholders/no-op controls and row metadata sources | Confirmed mobile run/file/activity failure points and metadata composition | No; captured in refreshed design |
+| 2026-05-19 | Command | `git diff --check` | Validate refreshed Markdown artifacts do not introduce whitespace errors | Passed | No |
 
+| 2026-05-19 | Existing artifact | `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/api-e2e-validation-report.md` Round 4 sections `Failed / Needs Solution Design UX Follow-up` and `Classification` | Understand delivery-readiness failure after Code Review Round 8 | Functional parity mostly works, but remaining mobile-specific UX issues require design refinement: mixed status, risky run setup selection, dense Activity, large-folder file browsing, and context visibility near send/launch. User later clarified API-key/runtime failure after launch is desktop-equivalent and out of scope | Requirements/design refreshed and routed back to architecture review |
+| 2026-05-19 | Code | `autobyteus-web/components/mobile/MobileHome.vue`, `stores/mobileNodeSessionStore.ts`, `utils/remoteAccess/mobileConnectionDiagnostics.ts` | Inspect misleading Offline/Cannot reach status source | Home derives Offline from missing status plus diagnostic; status fetch maps non-ok/unknown to network unreachable even when other APIs may succeed | Design now requires composite status/reachability model |
+| 2026-05-19 | Code | `autobyteus-web/components/mobile/MobileRunSetup.vue`, `composables/mobile/useMobileRunLaunchCoordinator.ts` | Inspect run setup target/default/readiness behavior | Run Setup uses native selects and `applyContextDefaults()` auto-fills first agent/team/workspace when no context default exists | Design now requires intentional pickers and launch summary, without adding API-key/provider preflight |
+| 2026-05-19 | Code | `autobyteus-web/components/mobile/MobileActivity.vue`, `MobileTeamMessages.vue`, `MobileToolActivityList.vue` | Inspect Activity density surfaces | Activity renders task rows plus visible team messages/tool history; rows clamp some text but page can still be long/dense with real data | Design now requires compact summaries, filters, and expansion/detail states |
+| 2026-05-19 | Code | `autobyteus-web/components/mobile/MobileFiles.vue`, `stores/mobileWorkStore.ts` | Inspect file discovery/context visibility | File preview/attach works, but file list is visible-folder-first and context visibility can be split between top tray/run setup/composer indicators | Design now requires sticky breadcrumb, discovery aids/deep search, and context visibility near send/launch |
 ## Current Behavior / Current Flow
 
 - Current entrypoint or first observable boundary: Electron desktop starts server through server manager and opens the desktop renderer against embedded node loopback URL.
@@ -245,3 +253,128 @@ Architecture review round 1 returned design-impact findings. The revised package
 - Direct application iframe/asset rendering on mobile remains out of MVP unless an authorized fetch/blob or signed asset URL design is added; application route families are still classified protected.
 - Proxy-aware local trust remains out of scope; future reverse-proxy support must add explicit trusted-proxy configuration rather than trusting forwarded headers.
 - Tailscale remains the first validation profile only; Headscale/company VPN/NetBird/Netmaker/WireGuard are provider-agnostic setup profiles feeding the same URL/pairing spines.
+
+
+## Mobile PWA User Validation Finding
+
+After implementation and Electron packaging, the user tested the PWA on a phone over LAN. Pairing and `/mobile` access worked, but the post-pairing workspace layout was judged not usable on mobile. Screenshots showed the desktop left drawer, workspace/team tree, top tabs (`Running`, `Files`, `Team`, `Tools`), nested running/config tabs, and right-panel-derived tools/activity concepts competing in a narrow phone viewport.
+
+Design implication: this is a same-ticket UX rework because the Remote Access MVP is not product-usable if the phone experience remains a compressed desktop layout. The rework is expected to be mostly frontend and should preserve desktop behavior.
+
+Artifacts added:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/mobile-ux-redesign-addendum.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/ui-prototypes/mobile-pwa-navigation/experience-story.md`
+
+## Round 3 Mobile Functional Parity Validation Return (2026-05-19)
+
+API/E2E returned the Mobile UX Redesign Local Fix as `Fail — Design Impact / Requirement Gap` after testing the current `/mobile` implementation against a 390x844 viewport and real local backend GraphQL data. Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/api-e2e-validation-report.md`.
+
+User clarification carried into requirements/design: mobile Remote Access is not merely a phone-shaped UI. It should let the user accomplish the practical desktop-web work journeys from a phone, while the normal desktop/web journey must not be broken or restyled by mobile work.
+
+Validation findings that change requirements/design scope:
+
+1. `MRA-E2E-025`: Real-data work rows are unreadable on phone. Home recent work, Runs, and Context Switcher rows collapse titles because long status/workspace metadata pills compete with the primary title. Evidence files include `round3-mobile-runs-truncation-real-data.png`, `round3-mobile-context-switcher-truncation-real-data.png`, and `round3-mobile-home-real-data.png`.
+2. `MRA-E2E-026`: Mobile cannot complete a new agent/team run journey. `MobileRuns.vue` exposes `Start new`, but the current state is a guidance card and context chooser rather than a launchable setup form.
+3. `MRA-E2E-027`: Files journey is incomplete. `MobileFiles.vue` lists files but preview is placeholder copy, and `Attach to chat` only closes the preview without adding visible composer context.
+4. `MRA-E2E-028`: Activity/team/tool journey is incomplete and ambiguous. `MobileActivity.vue` shows cards, but `Open team messages` has no visible state change and terminal/tools are only globally unsupported.
+5. `MRA-E2E-030`: Cross-cutting gap: current addendum fixed squeezed desktop navigation but did not define enough functional parity for desktop-web-equivalent mobile journeys.
+
+Current code evidence consulted during solution-design refresh:
+
+- `autobyteus-web/components/mobile/MobileRuns.vue`: `showRunSetup` toggles a guidance card; no mobile run setup form, initial prompt, required config readiness, or launch call is present.
+- `autobyteus-web/components/mobile/MobileFiles.vue`: file preview contains placeholder text and `attachFile()` only clears `previewNode`; it does not create a `ContextAttachment` or update composer state.
+- `autobyteus-web/components/mobile/MobileActivity.vue`: team messages button is enabled for team context but has no click handler/state transition; task plan is a short card only; terminal/tools are unsupported.
+- `autobyteus-web/components/mobile/MobileContextSwitcher.vue` and `MobileRuns.vue`: rows use horizontal flex with a shrink-0 metadata pill, matching the observed real-data title truncation failure.
+- `autobyteus-web/composables/mobile/useMobileWorkCatalog.ts`: metadata combines status and workspace names into a single pill such as `Running · autobyteus-workspace-superrepo`, contributing to row pressure.
+- `autobyteus-web/stores/agentRunStore.ts` and `autobyteus-web/stores/agentTeamRunStore.ts`: existing authoritative run launch owners already create/restore runs and send first/subsequent messages over GraphQL/WebSocket; mobile should reuse these through an adapter or refactored shared owner, not fork a mobile protocol.
+- `autobyteus-web/stores/fileExplorer.ts` already has authorized file-content/media fetch behavior through bound node endpoints; mobile file preview should reuse this owner or extract a shared mobile-safe preview adapter rather than keeping a placeholder.
+- `autobyteus-web/types/conversation.ts` and `utils/contextFiles/contextAttachmentModel.ts` already define `ContextAttachment` and `createWorkspaceContextAttachment`; mobile attach should use this model and show composer context.
+- `autobyteus-web/stores/agentSelectionStore.ts` currently changes selection and calls `workspaceCenterViewStore.showChat()`, which is a desktop-shell side effect. Mobile expansion exposes this as a boundary smell. Design should separate shared run selection/domain state from desktop center-view navigation or provide explicit desktop/mobile shell adapters so mobile actions do not depend on desktop workspace navigation side effects.
+
+Design implications:
+
+- Add a mobile functional parity matrix covering continue existing runs, send message, start new agent/team run, choose workspace/context, browse/preview/attach files, task plan/team messages/tool activity, terminal/tool/browser support boundaries, troubleshooting/unpair, and desktop/web no-regression.
+- Treat unreadable rows as a local CSS/layout fix inside the broader rework: mobile list rows must prioritize title/identity vertically and constrain metadata.
+- Treat run setup, file preview/attach, and activity/team messages as requirement/design gaps, not only implementation bugs, because prior addendum/handoff allowed placeholders or deferrals that no longer match the clarified product expectation.
+- Add desktop/web non-regression as an explicit design contract: `/workspace` and normal desktop web flows keep the desktop shell; mobile route gates and refactors must not leak into desktop.
+- Refactor legacy compressed-mobile behavior instead of preserving dual paths or compatibility wrappers. Desktop shell components can be reused only for content/domain rendering when they are mobile-safe; desktop navigation/panel owners must not become mobile owners.
+
+## Round 4 Mobile UX Refinement Validation Return (2026-05-19)
+
+API/E2E returned Round 4 as `Fail for delivery readiness — Design Impact / UX refinement required` after Code Review Round 8. Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/api-e2e-validation-report.md`.
+
+Important positive findings now preserved:
+
+- Round 3's functional blockers are mostly resolved: readable mobile rows, existing run continuation, real new agent/team launch paths, real file preview, active/draft file attachment targeting, Activity team messages/tool history, workspace context isolation, `/mobile/workspace` unsupported redirect, and desktop `/workspace` no-regression all passed or mostly passed.
+- New agent/team launch reached backend run creation; subsequent `ANTHROPIC_API_KEY` failure was observed after launch. User clarified this is normal desktop-equivalent runtime behavior when API keys are not configured, not a mobile UX issue to solve in this ticket.
+
+Remaining UX/design findings to carry forward:
+
+1. `UX-MRA-040`: Mobile Home says `Offline` / `Cannot reach desktop` when `/rest/remote-access/status` is unavailable, even though other APIs succeed. Design needs composite reachability/status semantics.
+2. `UX-MRA-041`: Mobile Run Setup uses large native selects and auto-selects the first agent/team/workspace when no explicit context default exists. This risks wrong-target launch.
+3. `UX-MRA-042` scope correction: Runtime/provider readiness such as missing `ANTHROPIC_API_KEY` discovered after run creation is out of scope when it matches desktop behavior. Mobile should only ensure the post-launch error is visible and not misclassified as a mobile route failure.
+4. `UX-MRA-043`: Activity/team messages/tool activity are functional but too dense for phone scanning. Design needs compact summaries, filters, and expansion/detail states.
+5. `UX-MRA-044`: File browsing works but large folders need mobile discovery aids: recent files, attached/current-run files, type filters, sticky breadcrumb, and deliberate deep search.
+6. `UX-MRA-045`: Context attachment state is correct but should stay adjacent to send/launch decisions and avoid duplicate/conflicting indicators.
+
+Current code evidence consulted during refinement:
+
+- `MobileHome.vue`, `mobileNodeSessionStore.ts`, and `mobileConnectionDiagnostics.ts`: Home status derives from status endpoint success/failure; unknown/non-ok status currently maps toward network unreachable copy.
+- `MobileRunSetup.vue`: native select controls and `applyContextDefaults()` auto-fill first agent, team, and workspace when explicit context defaults are absent.
+- `useMobileRunLaunchCoordinator.ts`: mobile launch delegates to existing run stores; do not add provider/API-key preflight in this ticket because that would change desktop-equivalent launch semantics.
+- `MobileActivity.vue`, `MobileTeamMessages.vue`, `MobileToolActivityList.vue`: Activity functions but can render too much detail inline for mobile.
+- `MobileFiles.vue` and `mobileWorkStore.ts`: file preview/attach works; discovery remains visible-folder oriented and context indicators need stronger adjacency to send/launch controls.
+
+Design implication: this is a narrower UX refinement pass than Round 3. The mobile work journeys now exist; the target design should reduce misleading status, wrong-action launch risk, high-density scanning burden, large-folder navigation friction, and send/launch context confusion without reopening backend pairing/auth, adding API-key/provider preflight, or breaking normal desktop/web.
+
+### User Clarification: API-Key / Runtime Errors Are Out Of Scope
+
+After the Round 4 design refresh, the user clarified that the observed `ANTHROPIC_API_KEY` error after launch is normal desktop-equivalent behavior. If a user has not configured an API key/provider, the launched agent reports the error after launch in the desktop app too. This ticket should not add new mobile-only pre-launch API-key/provider checks or change when those runtime errors are discovered.
+
+Scope correction: mobile UX should make the post-launch error visible/readable on phone, but it should not block launch or treat missing API keys as a delivery blocker for Remote Access mobile UX. Remaining Round 4 design work is limited to mobile-specific journey issues: status wording, intentional target selection, Activity density, large-folder file discovery, and context visibility near send/launch.
+
+## Round 10 Latest-Base Command Identity Refresh (2026-05-19)
+
+API/E2E Round 10 initially reported a real Codex/GPT-5.5 single-agent send failure from a mobile worktree that was behind `origin/personal`. The user asked whether the issue was mobile-only and clarified that general/shared issues should not be fixed inside this mobile UX ticket.
+
+Historical evidence from the stale worktree showed that a direct WebSocket command without command identity was rejected, while the same mobile-created Codex/GPT-5.5 run responded when command identity was present. That proved the symptom was not a mobile-shell or backend runtime/provider problem.
+
+Solution design then fetched and inspected latest `origin/personal` commit `98cfdc24612a8cce8525e934cfd373589ad51ec4` (`98cfdc24`) before authorizing any implementation. Static and executable checks on latest base showed the shared fix already exists:
+
+- `autobyteus-web/services/agentStreaming/AgentStreamingService.ts#sendMessage` accepts command identity and serializes it for single-agent `SEND_MESSAGE`.
+- `autobyteus-web/stores/agentRunStore.ts` creates stable client message identity and dedupe keys before sending.
+- `AgentStreamingService` handles command ACK rejection and routes rejected commands to shared error handling.
+- Focused latest-base tests passed:
+
+```bash
+pnpm -C autobyteus-web exec vitest run stores/__tests__/agentRunStore.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+```
+
+Result: pass — 3 files / 28 tests.
+
+Current decision:
+
+- No separate command-identity ticket remains. The obsolete ticket folder and dependency artifact were removed.
+- Do not add a mobile-only WebSocket sender, hidden mobile-only dedupe scheme, or ACK workaround.
+- Do not patch shared single-agent streaming inside the mobile UX ticket.
+- Merge/refresh this mobile branch with latest `origin/personal` before implementation/API-E2E continues.
+- If the missing-identity symptom reappears after the branch includes `98cfdc24` or newer, treat it as a shared-base regression from the latest branch state, not a mobile UX local fix.
+
+## Round 10 Non-WebSocket Mobile UX Findings Triage (2026-05-19)
+
+API/E2E routed non-WebSocket mobile UX findings separately from the stale shared command-identity finding in:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/mobile-ux-validation-findings-round10.md`
+
+Summary from validation: the mobile journey is functionally close for the phone-first MVP. Home, Continue latest run, Switch work, Chat/Runs/Files/Activity, file preview/attach, Activity filters/history, `/mobile/workspace` redirect, and desktop `/workspace` no-regression all validated. The remaining non-WebSocket items are UX/design polish or product-scope decisions rather than immediate implementation blockers.
+
+Solution-design triage:
+
+1. Runtime/model visibility: refine the existing launch-summary requirement rather than requiring full advanced configuration on phone. Mobile MVP may use desktop/agent defaults; the UI should show the resolved runtime/model when available or clear copy such as `Uses the agent's desktop default runtime/model`.
+2. Activity density: already covered by R-MRA-136 / AC-MRA-040; keep compact summaries, filters/chips, and drill-in details as target polish.
+3. Large-folder file browsing: already covered by R-MRA-137 / AC-MRA-041; keep sticky breadcrumb, recent/attached/type filters, and explicit deep search as target polish.
+4. Attachment/context visibility: already covered by R-MRA-138 / AC-MRA-042; keep context count/actions adjacent to send/launch and avoid conflicting duplicate indicators.
+5. New-run target selection: already covered by R-MRA-132/R-MRA-133 / AC-MRA-038; keep Recent/Favorites/Current context emphasis and avoid arbitrary defaults.
+
+Design impact: no new same-ticket backend/API scope and no desktop-web behavior change. If the product later requires strict desktop-equivalent runtime/model editing from phone, that should be explicitly re-scoped as advanced mobile run configuration rather than inferred from this MVP polish pass.

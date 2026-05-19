@@ -1,0 +1,3 @@
+Command: pnpm -C autobyteus-web exec nuxi typecheck (full log in round4-nuxi-typecheck-baseline.log)
+Result: repository typecheck still fails on unrelated baseline errors; grep below proves no changed mobile/rework path hits after this implementation.
+

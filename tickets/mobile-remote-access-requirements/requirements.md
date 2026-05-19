@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-Refined
+Refined — refreshed on 2026-05-19 after Round 3 mobile validation returned a Design Impact / Requirement Gap for functional mobile journey parity; refreshed again after Round 4 browser validation returned Design Impact / UX refinement required for delivery readiness; branch-currency corrected after Round 10 validation found a shared single-agent command-identity failure on a worktree behind `origin/personal`; latest `origin/personal` already contains that shared fix, so no separate command-identity ticket remains. Non-WebSocket Round 10 UX findings are triaged as polish/design follow-up with no new immediate blocker.
 
 ## Goal / Problem Statement
 
@@ -12,7 +12,7 @@ The product must not be coupled to one VPN vendor. Tailscale may be the easiest 
 
 The core user promise is:
 
-> Start AutoByteus on desktop, enable Phone Access, scan a QR code from the phone, and then the phone app/PWA keeps working whenever it can reach that node. The user should not manually configure backend URLs, ports, tokens, or VPN internals inside AutoByteus.
+> Start AutoByteus on desktop, enable Phone Access, scan a QR code from the phone, and then the phone app/PWA keeps working whenever it can reach that node. The user should not manually configure backend URLs, ports, tokens, or VPN internals inside AutoByteus. Once paired, the phone must let the user complete the practical desktop-web work journeys that make Remote Access useful, while the normal desktop/web layout and workflows remain unchanged.
 
 ## Product / Technical Judgement
 
@@ -27,6 +27,11 @@ The core user promise is:
   - validation over real private networks.
 - Android-native value comes later for QR scanning polish, secure credential storage, app links, notifications, file sharing, and distribution. It should not own the core remote-access protocol.
 - A throwaway smoke test can be done quickly over Tailscale/Headscale/LAN, but a production feature must not expose the current server API to reachable network peers without app-level auth.
+- Mobile product readiness is not satisfied by a phone-shaped shell alone. The mobile PWA must cover a declared functional parity matrix for the desktop-web journeys that are required from a phone.
+- Desktop/web non-regression is a hard product constraint: mobile routing, feature gates, and refactors must not change the normal desktop workspace layout, desktop run configuration journey, or desktop file/activity workflows except through explicitly reviewed shared-core fixes.
+- Round 4 validation showed core mobile functional parity now mostly works; final delivery readiness depends on reducing mobile decision risk and density: status wording must reflect mixed-success states, launch setup must prevent wrong-target launches, launch summary/context must be clear, Activity must be scannable, large-folder file browsing needs mobile discovery aids, and selected context files must remain adjacent to send/launch decisions. Runtime/provider failures such as a missing LLM API key after launch are desktop-equivalent functionality and are out of scope for this mobile UX ticket as long as the error is visible on mobile.
+- Round 10 validation initially identified a shared single-agent command-identity failure from a worktree behind `origin/personal`: the shared frontend single-agent streaming path appeared to send `SEND_MESSAGE` without backend-required command identity. Per the user's scope clarification, that was never mobile-only and must not be fixed as a mobile UX local patch. Refreshed solution-design check on 2026-05-19 against latest `origin/personal` `98cfdc24` found the shared fix already present: `AgentStreamingService.sendMessage(...)` serializes identity, `agentRunStore` generates stable command dedupe keys, ACK rejection handling exists, and focused tests pass. The obsolete command-identity dependency/ticket has been removed; the mobile branch must merge/latest-base before final validation rather than reimplementing the shared fix.
+- Round 10 non-WebSocket UX findings are captured as mobile polish/product-scope follow-up rather than immediate blockers. Activity density, large-folder file discovery, context visibility, and intentional target selection are already covered by R-MRA-132/R-MRA-133/R-MRA-136/R-MRA-137/R-MRA-138 and AC-MRA-038/040/041/042. Runtime/model visibility is clarified under R-MRA-134/AC-MRA-039: mobile may stay simplified for MVP, but the launch summary must show the resolved runtime/model when available or clearly state the desktop-default source instead of vague copy.
 
 ## Investigation Findings
 
@@ -44,12 +49,12 @@ The core user promise is:
 
 ## Design Health Assessment (Mandatory)
 
-- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Larger Requirement / Feature
-- Initial design issue signal (`Yes`/`No`/`Unclear`): Yes
-- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue; Missing Invariant; Duplicated Policy Or Coordination risk
-- Refactor posture (`Likely Needed`/`Likely Not Needed`/`Deferred`/`Unclear`): Likely Needed before production remote access
-- Evidence basis: Current server bind behavior, Electron loopback embedded config, Nuxt node endpoint derivation, browser fallback node registry, absent discovered general app auth, server-generated URL base handling.
-- Requirement or scope impact: The feature must introduce a clear Remote Access owner/boundary rather than scattering VPN-specific checks, URL selection, auth token handling, and mobile bootstrapping across frontend stores and server routes.
+- Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Larger Requirement / Feature with same-ticket mobile UX and functional parity rework.
+- Initial design issue signal (`Yes`/`No`/`Unclear`): Yes.
+- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue; Missing Invariant; Duplicated Policy Or Coordination risk; File Placement Or Responsibility Drift in mobile shell reuse; Legacy Or Compatibility Pressure if squeezed desktop panels/placeholders are kept as the mobile path.
+- Refactor posture (`Likely Needed`/`Likely Not Needed`/`Deferred`/`Unclear`): Needed for production remote access and for the mobile same-ticket rework. Refactor must remove mobile dependence on desktop panel navigation and must isolate mobile navigation from normal desktop/web shell state.
+- Evidence basis: Current server bind behavior, Electron loopback embedded config, Nuxt node endpoint derivation, browser fallback node registry, absent discovered general app auth, server-generated URL base handling, Round 3 mobile validation screenshots showing unreadable real-data rows, run setup placeholder, file preview/attach placeholder, activity/team-message no-op, the user's 2026-05-19 clarification that mobile must support practical desktop-web journeys, Round 4 validation showing remaining UX issues after functional paths became executable, and Round 10 branch-currency validation showing the shared single-agent command-identity gap is already fixed on latest `origin/personal` and is not a mobile UX scope item.
+- Requirement or scope impact: The feature must introduce clear Remote Access and Mobile Work Experience owners/boundaries rather than scattering VPN-specific checks, URL selection, auth token handling, mobile bootstrapping, mobile run launch, file preview/attach, and activity/team-message behavior across desktop shell components. Desktop/web journeys must remain protected by route/component boundaries and regression checks.
 
 ## Recommendations
 
@@ -123,6 +128,12 @@ Large
 - UC-MRA-010: Desktop user can view and revoke paired phone clients.
 - UC-MRA-011: Mobile user can use supported server-owned flows such as agents, agent teams, run history, workspace/file browsing where safe, applications where mobile compatible, and relevant settings.
 - UC-MRA-012: Mobile user is not shown desktop-only or Electron-only controls that cannot work on phone.
+- UC-MRA-013: Mobile user continues an existing agent run or team run, reads the conversation, attaches context when needed, and sends a message from the phone.
+- UC-MRA-014: Mobile user starts a new agent run from a phone by selecting an agent, selecting/confirming workspace, providing required launch inputs, entering an initial prompt, and landing in the chat/run stream.
+- UC-MRA-015: Mobile user starts a new team run from a phone by selecting a team, confirming workspace/defaults, entering an initial prompt for the focused member/coordinator path, and landing in the team chat/run stream.
+- UC-MRA-016: Mobile user browses workspace files, previews supported text/code/markdown content, and attaches a file/path context to the current chat with visible composer feedback.
+- UC-MRA-017: Mobile user opens task plan, team messages, and tool/activity history from the phone without needing the desktop right panel.
+- UC-MRA-018: Desktop/web user continues to use the normal desktop workspace, run configuration, file, team, and activity journeys with no mobile shell or feature-gate regression.
 
 ## Out of Scope
 
@@ -135,6 +146,7 @@ Large
 - Enterprise SSO/RBAC/MDM policy management beyond documenting compatibility with existing company VPNs.
 - Push notifications unless selected as a later native-wrapper milestone.
 - Solving desktop sleep/wake/reliable always-on host management beyond clear status/diagnostics.
+- Adding new provider/API-key preflight or changing when runtime/provider configuration errors are discovered; mobile should show the same post-launch agent/runtime errors desktop shows.
 
 ## Functional Requirements
 
@@ -217,6 +229,67 @@ Large
 - R-MRA-076: The desktop UI shall provide a revoke-all paired phones action that permanently invalidates every paired-device credential and requires every phone to pair again.
 - R-MRA-077: Phone Access enable/disable state and revoke-all outcomes shall be persisted across server restarts and shall apply consistently to REST, GraphQL, and WebSocket access.
 
+
+### Mobile UX Redesign Same-Ticket Rework
+
+- R-MRA-110: The mobile PWA shall use a phone-first navigation model rather than a compressed desktop panel layout.
+- R-MRA-111: After pairing, the mobile home shall show connection status, current node, a clear primary next action, recent work, and secondary troubleshooting/unpair actions.
+- R-MRA-112: Mobile work screens shall use at most one persistent task navigation model, with no more than four task destinations.
+- R-MRA-113: The mobile work shell shall expose the primary task destinations as Chat, Runs, Files, and Activity or equivalent user-intent labels.
+- R-MRA-114: The desktop left panel/full workspace tree shall not be the default mobile navigation; mobile context switching shall use a focused picker/sheet.
+- R-MRA-115: The mobile Chat screen shall make conversation and message composition the primary phone task after selecting, continuing, or starting work.
+- R-MRA-116: Desktop-only or unsupported mobile features shall show clear unsupported states and recovery actions instead of broken controls, no-op controls, placeholders that look actionable, or half-rendered desktop UI.
+- R-MRA-117: The mobile MVP shall satisfy a functional parity matrix for practical desktop-web work journeys; a phone-shaped shell alone is not sufficient.
+- R-MRA-118: Mobile Home, Runs, and Context Switcher rows shall remain readable with real workspace/run/team names at a 390x844 phone viewport; user-identifying titles must not be crushed by status/workspace metadata pills.
+- R-MRA-119: A paired phone user shall be able to continue an existing agent run and an existing team run, see the conversation, see a composer, and send a message using the same authorized REST/GraphQL/WebSocket boundaries as desktop web.
+- R-MRA-120: A paired phone user shall be able to start a new agent run through a complete mobile path: choose/confirm agent, choose/confirm workspace, use the same launch configuration/default behavior as desktop web, enter an initial prompt, launch, and land in Chat/Runs.
+- R-MRA-121: A paired phone user shall be able to start a new team run through a complete mobile path: choose/confirm team, choose/confirm workspace/defaults, use the same member/runtime/model configuration/default behavior as desktop web, enter an initial prompt for the focused/coordinator path, launch, and land in Chat/Runs.
+- R-MRA-122: Mobile context switching shall support Recent, Agents, Teams, and Workspaces without exposing the desktop tree as the default navigation and without creating duplicate authoritative context-selection state.
+- R-MRA-123: Mobile Files shall browse workspace folders, search/filter visible files, and open supported text/code/markdown files through authorized APIs with size/error limits; large, binary, or unsupported content shall show explicit unsupported states.
+- R-MRA-124: Mobile file/context attachment shall add a visible context item to the Chat composer, show the file name/count and remove action, and include the context when the next message/run launch is sent.
+- R-MRA-125: Mobile Activity shall provide a phone replacement for required desktop right-panel information: task plan, team messages, run events, and tool-call/activity history. Interactive terminal/tool panes may be intentionally unsupported for MVP only if the UI clearly disables or explains them and still shows relevant run/tool history where available.
+- R-MRA-126: Enabled mobile controls shall either complete the promised action or be disabled with an explicit mobile-scope explanation; no enabled no-op controls are allowed.
+- R-MRA-127: The normal desktop/web workspace journey shall remain unchanged by the mobile redesign: desktop routes keep the left panel, center workspace, right panel, desktop run configuration, desktop files, and desktop team/tool/activity surfaces.
+- R-MRA-128: Legacy compressed-desktop mobile behavior shall be removed/refactored from the mobile runtime instead of kept behind compatibility wrappers, including desktop left tree default navigation, stacked top tabs, duplicated Team surfaces, and placeholder run/file/activity affordances.
+- R-MRA-129: Mobile implementation shall reuse existing authoritative run, team, file, activity, context-attachment, node-binding, and auth transports where they own business logic; it shall not fork a mobile-only protocol or duplicate server/domain logic.
+- R-MRA-130: If existing shared stores/components mix desktop view navigation with domain selection or conversation/file/activity rendering, the implementation shall refactor toward shared domain/content owners plus separate desktop and mobile shell/navigation owners before adding more mobile behavior.
+
+- R-MRA-131: Mobile status/diagnostics shall use a composite reachability model. If the Remote Access status endpoint is unavailable but other authorized APIs such as GraphQL, files, or run data succeed, Mobile Home shall not say `Cannot reach desktop` or `Offline`; it shall show node reachable / Remote Access status unknown or version/status endpoint unavailable with clear recovery guidance.
+- R-MRA-132: Mobile Run Setup shall require intentional target choice unless launched from an explicit agent/team/workspace context. It shall not auto-select the first arbitrary agent, team, or workspace from a large list.
+- R-MRA-133: Mobile Run Setup shall use phone-appropriate searchable pickers or sheets for agent/team/workspace selection, prioritizing recent/current/favorite/contextual choices before all choices. Huge native select lists are not the desired steady-state mobile UX.
+- R-MRA-134: Mobile Run Setup shall show a compact launch summary adjacent to the launch button, including target, workspace, context files that will be included, and runtime/model visibility. For the MVP, mobile may use existing desktop/agent defaults instead of exposing full runtime/model selectors, but the summary shall show the resolved runtime/model when available or explicitly state that the agent's desktop default runtime/model will be used.
+- R-MRA-135: Mobile launch shall not add new provider/API-key preflight behavior that changes desktop-web launch semantics. Runtime/provider failures such as a missing LLM API key may surface after launch exactly as they do on desktop; the mobile requirement is only that the resulting error remains visible and understandable in the mobile Chat/Activity surface.
+- R-MRA-136: Mobile Activity shall be scannable by default: task/team/tool sections shall use compact rows, counts, filters/chips, priority/error states, and expand/detail actions instead of rendering long messages, commands, or logs inline by default.
+- R-MRA-137: Mobile Files shall support large-workspace discovery aids beyond visible-folder filtering: recent files, attached/current-run files where available, type filters such as markdown/code, sticky breadcrumb/current-folder context, and an explicit deep-search action when searching beyond the visible folder.
+- R-MRA-138: Mobile context-file visibility shall stay adjacent to the actual send or launch decision. A top tray may be supplemental, but composer and Run Setup launch controls shall show the exact files/count that will be included and avoid duplicate/conflicting indicators.
+
+### External Shared Platform Dependency
+
+- Latest-base branch boundary: latest `origin/personal` `98cfdc24` already contains the shared single-agent command-identity behavior required for real single-agent stream execution. This mobile UX ticket shall not implement a mobile-only workaround, duplicate WebSocket sender, or patch the shared streaming contract.
+- Implementation must merge/refresh mobile work onto `origin/personal` `98cfdc24` or newer before validation and discard/ignore stale scratch edits for command identity. If a missing-identity failure reappears after that, treat it as a regression against the shared base, not as mobile UX local work.
+- Mobile delivery posture after refresh: mobile UX implementation can be reviewed for phone-only surfaces, practical work journeys, and desktop no-regression; full real-run Codex/GPT-5.5 single-agent launch/send should be revalidated on the refreshed base and is no longer blocked by a separate command-identity ticket.
+
+### Mobile Functional Parity Matrix
+
+| Desktop-Web Journey / Capability | Mobile MVP Decision | Required Mobile Behavior | Unsupported / Simplified Boundary |
+| --- | --- | --- | --- |
+| Pair and reconnect to a desktop node | Must work | Pair from QR/link/manual payload, persist paired node, reconnect on reopen, show composite status/diagnostics that distinguish network unreachable from status endpoint/version mismatch | None for MVP. |
+| Continue existing agent run | Must work | Open recent/active agent run, show conversation/composer, send message over authorized transports | None for supported run types. |
+| Continue existing team run | Must work | Open recent/active team run, show team conversation/focused member composer, send message where desktop supports it | Complex member navigation may be simplified but must not block focused/coordinator messaging. |
+| Start new agent run | Must work | Intentionally select/confirm agent and workspace through mobile pickers, follow existing desktop launch defaults/config behavior, show launch summary, enter prompt, launch, land in Chat/Runs | Advanced config may be collapsed; post-launch runtime/provider errors are acceptable when they match desktop behavior and remain visible. Real single-agent stream execution should be validated after the mobile branch is merged with `origin/personal` `98cfdc24` or newer, which already contains the shared command-identity fix. |
+| Start new team run | Must work | Intentionally select/confirm team and workspace/defaults through mobile pickers, follow existing desktop member/runtime/model defaults/config behavior, show launch summary, enter prompt, launch, land in team Chat/Runs | Advanced member overrides may be collapsed; post-launch runtime/provider errors are acceptable when they match desktop behavior and remain visible. |
+| Choose/switch workspace/context | Must work | Focused picker with Recent / Agents / Teams / Workspaces and readable real-data rows | Full desktop tree is not default mobile navigation. |
+| Browse workspace files | Must work, simplified | Drill into folders, search/filter visible files, maintain sticky workspace/folder context, offer recent/attached/type filters, and provide explicit deep search for large workspaces | Bulk desktop file operations are not required. |
+| Preview file content | Must work for supported files | Load text/code/markdown under safe size through authorized API and show loading/error/unsupported states | Large/binary/media previews may be unsupported or link/open later. |
+| Attach file/context to chat | Must work | Add visible context item/count adjacent to composer or launch button and include it in send/launch payload | Upload/photo/share-sheet can wait for native wrapper/later milestone; duplicate/conflicting indicators are not acceptable. |
+| View task plan | Must work for team runs | Show task list/status from existing team context/hydration state | Editing task plans from mobile is not required. |
+| View/open team messages | Must work | `Open team messages` changes visible state and shows compact message summaries with expansion/detail states | Read/write policy follows existing desktop capability; no enabled no-op. |
+| View tool-call/activity history | Must work, read-only | Show compact run/tool activity summaries, filters/chips, error priority, and expanded details for commands/logs | Live tool management/configuration is not required. |
+| Interactive terminal/tool/browser panes | Intentionally unsupported for MVP unless existing safe viewer exists | Show clear unsupported/desktop-required notice and disable unavailable controls | Must not expose broken panes or misleading buttons. |
+| Settings/troubleshooting/unpair | Must work | Status, retry diagnostics, copy safe diagnostics, unpair local phone | Desktop revoke/manage devices remains desktop Phone Access. |
+| Normal desktop/web journey | Must remain unchanged | Desktop routes keep desktop shell and workflows; desktop regression tests/spot-checks remain green | Mobile shell/gates must not leak into `/workspace` or desktop settings beyond Phone Access. |
+
+
 ### Android / iOS Packaging
 
 - R-MRA-080: Android wrapper, if implemented, shall consume the same pairing payload and server APIs as the PWA.
@@ -266,6 +339,33 @@ Large
 - AC-MRA-016: Validation evidence includes REST, GraphQL, and WebSocket checks from a non-loopback client.
 - AC-MRA-017: Connection failure states distinguish network reachability failures from auth failures and unsupported mobile features.
 
+
+- AC-MRA-020: A paired phone user can identify connection status, current work context, and the primary next action within the mobile home/work shell.
+- AC-MRA-021: A paired phone user can continue or open an existing agent/team chat/run without using the desktop left panel as the primary navigation, and the chat composer is visible and usable.
+- AC-MRA-022: Mobile work navigation shows one task surface at a time and does not stack multiple persistent tab bars.
+- AC-MRA-023: Mobile context switching is available through a focused picker/sheet with Recent, Agents, Teams, and Workspaces or equivalent grouping.
+- AC-MRA-024: Desktop layout and behavior remain unchanged by the mobile UX redesign.
+- AC-MRA-025: Real-data mobile Home, Runs, and Context Switcher rows remain readable at a 390x844 viewport with long workspace/run/team names; status/workspace metadata does not collapse the user-identifying title.
+- AC-MRA-026: A paired phone user can complete a new agent-run launch path in validation using safe fixture/test data or an approved live run: select agent, select/confirm workspace, satisfy required launch inputs/defaults, enter prompt, launch, and land in Chat/Runs. Single-agent live send shall be validated on the refreshed branch; latest `origin/personal` `98cfdc24` already contains the shared command-identity fix, so any reappearing missing-identity failure is a shared-base regression rather than a mobile UX local fix.
+- AC-MRA-027: A paired phone user can complete a new team-run launch path in validation using safe fixture/test data or an approved live run: select team, select/confirm workspace/defaults, use existing launch defaults/config behavior, enter prompt, launch, and land in team Chat/Runs.
+- AC-MRA-028: Mobile Files can browse a workspace, open a supported text/code/markdown file through authorized APIs, show actual content or a concrete fetch/size error, and avoid placeholder preview copy.
+- AC-MRA-029: `Attach to chat` from mobile Files or context attach flow adds a visible composer context item/count with file name and remove action; the next mobile send/launch includes that context. Live single-agent execution of that send should be validated after the branch is merged with `origin/personal` `98cfdc24` or newer.
+- AC-MRA-030: Mobile Activity can show task plan status, open team messages into a visible detail/empty state, and show run/tool activity history or explicit read-only/unsupported states.
+- AC-MRA-031: Every enabled mobile action has a visible state change or completed effect; intentionally unsupported actions are disabled or routed to a clear unsupported notice.
+- AC-MRA-032: Mobile implementation removes/refactors compressed desktop mobile navigation; `/mobile` does not default to desktop left tree, stacked top tabs, duplicated Team navigation, or desktop right panel.
+- AC-MRA-033: Normal desktop/web routes, especially `/workspace`, continue to render and behave as the desktop shell with left panel, center workspace, and right-side surfaces; mobile feature gates do not redirect or restyle desktop routes.
+- AC-MRA-034: Shared run/team/file/activity changes are covered by desktop and mobile tests or spot-checks so refactors do not regress the normal desktop-web journey.
+- AC-MRA-035: Mobile run launch, file preview/attach, and activity views reuse authoritative existing stores/services/transports or refactored shared domain/content owners; no duplicate mobile-only business protocol is introduced.
+- AC-MRA-036: Any refactor of legacy desktop-coupled shared state separates domain selection/content ownership from desktop/mobile shell navigation before adding new mobile behavior.
+
+- AC-MRA-037: When `/rest/remote-access/status` is missing, version-mismatched, or unavailable but GraphQL/files/runs succeed, Mobile Home shows a mixed-success status such as node reachable/status unknown and does not claim the desktop is unreachable.
+- AC-MRA-038: Mobile Run Setup does not auto-select arbitrary first agent/team/workspace choices from large lists; users must intentionally choose or confirm context-derived defaults through mobile-friendly searchable pickers/sheets.
+- AC-MRA-039: Mobile Run Setup shows a compact target/workspace/runtime-model-source/context launch summary next to the launch action and does not introduce mobile-only provider/API-key preflight gating. The runtime/model row either shows the resolved value or clear copy such as `Uses the agent's desktop default runtime/model`; if the launched agent reports a runtime/provider error such as a missing API key, that error is visible in mobile Chat/Activity as it is on desktop.
+- AC-MRA-040: Mobile Activity renders team messages/tool history/task plan as compact, scannable summaries with filters or section controls and expansion/detail affordances; long commands/logs/messages are clamped or hidden by default.
+- AC-MRA-041: Mobile Files supports large-folder navigation with sticky breadcrumb/current-folder context plus at least two discovery aids among recent files, attached/current-run files, type filters, and explicit deep search.
+- AC-MRA-042: Mobile context files are shown adjacent to the actual composer send button and Run Setup launch button; top-level trays and shared composer indicators do not conflict about what will be sent.
+- AC-MRA-043: The mobile UX ticket records the Round 10 command-identity finding as a stale-branch/shared-base issue already fixed on latest `origin/personal` `98cfdc24` and does not introduce a mobile-only WebSocket `SEND_MESSAGE` payload builder, hidden mobile-only dedupe scheme, or duplicate shared single-agent streaming patch.
+
 ## Constraints / Dependencies
 
 - Current desktop app is Electron-based and starts the bundled server internally.
@@ -275,6 +375,7 @@ Large
 - PWA/browser storage is weaker than native secure storage; native wrappers may be needed for stronger credential storage.
 - Some VPN/self-hosted network setups require administrative knowledge; AutoByteus can guide them but should not claim to make Headscale/NetBird/Netmaker zero-config.
 - App-store policies, Android cleartext traffic policies, and iOS local network permissions may affect native-wrapper packaging.
+- Latest `origin/personal` `98cfdc24` already contains the shared frontend single-agent command-identity fix; mobile implementation must merge that refreshed base before final live Codex/GPT-5.5 single-agent launch/send signoff.
 
 ## Assumptions
 
@@ -292,9 +393,11 @@ Large
 - Mobile browser/PWA QR scanning support may be less smooth than native scanning; this affects whether Android wrapper should be pulled earlier.
 - Some existing frontend flows may still use build-time runtime config rather than current node context.
 - Generated URL behavior must be audited flow-by-flow.
-- The first mobile supported flow must be intentionally selected; trying to make the entire desktop UI mobile-compatible in one phase may be too large.
+- The mobile functional parity matrix must stay bounded to practical phone journeys; trying to clone the entire desktop UI on phone remains too large and is explicitly rejected.
+- Shared-store refactors that separate domain/content ownership from desktop/mobile shell navigation can regress normal desktop/web journeys unless covered by desktop tests or spot-checks.
 - Secure local storage for PWA credentials may be acceptable for prototype but weaker for production.
 - Desktop sleep/offline state may make the product feel unreliable unless surfaced clearly.
+- If mobile work is validated from a stale branch behind `origin/personal` `98cfdc24`, it can expose a single-agent send failure that is already fixed on base; refresh the branch instead of masking it with a mobile-only workaround.
 
 ## Requirement-To-Use-Case Coverage
 
@@ -312,6 +415,8 @@ Large
 - R-MRA-080 through R-MRA-085: UC-MRA-003, UC-MRA-004
 - R-MRA-090 through R-MRA-094: UC-MRA-005, UC-MRA-006, UC-MRA-007, UC-MRA-008, UC-MRA-009
 - R-MRA-100 through R-MRA-106: All in-scope use cases as release readiness coverage
+- R-MRA-110 through R-MRA-138: UC-MRA-011, UC-MRA-012, UC-MRA-013, UC-MRA-014, UC-MRA-015, UC-MRA-016, UC-MRA-017, UC-MRA-018
+- Latest-base command-identity behavior: UC-MRA-011 and UC-MRA-015 single-agent live send execution must be revalidated after merging `origin/personal` `98cfdc24` or newer
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -326,7 +431,12 @@ Large
 - AC-MRA-015: Covers product documentation and open/self-hosted path.
 - AC-MRA-016: Covers executable validation breadth.
 - AC-MRA-017: Covers user-understandable failure handling.
+- AC-MRA-020 through AC-MRA-024: Cover the phone-first navigation shell and desktop no-regression baseline.
+- AC-MRA-025 through AC-MRA-031: Cover functional mobile parity for readable real-data lists, existing/new run journeys, files, attachments, activity/team messages, and no-op prevention.
+- AC-MRA-032 through AC-MRA-036: Cover legacy compressed-mobile removal, normal desktop/web journey protection, shared-owner reuse, and refactor safety.
+- AC-MRA-037 through AC-MRA-042: Cover Round 4 UX refinement and Round 10 non-WebSocket UX follow-up: composite status, intentional mobile target picking, launch summary with clear runtime/model/default-source visibility and desktop-equivalent runtime error handling, scannable Activity, large-folder file discovery, and context visibility next to send/launch.
+- AC-MRA-043: Covers the Round 10 branch-currency refresh: the command-identity finding was not mobile-only and latest `origin/personal` already has the shared fix; no duplicate mobile local fix is allowed.
 
 ## Approval Status
 
-Approved for design direction by user on 2026-05-16 after discussion: proceed with Tailscale as first validation path, keep product VPN-agnostic, and start deeper spine-led design work. Refined after architecture review round 1 to make Phone Access disable and revoke-all behavior explicit.
+Approved for design direction by user on 2026-05-16 after discussion: proceed with Tailscale as first validation path, keep product VPN-agnostic, and start deeper spine-led design work. Refined after architecture review round 1 to make Phone Access disable and revoke-all behavior explicit. Refined again on 2026-05-19 after Round 3 API/E2E found a Design Impact / Requirement Gap: mobile must support practical desktop-web journeys from a phone, while the normal desktop/web journey must remain unchanged and legacy compressed-desktop mobile behavior must be refactored out of the mobile runtime. Refined a third time on 2026-05-19 after Round 4 API/E2E showed the functional paths mostly work but delivery readiness still requires UX simplification for status clarity, launch target safety, launch summary/context clarity, Activity density, file discovery, and context visibility near send/launch. User clarified that provider/API-key failures discovered after launch are desktop-equivalent behavior and out of scope for this mobile UX ticket. Branch-currency corrected after Round 10 API/E2E and user clarification: the command-identity finding came from a stale shared path, was not mobile-only, and latest `origin/personal` `98cfdc24` already contains the shared fix; no separate command-identity ticket remains. Round 10 non-WebSocket mobile UX findings were triaged as polish/design follow-up: existing Activity/files/context/target-selection requirements already cover the desired direction, and runtime/model visibility is clarified as resolved-value-or-default-source copy rather than full advanced configuration for MVP.

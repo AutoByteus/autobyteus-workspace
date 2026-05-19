@@ -5,9 +5,9 @@
     data-testid="mobile-unsupported-application-iframe"
   >
     <div class="max-w-lg rounded-3xl border border-slate-800 bg-slate-900/90 p-8 shadow-xl shadow-slate-950/30">
-      <h2 class="text-lg font-semibold text-white">Application unavailable on phone</h2>
+      <h2 class="text-lg font-semibold text-white">{{ $t('applications.components.applications.ApplicationSurface.mobileUnavailable') }}</h2>
       <p class="mt-2 text-sm leading-6 text-slate-300">
-        Application iframe surfaces are not part of the mobile MVP yet. Open this application from the desktop app.
+        {{ $t('applications.components.applications.ApplicationSurface.mobileUnavailableHelp') }}
       </p>
     </div>
   </div>

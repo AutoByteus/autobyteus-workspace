@@ -2,9 +2,9 @@
   <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" data-testid="phone-access-card">
     <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
       <div>
-        <h3 class="text-sm font-semibold text-gray-900">Phone Access</h3>
+        <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.PhoneAccessCard.title') }}</h3>
         <p class="mt-1 text-xs text-gray-500">
-          Pair a phone/PWA to this desktop over any private network you already trust.
+          {{ $t('settings.components.settings.PhoneAccessCard.description') }}
         </p>
       </div>
       <label class="inline-flex items-center gap-2 text-sm font-medium text-slate-700">
@@ -16,25 +16,25 @@
           data-testid="phone-access-toggle"
           @change="onToggle(($event.target as HTMLInputElement).checked)"
         />
-        Enable Phone Access
+        {{ $t('settings.components.settings.PhoneAccessCard.enable') }}
       </label>
     </div>
 
-    <div v-if="store.isLoading" class="mt-4 text-sm text-slate-500">Loading Phone Access…</div>
+    <div v-if="store.isLoading" class="mt-4 text-sm text-slate-500">{{ $t('settings.components.settings.PhoneAccessCard.loading') }}</div>
     <p v-if="store.error" class="mt-3 text-sm text-red-600" data-testid="phone-access-error">{{ store.error }}</p>
     <p v-if="store.info" class="mt-3 text-sm text-blue-700" data-testid="phone-access-info">{{ store.info }}</p>
 
     <div v-if="!store.phoneAccessEnabled" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-      Phones cannot connect while Phone Access is disabled. Paired-device records are kept, but mobile credentials are rejected until you enable this again.
+      {{ $t('settings.components.settings.PhoneAccessCard.disabledNotice') }}
     </div>
 
     <div class="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
       <div class="space-y-4">
         <div>
           <div class="flex items-center justify-between gap-2">
-            <label class="text-xs font-semibold uppercase tracking-wide text-slate-600">Reachable server URL</label>
+            <label class="text-xs font-semibold uppercase tracking-wide text-slate-600">{{ $t('settings.components.settings.PhoneAccessCard.reachableServerUrl') }}</label>
             <button type="button" class="text-xs font-medium text-blue-700 hover:text-blue-900" @click="store.refreshCandidates">
-              Refresh candidates
+              {{ $t('settings.components.settings.PhoneAccessCard.refreshCandidates') }}
             </button>
           </div>
           <select
@@ -49,7 +49,7 @@
         </div>
 
         <div>
-          <label class="text-xs font-semibold uppercase tracking-wide text-slate-600">Manual/private-network URL</label>
+          <label class="text-xs font-semibold uppercase tracking-wide text-slate-600">{{ $t('settings.components.settings.PhoneAccessCard.manualPrivateNetworkUrl') }}</label>
           <div class="mt-2 flex gap-2">
             <input
               v-model="store.manualServerBaseUrl"
@@ -76,7 +76,7 @@
             data-testid="phone-access-create-qr"
             @click="onCreateQr"
           >
-            Create QR code
+            {{ $t('settings.components.settings.PhoneAccessCard.createQrCode') }}
           </button>
           <button
             type="button"
@@ -85,14 +85,14 @@
             data-testid="phone-access-revoke-all"
             @click="onRevokeAll"
           >
-            Revoke all phones
+            {{ $t('settings.components.settings.PhoneAccessCard.revokeAllPhones') }}
           </button>
         </div>
 
         <div>
-          <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-600">Paired phones</h4>
+          <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-600">{{ $t('settings.components.settings.PhoneAccessCard.pairedPhones') }}</h4>
           <div v-if="store.devices.length === 0" class="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
-            No phones paired yet.
+            {{ $t('settings.components.settings.PhoneAccessCard.noPhonesPaired') }}
           </div>
           <div v-else class="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200">
             <div v-for="device in store.devices" :key="device.deviceId" class="flex flex-col gap-2 p-3 md:flex-row md:items-center md:justify-between">
@@ -118,13 +118,13 @@
       </div>
 
       <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-        <h4 class="text-sm font-semibold text-slate-900">Pairing QR</h4>
-        <p class="mt-1 text-xs text-slate-500">Scan or open this from the phone. It contains a short-lived one-time code, not the long-lived device credential.</p>
+        <h4 class="text-sm font-semibold text-slate-900">{{ $t('settings.components.settings.PhoneAccessCard.pairingQr') }}</h4>
+        <p class="mt-1 text-xs text-slate-500">{{ $t('settings.components.settings.PhoneAccessCard.pairingQrDescription') }}</p>
         <div v-if="qrDataUrl" class="mt-3 flex justify-center rounded-lg bg-white p-3">
-          <img :src="qrDataUrl" alt="Phone Access pairing QR" class="h-56 w-56" data-testid="phone-access-qr-image" />
+          <img :src="qrDataUrl" :alt="$t('settings.components.settings.PhoneAccessCard.pairingQrAlt')" class="h-56 w-56" data-testid="phone-access-qr-image" />
         </div>
         <div v-else class="mt-3 rounded-lg border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
-          No active QR code.
+          {{ $t('settings.components.settings.PhoneAccessCard.noActiveQrCode') }}
         </div>
         <textarea
           v-if="store.activePairing"
@@ -144,6 +144,7 @@ import { usePhoneAccessStore } from '~/stores/phoneAccessStore';
 import { toQrCodeDataUrl } from '~/services/qr/qrCodeDataUrlService';
 
 const store = usePhoneAccessStore();
+const { t: $t } = useLocalization();
 const qrDataUrl = ref<string | null>(null);
 
 const formatDate = (value: string): string => new Date(value).toLocaleString();
@@ -164,12 +165,12 @@ async function onCreateQr(): Promise<void> {
 }
 
 async function onRevokeAll(): Promise<void> {
-  const confirmed = window.confirm('Revoke every paired phone? Every phone must pair again.');
+  const confirmed = window.confirm($t('settings.components.settings.PhoneAccessCard.revokeAllConfirm'));
   if (!confirmed) {
     return;
   }
   const count = await store.revokeAllDevices();
-  window.alert(`Revoked ${count} phone credential${count === 1 ? '' : 's'}.`);
+  window.alert($t('settings.components.settings.PhoneAccessCard.revokedCredentials', { count }));
 }
 
 watch(() => store.activePairing?.qrText, renderQr);

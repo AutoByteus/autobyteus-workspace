@@ -1,86 +1,123 @@
 <template>
-  <main class="min-h-screen bg-slate-100 text-slate-900">
+  <main class="min-h-screen bg-slate-100 text-slate-900" data-testid="mobile-remote-access-shell">
     <MobilePairingBootstrap v-if="!sessionStore.isPaired" @paired="onPaired">
       <template v-if="unsupportedMessage" #notice>
         <MobileUnsupportedFeatureNotice :message="unsupportedMessage" />
       </template>
     </MobilePairingBootstrap>
-    <section v-else class="mx-auto flex min-h-screen max-w-3xl flex-col px-5 py-8">
-      <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">AutoByteus Remote Access</p>
-            <h1 class="mt-2 text-2xl font-bold text-slate-950">Connected to AutoByteus</h1>
-            <p class="mt-1 break-all font-mono text-xs text-slate-500">{{ sessionStore.session?.serverBaseUrl }}</p>
-          </div>
-          <button class="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700" @click="sessionStore.deleteLocalSession">
-            Unpair this phone
-          </button>
-        </div>
 
-        <div v-if="sessionStore.lastDiagnostic" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-          <p class="font-semibold">{{ sessionStore.lastDiagnostic.title }}</p>
-          <p class="mt-1">{{ sessionStore.lastDiagnostic.message }}</p>
-          <p class="mt-1 text-xs">{{ sessionStore.lastDiagnostic.recoveryAction }}</p>
-        </div>
+    <template v-else>
+      <MobileHome
+        v-if="screen === 'home'"
+        :server-base-url="sessionStore.serverBaseUrl"
+        :status="sessionStore.lastStatus"
+        :is-refreshing="sessionStore.isCheckingStatus"
+        :diagnostic="sessionStore.lastDiagnostic"
+        :authorized-api-reachable="sessionStore.authorizedApiReachable"
+        :notice-message="unsupportedMessage"
+        :current-context="mobileWorkStore.currentContext"
+        :recent-items="recentWorkItems"
+        @refresh-status="checkStatus"
+        @continue-latest="continueLatestRun"
+        @select-context="openContext"
+        @open-work-picker="openContextSwitcher"
+        @open-files="openFiles"
+        @open-troubleshooting="screen = 'troubleshooting'"
+        @request-unpair="showUnpairConfirm = true"
+      />
 
-        <MobileUnsupportedFeatureNotice
-          v-if="unsupportedMessage"
-          class="mt-4"
-          :message="unsupportedMessage"
-        />
+      <MobileWorkShell
+        v-else-if="screen === 'work'"
+        :context="mobileWorkStore.currentContext"
+        :active-tab="mobileWorkStore.activeTab"
+        @home="screen = 'home'"
+        @switch-context="openContextSwitcher"
+        @select-context="openContext"
+        @update:active-tab="mobileWorkStore.setActiveTab"
+      />
 
-        <div class="mt-6 grid gap-3 sm:grid-cols-2">
-          <button class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left" @click="checkStatus">
-            <p class="font-semibold">Server status</p>
-            <p class="mt-1 text-sm text-slate-600">{{ statusSummary }}</p>
-          </button>
-          <NuxtLink to="/workspace" class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
-            <p class="font-semibold">Workspace and runs</p>
-            <p class="mt-1 text-sm text-slate-600">Open the mobile-safe workspace slice.</p>
-          </NuxtLink>
-        </div>
+      <MobileTroubleshooting
+        v-else
+        :server-base-url="sessionStore.serverBaseUrl"
+        :is-checking="sessionStore.isCheckingStatus"
+        :diagnostic="sessionStore.lastDiagnostic"
+        :status="sessionStore.lastStatus"
+        @home="screen = 'home'"
+        @check-status="checkStatus"
+      />
 
-        <div class="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
-          <h2 class="text-sm font-semibold text-slate-900">Mobile MVP scope</h2>
-          <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600">
-            <li>Pairing, reconnect, and server status are mobile-ready.</li>
-            <li>Agent/team runs and run history use the paired node and authorized transports.</li>
-            <li>Desktop-only controls stay unsupported in the phone shell.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+      <MobileContextSwitcher
+        v-if="showContextSwitcher"
+        :recent-items="recentWorkItems"
+        :agent-items="agentItems"
+        :team-items="teamItems"
+        :workspace-items="workspaceItems"
+        :selected-context="mobileWorkStore.currentContext"
+        @close="showContextSwitcher = false"
+        @select-context="openContext"
+      />
+
+      <MobileUnpairConfirm
+        v-if="showUnpairConfirm"
+        @cancel="showUnpairConfirm = false"
+        @confirm="unpairPhone"
+      />
+    </template>
   </main>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import MobileContextSwitcher from '~/components/mobile/MobileContextSwitcher.vue';
+import MobileHome from '~/components/mobile/MobileHome.vue';
 import MobilePairingBootstrap from '~/components/mobile/MobilePairingBootstrap.vue';
+import MobileTroubleshooting from '~/components/mobile/MobileTroubleshooting.vue';
+import MobileUnpairConfirm from '~/components/mobile/MobileUnpairConfirm.vue';
 import MobileUnsupportedFeatureNotice from '~/components/mobile/MobileUnsupportedFeatureNotice.vue';
+import MobileWorkShell from '~/components/mobile/MobileWorkShell.vue';
+import { useMobileWorkCatalog } from '~/composables/mobile/useMobileWorkCatalog';
+import { useAgentContextsStore } from '~/stores/agentContextsStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
+import { useMobileWorkStore } from '~/stores/mobileWorkStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { MobileFeatureId } from '~/utils/mobileFeatureGates';
+import type { MobileTaskTab, MobileWorkContext } from '~/types/mobileWork';
+import { preferredTabForMobileContext } from '~/types/mobileWork';
+import { clearMobileRunSelection, selectMobileRun } from '~/utils/mobile/mobileSelectionAdapter';
+
+// Keep the component name in the compiled chunk stable for existing page tests.
+defineOptions({ name: 'MobileRemoteAccessShell' });
 
 const sessionStore = useMobileNodeSessionStore();
+const mobileWorkStore = useMobileWorkStore();
+const runHistoryStore = useRunHistoryStore();
+const agentContextsStore = useAgentContextsStore();
+const teamContextsStore = useAgentTeamContextsStore();
 const route = useRoute();
+const {
+  recentWorkItems,
+  latestRunItem,
+  agentItems,
+  teamItems,
+  workspaceItems,
+  refreshMobileWorkCatalog,
+} = useMobileWorkCatalog();
+
+type MobileScreen = 'home' | 'work' | 'troubleshooting';
+
+const screen = ref<MobileScreen>('home');
+const showContextSwitcher = ref(false);
+const showUnpairConfirm = ref(false);
 
 const unsupportedFeatureMessages: Partial<Record<MobileFeatureId, string>> = {
+  desktopWorkspace: 'The desktop workspace route is replaced by the phone-first mobile work shell. Use Home, Switch work, and Chat/Runs/Files/Activity instead.',
   desktopSettings: 'Desktop settings are managed from the desktop app. Phone Access exposes only mobile-safe connection controls.',
   desktopUpdates: 'Desktop update controls are not available from the phone client.',
   localFolderPicker: 'Local folder picking is not available from the phone client.',
   applicationIframe: 'Application iframe surfaces are not part of the mobile MVP yet.',
 };
-
-const statusSummary = computed(() => {
-  if (sessionStore.isCheckingStatus) {
-    return 'Checking…';
-  }
-  if (!sessionStore.lastStatus) {
-    return 'Tap to check reachability.';
-  }
-  return sessionStore.lastStatus.phoneAccessEnabled ? 'Phone Access enabled.' : 'Phone Access disabled.';
-});
 
 const unsupportedMessage = computed(() => {
   const feature = String(route.query.unsupported ?? '') as MobileFeatureId;
@@ -88,17 +125,82 @@ const unsupportedMessage = computed(() => {
 });
 
 async function checkStatus(): Promise<void> {
-  await sessionStore.fetchStatus();
+  const [statusResult, catalogResult] = await Promise.allSettled([
+    sessionStore.fetchStatus(),
+    refreshMobileWorkCatalog(),
+  ]);
+  const statusReachable = statusResult.status === 'fulfilled' && Boolean(statusResult.value);
+  const catalogReachable = catalogResult.status === 'fulfilled' && catalogResult.value.hadSuccess;
+  sessionStore.recordAuthorizedApiReachability(statusReachable || catalogReachable);
+}
+
+async function openRunContext(context: MobileWorkContext): Promise<void> {
+  try {
+    if (context.kind === 'agent-run') {
+      if (agentContextsStore.getRun(context.runId)) {
+        selectMobileRun(context.runId, 'agent');
+      } else {
+        await runHistoryStore.openRun(context.runId, { selectionMode: 'mobile' });
+      }
+    } else if (context.kind === 'team-run') {
+      if (teamContextsStore.getTeamContextById(context.teamRunId)) {
+        selectMobileRun(context.teamRunId, 'team');
+        await teamContextsStore.focusMemberAndEnsureHydrated?.(context.teamRunId, context.focusedMemberRouteKey);
+      } else {
+        await runHistoryStore.openTeamMemberRun(context.teamRunId, context.focusedMemberRouteKey, { selectionMode: 'mobile' });
+        selectMobileRun(context.teamRunId, 'team');
+      }
+    } else {
+      clearMobileRunSelection();
+    }
+  } catch (error) {
+    console.warn('[MobileRemoteAccessShell] Failed to open selected mobile context.', error);
+  }
+}
+
+async function openContext(context: MobileWorkContext, tab?: MobileTaskTab): Promise<void> {
+  showContextSwitcher.value = false;
+  const targetTab = tab ?? preferredTabForMobileContext(context);
+  mobileWorkStore.selectContext(context, targetTab);
+  screen.value = 'work';
+  await openRunContext(context);
+}
+
+async function continueLatestRun(): Promise<void> {
+  const item = latestRunItem.value;
+  if (!item) {
+    openContextSwitcher();
+    return;
+  }
+  await openContext(item.context, 'chat');
+}
+
+function openFiles(): void {
+  mobileWorkStore.setActiveTab('files');
+  screen.value = 'work';
+}
+
+function openContextSwitcher(): void {
+  showContextSwitcher.value = true;
+}
+
+function unpairPhone(): void {
+  showUnpairConfirm.value = false;
+  mobileWorkStore.clearContext();
+  sessionStore.deleteLocalSession();
+  screen.value = 'home';
 }
 
 async function onPaired(): Promise<void> {
   await checkStatus();
+  screen.value = 'home';
 }
 
 onMounted(async () => {
   sessionStore.initializeFromStorage();
-  if (sessionStore.isPaired) {
-    await checkStatus();
+  if (!sessionStore.isPaired) {
+    return;
   }
+  await checkStatus();
 });
 </script>

@@ -65,7 +65,8 @@ describe('mobile static root shell rendering', () => {
     expect(wrapper.find('[data-testid="mobile-unsupported-feature"]').exists()).toBe(true);
     expect(wrapper.text()).toContain('Desktop settings are managed from the desktop app.');
     expect(wrapper.text()).toContain('Connect this phone');
-    expect(wrapper.find('[data-testid="mobile-pairing-text"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-show-pairing-text"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-pairing-text"]').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('Agent Teams');
     expect(wrapper.text()).not.toContain('Skills');
     expect(navigateToMock).not.toHaveBeenCalled();
@@ -83,9 +84,10 @@ describe('mobile static root shell rendering', () => {
     await nextTick();
     await nextTick();
 
-    const pairingTextarea = wrapper.get('[data-testid="mobile-pairing-text"]').element as HTMLTextAreaElement;
     expect(wrapper.text()).toContain('Connect this phone');
-    expect(pairingTextarea.value).toBe(pairingPayload);
+    expect(wrapper.find('[data-testid="mobile-pairing-detected"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-pairing-text"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="mobile-pair-button"]').text()).toContain('Pair this phone');
     expect(wrapper.find('[data-testid="mobile-unsupported-feature"]').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('Agent Teams');
     expect(wrapper.text()).not.toContain('Skills');

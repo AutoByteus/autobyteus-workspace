@@ -18,7 +18,7 @@ describe('mobile feature gates', () => {
     expect(mobileFeatureForRouteLocation({ path: '/settings', query: {} })).toBe('desktopSettings');
     expect(mobileFeatureForRouteLocation({ path: '/mobile/settings', query: { section: 'updates' } })).toBe('desktopUpdates');
     expect(mobileFeatureForRouteLocation({ path: '/applications/app-1', query: {} })).toBe('applicationIframe');
-    expect(mobileFeatureForRouteLocation({ path: '/mobile/workspace', query: {} })).toBeNull();
+    expect(mobileFeatureForRouteLocation({ path: '/mobile/workspace', query: {} })).toBe('desktopWorkspace');
   });
 
   it('keeps desktop-only controls available outside mobile but blocked in mobile', () => {

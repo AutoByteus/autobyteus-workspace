@@ -1,0 +1,70 @@
+{
+  "records": [
+    {
+      "at": "2026-05-19T03:19:41.309Z",
+      "type": "rest-status",
+      "authorization": "absent"
+    },
+    {
+      "at": "2026-05-19T03:19:41.320Z",
+      "type": "graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "authorization": "present",
+      "authorized": true
+    },
+    {
+      "at": "2026-05-19T03:19:41.323Z",
+      "type": "graphql",
+      "operationName": "GetAgentDefinitions",
+      "authorization": "present",
+      "authorized": true
+    },
+    {
+      "at": "2026-05-19T03:19:41.324Z",
+      "type": "graphql",
+      "operationName": "GetAgentTeamDefinitions",
+      "authorization": "present",
+      "authorized": true
+    },
+    {
+      "at": "2026-05-19T03:19:41.324Z",
+      "type": "graphql",
+      "operationName": "GetAllWorkspaces",
+      "authorization": "present",
+      "authorized": true
+    },
+    {
+      "at": "2026-05-19T03:33:19.011Z",
+      "type": "rest-status",
+      "authorization": "absent"
+    },
+    {
+      "at": "2026-05-19T03:33:19.018Z",
+      "type": "graphql",
+      "operationName": "ListWorkspaceRunHistory",
+      "authorization": "present",
+      "authorized": true
+    },
+    {
+      "at": "2026-05-19T03:33:19.020Z",
+      "type": "graphql",
+      "operationName": "GetAgentDefinitions",
+      "authorization": "present",
+      "authorized": true
+    },
+    {
+      "at": "2026-05-19T03:33:19.021Z",
+      "type": "graphql",
+      "operationName": "GetAgentTeamDefinitions",
+      "authorization": "present",
+      "authorized": true
+    },
+    {
+      "at": "2026-05-19T03:33:19.021Z",
+      "type": "graphql",
+      "operationName": "GetAllWorkspaces",
+      "authorization": "present",
+      "authorized": true
+    }
+  ]
+}
