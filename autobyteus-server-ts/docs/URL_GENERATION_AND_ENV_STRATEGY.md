@@ -46,6 +46,21 @@ Host-header-based discovery is fragile in proxied/containerized networks.
 
 The TS server uses explicit startup configuration instead of implicit request-time detection.
 
+Remote Access adds one explicit exception for phone clients: when a paired mobile credential is authorized, the request auth context carries the client-facing base URL selected at pairing time. Resource URL generation may use that paired base URL, or an explicitly supplied/configured external base URL, before falling back to the local server base. This is still explicit configuration, not host-header discovery.
+
+## Remote Access Client-Facing URLs
+
+Phone Access must not return loopback-only absolute URLs to a phone on a LAN/VPN/private network. Use `DefaultClientFacingUrlResolver` for REST resource URLs that may be consumed by paired mobile clients.
+
+Resolution order:
+
+1. the active mobile auth context's paired `clientFacingBaseUrl`;
+2. an explicitly supplied paired-device client base URL;
+3. a configured external/public base URL;
+4. the local fallback base URL only for loopback peers or when it is not itself loopback.
+
+When the requester is remote and the only known fallback is loopback, the resolver returns a relative REST path rather than an unusable `127.0.0.1` absolute URL.
+
 ## Data Directory Interaction
 
 `--data-dir` can move the `.env` location.
@@ -59,3 +74,4 @@ Because `.env` and runtime paths are coupled, bootstrap must call `appConfigProv
 3. If using `--data-dir`, ensure the target directory contains `.env`.
 4. Do not instantiate path-sensitive singleton services before config initialization.
 5. If a test or harness bypasses `src/app.ts` and imports `src/server-runtime.ts` directly, it must initialize config first and seed `AUTOBYTEUS_INTERNAL_SERVER_BASE_URL` explicitly before enabling managed messaging.
+6. For Remote Access/mobile-facing resource URLs, use the client-facing resolver instead of directly concatenating `AUTOBYTEUS_SERVER_HOST`; paired phones should receive the paired private-network base or a safe relative path, not a desktop loopback URL.

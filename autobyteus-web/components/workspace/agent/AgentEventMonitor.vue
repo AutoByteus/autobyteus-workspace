@@ -11,6 +11,7 @@
     />
 
     <div>
+      <slot name="composerContext" />
       <AgentUserInputForm />
     </div>
   </div>

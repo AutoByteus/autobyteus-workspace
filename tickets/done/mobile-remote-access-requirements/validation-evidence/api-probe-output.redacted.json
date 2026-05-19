@@ -1,0 +1,358 @@
+{
+  "localBase": "http://127.0.0.1:49196",
+  "remoteBase": "http://192.168.2.158:49196",
+  "mobileUrl": "http://192.168.2.158:49196/mobile?pairing=<redacted>",
+  "results": [
+    {
+      "id": "MRA-API-001 public status loopback",
+      "response": {
+        "status": 200,
+        "json": {
+          "phoneAccessEnabled": false,
+          "pairingAvailable": false,
+          "compatibilityVersion": 1,
+          "serverName": "AutoByteus Desktop"
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "112",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-002 public status LAN",
+      "response": {
+        "status": 200,
+        "json": {
+          "phoneAccessEnabled": false,
+          "pairingAvailable": false,
+          "compatibilityVersion": 1,
+          "serverName": "AutoByteus Desktop"
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "112",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-003 local-only settings rejected over LAN",
+      "response": {
+        "status": 403,
+        "json": {
+          "error": "REMOTE_ACCESS_LOCAL_ONLY",
+          "code": "REMOTE_ACCESS_LOCAL_ONLY",
+          "message": "This endpoint is only available from the local desktop."
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "138",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-004 protected REST no token over LAN",
+      "response": {
+        "status": 401,
+        "json": {
+          "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+          "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+          "message": "Remote Access credential is required."
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "126",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-005 enable phone access loopback",
+      "response": {
+        "status": 200,
+        "json": {
+          "settings": {
+            "phoneAccessEnabled": true,
+            "updatedAt": "2026-05-16T06:49:57.585Z",
+            "updatedBy": "loopback-desktop"
+          }
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "110",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-006 create pairing session loopback",
+      "response": {
+        "status": 201,
+        "json": {
+          "payload": {
+            "version": 1,
+            "serverBaseUrl": "http://192.168.2.158:49196",
+            "pairingCode": "<redacted>",
+            "expiresAt": "2026-05-16T06:54:57.589Z",
+            "serverName": "E2E Harness"
+          },
+          "qrText": "<redacted>",
+          "mobileUrl": "http://192.168.2.158:49196/mobile?pairing=<redacted>"
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "728",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-007 exchange pairing over LAN",
+      "response": {
+        "status": 201,
+        "json": {
+          "credential": "<redacted>",
+          "serverBaseUrl": "http://192.168.2.158:49196",
+          "device": {
+            "deviceId": "device_53cd8437fa5edb8507ff4ba809c9b1ea",
+            "displayName": "API E2E Phone",
+            "clientFacingBaseUrl": "http://192.168.2.158:49196",
+            "createdAt": "2026-05-16T06:49:57.591Z",
+            "lastSeenAt": null,
+            "revokedAt": null
+          }
+        }
+      }
+    },
+    {
+      "id": "MRA-API-008 protected REST with token over LAN",
+      "response": {
+        "status": 200,
+        "json": {
+          "files": [],
+          "pagination": {
+            "currentPage": 1,
+            "totalPages": 1,
+            "totalFiles": 0,
+            "limit": 20
+          }
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "84",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-009 GraphQL no token over LAN",
+      "response": {
+        "status": 401,
+        "json": {
+          "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+          "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+          "message": "Remote Access credential is required."
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "126",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-010 GraphQL with token over LAN",
+      "response": {
+        "status": 200,
+        "json": {
+          "data": {
+            "__typename": "Query"
+          }
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "31",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-011 WS no token over LAN",
+      "websocket": {
+        "outcome": "close",
+        "code": 4401,
+        "reason": "REMOTE_ACCESS_AUTH_REQUIRED"
+      }
+    },
+    {
+      "id": "MRA-API-012 WS with token over LAN",
+      "websocket": {
+        "outcome": "message",
+        "message": "{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_NOT_FOUND\",\"message\":\"Agent run 'e2e-run-token' not found\"}}"
+      }
+    },
+    {
+      "id": "MRA-API-013 list devices loopback",
+      "response": {
+        "status": 200,
+        "json": {
+          "devices": [
+            {
+              "deviceId": "device_53cd8437fa5edb8507ff4ba809c9b1ea",
+              "displayName": "API E2E Phone",
+              "clientFacingBaseUrl": "http://192.168.2.158:49196",
+              "createdAt": "2026-05-16T06:49:57.591Z",
+              "lastSeenAt": "2026-05-16T06:49:57.609Z",
+              "revokedAt": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "MRA-API-014 revoke device loopback",
+      "response": {
+        "status": 200,
+        "json": {
+          "device": {
+            "deviceId": "device_53cd8437fa5edb8507ff4ba809c9b1ea",
+            "displayName": "API E2E Phone",
+            "clientFacingBaseUrl": "http://192.168.2.158:49196",
+            "createdAt": "2026-05-16T06:49:57.591Z",
+            "lastSeenAt": "2026-05-16T06:49:57.609Z",
+            "revokedAt": "2026-05-16T06:49:57.613Z"
+          }
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "264",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-015 revoked REST token over LAN",
+      "response": {
+        "status": 403,
+        "json": {
+          "error": "REMOTE_ACCESS_DEVICE_REVOKED",
+          "code": "REMOTE_ACCESS_DEVICE_REVOKED",
+          "message": "This paired device has been revoked."
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "127",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-016 create second pairing",
+      "response": {
+        "status": 201,
+        "json": {
+          "mobileUrl": "http://192.168.2.158:49196/mobile?pairing=<redacted>",
+          "payload": {
+            "version": 1,
+            "serverBaseUrl": "http://192.168.2.158:49196",
+            "pairingCode": "<redacted>",
+            "expiresAt": "2026-05-16T06:54:57.615Z",
+            "serverName": "AutoByteus Desktop"
+          }
+        }
+      }
+    },
+    {
+      "id": "MRA-API-017 exchange second pairing",
+      "response": {
+        "status": 201,
+        "json": {
+          "credential": "<redacted>",
+          "serverBaseUrl": "http://192.168.2.158:49196",
+          "device": {
+            "deviceId": "device_2dd86b9f012ef9b0efc18b62c8fb8023",
+            "displayName": "API E2E Phone 2",
+            "clientFacingBaseUrl": "http://192.168.2.158:49196",
+            "createdAt": "2026-05-16T06:49:57.616Z",
+            "lastSeenAt": null,
+            "revokedAt": null
+          }
+        }
+      }
+    },
+    {
+      "id": "MRA-API-018 revoke all loopback",
+      "response": {
+        "status": 200,
+        "json": {
+          "result": {
+            "revokedCount": 1
+          }
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "29",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    },
+    {
+      "id": "MRA-API-019 revoked-all REST token over LAN",
+      "response": {
+        "status": 403,
+        "json": {
+          "error": "REMOTE_ACCESS_DEVICE_REVOKED",
+          "code": "REMOTE_ACCESS_DEVICE_REVOKED",
+          "message": "This paired device has been revoked."
+        },
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "127",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 06:49:57 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        }
+      }
+    }
+  ]
+}

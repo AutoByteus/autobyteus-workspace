@@ -13,11 +13,14 @@ import {
   mergeHydratedRunFileChanges,
 } from '~/services/runHydration/runFileChangeHydrationService';
 
+export type RunOpenSelectionMode = 'desktop' | 'mobile';
+
 export interface OpenRunWithCoordinatorInput {
   runId: string;
   fallbackAgentName: string | null;
   ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
   selectRun?: boolean;
+  selectionMode?: RunOpenSelectionMode;
 }
 
 export interface OpenRunWithCoordinatorResult {
@@ -61,7 +64,12 @@ export const openAgentRun = async (
   }
 
   if (input.selectRun !== false) {
-    useAgentSelectionStore().selectRun(input.runId, 'agent');
+    const selectionStore = useAgentSelectionStore();
+    if (input.selectionMode === 'mobile') {
+      selectionStore.selectRunWithoutShellNavigation(input.runId, 'agent');
+    } else {
+      selectionStore.selectRun(input.runId, 'agent');
+    }
     useTeamRunConfigStore().clearConfig();
     useAgentRunConfigStore().clearConfig();
   }

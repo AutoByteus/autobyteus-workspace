@@ -1,5 +1,13 @@
+import { canUseLocalFolderPicker } from '~/utils/mobileFeatureGates';
+
 export async function pickFolderPath(): Promise<string | null> {
-  if (typeof window === 'undefined' || !window.electronAPI?.showFolderDialog) {
+  if (
+    typeof window === 'undefined'
+    || !canUseLocalFolderPicker({
+      isEmbeddedWindow: true,
+      hasElectronFolderDialog: Boolean(window.electronAPI?.showFolderDialog),
+    })
+  ) {
     return null;
   }
 

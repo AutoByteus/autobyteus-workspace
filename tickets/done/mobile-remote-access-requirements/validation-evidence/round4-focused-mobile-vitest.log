@@ -1,0 +1,59 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/autobyteus-web
+
+stderr | pages/__tests__/mobile-root.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/mobileFeatureGates.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | middleware/__tests__/mobileFeatureGate.global.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | pages/__tests__/mobile-root-shell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | middleware/__tests__/mobileFeatureGate.global.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/mobile-root-shell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/mobile-root.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/mobileFeatureGates.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/mobileFeatureGates.spec.ts (3 tests) 2ms
+ ✓ middleware/__tests__/mobileFeatureGate.global.spec.ts (3 tests) 3ms
+ ✓ pages/__tests__/mobile-root.spec.ts (2 tests) 10ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (5 tests) 33ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (8 tests) 52ms
+ ✓ pages/__tests__/mobile-root-shell.spec.ts (2 tests) 17ms
+
+ Test Files  6 passed (6)
+      Tests  23 passed (23)
+   Start at  07:11:51
+   Duration  4.34s (transform 2.36s, setup 20.68s, collect 1.17s, tests 117ms, environment 1.51s, prepare 1.02s)
+

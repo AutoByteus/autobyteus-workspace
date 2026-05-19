@@ -1,0 +1,2 @@
+git diff --check passed with no whitespace errors.
+git diff --check exit code: 0

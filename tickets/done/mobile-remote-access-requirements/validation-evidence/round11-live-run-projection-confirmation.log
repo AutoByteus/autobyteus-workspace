@@ -1,0 +1,132 @@
+single_agent_run_id=49db1c3f-b02a-443d-91f9-592e5ed66e37
+single_agent_resume=
+{
+  "data": {
+    "getAgentRunResumeConfig": {
+      "runId": "49db1c3f-b02a-443d-91f9-592e5ed66e37",
+      "isActive": true,
+      "metadataConfig": {
+        "agentDefinitionId": "codex",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+        "llmModelIdentifier": "gpt-5.5",
+        "runtimeKind": "codex_app_server",
+        "autoExecuteTools": false,
+        "skillAccessMode": "PRELOADED_ONLY"
+      },
+      "editableFields": {
+        "llmModelIdentifier": false,
+        "runtimeKind": false,
+        "workspaceRootPath": false
+      }
+    }
+  }
+}
+single_agent_conversation=
+[
+  {
+    "kind": "message",
+    "role": "user",
+    "content": "Round 11 mobile validation using Codex runtime gpt-5.5. Reply exactly: Round 11 mobile Codex send OK. Do not modify files.",
+    "media": null,
+    "ts": 1779179617.993
+  },
+  {
+    "kind": "message",
+    "role": "assistant",
+    "content": "Round 11 mobile Codex send OK.",
+    "media": null,
+    "ts": 1779179622.663
+  },
+  {
+    "kind": "message",
+    "role": "user",
+    "content": "Round 11 attachment send validation with the attached README context. Reply exactly: Round 11 attachment send OK. Do not modify files.",
+    "media": null,
+    "ts": 1779180130.129
+  },
+  {
+    "kind": "message",
+    "role": "assistant",
+    "content": "Round 11 attachment send OK.",
+    "media": null,
+    "ts": 1779180133.686
+  }
+]
+team_run_id=team_classroomsimulation_9df4466f
+team_resume=
+{
+  "data": {
+    "getTeamRunResumeConfig": {
+      "teamRunId": "team_classroomsimulation_9df4466f",
+      "isActive": true,
+      "metadata": {
+        "teamRunId": "team_classroomsimulation_9df4466f",
+        "teamDefinitionId": "classroomsimulation",
+        "teamDefinitionName": "ClassRoomSimulation",
+        "coordinatorMemberRouteKey": "professor",
+        "createdAt": "2026-05-19T08:42:22.044Z",
+        "updatedAt": "2026-05-19T08:42:22.044Z",
+        "archivedAt": null,
+        "memberTree": [
+          {
+            "memberKind": "agent",
+            "memberRouteKey": "professor",
+            "memberPath": [
+              "professor"
+            ],
+            "memberName": "professor",
+            "memberRunId": "professor_507a8d1d968eebd8",
+            "runtimeKind": "codex_app_server",
+            "platformAgentRunId": "019e3f66-697a-7c52-841c-d5ac21526c9d",
+            "agentDefinitionId": "professor",
+            "llmModelIdentifier": "gpt-5.5",
+            "autoExecuteTools": false,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "llmConfig": null,
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+            "applicationExecutionContext": null,
+            "role": null,
+            "description": null
+          },
+          {
+            "memberKind": "agent",
+            "memberRouteKey": "student",
+            "memberPath": [
+              "student"
+            ],
+            "memberName": "student",
+            "memberRunId": "student_5d89056e96e5ea80",
+            "runtimeKind": "codex_app_server",
+            "platformAgentRunId": null,
+            "agentDefinitionId": "student",
+            "llmModelIdentifier": "gpt-5.5",
+            "autoExecuteTools": false,
+            "skillAccessMode": "PRELOADED_ONLY",
+            "llmConfig": null,
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+            "applicationExecutionContext": null,
+            "role": null,
+            "description": null
+          }
+        ]
+      }
+    }
+  }
+}
+team_professor_conversation=
+[
+  {
+    "kind": "message",
+    "role": "user",
+    "content": "Round 11 mobile team launch smoke using Codex GPT-5.5. Reply exactly: Round 11 team launch OK. Do not use tools.",
+    "media": null,
+    "ts": 1779180136.893
+  },
+  {
+    "kind": "message",
+    "role": "assistant",
+    "content": "Round 11 team launch OK.",
+    "media": null,
+    "ts": 1779180140.126
+  }
+]

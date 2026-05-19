@@ -31,11 +31,14 @@ const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
   return AgentStatus.Offline;
 };
 
+export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
+
 export interface OpenTeamRunWithCoordinatorInput {
   teamRunId: string;
   memberRouteKey?: string | null;
   ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
   selectRun?: boolean;
+  selectionMode?: TeamRunOpenSelectionMode;
 }
 
 export interface OpenTeamRunWithCoordinatorResult {
@@ -166,7 +169,12 @@ export const openTeamRun = async (
   }
 
   if (input.selectRun !== false) {
-    useAgentSelectionStore().selectRun(metadata.teamRunId, 'team');
+    const selectionStore = useAgentSelectionStore();
+    if (input.selectionMode === 'mobile') {
+      selectionStore.selectRunWithoutShellNavigation(metadata.teamRunId, 'team');
+    } else {
+      selectionStore.selectRun(metadata.teamRunId, 'team');
+    }
     useTeamRunConfigStore().clearConfig();
     useAgentRunConfigStore().clearConfig();
   }

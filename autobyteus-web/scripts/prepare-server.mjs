@@ -122,6 +122,11 @@ async function buildWorkspaceArtifacts() {
   await runCommand('pnpm', ['-C', serverSourceRoot, 'build'])
 }
 
+async function buildMobileWebAssets() {
+  warn('\nBuilding mobile web assets...')
+  await runCommand('pnpm', ['-C', webRoot, 'build:mobile-web'])
+}
+
 async function deployServerPackageToStage() {
   warn('\nDeploying server package files into staging directory...')
 
@@ -404,6 +409,12 @@ async function copyDownloadIfPresent() {
   await copyIfExists(sourceDownloadDir, targetDownloadDir)
 }
 
+async function copyMobileWebIfPresent() {
+  const sourceMobileDir = path.join(webRoot, 'dist-mobile', 'public')
+  const targetMobileDir = path.join(stageDir, 'mobile-web')
+  await copyIfExists(sourceMobileDir, targetMobileDir)
+}
+
 async function run() {
   info('=======================================')
   info('   Preparing AutoByteus Server Files   ')
@@ -414,8 +425,10 @@ async function run() {
   }
 
   await buildWorkspaceArtifacts()
+  await buildMobileWebAssets()
   await stageRuntimeBundle()
   await copyDownloadIfPresent()
+  await copyMobileWebIfPresent()
   await publishStageToTarget()
   await rebuildNativeModulesForElectron()
 

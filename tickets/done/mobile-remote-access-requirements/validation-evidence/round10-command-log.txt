@@ -1,0 +1,45 @@
+
+$ pnpm -C autobyteus-web exec nuxi prepare
+
+$ pnpm -C autobyteus-web exec vitest run components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts pages/__tests__/mobile-root-shell.spec.ts pages/__tests__/mobile-root.spec.ts middleware/__tests__/mobileFeatureGate.global.spec.ts utils/__tests__/mobileFeatureGates.spec.ts
+
+$ pnpm -C autobyteus-web exec vitest run stores/__tests__/agentSelectionStore.spec.ts stores/__tests__/agentContextsStore.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+
+$ pnpm -C autobyteus-server-ts exec vitest run test/unit/remoteAccess/pairing-code.test.ts test/unit/remoteAccess/remote-access-pairing-service.test.ts test/unit/remoteAccess/remote-access-session-service.test.ts test/unit/remoteAccess/remote-access-settings-service.test.ts test/unit/remoteAccess/remote-access-bootstrap.test.ts
+
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access/pairing-auth-service.test.ts tests/unit/remote-access/redact-sensitive-url.test.ts tests/unit/remote-access/client-facing-url-resolver.test.ts tests/unit/remote-access/local-trust.test.ts tests/unit/remote-access/route-policy.test.ts
+
+$ pnpm -C autobyteus-web exec vitest run utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts utils/__tests__/nodeEndpoints.spec.ts utils/__tests__/nodeHostValidation.spec.ts utils/__tests__/nodeCapabilityProbe.spec.ts services/__tests__/api.nodeRouting.spec.ts
+
+$ pnpm -C autobyteus-web build:mobile-web
+
+$ NODE_OPTIONS=--max-old-space-size=8192 pnpm -C autobyteus-web exec nuxi typecheck
+typecheck exit status: 1
+
+$ git diff --check
+
+$ BACKEND_NODE_BASE_URL=http://127.0.0.1:29695 pnpm -C autobyteus-web exec nuxi dev --host 127.0.0.1 --port 3030
+
+$ pnpm -C autobyteus-web exec nuxi prepare # before browser dev restart
+
+$ nohup BACKEND_NODE_BASE_URL=http://127.0.0.1:29695 pnpm -C autobyteus-web exec nuxi dev --host 127.0.0.1 --port 3030
+
+$ rm -rf autobyteus-web/.nuxt autobyteus-web/node_modules/.cache/vite autobyteus-web/node_modules/.cache/nuxt # repair dev server cache
+
+$ pnpm -C autobyteus-web exec nuxi prepare # after cache cleanup
+
+$ timeout 12s BACKEND_NODE_BASE_URL=http://127.0.0.1:29695 pnpm -C autobyteus-web exec nuxi dev --host 127.0.0.1 --port 3030 # smoke
+
+$ env BACKEND_NODE_BASE_URL=http://127.0.0.1:29695 pnpm -C autobyteus-web exec nuxi dev --host 127.0.0.1 --port 3030 # smoke after cache cleanup
+
+$ nohup env BACKEND_NODE_BASE_URL=http://127.0.0.1:29695 pnpm -C autobyteus-web exec nuxi dev --host 127.0.0.1 --port 3030 # browser validation
+
+# Additional Round 10 validation after user runtime clarification
+# 2026-05-19
+curl GraphQL availableLlmProvidersWithModels(runtimeKind: codex_app_server) > round10-codex-runtime-model-probe.log
+Browser mobile Run Setup launched Codex in autobyteus-workspace-superrepo with browser-only defaultLaunchConfig fixture: runtimeKind=codex_app_server, llmModelIdentifier=gpt-5.5.
+node /tmp/round10-ws-probe.mjs b0d24431-207a-4833-87d7-4caf2bcb6c8b ... > round10-codex-direct-websocket-probe.log
+node /tmp/round10-ws-probe-with-id.mjs b0d24431-207a-4833-87d7-4caf2bcb6c8b ... > round10-codex-direct-websocket-with-identity.log
+Captured round10-mobile-codex-gpt55-response-after-identity-probe.png
+Wrote round10-browser-validation-notes.json
+Cleanup: removed autobyteus-web/dist and autobyteus-web/dist-mobile, cleared validation-tab mobile session localStorage, closed Round 10 validation tabs, stopped temporary Nuxt dev server on port 3030.

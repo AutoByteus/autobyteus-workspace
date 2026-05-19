@@ -73,7 +73,7 @@
         </div>
         <!-- Browse Button (Electron only) -->
         <button
-          v-if="isEmbeddedWindow"
+          v-if="canBrowseForFolder"
           type="button"
           @click="handleBrowse"
           :disabled="isLoading || isInteractionDisabled"
@@ -123,7 +123,7 @@
           <span v-else>{{ $t('workspace.components.workspace.config.WorkspaceSelector.select_a_previously_loaded_workspace') }}</span>
         </template>
         <template v-else>
-          {{ isEmbeddedWindow ? 'Browse for a folder or enter path manually.' : 'Enter path to load a new workspace.' }}
+          {{ canBrowseForFolder ? 'Browse for a folder or enter path manually.' : 'Enter path to load a new workspace.' }}
           <span class="i-heroicons-information-circle-20-solid h-4 w-4 ml-1.5 text-gray-400 cursor-help" title="Path must be an absolute file system path"></span>
         </template>
       </p>
@@ -139,6 +139,7 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import SearchableSelect from '~/components/common/SearchableSelect.vue';
 import { Icon } from '@iconify/vue';
 import { pickFolderPath } from '~/composables/useNativeFolderDialog';
+import { canUseLocalFolderPicker } from '~/utils/mobileFeatureGates';
 
 const props = defineProps<{
   workspaceId: string | null;
@@ -157,6 +158,10 @@ const emit = defineEmits<{
 const workspaceStore = useWorkspaceStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
+const canBrowseForFolder = computed(() => canUseLocalFolderPicker({
+  isEmbeddedWindow: isEmbeddedWindow.value,
+  hasElectronFolderDialog: typeof window !== 'undefined' && Boolean(window.electronAPI?.showFolderDialog),
+}));
 
 // Local state
 const mode = ref<'existing' | 'new'>('new');
@@ -292,7 +297,7 @@ const handleLoad = () => {
 
 // Native folder picker (Electron only)
 const handleBrowse = async () => {
-  if (!isEmbeddedWindow.value || !window.electronAPI?.showFolderDialog) return;
+  if (!canBrowseForFolder.value) return;
 
   const selectedPath = await pickFolderPath();
   if (selectedPath) {

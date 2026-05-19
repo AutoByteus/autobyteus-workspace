@@ -12,6 +12,7 @@ import {
 import { contextAttachmentPresentation } from '~/utils/contextFiles/contextAttachmentPresentation';
 import type { DraftContextFileOwnerDescriptor } from '~/utils/contextFiles/contextFileOwner';
 import { getServerBaseUrl } from '~/utils/serverConfig';
+import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 export type ContextAttachmentComposerTarget<TSubject> = {
   key: string;
@@ -183,7 +184,7 @@ export function useContextAttachmentComposer<TSubject>(options: {
     attachment: UploadedContextAttachment,
     draftOwner: DraftContextFileOwnerDescriptor,
   ): Promise<UploadedContextAttachment> => {
-    const response = await fetch(resolveAttachmentFetchUrl(attachment.locator));
+    const response = await authorizedFetch(resolveAttachmentFetchUrl(attachment.locator));
     if (!response.ok) {
       throw new Error(`Failed to fetch pasted draft attachment '${attachment.locator}' (${response.status}).`);
     }

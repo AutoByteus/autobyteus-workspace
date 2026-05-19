@@ -18,7 +18,7 @@
       </button>
     </div>
 
-    <div class="mt-auto">
+    <div v-if="showSettingsNavigation" class="mt-auto">
       <button
         type="button"
         class="group relative rounded-md p-2 transition-colors hover:bg-gray-100"
@@ -42,6 +42,7 @@ import { computed, onMounted } from 'vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore';
+import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 
 type PrimaryNavKey =
   | 'agents'
@@ -66,7 +67,7 @@ const allPrimaryNavItems: Array<{ key: PrimaryNavKey; labelKey: string; icon: st
 const primaryNavItems = computed(() => {
   return allPrimaryNavItems.filter((item) => {
     if (item.key === 'applications') {
-      return applicationsCapabilityStore.isEnabled
+      return applicationsCapabilityStore.isEnabled && isFeatureAvailableInRuntime('applicationIframe')
     }
     return true;
   });
@@ -77,6 +78,7 @@ const router = useRouter();
 const { isLeftPanelVisible, toggleLeftPanel } = useLeftPanel();
 
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
+const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
 
 const resolvePrimaryRoute = (key: PrimaryNavKey): RouteLocationRaw => {
   switch (key) {

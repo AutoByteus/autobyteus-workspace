@@ -1,0 +1,60 @@
+$ pnpm -C autobyteus-web exec vitest run utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts utils/__tests__/nodeEndpoints.spec.ts utils/__tests__/nodeHostValidation.spec.ts utils/__tests__/nodeCapabilityProbe.spec.ts services/__tests__/api.nodeRouting.spec.ts
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/autobyteus-web
+
+stderr | services/__tests__/api.nodeRouting.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/nodeHostValidation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/nodeEndpoints.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/nodeCapabilityProbe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/nodeEndpoints.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/nodeCapabilityProbe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/__tests__/api.nodeRouting.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/nodeHostValidation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/nodeEndpoints.spec.ts (5 tests) 3ms
+ ✓ utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts (2 tests) 2ms
+ ✓ utils/__tests__/nodeCapabilityProbe.spec.ts (4 tests) 3ms
+ ✓ utils/__tests__/nodeHostValidation.spec.ts (4 tests) 2ms
+ ✓ services/__tests__/api.nodeRouting.spec.ts (2 tests) 50ms
+ ✓ utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts (4 tests) 4ms
+
+ Test Files  6 passed (6)
+      Tests  21 passed (21)
+   Start at  08:43:39
+   Duration  4.89s (transform 2.68s, setup 23.57s, collect 459ms, tests 65ms, environment 1.39s, prepare 1.17s)
+

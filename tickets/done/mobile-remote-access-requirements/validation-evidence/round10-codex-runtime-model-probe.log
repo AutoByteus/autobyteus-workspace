@@ -1,0 +1,21 @@
+Round 10 Codex runtime/model GraphQL probe
+Timestamp: 2026-05-19T09:04:22+02:00
+Endpoint: http://127.0.0.1:29695/graphql
+Variables: runtimeKind=codex_app_server
+
+Raw response length: 2863
+provider_count: 13
+provider=ANTHROPIC name=Anthropic type=ANTHROPIC apiKeyConfigured=False status=NOT_APPLICABLE models=
+provider=AUTOBYTEUS name=AutoByteus type=AUTOBYTEUS apiKeyConfigured=True status=NOT_APPLICABLE models=
+provider=DEEPSEEK name=DeepSeek type=DEEPSEEK apiKeyConfigured=True status=NOT_APPLICABLE models=
+provider=GEMINI name=Gemini type=GEMINI apiKeyConfigured=True status=NOT_APPLICABLE models=
+provider=GLM name=GLM type=GLM apiKeyConfigured=False status=NOT_APPLICABLE models=
+provider=GROK name=Grok type=GROK apiKeyConfigured=True status=NOT_APPLICABLE models=
+provider=KIMI name=Kimi type=KIMI apiKeyConfigured=True status=NOT_APPLICABLE models=
+provider=LMSTUDIO name=LM Studio type=LMSTUDIO apiKeyConfigured=False status=NOT_APPLICABLE models=
+provider=MINIMAX name=MiniMax type=MINIMAX apiKeyConfigured=False status=NOT_APPLICABLE models=
+provider=MISTRAL name=Mistral type=MISTRAL apiKeyConfigured=False status=NOT_APPLICABLE models=
+provider=OLLAMA name=Ollama type=OLLAMA apiKeyConfigured=True status=NOT_APPLICABLE models=
+provider=OPENAI name=OpenAI type=OPENAI apiKeyConfigured=True status=NOT_APPLICABLE models=gpt-5.2,gpt-5.3-codex,gpt-5.3-codex-spark,gpt-5.4,gpt-5.4-mini,gpt-5.5
+provider=QWEN name=Qwen type=QWEN apiKeyConfigured=True status=NOT_APPLICABLE models=
+gpt-5.5_available: True

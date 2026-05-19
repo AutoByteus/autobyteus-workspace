@@ -1,0 +1,12 @@
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:3030/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 50ms
+✔ Vite server built in 279ms
+[nitro] ✔ Nuxt Nitro server built in 2728ms
+ℹ Vite client warmed up in 1ms

@@ -1,0 +1,22 @@
+cleanup_started
+terminate single-agent validation run 49db1c3f-b02a-443d-91f9-592e5ed66e37
+{
+  "data": {
+    "terminateAgentRun": {
+      "__typename": "TerminateAgentRunResult",
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  }
+}
+terminate team validation run team_classroomsimulation_9df4466f
+{
+  "data": {
+    "terminateAgentTeamRun": {
+      "__typename": "TerminateAgentTeamRunResult",
+      "success": true,
+      "message": "Agent team run terminated successfully."
+    }
+  }
+}
+cleanup_finished
