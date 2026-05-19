@@ -17,6 +17,10 @@ Phone Access is additive to the existing desktop/web product. The phone-first sh
 
 Stale or unsupported phone links such as `/mobile/workspace` stay inside the mobile experience and show an explicit unsupported-feature notice. Desktop-only workflows remain available from desktop/Electron and should not be forked or degraded by mobile journey refinements.
 
+The mobile shell can start new agent and team runs without falling back to hidden desktop defaults. The **Start new** surface uses the same launch configuration stores and runtime/model semantics as desktop: the user selects the run target, workspace, runtime/model, and first prompt, and launch stays disabled until those required choices are ready. For team launches, mobile also lets the user choose the initial leaf team member that receives the first prompt.
+
+For existing team runs, mobile exposes a **Message target** selector only on the work tabs where that focus affects the current run, such as Chat, Files, and Activity. The selector is intentionally hidden on the Runs tab and while **Start new** is open so it cannot be confused with the launch-time **First message target** selector. The current mobile client remembers the last valid focused member per team run for Recent-work reopen; that memory is client-local and is not a cross-device/backend persistence contract.
+
 ## Network Model
 
 AutoByteus does not require or special-case a VPN vendor. Phone Access only requires that the phone can reach the desktop/server node URL selected during pairing.
@@ -51,12 +55,13 @@ After pairing, the mobile shell:
 
 - restores the paired node session on reload;
 - checks `/rest/remote-access/status` for reachability and Phone Access state;
+- holds the post-pair transition in a checking state until status and work catalogs refresh, so a stable Home screen is not shown with stale or unknown node status after successful pairing;
 - sends bearer credentials on protected REST/GraphQL requests;
 - appends the credential as an `access_token` query parameter for WebSocket connections;
 - uses authorized fetch helpers for media, file, artifact, team-reference, and application setup resources;
 - keeps server-owned agent/team/workspace routes reachable when they are mobile-safe.
 
-The local **Unpair this phone** action deletes only the phone's local session. It does not revoke the server-side device record; use the desktop Phone Access card to revoke credentials on the node.
+The local **Unpair this phone** action deletes only the phone's local session and returns the UI to the pairing bootstrap without leaving Home or post-pair checking state active. It does not revoke the server-side device record; use the desktop Phone Access card to revoke credentials on the node. Failed or expired pairing exchanges likewise stay on the pairing bootstrap and must not write a local mobile session.
 
 ## Revocation and Disable Semantics
 

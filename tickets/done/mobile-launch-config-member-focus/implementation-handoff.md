@@ -2,15 +2,15 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/design-review-report.md`
-- Design-impact rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/design-impact-rework-mobile-ux-focus-scope.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/review-report.md`
-- Canonical API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/api-e2e-validation-report.md`
-- Round 1 live validation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/evidence/live-validation-observations.md`
-- Round 2 live validation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/evidence/live-validation-observations-round2.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-review-report.md`
+- Design-impact rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-impact-rework-mobile-ux-focus-scope.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/review-report.md`
+- Canonical API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/api-e2e-validation-report.md`
+- Round 1 live validation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations.md`
+- Round 2 live validation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations-round2.md`
 
 ## What Changed
 

@@ -2,13 +2,13 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/design-review-report.md`
-- Design-Impact Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/design-impact-rework-mobile-ux-focus-scope.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-review-report.md`
+- Design-Impact Rework Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-impact-rework-mobile-ux-focus-scope.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/review-report.md`
 - Current Validation Round: 3
 - Trigger: Round 3 code-review pass for the implementation-owned Local Fix after API/E2E `MOB-PAIR-001`.
 - Prior Round Reviewed: Round 2 `Fail / Local Fix`
@@ -143,9 +143,9 @@ None. API/E2E did not add or update repository-resident durable validation in Ro
 
 ## Other Validation Artifacts
 
-- Round 1 live observations: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/evidence/live-validation-observations.md`
-- Round 2 live observations: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/evidence/live-validation-observations-round2.md`
-- Round 3 live observations: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/evidence/live-validation-observations-round3.md`
+- Round 1 live observations: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations.md`
+- Round 2 live observations: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations-round2.md`
+- Round 3 live observations: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations-round3.md`
 - Typecheck log: `/tmp/mobile-launch-round3-typecheck.log`
 
 ## Temporary Validation Methods / Scaffolding
@@ -263,7 +263,7 @@ Because the latest authoritative validation result is `Pass` and API/E2E did not
 
 ## Evidence / Notes
 
-- Round 3 live evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/evidence/live-validation-observations-round3.md`
+- Round 3 live evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations-round3.md`
 - Non-blocking UX feedback for future polish: in a forced pairing failure, local error and diagnostic copy can repeat similar recovery text. This was not observed on the successful pairing/Home path and is not a release blocker for the Round 3 fix.
 
 ## Latest Authoritative Result

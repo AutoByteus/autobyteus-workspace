@@ -1,0 +1,122 @@
+# Delivery Integration Checks
+
+Date: 2026-05-19T20:51:35+02:00
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus
+Branch: codex/mobile-launch-config-member-focus
+HEAD: a32530af4a88458976361b58e500af2f810d0c79
+Base: origin/personal 4f2bd7fcffb2f26d9e90ad2deeb5873613d2d9a8
+
+## Command 1
+pnpm -C autobyteus-web exec vitest run components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts components/workspace/config/__tests__/RunConfigPanel.spec.ts
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (8 tests) 64ms
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (12 tests) 50ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (8 tests) 49ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts (7 tests) 86ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (11 tests) 96ms
+
+ Test Files  5 passed (5)
+      Tests  46 passed (46)
+   Start at  20:51:37
+   Duration  4.45s (transform 2.56s, setup 17.49s, collect 1.38s, tests 345ms, environment 946ms, prepare 769ms)
+
+
+## Command 2
+pnpm -C autobyteus-web exec vitest run stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web
+
+stderr | stores/__tests__/activeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/activeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentTeamContextsStore.spec.ts (7 tests) 9ms
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore > does not mark a persisted team inactive when backend termination fails
+Error terminating team team-terminate-fails-1 on backend: Error: not found
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/stores/agentTeamRunStore.ts:215:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:282:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore > interruptFocusedMemberGeneration rejects missing member target without using active-team fallback
+Cannot interrupt generation: target member route key is required.
+
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts (15 tests) 16ms
+ ✓ stores/__tests__/activeContextStore.spec.ts (3 tests) 7ms
+
+ Test Files  3 passed (3)
+      Tests  25 passed (25)
+   Start at  20:51:49
+   Duration  3.79s (transform 2.16s, setup 9.51s, collect 200ms, tests 32ms, environment 492ms, prepare 440ms)
+
+
+## Command 3
+set -o pipefail; pnpm -C autobyteus-web exec nuxi typecheck > /tmp/mobile-launch-delivery-typecheck.log 2>&1; status=$?; rg 'components/mobile|composables/mobile|stores/mobileWorkStore|useMobileWorkCatalog|useMobileRunLaunchCoordinator|useMobileTeamMemberFocusCoordinator|MobileRemoteAccessShell|MobilePairingBootstrap|useTeamRunRuntimeCatalogSync|TeamRunConfigForm' /tmp/mobile-launch-delivery-typecheck.log || true; echo typecheck_exit=$status
+typecheck_exit=1
+changed_path_filter_output_begin
+components/workspace/config/__tests__/TeamRunConfigForm.spec.ts(352,65): error TS2339: Property 'disabled' does not exist on type 'VueNode<Element>'.
+components/workspace/config/__tests__/TeamRunConfigForm.spec.ts(353,61): error TS2339: Property 'disabled' does not exist on type 'VueNode<Element>'.
+components/workspace/config/__tests__/TeamRunConfigForm.spec.ts(354,66): error TS2339: Property 'disabled' does not exist on type 'VueNode<Element>'.
+changed_path_filter_output_end
+note=Repository-wide Nuxt typecheck remains red; changed-path filter output above is the delivery signal. Full log: /tmp/mobile-launch-delivery-typecheck.log
+
+## Typecheck interpretation
+The full Nuxt typecheck exited 1 due repository-wide existing diagnostics. The only diagnostics matched by an expanded desktop-config filter were in `components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`, which is not changed by this ticket. Re-running the API/E2E changed-path filter for mobile/composable/store paths emitted no diagnostics.

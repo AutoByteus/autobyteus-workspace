@@ -3,20 +3,20 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/requirements.md`
 - Current Review Round: 3
 - Trigger: Local Fix implementation handoff from `implementation_engineer` after API/E2E reported `MOB-PAIR-001` as `Local Fix` for live post-pair checking/refresh sequencing.
 - Prior Review Round Reviewed: 2
 - Latest Authoritative Round: 3
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/design-review-report.md`
-- Design-Impact Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/design-impact-rework-mobile-ux-focus-scope.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-review-report.md`
+- Design-Impact Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/design-impact-rework-mobile-ux-focus-scope.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/api-e2e-validation-report.md`
 - Live Evidence Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/evidence/live-validation-observations.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/docs/task-artifacts/mobile-launch-config-member-focus/evidence/live-validation-observations-round2.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-launch-config-member-focus/tickets/done/mobile-launch-config-member-focus/evidence/live-validation-observations-round2.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No` from API/E2E; this round reviews an implementation-owned source/test local fix only.
 
