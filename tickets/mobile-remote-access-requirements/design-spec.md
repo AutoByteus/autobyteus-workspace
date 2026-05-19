@@ -977,7 +977,7 @@ This triage preserves the product boundary: mobile makes the practical work jour
 
 ## Round 10 Latest-Base Command Identity Refresh
 
-Decision: the Round 10 single-agent command-identity finding is not a mobile component local fix and is not an open dependency after branch refresh. Latest `origin/personal` `98cfdc24` already contains the shared single-agent command-identity and ACK rejection behavior. The mobile ticket should merge/refresh onto that fixed base and must not create a separate command-identity ticket or mobile workaround.
+Decision: the Round 10 single-agent command-identity finding is not a mobile component local fix and is not an open dependency after branch refresh. Latest `origin/personal` `98cfdc24` already contains the shared single-agent command-identity and ACK rejection behavior. The mobile ticket should stay refreshed on that fixed base and must not create a separate command-identity ticket or mobile workaround.
 
 Evidence basis:
 

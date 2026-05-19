@@ -358,7 +358,7 @@ Current decision:
 - No separate command-identity ticket remains. The obsolete ticket folder and dependency artifact were removed.
 - Do not add a mobile-only WebSocket sender, hidden mobile-only dedupe scheme, or ACK workaround.
 - Do not patch shared single-agent streaming inside the mobile UX ticket.
-- Merge/refresh this mobile branch with latest `origin/personal` before implementation/API-E2E continues.
+- Completed branch refresh: merge commit `26a17e0a` integrated latest `origin/personal` `98cfdc24`; implementation/API-E2E should continue from this integrated branch state.
 - If the missing-identity symptom reappears after the branch includes `98cfdc24` or newer, treat it as a shared-base regression from the latest branch state, not a mobile UX local fix.
 
 ## Round 10 Non-WebSocket Mobile UX Findings Triage (2026-05-19)

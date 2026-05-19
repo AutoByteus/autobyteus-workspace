@@ -82,7 +82,7 @@ Mobile UX ticket boundary:
 
 - Do not add a mobile-only WebSocket sender or hidden mobile-only dedupe scheme.
 - Do not patch shared single-agent streaming inside this mobile UX ticket.
-- Merge/refresh the ticket branch with `origin/personal` `98cfdc24` or newer before final validation.
+- Branch refresh completed via merge commit `26a17e0a`; final validation should run on `origin/personal` `98cfdc24` or newer.
 - Continue to validate phone-specific shell, setup, files, activity, status, context visibility, live single-agent send on the refreshed base, and desktop no-regression.
 
 No separate command-identity ticket remains. If the missing identity failure reappears after refresh, treat it as a shared-base regression rather than adding a mobile workaround.

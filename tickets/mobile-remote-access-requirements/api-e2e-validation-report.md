@@ -14,7 +14,7 @@
 - Trigger: Code review Round 10 pass after CR-MRA-007 Local Fix, followed by the user's explicit instruction to run real mobile agent execution using Codex runtime and GPT-5.5 instead of Anthropic/default runtime.
 - Prior Round Reviewed: Round 4 browser validation plus code-review Round 10 requested focus.
 - Latest Authoritative Round: 10 plus solution-design branch-currency correction
-- Latest Authoritative Result: **Superseded stale-base failure — revalidate after branch refresh.** Round 10 correctly proved the command-identity symptom was not mobile-only; subsequent solution-design refresh against latest `origin/personal` `98cfdc24` found the shared single-agent command-identity and ACK rejection fix already present on base. No separate command-identity ticket remains. The mobile branch must merge latest `origin/personal` and API/E2E should re-run real Codex/GPT-5.5 single-agent validation on that refreshed branch.
+- Latest Authoritative Result: **Superseded stale-base failure — revalidate on refreshed branch.** Round 10 correctly proved the command-identity symptom was not mobile-only; subsequent solution-design refresh against latest `origin/personal` `98cfdc24` found the shared single-agent command-identity and ACK rejection fix already present on base. No separate command-identity ticket remains. The mobile branch has now merged latest `origin/personal` (`98cfdc24`) and API/E2E should re-run real Codex/GPT-5.5 single-agent validation on this refreshed branch.
 
 ## Round History
 
@@ -24,12 +24,12 @@
 | 2 | Code review Round 4 pass after Round 1 fixes | MRA-E2E-003, MRA-E2E-016 | None blocking. | Pass | No | Remote Access bootstrap/static/auth spine passed. |
 | 3 | Mobile UX Redesign Local Fix validation plus user clarification that mobile must support desktop-web-equivalent journeys | Prior route/auth blockers | Yes: unreadable real-data rows, no complete new-run launch, placeholder file preview/attach, Activity no-op/limited behavior, broader functional parity requirement gap. | Fail | No | Routed to solution design. |
 | 4 | Code review Round 8 pass after functional-parity rework and CR-MRA-006 | Round 3 findings MRA-E2E-025..030 | UX/design frictions only; provider-key runtime errors clarified by user as expected when runtime is not configured. | Fail / Design Impact | No | Functional paths mostly existed, but UX refinement was requested. |
-| 10 | Code review Round 10 pass after CR-MRA-007 and user instruction to test real Codex/GPT-5.5 mobile execution | Round 4 UX/functionality paths; CR-MRA-007 composite status | Yes, on stale branch: shared single-agent command identity was missing. Latest-base refresh found this already fixed on `origin/personal` `98cfdc24`. | **Superseded / branch refresh required** | **Yes** | Not mobile-only and not a backend runtime/provider issue; do not fix inside the mobile ticket. Merge latest base and revalidate. |
+| 10 | Code review Round 10 pass after CR-MRA-007 and user instruction to test real Codex/GPT-5.5 mobile execution | Round 4 UX/functionality paths; CR-MRA-007 composite status | Yes, on stale branch: shared single-agent command identity was missing. Latest-base refresh found this already fixed on `origin/personal` `98cfdc24`. | **Superseded / branch refresh required** | **Yes** | Not mobile-only and not a backend runtime/provider issue; do not fix inside the mobile ticket. Latest base has been merged; revalidate. |
 
 
 ## User Scope Clarification And Latest-Base Correction After Round 10 Handoff
 
-After the initial Round 10 handoff, the user asked whether the command-identity symptom was mobile-only or a general backend/platform issue and clarified that a general issue should not be fixed inside this mobile UX ticket. Runtime evidence showed it was **not mobile-only** and **not a backend runtime/provider bug**: the backend accepted the same mobile-created Codex/GPT-5.5 run when command identity was present. Solution design then checked latest `origin/personal` `98cfdc24` and found the shared frontend fix already present. Current posture: no separate command-identity ticket remains; merge latest base into the mobile branch and revalidate real single-agent execution there.
+After the initial Round 10 handoff, the user asked whether the command-identity symptom was mobile-only or a general backend/platform issue and clarified that a general issue should not be fixed inside this mobile UX ticket. Runtime evidence showed it was **not mobile-only** and **not a backend runtime/provider bug**: the backend accepted the same mobile-created Codex/GPT-5.5 run when command identity was present. Solution design then checked latest `origin/personal` `98cfdc24` and found the shared frontend fix already present. Current posture: no separate command-identity ticket remains; latest base has been merged into the mobile branch and real single-agent execution should be revalidated there.
 
 ## Validation Basis
 
@@ -89,12 +89,12 @@ No native installer/updater/restart/migration scenario was introduced by the Rou
 | MRA-E2E-022 | One task surface at a time, bottom nav only | Browser | Pass | Chat/Runs/Files/Activity surfaces were navigated one at a time. |
 | MRA-E2E-024 / 033 | Desktop `/workspace` no-regression | Browser spot-check | Pass | `round10-desktop-workspace-no-mobile-shell.png` |
 | MRA-E2E-025 | Real-data mobile rows readable at 390x844 with long names | Browser | Pass | Home/recent rows remained readable in Round 10 browser pass. |
-| MRA-E2E-026 | New single-agent mobile launch using requested Codex runtime and GPT-5.5 | Browser + WebSocket isolation probe | Superseded stale-base fail / revalidate after branch refresh | Mobile Run Setup selected Codex/workspace/prompt and created run `b0d24431-207a-4833-87d7-4caf2bcb6c8b` with observed config `{ runtimeKind: codex_app_server, llmModelIdentifier: gpt-5.5 }`, but the mobile first message did not execute. Direct WebSocket command without identity reproduced backend rejection: `INVALID_COMMAND_ID`. Direct WebSocket command with identity was accepted and streamed a Codex/GPT-5.5 response visible in mobile. `round10-browser-validation-notes.json`, `round10-codex-direct-websocket-probe.log`, `round10-codex-direct-websocket-with-identity.log`, `round10-mobile-codex-gpt55-response-after-identity-probe.png` |
+| MRA-E2E-026 | New single-agent mobile launch using requested Codex runtime and GPT-5.5 | Browser + WebSocket isolation probe | Superseded stale-base fail / revalidate on refreshed branch | Mobile Run Setup selected Codex/workspace/prompt and created run `b0d24431-207a-4833-87d7-4caf2bcb6c8b` with observed config `{ runtimeKind: codex_app_server, llmModelIdentifier: gpt-5.5 }`, but the mobile first message did not execute. Direct WebSocket command without identity reproduced backend rejection: `INVALID_COMMAND_ID`. Direct WebSocket command with identity was accepted and streamed a Codex/GPT-5.5 response visible in mobile. `round10-browser-validation-notes.json`, `round10-codex-direct-websocket-probe.log`, `round10-codex-direct-websocket-with-identity.log`, `round10-mobile-codex-gpt55-response-after-identity-probe.png` |
 | MRA-E2E-027 | New team-run setup/launch path | Browser route check; focused tests | Partial Pass / Not re-forced with Codex after MRA-E2E-026 blocker | Prior Round 10 browser setup showed team launch route reaches Chat and runtime errors are surfaced after launch when provider config fails. Team streaming already carries command identity; full real Codex team response should be revalidated after branch refresh. `round10-mobile-team-provider-error-visible.png` |
 | MRA-E2E-028 | Mobile Files preview supported text/code/markdown through authorized file APIs | Browser | Pass | `README.md` preview rendered real content. `round10-mobile-file-preview-attach.png` |
 | MRA-E2E-029 | Attach file/context visibly to Chat or next launch | Browser | Pass for preview/attach/tray; live send with attachment not forced after launch blocker | Attach showed `Attached · 1` and `1 file attached to Chat context`. `round10-mobile-file-preview-attach.png` |
 | MRA-E2E-030 | Activity shows task plan/team messages/tool history/unsupported terminal notice | Browser | Pass | Activity filters/digest/error rows rendered. `round10-mobile-activity-filtered-errors.png` |
-| MRA-E2E-031 | Enabled mobile controls complete action or are disabled/explained | Browser | Superseded stale-base hidden rejection; revalidate after branch refresh | The stale-branch launch button completed local UI transition while the backend rejected the WebSocket command; latest base has shared ACK rejection handling, so revalidate on the merged branch. |
+| MRA-E2E-031 | Enabled mobile controls complete action or are disabled/explained | Browser | Superseded stale-base hidden rejection; revalidate on refreshed branch | The stale-branch launch button completed local UI transition while the backend rejected the WebSocket command; latest base has shared ACK rejection handling, so revalidate on the merged branch. |
 | MRA-E2E-036 / CR-MRA-006 | Shared selection isolation prevents stale run state in non-run mobile contexts | Focused tests + browser routes | Pass | `round10-focused-mobile-vitest.log`, `round10-shared-selection-run-open-vitest.log` |
 
 ## Test Scope
@@ -257,7 +257,7 @@ Round 10 evidence:
 
 **Latest-base correction:** solution-design inspection and focused tests on latest `origin/personal` `98cfdc24` found identity-bearing `AgentStreamingService.sendMessage(...)`, stable command identity generation in `agentRunStore`, and shared ACK rejection handling already present.
 
-**Current impact:** no separate shared/platform ticket is needed. The mobile branch must merge/latest-base and API/E2E should re-run real Codex/GPT-5.5 single-agent launch/send, including send-with-attachment, on the refreshed branch.
+**Current impact:** no separate shared/platform ticket is needed. The mobile branch now includes latest `origin/personal` and API/E2E should re-run real Codex/GPT-5.5 single-agent launch/send, including send-with-attachment, on the refreshed branch.
 
 ## Not Tested / Out Of Scope
 
@@ -268,7 +268,7 @@ Round 10 evidence:
 ## Blocked
 
 - Delivery should not proceed from the stale Round 10 validation result alone.
-- The command-identity failure is superseded by latest-base refresh; the branch must merge `origin/personal` `98cfdc24` or newer and API/E2E must revalidate real mobile single-agent execution on that integrated state.
+- The command-identity failure is superseded by latest-base refresh; the branch now includes `origin/personal` `98cfdc24`; API/E2E must revalidate real mobile single-agent execution on this integrated state.
 
 ## Cleanup Performed
 

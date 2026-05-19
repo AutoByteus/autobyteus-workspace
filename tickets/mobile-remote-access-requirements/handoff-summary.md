@@ -17,12 +17,12 @@ Ready for user verification and local app testing. The reviewed and API/E2E-vali
 - Ticket branch: `codex/mobile-remote-access-requirements`
 - Bootstrap base: `origin/personal` at `288903a8`
 - Latest tracked base checked before delivery docs: `origin/personal` at `a51d3abd`
-- Latest tracked base checked before local rebuild: `origin/personal` at `bea1185c` after `git fetch origin --prune` on 2026-05-18
-- Base advanced since bootstrap: `Yes` — ticket branch was behind `origin/personal` by 8 commits before the first delivery integration and behind by 56 commits before an earlier rebuild integration, behind by 11 commits before the previous rebuild integration, and behind by 2 commits before the latest rebuild integration.
+- Latest tracked base checked before current branch refresh: `origin/personal` at `98cfdc24` after `git fetch origin personal` on 2026-05-19
+- Base advanced since bootstrap: `Yes` — ticket branch was behind `origin/personal` by 8 commits before the first delivery integration and behind by 56 commits before an earlier rebuild integration, behind by 11 commits before the previous rebuild integration, and behind by 2 commits before the latest rebuild integration, and behind by 12 commits before the Round 10 branch-currency refresh.
 - Local checkpoint commit before refreshing latest base: `233dffa9` (`feat(remote-access): add phone access mobile pairing`)
 - Latest-base integration method: merge `origin/personal` into the ticket branch.
-- Integration merge commits: `463c7c27` for the first delivery refresh; `a5a3c750` and `7d5653ba` for previous rebuild refreshes; `d7f047f7` for the latest `origin/personal` refresh before rebuild.
-- Current relation after latest fetch: ticket branch is ahead of `origin/personal` by 5 commits and behind by 0 commits (`git rev-list --left-right --count HEAD...origin/personal` => `5 0`).
+- Integration merge commits: `463c7c27` for the first delivery refresh; `a5a3c750` and `7d5653ba` for previous rebuild refreshes; `d7f047f7` for the latest `origin/personal` refresh before rebuild; `26a17e0a` for the Round 10 branch-currency refresh to `98cfdc24`.
+- Current relation after latest fetch: ticket branch is ahead of `origin/personal` by 7 commits and behind by 0 commits (`git rev-list --left-right --count HEAD...origin/personal` => `7 0`).
 - Delivery-owned docs/artifacts started only after latest-base integration and post-integration checks: `Yes`
 
 ## Delivered Behavior
@@ -60,7 +60,7 @@ API/E2E added no repository-resident durable validation code in Round 2; no vali
 
 - Build command read from `autobyteus-web/README.md`: `pnpm build:electron:mac` from `autobyteus-web`.
 - Command run from the worktree: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= CSC_IDENTITY_AUTO_DISCOVERY=false pnpm -C autobyteus-web build:electron:mac`.
-- Latest base before rebuild: `origin/personal` at `bea1185c`; ticket branch ahead 5 / behind 0 after merge commit `d7f047f7`.
+- Latest base before prior rebuild: `origin/personal` at `bea1185c`; current branch is now refreshed to `origin/personal` at `98cfdc24` via merge commit `26a17e0a` and is ahead 7 / behind 0. Rebuild/validation should be renewed if downstream requires post-refresh Electron evidence.
 - Result: `Passed` on 2026-05-18. The local build is unsigned/not notarized.
 - Build unblocker fixed before rerun: localized Phone Access and mobile application-iframe strings so `pnpm -C autobyteus-web audit:localization-literals` passes.
 - DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.18.dmg` (362M)
@@ -74,7 +74,7 @@ API/E2E added no repository-resident durable validation code in Round 2; no vali
 - `pnpm -C autobyteus-web audit:localization-literals` — passed.
 - `pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts pages/__tests__/mobile-root.spec.ts pages/__tests__/mobile-root-shell.spec.ts middleware/__tests__/mobileFeatureGate.global.spec.ts utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts utils/remoteAccess/__tests__/websocketAuth.spec.ts utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts utils/__tests__/mobileFeatureGates.spec.ts plugins/__tests__/apollo.client.spec.ts components/workspace/config/__tests__/WorkspaceSelector.spec.ts components/fileExplorer/viewers/__tests__/ExcelViewer.spec.ts components/applications/__tests__/ApplicationSurface.spec.ts` — passed, 14 files / 72 tests.
 - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access/local-trust.test.ts tests/unit/remote-access/redact-sensitive-url.test.ts tests/unit/remote-access/route-policy.test.ts tests/unit/remote-access/pairing-auth-service.test.ts tests/unit/remote-access/client-facing-url-resolver.test.ts` — passed, 5 files / 27 tests.
-- Final `git fetch origin --prune` after the build kept `origin/personal` at `bea1185c`; current relation remained ahead 5 / behind 0.
+- Post-refresh `git fetch origin personal` kept `origin/personal` at `98cfdc24`; current relation is ahead 7 / behind 0.
 
 ## Docs Sync
 

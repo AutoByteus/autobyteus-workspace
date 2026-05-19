@@ -48,7 +48,7 @@ Reviewed triage decision:
 - Attachment/context visibility: already covered by R-MRA-138 / AC-MRA-042. Context indicators should remain adjacent to send/launch and share one authoritative context source.
 - New-run target selection: already covered by R-MRA-132/R-MRA-133 / AC-MRA-038. Recent/Favorites/Current context emphasis and no arbitrary first-item defaults remain the target.
 
-No non-WebSocket item should be promoted to a new blocking requirement. Full live single-agent execution should be revalidated after the branch includes latest `origin/personal`; do not add a mobile-only workaround or duplicate shared streaming patch.
+No non-WebSocket item should be promoted to a new blocking requirement. Full live single-agent execution should be revalidated after this branch includes latest `origin/personal`; do not add a mobile-only workaround or duplicate shared streaming patch.
 
 ## Task Design Health Assessment Verdict
 
@@ -69,7 +69,7 @@ No non-WebSocket item should be promoted to a new blocking requirement. Full liv
 | 1 | AR-MRA-004 | Medium / Design Impact | Remains resolved | WebSocket token/redaction policy remains unchanged. | No regression. |
 | 3 API/E2E | MRA-E2E-025 | High mobile UX defect | Resolved | Round 10 validation says real-data mobile rows remain readable. | Preserve. |
 | 3 API/E2E | MRA-E2E-026 | Critical functional gap | Resolved for mobile UI; latest-base stream fix available | Mobile run setup can select/configure/create/enter Chat; live single-agent execution should be revalidated after merging latest `origin/personal`. | Do not fix shared identity in mobile ticket. |
-| 3 API/E2E | MRA-E2E-027 | Critical functional gap | Resolved for preview/attach; live send revalidates on refreshed base | Round 10 file preview/attach works; live single-agent send-with-attachment should revalidate after branch refresh. | Preserve. |
+| 3 API/E2E | MRA-E2E-027 | Critical functional gap | Resolved for preview/attach; live send revalidates on refreshed base | Round 10 file preview/attach works; live single-agent send-with-attachment should revalidate on refreshed branch. | Preserve. |
 | 3 API/E2E | MRA-E2E-028 | High functional gap | Resolved functionally; polish remains | Activity filters/history visible; density is R-MRA-136 polish, not blocker. | Preserve compact/digest direction. |
 | 3 API/E2E | MRA-E2E-030 | Cross-cutting requirement/design gap | Resolved | Functional parity matrix and desktop no-regression boundary remain authoritative. | No reopening. |
 | 4 API/E2E | UX-MRA-040 | Design Impact / UX refinement | Resolved at design level | Composite status remains R-MRA-131 / AC-MRA-037. | No new blocker. |
@@ -78,7 +78,7 @@ No non-WebSocket item should be promoted to a new blocking requirement. Full liv
 | 4 API/E2E | UX-MRA-043 | Design Impact / UX refinement | Resolved at design level | Activity density remains R-MRA-136 / AC-MRA-040. | Round 10 UX-2 maps here. |
 | 4 API/E2E | UX-MRA-044 | Design Impact / UX refinement | Resolved at design level | File discovery remains R-MRA-137 / AC-MRA-041. | Round 10 UX-3 maps here. |
 | 4 API/E2E | UX-MRA-045 | Design Impact / UX refinement | Resolved at design level | Context visibility remains R-MRA-138 / AC-MRA-042. | Round 10 UX-4 maps here. |
-| 10 API/E2E | Round 10 command-identity finding | Stale-branch/shared scope issue | Resolved on latest base | Latest `origin/personal` `98cfdc24` already contains shared single-agent command identity and ACK handling. | Merge base and revalidate; no mobile-ticket implementation scope. |
+| 10 API/E2E | Round 10 command-identity finding | Stale-branch/shared scope issue | Resolved on latest base | Latest `origin/personal` `98cfdc24` already contains shared single-agent command identity and ACK handling. | Base has been merged; revalidate; no mobile-ticket implementation scope. |
 | 10 non-WS | UX-1 | Product-scope polish | Clarified, not blocking | R-MRA-134 / AC-MRA-039 now require resolved runtime/model or default-source copy, not full editing. | No advanced config re-scope. |
 | 10 non-WS | UX-2..UX-5 | UX polish | Already covered | Existing AC-MRA-038/040/041/042 cover target direction. | No new blockers. |
 
