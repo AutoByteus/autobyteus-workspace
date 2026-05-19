@@ -1,0 +1,52 @@
+# Live Mobile Validation Observations — Round 2
+
+- Browser target: `http://127.0.0.1:3000/mobile` served by Nuxt dev server against Electron backend `http://127.0.0.1:29695`.
+- Backend status before validation: `/rest/remote-access/status` returned `phoneAccessEnabled: true`, `pairingAvailable: true`, `serverName: AutoByteus Desktop`.
+- Fresh pairing was tested twice with local storage cleared before each attempt.
+  - Attempt 1 device: `device_7c492c942c134a5c4beea5ec925cda72`.
+  - Attempt 2 device: `device_aa4fe0f63d290e28bee8b5708707b3e5`.
+  - In both attempts, after clicking `Pair this phone`, the UI skipped the expected `mobile-post-pair-checking` state and immediately rendered stable Home with current node `127.0.0.1:29695` / status `Unknown` for at least ~3 seconds.
+  - Manual Home `Refresh` then updated the UI to `AutoByteus Desktop` / `Connected` and loaded recent work, proving the backend was reachable and the automatic post-pair refresh had not completed before stable Home.
+- Existing team-run focus scope after manual refresh:
+  - On Chat, `Message target` was visible.
+  - On Files and Activity, `Message target` remained visible and showed the selected focused member.
+  - On Runs, `Message target` was hidden.
+  - With Start new open from Runs, `Message target` stayed hidden and the recent run history list was hidden.
+- Start new setup UX:
+  - Agent mode copy read `Choose an agent, workspace, runtime/model, and first message.` and did not mention focused members.
+  - Team mode copy read `Choose a team, workspace, runtime/model, first message target, and first message.`.
+  - Runtime/model card copy was mobile-user-facing (`Pick the runtime and model this ... run will use.`) and did not mention desktop panels or store internals.
+  - Launch readiness blocker was shown in `MobileLaunchSummary`; the runtime/model card did not duplicate blocker text.
+- Searchable team launch focus picker:
+  - Opened `First message target`, searched `api`, and selected `api_e2e_engineer`.
+- Team launch validation:
+  - Selected `Software Engineering Team`, workspace `autobyteus-workspace-superrepo`, runtime `Codex App Server` (`codex_app_server`), model `gpt-5.5`, and first target `api_e2e_engineer`.
+  - Prompt: `Round 13 mobile team launch validation using Codex App Server gpt-5.5 to api_e2e_engineer. Reply exactly: round 13 team OK.`
+  - UI received `api_e2e_engineer` reply `round 13 team OK`.
+  - Backend team run: `team_software-engineering-team_f7ecee82`.
+  - `getTeamRunResumeConfig.metadata.memberTree` contained `runtimeKind: codex_app_server` and `llmModelIdentifier: gpt-5.5`.
+  - `getTeamMemberRunProjection(teamRunId: team_software-engineering-team_f7ecee82, memberRouteKey: api_e2e_engineer)` returned the prompt and reply with `agentRunId: api_e2e_engineer_ff238b6dd9101ed5`.
+  - `solution_designer` projection remained empty for the first team prompt.
+- Recent reopen focus memory:
+  - Returning Home and opening the Round 13 team run from Recent work preserved `Current: api_e2e_engineer`.
+  - After manually setting current-client Pinia focus memory for `team_software-engineering-team_f7ecee82` to invalid `stale_missing_member`, reopening the same Recent item fell back to `Current: solution_designer`, proving stale remembered routes are not used.
+- Existing-run searchable focus and focused send:
+  - Opened `Message target`, searched `delivery`, and selected `delivery_engineer`.
+  - Files and Activity retained `Current: delivery_engineer`; Runs hid the focus bar.
+  - Prompt: `Round 13 focused send after selecting delivery_engineer. Reply exactly: round 13 focus OK.`
+  - UI received `delivery_engineer` reply `round 13 focus OK`.
+  - Backend `delivery_engineer` projection had `agentRunId: delivery_engineer_86cdae959e0ac0a3` and contained the focused-send prompt/reply; `api_e2e_engineer` retained only the launch prompt/reply and `solution_designer` remained empty.
+- Single-agent launch validation:
+  - Selected agent `Codex`, workspace `autobyteus-workspace-superrepo`, runtime `Codex App Server` (`codex_app_server`), model `gpt-5.5`.
+  - Prompt: `Round 13 mobile single-agent launch validation using Codex App Server gpt-5.5. Reply exactly: round 13 agent OK.`
+  - UI received `Codex` reply `round 13 agent OK`.
+  - Backend agent run: `8cd1e407-60d9-402c-b3d8-4ad980a038b1`.
+  - `getAgentRunResumeConfig.metadataConfig` returned `runtimeKind: codex_app_server`, `llmModelIdentifier: gpt-5.5`, and `runtimeReference.runtimeKind: codex_app_server`.
+- Regression checks:
+  - `pnpm -C autobyteus-web exec vitest run components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts components/workspace/config/__tests__/RunConfigPanel.spec.ts` passed: 5 files / 46 tests.
+  - `pnpm -C autobyteus-web exec vitest run stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts` passed: 3 files / 25 tests.
+  - Repository-wide `pnpm -C autobyteus-web exec nuxi typecheck` remained red from existing broad issues; filtering the output for changed mobile/composable/store paths emitted no diagnostics.
+- Cleanup:
+  - Revoked temporary paired devices `device_7c492c942c134a5c4beea5ec925cda72` and `device_aa4fe0f63d290e28bee8b5708707b3e5`.
+  - Closed the validation browser tab.
+  - Stopped the local Nuxt dev server on port 3000.

@@ -1,0 +1,13 @@
+# Live Mobile Validation Observations
+
+- Browser target: `http://localhost:3000/mobile` against Electron backend `http://127.0.0.1:29695`.
+- Fresh mobile pairing succeeded via `/rest/remote-access/pairing-sessions` and `/rest/remote-access/pairing-exchanges`.
+- After manual Home refresh, status showed `AutoByteus Desktop` / `Connected` and run catalogs loaded.
+- Existing team run focus changed from `solution_designer` to `api_e2e_engineer`; Chat displayed the `api_e2e_engineer` message stream, and Files/Activity retained the same focus bar value.
+- Team launch: selected `Software Engineering Team`, workspace `autobyteus-workspace-superrepo`, runtime `Codex App Server`, model `gpt-5.5`, initial focus `api_e2e_engineer`, prompt `Round 12 mobile team launch validation using Codex App Server gpt-5.5. Reply exactly: mobile validation OK.` UI received assistant reply `mobile validation OK`.
+- Team backend evidence: `team_software-engineering-team_39133827`; `getTeamRunResumeConfig.metadata.memberTree[*]` uses `runtimeKind: codex_app_server`, `llmModelIdentifier: gpt-5.5`; only `api_e2e_engineer` projection had the first prompt/response conversation while `solution_designer` projection remained empty.
+- Single-agent launch: selected `Codex`, workspace `autobyteus-workspace-superrepo`, runtime `Codex App Server`, model `gpt-5.5`, prompt `Round 12 mobile single-agent validation using Codex App Server gpt-5.5. Reply exactly: mobile single-agent OK.` UI received assistant reply `mobile single-agent OK`.
+- Single-agent backend evidence: run `7a8037c6-b055-401c-8128-db8c5d798e42`; `getAgentRunResumeConfig.metadataConfig.runtimeKind = codex_app_server`, `llmModelIdentifier = gpt-5.5`, `runtimeReference.threadId = 019e413d-7f8a-7071-965f-f40d47644296`.
+- Existing team run focused-send follow-up: reopened `team_software-engineering-team_39133827`, changed focus from `solution_designer` to `delivery_engineer`, sent prompt `Round 12 mobile existing-team focus-change validation after selecting delivery_engineer. Reply exactly: focus changed OK.`, and the UI displayed the user prompt plus `delivery_engineer` reply `focus changed OK` under the selected focus.
+- Focused-send backend evidence: `getTeamMemberRunProjection(teamRunId: team_software-engineering-team_39133827, memberRouteKey: delivery_engineer)` returned the focus-change prompt and assistant reply with `agentRunId: delivery_engineer_6463b48638a7e05e`; `solution_designer` projection remained empty.
+- Cleanup: revoked temporary paired mobile device `device_82383c7ddf2d2a1be8421561bcf78cd3`; closed validation browser tab; stopped local Nuxt dev server after the final focused-send pass.

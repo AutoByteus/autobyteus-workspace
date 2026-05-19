@@ -92,7 +92,11 @@
 import { computed, onMounted, ref } from 'vue';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 
-const emit = defineEmits<{ paired: [] }>();
+const emit = defineEmits<{
+  paired: [];
+  'pairing-failed': [];
+  'pairing-started': [];
+}>();
 const sessionStore = useMobileNodeSessionStore();
 const pairingText = ref('');
 const manualUrl = ref('');
@@ -111,11 +115,13 @@ const readInitialPairingText = (): string => {
 
 async function pair(): Promise<void> {
   localError.value = null;
+  emit('pairing-started');
   try {
     await sessionStore.pairWithQrText(pairingText.value, deviceName.value || 'Phone');
     emit('paired');
   } catch (error) {
     localError.value = error instanceof Error ? error.message : 'Pairing failed.';
+    emit('pairing-failed');
   }
 }
 

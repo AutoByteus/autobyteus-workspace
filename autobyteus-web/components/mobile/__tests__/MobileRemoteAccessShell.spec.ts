@@ -10,6 +10,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
+import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 
@@ -119,18 +120,19 @@ const initialState = {
   },
 };
 
-const mountShell = () => mount(MobileRemoteAccessShell, {
+const mountShell = (options: { state?: typeof initialState; stubs?: Record<string, unknown> } = {}) => mount(MobileRemoteAccessShell, {
   global: {
     plugins: [
       createTestingPinia({
         createSpy: vi.fn,
-        initialState,
+        initialState: options.state ?? initialState,
       }),
     ],
     stubs: {
       AgentEventMonitor: { template: '<div data-testid="agent-event-monitor" />' },
       AgentTeamEventMonitor: { template: '<div data-testid="team-event-monitor" />' },
       NuxtLink: { template: '<a><slot /></a>' },
+      ...(options.stubs ?? {}),
     },
   },
 });
@@ -187,6 +189,24 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(runHistoryStore.openRun).toHaveBeenCalledWith('run-1', { selectionMode: 'mobile' });
   });
 
+  it('keeps Start new as a focused mobile setup surface instead of mixing recent history', async () => {
+    const wrapper = mountShell();
+    await nextTick();
+    await wrapper.get('[data-testid="mobile-home-primary-action"]').trigger('click');
+    await nextTick();
+    useMobileWorkStore().$patch({ activeTab: 'runs' });
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-runs-list"]').exists()).toBe(true);
+
+    await wrapper.get('[data-testid="mobile-start-run"]').trigger('click');
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-run-setup"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-runs-list"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="mobile-runs"]').text()).toContain('Start new run');
+  });
+
   it('shows a focused context switcher with Recent, Agents, Teams, and Workspaces instead of the desktop tree', async () => {
     const wrapper = mountShell();
     await nextTick();
@@ -220,6 +240,9 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
       'MobileComposerContextTray.vue',
       'MobileLaunchTargetPicker.vue',
       'MobileLaunchSummary.vue',
+      'MobileLaunchRuntimeModelCard.vue',
+      'MobileTeamLaunchFocusPicker.vue',
+      'MobileTeamMemberFocusBar.vue',
       'MobileActivityDigest.vue',
       'MobileTeamMessages.vue',
       'MobileToolActivityList.vue',
@@ -247,6 +270,8 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(runSetupSource).toContain('mobile-run-team-select');
     expect(runSetupSource).toContain('mobile-run-workspace-select');
     expect(runSetupSource).toContain('mobile-run-launch');
+    expect(runSetupSource).toContain('MobileLaunchRuntimeModelCard');
+    expect(runSetupSource).toContain('MobileTeamLaunchFocusPicker');
     expect(filesSource).toContain('MobileFileViewer');
     expect(fileViewerSource).toContain('authorized workspace file API');
     expect(fileViewerSource).toContain('mobile-file-attach');
@@ -349,6 +374,68 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(statusCardText).toContain('Cannot reach AutoByteus desktop');
     expect(statusCardText).not.toContain('Node reachable');
     expect(statusCardText).not.toContain('Phone Access status unavailable');
+  });
+
+  it('keeps post-pair checking active across the async session flip before stable Home', async () => {
+    let resolveStatus!: (value: NonNullable<typeof initialState.mobileNodeSession.lastStatus>) => void;
+    const statusPromise = new Promise<NonNullable<typeof initialState.mobileNodeSession.lastStatus>>((resolve) => {
+      resolveStatus = resolve;
+    });
+    const unpairedState: typeof initialState = {
+      ...initialState,
+      mobileNodeSession: {
+        ...initialState.mobileNodeSession,
+        session: null,
+        lastStatus: null,
+        lastDiagnostic: null,
+        authorizedApiReachable: false,
+      },
+    } as any;
+    const PairingBootstrapStub = {
+      setup(_props: unknown, { emit }: any) {
+        const sessionStore = useMobileNodeSessionStore();
+        async function pair() {
+          emit('pairing-started');
+          await nextTick();
+          sessionStore.$patch({ session: pairedSession as any });
+        }
+        return { pair };
+      },
+      template: '<button type="button" data-testid="mobile-pairing-complete" @click="pair">Pair</button>',
+    };
+
+    const wrapper = mountShell({
+      state: unpairedState,
+      stubs: {
+        MobilePairingBootstrap: PairingBootstrapStub,
+      },
+    });
+    await nextTick();
+
+    const sessionStore = useMobileNodeSessionStore();
+    vi.mocked(sessionStore.fetchStatus).mockImplementation(async () => {
+      const status = await statusPromise;
+      sessionStore.$patch({ lastStatus: status, lastDiagnostic: null });
+      return status;
+    });
+
+    await wrapper.get('[data-testid="mobile-pairing-complete"]').trigger('click');
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-post-pair-checking"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-home"]').exists()).toBe(false);
+
+    resolveStatus({
+      phoneAccessEnabled: true,
+      pairingAvailable: true,
+      compatibilityVersion: 1,
+      serverName: 'Desktop Node',
+    });
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="mobile-post-pair-checking"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-home"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('Desktop Node');
   });
 
 });

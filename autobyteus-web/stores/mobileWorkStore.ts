@@ -8,6 +8,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
   const currentContext = ref<MobileWorkContext | null>(null);
   const activeTab = ref<MobileTaskTab>('chat');
   const draftContextAttachments = ref<ContextAttachment[]>([]);
+  const focusedMemberRouteKeyByTeamRunId = ref<Record<string, string>>({});
 
   const draftContextAttachmentCount = computed(() => draftContextAttachments.value.length);
 
@@ -42,6 +43,44 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     return attachments;
   }
 
+  function rememberFocusedTeamMember(teamRunId: string, memberRouteKey: string): boolean {
+    const normalizedTeamRunId = teamRunId.trim();
+    const normalizedMemberRouteKey = memberRouteKey.trim();
+    if (!normalizedTeamRunId || !normalizedMemberRouteKey) {
+      return false;
+    }
+    focusedMemberRouteKeyByTeamRunId.value = {
+      ...focusedMemberRouteKeyByTeamRunId.value,
+      [normalizedTeamRunId]: normalizedMemberRouteKey,
+    };
+    return true;
+  }
+
+  function getRememberedFocusedTeamMember(teamRunId: string): string {
+    return focusedMemberRouteKeyByTeamRunId.value[teamRunId.trim()] || '';
+  }
+
+  function updateFocusedTeamMember(teamRunId: string, memberRouteKey: string): boolean {
+    const normalizedTeamRunId = teamRunId.trim();
+    const normalizedMemberRouteKey = memberRouteKey.trim();
+    const current = currentContext.value;
+    if (
+      !normalizedTeamRunId ||
+      !normalizedMemberRouteKey ||
+      current?.kind !== 'team-run' ||
+      current.teamRunId !== normalizedTeamRunId
+    ) {
+      return false;
+    }
+
+    currentContext.value = {
+      ...current,
+      focusedMemberRouteKey: normalizedMemberRouteKey,
+    };
+    rememberFocusedTeamMember(normalizedTeamRunId, normalizedMemberRouteKey);
+    return true;
+  }
+
   function clearContext(): void {
     currentContext.value = null;
     activeTab.value = 'chat';
@@ -52,6 +91,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     currentContext,
     activeTab,
     draftContextAttachments,
+    focusedMemberRouteKeyByTeamRunId,
     draftContextAttachmentCount,
     selectContext,
     setActiveTab,
@@ -59,6 +99,9 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     removeDraftContextAttachment,
     clearDraftContextAttachments,
     consumeDraftContextAttachments,
+    rememberFocusedTeamMember,
+    getRememberedFocusedTeamMember,
+    updateFocusedTeamMember,
     clearContext,
   };
 });

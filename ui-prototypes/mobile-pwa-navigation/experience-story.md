@@ -33,7 +33,7 @@ A user opens AutoByteus on a phone because they are away from their desktop but 
   - `action_pair_phone`: pair using pasted/scanned payload.
   - `action_check_server`: check manual URL reachability.
 - System behavior:
-  - when `action_pair_phone` succeeds -> show success toast -> go to `mobile_home`.
+  - when `action_pair_phone` succeeds -> show checking/refresh feedback while the node status and work catalogs load -> go to `mobile_home`.
   - when `action_pair_phone` fails -> stay on `pairing` with diagnostic and retry/new QR guidance.
 - Cognitive objective: make first pairing obvious and avoid making the user understand server internals.
 - Cognition controls:
@@ -637,14 +637,17 @@ Run setup sub-screen: `S5_run_setup`
 Layout:
 
 - Header: `Start run`.
-- Shows only the minimum required config first.
-- Advanced config collapsed.
+- Shows only the required launch choices first: agent/team, workspace, runtime/model, and first prompt.
+- Team mode also shows `First message target`, limited to leaf team members that can receive the first prompt.
+- Target and member pickers use phone-friendly search/filtering rather than long native selects.
+- Advanced config remains collapsed or omitted unless it is required for the selected runtime/model.
 - Primary button: `Start`.
+- Launch readiness and blocking copy live in one setup summary; the primary button stays disabled until required target, workspace, prompt, and runtime/model choices are ready.
 
 Actions:
 
 - `A5_setup_start`
-  - Starts run.
+  - Starts the run using the selected runtime/model and, for team launches, sends the first prompt to the selected first-message target.
   - Success -> `S4_chat`.
 - `A5_setup_advanced`
   - Expands optional parameters.
@@ -655,6 +658,7 @@ Important improvement from current UI:
 
 - The current `Running List / Configuration` nested tabs are too abstract.
 - Configuration should appear only when starting or editing a run.
+- Existing team-run message focus is separate from launch setup: `Message target` can appear on Chat/Files/Activity for the opened team run, but it should not appear on Runs or compete with the setup's `First message target`.
 
 ### screen_id: S6_files
 

@@ -1,0 +1,39 @@
+# Live Mobile Validation Observations — Round 3
+
+- Browser target: `http://127.0.0.1:3000/mobile` served by a local Nuxt dev server against the Electron-started backend at `http://127.0.0.1:29695`.
+- Backend status before validation: `/rest/remote-access/status` returned `phoneAccessEnabled: true`, `pairingAvailable: true`, `serverName: AutoByteus Desktop`.
+- Fresh-pair setup:
+  - Cleared browser `localStorage` and `sessionStorage` on the `127.0.0.1:3000` origin before the fresh pair attempt.
+  - Created a new remote-access pairing session through `POST /rest/remote-access/pairing-sessions` using `serverBaseUrl: http://127.0.0.1:29695`.
+  - Used mobile browser emulation at 390 × 844 with device scale factor 3.
+  - Injected a temporary in-browser fetch logger only for validation evidence; it delayed `/rest/remote-access/status` by 1300 ms so the transient post-pair checking state could be observed reliably. No repository source or durable validation was added.
+- Fresh pairing result for `MOB-PAIR-001`:
+  - Pairing created backend paired device `device_5e33e42325b0497c742f9b586275e508`.
+  - The UI first showed the unpaired pairing bootstrap.
+  - After tapping `Pair this phone`, `mobile-post-pair-checking` was observed with copy: `PAIRING COMPLETE Checking your desktop Refreshing Phone Access status and mobile work choices before Home opens. Checking status…`.
+  - Stable Home did not appear while the delayed status refresh was pending.
+  - First stable Home sample showed `CURRENT NODE AutoByteus Desktop http://127.0.0.1:29695 Connected`.
+  - No sampled stable Home state rendered `Unknown`.
+- Duplicate/fallback refresh guard evidence:
+  - Successful pair fetch log contained one `POST /rest/remote-access/pairing-exchanges` with HTTP `201` and one `GET /rest/remote-access/status` with HTTP `200`.
+  - The same successful pair also emitted the normal child `paired` event after the authoritative paired-session state changed; only one status refresh was observed, so the watcher and fallback path did not duplicate the post-pair status refresh.
+  - Follow-up samples after Home stayed stable with `Connected` and `mobile-post-pair-checking` absent.
+- Unpair cleanup:
+  - Opened the Home `Unpair` action and confirmed.
+  - UI returned to `mobile-pairing-bootstrap`.
+  - `mobile-post-pair-checking` was absent, Home was absent, and `autobyteus.remote_access.mobile_session.v1` was cleared from local storage.
+- Pairing failure cleanup:
+  - Reused the consumed pairing link after unpairing to force a pairing failure.
+  - UI remained on `mobile-pairing-bootstrap`, showed `Pairing problem`, did not show `mobile-post-pair-checking`, did not show Home, and did not write a mobile session to local storage.
+  - Failure fetch log added one failed `POST /rest/remote-access/pairing-exchanges` with HTTP `400` and no post-pair status refresh.
+- UX/copy feedback recorded:
+  - No redundant blocker or status text was observed in the successful post-pair checking or stable Home path.
+  - Non-blocking polish note: the forced failure path rendered both a local `Pairing problem` panel and the connection diagnostic panel, and both repeated similar recovery messaging. This does not block the Round 3 pairing fix but is worth considering in future mobile error-copy polish.
+- Regression checks:
+  - `pnpm -C autobyteus-web exec vitest run components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts components/workspace/config/__tests__/RunConfigPanel.spec.ts` passed: 5 files / 46 tests.
+  - `pnpm -C autobyteus-web exec vitest run stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts` passed: 3 files / 25 tests.
+  - Repository-wide `pnpm -C autobyteus-web exec nuxi typecheck` remains red from broad existing unrelated issues; filtering `/tmp/mobile-launch-round3-typecheck.log` for changed mobile/composable/store paths emitted no diagnostics.
+- Cleanup:
+  - Revoked temporary paired device `device_5e33e42325b0497c742f9b586275e508` through `DELETE /rest/remote-access/devices/device_5e33e42325b0497c742f9b586275e508`.
+  - Closed the validation browser tab.
+  - Stopped the local Nuxt dev server on port 3000 and verified no remaining listener on that port.

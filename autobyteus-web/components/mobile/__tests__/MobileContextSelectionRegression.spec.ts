@@ -1,22 +1,29 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { createPinia, setActivePinia, type Pinia } from 'pinia';
 import MobileChat from '../MobileChat.vue';
 import MobileComposerContextTray from '../MobileComposerContextTray.vue';
 import MobileRunSetup from '../MobileRunSetup.vue';
+import MobileTeamMemberFocusBar from '../MobileTeamMemberFocusBar.vue';
 import MobileToolActivityList from '../MobileToolActivityList.vue';
+import MobileWorkShell from '../MobileWorkShell.vue';
 import { useMobileFileContextCoordinator } from '~/composables/mobile/useMobileFileContextCoordinator';
+import { useMobileWorkCatalog } from '~/composables/mobile/useMobileWorkCatalog';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentActivityStore, type ToolActivity } from '~/stores/agentActivityStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
+import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
 import type { Conversation } from '~/types/conversation';
 import type { MobileWorkContext } from '~/types/mobileWork';
 import { createWorkspaceContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
@@ -83,6 +90,74 @@ function seedActiveAgentRun(): AgentContext {
   return run;
 }
 
+
+function seedActiveTeamRun(): AgentTeamContext {
+  const leadNode: AgentTeamMemberNode = {
+    memberKind: 'agent',
+    memberName: 'lead',
+    displayName: 'Lead',
+    memberPath: ['lead'],
+    memberRouteKey: 'lead',
+    memberRunId: 'lead-run',
+    agentDefinitionId: 'agent-1',
+  };
+  const reviewerNode: AgentTeamMemberNode = {
+    memberKind: 'agent',
+    memberName: 'reviewer',
+    displayName: 'Reviewer',
+    memberPath: ['reviewer'],
+    memberRouteKey: 'reviewer',
+    memberRunId: 'reviewer-run',
+    agentDefinitionId: 'agent-1',
+  };
+  const context: AgentTeamContext = {
+    teamRunId: 'team-run-1',
+    config: {
+      teamDefinitionId: 'team-1',
+      teamDefinitionName: 'Software Team',
+      runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
+      workspaceId: 'workspace-1',
+      llmModelIdentifier: 'test-model',
+      llmConfig: null,
+      autoExecuteTools: false,
+      skillAccessMode: 'PRELOADED_ONLY',
+      memberOverrides: {},
+      isLocked: false,
+    },
+    memberTree: [leadNode, reviewerNode],
+    memberNodesByRouteKey: new Map([
+      ['lead', leadNode],
+      ['reviewer', reviewerNode],
+    ]),
+    leafAgentContextsByRouteKey: new Map([
+      ['lead', makeAgentContext('lead-run')],
+      ['reviewer', makeAgentContext('reviewer-run')],
+    ]),
+    coordinatorMemberRouteKey: 'lead',
+    historicalHydration: null,
+    focusedMemberRouteKey: 'lead',
+    currentStatus: AgentTeamStatus.Offline,
+    isSubscribed: false,
+    taskPlan: null,
+    taskStatuses: null,
+  };
+  useAgentTeamContextsStore().teams.set(context.teamRunId, context);
+  useAgentSelectionStore().selectRunWithoutShellNavigation(context.teamRunId, 'team');
+  useMobileWorkStore().selectContext({
+    kind: 'team-run',
+    teamRunId: context.teamRunId,
+    teamDefinitionId: 'team-1',
+    title: 'Software Team',
+    summary: 'Existing team run',
+    workspaceRootPath: '/Users/normy/project',
+    focusedMemberRouteKey: 'lead',
+    isActive: true,
+    lastActivityAt: '2026-05-18T16:00:00.000Z',
+    statusLabel: 'Running',
+  }, 'chat');
+  return context;
+}
+
 function seedCatalog(): void {
   useAgentDefinitionStore().agentDefinitions = [
     {
@@ -98,6 +173,7 @@ function seedCatalog(): void {
       toolInvocationPreprocessorNames: [],
       lifecycleProcessorNames: [],
       skillNames: [],
+      defaultLaunchConfig: { runtimeKind: DEFAULT_AGENT_RUNTIME_KIND, llmModelIdentifier: 'test-model', llmConfig: null },
     },
   ];
   useAgentTeamDefinitionStore().agentTeamDefinitions = [
@@ -130,6 +206,10 @@ function mountWithPinia(component: any, options: any = {}) {
     global: {
       ...(options.global ?? {}),
       plugins: [pinia, ...(options.global?.plugins ?? [])],
+      stubs: {
+        RuntimeModelConfigFields: { template: '<div data-testid="runtime-model-config-fields" />' },
+        ...(options.global?.stubs ?? {}),
+      },
     },
   });
 }
@@ -229,6 +309,110 @@ describe('mobile context selection stale-run regression', () => {
       workspaceId: 'workspace-1',
       prompt: 'Use the attached draft context',
     });
+  });
+
+
+  it('updates both team focus and the mobile work context when changing an existing team-run target', async () => {
+    const teamContext = seedActiveTeamRun();
+
+    const wrapper = mountWithPinia(MobileTeamMemberFocusBar, {
+      props: { context: useMobileWorkStore().currentContext },
+    });
+
+    expect(wrapper.get('[data-testid="mobile-team-focus-label"]').text()).toContain('lead');
+
+    await wrapper.get('[data-testid="mobile-team-focus-select-toggle"]').trigger('click');
+    await nextTick();
+    const reviewerOption = wrapper
+      .findAll('[data-testid="mobile-team-focus-select-option"]')
+      .find((option) => option.text().includes('reviewer'));
+    expect(reviewerOption).toBeTruthy();
+    await reviewerOption!.trigger('click');
+    await flushPromises();
+
+    expect(teamContext.focusedMemberRouteKey).toBe('reviewer');
+    const currentContext = useMobileWorkStore().currentContext;
+    expect(currentContext?.kind).toBe('team-run');
+    if (currentContext?.kind === 'team-run') {
+      expect(currentContext.focusedMemberRouteKey).toBe('reviewer');
+    }
+    expect(useMobileWorkStore().getRememberedFocusedTeamMember('team-run-1')).toBe('reviewer');
+  });
+
+  it('hides existing-run Message target on Runs while keeping it on focused work tabs', async () => {
+    seedActiveTeamRun();
+    const wrapper = mountWithPinia(MobileWorkShell, {
+      props: {
+        context: useMobileWorkStore().currentContext,
+        activeTab: 'runs',
+      },
+      global: {
+        stubs: {
+          MobileChat: { template: '<div data-testid="mobile-chat-stub" />' },
+          MobileRuns: { template: '<div data-testid="mobile-runs-stub" />' },
+          MobileFiles: { template: '<div data-testid="mobile-files-stub" />' },
+          MobileActivity: { template: '<div data-testid="mobile-activity-stub" />' },
+        },
+      },
+    });
+
+    expect(wrapper.find('[data-testid="mobile-team-member-focus-bar"]').exists()).toBe(false);
+
+    await wrapper.setProps({ activeTab: 'chat' });
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-team-member-focus-bar"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).toContain('Message target');
+  });
+
+  it('prefers remembered valid team focus when mapping Recent team runs and falls back safely when stale', () => {
+    const runHistoryStore = useRunHistoryStore();
+    runHistoryStore.workspaceGroups = [
+      {
+        workspaceRootPath: '/Users/normy/project',
+        workspaceName: 'project',
+        agentDefinitions: [],
+        teamDefinitions: [
+          {
+            teamDefinitionId: 'team-1',
+            teamDefinitionName: 'Software Team',
+            runs: [
+              {
+                teamRunId: 'team-run-1',
+                teamDefinitionId: 'team-1',
+                teamDefinitionName: 'Software Team',
+                summary: 'Existing team run',
+                lastActivityAt: '2026-05-18T16:00:00.000Z',
+                status: 'Running',
+                lastKnownStatus: 'ACTIVE',
+                isActive: true,
+                coordinatorMemberRouteKey: 'lead',
+                members: [
+                  { memberRouteKey: 'lead', memberName: 'lead', memberRunId: 'lead-run' },
+                  { memberRouteKey: 'reviewer', memberName: 'reviewer', memberRunId: 'reviewer-run' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ] as any;
+
+    const mobileWorkStore = useMobileWorkStore();
+    mobileWorkStore.rememberFocusedTeamMember('team-run-1', 'reviewer');
+    const { recentWorkItems } = useMobileWorkCatalog();
+    const rememberedContext = recentWorkItems.value[0]?.context;
+    expect(rememberedContext?.kind).toBe('team-run');
+    if (rememberedContext?.kind === 'team-run') {
+      expect(rememberedContext.focusedMemberRouteKey).toBe('reviewer');
+    }
+
+    mobileWorkStore.rememberFocusedTeamMember('team-run-1', 'missing-member');
+    const fallbackContext = recentWorkItems.value[0]?.context;
+    expect(fallbackContext?.kind).toBe('team-run');
+    if (fallbackContext?.kind === 'team-run') {
+      expect(fallbackContext.focusedMemberRouteKey).toBe('lead');
+    }
   });
 
   it('does not leak stale run or tool activity into non-run mobile activity contexts', async () => {

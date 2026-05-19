@@ -1,14 +1,34 @@
 <template>
   <main class="min-h-screen bg-slate-100 text-slate-900" data-testid="mobile-remote-access-shell">
-    <MobilePairingBootstrap v-if="!sessionStore.isPaired" @paired="onPaired">
+    <MobilePairingBootstrap
+      v-if="!sessionStore.isPaired"
+      @paired="onPaired"
+      @pairing-failed="cancelPostPairRefresh"
+      @pairing-started="beginPostPairRefresh"
+    >
       <template v-if="unsupportedMessage" #notice>
         <MobileUnsupportedFeatureNotice :message="unsupportedMessage" />
       </template>
     </MobilePairingBootstrap>
 
     <template v-else>
+      <section
+        v-if="isPostPairChecking"
+        class="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-5 py-8 text-center"
+        data-testid="mobile-post-pair-checking"
+      >
+        <div class="rounded-3xl border border-blue-200 bg-white p-6 shadow-sm">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">Pairing complete</p>
+          <h1 class="mt-3 text-2xl font-bold text-slate-950">Checking your desktop</h1>
+          <p class="mt-3 text-sm text-slate-600">
+            Refreshing Phone Access status and mobile work choices before Home opens.
+          </p>
+          <p class="mt-4 text-sm font-semibold text-blue-700">Checking status…</p>
+        </div>
+      </section>
+
       <MobileHome
-        v-if="screen === 'home'"
+        v-else-if="screen === 'home'"
         :server-base-url="sessionStore.serverBaseUrl"
         :status="sessionStore.lastStatus"
         :is-refreshing="sessionStore.isCheckingStatus"
@@ -67,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import MobileContextSwitcher from '~/components/mobile/MobileContextSwitcher.vue';
 import MobileHome from '~/components/mobile/MobileHome.vue';
@@ -110,6 +130,9 @@ type MobileScreen = 'home' | 'work' | 'troubleshooting';
 const screen = ref<MobileScreen>('home');
 const showContextSwitcher = ref(false);
 const showUnpairConfirm = ref(false);
+const isPostPairChecking = ref(false);
+const pendingPostPairRefresh = ref(false);
+const postPairRefreshPromise = ref<Promise<void> | null>(null);
 
 const unsupportedFeatureMessages: Partial<Record<MobileFeatureId, string>> = {
   desktopWorkspace: 'The desktop workspace route is replaced by the phone-first mobile work shell. Use Home, Switch work, and Chat/Runs/Files/Activity instead.',
@@ -189,12 +212,61 @@ function unpairPhone(): void {
   mobileWorkStore.clearContext();
   sessionStore.deleteLocalSession();
   screen.value = 'home';
+  pendingPostPairRefresh.value = false;
+  isPostPairChecking.value = false;
+  postPairRefreshPromise.value = null;
+}
+
+function beginPostPairRefresh(): void {
+  screen.value = 'home';
+  pendingPostPairRefresh.value = true;
+  isPostPairChecking.value = true;
+}
+
+function cancelPostPairRefresh(): void {
+  if (sessionStore.isPaired) {
+    return;
+  }
+  pendingPostPairRefresh.value = false;
+  isPostPairChecking.value = false;
+  postPairRefreshPromise.value = null;
+}
+
+async function completePostPairRefresh(): Promise<void> {
+  if (!sessionStore.isPaired) {
+    return;
+  }
+  beginPostPairRefresh();
+  if (postPairRefreshPromise.value) {
+    return postPairRefreshPromise.value;
+  }
+
+  const refreshPromise = (async () => {
+    try {
+      await checkStatus();
+    } finally {
+      pendingPostPairRefresh.value = false;
+      isPostPairChecking.value = false;
+      postPairRefreshPromise.value = null;
+    }
+  })();
+  postPairRefreshPromise.value = refreshPromise;
+  return refreshPromise;
 }
 
 async function onPaired(): Promise<void> {
-  await checkStatus();
-  screen.value = 'home';
+  await completePostPairRefresh();
 }
+
+watch(() => sessionStore.isPaired, (isPaired, wasPaired) => {
+  if (isPaired && pendingPostPairRefresh.value) {
+    void completePostPairRefresh();
+    return;
+  }
+  if (!isPaired && wasPaired) {
+    cancelPostPairRefresh();
+  }
+});
 
 onMounted(async () => {
   sessionStore.initializeFromStorage();
