@@ -1,0 +1,112 @@
+# Base integration merge after checkpoint — 2026-05-18
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status
+head_before=44a4fb2681950bd3f46c50fcc2487806f6b720b9
+origin_personal=83d077d3f035f8517a80dd2a8470fa819e835f20
+ahead_behind_before=1	3
+--- git merge origin/personal --no-edit ---
+Merge made by the 'ort' strategy.
+ .../agent-tools/browser/browser-bridge-client.ts   |   9 +
+ .../agent-tools/browser/browser-tool-contract.ts   |  44 ++
+ .../browser/browser-tool-input-parsers.ts          |  35 +
+ .../browser/browser-tool-input-primitives.ts       |  18 +
+ .../agent-tools/browser/browser-tool-manifest.ts   |  56 ++
+ .../browser/browser-tool-parameter-schemas.ts      |   4 +
+ .../browser/browser-tool-semantic-validators.ts    |  72 ++
+ .../agent-tools/browser/browser-tool-service.ts    |  11 +
+ .../agent-tools/browser/register-browser-tools.ts  |   2 +
+ .../agent-tools/browser/set-device-emulation.ts    |  74 ++
+ .../browser-bridge-live-test-server.ts             |  54 +-
+ ...e-agent-run-backend-factory.integration.test.ts |   3 +
+ ...x-agent-run-backend-factory.integration.test.ts |   3 +
+ .../build-claude-browser-mcp-servers.test.ts       |  50 +-
+ ...uild-browser-dynamic-tool-registrations.test.ts |  43 +-
+ .../browser/browser-bridge-client.test.ts          |  49 ++
+ .../browser/browser-tool-contract.test.ts          |   6 +
+ .../browser/browser-tool-input-parsers.test.ts     |  29 +
+ .../browser-tool-semantic-validators.test.ts       |  37 +
+ .../browser/register-browser-tools.test.ts         |   8 +
+ .../components/workspace/tools/BrowserPanel.vue    |  41 +-
+ .../workspace/tools/__tests__/BrowserPanel.spec.ts |  76 +-
+ autobyteus-web/docs/browser_sessions.md            |  38 +-
+ .../__tests__/browser-shell-controller.spec.ts     |  71 ++
+ .../browser/__tests__/browser-tab-manager.spec.ts  | 165 ++++
+ .../electron/browser/browser-bridge-server.ts      |  19 +-
+ .../electron/browser/browser-device-emulation.ts   | 166 ++++
+ .../electron/browser/browser-shell-controller.ts   |  49 +-
+ .../electron/browser/browser-tab-manager.ts        | 134 ++--
+ .../browser/browser-tab-page-operations.ts         |  40 +-
+ .../electron/browser/browser-tab-types.ts          |  35 +
+ .../browser/register-browser-shell-ipc-handlers.ts |   9 +
+ autobyteus-web/electron/preload.ts                 |   3 +
+ .../shell/__tests__/workspace-shell-window.spec.ts | 116 +++
+ .../electron/shell/workspace-shell-window.ts       |   2 -
+ autobyteus-web/electron/types.d.ts                 |   4 +
+ .../messages/en/workspace.generated.ts             |   3 +
+ .../messages/zh-CN/workspace.generated.ts          |   3 +
+ .../stores/__tests__/browserShellStore.spec.ts     |  58 ++
+ autobyteus-web/stores/browserShellStore.ts         |  68 +-
+ autobyteus-web/types/browserShell.ts               |  26 +
+ autobyteus-web/types/electron.d.ts                 |  20 +
+ .../api-e2e-validation-report.md                   | 300 ++++++++
+ .../design-impact-mobile-device-presentation.md    |  48 ++
+ .../design-review-report.md                        | 203 +++++
+ .../browser-mobile-view-support/design-spec.md     | 340 +++++++++
+ .../docs-sync-report.md                            |  65 ++
+ .../electron-test-build-report.md                  |  90 +++
+ .../evidence/real-electron-browser-mobile-e2e.json | 789 +++++++++++++++++++
+ .../real-electron-browser-mobile-e2e-round2.json   | 328 ++++++++
+ ...electron-round2-presentation-failure-probe.json | 195 +++++
+ .../round2/screenshots/6535eb-1779130210883.png    | Bin 0 -> 26825 bytes
+ .../round2/screenshots/6535eb-1779130211036.png    | Bin 0 -> 36901 bytes
+ .../real-electron-browser-mobile-e2e-round3.json   | 849 +++++++++++++++++++++
+ ...electron-round3-presentation-failure-probe.json | 303 ++++++++
+ .../round3/screenshots/8821a0-1779131113163.png    | Bin 0 -> 27018 bytes
+ .../round3/screenshots/8821a0-1779131113311.png    | Bin 0 -> 37095 bytes
+ .../round3/screenshots/8821a0-1779131113853.png    | Bin 0 -> 14310 bytes
+ .../round3/screenshots/8821a0-1779131113996.png    | Bin 0 -> 28404 bytes
+ .../evidence/screenshots/e32e9e-1779126100624.png  | Bin 0 -> 30046 bytes
+ .../evidence/screenshots/e32e9e-1779126101517.png  | Bin 0 -> 30279 bytes
+ .../evidence/screenshots/e32e9e-1779126101831.png  | Bin 0 -> 47797 bytes
+ .../browser-mobile-view-support/handoff-summary.md | 176 +++++
+ .../implementation-handoff.md                      | 182 +++++
+ .../investigation-notes.md                         | 158 ++++
+ .../release-deployment-report.md                   | 137 ++++
+ .../browser-mobile-view-support/release-notes.md   |  11 +
+ .../browser-mobile-view-support/requirements.md    | 124 +++
+ .../browser-mobile-view-support/review-report.md   | 171 +++++
+ 69 files changed, 6102 insertions(+), 120 deletions(-)
+ create mode 100644 autobyteus-server-ts/src/agent-tools/browser/set-device-emulation.ts
+ create mode 100644 autobyteus-web/electron/browser/browser-device-emulation.ts
+ create mode 100644 autobyteus-web/electron/shell/__tests__/workspace-shell-window.spec.ts
+ create mode 100644 tickets/done/browser-mobile-view-support/api-e2e-validation-report.md
+ create mode 100644 tickets/done/browser-mobile-view-support/design-impact-mobile-device-presentation.md
+ create mode 100644 tickets/done/browser-mobile-view-support/design-review-report.md
+ create mode 100644 tickets/done/browser-mobile-view-support/design-spec.md
+ create mode 100644 tickets/done/browser-mobile-view-support/docs-sync-report.md
+ create mode 100644 tickets/done/browser-mobile-view-support/electron-test-build-report.md
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/real-electron-browser-mobile-e2e.json
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/round2/real-electron-browser-mobile-e2e-round2.json
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/round2/real-electron-round2-presentation-failure-probe.json
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/round2/screenshots/6535eb-1779130210883.png
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/round2/screenshots/6535eb-1779130211036.png
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/round3/real-electron-browser-mobile-e2e-round3.json
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/round3/real-electron-round3-presentation-failure-probe.json
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/round3/screenshots/8821a0-1779131113163.png
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/round3/screenshots/8821a0-1779131113311.png
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/round3/screenshots/8821a0-1779131113853.png
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/round3/screenshots/8821a0-1779131113996.png
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/screenshots/e32e9e-1779126100624.png
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/screenshots/e32e9e-1779126101517.png
+ create mode 100644 tickets/done/browser-mobile-view-support/evidence/screenshots/e32e9e-1779126101831.png
+ create mode 100644 tickets/done/browser-mobile-view-support/handoff-summary.md
+ create mode 100644 tickets/done/browser-mobile-view-support/implementation-handoff.md
+ create mode 100644 tickets/done/browser-mobile-view-support/investigation-notes.md
+ create mode 100644 tickets/done/browser-mobile-view-support/release-deployment-report.md
+ create mode 100644 tickets/done/browser-mobile-view-support/release-notes.md
+ create mode 100644 tickets/done/browser-mobile-view-support/requirements.md
+ create mode 100644 tickets/done/browser-mobile-view-support/review-report.md
+merge_exit_status=0
+head_after=300cd30b8dd0b612742ae2151e88ae478bbb5ee7
+ahead_behind_after=2	0
+--- git status --short after merge ---
+?? tickets/in-progress/individual-agent-initializing-status/delivery-checks/base-merge-command-correlated-20260518.log

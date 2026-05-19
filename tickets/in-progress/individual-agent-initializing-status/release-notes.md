@@ -10,3 +10,7 @@
 ## Fixes
 - Fixed the standalone offline/inactive send lifecycle gap where the frontend had to restore runtime before any backend-owned `Initializing` status could be observed.
 - Preserved backend runtime status authority: live runtime status replaces command-level `Initializing` or `Error` overlays once available.
+- Fixed a restored inactive standalone resend flicker by keeping runtime readiness/restored snapshots internal until command-correlated status evidence arrives.
+
+## Validation
+- Added durable E2E coverage for the `offline -> initializing -> running` resend sequence through the production websocket route.

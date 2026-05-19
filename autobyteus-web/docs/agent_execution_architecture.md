@@ -117,7 +117,11 @@ When the backend accepts a standalone `SEND_MESSAGE` command for an inactive or
 prepared run identity, `AgentRunCommandCoordinator` is responsible for
 publishing non-interruptible `initializing` before slow restore/start/activation
 work; the frontend displays that streamed status or `AGENT_COMMAND_ACK.status`
-instead of inventing a lifecycle placeholder. When the backend accepts a
+instead of inventing a lifecycle placeholder. Restored runtime readiness or a
+restored status snapshot is not a frontend-visible replacement for this
+overlay; keep showing backend `initializing` until command-correlated
+`TURN_STARTED`, `AGENT_STATUS`, terminal/error, or coordinator failure evidence
+arrives. When the backend accepts a
 focused team-member command for an `offline` or `idle` member, the team backend
 publishes member-scoped non-interruptible `initializing` before slow member
 startup/send work.

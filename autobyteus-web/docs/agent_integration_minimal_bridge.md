@@ -74,7 +74,9 @@ These handlers update the agent context and mark messages complete. In the curre
   `initializing` before slow restore/start/activation or first-turn send work.
   Client bridges should display streamed `AGENT_STATUS` and any
   `AGENT_COMMAND_ACK.status`; keep local `isSending` as submit-flight state
-  only.
+  only. Do not treat restored runtime readiness or restored status snapshots
+  as visible overlay replacement; wait for command-correlated `TURN_STARTED`,
+  `AGENT_STATUS`, terminal/error, or coordinator failure evidence.
 - `AGENT_COMMAND_ACK` confirms standalone command state. Same-`message_id`
   retries are idempotent duplicates; a different in-flight command can be
   rejected with `RUN_COMMAND_IN_PROGRESS`. Rejected or failed acknowledgements
