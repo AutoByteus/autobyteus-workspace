@@ -5,6 +5,13 @@
  * autobyteus-server/docs/design/agent_websocket_streaming_protocol.md
  */
 
+import type { AgentCommandAckPayload } from './agentCommandTypes';
+export type { AgentCommandAckPayload } from './agentCommandTypes';
+import type { CompactionStatusPayload } from './compactionTypes';
+export type { CompactionStatusPayload } from './compactionTypes';
+import type { ExternalUserMessagePayload } from './externalUserMessageTypes';
+export type { ExternalUserMessageContextFilePathPayload, ExternalUserMessagePayload } from './externalUserMessageTypes';
+
 // ============================================================================
 // Server → Client Message Types
 // ============================================================================
@@ -19,6 +26,7 @@ export type ServerMessageType =
   | 'SEGMENT_END'
   | 'EXTERNAL_USER_MESSAGE'
   | 'AGENT_STATUS'
+  | 'AGENT_COMMAND_ACK'
   | 'COMPACTION_STATUS'
   | 'TEAM_STATUS'
   | 'TOOL_APPROVAL_REQUESTED'
@@ -111,59 +119,6 @@ export interface AgentStatusPayload {
   tool_name?: string | null;
   error_message?: string | null;
   error_details?: string | null;
-}
-
-export interface CompactionStatusPayload {
-  phase: 'requested' | 'started' | 'completed' | 'failed';
-  turn_id?: string | null;
-  selected_block_count?: number | null;
-  compacted_block_count?: number | null;
-  raw_trace_count?: number | null;
-  semantic_fact_count?: number | null;
-  compaction_agent_definition_id?: string | null;
-  compaction_agent_name?: string | null;
-  compaction_runtime_kind?: string | null;
-  compaction_model_identifier?: string | null;
-  compaction_run_id?: string | null;
-  compaction_task_id?: string | null;
-  error_message?: string | null;
-  agent_id?: string;
-  agent_name?: string;
-  member_route_key?: string;
-  member_path?: string[];
-  source_route_key?: string;
-  source_path?: string[];
-}
-
-export interface ExternalUserMessageContextFilePathPayload {
-  path: string;
-  type?: 'Audio' | 'Csv' | 'Docx' | 'Html' | 'Image' | 'Javascript' | 'Json' | 'Markdown' | 'Pdf' | 'Pptx' | 'Python' | 'Text' | 'Unknown' | 'Video' | 'Xlsx' | 'Xml';
-}
-
-export interface ExternalUserMessagePayload {
-  content: string;
-  received_at?: string | null;
-  message_id?: string | null;
-  dedupe_key?: string | null;
-  input_origin?: 'user_message' | 'inter_agent_delivery' | string | null;
-  provider?: string | null;
-  transport?: string | null;
-  account_id?: string | null;
-  peer_id?: string | null;
-  thread_id?: string | null;
-  external_message_id?: string | null;
-  context_file_paths?: ExternalUserMessageContextFilePathPayload[];
-  agent_name?: string;
-  agent_id?: string;
-  member_route_key?: string;
-  member_path?: string[];
-  source_route_key?: string;
-  source_path?: string[];
-  sender_agent_id?: string | null;
-  sender_agent_name?: string | null;
-  sender_member_route_key?: string | null;
-  sender_member_path?: string[] | null;
-  parent_communication_message_id?: string | null;
 }
 
 export interface TeamStatusPayload {
@@ -441,6 +396,7 @@ export type ServerMessage =
   | { type: 'SEGMENT_END'; payload: SegmentEndPayload }
   | { type: 'EXTERNAL_USER_MESSAGE'; payload: ExternalUserMessagePayload }
   | { type: 'AGENT_STATUS'; payload: AgentStatusPayload }
+  | { type: 'AGENT_COMMAND_ACK'; payload: AgentCommandAckPayload }
   | { type: 'COMPACTION_STATUS'; payload: CompactionStatusPayload }
   | { type: 'TEAM_STATUS'; payload: TeamStatusPayload }
   | { type: 'TOOL_APPROVAL_REQUESTED'; payload: ToolApprovalRequestedPayload }

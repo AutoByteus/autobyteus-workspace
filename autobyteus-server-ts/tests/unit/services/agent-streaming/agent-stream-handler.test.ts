@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { type AgentEventStream } from "autobyteus-ts";
 import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRun } from "../../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../../src/agent-execution/domain/agent-run-config.js";
@@ -16,24 +15,25 @@ import {
   ServerMessageType,
 } from "../../../../src/services/agent-streaming/models.js";
 
-const createStream = (events: StreamEvent[]): AgentEventStream => {
-  const allEvents = async function* () {
-    for (const event of events) {
-      yield event;
-      await new Promise((resolve) => setImmediate(resolve));
-    }
-  };
-
-  return {
-    allEvents,
-    close: vi.fn().mockResolvedValue(undefined),
-  } as unknown as AgentEventStream;
-};
-
 const flush = async () => {
   await Promise.resolve();
   await Promise.resolve();
 };
+
+const buildProjection = (overrides: Record<string, unknown> = {}) => ({
+  status: "running",
+  canInterrupt: true,
+  isActive: true,
+  shouldConnectStream: true,
+  lastKnownStatus: "ACTIVE",
+  statusSource: "ACTIVE_RUNTIME",
+  statusPayload: { status: "running", can_interrupt: true, agent_id: "agent-123" },
+  ...overrides,
+});
+
+const createStatusProjectionService = (projection = buildProjection()) => ({
+  getRunStatusProjection: vi.fn().mockResolvedValue(projection),
+});
 
 describe("AgentStreamHandler", () => {
   const createActiveRun = (overrides: Record<string, unknown> = {}) => ({
@@ -41,15 +41,7 @@ describe("AgentStreamHandler", () => {
     runtimeKind: "autobyteus",
     isActive: vi.fn().mockReturnValue(true),
     getStatusSnapshot: vi.fn().mockReturnValue({ status: "running", can_interrupt: true }),
-    subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
-      const stream = createStream([]);
-      void (async () => {
-        for await (const event of stream.allEvents()) {
-          listener(event);
-        }
-      })();
-      return () => {};
-    }),
+    subscribeToEvents: vi.fn((_listener: (event: unknown) => void) => () => {}),
     postUserMessage: vi.fn().mockResolvedValue({ accepted: true, runtimeKind: "autobyteus" }),
     approveToolInvocation: vi
       .fn()
@@ -59,19 +51,41 @@ describe("AgentStreamHandler", () => {
   });
 
   const createAgentRunService = (
-    activeRun: ReturnType<typeof createActiveRun> | null,
+    activeRun: ReturnType<typeof createActiveRun> | AgentRun | null,
+  ) => ({
+    getAgentRun: vi.fn().mockReturnValue(activeRun),
+    restoreAgentRun: vi.fn(),
+    activatePreparedRun: vi.fn(),
+    recordRunActivity: vi.fn().mockResolvedValue(undefined),
+  });
+
+  const createCommandCoordinator = (
     options: {
-      activeRun?: ReturnType<typeof createActiveRun> | null;
-      resolvedRun?: ReturnType<typeof createActiveRun> | null;
+      activeRun?: ReturnType<typeof createActiveRun> | AgentRun | null;
+      onPost?: (input: any) => Promise<any> | any;
     } = {},
   ) => ({
-    getAgentRun: vi.fn().mockReturnValue(
-      "activeRun" in options ? options.activeRun : activeRun,
-    ),
-    resolveAgentRun: vi.fn().mockResolvedValue(
-      "resolvedRun" in options ? options.resolvedRun : activeRun,
-    ),
-    recordRunActivity: vi.fn().mockResolvedValue(undefined),
+    postUserMessage: vi.fn(async (input: any) => {
+      if (options.onPost) {
+        return options.onPost(input);
+      }
+      if (options.activeRun) {
+        input.onActiveRunReady?.(options.activeRun);
+      }
+      return {
+        ack: {
+          command_type: "SEND_MESSAGE",
+          run_id: input.runId,
+          message_id: input.messageId,
+          dedupe_key: input.dedupeKey,
+          state: "accepted",
+          accepted: true,
+          duplicate: false,
+          status: { status: "running", can_interrupt: true, agent_id: input.runId },
+        },
+        turnId: "turn-1",
+      };
+    }),
   });
 
   it("parses valid messages", () => {
@@ -93,14 +107,26 @@ describe("AgentStreamHandler", () => {
     );
   });
 
-  it("connects and sends CONNECTED message", async () => {
+  it("connects to a run identity and sends CONNECTED plus projected status without restoring runtime", async () => {
     const sessionManager = new AgentSessionManager();
-    const activeRun = createActiveRun();
-    const agentRunService = createAgentRunService(null, {
-      activeRun: null,
-      resolvedRun: activeRun,
-    });
-    const handler = new AgentStreamHandler(sessionManager, agentRunService as any);
+    const agentRunService = createAgentRunService(null);
+    const statusProjectionService = createStatusProjectionService(buildProjection({
+      status: "offline",
+      canInterrupt: false,
+      isActive: false,
+      shouldConnectStream: false,
+      lastKnownStatus: "IDLE",
+      statusSource: "HISTORICAL_METADATA",
+      statusPayload: { status: "offline", can_interrupt: false, agent_id: "agent-123" },
+    }));
+    const handler = new AgentStreamHandler(
+      sessionManager,
+      agentRunService as any,
+      getAgentRunEventMessageMapper(),
+      undefined,
+      createCommandCoordinator() as any,
+      statusProjectionService as any,
+    );
     const connection = {
       send: vi.fn(),
       close: vi.fn(),
@@ -110,20 +136,37 @@ describe("AgentStreamHandler", () => {
 
     expect(sessionId).toBeTruthy();
     expect(sessionManager.getSession(sessionId as string)).toBeDefined();
-    expect(agentRunService.resolveAgentRun).toHaveBeenCalledWith("agent-123");
-    expect(agentRunService.getAgentRun).not.toHaveBeenCalled();
+    expect(statusProjectionService.getRunStatusProjection).toHaveBeenCalledWith("agent-123");
+    expect(agentRunService.getAgentRun).toHaveBeenCalledWith("agent-123");
+    expect(agentRunService.restoreAgentRun).not.toHaveBeenCalled();
+    expect(agentRunService.activatePreparedRun).not.toHaveBeenCalled();
 
-    const payload = JSON.parse(connection.send.mock.calls[0][0]);
-    expect(payload.type).toBe(ServerMessageType.CONNECTED);
-    expect(payload.payload.agent_id).toBe("agent-123");
-    expect(payload.payload.session_id).toBe(sessionId);
+    const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
+    expect(messages).toEqual([
+      expect.objectContaining({
+        type: ServerMessageType.CONNECTED,
+        payload: expect.objectContaining({ agent_id: "agent-123", session_id: sessionId }),
+      }),
+      {
+        type: ServerMessageType.AGENT_STATUS,
+        payload: { status: "offline", can_interrupt: false, agent_id: "agent-123" },
+      },
+    ]);
   });
 
-  it("closes with 4004 when agent is missing", async () => {
+  it("closes with 4004 when agent identity is missing", async () => {
     const agentRunService = createAgentRunService(null);
+    const statusProjectionService = createStatusProjectionService(buildProjection({
+      statusSource: "MISSING",
+      statusPayload: { status: "offline", can_interrupt: false, agent_id: "missing-agent" },
+    }));
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
       agentRunService as any,
+      undefined,
+      undefined,
+      createCommandCoordinator() as any,
+      statusProjectionService as any,
     );
 
     const connection = {
@@ -134,7 +177,8 @@ describe("AgentStreamHandler", () => {
     const sessionId = await handler.connect(connection, "missing-agent");
 
     expect(sessionId).toBeNull();
-    expect(agentRunService.resolveAgentRun).toHaveBeenCalledWith("missing-agent");
+    expect(statusProjectionService.getRunStatusProjection).toHaveBeenCalledWith("missing-agent");
+    expect(agentRunService.getAgentRun).not.toHaveBeenCalled();
     expect(connection.close).toHaveBeenCalledWith(4004);
 
     const payload = JSON.parse(connection.send.mock.calls[0][0]);
@@ -142,7 +186,7 @@ describe("AgentStreamHandler", () => {
     expect(payload.payload.code).toBe("AGENT_NOT_FOUND");
   });
 
-  it("connects to run events through the AgentRun subject for runtime-managed runs", async () => {
+  it("connects to run events through the AgentRun subject for active runtime-managed runs", async () => {
     const unsubscribe = vi.fn();
     const activeRun = createActiveRun({
       runtimeKind: "codex_app_server",
@@ -154,6 +198,9 @@ describe("AgentStreamHandler", () => {
       new AgentSessionManager(),
       agentRunService as any,
       getAgentRunEventMessageMapper(),
+      undefined,
+      createCommandCoordinator({ activeRun }) as any,
+      createStatusProjectionService() as any,
     );
     const connection = {
       send: vi.fn(),
@@ -191,6 +238,9 @@ describe("AgentStreamHandler", () => {
       new AgentSessionManager(),
       agentRunService as any,
       getAgentRunEventMessageMapper(),
+      undefined,
+      createCommandCoordinator({ activeRun }) as any,
+      createStatusProjectionService() as any,
     );
     const connection = {
       send: vi.fn(),
@@ -200,7 +250,6 @@ describe("AgentStreamHandler", () => {
     await handler.connect(connection, "runtime-run-2");
     await flush();
 
-    expect(connection.send).toHaveBeenCalledTimes(3);
     const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
     expect(messages).toContainEqual(expect.objectContaining({
       type: ServerMessageType.SEGMENT_CONTENT,
@@ -210,6 +259,8 @@ describe("AgentStreamHandler", () => {
         segment_type: "text",
       }),
     }));
+    expect(messages).toContainEqual(expect.objectContaining({ type: ServerMessageType.CONNECTED }));
+    expect(messages).toContainEqual(expect.objectContaining({ type: ServerMessageType.AGENT_STATUS }));
   });
 
   it("maps turn lifecycle AgentRunEvents directly to websocket messages", async () => {
@@ -234,6 +285,9 @@ describe("AgentStreamHandler", () => {
       new AgentSessionManager(),
       agentRunService as any,
       getAgentRunEventMessageMapper(),
+      undefined,
+      createCommandCoordinator({ activeRun }) as any,
+      createStatusProjectionService() as any,
     );
     const connection = {
       send: vi.fn(),
@@ -243,7 +297,6 @@ describe("AgentStreamHandler", () => {
     await handler.connect(connection, "runtime-run-3");
     await flush();
 
-    expect(connection.send).toHaveBeenCalledTimes(3);
     const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
     expect(messages).toContainEqual(expect.objectContaining({
       type: ServerMessageType.TURN_COMPLETED,
@@ -264,6 +317,8 @@ describe("AgentStreamHandler", () => {
       agentRunService as any,
       undefined,
       broadcaster,
+      createCommandCoordinator({ activeRun }) as any,
+      createStatusProjectionService() as any,
     );
     const connection = {
       send: vi.fn(),
@@ -333,11 +388,18 @@ describe("AgentStreamHandler", () => {
       context,
       backend: backend as any,
     });
-    const agentRunService = createAgentRunService(activeRun as any);
+    const agentRunService = createAgentRunService(activeRun);
     const handler = new AgentStreamHandler(
       sessionManager,
       agentRunService as any,
       getAgentRunEventMessageMapper(),
+      undefined,
+      createCommandCoordinator({ activeRun }) as any,
+      createStatusProjectionService(buildProjection({
+        status: "idle",
+        canInterrupt: false,
+        statusPayload: { status: "idle", can_interrupt: false, agent_id: runId },
+      })) as any,
     );
     const connection = {
       send: vi.fn(),
@@ -362,12 +424,20 @@ describe("AgentStreamHandler", () => {
     expect(connection.close).not.toHaveBeenCalled();
   });
 
-  it("handles SEND_MESSAGE and forwards to the live AgentRun subject", async () => {
+  it("handles SEND_MESSAGE through the command coordinator and returns an ACK", async () => {
     const activeRun = createActiveRun();
     const agentRunService = createAgentRunService(activeRun);
+    const commandCoordinator = createCommandCoordinator({ activeRun });
 
     const sessionManager = new AgentSessionManager();
-    const handler = new AgentStreamHandler(sessionManager, agentRunService as any);
+    const handler = new AgentStreamHandler(
+      sessionManager,
+      agentRunService as any,
+      undefined,
+      undefined,
+      commandCoordinator as any,
+      createStatusProjectionService() as any,
+    );
 
     const connection = {
       send: vi.fn(),
@@ -384,70 +454,98 @@ describe("AgentStreamHandler", () => {
           content: "Hello world",
           context_file_paths: ["/a.py"],
           image_urls: ["https://example.com/img.png"],
+          message_id: "client-msg-1",
+          dedupe_key: "agent_run_input:agent-123:client-msg-1",
         },
       }),
     );
 
-    expect(activeRun.postUserMessage).toHaveBeenCalledTimes(1);
-    const message = activeRun.postUserMessage.mock.calls[0][0];
-    expect(message.content).toBe("Hello world");
-    expect(agentRunService.recordRunActivity).toHaveBeenCalledWith(
-      activeRun,
-      expect.objectContaining({
-        summary: "Hello world",
-        lastKnownStatus: "ACTIVE",
+    expect(commandCoordinator.postUserMessage).toHaveBeenCalledTimes(1);
+    const input = commandCoordinator.postUserMessage.mock.calls[0][0];
+    expect(input).toMatchObject({
+      runId: "agent-123",
+      messageId: "client-msg-1",
+      dedupeKey: "agent_run_input:agent-123:client-msg-1",
+      summary: "Hello world",
+    });
+    expect(input.message.content).toBe("Hello world");
+    expect(input.message.contextFiles.map((file: any) => file.toDict())).toEqual([
+      expect.objectContaining({ uri: "/a.py" }),
+      expect.objectContaining({ uri: "https://example.com/img.png", file_type: "image" }),
+    ]);
+
+    const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
+    expect(messages).toContainEqual(expect.objectContaining({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: expect.objectContaining({
+        accepted: true,
+        message_id: "client-msg-1",
+        dedupe_key: "agent_run_input:agent-123:client-msg-1",
       }),
-    );
+    }));
   });
 
-  it("restores and rebinds an agent run before SEND_MESSAGE when the active subject was removed", async () => {
-    const initialRun = createActiveRun({
-      subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
-    });
+  it("defers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator", async () => {
     const restoredRun = createActiveRun({
-      postUserMessage: vi.fn().mockResolvedValue({ accepted: true, runtimeKind: "autobyteus" }),
       subscribeToEvents: vi.fn().mockReturnValue(vi.fn()),
     });
-    const agentRunService = createAgentRunService(null, {
-      activeRun: null,
-      resolvedRun: initialRun,
-    });
-    agentRunService.resolveAgentRun
-      .mockResolvedValueOnce(initialRun)
-      .mockResolvedValueOnce(restoredRun);
-    const handler = new AgentStreamHandler(new AgentSessionManager(), agentRunService as any);
+    const agentRunService = createAgentRunService(null);
+    const commandCoordinator = createCommandCoordinator({ activeRun: restoredRun });
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(),
+      agentRunService as any,
+      undefined,
+      undefined,
+      commandCoordinator as any,
+      createStatusProjectionService(buildProjection({
+        status: "offline",
+        canInterrupt: false,
+        isActive: false,
+        shouldConnectStream: false,
+        lastKnownStatus: "IDLE",
+        statusSource: "PREPARED_IDENTITY",
+        statusPayload: { status: "offline", can_interrupt: false, agent_id: "agent-123" },
+      })) as any,
+    );
     const connection = {
       send: vi.fn(),
       close: vi.fn(),
     };
 
     const sessionId = await handler.connect(connection, "agent-123");
+    expect(sessionId).toBeTruthy();
+    expect(restoredRun.subscribeToEvents).not.toHaveBeenCalled();
+
     await handler.handleMessage(
       sessionId as string,
       JSON.stringify({
         type: ClientMessageType.SEND_MESSAGE,
         payload: {
           content: "resume agent",
+          message_id: "client-msg-1",
+          dedupe_key: "agent_run_input:agent-123:client-msg-1",
         },
       }),
     );
 
-    expect(agentRunService.resolveAgentRun).toHaveBeenCalledTimes(2);
-    expect(restoredRun.postUserMessage).toHaveBeenCalledTimes(1);
-    expect(initialRun.postUserMessage).not.toHaveBeenCalled();
+    expect(commandCoordinator.postUserMessage).toHaveBeenCalledTimes(1);
     expect(restoredRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
-    expect(agentRunService.recordRunActivity).toHaveBeenCalledWith(
-      restoredRun,
-      expect.objectContaining({
-        summary: "resume agent",
-      }),
-    );
+    expect(agentRunService.restoreAgentRun).not.toHaveBeenCalled();
+    expect(agentRunService.activatePreparedRun).not.toHaveBeenCalled();
   });
 
-  it("keeps interrupt-generation active-only and does not restore a stopped agent run", async () => {
+  it("keeps interrupt-generation active-only and does not activate a stopped agent run", async () => {
     const activeRun = createActiveRun();
     const agentRunService = createAgentRunService(activeRun);
-    const handler = new AgentStreamHandler(new AgentSessionManager(), agentRunService as any);
+    const commandCoordinator = createCommandCoordinator();
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(),
+      agentRunService as any,
+      undefined,
+      undefined,
+      commandCoordinator as any,
+      createStatusProjectionService() as any,
+    );
     const connection = {
       send: vi.fn(),
       close: vi.fn(),
@@ -455,7 +553,6 @@ describe("AgentStreamHandler", () => {
 
     const sessionId = await handler.connect(connection, "agent-123");
     agentRunService.getAgentRun.mockReturnValue(null);
-    agentRunService.resolveAgentRun.mockClear();
 
     await handler.handleMessage(
       sessionId as string,
@@ -464,16 +561,23 @@ describe("AgentStreamHandler", () => {
       }),
     );
 
-    expect(agentRunService.resolveAgentRun).not.toHaveBeenCalled();
+    expect(commandCoordinator.postUserMessage).not.toHaveBeenCalled();
     expect(activeRun.interrupt).not.toHaveBeenCalled();
   });
 
-  it("handles tool approvals", async () => {
+  it("handles tool approvals for active sessions", async () => {
     const activeRun = createActiveRun();
     const agentRunService = createAgentRunService(activeRun);
 
     const sessionManager = new AgentSessionManager();
-    const handler = new AgentStreamHandler(sessionManager, agentRunService as any);
+    const handler = new AgentStreamHandler(
+      sessionManager,
+      agentRunService as any,
+      undefined,
+      undefined,
+      createCommandCoordinator({ activeRun }) as any,
+      createStatusProjectionService() as any,
+    );
 
     const connection = {
       send: vi.fn(),
@@ -495,11 +599,17 @@ describe("AgentStreamHandler", () => {
 
   it("ignores messages for unknown sessions", async () => {
     const agentRunService = createAgentRunService(null);
+    const commandCoordinator = createCommandCoordinator();
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
       agentRunService as any,
+      undefined,
+      undefined,
+      commandCoordinator as any,
+      createStatusProjectionService() as any,
     );
 
     await handler.handleMessage("missing", JSON.stringify({ type: ClientMessageType.SEND_MESSAGE }));
+    expect(commandCoordinator.postUserMessage).not.toHaveBeenCalled();
   });
 });

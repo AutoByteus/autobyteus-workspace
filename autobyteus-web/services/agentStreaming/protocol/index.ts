@@ -11,6 +11,7 @@ export type {
   SegmentEndPayload,
   ExternalUserMessagePayload,
   AgentStatusPayload,
+  AgentCommandAckPayload,
   CompactionStatusPayload,
   TeamStatusPayload,
   ToolApprovalRequestedPayload,

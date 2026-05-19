@@ -23,21 +23,26 @@ This document explains the minimal set of frontend pieces required to integrate 
 ### 1) GraphQL sender
 A tiny wrapper that sends `sendAgentUserInput` and returns `runId`.
 
-Required fields for a new agent run:
+Required fields to prepare a new agent run identity:
 - `agentDefinitionId` (string)
 - `llmModelIdentifier` (string)
-- `userInput.content` (string)
+- `runtimeKind` (string)
+- `workspaceRootPath` (string)
+- optional `initialSummary` (string)
 
 ### 2) Agent run store
 Orchestrates:
 - creating a temporary context
-- calling the GraphQL mutation
-- opening the WebSocket stream
+- calling `PrepareAgentRun` for new runs to get a durable prepared `runId`
+  before attachment finalization and streaming
+- opening the WebSocket stream for the durable `runId`
 - tracking local submit-in-flight state, backend status, interrupt authority, and completion
 - beginning the local user submission immediately after validation: append the
   user message, clear the composer/staged files, set `isSending`, and later
   reconcile finalized attachment locators onto that same message rather than
   adding a duplicate
+- sending `SEND_MESSAGE` with a stable `message_id` and `dedupe_key`; do not
+  call `RestoreAgentRun` as a standalone send precondition
 
 ### 3) Streaming service + protocol
 A WebSocket client that:
@@ -53,6 +58,7 @@ Minimal handler set:
 - `TURN_STARTED`
 - `TURN_COMPLETED`
 - `AGENT_STATUS`
+- `AGENT_COMMAND_ACK`
 - `ASSISTANT_COMPLETE`
 - `ERROR`
 
@@ -62,10 +68,19 @@ These handlers update the agent context and mark messages complete. In the curre
 - `AGENT_STATUS` is run-level state with payload
   `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
   It does not contain legacy transition-field names.
-- After an accepted message command for an `offline` or `idle` run, the backend
-  publishes non-interruptible `initializing` before slow provider/native startup
-  or first-turn send work. Client bridges should display that streamed
-  `AGENT_STATUS` and keep local `isSending` as submit-flight state only.
+- Standalone `SEND_MESSAGE` payloads must include `message_id` and
+  `dedupe_key`. After an accepted command for an inactive or prepared run
+  identity, the backend command coordinator publishes non-interruptible
+  `initializing` before slow restore/start/activation or first-turn send work.
+  Client bridges should display streamed `AGENT_STATUS` and any
+  `AGENT_COMMAND_ACK.status`; keep local `isSending` as submit-flight state
+  only. Do not treat restored runtime readiness or restored status snapshots
+  as visible overlay replacement; wait for command-correlated `TURN_STARTED`,
+  `AGENT_STATUS`, terminal/error, or coordinator failure evidence.
+- `AGENT_COMMAND_ACK` confirms standalone command state. Same-`message_id`
+  retries are idempotent duplicates; a different in-flight command can be
+  rejected with `RUN_COMMAND_IN_PROGRESS`. Rejected or failed acknowledgements
+  should route through the normal error UI.
 - Startup tokens such as `bootstrapping`, `starting`, `startup`,
   `initializing`, and active `uninitialized` should be treated as
   non-interruptible `initializing`, not as `running` or `offline`.
@@ -96,6 +111,8 @@ These are the minimal modules typically required:
 
 - GraphQL
   - `services/agentGraphql.ts`
+  - New-run first messages should use `PrepareAgentRun`; `CancelPreparedAgentRun`
+    can clean up an abandoned prepared identity before activation.
 - Run store
   - `stores/agent/agentRunStore.ts`
 - Streaming

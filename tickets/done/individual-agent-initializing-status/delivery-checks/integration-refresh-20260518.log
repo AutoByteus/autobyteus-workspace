@@ -1,0 +1,60 @@
+# Delivery integration refresh — 2026-05-18 updated backend-owned package
+$ git fetch origin --prune
+$ git rev-parse HEAD origin/personal
+bea1185cde5b77dde7a565983f103085cba8178a
+bea1185cde5b77dde7a565983f103085cba8178a
+$ git merge-base HEAD origin/personal
+bea1185cde5b77dde7a565983f103085cba8178a
+$ git rev-list --left-right --count HEAD...origin/personal
+0	0
+$ git status --short --branch
+## codex/individual-agent-initializing-status...origin/personal
+ M autobyteus-server-ts/docs/ARCHITECTURE.md
+ M autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+ M autobyteus-server-ts/docs/modules/agent_execution.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts
+ M autobyteus-server-ts/src/api/graphql/types/agent-run.ts
+ M autobyteus-server-ts/src/api/graphql/types/run-history.ts
+ M autobyteus-server-ts/src/external-channel/runtime/channel-agent-run-facade.ts
+ M autobyteus-server-ts/src/external-channel/runtime/channel-binding-run-launcher.ts
+ M autobyteus-server-ts/src/run-history/domain/agent-run-history-index-types.ts
+ M autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts
+ M autobyteus-server-ts/src/run-history/services/agent-run-resume-config-service.ts
+ M autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts
+ M autobyteus-server-ts/src/run-history/store/agent-run-metadata-types.ts
+ M autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts
+ M autobyteus-server-ts/src/services/agent-streaming/models.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts
+ M autobyteus-server-ts/tests/unit/external-channel/runtime/channel-binding-run-launcher.test.ts
+ M autobyteus-server-ts/tests/unit/run-history/services/agent-run-history-service.test.ts
+ M autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_integration_minimal_bridge.md
+ M autobyteus-web/graphql/mutations/agentMutations.ts
+ M autobyteus-web/graphql/queries/runHistoryQueries.ts
+ M autobyteus-web/services/agentStreaming/AgentStreamingService.ts
+ M autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+ M autobyteus-web/services/agentStreaming/protocol/index.ts
+ M autobyteus-web/services/agentStreaming/protocol/messageTypes.ts
+ M autobyteus-web/stores/__tests__/agentRunStore.spec.ts
+ M autobyteus-web/stores/agentRunStore.ts
+ M autobyteus-web/stores/runHistoryLoadActions.ts
+ M autobyteus-web/stores/runHistoryTypes.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-status-overlay-store.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts
+?? autobyteus-server-ts/src/agent-execution/services/agent-run-status-projection-service.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-coordinator.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-registry.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-provisioning-service.test.ts
+?? autobyteus-server-ts/tests/unit/agent-execution/agent-run-status-projection-service.test.ts
+?? autobyteus-web/services/agentStreaming/protocol/agentCommandTypes.ts
+?? autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts
+?? autobyteus-web/services/agentStreaming/protocol/externalUserMessageTypes.ts
+?? tickets/in-progress/individual-agent-initializing-status/

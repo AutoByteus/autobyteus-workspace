@@ -1,6 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { AgentRunMetadata } from "./agent-run-metadata-types.js";
+import type {
+  AgentRunActivationState,
+  AgentRunMetadata,
+} from "./agent-run-metadata-types.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import type { AgentRunStatusRecord } from "./agent-run-history-index-record-types.js";
@@ -35,6 +38,23 @@ const normalizeMemoryDir = (
 const normalizeArchivedAt = (value: string | null | undefined): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
+const normalizeTimestamp = (value: string | null | undefined): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+
+const normalizeActivationState = (
+  value: AgentRunActivationState | string | null | undefined,
+): AgentRunActivationState => {
+  if (
+    value === "PREPARED" ||
+    value === "ACTIVATING" ||
+    value === "ACTIVATED" ||
+    value === "ACTIVATION_FAILED"
+  ) {
+    return value;
+  }
+  return "ACTIVATED";
+};
+
 const normalizeApplicationExecutionContext = (
   value: ApplicationExecutionContext | null | undefined,
 ): ApplicationExecutionContext | null => {
@@ -62,6 +82,9 @@ const normalizeMetadata = (
       ? metadata.platformAgentRunId.trim()
       : null,
   lastKnownStatus: normalizeLastKnownStatus(metadata.lastKnownStatus),
+  activationState: normalizeActivationState(metadata.activationState),
+  preparedAt: normalizeTimestamp(metadata.preparedAt),
+  preparedExpiresAt: normalizeTimestamp(metadata.preparedExpiresAt),
   archivedAt: normalizeArchivedAt(metadata.archivedAt),
   applicationExecutionContext: normalizeApplicationExecutionContext(
     metadata.applicationExecutionContext,

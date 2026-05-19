@@ -1,0 +1,64 @@
+# Local checkpoint before integrating advanced origin/personal — 2026-05-18
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status
+branch=codex/individual-agent-initializing-status
+head_before=bea1185cde5b77dde7a565983f103085cba8178a
+origin_personal=83d077d3f035f8517a80dd2a8470fa819e835f20
+ahead_behind_before=0	3
+--- git add -A ---
+add_exit_status=0
+--- git commit checkpoint ---
+[codex/individual-agent-initializing-status 7dd568c8] chore(ticket): checkpoint individual agent initializing status before base refresh
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 71 files changed, 44531 insertions(+), 1194 deletions(-)
+ create mode 100644 autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/services/agent-run-command-status-overlay-store.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/services/agent-run-status-projection-service.ts
+ create mode 100644 autobyteus-server-ts/tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-coordinator.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-registry.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/agent-run-provisioning-service.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/agent-run-status-projection-service.test.ts
+ create mode 100644 autobyteus-web/services/agentStreaming/protocol/agentCommandTypes.ts
+ create mode 100644 autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts
+ create mode 100644 autobyteus-web/services/agentStreaming/protocol/externalUserMessageTypes.ts
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/api-e2e-validation-report.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/electron-build-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/electron-build-verification-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/integration-refresh-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/integration-refresh-command-correlated-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/post-docs-diff-check-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/post-electron-build-diff-check-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/pre-integration-checkpoint-command-correlated-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/design-architecture-pivot-notes.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/design-post-delivery-rework-notes.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/design-review-report.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/design-rework-notes.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/design-spec.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/docs-sync-report.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/electron-build-report.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/handoff-summary.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/implementation-handoff.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/investigation-notes.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/release-deployment-report.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/release-notes.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/requirements.md
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/review-report.md
+commit_exit_status=0
+head_after=7dd568c8898d4f74bb6ec0a0e07f1a36372ba85d
+--- git status --short after checkpoint ---
+ M tickets/in-progress/individual-agent-initializing-status/delivery-checks/pre-integration-checkpoint-command-correlated-20260518.log

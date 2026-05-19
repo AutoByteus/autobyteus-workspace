@@ -102,10 +102,14 @@ Primary spine:
 
 1. `ChannelIngressService` accepts the inbound provider message, enforces
    idempotent receipt creation/claiming, and resolves the bound route target.
-2. `ChannelAgentRunFacade` or `ChannelTeamRunFacade` resolves or restores the
-   bound run, serializes same-run dispatches, posts the user message, and waits
-   for the authoritative `TURN_STARTED` event when the dispatch call does not
-   return a `turnId` directly.
+2. `ChannelAgentRunFacade` or `ChannelTeamRunFacade` resolves the bound route
+   run identity and serializes same-run dispatches. Standalone agent dispatch
+   uses `AgentRunCommandCoordinator` with a stable external-channel
+   `message_id` / `dedupe_key`, so it inherits the same backend-owned
+   initializing, prepared-activation, restore, duplicate, and busy-command
+   behavior as WebSocket `SEND_MESSAGE`; team dispatch remains team-container
+   owned. The facade waits for the authoritative `TURN_STARTED` event when the
+   dispatch call does not return a `turnId` directly.
 3. Only after that turn identity exists does the server persist the receipt as
    `ACCEPTED` and attach the accepted dispatch to `ChannelRunOutputDeliveryRuntime`.
 4. `ChannelRunOutputDeliveryRuntime` subscribes to the authoritative agent/team

@@ -111,9 +111,11 @@ describe("AgentRunHistoryService", () => {
     ];
 
     agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active"]);
-    agentRunManagerMock.getActiveRun.mockReturnValue({
-      getStatusSnapshot: () => ({ status: "running" as const }),
-    });
+    agentRunManagerMock.getActiveRun.mockImplementation((runId) =>
+      runId === "run-active"
+        ? { getStatusSnapshot: () => ({ status: "running" as const, can_interrupt: false }) }
+        : null,
+    );
 
     const service = new AgentRunHistoryService(memoryDir, {
       indexService: {
@@ -121,7 +123,12 @@ describe("AgentRunHistoryService", () => {
         rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
         removeRow: vi.fn(),
       },
-      metadataStore: createMetadataStore(Object.fromEntries(rows.map((row) => [row.runId, {}]))) as any,
+      metadataStore: createMetadataStore(
+        Object.fromEntries(rows.map((row) => [
+          row.runId,
+          { lastKnownStatus: row.lastKnownStatus },
+        ])),
+      ) as any,
     });
 
     const result = await service.listRunHistory(1);
@@ -142,6 +149,8 @@ describe("AgentRunHistoryService", () => {
                 status: "offline",
                 lastKnownStatus: "IDLE",
                 isActive: false,
+                shouldConnectStream: false,
+                statusSource: "HISTORICAL_METADATA",
               },
             ],
           },
@@ -162,6 +171,8 @@ describe("AgentRunHistoryService", () => {
                 status: "offline",
                 lastKnownStatus: "TERMINATED",
                 isActive: false,
+                shouldConnectStream: false,
+                statusSource: "TERMINATED_METADATA",
               },
             ],
           },
@@ -221,9 +232,11 @@ describe("AgentRunHistoryService", () => {
       },
     ];
     agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active-idle"]);
-    agentRunManagerMock.getActiveRun.mockReturnValue({
-      getStatusSnapshot: () => ({ status: "idle" as const }),
-    });
+    agentRunManagerMock.getActiveRun.mockImplementation((runId) =>
+      runId === "run-active-idle"
+        ? { getStatusSnapshot: () => ({ status: "idle" as const, can_interrupt: false }) }
+        : null,
+    );
 
     const service = new AgentRunHistoryService(memoryDir, {
       indexService: {
@@ -262,6 +275,11 @@ describe("AgentRunHistoryService", () => {
     ];
     const recordRecoveredSummary = vi.fn().mockResolvedValue(undefined);
     agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active"]);
+    agentRunManagerMock.getActiveRun.mockImplementation((runId) =>
+      runId === "run-active"
+        ? { getStatusSnapshot: () => ({ status: "running" as const, can_interrupt: false }) }
+        : null,
+    );
 
     const service = new AgentRunHistoryService(memoryDir, {
       indexService: {
@@ -318,6 +336,11 @@ describe("AgentRunHistoryService", () => {
     ];
     const recordRecoveredSummary = vi.fn().mockResolvedValue(undefined);
     agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active"]);
+    agentRunManagerMock.getActiveRun.mockImplementation((runId) =>
+      runId === "run-active"
+        ? { getStatusSnapshot: () => ({ status: "running" as const, can_interrupt: false }) }
+        : null,
+    );
 
     const service = new AgentRunHistoryService(memoryDir, {
       indexService: {
@@ -535,6 +558,11 @@ describe("AgentRunHistoryService", () => {
       },
     ];
     agentRunManagerMock.listActiveRuns.mockReturnValue(["run-archived-active"]);
+    agentRunManagerMock.getActiveRun.mockImplementation((runId) =>
+      runId === "run-archived-active"
+        ? { getStatusSnapshot: () => ({ status: "running" as const, can_interrupt: false }) }
+        : null,
+    );
 
     const service = new AgentRunHistoryService(memoryDir, {
       indexService: {

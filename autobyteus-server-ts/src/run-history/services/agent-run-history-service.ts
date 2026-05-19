@@ -1,7 +1,9 @@
 import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
-import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
+import {
+  AgentRunStatusProjectionService,
+} from "../../agent-execution/services/agent-run-status-projection-service.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
@@ -46,6 +48,7 @@ export class AgentRunHistoryService {
   private readonly agentRunManager: AgentRunManager;
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly agentRunViewProjectionService: AgentRunViewProjectionService;
+  private readonly statusProjectionService: AgentRunStatusProjectionService;
 
   constructor(
     memoryDir: string,
@@ -53,6 +56,7 @@ export class AgentRunHistoryService {
       indexService?: AgentRunHistoryIndexService;
       metadataStore?: AgentRunMetadataStore;
       agentRunViewProjectionService?: AgentRunViewProjectionService;
+      statusProjectionService?: AgentRunStatusProjectionService;
     } = {},
   ) {
     this.indexService =
@@ -64,6 +68,14 @@ export class AgentRunHistoryService {
     this.agentRunViewProjectionService =
       dependencies.agentRunViewProjectionService ??
       new AgentRunViewProjectionService(memoryDir);
+    this.statusProjectionService =
+      dependencies.statusProjectionService ??
+      new AgentRunStatusProjectionService({
+        agentRunManager: this.agentRunManager,
+        metadataService: {
+          readMetadata: (runId: string) => this.metadataStore.readMetadata(runId),
+        },
+      });
   }
 
   async listRunHistory(limitPerAgent = 6): Promise<RunHistoryWorkspaceGroup[]> {
@@ -72,7 +84,6 @@ export class AgentRunHistoryService {
       rows = await this.indexService.rebuildIndexFromDisk();
     }
 
-    const activeRunIds = new Set(this.agentRunManager.listActiveRuns());
     const staleRunIds: string[] = [];
     const normalizedRows = (
       await Promise.all(
@@ -82,19 +93,22 @@ export class AgentRunHistoryService {
             staleRunIds.push(row.runId);
             return null;
           }
-          if (metadata.archivedAt && !activeRunIds.has(row.runId)) {
+          const projection = await this.statusProjectionService.getRunStatusProjection(row.runId);
+          if (metadata.archivedAt && !projection.isActive) {
             return null;
           }
-          const isActive = activeRunIds.has(row.runId);
-          const summary = await this.resolveSummary(row, metadata, isActive);
+          const summary = await this.resolveSummary(row, metadata, projection.isActive);
           return {
             ...row,
             workspaceRootPath: canonicalizeWorkspaceRootPath(row.workspaceRootPath),
             summary,
+            projection,
           };
         }),
       )
-    ).filter((row): row is RunHistoryIndexRow => row !== null);
+    ).filter((row): row is RunHistoryIndexRow & {
+      projection: Awaited<ReturnType<AgentRunStatusProjectionService["getRunStatusProjection"]>>;
+    } => row !== null);
 
     if (staleRunIds.length > 0) {
       await Promise.all(staleRunIds.map((runId) => this.indexService.removeRow(runId)));
@@ -102,9 +116,9 @@ export class AgentRunHistoryService {
 
     const workspaceMap = new Map<string, Map<string, RunHistoryAgentGroup>>();
     for (const row of normalizedRows) {
-      const isActive = activeRunIds.has(row.runId);
-      const runStatus: RunKnownStatus = isActive ? "ACTIVE" : row.lastKnownStatus;
-      const status = this.resolveHistoryStatus(row, isActive);
+      const isActive = row.projection.isActive;
+      const runStatus: RunKnownStatus = row.projection.lastKnownStatus;
+      const status = row.projection.status;
       let agentMap = workspaceMap.get(row.workspaceRootPath);
       if (!agentMap) {
         agentMap = new Map<string, RunHistoryAgentGroup>();
@@ -126,6 +140,8 @@ export class AgentRunHistoryService {
         status,
         lastKnownStatus: runStatus,
         isActive,
+        shouldConnectStream: row.projection.shouldConnectStream,
+        statusSource: row.projection.statusSource,
       });
     }
 
@@ -192,19 +208,6 @@ export class AgentRunHistoryService {
         message: `Failed to archive stored run '${normalizedRunId}'.`,
       };
     }
-  }
-
-  private resolveHistoryStatus(
-    row: Pick<RunHistoryIndexRow, "runId" | "lastKnownStatus">,
-    isActive: boolean,
-  ): AgentApiStatus {
-    if (isActive) {
-      const activeRun = this.agentRunManager.getActiveRun(row.runId);
-      if (activeRun) {
-        return activeRun.getStatusSnapshot().status;
-      }
-    }
-    return row.lastKnownStatus === "ERROR" ? "error" : "offline";
   }
 
   async deleteStoredRun(runId: string): Promise<DeleteStoredRunResult> {

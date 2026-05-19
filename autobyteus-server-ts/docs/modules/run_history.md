@@ -11,7 +11,8 @@
 - Expose resume configuration for stored runs:
   - agent: `agent-run-resume-config-service.ts`
   - team: `team-run-history-service.ts#getTeamRunResumeConfig(...)`
-- Keep resume configuration truthful about active vs inactive state. Frontend follow-up send flows may use that flag to call explicit restore mutations, while backend WebSocket connection and `SEND_MESSAGE` remain authoritative restore-aware boundaries when the local resume-config cache is stale or absent.
+- Keep resume configuration truthful about active vs inactive state. For standalone agent runs, frontend follow-up sends should not restore directly; the backend `SEND_MESSAGE` command coordinator owns restore/start/send lifecycle. WebSocket connection can attach to a durable run identity and surface status projection without restoring the runtime. Team follow-up sends remain owned by the team restore/resolve boundary.
+- Project standalone visible status through `AgentRunStatusProjectionService`, with precedence `COMMAND_OVERLAY` first, active runtime second, prepared/historical metadata fallback third.
 - Normalize local application-owned replay traces into the canonical run-history replay bundle:
   - agent: `agent-run-view-projection-service.ts`
   - team member: `team-member-run-view-projection-service.ts`
@@ -66,6 +67,39 @@ Permanent delete remains a separate destructive action. `deleteStoredRun` and
 history index entries instead of only hiding the row. The current product slice
 does not expose an archived-list or unarchive GraphQL/UI path; archived data
 remains retained on disk for future recovery tooling.
+
+## Standalone Status Projection And Prepared Identities
+
+Standalone history rows expose both coarse durable state and current visible
+status projection:
+
+- `status`: public UI status (`offline`, `initializing`, `idle`, `running`, or
+  `error`).
+- `lastKnownStatus`: durable coarse state (`ACTIVE`, `IDLE`, `ERROR`, or
+  `TERMINATED`).
+- `isActive`: whether the row represents active/current work for visibility and
+  archive filtering.
+- `shouldConnectStream`: whether the frontend should connect to `/ws/agent/:runId`
+  even when there is not yet an active runtime subject, for example while a
+  command overlay is initializing.
+- `statusSource`: `COMMAND_OVERLAY`, `ACTIVE_RUNTIME`, `PREPARED_IDENTITY`,
+  `HISTORICAL_METADATA`, `TERMINATED_METADATA`, or `MISSING`.
+
+Projection precedence is command overlay first, active runtime second, and
+prepared/historical metadata fallback third. A command overlay `initializing`
+projects as `isActive=true`, `shouldConnectStream=true`,
+`lastKnownStatus=ACTIVE`, and `statusSource=COMMAND_OVERLAY`; a command overlay
+`error` projects as non-interruptible `error` with `lastKnownStatus=ERROR`.
+
+Prepared-new run identities are explicit metadata state, not inferred from a
+missing `platformAgentRunId`. `activationState` is one of `PREPARED`,
+`ACTIVATING`, `ACTIVATED`, or `ACTIVATION_FAILED`; prepared metadata also stores
+`preparedAt` and `preparedExpiresAt`. A prepared identity has a memory directory
+and history row, but no runtime until the first backend-owned `SEND_MESSAGE`
+activates it. GraphQL `prepareAgentRun` and `cancelPreparedAgentRun` live on the
+agent-run resolver because they prepare runtime identity, but their metadata is
+projected here. Explicit cancellation and stale-prepared cleanup remove only
+unactivated prepared identities.
 
 ## Persistence Files
 

@@ -1,11 +1,16 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentRun } from "../../../../src/agent-execution/domain/agent-run.js";
+import { AgentRunCommandCoordinator } from "../../../../src/agent-execution/services/agent-run-command-coordinator.js";
+import { AgentRunCommandRegistry } from "../../../../src/agent-execution/services/agent-run-command-registry.js";
+import { AgentRunCommandStatusOverlayStore } from "../../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
+import { AgentRunStatusProjectionService } from "../../../../src/agent-execution/services/agent-run-status-projection-service.js";
 import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
 import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
 import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
 import { createChannelRoutingKey } from "autobyteus-ts/external-channel/channel-routing-key.js";
 import type { ChannelBinding } from "../../../../src/external-channel/domain/models.js";
 import { ChannelAgentRunFacade } from "../../../../src/external-channel/runtime/channel-agent-run-facade.js";
+import { ChannelDispatchLockRegistry } from "../../../../src/external-channel/runtime/channel-dispatch-lock-registry.js";
 import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 
 const createEnvelope = () => ({
@@ -109,9 +114,57 @@ const createActiveRun = (options: {
     },
   });
 
+const buildFacade = (options: {
+  activeRun: AgentRun;
+  resolveOrStartAgentRun?: ReturnType<typeof vi.fn>;
+  publishExternalUserMessage?: ReturnType<typeof vi.fn>;
+}) => {
+  const registry = new AgentRunCommandRegistry();
+  const overlayStore = new AgentRunCommandStatusOverlayStore();
+  const recordRunActivity = vi.fn().mockResolvedValue(undefined);
+  const agentRunService = {
+    getAgentRun: vi.fn().mockReturnValue(options.activeRun),
+    getRunMetadata: vi.fn(),
+    restoreAgentRun: vi.fn(),
+    activatePreparedRun: vi.fn(),
+    recordRunActivity,
+  };
+  const projectionService = new AgentRunStatusProjectionService({
+    agentRunManager: {
+      getActiveRun: vi.fn().mockReturnValue(options.activeRun),
+    } as any,
+    metadataService: {
+      readMetadata: vi.fn().mockResolvedValue(null),
+    } as any,
+    overlayStore,
+    commandRegistry: registry,
+  });
+  const commandCoordinator = new AgentRunCommandCoordinator({
+    agentRunService: agentRunService as any,
+    registry,
+    overlayStore,
+    projectionService,
+    broadcaster: { publishToRun: vi.fn() } as any,
+  });
+  const resolveOrStartAgentRun = options.resolveOrStartAgentRun ?? vi.fn().mockResolvedValue("agent-1");
+  const publishExternalUserMessage = options.publishExternalUserMessage ?? vi.fn();
+  const facade = new ChannelAgentRunFacade({
+    runLauncher: { resolveOrStartAgentRun },
+    commandCoordinator,
+    agentLiveMessagePublisher: { publishExternalUserMessage },
+    dispatchLockRegistry: new ChannelDispatchLockRegistry(),
+  });
+  return {
+    facade,
+    resolveOrStartAgentRun,
+    publishExternalUserMessage,
+    recordRunActivity,
+    agentRunService,
+  };
+};
+
 describe("ChannelAgentRunFacade", () => {
-  it("dispatches to agent run through the run launcher and live AgentRun", async () => {
-    const resolveOrStartAgentRun = vi.fn().mockResolvedValue("agent-1");
+  it("dispatches to agent run through the run launcher and command coordinator", async () => {
     const postUserMessage = vi.fn().mockResolvedValue({
       accepted: true,
       turnId: "turn-1",
@@ -123,16 +176,7 @@ describe("ChannelAgentRunFacade", () => {
       runtimeKind: "codex_app_server",
       postUserMessage,
     });
-    const publishExternalUserMessage = vi.fn();
-    const recordRunActivity = vi.fn().mockResolvedValue(undefined);
-    const facade = new ChannelAgentRunFacade({
-      runLauncher: { resolveOrStartAgentRun },
-      agentRunService: {
-        getAgentRun: vi.fn().mockReturnValue(activeRun),
-        recordRunActivity,
-      },
-      agentLiveMessagePublisher: { publishExternalUserMessage },
-    });
+    const { facade, resolveOrStartAgentRun, publishExternalUserMessage, recordRunActivity } = buildFacade({ activeRun });
 
     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
@@ -154,10 +198,14 @@ describe("ChannelAgentRunFacade", () => {
     });
     expect(postUserMessage.mock.calls[0]?.[0]).toMatchObject({
       content: "hello",
+      metadata: expect.objectContaining({
+        message_id: expect.stringMatching(/^external_/),
+        dedupe_key: expect.stringMatching(/^external_channel:/),
+      }),
     });
   });
 
-  it("maps inbound attachments to context files", async () => {
+  it("maps inbound attachments to context files through the coordinator send path", async () => {
     const postUserMessage = vi.fn().mockResolvedValue({
       accepted: true,
       turnId: "turn-1",
@@ -169,20 +217,7 @@ describe("ChannelAgentRunFacade", () => {
       runtimeKind: "codex_app_server",
       postUserMessage,
     });
-    const publishExternalUserMessage = vi.fn();
-    const recordRunActivity = vi.fn().mockResolvedValue(undefined);
-    const facade = new ChannelAgentRunFacade({
-      runLauncher: {
-        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
-      },
-      agentRunService: {
-        getAgentRun: vi.fn().mockReturnValue(activeRun),
-        recordRunActivity,
-      },
-      agentLiveMessagePublisher: {
-        publishExternalUserMessage,
-      },
-    });
+    const { facade, publishExternalUserMessage, recordRunActivity } = buildFacade({ activeRun });
 
     const result = await facade.dispatchToAgentBinding(
       createAgentBinding(),
@@ -218,22 +253,11 @@ describe("ChannelAgentRunFacade", () => {
       postUserMessage,
       subscribeToEvents,
     });
-    const facade = new ChannelAgentRunFacade({
-      runLauncher: {
-        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
-      },
-      agentRunService: {
-        getAgentRun: vi.fn().mockReturnValue(activeRun),
-        recordRunActivity: vi.fn().mockResolvedValue(undefined),
-      },
-      agentLiveMessagePublisher: {
-        publishExternalUserMessage: vi.fn(),
-      },
-    });
+    const { facade } = buildFacade({ activeRun });
 
     await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
-    expect(subscribeToEvents).toHaveBeenCalledOnce();
+    expect(subscribeToEvents).toHaveBeenCalled();
     expect(subscribeToEvents.mock.invocationCallOrder[0]).toBeLessThan(
       postUserMessage.mock.invocationCallOrder[0] ?? Number.MAX_SAFE_INTEGER,
     );
@@ -250,18 +274,7 @@ describe("ChannelAgentRunFacade", () => {
         message: "Run session 'agent-1' is not active.",
       }),
     });
-    const facade = new ChannelAgentRunFacade({
-      runLauncher: {
-        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
-      },
-      agentRunService: {
-        getAgentRun: vi.fn().mockReturnValue(activeRun),
-        recordRunActivity: vi.fn(),
-      },
-      agentLiveMessagePublisher: {
-        publishExternalUserMessage,
-      },
-    });
+    const { facade } = buildFacade({ activeRun, publishExternalUserMessage });
 
     await expect(
       facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope()),
@@ -285,18 +298,7 @@ describe("ChannelAgentRunFacade", () => {
     const publishExternalUserMessage = vi.fn(() => {
       throw new Error("socket write failed");
     });
-    const facade = new ChannelAgentRunFacade({
-      runLauncher: {
-        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
-      },
-      agentRunService: {
-        getAgentRun: vi.fn().mockReturnValue(activeRun),
-        recordRunActivity: vi.fn().mockResolvedValue(undefined),
-      },
-      agentLiveMessagePublisher: {
-        publishExternalUserMessage,
-      },
-    });
+    const { facade } = buildFacade({ activeRun, publishExternalUserMessage });
 
     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
@@ -337,19 +339,7 @@ describe("ChannelAgentRunFacade", () => {
         };
       }),
     });
-    const publishExternalUserMessage = vi.fn();
-    const facade = new ChannelAgentRunFacade({
-      runLauncher: {
-        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
-      },
-      agentRunService: {
-        getAgentRun: vi.fn().mockReturnValue(activeRun),
-        recordRunActivity: vi.fn().mockResolvedValue(undefined),
-      },
-      agentLiveMessagePublisher: {
-        publishExternalUserMessage,
-      },
-    });
+    const { facade, publishExternalUserMessage } = buildFacade({ activeRun });
 
     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
@@ -389,18 +379,7 @@ describe("ChannelAgentRunFacade", () => {
       postUserMessage,
       subscribeToEvents,
     });
-    const facade = new ChannelAgentRunFacade({
-      runLauncher: {
-        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
-      },
-      agentRunService: {
-        getAgentRun: vi.fn().mockReturnValue(activeRun),
-        recordRunActivity: vi.fn().mockResolvedValue(undefined),
-      },
-      agentLiveMessagePublisher: {
-        publishExternalUserMessage: vi.fn(),
-      },
-    });
+    const { facade } = buildFacade({ activeRun });
 
     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 

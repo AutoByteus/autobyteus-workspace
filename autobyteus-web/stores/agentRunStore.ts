@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient'
-import { CreateAgentRun, RestoreAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
+import { CancelPreparedAgentRun, PrepareAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { AgentStreamingService } from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -26,21 +26,23 @@ import {
   finalizeLocalSubmissionAttachments,
 } from '~/services/runSubmission/localUserSubmission';
 
-interface CreateAgentRunMutationResultPayload {
-  createAgentRun: {
+interface PrepareAgentRunMutationResultPayload {
+  prepareAgentRun: {
     success: boolean;
     message: string;
     runId?: string | null;
+    activationState?: string | null;
+    preparedExpiresAt?: string | null;
   };
 }
 
-interface RestoreAgentRunMutationResultPayload {
-  restoreAgentRun: {
-    success: boolean;
-    message: string;
-    runId?: string | null;
-  };
-}
+const createClientMessageId = (): string => {
+  const randomId =
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+  return `client_${randomId}`;
+};
 
 // Maintain a map of streaming services per agent
 const streamingServices = new Map<string, AgentStreamingService>();
@@ -122,12 +124,13 @@ export const useAgentRunStore = defineStore('agentRun', {
         attachments: draftAttachments,
       });
 
+      let preparedRunId: string | null = null;
       try {
         let finalRunId = runId;
         if (isNewAgent) {
           const client = getApolloClient()
-          const { data, errors } = await client.mutate<CreateAgentRunMutationResultPayload>({
-            mutation: CreateAgentRun,
+          const { data, errors } = await client.mutate<PrepareAgentRunMutationResultPayload>({
+            mutation: PrepareAgentRun,
             variables: {
               input: {
                 agentDefinitionId: state.conversation.agentDefinitionId,
@@ -138,6 +141,7 @@ export const useAgentRunStore = defineStore('agentRun', {
                 llmConfig: config.llmConfig ?? null,
                 skillAccessMode: config.skillAccessMode,
                 runtimeKind: config.runtimeKind,
+                initialSummary: messageContent,
               }
             }
           });
@@ -146,47 +150,26 @@ export const useAgentRunStore = defineStore('agentRun', {
             throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
           }
 
-          const result = data?.createAgentRun;
+          const result = data?.prepareAgentRun;
           if (!result) {
-            throw new Error('Failed to create agent run: No response returned.');
+            throw new Error('Failed to prepare agent run: No response returned.');
           }
 
           if (!result.success) {
-            throw new Error(result.message || 'Failed to create agent run.');
+            throw new Error(result.message || 'Failed to prepare agent run.');
           }
 
           const permanentRunId = result.runId;
           if (!permanentRunId) {
-            throw new Error('Failed to create agent run: No runId returned on success.');
+            throw new Error('Failed to prepare agent run: No runId returned on success.');
           }
 
           finalRunId = permanentRunId;
+          preparedRunId = permanentRunId;
           agentContextsStore.promoteTemporaryId(runId, permanentRunId);
-        } else if (resumeConfig && !resumeConfig.isActive) {
-          const client = getApolloClient();
-          const { data, errors } = await client.mutate<RestoreAgentRunMutationResultPayload>({
-            mutation: RestoreAgentRun,
-            variables: { agentRunId: finalRunId },
-          });
-
-          if (errors && errors.length > 0) {
-            throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-          }
-
-          const result = data?.restoreAgentRun;
-          if (!result) {
-            throw new Error('Failed to restore agent run: No response returned.');
-          }
-          if (!result.success) {
-            throw new Error(result.message || 'Failed to restore agent run.');
-          }
-
-          finalRunId = result.runId || finalRunId;
         }
 
         agentContextsStore.lockConfig(finalRunId);
-        runHistoryStore.markRunAsActive(finalRunId);
-        runHistoryStore.refreshTreeQuietly();
 
         const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
           draftOwner,
@@ -202,9 +185,23 @@ export const useAgentRunStore = defineStore('agentRun', {
 
         const service = await this.ensureAgentStreamConnected(finalRunId);
         const streamPayload = partitionContextAttachmentsForStreaming(finalizedAttachments);
-        service.sendMessage(messageContent, streamPayload.contextFilePaths, streamPayload.imageUrls);
+        const messageId = createClientMessageId();
+        service.sendMessage(messageContent, streamPayload.contextFilePaths, streamPayload.imageUrls, {
+          messageId,
+          dedupeKey: `agent_run_input:${finalRunId}:${messageId}`,
+        });
+        preparedRunId = null;
+        runHistoryStore.refreshTreeQuietly();
       } catch (error: any) {
         console.error('Error sending user input:', error);
+        if (preparedRunId) {
+          getApolloClient().mutate({
+            mutation: CancelPreparedAgentRun,
+            variables: { agentRunId: preparedRunId },
+          }).catch((cancelError: unknown) => {
+            console.warn(`Failed to cancel prepared agent run '${preparedRunId}'.`, cancelError);
+          });
+        }
         failLocalSubmission(localSubmission, error);
         applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
 

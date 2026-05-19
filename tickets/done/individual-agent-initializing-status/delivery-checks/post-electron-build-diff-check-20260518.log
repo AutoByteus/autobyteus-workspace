@@ -1,0 +1,4 @@
+# Post-Electron build diff hygiene check — 2026-05-18
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status
+command=git diff --check
+exit_status=0

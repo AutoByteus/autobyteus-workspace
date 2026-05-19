@@ -1,0 +1,42 @@
+# Local checkpoint before latest origin/personal round 2 merge — 2026-05-19
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status
+branch=codex/individual-agent-initializing-status
+head_before=300cd30b8dd0b612742ae2151e88ae478bbb5ee7
+origin_personal=9ff0695b80509b8d46ef24b0257173d28bf1bf18
+ahead_behind_before=2	1
+--- git add -A ---
+add_exit_status=0
+--- git commit checkpoint ---
+[codex/individual-agent-initializing-status 682ff6ca] chore(ticket): checkpoint delivery evidence before latest base refresh
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 22 files changed, 39949 insertions(+), 150 deletions(-)
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/base-merge-command-correlated-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/electron-build-command-correlated-integrated-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/electron-build-personal-command-correlated-integrated-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/electron-build-personal-latest-origin-20260519.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/electron-build-personal-verification-command-correlated-integrated-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/electron-build-personal-verification-latest-origin-20260519.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/integration-refresh-latest-origin-personal-20260519.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/integration-refresh-latest-origin-personal-round2-20260519.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/post-command-correlated-delivery-diff-check-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/post-latest-origin-command-correlated-e2e-20260519.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/post-latest-origin-electron-delivery-diff-check-20260519.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/post-merge-command-correlated-e2e-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/post-merge-server-build-typecheck-20260518.log
+ create mode 100644 tickets/in-progress/individual-agent-initializing-status/delivery-checks/pre-latest-origin-round2-checkpoint-20260519.log
+commit_exit_status=0
+head_after=682ff6cac08fd942792e04d1ba0ae8837e94ae9e
+--- status after checkpoint ---
+ M tickets/in-progress/individual-agent-initializing-status/delivery-checks/pre-latest-origin-round2-checkpoint-20260519.log

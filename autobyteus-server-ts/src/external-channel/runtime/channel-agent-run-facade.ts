@@ -1,7 +1,8 @@
+import { createHash } from "node:crypto";
 import {
-  AgentRunService,
-  getAgentRunService,
-} from "../../agent-execution/services/agent-run-service.js";
+  AgentRunCommandCoordinator,
+  getAgentRunCommandCoordinator,
+} from "../../agent-execution/services/agent-run-command-coordinator.js";
 import type { ChannelBinding } from "../domain/models.js";
 import type { ChannelRunDispatchResult } from "./channel-run-dispatch-result.js";
 import { ChannelBindingRunLauncher } from "./channel-binding-run-launcher.js";
@@ -22,14 +23,14 @@ const logger = {
 
 export type ChannelAgentRunFacadeDependencies = {
   runLauncher?: ChannelBindingRunLauncher;
-  agentRunService?: AgentRunService;
+  commandCoordinator?: AgentRunCommandCoordinator;
   agentLiveMessagePublisher?: AgentLiveMessagePublisher;
   dispatchLockRegistry?: ChannelDispatchLockRegistry;
 };
 
 export class ChannelAgentRunFacade {
   private readonly runLauncher: ChannelBindingRunLauncher;
-  private readonly agentRunService: AgentRunService;
+  private readonly commandCoordinator: AgentRunCommandCoordinator;
   private readonly agentLiveMessagePublisher: AgentLiveMessagePublisher;
   private readonly dispatchLockRegistry: ChannelDispatchLockRegistry;
 
@@ -37,7 +38,7 @@ export class ChannelAgentRunFacade {
     deps: ChannelAgentRunFacadeDependencies = {},
   ) {
     this.runLauncher = deps.runLauncher ?? new ChannelBindingRunLauncher();
-    this.agentRunService = deps.agentRunService ?? getAgentRunService();
+    this.commandCoordinator = deps.commandCoordinator ?? getAgentRunCommandCoordinator();
     this.agentLiveMessagePublisher =
       deps.agentLiveMessagePublisher ?? getAgentLiveMessagePublisher();
     this.dispatchLockRegistry =
@@ -52,42 +53,40 @@ export class ChannelAgentRunFacade {
     return this.dispatchLockRegistry.runExclusive(
       `agent:${agentRunId}`,
       async () => {
-        const activeRun = this.agentRunService.getAgentRun(agentRunId);
-        if (!activeRun) {
-          throw new Error(`Agent run '${agentRunId}' is not active.`);
-        }
-        const subscribeToEvents = activeRun.subscribeToEvents.bind(activeRun);
-        const turnCapture = startDirectDispatchTurnCapture(subscribeToEvents);
-        let result;
-        try {
-          result = await activeRun.postUserMessage(buildAgentInputMessage(envelope));
-        } catch (error) {
-          turnCapture.dispose();
-          throw error;
-        }
-        if (!result.accepted) {
-          turnCapture.dispose();
+        const turnCaptureRef: {
+          current: ReturnType<typeof startDirectDispatchTurnCapture> | null;
+        } = { current: null };
+        const commandIdentity = buildExternalCommandIdentity(binding.id, envelope);
+        const commandResult = await this.commandCoordinator.postUserMessage({
+          runId: agentRunId,
+          messageId: commandIdentity.messageId,
+          dedupeKey: commandIdentity.dedupeKey,
+          message: buildAgentInputMessage(envelope),
+          summary: envelope.content,
+          onActiveRunReady: (activeRun) => {
+            turnCaptureRef.current = startDirectDispatchTurnCapture(
+              activeRun.subscribeToEvents.bind(activeRun),
+            );
+          },
+        });
+        if (!commandResult.ack.accepted) {
+          turnCaptureRef.current?.dispose();
           throw new Error(
-            result.message ??
-              `Agent run '${agentRunId}' rejected external channel dispatch (${result.code ?? "UNKNOWN"}).`,
+            commandResult.ack.message ??
+              `Agent run '${agentRunId}' rejected external channel dispatch (${commandResult.ack.code ?? "UNKNOWN"}).`,
           );
         }
-        let turnId = normalizeOptionalString(result.turnId ?? null);
+        let turnId = normalizeOptionalString(commandResult.turnId);
         if (turnId) {
-          turnCapture.dispose();
-        } else {
-          turnId = normalizeOptionalString(await turnCapture.promise);
+          turnCaptureRef.current?.dispose();
+        } else if (turnCaptureRef.current) {
+          turnId = normalizeOptionalString(await turnCaptureRef.current.promise);
         }
         if (!turnId) {
           throw new Error(
             `Agent run '${agentRunId}' accepted external channel dispatch without an authoritative turn start event.`,
           );
         }
-        await this.agentRunService.recordRunActivity(activeRun, {
-          summary: envelope.content,
-          lastKnownStatus: "ACTIVE",
-          lastActivityAt: new Date().toISOString(),
-        });
         try {
           this.agentLiveMessagePublisher.publishExternalUserMessage({
             runId: agentRunId,
@@ -110,6 +109,27 @@ export class ChannelAgentRunFacade {
     );
   }
 }
+
+const buildExternalCommandIdentity = (
+  bindingId: string,
+  envelope: import("autobyteus-ts/external-channel/external-message-envelope.js").ExternalMessageEnvelope,
+): { messageId: string; dedupeKey: string } => {
+  const hash = createHash("sha256")
+    .update(JSON.stringify({
+      bindingId,
+      provider: envelope.provider,
+      transport: envelope.transport,
+      accountId: envelope.accountId,
+      peerId: envelope.peerId,
+      threadId: envelope.threadId,
+      externalMessageId: envelope.externalMessageId,
+    }))
+    .digest("hex");
+  return {
+    messageId: `external_${hash.slice(0, 48)}`,
+    dedupeKey: `external_channel:${hash}`,
+  };
+};
 
 const normalizeOptionalString = (value: string | null): string | null => {
   if (value === null) {
