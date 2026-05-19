@@ -5,7 +5,7 @@
       :class="isZenMode ? 'fixed inset-0 z-[120] min-h-screen shadow-md' : 'h-full'"
     >
       <div class="border-b border-gray-200 px-2" :class="isZenMode ? 'py-1.5' : 'py-2'">
-        <div class="flex flex-wrap items-center gap-2">
+        <div v-if="hasBrowserTabs" class="flex items-center gap-2">
           <div class="flex min-w-0 flex-1 gap-1 overflow-x-auto">
             <div
               v-for="session in sessions"
@@ -35,7 +35,6 @@
           <button
             class="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
             :title="isZenMode ? 'Restore Browser view' : 'Maximize Browser view'"
-            :class="isZenMode ? 'order-3' : 'order-2'"
             type="button"
             @click="toggleZenMode"
           >
@@ -44,14 +43,17 @@
               class="h-4 w-4"
             />
           </button>
+        </div>
 
-          <form
-            class="flex min-w-0 items-center gap-2"
-            :class="isZenMode
-              ? 'order-2 flex-1'
-              : 'order-3 basis-full border-t border-gray-200 pt-2'"
-            @submit.prevent="handleAddressSubmit"
-          >
+        <form
+          class="flex min-w-0 items-center gap-2"
+          :class="hasBrowserTabs
+            ? isZenMode
+              ? 'mt-1.5'
+              : 'mt-2 border-t border-gray-200 pt-2'
+            : ''"
+          @submit.prevent="handleAddressSubmit"
+        >
           <button
             class="rounded-md border border-gray-200 px-2.5 py-1.5 text-sm text-gray-600 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900"
             type="button"
@@ -106,8 +108,7 @@
           >
             <Icon icon="heroicons:x-mark" class="h-4 w-4" />
           </button>
-          </form>
-        </div>
+        </form>
       </div>
 
       <div v-if="lastError" class="border-b border-red-100 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -157,6 +158,7 @@ const addressValue = ref('')
 let resizeObserver: ResizeObserver | null = null
 let lastSentBoundsKey: string | null = null
 
+const hasBrowserTabs = computed(() => sessions.value.length > 0)
 const activeDeviceMode = computed(() => activeSession.value?.deviceEmulation?.mode ?? 'desktop')
 
 const normalizeAddressInput = (value: string): string => {
