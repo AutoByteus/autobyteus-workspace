@@ -1,0 +1,24 @@
+{
+  "date": "2026-05-19",
+  "browserViewport": { "width": 390, "height": 844, "deviceScaleFactor": 3 },
+  "target": "http://127.0.0.1:3030/mobile",
+  "backend": "http://127.0.0.1:29695",
+  "sessionMethod": "local mobile session fixture because the running local backend did not expose Round-8 /rest/remote-access pairing/status endpoints; GraphQL/workspace/file/run APIs were exercised against the local backend.",
+  "observations": {
+    "homeReadableRows": "PASS: Home recent rows use vertical MobileReadableWorkRow layout; titles/details/meta are visible at phone viewport.",
+    "existingTeamRunContinuation": "PASS: Continue latest run opens Software Engineering Team team run with visible conversation and composer.",
+    "activityTeamMessagesToolHistory": "PASS: Activity shows task plan card, visible team message rows, tool activity rows, and an explicit unsupported terminal/browser/tool-pane notice.",
+    "filePreview": "PASS: Files search/open README.md shows actual authorized file content instead of placeholder copy.",
+    "fileAttachActiveRun": "PASS: Attach from README.md reports added to current run Chat context and Chat shows mobile context tray with README.md.",
+    "workspaceContextIsolation": "PASS: Selecting workspace context clears stale active run display; Activity shows select-team/select-run notices rather than prior run messages/tool activity.",
+    "draftAttachment": "PASS: Attaching article.md from a workspace context targets next mobile run launch; Chat tray shows draft attachment and Run Setup shows 1 context file will be attached.",
+    "newAgentLaunch": "PASS with environment terminal error: Mobile run setup allowed target/workspace/prompt launch and landed in new Memory Compactor Chat; backend/model runtime returned ANTHROPIC_API_KEY environment variable is not set.",
+    "newTeamLaunch": "PASS with environment terminal error: Mobile run setup allowed team/workspace/prompt launch and landed in new ClassRoomSimulation team Chat; backend/model runtime returned ANTHROPIC_API_KEY environment variable is not set.",
+    "mobileWorkspaceRedirect": "PASS: /mobile/workspace redirects to /mobile?unsupported=desktopWorkspace and renders mobile unsupported notice.",
+    "desktopWorkspaceNoRegression": "PASS: /workspace renders desktop navigation/content and no mobile-remote-access-shell. Note: browser viewport was mobile-sized during spot-check, but route remained desktop shell rather than mobile shell."
+  },
+  "environmentLimitations": [
+    "The running local AutoByteus backend on 127.0.0.1:29695 returned 404 for /rest/remote-access/status, /rest/remote-access/settings, and /rest/remote-access/pairing-sessions, so status/pairing REST was not revalidated against that live backend in this browser pass.",
+    "New agent/team launch reached the real launch path but the runtime produced ANTHROPIC_API_KEY environment variable is not set; this is classified as validation-environment/runtime configuration, not mobile UI failure."
+  ]
+}

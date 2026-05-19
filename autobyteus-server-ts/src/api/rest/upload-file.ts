@@ -5,8 +5,13 @@ import { randomUUID } from "node:crypto";
 import { pipeline } from "node:stream/promises";
 import type { FastifyInstance } from "fastify";
 import { extension as mimeExtension } from "mime-types";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 import { getMediaStorageService } from "../../services/media-storage-service.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
+import { getRemoteAccessAuthContext } from "../security/remote-access-route-policy.js";
+import {
+  buildDefaultClientFacingUrlContext,
+  getClientFacingUrlResolver,
+} from "../../remote-access/services/client-facing-url-resolver.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -114,12 +119,19 @@ export async function registerUploadRoutes(app: FastifyInstance): Promise<void> 
       return reply.code(500).send({ detail: `Failed to save file: ${String(error)}` });
     }
 
-    const baseUrl = appConfigProvider.config.getBaseUrl();
     const relativePath = path
       .relative(mediaStorageService.getMediaRoot(), filePath)
       .split(path.sep)
       .join("/");
-    const fileUrl = `${baseUrl}/rest/files/${relativePath}`;
+    const fileUrl = getClientFacingUrlResolver().resolveRestResourceUrl({
+      context: buildDefaultClientFacingUrlContext({
+        request,
+        authContext: getRemoteAccessAuthContext(request),
+        localFallbackBaseUrl: appConfigProvider.config.getBaseUrl(),
+      }),
+      restPath: `/rest/files/${relativePath}`,
+      prefer: "relative",
+    });
 
     logger.info(`Returning file URL: ${fileUrl}`);
     return reply.send({ fileUrl });

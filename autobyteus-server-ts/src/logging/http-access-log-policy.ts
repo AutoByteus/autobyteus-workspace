@@ -1,5 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import type { HttpAccessLogMode } from "../config/logging-config.js";
+import { redactSensitiveUrl } from "../api/security/redact-sensitive-url.js";
 
 export type HttpAccessLogPolicyConfig = {
   mode: HttpAccessLogMode;
@@ -70,7 +71,7 @@ export const registerHttpAccessLogPolicy = (
 
     const payload = {
       method: request.method,
-      url: request.url,
+      url: redactSensitiveUrl(request.url),
       statusCode,
       elapsedMs: Number(reply.elapsedTime ?? 0),
     };

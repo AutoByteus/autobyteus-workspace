@@ -1,5 +1,5 @@
 <template>
-  <div 
+  <div
     class="image-viewer-container"
     ref="containerRef"
     @wheel.prevent="handleWheel"
@@ -10,24 +10,24 @@
     @dblclick="resetZoom"
     :style="{ cursor: cursorStyle }"
   >
-    <img 
-      v-if="url" 
-      :src="url" 
-      :alt="$t('tools.components.fileExplorer.viewers.ImageViewer.image_content')" 
+    <img
+      v-if="resolvedUrl"
+      :src="resolvedUrl"
+      :alt="$t('tools.components.fileExplorer.viewers.ImageViewer.image_content')"
       class="image-content"
       :style="imageTransformStyle"
       draggable="false"
     />
     <div v-else class="error-placeholder">
-      <p>{{ $t('tools.components.fileExplorer.viewers.ImageViewer.image_url_is_not_available') }}</p>
+      <p>{{ resourceError || $t('tools.components.fileExplorer.viewers.ImageViewer.image_url_is_not_available') }}</p>
     </div>
 
     <!-- Zoom indicator -->
-    <div v-if="url" class="zoom-indicator">
+    <div v-if="resolvedUrl" class="zoom-indicator">
       <span class="zoom-text">{{ zoomPercentage }}%</span>
-      <button 
-        v-if="scale !== 1" 
-        @click="resetZoom" 
+      <button
+        v-if="scale !== 1"
+        @click="resetZoom"
         class="reset-button"
         :title="$t('tools.components.fileExplorer.viewers.ImageViewer.reset_zoom_double_click_image')"
       >
@@ -36,7 +36,7 @@
     </div>
 
     <!-- Zoom hint on first view -->
-    <div v-if="url && showHint" class="zoom-hint">
+    <div v-if="resolvedUrl && showHint" class="zoom-hint">
       <span>{{ $t('tools.components.fileExplorer.viewers.ImageViewer.scroll_to_zoom_drag_to_pan') }}</span>
     </div>
   </div>
@@ -44,10 +44,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
 
-defineProps<{
+const props = defineProps<{
   url: string | null;
 }>();
+const { resolvedUrl, error: resourceError } = useAuthorizedObjectUrl(() => props.url);
 
 // Zoom state
 const scale = ref(1);
@@ -89,19 +91,19 @@ const handleWheel = (event: WheelEvent) => {
 
   const delta = -event.deltaY * ZOOM_SENSITIVITY;
   const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale.value * (1 + delta)));
-  
+
   // If zooming out to 1 or below, reset position
   if (newScale <= 1 && scale.value > 1) {
     position.value = { x: 0, y: 0 };
   }
-  
+
   scale.value = newScale;
 };
 
 const handleMouseDown = (event: MouseEvent) => {
   // Only allow dragging when zoomed in
   if (scale.value <= 1) return;
-  
+
   isDragging.value = true;
   dragStart.value = { x: event.clientX, y: event.clientY };
   positionStart.value = { ...position.value };
@@ -109,10 +111,10 @@ const handleMouseDown = (event: MouseEvent) => {
 
 const handleMouseMove = (event: MouseEvent) => {
   if (!isDragging.value) return;
-  
+
   const dx = (event.clientX - dragStart.value.x) / scale.value;
   const dy = (event.clientY - dragStart.value.y) / scale.value;
-  
+
   position.value = {
     x: positionStart.value.x + dx,
     y: positionStart.value.y + dy,

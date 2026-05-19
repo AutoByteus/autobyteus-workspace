@@ -1,0 +1,16 @@
+{
+  "scenario": "Open generated pairing URL returned by /rest/remote-access/pairing-sessions",
+  "inputUrl": "http://192.168.2.158:49196/mobile?pairing=<redacted>",
+  "observedAfterLoad": {
+    "href": "http://192.168.2.158:49196/mobile/agents",
+    "pathname": "/mobile/agents",
+    "bodyTextExcerpt": "Agents\\nAgent Teams\\nSkills\\nMemory\\nMedia\\nWorkspaces\\nNo run history yet.\\n\\nPreparing Agent Manager...",
+    "hasConnectThisPhone": false,
+    "hasAgentShell": true,
+    "mobilePairingTextareaCount": 0
+  },
+  "controlObservation": {
+    "url": "http://192.168.2.158:49196/mobile/mobile?pairing=<redacted>",
+    "notes": "The phone pairing component appears only at a double mobile route and is rendered inside the desktop shell/sidebars, confirming Nuxt base/route composition is misaligned with the QR mobileUrl. The control URL is not the URL generated in the pairing payload."
+  }
+}

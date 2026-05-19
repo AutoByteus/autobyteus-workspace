@@ -106,7 +106,6 @@ export class MediaStorageService {
     pagination: { currentPage: number; totalPages: number; totalFiles: number; limit: number };
   }> {
     logger.info(`Listing media files for category '${category}' - Page: ${page}, Limit: ${limit}`);
-    const baseUrl = this.config.getBaseUrl();
     const allFiles: Array<{ filename: string; category: string; url: string; createdAt: number }> = [];
 
     const categoriesToScan =
@@ -129,7 +128,7 @@ export class MediaStorageService {
           allFiles.push({
             filename: entry.name,
             category: catName,
-            url: `${baseUrl}/rest/files/${relativePath}`,
+            url: `/rest/files/${relativePath}`,
             createdAt: stat.mtimeMs,
           });
         }
@@ -224,8 +223,7 @@ export class MediaStorageService {
       .relative(this.mediaRoot, destinationPath)
       .split(path.sep)
       .join("/");
-    const baseUrl = this.config.getBaseUrl();
-    const serverUrl = `${baseUrl}/rest/files/${relativePath}`;
+    const serverUrl = `/rest/files/${relativePath}`;
 
     logger.info(`Generated server URL for ingested context file: ${serverUrl}`);
     return serverUrl;
@@ -240,8 +238,7 @@ export class MediaStorageService {
       .relative(this.mediaRoot, filePath)
       .split(path.sep)
       .join("/");
-    const baseUrl = this.config.getBaseUrl();
-    const serverUrl = `${baseUrl}/rest/files/${relativePath}`;
+    const serverUrl = `/rest/files/${relativePath}`;
     logger.info(`Successfully saved media to ${filePath}. Server URL: ${serverUrl}`);
     return serverUrl;
   }

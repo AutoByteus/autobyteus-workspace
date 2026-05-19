@@ -1,0 +1,808 @@
+{
+  "localBase": "http://127.0.0.1:49216",
+  "remoteBase": "http://192.168.2.158:49216",
+  "results": [
+    {
+      "id": "MRA-API2-001 public status loopback",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "112",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "compatibilityVersion": 1,
+          "pairingAvailable": false,
+          "phoneAccessEnabled": false,
+          "serverName": "AutoByteus Desktop"
+        },
+        "status": 200
+      }
+    },
+    {
+      "id": "MRA-API2-002 public status LAN",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "112",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "compatibilityVersion": 1,
+          "pairingAvailable": false,
+          "phoneAccessEnabled": false,
+          "serverName": "AutoByteus Desktop"
+        },
+        "status": 200
+      }
+    },
+    {
+      "id": "MRA-API2-003 local-only settings rejected over LAN",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "138",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "code": "REMOTE_ACCESS_LOCAL_ONLY",
+          "error": "REMOTE_ACCESS_LOCAL_ONLY",
+          "message": "This endpoint is only available from the local desktop."
+        },
+        "status": 403
+      }
+    },
+    {
+      "id": "MRA-API2-004 protected REST no token over LAN",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "126",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+          "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+          "message": "Remote Access credential is required."
+        },
+        "status": 401
+      }
+    },
+    {
+      "id": "MRA-API2-005 enable phone access loopback",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "110",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "settings": {
+            "phoneAccessEnabled": true,
+            "updatedAt": "2026-05-16T07:31:08.127Z",
+            "updatedBy": "loopback-desktop"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "id": "MRA-API2-006 create pairing session loopback",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "739",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "mobileUrl": "http://192.168.2.158:49216/mobile?pairing=<redacted>",
+          "payload": {
+            "expiresAt": "2026-05-16T07:36:08.130Z",
+            "pairingCode": "<redacted>",
+            "serverBaseUrl": "http://192.168.2.158:49216",
+            "serverName": "Round2 API E2E",
+            "version": 1
+          },
+          "qrText": "http://192.168.2.158:49216/mobile?pairing=<redacted>"
+        },
+        "status": 201
+      }
+    },
+    {
+      "id": "MRA-API2-007 exchange pairing over LAN",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "331",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "credential": "<redacted>",
+          "device": {
+            "clientFacingBaseUrl": "http://192.168.2.158:49216",
+            "createdAt": "2026-05-16T07:31:08.132Z",
+            "deviceId": "device_7eeff8cf9284a1f8e7778685385799fb",
+            "displayName": "Round2 API Phone",
+            "lastSeenAt": null,
+            "revokedAt": null
+          },
+          "serverBaseUrl": "http://192.168.2.158:49216"
+        },
+        "status": 201
+      }
+    },
+    {
+      "id": "MRA-API2-008 protected REST with token over LAN",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "84",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "files": [],
+          "pagination": {
+            "currentPage": 1,
+            "limit": 20,
+            "totalFiles": 0,
+            "totalPages": 1
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "id": "MRA-API2-009 GraphQL no token over LAN",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "126",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+          "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+          "message": "Remote Access credential is required."
+        },
+        "status": 401
+      }
+    },
+    {
+      "id": "MRA-API2-010 GraphQL with token over LAN",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "8814",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "data": {
+            "__typename": "Query",
+            "agentDefinitions": [
+              {
+                "id": "professor-agent",
+                "name": "Professor Agent"
+              },
+              {
+                "id": "student-agent",
+                "name": "Student Agent"
+              },
+              {
+                "id": "pitch-practice-investor",
+                "name": "Pitch Practice Investor"
+              },
+              {
+                "id": "resume-designer",
+                "name": "Resume Designer"
+              },
+              {
+                "id": "software-tutorial-video-maker",
+                "name": "Software Tutorial Video Maker"
+              },
+              {
+                "id": "audiogenerator",
+                "name": "AudioGenerator"
+              },
+              {
+                "id": "chapter-slide-planner",
+                "name": "Chapter Slide Planner"
+              },
+              {
+                "id": "chemistry-concept-visualizer",
+                "name": "Chemistry Concept Visualizer"
+              },
+              {
+                "id": "chemistry-homework-grader",
+                "name": "Chemistry homework grader"
+              },
+              {
+                "id": "chemistry-teacher-germany",
+                "name": "Chemistry Teacher Germany"
+              },
+              {
+                "id": "cinematic-storybook-director",
+                "name": "Cinematic Storybook Director"
+              },
+              {
+                "id": "claras-ocean-friends-story-creator",
+                "name": "Clara\u2019s Ocean Friends Story Creator"
+              },
+              {
+                "id": "coding-agent",
+                "name": "coding agent"
+              },
+              {
+                "id": "daily-assistant",
+                "name": "Daily Assistant"
+              },
+              {
+                "id": "database-manager",
+                "name": "database manager"
+              },
+              {
+                "id": "dictionary-word-audio",
+                "name": "Dictionary Word Audio"
+              },
+              {
+                "id": "gemini-rpa-ppt-designer",
+                "name": "Gemini RPA PPT designer"
+              },
+              {
+                "id": "image-designer",
+                "name": "Image Designer"
+              },
+              {
+                "id": "infographics-creator",
+                "name": "Infographics Creator"
+              },
+              {
+                "id": "kid-story-teller",
+                "name": "Kid_Story_Teller"
+              },
+              {
+                "id": "mcp-tool-manager",
+                "name": "MCP Tool Manager"
+              },
+              {
+                "id": "media-editor",
+                "name": "Media Editor"
+              },
+              {
+                "id": "niuzhirui-production-db-manager",
+                "name": "niuzhirui_production_db_manager"
+              },
+              {
+                "id": "ppt-creator",
+                "name": "PPT Creator"
+              },
+              {
+                "id": "ppt-designer",
+                "name": "PPT Designer"
+              },
+              {
+                "id": "presentation-designer",
+                "name": "Presentation Designer"
+              },
+              {
+                "id": "project-manager",
+                "name": "project manager"
+              },
+              {
+                "id": "prompt-generator",
+                "name": "prompt generator"
+              },
+              {
+                "id": "prompt-manager",
+                "name": "prompt manager"
+              },
+              {
+                "id": "publisher",
+                "name": "Publisher"
+              },
+              {
+                "id": "reflectioncards",
+                "name": "ReflectionCards"
+              },
+              {
+                "id": "reflective-storyteller",
+                "name": "Reflective Storyteller"
+              },
+              {
+                "id": "requirement",
+                "name": "requirement"
+              },
+              {
+                "id": "requirement-engineer",
+                "name": "requirement engineer"
+              },
+              {
+                "id": "slideimagegenerator",
+                "name": "SlideImageGenerator"
+              },
+              {
+                "id": "slidenarrator",
+                "name": "SlideNarrator"
+              },
+              {
+                "id": "software-architect",
+                "name": "software architect"
+              },
+              {
+                "id": "software-developer",
+                "name": "Software Developer"
+              },
+              {
+                "id": "tutorialvideocreator",
+                "name": "TutorialVideoCreator"
+              },
+              {
+                "id": "video-subtitle-burn-in",
+                "name": "video subtitle burn in engineer"
+              },
+              {
+                "id": "visual-book-storyteller",
+                "name": "Visual Book Storyteller"
+              },
+              {
+                "id": "visual-dialogue-weaver",
+                "name": "Visual Dialogue Weaver"
+              },
+              {
+                "id": "visualstoryteller",
+                "name": "VisualStoryteller"
+              },
+              {
+                "id": "wechat-official-account-article-writer",
+                "name": "WeChat Official Account Article Writer"
+              },
+              {
+                "id": "weixin-linux-desktop-operator",
+                "name": "Weixin Linux desktop operator"
+              },
+              {
+                "id": "team-local:article-writing-team:article-reviewer",
+                "name": "article reviewer"
+              },
+              {
+                "id": "team-local:article-writing-team:article-writer",
+                "name": "article writer"
+              },
+              {
+                "id": "team-local:manga-video-studio-team:manga-illustrator",
+                "name": "manga illustrator"
+              },
+              {
+                "id": "team-local:manga-video-studio-team:manga-showrunner",
+                "name": "manga showrunner"
+              },
+              {
+                "id": "team-local:manga-video-studio-team:storyboard-director",
+                "name": "storyboard director"
+              },
+              {
+                "id": "team-local:manga-video-studio-team:voice-video-producer",
+                "name": "voice and video producer"
+              },
+              {
+                "id": "team-local:narrated-presentation-video-team:narration-script-reviewer",
+                "name": "narration-script-reviewer"
+              },
+              {
+                "id": "team-local:narrated-presentation-video-team:presentation-director",
+                "name": "presentation-director"
+              },
+              {
+                "id": "team-local:narrated-presentation-video-team:slide-video-producer",
+                "name": "slide-video-producer"
+              },
+              {
+                "id": "team-local:research-to-deck-team:deck-reviewer",
+                "name": "deck reviewer"
+              },
+              {
+                "id": "team-local:research-to-deck-team:deep-researcher",
+                "name": "deep researcher"
+              },
+              {
+                "id": "team-local:research-to-deck-team:infographic-powerpoint-designer",
+                "name": "infographic PowerPoint designer"
+              },
+              {
+                "id": "team-local:software-engineering-team:api-e2e-engineer",
+                "name": "api e2e engineer"
+              },
+              {
+                "id": "team-local:software-engineering-team:architecture-reviewer",
+                "name": "architecture reviewer"
+              },
+              {
+                "id": "team-local:software-engineering-team:code-reviewer",
+                "name": "code reviewer"
+              },
+              {
+                "id": "team-local:software-engineering-team:delivery-engineer",
+                "name": "delivery engineer"
+              },
+              {
+                "id": "team-local:software-engineering-team:implementation-engineer",
+                "name": "implementation engineer"
+              },
+              {
+                "id": "team-local:software-engineering-team:solution-designer",
+                "name": "solution designer"
+              },
+              {
+                "id": "team-local:software-product-promo-video-team:promo-director",
+                "name": "promo-director"
+              },
+              {
+                "id": "team-local:software-product-promo-video-team:promo-video-producer",
+                "name": "promo-video-producer"
+              },
+              {
+                "id": "team-local:software-product-promo-video-team:visual-director",
+                "name": "visual-director"
+              },
+              {
+                "id": "team-local:software-product-promo-video-team:visual-reviewer",
+                "name": "visual-reviewer"
+              },
+              {
+                "id": "team-local:bible-study-group:careful-reader",
+                "name": "\u7ec6\u8bfb\u7ecf\u6587\u7684\u7ec4\u5458"
+              },
+              {
+                "id": "team-local:bible-study-group:context-guide",
+                "name": "\u63d0\u4f9b\u4e0a\u4e0b\u6587\u7684\u7ec4\u5458"
+              },
+              {
+                "id": "team-local:bible-study-group:study-leader",
+                "name": "\u67e5\u7ecf\u5c0f\u7ec4\u957f"
+              },
+              {
+                "id": "team-local:clara-ocean-friends:clara-story-orchestrator",
+                "name": "Clara Story Orchestrator"
+              },
+              {
+                "id": "team-local:clara-ocean-friends:clara-storybook-builder",
+                "name": "Clara Storybook Builder"
+              },
+              {
+                "id": "team-local:marketing-team:linkedin-marketer",
+                "name": "LinkedIn marketer"
+              },
+              {
+                "id": "team-local:marketing-team:marketing-coordinator",
+                "name": "Marketing Coordinator"
+              },
+              {
+                "id": "team-local:marketing-team:weixin-gongzhonghao-marketer",
+                "name": "Weixin gongzhonghao marketer"
+              },
+              {
+                "id": "team-local:marketing-team:x-marketer",
+                "name": "X marketer"
+              },
+              {
+                "id": "team-local:marketing-team:xiaohongshu-marketer",
+                "name": "Xiaohongshu marketer"
+              },
+              {
+                "id": "team-local:movie-maker:cinematic-frame-artist",
+                "name": "Cinematic Frame Artist"
+              },
+              {
+                "id": "team-local:movie-maker:cinematic-sound-designer",
+                "name": "Cinematic Sound Designer"
+              },
+              {
+                "id": "team-local:movie-maker:cinematic-storyboard-architect",
+                "name": "Cinematic Storyboard Architect"
+              },
+              {
+                "id": "team-local:movie-maker:cinematic-video-editor",
+                "name": "Cinematic Video Editor"
+              },
+              {
+                "id": "team-local:socratic-math-team:animationdeveloper",
+                "name": "AnimationDeveloper"
+              },
+              {
+                "id": "team-local:socratic-math-team:geniusmathresolver",
+                "name": "GeniusMathResolver"
+              },
+              {
+                "id": "team-local:socratic-math-team:socraticmathteacher",
+                "name": "SocraticMathTeacher"
+              },
+              {
+                "id": "team-local:video-tutorial-creation-team:tutorial-video-assembler",
+                "name": "TutorialVideoAssembler"
+              },
+              {
+                "id": "team-local:video-tutorial-creation-team:tutorial-voiceover-writer",
+                "name": "TutorialVoiceoverWriter"
+              },
+              {
+                "id": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher",
+                "name": "Brief Studio Researcher"
+              },
+              {
+                "id": "team-local:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer",
+                "name": "Brief Studio Writer"
+              }
+            ],
+            "agentTeamDefinitions": [
+              {
+                "id": "article-writing-team",
+                "name": "Article Writing Team"
+              },
+              {
+                "id": "manga-video-studio-team",
+                "name": "Manga Video Studio Team"
+              },
+              {
+                "id": "narrated-presentation-video-team",
+                "name": "Narrated Presentation Video Team"
+              },
+              {
+                "id": "research-to-deck-team",
+                "name": "Research To Deck Team"
+              },
+              {
+                "id": "software-engineering-team",
+                "name": "Software Engineering Team"
+              },
+              {
+                "id": "software-product-promo-video-team",
+                "name": "Software Product Promo Video Team"
+              },
+              {
+                "id": "bible-study-group",
+                "name": "Bible Study Group"
+              },
+              {
+                "id": "clara-ocean-friends",
+                "name": "Clara Ocean Friends"
+              },
+              {
+                "id": "marketing-team",
+                "name": "Marketing Team"
+              },
+              {
+                "id": "movie-maker",
+                "name": "Movie Maker"
+              },
+              {
+                "id": "presentation-chemie",
+                "name": "Presentation_Chemie"
+              },
+              {
+                "id": "socratic-math-team",
+                "name": "Socratic Math Team"
+              },
+              {
+                "id": "video-tutorial-creation-team",
+                "name": "Video Tutorial Creation Team"
+              },
+              {
+                "id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b74726565732532466170706c69636174696f6e2d657865637574696f6e2d7265736f757263652d6e616d696e672532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+                "name": "Brief Studio Team"
+              },
+              {
+                "id": "professor-student-team",
+                "name": "Professor Student Team"
+              }
+            ]
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "id": "MRA-API2-011 WS no token over LAN",
+      "websocket": {
+        "code": 4401,
+        "outcome": "close",
+        "reason": "REMOTE_ACCESS_AUTH_REQUIRED"
+      }
+    },
+    {
+      "id": "MRA-API2-012 WS with token over LAN",
+      "websocket": {
+        "message": "{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_NOT_FOUND\",\"message\":\"Agent run 'e2e-run-token' not found\"}}",
+        "outcome": "message"
+      }
+    },
+    {
+      "id": "MRA-API2-013 list devices loopback",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "248",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "devices": [
+            {
+              "clientFacingBaseUrl": "http://192.168.2.158:49216",
+              "createdAt": "2026-05-16T07:31:08.132Z",
+              "deviceId": "device_7eeff8cf9284a1f8e7778685385799fb",
+              "displayName": "Round2 API Phone",
+              "lastSeenAt": "2026-05-16T07:31:08.170Z",
+              "revokedAt": null
+            }
+          ]
+        },
+        "status": 200
+      }
+    },
+    {
+      "id": "MRA-API2-014 protected resource without/with token",
+      "noToken": "<redacted>",
+      "withToken": "<redacted>"
+    },
+    {
+      "id": "MRA-API2-015 revoke device loopback",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "267",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "device": {
+            "clientFacingBaseUrl": "http://192.168.2.158:49216",
+            "createdAt": "2026-05-16T07:31:08.132Z",
+            "deviceId": "device_7eeff8cf9284a1f8e7778685385799fb",
+            "displayName": "Round2 API Phone",
+            "lastSeenAt": "2026-05-16T07:31:08.175Z",
+            "revokedAt": "2026-05-16T07:31:08.177Z"
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "id": "MRA-API2-016 revoked REST token over LAN",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "127",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "code": "REMOTE_ACCESS_DEVICE_REVOKED",
+          "error": "REMOTE_ACCESS_DEVICE_REVOKED",
+          "message": "This paired device has been revoked."
+        },
+        "status": 403
+      }
+    },
+    {
+      "created": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "747",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "mobileUrl": "http://192.168.2.158:49216/mobile?pairing=<redacted>",
+          "payload": {
+            "expiresAt": "2026-05-16T07:36:08.180Z",
+            "pairingCode": "<redacted>",
+            "serverBaseUrl": "http://192.168.2.158:49216",
+            "serverName": "Round2 API E2E 2",
+            "version": 1
+          },
+          "qrText": "http://192.168.2.158:49216/mobile?pairing=<redacted>"
+        },
+        "status": 201
+      },
+      "exchanged": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "333",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "credential": "<redacted>",
+          "device": {
+            "clientFacingBaseUrl": "http://192.168.2.158:49216",
+            "createdAt": "2026-05-16T07:31:08.181Z",
+            "deviceId": "device_3482036d1d2b4a136cd4832ec1607162",
+            "displayName": "Round2 API Phone 2",
+            "lastSeenAt": null,
+            "revokedAt": null
+          },
+          "serverBaseUrl": "http://192.168.2.158:49216"
+        },
+        "status": 201
+      },
+      "id": "MRA-API2-017 create/exchange second pairing"
+    },
+    {
+      "id": "MRA-API2-018 revoke all loopback",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "29",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "result": {
+            "revokedCount": 1
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "id": "MRA-API2-019 revoked-all REST token over LAN",
+      "response": {
+        "headers": {
+          "connection": "keep-alive",
+          "content-length": "127",
+          "content-type": "application/json; charset=utf-8",
+          "date": "Sat, 16 May 2026 07:31:08 GMT",
+          "keep-alive": "timeout=72",
+          "vary": "Origin"
+        },
+        "json": {
+          "code": "REMOTE_ACCESS_DEVICE_REVOKED",
+          "error": "REMOTE_ACCESS_DEVICE_REVOKED",
+          "message": "This paired device has been revoked."
+        },
+        "status": 403
+      }
+    }
+  ]
+}

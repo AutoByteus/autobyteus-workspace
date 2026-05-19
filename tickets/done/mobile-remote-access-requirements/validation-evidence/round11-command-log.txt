@@ -1,0 +1,194 @@
+
+## round11-nuxi-prepare
+$ pnpm -C autobyteus-web exec nuxi prepare
+exit=0 log=tickets/mobile-remote-access-requirements/validation-evidence/round11-nuxi-prepare.log
+  isElectronBuild false
+  [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+  │
+  ◆  Types generated in .nuxt.
+
+## round11-focused-mobile-streaming-vitest
+$ pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/AgentStreamingService.spec.ts stores/__tests__/agentRunStore.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts pages/__tests__/mobile-root-shell.spec.ts pages/__tests__/mobile-root.spec.ts middleware/__tests__/mobileFeatureGate.global.spec.ts utils/__tests__/mobileFeatureGates.spec.ts
+exit=0 log=tickets/mobile-remote-access-requirements/validation-evidence/round11-focused-mobile-streaming-vitest.log
+  Agent WebSocket connected
+  Agent WebSocket disconnected: bye
+  
+  stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+  Agent WebSocket disconnected: network reset
+  
+  stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+  Agent WebSocket error: Error: socket failed
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts:190:38
+      at file:///Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+      at file:///Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+      at file:///Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+      at new Promise (<anonymous>)
+      at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+      at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+      at processTicksAndRejections (node:internal/process/task_queues:105:5)
+      at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+      at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+  
+   ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts (12 tests) 12ms
+   ✓ middleware/__tests__/mobileFeatureGate.global.spec.ts (3 tests) 3ms
+   ✓ pages/__tests__/mobile-root.spec.ts (2 tests) 11ms
+   ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (5 tests) 40ms
+   ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts (5 tests) 56ms
+   ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (9 tests) 64ms
+   ✓ pages/__tests__/mobile-root-shell.spec.ts (2 tests) 21ms
+  stderr | utils/__tests__/mobileFeatureGates.spec.ts
+  Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+  
+  stdout | utils/__tests__/mobileFeatureGates.spec.ts
+  serverStore: Initializing server config
+  serverStore: Not in Electron environment. Skipping server initialization.
+  
+   ✓ utils/__tests__/mobileFeatureGates.spec.ts (3 tests) 2ms
+  
+   Test Files  10 passed (10)
+        Tests  57 passed (57)
+     Start at  10:25:09
+     Duration  5.80s (transform 2.78s, setup 36.40s, collect 2.50s, tests 228ms, environment 2.67s, prepare 1.97s)
+  
+
+## round11-remote-access-unit-vitest
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access
+exit=0 log=tickets/mobile-remote-access-requirements/validation-evidence/round11-remote-access-unit-vitest.log
+    └─ 20260210101500_add_agent_avatar/
+      └─ migration.sql
+    └─ 20260210192000_add_agent_team_avatar/
+      └─ migration.sql
+    └─ 20260211214500_add_sync_columns_and_tombstones/
+      └─ migration.sql
+    └─ 20260212070000_remove_workflow_definition/
+      └─ migration.sql
+    └─ 20260309103000_add_channel_binding_launch_preset/
+      └─ migration.sql
+    └─ 20260310153000_add_channel_binding_team_definition_id/
+      └─ migration.sql
+    └─ 20260331102000_remove_channel_bindings_table/
+      └─ migration.sql
+    └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+      └─ migration.sql
+    └─ 20260517090000_add_app_data_migration_records/
+      └─ migration.sql
+  
+  ┌─────────────────────────────────────────────────────────┐
+  │  Update available 5.22.0 -> 7.8.0                       │
+  │                                                         │
+  │  This is a major update - please follow the guide at    │
+  │  https://pris.ly/d/major-version-upgrade                │
+  │                                                         │
+  │  Run the following to update                            │
+  │    npm i --save-dev prisma@latest                       │
+  │    npm i @prisma/client@latest                          │
+  └─────────────────────────────────────────────────────────┘
+   ✓ tests/unit/remote-access/pairing-auth-service.test.ts (3 tests) 20ms
+   ✓ tests/unit/remote-access/local-trust.test.ts (12 tests) 6ms
+   ✓ tests/unit/remote-access/route-policy.test.ts (6 tests) 5ms
+   ✓ tests/unit/remote-access/redact-sensitive-url.test.ts (4 tests) 2ms
+   ✓ tests/unit/remote-access/client-facing-url-resolver.test.ts (2 tests) 2ms
+  
+   Test Files  5 passed (5)
+        Tests  27 passed (27)
+     Start at  10:25:15
+     Duration  991ms (transform 93ms, setup 50ms, import 137ms, tests 35ms, environment 0ms)
+  
+
+## round11-remote-access-web-vitest
+$ pnpm -C autobyteus-web exec vitest run utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts utils/__tests__/nodeEndpoints.spec.ts utils/__tests__/nodeHostValidation.spec.ts utils/__tests__/nodeCapabilityProbe.spec.ts services/__tests__/api.nodeRouting.spec.ts
+exit=0 log=tickets/mobile-remote-access-requirements/validation-evidence/round11-remote-access-web-vitest.log
+  
+  stderr | services/__tests__/api.nodeRouting.spec.ts
+  Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+  
+  stdout | utils/__tests__/nodeCapabilityProbe.spec.ts
+  serverStore: Initializing server config
+  serverStore: Not in Electron environment. Skipping server initialization.
+  
+  stdout | utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts
+  serverStore: Initializing server config
+  serverStore: Not in Electron environment. Skipping server initialization.
+  
+  stdout | utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts
+  serverStore: Initializing server config
+  serverStore: Not in Electron environment. Skipping server initialization.
+  
+  stdout | services/__tests__/api.nodeRouting.spec.ts
+  serverStore: Initializing server config
+  serverStore: Not in Electron environment. Skipping server initialization.
+  
+  stdout | utils/__tests__/nodeEndpoints.spec.ts
+  serverStore: Initializing server config
+  serverStore: Not in Electron environment. Skipping server initialization.
+  
+  stdout | utils/__tests__/nodeHostValidation.spec.ts
+  serverStore: Initializing server config
+  serverStore: Not in Electron environment. Skipping server initialization.
+  
+   ✓ utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts (2 tests) 1ms
+   ✓ utils/__tests__/nodeEndpoints.spec.ts (5 tests) 3ms
+   ✓ utils/__tests__/nodeHostValidation.spec.ts (4 tests) 2ms
+   ✓ utils/__tests__/nodeCapabilityProbe.spec.ts (4 tests) 3ms
+   ✓ services/__tests__/api.nodeRouting.spec.ts (2 tests) 40ms
+   ✓ utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts (4 tests) 4ms
+  
+   Test Files  6 passed (6)
+        Tests  21 passed (21)
+     Start at  10:25:18
+     Duration  4.38s (transform 2.47s, setup 21.08s, collect 395ms, tests 54ms, environment 1.20s, prepare 1.09s)
+  
+
+## round11-mobile-web-build
+$ pnpm -C autobyteus-web build:mobile-web
+exit=0 log=tickets/mobile-remote-access-requirements/validation-evidence/round11-mobile-web-build.log
+  (!) Some chunks are larger than 500 kB after minification. Consider:
+  - Using dynamic import() to code-split the application
+  - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+  - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+  
+  ℹ ✓ built in 14.10s
+  ✔ Client built in 14113ms
+  ℹ Building server...
+  ℹ vite v7.3.1 building ssr environment for production...
+  ℹ transforming...
+  ℹ ✓ 1 modules transformed.
+  ℹ rendering chunks...
+  ℹ ✓ built in 11ms
+  ✔ Server built in 31ms
+  [nitro] ℹ Initializing prerenderer
+  [nitro] ℹ Prerendering 14 initial routes with crawler
+  [nitro]   ├─ /agents (28ms)
+  [nitro]   ├─ /media (27ms)
+  [nitro]   ├─ /tools (27ms)
+  [nitro]   ├─ /skills (28ms)
+  [nitro]   ├─ /settings (28ms)
+  [nitro]   ├─ /memory (28ms)
+  [nitro]   ├─ /agent-teams (29ms)
+  [nitro]   ├─ /workspace (29ms)
+  [nitro]   ├─ /mobile (28ms)
+  [nitro]   ├─ / (28ms)
+  [nitro]   ├─ /applications (29ms)
+  [nitro]   ├─ /index.html (29ms)
+  [nitro]   ├─ /404.html (29ms)
+  [nitro]   ├─ /200.html (29ms)
+  [nitro] ℹ Prerendered 14 routes in 0.58 seconds
+  [nitro] ✔ Generated public dist/public
+  [nitro] ✔ You can preview this build using npx serve dist/public
+  │
+  ▲  HTML content not prerendered because ssr: false was set.
+  │
+  ●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+  │
+  └  ✨ You can now deploy dist/public to any static hosting!
+  Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/autobyteus-web/dist-mobile/public
+
+## round11-nuxi-typecheck-baseline
+exit=1 log=tickets/mobile-remote-access-requirements/validation-evidence/round11-nuxi-typecheck-baseline.log
+changed-path-grep-lines=       4 log=tickets/mobile-remote-access-requirements/validation-evidence/round11-typecheck-changed-path-grep.log
+
+## round11-git-diff-check
+$ git diff --check
+exit=0 log=tickets/mobile-remote-access-requirements/validation-evidence/round11-git-diff-check.log
+
+Round 11 focused executable validation complete.

@@ -98,6 +98,7 @@ import { useArtifactContentDisplayModeStore } from '~/stores/artifactContentDisp
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';
 import FileViewer from '~/components/fileExplorer/FileViewer.vue';
+import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
 const props = defineProps<{
   artifact: ArtifactViewerItem | null;
@@ -248,7 +249,7 @@ const refreshResolvedContent = async () => {
   const currentToken = ++fetchToken;
   isFetchingContent.value = true;
   try {
-    const response = await fetch(fetchUrl, { cache: 'no-store' });
+    const response = await authorizedFetch(fetchUrl, { cache: 'no-store' });
 
     if (response.status === 404) {
       if (currentToken !== fetchToken) return;

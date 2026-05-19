@@ -1,0 +1,3 @@
+grep_pattern=components/mobile|composables/mobile|stores/mobileWorkStore|types/mobileWork|utils/mobileFeatureGates|middleware/__tests__/mobileFeatureGate.global.spec.ts|pages/__tests__/mobile-root-shell.spec.ts|pages/__tests__/mobile-root.spec.ts|stores/agentRunStore.ts|services/agentStreaming/index.ts|services/agentStreaming/AgentStreamingService.ts|services/runSubmission/localUserSubmission.ts
+grep_exit_status=1
+matched_lines=0

@@ -36,6 +36,12 @@ New external custom applications should start with the reusable
 Full guide:
 - [`docs/custom-application-development.md`](docs/custom-application-development.md)
 
+## Phone Access / Remote Access
+
+AutoByteus desktop can pair a phone/PWA to the bundled server over any private network path the user already trusts, including LAN, Tailscale/Headscale, company VPN, NetBird, Netmaker, or WireGuard. The desktop flow lives in **Settings -> Nodes -> Phone Access** and generates a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`.
+
+User and packaging details are in [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md); backend route/auth details are in [`autobyteus-server-ts/docs/features/remote_access.md`](autobyteus-server-ts/docs/features/remote_access.md).
+
 ## Run The Published Server Docker
 
 If you want to start the released server image without cloning this repository, use the public launcher. It pulls `autobyteus/autobyteus-server:latest`, keeps state outside any source checkout, picks non-conflicting ports, and prints the Backend URL to add in **Settings → Nodes → Add Remote Node**.

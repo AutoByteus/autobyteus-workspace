@@ -1,0 +1,28 @@
+Round 12 deep code review check summary
+Date: 2026-05-19
+Reviewer role: code_reviewer
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements
+Branch: codex/mobile-remote-access-requirements
+HEAD: 89bbf0d0aaefaa6f747fdcdbfea1250cb7b19f6b
+origin/personal: 98cfdc24612a8cce8525e934cfd373589ad51ec4
+Branch relation after fetch: ahead 11 / behind 0; origin/personal is an ancestor of HEAD.
+
+Static review highlights:
+- No mobile-only SEND_MESSAGE, client_message_id, message_id, or dedupe/dedup code in components/mobile, composables/mobile, mobile stores, utils/mobile, or utils/remoteAccess.
+- Shared single-agent path remains: agentRunStore creates client_* messageId and agent_run_input:<runId>:<messageId> dedupeKey, then calls AgentStreamingService.sendMessage.
+- AgentStreamingService serializes message_id/dedupe_key and handles rejected AGENT_COMMAND_ACK as an error.
+- Shared team path remains: agentTeamRunStore creates client_* messageId and member_input:<teamRunId>:<memberRouteKey>:<messageId> dedupeKey, then calls TeamStreamingService.sendMessage.
+- Server-side command coordinator and agent websocket integration tests cover missing/duplicate/busy/failure ACK semantics.
+- Mobile UX source review found no mobile transport workaround, no duplicate mobile sender, and no regression in route/auth/mobile shell boundaries.
+
+Commands run by reviewer:
+1. git fetch origin personal — pass.
+2. Branch relation checks: git rev-list --left-right --count origin/personal...HEAD => 0 11; origin/personal ancestor of HEAD => yes.
+3. pnpm -C autobyteus-web exec nuxi prepare — pass.
+4. pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts pages/__tests__/mobile-root-shell.spec.ts pages/__tests__/mobile-root.spec.ts middleware/__tests__/mobileFeatureGate.global.spec.ts utils/__tests__/mobileFeatureGates.spec.ts utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts utils/remoteAccess/__tests__/websocketAuth.spec.ts — pass, 16 files / 102 tests.
+5. pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access tests/unit/agent-execution/agent-run-command-coordinator.test.ts tests/integration/agent/agent-websocket.integration.test.ts — pass, 7 files / 40 tests.
+6. pnpm -C autobyteus-web build:mobile-web — pass; reviewer removed generated autobyteus-web/dist and autobyteus-web/dist-mobile afterward.
+7. NODE_OPTIONS=--max-old-space-size=8192 pnpm -C autobyteus-web exec nuxi typecheck — fails on existing repo-wide baseline TypeScript issues; exact changed mobile/remote-access/streaming/run-submission path grep had 0 hits. Full transient log: /tmp/autobyteus-deep-review-typecheck.log. Exact grep transient log: /tmp/autobyteus-deep-review-typecheck-exact-changed-path-grep.log.
+8. git diff --check — pass.
+
+Review outcome: PASS. No open code-review findings.

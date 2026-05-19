@@ -8,7 +8,10 @@
         class="relative group cursor-pointer" 
         @click="openModal(url)"
       >
-        <img :src="url" :alt="$t('workspace.components.conversation.segments.MediaSegment.generated_image')" class="rounded-lg object-cover w-full h-full shadow-md transition-transform duration-300 group-hover:scale-105" />
+        <img v-if="displayUrlFor(url)" :src="displayUrlFor(url) || ''" :alt="$t('workspace.components.conversation.segments.MediaSegment.generated_image')" class="rounded-lg object-cover w-full h-full shadow-md transition-transform duration-300 group-hover:scale-105" />
+        <div v-else class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+          {{ resourceErrorsBySource[url] || 'Loading protected media…' }}
+        </div>
         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
           <button @click.stop="openModal(url)" class="p-2 bg-gray-800 bg-opacity-60 text-white rounded-full hover:bg-opacity-80 transition-all opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100" :title="$t('workspace.components.conversation.segments.MediaSegment.view_full_size')">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-5 h-5 fill-current"><path d="M32 32C14.3 32 0 46.3 0 64v96c0 17.7 14.3 32 32 32s32-14.3 32-32V96h64c17.7 0 32-14.3 32-32s-14.3-32-32-32H32zM64 352c-17.7 0-32 14.3-32 32s14.3 32 32 32h64v64c0 17.7 14.3 32 32 32s32-14.3 32-32V384c0-17.7-14.3-32-32-32H64zM320 32c-17.7 0-32 14.3-32 32v64h64c17.7 0 32-14.3 32-32s-14.3-32-32-32H320zM384 352c-17.7 0-32 14.3-32 32v64h-64c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32V384c0-17.7-14.3-32-32-32z"/></svg>
@@ -20,14 +23,16 @@
     <!-- Audio Display -->
     <div v-if="segment.mediaType === 'audio'" class="space-y-3">
       <div v-for="(url, index) in segment.urls" :key="index">
-        <audio controls :src="url" class="w-full">{{ $t('workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the') }}</audio>
+        <audio v-if="displayUrlFor(url)" controls :src="displayUrlFor(url) || ''" class="w-full">{{ $t('workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the') }}</audio>
+        <p v-else class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{{ resourceErrorsBySource[url] || 'Loading protected audio…' }}</p>
       </div>
     </div>
 
     <!-- Video Display -->
     <div v-if="segment.mediaType === 'video'" class="space-y-4">
       <div v-for="(url, index) in segment.urls" :key="index" class="relative">
-        <video controls :src="url" class="rounded-lg w-full shadow-md">{{ $t('workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the_2') }}</video>
+        <video v-if="displayUrlFor(url)" controls :src="displayUrlFor(url) || ''" class="rounded-lg w-full shadow-md">{{ $t('workspace.components.conversation.segments.MediaSegment.your_browser_does_not_support_the_2') }}</video>
+        <p v-else class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{{ resourceErrorsBySource[url] || 'Loading protected video…' }}</p>
       </div>
     </div>
     
@@ -35,7 +40,7 @@
     <FullScreenImageModal
       v-if="selectedImageUrl"
       :visible="isModalVisible"
-      :image-url="selectedImageUrl"
+      :image-url="selectedImageDisplayUrl"
       alt-text="Generated image - full size"
       :download-filename="downloadFilename"
       @close="closeModal"
@@ -48,13 +53,25 @@
 import { ref, computed } from 'vue';
 import type { MediaSegment } from '~/types/segments';
 import FullScreenImageModal from '~/components/common/FullScreenImageModal.vue';
+import { useAuthorizedObjectUrlMap } from '~/composables/useAuthorizedObjectUrl';
+import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 
-defineProps<{
+const props = defineProps<{
   segment: MediaSegment;
 }>();
 
 const isModalVisible = ref(false);
 const selectedImageUrl = ref<string | null>(null);
+const {
+  errorsBySource: resourceErrorsBySource,
+  resolveUrl: displayUrlFor,
+} = useAuthorizedObjectUrlMap(() => props.segment.urls);
+const selectedImageDisplayUrl = computed(() => {
+  if (!selectedImageUrl.value) {
+    return null;
+  }
+  return displayUrlFor(selectedImageUrl.value) || selectedImageUrl.value;
+});
 
 const downloadFilename = computed(() => {
   if (!selectedImageUrl.value) return 'image.png';
@@ -88,7 +105,7 @@ const downloadImage = async () => {
   
   try {
     // Fetch the image data
-    const response = await fetch(url);
+    const response = await authorizedFetch(url);
     if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
     const blob = await response.blob();
     

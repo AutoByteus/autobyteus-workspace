@@ -12,6 +12,11 @@ import type {
   ConnectionState,
 } from './types';
 import type { FileSystemChangeEvent } from '~/types/fileSystemChangeTypes';
+import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
+import {
+  buildAuthenticatedWebSocketUrl,
+  redactRemoteAccessWebSocketUrl,
+} from '~/utils/remoteAccess/websocketAuth';
 
 export class FileExplorerStreamingService {
   private ws: WebSocket | null = null;
@@ -90,9 +95,11 @@ export class FileExplorerStreamingService {
 
     this._state = this.reconnectAttempts > 0 ? 'reconnecting' : 'connecting';
     const encodedWorkspaceId = encodeURIComponent(this.workspaceId);
-    const url = `${this.wsEndpoint}/${encodedWorkspaceId}`;
+    const baseUrl = `${this.wsEndpoint}/${encodedWorkspaceId}`;
+    const credential = getActiveRemoteAccessCredential();
+    const url = credential ? buildAuthenticatedWebSocketUrl(baseUrl, credential) : baseUrl;
 
-    console.log(`[FileExplorerStreaming] Connecting to ${url}...`);
+    console.log(`[FileExplorerStreaming] Connecting to ${redactRemoteAccessWebSocketUrl(url)}...`);
 
     try {
       this.ws = new WebSocket(url);

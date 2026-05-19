@@ -10,6 +10,12 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
 
+type RunHistorySelectionMode = 'desktop' | 'mobile';
+
+interface RunHistoryOpenOptions {
+  selectionMode?: RunHistorySelectionMode;
+}
+
 interface RunHistorySelectionStoreLike {
   openingRun: boolean;
   error: string | null;
@@ -17,8 +23,8 @@ interface RunHistorySelectionStoreLike {
   selectedTeamRunId: string | null;
   selectedTeamMemberRouteKey: string | null;
   teamResumeConfigByTeamRunId: Record<string, TeamRunResumeConfigPayload>;
-  openTeamMemberRun(teamRunId: string, memberRouteKey: string): Promise<void>;
-  openRun(runId: string): Promise<void>;
+  openTeamMemberRun(teamRunId: string, memberRouteKey: string, options?: RunHistoryOpenOptions): Promise<void>;
+  openRun(runId: string, options?: RunHistoryOpenOptions): Promise<void>;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
 }
 
@@ -26,6 +32,7 @@ export const openTeamMemberRunFromHistory = async (
   store: RunHistorySelectionStoreLike,
   teamRunId: string,
   memberRouteKey: string,
+  options: RunHistoryOpenOptions = {},
 ): Promise<void> => {
   store.openingRun = true;
   store.error = null;
@@ -34,6 +41,7 @@ export const openTeamMemberRunFromHistory = async (
       teamRunId,
       memberRouteKey,
       ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
+      selectionMode: options.selectionMode,
     });
 
     store.teamResumeConfigByTeamRunId[result.resumeConfig.teamRunId] = result.resumeConfig;

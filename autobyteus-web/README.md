@@ -169,6 +169,12 @@ No additional configuration is needed for internal server mode. The application 
 - Uses the canonical embedded base URL `http://127.0.0.1:29695`
 - Configures the frontend to connect to that embedded node automatically
 
+#### Phone Access / Remote Access
+
+The desktop app can expose its bundled server to a paired phone/PWA over a LAN, Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or another private network that already reaches the desktop node. Enable **Settings -> Nodes -> Phone Access**, choose the reachable private-network URL, and scan/open the generated `/mobile?pairing=...` QR link from the phone. The phone stores a paired mobile session and then uses authenticated REST, GraphQL, WebSocket, and protected-resource transports.
+
+See `docs/remote_access.md` for setup, security, mobile-gating, and packaging details.
+
 ### External Server
 
 The external server mode connects to a separately running AutoByteus server. This mode is:

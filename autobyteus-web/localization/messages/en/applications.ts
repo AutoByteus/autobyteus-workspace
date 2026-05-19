@@ -124,6 +124,8 @@ const applicationMessages = {
   'applications.components.applications.ApplicationShell.startedAtLabel': 'Engine started',
   'applications.components.applications.ApplicationSurface.applicationUnavailable': 'Application launch is not ready',
   'applications.components.applications.ApplicationSurface.applicationUnavailableHelp': 'Wait for the application host launch to complete or retry from the page shell.',
+  'applications.components.applications.ApplicationSurface.mobileUnavailable': 'Application unavailable on phone',
+  'applications.components.applications.ApplicationSurface.mobileUnavailableHelp': 'Application iframe surfaces are not part of the mobile MVP yet. Open this application from the desktop app.',
   'applications.components.applications.ApplicationLaunchSetupPanel.title': 'Launch setup',
   'applications.components.applications.ApplicationLaunchSetupPanel.heading': 'Saved resource and launch defaults',
   'applications.components.applications.ApplicationLaunchSetupPanel.description': 'Choose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.',

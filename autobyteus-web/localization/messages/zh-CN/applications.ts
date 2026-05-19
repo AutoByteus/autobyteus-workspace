@@ -123,6 +123,8 @@ const applicationMessages = {
   'applications.components.applications.ApplicationShell.startedAtLabel': '引擎启动时间',
   'applications.components.applications.ApplicationSurface.applicationUnavailable': '应用程序启动尚未就绪',
   'applications.components.applications.ApplicationSurface.applicationUnavailableHelp': '请等待应用宿主启动完成，或从页面外壳重试。',
+  'applications.components.applications.ApplicationSurface.mobileUnavailable': '手机上暂不可用此应用',
+  'applications.components.applications.ApplicationSurface.mobileUnavailableHelp': '应用 iframe 界面尚未包含在移动 MVP 中。请从桌面应用打开此应用。',
   'applications.components.applications.ApplicationLaunchSetupPanel.title': '启动设置',
   'applications.components.applications.ApplicationLaunchSetupPanel.heading': '已保存的资源与启动默认值',
   'applications.components.applications.ApplicationLaunchSetupPanel.description': '为应用声明的运行时资源槽选择资源，并按声明可选地保存运行时、模型或工作区默认值，供之后由应用自身启动运行时使用。保存此表单不会启动运行。',

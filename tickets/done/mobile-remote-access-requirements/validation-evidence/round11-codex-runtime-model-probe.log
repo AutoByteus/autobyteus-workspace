@@ -1,0 +1,6 @@
+Round 11 Codex runtime/model GraphQL probe
+2026-05-19T10:27:40+02:00
+raw_len 2863
+provider_count 13
+provider=OPENAI name=OpenAI apiKeyConfigured=True status=NOT_APPLICABLE models=gpt-5.2,gpt-5.3-codex,gpt-5.3-codex-spark,gpt-5.4,gpt-5.4-mini,gpt-5.5
+gpt-5.5_available True

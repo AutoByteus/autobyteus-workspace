@@ -1,0 +1,11 @@
+Backend listener check on 29695:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 255 normy   25u  IPv4 0x152e11b6ca79e94e      0t0  TCP *:29695 (LISTEN)
+
+Frontend listener check on 3030:
+
+Remote Access REST probe:
+/rest/remote-access/status -> 404
+  body: {"message":"Route GET:/rest/remote-access/status not found","error":"Not Found","statusCode":404}/rest/remote-access/settings -> 404
+  body: {"message":"Route PUT:/rest/remote-access/settings not found","error":"Not Found","statusCode":404}/rest/remote-access/pairing-sessions -> 404
+  body: {"message":"Route POST:/rest/remote-access/pairing-sessions not found","error":"Not Found","statusCode":404}

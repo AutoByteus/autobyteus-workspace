@@ -1,0 +1,20 @@
+Round 4 API/E2E validation command log started at 2026-05-19T07:11:47+02:00
+
+[2026-05-19T07:11:47+02:00] pnpm -C autobyteus-web exec nuxi prepare
+[2026-05-19T07:11:49+02:00] exit 0 for round4-nuxi-prepare
+[2026-05-19T07:11:49+02:00] pnpm -C autobyteus-web exec vitest run components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts pages/__tests__/mobile-root-shell.spec.ts pages/__tests__/mobile-root.spec.ts middleware/__tests__/mobileFeatureGate.global.spec.ts utils/__tests__/mobileFeatureGates.spec.ts
+[2026-05-19T07:11:55+02:00] exit 0 for round4-focused-mobile-vitest
+[2026-05-19T07:11:55+02:00] pnpm -C autobyteus-web exec vitest run stores/__tests__/agentSelectionStore.spec.ts stores/__tests__/agentContextsStore.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+[2026-05-19T07:12:01+02:00] exit 0 for round4-shared-selection-run-open-vitest
+[2026-05-19T07:12:01+02:00] pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access
+[2026-05-19T07:12:02+02:00] exit 0 for round4-remote-access-unit-vitest
+[2026-05-19T07:12:02+02:00] pnpm -C autobyteus-web exec vitest run utils/remoteAccess/__tests__ utils/__tests__/nodeEndpoints.spec.ts stores/__tests__/windowNodeContextStore.spec.ts
+[2026-05-19T07:12:08+02:00] exit 0 for round4-remote-access-web-vitest
+[2026-05-19T07:12:08+02:00] pnpm -C autobyteus-web build:mobile-web
+[2026-05-19T07:12:24+02:00] exit 0 for round4-mobile-web-build
+[2026-05-19T07:12:24+02:00] git diff --check
+[2026-05-19T07:12:24+02:00] exit 0 for round4-git-diff-check
+
+[2026-05-19T07:25:00+02:00] Browser mobile validation completed: Home, Continue latest run, Activity/team messages/tool history, Files preview/attach, new agent launch, new team launch, workspace-context isolation, /mobile/workspace redirect, desktop /workspace no-regression.
+
+[2026-05-19T07:31:00+02:00] Wrote Round 4 canonical API/E2E validation report and ran git diff --check after report update; output in round4-git-diff-check-after-report.log.

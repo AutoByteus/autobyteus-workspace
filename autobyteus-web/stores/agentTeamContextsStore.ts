@@ -52,20 +52,20 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
 
     /** Returns the focused leaf agent context for the active team, or null when a subteam node is focused. */
     focusedMemberContext(): AgentContext | null {
-      const activeTeam = this.activeTeamContext;
+      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
       if (!activeTeam) return null;
       return activeTeam.leafAgentContextsByRouteKey.get(activeTeam.focusedMemberRouteKey) || null;
     },
 
     focusedMemberNode() {
-      const activeTeam = this.activeTeamContext;
+      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
       if (!activeTeam) return null;
       return activeTeam.memberNodesByRouteKey.get(activeTeam.focusedMemberRouteKey) || null;
     },
 
     /** Returns all leaf agent contexts for the active team. */
     teamMembers(): { memberRouteKey: string; context: AgentContext }[] {
-      const activeTeam = this.activeTeamContext;
+      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
       if (!activeTeam) return [];
       return Array.from(activeTeam.leafAgentContextsByRouteKey.entries()).map(([memberRouteKey, context]) => ({
         memberRouteKey,
@@ -82,7 +82,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
     /**
      * Creates a new team run from the current run config template.
      */
-    createRunFromTemplate(): string {
+    createRunFromTemplate(options: { selectionMode?: 'desktop' | 'mobile' } = {}): string {
       const selectionStore = useAgentSelectionStore();
       const teamDefinitionStore = useAgentTeamDefinitionStore();
       const agentDefinitionStore = useAgentDefinitionStore();
@@ -173,7 +173,11 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       };
 
       this.teams.set(teamRunId, newContext);
-      selectionStore.selectRun(teamRunId, 'team');
+      if (options.selectionMode === 'mobile') {
+        selectionStore.selectRunWithoutShellNavigation(teamRunId, 'team');
+      } else {
+        selectionStore.selectRun(teamRunId, 'team');
+      }
 
       return teamRunId;
     },
@@ -213,7 +217,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         selectionStore.selectedType === 'team' &&
         selectionStore.selectedRunId === temporaryTeamRunId
       ) {
-        selectionStore.selectRun(permanentTeamRunId, 'team');
+        selectionStore.selectRunWithoutShellNavigation(permanentTeamRunId, 'team');
       }
     },
 

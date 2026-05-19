@@ -13,6 +13,8 @@
 
 - GraphQL: `/graphql`
 - REST: `/rest/*`
+  - Phone Access management and pairing: `/rest/remote-access/*`
+- Mobile web/PWA static shell: `/mobile` and `/mobile/*`
 - WebSocket:
   - `/ws/agent/:runId`
   - `/ws/agent-team/:teamRunId`
@@ -34,6 +36,7 @@ Major domains under `src/`:
 - Token usage and memory-centric conversation state
 - Server-owned agent memory inspection and storage-only external-runtime recording
 - Agent artifacts
+- Remote Access / Phone Access pairing, mobile auth, and mobile static app serving
 
 ## Configuration Model
 
@@ -62,5 +65,6 @@ This keeps startup robust while still warming caches shortly after boot.
 - `ARCHITECTURE.md`
 - `URL_GENERATION_AND_ENV_STRATEGY.md`
 - `FILE_RENDERING_AND_MEDIA_PIPELINE.md`
+- `features/remote_access.md`
 - `modules/README.md`
 - `design/startup_initialization_and_lazy_services.md`

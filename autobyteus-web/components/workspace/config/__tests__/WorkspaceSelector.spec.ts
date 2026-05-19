@@ -51,6 +51,7 @@ describe('WorkspaceSelector', () => {
     
     // Reset window.electronAPI mock
     delete (window as any).electronAPI;
+    window.history.pushState({}, '', '/');
   });
 
   const defaultProps = {
@@ -130,6 +131,9 @@ describe('WorkspaceSelector', () => {
 
   it('shows Browse button when in Electron environment', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow.value = true;
+    (window as any).electronAPI = {
+      showFolderDialog: vi.fn(),
+    };
 
     const wrapper = mount(WorkspaceSelector, {
       props: defaultProps,
@@ -139,6 +143,21 @@ describe('WorkspaceSelector', () => {
     // Browse button should be visible
     const browseButton = wrapper.find('button[title="Browse for folder"]');
     expect(browseButton.exists()).toBe(true);
+  });
+
+  it('hides Browse button in mobile runtime even if an Electron folder API is present', async () => {
+    windowNodeContextStoreMock.isEmbeddedWindow.value = true;
+    (window as any).electronAPI = {
+      showFolderDialog: vi.fn(),
+    };
+    window.history.pushState({}, '', '/mobile/workspace');
+
+    const wrapper = mount(WorkspaceSelector, {
+      props: defaultProps,
+    });
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find('button[title="Browse for folder"]').exists()).toBe(false);
   });
 
   it('calls showFolderDialog when Browse button is clicked', async () => {
@@ -218,6 +237,9 @@ describe('WorkspaceSelector', () => {
 
   it('disables Browse button when isLoading is true', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow.value = true;
+    (window as any).electronAPI = {
+      showFolderDialog: vi.fn(),
+    };
 
     const wrapper = mount(WorkspaceSelector, {
       props: { ...defaultProps, isLoading: true },
@@ -230,6 +252,9 @@ describe('WorkspaceSelector', () => {
 
   it('disables Browse button when disabled prop is true', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow.value = true;
+    (window as any).electronAPI = {
+      showFolderDialog: vi.fn(),
+    };
 
     const wrapper = mount(WorkspaceSelector, {
       props: { ...defaultProps, disabled: true },
@@ -242,6 +267,9 @@ describe('WorkspaceSelector', () => {
 
   it('shows helper text for Electron mode', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow.value = true;
+    (window as any).electronAPI = {
+      showFolderDialog: vi.fn(),
+    };
 
     const wrapper = mount(WorkspaceSelector, {
       props: defaultProps,

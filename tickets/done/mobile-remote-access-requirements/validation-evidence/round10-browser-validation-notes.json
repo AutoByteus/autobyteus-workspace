@@ -1,0 +1,50 @@
+{
+    "round": 10,
+    "date": "2026-05-19",
+    "browser": "Codex in-app browser",
+    "viewport": "390x844 mobile, DPR 3",
+    "frontend": "http://127.0.0.1:3030/mobile",
+    "backend": "http://127.0.0.1:29695",
+    "session_fixture": "Browser localStorage mobile session used because local backend pairing/status REST routes returned 404; GraphQL/workspace/file/run data used real local backend.",
+    "user_runtime_instruction": "For real mobile agent execution, use Codex runtime and gpt-5.5, not Anthropic/default runtime. Missing provider/API-key errors after launch are not mobile problems.",
+    "codex_runtime_probe": {
+        "runtimeKind": "codex_app_server",
+        "model": "gpt-5.5",
+        "provider": "OPENAI",
+        "apiKeyConfigured": true,
+        "evidence": "round10-codex-runtime-model-probe.log"
+    },
+    "mobile_codex_agent_launch": {
+        "method": "Mobile Run Setup in browser. Because mobile Run Setup exposes only 'Existing desktop defaults' and no runtime/model selector, a browser-only Pinia defaultLaunchConfig fixture was used to simulate Codex/GPT-5.5 desktop defaults for the Codex definition. No repository code or backend definition data was changed.",
+        "selectedAgent": "Codex",
+        "selectedWorkspace": "autobyteus-workspace-superrepo",
+        "selectedConfigObservedInMobileStore": {
+            "runtimeKind": "codex_app_server",
+            "llmModelIdentifier": "gpt-5.5"
+        },
+        "runId": "b0d24431-207a-4833-87d7-4caf2bcb6c8b",
+        "initialMobileFirstMessageBehavior": "Run was created and the local user message appeared, but no assistant response arrived from the mobile-launched first message. GraphQL projection stayed empty for the first message, and run history showed the run active/idle with empty summary.",
+        "blockingEvidence": "round10-codex-direct-websocket-probe.log shows the same run's SEND_MESSAGE without message_id/dedupe_key is rejected with INVALID_COMMAND_ID: message_id must be a non-empty string no longer than 128 characters.",
+        "backendControlProbe": "round10-codex-direct-websocket-with-identity.log sent the same run a SEND_MESSAGE with message_id/dedupe_key; backend accepted it, started Codex/GPT-5.5, streamed response text, and the mobile Chat rendered the assistant response.",
+        "screenshot": "round10-mobile-codex-gpt55-response-after-identity-probe.png"
+    },
+    "status_validation": {
+        "mixedStatus": "Pass: status endpoint unavailable while authorized catalog/work data succeeds showed Node reachable \u00b7 Phone Access status unavailable.",
+        "currentCycleTrueFailure": "Pass: after switching to an unreachable node URL, refresh showed Offline / Cannot reach AutoByteus desktop instead of using stale authorizedApiReachable.",
+        "evidence": [
+            "round10-mobile-home-mixed-status-real-data.png",
+            "round10-mobile-home-true-offline-after-current-failure.png"
+        ]
+    },
+    "journey_validation_already_observed_in_round10": [
+        "Home node/status/primary action/recent work rendered with real local data.",
+        "Continue latest run opened existing Software Engineering Team chat with composer.",
+        "Bottom nav rendered one task surface at a time for Chat/Runs/Files/Activity.",
+        "Activity filters/digest rendered errors/tool rows and unsupported phone notice.",
+        "Files preview rendered README.md content; attach showed Attached \u00b7 1 and Chat context tray.",
+        "Desktop /workspace did not render mobile shell.",
+        "/mobile/workspace redirected to /mobile?unsupported=desktopWorkspace with unsupported notice."
+    ],
+    "classification": "Local Fix",
+    "blocking_issue": "Single-agent WebSocket SEND_MESSAGE from the frontend omits backend-required message_id/dedupe_key. Team streaming already includes identity; single-agent AgentStreamingService does not. Mobile new Codex run can be configured and created, but the first message is rejected/ignored and the UI gives no visible rejection/error. This blocks mobile functional parity for new single-agent launches and likely affects shared desktop single-agent sends through the same service."
+}

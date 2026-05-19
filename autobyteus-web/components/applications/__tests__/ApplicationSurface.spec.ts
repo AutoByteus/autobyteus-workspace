@@ -103,6 +103,7 @@ describe('ApplicationSurface', () => {
     hostHarness.props.descriptor = null
     hostHarness.props.bootstrapEnvelope = null
     hostHarness.bindingRevision = 0
+    window.history.pushState({}, '', '/')
     vi.clearAllMocks()
   })
 
@@ -155,6 +156,17 @@ describe('ApplicationSurface', () => {
     expect(wrapper.find('[data-testid="application-surface-loading-overlay"]').exists()).toBe(false)
     expect(wrapper.get('[data-testid="application-surface-canvas"]').classes()).toContain('opacity-100')
     expect(wrapper.get('[data-testid="application-surface-canvas"]').attributes('aria-hidden')).toBe('false')
+
+    wrapper.unmount()
+  })
+
+  it('renders an unsupported state instead of mounting application iframes in mobile runtime', () => {
+    window.history.pushState({}, '', '/mobile/applications/bundle-app__pkg__sample-app')
+
+    const wrapper = mountSurface()
+
+    expect(wrapper.find('[data-testid="mobile-unsupported-application-iframe"]').exists()).toBe(true)
+    expect(wrapper.findComponent(ApplicationIframeHostStub).exists()).toBe(false)
 
     wrapper.unmount()
   })

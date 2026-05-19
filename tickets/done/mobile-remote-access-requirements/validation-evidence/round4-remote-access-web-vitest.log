@@ -1,0 +1,59 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/autobyteus-web
+
+stderr | utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/remoteAccess/__tests__/websocketAuth.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/windowNodeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/nodeEndpoints.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/windowNodeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/nodeEndpoints.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/remoteAccess/__tests__/websocketAuth.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/remoteAccess/__tests__/websocketAuth.spec.ts (2 tests) 2ms
+ ✓ utils/remoteAccess/__tests__/mobileConnectionDiagnostics.spec.ts (2 tests) 1ms
+ ✓ utils/__tests__/nodeEndpoints.spec.ts (5 tests) 3ms
+ ✓ utils/remoteAccess/__tests__/authorizedResourceUrl.spec.ts (2 tests) 3ms
+ ✓ stores/__tests__/windowNodeContextStore.spec.ts (10 tests) 15ms
+ ✓ utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts (4 tests) 3ms
+
+ Test Files  6 passed (6)
+      Tests  25 passed (25)
+   Start at  07:12:04
+   Duration  3.83s (transform 2.18s, setup 18.43s, collect 352ms, tests 27ms, environment 1.22s, prepare 895ms)
+

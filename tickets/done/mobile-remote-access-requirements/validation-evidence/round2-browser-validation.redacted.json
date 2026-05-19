@@ -1,0 +1,173 @@
+{
+  "browserContextAuthAndResources": {
+    "graphqlNoTokenStatus": 401,
+    "graphqlWithTokenStatus": 200,
+    "protectedResourceNoTokenStatus": 401,
+    "protectedResourceWithTokenStatus": 200,
+    "protectedResourceWithTokenText": "round2 protected resource",
+    "restNoTokenStatus": 401,
+    "restWithTokenStatus": 200,
+    "seededAgentsPresent": true,
+    "seededTeamPresent": true,
+    "status": {
+      "pairingAvailable": true,
+      "phoneAccessEnabled": true,
+      "status": 200
+    },
+    "websocketNoToken": {
+      "code": 4401,
+      "outcome": "close",
+      "reason": "REMOTE_ACCESS_AUTH_REQUIRED"
+    },
+    "websocketWithToken": {
+      "messageContains": "AGENT_NOT_FOUND",
+      "outcome": "message"
+    }
+  },
+  "pairExchangeInBrowser": {
+    "clickedPairButton": true,
+    "connectedCopy": true,
+    "href": "http://192.168.2.158:49216/mobile/?pairing=<redacted>",
+    "pairingTextCount": 0,
+    "storedSession": {
+      "credential": "<redacted>",
+      "device": {
+        "clientFacingBaseUrl": "http://192.168.2.158:49216",
+        "deviceId": "<redacted>",
+        "displayName": "Phone"
+      },
+      "nodeId": "mobile-paired-node",
+      "pairedAt": "<timestamp>",
+      "serverBaseUrl": "http://192.168.2.158:49216",
+      "version": 1
+    },
+    "unsupportedCount": 0
+  },
+  "pairedSettingsRedirect": {
+    "connectedCopy": true,
+    "hasUnsupportedCopy": true,
+    "href": "http://192.168.2.158:49216/mobile/?unsupported=desktopSettings",
+    "pairingTextCount": 0,
+    "unsupportedCount": 1
+  },
+  "pairingUrlBootstrap": {
+    "desktopShellIndicators": [],
+    "hasConnectPhone": true,
+    "hasConnectedCopy": false,
+    "href": "http://192.168.2.158:49216/mobile/?pairing=<redacted>",
+    "pairButtonCount": 1,
+    "pairButtonDisabled": false,
+    "pairingTextCount": 1,
+    "rawPath": "/mobile/",
+    "searchHasPairing": true,
+    "textareaValueLength": 230,
+    "unsupportedCount": 0
+  },
+  "reloadMobileRoot": {
+    "connectedCopy": true,
+    "desktopShellIndicators": [],
+    "href": "http://192.168.2.158:49216/mobile/",
+    "pairingTextCount": 0,
+    "unsupportedCount": 0
+  },
+  "restartPersistenceCheck": {
+    "browserPersistedMobileSessionRestored": true,
+    "graphqlWithPersistedCredentialStatus": 200,
+    "harnessRestartedWithSameIsolatedAppDataDir": true,
+    "mobileRootAfterRestartConnectedCopy": true,
+    "notes": "Validated using the same browser localStorage session after stopping and restarting the backend harness against the same temp app-data directory; secrets redacted.",
+    "restWithPersistedCredentialStatus": 200,
+    "seededAgentStillPresent": true,
+    "statusAfterRestart": {
+      "pairingAvailable": true,
+      "phoneAccessEnabled": true,
+      "status": 200
+    }
+  },
+  "run": "round2 browser validation after Code Review Round 4",
+  "screenshots": [
+    {
+      "bytes": 134480,
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-unsupported-unpaired.png",
+      "sha256": "04173d62e1be684480951679288abb6cc99d8448645bcbfb66127dce95211e33"
+    },
+    {
+      "bytes": 161817,
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-pairing-url.png",
+      "sha256": "6086542baaeb38ea71cb3a4e461909e28c60e21719166773dc1f5b1897742b23"
+    },
+    {
+      "bytes": 123547,
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-connected.png",
+      "sha256": "1f0aea662413078aca7b9389696ee61a9b9395f818a2bcb0f96dee75eb16d785"
+    },
+    {
+      "bytes": 67555,
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-workspace-deeplink.png",
+      "sha256": "af136d6e073f85db561c3d21b67012423fb54eeca24a3e50cb5b6c6d03b40f7a"
+    },
+    {
+      "bytes": 142716,
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-unsupported-paired.png",
+      "sha256": "c63b0af54102bdf5569ffa8226d9211d580a0318a0645fe6d40acc8fefaf035d"
+    },
+    {
+      "bytes": 230685,
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-agent-teams-seeded.png",
+      "sha256": "d41b3b1b8f57e9763ec9c8cb894023ef01fd2acaf8a0d7f4a4bf67e1dcf17e74"
+    },
+    {
+      "bytes": 195864,
+      "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-agents-seeded.png",
+      "sha256": "a576079792420e63bc76434658a1afc825718d001b6ba1c6ab12ca9ffa550782"
+    }
+  ],
+  "seededMobileUxRoutes": {
+    "agentTeamsRoute": {
+      "containsProfessorStudentTeam": true,
+      "desktopShellIndicators": [],
+      "href": "http://192.168.2.158:49216/mobile/agent-teams",
+      "pairingTextCount": 0,
+      "unsupportedCount": 0
+    },
+    "agentsRoute": {
+      "containsProfessorAgent": true,
+      "containsStudentAgent": true,
+      "desktopShellIndicators": [],
+      "href": "http://192.168.2.158:49216/mobile/agents",
+      "pairingTextCount": 0,
+      "unsupportedCount": 0
+    },
+    "notes": "Seeded definitions were displayed through backend-served /mobile routes using the persisted paired mobile session. Agent/team run execution was not forced because that would require model/tool runtime behavior outside the residual Remote Access transport/static/auth risks.",
+    "screenshots": [
+      {
+        "bytes": 230685,
+        "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-agent-teams-seeded.png",
+        "sha256": "d41b3b1b8f57e9763ec9c8cb894023ef01fd2acaf8a0d7f4a4bf67e1dcf17e74"
+      },
+      {
+        "bytes": 195864,
+        "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round2-mobile-agents-seeded.png",
+        "sha256": "a576079792420e63bc76434658a1afc825718d001b6ba1c6ab12ca9ffa550782"
+      }
+    ]
+  },
+  "serverBaseUrl": "http://192.168.2.158:49216",
+  "unpairedSettingsRedirect": {
+    "bodyExcerpt": "AUTOBYTEUS REMOTE ACCESS Connect this phone ... Unsupported on phone Desktop settings are managed from the desktop app ... Pair phone MANUAL SERVER URL CHECK Check",
+    "desktopShellIndicators": [],
+    "hasConnectPhone": true,
+    "href": "http://192.168.2.158:49216/mobile/?unsupported=desktopSettings",
+    "pairButtonCount": 1,
+    "pairingTextCount": 1,
+    "unsupportedCount": 1
+  },
+  "workspaceDeepLink": {
+    "bodyExcerpt": "Agents Agent Teams Skills Memory Media Workspaces Temp Workspace No task history in this workspace... Files Terminal Activity Artifacts VNC Viewer Connected to Workspace Terminal",
+    "desktopShellIndicators": [],
+    "href": "http://192.168.2.158:49216/mobile/workspace",
+    "loadedExistingWorkspaceSlice": true,
+    "pairingTextCount": 0,
+    "unsupportedCount": 0
+  }
+}

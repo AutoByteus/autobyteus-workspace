@@ -67,6 +67,7 @@
 
     <footer class="flex-shrink-0 bg-white p-2">
       <button
+        v-if="showSettingsNavigation"
         type="button"
         class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors"
         :class="isSettingsActive
@@ -89,6 +90,7 @@ import WorkspaceAgentRunsTreePanel from '~/components/workspace/history/Workspac
 import { useAppLeftPanelSectionResize } from '~/composables/useAppLeftPanelSectionResize';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore';
+import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 
 type PrimaryNavKey =
   | 'agents'
@@ -113,7 +115,7 @@ const allPrimaryNavItems: Array<{ key: PrimaryNavKey; labelKey: string; icon: st
 const primaryNavItems = computed(() => {
   return allPrimaryNavItems.filter((item) => {
     if (item.key === 'applications') {
-      return applicationsCapabilityStore.isEnabled
+      return applicationsCapabilityStore.isEnabled && isFeatureAvailableInRuntime('applicationIframe')
     }
     return true;
   });
@@ -130,6 +132,7 @@ const {
 } = useAppLeftPanelSectionResize();
 
 const isSettingsActive = computed(() => route.path.startsWith('/settings'));
+const showSettingsNavigation = computed(() => isFeatureAvailableInRuntime('desktopSettings'));
 
 const resolvePrimaryRoute = (key: PrimaryNavKey): RouteLocationRaw => {
   switch (key) {

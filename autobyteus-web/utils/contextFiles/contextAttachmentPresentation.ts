@@ -1,5 +1,6 @@
 import type { ContextAttachment } from '~/types/conversation';
 import { getServerBaseUrl, getServerUrls } from '~/utils/serverConfig';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 
 const isAbsoluteLocalPath = (value: string): boolean => value.startsWith('/') || /^[a-zA-Z]:[\\/]/.test(value);
 
@@ -15,7 +16,7 @@ const normalizeBrowserUrl = (locator: string): string => {
     return locator;
   }
 
-  const baseUrl = getServerBaseUrl().replace(/\/$/, '');
+  const baseUrl = resolveBoundNodeBaseUrl();
   if (locator.startsWith('/')) {
     return `${baseUrl}${locator}`;
   }
@@ -40,8 +41,32 @@ const resolveWorkspacePreviewUrl = (input: {
     return null;
   }
 
-  const restBaseUrl = getServerUrls().rest.replace(/\/$/, '');
+  const restBaseUrl = resolveBoundRestBaseUrl();
   return `${restBaseUrl}/workspaces/${input.workspaceId}/content?path=${encodeURIComponent(input.locator)}`;
+};
+
+const resolveBoundNodeBaseUrl = (): string => {
+  try {
+    const contextStore = useWindowNodeContextStore();
+    if (contextStore.initialized) {
+      return contextStore.nodeBaseUrl.replace(/\/$/, '');
+    }
+  } catch {
+    // Tests and non-Pinia utility use fall back to legacy server config.
+  }
+  return getServerBaseUrl().replace(/\/$/, '');
+};
+
+const resolveBoundRestBaseUrl = (): string => {
+  try {
+    const contextStore = useWindowNodeContextStore();
+    if (contextStore.initialized) {
+      return contextStore.getBoundEndpoints().rest.replace(/\/$/, '');
+    }
+  } catch {
+    // Tests and non-Pinia utility use fall back to legacy server config.
+  }
+  return getServerUrls().rest.replace(/\/$/, '');
 };
 
 export const contextAttachmentPresentation = {

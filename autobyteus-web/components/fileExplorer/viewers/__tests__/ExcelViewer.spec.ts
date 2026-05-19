@@ -27,7 +27,7 @@ describe('ExcelViewer.vue', () => {
 
     it('renders loading state when loading', async () => {
         // Mock fetch to hang to simulate loading
-        global.fetch = vi.fn(() => new Promise(() => {}));
+        global.fetch = vi.fn(() => new Promise<Response>(() => {})) as unknown as typeof fetch;
         
         const wrapper = mount(ExcelViewer, {
             props: {
@@ -72,7 +72,7 @@ describe('ExcelViewer.vue', () => {
         global.fetch = vi.fn().mockResolvedValue({
             ok: true,
             arrayBuffer: () => Promise.resolve(new ArrayBuffer(8))
-        });
+        } as Response) as unknown as typeof fetch;
 
         const wrapper = mount(ExcelViewer, {
             props: {
@@ -84,7 +84,9 @@ describe('ExcelViewer.vue', () => {
         // Wait for async loadExcel
         await new Promise(resolve => setTimeout(resolve, 0));
 
-        expect(global.fetch).toHaveBeenCalledWith('http://example.com/test.xlsx');
+        expect(global.fetch).toHaveBeenCalledWith('http://example.com/test.xlsx', {
+            headers: expect.any(Headers),
+        });
         // Should be called with buffer, not string
         expect(XLSX.read).toHaveBeenCalledWith(expect.any(Uint8Array), { type: 'array' });
     });

@@ -178,6 +178,7 @@ import type {
 import ApplicationExecutionResourceSlotEditor from '~/components/applications/setup/ApplicationExecutionResourceSlotEditor.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport'
 import {
   MANIFEST_DEFAULT_SELECTION,
   buildDraftFromView,
@@ -278,7 +279,7 @@ const readErrorMessage = async (response: Response): Promise<string> => {
 }
 
 const fetchJson = async <T>(path: string, init?: RequestInit): Promise<T> => {
-  const response = await globalThis.fetch(`${restBaseUrl.value}${path}`, init)
+  const response = await authorizedFetch(`${restBaseUrl.value}${path}`, init)
   if (!response.ok) {
     throw new Error(await readErrorMessage(response))
   }

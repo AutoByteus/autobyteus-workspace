@@ -15,6 +15,8 @@
       >
         <CurrentWindowNodeCard :node-name="currentNode?.name || $t('settings.components.settings.NodeManager.currentNodeUnknown')" :node-type-label="currentNodeTypeLabel" :base-url="currentNode?.baseUrl" />
 
+        <PhoneAccessCard v-if="windowNodeContextStore.isEmbeddedWindow" />
+
         <RemoteBrowserSharingPanel />
 
         <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -238,6 +240,7 @@ import NodeSyncReportPanel from '~/components/sync/NodeSyncReportPanel.vue';
 import CurrentWindowNodeCard from '~/components/settings/CurrentWindowNodeCard.vue';
 import DockerNodeStartGuideCard from '~/components/settings/DockerNodeStartGuideCard.vue';
 import NodeManagerTabs from '~/components/settings/NodeManagerTabs.vue';
+import PhoneAccessCard from '~/components/settings/PhoneAccessCard.vue';
 import RemoteBrowserSharingPanel from '~/components/settings/RemoteBrowserSharingPanel.vue';
 import RemoteNodePairingControls from '~/components/settings/RemoteNodePairingControls.vue';
 import { useLocalization } from '~/composables/useLocalization';
