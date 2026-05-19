@@ -39,6 +39,9 @@
       <p class="mt-1 text-sm leading-6 text-slate-600">
         {{ t('settings.components.settings.DockerNodeStartGuideCard.directStepDescription') }}
       </p>
+      <p class="mt-2 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-900">
+        {{ t('settings.components.settings.DockerNodeStartGuideCard.workspaceModel') }}
+      </p>
       <div class="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2 2xl:grid-cols-3">
         <CommandCard v-for="command in directCommands" :key="command.id" :command="command" />
       </div>

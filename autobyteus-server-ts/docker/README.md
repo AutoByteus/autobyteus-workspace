@@ -43,6 +43,40 @@ autobyteus-docker new-container
 
 The first node uses `autobyteus-server-0` as its friendly name and prefers these host ports when available: Backend `8001`, VNC `5908`, noVNC `6080`, and Chrome debug `9228`. If a port is busy, the launcher retries with fresh ports. Repeated `new-container` calls create `autobyteus-server-1`, `autobyteus-server-2`, and so on.
 
+Each launcher-managed container keeps the existing private Docker named volumes
+and also gets host-visible user folders:
+
+- `/home/autobyteus/data` remains private server app data in `<node>-data`.
+- `/root` remains the private root home/auth volume in `<node>-root-home`.
+- `/home/autobyteus/workspace` is the node's host-backed user workspace.
+- `/home/autobyteus/shared` is one host-backed folder shared by all managed
+  Docker nodes.
+
+The shared workspace host root defaults to
+`$HOME/.autobyteus/docker-server/shared-workspace` on macOS/Linux and
+`%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace` on Windows. Override
+it with `AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR` if needed. The launcher sets
+`AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace`, so default
+terminal/agent work appears in the node workspace.
+
+Inspect paths and storage:
+
+```bash
+autobyteus-docker workspace paths
+autobyteus-docker storage
+```
+
+Apply the host bind mounts to existing managed containers with a safe recreate
+that keeps named volumes and host folders:
+
+```bash
+autobyteus-docker workspace apply --all
+```
+
+Existing files under `/home/autobyteus/data/temp_workspace` remain in the data
+named volume, but `/home/autobyteus/workspace` becomes the default temp
+workspace after apply.
+
 Upgrade every managed Docker node to the latest image while keeping named volumes:
 
 ```bash
@@ -205,6 +239,9 @@ Public launcher commands for no-clone users:
 - `autobyteus-docker upgrade --all`: Recreate all managed containers with the latest image while keeping named volumes.
 - `autobyteus-docker destroy --all`: Remove all managed containers and unused old images while keeping named volumes.
 - `autobyteus-docker reset`: Destroy all managed containers, keep volumes, then create a fresh `autobyteus-server-0`.
+- `autobyteus-docker workspace paths`: Show the host folders backing `/home/autobyteus/workspace` and `/home/autobyteus/shared`.
+- `autobyteus-docker workspace apply --all`: Safely recreate managed containers to apply shared workspace bind mounts while keeping named volumes.
+- `autobyteus-docker storage`: Show private named volumes, host bind mounts, and launcher state.
 - `autobyteus-docker urls`: Show Backend/noVNC/VNC/debug URLs for `autobyteus-server-0` by default.
 - `autobyteus-docker status`: Show managed launcher nodes.
 - `autobyteus-docker logs`: Show Docker logs for `autobyteus-server-0` by default.
@@ -318,8 +355,13 @@ Manual republish:
 
 Public launcher named volumes (per friendly node):
 - `<node-name>-workspace`: built artifacts
-- `<node-name>-data`: `.env`, SQLite DB, logs, media, memory
+- `<node-name>-data`: private server app data at `/home/autobyteus/data` (`.env`, SQLite DB, logs, media, memory, agents, skills, workspaces)
 - `<node-name>-root-home`: in-container root home, including Codex/Claude auth state
+
+Public launcher host bind mounts (additional, per friendly node unless noted):
+- `$HOME/.autobyteus/docker-server/shared-workspace/nodes/<node-name>` on macOS/Linux, or `%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace\nodes\<node-name>` on Windows, to `/home/autobyteus/workspace`.
+- `$HOME/.autobyteus/docker-server/shared-workspace/shared` on macOS/Linux, or `%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace\shared` on Windows, to `/home/autobyteus/shared` for every managed node.
+- Override the host root with `AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR`.
 
 Source helper named volumes (per Compose project):
 - `<project>_autobyteus-server-workspace`: built artifacts
@@ -327,6 +369,15 @@ Source helper named volumes (per Compose project):
 - `<project>_autobyteus-server-root-home`: in-container root home, including Codex/Claude auth state
 
 Server data directory in container: `/home/autobyteus/data`
+
+The launcher leaves `/home/autobyteus/data` as private app/server state. Do not
+bind-mount over that directory for the normal workflow; use
+`/home/autobyteus/workspace` for node-specific user files and
+`/home/autobyteus/shared` for cross-node collaboration. Adding or changing
+Docker bind mounts on an existing container requires recreation, but
+`autobyteus-docker workspace apply --all` keeps existing named volumes and host
+folders. On Linux, files written from the current root-running container may be
+root-owned on the host.
 
 To reset Codex/Claude login for a source-helper instance, remove the project volumes:
 

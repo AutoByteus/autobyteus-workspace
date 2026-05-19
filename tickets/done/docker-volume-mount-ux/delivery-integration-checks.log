@@ -1,0 +1,66 @@
+\n===== bash -n scripts/public/docker/autobyteus-docker.sh =====
+----- exit: 0 -----
+\n===== shellcheck scripts/public/docker/autobyteus-docker.sh =====
+----- exit: 0 -----
+\n===== python3 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace -v =====
+test_new_container_adds_bind_mounts_without_removing_named_volumes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'pwsh is not installed'
+test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 2.119s
+
+OK (skipped=1)
+----- exit: 0 -----
+\n===== pnpm --dir autobyteus-web exec vitest run utils/__tests__/dockerNodeLauncherCommands.spec.ts components/settings/__tests__/DockerNodeStartGuideCard.spec.ts =====
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/autobyteus-web
+
+stderr | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/dockerNodeLauncherCommands.spec.ts (2 tests) 2ms
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (2 tests) 18ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  19:08:55
+   Duration  4.16s (transform 2.20s, setup 6.93s, collect 45ms, tests 20ms, environment 500ms, prepare 356ms)
+
+----- exit: 0 -----
+\n===== git diff --check =====
+----- exit: 0 -----
+
+===== python3 -m unittest discover scripts/tests -v =====
+test_merge_contains_both_arch_zip_entries (test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_merge_fails_when_x64_zip_missing (test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_write_round_trip_preserves_dual_arch_entries (test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_new_container_adds_bind_mounts_without_removing_named_volumes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'pwsh is not installed'
+test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 2.053s
+
+OK (skipped=1)
+----- exit: 0 -----
+
+===== git diff --check (after delivery docs/artifacts) =====
+----- exit: 0 -----
