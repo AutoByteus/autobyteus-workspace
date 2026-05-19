@@ -1,6 +1,7 @@
 import { computed } from 'vue';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
+import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import type { MobileWorkContext, MobileWorkListItem } from '~/types/mobileWork';
@@ -29,6 +30,7 @@ export function useMobileWorkCatalog() {
   const runHistoryStore = useRunHistoryStore();
   const agentDefinitionStore = useAgentDefinitionStore();
   const teamDefinitionStore = useAgentTeamDefinitionStore();
+  const mobileWorkStore = useMobileWorkStore();
   const workspaceStore = useWorkspaceStore();
 
   const recentWorkItems = computed<MobileWorkListItem[]>(() => {
@@ -60,9 +62,13 @@ export function useMobileWorkCatalog() {
 
       for (const team of workspace.teamDefinitions) {
         for (const run of team.runs) {
-          const focusedMemberRouteKey = run.coordinatorMemberRouteKey
-            || run.members[0]?.memberRouteKey
-            || 'coordinator';
+          const validMemberRouteKeys = new Set(run.members.map((member) => member.memberRouteKey).filter(Boolean));
+          const rememberedMemberRouteKey = mobileWorkStore.getRememberedFocusedTeamMember(run.teamRunId);
+          const focusedMemberRouteKey = rememberedMemberRouteKey && validMemberRouteKeys.has(rememberedMemberRouteKey)
+            ? rememberedMemberRouteKey
+            : (run.coordinatorMemberRouteKey && validMemberRouteKeys.has(run.coordinatorMemberRouteKey)
+                ? run.coordinatorMemberRouteKey
+                : (run.members[0]?.memberRouteKey || ''));
           const context: MobileWorkContext = {
             kind: 'team-run',
             teamRunId: run.teamRunId,

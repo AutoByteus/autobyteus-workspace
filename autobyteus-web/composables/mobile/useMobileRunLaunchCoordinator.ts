@@ -4,14 +4,15 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
+import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRuntimeKind } from '~/types/agent/AgentRunConfig';
-import { resolveRunnableModelIdentifier } from '~/utils/runLaunchPolicy';
+import {
+  buildTeamMemberTreeFromDefinition,
+  flattenLeafAgentMemberNodes,
+} from '~/utils/teamDefinitionMembers';
 
 export type MobileRunLaunchDraft =
   | {
@@ -24,6 +25,7 @@ export type MobileRunLaunchDraft =
       kind: 'team';
       teamDefinitionId: string;
       workspaceId: string;
+      focusedMemberRouteKey: string;
       prompt: string;
     };
 
@@ -48,27 +50,89 @@ export function useMobileRunLaunchCoordinator() {
   const teamContextsStore = useAgentTeamContextsStore();
   const teamDefinitionStore = useAgentTeamDefinitionStore();
   const teamRunConfigStore = useTeamRunConfigStore();
-  const llmProviderConfigStore = useLLMProviderConfigStore();
   const mobileWorkStore = useMobileWorkStore();
   const workspaceStore = useWorkspaceStore();
 
-  async function resolveModel(runtimeKind: AgentRuntimeKind | string | null | undefined, candidate?: string | null): Promise<string> {
-    return resolveRunnableModelIdentifier({
-      candidateModels: [candidate],
-      getKnownModels: () => llmProviderConfigStore.models,
-      ensureModelsLoaded: async () => {
-        await llmProviderConfigStore.fetchProvidersWithModels(runtimeKind || DEFAULT_AGENT_RUNTIME_KIND);
-      },
+  function applyDraftAttachmentsToActiveContext(): void {
+    mobileWorkStore.consumeDraftContextAttachments().forEach((attachment) => {
+      activeContextStore.addContextFilePath(attachment);
     });
   }
 
-  async function loadRuntimeCatalog(runtimeKind: AgentRuntimeKind | string): Promise<string[]> {
-    try {
-      const rows = await llmProviderConfigStore.fetchProvidersWithModels(runtimeKind || DEFAULT_AGENT_RUNTIME_KIND);
-      return rows.flatMap((row) => row.models.map((model) => model.modelIdentifier));
-    } catch {
-      return [];
+  function assertAgentConfigMatchesDraft(draft: Extract<MobileRunLaunchDraft, { kind: 'agent' }>): void {
+    const config = agentRunConfigStore.config;
+    if (!config) {
+      throw new Error('Agent launch configuration is not ready. Re-select the agent and choose a model.');
     }
+    if (config.agentDefinitionId !== draft.agentDefinitionId) {
+      throw new Error('Agent launch configuration is stale. Re-select the agent before launching.');
+    }
+    if (config.workspaceId !== draft.workspaceId) {
+      throw new Error('Agent launch workspace is stale. Re-select the workspace before launching.');
+    }
+    if (!agentRunConfigStore.isConfigured) {
+      throw new Error('Choose a model before launching.');
+    }
+  }
+
+  function assertTeamConfigMatchesDraft(draft: Extract<MobileRunLaunchDraft, { kind: 'team' }>): void {
+    const config = teamRunConfigStore.config;
+    if (!config) {
+      throw new Error('Team launch configuration is not ready. Re-select the team and choose a model.');
+    }
+    if (config.teamDefinitionId !== draft.teamDefinitionId) {
+      throw new Error('Team launch configuration is stale. Re-select the team before launching.');
+    }
+    if (config.workspaceId !== draft.workspaceId) {
+      throw new Error('Team launch workspace is stale. Re-select the workspace before launching.');
+    }
+    const readiness = teamRunConfigStore.launchReadiness;
+    if (!readiness.canLaunch) {
+      throw new Error(readiness.blockingIssues[0]?.message || 'Team configuration is not launch-ready.');
+    }
+  }
+
+  function ensureAgentDraftConfig(draft: Extract<MobileRunLaunchDraft, { kind: 'agent' }>): void {
+    if (!agentRunConfigStore.config) {
+      const definition = agentDefinitionStore.getAgentDefinitionById(draft.agentDefinitionId);
+      if (!definition) {
+        throw new Error('Choose an agent before launching.');
+      }
+      agentRunConfigStore.setTemplate(definition);
+      agentRunConfigStore.updateAgentConfig({ workspaceId: draft.workspaceId });
+    }
+    assertAgentConfigMatchesDraft(draft);
+  }
+
+  function ensureTeamDraftConfig(draft: Extract<MobileRunLaunchDraft, { kind: 'team' }>): AgentTeamDefinition {
+    const definition = teamDefinitionStore.getAgentTeamDefinitionById(draft.teamDefinitionId);
+    if (!definition) {
+      throw new Error('Choose a team before launching.');
+    }
+    if (!teamRunConfigStore.config) {
+      teamRunConfigStore.setTemplate(definition);
+      teamRunConfigStore.updateConfig({ workspaceId: draft.workspaceId });
+    }
+    assertTeamConfigMatchesDraft(draft);
+    return definition;
+  }
+
+  function assertLeafFocusTarget(definition: AgentTeamDefinition, memberRouteKey: string): string {
+    const normalizedMemberRouteKey = memberRouteKey.trim();
+    if (!normalizedMemberRouteKey) {
+      throw new Error('Choose a focused team member before launching.');
+    }
+    const memberTree = buildTeamMemberTreeFromDefinition(definition, {
+      getTeamDefinitionById: (teamDefinitionId: string) =>
+        teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
+    });
+    const leafRouteKeys = new Set(
+      flattenLeafAgentMemberNodes(memberTree).map((member) => member.memberRouteKey),
+    );
+    if (!leafRouteKeys.has(normalizedMemberRouteKey)) {
+      throw new Error('Choose a focusable leaf team member before launching.');
+    }
+    return normalizedMemberRouteKey;
   }
 
   async function launchAgent(draft: Extract<MobileRunLaunchDraft, { kind: 'agent' }>): Promise<MobileRunLaunchResult> {
@@ -81,19 +145,12 @@ export function useMobileRunLaunchCoordinator() {
       throw new Error('Choose an agent before launching.');
     }
 
-    agentRunConfigStore.setTemplate(definition);
-    const model = await resolveModel(agentRunConfigStore.config?.runtimeKind, agentRunConfigStore.config?.llmModelIdentifier);
-    agentRunConfigStore.updateAgentConfig({
-      workspaceId: draft.workspaceId,
-      llmModelIdentifier: model,
-    });
+    ensureAgentDraftConfig(draft);
     teamRunConfigStore.clearConfig();
 
     const temporaryRunId = agentContextsStore.createRunFromTemplate({ selectionMode: 'mobile' });
     activeContextStore.updateRequirement(draft.prompt.trim());
-    mobileWorkStore.consumeDraftContextAttachments().forEach((attachment) => {
-      activeContextStore.addContextFilePath(attachment);
-    });
+    applyDraftAttachmentsToActiveContext();
     await activeContextStore.send();
 
     const runId = selectionStore.selectedType === 'agent' && selectionStore.selectedRunId
@@ -121,33 +178,22 @@ export function useMobileRunLaunchCoordinator() {
       teamDefinitionStore.fetchAllAgentTeamDefinitions(),
       workspaceStore.fetchAllWorkspaces(),
     ]);
-    const definition = teamDefinitionStore.getAgentTeamDefinitionById(draft.teamDefinitionId);
-    if (!definition) {
-      throw new Error('Choose a team before launching.');
-    }
-
-    teamRunConfigStore.setTemplate(definition);
-    const runtimeKind = teamRunConfigStore.config?.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND;
-    const model = await resolveModel(runtimeKind, teamRunConfigStore.config?.llmModelIdentifier);
-    teamRunConfigStore.updateConfig({
-      workspaceId: draft.workspaceId,
-      llmModelIdentifier: model,
-    });
-    const catalog = await loadRuntimeCatalog(runtimeKind);
-    teamRunConfigStore.setRuntimeModelCatalog(runtimeKind, catalog);
+    const definition = ensureTeamDraftConfig(draft);
+    const focusedMemberRouteKey = assertLeafFocusTarget(definition, draft.focusedMemberRouteKey);
     agentRunConfigStore.clearConfig();
 
     const temporaryTeamRunId = teamContextsStore.createRunFromTemplate({ selectionMode: 'mobile' });
+    await teamContextsStore.focusMemberAndEnsureHydrated(temporaryTeamRunId, focusedMemberRouteKey);
     activeContextStore.updateRequirement(draft.prompt.trim());
-    mobileWorkStore.consumeDraftContextAttachments().forEach((attachment) => {
-      activeContextStore.addContextFilePath(attachment);
-    });
+    applyDraftAttachmentsToActiveContext();
     await activeContextStore.send();
 
     const teamRunId = selectionStore.selectedType === 'team' && selectionStore.selectedRunId
       ? selectionStore.selectedRunId
       : temporaryTeamRunId;
     const team = teamContextsStore.getTeamContextById(teamRunId) || teamContextsStore.getTeamContextById(temporaryTeamRunId);
+    const actualFocusedMemberRouteKey = team?.focusedMemberRouteKey || focusedMemberRouteKey;
+    mobileWorkStore.rememberFocusedTeamMember(teamRunId, actualFocusedMemberRouteKey);
     return {
       context: {
         kind: 'team-run',
@@ -156,7 +202,7 @@ export function useMobileRunLaunchCoordinator() {
         title: definition.name,
         summary: draft.prompt.trim() || 'New team run',
         workspaceRootPath: workspaceRootPath(workspaceStore, draft.workspaceId),
-        focusedMemberRouteKey: team?.focusedMemberRouteKey || 'coordinator',
+        focusedMemberRouteKey: actualFocusedMemberRouteKey,
         isActive: true,
         lastActivityAt: new Date().toISOString(),
         statusLabel: 'Running',

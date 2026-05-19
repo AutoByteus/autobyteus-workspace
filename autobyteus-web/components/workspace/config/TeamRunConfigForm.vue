@@ -112,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, toRef } from 'vue'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { SkillAccessMode } from '~/types/agent/AgentRunConfig'
@@ -120,8 +120,7 @@ import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelCon
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import MemberOverrideTree from './MemberOverrideTree.vue'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
-import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
-import { loadRuntimeProviderGroupsForSelection } from '~/composables/useRuntimeScopedModelSelection'
+import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCatalogSync'
 import {
   buildTeamMemberTreeFromDefinition,
   flattenLeafAgentMemberNodes,
@@ -131,7 +130,6 @@ import {
   hasExplicitMemberLlmModelOverride,
   hasExplicitMemberRuntimeOverride,
   hasMeaningfulMemberOverride,
-  resolveEffectiveMemberRuntimeKind,
 } from '~/utils/teamRunConfigUtils'
 
 interface WorkspaceLoadingState {
@@ -154,7 +152,6 @@ const emit = defineEmits<{
 }>()
 
 const teamDefinitionStore = useAgentTeamDefinitionStore()
-const teamRunConfigStore = useTeamRunConfigStore()
 const overridesExpanded = ref(true)
 const readOnlyMode = computed(() => props.readOnly === true)
 const isFormReadOnly = computed(() => props.config.isLocked || readOnlyMode.value)
@@ -176,33 +173,7 @@ const coordinatorMemberRouteKey = computed(() => {
   return memberTree.value.find((node) => node.memberName === coordinatorMemberName)?.memberRouteKey || coordinatorMemberName
 })
 
-watch(
-  () => [
-    props.config.runtimeKind,
-    ...Object.values(props.config.memberOverrides || {}).map((override) => override?.runtimeKind || ''),
-  ],
-  async () => {
-    const runtimeKinds = new Set<string>()
-    runtimeKinds.add(props.config.runtimeKind)
-
-    Object.values(props.config.memberOverrides || {}).forEach((override) => {
-      runtimeKinds.add(resolveEffectiveMemberRuntimeKind(override, props.config.runtimeKind))
-    })
-
-    await Promise.all(
-      Array.from(runtimeKinds)
-        .filter((runtimeKind) => runtimeKind.trim().length > 0)
-        .map(async (runtimeKind) => {
-          const rows = await loadRuntimeProviderGroupsForSelection(runtimeKind)
-          teamRunConfigStore.setRuntimeModelCatalog(
-            runtimeKind,
-            rows.flatMap((row) => row.models.map((model) => model.modelIdentifier)),
-          )
-        }),
-    )
-  },
-  { immediate: true },
-)
+useTeamRunRuntimeCatalogSync(toRef(props, 'config'))
 
 const handleOverrideUpdate = (memberRouteKey: string, override: MemberConfigOverride | null) => {
   if (isFormReadOnly.value) return

@@ -13,6 +13,8 @@
       </button>
     </header>
 
+    <MobileTeamMemberFocusBar v-if="showTeamFocusBar" :context="context" />
+
     <main class="min-h-0 flex-1 overflow-hidden bg-white" data-testid="mobile-work-task-surface">
       <MobileChat
         v-if="activeTab === 'chat'"
@@ -61,6 +63,7 @@ import MobileActivity from '~/components/mobile/MobileActivity.vue';
 import MobileChat from '~/components/mobile/MobileChat.vue';
 import MobileFiles from '~/components/mobile/MobileFiles.vue';
 import MobileRuns from '~/components/mobile/MobileRuns.vue';
+import MobileTeamMemberFocusBar from '~/components/mobile/MobileTeamMemberFocusBar.vue';
 import type { MobileTaskTab, MobileWorkContext } from '~/types/mobileWork';
 import { mobileWorkContextSubtitle, mobileWorkContextTitle } from '~/types/mobileWork';
 
@@ -75,6 +78,8 @@ defineEmits<{
   'update:activeTab': [tab: MobileTaskTab];
   selectContext: [context: MobileWorkContext];
 }>();
+
+const showTeamFocusBar = computed(() => props.context?.kind === 'team-run' && props.activeTab !== 'runs');
 
 const tabs: Array<{ id: MobileTaskTab; label: string; icon: string }> = [
   { id: 'chat', label: 'Chat', icon: '💬' },

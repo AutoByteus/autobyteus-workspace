@@ -85,11 +85,27 @@ function seedCatalogAndWorkspace(): void {
       toolInvocationPreprocessorNames: [],
       lifecycleProcessorNames: [],
       skillNames: [],
+      defaultLaunchConfig: { runtimeKind: DEFAULT_AGENT_RUNTIME_KIND, llmModelIdentifier: 'test-model', llmConfig: null },
     },
     {
       id: 'agent-2',
       name: 'Reviewer Agent',
       description: 'Reviews software',
+      instructions: '',
+      toolNames: [],
+      inputProcessorNames: [],
+      llmResponseProcessorNames: [],
+      systemPromptProcessorNames: [],
+      toolExecutionResultProcessorNames: [],
+      toolInvocationPreprocessorNames: [],
+      lifecycleProcessorNames: [],
+      skillNames: [],
+      defaultLaunchConfig: { runtimeKind: DEFAULT_AGENT_RUNTIME_KIND, llmModelIdentifier: 'test-model', llmConfig: null },
+    },
+    {
+      id: 'agent-3',
+      name: 'Unconfigured Agent',
+      description: 'Needs a model choice',
       instructions: '',
       toolNames: [],
       inputProcessorNames: [],
@@ -108,7 +124,11 @@ function seedCatalogAndWorkspace(): void {
       description: 'Coordinates implementation',
       instructions: '',
       coordinatorMemberName: 'lead',
-      nodes: [],
+      nodes: [
+        { memberName: 'lead', ref: 'agent-1', refType: 'AGENT', refScope: 'SHARED' },
+        { memberName: 'reviewer', ref: 'agent-2', refType: 'AGENT', refScope: 'SHARED' },
+      ],
+      defaultLaunchConfig: { runtimeKind: DEFAULT_AGENT_RUNTIME_KIND, llmModelIdentifier: 'test-model', llmConfig: null },
     },
   ];
   useWorkspaceStore().workspaces = {
@@ -148,6 +168,10 @@ function mountWithPinia(component: any, options: any = {}) {
     global: {
       ...(options.global ?? {}),
       plugins: [pinia, ...(options.global?.plugins ?? [])],
+      stubs: {
+        RuntimeModelConfigFields: { template: '<div data-testid="runtime-model-config-fields" />' },
+        ...(options.global?.stubs ?? {}),
+      },
     },
   });
 }
@@ -189,10 +213,14 @@ describe('mobile Round 4 UX refinements', () => {
     });
     await nextTick();
 
+    expect(wrapper.text()).toContain('Choose an agent, workspace, runtime/model, and first message.');
+    expect(wrapper.text()).not.toContain('focused member');
     expect(wrapper.get('[data-testid="mobile-run-agent-select"]').text()).toContain('Choose an agent intentionally');
     expect(wrapper.get('[data-testid="mobile-run-workspace-select"]').text()).toContain('Project Workspace');
-    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Existing desktop defaults');
-    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('provider/runtime errors appear after launch');
+    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Choose model');
+    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Review your mobile launch choices');
+    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).not.toContain('Existing desktop defaults');
+    expect(wrapper.find('[data-testid="mobile-runtime-model-blocking-issue"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="mobile-run-launch"]').attributes('disabled')).toBeDefined();
 
     await wrapper.get('[data-testid="mobile-run-agent-select-toggle"]').trigger('click');
@@ -202,7 +230,56 @@ describe('mobile Round 4 UX refinements', () => {
     await nextTick();
 
     expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Reviewer Agent');
+    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('AutoByteus · test-model');
     expect(wrapper.get('[data-testid="mobile-run-launch"]').attributes('disabled')).toBeUndefined();
+  });
+
+  it('uses a searchable mobile picker for team launch first message targets', async () => {
+    const wrapper = mountWithPinia(MobileRunSetup, {
+      props: { context: workspaceContext },
+    });
+    await nextTick();
+
+    await wrapper.get('[data-testid="mobile-run-setup-team-mode"]').trigger('click');
+    await nextTick();
+    expect(wrapper.text()).toContain('Choose a team, workspace, runtime/model, first message target, and first message.');
+
+    await wrapper.get('[data-testid="mobile-run-team-select-toggle"]').trigger('click');
+    await nextTick();
+    await wrapper.get('[data-testid="mobile-run-team-select-option"]').trigger('click');
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-team-launch-focus-select"]').exists()).toBe(true);
+    expect(wrapper.find('select[data-testid="mobile-team-launch-focus-select"]').exists()).toBe(false);
+
+    await wrapper.get('[data-testid="mobile-team-launch-focus-select-toggle"]').trigger('click');
+    await nextTick();
+    expect(wrapper.find('[data-testid="mobile-team-launch-focus-select-search"]').exists()).toBe(true);
+
+    await wrapper.get('[data-testid="mobile-team-launch-focus-select-search"]').setValue('reviewer');
+    await nextTick();
+
+    const options = wrapper.findAll('[data-testid="mobile-team-launch-focus-select-option"]');
+    expect(options).toHaveLength(1);
+    expect(options[0].text()).toContain('reviewer');
+  });
+
+
+  it('keeps mobile launch disabled instead of silently choosing a model for unconfigured agents', async () => {
+    const wrapper = mountWithPinia(MobileRunSetup, {
+      props: { context: workspaceContext },
+    });
+    await nextTick();
+
+    await wrapper.get('[data-testid="mobile-run-agent-select-toggle"]').trigger('click');
+    await nextTick();
+    await wrapper.findAll('[data-testid="mobile-run-agent-select-option"]')[2].trigger('click');
+    await wrapper.get('[data-testid="mobile-run-prompt"]').setValue('Try without a model');
+    await nextTick();
+
+    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Unconfigured Agent');
+    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Choose a model before launching.');
+    expect(wrapper.get('[data-testid="mobile-run-launch"]').attributes('disabled')).toBeDefined();
   });
 
   it('keeps context visibility adjacent to the mobile composer send decision', () => {
