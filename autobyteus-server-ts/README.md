@@ -208,7 +208,8 @@ autobyteus-docker workspace apply --all
 mounts while keeping existing named volumes and host folders.
 Existing files under `/home/autobyteus/data/temp_workspace` stay preserved in
 the data named volume, but `/home/autobyteus/workspace` becomes the default temp
-workspace after apply.
+workspace after apply. On Linux hosts, files written from the current
+root-running container into bind-mounted host folders may be root-owned.
 
 Claude Agent SDK sessions automatically read Claude Code filesystem settings.
 For this Docker image, the `user` Claude Code settings source resolves to
