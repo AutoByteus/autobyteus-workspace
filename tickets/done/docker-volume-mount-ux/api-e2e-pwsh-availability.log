@@ -1,0 +1,2 @@
+## PowerShell runtime availability
+pwsh unavailable on this macOS validation host; native PowerShell parse/runtime validation not executed

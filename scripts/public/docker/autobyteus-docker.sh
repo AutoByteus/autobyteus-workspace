@@ -5,7 +5,7 @@ LAUNCHER_LABEL_KEY="com.autobyteus.launcher"
 LAUNCHER_LABEL_VALUE="server-docker"
 NODE_LABEL_KEY="com.autobyteus.nodeName"
 CONFIG_LABEL_KEY="com.autobyteus.configHash"
-CONFIG_HASH_VERSION="v1"
+CONFIG_HASH_VERSION="v2"
 NODE_NAME_PREFIX="autobyteus-server"
 DEFAULT_NODE_NAME="${NODE_NAME_PREFIX}-0"
 DEFAULT_IMAGE="autobyteus/autobyteus-server"
@@ -13,6 +13,9 @@ DEFAULT_TAG="latest"
 MAX_RUN_ATTEMPTS=5
 USED_PORTS=""
 PUBLIC_BASH_SCRIPT_URL="https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh"
+WORKSPACE_CONTAINER_PATH="/home/autobyteus/workspace"
+SHARED_CONTAINER_PATH="/home/autobyteus/shared"
+TEMP_WORKSPACE_ENV_VALUE="${WORKSPACE_CONTAINER_PATH}"
 
 usage() {
   cat <<USAGE
@@ -28,6 +31,9 @@ Commands:
   upgrade --all      Upgrade all managed Docker nodes to the latest image
   destroy --all      Remove all managed Docker nodes, keeping named volumes
   reset              Destroy all managed Docker nodes, then create autobyteus-server-0
+  workspace paths    Show host/container paths for node and shared workspaces
+  workspace apply    Recreate node(s) to apply shared workspace bind mounts safely
+  storage            Show named volumes and host bind mounts for node(s)
   urls | ports       Show Backend, GraphQL, noVNC, VNC, and debug URLs
   status | ps        Show managed Docker nodes
   logs               Show Docker logs for a managed node
@@ -40,13 +46,14 @@ Options:
   --name <name>      Friendly node name for status/logs/urls/stop (default: ${DEFAULT_NODE_NAME})
   --tag <tag>        Docker image tag (default: ${DEFAULT_TAG})
   --image <image>    Docker image repository or full image ref (default: ${DEFAULT_IMAGE})
-  --all              Required for upgrade/destroy; also applies stop/status to all managed nodes
+  --all              Required for upgrade/destroy; also applies stop/status/workspace/storage to all managed nodes
   -h, --help         Show this help
 
 State:
   Default install path: \$HOME/.local/bin/autobyteus-docker
   Default state directory: \$HOME/.autobyteus/docker-server
-  Overrides: AUTOBYTEUS_DOCKER_INSTALL_DIR, AUTOBYTEUS_DOCKER_STATE_DIR
+  Shared workspace: \$HOME/.autobyteus/docker-server/shared-workspace
+  Overrides: AUTOBYTEUS_DOCKER_INSTALL_DIR, AUTOBYTEUS_DOCKER_STATE_DIR, AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR
 USAGE
 }
 
@@ -57,6 +64,23 @@ now_utc() { date -u '+%Y-%m-%dT%H:%M:%SZ'; }
 state_root() { printf '%s\n' "${AUTOBYTEUS_DOCKER_STATE_DIR:-${HOME}/.autobyteus/docker-server}"; }
 state_dir() { printf '%s/nodes\n' "$(state_root)"; }
 ensure_state_dir() { mkdir -p "$(state_dir)"; }
+
+shared_workspace_root() {
+  printf '%s\n' "${AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR:-$(state_root)/shared-workspace}"
+}
+
+node_workspace_host_path() {
+  printf '%s/nodes/%s\n' "$(shared_workspace_root)" "$(normalize_node_name "$1")"
+}
+
+shared_workspace_host_path() {
+  printf '%s/shared\n' "$(shared_workspace_root)"
+}
+
+ensure_shared_workspace_dirs() {
+  local node_name="$1"
+  mkdir -p "$(node_workspace_host_path "$node_name")" "$(shared_workspace_host_path)"
+}
 
 install_source_url() {
   printf '%s\n' "${AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL:-$PUBLIC_BASH_SCRIPT_URL}"
@@ -90,7 +114,7 @@ install_launcher() {
   trap - RETURN
 
   log "Installed AutoByteus Docker launcher: ${install_path}"
-  printf 'Next commands:\n  autobyteus-docker new-container\n  autobyteus-docker upgrade --all\n  autobyteus-docker urls\n'
+  printf 'Next commands:\n  autobyteus-docker new-container\n  autobyteus-docker workspace paths\n  autobyteus-docker storage\n  autobyteus-docker urls\n'
   if path_has_dir "$dir"; then
     log "Install directory is already on PATH."
     return
@@ -148,10 +172,13 @@ hash_text() {
 }
 
 desired_config_hash() {
-  local node_name="$1" image_ref="$2" volume_prefix
+  local node_name="$1" image_ref="$2" volume_prefix workspace_root node_workspace_host shared_host
   volume_prefix="$(volume_prefix_for "$node_name")"
-  printf 'version=%s\nnode=%s\nimage=%s\nbackend=%s\nvnc=%s\nnovnc=%s\ndebug=%s\nworkspace_volume=%s-workspace\ndata_volume=%s-data\nroot_volume=%s-root-home\nserver_host=http://localhost:%s\nvnc_hosts=localhost:%s\n' \
-    "$CONFIG_HASH_VERSION" "$node_name" "$image_ref" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$BACKEND_PORT" "$NOVNC_PORT" | hash_text
+  workspace_root="$(shared_workspace_root)"
+  node_workspace_host="$(node_workspace_host_path "$node_name")"
+  shared_host="$(shared_workspace_host_path)"
+  printf 'version=%s\nnode=%s\nimage=%s\nbackend=%s\nvnc=%s\nnovnc=%s\ndebug=%s\nworkspace_volume=%s-workspace\ndata_volume=%s-data\nroot_volume=%s-root-home\nshared_workspace_root=%s\nnode_workspace_host=%s\nnode_workspace_target=%s\nshared_workspace_host=%s\nshared_workspace_target=%s\ntemp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=%s\nserver_host=http://localhost:%s\nvnc_hosts=localhost:%s\n' \
+    "$CONFIG_HASH_VERSION" "$node_name" "$image_ref" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$workspace_root" "$node_workspace_host" "$WORKSPACE_CONTAINER_PATH" "$shared_host" "$SHARED_CONTAINER_PATH" "$TEMP_WORKSPACE_ENV_VALUE" "$BACKEND_PORT" "$NOVNC_PORT" | hash_text
 }
 
 image_id_for() { docker image inspect --format '{{.Id}}' "$1" 2>/dev/null || true; }
@@ -318,8 +345,11 @@ next_node_name() {
 volume_prefix_for() { printf '%s\n' "$(normalize_node_name "$1")"; }
 
 run_container() {
-  local node_name="$1" container_name="$2" image_ref="$3" config_hash="$4" output volume_prefix
+  local node_name="$1" container_name="$2" image_ref="$3" config_hash="$4" output volume_prefix node_workspace_host shared_host
   volume_prefix="$(volume_prefix_for "$node_name")"
+  ensure_shared_workspace_dirs "$node_name"
+  node_workspace_host="$(node_workspace_host_path "$node_name")"
+  shared_host="$(shared_workspace_host_path)"
   output="$(docker run -d \
     --name "$container_name" \
     --restart unless-stopped \
@@ -342,9 +372,12 @@ run_container() {
     -e DB_TYPE=sqlite \
     -e LOG_LEVEL=INFO \
     -e AUTOBYTEUS_SKIP_SYNC=1 \
+    -e "AUTOBYTEUS_TEMP_WORKSPACE_DIR=${TEMP_WORKSPACE_ENV_VALUE}" \
     -v "${volume_prefix}-workspace:/app/autobyteus-server-ts/workspace" \
     -v "${volume_prefix}-data:/home/autobyteus/data" \
     -v "${volume_prefix}-root-home:/root" \
+    --mount "type=bind,source=${node_workspace_host},target=${WORKSPACE_CONTAINER_PATH}" \
+    --mount "type=bind,source=${shared_host},target=${SHARED_CONTAINER_PATH}" \
     "$image_ref" 2>&1)"
   printf '%s\n' "$output"
 }
@@ -391,8 +424,42 @@ GraphQL: http://localhost:${BACKEND_PORT}/graphql
 noVNC: http://localhost:${NOVNC_PORT}
 VNC: localhost:${VNC_PORT}
 Chrome debug: localhost:${DEBUG_PORT}
+Workspace: ${WORKSPACE_CONTAINER_PATH} -> $(node_workspace_host_path "$node_name")
+Shared folder: ${SHARED_CONTAINER_PATH} -> $(shared_workspace_host_path)
+Private app data: /home/autobyteus/data -> $(volume_prefix_for "$node_name")-data (Docker named volume)
 Next step: paste Backend into Add Remote Node in AutoByteus.
 URLS
+}
+
+print_workspace_paths_for_node() {
+  local node_name="$1"
+  cat <<PATHS
+AutoByteus Docker workspace paths: ${node_name}
+Shared workspace host root: $(shared_workspace_root)
+Node workspace host path: $(node_workspace_host_path "$node_name")
+Node workspace container path: ${WORKSPACE_CONTAINER_PATH}
+Shared folder host path: $(shared_workspace_host_path)
+Shared folder container path: ${SHARED_CONTAINER_PATH}
+Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=${TEMP_WORKSPACE_ENV_VALUE}
+PATHS
+}
+
+print_storage_for_node() {
+  local node_name="$1" volume_prefix
+  volume_prefix="$(volume_prefix_for "$node_name")"
+  cat <<STORAGE
+AutoByteus Docker storage: ${node_name}
+Private Docker named volumes (kept during recreate/destroy/reset):
+  ${volume_prefix}-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  ${volume_prefix}-root-home -> /root (Codex/Claude auth and root home settings)
+  ${volume_prefix}-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  $(node_workspace_host_path "$node_name") -> ${WORKSPACE_CONTAINER_PATH} (this node's user workspace and default temp workspace)
+  $(shared_workspace_host_path) -> ${SHARED_CONTAINER_PATH} (shared across launcher-managed Docker nodes)
+Launcher state directory: $(state_root)
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes ${WORKSPACE_CONTAINER_PATH} after apply.
+STORAGE
 }
 
 start_node() {
@@ -587,6 +654,82 @@ reset_nodes() {
   start_node "$DEFAULT_NODE_NAME" "$image_ref" "1"
 }
 
+image_ref_for_node_or_default() {
+  local node_name="$1" fallback_image_ref="$2" file
+  file="$(state_path_for "$node_name")"
+  if [[ -f "$file" ]]; then
+    load_state "$file"
+    if [[ -n "${IMAGE_REF:-}" ]]; then
+      printf '%s\n' "$IMAGE_REF"
+      return
+    fi
+  fi
+  printf '%s\n' "$fallback_image_ref"
+}
+
+node_known_for_apply() {
+  local node_name="$1"
+  [[ -f "$(state_path_for "$node_name")" ]] && return 0
+  [[ -n "$(container_for_node "$node_name")" ]] && return 0
+  if container_exists "$node_name" && managed_container "$node_name"; then
+    return 0
+  fi
+  return 1
+}
+
+show_workspace_paths() {
+  local filter_name="$1" show_all="$2" node any=0
+  if [[ "$show_all" == "1" ]]; then
+    while IFS= read -r node; do
+      [[ -n "$node" ]] || continue
+      [[ "$any" == "0" ]] || printf '\n'
+      print_workspace_paths_for_node "$node"
+      any=1
+    done < <(managed_node_names)
+    [[ "$any" == "1" ]] || log "No managed Docker nodes found."
+    return
+  fi
+  print_workspace_paths_for_node "$filter_name"
+}
+
+show_storage() {
+  local filter_name="$1" show_all="$2" node any=0
+  if [[ "$show_all" == "1" ]]; then
+    while IFS= read -r node; do
+      [[ -n "$node" ]] || continue
+      [[ "$any" == "0" ]] || printf '\n'
+      print_storage_for_node "$node"
+      any=1
+    done < <(managed_node_names)
+    [[ "$any" == "1" ]] || log "No managed Docker nodes found."
+    return
+  fi
+  print_storage_for_node "$filter_name"
+}
+
+apply_workspace_to_node() {
+  local node_name="$1" fallback_image_ref="$2" node_image_ref prefer_defaults=0
+  node_known_for_apply "$node_name" || fail "No managed Docker node found for ${node_name}. Run new-container first, or use workspace apply --all for existing managed nodes."
+  node_image_ref="$(image_ref_for_node_or_default "$node_name" "$fallback_image_ref")"
+  [[ "$node_name" == "$DEFAULT_NODE_NAME" ]] && prefer_defaults=1
+  log "Applying shared workspace bind mounts to ${node_name}. Named volumes will be kept."
+  start_node "$node_name" "$node_image_ref" "$prefer_defaults"
+}
+
+apply_workspace() {
+  local filter_name="$1" show_all="$2" fallback_image_ref="$3" node any=0
+  if [[ "$show_all" == "1" ]]; then
+    while IFS= read -r node; do
+      [[ -n "$node" ]] || continue
+      apply_workspace_to_node "$node" "$fallback_image_ref"
+      any=1
+    done < <(managed_node_names)
+    [[ "$any" == "1" ]] || log "No managed Docker nodes found."
+    return
+  fi
+  apply_workspace_to_node "$filter_name" "$fallback_image_ref"
+}
+
 resolve_target_name() {
   local explicit_name="$1"
   if [[ -n "$explicit_name" ]]; then normalize_node_name "$explicit_name"; return; fi
@@ -671,7 +814,7 @@ main() {
     esac
   done
 
-  local node_name image_ref
+  local node_name image_ref workspace_action
 
   case "$cmd" in
     install)
@@ -682,7 +825,7 @@ main() {
   esac
 
   case "$cmd" in
-    new-container|upgrade|destroy|reset|urls|ports|status|ps|stop|logs) ;;
+    new-container|upgrade|destroy|reset|workspace|storage|urls|ports|status|ps|stop|logs) ;;
     *) usage; exit 1 ;;
   esac
 
@@ -715,6 +858,22 @@ main() {
       [[ "$stop_all" != "1" ]] || fail "reset already applies to all managed nodes and does not accept --all."
       [[ -z "$name_arg" ]] || fail "reset always recreates ${DEFAULT_NODE_NAME}; do not pass --name."
       reset_nodes "$image_ref"
+      ;;
+    workspace)
+      workspace_action="${extra[0]:-paths}"
+      if [[ "$workspace_action" != "paths" && "$workspace_action" != "apply" ]]; then
+        fail "Unknown workspace subcommand: ${workspace_action}. Use 'workspace paths' or 'workspace apply'."
+      fi
+      [[ "${#extra[@]}" -le 1 ]] || fail "Unknown workspace option(s): ${extra[*]:1}"
+      if [[ "$workspace_action" == "paths" ]]; then
+        show_workspace_paths "$node_name" "$stop_all"
+      else
+        apply_workspace "$node_name" "$stop_all" "$image_ref"
+      fi
+      ;;
+    storage)
+      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown storage option(s): ${extra[*]}"
+      show_storage "$node_name" "$stop_all"
       ;;
     urls|ports) show_urls "$node_name" ;;
     status|ps) if [[ -n "$name_arg" ]]; then show_status "$node_name"; else show_status ""; fi ;;

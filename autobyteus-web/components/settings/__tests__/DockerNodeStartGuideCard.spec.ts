@@ -43,6 +43,10 @@ describe('DockerNodeStartGuideCard', () => {
     expect(wrapper.text()).toContain('autobyteus-docker upgrade --all');
     expect(wrapper.text()).toContain('autobyteus-docker destroy --all');
     expect(wrapper.text()).toContain('autobyteus-docker reset');
+    expect(wrapper.text()).toContain('autobyteus-docker workspace paths');
+    expect(wrapper.text()).toContain('autobyteus-docker workspace apply --all');
+    expect(wrapper.text()).toContain('autobyteus-docker storage');
+    expect(wrapper.text()).toContain('settings.components.settings.DockerNodeStartGuideCard.workspaceModel');
     expect(wrapper.text()).not.toContain('autobyteus-docker start');
     expect(wrapper.text()).toContain('autobyteus-docker urls');
     expect(wrapper.text()).toContain('autobyteus-docker status');
