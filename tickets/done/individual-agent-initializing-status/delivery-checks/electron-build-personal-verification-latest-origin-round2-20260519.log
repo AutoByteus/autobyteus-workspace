@@ -1,0 +1,55 @@
+# Electron personal rebuild verification after latest origin round2 — 2026-05-19
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status
+head=b8ea36568a27df1fb4b3ae792cd91772c83bfe54
+origin_personal=9ff0695b80509b8d46ef24b0257173d28bf1bf18
+ahead_behind=4	0
+--- artifacts ---
+total 1510912
+-rw-r--r--@ 1 normy  staff   359M May 19 05:48 AutoByteus_personal_macos-arm64-1.3.18.dmg
+-rw-r--r--@ 1 normy  staff   382K May 19 05:48 AutoByteus_personal_macos-arm64-1.3.18.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   356M May 19 05:49 AutoByteus_personal_macos-arm64-1.3.18.zip
+-rw-r--r--@ 1 normy  staff   375K May 19 05:49 AutoByteus_personal_macos-arm64-1.3.18.zip.blockmap
+-rw-r--r--@ 1 normy  staff   555B May 19 05:49 latest-mac.yml
+drwxr-xr-x@ 3 normy  staff    96B May 19 05:47 mac-arm64
+--- byte sizes ---
+/Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.18.dmg 376041773
+/Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.18.zip 373550122
+--- sha256 ---
+22e226277e276c6d3ef9882c603fc2961eb52a727f5415c14f3acbb8adda0a4a  /Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.18.dmg
+b9058a15e81cb6e08235210da1b61e7cd8522752dbea7bbe69800b4169f733c9  /Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.18.zip
+--- zip integrity ---
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.18.zip.
+zip_integrity=passed
+--- dmg image info ---
+Class Name: CUDIFDiskImage
+Checksum Type: CRC32
+		Name: disk image (Apple_APFS : 4)
+		Checksum Type: CRC32
+		Name:  (Apple_Free : 5)
+		Checksum Type: CRC32
+		Name: GPT Header (Primary GPT Header : 1)
+		Checksum Type: CRC32
+		Name: GPT Partition Data (Backup GPT Table : 6)
+		Checksum Type: CRC32
+		Name: GPT Partition Data (Primary GPT Table : 2)
+		Checksum Type: CRC32
+		Name: GPT Header (Backup GPT Header : 7)
+		Checksum Type: CRC32
+		Name: Protective Master Boot Record (MBR : 0)
+		Checksum Type: CRC32
+		Name:  (Apple_Free : 3)
+		Checksum Type: CRC32
+Format: UDZO
+	URL: file:///Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.18.dmg
+	Name: AutoByteus_personal_macos-arm64-1.3.18.dmg
+	Class Name: CUDIFEncoding
+		URL: file:///Users/normy/autobyteus_org/autobyteus-worktrees/individual-agent-initializing-status/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.18.dmg
+		Name: AutoByteus_personal_macos-arm64-1.3.18.dmg
+		Class Name: CBSDBackingStore
+	Encrypted: false
+	Compressed: true
+--- app plist ---
+1.3.18
+AutoByteus
+AutoByteus
+exit_status=0
