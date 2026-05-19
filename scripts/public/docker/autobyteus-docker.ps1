@@ -8,13 +8,16 @@ $Script:LauncherLabelKey = 'com.autobyteus.launcher'
 $Script:LauncherLabelValue = 'server-docker'
 $Script:NodeLabelKey = 'com.autobyteus.nodeName'
 $Script:ConfigLabelKey = 'com.autobyteus.configHash'
-$Script:ConfigHashVersion = 'v1'
+$Script:ConfigHashVersion = 'v2'
 $Script:NodeNamePrefix = 'autobyteus-server'
 $Script:DefaultNodeName = "$($Script:NodeNamePrefix)-0"
 $Script:DefaultImage = 'autobyteus/autobyteus-server'
 $Script:DefaultTag = 'latest'
 $Script:MaxRunAttempts = 5
 $Script:PublicPowerShellScriptUrl = 'https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1'
+$Script:WorkspaceContainerPath = '/home/autobyteus/workspace'
+$Script:SharedContainerPath = '/home/autobyteus/shared'
+$Script:TempWorkspaceEnvValue = $Script:WorkspaceContainerPath
 
 function Show-AutoByteusDockerHelp {
 @"
@@ -30,6 +33,9 @@ Commands:
   upgrade --all      Upgrade all managed Docker nodes to the latest image
   destroy --all      Remove all managed Docker nodes, keeping named volumes
   reset              Destroy all managed Docker nodes, then create autobyteus-server-0
+  workspace paths    Show host/container paths for node and shared workspaces
+  workspace apply    Recreate node(s) to apply shared workspace bind mounts safely
+  storage            Show named volumes and host bind mounts for node(s)
   urls | ports       Show Backend, GraphQL, noVNC, VNC, and debug URLs
   status | ps        Show managed Docker nodes
   logs               Show Docker logs for a managed node
@@ -42,7 +48,7 @@ Options:
   --name <name>      Friendly node name for status/logs/urls/stop (default: $Script:DefaultNodeName)
   --tag <tag>        Docker image tag (default: $Script:DefaultTag)
   --image <image>    Docker image repository or full image ref (default: $Script:DefaultImage)
-  --all              Required for upgrade/destroy; also applies stop/status to all managed nodes
+  --all              Required for upgrade/destroy; also applies stop/status/workspace/storage to all managed nodes
   -h, --help         Show this help
 
 State:
@@ -50,6 +56,8 @@ State:
   Default install directory: %LOCALAPPDATA%\AutoByteus\bin
   AUTOBYTEUS_DOCKER_STATE_DIR overrides the state directory.
   Default state directory: %LOCALAPPDATA%\AutoByteus\docker-server
+  AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR overrides the shared workspace root.
+  Default shared workspace: %LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace
 "@
 }
 
@@ -66,6 +74,24 @@ function Get-StateRoot {
 
 function Get-StateDir { Join-Path (Get-StateRoot) 'nodes' }
 function Ensure-StateDir { New-Item -ItemType Directory -Force -Path (Get-StateDir) | Out-Null }
+
+function Get-SharedWorkspaceRoot {
+  if ($env:AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR) { return $env:AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR }
+  Join-Path (Get-StateRoot) 'shared-workspace'
+}
+
+function Get-NodeWorkspaceHostPath([string]$NodeName) {
+  Join-Path (Join-Path (Get-SharedWorkspaceRoot) 'nodes') (Normalize-NodeName $NodeName)
+}
+
+function Get-SharedWorkspaceHostPath {
+  Join-Path (Get-SharedWorkspaceRoot) 'shared'
+}
+
+function Ensure-SharedWorkspaceDirs([string]$NodeName) {
+  New-Item -ItemType Directory -Force -Path (Get-NodeWorkspaceHostPath $NodeName) | Out-Null
+  New-Item -ItemType Directory -Force -Path (Get-SharedWorkspaceHostPath) | Out-Null
+}
 
 function Get-InstallDir {
   if ($env:AUTOBYTEUS_DOCKER_INSTALL_DIR) { return $env:AUTOBYTEUS_DOCKER_INSTALL_DIR }
@@ -98,7 +124,7 @@ function Install-Launcher {
 
   Write-LauncherInfo "Installed AutoByteus Docker launcher: $ps1Path"
   Write-Host "Command shim: $cmdPath"
-  Write-Host "Next commands:`n  autobyteus-docker new-container`n  autobyteus-docker upgrade --all`n  autobyteus-docker urls"
+  Write-Host "Next commands:`n  autobyteus-docker new-container`n  autobyteus-docker workspace paths`n  autobyteus-docker storage`n  autobyteus-docker urls"
   if (Test-DirectoryOnPath $installDir) { Write-LauncherInfo 'Install directory is already on PATH.'; return }
   Write-Host "PATH guidance:`n  This shell cannot find 'autobyteus-docker' until $installDir is on User PATH.`n  Use direct path now:`n    powershell -NoProfile -ExecutionPolicy Bypass -File `"$ps1Path`" new-container`n  To add this directory to your User PATH without admin rights, run:`n    [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'User') + ';$installDir', 'User')`n  Then open a new PowerShell window."
 }
@@ -298,8 +324,9 @@ function Get-NextNodeName {
 }
 
 function Print-Urls($State) {
+  $nodeName = [string]$State.nodeName
 @"
-AutoByteus Docker node: $($State.nodeName)
+AutoByteus Docker node: $nodeName
 Container: $($State.containerName)
 Image: $($State.imageRef)
 Backend: http://localhost:$($State.backendPort)
@@ -307,7 +334,39 @@ GraphQL: http://localhost:$($State.backendPort)/graphql
 noVNC: http://localhost:$($State.noVncPort)
 VNC: localhost:$($State.vncPort)
 Chrome debug: localhost:$($State.debugPort)
+Workspace: $Script:WorkspaceContainerPath -> $(Get-NodeWorkspaceHostPath $nodeName)
+Shared folder: $Script:SharedContainerPath -> $(Get-SharedWorkspaceHostPath)
+Private app data: /home/autobyteus/data -> $(Normalize-NodeName $nodeName)-data (Docker named volume)
 Next step: paste Backend into Add Remote Node in AutoByteus.
+"@ | Write-Host
+}
+
+function Write-WorkspacePathsForNode([string]$NodeName) {
+@"
+AutoByteus Docker workspace paths: $NodeName
+Shared workspace host root: $(Get-SharedWorkspaceRoot)
+Node workspace host path: $(Get-NodeWorkspaceHostPath $NodeName)
+Node workspace container path: $Script:WorkspaceContainerPath
+Shared folder host path: $(Get-SharedWorkspaceHostPath)
+Shared folder container path: $Script:SharedContainerPath
+Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue
+"@ | Write-Host
+}
+
+function Write-StorageForNode([string]$NodeName) {
+  $volumePrefix = Normalize-NodeName $NodeName
+@"
+AutoByteus Docker storage: $NodeName
+Private Docker named volumes (kept during recreate/destroy/reset):
+  $volumePrefix-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  $volumePrefix-root-home -> /root (Codex/Claude auth and root home settings)
+  $volumePrefix-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  $(Get-NodeWorkspaceHostPath $NodeName) -> $Script:WorkspaceContainerPath (this node's user workspace and default temp workspace)
+  $(Get-SharedWorkspaceHostPath) -> $Script:SharedContainerPath (shared across launcher-managed Docker nodes)
+Launcher state directory: $(Get-StateRoot)
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes $Script:WorkspaceContainerPath after apply.
 "@ | Write-Host
 }
 
@@ -317,8 +376,28 @@ function Set-StateProperty($State, [string]$Name, $Value) {
 }
 
 function Get-StateConfigHash($State) {
-  $volumePrefix = Normalize-NodeName $State.nodeName
-  $text = @("version=$Script:ConfigHashVersion", "node=$($State.nodeName)", "image=$($State.imageRef)", "backend=$($State.backendPort)", "vnc=$($State.vncPort)", "novnc=$($State.noVncPort)", "debug=$($State.debugPort)", "workspace_volume=$volumePrefix-workspace", "data_volume=$volumePrefix-data", "root_volume=$volumePrefix-root-home", "server_host=http://localhost:$($State.backendPort)", "vnc_hosts=localhost:$($State.noVncPort)") -join "`n"
+  $nodeName = [string]$State.nodeName
+  $volumePrefix = Normalize-NodeName $nodeName
+  $text = @(
+    "version=$Script:ConfigHashVersion",
+    "node=$nodeName",
+    "image=$($State.imageRef)",
+    "backend=$($State.backendPort)",
+    "vnc=$($State.vncPort)",
+    "novnc=$($State.noVncPort)",
+    "debug=$($State.debugPort)",
+    "workspace_volume=$volumePrefix-workspace",
+    "data_volume=$volumePrefix-data",
+    "root_volume=$volumePrefix-root-home",
+    "shared_workspace_root=$(Get-SharedWorkspaceRoot)",
+    "node_workspace_host=$(Get-NodeWorkspaceHostPath $nodeName)",
+    "node_workspace_target=$Script:WorkspaceContainerPath",
+    "shared_workspace_host=$(Get-SharedWorkspaceHostPath)",
+    "shared_workspace_target=$Script:SharedContainerPath",
+    "temp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
+    "server_host=http://localhost:$($State.backendPort)",
+    "vnc_hosts=localhost:$($State.noVncPort)"
+  ) -join "`n"
   $sha = [System.Security.Cryptography.SHA256]::Create()
   try { ($sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($text)) | ForEach-Object { $_.ToString('x2') }) -join '' } finally { $sha.Dispose() }
 }
@@ -437,6 +516,10 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
     Set-StateProperty $state 'configHash' (Get-StateConfigHash $state)
 
     if (Test-ContainerExists $containerName) { & docker rm -f $containerName *> $null }
+    $stateNodeName = [string]$state.nodeName
+    Ensure-SharedWorkspaceDirs $stateNodeName
+    $nodeWorkspaceHost = Get-NodeWorkspaceHostPath $stateNodeName
+    $sharedWorkspaceHost = Get-SharedWorkspaceHostPath
     $outputFile = [System.IO.Path]::GetTempFileName()
     try {
       & docker run -d `
@@ -461,9 +544,12 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
         -e DB_TYPE=sqlite `
         -e LOG_LEVEL=INFO `
         -e AUTOBYTEUS_SKIP_SYNC=1 `
-        -v "$(Normalize-NodeName $state.nodeName)-workspace:/app/autobyteus-server-ts/workspace" `
-        -v "$(Normalize-NodeName $state.nodeName)-data:/home/autobyteus/data" `
-        -v "$(Normalize-NodeName $state.nodeName)-root-home:/root" `
+        -e "AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue" `
+        -v "$(Normalize-NodeName $stateNodeName)-workspace:/app/autobyteus-server-ts/workspace" `
+        -v "$(Normalize-NodeName $stateNodeName)-data:/home/autobyteus/data" `
+        -v "$(Normalize-NodeName $stateNodeName)-root-home:/root" `
+        --mount "type=bind,source=$nodeWorkspaceHost,target=$Script:WorkspaceContainerPath" `
+        --mount "type=bind,source=$sharedWorkspaceHost,target=$Script:SharedContainerPath" `
         $state.imageRef *> $outputFile
       $exitCode = $LASTEXITCODE
       $output = Get-Content -Raw -Path $outputFile
@@ -572,6 +658,69 @@ function Reset-Nodes([string]$ImageRef) {
   Start-Node $Script:DefaultNodeName $ImageRef $true
 }
 
+function Get-ImageRefForNodeOrDefault([string]$NodeName, [string]$FallbackImageRef) {
+  $state = Read-NodeState $NodeName
+  if ($state -and $state.imageRef) { return $state.imageRef }
+  $FallbackImageRef
+}
+
+function Test-NodeKnownForApply([string]$NodeName) {
+  if (Test-Path (Get-StatePath $NodeName)) { return $true }
+  if (Get-ContainerForNode $NodeName) { return $true }
+  if ((Test-ContainerExists $NodeName) -and (Test-ManagedContainer $NodeName)) { return $true }
+  $false
+}
+
+function Show-WorkspacePaths([string]$FilterName, [bool]$ShowAll) {
+  if ($ShowAll) {
+    $nodes = @(Get-ManagedNodeNames)
+    if ($nodes.Count -eq 0) { Write-LauncherInfo 'No managed Docker nodes found.'; return }
+    $first = $true
+    foreach ($node in $nodes) {
+      if (-not $first) { Write-Host '' }
+      Write-WorkspacePathsForNode $node
+      $first = $false
+    }
+    return
+  }
+  Write-WorkspacePathsForNode $FilterName
+}
+
+function Show-Storage([string]$FilterName, [bool]$ShowAll) {
+  if ($ShowAll) {
+    $nodes = @(Get-ManagedNodeNames)
+    if ($nodes.Count -eq 0) { Write-LauncherInfo 'No managed Docker nodes found.'; return }
+    $first = $true
+    foreach ($node in $nodes) {
+      if (-not $first) { Write-Host '' }
+      Write-StorageForNode $node
+      $first = $false
+    }
+    return
+  }
+  Write-StorageForNode $FilterName
+}
+
+function Apply-WorkspaceToNode([string]$NodeName, [string]$FallbackImageRef) {
+  if (-not (Test-NodeKnownForApply $NodeName)) {
+    Fail-Launcher "No managed Docker node found for $NodeName. Run new-container first, or use workspace apply --all for existing managed nodes."
+  }
+  $nodeImageRef = Get-ImageRefForNodeOrDefault $NodeName $FallbackImageRef
+  $preferDefaults = $NodeName -eq $Script:DefaultNodeName
+  Write-LauncherInfo "Applying shared workspace bind mounts to $NodeName. Named volumes will be kept."
+  Start-Node $NodeName $nodeImageRef $preferDefaults
+}
+
+function Apply-Workspace([string]$FilterName, [bool]$ShowAll, [string]$FallbackImageRef) {
+  if ($ShowAll) {
+    $nodes = @(Get-ManagedNodeNames)
+    if ($nodes.Count -eq 0) { Write-LauncherInfo 'No managed Docker nodes found.'; return }
+    foreach ($node in $nodes) { Apply-WorkspaceToNode $node $FallbackImageRef }
+    return
+  }
+  Apply-WorkspaceToNode $FilterName $FallbackImageRef
+}
+
 function Show-Urls([string]$NodeName) {
   $state = Read-NodeState $NodeName
   if (-not $state) { Fail-Launcher "No launcher state found for $NodeName. Run new-container first." }
@@ -653,7 +802,7 @@ function Invoke-AutoByteusDocker {
     }
   }
 
-  if ($cmd -notin @('new-container', 'upgrade', 'destroy', 'reset', 'urls', 'ports', 'status', 'ps', 'stop', 'logs')) {
+  if ($cmd -notin @('new-container', 'upgrade', 'destroy', 'reset', 'workspace', 'storage', 'urls', 'ports', 'status', 'ps', 'stop', 'logs')) {
     Show-AutoByteusDockerHelp
     exit 1
   }
@@ -687,6 +836,22 @@ function Invoke-AutoByteusDocker {
       if ($stopAll) { Fail-Launcher 'reset already applies to all managed nodes and does not accept --all.' }
       if ($nameArg) { Fail-Launcher "reset always recreates $Script:DefaultNodeName; do not pass --name." }
       Reset-Nodes $imageRef
+    }
+    'workspace' {
+      $workspaceAction = if ($extra.Count -gt 0) { $extra[0] } else { 'paths' }
+      if ($workspaceAction -notin @('paths', 'apply')) {
+        Fail-Launcher "Unknown workspace subcommand: $workspaceAction. Use 'workspace paths' or 'workspace apply'."
+      }
+      if ($extra.Count -gt 1) { Fail-Launcher "Unknown workspace option(s): $($extra[1..($extra.Count - 1)] -join ' ')" }
+      if ($workspaceAction -eq 'paths') {
+        Show-WorkspacePaths $nodeName $stopAll
+      } else {
+        Apply-Workspace $nodeName $stopAll $imageRef
+      }
+    }
+    'storage' {
+      if ($extra.Count -gt 0) { Fail-Launcher "Unknown storage option(s): $($extra -join ' ')" }
+      Show-Storage $nodeName $stopAll
     }
     { $_ -in @('urls', 'ports') } { Show-Urls $nodeName }
     { $_ -in @('status', 'ps') } { Show-Status $(if ($nameArg) { $nodeName } else { '' }) }

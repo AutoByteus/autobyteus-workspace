@@ -9,6 +9,9 @@ export type DockerLauncherCommandId =
   | 'direct-upgrade-all'
   | 'direct-destroy-all'
   | 'direct-reset'
+  | 'direct-workspace-paths'
+  | 'direct-workspace-apply-all'
+  | 'direct-storage'
   | 'direct-urls'
   | 'direct-status'
   | 'direct-logs'
@@ -115,6 +118,36 @@ export function buildDockerNodeLauncherCommands(): DockerLauncherCommand[] {
       titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.reset.title',
       descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.reset.description',
       command: buildDirectLauncherCommand(['reset']),
+      isPrimary: true,
+    },
+    {
+      id: 'direct-workspace-paths',
+      phase: 'direct',
+      platform: 'installed-cli',
+      platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
+      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.workspacePaths.title',
+      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.workspacePaths.description',
+      command: buildDirectLauncherCommand(['workspace', 'paths']),
+      isPrimary: true,
+    },
+    {
+      id: 'direct-workspace-apply-all',
+      phase: 'direct',
+      platform: 'installed-cli',
+      platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
+      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.workspaceApplyAll.title',
+      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.workspaceApplyAll.description',
+      command: buildDirectLauncherCommand(['workspace', 'apply', '--all']),
+      isPrimary: true,
+    },
+    {
+      id: 'direct-storage',
+      phase: 'direct',
+      platform: 'installed-cli',
+      platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
+      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.storage.title',
+      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.storage.description',
+      command: buildDirectLauncherCommand(['storage']),
       isPrimary: true,
     },
     {

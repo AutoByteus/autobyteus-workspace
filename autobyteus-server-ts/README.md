@@ -185,6 +185,31 @@ autobyteus-docker new-container
 
 Repeated `new-container` calls create `autobyteus-server-0`, then `autobyteus-server-1`, then `autobyteus-server-2`, and so on.
 
+The launcher keeps private server state in existing Docker named volumes:
+`/home/autobyteus/data` is private app/server data, `/root` stores in-container
+root home/auth settings, and `/app/autobyteus-server-ts/workspace` keeps the
+existing workspace volume. It also creates host-visible user folders under a
+shared workspace root (`$HOME/.autobyteus/docker-server/shared-workspace` on
+macOS/Linux, `%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace` on
+Windows, or `AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR` when set):
+
+- `/home/autobyteus/workspace` is this node's user workspace.
+- `/home/autobyteus/shared` is shared across launcher-managed Docker nodes.
+
+Inspect the mapping or apply it to existing managed containers:
+
+```bash
+autobyteus-docker workspace paths
+autobyteus-docker storage
+autobyteus-docker workspace apply --all
+```
+
+`workspace apply --all` safely recreates managed containers to add the bind
+mounts while keeping existing named volumes and host folders.
+Existing files under `/home/autobyteus/data/temp_workspace` stay preserved in
+the data named volume, but `/home/autobyteus/workspace` becomes the default temp
+workspace after apply.
+
 Claude Agent SDK sessions automatically read Claude Code filesystem settings.
 For this Docker image, the `user` Claude Code settings source resolves to
 `/root/.claude/settings.json` inside the container because the server process

@@ -1,0 +1,49 @@
+## syntax/static
+## launcher unit tests
+test_new_container_adds_bind_mounts_without_removing_named_volumes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'pwsh is not installed'
+test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 2.127s
+
+OK (skipped=1)
+## scripts test discovery
+test_merge_contains_both_arch_zip_entries (test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_merge_fails_when_x64_zip_missing (test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_write_round_trip_preserves_dual_arch_entries (test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_new_container_adds_bind_mounts_without_removing_named_volumes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'pwsh is not installed'
+test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.876s
+
+OK (skipped=1)
+## frontend targeted vitest
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/autobyteus-web
+
+stdout | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/dockerNodeLauncherCommands.spec.ts (2 tests) 2ms
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (2 tests) 20ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  19:02:44
+   Duration  1.79s (transform 870ms, setup 2.57s, collect 50ms, tests 22ms, environment 285ms, prepare 268ms)
+
+## diff check

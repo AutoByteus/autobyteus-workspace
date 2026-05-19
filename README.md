@@ -63,6 +63,41 @@ autobyteus-docker new-container
 Repeated `new-container` calls create `autobyteus-server-0`, then
 `autobyteus-server-1`, then `autobyteus-server-2`, and so on.
 
+The public launcher keeps the existing private Docker named volumes unchanged:
+`<node>-data` stays mounted at `/home/autobyteus/data`, `<node>-root-home`
+stays mounted at `/root`, and `<node>-workspace` stays mounted at
+`/app/autobyteus-server-ts/workspace`. It also creates a host-visible shared
+workspace root outside the source tree:
+
+- macOS / Linux default: `$HOME/.autobyteus/docker-server/shared-workspace`
+- Windows default: `%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace`
+- Override: `AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR`
+
+Inside each managed container, user files land in simple stable paths:
+`/home/autobyteus/workspace` is backed by that node's host folder, and
+`/home/autobyteus/shared` is backed by one shared host folder visible to every
+managed Docker node. The launcher sets
+`AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace`, so default
+terminal/agent work appears in the host-visible node workspace.
+
+Inspect the path mapping:
+
+```bash
+autobyteus-docker workspace paths
+autobyteus-docker storage
+```
+
+Existing containers need a one-time safe recreate before they receive the new
+bind mounts. This keeps named volumes and host folders:
+
+```bash
+autobyteus-docker workspace apply --all
+```
+
+Any existing files under `/home/autobyteus/data/temp_workspace` remain preserved
+in the data named volume, but `/home/autobyteus/workspace` becomes the default
+temp workspace after apply.
+
 Claude Agent SDK sessions automatically read Claude Code filesystem settings.
 For this Docker image, the `user` Claude Code settings source resolves to
 `/root/.claude/settings.json` inside the container because the server process
