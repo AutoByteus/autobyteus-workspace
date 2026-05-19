@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/design-spec.md`
 - Current Review Round: `1`
 - Trigger: Initial architecture review requested by `solution_designer` for Docker shared workspace bind-mount UX ticket.
 - Prior Review Round Reviewed: `None`

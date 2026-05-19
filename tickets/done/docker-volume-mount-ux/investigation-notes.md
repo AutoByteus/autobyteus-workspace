@@ -21,10 +21,10 @@ User asks whether Docker container volumes can be stored somewhere durable, idea
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): `Git`
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/in-progress/docker-volume-mount-ux`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/in-progress/docker-volume-mount-ux`
 - Current Branch: `codex/docker-volume-mount-ux`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin --prune` succeeded on 2026-05-19.
 - Task Branch: `codex/docker-volume-mount-ux`
@@ -39,7 +39,7 @@ User asks whether Docker container volumes can be stored somewhere durable, idea
 | --- | --- | --- | --- | --- | --- |
 | 2026-05-19 | Command | `pwd && git rev-parse --show-toplevel && git status --short --branch && git remote -v && git symbolic-ref refs/remotes/origin/HEAD` | Discover initial repo/worktree context | Initial checkout was `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` on branch `personal`, remote default `origin/personal`. | No |
 | 2026-05-19 | Command | `git fetch origin --prune` | Refresh tracked remote refs before creating task worktree | Fetch succeeded. | No |
-| 2026-05-19 | Command | `git worktree add -b codex/docker-volume-mount-ux /Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux origin/personal` | Create dedicated task branch/worktree | Worktree created at commit `98cfdc24612a8cce8525e934cfd373589ad51ec4`. | No |
+| 2026-05-19 | Command | `git worktree add -b codex/docker-volume-mount-ux /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Create dedicated task branch/worktree | Worktree created at commit `98cfdc24612a8cce8525e934cfd373589ad51ec4`. | No |
 | 2026-05-19 | Doc | `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/SKILL.md` | Follow team solution-designer workflow | Requires bootstrap artifacts, investigation notes, requirements refinement, and design spec after approval. | No |
 | 2026-05-19 | Doc | `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/design-principles.md` | Load shared design authority | Use spine/ownership model and authoritative boundary rule. | No |
 | 2026-05-19 | Command | `find scripts/public/docker autobyteus-server-ts/docker docker -maxdepth 3 -type f -print` | Locate Docker scripts/docs | Public launcher scripts are in `scripts/public/docker`; source helper and compose files are in `autobyteus-server-ts/docker`. | No |

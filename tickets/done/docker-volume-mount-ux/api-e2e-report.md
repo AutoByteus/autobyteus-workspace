@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/review-report.md`
 - Current Validation Round: `1`
 - Trigger: Code-review pass from `code_reviewer`; validate Docker shared workspace bind-mount UX before delivery.
 - Prior Round Reviewed: `N/A`
@@ -115,10 +115,10 @@ No repository-resident tests or source files were added or modified during API/E
 
 ## Other Validation Artifacts
 
-- Local static/unit/frontend check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/api-e2e-local-checks.log`
-- Real Docker validation log: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/api-e2e-real-docker.log`
-- Real Docker structured evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/api-e2e-docker-evidence.json`
-- PowerShell availability log: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/api-e2e-pwsh-availability.log`
+- Local static/unit/frontend check log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/api-e2e-local-checks.log`
+- Real Docker validation log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/api-e2e-real-docker.log`
+- Real Docker structured evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/api-e2e-docker-evidence.json`
+- PowerShell availability log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/api-e2e-pwsh-availability.log`
 
 ## Temporary Validation Methods / Scaffolding
 

@@ -2,9 +2,9 @@
 
 ## Status
 
-User verification received; finalization is in progress with no release/deployment requested. The Docker shared workspace bind-mount UX has passed code review and API/E2E validation, delivery integrated the latest tracked `origin/personal` base and reran relevant checks, and long-lived docs plus ticket release notes are synced against the integrated state.
+Finalized after explicit user verification. The Docker shared workspace bind-mount UX passed code review and API/E2E validation, delivery integrated the latest tracked `origin/personal` base and reran relevant checks, long-lived docs plus ticket release notes were synced against the integrated state, and the ticket was archived under `tickets/done/docker-volume-mount-ux/`.
 
-The ticket has been archived under `tickets/done/docker-volume-mount-ux/` before the final ticket-branch commit, as required by the delivery workflow.
+No release/publication/deployment was run because the user explicitly requested no release.
 
 ## User Verification
 
@@ -15,7 +15,8 @@ The ticket has been archived under `tickets/done/docker-volume-mount-ux/` before
 
 ## Integrated Branch State
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux`
+- Original delivery worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux` (cleaned up after finalization)
+- Final archived ticket location: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux`
 - Ticket branch: `codex/docker-volume-mount-ux`
 - Bootstrap base: `origin/personal` at `98cfdc24612a8cce8525e934cfd373589ad51ec4` (`98cfdc24`)
 - Latest tracked base checked by delivery: `origin/personal` at `4aae26b4a6f81a8cac6b2df8c80b1e95392d7645` (`4aae26b4`) after `git fetch origin --prune` on 2026-05-19
@@ -78,7 +79,7 @@ Results:
 - Local safety checkpoint commit completed at `7b1fd44c` before integrating latest base.
 - Merge completed at `71199456` with no conflicts.
 
-Post-integration checks rerun by delivery; all passed. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/delivery-integration-checks.log`
+Post-integration checks rerun by delivery; all passed. Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/delivery-integration-checks.log`
 
 ```bash
 bash -n scripts/public/docker/autobyteus-docker.sh
@@ -101,13 +102,13 @@ Updated durable docs/user-facing guidance:
 - `autobyteus-web/docs/settings.md`
 - Settings -> Nodes Docker Guide copy/localization and command catalog were already updated by implementation.
 
-Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/docs-sync-report.md`
+Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/docs-sync-report.md`
 
 ## Release Notes
 
 Release notes prepared before verification:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/release-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/release-notes.md`
 
 No release/publication/deployment has been run; user explicitly requested no release.
 
@@ -117,32 +118,33 @@ No release/publication/deployment has been run; user explicitly requested no rel
 - Linux bind-mounted files may be root-owned because the container currently runs as root; docs now call this out.
 - Public launcher scripts remain large because of the existing self-contained public no-clone launcher contract; future splitting/generation may be useful if packaging allows it.
 
-## Finalization Status Before Target Merge
+## Finalization Result
 
-User verification is complete. Delivery is proceeding with:
-
-1. Ticket branch final commit and push.
-2. Finalization target refresh for local `personal` tracking `origin/personal`.
-3. Merge of `codex/docker-volume-mount-ux` into `personal`.
-4. Push of updated `personal` to `origin/personal`.
-5. No release/publication/deployment, per user instruction.
-
-Final merge/push/cleanup results are recorded in `release-deployment-report.md` after completion.
+- User verification: completed on 2026-05-19 (`i would say the task is done. lets finalize and no need to release`).
+- Ticket archive path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux`.
+- Ticket branch final commit: `331527ec` (`docs(docker): finalize shared workspace delivery`).
+- Ticket branch push: completed to `origin/codex/docker-volume-mount-ux` before target merge.
+- Finalization target: local `personal` tracking `origin/personal`.
+- Target refresh before merge: completed; `origin/personal` remained `4aae26b4`.
+- Merge into target: completed with merge commit `118b5683` (`Merge Docker shared workspace delivery`).
+- Target push: completed to `origin/personal`.
+- Release/deployment: not run per user request.
+- Cleanup: dedicated ticket worktree removed; local ticket branch deleted; remote ticket branch deleted; worktree prune completed.
 
 ## Cumulative Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/api-e2e-report.md`
-- Real Docker structured evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/api-e2e-docker-evidence.json`
-- Real Docker log: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/api-e2e-real-docker.log`
-- Local checks log: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/api-e2e-local-checks.log`
-- PowerShell availability log: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/api-e2e-pwsh-availability.log`
-- Delivery integration checks: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/delivery-integration-checks.log`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/docs-sync-report.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/release-deployment-report.md`
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/release-notes.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/api-e2e-report.md`
+- Real Docker structured evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/api-e2e-docker-evidence.json`
+- Real Docker log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/api-e2e-real-docker.log`
+- Local checks log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/api-e2e-local-checks.log`
+- PowerShell availability log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/api-e2e-pwsh-availability.log`
+- Delivery integration checks: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/delivery-integration-checks.log`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/docs-sync-report.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/release-deployment-report.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/release-notes.md`

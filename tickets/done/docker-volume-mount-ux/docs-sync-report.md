@@ -6,7 +6,7 @@
 - Trigger: Delivery-stage docs sync after API/E2E validation passed for Docker shared workspace bind-mount UX.
 - Bootstrap base reference: `origin/personal` at `98cfdc24612a8cce8525e934cfd373589ad51ec4` (`98cfdc24`) when `codex/docker-volume-mount-ux` was created.
 - Integrated base reference used for docs sync: `origin/personal` at `4aae26b4a6f81a8cac6b2df8c80b1e95392d7645` (`4aae26b4`) after `git fetch origin --prune` on 2026-05-19. Delivery integrated the 14 new tracked-base commits by merging `origin/personal` into the ticket branch.
-- Post-integration verification reference: merge commit `711994560fe0ce3297ea01521e2c7d8a0b633181` (`71199456`) plus `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-volume-mount-ux/tickets/done/docker-volume-mount-ux/delivery-integration-checks.log`.
+- Post-integration verification reference: merge commit `711994560fe0ce3297ea01521e2c7d8a0b633181` (`71199456`) plus `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/docker-volume-mount-ux/delivery-integration-checks.log`.
 
 ## Why Docs Were Updated
 
