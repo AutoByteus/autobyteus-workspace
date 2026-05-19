@@ -57,6 +57,18 @@ Resolved the Round 9 code review finding that historical authorized API reachabi
 - Home refresh, troubleshooting check, paired bootstrap, and mounted paired-session bootstrap all use the same current-cycle reachability path.
 - Added a behavior regression that starts from prior reachable state, simulates a later `/rest/remote-access/status` network failure with all current catalog refreshes failing, and verifies Home shows `Offline` / `Cannot reach AutoByteus desktop` rather than `Node reachable` / `Phone Access status unavailable`.
 
+
+### Latest-Base Branch Refresh / Round 10 Scope Correction
+
+After the user raised a branch-currency concern, solution design refreshed this worktree onto latest `origin/personal` before implementation resumed.
+
+- Mobile UX work was committed at `ac602d14` (`feat(remote-access): complete mobile ux functional parity`).
+- Latest `origin/personal` `98cfdc24612a8cce8525e934cfd373589ad51ec4` was merged via `26a17e0a`.
+- Current reviewed implementation basis before this handoff update was `181cdbb4` (`docs(remote-access): record latest-base validation checks`), with `origin/personal` an ancestor of the branch and no behind commits.
+- The historical Round 10 shared single-agent command-identity symptom was confirmed to come from stale branch state. Latest `origin/personal` already includes shared single-agent command identity generation, identity-bearing `AgentStreamingService.sendMessage(...)`, and rejected `AGENT_COMMAND_ACK` visibility.
+- The obsolete separate shared command-identity ticket/dependency was removed. This mobile UX implementation does **not** add a mobile-only WebSocket sender, mobile-only dedupe scheme, duplicate `SEND_MESSAGE` builder, or shared streaming patch.
+- Downstream API/E2E should re-run real Codex/GPT-5.5 single-agent launch/send on this latest-base branch state. If a missing-identity failure reappears after this merge, classify it as a shared-base regression, not a mobile UX local fix.
+
 ## Key Files Or Areas
 
 Added:
@@ -143,6 +155,28 @@ Extended/modified:
 - Working tree contains upstream/pre-existing documentation, validation, and prior implementation artifacts outside this rework; this handoff describes the current implementation state relevant to code review.
 
 ## Local Implementation Checks Run
+
+
+### Latest-Base Refresh Checks
+
+- Branch currency check:
+  - Result: `origin/personal` `98cfdc24612a8cce8525e934cfd373589ad51ec4` is an ancestor of the implementation branch; branch is ahead of `origin/personal` and behind by `0` commits.
+  - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-latest-base-refresh-solution-design-checks.log`
+- `git diff --check`
+  - Result: Passed after latest-base refresh.
+  - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-latest-base-refresh-solution-design-checks.log`
+- Obsolete shared command-identity ticket/reference search:
+  - Result: Passed; obsolete separate ticket/dependency paths are absent, and active mobile ticket docs no longer reference the stale dependency as open work.
+  - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-latest-base-refresh-solution-design-checks.log`
+- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/__tests__/AgentStreamingService.spec.ts stores/__tests__/agentRunStore.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts pages/__tests__/mobile-root-shell.spec.ts pages/__tests__/mobile-root.spec.ts middleware/__tests__/mobileFeatureGate.global.spec.ts utils/__tests__/mobileFeatureGates.spec.ts`
+  - Result: Passed after latest-base merge — 10 files / 57 tests.
+  - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-latest-base-refresh-solution-design-checks.log`
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access`
+  - Result: Passed after latest-base merge — 5 files / 27 tests.
+  - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-latest-base-refresh-solution-design-checks.log`
+- `pnpm -C autobyteus-web build:mobile-web`
+  - Result: Passed after latest-base merge; generated dist artifacts were removed afterward.
+  - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-latest-base-refresh-solution-design-checks.log`
 
 ### Round 9 CR-MRA-007 Local Fix Checks
 
