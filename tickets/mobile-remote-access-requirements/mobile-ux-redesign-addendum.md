@@ -87,6 +87,20 @@ Mobile UX ticket boundary:
 
 No separate command-identity ticket remains. If the missing identity failure reappears after refresh, treat it as a shared-base regression rather than adding a mobile workaround.
 
+## 2026-05-19 Round 11 Functional Pass / Delivery Triage
+
+Round 11 API/E2E passed the latest-base mobile journey with real Codex App Server / `gpt-5.5` execution. Existing single-agent continuation, attached-file send, existing team continuation, new team launch, Activity, Files, stale `/mobile/workspace`, and desktop `/workspace` no-regression all passed. The prior stale WebSocket/command-identity symptom did not recur on the latest base.
+
+Solution-design triage: UX-MRA-050 through UX-MRA-054 are accepted as non-blocking polish. The current ticket should not pause for another implementation loop unless product explicitly tightens the MVP bar. Preserve these as follow-up direction:
+
+- show resolved runtime/model or clearer desktop-default-source copy when available;
+- make mixed-success status copy calmer/actionable while keeping the current correct logic;
+- improve long Activity/team/tool drill-in ergonomics later;
+- make attachment removal more touch-obvious later;
+- keep the launch target/workspace/runtime/context summary prominent.
+
+These polish items must remain mobile-shell/user-experience refinements only; they must not alter desktop workflows, add mobile-only runtime preflight, or fork shared transport behavior.
+
 ## Why This Stays In The Same Ticket
 
 The original ticket goal is not only to expose `/mobile` and pair a phone; it is to make AutoByteus usable from a phone over a private network. User validation showed the backend/PWA/auth foundation works, but the current post-pairing workspace experience is a compressed desktop layout with too many panels and nested navigation layers. That fails the mobile usability intent of the same Remote Access MVP.

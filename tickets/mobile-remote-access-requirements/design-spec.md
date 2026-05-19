@@ -1000,6 +1000,22 @@ Resolved shared platform behavior on latest base:
 - Do not duplicate this work in the mobile ticket; if a future regression appears, treat it as a shared-base regression from the latest branch state.
 
 
+## Round 11 Functional Pass And UX Polish Triage
+
+API/E2E Round 11 validated the latest-base integrated branch in a 390x844 mobile viewport against the local backend with real Codex App Server / `gpt-5.5` execution. The stale Round 10 command-identity symptom did not recur. The following MVP journeys passed: mobile Home, existing single-agent continuation, attached-file send, existing team continuation, bottom navigation, Activity/team/tool history, new team launch, stale `/mobile/workspace` unsupported notice, and desktop `/workspace` no-regression.
+
+Solution-design decision: accept the current implementation as satisfying the same-ticket mobile functional-parity MVP and route toward delivery. Do not re-scope another current-ticket implementation pass for UX-MRA-050 through UX-MRA-054. These findings are valid polish/future-product improvements, but they are not blocking defects because the corresponding journeys are functional and already governed by existing design direction:
+
+| Finding | Decision | Existing design owner / future polish direction |
+| --- | --- | --- |
+| UX-MRA-050 runtime/model visibility | Later polish | Keep mobile simplified for MVP; improve resolved runtime/model or desktop-default-source copy when a low-risk selector/value is available. |
+| UX-MRA-051 mixed status copy | Later polish | Current composite logic is correct; copy can become calmer/actionable without changing status semantics. |
+| UX-MRA-052 long Activity ergonomics | Later polish | Keep compact Activity rows; future pass can add full-screen details, copy/open-full, and stronger section collapse. |
+| UX-MRA-053 attachment removal affordance | Later polish | Attachment tray works and is decision-adjacent; future pass can enlarge touch targets or use explicit `Remove` text. |
+| UX-MRA-054 launch summary prominence | Later polish | Current picker/summary passes; future pass should keep target/workspace/runtime/context summary visually prominent. |
+
+Guardrail: these polish items must not change normal desktop/web behavior, add provider/API-key preflight, or reintroduce mobile-specific transport/business protocol forks. If product later wants stricter phone-side runtime/model editing or richer Activity drill-in before release, that should be explicitly scoped as a new polish ticket or release follow-up, not inferred from this MVP validation pass.
+
 ## Desktop/Web Non-Regression Boundary
 
 - `/mobile` is the only owner of the mobile shell. Mobile feature gates apply to mobile routes and explicit unsupported mobile redirects; they must not become global desktop route policy.

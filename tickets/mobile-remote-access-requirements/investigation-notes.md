@@ -381,3 +381,15 @@ Solution-design triage:
 5. New-run target selection: already covered by R-MRA-132/R-MRA-133 / AC-MRA-038; keep Recent/Favorites/Current context emphasis and avoid arbitrary defaults.
 
 Design impact: no new same-ticket backend/API scope and no desktop-web behavior change. If the product later requires strict desktop-equivalent runtime/model editing from phone, that should be explicitly re-scoped as advanced mobile run configuration rather than inferred from this MVP polish pass.
+
+
+## Round 11 API/E2E Functional Pass And Solution-Design Triage (2026-05-19)
+
+API/E2E Round 11 validated the latest-base integrated branch in a realistic 390x844 phone viewport with the local backend and real Codex App Server / `gpt-5.5` execution. Functional result: Pass. The prior stale command-identity symptom did not recur. Real mobile single-agent continuation, attached-file send, team continuation, team launch, Files, Activity, stale `/mobile/workspace`, and desktop `/workspace` no-regression all passed.
+
+Artifacts:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/api-e2e-validation-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/mobile-ux-validation-findings-round11.md`
+
+Solution-design decision: route toward delivery. UX-MRA-050 through UX-MRA-054 are non-blocking polish because the associated journeys are functional and the desired improvements are already aligned with existing Round 4/Round 10 design direction. Do not re-scope another current-ticket implementation pass for these unless product explicitly raises the MVP bar. Capture them as future polish/release follow-up: clearer runtime/model/default-source copy, calmer mixed status wording, better Activity detail ergonomics, more obvious attachment removal, and continued launch-summary prominence.
