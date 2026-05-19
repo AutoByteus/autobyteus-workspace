@@ -132,13 +132,20 @@ export class AgentStreamingService {
   /**
    * Send a user message to the agent.
    */
-  sendMessage(content: string, contextFilePaths?: string[], imageUrls?: string[]): void {
+  sendMessage(
+    content: string,
+    contextFilePaths?: string[],
+    imageUrls?: string[],
+    command?: { messageId: string; dedupeKey: string },
+  ): void {
     const message: ClientMessage = {
       type: 'SEND_MESSAGE',
       payload: {
         content,
         context_file_paths: contextFilePaths,
         image_urls: imageUrls,
+        message_id: command?.messageId ?? '',
+        dedupe_key: command?.dedupeKey ?? '',
       },
     };
     this.wsClient.send(serializeClientMessage(message));
@@ -302,6 +309,18 @@ export class AgentStreamingService {
 
       case 'AGENT_STATUS':
         handleAgentStatus(message.payload, context);
+        break;
+
+      case 'AGENT_COMMAND_ACK':
+        if (message.payload.status) {
+          handleAgentStatus(message.payload.status, context);
+        }
+        if (!message.payload.accepted) {
+          handleError({
+            code: message.payload.code ?? 'AGENT_COMMAND_REJECTED',
+            message: message.payload.message ?? 'Agent command was not accepted.',
+          }, context);
+        }
         break;
 
       case 'COMPACTION_STATUS':

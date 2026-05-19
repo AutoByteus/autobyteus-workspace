@@ -51,15 +51,20 @@ describe('BrowserPanel', () => {
     expect(wrapper.text()).toContain('Google Browser Test')
   })
 
-  it('shows a clean empty-state hint when no browser tabs exist', async () => {
+  it('shows compact zero-tab chrome and a clean empty-state hint when no browser tabs exist', async () => {
     const store = useBrowserShellStore()
+    store.browserAvailable = true
     store.activeTabId = null
     store.sessions = []
 
     const wrapper = mount(BrowserPanel)
     await nextTick()
+    await flushPromises()
 
     expect(wrapper.text()).toMatch(/open a url to start browsing/i)
+    expect(wrapper.find('button[title="Maximize Browser view"]').exists()).toBe(false)
+    expect(wrapper.get('button[title="Open new tab"]').exists()).toBe(true)
+    expect(wrapper.get('input').attributes('placeholder')).toMatch(/enter url and press enter/i)
   })
 
   it('opens a browser tab from the Browser chrome', async () => {
@@ -81,7 +86,19 @@ describe('BrowserPanel', () => {
             },
           ],
         }),
-        updateBrowserHostBounds: vi.fn().mockResolvedValue({
+        updateBrowserHostBounds: vi.fn()
+          .mockResolvedValueOnce({
+            activeTabId: 'tab-1',
+            sessions: [
+              {
+                tab_id: 'tab-1',
+                title: 'Example',
+                url: 'https://example.com/',
+                deviceEmulation: { mode: 'desktop', profile: null },
+              },
+            ],
+          })
+          .mockResolvedValue({
           activeTabId: 'tab-1',
           sessions: [
             {
@@ -209,6 +226,68 @@ describe('BrowserPanel', () => {
     })
   })
 
+  it('toggles mobile device emulation for the active browser tab', async () => {
+    Object.defineProperty(window, 'electronAPI', {
+      configurable: true,
+      value: {
+        getBrowserShellSnapshot: vi.fn().mockResolvedValue({
+          activeTabId: 'tab-1',
+          sessions: [
+            {
+              tab_id: 'tab-1',
+              title: 'Example',
+              url: 'https://example.com/',
+              deviceEmulation: { mode: 'desktop', profile: null },
+            },
+          ],
+        }),
+        onBrowserShellSnapshotUpdated: vi.fn(() => vi.fn()),
+        setBrowserDeviceEmulation: vi.fn().mockResolvedValue({
+          activeTabId: 'tab-1',
+          sessions: [
+            {
+              tab_id: 'tab-1',
+              title: 'Example',
+              url: 'https://example.com/',
+              deviceEmulation: {
+                mode: 'mobile',
+                profile: {
+                  width: 390,
+                  height: 844,
+                  deviceScaleFactor: 3,
+                },
+              },
+            },
+          ],
+        }),
+        updateBrowserHostBounds: vi.fn().mockResolvedValue({
+          activeTabId: 'tab-1',
+          sessions: [
+            {
+              tab_id: 'tab-1',
+              title: 'Example',
+              url: 'https://example.com/',
+              deviceEmulation: { mode: 'desktop', profile: null },
+            },
+          ],
+        }),
+      },
+      writable: true,
+    })
+
+    const wrapper = mount(BrowserPanel)
+    await nextTick()
+    await flushPromises()
+
+    await wrapper.get('button[title="Switch to mobile view"]').trigger('click')
+    await flushPromises()
+
+    expect(window.electronAPI?.setBrowserDeviceEmulation).toHaveBeenCalledWith({
+      tabId: 'tab-1',
+      mode: 'mobile',
+    })
+  })
+
   it('closes the active browser tab from the Browser chrome', async () => {
     Object.defineProperty(window, 'electronAPI', {
       configurable: true,
@@ -251,9 +330,38 @@ describe('BrowserPanel', () => {
 
     expect(window.electronAPI?.closeBrowserShellSession).toHaveBeenCalledWith('tab-1')
     expect(wrapper.text()).toMatch(/open a url to start browsing/i)
+    expect(wrapper.find('button[title="Maximize Browser view"]').exists()).toBe(false)
   })
 
-  it('toggles Browser full-view mode from the Browser chrome', async () => {
+  it('toggles Browser full-view mode from the Browser chrome when browser tabs exist', async () => {
+    Object.defineProperty(window, 'electronAPI', {
+      configurable: true,
+      value: {
+        getBrowserShellSnapshot: vi.fn().mockResolvedValue({
+          activeTabId: 'tab-1',
+          sessions: [
+            {
+              tab_id: 'tab-1',
+              title: 'Example',
+              url: 'https://example.com/',
+            },
+          ],
+        }),
+        onBrowserShellSnapshotUpdated: vi.fn(() => vi.fn()),
+        updateBrowserHostBounds: vi.fn().mockResolvedValue({
+          activeTabId: 'tab-1',
+          sessions: [
+            {
+              tab_id: 'tab-1',
+              title: 'Example',
+              url: 'https://example.com/',
+            },
+          ],
+        }),
+      },
+      writable: true,
+    })
+
     const wrapper = mount(BrowserPanel)
     const displayModeStore = useBrowserDisplayModeStore()
     await nextTick()

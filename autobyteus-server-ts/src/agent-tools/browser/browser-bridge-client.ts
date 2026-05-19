@@ -18,6 +18,8 @@ import {
   BrowserToolError,
   ReadPageInput,
   ReadPageResult,
+  SetDeviceEmulationInput,
+  SetDeviceEmulationResult,
   type BrowserToolErrorCode,
 } from "./browser-tool-contract.js";
 
@@ -47,6 +49,7 @@ const CANONICAL_BROWSER_ERROR_CODES = new Set<BrowserToolErrorCode>([
   "browser_page_read_failed",
   "dom_snapshot_failed",
   "browser_javascript_execution_failed",
+  "browser_device_emulation_failed",
   "browser_bridge_unavailable",
 ]);
 
@@ -140,6 +143,12 @@ export class BrowserBridgeClient {
 
   async closeTab(input: CloseTabInput): Promise<CloseTabResult> {
     return this.post<CloseTabResult>("/browser/close", input);
+  }
+
+  async setDeviceEmulation(
+    input: SetDeviceEmulationInput,
+  ): Promise<SetDeviceEmulationResult> {
+    return this.post<SetDeviceEmulationResult>("/browser/device-emulation", input);
   }
 
   private async post<T>(path: string, body: Record<string, unknown>): Promise<T> {

@@ -16,6 +16,14 @@ type BrowserBridgeSession = {
   tab_id: string;
   url: string;
   title: string | null;
+  device_emulation: {
+    mode: "desktop" | "mobile";
+    profile: null | {
+      width: number;
+      height: number;
+      device_scale_factor: number;
+    };
+  };
 };
 
 const readJsonBody = async (request: IncomingMessage): Promise<Record<string, unknown>> => {
@@ -91,6 +99,7 @@ export class BrowserBridgeLiveTestServer {
             tab_id: browserSessionId,
             url: typeof body.url === "string" ? body.url : "",
             title: typeof body.title === "string" ? body.title : null,
+            device_emulation: { mode: "desktop", profile: null },
           };
           this.sessions.set(browserSessionId, session);
           writeJson(response, 200, {
@@ -210,6 +219,36 @@ export class BrowserBridgeLiveTestServer {
                 javascript:
                   typeof body.javascript === "string" ? body.javascript : "",
               }),
+            },
+          });
+          return;
+        }
+        case "/browser/device-emulation": {
+          const session = this.requireSession(body, response);
+          if (!session) {
+            return;
+          }
+          const mode = body.mode === "mobile" ? "mobile" : "desktop";
+          session.device_emulation =
+            mode === "mobile"
+              ? {
+                  mode: "mobile",
+                  profile: {
+                    width: typeof body.width === "number" ? body.width : 390,
+                    height: typeof body.height === "number" ? body.height : 844,
+                    device_scale_factor:
+                      typeof body.device_scale_factor === "number"
+                        ? body.device_scale_factor
+                        : 3,
+                  },
+                }
+              : { mode: "desktop", profile: null };
+          writeJson(response, 200, {
+            ok: true,
+            result: {
+              tab_id: session.tab_id,
+              mode: session.device_emulation.mode,
+              profile: session.device_emulation.profile,
             },
           });
           return;
@@ -337,11 +376,12 @@ export const buildBrowserToolSurfacePrompt = (input: {
     "Call these tools in order with exactly these arguments:",
     `1. open_tab ${JSON.stringify({ url: input.openUrl, title: input.title, wait_until: "load" })}`,
     `2. navigate_to ${JSON.stringify({ tab_id: "browser-session-1", url: input.navigateUrl, wait_until: "load" })}`,
-    `3. list_tabs ${JSON.stringify({})}`,
-    `4. read_page ${JSON.stringify({ tab_id: "browser-session-1", cleaning_mode: "thorough" })}`,
-    `5. screenshot ${JSON.stringify({ tab_id: "browser-session-1", full_page: false })}`,
-    `6. dom_snapshot ${JSON.stringify({ tab_id: "browser-session-1", include_non_interactive: false, include_bounding_boxes: true, max_elements: 5 })}`,
-    `7. run_script ${JSON.stringify({ tab_id: "browser-session-1", javascript: "document.title" })}`,
-    `8. close_tab ${JSON.stringify({ tab_id: "browser-session-1" })}`,
-    "After all eight tool calls succeed, reply with DONE only.",
+    `3. set_device_emulation ${JSON.stringify({ tab_id: "browser-session-1", mode: "mobile", width: 390, height: 844, device_scale_factor: 3 })}`,
+    `4. list_tabs ${JSON.stringify({})}`,
+    `5. read_page ${JSON.stringify({ tab_id: "browser-session-1", cleaning_mode: "thorough" })}`,
+    `6. screenshot ${JSON.stringify({ tab_id: "browser-session-1", full_page: false })}`,
+    `7. dom_snapshot ${JSON.stringify({ tab_id: "browser-session-1", include_non_interactive: false, include_bounding_boxes: true, max_elements: 5 })}`,
+    `8. run_script ${JSON.stringify({ tab_id: "browser-session-1", javascript: "document.title" })}`,
+    `9. close_tab ${JSON.stringify({ tab_id: "browser-session-1" })}`,
+    "After all nine tool calls succeed, reply with DONE only.",
   ].join("\n");

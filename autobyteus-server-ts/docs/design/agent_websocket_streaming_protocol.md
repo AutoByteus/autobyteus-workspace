@@ -38,6 +38,32 @@ type AgentStatusPayload = {
   agent_name?: string;
 };
 
+type AgentCommandAckPayload = {
+  command_type: "SEND_MESSAGE";
+  run_id: string;
+  message_id: string;
+  dedupe_key: string;
+  state:
+    | "accepted"
+    | "duplicate_in_progress"
+    | "duplicate_completed"
+    | "duplicate_failed"
+    | "duplicate_rejected"
+    | "rejected"
+    | "failed";
+  accepted: boolean;
+  duplicate: boolean;
+  code?:
+    | "RUN_COMMAND_IN_PROGRESS"
+    | "INVALID_COMMAND_ID"
+    | "RUN_NOT_FOUND"
+    | "ACTIVATION_FAILED"
+    | "RUNTIME_REJECTED"
+    | "UNKNOWN_ERROR";
+  message?: string;
+  status?: AgentStatusPayload;
+};
+
 type TeamStatusPayload = {
   status: "offline" | "initializing" | "idle" | "running" | "error";
 };
@@ -145,17 +171,64 @@ reconstructed from Team Communication rows after the fact.
 
 ## Connection And Command Recovery Contract
 
-Connection establishment is restore-aware:
+Single-agent connection establishment is identity/projection aware, not
+runtime-restoring:
 
-1. The handler resolves the requested `runId` / `teamRunId` through the domain service.
+1. The handler asks `AgentRunStatusProjectionService` for the requested `runId`.
+2. If the run identity is missing, the handler emits `AGENT_NOT_FOUND` and
+   closes with `4004`.
+3. Otherwise the handler creates a WebSocket session for that durable run id,
+   registers the connection for command-status fan-out, emits `CONNECTED`, and
+   sends the projected `AGENT_STATUS`.
+4. If an active runtime already exists, the handler also binds the session to
+   that runtime event stream. Prepared, historical inactive, and command-overlay
+   identities can still connect before runtime activation.
+
+Standalone new-run first message uses GraphQL `prepareAgentRun(...)` before the
+WebSocket command. Preparation creates the durable run id, metadata, memory
+directory, and history row without starting runtime. If the user abandons the
+draft before sending, `cancelPreparedAgentRun(...)` can remove the unactivated
+prepared identity.
+
+Standalone `SEND_MESSAGE` is a backend-owned command and must include stable
+identity fields:
+
+```json
+{
+  "type": "SEND_MESSAGE",
+  "payload": {
+    "content": "...",
+    "message_id": "client-or-external-stable-id",
+    "dedupe_key": "agent_run_input:<runId>:<message_id>",
+    "context_file_paths": [],
+    "image_urls": []
+  }
+}
+```
+
+The handler routes the command through `AgentRunCommandCoordinator`. For an
+inactive historical run or prepared identity, the coordinator publishes
+non-interruptible `AGENT_STATUS initializing` before restore/start/activation
+work, then activates/restores the runtime and forwards the message. During an
+inactive-start command, restored runtime readiness is internal and does not
+replace the command overlay. The overlay is replaced only by command-correlated
+post-handoff lifecycle signals: command-start `AGENT_STATUS initializing`,
+explicit `TURN_STARTED`, command-correlated `AGENT_STATUS`, terminal/error
+events after handoff, or coordinator activation/post failure handling. Restored
+runtime snapshots/readiness, WebSocket bind success, `statusHint=ACTIVE` alone,
+metadata `lastKnownStatus=ACTIVE`, and active runtime snapshot availability do
+not clear or replace the overlay. The handler sends `AGENT_COMMAND_ACK` for
+accepted, duplicate, rejected, and failed outcomes. Retries with the same
+`(runId, message_id)` are idempotent; a different `message_id` while another
+command for the run is `STARTING` or `FORWARDED` is rejected with
+`RUN_COMMAND_IN_PROGRESS` rather than queued.
+
+Team connection establishment remains restore-aware through the team service:
+
+1. The handler resolves the requested `teamRunId` through the team domain service.
 2. The service first checks the active in-memory registry.
 3. If no active runtime exists, the service attempts to restore the persisted run.
 4. The handler creates a WebSocket session only after it has a runtime subject and can subscribe to that subject's event stream.
-
-`SEND_MESSAGE` follows the same restore-aware boundary. On every follow-up chat
-message, the handler resolves the session's run again, rebinds the WebSocket
-subscription if a stopped persisted run was restored, and posts the user input
-to the resolved runtime subject.
 
 For team runs, the command target is a `TeamMemberSelector` normalized at the
 WebSocket edge from explicit path/route fields only:
@@ -177,7 +250,7 @@ Control commands remain active-only:
 - `APPROVE_TOOL`
 - `DENY_TOOL`
 
-Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat interrupt/approval messages as a way to resume a stopped run; stopped-run recovery is owned by connection setup, explicit restore mutations, and `SEND_MESSAGE`.
+Those commands intentionally require an already-active runtime lookup and do not call the restore path. Clients should not treat interrupt/approval messages as a way to resume a stopped run; standalone stopped-run recovery is owned by backend `SEND_MESSAGE`, while team stopped-run recovery is owned by the team resolve/restore path and team `SEND_MESSAGE`.
 
 Tool approval and denial target the agent that produced the pending approval
 request. Preferred team payload identity is the source identity emitted with the
@@ -247,7 +320,7 @@ session, and leave later follow-up recovery to explicit restore plus
 
 ## Error And Close Semantics
 
-- Missing or unrestorable single-agent runs emit `AGENT_NOT_FOUND` and close with `4004`.
+- Missing single-agent run identities emit `AGENT_NOT_FOUND` and close with `4004`.
 - Missing or unrestorable team runs emit `TEAM_NOT_FOUND` and close with `4004`.
 - Runs that resolve but cannot expose a stream subscription emit `AGENT_STREAM_UNAVAILABLE` or `TEAM_STREAM_UNAVAILABLE` and close with `1011`.
 - Unknown client message types are logged and ignored instead of changing run state.
@@ -256,4 +329,4 @@ session, and leave later follow-up recovery to explicit restore plus
 
 - Session lifecycle is tied to socket lifecycle.
 - Errors are logged and emitted as terminal stream events.
-- Managers are singleton-backed and shared across requests, but stream handlers depend on the outer run-service boundary for restore and active lookup.
+- Managers are singleton-backed and shared across requests. Single-agent stream handlers depend on the status-projection and command-coordinator boundaries for identity/status/activation, while team stream handlers depend on the team run-service boundary for restore and active lookup.

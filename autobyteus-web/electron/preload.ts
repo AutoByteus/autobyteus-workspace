@@ -10,6 +10,7 @@ import type {
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
   BrowserShellReloadTabRequest,
+  BrowserShellSetDeviceEmulationRequest,
   BrowserShellSnapshot,
 } from '../types/browserShell'
 import type {
@@ -80,6 +81,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('browser-shell:set-active-session', browserSessionId) as Promise<BrowserShellSnapshot>,
   updateBrowserHostBounds: (bounds: BrowserHostBounds | null) =>
     ipcRenderer.invoke('browser-shell:update-host-bounds', bounds) as Promise<BrowserShellSnapshot>,
+  setBrowserDeviceEmulation: (request: BrowserShellSetDeviceEmulationRequest) =>
+    ipcRenderer.invoke('browser-shell:set-device-emulation', request) as Promise<BrowserShellSnapshot>,
   closeBrowserShellSession: (browserSessionId: string) =>
     ipcRenderer.invoke('browser-shell:close-session', browserSessionId) as Promise<BrowserShellSnapshot>,
   onBrowserShellSnapshotUpdated: (callback: (snapshot: BrowserShellSnapshot) => void) => {

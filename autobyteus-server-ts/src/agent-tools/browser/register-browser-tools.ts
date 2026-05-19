@@ -8,6 +8,7 @@ import { registerOpenTabTool } from "./open-tab.js";
 import { registerDomSnapshotTool } from "./dom-snapshot.js";
 import { getBrowserToolService } from "./browser-tool-service.js";
 import { registerReadPageTool } from "./read-page.js";
+import { registerSetDeviceEmulationTool } from "./set-device-emulation.js";
 import { BROWSER_TOOL_NAME_LIST } from "./browser-tool-contract.js";
 
 export function registerBrowserTools(): void {
@@ -26,6 +27,7 @@ export function registerAllBrowserTools(): void {
   registerScreenshotTool();
   registerDomSnapshotTool();
   registerRunScriptTool();
+  registerSetDeviceEmulationTool();
 }
 
 export function unregisterBrowserTools(): void {

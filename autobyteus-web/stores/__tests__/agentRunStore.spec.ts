@@ -3,7 +3,7 @@ import { setActivePinia, createPinia } from 'pinia';
 import { useAgentRunStore } from '../agentRunStore';
 import { useAgentContextsStore } from '../agentContextsStore';
 import { AgentStreamingService } from '~/services/agentStreaming';
-import { RestoreAgentRun } from '~/graphql/mutations/agentMutations';
+import { PrepareAgentRun } from '~/graphql/mutations/agentMutations';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const {
@@ -20,9 +20,11 @@ const {
 } = vi.hoisted(() => ({
   mutateMock: vi.fn().mockResolvedValue({
     data: {
-      createAgentRun: {
+      prepareAgentRun: {
         success: true,
         runId: 'perm-agent-id',
+        activationState: 'PREPARED',
+        preparedExpiresAt: '2026-01-02T00:00:00.000Z',
         message: 'Success',
       },
     },
@@ -118,9 +120,11 @@ describe('agentRunStore', () => {
         contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(async ({ attachments }: { attachments: any[] }) => attachments);
         mutateMock.mockResolvedValue({
           data: {
-            createAgentRun: {
+            prepareAgentRun: {
               success: true,
               runId: 'perm-agent-id',
+              activationState: 'PREPARED',
+              preparedExpiresAt: '2026-01-02T00:00:00.000Z',
               message: 'Success',
             },
           },
@@ -177,9 +181,10 @@ describe('agentRunStore', () => {
         expect(mockAgentContext.state.conversation.messages).toHaveLength(1);
         expect(mockAgentContext.state.conversation.messages[0].text).toBe('do something');
         
-        // 2. Should call mutation (implicit via successful execution)
+        // 2. Should prepare an identity without starting/restoring runtime on the frontend
         expect(mutateMock).toHaveBeenCalledWith(
           expect.objectContaining({
+            mutation: PrepareAgentRun,
             variables: expect.objectContaining({
               input: expect.objectContaining({
                 runtimeKind: 'autobyteus',
@@ -199,7 +204,15 @@ describe('agentRunStore', () => {
         
         // 6. Should connect stream and send the first message over WebSocket
         expect(AgentStreamingService).toHaveBeenCalled(); 
-        expect(mockSendMessage).toHaveBeenCalledWith('do something', [], []);
+        expect(mockSendMessage).toHaveBeenCalledWith(
+          'do something',
+          [],
+          [],
+          expect.objectContaining({
+            messageId: expect.stringMatching(/^client_/),
+            dedupeKey: expect.stringMatching(/^agent_run_input:perm-agent-id:client_/),
+          }),
+        );
     });
 
     it('acknowledges a new agent send locally before backend creation resolves', () => {
@@ -224,9 +237,11 @@ describe('agentRunStore', () => {
 
         resolveCreate({
           data: {
-            createAgentRun: {
+            prepareAgentRun: {
               success: true,
               runId: 'perm-agent-id',
+              activationState: 'PREPARED',
+              preparedExpiresAt: '2026-01-02T00:00:00.000Z',
               message: 'Success',
             },
           },
@@ -264,7 +279,7 @@ describe('agentRunStore', () => {
         await expect(store.sendUserInputAndSubscribe()).rejects.toThrowError("No active agent selected");
     });
 
-    it('sendUserInputAndSubscribe should restore persisted inactive runs before sending', async () => {
+    it('sendUserInputAndSubscribe should send persisted inactive runs without frontend restore', async () => {
         mockAgentContext.state.runId = 'run-1';
         runHistoryStoreMock.getResumeConfig.mockReturnValue({
           isActive: false,
@@ -272,30 +287,23 @@ describe('agentRunStore', () => {
             workspaceRootPath: '/tmp/workspace-one',
           },
         });
-        mutateMock.mockResolvedValueOnce({
-          data: {
-            restoreAgentRun: {
-              success: true,
-              runId: 'run-1',
-              message: 'restored',
-            },
-          },
-          errors: [],
-        });
 
         const store = useAgentRunStore();
         await store.sendUserInputAndSubscribe();
 
-        expect(mutateMock).toHaveBeenCalledWith(
-          expect.objectContaining({
-            mutation: RestoreAgentRun,
-            variables: { agentRunId: 'run-1' },
-          }),
-        );
+        expect(mutateMock).not.toHaveBeenCalled();
         expect(mockContextsStore.promoteTemporaryId).not.toHaveBeenCalled();
         expect(mockContextsStore.lockConfig).toHaveBeenCalledWith('run-1');
-        expect(runHistoryStoreMock.markRunAsActive).toHaveBeenCalledWith('run-1');
-        expect(mockSendMessage).toHaveBeenCalledWith('do something', [], []);
+        expect(runHistoryStoreMock.markRunAsActive).not.toHaveBeenCalled();
+        expect(mockSendMessage).toHaveBeenCalledWith(
+          'do something',
+          [],
+          [],
+          expect.objectContaining({
+            messageId: expect.stringMatching(/^client_/),
+            dedupeKey: expect.stringMatching(/^agent_run_input:run-1:client_/),
+          }),
+        );
     });
     
     it('closeAgent should disconnect and remove context', async () => {

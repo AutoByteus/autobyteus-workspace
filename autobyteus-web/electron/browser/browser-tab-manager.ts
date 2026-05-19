@@ -1,83 +1,27 @@
 import { randomUUID } from 'crypto'
 import { EventEmitter } from 'events'
-import type {
-  BrowserWindowConstructorOptions,
-  Rectangle,
-  WebContents,
-  WebContentsView,
-} from 'electron'
+import type { BrowserWindowConstructorOptions, Rectangle, WebContents, WebContentsView } from 'electron'
 import { DEFAULT_BROWSER_VIEW_BOUNDS } from './browser-view-factory'
+import { BrowserDeviceEmulationController, cloneBrowserDeviceEmulationState, DEFAULT_BROWSER_DEVICE_EMULATION_STATE } from './browser-device-emulation'
 import { BrowserTabNavigation } from './browser-tab-navigation'
 import { BrowserTabPageOperations } from './browser-tab-page-operations'
 import { logger } from '../logger'
-import type {
-  CaptureBrowserScreenshotRequest,
-  CaptureBrowserScreenshotResult,
-  CloseBrowserRequest,
-  CloseBrowserResult,
-  ExecuteBrowserJavascriptRequest,
-  ExecuteBrowserJavascriptResult,
-  ListBrowserTabsResult,
-  NavigateBrowserRequest,
-  NavigateBrowserResult,
-  OpenBrowserRequest,
-  OpenBrowserResult,
-  ReloadBrowserRequest,
-  ReloadBrowserResult,
-  BrowserDomSnapshotRequest,
-  BrowserDomSnapshotResult,
-  BrowserPopupOpenedEvent,
-  BrowserTabManagerOptions,
-  BrowserTabRecord,
-  BrowserTabSummary,
-  ReadBrowserPageRequest,
-  ReadBrowserPageResult,
-} from './browser-tab-types'
-import {
-  BrowserTabError,
-  type BrowserReadyState,
-} from './browser-tab-types'
-
-export type {
-  CaptureBrowserScreenshotRequest,
-  CaptureBrowserScreenshotResult,
-  CloseBrowserRequest,
-  CloseBrowserResult,
-  ExecuteBrowserJavascriptRequest,
-  ExecuteBrowserJavascriptResult,
-  ListBrowserTabsResult,
-  NavigateBrowserRequest,
-  NavigateBrowserResult,
-  OpenBrowserRequest,
-  OpenBrowserResult,
-  ReloadBrowserRequest,
-  ReloadBrowserResult,
-  BrowserDomSnapshotRequest,
-  BrowserDomSnapshotResult,
-  BrowserPopupOpenedEvent,
-  BrowserReadyState,
-  BrowserTabErrorCode,
-  BrowserTabManagerOptions,
-  BrowserTabSummary,
-  ReadBrowserPageRequest,
-  ReadBrowserPageResult,
-} from './browser-tab-types'
+import type { BrowserDomSnapshotRequest, BrowserDomSnapshotResult, BrowserPopupOpenedEvent, BrowserTabManagerOptions, BrowserTabRecord, BrowserTabSummary, CaptureBrowserScreenshotRequest, CaptureBrowserScreenshotResult, CloseBrowserRequest, CloseBrowserResult, ExecuteBrowserJavascriptRequest, ExecuteBrowserJavascriptResult, ListBrowserTabsResult, NavigateBrowserRequest, NavigateBrowserResult, OpenBrowserRequest, OpenBrowserResult, ReadBrowserPageRequest, ReadBrowserPageResult, ReloadBrowserRequest, ReloadBrowserResult, SetBrowserDeviceEmulationRequest, SetBrowserDeviceEmulationResult } from './browser-tab-types'
+import { BrowserTabError } from './browser-tab-types'
 export { BrowserTabError } from './browser-tab-types'
+export type { BrowserDomSnapshotRequest, BrowserDomSnapshotResult, BrowserPopupOpenedEvent, BrowserReadyState, BrowserTabErrorCode, BrowserTabManagerOptions, BrowserTabSummary, CaptureBrowserScreenshotRequest, CaptureBrowserScreenshotResult, CloseBrowserRequest, CloseBrowserResult, ExecuteBrowserJavascriptRequest, ExecuteBrowserJavascriptResult, ListBrowserTabsResult, NavigateBrowserRequest, NavigateBrowserResult, OpenBrowserRequest, OpenBrowserResult, ReadBrowserPageRequest, ReadBrowserPageResult, ReloadBrowserRequest, ReloadBrowserResult, SetBrowserDeviceEmulationRequest, SetBrowserDeviceEmulationResult } from './browser-tab-types'
 
-const TAB_ID_LENGTH = 6
-const MAX_CLOSED_SESSION_TOMBSTONES = 256
-const MAX_POPUP_CHILD_SESSIONS_PER_OPENER = 8
+const TAB_ID_LENGTH = 6, MAX_CLOSED_SESSION_TOMBSTONES = 256, MAX_POPUP_CHILD_SESSIONS_PER_OPENER = 8
 type BrowserWindowOpenHandler = Parameters<WebContents['setWindowOpenHandler']>[0]
 type BrowserWindowOpenDetails = Parameters<BrowserWindowOpenHandler>[0]
 type BrowserWindowOpenResponse = ReturnType<BrowserWindowOpenHandler>
-type BrowserWindowCreateOptions = BrowserWindowConstructorOptions & {
-  webContents?: WebContents | null
-}
+type BrowserWindowCreateOptions = BrowserWindowConstructorOptions & { webContents?: WebContents | null }
 
 export class BrowserTabManager extends EventEmitter {
   private readonly sessions = new Map<string, BrowserTabRecord>()
   private readonly closedSessionIds = new Set<string>()
   private readonly navigation = new BrowserTabNavigation()
+  private readonly deviceEmulation = new BrowserDeviceEmulationController()
   private readonly pageOperations: BrowserTabPageOperations
 
   constructor(private readonly options: BrowserTabManagerOptions) {
@@ -162,7 +106,9 @@ export class BrowserTabManager extends EventEmitter {
     input: CaptureBrowserScreenshotRequest,
   ): Promise<CaptureBrowserScreenshotResult> {
     const session = this.getOpenSessionOrThrow(input.tab_id)
-    return this.pageOperations.captureScreenshot(session, input.full_page ?? false)
+    return this.pageOperations.captureScreenshot(session, input.full_page ?? false, {
+      afterOriginalBoundsRestored: () => this.reapplyMobileDeviceEmulation(session),
+    })
   }
 
   listSessions(): ListBrowserTabsResult {
@@ -188,6 +134,32 @@ export class BrowserTabManager extends EventEmitter {
   ): Promise<ExecuteBrowserJavascriptResult> {
     const session = this.getOpenSessionOrThrow(input.tab_id)
     return this.pageOperations.executeJavascript(session, input.javascript)
+  }
+
+  async setDeviceEmulation(
+    input: SetBrowserDeviceEmulationRequest,
+  ): Promise<SetBrowserDeviceEmulationResult> {
+    const session = this.getOpenSessionOrThrow(input.tab_id)
+    const previousState = session.deviceEmulation
+    const previousBounds = { ...session.viewportBounds }
+    const nextState = this.deviceEmulation.resolveState(input)
+    const presentation = this.deviceEmulation.resolvePresentation(session.hostBounds, nextState)
+    session.hostBounds = presentation.hostBounds
+    this.updateSessionPresentationBounds(session, presentation.bounds)
+    try {
+      this.deviceEmulation.apply(session.view.webContents, nextState, presentation.scale)
+    } catch (error) {
+      session.deviceEmulation = previousState
+      this.updateSessionPresentationBounds(session, previousBounds)
+      throw error
+    }
+    session.deviceEmulation = nextState
+    this.emitSessionUpserted(session)
+    return {
+      tab_id: session.id,
+      mode: nextState.mode,
+      profile: nextState.mode === 'mobile' ? { ...nextState.profile } : null,
+    }
   }
 
   async closeSession(input: CloseBrowserRequest): Promise<CloseBrowserResult> {
@@ -242,7 +214,14 @@ export class BrowserTabManager extends EventEmitter {
 
   updateSessionViewportBounds(browserSessionId: string, bounds: Rectangle): void {
     const session = this.getOpenSessionOrThrow(browserSessionId)
-    this.pageOperations.updateViewportBounds(session, bounds)
+    const presentation = this.deviceEmulation.resolvePresentation(bounds, session.deviceEmulation)
+    session.hostBounds = presentation.hostBounds
+    this.updateSessionPresentationBounds(session, presentation.bounds)
+    this.deviceEmulation.reapplyMobileIfNeeded(
+      session.view.webContents,
+      session.deviceEmulation,
+      presentation.scale,
+    )
   }
 
   onSessionUpserted(listener: (summary: BrowserTabSummary) => void): () => void {
@@ -417,8 +396,30 @@ export class BrowserTabManager extends EventEmitter {
       state: input.state,
       openPromise: null,
       view: input.view,
+      hostBounds: { ...DEFAULT_BROWSER_VIEW_BOUNDS },
       viewportBounds: { ...DEFAULT_BROWSER_VIEW_BOUNDS },
+      deviceEmulation: { ...DEFAULT_BROWSER_DEVICE_EMULATION_STATE },
     }
+  }
+
+  private updateSessionPresentationBounds(session: BrowserTabRecord, bounds: Rectangle): void {
+    session.viewportBounds = { ...bounds }
+    session.view.setBounds(session.viewportBounds)
+  }
+
+  private reapplyMobileDeviceEmulation(session: BrowserTabRecord): void {
+    if (session.deviceEmulation.mode !== 'mobile') {
+      return
+    }
+    const presentation = this.deviceEmulation.resolvePresentation(
+      session.hostBounds,
+      session.deviceEmulation,
+    )
+    this.deviceEmulation.apply(
+      session.view.webContents,
+      session.deviceEmulation,
+      presentation.scale,
+    )
   }
 
   private createPopupChildWindow(
@@ -563,6 +564,7 @@ export class BrowserTabManager extends EventEmitter {
       tab_id: session.id,
       title: session.title,
       url: session.url,
+      device_emulation: cloneBrowserDeviceEmulationState(session.deviceEmulation),
     }
   }
 }

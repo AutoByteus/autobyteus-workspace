@@ -123,8 +123,6 @@ export class WorkspaceShellWindow {
       this.browserWindow.contentView.addChildView(nextView);
       this.attachedBrowserView = nextView;
     }
-
-    nextView.setBounds(nextBounds);
   }
 
   private detachAttachedBrowserView(): void {

@@ -5,6 +5,23 @@ import type { BrowserScreenshotArtifactWriter } from './browser-screenshot-artif
 import type { BrowserViewFactory } from './browser-view-factory'
 
 export type BrowserReadyState = 'domcontentloaded' | 'load'
+export type BrowserDeviceEmulationMode = 'desktop' | 'mobile'
+
+export type BrowserDeviceEmulationProfile = {
+  width: number
+  height: number
+  device_scale_factor: number
+}
+
+export type BrowserDeviceEmulationState =
+  | {
+      mode: 'desktop'
+      profile: null
+    }
+  | {
+      mode: 'mobile'
+      profile: BrowserDeviceEmulationProfile
+    }
 
 export type OpenBrowserRequest = {
   url: string
@@ -58,6 +75,7 @@ export type BrowserTabSummary = {
   tab_id: string
   title: string | null
   url: string
+  device_emulation: BrowserDeviceEmulationState
 }
 
 export type BrowserPopupOpenedEvent = {
@@ -110,6 +128,20 @@ export type ExecuteBrowserJavascriptResult = {
   result_json: string
 }
 
+export type SetBrowserDeviceEmulationRequest = {
+  tab_id: string
+  mode: BrowserDeviceEmulationMode
+  width?: number
+  height?: number
+  device_scale_factor?: number
+}
+
+export type SetBrowserDeviceEmulationResult = {
+  tab_id: string
+  mode: BrowserDeviceEmulationMode
+  profile: BrowserDeviceEmulationProfile | null
+}
+
 export type CloseBrowserRequest = {
   tab_id: string
 }
@@ -127,6 +159,7 @@ export type BrowserTabErrorCode =
   | 'browser_page_read_failed'
   | 'dom_snapshot_failed'
   | 'browser_javascript_execution_failed'
+  | 'browser_device_emulation_failed'
 
 export class BrowserTabError extends Error {
   readonly code: BrowserTabErrorCode
@@ -148,7 +181,9 @@ export type BrowserTabRecord = {
   state: 'opening' | 'open'
   openPromise: Promise<void> | null
   view: WebContentsView
+  hostBounds: Rectangle
   viewportBounds: Rectangle
+  deviceEmulation: BrowserDeviceEmulationState
 }
 
 export type BrowserTabManagerOptions = {

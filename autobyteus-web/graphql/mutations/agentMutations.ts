@@ -20,6 +20,27 @@ export const CreateAgentRun = gql`
   }
 `;
 
+export const PrepareAgentRun = gql`
+  mutation PrepareAgentRun($input: CreateAgentRunInput!) {
+    prepareAgentRun(input: $input) {
+      success
+      message
+      runId
+      activationState
+      preparedExpiresAt
+    }
+  }
+`;
+
+export const CancelPreparedAgentRun = gql`
+  mutation CancelPreparedAgentRun($agentRunId: String!) {
+    cancelPreparedAgentRun(agentRunId: $agentRunId) {
+      success
+      message
+    }
+  }
+`;
+
 export const RestoreAgentRun = gql`
   mutation RestoreAgentRun($agentRunId: String!) {
     restoreAgentRun(agentRunId: $agentRunId) {

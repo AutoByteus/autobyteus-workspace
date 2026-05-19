@@ -5,7 +5,7 @@
       :class="isZenMode ? 'fixed inset-0 z-[120] min-h-screen shadow-md' : 'h-full'"
     >
       <div class="border-b border-gray-200 px-2" :class="isZenMode ? 'py-1.5' : 'py-2'">
-        <div class="flex flex-wrap items-center gap-2">
+        <div v-if="hasBrowserTabs" class="flex items-center gap-2">
           <div class="flex min-w-0 flex-1 gap-1 overflow-x-auto">
             <div
               v-for="session in sessions"
@@ -18,6 +18,12 @@
             >
               <span class="truncate">{{ session.title || session.url }}</span>
               <span
+                v-if="session.deviceEmulation?.mode === 'mobile'"
+                class="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-700"
+              >
+                {{ $t('workspace.components.workspace.tools.BrowserPanel.mobile_mode_badge') }}
+              </span>
+              <span
                 class="flex h-4 w-4 cursor-pointer items-center justify-center rounded-full text-xs text-gray-400 transition-colors hover:bg-red-100 hover:text-red-600"
                 @click.stop="handleSessionClose(session.tab_id)"
               >
@@ -29,7 +35,6 @@
           <button
             class="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
             :title="isZenMode ? 'Restore Browser view' : 'Maximize Browser view'"
-            :class="isZenMode ? 'order-3' : 'order-2'"
             type="button"
             @click="toggleZenMode"
           >
@@ -38,14 +43,17 @@
               class="h-4 w-4"
             />
           </button>
+        </div>
 
-          <form
-            class="flex min-w-0 items-center gap-2"
-            :class="isZenMode
-              ? 'order-2 flex-1'
-              : 'order-3 basis-full border-t border-gray-200 pt-2'"
-            @submit.prevent="handleAddressSubmit"
-          >
+        <form
+          class="flex min-w-0 items-center gap-2"
+          :class="hasBrowserTabs
+            ? isZenMode
+              ? 'mt-1.5'
+              : 'mt-2 border-t border-gray-200 pt-2'
+            : ''"
+          @submit.prevent="handleAddressSubmit"
+        >
           <button
             class="rounded-md border border-gray-200 px-2.5 py-1.5 text-sm text-gray-600 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900"
             type="button"
@@ -74,6 +82,24 @@
           </button>
 
           <button
+            class="rounded-md border px-2.5 py-1.5 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            :class="activeDeviceMode === 'mobile'
+              ? 'border-blue-400 bg-blue-50 text-blue-700 hover:border-blue-500 hover:bg-blue-100'
+              : 'border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900'"
+            type="button"
+            :title="activeDeviceMode === 'mobile'
+              ? $t('workspace.components.workspace.tools.BrowserPanel.switch_to_desktop_view')
+              : $t('workspace.components.workspace.tools.BrowserPanel.switch_to_mobile_view')"
+            :disabled="!activeTabId"
+            @click="handleToggleDeviceEmulation"
+          >
+            <Icon
+              :icon="activeDeviceMode === 'mobile' ? 'heroicons:computer-desktop' : 'heroicons:device-phone-mobile'"
+              class="h-4 w-4"
+            />
+          </button>
+
+          <button
             class="rounded-md border border-gray-200 px-2.5 py-1.5 text-sm text-gray-600 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50"
             type="button"
             :title="$t('workspace.components.workspace.tools.BrowserPanel.close_active_tab')"
@@ -82,8 +108,7 @@
           >
             <Icon icon="heroicons:x-mark" class="h-4 w-4" />
           </button>
-          </form>
-        </div>
+        </form>
       </div>
 
       <div v-if="lastError" class="border-b border-red-100 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -115,7 +140,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { storeToRefs } from 'pinia'
-import { nextTick, onBeforeUnmount, onMounted, ref, Teleport, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, Teleport, watch } from 'vue'
 import type { BrowserHostBounds } from '~/types/browserShell'
 import { useBrowserShellStore } from '~/stores/browserShellStore'
 import { useBrowserDisplayModeStore } from '~/stores/browserDisplayMode'
@@ -132,6 +157,9 @@ const hostRef = ref<HTMLElement | null>(null)
 const addressValue = ref('')
 let resizeObserver: ResizeObserver | null = null
 let lastSentBoundsKey: string | null = null
+
+const hasBrowserTabs = computed(() => sessions.value.length > 0)
+const activeDeviceMode = computed(() => activeSession.value?.deviceEmulation?.mode ?? 'desktop')
 
 const normalizeAddressInput = (value: string): string => {
   const trimmedValue = value.trim()
@@ -257,6 +285,19 @@ const handleRefresh = async (): Promise<void> => {
   })
   await nextTick()
   syncAddressValue()
+  await syncHostBounds()
+}
+
+const handleToggleDeviceEmulation = async (): Promise<void> => {
+  if (!activeTabId.value) {
+    return
+  }
+
+  await browserShellStore.setDeviceEmulation({
+    tabId: activeTabId.value,
+    mode: activeDeviceMode.value === 'mobile' ? 'desktop' : 'mobile',
+  })
+  await nextTick()
   await syncHostBounds()
 }
 

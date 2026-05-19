@@ -1,0 +1,849 @@
+{
+  "meta": {
+    "date": "2026-05-18T19:05:11.692Z",
+    "electron": "38.8.2",
+    "chrome": "140.0.7339.249",
+    "node": "22.22.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "fixtureBaseUrl": "http://127.0.0.1:56180",
+  "expected": {
+    "profile": {
+      "width": 390,
+      "height": 844,
+      "device_scale_factor": 3
+    },
+    "largeHost": {
+      "x": 0,
+      "y": 0,
+      "width": 1000,
+      "height": 900
+    },
+    "offsetLargeHost": {
+      "x": 12,
+      "y": 18,
+      "width": 1000,
+      "height": 900
+    },
+    "smallHost": {
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 500
+    },
+    "expectedLarge": {
+      "bounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "scale": 1
+    },
+    "expectedOffsetLarge": {
+      "bounds": {
+        "x": 317,
+        "y": 46,
+        "width": 390,
+        "height": 844
+      },
+      "scale": 1
+    },
+    "expectedSmall": {
+      "bounds": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "scale": 0.5924170616113744
+    }
+  },
+  "measurements": {
+    "desktopBefore": {
+      "innerWidth": 1000,
+      "innerHeight": 900,
+      "dpr": 2,
+      "modeContent": "DESKTOP",
+      "mobileMedia": false,
+      "bodyBackground": "rgb(255, 211, 155)",
+      "probeWidth": 899,
+      "layoutWidth": 960,
+      "scrollHeight": 1995,
+      "title": "Round3 Mobile Probe /tab-one"
+    },
+    "mobileResult": {
+      "tab_id": "8821a0",
+      "mode": "mobile",
+      "profile": {
+        "width": 390,
+        "height": 844,
+        "device_scale_factor": 3
+      }
+    },
+    "mobileLargeProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 2032,
+      "title": "Round3 Mobile Probe /tab-one"
+    },
+    "postNormalLargeProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 2032,
+      "title": "Round3 Mobile Probe /tab-one"
+    },
+    "largeFullPageBoundsMutation": [
+      {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 2032
+      },
+      {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      }
+    ],
+    "postFullLargeProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 2032,
+      "title": "Round3 Mobile Probe /tab-one"
+    },
+    "smallProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 2032,
+      "title": "Round3 Mobile Probe /tab-one"
+    },
+    "smallFullPageBoundsMutation": [
+      {
+        "x": 44,
+        "y": 0,
+        "width": 390,
+        "height": 2032
+      },
+      {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      }
+    ],
+    "postSmallFullProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 2032,
+      "title": "Round3 Mobile Probe /tab-one"
+    },
+    "tab2Desktop": {
+      "innerWidth": 1000,
+      "innerHeight": 900,
+      "dpr": 2,
+      "modeContent": "DESKTOP",
+      "mobileMedia": false,
+      "bodyBackground": "rgb(255, 211, 155)",
+      "probeWidth": 899,
+      "layoutWidth": 960,
+      "scrollHeight": 1995,
+      "title": "Round3 Mobile Probe /tab-two"
+    },
+    "tab1AfterSwitch": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 2032,
+      "title": "Round3 Mobile Probe /tab-one"
+    },
+    "tab2AfterSwitch": {
+      "innerWidth": 1000,
+      "innerHeight": 900,
+      "dpr": 2,
+      "modeContent": "DESKTOP",
+      "mobileMedia": false,
+      "bodyBackground": "rgb(255, 211, 155)",
+      "probeWidth": 899,
+      "layoutWidth": 960,
+      "scrollHeight": 1995,
+      "title": "Round3 Mobile Probe /tab-two"
+    },
+    "shellSnapshotMobile": {
+      "activeTabId": "c2226a",
+      "sessions": [
+        {
+          "tab_id": "8821a0",
+          "title": "Round3 Tab One",
+          "url": "http://127.0.0.1:56180/tab-one",
+          "deviceEmulation": {
+            "mode": "mobile",
+            "profile": {
+              "width": 390,
+              "height": 844,
+              "deviceScaleFactor": 3
+            }
+          }
+        },
+        {
+          "tab_id": "c2226a",
+          "title": "Round3 Tab Two",
+          "url": "http://127.0.0.1:56180/tab-two",
+          "deviceEmulation": {
+            "mode": "mobile",
+            "profile": {
+              "width": 390,
+              "height": 844,
+              "deviceScaleFactor": 3
+            }
+          }
+        }
+      ]
+    },
+    "tab2ShellMobileProbe": {
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "dpr": 3,
+      "modeContent": "MOBILE",
+      "mobileMedia": true,
+      "bodyBackground": "rgb(155, 209, 255)",
+      "probeWidth": 329,
+      "layoutWidth": 390,
+      "scrollHeight": 2032,
+      "title": "Round3 Mobile Probe /tab-two"
+    },
+    "desktopResult": {
+      "tab_id": "c2226a",
+      "mode": "desktop",
+      "profile": null
+    },
+    "tab2Restored": {
+      "innerWidth": 1000,
+      "innerHeight": 900,
+      "dpr": 2,
+      "modeContent": "DESKTOP",
+      "mobileMedia": false,
+      "bodyBackground": "rgb(255, 211, 155)",
+      "probeWidth": 899,
+      "layoutWidth": 960,
+      "scrollHeight": 1995,
+      "title": "Round3 Mobile Probe /tab-two"
+    },
+    "closeResults": {
+      "close2": {
+        "tab_id": "c2226a",
+        "status": "closed"
+      },
+      "close1": {
+        "tab_id": "8821a0",
+        "status": "closed"
+      }
+    }
+  },
+  "screenshots": [
+    {
+      "label": "round3-large-mobile-normal",
+      "input": {
+        "tab_id": "8821a0",
+        "full_page": false
+      },
+      "beforeBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "afterBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "expectedBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "tab_id": "8821a0",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/round3/screenshots/8821a0-1779131113163.png",
+      "mime_type": "image/png",
+      "bytes": 27018,
+      "imageSize": {
+        "width": 780,
+        "height": 1688
+      }
+    },
+    {
+      "label": "round3-large-mobile-full-page",
+      "input": {
+        "tab_id": "8821a0",
+        "full_page": true
+      },
+      "beforeBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "afterBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "expectedBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "tab_id": "8821a0",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/round3/screenshots/8821a0-1779131113311.png",
+      "mime_type": "image/png",
+      "bytes": 37095,
+      "imageSize": {
+        "width": 780,
+        "height": 4064
+      }
+    },
+    {
+      "label": "round3-small-mobile-normal",
+      "input": {
+        "tab_id": "8821a0",
+        "full_page": false
+      },
+      "beforeBounds": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "afterBounds": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "expectedBounds": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "tab_id": "8821a0",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/round3/screenshots/8821a0-1779131113853.png",
+      "mime_type": "image/png",
+      "bytes": 14310,
+      "imageSize": {
+        "width": 462,
+        "height": 1000
+      }
+    },
+    {
+      "label": "round3-small-mobile-full-page",
+      "input": {
+        "tab_id": "8821a0",
+        "full_page": true
+      },
+      "beforeBounds": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "afterBounds": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "expectedBounds": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "tab_id": "8821a0",
+      "artifact_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/browser-mobile-view-support/tickets/browser-mobile-view-support/evidence/round3/screenshots/8821a0-1779131113996.png",
+      "mime_type": "image/png",
+      "bytes": 28404,
+      "imageSize": {
+        "width": 780,
+        "height": 4064
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "name": "large_host_centered_finite_mobile_presentation",
+      "value": {
+        "bounds": {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        "expected": {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        "params": {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 1
+        },
+        "probe": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "dpr": 3,
+          "modeContent": "MOBILE",
+          "mobileMedia": true,
+          "bodyBackground": "rgb(155, 209, 255)",
+          "probeWidth": 329,
+          "layoutWidth": 390,
+          "scrollHeight": 2032,
+          "title": "Round3 Mobile Probe /tab-one"
+        }
+      }
+    },
+    {
+      "name": "small_host_fit_scaled_presentation_keeps_device_metrics",
+      "value": {
+        "bounds": {
+          "x": 44,
+          "y": 0,
+          "width": 231,
+          "height": 500
+        },
+        "expected": {
+          "x": 44,
+          "y": 0,
+          "width": 231,
+          "height": 500
+        },
+        "params": {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 0.5924170616113744
+        },
+        "probe": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "dpr": 3,
+          "modeContent": "MOBILE",
+          "mobileMedia": true,
+          "bodyBackground": "rgb(155, 209, 255)",
+          "probeWidth": 329,
+          "layoutWidth": 390,
+          "scrollHeight": 2032,
+          "title": "Round3 Mobile Probe /tab-one"
+        }
+      }
+    },
+    {
+      "name": "tab_local_state_and_presentation_preserved_through_switching",
+      "value": {
+        "tab1Bounds": {
+          "x": 317,
+          "y": 46,
+          "width": 390,
+          "height": 844
+        },
+        "tab1Probe": {
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "dpr": 3,
+          "modeContent": "MOBILE",
+          "mobileMedia": true,
+          "bodyBackground": "rgb(155, 209, 255)",
+          "probeWidth": 329,
+          "layoutWidth": 390,
+          "scrollHeight": 2032,
+          "title": "Round3 Mobile Probe /tab-one"
+        },
+        "tab2Bounds": {
+          "x": 12,
+          "y": 18,
+          "width": 1000,
+          "height": 900
+        },
+        "tab2Probe": {
+          "innerWidth": 1000,
+          "innerHeight": 900,
+          "dpr": 2,
+          "modeContent": "DESKTOP",
+          "mobileMedia": false,
+          "bodyBackground": "rgb(255, 211, 155)",
+          "probeWidth": 899,
+          "layoutWidth": 960,
+          "scrollHeight": 1995,
+          "title": "Round3 Mobile Probe /tab-two"
+        }
+      }
+    },
+    {
+      "name": "desktop_restore_returns_to_full_host_projection",
+      "value": {
+        "bounds": {
+          "x": 12,
+          "y": 18,
+          "width": 1000,
+          "height": 900
+        },
+        "expected": {
+          "x": 12,
+          "y": 18,
+          "width": 1000,
+          "height": 900
+        },
+        "probe": {
+          "innerWidth": 1000,
+          "innerHeight": 900,
+          "dpr": 2,
+          "modeContent": "DESKTOP",
+          "mobileMedia": false,
+          "bodyBackground": "rgb(255, 211, 155)",
+          "probeWidth": 899,
+          "layoutWidth": 960,
+          "scrollHeight": 1995,
+          "title": "Round3 Mobile Probe /tab-two"
+        },
+        "disableCalls": 1
+      }
+    }
+  ],
+  "snapshots": [],
+  "result": "pass",
+  "viewRecords": [
+    {
+      "index": 0,
+      "setBoundsCalls": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 900
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 2032
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 44,
+          "y": 0,
+          "width": 231,
+          "height": 500
+        },
+        {
+          "x": 44,
+          "y": 0,
+          "width": 390,
+          "height": 2032
+        },
+        {
+          "x": 44,
+          "y": 0,
+          "width": 231,
+          "height": 500
+        },
+        {
+          "x": 317,
+          "y": 46,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 317,
+          "y": 46,
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "lastBounds": {
+        "x": 317,
+        "y": 46,
+        "width": 390,
+        "height": 844
+      },
+      "enableDeviceEmulationCalls": [
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 1
+        },
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 1
+        },
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 0.5924170616113744
+        },
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 0.5924170616113744
+        },
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 1
+        },
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 1
+        }
+      ],
+      "disableDeviceEmulationCalls": 0
+    },
+    {
+      "index": 1,
+      "setBoundsCalls": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 900
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 500
+        },
+        {
+          "x": 12,
+          "y": 18,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 12,
+          "y": 18,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 317,
+          "y": 46,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 317,
+          "y": 46,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 12,
+          "y": 18,
+          "width": 1000,
+          "height": 900
+        }
+      ],
+      "lastBounds": {
+        "x": 12,
+        "y": 18,
+        "width": 1000,
+        "height": 900
+      },
+      "enableDeviceEmulationCalls": [
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 1
+        },
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 1
+        }
+      ],
+      "disableDeviceEmulationCalls": 1
+    }
+  ]
+}

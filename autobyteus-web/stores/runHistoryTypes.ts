@@ -14,6 +14,8 @@ export interface RunHistoryItem {
   status: AgentStatus;
   lastKnownStatus: RunKnownStatus;
   isActive: boolean;
+  shouldConnectStream?: boolean;
+  statusSource?: string;
 }
 
 export interface RunHistoryAgentGroup {

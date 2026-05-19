@@ -10,6 +10,14 @@ import {
   AgentRunService,
   getAgentRunService,
 } from "../../agent-execution/services/agent-run-service.js";
+import {
+  AgentRunCommandCoordinator,
+  getAgentRunCommandCoordinator,
+} from "../../agent-execution/services/agent-run-command-coordinator.js";
+import {
+  AgentRunStatusProjectionService,
+  getAgentRunStatusProjectionService,
+} from "../../agent-execution/services/agent-run-status-projection-service.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
 import {
   AgentStreamBroadcaster,
@@ -69,6 +77,8 @@ export class AgentStreamHandler {
     AgentRun
   >();
   private agentRunService: AgentRunService;
+  private commandCoordinator: AgentRunCommandCoordinator;
+  private statusProjectionService: AgentRunStatusProjectionService;
   private runtimeEventSequence = 0;
   private broadcaster: AgentStreamBroadcaster;
 
@@ -77,16 +87,20 @@ export class AgentStreamHandler {
     agentRunService: AgentRunService = getAgentRunService(),
     eventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
     broadcaster: AgentStreamBroadcaster = getAgentStreamBroadcaster(),
+    commandCoordinator: AgentRunCommandCoordinator = getAgentRunCommandCoordinator(),
+    statusProjectionService: AgentRunStatusProjectionService = getAgentRunStatusProjectionService(),
   ) {
     this.sessionManager = sessionManager;
     this.agentRunService = agentRunService;
     this.eventMessageMapper = eventMessageMapper;
     this.broadcaster = broadcaster;
+    this.commandCoordinator = commandCoordinator;
+    this.statusProjectionService = statusProjectionService;
   }
 
   async connect(connection: WebSocketConnection, agentRunId: string): Promise<string | null> {
-    const activeRun = await this.resolveAgentRun(agentRunId);
-    if (!activeRun) {
+    const projection = await this.statusProjectionService.getRunStatusProjection(agentRunId);
+    if (projection.statusSource === "MISSING") {
       this.closeWithAgentNotFound(connection, agentRunId);
       return null;
     }
@@ -107,7 +121,8 @@ export class AgentStreamHandler {
     this.broadcaster.registerConnection(sessionId, agentRunId, connection);
     this.sessionConnections.set(sessionId, connection);
 
-    if (!this.bindSessionToRun(sessionId, activeRun, connection)) {
+    const activeRun = this.getActiveRun(agentRunId);
+    if (activeRun && !this.bindSessionToRun(sessionId, activeRun, connection)) {
       this.sessionConnections.delete(sessionId);
       this.broadcaster.unregisterConnection(sessionId);
       this.sessionManager.closeSession(sessionId);
@@ -124,7 +139,7 @@ export class AgentStreamHandler {
     connection.send(
       new ServerMessage(
         ServerMessageType.AGENT_STATUS,
-        activeRun.getStatusSnapshot(),
+        projection.statusPayload,
       ).toJson(),
     );
 
@@ -146,11 +161,7 @@ export class AgentStreamHandler {
       const agentRunId = session.runId;
 
       if (msgType === ClientMessageType.SEND_MESSAGE) {
-        const activeRun = await this.resolveSessionRun(sessionId, agentRunId);
-        if (!activeRun) {
-          return;
-        }
-        await this.handleSendMessage(activeRun, payload);
+        await this.handleSendMessage(sessionId, agentRunId, payload);
         return;
       }
 
@@ -198,35 +209,6 @@ export class AgentStreamHandler {
     }
     const activeRun = this.getActiveRun(runId);
     return !!activeRun && this.bindSessionToRun(sessionId, activeRun, connection);
-  }
-
-  private async resolveSessionRun(
-    sessionId: string,
-    runId: string,
-  ): Promise<AgentRun | null> {
-    const connection = this.sessionConnections.get(sessionId);
-    if (!connection) {
-      return null;
-    }
-
-    const activeRun = await this.resolveAgentRun(runId);
-    if (!activeRun) {
-      logger.warn(`Agent websocket session '${sessionId}' could not resolve run '${runId}'.`);
-      this.closeWithAgentNotFound(connection, runId);
-      return null;
-    }
-
-    if (!this.bindSessionToRun(sessionId, activeRun, connection)) {
-      const errorMsg = createErrorMessage(
-        "AGENT_STREAM_UNAVAILABLE",
-        `Agent run '${runId}' stream not available`,
-      );
-      connection.send(errorMsg.toJson());
-      connection.close(1011);
-      return null;
-    }
-
-    return activeRun;
   }
 
   private bindSessionToRun(
@@ -302,9 +284,19 @@ export class AgentStreamHandler {
     }
   }
 
-  private async handleSendMessage(activeRun: AgentRun, payload: Record<string, unknown>): Promise<void> {
-    const agentRunId = activeRun.runId;
+  private async handleSendMessage(
+    sessionId: string,
+    agentRunId: string,
+    payload: Record<string, unknown>,
+  ): Promise<void> {
+    const connection = this.sessionConnections.get(sessionId);
+    if (!connection) {
+      return;
+    }
+
     const content = typeof payload.content === "string" ? payload.content : "";
+    const messageId = typeof payload.message_id === "string" ? payload.message_id : "";
+    const dedupeKey = typeof payload.dedupe_key === "string" ? payload.dedupe_key : "";
     const contextFilePaths =
       (payload.context_file_paths as unknown[]) ?? (payload.contextFilePaths as unknown[]) ?? [];
     const imageUrls = (payload.image_urls as unknown[]) ?? (payload.imageUrls as unknown[]) ?? [];
@@ -327,18 +319,27 @@ export class AgentStreamHandler {
       context_files: contextPayload.length > 0 ? contextPayload : null,
     });
 
-    const result = await activeRun.postUserMessage(userMessage);
-    if (!result.accepted) {
-      logger.warn(
-        `SEND_MESSAGE rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
-      );
-      return;
-    }
-    await this.agentRunService.recordRunActivity(activeRun, {
+    const result = await this.commandCoordinator.postUserMessage({
+      runId: agentRunId,
+      messageId,
+      dedupeKey,
+      message: userMessage,
       summary: content,
-      lastKnownStatus: "ACTIVE",
-      lastActivityAt: new Date().toISOString(),
+      onActiveRunReady: (activeRun) => {
+        this.bindSessionToRun(sessionId, activeRun, connection);
+      },
     });
+    connection.send(
+      new ServerMessage(
+        ServerMessageType.AGENT_COMMAND_ACK,
+        result.ack,
+      ).toJson(),
+    );
+    if (!result.ack.accepted) {
+      logger.warn(
+        `SEND_MESSAGE command not accepted for agent run ${agentRunId}: [${result.ack.code ?? "UNKNOWN"}] ${result.ack.message ?? "no message"}`,
+      );
+    }
   }
 
   private async handleInterruptGeneration(agentRunId: string): Promise<void> {
@@ -384,9 +385,6 @@ export class AgentStreamHandler {
     return this.agentRunService.getAgentRun(runId);
   }
 
-  private resolveAgentRun(runId: string): Promise<AgentRun | null> {
-    return this.agentRunService.resolveAgentRun(runId);
-  }
 
   private closeWithAgentNotFound(connection: WebSocketConnection, runId: string): void {
     const errorMsg = createErrorMessage("AGENT_NOT_FOUND", `Agent run '${runId}' not found`);
@@ -419,6 +417,8 @@ export const getAgentStreamHandler = (): AgentStreamHandler => {
       getAgentRunService(),
       getAgentRunEventMessageMapper(),
       getAgentStreamBroadcaster(),
+      getAgentRunCommandCoordinator(),
+      getAgentRunStatusProjectionService(),
     );
   }
   return cachedAgentStreamHandler;

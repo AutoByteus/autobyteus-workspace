@@ -6,6 +6,7 @@ import {
   NAVIGATE_TO_TOOL_NAME,
   OPEN_TAB_TOOL_NAME,
   DOM_SNAPSHOT_TOOL_NAME,
+  SET_DEVICE_EMULATION_TOOL_NAME,
   BROWSER_READ_PAGE_CLEANING_MODES,
   BROWSER_WAIT_UNTIL_VALUES,
   BrowserToolError,
@@ -28,6 +29,7 @@ const browserInputErrorCodeByToolName: Record<BrowserToolName, BrowserToolErrorC
   [SCREENSHOT_TOOL_NAME]: "browser_tab_not_found",
   [DOM_SNAPSHOT_TOOL_NAME]: "dom_snapshot_failed",
   [RUN_SCRIPT_TOOL_NAME]: "browser_javascript_execution_failed",
+  [SET_DEVICE_EMULATION_TOOL_NAME]: "browser_device_emulation_failed",
 };
 
 export const invalidInputError = (
@@ -98,6 +100,22 @@ export const readOptionalInteger = (
 ): number => {
   if (!hasOwn(rawArguments, key)) {
     return defaultValue;
+  }
+
+  const normalized = asInteger(rawArguments[key]);
+  if (normalized === null) {
+    throw invalidInputError(toolName, `${toolName} requires '${key}' to be an integer.`);
+  }
+  return normalized;
+};
+
+export const readOptionalIntegerOrUndefined = (
+  toolName: BrowserToolName,
+  rawArguments: Record<string, unknown>,
+  key: string,
+): number | undefined => {
+  if (!hasOwn(rawArguments, key)) {
+    return undefined;
   }
 
   const normalized = asInteger(rawArguments[key]);

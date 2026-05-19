@@ -1,4 +1,3 @@
-import type { Rectangle } from 'electron'
 import {
   BROWSER_DOM_SNAPSHOT_SCRIPT,
   type BrowserDomSnapshotElement,
@@ -23,17 +22,12 @@ const MAX_FULL_PAGE_DIMENSION = 4000
 const FULL_PAGE_CAPTURE_SETTLE_MS = 60
 const READ_PAGE_SCRIPT = "document.documentElement?.outerHTML ?? ''"
 
-const sleep = async (ms: number): Promise<void> => {
-  await new Promise((resolve) => setTimeout(resolve, ms))
+type BrowserScreenshotBoundsHooks = {
+  afterOriginalBoundsRestored?: () => void
 }
 
-const rectanglesEqual = (left: Rectangle, right: Rectangle): boolean => {
-  return (
-    left.x === right.x &&
-    left.y === right.y &&
-    left.width === right.width &&
-    left.height === right.height
-  )
+const sleep = async (ms: number): Promise<void> => {
+  await new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 export class BrowserTabPageOperations {
@@ -42,8 +36,9 @@ export class BrowserTabPageOperations {
   async captureScreenshot(
     session: BrowserTabRecord,
     fullPage: boolean,
+    boundsHooks?: BrowserScreenshotBoundsHooks,
   ): Promise<CaptureBrowserScreenshotResult> {
-    const image = await this.captureSessionPage(session, fullPage)
+    const image = await this.captureSessionPage(session, fullPage, boundsHooks)
     const artifactPath = await this.screenshotWriter.write(image.toPNG(), session.id)
 
     return {
@@ -157,23 +152,11 @@ export class BrowserTabPageOperations {
     }
   }
 
-  updateViewportBounds(session: BrowserTabRecord, bounds: Rectangle): void {
-    const nextBounds = {
-      x: Math.round(bounds.x),
-      y: Math.round(bounds.y),
-      width: Math.max(1, Math.round(bounds.width)),
-      height: Math.max(1, Math.round(bounds.height)),
-    }
-
-    if (rectanglesEqual(session.viewportBounds, nextBounds)) {
-      return
-    }
-
-    session.viewportBounds = nextBounds
-    session.view.setBounds(session.viewportBounds)
-  }
-
-  private async captureSessionPage(session: BrowserTabRecord, fullPage: boolean) {
+  private async captureSessionPage(
+    session: BrowserTabRecord,
+    fullPage: boolean,
+    boundsHooks?: BrowserScreenshotBoundsHooks,
+  ) {
     if (!fullPage) {
       return session.view.webContents.capturePage()
     }
@@ -220,6 +203,7 @@ export class BrowserTabPageOperations {
       if (nextWidth !== originalBounds.width || nextHeight !== originalBounds.height) {
         session.viewportBounds = originalBounds
         session.view.setBounds(originalBounds)
+        boundsHooks?.afterOriginalBoundsRestored?.()
       }
     }
   }

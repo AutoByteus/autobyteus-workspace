@@ -1,0 +1,303 @@
+{
+  "meta": {
+    "date": "2026-05-18T19:03:06.268Z",
+    "electron": "38.8.2",
+    "chrome": "140.0.7339.249",
+    "node": "22.22.0",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "host": {
+    "x": 0,
+    "y": 0,
+    "width": 1000,
+    "height": 900
+  },
+  "small": {
+    "x": 0,
+    "y": 0,
+    "width": 320,
+    "height": 500
+  },
+  "expectedHost": {
+    "bounds": {
+      "x": 305,
+      "y": 28,
+      "width": 390,
+      "height": 844
+    },
+    "scale": 1
+  },
+  "expectedSmall": {
+    "bounds": {
+      "x": 44,
+      "y": 0,
+      "width": 231,
+      "height": 500
+    },
+    "scale": 0.5924170616113744
+  },
+  "steps": [
+    {
+      "name": "desktop-host",
+      "lastBounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1000,
+        "height": 900
+      },
+      "setBoundsTail": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 900
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        }
+      ]
+    },
+    {
+      "name": "after-shell-setDeviceEmulation-large-host",
+      "lastBounds": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "expected": {
+        "x": 305,
+        "y": 28,
+        "width": 390,
+        "height": 844
+      },
+      "snapshot": {
+        "activeTabId": "9e6caa",
+        "sessions": [
+          {
+            "tab_id": "9e6caa",
+            "title": "round3 failure probe",
+            "url": "http://127.0.0.1:56052/probe",
+            "deviceEmulation": {
+              "mode": "mobile",
+              "profile": {
+                "width": 390,
+                "height": 844,
+                "deviceScaleFactor": 3
+              }
+            }
+          }
+        ]
+      },
+      "enableCall": {
+        "screenPosition": "mobile",
+        "screenSize": {
+          "width": 390,
+          "height": 844
+        },
+        "viewPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "deviceScaleFactor": 3,
+        "viewSize": {
+          "width": 390,
+          "height": 844
+        },
+        "scale": 1
+      },
+      "setBoundsTail": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 900
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        }
+      ]
+    },
+    {
+      "name": "after-shell-updateHostBounds-small-host",
+      "lastBounds": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "expected": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "enableCall": {
+        "screenPosition": "mobile",
+        "screenSize": {
+          "width": 390,
+          "height": 844
+        },
+        "viewPosition": {
+          "x": 0,
+          "y": 0
+        },
+        "deviceScaleFactor": 3,
+        "viewSize": {
+          "width": 390,
+          "height": 844
+        },
+        "scale": 0.5924170616113744
+      },
+      "setBoundsTail": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 900
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 44,
+          "y": 0,
+          "width": 231,
+          "height": 500
+        }
+      ]
+    }
+  ],
+  "result": "pass",
+  "viewRecords": [
+    {
+      "index": 0,
+      "lastBounds": {
+        "x": 44,
+        "y": 0,
+        "width": 231,
+        "height": 500
+      },
+      "setBoundsCalls": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 900
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1000,
+          "height": 900
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 305,
+          "y": 28,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "x": 44,
+          "y": 0,
+          "width": 231,
+          "height": 500
+        }
+      ],
+      "enableCalls": [
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 1
+        },
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 1
+        },
+        {
+          "screenPosition": "mobile",
+          "screenSize": {
+            "width": 390,
+            "height": 844
+          },
+          "viewPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "deviceScaleFactor": 3,
+          "viewSize": {
+            "width": 390,
+            "height": 844
+          },
+          "scale": 0.5924170616113744
+        }
+      ],
+      "disableCalls": 0
+    }
+  ]
+}
