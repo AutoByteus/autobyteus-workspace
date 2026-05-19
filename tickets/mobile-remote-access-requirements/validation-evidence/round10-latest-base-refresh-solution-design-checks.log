@@ -1,0 +1,44 @@
+Round 10 latest-base refresh checks — solution design
+Date: 2026-05-19
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements
+Branch: codex/mobile-remote-access-requirements
+HEAD: 29266b9b docs(remote-access): record latest base refresh
+Merged base: origin/personal 98cfdc24
+Merge commit: 26a17e0a
+Branch relation: ahead 8 / behind 0 versus origin/personal
+origin/personal ancestor of HEAD: yes
+
+Repository hygiene:
+- git diff --check: pass
+- Obsolete command-identity ticket/dependency docs search: no DEP-MRA-001, MRA-E2E-037, shared-single-agent-command, shared-single-agent-command-identity-dependency, or tickets/in-progress/shared-single-agent-command-identity references in active mobile ticket markdown.
+- Obsolete paths removed: tickets/in-progress/shared-single-agent-command-identity/ and tickets/mobile-remote-access-requirements/shared-single-agent-command-identity-dependency.md are absent.
+
+Focused web validation after latest-base merge:
+Command:
+pnpm -C autobyteus-web exec vitest run \
+  services/agentStreaming/__tests__/AgentStreamingService.spec.ts \
+  stores/__tests__/agentRunStore.spec.ts \
+  services/runSubmission/__tests__/localUserSubmission.spec.ts \
+  components/mobile/__tests__/MobileRemoteAccessShell.spec.ts \
+  components/mobile/__tests__/MobileUxRefinement.spec.ts \
+  components/mobile/__tests__/MobileContextSelectionRegression.spec.ts \
+  pages/__tests__/mobile-root-shell.spec.ts \
+  pages/__tests__/mobile-root.spec.ts \
+  middleware/__tests__/mobileFeatureGate.global.spec.ts \
+  utils/__tests__/mobileFeatureGates.spec.ts
+Result: pass — 10 files / 57 tests.
+
+Focused backend Remote Access validation after latest-base merge:
+Command:
+pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access
+Result: pass — 5 files / 27 tests.
+
+Static mobile build after latest-base merge:
+Command:
+pnpm -C autobyteus-web build:mobile-web
+Result: pass. Vite emitted existing size/dynamic-import warnings; build completed and generated mobile web assets. Generated dist artifacts were removed from the worktree after the check.
+
+Static code inspection after latest-base merge:
+- autobyteus-web/services/agentStreaming/AgentStreamingService.ts includes both Remote Access WebSocket credential wrapping and shared single-agent command identity/ACK rejection handling from origin/personal.
+- autobyteus-web/stores/agentRunStore.ts sends client message identity and dedupe key into AgentStreamingService.sendMessage(...).
+- autobyteus-web/services/agentStreaming/TeamStreamingService.ts still wraps Remote Access WebSocket credentials and preserves team message identity.

@@ -361,6 +361,9 @@ Current decision:
 - Completed branch refresh: merge commit `26a17e0a` integrated latest `origin/personal` `98cfdc24`; implementation/API-E2E should continue from this integrated branch state.
 - If the missing-identity symptom reappears after the branch includes `98cfdc24` or newer, treat it as a shared-base regression from the latest branch state, not a mobile UX local fix.
 
+
+Post-merge solution-design checks passed on the integrated branch (`HEAD 29266b9b`, merge commit `26a17e0a`, `origin/personal` `98cfdc24`): `git diff --check`, obsolete command-ticket/reference checks, focused web Vitest (10 files / 57 tests), backend Remote Access unit Vitest (5 files / 27 tests), and `pnpm -C autobyteus-web build:mobile-web`. Evidence is recorded in `validation-evidence/round10-latest-base-refresh-solution-design-checks.log`.
+
 ## Round 10 Non-WebSocket Mobile UX Findings Triage (2026-05-19)
 
 API/E2E routed non-WebSocket mobile UX findings separately from the stale shared command-identity finding in:

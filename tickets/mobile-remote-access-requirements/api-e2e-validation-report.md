@@ -31,6 +31,23 @@
 
 After the initial Round 10 handoff, the user asked whether the command-identity symptom was mobile-only or a general backend/platform issue and clarified that a general issue should not be fixed inside this mobile UX ticket. Runtime evidence showed it was **not mobile-only** and **not a backend runtime/provider bug**: the backend accepted the same mobile-created Codex/GPT-5.5 run when command identity was present. Solution design then checked latest `origin/personal` `98cfdc24` and found the shared frontend fix already present. Current posture: no separate command-identity ticket remains; latest base has been merged into the mobile branch and real single-agent execution should be revalidated there.
 
+
+## Solution-Design Latest-Base Integrated Check (2026-05-19)
+
+After committing the mobile ticket work, solution design merged latest `origin/personal` `98cfdc24` into `codex/mobile-remote-access-requirements` via merge commit `26a17e0a`, then recorded final docs at `29266b9b`. Current branch relation is ahead 8 / behind 0 and `origin/personal` is an ancestor of HEAD.
+
+Post-merge checks passed:
+
+- `git diff --check`;
+- obsolete command-identity ticket/dependency path and active-doc reference checks;
+- focused web Vitest covering shared single-agent command identity, run submission, mobile shell/refinement/context-selection, mobile routes, middleware, and feature gates — 10 files / 57 tests;
+- backend Remote Access unit Vitest — 5 files / 27 tests;
+- `pnpm -C autobyteus-web build:mobile-web`.
+
+Evidence file: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-remote-access-requirements/tickets/mobile-remote-access-requirements/validation-evidence/round10-latest-base-refresh-solution-design-checks.log`.
+
+Remaining API/E2E action: rerun real mobile Codex/GPT-5.5 single-agent launch/send on this integrated branch. The stale command-identity ticket remains removed and should not be reimplemented as a mobile local fix.
+
 ## Validation Basis
 
 Validated against:
