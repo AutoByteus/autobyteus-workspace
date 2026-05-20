@@ -100,6 +100,13 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
       maxOutputTokens: 65536,
       sourceUrl: 'https://ai.google.dev/gemini-api/docs/gemini-3',
       verifiedAt: '2026-04-09'
+    },
+    'gemini-3.5-flash': {
+      maxContextTokens: 1048576,
+      maxInputTokens: 1048576,
+      maxOutputTokens: 65536,
+      sourceUrl: 'https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash',
+      verifiedAt: '2026-05-20'
     }
   },
   [LLMProvider.KIMI]: {

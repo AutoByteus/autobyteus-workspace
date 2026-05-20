@@ -1,0 +1,27 @@
+# Delivery integration refresh
+UTC 2026-05-20T05:01:59Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-35-flash-antigravity-runtime-support
+Branch: codex/gemini-35-flash-antigravity-runtime-support
+Command: git fetch origin --prune
+HEAD: 96703369b8fa54e6b2fef736f33d0d9339de6321
+origin/personal: 96703369b8fa54e6b2fef736f33d0d9339de6321
+merge-base HEAD origin/personal: 96703369b8fa54e6b2fef736f33d0d9339de6321
+ahead-behind HEAD...origin/personal: 0	0
+origin/personal ancestor of HEAD:
+yes
+HEAD ancestor of origin/personal:
+yes
+status:
+## codex/gemini-35-flash-antigravity-runtime-support...origin/personal
+ M autobyteus-server-ts/docs/modules/llm_management.md
+ M autobyteus-ts/docs/llm_module_design.md
+ M autobyteus-ts/docs/llm_module_design_nodejs.md
+ M autobyteus-ts/docs/provider_model_catalogs.md
+ M autobyteus-ts/src/llm/metadata/curated-model-metadata.ts
+ M autobyteus-ts/src/llm/supported-model-definitions.ts
+ M autobyteus-ts/src/utils/gemini-model-mapping.ts
+ M autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts
+ M autobyteus-ts/tests/unit/utils/gemini-model-mapping.test.ts
+?? autobyteus-server-ts/tests/unit/llm-management/services/model-catalog-service.test.ts
+?? autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts
+?? tickets/gemini-35-flash-antigravity-runtime-support/

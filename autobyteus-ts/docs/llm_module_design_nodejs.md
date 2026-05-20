@@ -118,18 +118,25 @@ loads those definitions, resolves curated metadata from
 `src/llm/metadata/curated-model-metadata.ts`, then registers the resulting
 `LLMModel` objects.
 
-The current latest-model support set verified on 2026-04-25 includes:
+The current latest-model support set is summarized in
+`docs/provider_model_catalogs.md`. Notable LLM entries include:
 
-- OpenAI `gpt-5.5`.
-- Anthropic `claude-opus-4.7` with API value `claude-opus-4-7`.
-- DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro`.
-- Moonshot/Kimi `kimi-k2.6`.
+- OpenAI `gpt-5.5` (verified 2026-04-25).
+- Anthropic `claude-opus-4.7` with API value `claude-opus-4-7` (verified
+  2026-04-25).
+- DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro` (verified 2026-04-25).
+- Gemini `gemini-3.5-flash` with the same provider value for API-key and
+  Vertex runtimes (verified 2026-05-20).
+- Moonshot/Kimi `kimi-k2.6` (verified 2026-04-25).
 
 Provider adapters own request-shape differences:
 
 - `AnthropicLLM` maps Opus 4.7 adaptive-thinking config without sending fixed
   thinking budgets or an adapter-injected default `temperature`.
 - `DeepSeekLLM` continues to use the OpenAI-compatible DeepSeek path for V4.
+- `GeminiLLM` uses the exact `gemini-3.5-flash` ID for both API-key and Vertex
+  modes through `src/utils/gemini-model-mapping.ts`, while sharing the existing
+  Gemini thinking config schema.
 - `KimiLLM` keeps tool-call continuation safe for `kimi-k2.6` by disabling
   thinking when tool workflows have no explicit thinking override. Kimi also
   normalizes provider-safe temperature defaults for `kimi-k2.6`: `0.6` for tool
@@ -367,8 +374,8 @@ under `tests/integration/llm/...`.
   text history through `src/llm/prompt-renderers/provider-tool-history-renderer-selection.ts`.
 - Add image models in `src/multimedia/image/image-client-factory.ts`.
 - Add audio/TTS models in `src/multimedia/audio/audio-client-factory.ts`.
-- Add Gemini API-key / Vertex runtime model mappings in
-  `src/utils/gemini-model-mapping.ts`.
+- Add Gemini API-key / Vertex runtime model mappings for LLM, image, and audio
+  surfaces in `src/utils/gemini-model-mapping.ts`.
 - Add provider display names in `src/llm/provider-display-names.ts`.
 - Update shared metadata shape in `src/llm/models.ts`.
 - Update saved custom-provider schema in
