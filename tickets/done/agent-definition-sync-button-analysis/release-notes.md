@@ -5,3 +5,4 @@
 - Make Agent and Agent Team Reload refresh local backend definition catalogs from configured package/Git/folder sources before refetching.
 - Simplify Settings → Nodes to node registration, capability display, phone access, Docker guidance, and remote browser sharing without bootstrap/full-sync controls.
 - Remove legacy node-sync GraphQL APIs, backend services, frontend sync store/components/types, personal Docker remote-sync helper path, and stale sync documentation.
+- Fix Windows desktop release packaging so the mobile web asset build resolves `pnpm.cmd` correctly on Windows runners.

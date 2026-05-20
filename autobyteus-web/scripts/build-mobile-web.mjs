@@ -18,12 +18,28 @@ const exists = async (target) => {
   }
 }
 
+function resolveExecutable(command) {
+  if (process.platform !== 'win32') {
+    return command
+  }
+  if (
+    command.includes('\\') ||
+    command.includes('/') ||
+    command.endsWith('.exe') ||
+    command.endsWith('.cmd')
+  ) {
+    return command
+  }
+  return `${command}.cmd`
+}
+
 const run = (command, args, env = {}) => new Promise((resolve, reject) => {
-  const child = spawn(command, args, {
+  const executable = resolveExecutable(command)
+  const child = spawn(executable, args, {
     cwd: webRoot,
     env: { ...process.env, ...env },
     stdio: 'inherit',
-    shell: process.platform === 'win32' && command.endsWith('.cmd'),
+    shell: process.platform === 'win32' && executable.endsWith('.cmd'),
   })
   child.on('error', reject)
   child.on('close', (code) => {
@@ -31,7 +47,7 @@ const run = (command, args, env = {}) => new Promise((resolve, reject) => {
       resolve()
       return
     }
-    reject(new Error(`Command failed (${code}): ${command} ${args.join(' ')}`))
+    reject(new Error(`Command failed (${code}): ${executable} ${args.join(' ')}`))
   })
 })
 
