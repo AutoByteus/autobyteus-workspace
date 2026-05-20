@@ -271,6 +271,15 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     configSchema: geminiSchema
   },
   {
+    name: 'gemini-3.5-flash',
+    value: 'gemini-3.5-flash',
+    provider: LLMProvider.GEMINI,
+    llmClass: GeminiLLM,
+    canonicalName: 'gemini-3.5-flash',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(1.5, 9.0) }),
+    configSchema: geminiSchema
+  },
+  {
     name: 'kimi-k2.6',
     value: 'kimi-k2.6',
     provider: LLMProvider.KIMI,

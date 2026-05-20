@@ -10,6 +10,7 @@ or changing provider-specific request-shaping behavior.
 | --- | --- | --- | --- |
 | LLM API models | `src/llm/supported-model-definitions.ts` | Provider adapters under `src/llm/api/` | `LLMFactory` builds registry entries from supported definitions and metadata. |
 | LLM metadata | `src/llm/metadata/curated-model-metadata.ts` | `src/llm/metadata/model-metadata-resolver.ts` | Add docs-backed context/output limits and verification dates for known API models. |
+| Gemini LLM runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiLLM` | Add API-key and Vertex mappings when Gemini LLM provider values differ or need explicit identity coverage. |
 | Audio / TTS models | `src/multimedia/audio/audio-client-factory.ts` | `src/multimedia/audio/api/*` | Built-in TTS models are registered by the audio factory. |
 | Gemini TTS runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiAudioClient` | User-facing names can map to API-key and Vertex-specific model values. |
 | Image models | `src/multimedia/image/image-client-factory.ts` | `src/multimedia/image/api/*` | Built-in image models are registered by the image factory. |
@@ -24,6 +25,7 @@ or changing provider-specific request-shaping behavior.
 | LLM | `claude-opus-4.7` | `claude-opus-4-7` | Anthropic | 2026-04-25 | Uses adaptive-thinking schema; see request-shape notes below. |
 | LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter and V4 thinking schema. |
 | LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter and V4 thinking schema. |
+| LLM | `gemini-3.5-flash` | `gemini-3.5-flash` | Gemini | 2026-05-20 | Uses the existing Gemini LLM adapter, shared Gemini thinking schema, explicit API-key/Vertex identity mapping, and docs-backed token-limit metadata. |
 | LLM | `kimi-k2.6` | `kimi-k2.6` | Moonshot / Kimi | 2026-04-25 | Uses the existing Kimi OpenAI-compatible adapter. |
 | Image | `gpt-image-2` | `gpt-image-2` | OpenAI | 2026-04-25 | Supports generation and editing through `OpenAIImageClient`. |
 | Image | `gemini-3.1-flash-image-preview` | `gemini-3.1-flash-image-preview` | Gemini | 2026-05-05 | Registered in the image catalog and mapped identically for API-key and Vertex Gemini runtimes. |
@@ -83,6 +85,26 @@ than a shared request-builder contract.
   before the shared OpenAI-compatible request builder runs: tool workflows use
   `temperature: 0.6`, non-tool requests use `temperature: 1`, and explicit
   per-request `temperature` kwargs are preserved.
+
+### Gemini LLM Models
+
+Gemini LLM catalog entries are registered in
+`src/llm/supported-model-definitions.ts`, with docs-backed limits in
+`src/llm/metadata/curated-model-metadata.ts`. Add an explicit LLM runtime
+mapping in `src/utils/gemini-model-mapping.ts` so both API-key and Vertex modes
+are covered by tests even when the provider value is currently identical.
+
+`gemini-3.5-flash` is the supported Gemini 3.5 Flash LLM ID verified on
+2026-05-20. It uses the exact same user-facing ID and provider API value for
+API-key and Vertex runtimes, reuses the shared Gemini thinking schema
+(`thinking_level` and `include_thoughts`), and reports curated limits of
+1,048,576 input/context tokens and 65,536 output tokens. Its default pricing
+configuration is the verified 2026-05-20 paid-tier rate of `1.5` input and
+`9.0` output per 1M tokens.
+
+Do not add aliases or compatibility wrappers for older preview IDs when adding
+Gemini LLM models. Use the official model ID unless Google documents a distinct
+Vertex-specific value.
 
 ### OpenAI GPT Image 2
 

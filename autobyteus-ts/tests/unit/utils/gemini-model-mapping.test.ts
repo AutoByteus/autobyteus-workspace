@@ -33,6 +33,8 @@ describe('resolveModelForRuntime', () => {
   it('maps Gemini text models for the LLM modality', () => {
     expect(resolveModelForRuntime('gemini-3.1-pro-preview', 'llm', 'vertex')).toBe('gemini-3.1-pro-preview');
     expect(resolveModelForRuntime('gemini-3-flash-preview', 'llm', 'api_key')).toBe('gemini-3-flash-preview');
+    expect(resolveModelForRuntime('gemini-3.5-flash', 'llm', 'api_key')).toBe('gemini-3.5-flash');
+    expect(resolveModelForRuntime('gemini-3.5-flash', 'llm', 'vertex')).toBe('gemini-3.5-flash');
   });
 
   it('maps Gemini 3.1 Flash Image Preview for api_key and vertex runtimes', () => {
