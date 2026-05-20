@@ -59,6 +59,7 @@ describe('LLMFactory metadata resolution', () => {
     const openaiModels = await LLMFactory.listModelsByProvider(LLMProvider.OPENAI);
     const anthropicModels = await LLMFactory.listModelsByProvider(LLMProvider.ANTHROPIC);
     const deepseekModels = await LLMFactory.listModelsByProvider(LLMProvider.DEEPSEEK);
+    const geminiModels = await LLMFactory.listModelsByProvider(LLMProvider.GEMINI);
     const kimiModels = await LLMFactory.listModelsByProvider(LLMProvider.KIMI);
     const qwenModels = await LLMFactory.listModelsByProvider(LLMProvider.QWEN);
 
@@ -88,6 +89,28 @@ describe('LLMFactory metadata resolution', () => {
       value: 'deepseek-v4-pro',
       max_context_tokens: 1000000,
       max_output_tokens: 384000
+    });
+    const gemini35Flash = geminiModels.find((model) => model.model_identifier === 'gemini-3.5-flash');
+    expect(gemini35Flash).toMatchObject({
+      model_identifier: 'gemini-3.5-flash',
+      display_name: 'gemini-3.5-flash',
+      value: 'gemini-3.5-flash',
+      canonical_name: 'gemini-3.5-flash',
+      provider_type: LLMProvider.GEMINI,
+      runtime: 'api',
+      max_context_tokens: 1048576,
+      max_input_tokens: 1048576,
+      max_output_tokens: 65536
+    });
+    expect(gemini35Flash?.config_schema).toMatchObject({
+      properties: {
+        thinking_level: expect.objectContaining({
+          enum: ['minimal', 'low', 'medium', 'high']
+        }),
+        include_thoughts: expect.objectContaining({
+          type: 'boolean'
+        })
+      }
     });
     expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')).toMatchObject({
       provider_type: LLMProvider.KIMI,
@@ -161,6 +184,12 @@ describe('LLMFactory metadata resolution', () => {
                 baseModelId: 'gemini-3-flash-preview',
                 inputTokenLimit: 1048576,
                 outputTokenLimit: 65536
+              },
+              {
+                name: 'models/gemini-3.5-flash',
+                baseModelId: 'gemini-3.5-flash',
+                inputTokenLimit: 1048576,
+                outputTokenLimit: 65536
               }
             ]
           })
@@ -187,6 +216,12 @@ describe('LLMFactory metadata resolution', () => {
     expect(mistralModels.find((model) => model.model_identifier === 'mistral-large-3')?.max_context_tokens).toBe(300000);
     expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.1-pro-preview')?.max_input_tokens).toBe(1048576);
     expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.1-pro-preview')?.max_output_tokens).toBe(65536);
+    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.5-flash')).toMatchObject({
+      value: 'gemini-3.5-flash',
+      max_context_tokens: 1048576,
+      max_input_tokens: 1048576,
+      max_output_tokens: 65536
+    });
     expect(mockFetch).toHaveBeenCalledTimes(4);
   });
 
@@ -211,6 +246,15 @@ describe('LLMFactory metadata resolution', () => {
       1048576
     );
     expect(geminiModels.find((model) => model.model_identifier === 'gemini-3-flash-preview')?.max_output_tokens).toBe(
+      65536
+    );
+    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.5-flash')?.max_context_tokens).toBe(
+      1048576
+    );
+    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.5-flash')?.max_input_tokens).toBe(
+      1048576
+    );
+    expect(geminiModels.find((model) => model.model_identifier === 'gemini-3.5-flash')?.max_output_tokens).toBe(
       65536
     );
     expect(mockFetch).toHaveBeenCalledTimes(1);

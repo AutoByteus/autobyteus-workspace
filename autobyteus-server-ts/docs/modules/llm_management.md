@@ -93,6 +93,10 @@ The GraphQL boundary stays provider-centered through
   values.
 - Gemini keeps its special setup modes, but it still projects into the same
   provider-centered list.
+- The Autobyteus runtime model catalog delegates built-in LLM entries to the
+  `autobyteus-ts` `LLMFactory`; package-level additions such as
+  `gemini-3.5-flash` should surface through that path rather than through a
+  duplicate server-side Gemini model list.
 
 ### Custom Providers
 

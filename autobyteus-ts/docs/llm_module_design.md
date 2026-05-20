@@ -77,7 +77,8 @@ new built-in enum value for every saved endpoint.
     `LLMFactory.ensureInitialized()` is called. It:
     - Registers supported built-in API models from
       `src/llm/supported-model-definitions.ts` (for example `gpt-5.5`,
-      `claude-opus-4.7`, `deepseek-v4-flash`, and `kimi-k2.6`).
+      `claude-opus-4.7`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
+      `kimi-k2.6`).
     - Probes local runtimes (Ollama, LM Studio) to discover available models.
     - Leaves custom OpenAI-compatible provider sync to the caller that owns
       persisted provider records.
@@ -120,6 +121,9 @@ Current examples of provider-specific model rules:
   for that model.
 - `deepseek-v4-flash` and `deepseek-v4-pro` use the existing DeepSeek
   OpenAI-compatible adapter with their V4 thinking schema.
+- `gemini-3.5-flash` uses the existing Gemini adapter, the shared Gemini
+  thinking schema, docs-backed curated token limits, and explicit API-key /
+  Vertex identity mapping in `src/utils/gemini-model-mapping.ts`.
 - `kimi-k2.6` disables thinking automatically for tool workflows when the
   caller has not supplied an explicit thinking override. It also normalizes
   provider-safe temperature defaults: tool workflows use `temperature: 0.6`,
@@ -307,7 +311,7 @@ healthy custom providers or the built-in registry.
 | Provider   | Param Name         | Type    | UI Control | Sent to Backend              |
 | ---------- | ------------------ | ------- | ---------- | ---------------------------- |
 | GPT-5.5          | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "high"}` |
-| Gemini 3         | `thinking_level`   | ENUM    | Dropdown   | `{thinking_level: "high"}`   |
+| Gemini 3 / 3.5 Flash | `thinking_level`   | ENUM    | Dropdown   | `{thinking_level: "high"}`   |
 | Claude Opus 4.7  | `thinking_enabled` | BOOLEAN | Toggle     | `{thinking: {type: "adaptive"}}` |
 | Claude Opus 4.7  | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
 | DeepSeek V4      | `thinking.type`    | ENUM    | Dropdown   | `{thinking: {type: "enabled"}}` |
