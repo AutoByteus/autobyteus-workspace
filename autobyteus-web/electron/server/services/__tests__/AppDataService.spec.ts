@@ -172,6 +172,11 @@ describe('AppDataService', () => {
         expect.stringContaining(`AUTOBYTEUS_SERVER_HOST=${EMBEDDED_SERVER_BASE_URL}`),
         'utf8'
       )
+      expect(mockedFs.writeFileSync).toHaveBeenCalledWith(
+        path.join(expectedAppDataDir, '.env'),
+        expect.stringContaining(`DATABASE_URL=file:${path.join(expectedAppDataDir, 'db', 'production.db').replace(/\\/g, '/')}`),
+        'utf8'
+      )
     })
 
     it('generates app-data .env when bundled .env is missing', () => {
@@ -193,6 +198,11 @@ describe('AppDataService', () => {
       expect(mockedFs.writeFileSync).toHaveBeenCalledWith(
         path.join(expectedAppDataDir, '.env'),
         expect.stringContaining(`AUTOBYTEUS_SERVER_HOST=${EMBEDDED_SERVER_BASE_URL}`),
+        'utf8'
+      )
+      expect(mockedFs.writeFileSync).toHaveBeenCalledWith(
+        path.join(expectedAppDataDir, '.env'),
+        expect.stringContaining(`DATABASE_URL=file:${path.join(expectedAppDataDir, 'db', 'production.db').replace(/\\/g, '/')}`),
         'utf8'
       )
     })

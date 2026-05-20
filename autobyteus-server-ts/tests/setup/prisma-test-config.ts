@@ -7,4 +7,4 @@ export const getTestDatabasePath = (): string => {
   return path.join(dir, "autobyteus-server-test.db");
 };
 
-export const getTestDatabaseUrl = (): string => `file:${getTestDatabasePath()}`;
+export const getTestDatabaseUrl = (): string => `file:${getTestDatabasePath().replace(/\\/g, "/")}`;

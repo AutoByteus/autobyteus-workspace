@@ -181,8 +181,12 @@ export class AppConfig {
       return;
     }
     const dbPath = this.getSqlitePath();
-    const expectedUrl = `file:${dbPath}`;
+    const expectedUrl = this.toPrismaSqliteUrl(dbPath);
     this.set("DATABASE_URL", expectedUrl);
+  }
+
+  private toPrismaSqliteUrl(filePath: string): string {
+    return `file:${filePath.replace(/\\/g, "/")}`;
   }
 
   private getSqlitePath(): string {

@@ -2,6 +2,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 import { logger as rootLogger } from '../../logger'
 import { INTERNAL_SERVER_BASE_URL } from '../../../shared/embeddedServerConfig'
+import { toPrismaSqliteUrl } from '../prismaSqliteUrl'
 
 const logger = rootLogger.child('server.app-data')
 
@@ -195,16 +196,11 @@ export class AppDataService {
       'APP_ENV=production',
       'LOG_LEVEL=INFO',
       'DB_TYPE=sqlite',
-      `DATABASE_URL=${this.toPrismaSqliteUrl(dbPath)}`,
+      `DATABASE_URL=${toPrismaSqliteUrl(dbPath)}`,
       `AUTOBYTEUS_SERVER_HOST=${defaultHost}`
     ]
 
     return `${lines.join('\n')}\n`
-  }
-
-  private toPrismaSqliteUrl(filePath: string): string {
-    const normalizedPath = filePath.replace(/\\/g, '/')
-    return normalizedPath.startsWith('/') ? `file:${normalizedPath}` : `file:/${normalizedPath}`
   }
 
   /**

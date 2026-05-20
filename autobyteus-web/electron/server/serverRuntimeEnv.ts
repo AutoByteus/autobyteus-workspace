@@ -1,9 +1,5 @@
 import * as path from 'path'
-
-function toPrismaSqliteUrl(filePath: string): string {
-  const normalizedPath = filePath.replace(/\\/g, '/')
-  return normalizedPath.startsWith('/') ? `file:${normalizedPath}` : `file:/${normalizedPath}`
-}
+import { toPrismaSqliteUrl } from './prismaSqliteUrl'
 
 export function buildServerRuntimeEnv(
   appDataDir: string,

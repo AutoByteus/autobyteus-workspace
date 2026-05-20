@@ -5,4 +5,4 @@ export const getTestDatabasePath = () => {
     fs.mkdirSync(dir, { recursive: true });
     return path.join(dir, "autobyteus-server-test.db");
 };
-export const getTestDatabaseUrl = () => `file:${getTestDatabasePath()}`;
+export const getTestDatabaseUrl = () => `file:${getTestDatabasePath().replace(/\\/g, "/")}`;

@@ -21,7 +21,7 @@ describe('buildServerRuntimeEnv', () => {
       {}
     )
 
-    expect(env.DATABASE_URL).toBe('file:/C:/Users/tester/.autobyteus/server-data/db/production.db')
+    expect(env.DATABASE_URL).toBe('file:C:/Users/tester/.autobyteus/server-data/db/production.db')
   })
 
   it('keeps explicitly provided database env overrides', () => {

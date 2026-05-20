@@ -66,8 +66,9 @@ describe("AppConfig", () => {
 
     expect(config.getBaseUrl()).toBe("http://localhost:8000");
     const expectedDbPath = path.resolve(configDir, "db", "test.db");
-    expect(config.get("DATABASE_URL")).toBe(`file:${expectedDbPath}`);
-    expect(process.env.DATABASE_URL).toBe(`file:${expectedDbPath}`);
+    const expectedDatabaseUrl = `file:${expectedDbPath.replace(/\\/g, "/")}`;
+    expect(config.get("DATABASE_URL")).toBe(expectedDatabaseUrl);
+    expect(process.env.DATABASE_URL).toBe(expectedDatabaseUrl);
     expect(fs.existsSync(path.join(configDir, "logs"))).toBe(true);
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
