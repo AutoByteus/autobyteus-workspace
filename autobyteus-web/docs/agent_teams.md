@@ -58,7 +58,7 @@ for the selected model. This includes thinking settings such as
 
 ## Ownership Behavior
 
-| Scope | Shown in generic Agent Teams list | Editable from generic team detail/edit | Generic delete / sync |
+| Scope | Shown in generic Agent Teams list | Editable from generic team detail/edit | Generic delete action |
 | --- | --- | --- | --- |
 | `SHARED` | Yes | Yes | Allowed |
 | `TEAM_LOCAL` | No in the root catalog; discover through the owning team detail/member tree | Direct known-id routes can inspect/edit when the backing source is writable | Not allowed as an independent generic root workflow |
@@ -265,11 +265,13 @@ history rows.
 
 Package import/remove flows invalidate and reload Agent Teams together with Applications and Agents so application-owned teams appear or disappear immediately in the same session.
 
+For definition updates outside the editor, use the package/Git/folder source workflow and then press **Reload** in the Agent Teams catalog. Reload refreshes the local agent and team definition catalogs from the configured sources and performs a network refetch; it does not copy definitions between nodes.
+
 ## Featured Teams
 
 `AgentTeamList.vue` joins the loaded team catalog with `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` entries whose `resourceKind` is `AGENT_TEAM`.
 
-- Featured teams render with the same `AgentTeamCard` component and the same view, sync, and run actions as the regular grid.
+- Featured teams render with the same `AgentTeamCard` component and the same view-details and run actions as the regular grid.
 - When the featured section is visible, the same team is removed from the regular grid to avoid duplicate cards.
 - Search mode hides featured grouping and searches the root team catalog normally, including featured teams that match the query while still excluding `TEAM_LOCAL` child definitions from the root page.
 - Unknown or removed definition ids in the setting are ignored on the catalog page; Settings keeps unresolved rows visible for operator cleanup.
@@ -278,7 +280,7 @@ Package import/remove flows invalidate and reload Agent Teams together with Appl
 ## Notes
 
 - The generic create flow still creates shared standalone teams.
-- Application-owned teams are surfaced for inspection/testing and in-place editing, not for shared-path deletion or sync.
+- Application-owned teams are surfaced for inspection/testing and in-place editing, not for shared-path deletion.
 - Team-local subteams are stored under the owning team at `agent-teams/<local-team-id>/`, can own their own `agents/` and deeper `agent-teams/` folders, and are hidden from the root catalog by `ownershipScope: 'TEAM_LOCAL'`.
 - Team member configs must preserve explicit `refScope` for all members. Use `TEAM_LOCAL` for parent-owned local agents/subteams, `SHARED` for reusable catalog definitions, and `APPLICATION_OWNED` for same-application sibling team references from application-owned teams.
 - Resolvable nested team members show a visible `View ↗` action in the parent team detail row. The action routes through the existing Agent Teams page detail view with the resolved canonical child team id and a parent return context, including canonical team-local child ids such as `team-local-team:<encoded-owner-team-id>:<encoded-local-team-id>`. Unresolved nested team rows do not show a broken navigation action.

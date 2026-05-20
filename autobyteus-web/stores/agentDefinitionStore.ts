@@ -6,6 +6,7 @@ import {
   CreateAgentDefinition,
   DeleteAgentDefinition,
   DuplicateAgentDefinition,
+  RefreshAgentDefinitionCatalog,
   UpdateAgentDefinition,
 } from '~/graphql/mutations/agentDefinitionMutations'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
@@ -148,6 +149,38 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     } catch (cause) {
       error.value = cause
       console.error('Failed to reload agent definitions:', cause)
+      throw cause
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const refreshAndReloadAllAgentDefinitions = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const client = getApolloClient()
+      const mutationResult = await client.mutate({
+        mutation: RefreshAgentDefinitionCatalog,
+      })
+
+      if (mutationResult.errors && mutationResult.errors.length > 0) {
+        throw new Error(mutationResult.errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      const { data, errors } = await client.query({
+        query: GetAgentDefinitions,
+        fetchPolicy: 'network-only',
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      agentDefinitions.value = data.agentDefinitions || []
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to refresh agent definition catalog:', cause)
       throw cause
     } finally {
       loading.value = false
@@ -353,6 +386,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     deleteResult,
     fetchAllAgentDefinitions,
     reloadAllAgentDefinitions,
+    refreshAndReloadAllAgentDefinitions,
     createAgentDefinition,
     updateAgentDefinition,
     deleteAgentDefinition,

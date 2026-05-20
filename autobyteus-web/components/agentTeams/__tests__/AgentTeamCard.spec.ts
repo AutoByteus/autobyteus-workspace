@@ -11,7 +11,6 @@ vi.mock('~/composables/useLocalization', () => ({
 
       const translations: Record<string, string> = {
         'agentTeams.components.agentTeams.AgentTeamCard.uncategorized': 'Uncategorized',
-        'agentTeams.components.agentTeams.AgentTeamCard.sync': 'Sync',
         'agentTeams.components.agentTeams.AgentTeamCard.run': 'Run',
         'agentTeams.components.agentTeams.AgentTeamCard.view_details': 'View Details',
         'agentTeams.components.agentTeams.AgentTeamCard.and_rarr': '->',
@@ -38,10 +37,10 @@ const buildTeamDefinition = (overrides: Record<string, unknown> = {}) => ({
   coordinatorMemberName: 'solution_designer',
   updatedAt: '2026-04-10T09:00:00.000Z',
   nodes: [
-    { memberName: 'solution_designer', ref: 'agent-1', refType: 'AGENT', refScope: 'SHARED' },
-    { memberName: 'architect_reviewer', ref: 'agent-2', refType: 'AGENT', refScope: 'SHARED' },
-    { memberName: 'implementation_engineer', ref: 'agent-3', refType: 'AGENT', refScope: 'SHARED' },
-    { memberName: 'api_e2e_engineer', ref: 'agent-4', refType: 'AGENT', refScope: 'SHARED' },
+    { memberName: 'solution_designer', ref: 'agent-1', refType: 'AGENT' as const, refScope: 'SHARED' as const },
+    { memberName: 'architect_reviewer', ref: 'agent-2', refType: 'AGENT' as const, refScope: 'SHARED' as const },
+    { memberName: 'implementation_engineer', ref: 'agent-3', refType: 'AGENT' as const, refScope: 'SHARED' as const },
+    { memberName: 'api_e2e_engineer', ref: 'agent-4', refType: 'AGENT' as const, refScope: 'SHARED' as const },
   ],
   ...overrides,
 });
@@ -57,7 +56,6 @@ describe('AgentTeamCard', () => {
           $t: (key: string) => {
             const translations: Record<string, string> = {
               'agentTeams.components.agentTeams.AgentTeamCard.uncategorized': 'Uncategorized',
-              'agentTeams.components.agentTeams.AgentTeamCard.sync': 'Sync',
               'agentTeams.components.agentTeams.AgentTeamCard.run': 'Run',
               'agentTeams.components.agentTeams.AgentTeamCard.view_details': 'View Details',
               'agentTeams.components.agentTeams.AgentTeamCard.and_rarr': '->',
@@ -77,6 +75,8 @@ describe('AgentTeamCard', () => {
     expect(wrapper.text()).toContain('Coordinator');
     expect(wrapper.text()).toContain('Members');
     expect(wrapper.text()).toContain('Nested Teams');
+    expect(wrapper.text()).not.toContain('Sync');
+    expect(wrapper.text()).toContain('Run');
     expect(wrapper.text()).not.toContain('Updated');
     expect(wrapper.text()).not.toContain('Not tracked');
   });

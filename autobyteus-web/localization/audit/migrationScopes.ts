@@ -70,8 +70,8 @@ export const localizationMigrationScopes: LocalizationMigrationScope[] = [
   {
     scopeId: 'M-009',
     status: 'closed',
-    description: 'tools, sync, and file explorer UI',
-    include: ['pages/tools.vue', 'components/tools/', 'components/sync/', 'components/fileExplorer/'],
+    description: 'tools and file explorer UI',
+    include: ['pages/tools.vue', 'components/tools/', 'components/fileExplorer/'],
   },
   {
     scopeId: 'M-010',

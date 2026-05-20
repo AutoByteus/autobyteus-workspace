@@ -1,17 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import AgentCard from '../AgentCard.vue'
+import type { AgentDefinition } from '~/stores/agentDefinitionStore'
 
 const mockTranslations: Record<string, string> = {
   'agents.components.agents.AgentCard.teamLabel': 'Team: {{team}}',
-  'agents.components.agents.AgentCard.sync': 'Sync',
   'agents.components.agents.AgentCard.run': 'Run',
 }
 
-const buildAgentDefinition = (overrides: Record<string, unknown> = {}) => ({
+const buildAgentDefinition = (overrides: Partial<AgentDefinition> = {}): AgentDefinition => ({
   id: 'agent-1',
   name: 'Architect Designer',
   description: 'Designs system structure.',
+  instructions: 'Follow the architecture brief.',
   toolNames: ['tool-a'],
   skillNames: ['skill-a'],
   inputProcessorNames: [],
@@ -84,7 +85,7 @@ describe('AgentCard', () => {
     expect(wrapper.text()).not.toContain('Sync')
   })
 
-  it('keeps shared agents visually unchanged', () => {
+  it('keeps shared agents on run and details actions without sync', () => {
     const wrapper = mount(AgentCard, {
       props: {
         agentDef: buildAgentDefinition(),
@@ -97,6 +98,7 @@ describe('AgentCard', () => {
     })
 
     expect(wrapper.text()).not.toContain('Team:')
-    expect(wrapper.text()).toContain('Sync')
+    expect(wrapper.text()).not.toContain('Sync')
+    expect(wrapper.text()).toContain('Run')
   })
 })

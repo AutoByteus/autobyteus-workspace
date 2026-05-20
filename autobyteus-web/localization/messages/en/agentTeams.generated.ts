@@ -45,8 +45,6 @@ const messages = {
   'agentTeams.components.agentTeams.AgentTeamList.loading_agent_team_definitions': 'Loading agent team definitions...',
   'agentTeams.components.agentTeams.AgentTeamList.no_teams_found': 'No teams found',
   'agentTeams.components.agentTeams.AgentTeamList.search_teams_by_name': 'Search teams by name',
-  'agentTeams.components.agentTeams.AgentTeamList.sync_team': 'Sync Team',
-  'agentTeams.components.agentTeams.AgentTeamList.team_sync_report': 'Team Sync Report',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.no_options_found': 'No options found.',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.searchplaceholder': 'searchPlaceholder',
   'agentTeams.components.agentTeams.form.AgentTeamLibraryPanel.agent_and_team_library': 'Agent & Team Library',

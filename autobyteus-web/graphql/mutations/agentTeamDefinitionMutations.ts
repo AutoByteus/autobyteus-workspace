@@ -57,3 +57,9 @@ export const DeleteAgentTeamDefinition = gql`
     }
   }
 `
+
+export const RefreshAgentTeamDefinitionCatalog = gql`
+  mutation RefreshAgentTeamDefinitionCatalog {
+    refreshAgentTeamDefinitionCatalog
+  }
+`

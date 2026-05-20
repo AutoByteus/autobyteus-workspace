@@ -20,7 +20,6 @@ Commands:
   logs         Tail logs
   ports        Print current mapped ports and URLs
   seed         Seed test fixtures through GraphQL
-  sync-remotes Run full sync from main node to remote node(s)
 
 Options (all commands):
   -p, --project <name>   Compose project name (default: ${DEFAULT_PROJECT})
@@ -31,8 +30,6 @@ Options (up only):
   --fresh-ports          Pick a new set of host ports
   --seed-test-fixtures   Seed fixtures after startup (default: on)
   --no-seed-test-fixtures Disable fixture seeding during startup
-  --sync-remotes         Run post-start sync to remotes (default: on)
-  --no-sync-remotes      Disable post-start remote sync
 
 Options (down only):
   --volumes              Remove named volumes
@@ -64,24 +61,6 @@ run_seed_fixtures() {
 
   log "Seeding test fixtures via ${graphql_url}"
   python3 "${seed_script}" --graphql-url "${graphql_url}"
-}
-
-run_remote_full_sync() {
-  local env_file="$1"
-  local project="$2"
-  local remote_count="$3"
-  local sync_script="${ROOT_DIR}/scripts/run-personal-remote-sync.py"
-  [[ -f "${sync_script}" ]] || fail "Remote sync script not found: ${sync_script}"
-
-  # shellcheck disable=SC1090
-  source "${env_file}"
-  local graphql_url="http://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}/graphql"
-
-  log "Running full sync to remotes via ${graphql_url} (expected remotes=${remote_count})"
-  python3 "${sync_script}" \
-    --graphql-url "${graphql_url}" \
-    --project "${project}" \
-    --remote-count "${remote_count}"
 }
 
 normalize_project() {
@@ -220,7 +199,6 @@ fresh_ports=0
 remove_volumes=0
 remove_state=0
 seed_test_fixtures=1
-sync_remotes=1
 extra_args=()
 
 while [[ $# -gt 0 ]]; do
@@ -249,14 +227,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     --no-seed-test-fixtures)
       seed_test_fixtures=0
-      shift
-      ;;
-    --sync-remotes)
-      sync_remotes=1
-      shift
-      ;;
-    --no-sync-remotes)
-      sync_remotes=0
       shift
       ;;
     --volumes)
@@ -330,14 +300,6 @@ case "${cmd}" in
     if [[ "${seed_test_fixtures}" -eq 1 ]]; then
       run_seed_fixtures "${env_file}"
     fi
-    if [[ "${sync_remotes}" -eq 1 ]]; then
-      if [[ "${remote_nodes}" -gt 0 ]]; then
-        run_remote_full_sync "${env_file}" "${project}" "${remote_nodes}"
-      else
-        log "Skipping remote sync: --remote-nodes is 0."
-      fi
-    fi
-
     printf '\n'
     print_endpoints "${env_file}"
     ;;
@@ -378,15 +340,6 @@ case "${cmd}" in
   seed)
     [[ -f "${env_file}" ]] || fail "Runtime env file not found: ${env_file}"
     run_seed_fixtures "${env_file}"
-    ;;
-
-  sync-remotes)
-    [[ -f "${env_file}" ]] || fail "Runtime env file not found: ${env_file}"
-    expected_remote_count="${remote_nodes}"
-    if [[ "${expected_remote_count}" -le 0 ]]; then
-      expected_remote_count=1
-    fi
-    run_remote_full_sync "${env_file}" "${project}" "${expected_remote_count}"
     ;;
 
   *)

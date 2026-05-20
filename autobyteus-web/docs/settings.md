@@ -85,10 +85,10 @@ Provides insights into the application's token consumption and associated costs.
 
 **Component:** `components/settings/NodeManager.vue`
 
-Manage local/remote node registrations and synchronization operations.
+Manage local/remote node registrations, capability display, and remote-access operations.
 
 - **Tabbed layout:** `components/settings/NodeManagerTabs.vue` is the visible page header for Settings → Nodes. It splits the page into a default **Manage Nodes** tab and a **Docker Guide** tab without rendering an additional redundant `Node Manager` title.
-- **Manage Nodes tab:** contains the actionable node-management settings and operations: current window node (`components/settings/CurrentWindowNodeCard.vue`), `Remote Browser Sharing`, Add Remote Node, Run Full Sync, and Configured Nodes.
+- **Manage Nodes tab:** contains the actionable node-management settings and operations: current window node (`components/settings/CurrentWindowNodeCard.vue`), `Remote Browser Sharing`, Add Remote Node, and Configured Nodes.
 - **Phone Access:** when the current window is the embedded desktop node, `components/settings/PhoneAccessCard.vue` appears in the Manage Nodes tab. It is the desktop-owned pairing and revocation surface for the phone/PWA Remote Access flow. Operators can enable or disable Phone Access, choose or manually enter a LAN/VPN/private-network server URL, create a short-lived pairing QR/link, inspect paired phones, revoke one phone, or revoke all phones. See [Phone Access / Remote Access](./remote_access.md) for the user and packaging guide.
 - **Docker Guide tab:** `components/settings/DockerNodeStartGuideCard.vue` gives packaged-app users copyable no-clone commands for running a published server Docker node. This content is tutorial/help guidance rather than saved node settings, so it is intentionally separated from the management form flow.
   - macOS/Linux and Windows PowerShell primary commands install or replace the local `autobyteus-docker` launcher once from the public raw GitHub URL.
@@ -100,7 +100,7 @@ Manage local/remote node registrations and synchronization operations.
   - Existing managed containers receive the host-visible workspace bind mounts through `autobyteus-docker workspace apply --all`, which safely recreates containers while keeping named volumes and host folders.
 - Register and rename remote nodes from the Manage Nodes tab.
 - Validate connectivity/capabilities from the Manage Nodes tab.
-- Trigger focused or full sync operations between nodes from the Manage Nodes tab.
+- Use packages, Git/folders, and catalog Reload for agent/team definition updates; configure MCP servers explicitly on each machine from Settings → MCP Servers.
 - In Electron, `Remote Browser Sharing` is an advanced opt-in setting for sharing the local Browser runtime with selected remote nodes.
 - Changing the remote-browser-sharing listener host requires restarting Electron because the Browser bridge listener is started by Electron main during desktop bootstrap.
 - Pairing and revoke actions are per remote node, and successful pair/unpair operations refresh remote browser-tool availability without restarting the remote node server.

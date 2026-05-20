@@ -4,54 +4,19 @@ import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import AgentTeamList from '../AgentTeamList.vue';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
-import { useNodeStore } from '~/stores/nodeStore';
-import { useNodeSyncStore } from '~/stores/nodeSyncStore';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useServerSettingsStore } from '~/stores/serverSettings';
 import { FEATURED_CATALOG_ITEMS_SETTING_KEY } from '~/utils/catalog/featuredCatalogItems';
-
-const EMBEDDED_SERVER_BASE_URL = 'http://127.0.0.1:29695';
 
 const AgentTeamCardStub = {
   name: 'AgentTeamCard',
   template: '<div class="agent-team-card"></div>',
   props: ['teamDef'],
-  emits: ['run-team', 'view-details', 'sync-team'],
+  emits: ['run-team', 'view-details'],
 };
-
-const NodeSyncTargetPickerModalStub = {
-  name: 'NodeSyncTargetPickerModal',
-  template: '<div class="sync-target-picker-stub"></div>',
-  props: ['modelValue'],
-  emits: ['update:modelValue', 'confirm'],
-};
-
-const NodeSyncReportPanelStub = {
-  name: 'NodeSyncReportPanel',
-  template: '<div class="sync-report-panel-stub"></div>',
-  props: ['report', 'title'],
-};
-
-function setElectronApiMock(mock: Partial<Window['electronAPI']> | null): void {
-  Object.defineProperty(window, 'electronAPI', {
-    configurable: true,
-    writable: true,
-    value: mock,
-  });
-}
 
 async function flushAsyncUi(): Promise<void> {
   await Promise.resolve();
   await Promise.resolve();
-}
-
-function readSetupRef<T>(wrapper: ReturnType<typeof mount>, key: string): T | undefined {
-  const setupState = (wrapper.vm as any).$?.setupState;
-  const value = setupState?.[key];
-  if (value && typeof value === 'object' && 'value' in value) {
-    return value.value as T;
-  }
-  return value as T | undefined;
 }
 
 describe('AgentTeamList', () => {
@@ -76,33 +41,11 @@ describe('AgentTeamList', () => {
     },
   ];
 
-  const defaultNodes = [
-    {
-      id: 'embedded-local',
-      name: 'Embedded Node',
-      baseUrl: EMBEDDED_SERVER_BASE_URL,
-      nodeType: 'embedded',
-      isSystem: true,
-      createdAt: '2026-02-11T00:00:00.000Z',
-      updatedAt: '2026-02-11T00:00:00.000Z',
-    },
-    {
-      id: 'remote-1',
-      name: 'Remote One',
-      baseUrl: 'http://localhost:8001',
-      nodeType: 'remote',
-      isSystem: false,
-      createdAt: '2026-02-11T00:00:00.000Z',
-      updatedAt: '2026-02-11T00:00:00.000Z',
-    },
-  ];
-
   beforeEach(() => {
     vi.restoreAllMocks();
-    setElectronApiMock(null);
   });
 
-  const mountComponent = async (options?: { nodes?: any[]; sourceNodeId?: string; featuredSettingValue?: string | null }) => {
+  const mountComponent = async (options?: { featuredSettingValue?: string | null }) => {
     const pinia = createTestingPinia({
       createSpy: vi.fn,
       stubActions: true,
@@ -113,16 +56,6 @@ describe('AgentTeamList', () => {
     store.agentTeamDefinitions = mockTeamDefs as any;
     store.loading = false as any;
     store.error = null as any;
-
-    const nodeStore = useNodeStore();
-    nodeStore.nodes = (options?.nodes ?? defaultNodes) as any;
-    (nodeStore.initializeRegistry as any).mockResolvedValue(undefined);
-
-    const nodeSyncStore = useNodeSyncStore();
-    (nodeSyncStore.initialize as any).mockResolvedValue(undefined);
-
-    const windowNodeContextStore = useWindowNodeContextStore();
-    windowNodeContextStore.nodeId = options?.sourceNodeId ?? 'embedded-local';
 
     const serverSettingsStore = useServerSettingsStore();
     serverSettingsStore.settings = options?.featuredSettingValue === undefined || options.featuredSettingValue === null
@@ -142,8 +75,6 @@ describe('AgentTeamList', () => {
         plugins: [pinia],
         stubs: {
           AgentTeamCard: AgentTeamCardStub,
-          NodeSyncTargetPickerModal: NodeSyncTargetPickerModalStub,
-          NodeSyncReportPanel: NodeSyncReportPanelStub,
         },
       },
     });
@@ -191,19 +122,6 @@ describe('AgentTeamList', () => {
     expect(cards.map((card) => (card.props('teamDef') as any).id)).toEqual(['t1', 't2']);
   });
 
-  it('shows error when no target nodes are available for team sync', async () => {
-    const wrapper = await mountComponent({
-      nodes: [defaultNodes[0]],
-    });
-
-    const setupState = (wrapper.vm as any).$?.setupState;
-    await setupState.syncTeam(mockTeamDefs[0]);
-    await flushAsyncUi();
-    await wrapper.vm.$nextTick();
-
-    expect(readSetupRef<string | null>(wrapper, 'syncError')).toBe('No target nodes available for sync.');
-  });
-
   it('reloads team definitions when reload is clicked', async () => {
     const wrapper = await mountComponent();
     const store = useAgentTeamDefinitionStore();
@@ -213,60 +131,6 @@ describe('AgentTeamList', () => {
     await reloadButton!.trigger('click');
     await flushAsyncUi();
 
-    expect(store.reloadAllAgentTeamDefinitions).toHaveBeenCalledTimes(1);
-  });
-
-  it('opens target picker and runs selective team sync after confirmation', async () => {
-    const wrapper = await mountComponent();
-    const nodeSyncStore = useNodeSyncStore();
-    (nodeSyncStore.runSelectiveTeamSync as any).mockResolvedValue({
-      status: 'success',
-      sourceNodeId: 'embedded-local',
-      targetResults: [{ targetNodeId: 'remote-1', status: 'success' }],
-      error: null,
-      report: {
-        sourceNodeId: 'embedded-local',
-        scope: ['agent_definition', 'agent_team_definition'],
-        exportByEntity: [],
-        targets: [],
-      },
-    });
-
-    const setupState = (wrapper.vm as any).$?.setupState;
-    await setupState.syncTeam(mockTeamDefs[0]);
-    expect(readSetupRef<boolean>(wrapper, 'isTargetPickerOpen')).toBe(true);
-
-    await setupState.confirmTeamSync(['remote-1']);
-    await flushAsyncUi();
-    await wrapper.vm.$nextTick();
-
-    expect(nodeSyncStore.runSelectiveTeamSync).toHaveBeenCalledWith({
-      sourceNodeId: 'embedded-local',
-      targetNodeIds: ['remote-1'],
-      agentTeamDefinitionIds: ['t1'],
-      includeDependencies: true,
-      includeDeletes: false,
-    });
-    expect(readSetupRef(wrapper, 'lastTeamSyncReport')).toEqual({
-      sourceNodeId: 'embedded-local',
-      scope: ['agent_definition', 'agent_team_definition'],
-      exportByEntity: [],
-      targets: [],
-    });
-    expect(readSetupRef<string | null>(wrapper, 'syncInfo')).toBe('Team sync success. 1/1 target(s) succeeded.');
-  });
-
-  it('renders sync failure message when selective team sync rejects', async () => {
-    const wrapper = await mountComponent();
-    const nodeSyncStore = useNodeSyncStore();
-    (nodeSyncStore.runSelectiveTeamSync as any).mockRejectedValue(new Error('team sync failed'));
-
-    const setupState = (wrapper.vm as any).$?.setupState;
-    await setupState.syncTeam(mockTeamDefs[0]);
-    await setupState.confirmTeamSync(['remote-1']);
-    await flushAsyncUi();
-    await wrapper.vm.$nextTick();
-
-    expect(readSetupRef<string | null>(wrapper, 'syncError')).toBe('team sync failed');
+    expect(store.refreshAndReloadAllAgentTeamDefinitions).toHaveBeenCalledTimes(1);
   });
 });

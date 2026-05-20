@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useAgentTeamDefinitionStore } from '../agentTeamDefinitionStore';
+import { GetAgentTeamDefinitions } from '~/graphql/queries/agentTeamDefinitionQueries';
+import { RefreshAgentTeamDefinitionCatalog } from '~/graphql/mutations/agentTeamDefinitionMutations';
 
 const mockQuery = vi.fn();
 const mockMutate = vi.fn();
@@ -33,7 +35,7 @@ describe('agentTeamDefinitionStore', () => {
 
     expect(mockQuery).not.toHaveBeenCalled();
     expect(store.error).toBeInstanceOf(Error);
-    expect(store.error?.message).toBe('Bound backend is not ready');
+    expect((store.error as Error).message).toBe('Bound backend is not ready');
   });
 
   it('fetches team definitions when bound backend is ready', async () => {
@@ -103,6 +105,48 @@ describe('agentTeamDefinitionStore', () => {
     ]);
     expect(store.getTeamLocalTeamDefinitionsByOwnerTeamId('company')).toEqual([
       expect.objectContaining({ id: 'team-local-team:company:research' }),
+    ]);
+  });
+
+  it('refreshes the backend team catalog before network reloading team definitions', async () => {
+    mockMutate.mockResolvedValue({
+      data: {
+        refreshAgentTeamDefinitionCatalog: true,
+      },
+      errors: [],
+    });
+    mockQuery.mockResolvedValue({
+      data: {
+        agentTeamDefinitions: [
+          {
+            id: 'refreshed-team',
+            name: 'Refreshed Team',
+            description: 'Loaded after catalog refresh',
+            instructions: 'Use refreshed team catalog data.',
+            coordinatorMemberName: 'lead',
+            nodes: [],
+            ownershipScope: 'SHARED',
+          },
+        ],
+      },
+      errors: [],
+    });
+
+    const store = useAgentTeamDefinitionStore();
+    await store.refreshAndReloadAllAgentTeamDefinitions();
+
+    expect(mockMutate).toHaveBeenCalledWith({
+      mutation: RefreshAgentTeamDefinitionCatalog,
+    });
+    expect(mockQuery).toHaveBeenCalledWith({
+      query: GetAgentTeamDefinitions,
+      fetchPolicy: 'network-only',
+    });
+    expect(mockMutate.mock.invocationCallOrder[0]).toBeLessThan(
+      mockQuery.mock.invocationCallOrder[0],
+    );
+    expect(store.agentTeamDefinitions).toEqual([
+      expect.objectContaining({ id: 'refreshed-team' }),
     ]);
   });
 

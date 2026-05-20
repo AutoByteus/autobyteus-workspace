@@ -19,6 +19,7 @@ import {
   TeamMember as DomainTeamMember,
 } from "../../../agent-team-definition/domain/models.js";
 import { AgentTeamDefinitionService } from "../../../agent-team-definition/services/agent-team-definition-service.js";
+import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionConverter } from "../converters/agent-team-definition-converter.js";
 import {
   GraphqlDefaultLaunchConfig,
@@ -241,6 +242,18 @@ export class AgentTeamDefinitionResolver {
     } catch (error) {
       logger.error(`Error fetching agent team templates: ${String(error)}`);
       throw new Error("Unable to fetch agent team templates at this time.");
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async refreshAgentTeamDefinitionCatalog(): Promise<boolean> {
+    try {
+      await AgentDefinitionService.getInstance().refreshCache();
+      await AgentTeamDefinitionService.getInstance().refreshCache();
+      return true;
+    } catch (error) {
+      logger.error(`Error refreshing agent team definition catalog: ${String(error)}`);
+      throw new Error("Unable to refresh agent team definition catalog at this time.");
     }
   }
 
