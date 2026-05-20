@@ -2,7 +2,6 @@ import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
   'agentTeams.components.agentTeams.AgentTeamCard.uncategorized': 'Uncategorized',
-  'agentTeams.components.agentTeams.AgentTeamCard.sync': 'Sync',
   'agentTeams.components.agentTeams.AgentTeamCard.run': 'Run',
   'agentTeams.components.agentTeams.AgentTeamCard.teamBadge': 'TEAM',
   'agentTeams.components.agentTeams.AgentTeamCard.moreCount': '+{{count}} more',
@@ -73,8 +72,6 @@ const messages = {
   'agentTeams.components.agentTeams.AgentTeamList.allTeams': 'All teams',
   'agentTeams.components.agentTeams.AgentTeamList.emptyFiltered': 'No teams matched "{{query}}"',
   'agentTeams.components.agentTeams.AgentTeamList.emptyDefault': 'Create your first agent team to get started.',
-  'agentTeams.components.agentTeams.AgentTeamList.syncTargetDescription': 'Select target node(s) for "{{name}}".',
-  'agentTeams.components.agentTeams.AgentTeamList.syncConfirmLabel': 'Sync Team',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.loading': 'Loading...',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.defaultPlaceholder': 'Select an option',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.defaultSearchPlaceholder': 'Search...',

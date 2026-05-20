@@ -67,13 +67,6 @@
 
       <div class="flex w-full flex-row gap-3 sm:w-auto sm:flex-col sm:items-end">
         <button
-          v-if="canSync"
-          @click.stop="$emit('sync-agent', agentDef)"
-          class="inline-flex min-w-[84px] justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-        >
-          {{ $t('agents.components.agents.AgentCard.sync') }}
-        </button>
-        <button
           @click.stop="$emit('run-agent', agentDef)"
           class="inline-flex min-w-[84px] justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
@@ -101,7 +94,7 @@ const props = defineProps<{
   agentDef: AgentDefinition;
 }>();
 
-const emit = defineEmits(['view-details', 'run-agent', 'sync-agent']);
+defineEmits(['view-details', 'run-agent']);
 
 const { agentDef } = toRefs(props);
 const { $t } = useNuxtApp();
@@ -162,7 +155,6 @@ const ownershipLabel = computed(() => {
   }
   return '';
 });
-const canSync = computed(() => ownershipScope.value === 'SHARED');
 
 const avatarInitials = computed(() => {
   const raw = agentDef.value.name?.trim() ?? '';

@@ -45,8 +45,6 @@ const messages = {
   'agentTeams.components.agentTeams.AgentTeamList.loading_agent_team_definitions': '正在加载智能体团队定义...',
   'agentTeams.components.agentTeams.AgentTeamList.no_teams_found': '没有找到团队',
   'agentTeams.components.agentTeams.AgentTeamList.search_teams_by_name': '按名称搜索团队',
-  'agentTeams.components.agentTeams.AgentTeamList.sync_team': '同步团队',
-  'agentTeams.components.agentTeams.AgentTeamList.team_sync_report': '团队同步报告',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.no_options_found': '没有找到选项。',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.searchplaceholder': '搜索占位符',
   'agentTeams.components.agentTeams.form.AgentTeamLibraryPanel.agent_and_team_library': '智能体与团队库',

@@ -46,7 +46,7 @@ for the selected model. This includes thinking settings such as
 
 ## Ownership Behavior
 
-| Scope | Shown in generic Agents list | Editable from generic agent detail/edit | Generic delete / duplicate / sync |
+| Scope | Shown in generic Agents list | Editable from generic agent detail/edit | Generic delete / duplicate actions |
 | --- | --- | --- | --- |
 | `SHARED` | Yes | Yes | Allowed |
 | `TEAM_LOCAL` | No in normal browse/search; use owning Agent Team detail | Direct known-id routes remain available, but primary edit is in Agent Team detail | Not allowed in the generic shared workflow |
@@ -97,13 +97,15 @@ Definition editors can leave runtime blank to mean “choose when launching”, 
 
 Package import/remove flows invalidate and reload Agents together with Applications and Agent Teams. This keeps embedded application-owned definitions visible (or removed) in the same session immediately after a package mutation.
 
+For definition updates outside the editor, use the package/Git/folder source workflow and then press **Reload** in the Agents catalog. Reload refreshes the local agent definition catalog from the configured sources and performs a network refetch; it does not copy definitions between nodes.
+
 ## Featured Agents
 
 `AgentList.vue` joins the loaded agent catalog with `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` entries whose `resourceKind` is `AGENT`.
 
 - Featured placement is user/operator-selected through Settings; fresh server startup does not auto-feature Daily Assistant or any other agent.
 - Daily Assistant can be loaded as a normal private/shared agent from an agent package such as `/Users/normy/autobyteus_org/autobyteus-private-agents/agents/daily-assistant/`, then added to Featured agents through Settings if desired.
-- Featured agents render with the same `AgentCard` component and the same view, sync, and run actions as the origin-grouped browse sections.
+- Featured agents render with the same `AgentCard` component and the same view-details and run actions as the origin-grouped browse sections.
 - When the featured section is visible, the same agent is removed from later origin sections to avoid duplicate cards.
 - Search mode hides featured and origin grouping and searches the discoverable agent catalog, excluding team-local definitions.
 - Unknown or removed definition ids in the setting are ignored on the catalog page; Settings keeps unresolved rows visible for operator cleanup.

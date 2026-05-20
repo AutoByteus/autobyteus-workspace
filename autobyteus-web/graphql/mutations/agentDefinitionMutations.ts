@@ -69,3 +69,9 @@ export const DuplicateAgentDefinition = gql`
   }
   ${AgentDefinitionMutationFields}
 `
+
+export const RefreshAgentDefinitionCatalog = gql`
+  mutation RefreshAgentDefinitionCatalog {
+    refreshAgentDefinitionCatalog
+  }
+`

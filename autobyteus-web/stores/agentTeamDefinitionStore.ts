@@ -5,6 +5,7 @@ import { GetAgentTeamDefinitions } from '~/graphql/queries/agentTeamDefinitionQu
 import {
   CreateAgentTeamDefinition,
   DeleteAgentTeamDefinition,
+  RefreshAgentTeamDefinitionCatalog,
   UpdateAgentTeamDefinition,
 } from '~/graphql/mutations/agentTeamDefinitionMutations'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
@@ -131,6 +132,38 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     } catch (cause) {
       error.value = cause
       console.error('Failed to reload agent team definitions:', cause)
+      throw cause
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const refreshAndReloadAllAgentTeamDefinitions = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const client = getApolloClient()
+      const mutationResult = await client.mutate({
+        mutation: RefreshAgentTeamDefinitionCatalog,
+      })
+
+      if (mutationResult.errors && mutationResult.errors.length > 0) {
+        throw new Error(mutationResult.errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      const { data, errors } = await client.query({
+        query: GetAgentTeamDefinitions,
+        fetchPolicy: 'network-only',
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+      }
+
+      agentTeamDefinitions.value = (data.agentTeamDefinitions || []) as AgentTeamDefinition[]
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to refresh agent team definition catalog:', cause)
       throw cause
     } finally {
       loading.value = false
@@ -302,6 +335,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     error,
     fetchAllAgentTeamDefinitions,
     reloadAllAgentTeamDefinitions,
+    refreshAndReloadAllAgentTeamDefinitions,
     createAgentTeamDefinition,
     updateAgentTeamDefinition,
     deleteAgentTeamDefinition,

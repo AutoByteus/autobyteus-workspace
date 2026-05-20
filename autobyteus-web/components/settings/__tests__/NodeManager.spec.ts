@@ -4,12 +4,11 @@ import NodeManager from '../NodeManager.vue';
 
 const {
   nodeStoreMock,
-  nodeSyncStoreMock,
   remoteBrowserSharingStoreMock,
   validateServerHostConfigurationMock,
   probeNodeCapabilitiesMock,
 } = vi.hoisted(() => {
-  const initialNodes = [
+  const initialNodes: any[] = [
     {
       id: 'embedded-local',
       name: 'Embedded Node',
@@ -56,50 +55,6 @@ const {
       renameNode: vi.fn().mockResolvedValue(undefined),
       removeRemoteNode: vi.fn().mockResolvedValue(undefined),
     },
-    nodeSyncStoreMock: {
-      initialize: vi.fn().mockResolvedValue(undefined),
-      runBootstrapSync: vi.fn().mockResolvedValue({
-        status: 'success',
-        sourceNodeId: 'embedded-local',
-        targetResults: [{ targetNodeId: 'remote-added', status: 'success' }],
-        error: null,
-      }),
-      runFullSync: vi.fn().mockResolvedValue({
-        status: 'success',
-        sourceNodeId: 'embedded-local',
-        targetResults: [{ targetNodeId: 'remote-1', status: 'success' }],
-        error: null,
-        report: {
-          sourceNodeId: 'embedded-local',
-          scope: ['agent_definition'],
-          exportByEntity: [
-            {
-              entityType: 'agent_definition',
-              exportedCount: 1,
-              sampledKeys: ['agent-1'],
-              sampleTruncated: false,
-            },
-          ],
-          targets: [
-            {
-              targetNodeId: 'remote-1',
-              status: 'success',
-              summary: {
-                processed: 1,
-                created: 1,
-                updated: 0,
-                deleted: 0,
-                skipped: 0,
-              },
-              failureCountTotal: 0,
-              failureSamples: [],
-              failureSampleTruncated: false,
-              message: null,
-            },
-          ],
-        },
-      }),
-    },
     remoteBrowserSharingStoreMock: {
       initialize: vi.fn().mockResolvedValue(undefined),
       prepareNodeRemoval: vi.fn().mockResolvedValue(null),
@@ -113,10 +68,6 @@ const {
 
 vi.mock('~/stores/nodeStore', () => ({
   useNodeStore: () => nodeStoreMock,
-}));
-
-vi.mock('~/stores/nodeSyncStore', () => ({
-  useNodeSyncStore: () => nodeSyncStoreMock,
 }));
 
 vi.mock('~/stores/remoteBrowserSharingStore', () => ({
@@ -213,10 +164,7 @@ describe('NodeManager', () => {
       },
       capabilityProbeState: 'ready',
     });
-    expect(nodeSyncStoreMock.runBootstrapSync).toHaveBeenCalledWith({
-      sourceNodeId: 'embedded-local',
-      targetNodeId: 'remote-added',
-    });
+    expect(wrapper.find('[data-testid="bootstrap-sync-on-add"]').exists()).toBe(false);
   });
 
   it('focuses/open an existing node window', async () => {
@@ -241,6 +189,8 @@ describe('NodeManager', () => {
     expect(wrapper.find('h2').exists()).toBe(false);
     expect(wrapper.find('[data-testid="node-manager-panel-manage"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="full-sync-run-button"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="bootstrap-sync-on-add"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="docker-node-start-guide-card"]').exists()).toBe(false);
   });
 
@@ -255,24 +205,6 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="node-manager-panel-dockerGuide"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="docker-node-start-guide-card"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
-  });
-
-  it('runs full sync with explicit source and selected targets', async () => {
-    const wrapper = mount(NodeManager);
-    await wrapper.vm.$nextTick();
-
-    const setupState = (wrapper.vm as any).$?.setupState;
-    setupState.fullSyncSourceNodeId = 'embedded-local';
-    setupState.fullSyncTargetNodeIds = ['remote-1'];
-    setupState.fullSyncScope = ['agent_definition'];
-
-    await wrapper.get('[data-testid="full-sync-run-button"]').trigger('click');
-
-    expect(nodeSyncStoreMock.runFullSync).toHaveBeenCalledWith({
-      sourceNodeId: 'embedded-local',
-      targetNodeIds: ['remote-1'],
-      scope: ['agent_definition'],
-    });
   });
 
   it('prepares remote browser cleanup before removing a remote node', async () => {

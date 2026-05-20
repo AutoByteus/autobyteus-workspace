@@ -41,18 +41,6 @@
         </div>
       </div>
 
-      <div v-if="syncError" class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-        {{ syncError }}
-      </div>
-      <div v-if="syncInfo" class="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
-        {{ syncInfo }}
-      </div>
-      <NodeSyncReportPanel
-        v-if="lastAgentSyncReport"
-        :report="lastAgentSyncReport"
-        :title="$t('agents.components.agents.AgentList.agent_sync_report')"
-        data-testid="agent-sync-report"
-      />
 
       <div v-if="loading && !reloading" class="rounded-lg border border-slate-200 bg-white py-20 text-center shadow-sm">
         <div class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
@@ -70,7 +58,6 @@
           :agent-def="agentDef"
           @view-details="viewDetails"
           @run-agent="runAgent"
-          @sync-agent="syncAgent"
         />
       </div>
 
@@ -86,7 +73,6 @@
               :agent-def="agentDef"
               @view-details="viewDetails"
               @run-agent="runAgent"
-              @sync-agent="syncAgent"
             />
           </div>
         </section>
@@ -112,7 +98,6 @@
                   :agent-def="agentDef"
                   @view-details="viewDetails"
                   @run-agent="runAgent"
-                  @sync-agent="syncAgent"
                 />
               </div>
             </article>
@@ -133,7 +118,6 @@
               :agent-def="agentDef"
               @view-details="viewDetails"
               @run-agent="runAgent"
-              @sync-agent="syncAgent"
             />
           </div>
         </section>
@@ -151,17 +135,6 @@
         </div>
       </div>
     </div>
-
-    <NodeSyncTargetPickerModal
-      v-model="isTargetPickerOpen"
-      :title="$t('agents.components.agents.AgentList.sync_agent')"
-      :description="pendingSyncAgent ? $t('agents.components.agents.AgentList.syncTargetDescription', { name: pendingSyncAgent.name }) : null"
-      :source-node-name="sourceNodeName"
-      :targets="availableSyncTargets"
-      :busy="nodeSyncStore.isRunning"
-      :confirm-label="$t('agents.components.agents.AgentList.syncConfirmLabel')"
-      @confirm="confirmAgentSync"
-    />
   </div>
 </template>
 
@@ -171,14 +144,7 @@ import { storeToRefs } from 'pinia';
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
 import AgentCard from '~/components/agents/AgentCard.vue';
 import { useRunActions } from '~/composables/useRunActions';
-import { useNodeStore } from '~/stores/nodeStore';
-import { useNodeSyncStore } from '~/stores/nodeSyncStore';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useServerSettingsStore } from '~/stores/serverSettings';
-import { EMBEDDED_NODE_ID } from '~/types/node';
-import NodeSyncTargetPickerModal from '~/components/sync/NodeSyncTargetPickerModal.vue';
-import NodeSyncReportPanel from '~/components/sync/NodeSyncReportPanel.vue';
-import type { NodeSyncRunReport } from '~/types/nodeSync';
 import { useToasts } from '~/composables/useToasts';
 import {
   FEATURED_CATALOG_ITEMS_SETTING_KEY,
@@ -194,9 +160,6 @@ const agentDefinitionStore = useAgentDefinitionStore();
 const { prepareAgentRun } = useRunActions();
 const { addToast } = useToasts();
 const { deleteResult } = storeToRefs(agentDefinitionStore);
-const nodeStore = useNodeStore();
-const nodeSyncStore = useNodeSyncStore();
-const windowNodeContextStore = useWindowNodeContextStore();
 const serverSettingsStore = useServerSettingsStore();
 const { $t } = useNuxtApp();
 
@@ -210,15 +173,7 @@ const errorMessage = computed(() => error.value?.message || '');
 
 const searchQuery = ref('');
 const reloading = ref(false);
-const syncInfo = ref<string | null>(null);
-const syncError = ref<string | null>(null);
-const pendingSyncAgent = ref<AgentDefinition | null>(null);
-const isTargetPickerOpen = ref(false);
-const availableSyncTargets = ref<Array<{ id: string; name: string; baseUrl: string }>>([]);
-const lastAgentSyncReport = ref<NodeSyncRunReport | null>(null);
 
-const sourceNodeId = computed(() => windowNodeContextStore.nodeId || EMBEDDED_NODE_ID);
-const sourceNodeName = computed(() => nodeStore.getNodeById(sourceNodeId.value)?.name || 'Current Node');
 const isSearchActive = computed(() => searchQuery.value.trim().length > 0);
 
 // Watch for delete result and show it through the shared global toaster.
@@ -296,20 +251,13 @@ onMounted(() => {
   serverSettingsStore.fetchServerSettings().catch((error) => {
     console.warn('Failed to load featured catalog settings:', error);
   });
-
-  nodeStore.initializeRegistry().catch((error) => {
-    syncError.value = error instanceof Error ? error.message : String(error);
-  });
-  nodeSyncStore.initialize().catch((error) => {
-    syncError.value = error instanceof Error ? error.message : String(error);
-  });
 });
 
 const handleReload = async () => {
   reloading.value = true;
   try {
     await Promise.all([
-      agentDefinitionStore.reloadAllAgentDefinitions(),
+      agentDefinitionStore.refreshAndReloadAllAgentDefinitions(),
       serverSettingsStore.reloadServerSettings(),
     ]);
   } catch (e) {
@@ -329,57 +277,4 @@ const runAgent = (agentDef: AgentDefinition) => {
   navigateTo('/workspace');
 };
 
-const syncAgent = async (agentDef: AgentDefinition): Promise<void> => {
-  syncInfo.value = null;
-  syncError.value = null;
-  lastAgentSyncReport.value = null;
-
-  if (normalizeDefinitionOwnershipScope(agentDef) !== 'SHARED') {
-    syncError.value = 'Only shared agents can be synced individually.';
-    return;
-  }
-
-  const targetNodes = nodeStore.nodes.filter((node) => node.id !== sourceNodeId.value);
-  if (targetNodes.length === 0) {
-    syncError.value = 'No target nodes available for sync.';
-    return;
-  }
-
-  pendingSyncAgent.value = agentDef;
-  availableSyncTargets.value = targetNodes.map((node) => ({
-    id: node.id,
-    name: node.name,
-    baseUrl: node.baseUrl,
-  }));
-  isTargetPickerOpen.value = true;
-};
-
-const confirmAgentSync = async (targetNodeIds: string[]): Promise<void> => {
-  if (!pendingSyncAgent.value) {
-    return;
-  }
-
-  try {
-    const result = await nodeSyncStore.runSelectiveAgentSync({
-      sourceNodeId: sourceNodeId.value,
-      targetNodeIds,
-      agentDefinitionIds: [pendingSyncAgent.value.id],
-      includeDependencies: true,
-      includeDeletes: false,
-    });
-
-    lastAgentSyncReport.value = result.report ?? null;
-    const successCount = result.targetResults.filter((target) => target.status === 'success').length;
-    if (result.status === 'failed') {
-      syncError.value = result.error || 'Agent sync failed.';
-      return;
-    }
-
-    syncInfo.value = `Agent sync ${result.status}. ${successCount}/${result.targetResults.length} target(s) succeeded.`;
-  } catch (error) {
-    syncError.value = error instanceof Error ? error.message : String(error);
-  } finally {
-    pendingSyncAgent.value = null;
-  }
-};
 </script>

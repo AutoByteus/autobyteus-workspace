@@ -40,18 +40,6 @@
         </div>
       </div>
 
-      <div v-if="syncError" class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-        {{ syncError }}
-      </div>
-      <div v-if="syncInfo" class="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
-        {{ syncInfo }}
-      </div>
-      <NodeSyncReportPanel
-        v-if="lastTeamSyncReport"
-        :report="lastTeamSyncReport"
-        :title="$t('agentTeams.components.agentTeams.AgentTeamList.team_sync_report')"
-        data-testid="team-sync-report"
-      />
 
       <div v-if="loading && !reloading" class="rounded-lg border border-slate-200 bg-white py-20 text-center shadow-sm">
         <div class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
@@ -68,7 +56,6 @@
           :team-def="teamDef"
           @view-details="viewDetails"
           @run-team="handleRunTeam"
-          @sync-team="syncTeam"
         />
       </div>
       <div v-else-if="featuredTeamDefinitions.length > 0" class="space-y-8">
@@ -84,7 +71,6 @@
               :team-def="teamDef"
               @view-details="viewDetails"
               @run-team="handleRunTeam"
-              @sync-team="syncTeam"
             />
           </div>
         </section>
@@ -100,7 +86,6 @@
               :team-def="teamDef"
               @view-details="viewDetails"
               @run-team="handleRunTeam"
-              @sync-team="syncTeam"
             />
           </div>
         </section>
@@ -112,7 +97,6 @@
           :team-def="teamDef"
           @view-details="viewDetails"
           @run-team="handleRunTeam"
-          @sync-team="syncTeam"
         />
       </div>
       <div v-else class="rounded-lg border border-slate-200 bg-white py-16 text-center shadow-sm">
@@ -127,17 +111,6 @@
         </div>
       </div>
     </div>
-
-    <NodeSyncTargetPickerModal
-      v-model="isTargetPickerOpen"
-      :title="$t('agentTeams.components.agentTeams.AgentTeamList.sync_team')"
-      :description="pendingSyncTeam ? $t('agentTeams.components.agentTeams.AgentTeamList.syncTargetDescription', { name: pendingSyncTeam.name }) : null"
-      :source-node-name="sourceNodeName"
-      :targets="availableSyncTargets"
-      :busy="nodeSyncStore.isRunning"
-      :confirm-label="$t('agentTeams.components.agentTeams.AgentTeamList.syncConfirmLabel')"
-      @confirm="confirmTeamSync"
-    />
   </div>
 </template>
 
@@ -146,14 +119,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import AgentTeamCard from '~/components/agentTeams/AgentTeamCard.vue';
 import { useRunActions } from '~/composables/useRunActions';
-import { useNodeStore } from '~/stores/nodeStore';
-import { useNodeSyncStore } from '~/stores/nodeSyncStore';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useServerSettingsStore } from '~/stores/serverSettings';
-import { EMBEDDED_NODE_ID } from '~/types/node';
-import NodeSyncTargetPickerModal from '~/components/sync/NodeSyncTargetPickerModal.vue';
-import NodeSyncReportPanel from '~/components/sync/NodeSyncReportPanel.vue';
-import type { NodeSyncRunReport } from '~/types/nodeSync';
 import {
   FEATURED_CATALOG_ITEMS_SETTING_KEY,
   parseFeaturedCatalogItemsSetting,
@@ -165,9 +131,6 @@ const emit = defineEmits(['navigate']);
 const store = useAgentTeamDefinitionStore();
 const { prepareTeamRun } = useRunActions();
 const router = useRouter();
-const nodeStore = useNodeStore();
-const nodeSyncStore = useNodeSyncStore();
-const windowNodeContextStore = useWindowNodeContextStore();
 const serverSettingsStore = useServerSettingsStore();
 
 const teamDefinitions = computed(() => store.rootAgentTeamDefinitions);
@@ -177,15 +140,7 @@ const errorMessage = computed(() => error.value?.message || '');
 
 const searchQuery = ref('');
 const reloading = ref(false);
-const syncInfo = ref<string | null>(null);
-const syncError = ref<string | null>(null);
-const pendingSyncTeam = ref<AgentTeamDefinition | null>(null);
-const isTargetPickerOpen = ref(false);
-const availableSyncTargets = ref<Array<{ id: string; name: string; baseUrl: string }>>([]);
-const lastTeamSyncReport = ref<NodeSyncRunReport | null>(null);
 
-const sourceNodeId = computed(() => windowNodeContextStore.nodeId || EMBEDDED_NODE_ID);
-const sourceNodeName = computed(() => nodeStore.getNodeById(sourceNodeId.value)?.name || 'Current Node');
 const isSearchActive = computed(() => searchQuery.value.trim().length > 0);
 
 const filteredTeamDefinitions = computed(() => {
@@ -226,20 +181,13 @@ onMounted(() => {
   serverSettingsStore.fetchServerSettings().catch((error) => {
     console.warn('Failed to load featured catalog settings:', error);
   });
-
-  nodeStore.initializeRegistry().catch((error) => {
-    syncError.value = error instanceof Error ? error.message : String(error);
-  });
-  nodeSyncStore.initialize().catch((error) => {
-    syncError.value = error instanceof Error ? error.message : String(error);
-  });
 });
 
 const handleReload = async () => {
   reloading.value = true;
   try {
     await Promise.all([
-      store.reloadAllAgentTeamDefinitions(),
+      store.refreshAndReloadAllAgentTeamDefinitions(),
       serverSettingsStore.reloadServerSettings(),
     ]);
   } catch (e) {
@@ -258,57 +206,4 @@ const handleRunTeam = (teamDef: AgentTeamDefinition) => {
   router.push('/workspace');
 };
 
-const syncTeam = async (teamDef: AgentTeamDefinition): Promise<void> => {
-  syncInfo.value = null;
-  syncError.value = null;
-  lastTeamSyncReport.value = null;
-
-  if ((teamDef.ownershipScope ?? 'SHARED') !== 'SHARED') {
-    syncError.value = 'Only shared teams can be synced individually.';
-    return;
-  }
-
-  const targetNodes = nodeStore.nodes.filter((node) => node.id !== sourceNodeId.value);
-  if (targetNodes.length === 0) {
-    syncError.value = 'No target nodes available for sync.';
-    return;
-  }
-
-  pendingSyncTeam.value = teamDef;
-  availableSyncTargets.value = targetNodes.map((node) => ({
-    id: node.id,
-    name: node.name,
-    baseUrl: node.baseUrl,
-  }));
-  isTargetPickerOpen.value = true;
-};
-
-const confirmTeamSync = async (targetNodeIds: string[]): Promise<void> => {
-  if (!pendingSyncTeam.value) {
-    return;
-  }
-
-  try {
-    const result = await nodeSyncStore.runSelectiveTeamSync({
-      sourceNodeId: sourceNodeId.value,
-      targetNodeIds,
-      agentTeamDefinitionIds: [pendingSyncTeam.value.id],
-      includeDependencies: true,
-      includeDeletes: false,
-    });
-
-    lastTeamSyncReport.value = result.report ?? null;
-    const successCount = result.targetResults.filter((target) => target.status === 'success').length;
-    if (result.status === 'failed') {
-      syncError.value = result.error || 'Team sync failed.';
-      return;
-    }
-
-    syncInfo.value = `Team sync ${result.status}. ${successCount}/${result.targetResults.length} target(s) succeeded.`;
-  } catch (error) {
-    syncError.value = error instanceof Error ? error.message : String(error);
-  } finally {
-    pendingSyncTeam.value = null;
-  }
-};
 </script>

@@ -263,6 +263,18 @@ export class AgentDefinitionResolver {
     }
   }
 
+  @Mutation(() => Boolean)
+  async refreshAgentDefinitionCatalog(): Promise<boolean> {
+    try {
+      const service = AgentDefinitionService.getInstance();
+      await service.refreshCache();
+      return true;
+    } catch (error) {
+      logger.error(`Error refreshing agent definition catalog: ${String(error)}`);
+      throw new Error("Unable to refresh agent definition catalog at this time.");
+    }
+  }
+
   @Mutation(() => AgentDefinition)
   async createAgentDefinition(
     @Arg("input", () => CreateAgentDefinitionInput) input: CreateAgentDefinitionInput,

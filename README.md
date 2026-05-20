@@ -172,11 +172,11 @@ Use these commands from the repo root:
 ./scripts/personal-docker.sh ports
 ```
 
-Default `up` behavior includes one remote node, fixture seeding, and post-start sync.
+Default `up` behavior includes one remote node and fixture seeding.
 If you only want the main all-in-one container:
 
 ```bash
-./scripts/personal-docker.sh up -r 0 --no-seed-test-fixtures --no-sync-remotes
+./scripts/personal-docker.sh up -r 0 --no-seed-test-fixtures
 ```
 
 Stop stack:

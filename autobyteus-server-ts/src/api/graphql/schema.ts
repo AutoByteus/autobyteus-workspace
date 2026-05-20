@@ -18,8 +18,6 @@ import { McpServerResolver } from './types/mcp-server.js';
 import { MemoryIndexResolver } from './types/memory-index.js';
 import { MemoryViewResolver } from './types/memory-view.js';
 import { ExternalChannelSetupResolver } from './types/external-channel-setup.js';
-import { NodeSyncResolver } from './types/node-sync.js';
-import { NodeSyncControlResolver } from './types/node-sync-control.js';
 import { RunHistoryResolver } from './types/run-history.js';
 import { RunFileChangesResolver } from './types/run-file-changes.js';
 import { TeamCommunicationResolver } from './types/team-communication.js';
@@ -54,8 +52,6 @@ export async function buildGraphqlSchema() {
       MemoryIndexResolver,
       MemoryViewResolver,
       ExternalChannelSetupResolver,
-      NodeSyncResolver,
-      NodeSyncControlResolver,
       RunHistoryResolver,
       RunFileChangesResolver,
       TeamCommunicationResolver,

@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useAgentDefinitionStore } from '../agentDefinitionStore';
+import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries';
+import { RefreshAgentDefinitionCatalog } from '~/graphql/mutations/agentDefinitionMutations';
 
 const {
   mockApolloClient,
@@ -37,7 +39,7 @@ describe('agentDefinitionStore', () => {
 
     expect(mockApolloClient.query).not.toHaveBeenCalled();
     expect(store.error).toBeInstanceOf(Error);
-    expect(store.error?.message).toBe('Bound backend is not ready');
+    expect((store.error as Error).message).toBe('Bound backend is not ready');
   });
 
   it('fetches definitions when bound backend is ready', async () => {
@@ -135,6 +137,56 @@ describe('agentDefinitionStore', () => {
       expect.objectContaining({
         id: 'team-local-agent:team-a:local-agent',
       }),
+    ]);
+  });
+
+  it('refreshes the backend catalog before network reloading definitions', async () => {
+    mockApolloClient.mutate.mockResolvedValue({
+      data: {
+        refreshAgentDefinitionCatalog: true,
+      },
+      errors: [],
+    });
+    mockApolloClient.query.mockResolvedValue({
+      data: {
+        agentDefinitions: [
+          {
+            id: 'refreshed-agent',
+            name: 'Refreshed Agent',
+            description: 'Loaded after catalog refresh',
+            instructions: 'Use refreshed catalog data.',
+            toolNames: [],
+            inputProcessorNames: [],
+            llmResponseProcessorNames: [],
+            systemPromptProcessorNames: [],
+            toolExecutionResultProcessorNames: [],
+            toolInvocationPreprocessorNames: [],
+            lifecycleProcessorNames: [],
+            skillNames: [],
+            ownershipScope: 'SHARED',
+            ownerTeamId: null,
+            ownerTeamName: null,
+          },
+        ],
+      },
+      errors: [],
+    });
+
+    const store = useAgentDefinitionStore();
+    await store.refreshAndReloadAllAgentDefinitions();
+
+    expect(mockApolloClient.mutate).toHaveBeenCalledWith({
+      mutation: RefreshAgentDefinitionCatalog,
+    });
+    expect(mockApolloClient.query).toHaveBeenCalledWith({
+      query: GetAgentDefinitions,
+      fetchPolicy: 'network-only',
+    });
+    expect(mockApolloClient.mutate.mock.invocationCallOrder[0]).toBeLessThan(
+      mockApolloClient.query.mock.invocationCallOrder[0],
+    );
+    expect(store.agentDefinitions).toEqual([
+      expect.objectContaining({ id: 'refreshed-agent' }),
     ]);
   });
 

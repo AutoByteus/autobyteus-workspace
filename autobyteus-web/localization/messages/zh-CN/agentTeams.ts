@@ -2,7 +2,6 @@ import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
   'agentTeams.components.agentTeams.AgentTeamCard.uncategorized': '未分类',
-  'agentTeams.components.agentTeams.AgentTeamCard.sync': '同步',
   'agentTeams.components.agentTeams.AgentTeamCard.run': '运行',
   'agentTeams.components.agentTeams.AgentTeamCard.teamBadge': '团队',
   'agentTeams.components.agentTeams.AgentTeamCard.moreCount': '另有 {{count}} 个',
@@ -73,8 +72,6 @@ const messages = {
   'agentTeams.components.agentTeams.AgentTeamList.allTeams': '全部团队',
   'agentTeams.components.agentTeams.AgentTeamList.emptyFiltered': '没有找到与“{{query}}”匹配的团队',
   'agentTeams.components.agentTeams.AgentTeamList.emptyDefault': '创建你的第一个智能体团队以开始使用。',
-  'agentTeams.components.agentTeams.AgentTeamList.syncTargetDescription': '为“{{name}}”选择目标节点。',
-  'agentTeams.components.agentTeams.AgentTeamList.syncConfirmLabel': '同步团队',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.loading': '加载中...',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.defaultPlaceholder': '选择一个选项',
   'agentTeams.components.agentTeams.SearchableGroupedSelect.defaultSearchPlaceholder': '搜索...',
