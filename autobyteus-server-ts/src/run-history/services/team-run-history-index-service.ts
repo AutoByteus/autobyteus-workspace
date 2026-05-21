@@ -1,233 +1,28 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
-import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import type {
-  TeamRunIndexRow,
-  TeamRunKnownStatus,
-} from "../domain/team-run-history-index-types.js";
+import type { TeamRunIndexRow } from "../domain/team-run-history-index-types.js";
 import { TeamRunHistoryIndexStore } from "../store/team-run-history-index-store.js";
-import type {
-  TeamRunMetadata,
-} from "../store/team-run-metadata-types.js";
-import {
-  isUnsupportedLegacyTeamRunMetadataError,
-  TeamRunMetadataStore,
-} from "../store/team-run-metadata-store.js";
-import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
-import { compactSummary, extractSummaryFromRawTraces } from "./run-history-service-helpers.js";
-import {
-  getTeamRunLeafAgentMetadata,
-  resolveTeamRunLeafAgentByRouteKey,
-  resolveTeamWorkspaceRootPath as resolveMetadataWorkspaceRootPath,
-} from "./team-run-metadata-flattener.js";
 
-const nowIso = (): string => new Date().toISOString();
-
-const logger = {
-  warn: (...args: unknown[]) => console.warn(...args),
-};
-
+/**
+ * Low-level read-only adapter for team history index diagnostics.
+ * Normal history listing and all lifecycle mutations must use
+ * TeamRunHistoryCatalogService instead.
+ */
 export class TeamRunHistoryIndexService {
   private readonly indexStore: TeamRunHistoryIndexStore;
-  private readonly metadataStore: TeamRunMetadataStore;
-  private readonly teamRunManager: AgentTeamRunManager;
-  private readonly memberLayout: TeamMemberMemoryLayout;
 
   constructor(
     memoryDir: string,
-    dependencies: {
-      indexStore?: TeamRunHistoryIndexStore;
-      metadataStore?: TeamRunMetadataStore;
-      teamRunManager?: AgentTeamRunManager;
-    } = {},
+    dependencies: { indexStore?: TeamRunHistoryIndexStore } = {},
   ) {
-    this.indexStore =
-      dependencies.indexStore ?? new TeamRunHistoryIndexStore(memoryDir);
-    this.metadataStore =
-      dependencies.metadataStore ?? new TeamRunMetadataStore(memoryDir);
-    this.teamRunManager =
-      dependencies.teamRunManager ?? AgentTeamRunManager.getInstance();
-    this.memberLayout = new TeamMemberMemoryLayout(memoryDir);
+    this.indexStore = dependencies.indexStore ?? new TeamRunHistoryIndexStore(memoryDir);
   }
 
   async listRows(): Promise<TeamRunIndexRow[]> {
     return this.indexStore.listRows();
   }
 
-  async removeRow(teamRunId: string): Promise<void> {
-    await this.indexStore.removeRow(teamRunId);
-  }
-
-  async recordRunCreated(input: {
-    teamRunId: string;
-    metadata: TeamRunMetadata;
-    summary: string;
-    lastKnownStatus?: TeamRunKnownStatus;
-    lastActivityAt?: string;
-  }): Promise<void> {
-    await this.upsertFromMetadata({
-      teamRunId: input.teamRunId,
-      metadata: input.metadata,
-      summary: input.summary,
-      lastKnownStatus: input.lastKnownStatus ?? "ACTIVE",
-      lastActivityAt: input.lastActivityAt ?? nowIso(),
-    });
-  }
-
-  async recordRunRestored(input: {
-    teamRunId: string;
-    metadata: TeamRunMetadata;
-    lastKnownStatus?: TeamRunKnownStatus;
-    lastActivityAt?: string;
-  }): Promise<void> {
-    const existing = await this.indexStore.getRow(input.teamRunId);
-    await this.upsertFromMetadata({
-      teamRunId: input.teamRunId,
-      metadata: input.metadata,
-      summary: existing?.summary ?? "",
-      lastKnownStatus: input.lastKnownStatus ?? "ACTIVE",
-      lastActivityAt: input.lastActivityAt ?? nowIso(),
-    });
-  }
-
-  async recordRunActivity(input: {
-    teamRunId: string;
-    metadata?: TeamRunMetadata | null;
-    summary?: string | null;
-    lastKnownStatus?: TeamRunKnownStatus;
-    lastActivityAt?: string;
-  }): Promise<void> {
-    const lastActivityAt = input.lastActivityAt ?? nowIso();
-    const lastKnownStatus = input.lastKnownStatus ?? "ACTIVE";
-    const existing = await this.indexStore.getRow(input.teamRunId);
-
-    if (input.metadata) {
-      await this.upsertFromMetadata({
-        teamRunId: input.teamRunId,
-        metadata: input.metadata,
-        summary: this.resolveFirstSummary(existing?.summary, input.summary) ?? "",
-        lastKnownStatus,
-        lastActivityAt,
-      });
-      return;
-    }
-
-    const nextSummary = this.resolveFirstSummary(existing?.summary, input.summary);
-    await this.indexStore.updateRow(input.teamRunId, {
-      ...(nextSummary !== undefined ? { summary: nextSummary } : {}),
-      lastKnownStatus,
-      lastActivityAt,
-    });
-  }
-
-  async recordRunTerminated(teamRunId: string): Promise<void> {
-    await this.indexStore.updateRow(teamRunId, {
-      lastActivityAt: nowIso(),
-    });
-  }
-
-  async rebuildIndexFromDisk(): Promise<TeamRunIndexRow[]> {
-    const teamRunIds = await this.metadataStore.listTeamRunIds();
-    const rows: TeamRunIndexRow[] = [];
-    for (const teamRunId of teamRunIds) {
-      let metadata: TeamRunMetadata | null = null;
-      try {
-        metadata = await this.metadataStore.readMetadata(teamRunId);
-      } catch (error) {
-        if (isUnsupportedLegacyTeamRunMetadataError(error)) {
-          logger.warn(
-            `Skipping unmigrated legacy team run metadata '${teamRunId}' while rebuilding history index. Open Settings -> Server -> Migrations for details.`,
-          );
-          continue;
-        }
-        throw error;
-      }
-      if (!metadata) {
-        continue;
-      }
-      rows.push({
-        teamRunId,
-        teamDefinitionId: metadata.teamDefinitionId,
-        teamDefinitionName: metadata.teamDefinitionName,
-        workspaceRootPath: resolveTeamWorkspaceRootPath(metadata),
-        summary: this.extractSummaryFromCoordinator(metadata),
-        lastActivityAt: metadata.updatedAt || metadata.createdAt || nowIso(),
-        lastKnownStatus: this.isTeamRunActive(teamRunId) ? "ACTIVE" : "IDLE",
-        deleteLifecycle: "READY",
-      });
-    }
-    await this.indexStore.writeIndex({
-      version: 1,
-      rows,
-    });
-    return rows;
-  }
-
-  private async upsertFromMetadata(input: {
-    teamRunId: string;
-    metadata: TeamRunMetadata;
-    summary: string;
-    lastKnownStatus: TeamRunKnownStatus;
-    lastActivityAt: string;
-  }): Promise<void> {
-    const row: TeamRunIndexRow = {
-      teamRunId: input.teamRunId,
-      teamDefinitionId: input.metadata.teamDefinitionId,
-      teamDefinitionName: input.metadata.teamDefinitionName,
-      workspaceRootPath: resolveTeamWorkspaceRootPath(input.metadata),
-      summary: compactSummary(input.summary),
-      lastActivityAt: input.lastActivityAt,
-      lastKnownStatus: input.lastKnownStatus,
-      deleteLifecycle: "READY",
-    };
-    await this.indexStore.upsertRow(row);
-  }
-
-  private resolveFirstSummary(
-    existingSummary: string | null | undefined,
-    nextSummary: string | null | undefined,
-  ): string | undefined {
-    const existing = compactSummary(existingSummary ?? null);
-    if (existing) {
-      return existing;
-    }
-
-    if (nextSummary === undefined || nextSummary === null) {
-      return undefined;
-    }
-
-    return compactSummary(nextSummary);
-  }
-
-  private extractSummaryFromCoordinator(metadata: TeamRunMetadata): string {
-    const coordinatorMemberRouteKey = metadata.coordinatorMemberRouteKey.trim();
-    const coordinatorMember =
-      resolveTeamRunLeafAgentByRouteKey(metadata, coordinatorMemberRouteKey) ??
-      getTeamRunLeafAgentMetadata(metadata)[0];
-
-    if (!coordinatorMember) {
-      return "";
-    }
-
-    const teamDir = this.memberLayout.getTeamDirPath(metadata.teamRunId);
-    const memberStore = new MemoryFileStore(teamDir, {
-      runRootSubdir: "",
-      warnOnMissingFiles: false,
-    });
-
-    return extractSummaryFromRawTraces(
-      memberStore.readRawTracesActive(coordinatorMember.memberRunId, 300),
-      memberStore.readRawTracesArchive(coordinatorMember.memberRunId, 300),
-    );
-  }
-
-  private isTeamRunActive(teamRunId: string): boolean {
-    const activeRunIds = new Set(this.teamRunManager.listActiveRuns());
-    return (
-      activeRunIds.has(teamRunId) ||
-      this.teamRunManager.getTeamRun(teamRunId) !== null
-    );
+  async getRow(teamRunId: string): Promise<TeamRunIndexRow | null> {
+    return this.indexStore.getRow(teamRunId);
   }
 }
 
@@ -240,9 +35,4 @@ export const getTeamRunHistoryIndexService = (): TeamRunHistoryIndexService => {
     );
   }
   return cachedTeamRunHistoryIndexService;
-};
-
-const resolveTeamWorkspaceRootPath = (metadata: TeamRunMetadata): string | null => {
-  const workspaceRootPath = resolveMetadataWorkspaceRootPath(metadata);
-  return workspaceRootPath ? canonicalizeWorkspaceRootPath(workspaceRootPath) : null;
 };

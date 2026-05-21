@@ -123,8 +123,6 @@ export class AgentRunCommandCoordinator {
       }
       await this.agentRunService.recordRunActivity(activeRun, {
         summary: input.summary ?? input.message.content,
-        lastKnownStatus: "ACTIVE",
-        lastActivityAt: new Date().toISOString(),
       });
       return this.recordResult(
         registry.getRecord(record.runId, record.messageId) ?? record,
@@ -147,16 +145,12 @@ export class AgentRunCommandCoordinator {
     }
 
     const metadata = await this.agentRunService.getRunMetadata(runId);
-    if (!metadata || metadata.lastKnownStatus === "TERMINATED") {
+    if (!metadata) {
       throw new Error(`Run '${runId}' was not found or cannot accept commands.`);
     }
 
-    const activationState = metadata.activationState ?? "ACTIVATED";
-    if (activationState === "PREPARED" || activationState === "ACTIVATION_FAILED") {
+    if (metadata.preparedAt && !metadata.startedAt) {
       return this.agentRunService.activatePreparedRun(runId);
-    }
-    if (activationState === "ACTIVATING") {
-      throw new Error(`Run '${runId}' is already activating.`);
     }
     return (await this.agentRunService.restoreAgentRun(runId)).run;
   }

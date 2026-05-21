@@ -21,9 +21,8 @@ import {
   AgentRunMetadataService,
 } from "../../run-history/services/agent-run-metadata-service.js";
 import {
-  AgentRunHistoryIndexService,
-  getAgentRunHistoryIndexService,
-} from "../../run-history/services/agent-run-history-index-service.js";
+  AgentRunHistoryCatalogService,
+} from "../../run-history/services/agent-run-history-catalog-service.js";
 import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { generateStandaloneAgentRunId } from "../../run-history/utils/agent-run-id-utils.js";
@@ -53,16 +52,17 @@ export class AgentRunProvisioningService {
   private readonly memoryLayout: AgentRunMemoryLayout;
   private readonly agentRunManager: AgentRunManager;
   private readonly metadataService: AgentRunMetadataService;
-  private readonly historyIndexService: AgentRunHistoryIndexService;
+  private readonly historyCatalogService: AgentRunHistoryCatalogService;
   private readonly workspaceManager: ReturnType<typeof getWorkspaceManager>;
   private readonly agentDefinitionService: AgentDefinitionService;
+  private readonly activationLocks = new Map<string, Promise<AgentRun>>();
 
   constructor(
     memoryDir: string,
     deps: {
       agentRunManager?: AgentRunManager;
       metadataService?: AgentRunMetadataService;
-      historyIndexService?: AgentRunHistoryIndexService;
+      historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
       agentDefinitionService?: AgentDefinitionService;
     } = {},
@@ -71,8 +71,8 @@ export class AgentRunProvisioningService {
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.metadataService =
       deps.metadataService ?? new AgentRunMetadataService(memoryDir);
-    this.historyIndexService =
-      deps.historyIndexService ?? getAgentRunHistoryIndexService();
+    this.historyCatalogService =
+      deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
     this.agentDefinitionService =
       deps.agentDefinitionService ?? AgentDefinitionService.getInstance();
@@ -102,20 +102,17 @@ export class AgentRunProvisioningService {
       skillAccessMode: preparedInput.skillAccessMode,
       runtimeKind: preparedInput.runtimeKind,
       platformAgentRunId: null,
-      lastKnownStatus: "IDLE",
-      activationState: "PREPARED",
       preparedAt: preparedAt.toISOString(),
       preparedExpiresAt: preparedExpiresAt.toISOString(),
+      startedAt: null,
       applicationExecutionContext: preparedInput.applicationExecutionContext,
     };
 
-    await this.metadataService.writeMetadata(runId, metadata);
-    await this.historyIndexService.recordRunCreated({
+    await this.historyCatalogService.recordPreparedRun({
       runId,
       metadata,
       summary: input.initialSummary ?? "",
-      lastKnownStatus: "IDLE",
-      lastActivityAt: preparedAt.toISOString(),
+      createdAt: preparedAt.toISOString(),
     });
     return {
       runId,
@@ -126,6 +123,22 @@ export class AgentRunProvisioningService {
 
   async activatePreparedRun(runId: string): Promise<AgentRun> {
     const normalizedRunId = normalizeRequiredRunId(runId);
+    const existingLock = this.activationLocks.get(normalizedRunId);
+    if (existingLock) {
+      return existingLock;
+    }
+    const lock = this.activatePreparedRunUnlocked(normalizedRunId);
+    this.activationLocks.set(normalizedRunId, lock);
+    try {
+      return await lock;
+    } finally {
+      if (this.activationLocks.get(normalizedRunId) === lock) {
+        this.activationLocks.delete(normalizedRunId);
+      }
+    }
+  }
+
+  private async activatePreparedRunUnlocked(normalizedRunId: string): Promise<AgentRun> {
     const activeRun = this.agentRunManager.getActiveRun(normalizedRunId);
     if (activeRun) {
       throw new Error(`Run '${normalizedRunId}' is already active and cannot be prepared-activated again.`);
@@ -135,98 +148,49 @@ export class AgentRunProvisioningService {
     if (!metadata) {
       throw new Error(`Run '${normalizedRunId}' cannot be activated because metadata is missing.`);
     }
-    const activationState = metadata.activationState ?? "ACTIVATED";
-    if (activationState !== "PREPARED" && activationState !== "ACTIVATION_FAILED") {
+    if (!metadata.preparedAt || metadata.startedAt) {
       throw new Error(`Run '${normalizedRunId}' is not in a prepared activation state.`);
     }
 
-    const activatingMetadata: AgentRunMetadata = {
-      ...metadata,
-      activationState: "ACTIVATING",
-    };
-    await this.metadataService.writeMetadata(normalizedRunId, activatingMetadata);
+    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(
+      metadata.workspaceRootPath,
+    );
+    const createdRun = await this.agentRunManager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind: metadata.runtimeKind,
+        agentDefinitionId: metadata.agentDefinitionId,
+        llmModelIdentifier: metadata.llmModelIdentifier,
+        autoExecuteTools: metadata.autoExecuteTools,
+        workspaceId: workspace.workspaceId,
+        memoryDir: metadata.memoryDir,
+        llmConfig: metadata.llmConfig,
+        skillAccessMode: metadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
+        applicationExecutionContext: metadata.applicationExecutionContext ?? null,
+      }),
+      normalizedRunId,
+    );
 
-    try {
-      const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(
-        activatingMetadata.workspaceRootPath,
-      );
-      const createdRun = await this.agentRunManager.createAgentRun(
-        new AgentRunConfig({
-          runtimeKind: activatingMetadata.runtimeKind,
-          agentDefinitionId: activatingMetadata.agentDefinitionId,
-          llmModelIdentifier: activatingMetadata.llmModelIdentifier,
-          autoExecuteTools: activatingMetadata.autoExecuteTools,
-          workspaceId: workspace.workspaceId,
-          memoryDir: activatingMetadata.memoryDir,
-          llmConfig: activatingMetadata.llmConfig,
-          skillAccessMode: activatingMetadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
-          applicationExecutionContext: activatingMetadata.applicationExecutionContext ?? null,
-        }),
-        normalizedRunId,
-      );
-
-      const activatedMetadata: AgentRunMetadata = {
-        ...activatingMetadata,
-        runtimeKind: createdRun.runtimeKind,
-        platformAgentRunId: createdRun.getPlatformAgentRunId(),
-        lastKnownStatus: "ACTIVE",
-        activationState: "ACTIVATED",
-      };
-      await this.metadataService.writeMetadata(normalizedRunId, activatedMetadata);
-      await this.historyIndexService.recordRunRestored({
-        runId: normalizedRunId,
-        metadata: activatedMetadata,
-        lastKnownStatus: "ACTIVE",
-        lastActivityAt: new Date().toISOString(),
-      });
-      return createdRun;
-    } catch (error) {
-      const failedMetadata: AgentRunMetadata = {
-        ...activatingMetadata,
-        lastKnownStatus: "ERROR",
-        activationState: "ACTIVATION_FAILED",
-      };
-      await this.metadataService.writeMetadata(normalizedRunId, failedMetadata);
-      await this.historyIndexService.recordRunActivity({
-        runId: normalizedRunId,
-        metadata: failedMetadata,
-        summary: "",
-        lastKnownStatus: "ERROR",
-        lastActivityAt: new Date().toISOString(),
-      });
-      throw error;
+    const activatedMetadata = await this.historyCatalogService.recordRunStarted({
+      runId: normalizedRunId,
+      runtimeKind: createdRun.runtimeKind,
+      platformAgentRunId: createdRun.getPlatformAgentRunId(),
+      startedAt: new Date().toISOString(),
+    });
+    if (!activatedMetadata) {
+      throw new Error(`Run '${normalizedRunId}' cannot be activated because metadata disappeared.`);
     }
+    return createdRun;
   }
 
   async cancelPreparedAgentRun(runId: string): Promise<CancelPreparedAgentRunResult> {
     const normalizedRunId = normalizeRequiredRunId(runId);
-    if (this.agentRunManager.hasActiveRun(normalizedRunId)) {
-      return {
-        success: false,
-        message: "Prepared run already has an active runtime.",
-      };
-    }
     if (getAgentRunCommandRegistry().hasInFlightCommand(normalizedRunId)) {
       return {
         success: false,
         message: "Prepared run has a command in progress.",
       };
     }
-
-    const metadata = await this.metadataService.readMetadata(normalizedRunId);
-    if (!metadata) {
-      return { success: true, message: "Prepared run already removed." };
-    }
-    if ((metadata.activationState ?? "ACTIVATED") !== "PREPARED") {
-      return {
-        success: false,
-        message: "Only unactivated prepared runs can be cancelled.",
-      };
-    }
-
-    await this.historyIndexService.removeRow(normalizedRunId);
-    await fs.rm(metadata.memoryDir, { recursive: true, force: true });
-    return { success: true, message: "Prepared run cancelled." };
+    return this.historyCatalogService.cancelPreparedRun(normalizedRunId);
   }
 
   async cleanupStalePreparedRuns(now: Date = new Date()): Promise<number> {
@@ -240,7 +204,7 @@ export class AgentRunProvisioningService {
 
     for (const runId of entries) {
       const metadata = await this.metadataService.readMetadata(runId);
-      if (!metadata || (metadata.activationState ?? "ACTIVATED") !== "PREPARED") {
+      if (!metadata || !metadata.preparedAt || metadata.startedAt) {
         continue;
       }
       if (this.agentRunManager.hasActiveRun(runId) || getAgentRunCommandRegistry().hasInFlightCommand(runId)) {

@@ -30,6 +30,7 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>) => {
     ...agent,
     runs: (agent.runs ?? []).map((run: any) => ({
       ...run,
+      createdAt: run.createdAt ?? run.lastActivityAt ?? '2026-01-01T00:00:00.000Z',
       status: run.status ?? (run.isActive ? 'running' : run.lastKnownStatus === 'ERROR' ? 'error' : 'offline'),
     })),
   }));
@@ -38,6 +39,7 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>) => {
     ...definition,
     runs: (definition.runs ?? []).map((teamRun: any) => ({
       ...teamRun,
+      createdAt: teamRun.createdAt ?? teamRun.lastActivityAt ?? '2026-01-01T00:00:00.000Z',
       status: teamRun.status ?? (teamRun.isActive ? 'running' : teamRun.lastKnownStatus === 'ERROR' ? 'error' : 'offline'),
       members: (teamRun.members ?? []).map((member: any) => ({
         ...member,
@@ -55,6 +57,37 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>) => {
 
 const flattenWorkspaceGroupTeamRuns = (workspaceGroup: Record<string, any> | undefined): Array<any> =>
   workspaceGroup?.teamDefinitions?.flatMap((definition: any) => definition.runs) ?? [];
+
+const buildTeamResumeMetadata = (input: {
+  teamRunId?: string;
+  teamDefinitionId?: string;
+  teamDefinitionName?: string;
+  coordinatorMemberRouteKey?: string;
+  createdAt?: string;
+  members?: Array<Record<string, any>>;
+} = {}) => ({
+  teamRunId: input.teamRunId ?? 'team-1',
+  teamDefinitionId: input.teamDefinitionId ?? 'team-def-1',
+  teamDefinitionName: input.teamDefinitionName ?? 'Team Alpha',
+  coordinatorMemberRouteKey: input.coordinatorMemberRouteKey ?? 'super_agent',
+  createdAt: input.createdAt ?? '2026-01-01T00:00:00.000Z',
+  archivedAt: null,
+  memberTree: (input.members ?? []).map((member) => ({
+    memberKind: 'agent',
+    memberRouteKey: member.memberRouteKey,
+    memberPath: member.memberPath ?? [member.memberRouteKey],
+    memberName: member.memberName,
+    memberRunId: member.memberRunId,
+    runtimeKind: member.runtimeKind ?? 'codex_app_server',
+    platformAgentRunId: member.platformAgentRunId ?? null,
+    agentDefinitionId: member.agentDefinitionId,
+    llmModelIdentifier: member.llmModelIdentifier ?? 'model-x',
+    autoExecuteTools: member.autoExecuteTools ?? false,
+    skillAccessMode: member.skillAccessMode ?? 'PRELOADED_ONLY',
+    llmConfig: member.llmConfig ?? null,
+    workspaceRootPath: member.workspaceRootPath ?? '/ws/a',
+  })),
+});
 
 const {
   queryMock,
@@ -336,10 +369,25 @@ describe('runHistoryStore', () => {
           teamDefinitionId: 'team-def-1',
           teamDefinitionName: 'Team Alpha',
           coordinatorMemberRouteKey: 'super_agent',
-          runVersion: 1,
           createdAt: '2026-01-01T00:00:00.000Z',
-          updatedAt: '2026-01-01T00:00:00.000Z',
-          memberMetadata: [],
+          archivedAt: null,
+          memberTree: [
+            {
+              memberKind: 'agent',
+              memberRouteKey: 'super_agent',
+              memberPath: ['super_agent'],
+              memberName: 'Super Agent',
+              memberRunId: 'member-run-live-1',
+              runtimeKind: 'codex_app_server',
+              platformAgentRunId: null,
+              agentDefinitionId: 'agent-def-1',
+              llmModelIdentifier: 'model-x',
+              autoExecuteTools: false,
+              skillAccessMode: 'PRELOADED_ONLY',
+              llmConfig: null,
+              workspaceRootPath: '/ws/a',
+            },
+          ],
         },
       },
       hydratedContext: {
@@ -354,14 +402,36 @@ describe('runHistoryStore', () => {
           memberOverrides: {},
           isLocked: true,
         },
-        members: new Map([
+        memberTree: [
+          {
+            memberKind: 'agent',
+            memberRouteKey: 'super_agent',
+            memberPath: ['super_agent'],
+            memberName: 'Super Agent',
+            displayName: 'Super Agent',
+            memberRunId: 'member-run-live-1',
+            agentDefinitionId: 'agent-def-1',
+          },
+        ],
+        memberNodesByRouteKey: new Map([
           ['super_agent', {
-            config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
+            memberKind: 'agent',
+            memberRouteKey: 'super_agent',
+            memberPath: ['super_agent'],
+            memberName: 'Super Agent',
+            displayName: 'Super Agent',
+            memberRunId: 'member-run-live-1',
+            agentDefinitionId: 'agent-def-1',
+          }],
+        ]),
+        leafAgentContextsByRouteKey: new Map([
+          ['super_agent', {
+            config: { workspaceId: 'ws-1', agentDefinitionId: 'agent-def-1', agentDefinitionName: 'Super Agent' },
             state: { runId: 'member-run-live-1', conversation: { messages: [] }, currentStatus: 'offline' },
           }],
         ]),
         historicalHydration: null,
-        focusedMemberName: 'super_agent',
+        focusedMemberRouteKey: 'super_agent',
         currentStatus: 'offline',
         isSubscribed: false,
         taskPlan: null,
@@ -495,7 +565,7 @@ describe('runHistoryStore', () => {
       runId: 'run-live-1',
       fallbackAgentName: 'SuperAgent',
       ensureWorkspaceByRootPath: expect.any(Function),
-      currentStatus: 'ACTIVE',
+      currentStatus: 'running',
     });
     expect(agentRunStoreMock.connectToAgentStream).toHaveBeenCalledWith('run-live-1');
     expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith({
@@ -1591,7 +1661,7 @@ describe('runHistoryStore', () => {
       expect.objectContaining({
         teamRunId: 'team-1',
         teamDefinitionName: 'Team Alpha',
-        focusedMemberName: 'solution_designer',
+        focusedMemberRouteKey: 'solution_designer',
         workspaceRootPath: '/ws/a',
       }),
     );
@@ -2231,15 +2301,9 @@ describe('runHistoryStore', () => {
             getTeamRunResumeConfig: {
               teamRunId: 'team-1',
               isActive: false,
-              metadata: {
+              metadata: buildTeamResumeMetadata({
                 teamRunId: 'team-1',
-                teamDefinitionId: 'team-def-1',
-                teamDefinitionName: 'Team Alpha',
-                coordinatorMemberRouteKey: 'super_agent',
-                runVersion: 1,
-                createdAt: '2026-01-01T00:00:00.000Z',
-                updatedAt: '2026-01-01T00:05:00.000Z',
-                memberMetadata: [
+                members: [
                   {
                     memberRouteKey: 'super_agent',
                     memberName: 'Super Agent',
@@ -2261,7 +2325,7 @@ describe('runHistoryStore', () => {
                     workspaceRootPath: '/ws/a',
                   },
                 ],
-              },
+              }),
             },
           },
           errors: [],
@@ -2326,15 +2390,9 @@ describe('runHistoryStore', () => {
             getTeamRunResumeConfig: {
               teamRunId: 'team-1',
               isActive: true,
-              metadata: {
+              metadata: buildTeamResumeMetadata({
                 teamRunId: 'team-1',
-                teamDefinitionId: 'team-def-1',
-                teamDefinitionName: 'Team Alpha',
-                coordinatorMemberRouteKey: 'super_agent',
-                runVersion: 1,
-                createdAt: '2026-01-01T00:00:00.000Z',
-                updatedAt: '2026-01-01T00:05:00.000Z',
-                memberMetadata: [
+                members: [
                   {
                     memberRouteKey: 'super_agent',
                     memberName: 'Super Agent',
@@ -2346,7 +2404,7 @@ describe('runHistoryStore', () => {
                     workspaceRootPath: '/ws/a',
                   },
                 ],
-              },
+              }),
             },
           },
           errors: [],
@@ -2398,15 +2456,9 @@ describe('runHistoryStore', () => {
             getTeamRunResumeConfig: {
               teamRunId: 'team-stale-1',
               isActive: true,
-              metadata: {
+              metadata: buildTeamResumeMetadata({
                 teamRunId: 'team-stale-1',
-                teamDefinitionId: 'team-def-1',
-                teamDefinitionName: 'Team Alpha',
-                coordinatorMemberRouteKey: 'super_agent',
-                runVersion: 1,
-                createdAt: '2026-01-01T00:00:00.000Z',
-                updatedAt: '2026-01-01T00:05:00.000Z',
-                memberMetadata: [
+                members: [
                   {
                     memberRouteKey: 'super_agent',
                     memberName: 'Super Agent',
@@ -2418,7 +2470,7 @@ describe('runHistoryStore', () => {
                     workspaceRootPath: '/ws/a',
                   },
                 ],
-              },
+              }),
             },
           },
           errors: [],
@@ -2469,15 +2521,10 @@ describe('runHistoryStore', () => {
             getTeamRunResumeConfig: {
               teamRunId: 'team-1',
               isActive: false,
-              metadata: {
+              metadata: buildTeamResumeMetadata({
                 teamRunId: 'team-1',
-                teamDefinitionId: 'team-def-1',
-                teamDefinitionName: 'Team Alpha',
                 coordinatorMemberRouteKey: 'super_agent',
-                runVersion: 1,
-                createdAt: '2026-01-01T00:00:00.000Z',
-                updatedAt: '2026-01-01T00:05:00.000Z',
-                memberMetadata: [
+                members: [
                   {
                     memberRouteKey: 'solution_designer',
                     memberName: 'Solution Designer',
@@ -2499,7 +2546,7 @@ describe('runHistoryStore', () => {
                     workspaceRootPath: '/ws/a',
                   },
                 ],
-              },
+              }),
             },
           },
           errors: [],
@@ -2922,16 +2969,7 @@ describe('runHistoryStore', () => {
       'team-1': {
         teamRunId: 'team-1',
         isActive: false,
-        metadata: {
-          teamRunId: 'team-1',
-          teamDefinitionId: 'team-def-1',
-          teamDefinitionName: 'Team Alpha',
-          coordinatorMemberRouteKey: 'super_agent',
-          runVersion: 1,
-          createdAt: '2026-01-01T00:00:00.000Z',
-          updatedAt: '2026-01-01T00:00:00.000Z',
-          memberMetadata: [],
-        },
+        metadata: buildTeamResumeMetadata({ teamRunId: 'team-1' }),
       },
     };
     store.selectedTeamRunId = 'team-1';

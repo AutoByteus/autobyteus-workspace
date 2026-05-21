@@ -1,79 +1,121 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import {
-  AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
+import type {
   AgentRunHistoryIndexFileRecord,
   AgentRunHistoryIndexRowRecord,
 } from "./agent-run-history-index-record-types.js";
+import { atomicWriteJsonFile } from "./atomic-json-file-writer.js";
+import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-const createEmptyIndex = (): AgentRunHistoryIndexFileRecord => ({
-  version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-  rows: [],
-});
+const createEmptyIndex = (): AgentRunHistoryIndexFileRecord => [];
 
-const createTempPath = (filePath: string): string =>
-  `${filePath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
+const allowedRowKeys = new Set([
+  "runId",
+  "agentDefinitionId",
+  "agentName",
+  "workspaceRootPath",
+  "summary",
+  "createdAt",
+  "archivedAt",
+  "terminatedAt",
+]);
+
+const normalizeSafeRunId = (value: string): string => {
+  const runId = value.trim();
+  if (
+    !runId ||
+    path.isAbsolute(runId) ||
+    path.posix.isAbsolute(runId) ||
+    path.win32.isAbsolute(runId) ||
+    /[\\/]/.test(runId) ||
+    runId === "." ||
+    runId === ".."
+  ) {
+    throw new Error("runId must be a safe standalone run identity.");
+  }
+  return runId;
+};
+
+const normalizeRequiredString = (value: string, fieldName: string): string => {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    throw new Error(`${fieldName} cannot be empty.`);
+  }
+  return trimmed;
+};
 
 const normalizeRow = (
   row: AgentRunHistoryIndexRowRecord,
 ): AgentRunHistoryIndexRowRecord => ({
-  runId: row.runId,
-  agentDefinitionId: row.agentDefinitionId,
-  agentName: row.agentName,
-  workspaceRootPath: row.workspaceRootPath,
+  runId: normalizeSafeRunId(row.runId),
+  agentDefinitionId: normalizeRequiredString(row.agentDefinitionId, "agentDefinitionId"),
+  agentName: normalizeRequiredString(row.agentName, "agentName"),
+  workspaceRootPath: canonicalizeWorkspaceRootPath(row.workspaceRootPath),
   summary: row.summary,
-  lastActivityAt: row.lastActivityAt,
-  lastKnownStatus: row.lastKnownStatus,
+  createdAt: normalizeRequiredString(row.createdAt, "createdAt"),
+  archivedAt: row.archivedAt ?? null,
+  terminatedAt: row.terminatedAt ?? null,
 });
 
 const parseIndexFile = (value: unknown): AgentRunHistoryIndexFileRecord | null => {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-  const payload = value as Record<string, unknown>;
-  if (typeof payload.version !== "number" || !Array.isArray(payload.rows)) {
+  if (!Array.isArray(value)) {
     return null;
   }
   const rows: AgentRunHistoryIndexRowRecord[] = [];
-  for (const row of payload.rows) {
+  for (const row of value) {
     if (!row || typeof row !== "object") {
       return null;
     }
     const candidate = row as Record<string, unknown>;
+    if (Object.keys(candidate).some((key) => !allowedRowKeys.has(key))) {
+      return null;
+    }
     if (
       typeof candidate.runId !== "string" ||
       typeof candidate.agentDefinitionId !== "string" ||
       typeof candidate.agentName !== "string" ||
       typeof candidate.workspaceRootPath !== "string" ||
       typeof candidate.summary !== "string" ||
-      typeof candidate.lastActivityAt !== "string" ||
-      (candidate.lastKnownStatus !== "ACTIVE" &&
-        candidate.lastKnownStatus !== "IDLE" &&
-        candidate.lastKnownStatus !== "ERROR" &&
-        candidate.lastKnownStatus !== "TERMINATED")
+      typeof candidate.createdAt !== "string"
     ) {
       return null;
     }
-    rows.push(
-      normalizeRow({
-        runId: candidate.runId,
-        agentDefinitionId: candidate.agentDefinitionId,
-        agentName: candidate.agentName,
-        workspaceRootPath: candidate.workspaceRootPath,
-        summary: candidate.summary,
-        lastActivityAt: candidate.lastActivityAt,
-        lastKnownStatus: candidate.lastKnownStatus,
-      }),
-    );
+    if (
+      !(
+        candidate.archivedAt === undefined ||
+        candidate.archivedAt === null ||
+        typeof candidate.archivedAt === "string"
+      ) ||
+      !(
+        candidate.terminatedAt === undefined ||
+        candidate.terminatedAt === null ||
+        typeof candidate.terminatedAt === "string"
+      )
+    ) {
+      return null;
+    }
+    try {
+      rows.push(
+        normalizeRow({
+          runId: candidate.runId,
+          agentDefinitionId: candidate.agentDefinitionId,
+          agentName: candidate.agentName,
+          workspaceRootPath: candidate.workspaceRootPath,
+          summary: candidate.summary,
+          createdAt: candidate.createdAt,
+          archivedAt: candidate.archivedAt ?? null,
+          terminatedAt: candidate.terminatedAt ?? null,
+        }),
+      );
+    } catch {
+      return null;
+    }
   }
-  return {
-    version: payload.version,
-    rows,
-  };
+  return rows;
 };
 
 export class AgentRunHistoryIndexStore {
@@ -90,8 +132,7 @@ export class AgentRunHistoryIndexStore {
   }
 
   async listRows(): Promise<AgentRunHistoryIndexRowRecord[]> {
-    const index = await this.readIndex();
-    return index.rows;
+    return this.readIndex();
   }
 
   async getRow(runId: string): Promise<AgentRunHistoryIndexRowRecord | null> {
@@ -99,99 +140,9 @@ export class AgentRunHistoryIndexStore {
     return rows.find((row) => row.runId === runId) ?? null;
   }
 
-  async writeIndex(index: AgentRunHistoryIndexFileRecord): Promise<void> {
+  async writeIndex(rows: AgentRunHistoryIndexFileRecord): Promise<void> {
     await this.queueWrite(async () => {
-      const rows = index.rows.map(normalizeRow);
-      await this.writeIndexFile({
-        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
-    });
-  }
-
-  async upsertRow(row: AgentRunHistoryIndexRowRecord): Promise<void> {
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const rows = index.rows.filter((entry) => entry.runId !== row.runId);
-      rows.push(normalizeRow(row));
-      await this.writeIndexFile({
-        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
-    });
-  }
-
-  async updateRow(
-    runId: string,
-    patch: Partial<Omit<AgentRunHistoryIndexRowRecord, "runId">>,
-  ): Promise<void> {
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const current = index.rows.find((row) => row.runId === runId);
-      if (!current) {
-        return;
-      }
-      const next: AgentRunHistoryIndexRowRecord = {
-        ...current,
-        ...patch,
-        runId,
-      };
-      const rows = index.rows
-        .filter((row) => row.runId !== runId)
-        .concat(normalizeRow(next));
-      await this.writeIndexFile({
-        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
-    });
-  }
-
-  async mutateRow(
-    runId: string,
-    reducer: (
-      current: AgentRunHistoryIndexRowRecord | null,
-    ) =>
-      | AgentRunHistoryIndexRowRecord
-      | null
-      | Promise<AgentRunHistoryIndexRowRecord | null>,
-  ): Promise<AgentRunHistoryIndexRowRecord | null> {
-    let result: AgentRunHistoryIndexRowRecord | null = null;
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const current =
-        index.rows.find((row) => row.runId === runId) ?? null;
-      const next = await reducer(current ? normalizeRow(current) : null);
-      if (!next) {
-        return;
-      }
-
-      const normalized = normalizeRow({
-        ...next,
-        runId,
-      });
-      const rows = index.rows
-        .filter((row) => row.runId !== runId)
-        .concat(normalized);
-      await this.writeIndexFile({
-        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
-      result = normalized;
-    });
-    return result;
-  }
-
-  async removeRow(runId: string): Promise<void> {
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const rows = index.rows.filter((row) => row.runId !== runId);
-      if (rows.length === index.rows.length) {
-        return;
-      }
-      await this.writeIndexFile({
-        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
+      await this.writeIndexFile(rows.map(normalizeRow));
     });
   }
 
@@ -213,10 +164,7 @@ export class AgentRunHistoryIndexStore {
         logger.warn(`Invalid run history index file format: ${this.indexFilePath}`);
         return createEmptyIndex();
       }
-      return {
-        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows: validated.rows,
-      };
+      return validated;
     } catch (error) {
       const message = String(error);
       if (!message.includes("ENOENT")) {
@@ -226,11 +174,7 @@ export class AgentRunHistoryIndexStore {
     }
   }
 
-  private async writeIndexFile(index: AgentRunHistoryIndexFileRecord): Promise<void> {
-    const directory = path.dirname(this.indexFilePath);
-    await fs.mkdir(directory, { recursive: true });
-    const tempPath = createTempPath(this.indexFilePath);
-    await fs.writeFile(tempPath, JSON.stringify(index, null, 2), "utf-8");
-    await fs.rename(tempPath, this.indexFilePath);
+  private async writeIndexFile(rows: AgentRunHistoryIndexFileRecord): Promise<void> {
+    await atomicWriteJsonFile(this.indexFilePath, rows);
   }
 }

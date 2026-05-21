@@ -11,9 +11,10 @@ export const ListWorkspaceRunHistory = gql`
         runs {
           runId
           summary
-          lastActivityAt
+          createdAt
+          archivedAt
+          terminatedAt
           status
-          lastKnownStatus
           isActive
           shouldConnectStream
           statusSource
@@ -29,10 +30,10 @@ export const ListWorkspaceRunHistory = gql`
           coordinatorMemberRouteKey
           workspaceRootPath
           summary
-          lastActivityAt
+          createdAt
+          archivedAt
+          terminatedAt
           status
-          lastKnownStatus
-          deleteLifecycle
           isActive
           memberTree
           members {

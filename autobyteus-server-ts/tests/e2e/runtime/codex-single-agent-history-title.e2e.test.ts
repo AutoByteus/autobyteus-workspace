@@ -27,8 +27,9 @@ type WsMessage = {
 type RunHistoryRow = {
   runId: string;
   summary: string;
-  lastActivityAt: string;
-  lastKnownStatus: string;
+  createdAt: string;
+  status: string;
+  statusSource: string;
   isActive: boolean;
 };
 
@@ -420,8 +421,9 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
               runs {
                 runId
                 summary
-                lastActivityAt
-                lastKnownStatus
+                createdAt
+                status
+                statusSource
                 isActive
               }
             }
@@ -473,38 +475,22 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
     );
   };
 
-  const overwriteIndexSummary = async (
-    runId: string,
-    summary: string,
-  ): Promise<string> => {
+  const getIndexPath = (): string => {
     if (!testDataDir) {
       throw new Error("Test data directory is not initialized.");
     }
-    const indexPath = path.join(testDataDir, "memory", "run_history_index.json");
-    const index = JSON.parse(await fs.readFile(indexPath, "utf-8")) as {
-      rows?: Array<Record<string, unknown>>;
-    };
-    const row = index.rows?.find((candidate) => candidate.runId === runId);
-    expect(row).toBeTruthy();
-    row!.summary = summary;
-    await fs.writeFile(indexPath, JSON.stringify(index, null, 2), "utf-8");
-    return indexPath;
+    return path.join(testDataDir, "memory", "run_history_index.json");
   };
 
   const readIndexSummary = async (runId: string): Promise<string | null> => {
-    if (!testDataDir) {
-      throw new Error("Test data directory is not initialized.");
-    }
-    const indexPath = path.join(testDataDir, "memory", "run_history_index.json");
-    const index = JSON.parse(await fs.readFile(indexPath, "utf-8")) as {
-      rows?: Array<Record<string, unknown>>;
-    };
-    const row = index.rows?.find((candidate) => candidate.runId === runId);
+    const indexPath = getIndexPath();
+    const index = JSON.parse(await fs.readFile(indexPath, "utf-8")) as Array<Record<string, unknown>>;
+    const row = index.find((candidate) => candidate.runId === runId);
     return typeof row?.summary === "string" ? row.summary : null;
   };
 
   it(
-    "keeps the initial user message as the GraphQL history title after Codex follow-up messages and active-row repair",
+    "keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites",
     async () => {
       const workspaceRootPath = await fs.mkdtemp(path.join(os.tmpdir(), "codex-history-title-workspace-"));
       createdWorkspaceRoots.add(workspaceRootPath);
@@ -533,8 +519,10 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
         expect(firstHistoryRow).toEqual(expect.objectContaining({
           summary: firstUserMessage,
           isActive: true,
-          lastKnownStatus: "ACTIVE",
+          statusSource: "ACTIVE_RUNTIME",
         }));
+        expect(["idle", "running"]).toContain(firstHistoryRow.status);
+        const firstIndexStat = await fs.stat(getIndexPath());
 
         await sendMessageAndWaitForCodexTurn(
           socket,
@@ -546,22 +534,18 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
         expect(followUpHistoryRow.summary).toBe(firstUserMessage);
         expect(followUpHistoryRow.summary).not.toBe(followUpUserMessage);
         expect(followUpHistoryRow.isActive).toBe(true);
-        expect(followUpHistoryRow.lastKnownStatus).toBe("ACTIVE");
-        expect(followUpHistoryRow.lastActivityAt >= firstHistoryRow.lastActivityAt).toBe(true);
+        expect(followUpHistoryRow.statusSource).toBe("ACTIVE_RUNTIME");
+        expect(["idle", "running"]).toContain(followUpHistoryRow.status);
+        expect(followUpHistoryRow.createdAt).toBe(firstHistoryRow.createdAt);
         expect(await readIndexSummary(runId)).toBe(firstUserMessage);
 
         await waitForProjectionWithUserMessages(runId, [
           firstUserMessage,
           followUpUserMessage,
         ]);
-
-        await overwriteIndexSummary(runId, followUpUserMessage);
-        expect(await readIndexSummary(runId)).toBe(followUpUserMessage);
-
-        const repairedHistoryRow = await findHistoryRow(runId);
-        expect(repairedHistoryRow.summary).toBe(firstUserMessage);
-        expect(repairedHistoryRow.summary).not.toBe(followUpUserMessage);
+        const followUpIndexStat = await fs.stat(getIndexPath());
         expect(await readIndexSummary(runId)).toBe(firstUserMessage);
+        expect(followUpIndexStat.mtimeMs).toBe(firstIndexStat.mtimeMs);
       } finally {
         socket.close();
         await app.close();

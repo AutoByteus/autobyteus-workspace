@@ -216,8 +216,8 @@ post-handoff lifecycle signals: command-start `AGENT_STATUS initializing`,
 explicit `TURN_STARTED`, command-correlated `AGENT_STATUS`, terminal/error
 events after handoff, or coordinator activation/post failure handling. Restored
 runtime snapshots/readiness, WebSocket bind success, `statusHint=ACTIVE` alone,
-metadata `lastKnownStatus=ACTIVE`, and active runtime snapshot availability do
-not clear or replace the overlay. The handler sends `AGENT_COMMAND_ACK` for
+persisted metadata, and active runtime snapshot availability do not clear or
+replace the overlay. The handler sends `AGENT_COMMAND_ACK` for
 accepted, duplicate, rejected, and failed outcomes. Retries with the same
 `(runId, message_id)` are idempotent; a different `message_id` while another
 command for the run is `STARTING` or `FORWARDED` is rejected with

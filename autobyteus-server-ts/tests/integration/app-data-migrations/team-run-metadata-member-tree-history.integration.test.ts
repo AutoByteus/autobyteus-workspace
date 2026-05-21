@@ -14,9 +14,13 @@ import {
   TeamRunMetadataMemberTreeMigration,
   TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
 } from "../../../src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.js";
+import {
+  TeamRunHistoryIndexV2AppDataMigration,
+  TEAM_RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID,
+} from "../../../src/app-data-migrations/migrations/team-run-history-index-v2-migration.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { WorkspaceRunHistoryService } from "../../../src/run-history/services/workspace-run-history-service.js";
-import { TeamRunHistoryIndexService } from "../../../src/run-history/services/team-run-history-index-service.js";
+import { TeamRunHistoryCatalogService } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { TeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
 import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
@@ -114,7 +118,6 @@ const currentCanonicalMetadata = (): TeamRunMetadata => ({
   teamDefinitionName: "Current Canonical Team",
   coordinatorMemberRouteKey: "coordinator",
   createdAt: "2026-05-01T12:00:00.000Z",
-  updatedAt: "2026-05-01T12:05:00.000Z",
   archivedAt: null,
   memberTree: [
     {
@@ -168,20 +171,41 @@ describe("team run metadata member-tree app-data migration history boundary", ()
     const metadataStore = new TeamRunMetadataStore(memoryDir);
     const repository = new InMemoryMigrationRepository();
     const runner = new AppDataMigrationRunner(
-      new AppDataMigrationRegistry([new TeamRunMetadataMemberTreeMigration(memoryDir)]),
+      new AppDataMigrationRegistry([
+        new TeamRunMetadataMemberTreeMigration(memoryDir),
+        new TeamRunHistoryIndexV2AppDataMigration(memoryDir),
+      ]),
       repository,
       { logsDir: path.join(tempDir, "logs") },
     );
 
     const firstRun = await runner.runPending();
-    expect(firstRun).toHaveLength(1);
-    expect(firstRun[0]).toMatchObject({
+    expect(firstRun).toHaveLength(2);
+    const memberTreeRun = firstRun.find(
+      (run) => run.migrationId === TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
+    );
+    const teamIndexRun = firstRun.find(
+      (run) => run.migrationId === TEAM_RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID,
+    );
+    expect(memberTreeRun).toMatchObject({
       migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
       status: "SUCCEEDED",
       attempts: 1,
       canRetry: false,
     });
-    expect(firstRun[0]?.summary).toMatchObject({
+    expect(memberTreeRun?.summary).toMatchObject({
+      scannedCount: 1,
+      migratedCount: 1,
+      skippedCount: 0,
+      failedCount: 0,
+    });
+    expect(teamIndexRun).toMatchObject({
+      migrationId: TEAM_RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID,
+      status: "SUCCEEDED",
+      attempts: 1,
+      canRetry: false,
+    });
+    expect(teamIndexRun?.summary).toMatchObject({
       scannedCount: 1,
       migratedCount: 1,
       skippedCount: 0,
@@ -209,14 +233,14 @@ describe("team run metadata member-tree app-data migration history boundary", ()
     expect(backupNames.some((name) => name.includes("team_run_metadata.json.backup-"))).toBe(true);
 
     const indexStore = new TeamRunHistoryIndexStore(memoryDir);
-    const indexService = new TeamRunHistoryIndexService(memoryDir, {
+    const catalogService = new TeamRunHistoryCatalogService(memoryDir, {
       indexStore,
       metadataStore,
       teamRunManager: inactiveTeamRunManager,
     });
     const teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
       metadataStore,
-      indexService,
+      catalogService,
       teamRunManager: inactiveTeamRunManager,
     });
     const workspaceRunHistoryService = new WorkspaceRunHistoryService({
@@ -274,23 +298,44 @@ describe("team run metadata member-tree app-data migration history boundary", ()
 
     const repository = new InMemoryMigrationRepository();
     const runner = new AppDataMigrationRunner(
-      new AppDataMigrationRegistry([new TeamRunMetadataMemberTreeMigration(memoryDir)]),
+      new AppDataMigrationRegistry([
+        new TeamRunMetadataMemberTreeMigration(memoryDir),
+        new TeamRunHistoryIndexV2AppDataMigration(memoryDir),
+      ]),
       repository,
       { logsDir: path.join(tempDir, "logs") },
     );
 
     const firstRun = await runner.runPending();
-    expect(firstRun).toHaveLength(1);
-    expect(firstRun[0]).toMatchObject({
+    expect(firstRun).toHaveLength(2);
+    const memberTreeRun = firstRun.find(
+      (run) => run.migrationId === TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
+    );
+    const teamIndexRun = firstRun.find(
+      (run) => run.migrationId === TEAM_RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID,
+    );
+    expect(memberTreeRun).toMatchObject({
       migrationId: TEAM_RUN_METADATA_MEMBER_TREE_MIGRATION_ID,
       status: "SUCCEEDED_WITH_WARNINGS",
       attempts: 1,
       canRetry: true,
     });
-    expect(firstRun[0]?.summary).toMatchObject({
+    expect(memberTreeRun?.summary).toMatchObject({
       scannedCount: 3,
       migratedCount: 1,
       skippedCount: 1,
+      failedCount: 1,
+    });
+    expect(teamIndexRun).toMatchObject({
+      migrationId: TEAM_RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID,
+      status: "SUCCEEDED_WITH_WARNINGS",
+      attempts: 1,
+      canRetry: true,
+    });
+    expect(teamIndexRun?.summary).toMatchObject({
+      scannedCount: 3,
+      migratedCount: 2,
+      skippedCount: 0,
       failedCount: 1,
     });
 
@@ -315,14 +360,14 @@ describe("team run metadata member-tree app-data migration history boundary", ()
     expect(backupNames.some((name) => name.includes("team_run_metadata.json.backup-"))).toBe(true);
 
     const indexStore = new TeamRunHistoryIndexStore(memoryDir);
-    const indexService = new TeamRunHistoryIndexService(memoryDir, {
+    const catalogService = new TeamRunHistoryCatalogService(memoryDir, {
       indexStore,
       metadataStore,
       teamRunManager: inactiveTeamRunManager,
     });
     const teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
       metadataStore,
-      indexService,
+      catalogService,
       teamRunManager: inactiveTeamRunManager,
     });
     const workspaceRunHistoryService = new WorkspaceRunHistoryService({

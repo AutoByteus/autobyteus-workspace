@@ -1,41 +1,33 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 describe("AgentRunService termination", () => {
-  const createSubject = (options: {
-    metadata?: Record<string, unknown> | null;
-  } = {}) => {
-    const agentRunManager = {
-      getActiveRun: vi.fn(),
-    } as any;
+  const createSubject = (options: { metadata?: Record<string, unknown> | null } = {}) => {
+    const agentRunManager = { getActiveRun: vi.fn() } as never;
     const metadataService = {
       readMetadata: vi.fn().mockResolvedValue(options.metadata ?? null),
       writeMetadata: vi.fn().mockResolvedValue(undefined),
     };
-    const historyIndexService = {
+    const historyCatalogService = {
       recordRunTerminated: vi.fn().mockResolvedValue(undefined),
-    } as any;
+      recordPreparedRun: vi.fn(),
+      recordRunStarted: vi.fn(),
+    };
 
     const service = new AgentRunService("/tmp/agent-run-service-test", {
       agentRunManager,
-      metadataService,
-      historyIndexService,
+      metadataService: metadataService as never,
+      historyCatalogService: historyCatalogService as never,
     });
 
-    return {
-      service,
-      mocks: {
-        agentRunManager,
-        metadataService,
-        historyIndexService,
-      },
-    };
+    return { service, mocks: { agentRunManager, metadataService, historyCatalogService } };
   };
 
   it("routes non-native runtime runs through the live AgentRun subject", async () => {
     const { service, mocks } = createSubject();
     mocks.agentRunManager.getActiveRun.mockReturnValue({
-      runtimeKind: "codex_app_server",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       getPlatformAgentRunId: vi.fn().mockReturnValue(null),
       terminate: vi.fn().mockResolvedValue({ accepted: true }),
     });
@@ -46,16 +38,16 @@ describe("AgentRunService termination", () => {
       success: true,
       message: "Agent run terminated successfully.",
       route: "runtime",
-      runtimeKind: "codex_app_server",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
     expect(mocks.agentRunManager.getActiveRun).toHaveBeenCalledWith("run-1");
-    expect(mocks.historyIndexService.recordRunTerminated).toHaveBeenCalledWith("run-1");
+    expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({ runId: "run-1" });
   });
 
   it("routes autobyteus runtime runs through the live AgentRun subject and performs shared cleanup once", async () => {
     const { service, mocks } = createSubject();
     mocks.agentRunManager.getActiveRun.mockReturnValue({
-      runtimeKind: "autobyteus",
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
       getPlatformAgentRunId: vi.fn().mockReturnValue(null),
       terminate: vi.fn().mockResolvedValue({ accepted: true }),
     });
@@ -66,10 +58,9 @@ describe("AgentRunService termination", () => {
       success: true,
       message: "Agent run terminated successfully.",
       route: "native",
-      runtimeKind: "autobyteus",
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
     });
-    expect(mocks.agentRunManager.getActiveRun).toHaveBeenCalledWith("run-2");
-    expect(mocks.historyIndexService.recordRunTerminated).toHaveBeenCalledTimes(1);
+    expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledTimes(1);
   });
 
   it("returns not found when no active AgentRun exists", async () => {
@@ -84,18 +75,15 @@ describe("AgentRunService termination", () => {
       route: "not_found",
       runtimeKind: null,
     });
-    expect(mocks.historyIndexService.recordRunTerminated).not.toHaveBeenCalled();
+    expect(mocks.historyCatalogService.recordRunTerminated).not.toHaveBeenCalled();
   });
 
   it("skips shared cleanup when AgentRun termination is rejected", async () => {
     const { service, mocks } = createSubject();
     mocks.agentRunManager.getActiveRun.mockReturnValue({
-      runtimeKind: "claude_agent_sdk",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       getPlatformAgentRunId: vi.fn().mockReturnValue(null),
-      terminate: vi.fn().mockResolvedValue({
-        accepted: false,
-        code: "RUN_SESSION_NOT_FOUND",
-      }),
+      terminate: vi.fn().mockResolvedValue({ accepted: false, code: "RUN_SESSION_NOT_FOUND" }),
     });
 
     const result = await service.terminateAgentRun("run-3");
@@ -104,12 +92,12 @@ describe("AgentRunService termination", () => {
       success: false,
       message: "Agent run not found.",
       route: "not_found",
-      runtimeKind: "claude_agent_sdk",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     });
-    expect(mocks.historyIndexService.recordRunTerminated).not.toHaveBeenCalled();
+    expect(mocks.historyCatalogService.recordRunTerminated).not.toHaveBeenCalled();
   });
 
-  it("persists TERMINATED status when metadata exists", async () => {
+  it("updates platform handle metadata and records catalog termination when metadata exists", async () => {
     const { service, mocks } = createSubject({
       metadata: {
         runId: "run-4",
@@ -120,13 +108,13 @@ describe("AgentRunService termination", () => {
         llmConfig: null,
         autoExecuteTools: false,
         skillAccessMode: null,
-        runtimeKind: "codex_app_server",
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         platformAgentRunId: "thread-old",
-        lastKnownStatus: "ACTIVE",
+        startedAt: "2026-05-17T00:05:00.000Z",
       },
     });
     mocks.agentRunManager.getActiveRun.mockReturnValue({
-      runtimeKind: "codex_app_server",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       getPlatformAgentRunId: vi.fn().mockReturnValue("thread-new"),
       terminate: vi.fn().mockResolvedValue({ accepted: true }),
     });
@@ -142,10 +130,12 @@ describe("AgentRunService termination", () => {
       llmConfig: null,
       autoExecuteTools: false,
       skillAccessMode: null,
-      runtimeKind: "codex_app_server",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: "thread-new",
-      lastKnownStatus: "TERMINATED",
+      startedAt: "2026-05-17T00:05:00.000Z",
     });
-    expect(mocks.historyIndexService.recordRunTerminated).toHaveBeenCalledWith("run-4");
+    const written = mocks.metadataService.writeMetadata.mock.calls[0][1];
+    expect(written).not.toHaveProperty("lastKnownStatus");
+    expect(mocks.historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({ runId: "run-4" });
   });
 });

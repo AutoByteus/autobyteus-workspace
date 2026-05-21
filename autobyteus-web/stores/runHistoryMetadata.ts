@@ -129,7 +129,6 @@ export const parseTeamRunMetadata = (value: unknown): TeamRunMetadataPayload => 
     teamDefinitionName: String(payload.teamDefinitionName || ''),
     coordinatorMemberRouteKey: String(payload.coordinatorMemberRouteKey || ''),
     createdAt: String(payload.createdAt || new Date().toISOString()),
-    updatedAt: String(payload.updatedAt || new Date().toISOString()),
     archivedAt: typeof payload.archivedAt === 'string' ? payload.archivedAt : null,
     memberTree: payload.memberTree.map(parseMemberMetadata),
   };

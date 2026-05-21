@@ -13,10 +13,8 @@ import {
   AgentRunMetadataService,
 } from "../../run-history/services/agent-run-metadata-service.js";
 import {
-  AgentRunHistoryIndexService,
-  getAgentRunHistoryIndexService,
-} from "../../run-history/services/agent-run-history-index-service.js";
-import type { RunKnownStatus } from "../../run-history/domain/agent-run-history-index-types.js";
+  AgentRunHistoryCatalogService,
+} from "../../run-history/services/agent-run-history-catalog-service.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
@@ -72,7 +70,7 @@ export interface AgentRunTerminationResult {
 export class AgentRunService {
   private agentRunManager: AgentRunManager;
   private metadataService: AgentRunMetadataService;
-  private historyIndexService: AgentRunHistoryIndexService;
+  private historyCatalogService: AgentRunHistoryCatalogService;
   private workspaceManager = getWorkspaceManager();
   private readonly provisioningService: AgentRunProvisioningService;
 
@@ -81,7 +79,7 @@ export class AgentRunService {
     deps: {
       agentRunManager?: AgentRunManager;
       metadataService?: AgentRunMetadataService;
-      historyIndexService?: AgentRunHistoryIndexService;
+      historyCatalogService?: AgentRunHistoryCatalogService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
       agentDefinitionService?: AgentDefinitionService;
     } = {},
@@ -89,13 +87,13 @@ export class AgentRunService {
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.metadataService =
       deps.metadataService ?? new AgentRunMetadataService(memoryDir);
-    this.historyIndexService =
-      deps.historyIndexService ?? getAgentRunHistoryIndexService();
+    this.historyCatalogService =
+      deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
     this.provisioningService = new AgentRunProvisioningService(memoryDir, {
       agentRunManager: this.agentRunManager,
       metadataService: this.metadataService,
-      historyIndexService: this.historyIndexService,
+      historyCatalogService: this.historyCatalogService,
       workspaceManager: this.workspaceManager,
       agentDefinitionService: deps.agentDefinitionService,
     });
@@ -119,10 +117,9 @@ export class AgentRunService {
       await this.metadataService.writeMetadata(runId, {
         ...metadata,
         platformAgentRunId: activeRun.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
-        lastKnownStatus: "TERMINATED",
       });
     }
-    await this.historyIndexService.recordRunTerminated(runId);
+    await this.historyCatalogService.recordRunTerminated({ runId });
     return {
       success: true,
       message: "Agent run terminated successfully.",
@@ -249,8 +246,6 @@ export class AgentRunService {
     run: AgentRun,
     input: {
       summary?: string | null;
-      lastKnownStatus?: RunKnownStatus;
-      lastActivityAt?: string;
     } = {},
   ): Promise<void> {
     const metadata = await this.metadataService.readMetadata(run.runId);
@@ -258,18 +253,14 @@ export class AgentRunService {
       ? {
           ...metadata,
           platformAgentRunId: run.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
-          lastKnownStatus: input.lastKnownStatus ?? "ACTIVE",
         }
       : null;
     if (updatedMetadata) {
       await this.metadataService.writeMetadata(run.runId, updatedMetadata);
     }
-    await this.historyIndexService.recordRunActivity({
+    await this.historyCatalogService.recordRunSummary({
       runId: run.runId,
-      metadata: updatedMetadata,
       summary: input.summary ?? "",
-      lastKnownStatus: input.lastKnownStatus ?? "ACTIVE",
-      lastActivityAt: input.lastActivityAt ?? new Date().toISOString(),
     });
   }
 
@@ -288,15 +279,9 @@ export class AgentRunService {
         `Run '${normalizedRunId}' cannot be restored because metadata is missing.`,
       );
     }
-    const activationState = metadata.activationState ?? "ACTIVATED";
-    if (activationState !== "ACTIVATED") {
+    if (metadata.preparedAt && !metadata.startedAt) {
       throw new Error(
-        `Run '${normalizedRunId}' cannot be restored because activationState is '${activationState}'.`,
-      );
-    }
-    if (metadata.lastKnownStatus === "TERMINATED") {
-      throw new Error(
-        `Run '${normalizedRunId}' cannot be restored because it is terminated.`,
+        `Run '${normalizedRunId}' cannot be restored because it has not been started.`,
       );
     }
 
@@ -321,22 +306,17 @@ export class AgentRunService {
       }),
     );
 
-    const persistedMetadata: AgentRunMetadata = {
-      ...metadata,
+    const persistedMetadata = await this.historyCatalogService.recordRunStarted({
       runId: normalizedRunId,
       runtimeKind: restoredRun.runtimeKind,
-      platformAgentRunId:
-        restoredRun.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
-      lastKnownStatus: "ACTIVE",
-      activationState: "ACTIVATED",
-    };
-    await this.metadataService.writeMetadata(normalizedRunId, persistedMetadata);
-    await this.historyIndexService.recordRunRestored({
-      runId: normalizedRunId,
-      metadata: persistedMetadata,
-      lastKnownStatus: "ACTIVE",
-      lastActivityAt: new Date().toISOString(),
+      platformAgentRunId: restoredRun.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
+      startedAt: metadata.startedAt ?? new Date().toISOString(),
     });
+    if (!persistedMetadata) {
+      throw new Error(
+        `Run '${normalizedRunId}' cannot be restored because metadata disappeared.`,
+      );
+    }
 
     return {
       run: restoredRun,

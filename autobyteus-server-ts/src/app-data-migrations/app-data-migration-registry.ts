@@ -1,5 +1,7 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
 import type { AppDataMigrationDefinition } from "./domain/app-data-migration-types.js";
+import { RunHistoryIndexV2AppDataMigration } from "./migrations/run-history-index-v2-migration.js";
+import { TeamRunHistoryIndexV2AppDataMigration } from "./migrations/team-run-history-index-v2-migration.js";
 import { TeamRunMetadataMemberTreeMigration } from "./migrations/team-run-metadata-member-tree-migration.js";
 
 export class AppDataMigrationRegistry {
@@ -8,6 +10,8 @@ export class AppDataMigrationRegistry {
   constructor(definitions?: AppDataMigrationDefinition[]) {
     this.definitions = definitions ?? [
       new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
+      new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
+      new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
     ];
   }
 

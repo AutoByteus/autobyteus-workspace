@@ -1,30 +1,13 @@
-import fs from "node:fs/promises";
 import path from "node:path";
-import type {
-  AgentRunActivationState,
-  AgentRunMetadata,
-} from "./agent-run-metadata-types.js";
+import fs from "node:fs/promises";
+import type { AgentRunMetadata } from "./agent-run-metadata-types.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
-import type { AgentRunStatusRecord } from "./agent-run-history-index-record-types.js";
 import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
+import { atomicWriteJsonFile } from "./atomic-json-file-writer.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
-};
-
-const normalizeLastKnownStatus = (
-  value: AgentRunStatusRecord | string | null | undefined,
-): AgentRunStatusRecord => {
-  if (
-    value === "ACTIVE" ||
-    value === "IDLE" ||
-    value === "ERROR" ||
-    value === "TERMINATED"
-  ) {
-    return value;
-  }
-  return "IDLE";
 };
 
 const normalizeMemoryDir = (
@@ -35,25 +18,8 @@ const normalizeMemoryDir = (
     ? path.resolve(memoryDir.trim())
     : path.resolve(fallbackMemoryDir);
 
-const normalizeArchivedAt = (value: string | null | undefined): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
 const normalizeTimestamp = (value: string | null | undefined): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
-const normalizeActivationState = (
-  value: AgentRunActivationState | string | null | undefined,
-): AgentRunActivationState => {
-  if (
-    value === "PREPARED" ||
-    value === "ACTIVATING" ||
-    value === "ACTIVATED" ||
-    value === "ACTIVATION_FAILED"
-  ) {
-    return value;
-  }
-  return "ACTIVATED";
-};
 
 const normalizeApplicationExecutionContext = (
   value: ApplicationExecutionContext | null | undefined,
@@ -81,27 +47,23 @@ const normalizeMetadata = (
     typeof metadata.platformAgentRunId === "string" && metadata.platformAgentRunId.trim().length > 0
       ? metadata.platformAgentRunId.trim()
       : null,
-  lastKnownStatus: normalizeLastKnownStatus(metadata.lastKnownStatus),
-  activationState: normalizeActivationState(metadata.activationState),
   preparedAt: normalizeTimestamp(metadata.preparedAt),
   preparedExpiresAt: normalizeTimestamp(metadata.preparedExpiresAt),
-  archivedAt: normalizeArchivedAt(metadata.archivedAt),
+  startedAt: normalizeTimestamp(metadata.startedAt),
   applicationExecutionContext: normalizeApplicationExecutionContext(
     metadata.applicationExecutionContext,
   ),
 });
 
 export class AgentRunMetadataStore {
-  private baseDir: string;
   private readonly layout: AgentRunMemoryLayout;
 
   constructor(memoryDir: string) {
     this.layout = new AgentRunMemoryLayout(memoryDir);
-    this.baseDir = this.layout.getRunsRootDirPath();
   }
 
   getMetadataPath(runId: string): string {
-    return path.join(this.baseDir, runId, "run_metadata.json");
+    return path.join(this.layout.getRunDirPath(runId), "run_metadata.json");
   }
 
   async readMetadata(runId: string): Promise<AgentRunMetadata | null> {
@@ -129,7 +91,6 @@ export class AgentRunMetadataStore {
       runId,
     }, this.layout.getRunDirPath(runId));
     const metadataPath = this.getMetadataPath(runId);
-    await fs.mkdir(path.dirname(metadataPath), { recursive: true });
-    await fs.writeFile(metadataPath, JSON.stringify(normalized, null, 2), "utf-8");
+    await atomicWriteJsonFile(metadataPath, normalized);
   }
 }

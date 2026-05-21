@@ -10,7 +10,9 @@ import { RAW_TRACES_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-f
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
+import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
+import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
 import { TeamMemberMemoryLayout } from "../../../src/agent-memory/store/team-member-memory-layout.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writer.js";
@@ -243,8 +245,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: STANDALONE_THREAD_ID,
-      lastKnownStatus: "IDLE",
-    });
+    } satisfies AgentRunMetadata);
     await writeLocalReplayToolTrace(runDir, {
       userText: "Run GraphQL standalone projection validation.",
       dynamicInvocationId: "dynamic-send-1",
@@ -325,8 +326,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: "native-thread-should-not-recover-reasoning",
-      lastKnownStatus: "IDLE",
-    });
+    } satisfies AgentRunMetadata);
 
     const accumulator = new RuntimeMemoryEventAccumulator({
       runId,
@@ -537,8 +537,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: "native-thread-should-not-recover-standalone",
-      lastKnownStatus: "IDLE",
-    });
+    } satisfies AgentRunMetadata);
 
     const result = await execGraphql<{ getRunProjection: ProjectionPayload }>(
       `
@@ -573,12 +572,12 @@ describe("Run projection tool-call GraphQL e2e", () => {
       teamDefinitionId: "team-definition-1",
       teamDefinitionName: "Tool Projection Validation Team",
       coordinatorMemberRouteKey: "coordinator",
-      runVersion: 1,
       createdAt: new Date(USER_TS * 1000).toISOString(),
-      updatedAt: new Date(ASSISTANT_TS * 1000).toISOString(),
-      memberMetadata: [
+      memberTree: [
         {
+          memberKind: "agent",
           memberRouteKey: "coordinator",
+          memberPath: ["coordinator"],
           memberName: "coordinator",
           memberRunId: MEMBER_RUN_ID,
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -589,9 +588,10 @@ describe("Run projection tool-call GraphQL e2e", () => {
           skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
           llmConfig: null,
           workspaceRootPath,
+          applicationExecutionContext: null,
         },
       ],
-    });
+    } satisfies TeamRunMetadata);
 
     const memberDir = new TeamMemberMemoryLayout(memoryDir).getMemberDirPath(
       TEAM_RUN_ID,
@@ -675,12 +675,12 @@ describe("Run projection tool-call GraphQL e2e", () => {
       teamDefinitionId: "team-definition-local-replay-absent",
       teamDefinitionName: "Local Replay Absent Team",
       coordinatorMemberRouteKey: "coordinator",
-      runVersion: 1,
       createdAt: new Date(USER_TS * 1000).toISOString(),
-      updatedAt: new Date(ASSISTANT_TS * 1000).toISOString(),
-      memberMetadata: [
+      memberTree: [
         {
+          memberKind: "agent",
           memberRouteKey: "coordinator",
+          memberPath: ["coordinator"],
           memberName: "coordinator",
           memberRunId,
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -691,9 +691,10 @@ describe("Run projection tool-call GraphQL e2e", () => {
           skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
           llmConfig: null,
           workspaceRootPath,
+          applicationExecutionContext: null,
         },
       ],
-    });
+    } satisfies TeamRunMetadata);
 
     const result = await execGraphql<{ getTeamMemberRunProjection: ProjectionPayload }>(
       `

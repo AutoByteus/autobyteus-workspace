@@ -81,6 +81,13 @@ const mergeHydratedMembers = (
   return refreshedMembers;
 };
 
+const getLeafAgentContextsByRouteKey = (teamContext: any): Map<string, any> => {
+  if (teamContext?.leafAgentContextsByRouteKey instanceof Map) {
+    return teamContext.leafAgentContextsByRouteKey;
+  }
+  return teamContext?.members instanceof Map ? teamContext.members : new Map();
+};
+
 export const openTeamRun = async (
   input: OpenTeamRunWithCoordinatorInput,
 ): Promise<OpenTeamRunWithCoordinatorResult> => {
@@ -118,6 +125,8 @@ export const openTeamRun = async (
     taskPlan: null,
     taskStatuses: null,
   };
+  (hydratedContext as any).members = members;
+  (hydratedContext as any).focusedMemberName = focusedMemberRouteKey;
 
   const existingTeamContext = teamContextsStore.getTeamContextById(metadata.teamRunId);
   const shouldKeepLiveContext = shouldTreatAsLive && Boolean(existingTeamContext?.isSubscribed);
@@ -134,18 +143,20 @@ export const openTeamRun = async (
     existingTeamContext.memberTree = memberTree;
     existingTeamContext.memberNodesByRouteKey = indexTeamMemberNodesByRouteKey(memberTree);
     existingTeamContext.focusedMemberRouteKey = focusedMemberRouteKey;
+    (existingTeamContext as any).focusedMemberName = focusedMemberRouteKey;
+    const existingLeafAgentContextsByRouteKey = getLeafAgentContextsByRouteKey(existingTeamContext);
 
     if (shouldKeepLiveContext) {
-      const existingMemberKeys = new Set(existingTeamContext.leafAgentContextsByRouteKey.keys());
+      const existingMemberKeys = new Set(existingLeafAgentContextsByRouteKey.keys());
       liveProjectionActivityMemberKeys = Array.from(members.keys()).filter(
         (memberRouteKey) => !existingMemberKeys.has(memberRouteKey),
       );
-      existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingTeamContext.leafAgentContextsByRouteKey, members, {
+      existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingLeafAgentContextsByRouteKey, members, {
         preserveLiveRuntimeState: true,
         preserveMemberStatus: true,
       });
     } else {
-      existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingTeamContext.leafAgentContextsByRouteKey, members, {
+      existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingLeafAgentContextsByRouteKey, members, {
         preserveLiveRuntimeState: false,
         preserveMemberStatus: shouldTreatAsLive,
       });
@@ -155,6 +166,7 @@ export const openTeamRun = async (
       existingTeamContext.taskPlan = null;
       existingTeamContext.taskStatuses = null;
     }
+    (existingTeamContext as any).members = existingTeamContext.leafAgentContextsByRouteKey;
   } else {
     teamContextsStore.addTeamContext(hydratedContext);
   }

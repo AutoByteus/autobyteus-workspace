@@ -9,19 +9,28 @@ const scriptPath = path.resolve(process.cwd(), "scripts/cleanup-codex-e2e-run-hi
 const seedRunHistory = async (memoryDir: string): Promise<void> => {
   await mkdir(path.join(memoryDir, "agents", "run-clean-target"), { recursive: true });
   await mkdir(path.join(memoryDir, "agents", "run-keep"), { recursive: true });
-  const index = {
-    version: 1,
-    rows: [
-      {
-        runId: "run-clean-target",
-        workspaceRootPath: path.join(os.tmpdir(), "codex-continue-workspace-e2e-abc123"),
-      },
-      {
-        runId: "run-keep",
-        workspaceRootPath: path.join(os.tmpdir(), "customer-workspace"),
-      },
-    ],
-  };
+  const index = [
+    {
+      runId: "run-clean-target",
+      agentDefinitionId: "agent-def-1",
+      agentName: "Agent One",
+      workspaceRootPath: path.join(os.tmpdir(), "codex-continue-workspace-e2e-abc123"),
+      summary: "cleanup target",
+      createdAt: "2026-03-26T10:00:00.000Z",
+      archivedAt: null,
+      terminatedAt: null,
+    },
+    {
+      runId: "run-keep",
+      agentDefinitionId: "agent-def-2",
+      agentName: "Agent Two",
+      workspaceRootPath: path.join(os.tmpdir(), "customer-workspace"),
+      summary: "keep",
+      createdAt: "2026-03-26T11:00:00.000Z",
+      archivedAt: null,
+      terminatedAt: "2026-03-26T12:00:00.000Z",
+    },
+  ];
   await writeFile(
     path.join(memoryDir, "run_history_index.json"),
     `${JSON.stringify(index, null, 2)}\n`,
@@ -29,10 +38,36 @@ const seedRunHistory = async (memoryDir: string): Promise<void> => {
   );
 };
 
-const readRowIds = async (memoryDir: string): Promise<string[]> => {
+const seedLegacyRunHistory = async (memoryDir: string): Promise<void> => {
+  await mkdir(path.join(memoryDir, "agents", "run-clean-target"), { recursive: true });
+  await mkdir(path.join(memoryDir, "agents", "run-keep"), { recursive: true });
+  await writeFile(
+    path.join(memoryDir, "run_history_index.json"),
+    `${JSON.stringify({
+      version: 1,
+      rows: [
+        {
+          runId: "run-clean-target",
+          workspaceRootPath: path.join(os.tmpdir(), "codex-continue-workspace-e2e-abc123"),
+        },
+        {
+          runId: "run-keep",
+          workspaceRootPath: path.join(os.tmpdir(), "customer-workspace"),
+        },
+      ],
+    }, null, 2)}\n`,
+    "utf-8",
+  );
+};
+
+const readIndex = async (memoryDir: string): Promise<Array<Record<string, unknown>>> => {
   const raw = await readFile(path.join(memoryDir, "run_history_index.json"), "utf-8");
-  const parsed = JSON.parse(raw) as { rows: Array<{ runId: string }> };
-  return parsed.rows.map((row) => row.runId);
+  return JSON.parse(raw) as Array<Record<string, unknown>>;
+};
+
+const readRowIds = async (memoryDir: string): Promise<string[]> => {
+  const parsed = await readIndex(memoryDir);
+  return parsed.map((row) => row.runId as string);
 };
 
 const exists = async (targetPath: string): Promise<boolean> => {
@@ -76,7 +111,49 @@ describe("cleanup-codex-e2e-run-history script", () => {
 
       const rowIds = await readRowIds(memoryDir);
       expect(rowIds).toEqual(["run-keep"]);
+      await expect(readIndex(memoryDir)).resolves.toEqual([
+        {
+          runId: "run-keep",
+          agentDefinitionId: "agent-def-2",
+          agentName: "Agent Two",
+          workspaceRootPath: path.join(os.tmpdir(), "customer-workspace"),
+          summary: "keep",
+          createdAt: "2026-03-26T11:00:00.000Z",
+          archivedAt: null,
+          terminatedAt: "2026-03-26T12:00:00.000Z",
+        },
+      ]);
       expect(await exists(path.join(memoryDir, "agents", "run-clean-target"))).toBe(false);
+      expect(await exists(path.join(memoryDir, "agents", "run-keep"))).toBe(true);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it("refuses legacy/minimal indexes instead of stamping invalid pseudo-V2 rows", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "cleanup-codex-e2e-legacy-"));
+    const memoryDir = path.join(root, "memory");
+    await seedLegacyRunHistory(memoryDir);
+
+    try {
+      expect(() => execFileSync("node", [scriptPath, "--memory-dir", memoryDir], {
+        encoding: "utf-8",
+        stdio: "pipe",
+      })).toThrow(/migrate-agent-run-history-index-v2/);
+      await expect(readIndex(memoryDir)).resolves.toEqual({
+        version: 1,
+        rows: [
+          {
+            runId: "run-clean-target",
+            workspaceRootPath: path.join(os.tmpdir(), "codex-continue-workspace-e2e-abc123"),
+          },
+          {
+            runId: "run-keep",
+            workspaceRootPath: path.join(os.tmpdir(), "customer-workspace"),
+          },
+        ],
+      });
+      expect(await exists(path.join(memoryDir, "agents", "run-clean-target"))).toBe(true);
       expect(await exists(path.join(memoryDir, "agents", "run-keep"))).toBe(true);
     } finally {
       await rm(root, { recursive: true, force: true });

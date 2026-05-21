@@ -349,6 +349,22 @@ Dry-run preview:
 pnpm -C autobyteus-server-ts run cleanup:codex-e2e-history --memory-dir ./memory --dry-run
 ```
 
+Startup app-data migrations normally repair legacy/partial standalone
+`run_history_index.json` and team `team_run_history_index.json` files into V2
+catalog format. The team history migration runs after the existing member-tree
+metadata migration and does not require a separate cleanup command. If the
+Codex E2E cleanup still reports a legacy or minimal standalone index, run the
+manual standalone V2 migration/repair fallback and then retry cleanup:
+
+```bash
+node autobyteus-server-ts/scripts/migrate-agent-run-history-index-v2.mjs --memory-dir ./memory --apply
+```
+
+See `autobyteus-server-ts/scripts/run-history-index-migration.md` for the
+standalone startup migration boundary, manual dry-run/apply fallback, backup,
+and `createdAt` fallback details. Team history repair is owned by the required
+startup app-data migration `TeamRunHistoryIndexV2AppDataMigration`.
+
 Run full backend suite with Codex live transport enabled:
 
 ```bash

@@ -10,13 +10,13 @@ const buildMetadata = (
   runId: "run-1",
   agentDefinitionId: "agent-def-1",
   workspaceRootPath: "/tmp/workspace",
+  memoryDir: "/tmp/memory/agents/run-1",
   llmModelIdentifier: "model-1",
   llmConfig: null,
   autoExecuteTools: false,
   skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: "thread-1",
-  lastKnownStatus: "IDLE",
   ...overrides,
 });
 
@@ -38,7 +38,7 @@ describe("AgentRunMetadataService", () => {
 
   it("delegates metadata writes to the metadata store", async () => {
     const writeMetadata = vi.fn().mockResolvedValue(undefined);
-    const metadata = buildMetadata({ lastKnownStatus: "TERMINATED" });
+    const metadata = buildMetadata({ platformAgentRunId: "thread-2" });
     const service = new AgentRunMetadataService("/tmp/memory", {
       metadataStore: {
         readMetadata: vi.fn(),

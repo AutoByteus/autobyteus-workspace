@@ -146,7 +146,6 @@ export const normalizeTeamRunMetadata = (
   teamDefinitionName: metadata.teamDefinitionName.trim(),
   coordinatorMemberRouteKey: normalizeMemberRouteKey(metadata.coordinatorMemberRouteKey),
   createdAt: metadata.createdAt,
-  updatedAt: metadata.updatedAt,
   archivedAt: normalizeArchivedAt(metadata.archivedAt),
   memberTree: metadata.memberTree.map(normalizeMemberMetadata),
 });
@@ -253,7 +252,6 @@ export const validateTeamRunMetadataPayload = (
     typeof payload.teamDefinitionName !== "string" ||
     typeof payload.coordinatorMemberRouteKey !== "string" ||
     typeof payload.createdAt !== "string" ||
-    typeof payload.updatedAt !== "string" ||
     !Array.isArray(payload.memberTree)
   ) {
     throw new Error(`Invalid team run metadata format for '${teamRunId}'.`);
@@ -272,7 +270,6 @@ export const validateTeamRunMetadataPayload = (
     teamDefinitionName: payload.teamDefinitionName,
     coordinatorMemberRouteKey: payload.coordinatorMemberRouteKey,
     createdAt: payload.createdAt,
-    updatedAt: payload.updatedAt,
     archivedAt: typeof payload.archivedAt === "string" ? payload.archivedAt : null,
     memberTree,
   };
