@@ -90,6 +90,7 @@ export type AgentPackage = {
   source: Scalars['String']['output'];
   sourceKind: AgentPackageSourceKind;
   teamLocalAgentCount: Scalars['Int']['output'];
+  updateInfo: AgentPackageUpdateInfo;
 };
 
 export enum AgentPackageImportSourceKind {
@@ -101,6 +102,30 @@ export enum AgentPackageSourceKind {
   BuiltIn = 'BUILT_IN',
   GithubRepository = 'GITHUB_REPOSITORY',
   LocalPath = 'LOCAL_PATH'
+}
+
+export type AgentPackageUpdateInfo = {
+  __typename?: 'AgentPackageUpdateInfo';
+  canCheck: Scalars['Boolean']['output'];
+  canReload: Scalars['Boolean']['output'];
+  canUpdate: Scalars['Boolean']['output'];
+  checkedAt?: Maybe<Scalars['String']['output']>;
+  installedRevision?: Maybe<Scalars['String']['output']>;
+  lastError?: Maybe<Scalars['String']['output']>;
+  latestRevision?: Maybe<Scalars['String']['output']>;
+  message: Scalars['String']['output'];
+  status: AgentPackageUpdateStatus;
+};
+
+export enum AgentPackageUpdateStatus {
+  CheckFailed = 'CHECK_FAILED',
+  NotApplicable = 'NOT_APPLICABLE',
+  NotChecked = 'NOT_CHECKED',
+  ReloadAvailable = 'RELOAD_AVAILABLE',
+  Unknown = 'UNKNOWN',
+  UpToDate = 'UP_TO_DATE',
+  UpdateAvailable = 'UPDATE_AVAILABLE',
+  UpdateFailed = 'UPDATE_FAILED'
 }
 
 export type AgentTeamDefinition = {
@@ -697,6 +722,7 @@ export type Mutation = {
   archiveStoredRun: ArchiveStoredRunMutationResult;
   archiveStoredTeamRun: ArchiveStoredTeamRunMutationResult;
   cancelPreparedAgentRun: CancelPreparedAgentRunResult;
+  checkAgentPackageUpdates: Array<AgentPackage>;
   clearRemoteBrowserBridge: RemoteBrowserBridgeMutationResult;
   configureMcpServer: ConfigureMcpServerResult;
   createAgentDefinition: AgentDefinition;
@@ -734,6 +760,7 @@ export type Mutation = {
   refreshAgentDefinitionCatalog: Scalars['Boolean']['output'];
   refreshAgentTeamDefinitionCatalog: Scalars['Boolean']['output'];
   registerRemoteBrowserBridge: RemoteBrowserBridgeMutationResult;
+  reloadAgentPackage: Array<AgentPackage>;
   reloadLlmModels: Scalars['String']['output'];
   reloadLlmProviderModels: Scalars['String']['output'];
   reloadToolSchema: ReloadToolSchemaResult;
@@ -752,6 +779,7 @@ export type Mutation = {
   terminateAgentRun: TerminateAgentRunResult;
   terminateAgentTeamRun: TerminateAgentTeamRunResult;
   updateAgentDefinition: AgentDefinition;
+  updateAgentPackage: Array<AgentPackage>;
   updateAgentTeamDefinition: AgentTeamDefinition;
   updateManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   updateServerSetting: Scalars['String']['output'];
@@ -789,6 +817,10 @@ export type MutationArchiveStoredTeamRunArgs = {
 
 export type MutationCancelPreparedAgentRunArgs = {
   agentRunId: Scalars['String']['input'];
+};
+
+export type MutationCheckAgentPackageUpdatesArgs = {
+  packageIds?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 
@@ -959,6 +991,10 @@ export type MutationRegisterRemoteBrowserBridgeArgs = {
   input: RemoteBrowserBridgeInput;
 };
 
+export type MutationReloadAgentPackageArgs = {
+  packageId: Scalars['String']['input'];
+};
+
 
 export type MutationReloadLlmModelsArgs = {
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
@@ -1061,6 +1097,10 @@ export type MutationTerminateAgentTeamRunArgs = {
 
 export type MutationUpdateAgentDefinitionArgs = {
   input: UpdateAgentDefinitionInput;
+};
+
+export type MutationUpdateAgentPackageArgs = {
+  packageId: Scalars['String']['input'];
 };
 
 
@@ -1890,24 +1930,47 @@ export type WorkspaceRunHistoryGroupObject = {
   workspaceRootPath: Scalars['String']['output'];
 };
 
+export type AgentPackageFieldsFragment = { __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, applicationCount: number, isDefault: boolean, isRemovable: boolean, updateInfo: { __typename?: 'AgentPackageUpdateInfo', status: AgentPackageUpdateStatus, canCheck: boolean, canUpdate: boolean, canReload: boolean, message: string, installedRevision?: string | null, latestRevision?: string | null, checkedAt?: string | null, lastError?: string | null } };
+
 export type GetAgentPackagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentPackagesQuery = { __typename?: 'Query', agentPackages: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, isDefault: boolean, isRemovable: boolean }> };
+export type GetAgentPackagesQuery = { __typename?: 'Query', agentPackages: Array<AgentPackageFieldsFragment> };
 
 export type ImportAgentPackageMutationVariables = Exact<{
   input: ImportAgentPackageInput;
 }>;
 
 
-export type ImportAgentPackageMutation = { __typename?: 'Mutation', importAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, isDefault: boolean, isRemovable: boolean }> };
+export type ImportAgentPackageMutation = { __typename?: 'Mutation', importAgentPackage: Array<AgentPackageFieldsFragment> };
 
 export type RemoveAgentPackageMutationVariables = Exact<{
   packageId: Scalars['String']['input'];
 }>;
 
 
-export type RemoveAgentPackageMutation = { __typename?: 'Mutation', removeAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, isDefault: boolean, isRemovable: boolean }> };
+export type RemoveAgentPackageMutation = { __typename?: 'Mutation', removeAgentPackage: Array<AgentPackageFieldsFragment> };
+
+export type ReloadAgentPackageMutationVariables = Exact<{
+  packageId: Scalars['String']['input'];
+}>;
+
+
+export type ReloadAgentPackageMutation = { __typename?: 'Mutation', reloadAgentPackage: Array<AgentPackageFieldsFragment> };
+
+export type CheckAgentPackageUpdatesMutationVariables = Exact<{
+  packageIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type CheckAgentPackageUpdatesMutation = { __typename?: 'Mutation', checkAgentPackageUpdates: Array<AgentPackageFieldsFragment> };
+
+export type UpdateAgentPackageMutationVariables = Exact<{
+  packageId: Scalars['String']['input'];
+}>;
+
+
+export type UpdateAgentPackageMutation = { __typename?: 'Mutation', updateAgentPackage: Array<AgentPackageFieldsFragment> };
 
 export type ApplicationPackageListFieldsFragment = { __typename?: 'ApplicationPackage', packageId: string, displayName: string, sourceKind: ApplicationPackageSourceKind, sourceSummary?: string | null, applicationCount: number, isPlatformOwned: boolean, isRemovable: boolean };
 
@@ -2821,22 +2884,39 @@ export const ApplicationDetailFieldsFragmentDoc = gql`
 }
     ${ApplicationCatalogFieldsFragmentDoc}
 ${ApplicationTechnicalDetailsFieldsFragmentDoc}`;
-export const GetAgentPackagesDocument = gql`
-    query GetAgentPackages {
-  agentPackages {
-    packageId
-    displayName
-    path
-    sourceKind
-    source
-    sharedAgentCount
-    teamLocalAgentCount
-    agentTeamCount
-    isDefault
-    isRemovable
+export const AgentPackageFieldsFragmentDoc = gql`
+    fragment AgentPackageFields on AgentPackage {
+  packageId
+  displayName
+  path
+  sourceKind
+  source
+  sharedAgentCount
+  teamLocalAgentCount
+  agentTeamCount
+  applicationCount
+  isDefault
+  isRemovable
+  updateInfo {
+    status
+    canCheck
+    canUpdate
+    canReload
+    message
+    installedRevision
+    latestRevision
+    checkedAt
+    lastError
   }
 }
     `;
+export const GetAgentPackagesDocument = gql`
+    query GetAgentPackages {
+  agentPackages {
+    ...AgentPackageFields
+  }
+}
+    ${AgentPackageFieldsFragmentDoc}`;
 
 /**
  * __useGetAgentPackagesQuery__
@@ -2860,19 +2940,10 @@ export type GetAgentPackagesQueryCompositionFunctionResult = VueApolloComposable
 export const ImportAgentPackageDocument = gql`
     mutation ImportAgentPackage($input: ImportAgentPackageInput!) {
   importAgentPackage(input: $input) {
-    packageId
-    displayName
-    path
-    sourceKind
-    source
-    sharedAgentCount
-    teamLocalAgentCount
-    agentTeamCount
-    isDefault
-    isRemovable
+    ...AgentPackageFields
   }
 }
-    `;
+    ${AgentPackageFieldsFragmentDoc}`;
 
 /**
  * __useImportAgentPackageMutation__
@@ -2898,19 +2969,10 @@ export type ImportAgentPackageMutationCompositionFunctionResult = VueApolloCompo
 export const RemoveAgentPackageDocument = gql`
     mutation RemoveAgentPackage($packageId: String!) {
   removeAgentPackage(packageId: $packageId) {
-    packageId
-    displayName
-    path
-    sourceKind
-    source
-    sharedAgentCount
-    teamLocalAgentCount
-    agentTeamCount
-    isDefault
-    isRemovable
+    ...AgentPackageFields
   }
 }
-    `;
+    ${AgentPackageFieldsFragmentDoc}`;
 
 /**
  * __useRemoveAgentPackageMutation__
@@ -2933,6 +2995,39 @@ export function useRemoveAgentPackageMutation(options: VueApolloComposable.UseMu
   return VueApolloComposable.useMutation<RemoveAgentPackageMutation, RemoveAgentPackageMutationVariables>(RemoveAgentPackageDocument, options);
 }
 export type RemoveAgentPackageMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveAgentPackageMutation, RemoveAgentPackageMutationVariables>;
+export const ReloadAgentPackageDocument = gql`
+    mutation ReloadAgentPackage($packageId: String!) {
+  reloadAgentPackage(packageId: $packageId) {
+    ...AgentPackageFields
+  }
+}
+    ${AgentPackageFieldsFragmentDoc}`;
+export function useReloadAgentPackageMutation(options: VueApolloComposable.UseMutationOptions<ReloadAgentPackageMutation, ReloadAgentPackageMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ReloadAgentPackageMutation, ReloadAgentPackageMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ReloadAgentPackageMutation, ReloadAgentPackageMutationVariables>(ReloadAgentPackageDocument, options);
+}
+export type ReloadAgentPackageMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ReloadAgentPackageMutation, ReloadAgentPackageMutationVariables>;
+export const CheckAgentPackageUpdatesDocument = gql`
+    mutation CheckAgentPackageUpdates($packageIds: [String!]) {
+  checkAgentPackageUpdates(packageIds: $packageIds) {
+    ...AgentPackageFields
+  }
+}
+    ${AgentPackageFieldsFragmentDoc}`;
+export function useCheckAgentPackageUpdatesMutation(options: VueApolloComposable.UseMutationOptions<CheckAgentPackageUpdatesMutation, CheckAgentPackageUpdatesMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CheckAgentPackageUpdatesMutation, CheckAgentPackageUpdatesMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CheckAgentPackageUpdatesMutation, CheckAgentPackageUpdatesMutationVariables>(CheckAgentPackageUpdatesDocument, options);
+}
+export type CheckAgentPackageUpdatesMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CheckAgentPackageUpdatesMutation, CheckAgentPackageUpdatesMutationVariables>;
+export const UpdateAgentPackageDocument = gql`
+    mutation UpdateAgentPackage($packageId: String!) {
+  updateAgentPackage(packageId: $packageId) {
+    ...AgentPackageFields
+  }
+}
+    ${AgentPackageFieldsFragmentDoc}`;
+export function useUpdateAgentPackageMutation(options: VueApolloComposable.UseMutationOptions<UpdateAgentPackageMutation, UpdateAgentPackageMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateAgentPackageMutation, UpdateAgentPackageMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateAgentPackageMutation, UpdateAgentPackageMutationVariables>(UpdateAgentPackageDocument, options);
+}
+export type UpdateAgentPackageMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateAgentPackageMutation, UpdateAgentPackageMutationVariables>;
 export const GetApplicationPackagesDocument = gql`
     query GetApplicationPackages {
   applicationPackages {

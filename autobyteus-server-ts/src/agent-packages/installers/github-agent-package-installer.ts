@@ -7,12 +7,15 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { downloadFileFromUrl } from "../../utils/download-utils.js";
 import type {
   GitHubRepositoryMetadata,
+  GitHubRepositoryRevisionMetadata,
   GitHubRepositorySource,
   ManagedGitHubInstallResult,
 } from "../types.js";
 import {
   buildGitHubRepositoryApiUrl,
   buildGitHubRepositoryArchiveUrl,
+  buildGitHubRepositoryArchiveUrlForRef,
+  buildGitHubRepositoryBranchApiUrl,
 } from "../utils/github-repository-source.js";
 import { validatePackageRoot } from "../utils/package-root-summary.js";
 
@@ -27,6 +30,11 @@ type SpawnLike = typeof spawn;
 type TarExtractionCommandSpec = {
   executable: string;
   shell: boolean;
+};
+
+export type ManagedGitHubPackageReplacement = ManagedGitHubInstallResult & {
+  commit: () => Promise<void>;
+  rollback: () => Promise<void>;
 };
 
 export class GitHubAgentPackageInstaller {
@@ -57,7 +65,7 @@ export class GitHubAgentPackageInstaller {
       );
     }
 
-    const metadata = await this.fetchRepositoryMetadata(source);
+    const metadata = await this.fetchRepositoryRevisionMetadata(source);
     const stagingDir = await this.createStagingDirectory(source.installKey);
     const extractionDir = path.join(stagingDir, "extracted");
 
@@ -76,6 +84,8 @@ export class GitHubAgentPackageInstaller {
         rootPath: installDir,
         managedInstallPath: installDir,
         canonicalSourceUrl: metadata.canonicalUrl,
+        defaultBranch: metadata.defaultBranch,
+        installedRevision: metadata.latestRevision,
       };
     } catch (error) {
       await fsPromises.rm(installDir, { recursive: true, force: true }).catch(
@@ -101,6 +111,133 @@ export class GitHubAgentPackageInstaller {
     return this.options.downloadFileFromUrlImpl ?? downloadFileFromUrl;
   }
 
+  async fetchRepositoryRevisionMetadata(
+    source: GitHubRepositorySource,
+  ): Promise<GitHubRepositoryRevisionMetadata> {
+    const metadata = await this.fetchRepositoryMetadata(source);
+    const response = await this.getFetch()(
+      buildGitHubRepositoryBranchApiUrl(
+        metadata.owner,
+        metadata.repo,
+        metadata.defaultBranch,
+      ),
+      {
+        headers: {
+          Accept: "application/vnd.github+json",
+          "User-Agent": "AutoByteus-AgentPackageInstaller",
+        },
+        signal: AbortSignal.timeout(30_000),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `GitHub repository branch metadata request failed with HTTP ${response.status} ${response.statusText}.`,
+      );
+    }
+
+    const payload = (await response.json()) as Partial<{
+      commit: { sha?: string };
+    }>;
+    const latestRevision = payload.commit?.sha?.trim();
+    if (!latestRevision) {
+      throw new Error(
+        `GitHub repository latest revision is unavailable: ${metadata.canonicalUrl}`,
+      );
+    }
+
+    return {
+      ...metadata,
+      latestRevision,
+    };
+  }
+
+  async stagePackageReplacement(
+    source: GitHubRepositorySource,
+    metadata: GitHubRepositoryRevisionMetadata,
+    installDir: string,
+  ): Promise<ManagedGitHubPackageReplacement> {
+    const resolvedInstallDir = path.resolve(installDir);
+    if (!fs.existsSync(resolvedInstallDir)) {
+      throw new Error(
+        `GitHub agent package install path not found: ${resolvedInstallDir}`,
+      );
+    }
+
+    const stagingDir = await this.createStagingDirectory(source.installKey);
+    const extractionDir = path.join(stagingDir, "extracted");
+    const backupDir = path.join(stagingDir, "previous-install");
+    let replacementActive = false;
+    let finalized = false;
+
+    try {
+      await fsPromises.mkdir(extractionDir, { recursive: true });
+      const archivePath = await this.downloadRepositoryArchive(source, metadata, stagingDir);
+      await this.extractArchive(archivePath, extractionDir);
+
+      const extractedRoot = await this.resolveExtractedRoot(extractionDir);
+      validatePackageRoot(extractedRoot);
+
+      await fsPromises.rename(resolvedInstallDir, backupDir);
+      replacementActive = true;
+
+      try {
+        await fsPromises.rename(extractedRoot, resolvedInstallDir);
+      } catch (error) {
+        await fsPromises.rm(resolvedInstallDir, {
+          recursive: true,
+          force: true,
+        }).catch(() => undefined);
+        await fsPromises.rename(backupDir, resolvedInstallDir).catch(
+          () => undefined,
+        );
+        replacementActive = false;
+        throw error;
+      }
+
+      const cleanup = async (): Promise<void> => {
+        await fsPromises.rm(stagingDir, { recursive: true, force: true }).catch(
+          () => undefined,
+        );
+      };
+
+      return {
+        rootPath: resolvedInstallDir,
+        managedInstallPath: resolvedInstallDir,
+        canonicalSourceUrl: metadata.canonicalUrl,
+        defaultBranch: metadata.defaultBranch,
+        installedRevision: metadata.latestRevision,
+        commit: async () => {
+          if (finalized) {
+            return;
+          }
+          finalized = true;
+          replacementActive = false;
+          await cleanup();
+        },
+        rollback: async () => {
+          if (finalized) {
+            return;
+          }
+          finalized = true;
+          if (replacementActive) {
+            await fsPromises.rm(resolvedInstallDir, {
+              recursive: true,
+              force: true,
+            }).catch(() => undefined);
+            await fsPromises.rename(backupDir, resolvedInstallDir);
+          }
+          await cleanup();
+        },
+      };
+    } catch (error) {
+      await fsPromises.rm(stagingDir, { recursive: true, force: true }).catch(
+        () => undefined,
+      );
+      throw error;
+    }
+  }
+
   private async fetchRepositoryMetadata(
     source: GitHubRepositorySource,
   ): Promise<GitHubRepositoryMetadata> {
@@ -114,7 +251,7 @@ export class GitHubAgentPackageInstaller {
 
     if (response.status === 404) {
       throw new Error(
-        `GitHub repository not found or not public: ${source.canonicalUrl}`,
+        `GitHub repository not found or not public: ${source.canonicalUrl}. For private repositories, clone locally and import the local path.`,
       );
     }
 
@@ -134,7 +271,7 @@ export class GitHubAgentPackageInstaller {
 
     if (payload.private) {
       throw new Error(
-        `GitHub repository is not public and cannot be imported: ${source.canonicalUrl}`,
+        `GitHub repository is not public and cannot be imported: ${source.canonicalUrl}. Clone it locally and import the local path instead.`,
       );
     }
 
@@ -165,7 +302,7 @@ export class GitHubAgentPackageInstaller {
 
   private async downloadRepositoryArchive(
     source: GitHubRepositorySource,
-    metadata: GitHubRepositoryMetadata,
+    metadata: GitHubRepositoryMetadata & { latestRevision?: string },
     stagingDir: string,
   ): Promise<string> {
     const downloadDir = path.join(
@@ -173,11 +310,17 @@ export class GitHubAgentPackageInstaller {
       "download",
       source.installKey,
     );
-    const archiveUrl = buildGitHubRepositoryArchiveUrl(
-      metadata.owner,
-      metadata.repo,
-      metadata.defaultBranch,
-    );
+    const archiveUrl = metadata.latestRevision
+      ? buildGitHubRepositoryArchiveUrlForRef(
+          metadata.owner,
+          metadata.repo,
+          metadata.latestRevision,
+        )
+      : buildGitHubRepositoryArchiveUrl(
+          metadata.owner,
+          metadata.repo,
+          metadata.defaultBranch,
+        );
     return this.getDownloadFileFromUrl()(archiveUrl, downloadDir);
   }
 

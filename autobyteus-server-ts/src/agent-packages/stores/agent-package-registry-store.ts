@@ -5,8 +5,10 @@ import {
   writeJsonArrayFile,
 } from "../../persistence/file/store-utils.js";
 import type {
+  AgentPackageGitHubSourceMetadata,
   AgentPackageImportSourceKind,
   AgentPackageRecord,
+  AgentPackageSourceMetadata,
 } from "../types.js";
 import {
   buildGitHubPackageId,
@@ -20,15 +22,53 @@ type AppConfigLike = {
 type ReadJsonArrayFileLike = <T>(filePath: string) => Promise<T[]>;
 type WriteJsonArrayFileLike = <T>(filePath: string, rows: T[]) => Promise<void>;
 
-const normalizeRecord = (record: AgentPackageRecord): AgentPackageRecord => ({
-  ...record,
-  rootPath: path.resolve(record.rootPath),
-  managedInstallPath: record.managedInstallPath
-    ? path.resolve(record.managedInstallPath)
-    : null,
-  normalizedSource: record.normalizedSource.trim().toLowerCase(),
-  sourceKind: record.sourceKind as AgentPackageImportSourceKind,
+const UNKNOWN_GITHUB_SOURCE_METADATA: AgentPackageGitHubSourceMetadata = {
+  defaultBranch: null,
+  installedRevision: null,
+  latestRevision: null,
+  latestCheckedAt: null,
+  updateStatus: "UNKNOWN",
+  lastError: null,
+};
+
+const normalizeGitHubSourceMetadata = (
+  metadata: AgentPackageGitHubSourceMetadata | null | undefined,
+): AgentPackageGitHubSourceMetadata => ({
+  defaultBranch: metadata?.defaultBranch?.trim() || null,
+  installedRevision: metadata?.installedRevision?.trim() || null,
+  latestRevision: metadata?.latestRevision?.trim() || null,
+  latestCheckedAt: metadata?.latestCheckedAt?.trim() || null,
+  updateStatus: metadata?.updateStatus ?? UNKNOWN_GITHUB_SOURCE_METADATA.updateStatus,
+  lastError: metadata?.lastError?.trim() || null,
 });
+
+const normalizeSourceMetadata = (
+  sourceKind: AgentPackageImportSourceKind,
+  metadata: AgentPackageSourceMetadata | null | undefined,
+): AgentPackageSourceMetadata | null => {
+  if (sourceKind !== "GITHUB_REPOSITORY") {
+    return null;
+  }
+
+  return {
+    github: normalizeGitHubSourceMetadata(metadata?.github),
+  };
+};
+
+const normalizeRecord = (record: AgentPackageRecord): AgentPackageRecord => {
+  const sourceKind = record.sourceKind as AgentPackageImportSourceKind;
+
+  return {
+    ...record,
+    rootPath: path.resolve(record.rootPath),
+    managedInstallPath: record.managedInstallPath
+      ? path.resolve(record.managedInstallPath)
+      : null,
+    normalizedSource: record.normalizedSource.trim().toLowerCase(),
+    sourceKind,
+    sourceMetadata: normalizeSourceMetadata(sourceKind, record.sourceMetadata),
+  };
+};
 
 const isPersistedSourceKind = (
   value: string,
@@ -103,6 +143,7 @@ export class AgentPackageRegistryStore {
       source: resolved,
       normalizedSource: resolved,
       managedInstallPath: null,
+      sourceMetadata: null,
       createdAt: now,
       updatedAt: now,
     };
@@ -115,6 +156,7 @@ export class AgentPackageRegistryStore {
     source: string;
     rootPath: string;
     managedInstallPath: string;
+    sourceMetadata?: AgentPackageSourceMetadata | null;
   }): Promise<AgentPackageRecord> {
     const normalizedSource = input.normalizedSource.trim().toLowerCase();
     const resolvedRootPath = path.resolve(input.rootPath);
@@ -128,6 +170,10 @@ export class AgentPackageRegistryStore {
       source: input.source,
       normalizedSource,
       managedInstallPath: resolvedManagedInstallPath,
+      sourceMetadata: normalizeSourceMetadata(
+        "GITHUB_REPOSITORY",
+        input.sourceMetadata,
+      ),
       createdAt: now,
       updatedAt: now,
     };
@@ -152,6 +198,42 @@ export class AgentPackageRegistryStore {
     await this.writeJsonArrayFileImpl(this.getRegistryPath(), nextRows);
   }
 
+  async replacePackageRecord(record: AgentPackageRecord): Promise<AgentPackageRecord> {
+    const normalizedRecord = normalizeRecord({
+      ...record,
+      updatedAt: new Date().toISOString(),
+    });
+    const rows = await this.listPackageRecords();
+    const nextRows = rows.filter(
+      (row) => row.packageId !== normalizedRecord.packageId,
+    );
+    nextRows.push(normalizedRecord);
+
+    await this.writeJsonArrayFileImpl(this.getRegistryPath(), nextRows);
+    return normalizedRecord;
+  }
+
+  async updateGitHubSourceMetadata(
+    packageId: string,
+    metadata: AgentPackageGitHubSourceMetadata,
+  ): Promise<AgentPackageRecord> {
+    const rows = await this.listPackageRecords();
+    const existing = rows.find((row) => row.packageId === packageId);
+    if (!existing) {
+      throw new Error(`Agent package not found: ${packageId}`);
+    }
+    if (existing.sourceKind !== "GITHUB_REPOSITORY") {
+      throw new Error("Only GitHub agent packages have source metadata.");
+    }
+
+    return this.replacePackageRecord({
+      ...existing,
+      sourceMetadata: {
+        github: normalizeGitHubSourceMetadata(metadata),
+      },
+    });
+  }
+
   private async upsertRecord(
     nextRecord: AgentPackageRecord,
     matcher: (record: AgentPackageRecord) => boolean,
@@ -164,6 +246,7 @@ export class AgentPackageRegistryStore {
           ...existing,
           ...nextRecord,
           createdAt: existing.createdAt,
+          sourceMetadata: nextRecord.sourceMetadata,
           updatedAt: new Date().toISOString(),
         }
       : nextRecord;
