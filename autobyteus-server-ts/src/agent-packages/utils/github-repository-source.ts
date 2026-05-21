@@ -83,9 +83,23 @@ export const buildGitHubRepositoryApiUrl = (
 ): string =>
   `https://api.github.com/repos/${encodeURIComponent(source.owner)}/${encodeURIComponent(source.repo)}`;
 
+export const buildGitHubRepositoryBranchApiUrl = (
+  owner: string,
+  repo: string,
+  branch: string,
+): string =>
+  `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/branches/${encodeURIComponent(branch)}`;
+
 export const buildGitHubRepositoryArchiveUrl = (
   owner: string,
   repo: string,
   defaultBranch: string,
 ): string =>
   `https://codeload.github.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/tar.gz/refs/heads/${encodeURIComponent(defaultBranch)}`;
+
+export const buildGitHubRepositoryArchiveUrlForRef = (
+  owner: string,
+  repo: string,
+  revision: string,
+): string =>
+  `https://codeload.github.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/tar.gz/${encodeURIComponent(revision)}`;

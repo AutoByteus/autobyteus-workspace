@@ -26,6 +26,45 @@ export type AgentPackageSummary = {
   applicationCount: number;
 };
 
+export const AGENT_PACKAGE_UPDATE_STATUSES = [
+  "NOT_APPLICABLE",
+  "RELOAD_AVAILABLE",
+  "NOT_CHECKED",
+  "UNKNOWN",
+  "UP_TO_DATE",
+  "UPDATE_AVAILABLE",
+  "CHECK_FAILED",
+  "UPDATE_FAILED",
+] as const;
+
+export type AgentPackageUpdateStatus =
+  (typeof AGENT_PACKAGE_UPDATE_STATUSES)[number];
+
+export type AgentPackageGitHubSourceMetadata = {
+  defaultBranch: string | null;
+  installedRevision: string | null;
+  latestRevision: string | null;
+  latestCheckedAt: string | null;
+  updateStatus: AgentPackageUpdateStatus;
+  lastError: string | null;
+};
+
+export type AgentPackageSourceMetadata = {
+  github: AgentPackageGitHubSourceMetadata | null;
+};
+
+export type AgentPackageUpdateInfo = {
+  status: AgentPackageUpdateStatus;
+  canCheck: boolean;
+  canUpdate: boolean;
+  canReload: boolean;
+  message: string;
+  installedRevision: string | null;
+  latestRevision: string | null;
+  checkedAt: string | null;
+  lastError: string | null;
+};
+
 export type AgentPackage = AgentPackageSummary & {
   packageId: string;
   displayName: string;
@@ -35,6 +74,7 @@ export type AgentPackage = AgentPackageSummary & {
   isDefault: boolean;
   isRemovable: boolean;
   managedInstallPath: string | null;
+  updateInfo: AgentPackageUpdateInfo;
 };
 
 export type AgentPackageRecord = {
@@ -44,6 +84,7 @@ export type AgentPackageRecord = {
   source: string;
   normalizedSource: string;
   managedInstallPath: string | null;
+  sourceMetadata: AgentPackageSourceMetadata | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -63,8 +104,14 @@ export type GitHubRepositoryMetadata = {
   defaultBranch: string;
 };
 
+export type GitHubRepositoryRevisionMetadata = GitHubRepositoryMetadata & {
+  latestRevision: string;
+};
+
 export type ManagedGitHubInstallResult = {
   rootPath: string;
   managedInstallPath: string;
   canonicalSourceUrl: string;
+  defaultBranch?: string;
+  installedRevision?: string;
 };

@@ -202,10 +202,32 @@ Manage application package sources used by the current node.
 
 Manage agent package sources used by the app.
 
-- Import a package from a local filesystem path.
-- Import a package from a public GitHub repository URL.
-- Review installed package inventory and source type.
-- Remove removable imported packages from app-managed storage.
+- Import a package from a local filesystem path. Local folders remain user-owned:
+  AutoByteus validates and reads them, but it does not pull Git, overwrite files,
+  or otherwise mutate the folder. Use the row-level **Reload** action after
+  editing or pulling that folder externally.
+- Import a package from a public GitHub repository URL. GitHub imports are
+  installed into AutoByteus-managed storage from the repository archive; the app
+  does not require a system `git` binary for import or update.
+- Review installed package inventory, source type, package counts, and
+  source-aware update state. GitHub rows can be `Not checked`, `Unknown
+  installed version`, `Up to date`, `Update available`, `Check failed`, or
+  `Last update failed`; local rows show that reload is available.
+- Use **Check again** on GitHub rows to refresh default-branch revision metadata.
+  When the remote revision is newer, or when a legacy GitHub import has unknown
+  installed revision metadata, use **Update** to download, validate, and replace
+  the managed package. Failed checks or updates keep the existing package
+  available and show the recorded error.
+- Duplicate GitHub imports direct operators back to the existing package row's
+  check/update flow instead of requiring delete/re-import.
+- Direct private GitHub URL imports are not authenticated in this flow. Clone or
+  sync private repositories locally, import the local path, and use **Reload**
+  after external updates.
+- Remove removable imported packages from app-managed storage. Built-in/default
+  package rows are platform-owned and do not expose user update, reload, or
+  remove actions.
+- Import, removal, local reload, and managed GitHub update refresh the dependent
+  Applications, Agents, and Agent Teams catalogs in the same session.
 
 ### 11. Server Settings
 

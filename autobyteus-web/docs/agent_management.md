@@ -95,9 +95,20 @@ Definition editors can leave runtime blank to mean “choose when launching”, 
 
 ## Package Refresh Behavior
 
-Package import/remove flows invalidate and reload Agents together with Applications and Agent Teams. This keeps embedded application-owned definitions visible (or removed) in the same session immediately after a package mutation.
+Agent package import, removal, local reload, and managed GitHub update flows
+invalidate and reload Agents together with Applications and Agent Teams. This
+keeps embedded application-owned definitions visible, refreshed, or removed in
+the same session immediately after a package mutation.
 
-For definition updates outside the editor, use the package/Git/folder source workflow and then press **Reload** in the Agents catalog. Reload refreshes the local agent definition catalog from the configured sources and performs a network refetch; it does not copy definitions between nodes.
+For definition updates outside the editor, use **Settings → Agent Packages** as
+the source-aware package lifecycle surface. Local path packages remain
+user-owned: edit or pull the folder outside AutoByteus, then press the package
+row's **Reload** action so the backend validates and rescans the package.
+Public GitHub package rows can **Check again** for default-branch drift and
+**Update** the AutoByteus-managed package when an update is available or the
+installed revision is unknown. These actions refresh the local agent catalog
+from configured package sources and perform a network refetch; they do not copy
+definitions between nodes.
 
 ## Featured Agents
 

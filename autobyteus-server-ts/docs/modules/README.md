@@ -11,6 +11,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Definition | [agent_definition.md](./agent_definition.md) |
 | Agent Execution | [agent_execution.md](./agent_execution.md) |
 | Agent Memory | [agent_memory.md](./agent_memory.md) |
+| Agent Packages | [agent_packages.md](./agent_packages.md) |
 | Agent Streaming | [agent_streaming.md](./agent_streaming.md) |
 | Agent Team Definition | [agent_team_definition.md](./agent_team_definition.md) |
 | Agent Team Execution | [agent_team_execution.md](./agent_team_execution.md) |
