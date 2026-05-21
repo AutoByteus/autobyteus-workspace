@@ -2,10 +2,10 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/design-spec.md`
-- Mobile Shell Scope Analysis Addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/mobile-shell-scope-analysis.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/design-spec.md`
+- Mobile Shell Scope Analysis Addendum: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/mobile-shell-scope-analysis.md`
 - Current Review Round: 2
 - Trigger: Re-review after solution design refined DRI-001 around team draft attachment identity after removing setup-owned first-message target, plus Round 2 addendum tightening the binding mobile-shell/shared-core change budget after the user's explicit scope concern.
 - Prior Review Round Reviewed: Round 1 in this same canonical report path.
@@ -52,7 +52,7 @@ No new blocking finding is introduced by the addendum. It narrows implementation
 
 ## Mobile Shell Scope Analysis Addendum Review
 
-Reviewed scope-analysis artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/mobile-shell-scope-analysis.md`.
+Reviewed scope-analysis artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/mobile-shell-scope-analysis.md`.
 
 The analysis is sufficient to prevent core/shared drift when treated as binding implementation guidance. I also checked the current changed-file surface and shared seam shape at architecture-review depth.
 

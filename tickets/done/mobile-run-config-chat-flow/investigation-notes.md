@@ -16,10 +16,10 @@ The user reviewed the current mobile Start new setup and asked why a Launch Summ
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow`
 - Current Branch: `codex/mobile-run-config-chat-flow`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin --prune` succeeded on 2026-05-21.
 - Task Branch: `codex/mobile-run-config-chat-flow`
@@ -41,14 +41,14 @@ The user reviewed the current mobile Start new setup and asked why a Launch Summ
 | 2026-05-21 | Code | `autobyteus-web/components/mobile/MobileChat.vue`, `MobileComposerContextTray.vue` | Confirm Chat has normal composer/context surface | Mobile Chat already renders normal agent/team monitor composer and context tray. | First message belongs here |
 | 2026-05-21 | Code | `autobyteus-web/composables/mobile/useMobileFileContextCoordinator.ts`, `stores/mobileWorkStore.ts` | Check draft attachment handling | Non-run contexts store attachments in `draftContextAttachments`; active runs show `activeContextStore.currentContextPaths`. Current coordinator consumes draft attachments just before send. | Transfer attachments on create |
 | 2026-05-21 | Code | `autobyteus-web/stores/agentContextsStore.ts`, `agentTeamContextsStore.ts` | Verify empty run creation capability | Both stores create selected agent/team contexts from config templates without sending a prompt; team run chooses an initial focused member. | Reuse boundaries |
-| 2026-05-21 | Doc | `docs/task-artifacts/mobile-run-config-chat-flow/design-review-report.md` | Consume architecture review Round 1 | Review failed on DRI-001: team draft attachment transfer was not identity-safe after removing setup focus target. | Yes: refine design |
+| 2026-05-21 | Doc | `tickets/done/mobile-run-config-chat-flow/design-review-report.md` | Consume architecture review Round 1 | Review failed on DRI-001: team draft attachment transfer was not identity-safe after removing setup focus target. | Yes: refine design |
 | 2026-05-21 | Code | `autobyteus-web/stores/activeContextStore.ts` | Inspect active context attachment ownership | `activeAgentContext` resolves a team selection to `agentTeamContextsStore.focusedMemberContext`; `currentContextPaths` and `addContextFilePath` are per focused leaf `AgentContext`, not team-run scoped. | Design pending team-run owner |
 | 2026-05-21 | Code | `autobyteus-web/components/agentInput/AgentUserInputTextArea.vue`, `AgentUserInputForm.vue`, `AgentEventMonitor.vue`, `AgentTeamEventMonitor.vue` | Inspect first-send hook opportunities | The send button calls `activeContextStore.send()` directly inside shared textarea. A mobile-only before-send hook would need to thread through shared form/monitor components as an optional no-op desktop prop, or an equivalent explicit pre-send bridge. | Specify shared no-op hook if chosen |
 | 2026-05-21 | Code | `autobyteus-web/stores/agentTeamRunStore.ts`, `services/runSubmission/localUserSubmission.ts` | Inspect send-time attachment consumption | Team send uses the current focused member route and `contextAttachments`; local submission clears the focused member's `contextFilePaths` after send begins. This supports flushing pending attachments to the selected leaf immediately before send. | Add design details |
 | 2026-05-21 | Other | User clarification after observing implementation changed files | Re-check implementation scope boundaries | User is concerned this UI-focused mobile task may be expanding into core/shared files and stores. `mobileWorkStore` is mobile-owned, but shared composer changes must be fallback-only no-op seams if needed at all. | Tighten requirements/design |
 | 2026-05-21 | Command | `git diff --name-only`, `git diff --stat`, focused source diffs | Analyze implementation change surface against mobile-shell/no-core principle | Observed mobile-only UI/coordinator/store changes plus one shared composer/monitor optional `beforeSend` seam. No backend/API/runtime/model/core run store source files changed. | Downstream review hot spot |
 | 2026-05-21 | Command | `pnpm --dir autobyteus-web test:nuxt run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts` | Validate focused mobile UX and shared seam checks | Passed: 4 files / 43 tests. | Still require downstream desktop/web no-regression review |
-| 2026-05-21 | Doc | `docs/task-artifacts/mobile-run-config-chat-flow/mobile-shell-scope-analysis.md` | Record implementation-scope analysis for downstream agents | Analysis concludes implementation is broadly aligned; shared composer/monitor seam is the only caution area and must remain generic optional no-op or be removed. | Send downstream |
+| 2026-05-21 | Doc | `tickets/done/mobile-run-config-chat-flow/mobile-shell-scope-analysis.md` | Record implementation-scope analysis for downstream agents | Analysis concludes implementation is broadly aligned; shared composer/monitor seam is the only caution area and must remain generic optional no-op or be removed. | Send downstream |
 
 ## Current Behavior / Current Flow
 

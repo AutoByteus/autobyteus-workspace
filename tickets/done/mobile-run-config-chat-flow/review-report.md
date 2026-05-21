@@ -3,23 +3,23 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/requirements.md`
 - Current Review Round: 3
 - Trigger: Local Fix implementation after API/E2E failure `MOB-TEMP-PROMOTE-001` where mobile current context kept a temporary run id after first-send backend promotion.
 - Prior Review Round Reviewed: 2
 - Latest Authoritative Round: 3
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/design-spec.md`
-- Design-Impact Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/design-impact-rework-config-then-chat.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/design-review-report.md`
-- Mobile Shell Scope Analysis Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/mobile-shell-scope-analysis.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/api-e2e-validation-report.md`
-- Live Evidence Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/evidence/live-validation-observations.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/design-spec.md`
+- Design-Impact Rework Note Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/design-impact-rework-config-then-chat.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/design-review-report.md`
+- Mobile Shell Scope Analysis Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/mobile-shell-scope-analysis.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/api-e2e-validation-report.md`
+- Live Evidence Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/evidence/live-validation-observations.md`
 - Previous Delivered-Task References Reviewed As Context:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/upstream-previous-requirements.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/upstream-previous-investigation-notes.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/upstream-previous-design-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/upstream-previous-requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/upstream-previous-investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/upstream-previous-design-spec.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`; this round reviews an implementation-owned source/test Local Fix only.
 
@@ -33,7 +33,7 @@
 
 ## Review Scope
 
-Reviewed the Round 3 Local Fix in `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow` against the existing artifact chain, API/E2E failure report, live validation evidence, mobile-shell scope analysis, and canonical design principles.
+Reviewed the Round 3 Local Fix in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` against the existing artifact chain, API/E2E failure report, live validation evidence, mobile-shell scope analysis, and canonical design principles.
 
 Round 3 review focused on:
 

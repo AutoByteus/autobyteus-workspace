@@ -2,19 +2,19 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/design-spec.md`
-- Design-impact rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/design-impact-rework-config-then-chat.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/design-review-report.md`
-- Mobile shell scope analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/mobile-shell-scope-analysis.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/api-e2e-validation-report.md`
-- Live validation evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/evidence/live-validation-observations.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/design-spec.md`
+- Design-impact rework note: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/design-impact-rework-config-then-chat.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/design-review-report.md`
+- Mobile shell scope analysis: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/mobile-shell-scope-analysis.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/api-e2e-validation-report.md`
+- Live validation evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/evidence/live-validation-observations.md`
 - Previous delivered-task references:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/upstream-previous-requirements.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/upstream-previous-investigation-notes.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/docs/task-artifacts/mobile-run-config-chat-flow/upstream-previous-design-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/upstream-previous-requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/upstream-previous-investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-run-config-chat-flow/upstream-previous-design-spec.md`
 
 ## What Changed
 
@@ -189,7 +189,7 @@ Implementation-scoped checks only:
 1. Focused mobile/shared/config/store Vitest suite:
 
    ```bash
-   cd /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/autobyteus-web
+   cd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
    pnpm exec vitest run \
      components/mobile/__tests__/MobileUxRefinement.spec.ts \
      components/mobile/__tests__/MobileContextSelectionRegression.spec.ts \
@@ -227,7 +227,7 @@ Implementation-scoped checks only:
 3. Repository-wide TypeScript check:
 
    ```bash
-   cd /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-run-config-chat-flow/autobyteus-web
+   cd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
    pnpm exec tsc --noEmit --pretty false
    ```
 
