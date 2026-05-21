@@ -12,8 +12,15 @@
         <MobileComposerContextTray :context="context" />
       </template>
     </AgentEventMonitor>
-    <AgentTeamEventMonitor v-else-if="selectedTeamContext" class="min-h-0 flex-1">
+    <AgentTeamEventMonitor v-else-if="selectedTeamContext" :before-send="beforeSend" class="min-h-0 flex-1">
       <template #composerContext>
+        <p
+          v-if="pendingTeamAttachmentError"
+          class="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800"
+          data-testid="mobile-team-pending-attachments-error"
+        >
+          {{ pendingTeamAttachmentError }}
+        </p>
         <MobileComposerContextTray :context="context" />
       </template>
     </AgentTeamEventMonitor>
@@ -36,8 +43,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import MobileComposerContextTray from '~/components/mobile/MobileComposerContextTray.vue';
+import { useMobilePendingTeamRunAttachments } from '~/composables/mobile/useMobilePendingTeamRunAttachments';
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
@@ -57,6 +65,10 @@ defineEmits<{
 const selectionStore = useAgentSelectionStore();
 const agentContextsStore = useAgentContextsStore();
 const teamContextsStore = useAgentTeamContextsStore();
+const {
+  beforeSend,
+  error: pendingTeamAttachmentError,
+} = useMobilePendingTeamRunAttachments(toRef(props, 'context'));
 
 const selectedAgentContext = computed(() => {
   if (props.context?.kind !== 'agent-run') return null;

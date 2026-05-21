@@ -209,34 +209,33 @@ describe('mobile Round 4 UX refinements', () => {
     expect(wrapper.get('[data-testid="mobile-home-status-card"]').text()).not.toContain('Offline');
   });
 
-  it('requires intentional run target selection and shows launch summary without provider preflight gating', async () => {
+  it('uses configure-only mobile setup without first-message entry or launch summary', async () => {
     const wrapper = mountWithPinia(MobileRunSetup, {
       props: { context: workspaceContext },
     });
     await nextTick();
 
-    expect(wrapper.text()).toContain('Choose an agent, workspace, runtime/model, and first message.');
+    expect(wrapper.text()).toContain('Choose an agent, workspace, and runtime/model. You’ll type the first message in Chat.');
     expect(wrapper.text()).not.toContain('focused member');
+    expect(wrapper.find('[data-testid="mobile-run-prompt"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-launch-summary"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="mobile-run-agent-select"]').text()).toContain('Choose an agent intentionally');
     expect(wrapper.get('[data-testid="mobile-run-workspace-select"]').text()).toContain('Project Workspace');
-    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Choose model');
-    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Review your mobile launch choices');
-    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).not.toContain('Existing desktop defaults');
+    expect(wrapper.get('[data-testid="mobile-run-setup-readiness"]').text()).toContain('Choose an agent before creating the run.');
     expect(wrapper.find('[data-testid="mobile-runtime-model-blocking-issue"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="mobile-run-launch"]').attributes('disabled')).toBeDefined();
 
     await wrapper.get('[data-testid="mobile-run-agent-select-toggle"]').trigger('click');
     await nextTick();
     await wrapper.findAll('[data-testid="mobile-run-agent-select-option"]')[1].trigger('click');
-    await wrapper.get('[data-testid="mobile-run-prompt"]').setValue('Start intentionally');
     await nextTick();
 
-    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Reviewer Agent');
-    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('AutoByteus · test-model');
+    expect(wrapper.get('[data-testid="mobile-run-agent-select"]').text()).toContain('Reviewer Agent');
+    expect(wrapper.get('[data-testid="mobile-run-setup-readiness"]').text()).toContain('Ready to create the run. Chat opens next.');
     expect(wrapper.get('[data-testid="mobile-run-launch"]').attributes('disabled')).toBeUndefined();
   });
 
-  it('uses a searchable mobile picker for team launch first message targets', async () => {
+  it('removes team launch first-message target from setup while keeping searchable team selection', async () => {
     const wrapper = mountWithPinia(MobileRunSetup, {
       props: { context: workspaceContext },
     });
@@ -244,26 +243,21 @@ describe('mobile Round 4 UX refinements', () => {
 
     await wrapper.get('[data-testid="mobile-run-setup-team-mode"]').trigger('click');
     await nextTick();
-    expect(wrapper.text()).toContain('Choose a team, workspace, runtime/model, first message target, and first message.');
+    expect(wrapper.text()).toContain('Choose a team, workspace, and runtime/model. You’ll select the message target in Chat.');
+    expect(wrapper.find('[data-testid="mobile-run-prompt"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-team-launch-focus-select"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('First message target');
 
     await wrapper.get('[data-testid="mobile-run-team-select-toggle"]').trigger('click');
     await nextTick();
+    expect(wrapper.find('select[data-testid="mobile-run-team-select"]').exists()).toBe(false);
+
     await wrapper.get('[data-testid="mobile-run-team-select-option"]').trigger('click');
     await nextTick();
 
-    expect(wrapper.find('[data-testid="mobile-team-launch-focus-select"]').exists()).toBe(true);
-    expect(wrapper.find('select[data-testid="mobile-team-launch-focus-select"]').exists()).toBe(false);
-
-    await wrapper.get('[data-testid="mobile-team-launch-focus-select-toggle"]').trigger('click');
-    await nextTick();
-    expect(wrapper.find('[data-testid="mobile-team-launch-focus-select-search"]').exists()).toBe(true);
-
-    await wrapper.get('[data-testid="mobile-team-launch-focus-select-search"]').setValue('reviewer');
-    await nextTick();
-
-    const options = wrapper.findAll('[data-testid="mobile-team-launch-focus-select-option"]');
-    expect(options).toHaveLength(1);
-    expect(options[0].text()).toContain('reviewer');
+    expect(wrapper.get('[data-testid="mobile-run-team-select"]').text()).toContain('Software Team');
+    expect(wrapper.get('[data-testid="mobile-run-setup-readiness"]').text()).not.toContain('First message');
+    expect(wrapper.get('[data-testid="mobile-run-launch"]').text()).toContain('Create run');
   });
 
 
@@ -276,11 +270,12 @@ describe('mobile Round 4 UX refinements', () => {
     await wrapper.get('[data-testid="mobile-run-agent-select-toggle"]').trigger('click');
     await nextTick();
     await wrapper.findAll('[data-testid="mobile-run-agent-select-option"]')[2].trigger('click');
-    await wrapper.get('[data-testid="mobile-run-prompt"]').setValue('Try without a model');
     await nextTick();
 
-    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Unconfigured Agent');
-    expect(wrapper.get('[data-testid="mobile-launch-summary"]').text()).toContain('Choose a model before launching.');
+    expect(wrapper.find('[data-testid="mobile-run-prompt"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-launch-summary"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="mobile-run-agent-select"]').text()).toContain('Unconfigured Agent');
+    expect(wrapper.get('[data-testid="mobile-run-setup-readiness"]').text()).toContain('Choose a model before creating the run.');
     expect(wrapper.get('[data-testid="mobile-run-launch"]').attributes('disabled')).toBeDefined();
   });
 

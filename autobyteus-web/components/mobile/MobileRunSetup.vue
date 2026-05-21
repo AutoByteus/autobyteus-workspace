@@ -1,5 +1,5 @@
 <template>
-  <form class="space-y-4 rounded-3xl border border-blue-200 bg-blue-50 p-4" data-testid="mobile-run-setup" @submit.prevent="launch">
+  <form class="space-y-4 rounded-3xl border border-blue-200 bg-blue-50 p-4" data-testid="mobile-run-setup" @submit.prevent="createRun">
     <div class="flex items-start justify-between gap-3">
       <div>
         <p class="text-sm font-bold text-blue-950">Start new work</p>
@@ -77,31 +77,27 @@
       @update:llm-config="teamRunConfigStore.updateConfig({ llmConfig: $event })"
     />
 
-    <MobileTeamLaunchFocusPicker
-      v-if="mode === 'team' && selectedTeamId"
-      v-model="selectedTeamFocusRouteKey"
-      :team-definition-id="selectedTeamId"
-    />
-
-    <label class="block text-sm font-semibold text-blue-950">
-      First message
-      <textarea
-        v-model="prompt"
-        rows="4"
-        class="mt-1 w-full rounded-2xl border border-blue-200 bg-white px-3 py-3 text-sm"
-        placeholder="Tell AutoByteus what to do first…"
-        data-testid="mobile-run-prompt"
-      />
-    </label>
-
-    <MobileLaunchSummary
-      :target-label="selectedTargetLabel"
-      :workspace-label="selectedWorkspaceLabel"
-      :model-label="selectedModelLabel"
-      :first-message-target-label="selectedFirstMessageTargetLabel"
-      :blocking-issue="blockingIssue"
-      :ready="canLaunch"
-    />
+    <section class="rounded-2xl border border-blue-200 bg-white p-3 text-sm" data-testid="mobile-run-setup-readiness">
+      <p class="font-semibold" :class="canLaunch ? 'text-emerald-700' : 'text-amber-700'">
+        {{ canLaunch ? 'Ready to create the run. Chat opens next.' : blockingIssue }}
+      </p>
+      <div v-if="draftAttachments.length" class="mt-3 rounded-xl bg-blue-50 px-3 py-2" data-testid="mobile-run-setup-context-count">
+        <div class="flex justify-between gap-3 text-blue-950">
+          <span class="text-slate-500">Context for Chat</span>
+          <span class="font-semibold">{{ draftAttachments.length }} file{{ draftAttachments.length === 1 ? '' : 's' }}</span>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-1.5">
+          <span
+            v-for="attachment in draftAttachments"
+            :key="attachment.id"
+            class="max-w-full truncate rounded-full border border-blue-200 bg-white px-2.5 py-1 text-xs font-semibold text-blue-800"
+            data-testid="mobile-run-setup-context-item"
+          >
+            {{ attachment.displayName }}
+          </span>
+        </div>
+      </div>
+    </section>
 
     <p v-if="error" class="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700" data-testid="mobile-run-setup-error">
       {{ error }}
@@ -110,10 +106,10 @@
     <button
       type="submit"
       class="w-full rounded-2xl bg-blue-600 px-4 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
-      :disabled="!canLaunch || launching"
+      :disabled="!canLaunch || creating"
       data-testid="mobile-run-launch"
     >
-      {{ launching ? 'Launching…' : 'Launch run' }}
+      {{ creating ? 'Creating…' : 'Create run' }}
     </button>
   </form>
 </template>
@@ -121,25 +117,18 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import MobileLaunchRuntimeModelCard from '~/components/mobile/MobileLaunchRuntimeModelCard.vue';
-import MobileLaunchSummary from '~/components/mobile/MobileLaunchSummary.vue';
 import MobileLaunchTargetPicker from '~/components/mobile/MobileLaunchTargetPicker.vue';
-import MobileTeamLaunchFocusPicker from '~/components/mobile/MobileTeamLaunchFocusPicker.vue';
-import { buildMobileTeamMemberFocusRows } from '~/composables/mobile/useMobileTeamMemberFocusCoordinator';
 import { useMobileRunLaunchCoordinator } from '~/composables/mobile/useMobileRunLaunchCoordinator';
 import { useMobileWorkCatalog } from '~/composables/mobile/useMobileWorkCatalog';
 import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCatalogSync';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
+import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { MobileRunSetupIntent, MobileWorkContext, MobileWorkListItem } from '~/types/mobileWork';
-import {
-  buildTeamMemberTreeFromDefinition,
-  flattenLeafAgentMemberNodes,
-} from '~/utils/teamDefinitionMembers';
 
 type MobileLaunchPickerItem = {
   id: string;
@@ -163,19 +152,19 @@ const agentDefinitionStore = useAgentDefinitionStore();
 const agentRunConfigStore = useAgentRunConfigStore();
 const teamDefinitionStore = useAgentTeamDefinitionStore();
 const teamRunConfigStore = useTeamRunConfigStore();
+const mobileWorkStore = useMobileWorkStore();
 const { agentItems, teamItems, workspaceItems } = useMobileWorkCatalog();
-const { launchMobileRun } = useMobileRunLaunchCoordinator();
+const { createMobileRunFromConfig } = useMobileRunLaunchCoordinator();
 const mode = ref<'agent' | 'team'>('agent');
 const selectedAgentId = ref('');
 const selectedTeamId = ref('');
 const selectedWorkspaceId = ref('');
-const selectedTeamFocusRouteKey = ref('');
-const prompt = ref('');
-const launching = ref(false);
+const creating = ref(false);
 const error = ref<string | null>(null);
 const setupHelpText = computed(() => mode.value === 'team'
-  ? 'Choose a team, workspace, runtime/model, first message target, and first message.'
-  : 'Choose an agent, workspace, runtime/model, and first message.');
+  ? 'Choose a team, workspace, and runtime/model. You’ll select the message target in Chat.'
+  : 'Choose an agent, workspace, and runtime/model. You’ll type the first message in Chat.');
+const draftAttachments = computed(() => mobileWorkStore.draftContextAttachments);
 
 const workspaceIdByRootPath = computed(() => new Map(workspaceItems.value.flatMap((item) => item.context.kind === 'workspace'
   ? [[item.context.rootPath, item.context.workspaceId] as const]
@@ -189,12 +178,6 @@ const teamChoices = computed<MobileLaunchPickerItem[]>(() => teamItems.value.fla
 const workspaceChoices = computed<MobileLaunchPickerItem[]>(() => workspaceItems.value.flatMap((item) => item.context.kind === 'workspace'
   ? [{ id: item.context.workspaceId, label: item.label, detail: item.detail, group: choiceGroupForWorkspace(item) }]
   : []));
-const selectedTargetLabel = computed(() => {
-  const choices = mode.value === 'agent' ? agentChoices.value : teamChoices.value;
-  const selectedId = mode.value === 'agent' ? selectedAgentId.value : selectedTeamId.value;
-  return choices.find((item) => item.id === selectedId)?.label || '';
-});
-const selectedWorkspaceLabel = computed(() => workspaceChoices.value.find((item) => item.id === selectedWorkspaceId.value)?.label || '');
 const agentConfigForSelectedTarget = computed<AgentRunConfig | null>(() => {
   const config = agentRunConfigStore.config;
   return mode.value === 'agent' && config?.agentDefinitionId === selectedAgentId.value ? config : null;
@@ -206,69 +189,29 @@ const teamConfigForSelectedTarget = computed<TeamRunConfig | null>(() => {
 const activeTeamConfigForCatalogSync = computed(() => teamConfigForSelectedTarget.value);
 useTeamRunRuntimeCatalogSync(activeTeamConfigForCatalogSync);
 
-const selectedTeamDefinition = computed(() => selectedTeamId.value
-  ? teamDefinitionStore.getAgentTeamDefinitionById(selectedTeamId.value)
-  : null);
-const teamFocusRows = computed(() => {
-  const definition = selectedTeamDefinition.value;
-  if (!definition) {
-    return [];
-  }
-  try {
-    const tree = buildTeamMemberTreeFromDefinition(definition, {
-      getTeamDefinitionById: (teamDefinitionId: string) =>
-        teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
-    });
-    return buildMobileTeamMemberFocusRows(
-      flattenLeafAgentMemberNodes(tree),
-      (agentDefinitionId) => agentDefinitionStore.getAgentDefinitionById(agentDefinitionId)?.name || null,
-    );
-  } catch (cause) {
-    console.error('[MobileRunSetup] Failed to build team member focus choices.', cause);
-    return [];
-  }
-});
-const selectedFirstMessageTargetLabel = computed(() => mode.value === 'team'
-  ? teamFocusRows.value.find((row) => row.routeKey === selectedTeamFocusRouteKey.value)?.label || ''
-  : '');
-const selectedModelLabel = computed(() => {
-  const config = mode.value === 'agent' ? agentConfigForSelectedTarget.value : teamConfigForSelectedTarget.value;
-  if (!config) {
-    return '';
-  }
-  const runtimeLabel = runtimeKindToLabel(config.runtimeKind);
-  const model = config.llmModelIdentifier?.trim();
-  return model ? `${runtimeLabel} · ${model}` : `${runtimeLabel} · Choose model`;
-});
 const teamReadiness = computed(() => teamRunConfigStore.launchReadiness);
 const blockingIssue = computed(() => {
   const targetSelected = mode.value === 'agent' ? selectedAgentId.value : selectedTeamId.value;
   if (!targetSelected) {
-    return mode.value === 'agent' ? 'Choose an agent before launching.' : 'Choose a team before launching.';
+    return mode.value === 'agent' ? 'Choose an agent before creating the run.' : 'Choose a team before creating the run.';
   }
   if (!selectedWorkspaceId.value) {
-    return 'Choose a workspace before launching.';
+    return 'Choose a workspace before creating the run.';
   }
   if (mode.value === 'agent') {
     if (!agentConfigForSelectedTarget.value) {
       return 'Agent launch configuration is still loading.';
     }
     if (!agentRunConfigStore.isConfigured) {
-      return 'Choose a model before launching.';
+      return 'Choose a model before creating the run.';
     }
-  } else {
-    if (!teamConfigForSelectedTarget.value) {
-      return 'Team launch configuration is still loading.';
-    }
-    if (!selectedTeamFocusRouteKey.value || !teamFocusRows.value.some((row) => row.routeKey === selectedTeamFocusRouteKey.value)) {
-      return 'Choose a focused team member before launching.';
-    }
-    if (!teamReadiness.value.canLaunch) {
-      return teamReadiness.value.blockingIssues[0]?.message || 'Team configuration is not launch-ready.';
-    }
+    return '';
   }
-  if (!prompt.value.trim()) {
-    return 'Enter the first message before launching.';
+  if (!teamConfigForSelectedTarget.value) {
+    return 'Team launch configuration is still loading.';
+  }
+  if (!teamReadiness.value.canLaunch) {
+    return teamReadiness.value.blockingIssues[0]?.message || 'Team configuration is not launch-ready.';
   }
   return '';
 });
@@ -330,9 +273,6 @@ function applyContextDefaults(): void {
     if (!selectedWorkspaceId.value) {
       selectedWorkspaceId.value = workspaceIdByRootPath.value.get(props.context.workspaceRootPath) || '';
     }
-    if (!selectedTeamFocusRouteKey.value) {
-      selectedTeamFocusRouteKey.value = props.context.focusedMemberRouteKey;
-    }
   }
   if (props.context?.kind === 'workspace' && !selectedWorkspaceId.value) {
     selectedWorkspaceId.value = props.context.workspaceId;
@@ -347,7 +287,6 @@ function applySetupIntentDefaults(intent: MobileRunSetupIntent | null | undefine
     mode.value = 'agent';
     selectedAgentId.value = intent.agentDefinitionId;
     selectedTeamId.value = '';
-    selectedTeamFocusRouteKey.value = '';
   } else {
     mode.value = 'team';
     selectedTeamId.value = intent.teamDefinitionId;
@@ -401,36 +340,32 @@ function syncSelectedConfig(): void {
   }
 }
 
-async function launch(): Promise<void> {
+async function createRun(): Promise<void> {
   error.value = null;
   if (!canLaunch.value) {
-    error.value = blockingIssue.value || 'Choose a target, workspace, model, and first message.';
+    error.value = blockingIssue.value || 'Choose a target, workspace, and model before creating the run.';
     return;
   }
-  launching.value = true;
+  creating.value = true;
   try {
-    const result = await launchMobileRun(
+    const result = await createMobileRunFromConfig(
       mode.value === 'agent'
         ? {
             kind: 'agent',
             agentDefinitionId: selectedAgentId.value,
             workspaceId: selectedWorkspaceId.value,
-            prompt: prompt.value,
           }
         : {
             kind: 'team',
             teamDefinitionId: selectedTeamId.value,
             workspaceId: selectedWorkspaceId.value,
-            focusedMemberRouteKey: selectedTeamFocusRouteKey.value,
-            prompt: prompt.value,
           },
     );
-    prompt.value = '';
     emit('launched', result.context);
   } catch (cause) {
-    error.value = cause instanceof Error ? cause.message : 'Failed to launch mobile run.';
+    error.value = cause instanceof Error ? cause.message : 'Failed to create mobile run.';
   } finally {
-    launching.value = false;
+    creating.value = false;
   }
 }
 
@@ -438,7 +373,6 @@ watch(() => props.context, () => {
   selectedAgentId.value = '';
   selectedTeamId.value = '';
   selectedWorkspaceId.value = '';
-  selectedTeamFocusRouteKey.value = '';
   applyContextDefaults();
   applySetupIntentDefaults(props.setupIntent);
 }, { immediate: true });
@@ -455,17 +389,4 @@ watch(() => props.setupIntent?.revision, (revision) => {
   emit('setupIntentConsumed', revision);
 }, { immediate: true });
 watch([mode, selectedAgentId, selectedTeamId, selectedWorkspaceId, agentChoices, teamChoices], syncSelectedConfig, { immediate: true });
-watch(teamFocusRows, (rows) => {
-  if (mode.value !== 'team') {
-    selectedTeamFocusRouteKey.value = '';
-    return;
-  }
-  if (rows.length === 0) {
-    selectedTeamFocusRouteKey.value = '';
-    return;
-  }
-  if (!rows.some((row) => row.routeKey === selectedTeamFocusRouteKey.value)) {
-    selectedTeamFocusRouteKey.value = rows[0].routeKey;
-  }
-}, { immediate: true });
 </script>
