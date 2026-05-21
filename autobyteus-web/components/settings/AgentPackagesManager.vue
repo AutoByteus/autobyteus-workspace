@@ -24,21 +24,28 @@
         <li
           v-for="pkg in sortedPackages"
           :key="pkg.packageId"
-          class="flex items-center justify-between px-4 py-3"
+          class="flex items-start justify-between px-4 py-3"
           :data-testid="`agent-package-row-${pkg.sourceKind.toLowerCase()}`"
         >
-          <div class="min-w-0">
+          <div class="min-w-0 flex-1">
             <div class="truncate text-sm font-semibold text-gray-900" :title="pkg.displayName">
               {{ pkg.displayName }}
             </div>
             <div class="mt-1 text-xs text-gray-500">
-              {{ sourceKindLabel(pkg.sourceKind) }} | Shared Agents: {{ pkg.sharedAgentCount }} | Team-local Agents: {{ pkg.teamLocalAgentCount }} | Teams: {{ pkg.agentTeamCount }}
+              {{ sourceKindLabel(pkg.sourceKind) }} | Shared Agents: {{ pkg.sharedAgentCount }} | Team-local Agents: {{ pkg.teamLocalAgentCount }} | Teams: {{ pkg.agentTeamCount }} | Applications: {{ pkg.applicationCount }}
             </div>
             <div class="mt-1 truncate font-mono text-xs text-gray-500" :title="pkg.path">
               {{ pkg.sourceKind === 'GITHUB_REPOSITORY' ? pkg.source : pkg.path }}
             </div>
+            <div
+              class="mt-2 text-xs"
+              :class="updateStatusClass(pkg.updateInfo.status)"
+              :data-testid="`agent-package-update-status-${packageActionKey(pkg.packageId)}`"
+            >
+              {{ updateStatusLabel(pkg) }}
+            </div>
           </div>
-          <div class="ml-4 flex items-center gap-2">
+          <div class="ml-4 flex shrink-0 flex-wrap items-center justify-end gap-2">
             <span
               class="rounded px-2 py-1 text-xs font-medium"
               :class="pkg.isDefault ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700'"
@@ -46,10 +53,40 @@
               {{ pkg.isDefault ? 'Default' : sourceKindLabel(pkg.sourceKind) }}
             </span>
             <button
+              v-if="pkg.updateInfo.canReload"
+              type="button"
+              class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              :data-testid="`agent-package-reload-button-${packageActionKey(pkg.packageId)}`"
+              :disabled="isRowActionDisabled(pkg.packageId)"
+              @click="handleReload(pkg.packageId)"
+            >
+              {{ store.isPackageActionLoading(pkg.packageId) ? 'Reloading...' : 'Reload' }}
+            </button>
+            <button
+              v-if="pkg.sourceKind === 'GITHUB_REPOSITORY' && pkg.updateInfo.canCheck"
+              type="button"
+              class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+              :data-testid="`agent-package-check-button-${packageActionKey(pkg.packageId)}`"
+              :disabled="isRowActionDisabled(pkg.packageId) || checkingUpdates"
+              @click="handleCheckUpdates(pkg.packageId)"
+            >
+              {{ checkingUpdates ? 'Checking...' : 'Check again' }}
+            </button>
+            <button
+              v-if="pkg.updateInfo.canUpdate"
+              type="button"
+              class="rounded bg-gray-900 px-2 py-1 text-xs font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+              :data-testid="`agent-package-update-button-${packageActionKey(pkg.packageId)}`"
+              :disabled="isRowActionDisabled(pkg.packageId)"
+              @click="handleUpdate(pkg.packageId)"
+            >
+              {{ store.isPackageActionLoading(pkg.packageId) ? 'Updating...' : 'Update' }}
+            </button>
+            <button
               v-if="pkg.isRemovable"
               type="button"
               class="rounded border border-red-300 px-2 py-1 text-xs text-red-700 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-              :disabled="loading"
+              :disabled="isRowActionDisabled(pkg.packageId)"
               @click="handleRemove(pkg.packageId)"
             >
               Remove
@@ -91,13 +128,15 @@
 import { computed, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import type {
+  AgentPackage,
   AgentPackageImportSourceKind,
   AgentPackageSourceKind,
+  AgentPackageUpdateStatus,
 } from '~/stores/agentPackagesStore'
 import { useAgentPackagesStore } from '~/stores/agentPackagesStore'
 
 const store = useAgentPackagesStore()
-const { agentPackages, loading, error } = storeToRefs(store)
+const { agentPackages, loading, checkingUpdates, error } = storeToRefs(store)
 
 const newSource = ref('')
 const successMessage = ref('')
@@ -123,6 +162,34 @@ const sourceKindLabel = (sourceKind: AgentPackageSourceKind): string => {
   }
 }
 
+const updateStatusLabel = (pkg: AgentPackage): string => {
+  if (pkg.sourceKind === 'LOCAL_PATH') {
+    return 'Local folder — reload after external changes.'
+  }
+  return pkg.updateInfo.message
+}
+
+const updateStatusClass = (status: AgentPackageUpdateStatus): string => {
+  switch (status) {
+    case 'UPDATE_AVAILABLE':
+    case 'UNKNOWN':
+      return 'text-amber-700'
+    case 'CHECK_FAILED':
+    case 'UPDATE_FAILED':
+      return 'text-red-700'
+    case 'UP_TO_DATE':
+      return 'text-green-700'
+    default:
+      return 'text-gray-500'
+  }
+}
+
+const packageActionKey = (packageId: string): string =>
+  encodeURIComponent(packageId).replace(/%/g, '_')
+
+const isRowActionDisabled = (packageId: string): boolean =>
+  loading.value || store.isPackageActionLoading(packageId)
+
 const normalizeImportSource = (value: string): string =>
   /^github\.com\//i.test(value) ? `https://${value}` : value
 
@@ -134,6 +201,9 @@ const detectSourceKind = (value: string): AgentPackageImportSourceKind =>
 onMounted(async () => {
   try {
     await store.fetchAgentPackages()
+    if (agentPackages.value.some((pkg) => pkg.sourceKind === 'GITHUB_REPOSITORY')) {
+      await store.checkAgentPackageUpdates()
+    }
   } catch {
     // Store exposes error state.
   }
@@ -155,6 +225,42 @@ const handleImport = async (): Promise<void> => {
     })
     successMessage.value = 'Agent package imported.'
     newSource.value = ''
+  } catch {
+    // Store exposes error state.
+  }
+}
+
+const handleReload = async (packageId: string): Promise<void> => {
+  successMessage.value = ''
+  store.clearError()
+
+  try {
+    await store.reloadAgentPackage(packageId)
+    successMessage.value = 'Agent package reloaded.'
+  } catch {
+    // Store exposes error state.
+  }
+}
+
+const handleCheckUpdates = async (packageId?: string): Promise<void> => {
+  successMessage.value = ''
+  store.clearError()
+
+  try {
+    await store.checkAgentPackageUpdates(packageId ? [packageId] : undefined)
+    successMessage.value = 'Agent package update status refreshed.'
+  } catch {
+    // Store exposes error state.
+  }
+}
+
+const handleUpdate = async (packageId: string): Promise<void> => {
+  successMessage.value = ''
+  store.clearError()
+
+  try {
+    await store.updateAgentPackage(packageId)
+    successMessage.value = 'Agent package updated.'
   } catch {
     // Store exposes error state.
   }
