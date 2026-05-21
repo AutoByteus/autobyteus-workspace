@@ -30,9 +30,12 @@ vi.mock('~/utils/apolloClient', () => ({
 }))
 
 vi.mock('~/graphql/agentPackages', () => ({
+  CHECK_AGENT_PACKAGE_UPDATES: {},
   GET_AGENT_PACKAGES: {},
   IMPORT_AGENT_PACKAGE: {},
+  RELOAD_AGENT_PACKAGE: {},
   REMOVE_AGENT_PACKAGE: {},
+  UPDATE_AGENT_PACKAGE: {},
 }))
 
 vi.mock('~/stores/applicationStore', () => ({
@@ -48,6 +51,15 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
 }))
 
 import { useAgentPackagesStore } from '../agentPackagesStore'
+
+const expectDependentCatalogRefresh = () => {
+  expect(applicationStoreMock.invalidateApplications).toHaveBeenCalledOnce()
+  expect(agentDefinitionStoreMock.invalidateAgentDefinitions).toHaveBeenCalledOnce()
+  expect(agentTeamDefinitionStoreMock.invalidateAgentTeamDefinitions).toHaveBeenCalledOnce()
+  expect(applicationStoreMock.fetchApplications).toHaveBeenCalledWith(true)
+  expect(agentDefinitionStoreMock.reloadAllAgentDefinitions).toHaveBeenCalledOnce()
+  expect(agentTeamDefinitionStoreMock.reloadAllAgentTeamDefinitions).toHaveBeenCalledOnce()
+}
 
 describe('agentPackagesStore', () => {
   beforeEach(() => {
@@ -73,12 +85,7 @@ describe('agentPackagesStore', () => {
     })
 
     expect(store.agentPackages).toEqual([{ packageId: 'pkg-1', displayName: 'Pkg 1' }])
-    expect(applicationStoreMock.invalidateApplications).toHaveBeenCalledOnce()
-    expect(agentDefinitionStoreMock.invalidateAgentDefinitions).toHaveBeenCalledOnce()
-    expect(agentTeamDefinitionStoreMock.invalidateAgentTeamDefinitions).toHaveBeenCalledOnce()
-    expect(applicationStoreMock.fetchApplications).toHaveBeenCalledWith(true)
-    expect(agentDefinitionStoreMock.reloadAllAgentDefinitions).toHaveBeenCalledOnce()
-    expect(agentTeamDefinitionStoreMock.reloadAllAgentTeamDefinitions).toHaveBeenCalledOnce()
+    expectDependentCatalogRefresh()
   })
 
   it('refreshes dependent catalogs after a successful package removal', async () => {
@@ -93,11 +100,55 @@ describe('agentPackagesStore', () => {
     await store.removeAgentPackage('pkg-2')
 
     expect(store.agentPackages).toEqual([{ packageId: 'built-in:default', displayName: 'Built-in' }])
-    expect(applicationStoreMock.invalidateApplications).toHaveBeenCalledOnce()
-    expect(agentDefinitionStoreMock.invalidateAgentDefinitions).toHaveBeenCalledOnce()
-    expect(agentTeamDefinitionStoreMock.invalidateAgentTeamDefinitions).toHaveBeenCalledOnce()
-    expect(applicationStoreMock.fetchApplications).toHaveBeenCalledWith(true)
-    expect(agentDefinitionStoreMock.reloadAllAgentDefinitions).toHaveBeenCalledOnce()
-    expect(agentTeamDefinitionStoreMock.reloadAllAgentTeamDefinitions).toHaveBeenCalledOnce()
+    expectDependentCatalogRefresh()
+  })
+
+  it('refreshes dependent catalogs after a local package reload', async () => {
+    apolloClientMock.mutate.mockResolvedValue({
+      data: {
+        reloadAgentPackage: [{ packageId: 'pkg-1', displayName: 'Pkg 1 reloaded' }],
+      },
+      errors: [],
+    })
+
+    const store = useAgentPackagesStore()
+    await store.reloadAgentPackage('pkg-1')
+
+    expect(store.agentPackages).toEqual([{ packageId: 'pkg-1', displayName: 'Pkg 1 reloaded' }])
+    expect(store.isPackageActionLoading('pkg-1')).toBe(false)
+    expectDependentCatalogRefresh()
+  })
+
+  it('updates package state after checking GitHub updates without refreshing dependent catalogs', async () => {
+    apolloClientMock.mutate.mockResolvedValue({
+      data: {
+        checkAgentPackageUpdates: [{ packageId: 'github:pkg', displayName: 'GitHub Pkg' }],
+      },
+      errors: [],
+    })
+
+    const store = useAgentPackagesStore()
+    await store.checkAgentPackageUpdates(['github:pkg'])
+
+    expect(store.agentPackages).toEqual([{ packageId: 'github:pkg', displayName: 'GitHub Pkg' }])
+    expect(applicationStoreMock.invalidateApplications).not.toHaveBeenCalled()
+    expect(agentDefinitionStoreMock.invalidateAgentDefinitions).not.toHaveBeenCalled()
+    expect(agentTeamDefinitionStoreMock.invalidateAgentTeamDefinitions).not.toHaveBeenCalled()
+  })
+
+  it('refreshes dependent catalogs after a managed GitHub package update', async () => {
+    apolloClientMock.mutate.mockResolvedValue({
+      data: {
+        updateAgentPackage: [{ packageId: 'github:pkg', displayName: 'GitHub Pkg updated' }],
+      },
+      errors: [],
+    })
+
+    const store = useAgentPackagesStore()
+    await store.updateAgentPackage('github:pkg')
+
+    expect(store.agentPackages).toEqual([{ packageId: 'github:pkg', displayName: 'GitHub Pkg updated' }])
+    expect(store.isPackageActionLoading('github:pkg')).toBe(false)
+    expectDependentCatalogRefresh()
   })
 })
