@@ -1,0 +1,20 @@
+timestamp=2026-05-21T19:23:27Z
+== adb devices -l ==
+List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:4
+
+== getprops ==
+model=2109119DG
+
+device=lisa
+
+release=12
+
+sdk=31
+
+miui=V130
+
+== package before install concise ==
+== appops camera before ==
+Error: No UID for org.autobyteus.mobile in user 0
+== path before ==

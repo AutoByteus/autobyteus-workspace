@@ -13,6 +13,7 @@ import org.autobyteus.mobile.shell.AndroidAppShellViewModel
 import org.autobyteus.mobile.shell.AndroidExternalActions
 import org.autobyteus.mobile.shell.ConnectionInputResolution
 import org.autobyteus.mobile.shell.ConnectionInputResolver
+import org.autobyteus.mobile.shell.QrScanCoordinator
 import org.autobyteus.mobile.ui.ConnectionScreen
 import org.autobyteus.mobile.ui.WebShellScreen
 import org.autobyteus.mobile.web.AutoByteusWebView
@@ -26,6 +27,7 @@ class MainActivity : Activity() {
     private lateinit var webShellScreen: WebShellScreen
     private lateinit var inputResolver: ConnectionInputResolver
     private lateinit var externalActions: AndroidExternalActions
+    private lateinit var qrScanCoordinator: QrScanCoordinator
     private lateinit var fileChooserCoordinator: WebFileChooserCoordinator
     private val viewModel = AndroidAppShellViewModel()
     private val executor = Executors.newSingleThreadExecutor()
@@ -39,7 +41,12 @@ class MainActivity : Activity() {
         connectionScreen = ConnectionScreen(this)
         webShellScreen = WebShellScreen(this)
         inputResolver = ConnectionInputResolver()
-        externalActions = AndroidExternalActions(this) { diagnostic -> showConnection(diagnostic) }
+        externalActions = AndroidExternalActions(this)
+        qrScanCoordinator = QrScanCoordinator(
+            activity = this,
+            onQrText = { decodedText -> submitInput(decodedText, httpAcknowledged = false) },
+            onDiagnostic = { diagnostic -> showConnection(diagnostic) },
+        )
         fileChooserCoordinator = WebFileChooserCoordinator(this) { diagnostic -> showWebDiagnostic(diagnostic) }
 
         val sharedText = extractSharedText(intent)
@@ -71,9 +78,16 @@ class MainActivity : Activity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (fileChooserCoordinator.handleActivityResult(requestCode, resultCode, data)) return
-        if (requestCode == AndroidExternalActions.QR_SCAN_REQUEST && resultCode == RESULT_OK) {
-            data?.getStringExtra("SCAN_RESULT")?.takeIf { it.isNotBlank() }?.let { submitInput(it, false) }
-        }
+        if (qrScanCoordinator.handleActivityResult(requestCode, resultCode, data)) return
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (qrScanCoordinator.handleRequestPermissionsResult(requestCode, permissions, grantResults)) return
     }
 
     @Suppress("OVERRIDE_DEPRECATION", "DEPRECATION")
@@ -119,7 +133,7 @@ class MainActivity : Activity() {
                         showConnection()
                     },
                     onSubmitInput = ::submitInput,
-                    onScanQr = { externalActions.startQrScan() },
+                    onScanQr = { qrScanCoordinator.startQrScan() },
                     onOpenTailscale = { externalActions.openTailscale() },
                 ),
             ),

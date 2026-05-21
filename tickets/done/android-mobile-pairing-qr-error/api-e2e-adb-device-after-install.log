@@ -1,0 +1,21 @@
+timestamp=2026-05-21T19:26:56Z
+== path ==
+package:/data/app/~~svS9a2m2ydSfhG8Hwe1BUQ==/org.autobyteus.mobile-fF2n9Gx4mFOP2rqa6yaSOw==/base.apk
+== package concise after install ==
+    userId=10512
+    versionCode=1 minSdk=26 targetSdk=35
+    versionName=0.1.0
+    firstInstallTime=2026-05-21 21:24:19
+    lastUpdateTime=2026-05-21 21:24:19
+      android.permission.CAMERA
+      android.permission.INTERNET: granted=true
+      android.permission.ACCESS_NETWORK_STATE: granted=true
+        android.permission.CAMERA: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+        android.permission.CAMERA: granted=false
+== appops camera after install ==
+Uid mode: CAMERA: ignore
+== resolve capture activity ==
+priority=0 preferredOrder=0 match=0x0 specificIndex=-1 isDefault=false
+org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity
+== legacy external scan resolve ==
+No activity found

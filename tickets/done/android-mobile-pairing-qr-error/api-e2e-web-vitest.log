@@ -1,0 +1,35 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-web
+
+stderr | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/mobile/__tests__/useMobileWorkCatalog.spec.ts (2 tests) 5ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (12 tests) 62ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (13 tests) 116ms
+
+ Test Files  3 passed (3)
+      Tests  27 passed (27)
+   Start at  21:11:27
+   Duration  4.77s (transform 2.53s, setup 11.59s, collect 613ms, tests 184ms, environment 599ms, prepare 462ms)
+

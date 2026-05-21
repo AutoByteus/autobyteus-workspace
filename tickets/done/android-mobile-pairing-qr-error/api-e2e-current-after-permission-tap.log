@@ -1,0 +1,43 @@
+timestamp=2026-05-21T19:28:21Z
+== current top windows/activity ==
+  mCurrentFocus=Window{38f1fa5 u0 com.twitter.android/com.twitter.app.main.MainActivity}
+  mFocusedApp=ActivityRecord{f80a7d9 u0 com.twitter.android/com.twitter.app.main.MainActivity t17583}
+    mResumedActivity: ActivityRecord{f80a7d9 u0 com.twitter.android/com.twitter.app.main.MainActivity t17583}
+== try compressed dump ==
+java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.MiuiFreeformImpl.getSize(MiuiFreeformImpl.java:53)
+	at android.util.MiuiFreeformUtils.getSize(MiuiFreeformUtils.java:49)
+	at android.view.Display.getSize(Display.java:796)
+	at com.android.commands.uiautomator.DumpCommand.run(DumpCommand.java:110)
+	at com.android.commands.uiautomator.Launcher.main(Launcher.java:83)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:363)
+Caused by: android.system.ErrnoException: open failed: ENOENT (No such file or directory)
+	at libcore.io.Linux.open(Native Method)
+	at libcore.io.ForwardingOs.open(ForwardingOs.java:574)
+	at libcore.io.BlockGuardOs.open(BlockGuardOs.java:274)
+	at libcore.io.IoBridge.open(IoBridge.java:560)
+	... 20 more
+UI hierchary dumped to: /sdcard/api-e2e-current.xml
+/sdcard/api-e2e-current.xml: 1 file pulled, 0 skipped. 2.0 MB/s (15216 bytes in 0.007s)
+== texts if any ==
+Für dich [84,142][234,197] android.widget.TextView false
+Folge ich [403,142][569,197] android.widget.TextView false
+AI Math [794,142][940,197] android.widget.TextView false
+von anakontra.com [172,443][783,502] android.widget.TextView true
+Mit KI erstellt [221,513][439,561] android.widget.TextView false
+screenshot=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-mobile-pairing-qr-error/api-e2e-screenshot-current-after-permission-tap.png

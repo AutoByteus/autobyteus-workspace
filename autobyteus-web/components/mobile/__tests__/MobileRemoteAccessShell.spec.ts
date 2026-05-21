@@ -73,9 +73,8 @@ const initialState = {
               {
                 runId: 'run-1',
                 summary: 'Implement mobile shell',
-                lastActivityAt: '2026-05-18T16:00:00.000Z',
-                status: 'Running',
-                lastKnownStatus: 'ACTIVE',
+                createdAt: '2026-05-18T16:00:00.000Z',
+                status: 'running',
                 isActive: true,
               },
             ],

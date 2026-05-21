@@ -1,0 +1,10 @@
+# Delivery integrated-state checks 2026-05-21T19:57:13Z
+Branch: codex/android-mobile-pairing-qr-error
+HEAD: 80298db5a2e0ead4d9c01818316e21a4a844eba5 chore(ticket): record android tailscale release completion
+origin/personal: 80298db5a2e0ead4d9c01818316e21a4a844eba5 chore(ticket): record android tailscale release completion
+Ahead/behind HEAD...origin/personal: 0	0
+Merge-base: 80298db5a2e0ead4d9c01818316e21a4a844eba5
+No new base commits were integrated because HEAD and origin/personal are identical; upstream API/E2E validation remains applicable to source state plus delivery docs/artifact-only edits.
+
+$ git diff --check
+git diff --check: PASS

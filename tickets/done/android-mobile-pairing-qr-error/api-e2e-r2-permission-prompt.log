@@ -1,0 +1,57 @@
+timestamp=2026-05-21T19:45:03Z
+== reset camera permission to denied promptable ==
+Unknown command: clear-permission-flags
+        android.permission.CAMERA: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+        android.permission.CAMERA: granted=false
+== launch app and tap scan ==
+Starting: Intent { cmp=org.autobyteus.mobile/.MainActivity }
+Status: ok
+LaunchState: COLD
+Activity: org.autobyteus.mobile/.MainActivity
+TotalTime: 349
+WaitTime: 354
+Complete
+== focus after tap ==
+  mCurrentFocus=Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+  mFocusedApp=ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.MiuiFreeformImpl.getSize(MiuiFreeformImpl.java:53)
+	at android.util.MiuiFreeformUtils.getSize(MiuiFreeformUtils.java:49)
+	at android.view.Display.getSize(Display.java:796)
+	at com.android.commands.uiautomator.DumpCommand.run(DumpCommand.java:110)
+	at com.android.commands.uiautomator.Launcher.main(Launcher.java:83)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:363)
+Caused by: android.system.ErrnoException: open failed: ENOENT (No such file or directory)
+	at libcore.io.Linux.open(Native Method)
+	at libcore.io.ForwardingOs.open(ForwardingOs.java:574)
+	at libcore.io.BlockGuardOs.open(BlockGuardOs.java:274)
+	at libcore.io.IoBridge.open(IoBridge.java:560)
+	... 20 more
+/sdcard/api-e2e-r2-permission-prompt.xml: 1 file pulled, 0 skipped. 1.3 MB/s (7651 bytes in 0.006s)
+== permission prompt texts ==
+AutoByteus mobile  [55,181][1025,277] android.widget.TextView click=false
+Open the existing /mobile shell from a saved desktop node. Pair with the same stable Tailscale URL you expect to use while traveling.  [55,277][1025,429] android.widget.TextView click=false
+PAIR OR ENTER NODE URL  [55,451][1025,495] android.widget.TextView click=false
+https://desktop.tailnet-name.ts.net/mobile  [55,503][1025,682] android.widget.EditText click=true
+I understand HTTP should only be used on a trusted private LAN/tailnet. Prefer Tailscale Serve HTTPS for travel.  [55,682][1025,814] android.widget.CheckBox click=true
+SAVE AND OPEN  [55,826][532,958] android.widget.Button click=true
+PASTE  [548,826][1025,958] android.widget.Button click=true
+SCAN QR  [55,966][532,1098] android.widget.Button click=true
+OPEN TAILSCALE  [548,966][1025,1098] android.widget.Button click=true
+Recommended setup  [93,1145][987,1201] android.widget.TextView click=false
+Use Tailscale Serve HTTPS, for example https://desktop.tailnet-name.ts.net/mobile. If you pair with a LAN IP and later switch to a Tailscale hostname, WebView localStorage is a different origin and you may need to pair again.  [93,1205][987,1421] android.widget.TextView click=false

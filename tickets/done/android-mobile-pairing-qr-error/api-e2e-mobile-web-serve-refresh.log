@@ -1,0 +1,16 @@
+timestamp=2026-05-21T19:27:14Z
+source=/Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-web/dist-mobile/public
+dest=/Applications/AutoByteus.app/Contents/Resources/server/mobile-web
+source_file_count=177
+source_index_sha256=9603ea94ca777769a7c80f216592da080b1641799972836a64b3237e141920bb
+dest_before_file_count=177
+dest_before_index_sha256=c8a0876e048c0fee3187977aaebc0c12795db141a6bfcbc5fc30014233323587
+backup=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-mobile-pairing-qr-error/mobile-web-before-api-e2e-20260521T192714Z.tar.gz
+backup_sha256=3ac286a951facbacd9762bccafb5517ed3351437a3f7b7dfcf33e95a37c710ff
+dest_after_file_count=177
+dest_after_index_sha256=9603ea94ca777769a7c80f216592da080b1641799972836a64b3237e141920bb
+served_index_sha256=9603ea94ca777769a7c80f216592da080b1641799972836a64b3237e141920bb
+served_index_entry=<!DOCTYPE html><html><head><meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1"> <script type="importmap">{"imports":{"#entry":"/mobile/_nuxt/ChWesKzE.js"}}</script> <link rel="stylesheet" href="/mobile/_nuxt/entry.BDBXZ_E4.css" crossorigin> 
+server_process=
+  PID  PPID STARTED                      COMMAND
+78138 77661 Thu May 21 20:22:09 2026     /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data

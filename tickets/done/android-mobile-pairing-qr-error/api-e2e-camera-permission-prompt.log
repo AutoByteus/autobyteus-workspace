@@ -1,0 +1,5 @@
+timestamp=2026-05-21T19:27:55Z
+== tap Scan QR for permission denial path ==
+== permission prompt dump ==
+ERROR: could not get idle state.
+adb: error: failed to stat remote object '/sdcard/api-e2e-permission-prompt.xml': No such file or directory

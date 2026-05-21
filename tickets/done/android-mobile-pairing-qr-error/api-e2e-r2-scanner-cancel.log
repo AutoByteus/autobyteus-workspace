@@ -1,0 +1,88 @@
+timestamp=2026-05-21T19:44:33Z
+== press back to cancel scanner ==
+== activity/window after cancel ==
+    mResumedActivity: ActivityRecord{2eeb5b9 u0 org.autobyteus.mobile/.MainActivity t17623}
+    mLastPausedActivity: ActivityRecord{d7c5e80 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity t-1 f}}
+    * Task{117edfe #17623 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+      affinity=10512:org.autobyteus.mobile
+      intent={flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity}
+      mActivityComponent=org.autobyteus.mobile/.MainActivity
+      Activities=[ActivityRecord{2eeb5b9 u0 org.autobyteus.mobile/.MainActivity t17623}]
+      mRootProcess=ProcessRecord{5e462f1 17643:org.autobyteus.mobile/u0a512}
+      * Hist #0: ActivityRecord{2eeb5b9 u0 org.autobyteus.mobile/.MainActivity t17623}
+          packageName=org.autobyteus.mobile processName=org.autobyteus.mobile
+          app=ProcessRecord{5e462f1 17643:org.autobyteus.mobile/u0a512}
+          Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity }
+          rootOfTask=true task=Task{117edfe #17623 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+          taskAffinity=10512:org.autobyteus.mobile
+          mActivityComponent=org.autobyteus.mobile/.MainActivity
+          baseDir=/data/app/~~iBl5tX4HwKIYe-SNLeRWAw==/org.autobyteus.mobile-bzBz7CbpDV_w_f06SdoagQ==/base.apk
+          dataDir=/data/user/0/org.autobyteus.mobile
+          windows=[Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}]
+    Resumed: ActivityRecord{2eeb5b9 u0 org.autobyteus.mobile/.MainActivity t17623}
+  ResumedActivity: ActivityRecord{2eeb5b9 u0 org.autobyteus.mobile/.MainActivity t17623}
+  topDisplayFocusedRootTask=Task{117edfe #17623 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+  deepestLastOrientationSource=ActivityRecord{2eeb5b9 u0 org.autobyteus.mobile/.MainActivity t17623}
+  mCurrentFocus=Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+  mFocusedApp=ActivityRecord{2eeb5b9 u0 org.autobyteus.mobile/.MainActivity t17623}
+      mPreferredTopFocusableRootTask=Task{117edfe #17623 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+      mLastFocusedRootTask=Task{117edfe #17623 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+      * Task{117edfe #17623 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+        * ActivityRecord{2eeb5b9 u0 org.autobyteus.mobile/.MainActivity t17623}
+    mFocusedWindow=Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+    mTopFullscreenOpaqueWindowState=Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+    mTopFullscreenOpaqueOrDimmingWindowState=Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+      ITYPE_IME -> Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+      ITYPE_NAVIGATION_BAR -> Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+      ITYPE_STATUS_BAR -> Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+        mControlTarget=Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+        mControlTarget=Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+        mControlTarget=Window{b60440c u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+        (fullscreen) Task{117edfe #17623 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+  VisibleActivityProcess:[ ProcessRecord{5e462f1 17643:org.autobyteus.mobile/u0a512}]
+java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.MiuiFreeformImpl.getSize(MiuiFreeformImpl.java:53)
+	at android.util.MiuiFreeformUtils.getSize(MiuiFreeformUtils.java:49)
+	at android.view.Display.getSize(Display.java:796)
+	at com.android.commands.uiautomator.DumpCommand.run(DumpCommand.java:110)
+	at com.android.commands.uiautomator.Launcher.main(Launcher.java:83)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:363)
+Caused by: android.system.ErrnoException: open failed: ENOENT (No such file or directory)
+	at libcore.io.Linux.open(Native Method)
+	at libcore.io.ForwardingOs.open(ForwardingOs.java:574)
+	at libcore.io.BlockGuardOs.open(BlockGuardOs.java:274)
+	at libcore.io.IoBridge.open(IoBridge.java:560)
+	... 20 more
+/sdcard/api-e2e-r2-scanner-cancel.xml: 1 file pulled, 0 skipped. 1.6 MB/s (8803 bytes in 0.005s)
+== cancel texts ==
+AutoByteus mobile [55,181][1025,277] android.widget.TextView click=false
+Open the existing /mobile shell from a saved desktop node. Pair with the same stable Tailscale URL you expect to use while traveling. [55,277][1025,429] android.widget.TextView click=false
+QR scan was not completed [93,476][987,532] android.widget.TextView click=false
+No QR text was returned from the scanner.
+
+Scan the Phone Access QR again, or paste/manual-enter the Phone Access link text. [93,536][987,710] android.widget.TextView click=false
+PAIR OR ENTER NODE URL [55,765][1025,809] android.widget.TextView click=false
+https://desktop.tailnet-name.ts.net/mobile [55,817][1025,996] android.widget.EditText click=true
+I understand HTTP should only be used on a trusted private LAN/tailnet. Prefer Tailscale Serve HTTPS for travel. [55,996][1025,1128] android.widget.CheckBox click=true
+SAVE AND OPEN [55,1140][532,1272] android.widget.Button click=true
+PASTE [548,1140][1025,1272] android.widget.Button click=true
+SCAN QR [55,1280][532,1412] android.widget.Button click=true
+OPEN TAILSCALE [548,1280][1025,1412] android.widget.Button click=true
+Recommended setup [93,1459][987,1515] android.widget.TextView click=false
+Use Tailscale Serve HTTPS, for example https://desktop.tailnet-name.ts.net/mobile. If you pair with a LAN IP and later switch to a Tailscale hostname, WebView localStorage is a different origin and you may need to pair again. [93,1519][987,1735] android.widget.TextView click=false
+== crash buffer after cancel ==

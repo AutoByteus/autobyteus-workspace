@@ -1,0 +1,255 @@
+timestamp=2026-05-21T19:29:21Z
+== crash dialogs/text ==
+{'index': '0', 'text': '', 'resource-id': '', 'class': 'android.widget.FrameLayout', 'package': 'android', 'content-desc': '', 'checkable': 'false', 'checked': 'false', 'clickable': 'false', 'enabled': 'true', 'focusable': 'false', 'focused': 'false', 'scrollable': 'false', 'long-clickable': 'false', 'password': 'false', 'selected': 'false', 'bounds': '[0,0][1080,2166]'}
+== logcat fatal around org.autobyteus.mobile ==
+05-21 21:29:15.617 E/SDM     ( 1091): HWCDisplay::GetClientTargetProperty: QIPL: GetClinetTargetProperty func enter
+05-21 21:29:15.618 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.620 D/QS      ( 3489): setListening false
+05-21 21:29:15.623 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.652 E/DeviceInfo(32005): isAboveOS2Version fail: java.lang.NumberFormatException: For input string: ""
+05-21 21:29:15.657 I/DynamicRefreshRate recy(32005): dynamic params is false
+05-21 21:29:15.657 E/DynamicRefreshRate recy(32005): dynamic is not enable
+05-21 21:29:15.662 D/AudioFlinger( 1182): updateWakeLockUids_l AudioOut_25 uids:
+05-21 21:29:15.662 V/APM::EffectDescriptor( 1182): setEffectEnabled(false) total CPU 0
+05-21 21:29:15.663 I/a       ( 6348): uid:10118change to inactive
+05-21 21:29:15.663 D/ProcessManager( 1828): add temp remove audio inactive uid : 10118
+05-21 21:29:15.664 D/ACDB-LOADER(  978): ACDB -> send_audvoltable
+05-21 21:29:15.664 D/ACDB-LOADER(  978): ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE_SIZE
+05-21 21:29:15.664 D/android.hardware.audio.service(  978): Failed to fetch the lookup information of the device 0000271B 
+05-21 21:29:15.664 D/ACDB-LOADER(  978): Error: ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE_SIZE Returned = -19
+05-21 21:29:15.664 D/ACDB-LOADER(  978): ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE, vol index 0
+05-21 21:29:15.664 D/android.hardware.audio.service(  978): Failed to fetch the lookup information of the device 0000271B 
+05-21 21:29:15.664 D/ACDB-LOADER(  978): Error: ACDB AudProc vol returned = -19
+05-21 21:29:15.664 D/ACDB-LOADER(  978): ACDB -> AUDIO_SET_VOL_CAL cal type = 40
+05-21 21:29:15.664 W/msm8974_platform(  978): platform_send_gain_dep_cal: Usecase list is empty
+05-21 21:29:15.664 V/APM::EffectDescriptor( 1182): unregisterEffect() effect Volume listener for Music, ID 13627, memory 1 total memory 1
+05-21 21:29:15.664 D/APM_AudioPolicyManager( 1182): stopOutput portId 1786
+05-21 21:29:15.664 D/APM_AudioPolicyManager( 1182): stopOutput() output 37, stream 3, session 19017
+05-21 21:29:15.664 D/APM_AudioPolicyManager( 1182): getNewOutputDevices selected devices AUDIO_DEVICE_NONE
+05-21 21:29:15.664 D/APM_AudioPolicyManager( 1182): setOutputDevices device AUDIO_DEVICE_NONE delayMs 218 force 0
+05-21 21:29:15.664 D/APM_AudioPolicyManager( 1182): setOutputDevices() prevDevice {type:0x2,@:}
+05-21 21:29:15.667 V/EffectMiSound(  978): MiSound_command() start, cmdCode=20
+05-21 21:29:15.667 V/EffectMiSound(  978): MiSound_Command EFFECT_CMD_OFFLOAD
+05-21 21:29:15.667 V/EffectMiSound(  978): MiSound_command() start, cmdCode=1
+05-21 21:29:15.667 V/EffectMiSound(  978): MiSound_setConfig start
+05-21 21:29:15.668 V/EffectMiSound(  978): MiSound_command() start, cmdCode=9
+05-21 21:29:15.668 V/EffectMiSound(  978): MiSound_Command EFFECT_CMD_SET_DEVICE: 0x00000002
+05-21 21:29:15.668 V/EffectMiSound(  978): MiSound_command() start, cmdCode=11
+05-21 21:29:15.668 V/EffectMiSound(  978): MiSound_Command EFFECT_CMD_SET_AUDIO_MODE: 0
+05-21 21:29:15.668 V/APM::EffectDescriptor( 1182): moveEffects session 0 srcOutput 37 dstOutput 13
+05-21 21:29:15.669 D/audio_hw_primary(  978): out_set_parameters: enter: usecase(0: deep-buffer-playback) kvpairs: appname=-com.twitter.android
+05-21 21:29:15.669 D/audio_hw_primary(  978): out_set_parameters: [hal_apptype] cannot find app type [-com.twitter.android], return !
+05-21 21:29:15.681 D/DecorView[](32005): getWindowModeFromSystem  windowmode is 1
+05-21 21:29:15.684 V/MiuiActivityTaskManagerServiceEx( 1828): dispatchActivityLifeState state = onResume
+05-21 21:29:15.684 V/MiuiActivityTaskManagerServiceEx( 1828): dispatchActivityLifeState r = ActivityRecord{eedb5a1 u0 com.miui.securitycenter/com.miui.permcenter.install.PackageManagerActivity t17615}
+05-21 21:29:15.685 D/RecentsImpl( 3541): mActivityStateObserver com.miui.permcenter.install.PackageManagerActivity
+05-21 21:29:15.686 W/RecentsImpl( 3541): onResumed className=com.miui.permcenter.install.PackageManagerActivity   mIsInAnotherPro=false   isKeyguardLocked=false
+05-21 21:29:15.691 I/ndroid.systemu( 3489): NativeAlloc concurrent copying GC freed 11MB AllocSpace bytes, 0(0B) LOS objects, 49% free, 19MB/39MB, paused 149us,39us total 117.472ms
+05-21 21:29:15.696 W/System  ( 3489): A resource failed to call release. 
+05-21 21:29:15.701 W/System  ( 3489): A resource failed to call close. 
+05-21 21:29:15.701 W/System  ( 3489): A resource failed to call close. 
+05-21 21:29:15.702 W/ContextImpl(32005): Calling a method in the system process without a qualified user: android.app.ContextImpl.bindService:1906 android.content.ContextWrapper.bindService:822 m7.ig.g:11 m7.ig.d:103 m7.gw.a:203 
+05-21 21:29:15.702 W/System  ( 3489): A resource failed to call close. 
+05-21 21:29:15.702 W/System  ( 3489): A resource failed to call release. 
+05-21 21:29:15.705 I/twitter.androi(28362): Background young concurrent copying GC freed 16MB AllocSpace bytes, 104(3180KB) LOS objects, 17% free, 107MB/130MB, paused 618us,74us total 146.142ms
+05-21 21:29:15.707 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.709 D/WindowManager( 1828): Input focus has changed to Window{9b8d4ac u0 com.miui.securitycenter/com.miui.permcenter.install.PackageManagerActivity} display=0
+05-21 21:29:15.721 E/vendor.qti.hardware.perf@2.2-service( 1122): Unknown params
+05-21 21:29:15.723 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.725 D/PerfImpl( 1828): perfFirstDrawBoost: com.miui.securitycenter, 32005, 1
+05-21 21:29:15.725 E/vendor.qti.hardware.perf@2.2-service( 1122): Unknown params
+05-21 21:29:15.727 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.730 E/        (32005): setFeedbackRadius failed , e:java.lang.NoSuchMethodException: android.view.View.setFeedbackRadius [float]
+05-21 21:29:15.736 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.737 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.739 W/InputManager-JNI( 1828): Input channel object 'd84f513 Splash Screen com.miui.securitycenter (client)' was disposed without first being removed with the input manager!
+05-21 21:29:15.741 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.742 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.742 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onFinishInput():2259 
+05-21 21:29:15.743 I/Module  ( 5757): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():103 repeatCheckTimes = 0, locked = false
+05-21 21:29:15.743 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=com.miui.securitycenter, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+05-21 21:29:15.744 W/AndroidIME( 5757): LatinIMEBase.updateInputViewCoverNavigation():327 Null input view, cannot update padding!
+05-21 21:29:15.744 I/ActivityTaskManager( 1828): Displayed com.miui.securitycenter/com.miui.permcenter.install.PackageManagerActivity: +496ms
+05-21 21:29:15.744 D/PerfImpl( 1828): perfLockReleaseHandler: -1
+05-21 21:29:15.747 I/Module  ( 5757): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():103 repeatCheckTimes = 1, locked = false
+05-21 21:29:15.748 I/DisplayFrameSetting( 6348): homeToAppEnd pkg=com.miui.securitycenter
+05-21 21:29:15.749 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.752 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.754 I/MiuiNetworkPolicy( 1828): updateUidState uid = 99475, uidState = 15
+05-21 21:29:15.755 I/MiuiNetworkPolicy( 1828): updateUidState uid = 10118, uidState = 15
+05-21 21:29:15.759 I/ExoPlayerImpl(28362): Release 4efb91d [ExoPlayerLib/2.19.1] [lisa, 2109119DG, Xiaomi, 31] [goog.exo.core, goog.exo.datasource, goog.exo.exoplayer, goog.exo.decoder, goog.exo.hls, goog.exo.okhttp, goog.exo.extractor]
+05-21 21:29:15.760 D/Process ( 1828): audio-opt: audio thread tid = 29950 could not get bg policy.
+05-21 21:29:15.765 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:15.766 D/AdvertisingIdClient( 8805): AdvertisingIdClient already created.
+05-21 21:29:15.766 D/AdvertisingIdClient( 8805): AdvertisingIdClient is not bounded. Starting to bind it...
+05-21 21:29:15.767 D/MediaCodec(28362): keep callback message for reclaim
+05-21 21:29:15.768 E/QC2Interface( 1132): Failed to query parameters
+05-21 21:29:15.768 I/CCodecConfig(28362): query failed after returning 17 values (BAD_INDEX)
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] flushed work; ignored.
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] Discard frames from previous generation.
+05-21 21:29:15.768 E/QC2Interface( 1132): Failed to query parameters
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] flushed work; ignored.
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] Discard frames from previous generation.
+05-21 21:29:15.768 W/Codec2Client(28362): query -- param skipped: index = 1342179345.
+05-21 21:29:15.768 W/Codec2Client(28362): query -- param skipped: index = 2415921170.
+05-21 21:29:15.768 W/Codec2Client(28362): query -- param skipped: index = 1610614798.
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] flushed work; ignored.
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] Discard frames from previous generation.
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] flushed work; ignored.
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] Discard frames from previous generation.
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] flushed work; ignored.
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] Discard frames from previous generation.
+05-21 21:29:15.768 D/CCodecBufferChannel(28362): [c2.qti.avc.decoder#789] start: updating output delay 11
+05-21 21:29:15.768 E/QC2Interface( 1132): Failed to query parameters
+05-21 21:29:15.769 D/AdvertisingIdClient( 8805): AdvertisingIdClient is bounded
+05-21 21:29:15.770 D/AudioTrack(28362): stop(sessionID=19017)
+05-21 21:29:15.770 D/AudioTrack(28362): stop(1786): prior state:STATE_FLUSHED
+05-21 21:29:15.770 D/AudioTrack(28362): ~AudioTrack(sessionID=19017)
+05-21 21:29:15.770 D/AudioTrack(28362): stop(sessionID=19017)
+05-21 21:29:15.770 D/AudioTrack(28362): stop(1786): prior state:STATE_FLUSHED
+05-21 21:29:15.770 D/CCodecBuffers(28362): [c2.android.aac.decoder#972:1D-Output.Impl[N]] Client returned a buffer it does not own according to our record: 0
+05-21 21:29:15.770 D/CCodecBuffers(28362): [c2.android.aac.decoder#972:1D-Output.Impl[N]] Client returned a buffer it does not own according to our record: 1
+05-21 21:29:15.770 D/MediaCodec(28362): keep callback message for reclaim
+05-21 21:29:15.772 I/CCodecConfig(28362): query failed after returning 19 values (BAD_INDEX)
+05-21 21:29:15.772 D/APM_AudioPolicyManager( 1182): releaseOutput portId 1786
+05-21 21:29:15.772 D/APM_AudioPolicyManager( 1182): releaseOutput() 37
+05-21 21:29:15.772 W/Codec2Client(28362): query -- param skipped: index = 1342179345.
+05-21 21:29:15.772 W/Codec2Client(28362): query -- param skipped: index = 2415921170.
+05-21 21:29:15.772 W/Codec2Client(28362): query -- param skipped: index = 1610614798.
+05-21 21:29:15.772 D/CCodecBufferChannel(28362): [c2.android.aac.decoder#972] start: updating output delay 2
+05-21 21:29:15.774 D/SurfaceUtils(28362): connecting to surface 0xb40000782b727010, reason connectToSurface
+05-21 21:29:15.774 I/MediaCodec(28362): [c2.qti.avc.decoder] setting surface generation to 29042810
+05-21 21:29:15.774 D/SurfaceUtils(28362): disconnecting from surface 0xb40000782b727010, reason connectToSurface(reconnect)
+05-21 21:29:15.774 D/SurfaceUtils(28362): connecting to surface 0xb40000782b727010, reason connectToSurface(reconnect)
+05-21 21:29:15.775 D/Codec2-OutputBufferQueue(28362): remote graphic buffer migration 0/0
+05-21 21:29:15.775 E/QC2Interface( 1132): Few parameters failed to configure
+05-21 21:29:15.775 D/Codec2Client(28362): setOutputSurface -- failed to set consumer usage (6/BAD_INDEX)
+05-21 21:29:15.775 D/Codec2Client(28362): setOutputSurface -- generation=29042810 consumer usage=0x900
+05-21 21:29:15.775 D/qdgralloc( 1081): Falling back to default YUV format - no camera/video specific format defined, usage 0x100
+05-21 21:29:15.776 D/qdgralloc( 1132): Falling back to default YUV format - no camera/video specific format defined, usage 0x100
+05-21 21:29:15.776 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 0 is not owned by the producer (state = FREE)
+05-21 21:29:15.776 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 1 is not owned by the producer (state = FREE)
+05-21 21:29:15.776 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 2 is not owned by the producer (state = FREE)
+05-21 21:29:15.777 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 3 is not owned by the producer (state = FREE)
+05-21 21:29:15.777 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 4 is not owned by the producer (state = FREE)
+05-21 21:29:15.777 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 5 is not owned by the producer (state = FREE)
+05-21 21:29:15.777 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 6 is not owned by the producer (state = FREE)
+05-21 21:29:15.777 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 7 is not owned by the producer (state = FREE)
+05-21 21:29:15.777 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 8 is not owned by the producer (state = FREE)
+05-21 21:29:15.777 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 9 is not owned by the producer (state = FREE)
+05-21 21:29:15.777 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 10 is not owned by the producer (state = FREE)
+05-21 21:29:15.777 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 11 is not owned by the producer (state = FREE)
+05-21 21:29:15.777 E/BufferQueueProducer(28362): [SurfaceTexture-0-28362-53](id:6eca000000d0,api:3,p:28362,c:28362) detachBuffer: slot 12 is not owned by the producer (state = FREE)
+--
+05-21 21:29:21.771 E/twitter.androi(28362): [SurfaceTexture-0-28362-53] detachFromContext: SurfaceTexture is not attached to a GL context
+05-21 21:29:21.772 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:21.773 I/system_server( 1828): user found in check list, getPackageName  android.view.OrientationEventListener
+05-21 21:29:21.773 I/system_server( 1828): user found in check list, getPackageName  android.view.OrientationEventListener
+05-21 21:29:21.775 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:21.775 W/EventThreadInspector( 1198): slow VSync-appSf on display(4630946480857061762) count=1, avg=32 ms, max=32 ms.
+05-21 21:29:21.775 W/EventThreadInspector( 1198): slow VSync-app on display(4630946480857061762) count=1, avg=32 ms, max=32 ms.
+05-21 21:29:21.777 D/RecentsModel( 3541): onTaskStackChangedBackground
+05-21 21:29:21.777 D/RecentsModel( 3541): onTaskStackChangedBackground    MSG_TASK_STACK_CHANGE
+05-21 21:29:21.777 D/RecentsModel( 3541): preloadRecents
+05-21 21:29:21.777 W/RecentsModel( 3541): getRunningTask
+05-21 21:29:21.778 E/SDM     ( 1091): HWCSession::GetClientTargetProperty: GetClinetTargetProperty interface enter
+05-21 21:29:21.778 E/SDM     ( 1091): HWCDisplay::GetClientTargetProperty: QIPL: GetClinetTargetProperty func enter
+05-21 21:29:21.780 W/RecentsModel( 3541): getRunningTask   taskInfo=TaskInfo{userId=0 taskId=17583 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.twitter.android/.StartActivity } baseActivity=ComponentInfo{com.twitter.android/com.twitter.app.main.MainActivity} topActivity=ComponentInfo{com.twitter.android/com.twitter.app.main.MainActivity} origActivity=null realActivity=ComponentInfo{com.twitter.android/com.twitter.android.StartActivity} numActivities=1 lastActiveTime=455791793 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=2 isResizeable=true token=WCT{android.window.IWindowContainerToken$Stub$Proxy@479709d} topActivityType=1 pictureInPictureParams=PictureInPictureParams( aspectRatio=null sourceRectHint=null hasSetActions=false isAutoPipEnabled=false isSeamlessResizeEnabled=true) displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{e72f912 com.twitter.app.main.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true topActivityInSizeCompat=false locusId= null windowMode=1}
+05-21 21:29:21.780 W/RecentsModel( 3541): getTaskInfoIgnoreHomeAndFreeform   taskInfo=ComponentInfo{com.twitter.android/com.twitter.app.main.MainActivity}
+05-21 21:29:21.780 E/ActivityManagerWrapper( 3541): get all recent tasks force including 17583
+05-21 21:29:21.782 I/SCTaskStackListener( 4868): onTaskStackChanged! inSplit = false
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: size=18
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17583   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.twitter.android/.StartActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17615   userId=0   baseIntent=Intent { flg=0x10000000 cmp=com.miui.securitycenter/com.miui.permcenter.install.PackageManagerActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17614   userId=0   baseIntent=Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17531   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.discord/.main.MainDefault }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17607   userId=0   baseIntent=Intent { act=android.settings.APPLICATION_DEVELOPMENT_SETTINGS flg=0x10008000 pkg=com.android.settings cmp=com.android.settings/.Settings$DevelopmentSettingsDashboardActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17605   userId=0   baseIntent=Intent { act=android.search.action.GLOBAL_SEARCH flg=0x10000000 cmp=com.google.android.googlequicksearchbox/.GoogleAppGlobalSearchImplicitGatewayInternal }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17535   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.tencent.mm/.ui.LauncherUI }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17604   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.whatsapp/.Main }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17603   userId=0   baseIntent=Intent { flg=0x34000000 cmp=com.tencent.mm/.plugin.finder.ui.FinderHomeAffinityUI }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17602   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=de.commerzbanking.mobil/de.commerzbank.app.future.prelogin.splash.SplashActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17519   userId=0   baseIntent=Intent { act=android.intent.action.VIEW dat=https://www.linkedin.com/... flg=0x10000000 cmp=com.linkedin.android/.urls.DeeplinkActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17530   userId=0   baseIntent=Intent { act=android.intent.action.MAIN flg=0x10200000 cmp=com.xiaomi.scanner/.app.ScanActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17584   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.xingin.xhs/.index.v2.IndexActivityV2 }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17598   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.google.android.youtube/.app.honeycomb.Shell$HomeActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17585   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=de.hansecom.klimaticket/de.hansecom.activity.SplashActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17559   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.tailscale.ipn/.MainActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17548   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10204000 cmp=com.medium.reader/com.medium.android.donkey.launcher.LauncherActivity }
+05-21 21:29:21.784 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17546   userId=0   baseIntent=Intent { flg=0x1400c000 cmp=com.meetup/.feature.legacy.activity.RootActivity }
+05-21 21:29:21.785 I/SCTaskStackListener( 4868): onTaskStackChanged! inSplit = false
+05-21 21:29:21.788 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:21.790 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:21.793 I/system_server( 1828): user found in check list, getPackageName  android.view.OrientationEventListener
+05-21 21:29:21.793 I/system_server( 1828): user found in check list, getPackageName  android.view.OrientationEventListener
+05-21 21:29:21.793 E/chromium(29624): [ERROR:cc/tiles/tile_manager.cc:1012] WARNING: tile memory limits exceeded, some content may not draw
+05-21 21:29:21.793 E/chromium(29624): [ERROR:cc/tiles/tile_manager.cc:1012] WARNING: tile memory limits exceeded, some content may not draw
+05-21 21:29:21.794 D/PMonitor( 6055):  onForegroundActivitiesChanged:pid = 32005,activity-uid=1000,foregroundActivities=false
+05-21 21:29:21.794 D/Aurogon ( 1828):  uid = 1000 switch to BG
+05-21 21:29:21.796 E/c       (31255): NameNotFound android.uid.system:1000
+05-21 21:29:21.800 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:21.809 I/DMCodecAdapterFactory(28362): Creating an asynchronous MediaCodec adapter for track type video
+05-21 21:29:21.811 W/InputManager-JNI( 1828): Input channel object '9b8d4ac com.miui.securitycenter/com.miui.permcenter.install.PackageManagerActivity (client)' was disposed without first being removed with the input manager!
+05-21 21:29:21.811 I/MediaCodec(28362): init video box disabled for codec not supported
+05-21 21:29:21.812 I/system_server( 1828): user found in check list, getPackageName  android.view.OrientationEventListener
+05-21 21:29:21.812 I/system_server( 1828): user found in check list, getPackageName  android.view.OrientationEventListener
+05-21 21:29:21.814 D/CCodec  (28362): allocate(c2.qti.avc.decoder)
+05-21 21:29:21.816 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:21.817 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:21.817 I/CCodec  (28362): setting up 'default' as default (vendor) store
+05-21 21:29:21.818 I/vendor.qti.media.c2@1.0-service( 1132): missing struct descriptor #Param::CoreIndex(-Vc010) for field window of struct #Param::CoreIndex(FV1c00d)
+05-21 21:29:21.818 I/vendor.qti.media.c2@1.0-service( 1132): missing struct descriptor #Param::CoreIndex(-Vc01a) for field misr_info_top_field of struct #Param::CoreIndex(-Vc01b)
+05-21 21:29:21.818 I/vendor.qti.media.c2@1.0-service( 1132): missing struct descriptor #Param::CoreIndex(-Vc01a) for field misr_info_bottom_field of struct #Param::CoreIndex(-Vc01b)
+05-21 21:29:21.818 I/vendor.qti.media.c2@1.0-service( 1132): missing struct descriptor #Param::CoreIndex(--002) for field mastering of struct #Param::CoreIndex(--180a)
+05-21 21:29:21.818 E/StandardCaps( 1132): Failed to read platform hdr value
+05-21 21:29:21.819 I/QC2Comp ( 1132): Create: Allocated component[1460] for name c2.qti.avc.decoder : [32 bit]
+05-21 21:29:21.819 I/QC2CompStore( 1132): Created component(c2.qti.avc.decoder) id(1460)
+05-21 21:29:21.821 I/CCodec  (28362): Created component [c2.qti.avc.decoder]
+05-21 21:29:21.822 E/QC2Interface( 1132): Failed to query parameters
+05-21 21:29:21.822 D/CCodecConfig(28362): read media type: video/avc
+05-21 21:29:21.822 W/ActivityTaskManager( 1828): Can't find TaskDisplayArea to determine support for multi window. Task id=17615 attached=false
+05-21 21:29:21.822 W/ActivityTaskManager( 1828): Can't find TaskDisplayArea to determine support for multi window. Task id=17615 attached=false
+05-21 21:29:21.823 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:21.825 D/ReflectedParamUpdater(28362): extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_top_field.misr_dpb_luma
+05-21 21:29:21.825 D/ReflectedParamUpdater(28362): extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_top_field.misr_dpb_chroma
+05-21 21:29:21.825 D/ReflectedParamUpdater(28362): extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_top_field.misr_opb_luma
+05-21 21:29:21.825 D/ReflectedParamUpdater(28362): extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_top_field.misr_opb_chroma
+05-21 21:29:21.825 D/ReflectedParamUpdater(28362): extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_bottom_field.misr_dpb_luma
+05-21 21:29:21.825 D/ReflectedParamUpdater(28362): extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_bottom_field.misr_dpb_chroma
+05-21 21:29:21.825 D/ReflectedParamUpdater(28362): extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_bottom_field.misr_opb_luma
+05-21 21:29:21.825 D/ReflectedParamUpdater(28362): extent() != 1 for single value type: vendor.qti-ext-dec-info-misr.misr_info_bottom_field.misr_opb_chroma
+05-21 21:29:21.828 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onFinishInput():2259 
+05-21 21:29:21.828 I/Module  ( 5757): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():103 repeatCheckTimes = 0, locked = false
+05-21 21:29:21.828 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=com.twitter.android, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+05-21 21:29:21.828 W/AndroidIME( 5757): LatinIMEBase.updateInputViewCoverNavigation():327 Null input view, cannot update padding!
+05-21 21:29:21.829 I/Module  ( 5757): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():103 repeatCheckTimes = 1, locked = false
+05-21 21:29:21.830 D/ReflectedParamUpdater(28362): ignored struct field vendor.qti-ext-dec-panscan.window
+05-21 21:29:21.831 E/chromium(29624): [ERROR:cc/tiles/tile_manager.cc:1012] WARNING: tile memory limits exceeded, some content may not draw
+05-21 21:29:21.831 E/chromium(29624): [ERROR:cc/tiles/tile_manager.cc:1012] WARNING: tile memory limits exceeded, some content may not draw
+05-21 21:29:21.831 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:21.832 I/system_server( 1828): user found in check list, getPackageName  android.view.OrientationEventListener
+05-21 21:29:21.832 I/system_server( 1828): user found in check list, getPackageName  android.view.OrientationEventListener
+05-21 21:29:21.833 D/ReflectedParamUpdater(28362): extent() != 1 for single value type: output.buffers.pool-ids.values
+05-21 21:29:21.836 D/CCodecConfig(28362): ignoring local param raw.size (0xd2001800) as it is already supported
+05-21 21:29:21.836 D/CCodecConfig(28362): ignoring local param default.color (0x5200180b) as it is already supported
+05-21 21:29:21.836 D/CCodecConfig(28362): ignoring local param raw.hdr-static-info (0xd200180a) as it is already supported
+05-21 21:29:21.837 E/QC2Interface( 1132): Failed to query parameters
+05-21 21:29:21.837 I/CCodecConfig(28362): query failed after returning 17 values (BAD_INDEX)
+05-21 21:29:21.837 D/CCodecConfig(28362): c2 config diff is Dict {
+05-21 21:29:21.837 D/CCodecConfig(28362):   c2::i32 algo.priority.value = 0
+05-21 21:29:21.837 D/CCodecConfig(28362):   c2::float algo.rate.value = 30
+05-21 21:29:21.837 D/CCodecConfig(28362):   c2::u32 algo.secure-mode.value = 0
+05-21 21:29:21.837 D/CCodecConfig(28362):   c2::float coded.frame-rate.value = 30
+05-21 21:29:21.837 D/CCodecConfig(28362):   c2::u32 coded.pl.level = 0
+05-21 21:29:21.837 D/CCodecConfig(28362):   c2::u32 coded.pl.profile = 20484
+== tombstone/crash package if available ==
+Drop box contents: 275 entries
+Max entries: 1000
+Low priority rate limit period: 2000 ms
+Low priority tags: {data_app_wtf, keymaster, system_server_wtf, system_app_strictmode, system_app_wtf, system_server_strictmode, data_app_strictmode, netstats}
+Searching for: data_app_crash
+
+========================================
+2026-05-21 21:27:59 data_app_crash (contents lost)
+========================================
+2026-05-21 21:29:04 data_app_crash (contents lost)

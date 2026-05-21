@@ -1,0 +1,61 @@
+{
+  "workspaceGroupCount": 6,
+  "teamRunCount": 52,
+  "activeTeamRunCount": 1,
+  "querySelectedFields": [
+    "createdAt",
+    "not lastActivityAt"
+  ],
+  "sampleTeamRunShapes": [
+    {
+      "workspaceName": "autobyteus_private_mcps",
+      "teamDefinitionName": "Software Engineering Team",
+      "teamRunIdPrefix": "team_software-engineering-team_f",
+      "hasCreatedAt": true,
+      "hasLastActivityAt": false,
+      "status": "offline",
+      "isActive": false,
+      "memberCount": 6
+    },
+    {
+      "workspaceName": "autobyteus-com-workspace",
+      "teamDefinitionName": "Software Engineering Team",
+      "teamRunIdPrefix": "team_software-engineering-team_e",
+      "hasCreatedAt": true,
+      "hasLastActivityAt": false,
+      "status": "offline",
+      "isActive": false,
+      "memberCount": 6
+    },
+    {
+      "workspaceName": "autobyteus-tutorial-videos",
+      "teamDefinitionName": "Research To Deck Team",
+      "teamRunIdPrefix": "team_research-to-deck-team_54b7c",
+      "hasCreatedAt": true,
+      "hasLastActivityAt": false,
+      "status": "offline",
+      "isActive": false,
+      "memberCount": 3
+    },
+    {
+      "workspaceName": "autobyteus-tutorial-videos",
+      "teamDefinitionName": "Video Tutorial Creation Team",
+      "teamRunIdPrefix": "team_video-tutorial-creation-tea",
+      "hasCreatedAt": true,
+      "hasLastActivityAt": false,
+      "status": "offline",
+      "isActive": false,
+      "memberCount": 2
+    },
+    {
+      "workspaceName": "autobyteus-tutorial-videos",
+      "teamDefinitionName": "Video Tutorial Creation Team",
+      "teamRunIdPrefix": "team_video-tutorial-creation-tea",
+      "hasCreatedAt": true,
+      "hasLastActivityAt": false,
+      "status": "offline",
+      "isActive": false,
+      "memberCount": 2
+    }
+  ]
+}

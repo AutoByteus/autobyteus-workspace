@@ -2,6 +2,7 @@ package org.autobyteus.mobile
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
@@ -14,13 +15,14 @@ import org.autobyteus.mobile.connection.ConnectionDiagnostic
 import org.autobyteus.mobile.connection.ConnectionFailureKind
 import org.autobyteus.mobile.connection.NodeUrlNormalizer
 import org.autobyteus.mobile.connection.SavedNodeProfile
-import org.autobyteus.mobile.shell.AndroidExternalActions
+import org.autobyteus.mobile.shell.QrScanCoordinator
 import org.autobyteus.mobile.ui.WebShellScreen
 import org.autobyteus.mobile.web.AutoByteusWebView
 import org.autobyteus.mobile.web.WebFileChooserCoordinator
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -36,7 +38,91 @@ class AutoByteusMobileShellSmokeTest {
 
     @Test
     fun fileChooserAndQrActivityResultsHaveDistinctRequestCodes() {
-        assertNotEquals(AndroidExternalActions.QR_SCAN_REQUEST, WebFileChooserCoordinator.REQUEST_CODE)
+        assertNotEquals(QrScanCoordinator.QR_SCAN_REQUEST, WebFileChooserCoordinator.REQUEST_CODE)
+        assertNotEquals(QrScanCoordinator.CAMERA_PERMISSION_REQUEST, WebFileChooserCoordinator.REQUEST_CODE)
+        assertNotEquals(QrScanCoordinator.QR_SCAN_REQUEST, QrScanCoordinator.CAMERA_PERMISSION_REQUEST)
+    }
+
+    @Test
+    fun qrCoordinatorEmitsDecodedTextFromSuccessfulScanResult() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            var decodedText: String? = null
+            var diagnostic: ConnectionDiagnostic? = null
+            val coordinator = QrScanCoordinator(
+                activity = Activity(),
+                onQrText = { decodedText = it },
+                onDiagnostic = { diagnostic = it },
+                permissionController = FakePermissionController(granted = true),
+                scannerLauncher = FakeScannerLauncher(),
+            )
+
+            val handled = coordinator.handleActivityResult(
+                QrScanCoordinator.QR_SCAN_REQUEST,
+                Activity.RESULT_OK,
+                Intent().putExtra(QrScanCoordinator.SCAN_RESULT_EXTRA, "  https://desktop.tailnet.ts.net/mobile?pairing=abc  "),
+            )
+
+            assertTrue(handled)
+            assertEquals("https://desktop.tailnet.ts.net/mobile?pairing=abc", decodedText)
+            assertNull(diagnostic)
+        }
+    }
+
+    @Test
+    fun qrCoordinatorReturnsCancelDiagnosticForCanceledOrEmptyScan() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            var diagnostics = 0
+            val coordinator = QrScanCoordinator(
+                activity = Activity(),
+                onQrText = {},
+                onDiagnostic = { diagnostics += 1 },
+                permissionController = FakePermissionController(granted = true),
+                scannerLauncher = FakeScannerLauncher(),
+            )
+
+            assertTrue(coordinator.handleActivityResult(QrScanCoordinator.QR_SCAN_REQUEST, Activity.RESULT_CANCELED, null))
+            assertTrue(coordinator.handleActivityResult(
+                QrScanCoordinator.QR_SCAN_REQUEST,
+                Activity.RESULT_OK,
+                Intent().putExtra(QrScanCoordinator.SCAN_RESULT_EXTRA, "  "),
+            ))
+            assertEquals(2, diagnostics)
+        }
+    }
+
+    @Test
+    fun qrCoordinatorOwnsCameraPermissionBeforeLaunchingScanner() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            var diagnostics = 0
+            val permissionController = FakePermissionController(granted = false)
+            val scannerLauncher = FakeScannerLauncher()
+            val coordinator = QrScanCoordinator(
+                activity = Activity(),
+                onQrText = {},
+                onDiagnostic = { diagnostics += 1 },
+                permissionController = permissionController,
+                scannerLauncher = scannerLauncher,
+            )
+
+            coordinator.startQrScan()
+
+            assertEquals(QrScanCoordinator.CAMERA_PERMISSION_REQUEST, permissionController.requestedCode)
+            assertNull(scannerLauncher.launchedCode)
+
+            assertTrue(coordinator.handleRequestPermissionsResult(
+                QrScanCoordinator.CAMERA_PERMISSION_REQUEST,
+                arrayOf(android.Manifest.permission.CAMERA),
+                intArrayOf(android.content.pm.PackageManager.PERMISSION_DENIED),
+            ))
+            assertEquals(1, diagnostics)
+
+            assertTrue(coordinator.handleRequestPermissionsResult(
+                QrScanCoordinator.CAMERA_PERMISSION_REQUEST,
+                arrayOf(android.Manifest.permission.CAMERA),
+                intArrayOf(android.content.pm.PackageManager.PERMISSION_GRANTED),
+            ))
+            assertEquals(QrScanCoordinator.QR_SCAN_REQUEST, scannerLauncher.launchedCode)
+        }
     }
 
     @Test
@@ -124,6 +210,26 @@ class AutoByteusMobileShellSmokeTest {
             } finally {
                 webView.destroy()
             }
+        }
+    }
+
+    private class FakePermissionController(
+        private val granted: Boolean,
+    ) : QrScanCoordinator.PermissionController {
+        var requestedCode: Int? = null
+
+        override fun hasCameraPermission(): Boolean = granted
+
+        override fun requestCameraPermission(requestCode: Int) {
+            requestedCode = requestCode
+        }
+    }
+
+    private class FakeScannerLauncher : QrScanCoordinator.ScannerLauncher {
+        var launchedCode: Int? = null
+
+        override fun launch(requestCode: Int) {
+            launchedCode = requestCode
         }
     }
 

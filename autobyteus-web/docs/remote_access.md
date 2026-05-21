@@ -1,6 +1,6 @@
 # Phone Access / Remote Access
 
-Phone Access lets a phone browser or PWA connect to the desktop-owned AutoByteus node over a private network path that the user or organization already trusts. The first supported client is the Nuxt mobile web shell served by the backend under `/mobile`; Android/iOS native wrappers can reuse the same pairing and transport protocol later.
+Phone Access lets a phone browser, PWA, or AutoByteus Android shell connect to the desktop-owned AutoByteus node over a private network path that the user or organization already trusts. The shared client surface is the Nuxt mobile web shell served by the backend under `/mobile`; native wrappers reuse the same pairing and transport protocol rather than bundling a separate AutoByteus runtime.
 
 ## What Phone Access Does
 
@@ -52,7 +52,7 @@ The app-level pairing credential is still required. A private network or VPN is 
 4. Pick a **Reachable server URL**. Prefer a non-loopback LAN/VPN URL for a real phone. Use **Manual/private-network URL** when the desired company VPN or overlay hostname is not auto-discovered.
    - For Android travel, prefer entering the stable Tailscale Serve or MagicDNS URL before creating the QR. Use the same URL that the phone will use while away.
 5. Click **Create QR code**.
-6. Scan or open the QR/link on the phone before the one-time code expires.
+6. Scan or open the QR/link on the phone before the one-time code expires. AutoByteus Android owns its **Scan QR** flow with a bundled scanner and camera permission handling; it does not require a separately installed generic QR scanner app.
 7. The phone exchanges the code for a per-device credential and stores the paired session.
 
 Pairing codes are short-lived and single-use. The long-lived credential is returned only to the phone after the code exchange.
@@ -119,12 +119,23 @@ ANDROID_HOME="$HOME/Library/Android/sdk" gradle -p autobyteus-android :app:assem
 
 The Android shell loads the desktop-served `/mobile` URL in WebView. It does not bundle a separate copy of the AutoByteus mobile UI, run AutoByteus locally, or create a second pairing/credential protocol.
 
+When a change touches mobile web code used under `/mobile`, treat the mobile web bundle and the Android APK as separate freshness gates:
+
+- rebuild `autobyteus-web/dist-mobile/public`;
+- rebuild or refresh the desktop/server package that serves `mobile-web/`;
+- verify the served `/mobile/index.html` hash matches the corrected `dist-mobile/public/index.html`;
+- install the corrected Android APK when native shell behavior changed.
+
+Installing a new APK does not update the desktop-served `/mobile` bundle. A stale packaged `mobile-web/` directory can keep serving old JavaScript to Android WebView even when the Android APK is current.
+
 ## Troubleshooting
 
 - **Phone cannot reach server:** verify the selected base URL from the phone, OS firewall/private-network ACLs, and VPN/overlay connection.
 - **Android over Tailscale cannot reach server:** verify Tailscale is connected on the phone, the desktop is online and awake, the app is not excluded by Tailscale split tunneling, and the saved URL is the same stable URL used during pairing.
+- **Android Scan QR does not open the bundled scanner:** rebuild and reinstall the current AutoByteus Android APK and verify the app has camera permission. Current AutoByteus Android does not depend on an external ZXing scanner app.
 - **Pairing says disabled:** enable Phone Access from the desktop node before creating or using a QR.
 - **Pairing code invalid or expired:** create a new QR. Codes are short-lived and single-use.
+- **Mobile Home shows `Error 500` or `localeCompare` after a mobile-web fix:** verify the desktop/server node is serving the freshly rebuilt `/mobile` bundle, not an older packaged `mobile-web/` copy.
 - **Credential rejected after pairing:** check whether Phone Access was disabled or the device was revoked; pair again after re-enabling or revocation.
 - **WebSocket blocked:** confirm the private network/proxy permits WebSocket traffic to the server port.
 - **VNC host unreachable from phone:** configure VNC hosts with LAN, VPN, or overlay hostnames/IPs that the phone can reach; desktop-only loopback names such as `localhost` usually work only on the desktop host.

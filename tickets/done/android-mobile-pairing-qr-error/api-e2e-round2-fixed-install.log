@@ -1,0 +1,43 @@
+timestamp=2026-05-21T19:43:33Z
+apk_sha256=cf77a63a86fcf8fce3100666722368ad107b14451d35c9a37137448acfd4a7ff
+== ensure device ==
+List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:4
+
+== install fixed APK ==
+Performing Streamed Install
+Success
+== package after install ==
+package:/data/app/~~iBl5tX4HwKIYe-SNLeRWAw==/org.autobyteus.mobile-bzBz7CbpDV_w_f06SdoagQ==/base.apk
+      androidx.profileinstaller.action.SAVE_PROFILE:
+        2a5cff5 org.autobyteus.mobile/androidx.profileinstaller.ProfileInstallReceiver filter 5991c18
+          Action: "androidx.profileinstaller.action.SAVE_PROFILE"
+      androidx.profileinstaller.action.INSTALL_PROFILE:
+        2a5cff5 org.autobyteus.mobile/androidx.profileinstaller.ProfileInstallReceiver filter 274618a
+          Action: "androidx.profileinstaller.action.INSTALL_PROFILE"
+      androidx.profileinstaller.action.SKIP_FILE:
+        2a5cff5 org.autobyteus.mobile/androidx.profileinstaller.ProfileInstallReceiver filter c01c3fb
+          Action: "androidx.profileinstaller.action.SKIP_FILE"
+      androidx.profileinstaller.action.BENCHMARK_OPERATION:
+        2a5cff5 org.autobyteus.mobile/androidx.profileinstaller.ProfileInstallReceiver filter b507671
+          Action: "androidx.profileinstaller.action.BENCHMARK_OPERATION"
+  org.autobyteus.mobile/androidx.startup.InitializationProvider:
+    Provider{fcb684e org.autobyteus.mobile/androidx.startup.InitializationProvider}
+  [org.autobyteus.mobile.androidx-startup]:
+    Provider{fcb684e org.autobyteus.mobile/androidx.startup.InitializationProvider}
+    userId=10512
+    versionCode=1 minSdk=26 targetSdk=35
+    versionName=0.1.0
+    firstInstallTime=2026-05-21 21:24:19
+    lastUpdateTime=2026-05-21 21:43:33
+      android.permission.CAMERA
+      android.permission.INTERNET: granted=true
+      org.autobyteus.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: granted=true
+      android.permission.ACCESS_NETWORK_STATE: granted=true
+        android.permission.CAMERA: granted=true, flags=[ USER_SET|USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+        android.permission.CAMERA: granted=false
+== reverse ==
+UsbFfs tcp:29695 tcp:29695
+
+== clear app data and logcat ==
+Success

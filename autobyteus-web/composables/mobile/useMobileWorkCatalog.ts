@@ -26,6 +26,12 @@ const toStatusLabel = (value: string | null | undefined, isActive: boolean): str
 
 const summarizeRun = (run: RunHistoryItem): string => run.summary || run.runId;
 const summarizeTeamRun = (run: TeamRunHistoryItem): string => run.summary || run.teamRunId;
+const activitySortKey = (context: MobileWorkContext): string => {
+  if (!('lastActivityAt' in context) || typeof context.lastActivityAt !== 'string') {
+    return '';
+  }
+  return context.lastActivityAt;
+};
 
 type SegmentLoadState = {
   status: MobileCatalogSegmentStatus;
@@ -119,8 +125,8 @@ export function useMobileWorkCatalog() {
             workspaceRootPath: workspace.workspaceRootPath,
             focusedMemberRouteKey,
             isActive: run.isActive,
-            lastActivityAt: run.lastActivityAt,
-            statusLabel: toStatusLabel(run.lastKnownStatus, run.isActive),
+            lastActivityAt: run.createdAt,
+            statusLabel: toStatusLabel(run.status, run.isActive),
           };
           items.push({
             key: `team-run:${run.teamRunId}:${focusedMemberRouteKey}`,
@@ -139,8 +145,8 @@ export function useMobileWorkCatalog() {
       if (aActive !== bActive) {
         return bActive - aActive;
       }
-      const aTime = 'lastActivityAt' in a.context ? a.context.lastActivityAt : '';
-      const bTime = 'lastActivityAt' in b.context ? b.context.lastActivityAt : '';
+      const aTime = activitySortKey(a.context);
+      const bTime = activitySortKey(b.context);
       return bTime.localeCompare(aTime);
     });
   });

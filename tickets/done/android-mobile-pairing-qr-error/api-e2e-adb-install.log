@@ -1,0 +1,8 @@
+timestamp=2026-05-21T19:23:37Z
+apk=/Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+7955bbd7ca6158c4f5eda7dc464fa4ccc7539c21ddd125418a5ba2898b1bb1c4  /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+== adb install -r -d -t ==
+Performing Streamed Install
+adb: failed to install /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk: Failure [INSTALL_FAILED_USER_RESTRICTED: Install canceled by user]
+
+install_exit=1

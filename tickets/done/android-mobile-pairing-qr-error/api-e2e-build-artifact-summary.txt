@@ -1,0 +1,14 @@
+Built mobile web output:
+9.9M	autobyteus-web/dist-mobile/public
+     175
+index entry:
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="importmap">{"imports":{"#entry":"/mobile/_nuxt/ChWesKzE.js"}}</script>
+<link rel="stylesheet" href="/mobile/_nuxt/entry.BDBXZ_E4.css" crossorigin>
+<link rel="modulepreload" as="script" crossorigin href="/mobile/_nuxt/ChWesKzE.js">
+APK:
+-rw-r--r--@ 1 normy  staff  1233035 May 21 20:58 autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+7955bbd7ca6158c4f5eda7dc464fa4ccc7539c21ddd125418a5ba2898b1bb1c4  autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+Mobile index sha:
+4708598da3c085b61026ac50d8653d285be468c4b2feda99beba07492068f124  autobyteus-web/dist-mobile/public/index.html

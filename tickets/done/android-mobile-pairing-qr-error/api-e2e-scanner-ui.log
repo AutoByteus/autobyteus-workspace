@@ -1,0 +1,37 @@
+timestamp=2026-05-21T19:29:04Z
+== tap Scan QR with camera granted ==
+== top activity/window after tap ==
+    mResumedActivity: ActivityRecord{f80a7d9 u0 com.twitter.android/com.twitter.app.main.MainActivity t17583}
+  mCurrentFocus=Window{baab100 u0 Application Error: org.autobyteus.mobile}
+  mFocusedApp=ActivityRecord{f80a7d9 u0 com.twitter.android/com.twitter.app.main.MainActivity t17583}
+== uiautomator scanner dump ==
+java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.MiuiFreeformImpl.getSize(MiuiFreeformImpl.java:53)
+	at android.util.MiuiFreeformUtils.getSize(MiuiFreeformUtils.java:49)
+	at android.view.Display.getSize(Display.java:796)
+	at com.android.commands.uiautomator.DumpCommand.run(DumpCommand.java:110)
+	at com.android.commands.uiautomator.Launcher.main(Launcher.java:83)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:363)
+Caused by: android.system.ErrnoException: open failed: ENOENT (No such file or directory)
+	at libcore.io.Linux.open(Native Method)
+	at libcore.io.ForwardingOs.open(ForwardingOs.java:574)
+	at libcore.io.BlockGuardOs.open(BlockGuardOs.java:274)
+	at libcore.io.IoBridge.open(IoBridge.java:560)
+	... 20 more
+/sdcard/api-e2e-scanner-ui.xml: 1 file pulled, 0 skipped. 0.0 MB/s (405 bytes in 0.009s)
+== logcat scanner excerpt ==

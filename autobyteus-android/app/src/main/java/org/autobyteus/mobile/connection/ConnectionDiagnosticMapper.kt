@@ -12,6 +12,27 @@ object ConnectionDiagnosticMapper {
         recoveryAction = "Use a stable Tailscale Serve, MagicDNS, LAN, or private-network URL that reaches the desktop node.",
     )
 
+    fun cameraPermissionDenied(): ConnectionDiagnostic = ConnectionDiagnostic(
+        kind = ConnectionFailureKind.InvalidUrl,
+        title = "Camera permission is needed",
+        message = "AutoByteus needs camera permission to scan the Phone Access QR.",
+        recoveryAction = "Grant camera permission and scan again, or paste/manual-enter the Phone Access link text.",
+    )
+
+    fun qrScanCanceled(): ConnectionDiagnostic = ConnectionDiagnostic(
+        kind = ConnectionFailureKind.InvalidUrl,
+        title = "QR scan was not completed",
+        message = "No QR text was returned from the scanner.",
+        recoveryAction = "Scan the Phone Access QR again, or paste/manual-enter the Phone Access link text.",
+    )
+
+    fun qrScanUnavailable(): ConnectionDiagnostic = ConnectionDiagnostic(
+        kind = ConnectionFailureKind.InvalidUrl,
+        title = "QR scanner could not start",
+        message = "The in-app QR scanner could not start on this device.",
+        recoveryAction = "Try Scan QR again after checking camera permission, or paste/manual-enter the Phone Access link text.",
+    )
+
     fun httpNeedsAcknowledgement(url: String): ConnectionDiagnostic = ConnectionDiagnostic(
         kind = ConnectionFailureKind.HttpNeedsAcknowledgement,
         title = "HTTP needs explicit acknowledgement",

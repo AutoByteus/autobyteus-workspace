@@ -4,7 +4,7 @@ This guide covers the Android app shell that loads the existing AutoByteus `/mob
 
 ## Ownership boundaries
 
-- **Android app:** setup, saved node profile, WebView containment, diagnostics, build/package.
+- **Android app:** setup, app-owned QR scanning and camera permission handling, saved node profile, WebView containment, diagnostics, build/package.
 - **Existing `/mobile` shell:** AutoByteus Home, Chat, Runs, Files, Tools, Activity, pairing bootstrap, and mobile session restore.
 - **Remote Access backend:** Phone Access status, pairing sessions, pairing exchange, credentials, revocation.
 - **Tailscale:** private network reachability only; it is not AutoByteus authorization.
@@ -53,9 +53,11 @@ Why this matters: the MVP credential remains in WebView-local `localStorage`, wh
    ```
 
 4. In the app, choose one of:
-   - scan the Phone Access QR using a compatible QR scanner app;
+   - tap **Scan QR** and scan the Phone Access QR with the bundled AutoByteus scanner;
    - paste/share the Phone Access link;
    - manually enter the stable `/mobile` URL.
+
+The Android app owns QR scanning. A separate ZXing-compatible scanner app is not required. If camera permission is denied or the scan is cancelled, the app returns to the connection screen with retry plus paste/manual-entry guidance.
 
 ## Troubleshooting hints shown by the app
 
@@ -93,18 +95,29 @@ Record the mode used in validation evidence:
    ANDROID_HOME="$HOME/Library/Android/sdk" gradle -p autobyteus-android :app:assembleDebug
    ```
 
-2. Run the live smoke helper:
+2. If the change touches `/mobile`, build the mobile web bundle and ensure the desktop node being validated serves that exact refreshed bundle:
+
+   ```bash
+   pnpm -C autobyteus-web build:mobile-web
+   shasum -a 256 autobyteus-web/dist-mobile/public/index.html
+   ```
+
+   Installing a new Android APK does not update the desktop-served `/mobile` assets. For packaged-desktop validation, rebuild or refresh the packaged server `mobile-web/` directory through the documented packaging path, then verify the served `/mobile/index.html` hash matches the new `dist-mobile/public/index.html` hash.
+
+3. Run the live smoke helper:
 
    ```bash
    autobyteus-android/scripts/android-live-smoke.sh \
      autobyteus-android/app/build/outputs/apk/debug/app-debug.apk \
-     docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence
+     tickets/in-progress/<ticket-name>/e2e-evidence
    ```
 
-3. First-run setup: enter/paste the stable Tailscale URL or pairing link and verify the WebView opens `/mobile`.
-4. Pairing: complete the existing `/mobile?pairing=` flow and confirm Home/Chat is usable.
-5. Attachment upload: open Chat, tap an attachment/file upload control, choose a small local file through the Android picker, and confirm the selected file appears in the existing mobile composer/upload path.
-6. Restore: force-stop and reopen:
+4. QR scan launch: tap **Scan QR**, grant camera permission when prompted, and confirm the bundled `org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity` scanner UI opens. The app must not depend on an external scanner package.
+5. Scanner recovery: cancel the scanner and confirm the app returns to the connection screen with the recoverable QR retry/paste/manual-entry guidance. When practical, also exercise Android camera-permission denial.
+6. First-run setup: scan the Phone Access QR, or enter/paste/share the stable Tailscale URL or pairing link, and verify the WebView opens `/mobile`.
+7. Pairing: complete the existing `/mobile?pairing=` flow and confirm Home/Chat is usable.
+8. Attachment upload: open Chat, tap an attachment/file upload control, choose a small local file through the Android picker, and confirm the selected file appears in the existing mobile composer/upload path.
+9. Restore: force-stop and reopen:
 
    ```bash
    adb shell am force-stop org.autobyteus.mobile
@@ -113,6 +126,7 @@ Record the mode used in validation evidence:
 
    Confirm the saved node opens without another QR scan.
 
-7. Travel/reachability simulation: keep Android on Tailscale and avoid relying on the LAN-only URL. If practical, test with Wi-Fi disabled or from another network.
-8. Failure diagnostic: disconnect Tailscale or temporarily save an unreachable URL and confirm the native recovery copy appears instead of a raw WebView error page.
-9. Evidence capture: include screenshots, logcat, APK path/hash, desktop-node mode, stable URL shape, attachment-upload result, and backend/mobile status observations.
+10. Mobile Home/catalog freshness: confirm the saved-node relaunch renders Mobile Home/recent work and does not show `Error 500` or `Cannot read properties of undefined (reading 'localeCompare')`. If that error appears after a source fix, first suspect a stale desktop-served `/mobile` bundle.
+11. Travel/reachability simulation: keep Android on Tailscale and avoid relying on the LAN-only URL. If practical, test with Wi-Fi disabled or from another network.
+12. Failure diagnostic: disconnect Tailscale or temporarily save an unreachable URL and confirm the native recovery copy appears instead of a raw WebView error page.
+13. Evidence capture: include screenshots, logcat, APK path/hash, served mobile bundle path/hash, desktop-node mode, stable URL shape, attachment-upload result, and backend/mobile status observations.

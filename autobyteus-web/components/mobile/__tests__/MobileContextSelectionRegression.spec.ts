@@ -508,9 +508,8 @@ describe('mobile context selection stale-run regression', () => {
                 teamDefinitionId: 'team-1',
                 teamDefinitionName: 'Software Team',
                 summary: 'Existing team run',
-                lastActivityAt: '2026-05-18T16:00:00.000Z',
-                status: 'Running',
-                lastKnownStatus: 'ACTIVE',
+                createdAt: '2026-05-18T16:00:00.000Z',
+                status: AgentTeamStatus.Running,
                 isActive: true,
                 coordinatorMemberRouteKey: 'lead',
                 members: [

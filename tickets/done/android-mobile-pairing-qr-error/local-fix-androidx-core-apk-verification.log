@@ -1,0 +1,18 @@
+AndroidX Core runtime class verification in fixed APK
+APK: autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+APK sha256:
+cf77a63a86fcf8fce3100666722368ad107b14451d35c9a37137448acfd4a7ff  autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+Dex files:
+classes3.dex
+classes4.dex
+classes5.dex
+classes6.dex
+classes.dex
+classes2.dex
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes.dex --
+  Class descriptor  : 'Landroidx/core/content/ContextCompat;'
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes2.dex --
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes3.dex --
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes4.dex --
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes5.dex --
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes6.dex --

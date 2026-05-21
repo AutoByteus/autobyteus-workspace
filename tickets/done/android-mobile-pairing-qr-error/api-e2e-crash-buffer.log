@@ -1,0 +1,357 @@
+== crash buffer ==
+--------- beginning of crash
+05-21 21:27:59.180 E/AndroidRuntime(12011): FATAL EXCEPTION: main
+05-21 21:27:59.180 E/AndroidRuntime(12011): Process: org.autobyteus.mobile, PID: 12011
+05-21 21:27:59.180 E/AndroidRuntime(12011): java.lang.NoClassDefFoundError: Failed resolution of: Landroidx/core/content/ContextCompat;
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at com.journeyapps.barcodescanner.CaptureManager.openCameraWithPermission(CaptureManager.java:241)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at com.journeyapps.barcodescanner.CaptureManager.onResume(CaptureManager.java:230)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at com.journeyapps.barcodescanner.CaptureActivity.onResume(CaptureActivity.java:41)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.app.Instrumentation.callActivityOnResume(Instrumentation.java:1476)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.app.Activity.performResume(Activity.java:8398)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.app.ActivityThread.performResumeActivity(ActivityThread.java:4865)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.app.ActivityThread.handleResumeActivity(ActivityThread.java:4908)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.app.servertransaction.ResumeActivityItem.execute(ResumeActivityItem.java:54)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.app.servertransaction.ActivityTransactionItem.execute(ActivityTransactionItem.java:45)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.app.servertransaction.TransactionExecutor.executeLifecycleState(TransactionExecutor.java:176)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:97)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2259)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.os.Handler.dispatchMessage(Handler.java:106)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.os.Looper.loopOnce(Looper.java:210)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.os.Looper.loop(Looper.java:299)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at android.app.ActivityThread.main(ActivityThread.java:8103)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at java.lang.reflect.Method.invoke(Native Method)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:556)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1045)
+05-21 21:27:59.180 E/AndroidRuntime(12011): Caused by: java.lang.ClassNotFoundException: Didn't find class "androidx.core.content.ContextCompat" on path: DexPathList[[zip file "/data/app/~~svS9a2m2ydSfhG8Hwe1BUQ==/org.autobyteus.mobile-fF2n9Gx4mFOP2rqa6yaSOw==/base.apk"],nativeLibraryDirectories=[/data/app/~~svS9a2m2ydSfhG8Hwe1BUQ==/org.autobyteus.mobile-fF2n9Gx4mFOP2rqa6yaSOw==/lib/arm64, /system/lib64, /system_ext/lib64]]
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at java.lang.ClassLoader.loadClass(ClassLoader.java:642)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	at java.lang.ClassLoader.loadClass(ClassLoader.java:578)
+05-21 21:27:59.180 E/AndroidRuntime(12011): 	... 19 more
+05-21 21:29:04.929 E/AndroidRuntime(12780): FATAL EXCEPTION: main
+05-21 21:29:04.929 E/AndroidRuntime(12780): Process: org.autobyteus.mobile, PID: 12780
+05-21 21:29:04.929 E/AndroidRuntime(12780): java.lang.NoClassDefFoundError: Failed resolution of: Landroidx/core/content/ContextCompat;
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at com.journeyapps.barcodescanner.CaptureManager.openCameraWithPermission(CaptureManager.java:241)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at com.journeyapps.barcodescanner.CaptureManager.onResume(CaptureManager.java:230)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at com.journeyapps.barcodescanner.CaptureActivity.onResume(CaptureActivity.java:41)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.Instrumentation.callActivityOnResume(Instrumentation.java:1476)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.Activity.performResume(Activity.java:8398)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.ActivityThread.performResumeActivity(ActivityThread.java:4865)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.ActivityThread.handleResumeActivity(ActivityThread.java:4908)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.servertransaction.ResumeActivityItem.execute(ResumeActivityItem.java:54)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.servertransaction.ActivityTransactionItem.execute(ActivityTransactionItem.java:45)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.servertransaction.TransactionExecutor.executeLifecycleState(TransactionExecutor.java:176)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:97)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2259)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.os.Handler.dispatchMessage(Handler.java:106)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.os.Looper.loopOnce(Looper.java:210)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.os.Looper.loop(Looper.java:299)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.ActivityThread.main(ActivityThread.java:8103)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at java.lang.reflect.Method.invoke(Native Method)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:556)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1045)
+05-21 21:29:04.929 E/AndroidRuntime(12780): Caused by: java.lang.ClassNotFoundException: Didn't find class "androidx.core.content.ContextCompat" on path: DexPathList[[zip file "/data/app/~~svS9a2m2ydSfhG8Hwe1BUQ==/org.autobyteus.mobile-fF2n9Gx4mFOP2rqa6yaSOw==/base.apk"],nativeLibraryDirectories=[/data/app/~~svS9a2m2ydSfhG8Hwe1BUQ==/org.autobyteus.mobile-fF2n9Gx4mFOP2rqa6yaSOw==/lib/arm64, /system/lib64, /system_ext/lib64]]
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at java.lang.ClassLoader.loadClass(ClassLoader.java:642)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at java.lang.ClassLoader.loadClass(ClassLoader.java:578)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	... 19 more
+== main log fatal simple ==
+05-21 21:28:57.779 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 3 prevWindowingMode = 3 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:57.786 W//system/bin/init(    1): type=1107 audit(0.0:395436): uid=0 auid=4294967295 ses=4294967295 subj=u:r:init:s0 msg='avc: denied { set } for property=persist.vendor.freeform.cam.orientation pid=1828 uid=1000 gid=1000 scontext=u:r:system_server:s0 tcontext=u:object_r:vendor_default_prop:s0 tclass=property_service permissive=0'
+05-21 21:28:57.796 I/AppBase ( 5757): AppBase.onConfigurationChanged():291 onConfigurationChanged() : NewConfig = {1.0 262mcc3mnc [de_DE] ldltr sw392dp w787dp h354dp 440dpi nrml long hdr widecg land night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 2400, 1080) mAppBounds=Rect(104, 0 - 2270, 1080) mMaxBounds=Rect(0, 0 - 2400, 1080) mWindowingMode=fullscreen mDisplayWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} as.4 s.4463 fontWeightAdjustment=0 themeChanged=0 themeChangedFlags=0 extraData = Bundle[{}] dt/?}
+05-21 21:28:57.806 W/libc    ( 1828): Unable to set property "persist.vendor.freeform.cam.orientation" to "1": error code: 0x18
+05-21 21:28:57.807 D/MiuiFreeFormCameraStrategy( 1828): set persist.vendor.freeform.3appcam error! java.lang.RuntimeException: failed to set system property (check logcat for reason)
+05-21 21:28:57.807 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 3 prevWindowingMode = 3 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:57.807 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 4 prevWindowingMode = 4 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:57.807 W/libc    ( 1828): Unable to set property "persist.vendor.freeform.cam.orientation" to "1": error code: 0x18
+05-21 21:28:57.802 W//system/bin/init(    1): type=1107 audit(0.0:395437): uid=0 auid=4294967295 ses=4294967295 subj=u:r:init:s0 msg='avc: denied { set } for property=persist.vendor.freeform.cam.orientation pid=1828 uid=1000 gid=1000 scontext=u:r:system_server:s0 tcontext=u:object_r:vendor_default_prop:s0 tclass=property_service permissive=0'
+05-21 21:28:57.807 D/MiuiFreeFormCameraStrategy( 1828): set persist.vendor.freeform.3appcam error! java.lang.RuntimeException: failed to set system property (check logcat for reason)
+05-21 21:28:57.807 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 4 prevWindowingMode = 4 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:57.809 D/MiuiFreeFormGestureController( 1828): displayConfigurationChange
+05-21 21:28:57.809 I/MiuiMultiWindowSplitUI( 1828): mUiMode = 32  current ui mode = 32
+05-21 21:28:57.809 I/MiuiMultiWindowSplitUI( 1828): onConfigurationChanged mCoverLp null
+05-21 21:28:57.810 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 3 prevWindowingMode = 3 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:57.810 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 4 prevWindowingMode = 4 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:57.813 W/VsyncModulator( 1198): setTransactionSchedule: Unexpected EarlyEnd
+05-21 21:28:57.815 D/TouchInteractionService( 3541): onConfigurationChanged
+05-21 21:28:57.815 D/TouchInteractionService( 3541): preloadOverview: mIsUserUnlocked=true
+05-21 21:28:57.817 E/vendor.qti.hardware.perf@2.2-service( 1122): Unknown params
+05-21 21:28:57.818 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-21 21:28:57.818 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-21 21:28:57.818 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,2400,1080))
+05-21 21:28:57.819 I/InputManager-JNI( 1828): Viewport [0] to add: local:4630946480857061762, isActive: true
+05-21 21:28:57.819 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onConfigurationChanged():1139 onConfigurationChanged() : NewConfig = {1.0 262mcc3mnc [de_DE] ldltr sw392dp w787dp h354dp 440dpi nrml long hdr widecg land night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 2400, 1080) mAppBounds=Rect(104, 0 - 2270, 1080) mMaxBounds=Rect(0, 0 - 2400, 1080) mWindowingMode=fullscreen mDisplayWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_90} as.4 s.4463 fontWeightAdjustment=0 themeChanged=0 themeChangedFlags=0 extraData = Bundle[{}] dt/?}
+05-21 21:28:57.824 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onConfigurationChanged():1140 device real metrics: DisplayMetrics{density=2.75, width=2400, height=1080, scaledDensity=2.75, xdpi=401.639, ydpi=401.845}
+05-21 21:28:57.827 V/AudioService.RotationHelper( 1828): publishing device rotation =1 (x90deg)
+05-21 21:28:57.828 I/audioserver( 1182): setGameParameters keyvalue: rotation=90
+05-21 21:28:57.829 D/audio_hw_primary(  978): adev_set_parameters: enter: rotation=90
+05-21 21:28:57.829 V/msm8974_platform(  978): platform_set_parameters: enter: rotation=90
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:57.829 D/adsp_utils(  978): set_channel_reverse mode: 0
+05-21 21:28:57.829 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69940;cal_paramid=0x1000a110;cal_topoid=0x1000a106;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:57.829 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a106 and apptype 0x11134
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:57.829 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69940;cal_paramid=0x1000a110;cal_topoid=0x1000a100;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:57.829 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a100 and apptype 0x11134
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:57.829 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69937;cal_paramid=0x1000a110;cal_topoid=0x1000a106;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:57.829 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a106 and apptype 0x11131
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:57.829 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69937;cal_paramid=0x1000a110;cal_topoid=0x1000a100;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:57.829 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a100 and apptype 0x11131
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:57.829 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69936;cal_paramid=0x1000a110;cal_topoid=0x1000a106;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:57.829 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a106 and apptype 0x11130
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:57.829 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69936;cal_paramid=0x1000a110;cal_topoid=0x1000a100;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:57.829 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a100 and apptype 0x11130
+05-21 21:28:57.829 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:57.829 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:57.829 D/ultrasound_extn(  978): ultrasound_extn_set_parameters: enter, state 0
+05-21 21:28:57.830 D/audio_hw_primary(  978): adev_set_parameters: exit with code(0)
+05-21 21:28:57.831 I/BtGatt.ScanManager(22882): msg.what = 8
+05-21 21:28:57.831 W/Launcher( 3541): onDisplayChanged: newRotation=1, mCurrentRotation=0
+05-21 21:28:57.831 D/RecentsContainer( 3541): isNeedSkipTouch=true
+05-21 21:28:57.831 D/Launcher.ShortcutMenuLayer( 3541): isNeedSkipTouch=true
+05-21 21:28:57.833 D/MiuiFreeFormGesturePointerEventListener( 1828): updateScreenParams ori:2 mNotchBar:0 mDisplayRotation:1isNotchScreen:true
+05-21 21:28:57.836 D/TaskStackChangeListeners( 3541): onTaskDisplayChanged =  taskId = 17614 newDisplayId = 0
+05-21 21:28:57.837 D/TaskStackChangeListeners( 3541): onTaskDisplayChanged =  taskId = 17583 newDisplayId = 0
+05-21 21:28:57.837 D/TaskStackChangeListeners( 3541): onTaskDisplayChanged =  taskId = 2 newDisplayId = 0
+05-21 21:28:57.837 W/InputManager-JNI( 1828): Input channel object '1595af8 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+05-21 21:28:57.839 D/ScreenDecorations( 3489): updateOrientation: false
+05-21 21:28:57.839 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onConfigurationChanged():1148 Maybe update OEM display config because of configuration change
+05-21 21:28:57.842 I/BtGatt.ScanManager(22882): msg.what = 5
+05-21 21:28:57.842 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,2400,1080))
+05-21 21:28:57.842 D/WindowManager( 1828): Input focus has changed to null display=0
+05-21 21:28:57.843 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,2400,1080))
+05-21 21:28:57.847 D/TaskStackChangeListeners( 3541): onTaskDisplayChanged =  taskId = 17531 newDisplayId = 0
+05-21 21:28:57.847 D/TaskStackChangeListeners( 3541): onTaskDisplayChanged =  taskId = 17605 newDisplayId = 0
+05-21 21:28:57.847 D/TaskStackChangeListeners( 3541): onTaskDisplayChanged =  taskId = 17535 newDisplayId = 0
+05-21 21:28:57.847 D/TaskStackChangeListeners( 3541): onTaskDisplayChanged =  taskId = 17604 newDisplayId = 0
+05-21 21:28:57.847 D/TaskStackChangeListeners( 3541): onTaskDisplayChanged =  taskId = 17519 newDisplayId = 0
+--
+05-21 21:28:59.012 I/AndroidIME( 5757): InputBundleManager.loadActiveInputBundleId():542 loadActiveInputBundleId: de, ime_german
+05-21 21:28:59.013 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 0 prevWindowingMode = 1 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.014 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, true)
+05-21 21:28:59.014 W/SessionManager( 5757): SessionManager.beginSession():72 Try to begin an already begun session [INPUT_SESSION], end it first
+05-21 21:28:59.014 W/AndroidIME( 5757): LatinIMEBase.updateInputViewCoverNavigation():327 Null input view, cannot update padding!
+05-21 21:28:59.014 I/Module  ( 5757): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():103 repeatCheckTimes = 1, locked = false
+05-21 21:28:59.015 W/PrimesLoggerHolder( 5757): FrameMetricServiceImpl.start():170 measurement already started: MeasurementKey{rawStringEventName=null, noPiiEventName=OnConfigurationChanged, isActivity=false}
+05-21 21:28:59.015 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 0 prevWindowingMode = 1 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.017 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 0 prevWindowingMode = 1 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.018 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 0 prevWindowingMode = 1 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.020 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 0 prevWindowingMode = 1 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.021 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 0 prevWindowingMode = 1 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.021 I/SP      ( 5757): Registering content_cache.2024032915, url: https://www.gstatic.com/android/keyboard/modelpack/contentcache/202403291544/superpacks_manifest.json, constraints: W:*:*:*, flags: bg, requested: 2024032915, current: 2024032915
+05-21 21:28:59.022 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 0 prevWindowingMode = 1 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.023 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 0 prevWindowingMode = 1 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.023 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 1 prevWindowingMode = 1 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.024 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 6 prevWindowingMode = 6 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.024 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 6 prevWindowingMode = 6 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.024 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 3 prevWindowingMode = 3 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.024 W/libc    ( 1828): Unable to set property "persist.vendor.freeform.cam.orientation" to "0": error code: 0x18
+05-21 21:28:59.024 D/MiuiFreeFormCameraStrategy( 1828): set persist.vendor.freeform.3appcam error! java.lang.RuntimeException: failed to set system property (check logcat for reason)
+05-21 21:28:59.018 W//system/bin/init(    1): type=1107 audit(0.0:395445): uid=0 auid=4294967295 ses=4294967295 subj=u:r:init:s0 msg='avc: denied { set } for property=persist.vendor.freeform.cam.orientation pid=1828 uid=1000 gid=1000 scontext=u:r:system_server:s0 tcontext=u:object_r:vendor_default_prop:s0 tclass=property_service permissive=0'
+05-21 21:28:59.024 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 3 prevWindowingMode = 3 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.024 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 4 prevWindowingMode = 4 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.025 W/libc    ( 1828): Unable to set property "persist.vendor.freeform.cam.orientation" to "0": error code: 0x18
+05-21 21:28:59.018 W//system/bin/init(    1): type=1107 audit(0.0:395446): uid=0 auid=4294967295 ses=4294967295 subj=u:r:init:s0 msg='avc: denied { set } for property=persist.vendor.freeform.cam.orientation pid=1828 uid=1000 gid=1000 scontext=u:r:system_server:s0 tcontext=u:object_r:vendor_default_prop:s0 tclass=property_service permissive=0'
+05-21 21:28:59.025 D/MiuiFreeFormCameraStrategy( 1828): set persist.vendor.freeform.3appcam error! java.lang.RuntimeException: failed to set system property (check logcat for reason)
+05-21 21:28:59.025 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 4 prevWindowingMode = 4 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.025 D/MiuiFreeFormGestureController( 1828): displayConfigurationChange
+05-21 21:28:59.026 I/MiuiMultiWindowSplitUI( 1828): mUiMode = 32  current ui mode = 32
+05-21 21:28:59.026 I/MiuiMultiWindowSplitUI( 1828): onConfigurationChanged mCoverLp null
+05-21 21:28:59.026 I/KeyboardDefManager( 5757): KeyboardDefManager$1.onSuccess():277 requestKeyboardDef onSuccess(): info=odq{defIds=[#0x7f1705e9, #0x7f1708b6], defIdsCacheKey=[2132215273, 2132215990]}
+05-21 21:28:59.027 I/KeyboardInterfacePrivate( 5757): IKeyboard.createKeyboard():67 Keyboard created from HiltKeyboardFactory: com.google.android.apps.inputmethod.latin.keyboard.LatinPrimeKeyboard
+05-21 21:28:59.027 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 3 prevWindowingMode = 3 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.027 V/ActivityTaskManager( 1828): onConfigurationChanged overrideWindowingMode = 4 prevWindowingMode = 4 isEnterFreeformMode = false isOutFreeformMode = + falsealreadySetFreeformBounds: false
+05-21 21:28:59.028 I/SuperpacksManagerImpl( 5757): SuperpacksManagerImpl$3$1.onSuccess():552 content_cache.registerManifest() succeeded
+05-21 21:28:59.029 I/SP      ( 5757): Sync for emoticon_content_description succeeded in 22 ms: no changes
+05-21 21:28:59.029 I/SP      ( 5757): GC for 'emoticon_content_description' (10) with ttl of 0 ms took 0 ms (0/0/0)
+05-21 21:28:59.029 I/SP      ( 5757): Syncing content_cache (2024032915) with slices: [74ed8b2e38ec1bc8af70aa63d8ec49de, 8722425f4121ffdea802b1066df73991, fa1da98da1212aad6fb9a8efaff48148], metadata: true
+05-21 21:28:59.030 I/SuperpacksManagerImpl( 5757): SuperpacksManagerImpl$19.onSyncSuccess():947 emoticon_content_description.sync() succeeded
+05-21 21:28:59.031 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+05-21 21:28:59.031 I/InputManager-JNI( 1828): Viewport [0] to add: local:4630946480857061762, isActive: true
+05-21 21:28:59.032 W/Launcher( 3541): onDisplayChanged: newRotation=0, mCurrentRotation=1
+05-21 21:28:59.032 V/AudioService.RotationHelper( 1828): publishing device rotation =0 (x90deg)
+05-21 21:28:59.032 D/RecentsContainer( 3541): isNeedSkipTouch=false
+05-21 21:28:59.032 D/Launcher.ShortcutMenuLayer( 3541): isNeedSkipTouch=false
+05-21 21:28:59.032 I/InputReader( 1828): Reconfiguring input devices, changes=DISPLAY_INFO | 
+05-21 21:28:59.032 I/InputReader( 1828): Device reconfigured: id=4, name='goodix_ts', size 1080x2400, orientation 0, mode 1, display id 0
+05-21 21:28:59.032 I/audioserver( 1182): setGameParameters keyvalue: rotation=0
+05-21 21:28:59.033 D/audio_hw_primary(  978): adev_set_parameters: enter: rotation=0
+05-21 21:28:59.033 V/msm8974_platform(  978): platform_set_parameters: enter: rotation=0
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:59.033 D/adsp_utils(  978): set_channel_reverse mode: 0
+05-21 21:28:59.033 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69940;cal_paramid=0x1000a110;cal_topoid=0x1000a106;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:59.033 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a106 and apptype 0x11134
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:59.033 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69940;cal_paramid=0x1000a110;cal_topoid=0x1000a100;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:59.033 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a100 and apptype 0x11134
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:59.033 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69937;cal_paramid=0x1000a110;cal_topoid=0x1000a106;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:59.033 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a106 and apptype 0x11131
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:59.033 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69937;cal_paramid=0x1000a110;cal_topoid=0x1000a100;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:59.033 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a100 and apptype 0x11131
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:59.033 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69936;cal_paramid=0x1000a110;cal_topoid=0x1000a106;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:59.033 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a106 and apptype 0x11130
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:59.033 V/msm8974_platform(  978): platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69936;cal_paramid=0x1000a110;cal_topoid=0x1000a100;cal_samplerate=48000;cal_data=AAAAAA==
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_get_output_snd_device: enter: output devices(0x2)
+05-21 21:28:59.033 D/msm8974_platform(  978): Setting audio calibration for snd_device(2) acdb_id(10011)
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a100 and apptype 0x11130
+05-21 21:28:59.033 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-21 21:28:59.033 D/msm8974_platform(  978): platform_set_parameters: exit with code(0)
+05-21 21:28:59.033 D/ultrasound_extn(  978): ultrasound_extn_set_parameters: enter, state 0
+05-21 21:28:59.033 D/audio_hw_primary(  978): adev_set_parameters: exit with code(0)
+05-21 21:28:59.033 I/BtGatt.ScanManager(22882): msg.what = 8
+05-21 21:28:59.034 I/BtGatt.ScanManager(22882): msg.what = 5
+05-21 21:28:59.034 D/ScreenDecorations( 3489): updateOrientation: false
+05-21 21:28:59.036 W/InputManager-JNI( 1828): Input channel object '3747f1 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+05-21 21:28:59.039 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+05-21 21:28:59.039 D/WindowManager( 1828): Input focus has changed to null display=0
+05-21 21:28:59.044 W/InputDispatcher( 1828): Letterbox_left_ActivityRecord{e426581 u0 org.autobyteus.mobile/.MainActivity t17614} has FLAG_SLIPPERY. Please report this in b/157929241
+05-21 21:28:59.044 E/SDM     ( 1091): HWCSession::GetClientTargetProperty: GetClinetTargetProperty interface enter
+05-21 21:28:59.044 E/SDM     ( 1091): HWCDisplay::GetClientTargetProperty: QIPL: GetClinetTargetProperty func enter
+05-21 21:28:59.048 D/TelephonyProvider( 3482): Using old permission behavior for telephony provider compat
+05-21 21:28:59.049 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+05-21 21:28:59.049 D/TelephonyProvider( 3482): subIdString = 1 subId = 1
+05-21 21:28:59.049 D/TelephonyProvider( 3482): Using old permission behavior for telephony provider compat
+05-21 21:28:59.049 D/TelephonyProvider( 3482): subIdString = 1 subId = 1
+05-21 21:28:59.051 D/MiuiFreeFormGesturePointerEventListener( 1828): updateScreenParams ori:1 mNotchBar:0 mDisplayRotation:0isNotchScreen:true
+05-21 21:28:59.051 D/TaskStackChangeListeners( 3541): onTaskDisplayChanged =  taskId = 17614 newDisplayId = 0
+--
+05-21 21:29:04.842 W/perf@2.2-servic( 1122): type=1400 audit(0.0:395457): avc: denied { search } for name="1198" dev="proc" ino=49845755 scontext=u:r:vendor_hal_perf_default:s0 tcontext=u:r:surfaceflinger:s0 tclass=dir permissive=0
+05-21 21:29:04.850 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-21 21:29:04.850 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-21 21:29:04.851 D/PerfImpl( 1828): perfWarmLaunchBoost: org.autobyteus.mobile, -1, 2
+05-21 21:29:04.851 E/vendor.qti.hardware.perf@2.2-service( 1122): Unknown params
+05-21 21:29:04.852 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,104)(0,2270,1080,2400))
+05-21 21:29:04.883 I/system_server( 1828): user found in check list, getPackageName  android.view.OrientationEventListener
+05-21 21:29:04.883 I/system_server( 1828): user found in check list, getPackageName  android.view.OrientationEventListener
+05-21 21:29:04.905 D/PerfImpl( 1828): perfWarmLaunchBoost: org.autobyteus.mobile, -1, 2
+05-21 21:29:04.905 E/vendor.qti.hardware.perf@2.2-service( 1122): Unknown params
+05-21 21:29:04.906 D/PerfImpl( 1828): perfColdLaunchBoost: org.autobyteus.mobile, 12780, 102
+05-21 21:29:04.907 E/vendor.qti.hardware.perf@2.2-service( 1122): Unknown params
+05-21 21:29:04.907 E/ANDR-PERF-LM( 1122): MetaMeter: handleAsync() 166: AdaptLaunch Invalid Async
+05-21 21:29:04.907 W/ActivityTaskManager( 1828): Tried to set launchTime (0) < mLastActivityLaunchTime (251615411)
+05-21 21:29:04.911 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+05-21 21:29:04.911 D/WindowManager( 1828): Input focus has changed to null display=0
+05-21 21:29:04.913 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+05-21 21:29:04.918 D/DecorView[](12780): getWindowModeFromSystem  windowmode is 1
+05-21 21:29:04.922 I/DecodeHintManager(12780): Hints from the Intent: {}
+05-21 21:29:04.928 D/AndroidRuntime(12780): Shutting down VM
+05-21 21:29:04.929 E/AndroidRuntime(12780): FATAL EXCEPTION: main
+05-21 21:29:04.929 E/AndroidRuntime(12780): Process: org.autobyteus.mobile, PID: 12780
+05-21 21:29:04.929 E/AndroidRuntime(12780): java.lang.NoClassDefFoundError: Failed resolution of: Landroidx/core/content/ContextCompat;
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at com.journeyapps.barcodescanner.CaptureManager.openCameraWithPermission(CaptureManager.java:241)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at com.journeyapps.barcodescanner.CaptureManager.onResume(CaptureManager.java:230)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at com.journeyapps.barcodescanner.CaptureActivity.onResume(CaptureActivity.java:41)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.Instrumentation.callActivityOnResume(Instrumentation.java:1476)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.Activity.performResume(Activity.java:8398)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.ActivityThread.performResumeActivity(ActivityThread.java:4865)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.ActivityThread.handleResumeActivity(ActivityThread.java:4908)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.servertransaction.ResumeActivityItem.execute(ResumeActivityItem.java:54)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.servertransaction.ActivityTransactionItem.execute(ActivityTransactionItem.java:45)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.servertransaction.TransactionExecutor.executeLifecycleState(TransactionExecutor.java:176)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:97)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2259)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.os.Handler.dispatchMessage(Handler.java:106)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.os.Looper.loopOnce(Looper.java:210)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.os.Looper.loop(Looper.java:299)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at android.app.ActivityThread.main(ActivityThread.java:8103)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at java.lang.reflect.Method.invoke(Native Method)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:556)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1045)
+05-21 21:29:04.929 E/AndroidRuntime(12780): Caused by: java.lang.ClassNotFoundException: Didn't find class "androidx.core.content.ContextCompat" on path: DexPathList[[zip file "/data/app/~~svS9a2m2ydSfhG8Hwe1BUQ==/org.autobyteus.mobile-fF2n9Gx4mFOP2rqa6yaSOw==/base.apk"],nativeLibraryDirectories=[/data/app/~~svS9a2m2ydSfhG8Hwe1BUQ==/org.autobyteus.mobile-fF2n9Gx4mFOP2rqa6yaSOw==/lib/arm64, /system/lib64, /system_ext/lib64]]
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at java.lang.ClassLoader.loadClass(ClassLoader.java:642)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	at java.lang.ClassLoader.loadClass(ClassLoader.java:578)
+05-21 21:29:04.929 E/AndroidRuntime(12780): 	... 19 more
+05-21 21:29:04.930 D/OOMEventManagerFK(12780): checkEventAndDumpForJE: 0
+05-21 21:29:04.934 I/DropBoxManagerService( 1828): add tag=data_app_crash isTagEnabled=true flags=0x2
+05-21 21:29:04.934 W/DropBoxManagerService( 1828): Dropping: data_app_crash (2381 > 0 bytes)
+05-21 21:29:04.934 W/ActivityTaskManager( 1828):   Force finishing activity org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity
+05-21 21:29:04.941 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+05-21 21:29:04.941 W/ActivityTaskManager( 1828):   Force finishing activity org.autobyteus.mobile/.MainActivity
+05-21 21:29:04.943 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+05-21 21:29:04.944 W/BroadcastQueue( 1828): Background execution not allowed: receiving Intent { act=android.intent.action.DROPBOX_ENTRY_ADDED flg=0x10 (has extras) } to com.google.android.gms/.stats.service.DropBoxEntryAddedReceiver
+05-21 21:29:04.951 D/EventBus( 3541): No subscribers registered for event class com.miui.home.recents.messages.TaskSnapshotChangedEvent
+05-21 21:29:04.951 D/EventBus( 3541): No subscribers registered for event class org.greenrobot.eventbus.NoSubscriberEvent
+05-21 21:29:04.952 D/OneHandedController( 3489): stopOneHanded state isTransitioning or STATE_NONE
+05-21 21:29:04.967 I/ForceDarkHelperStubImpl(28362): setViewRootImplForceDark: false for com.twitter.app.main.MainActivity@272ad5a, reason: AppDarkModeEnable
+05-21 21:29:04.972 W/OpenGLRenderer(28362): Incorrectly called buildLayer on View: FrameLayout, destroying layer...
+05-21 21:29:04.976 W/MiuiFreeFormGesturePointerEventListener( 1828): setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+05-21 21:29:05.010 E/DropBoxUtil( 9344): [AppErrors] null InputStream [CONTEXT service_id=254 ]
+05-21 21:29:05.010 E/DropBoxUtil( 9344): java.io.IOException: null InputStream
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at fkhq.c(:com.google.android.gms@261833029@26.18.33 (190400-913931251):182)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at fkfy.l(:com.google.android.gms@261833029@26.18.33 (190400-913931251):4)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at fkfm.apply(:com.google.android.gms@261833029@26.18.33 (190400-913931251):39)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at afmr.apply(:com.google.android.gms@261833029@26.18.33 (190400-913931251):5)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at afnd.apply(:com.google.android.gms@261833029@26.18.33 (190400-913931251):45)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at gmei.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):3)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at haws.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):17)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjty.d(:com.google.android.gms@261833029@26.18.33 (190400-913931251):3)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjua.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):47)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjvn.execute(:com.google.android.gms@261833029@26.18.33 (190400-913931251):1)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjtn.f(:com.google.android.gms@261833029@26.18.33 (190400-913931251):1)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjtn.hD(:com.google.android.gms@261833029@26.18.33 (190400-913931251):38)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at gmea.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):39)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hawr.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):17)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjvu.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):20)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjxx.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):3)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjwy.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):19)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjxz.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):5)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjvw.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):53)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjvn.execute(:com.google.android.gms@261833029@26.18.33 (190400-913931251):1)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjvw.execute(:com.google.android.gms@261833029@26.18.33 (190400-913931251):76)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjtn.f(:com.google.android.gms@261833029@26.18.33 (190400-913931251):1)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjtn.hD(:com.google.android.gms@261833029@26.18.33 (190400-913931251):38)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjvy.b(:com.google.android.gms@261833029@26.18.33 (190400-913931251):33)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at gmee.i(:com.google.android.gms@261833029@26.18.33 (190400-913931251):26)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at gmem.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):10)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at haws.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):17)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjty.d(:com.google.android.gms@261833029@26.18.33 (190400-913931251):3)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjua.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):47)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjvn.execute(:com.google.android.gms@261833029@26.18.33 (190400-913931251):1)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjtn.f(:com.google.android.gms@261833029@26.18.33 (190400-913931251):1)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjtn.hD(:com.google.android.gms@261833029@26.18.33 (190400-913931251):38)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at gmek.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):39)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hawr.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):17)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjvu.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):20)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjxx.a(:com.google.android.gms@261833029@26.18.33 (190400-913931251):3)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjwy.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):19)
+05-21 21:29:05.010 E/DropBoxUtil( 9344): 	at hjxz.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):5)

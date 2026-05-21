@@ -1,0 +1,31 @@
+timestamp=2026-05-21T19:22:59Z
+git_branch=codex/android-mobile-pairing-qr-error
+git_status=
+## codex/android-mobile-pairing-qr-error...origin/personal
+ M autobyteus-android/app/build.gradle.kts
+ M autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt
+ M autobyteus-android/app/src/main/AndroidManifest.xml
+ M autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt
+ M autobyteus-android/app/src/main/java/org/autobyteus/mobile/connection/ConnectionDiagnosticMapper.kt
+ M autobyteus-android/app/src/main/java/org/autobyteus/mobile/shell/AndroidExternalActions.kt
+ M autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+ M autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+ M autobyteus-web/composables/mobile/useMobileWorkCatalog.ts
+?? autobyteus-android/app/src/main/java/org/autobyteus/mobile/shell/QrScanCoordinator.kt
+?? autobyteus-web/composables/mobile/__tests__/
+?? tickets/done/android-mobile-pairing-qr-error/
+apk_path=/Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+apk_sha256=7955bbd7ca6158c4f5eda7dc464fa4ccc7539c21ddd125418a5ba2898b1bb1c4
+apk_size=1233035
+mobile_output_path=/Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-web/dist-mobile/public
+mobile_file_count=177
+mobile_index_sha256=9603ea94ca777769a7c80f216592da080b1641799972836a64b3237e141920bb
+mobile_index_entry=<!DOCTYPE html><html><head><meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1"> <script type="importmap">{"imports":{"#entry":"/mobile/_nuxt/ChWesKzE.js"}}</script> <link rel="stylesheet" href="/mobile/_nuxt/entry.BDBXZ_E4.css" crossorigin> 
+manifest_marker_counts:
+13:    <uses-permission android:name="android.permission.CAMERA" />
+16:        android:name="android.hardware.camera"
+35:        android:name="android.hardware.camera.front"
+37:    <!-- <uses-feature android:name="android.hardware.camera.any"/> -->
+39:        android:name="android.hardware.camera.autofocus"
+42:        android:name="android.hardware.camera.flash"
+79:            android:name="com.journeyapps.barcodescanner.CaptureActivity"

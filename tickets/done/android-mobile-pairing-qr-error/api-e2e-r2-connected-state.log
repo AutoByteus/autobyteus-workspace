@@ -1,0 +1,347 @@
+timestamp=2026-05-21T19:47:25Z
+== current activity/window after user scan/connect ==
+    mResumedActivity: ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+    mLastPausedActivity: ActivityRecord{aab7283 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity t-1 f}}
+    * Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+      affinity=10512:org.autobyteus.mobile
+      intent={flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity}
+      mActivityComponent=org.autobyteus.mobile/.MainActivity
+      Activities=[ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}]
+      mRootProcess=ProcessRecord{95b3d 18157:org.autobyteus.mobile/u0a512}
+      * Hist #0: ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+          packageName=org.autobyteus.mobile processName=org.autobyteus.mobile
+          app=ProcessRecord{95b3d 18157:org.autobyteus.mobile/u0a512}
+          Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity }
+          rootOfTask=true task=Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+          taskAffinity=10512:org.autobyteus.mobile
+          mActivityComponent=org.autobyteus.mobile/.MainActivity
+          baseDir=/data/app/~~iBl5tX4HwKIYe-SNLeRWAw==/org.autobyteus.mobile-bzBz7CbpDV_w_f06SdoagQ==/base.apk
+          dataDir=/data/user/0/org.autobyteus.mobile
+          windows=[Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}]
+    Resumed: ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+  ResumedActivity: ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+  topDisplayFocusedRootTask=Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+  deepestLastOrientationSource=ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+  mCurrentFocus=Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+  mFocusedApp=ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+      mPreferredTopFocusableRootTask=Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+      mLastFocusedRootTask=Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+      * Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+        * ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+    mFocusedWindow=Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+    mTopFullscreenOpaqueWindowState=Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+    mTopFullscreenOpaqueOrDimmingWindowState=Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+      ITYPE_IME -> Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+      ITYPE_NAVIGATION_BAR -> Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+      ITYPE_STATUS_BAR -> Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+        mControlTarget=Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+        mControlTarget=Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+        mControlTarget=Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+        (fullscreen) Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1}
+  VisibleActivityProcess:[ ProcessRecord{95b3d 18157:org.autobyteus.mobile/u0a512}]
+  mCurrentFocus=Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+  mFocusedApp=ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+== ui dump ==
+java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.MiuiFreeformImpl.getSize(MiuiFreeformImpl.java:53)
+	at android.util.MiuiFreeformUtils.getSize(MiuiFreeformUtils.java:49)
+	at android.view.Display.getSize(Display.java:796)
+	at com.android.commands.uiautomator.DumpCommand.run(DumpCommand.java:110)
+	at com.android.commands.uiautomator.Launcher.main(Launcher.java:83)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:363)
+Caused by: android.system.ErrnoException: open failed: ENOENT (No such file or directory)
+	at libcore.io.Linux.open(Native Method)
+	at libcore.io.ForwardingOs.open(ForwardingOs.java:574)
+	at libcore.io.BlockGuardOs.open(BlockGuardOs.java:274)
+	at libcore.io.IoBridge.open(IoBridge.java:560)
+	... 20 more
+/sdcard/api-e2e-r2-connected.xml: 1 file pulled, 0 skipped. 3.0 MB/s (13702 bytes in 0.004s)
+== visible text after connect ==
+AUTOBYTEUS REMOTE ACCESS
+AutoByteus
+Mobile Home
+Refresh
+CURRENT NODE
+AutoByteus Desktop
+http://100.127.30.107:29695
+Connected
+PRIMARY NEXT ACTION Continue latest run recently there is qwen3 mtp model, i am not so clear about the details basically mtp like Qwen3.6...
+Recent work
+Switch work
+research engineer recently there is qwen3 mtp model, i am not so clear about the details basically mtp like Qwen3.6... Running · temp_workspace
+Software Engineering Team Currently our application, last time I have built, if you look at the codebase, we have Android a... Running · autobyteus-workspace-superrepo
+Software Engineering Team /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifac... Offline · autobyteus-workspace-superrepo
+Software Engineering Team Currently on the front end, I'm able to import the agent packages and we support the GitHub, and ... Offline · autobyteus-workspace-superrepo
+Software Engineering Team When I'm currently using the mobile version, as you can see the screenshot, I cannot just start a... Offline · autobyteus-workspace-superrepo
+Choose work Recent, Agents, Teams, Workspaces
+Files Browse current workspace
+Troubleshoot Connection diagnostics
+Unpair Remove this phone
+screenshot=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-mobile-pairing-qr-error/api-e2e-r2-screenshot-connected.png
+== backend remote access devices ==
+{"devices":[{"deviceId":"device_ae3c38413bb1a4a0a21674e50ece9026","displayName":"Phone","clientFacingBaseUrl":"http://192.168.2.158:29695","createdAt":"2026-05-18T15:47:04.012Z","lastSeenAt":"2026-05-19T13:22:35.908Z","revokedAt":"2026-05-19T13:22:40.491Z"},{"deviceId":"device_e5ec85dbff0e51c257ffe2b9e23212e0","displayName":"Phone","clientFacingBaseUrl":"http://100.127.30.107:29695","createdAt":"2026-05-19T13:19:20.130Z","lastSeenAt":"2026-05-19T13:31:11.516Z","revokedAt":"2026-05-19T19:35:05.705Z"},{"deviceId":"device_82383c7ddf2d2a1be8421561bcf78cd3","displayName":"Phone","clientFacingBaseUrl":"http://127.0.0.1:29695","createdAt":"2026-05-19T17:11:49.681Z","lastSeenAt":null,"revokedAt":"2026-05-19T17:19:16.500Z"},{"deviceId":"device_7c492c942c134a5c4beea5ec925cda72","displayName":"Phone","clientFacingBaseUrl":"http://127.0.0.1:29695","createdAt":"2026-05-19T18:07:44.396Z","lastSeenAt":null,"revokedAt":"2026-05-19T18:16:52.884Z"},{"deviceId":"device_aa4fe0f63d290e28bee8b5708707b3e5","displayName":"Phone","clientFacingBaseUrl":"http://127.0.0.1:29695","createdAt":"2026-05-19T18:09:42.246Z","lastSeenAt":null,"revokedAt":"2026-05-19T18:16:52.896Z"},{"deviceId":"device_5e33e42325b0497c742f9b586275e508","displayName":"Phone","clientFacingBaseUrl":"http://127.0.0.1:29695","createdAt":"2026-05-19T18:38:08.365Z","lastSeenAt":null,"revokedAt":"2026-05-19T18:44:56.248Z"},{"deviceId":"device_6c5b848f0eb06428ecba6c9ffb64f521","displayName":"Codex API/E2E Validation","clientFacingBaseUrl":"http://127.0.0.1:29695","createdAt":"2026-05-21T08:46:47.255Z","lastSeenAt":null,"revokedAt":"2026-05-21T08:55:29.353Z"},{"deviceId":"device_2252e0d234f8697b2e925fbe300075ca","displayName":"Phone","clientFacingBaseUrl":"http://127.0.0.1:29695","createdAt":"2026-05-21T08:50:09.104Z","lastSeenAt":null,"revokedAt":"2026-05-21T08:55:29.364Z"},{"deviceId":"device_cd1da2cedc9e2f4b04825cea2c3c02c0","displayName":"Phone","clientFacingBaseUrl":"http://192.168.2.158:29695","createdAt":"2026-05-21T10:04:06.287Z","lastSeenAt":"2026-05-21T13:00:27.469Z","revokedAt":"2026-05-21T17:11:37.691Z"},{"deviceId":"device_878880a915ac9883aa1cb1ac8a94bfb0","displayName":"Phone","clientFacingBaseUrl":"http://127.0.0.1:29695","createdAt":"2026-05-21T11:08:59.602Z","lastSeenAt":null,"revokedAt":"2026-05-21T11:19:44.633Z"},{"deviceId":"device_8a520406dfb037d5ad4a5e07c7938fc1","displayName":"Phone","clientFacingBaseUrl":"http://127.0.0.1:29695","createdAt":"2026-05-21T11:39:12.845Z","lastSeenAt":null,"revokedAt":"2026-05-21T11:51:52.132Z"},{"deviceId":"device_b860306d60ee4d75937bb3005c7bdea0","displayName":"Phone","clientFacingBaseUrl":"http://normys-macbook-pro.tail0347f8.ts.net:29695","createdAt":"2026-05-21T15:07:28.734Z","lastSeenAt":"2026-05-21T15:26:09.122Z","revokedAt":"2026-05-21T17:11:37.691Z"},{"deviceId":"device_09f8966fbeae1d64efc59088ad834d0d","displayName":"Phone","clientFacingBaseUrl":"http://normys-macbook-pro.tail0347f8.ts.net:29695","createdAt":"2026-05-21T15:32:33.591Z","lastSeenAt":"2026-05-21T15:34:40.775Z","revokedAt":"2026-05-21T17:11:37.691Z"},{"deviceId":"device_723bb2226e29851b92422f8a87024d25","displayName":"Phone","clientFacingBaseUrl":"http://normys-macbook-pro.tail0347f8.ts.net:29695","createdAt":"2026-05-21T16:15:36.755Z","lastSeenAt":"2026-05-21T17:11:18.344Z","revokedAt":"2026-05-21T17:11:37.691Z"},{"deviceId":"device_38b346999aae8d1c4e678883984ecb9a","displayName":"Phone","clientFacingBaseUrl":"http://100.127.30.107:29695","createdAt":"2026-05-21T17:14:23.612Z","lastSeenAt":"2026-05-21T18:49:31.664Z","revokedAt":"2026-05-21T19:04:58.756Z"},{"deviceId":"device_3d06ccae32dc43956c60f0af910576b2","displayName":"Phone","clientFacingBaseUrl":"http://100.127.30.107:29695","createdAt":"2026-05-21T19:45:57.909Z","lastSeenAt":"2026-05-21T19:46:00.195Z","revokedAt":null}]}
+== backend status ==
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverName":"AutoByteus Desktop"}
+== android saved node prefs via run-as ==
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="selected_profile_id">http://100.127.30.107:29695</string>
+    <string name="profiles">[{&quot;id&quot;:&quot;http:\/\/100.127.30.107:29695&quot;,&quot;displayName&quot;:&quot;AutoByteus Desktop&quot;,&quot;baseUrl&quot;:&quot;http:\/\/100.127.30.107:29695&quot;,&quot;mobileUrl&quot;:&quot;http:\/\/100.127.30.107:29695\/mobile&quot;,&quot;scheme&quot;:&quot;http&quot;,&quot;host&quot;:&quot;100.127.30.107&quot;,&quot;port&quot;:29695,&quot;httpAcknowledged&quot;:true,&quot;createdAtEpochMillis&quot;:1779392751450,&quot;updatedAtEpochMillis&quot;:1779392751691}]</string>
+</map>
+== crash buffer after user scan/connect ==
+== filtered logcat after fixed scanner/pairing ==
+05-21 21:44:36.104 I/AndroidRuntime(18058): Leaving lock profiling enabled
+05-21 21:44:36.448 D/nativeloader(18058): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-21 21:44:36.694 D/AndroidRuntime(18058): Calling main entry com.android.commands.uiautomator.Launcher
+05-21 21:44:38.226 D/AndroidRuntime(18058): Shutting down VM
+05-21 21:44:44.200 I/cn_CronetUrlRequestContext( 9344): destroyNativeStreamLocked org.chromium.net.impl.CronetBidirectionalStream@8a743e2
+05-21 21:45:03.615 I/ActivityManager( 1828): Force stopping org.autobyteus.mobile appid=10512 user=0: from process:18108
+05-21 21:45:03.621 I/ActivityManager( 1828): Killing 17643:org.autobyteus.mobile/u0a512 (adj 0): stop org.autobyteus.mobile due to from process:18108
+05-21 21:45:03.623 D/PerfImpl( 1828): perfProcessKillBoost: org.autobyteus.mobile, 17643, 0
+05-21 21:45:03.631 W/ActivityTaskManager( 1828): Force removing ActivityRecord{2eeb5b9 u0 org.autobyteus.mobile/.MainActivity t17623 f}}: app died, no saved state
+05-21 21:45:03.638 W/InputManager-JNI( 1828): Input channel object 'b60440c org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+05-21 21:45:03.650 I/ProcessMonitor( 4868): onForegroundInfoChanged: ForegroundInfo{mForegroundPackageName='com.miui.home', mForegroundUid=10133, mForegroundPid=3541, mLastForegroundPackageName='org.autobyteus.mobile', mLastForegroundUid=10512, mLastForegroundPid=17643, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:03.650 I/GST     ( 6361): forePkg: com.miui.home, preForePkg: org.autobyteus.mobile
+05-21 21:45:03.651 D/AppObserver( 3541): ForegroundInfo{mForegroundPackageName='com.miui.home', mForegroundUid=10133, mForegroundPid=3541, mLastForegroundPackageName='org.autobyteus.mobile', mLastForegroundUid=10512, mLastForegroundPid=17643, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:03.651 D/PerfEngineController( 6348): ForegroundInfo{mForegroundPackageName='com.miui.home', mForegroundUid=10133, mForegroundPid=3541, mLastForegroundPackageName='org.autobyteus.mobile', mLastForegroundUid=10512, mLastForegroundPid=17643, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:03.652 I/GameBoosterService( 4868): onForegroundInfoChanged: Cur=com.miui.home	 last=org.autobyteus.mobile
+05-21 21:45:03.653 I/ThermalInfoCollector( 6348): collectForgroundAppsInfo: org.autobyteus.mobile
+05-21 21:45:03.662 D/GameBoosterService( 4868): onGameStatusChange foreground:ForegroundInfo{mForegroundPackageName='com.miui.home', mForegroundUid=10133, mForegroundPid=3541, mLastForegroundPackageName='org.autobyteus.mobile', mLastForegroundUid=10512, mLastForegroundPid=17643, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:03.673 V/ActivityManager( 1828): Got obituary of 17643:org.autobyteus.mobile
+05-21 21:45:04.004 I/ActivityTaskManager( 1828): START u0 {flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity} from uid 2000
+05-21 21:45:04.021 D/PerfImpl( 1828): perfAnimBoost: org.autobyteus.mobile
+05-21 21:45:04.041 D/PerfImpl( 1828): perfColdLaunchBoost: org.autobyteus.mobile, 18157, 101
+05-21 21:45:04.042 D/Boost   ( 1828): hostingType=pre-top-activity, hostingName={org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}, callerPackage=others, isSystem=true, isBoostNeeded=false.
+05-21 21:45:04.045 I/ActivityManager( 1828): Start proc 18157:org.autobyteus.mobile/u0a512 for pre-top-activity {org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} caller=others
+05-21 21:45:04.091 D/PerfImpl( 1828): perfColdLaunchBoost: org.autobyteus.mobile, 18157, 103
+05-21 21:45:04.099 I/ProcessMonitor( 4868): onForegroundInfoChanged: ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10512, mForegroundPid=18157, mLastForegroundPackageName='com.miui.home', mLastForegroundUid=10133, mLastForegroundPid=3541, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+05-21 21:45:04.099 I/GST     ( 6361): forePkg: org.autobyteus.mobile, preForePkg: com.miui.home
+05-21 21:45:04.099 D/AppObserver( 3541): ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10512, mForegroundPid=18157, mLastForegroundPackageName='com.miui.home', mLastForegroundUid=10133, mLastForegroundPid=3541, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+05-21 21:45:04.099 D/AutoInstallService(11749): onForegroundInfoChanged: org.autobyteus.mobile
+05-21 21:45:04.099 I/GameBoosterService( 4868): onForegroundInfoChanged: Cur=org.autobyteus.mobile	 last=com.miui.home
+05-21 21:45:04.100 D/LS-ForegroundStatusManager( 6348): handleMessage ForegroundInfoChanged. pkg = org.autobyteus.mobile, uid = 10512, mCurrentForegroundUid = 10133
+05-21 21:45:04.100 D/PerfEngineController( 6348): ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10512, mForegroundPid=18157, mLastForegroundPackageName='com.miui.home', mLastForegroundUid=10133, mLastForegroundPid=3541, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+05-21 21:45:04.102 D/GameBoosterService( 4868): onGameStatusChange foreground:ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10512, mForegroundPid=18157, mLastForegroundPackageName='com.miui.home', mLastForegroundUid=10133, mLastForegroundPid=3541, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+05-21 21:45:04.123 W/RecentsModel( 3541): getRunningTask   taskInfo=TaskInfo{userId=0 taskId=17624 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity } baseActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} topActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} origActivity=null realActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} numActivities=1 lastActiveTime=456734137 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true token=WCT{android.window.IWindowContainerToken$Stub$Proxy@ec489d0} topActivityType=1 pictureInPictureParams=PictureInPictureParams( aspectRatio=null sourceRectHint=null hasSetActions=false isAutoPipEnabled=false isSeamlessResizeEnabled=true) displayCutoutSafeInsets=Rect(0, 104 - 0, 0) topActivityInfo=ActivityInfo{28c3dc9 org.autobyteus.mobile.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=true topActivityInSizeCompat=false locusId= null windowMode=1}
+05-21 21:45:04.123 W/RecentsModel( 3541): getTaskInfoIgnoreHomeAndFreeform   taskInfo=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+05-21 21:45:04.125 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17624   userId=0   baseIntent=Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity }
+05-21 21:45:04.129 D/nativeloader(18157): Configuring clns-4 for other apk /data/app/~~iBl5tX4HwKIYe-SNLeRWAw==/org.autobyteus.mobile-bzBz7CbpDV_w_f06SdoagQ==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~iBl5tX4HwKIYe-SNLeRWAw==/org.autobyteus.mobile-bzBz7CbpDV_w_f06SdoagQ==/lib/arm64, permitted_path=/data:/mnt/expand:/data/user/0/org.autobyteus.mobile
+05-21 21:45:04.140 V/GraphicsEnvironment(18157): ANGLE Developer option for 'org.autobyteus.mobile' set to: 'default'
+05-21 21:45:04.143 I/ForceDarkHelperStubImpl(18157): initialize for org.autobyteus.mobile , ForceDarkOrigin
+05-21 21:45:04.264 V/MiuiActivityTaskManagerServiceEx( 1828): dispatchActivityLifeState r = ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+05-21 21:45:04.264 D/RecentsImpl( 3541): mActivityStateObserver org.autobyteus.mobile.MainActivity
+05-21 21:45:04.264 W/RecentsImpl( 3541): onResumed className=org.autobyteus.mobile.MainActivity   mIsInAnotherPro=false   isKeyguardLocked=false
+05-21 21:45:04.286 D/WindowManager( 1828): Input focus has changed to Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} display=0
+05-21 21:45:04.354 D/PerfImpl( 1828): perfFirstDrawBoost: org.autobyteus.mobile, 18157, 1
+05-21 21:45:04.359 I/DisplayFrameSetting( 6348): homeToAppEnd pkg=org.autobyteus.mobile
+05-21 21:45:04.363 I/ActivityTaskManager( 1828): Displayed org.autobyteus.mobile/.MainActivity: +349ms
+05-21 21:45:04.378 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+05-21 21:45:04.381 W/InputManager-JNI( 1828): Input channel object 'ff670e7 Splash Screen org.autobyteus.mobile (client)' was disposed without first being removed with the input manager!
+05-21 21:45:05.426 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 252594336, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:05.430 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 252594336, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:07.751 D/AndroidRuntime(18203): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+05-21 21:45:07.755 I/AndroidRuntime(18203): Using default boot image
+05-21 21:45:07.970 D/nativeloader(18203): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-21 21:45:08.163 D/AndroidRuntime(18203): Calling main entry com.android.commands.uiautomator.Launcher
+05-21 21:45:09.443 D/AndroidRuntime(18203): Shutting down VM
+05-21 21:45:09.529 D/ProfileInstaller(18157): Installing profile for org.autobyteus.mobile
+05-21 21:45:26.312 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 252615220, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:26.315 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 252615220, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:26.346 D/MiuiFreeFormManagerService( 1828): onStartActivityInner as = Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1} op = null
+05-21 21:45:26.346 D/MiuiFreeFormManagerService( 1828): onStartActivityInner as = Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=1} op = null
+05-21 21:45:26.366 I/ProcessMonitor( 4868): onForegroundInfoChanged: ForegroundInfo{mForegroundPackageName='com.google.android.permissioncontroller', mForegroundUid=10262, mForegroundPid=32161, mLastForegroundPackageName='org.autobyteus.mobile', mLastForegroundUid=10512, mLastForegroundPid=18157, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:26.367 I/GST     ( 6361): forePkg: com.google.android.permissioncontroller, preForePkg: org.autobyteus.mobile
+05-21 21:45:26.367 D/PerfEngineController( 6348): ForegroundInfo{mForegroundPackageName='com.google.android.permissioncontroller', mForegroundUid=10262, mForegroundPid=32161, mLastForegroundPackageName='org.autobyteus.mobile', mLastForegroundUid=10512, mLastForegroundPid=18157, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:26.367 D/AppObserver( 3541): ForegroundInfo{mForegroundPackageName='com.google.android.permissioncontroller', mForegroundUid=10262, mForegroundPid=32161, mLastForegroundPackageName='org.autobyteus.mobile', mLastForegroundUid=10512, mLastForegroundPid=18157, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:26.368 I/ThermalInfoCollector( 6348): collectForgroundAppsInfo: org.autobyteus.mobile
+05-21 21:45:26.475 W/RecentsModel( 3541): getRunningTask   taskInfo=TaskInfo{userId=0 taskId=17624 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity } baseActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} topActivity=ComponentInfo{com.google.android.permissioncontroller/com.android.permissioncontroller.permission.ui.GrantPermissionsActivity} origActivity=null realActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} numActivities=2 lastActiveTime=456756488 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true token=WCT{android.window.IWindowContainerToken$Stub$Proxy@8232b39} topActivityType=1 pictureInPictureParams=PictureInPictureParams( aspectRatio=null sourceRectHint=null hasSetActions=false isAutoPipEnabled=false isSeamlessResizeEnabled=true) displayCutoutSafeInsets=Rect(0, 104 - 0, 0) topActivityInfo=ActivityInfo{53af57e com.android.permissioncontroller.permission.ui.GrantPermissionsActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true topActivityInSizeCompat=false locusId= null windowMode=1}
+05-21 21:45:26.475 W/RecentsModel( 3541): getTaskInfoIgnoreHomeAndFreeform   taskInfo=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+05-21 21:45:26.477 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17624   userId=0   baseIntent=Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity }
+05-21 21:45:28.612 D/AndroidRuntime(18290): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+05-21 21:45:28.615 I/AndroidRuntime(18290): Using default boot image
+05-21 21:45:28.615 I/AndroidRuntime(18290): Leaving lock profiling enabled
+05-21 21:45:28.831 D/nativeloader(18290): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-21 21:45:29.031 D/AndroidRuntime(18290): Calling main entry com.android.commands.uiautomator.Launcher
+05-21 21:45:29.073 I/GrantPermissionsViewModel(32161): Logged buttons presented and clicked permissionGroupName=android.permission-group.CAMERA uid=10512 package=org.autobyteus.mobile presentedButtons=44 clickedButton=4 isPermissionRationaleShown=false sessionId=6017500309356890434 targetSdk=35 prompt=ONE_TIME_FG initialLocationPrecision=0 selectedLocationPrecision=0 locationAccuracyButtonClicked= false
+05-21 21:45:29.079 E/PackageManager( 1828): Permission android.permission.BACKGROUND_CAMERA isn't requested by package org.autobyteus.mobile
+05-21 21:45:29.107 D/PerfImpl( 1828): perfWarmLaunchBoost: org.autobyteus.mobile, -1, 2
+05-21 21:45:29.110 D/WindowManager( 1828): Input focus has changed to Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} display=0
+05-21 21:45:29.112 I/ProcessMonitor( 4868): onForegroundInfoChanged: ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10512, mForegroundPid=18157, mLastForegroundPackageName='com.google.android.permissioncontroller', mLastForegroundUid=10262, mLastForegroundPid=32161, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:29.112 D/PerfEngineController( 6348): ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10512, mForegroundPid=18157, mLastForegroundPackageName='com.google.android.permissioncontroller', mLastForegroundUid=10262, mLastForegroundPid=32161, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:29.112 D/AutoInstallService(11749): onForegroundInfoChanged: org.autobyteus.mobile
+05-21 21:45:29.113 I/GST     ( 6361): forePkg: org.autobyteus.mobile, preForePkg: com.google.android.permissioncontroller
+05-21 21:45:29.113 D/AppObserver( 3541): ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10512, mForegroundPid=18157, mLastForegroundPackageName='com.google.android.permissioncontroller', mLastForegroundUid=10262, mLastForegroundPid=32161, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:29.114 I/GameBoosterService( 4868): onForegroundInfoChanged: Cur=org.autobyteus.mobile	 last=com.google.android.permissioncontroller
+05-21 21:45:29.114 D/LS-ForegroundStatusManager( 6348): handleMessage ForegroundInfoChanged. pkg = org.autobyteus.mobile, uid = 10512, mCurrentForegroundUid = 10262
+05-21 21:45:29.117 D/GameBoosterService( 4868): onGameStatusChange foreground:ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10512, mForegroundPid=18157, mLastForegroundPackageName='com.google.android.permissioncontroller', mLastForegroundUid=10262, mLastForegroundPid=32161, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=0}
+05-21 21:45:29.145 I/ActivityTaskManager( 1828): START u0 {act=com.google.zxing.client.android.SCAN cmp=org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity (has extras)} from uid 10512
+05-21 21:45:29.146 D/MiuiFreeFormManagerService( 1828): onStartActivityInner as = Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=2} op = null
+05-21 21:45:29.146 D/MiuiFreeFormManagerService( 1828): onStartActivityInner as = Task{941c001 #17624 type=standard A=10512:org.autobyteus.mobile U=0 visible=true mode=fullscreen translucent=false sz=2} op = null
+05-21 21:45:29.160 D/PerfImpl( 1828): perfWarmLaunchBoost: org.autobyteus.mobile, -1, 2
+05-21 21:45:29.168 V/MiuiActivityTaskManagerServiceEx( 1828): dispatchActivityLifeState r = ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+05-21 21:45:29.175 D/RecentsImpl( 3541): mActivityStateObserver org.autobyteus.mobile.MainActivity
+05-21 21:45:29.175 W/RecentsImpl( 3541): onResumed className=org.autobyteus.mobile.MainActivity   mIsInAnotherPro=false   isKeyguardLocked=false
+05-21 21:45:29.182 D/PerfImpl( 1828): perfWarmLaunchBoost: org.autobyteus.mobile, -1, 2
+05-21 21:45:29.183 D/PerfImpl( 1828): perfColdLaunchBoost: org.autobyteus.mobile, 18157, 102
+05-21 21:45:29.233 I/CameraBooster( 1828): skip camera boost for org.autobyteus.mobile
+05-21 21:45:29.236 I/DisplayFrameSetting( 6348): onReceive camera uid=10512 state=1 pkg=org.autobyteus.mobile
+05-21 21:45:29.238 I/CameraService( 1687): CameraService::connect call (PID -1 "org.autobyteus.mobile", camera ID 0) and Camera API version 1
+05-21 21:45:29.239 I/Camera2ClientBase( 1687): Camera 0: Opened. Client: org.autobyteus.mobile (PID 18157, UID 10512)
+05-21 21:45:29.239 D/CameraImpl( 1687): setClientPackageName:36 org.autobyteus.mobile api1
+05-21 21:45:29.252 V/MiuiActivityTaskManagerServiceEx( 1828): dispatchActivityLifeState r = ActivityRecord{aab7283 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity t17624}
+05-21 21:45:29.253 D/RecentsImpl( 3541): mActivityStateObserver com.journeyapps.barcodescanner.CaptureActivity
+05-21 21:45:29.254 W/RecentsImpl( 3541): onResumed className=com.journeyapps.barcodescanner.CaptureActivity   mIsInAnotherPro=false   isKeyguardLocked=false
+05-21 21:45:29.267 D/WindowManager( 1828): Input focus has changed to Window{8784530 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity} display=0
+05-21 21:45:29.289 D/SurfaceView(18157): UPDATE Surface(name=SurfaceView[org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity])/@0x8c52706, mIsProjectionMode = false
+05-21 21:45:29.304 D/PerfImpl( 1828): perfFirstDrawBoost: org.autobyteus.mobile, 18157, 1
+05-21 21:45:29.306 I/ActivityTaskManager( 1828): Displayed org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity: +172ms
+05-21 21:45:29.311 W/RecentsModel( 3541): getRunningTask   taskInfo=TaskInfo{userId=0 taskId=17624 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity } baseActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} topActivity=ComponentInfo{org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity} origActivity=null realActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} numActivities=2 lastActiveTime=456759324 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true token=WCT{android.window.IWindowContainerToken$Stub$Proxy@48241f5} topActivityType=1 pictureInPictureParams=PictureInPictureParams( aspectRatio=null sourceRectHint=null hasSetActions=false isAutoPipEnabled=false isSeamlessResizeEnabled=true) displayCutoutSafeInsets=Rect(0, 104 - 0, 0) topActivityInfo=ActivityInfo{40ceb8a com.journeyapps.barcodescanner.CaptureActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true topActivityInSizeCompat=false locusId= null windowMode=1}
+05-21 21:45:29.311 W/RecentsModel( 3541): getTaskInfoIgnoreHomeAndFreeform   taskInfo=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+05-21 21:45:29.316 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17624   userId=0   baseIntent=Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity }
+05-21 21:45:29.319 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+05-21 21:45:29.319 I/WindowManager( 1828): rotation changed from 0 to 1 due ActivityRecord{aab7283 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity t17624}
+05-21 21:45:29.386 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, true)
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.400 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:29.852 E/CHIUSECASE(  982): [ERROR  ] chifeature2realtime.cpp:3365 OnPipelineSelect() wechat power, apkName=org.autobyteus.mobile
+05-21 21:45:31.076 D/AndroidRuntime(18290): Shutting down VM
+05-21 21:45:43.509 D/PerfImpl( 1828): perfWarmLaunchBoost: org.autobyteus.mobile, -1, 2
+05-21 21:45:43.534 I/DisplayFrameSetting( 6348): onReceive camera uid=10512 state=2 pkg=org.autobyteus.mobile
+05-21 21:45:43.561 V/MiuiActivityTaskManagerServiceEx( 1828): dispatchActivityLifeState r = ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+05-21 21:45:43.561 D/RecentsImpl( 3541): mActivityStateObserver org.autobyteus.mobile.MainActivity
+05-21 21:45:43.562 W/RecentsImpl( 3541): onResumed className=org.autobyteus.mobile.MainActivity   mIsInAnotherPro=false   isKeyguardLocked=false
+05-21 21:45:43.575 D/WindowManager( 1828): Input focus has changed to Window{cce448 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} display=0
+05-21 21:45:43.624 I/WindowManager( 1828): rotation changed from 1 to 0 due ActivityRecord{d6251e8 u0 org.autobyteus.mobile/.MainActivity t17624}
+05-21 21:45:43.632 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+05-21 21:45:43.635 W/RecentsModel( 3541): getRunningTask   taskInfo=TaskInfo{userId=0 taskId=17624 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity } baseActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} topActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} origActivity=null realActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} numActivities=1 lastActiveTime=456773648 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true token=WCT{android.window.IWindowContainerToken$Stub$Proxy@5563656} topActivityType=1 pictureInPictureParams=PictureInPictureParams( aspectRatio=null sourceRectHint=null hasSetActions=false isAutoPipEnabled=false isSeamlessResizeEnabled=true) displayCutoutSafeInsets=Rect(104, 0 - 0, 0) topActivityInfo=ActivityInfo{6c786d7 org.autobyteus.mobile.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true topActivityInSizeCompat=false locusId= null windowMode=1}
+05-21 21:45:43.635 W/RecentsModel( 3541): getTaskInfoIgnoreHomeAndFreeform   taskInfo=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+05-21 21:45:43.638 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17624   userId=0   baseIntent=Intent { flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity }
+05-21 21:45:43.641 W/InputManager-JNI( 1828): Input channel object '8784530 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity (client)' was disposed without first being removed with the input manager!
+05-21 21:45:43.644 W/InputManager-JNI( 1828): Input channel object 'Letterbox_left_ActivityRecord{aab7283 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity t17624} (client)' was disposed without first being removed with the input manager!
+05-21 21:45:43.645 W/InputManager-JNI( 1828): Input channel object 'Letterbox_top_ActivityRecord{aab7283 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity t17624} (client)' was disposed without first being removed with the input manager!
+05-21 21:45:43.645 W/InputManager-JNI( 1828): Input channel object 'Letterbox_right_ActivityRecord{aab7283 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity t17624} (client)' was disposed without first being removed with the input manager!
+05-21 21:45:43.645 W/InputManager-JNI( 1828): Input channel object 'Letterbox_bottom_ActivityRecord{aab7283 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity t17624} (client)' was disposed without first being removed with the input manager!
+05-21 21:45:43.656 W/InputDispatcher( 1828): Letterbox_left_ActivityRecord{aab7283 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity t17624} has FLAG_SLIPPERY. Please report this in b/157929241
+05-21 21:45:43.724 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, true)
+05-21 21:45:43.793 I/Camera2ClientBase( 1687): Closed Camera 0. Client was: org.autobyteus.mobile (PID 18157, UID 10512)
+05-21 21:45:46.680 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 252635589, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:46.783 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 252635692, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:48.689 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 252637597, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:48.843 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 252637751, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:50.382 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 252639291, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:50.505 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 252639414, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:51.331 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 252640239, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:51.445 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 252640354, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:51.457 D/PerfShielderService( 1828): org.autobyteus.mobile|org.autobyteus.mobile/org.autobyteus.mobile.MainActivity|222|252639638026798|204|5|3
+05-21 21:45:51.458 W/MiuiPerfServiceClient( 4492): interceptAndQueuing:18157|org.autobyteus.mobile|222|204|252639638026798|Slow issue draw commands|3
+05-21 21:45:51.806 D/nativeloader(18157): Load /data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk!/lib/arm64-v8a/libwebviewchromium.so using class loader ns clns-6 (caller=/data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk): ok
+05-21 21:45:51.814 D/nativeloader(18157): Load /system/lib64/libwebviewchromium_plat_support.so using class loader ns clns-6 (caller=/data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk): ok
+05-21 21:45:51.832 I/chromium(18157): [0521/214551.818696:INFO:android_webview/browser/variations/variations_seed_loader.cc:67] Failed to open file for reading.: No such file or directory (2)
+05-21 21:45:51.832 I/chromium(18157): [INFO:android_webview/browser/variations/variations_seed_loader.cc:67] Failed to open file for reading.: No such file or directory (2)
+05-21 21:45:51.900 D/Boost   ( 1828): hostingType=, hostingName={org.autobyteus.mobile/org.chromium.content.app.SandboxedProcessService0:0}, callerPackage=org.autobyteus.mobile, isSystem=false, isBoostNeeded=false.
+05-21 21:45:51.901 I/ActivityManager( 1828): Start proc 18624:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0i522 for  {org.autobyteus.mobile/org.chromium.content.app.SandboxedProcessService0:0} caller=org.autobyteus.mobile
+05-21 21:45:51.948 I/ForceDarkHelperStubImpl(18624): initialize for org.autobyteus.mobile , ForceDarkOrigin
+05-21 21:45:51.952 I/cr_WebViewApkApp(18624): version=148.0.7778.120 (777812003) minSdkVersion=29 processName=com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0 splits=<none>
+05-21 21:45:51.982 W/chromium(18157): [WARNING:android_webview/browser/network_service/net_helpers.cc:137] HTTP Cache size is: 20971520
+05-21 21:45:52.027 D/ConnectivityService( 1828): requestNetwork for uid/pid:10512/18157 activeRequest: null callbackRequest: 40634 [NetworkRequest [ REQUEST id=40635, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10512 RequestorUid: 10512 RequestorPkg: org.autobyteus.mobile UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|NC|LP
+05-21 21:45:52.035 D/UntrustedWifiNetworkFactory( 1828): got request NetworkRequest [ REQUEST id=40635, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10512 RequestorUid: 10512 RequestorPkg: org.autobyteus.mobile UnderlyingNetworks: Null] ]
+05-21 21:45:52.038 D/OemPaidWifiNetworkFactory( 1828): got request NetworkRequest [ REQUEST id=40635, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10512 RequestorUid: 10512 RequestorPkg: org.autobyteus.mobile UnderlyingNetworks: Null] ]
+05-21 21:45:52.088 W/chromium(18624): [WARNING:content/app/android/content_main_android.cc:82] android_setCpu already initialized
+05-21 21:45:52.116 W/chromium(18624): [WARNING:content/child/runtime_features.cc:540] Fenced frames cannot be enabled in this configuration. Use --enable-features=FencedFrames instead.
+05-21 21:45:52.116 W/chromium(18624): [WARNING:content/child/runtime_features.cc:565] Topics cannot be enabled in this configuration. Use --enable-features=BrowsingTopics in addition.
+05-21 21:45:52.116 W/chromium(18624): [WARNING:content/child/runtime_features.cc:586] SharedStorage cannot be enabled in this configuration. Use --enable-features=SharedStorageAPI in addition.
+05-21 21:45:52.122 I/chromium(18624): [INFO:third_party/skia/src/ports/SkFontMgr_android_parser.cpp:723] [SkFontMgr Android Parser] '/product/etc/fonts_customization.xml' could not be opened
+05-21 21:45:52.122 I/chromium(18624): 
+05-21 21:45:52.978 I/chromium(18157): [INFO:CONSOLE:651] "serverStore: Initializing server config", source: http://100.127.30.107:29695/mobile/_nuxt/ChWesKzE.js (651)
+05-21 21:45:52.979 I/chromium(18157): [INFO:CONSOLE:651] "serverStore: Not in Electron environment. Skipping server initialization.", source: http://100.127.30.107:29695/mobile/_nuxt/ChWesKzE.js (651)
+05-21 21:45:53.013 I/chromium(18157): [INFO:CONSOLE:659] "ServerLoading: Component mounted with status: running", source: http://100.127.30.107:29695/mobile/_nuxt/ChWesKzE.js (659)
+05-21 21:45:54.473 D/Boost   ( 1828): hostingType=service, hostingName={com.google.android.webview/org.chromium.android_webview.services.VariationsSeedServer}, callerPackage=org.autobyteus.mobile, isSystem=false, isBoostNeeded=false.
+05-21 21:45:54.474 I/ActivityManager( 1828): Start proc 18704:com.google.android.webview:webview_service/u0a222 for service {com.google.android.webview/org.chromium.android_webview.services.VariationsSeedServer} caller=org.autobyteus.mobile
+05-21 21:45:54.628 D/PerfShielderService( 1828): org.autobyteus.mobile|org.autobyteus.mobile/org.autobyteus.mobile.MainActivity|237|252642202371849|237|5|1
+05-21 21:45:54.629 W/MiuiPerfServiceClient( 4492): interceptAndQueuing:18157|org.autobyteus.mobile|237|237|252642202371849|Slow issue draw commands|1
+05-21 21:45:55.020 I/chromium(18157): [INFO:CONSOLE:651] "serverStore: Checking server health at http://localhost:8000/health", source: http://100.127.30.107:29695/mobile/_nuxt/ChWesKzE.js (651)
+05-21 21:45:57.740 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 252646649, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:57.839 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 252646748, channel 'cce448 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-21 21:45:57.865 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=12000000, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+05-21 21:45:58.155 I/chromium(18157): [INFO:CONSOLE:419] "[Workspace] Connecting to file system changes for workspace: temp_ws_default", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.156 I/chromium(18157): [INFO:CONSOLE:419] "[FileExplorerStreaming] Connecting to ws://100.127.30.107:29695/ws/file-explorer/temp_ws_default?access_token=%5BREDACTED%5D...", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.157 I/chromium(18157): [INFO:CONSOLE:419] "[Workspace] Connecting to file system changes for workspace: agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.157 I/chromium(18157): [INFO:CONSOLE:419] "[FileExplorerStreaming] Connecting to ws://100.127.30.107:29695/ws/file-explorer/agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c?access_token=%5BREDACTED%5D...", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.158 I/chromium(18157): [INFO:CONSOLE:419] "[Workspace] Connecting to file system changes for workspace: agent_ws_7469afd0ad3e4800e6b203f34c6f12d2230e0aa6f7646e1c620b9fe3262f4a20", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.158 I/chromium(18157): [INFO:CONSOLE:419] "[FileExplorerStreaming] Connecting to ws://100.127.30.107:29695/ws/file-explorer/agent_ws_7469afd0ad3e4800e6b203f34c6f12d2230e0aa6f7646e1c620b9fe3262f4a20?access_token=%5BREDACTED%5D...", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.294 I/chromium(18157): [INFO:CONSOLE:419] "[FileExplorerStreaming] WebSocket connected", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.373 I/chromium(18157): [INFO:CONSOLE:419] "[FileExplorerStreaming] Session established: 88fd36a9-fadd-44fc-b48a-31523c6984bc", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.374 I/chromium(18157): [INFO:CONSOLE:419] "[Workspace] Connected to file system changes: 88fd36a9-fadd-44fc-b48a-31523c6984bc", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.374 I/chromium(18157): [INFO:CONSOLE:419] "[FileExplorerStreaming] WebSocket connected", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.380 I/chromium(18157): [INFO:CONSOLE:419] "[FileExplorerStreaming] Session established: fcf29945-f6ec-4fcf-a9af-77da5a2bd02b", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.380 I/chromium(18157): [INFO:CONSOLE:419] "[Workspace] Connected to file system changes: fcf29945-f6ec-4fcf-a9af-77da5a2bd02b", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.380 I/chromium(18157): [INFO:CONSOLE:419] "[FileExplorerStreaming] WebSocket connected", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.381 I/chromium(18157): [INFO:CONSOLE:419] "[FileExplorerStreaming] Session established: e296d784-75fc-4254-8c22-940ddb85d77c", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.382 I/chromium(18157): [INFO:CONSOLE:419] "[Workspace] Connected to file system changes: e296d784-75fc-4254-8c22-940ddb85d77c", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:45:58.608 I/chromium(18157): [INFO:CONSOLE:51] "Agent WebSocket connected", source: http://100.127.30.107:29695/mobile/_nuxt/Du0oyj1B.js (51)
+05-21 21:46:00.214 I/chromium(18157): [INFO:CONSOLE:51] "Team WebSocket connected", source: http://100.127.30.107:29695/mobile/_nuxt/Du0oyj1B.js (51)
+05-21 21:46:00.214 I/chromium(18157): [INFO:CONSOLE:51] "No member context found for message, skipping", source: http://100.127.30.107:29695/mobile/_nuxt/Du0oyj1B.js (51)
+05-21 21:46:46.118 D/nativeloader( 2836): Load /data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk!/lib/arm64-v8a/libwebviewchromium.so using class loader ns clns-7 (caller=/data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk): ok
+05-21 21:46:46.121 D/nativeloader( 2836): Load /system/lib64/libwebviewchromium_plat_support.so using class loader ns clns-7 (caller=/data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk): ok
+05-21 21:46:46.125 E/chromium( 2836): [0521/214646.124450:ERROR:android_webview/browser/variations/variations_seed_loader.cc:39] Seed missing signature.
+05-21 21:46:46.184 D/Boost   ( 1828): hostingType=, hostingName={com.google.android.googlequicksearchbox/org.chromium.content.app.SandboxedProcessService0:0}, callerPackage=com.google.android.googlequicksearchbox, isSystem=true, isBoostNeeded=false.
+05-21 21:46:46.185 I/ActivityManager( 1828): Start proc 18800:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0i523 for  {com.google.android.googlequicksearchbox/org.chromium.content.app.SandboxedProcessService0:0} caller=com.google.android.googlequicksearchbox
+05-21 21:46:46.260 I/cr_WebViewApkApp(18800): version=148.0.7778.120 (777812003) minSdkVersion=29 processName=com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0 splits=<none>
+05-21 21:46:46.321 W/chromium( 2836): [WARNING:android_webview/browser/network_service/net_helpers.cc:137] HTTP Cache size is: 20971520
+05-21 21:46:46.402 W/chromium(18800): [WARNING:content/app/android/content_main_android.cc:82] android_setCpu already initialized
+05-21 21:46:46.462 W/chromium(18800): [WARNING:content/child/runtime_features.cc:540] Fenced frames cannot be enabled in this configuration. Use --enable-features=FencedFrames instead.
+05-21 21:46:46.462 W/chromium(18800): [WARNING:content/child/runtime_features.cc:565] Topics cannot be enabled in this configuration. Use --enable-features=BrowsingTopics in addition.
+05-21 21:46:46.462 W/chromium(18800): [WARNING:content/child/runtime_features.cc:586] SharedStorage cannot be enabled in this configuration. Use --enable-features=SharedStorageAPI in addition.
+05-21 21:46:46.480 I/chromium(18800): [INFO:third_party/skia/src/ports/SkFontMgr_android_parser.cpp:723] [SkFontMgr Android Parser] '/product/etc/fonts_customization.xml' could not be opened
+05-21 21:46:46.480 I/chromium(18800): 
+05-21 21:46:49.453 I/chromium(18157): [INFO:CONSOLE:51] "[toolLifecycleHandler] Dropping malformed TOOL_LOG payload [object Object]", source: http://100.127.30.107:29695/mobile/_nuxt/Du0oyj1B.js (51)
+05-21 21:46:49.943 I/chromium(18157): [INFO:CONSOLE:419] "[Workspace] Received file system change for temp_ws_default: [object Object]", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:46:49.948 I/chromium(18157): [INFO:CONSOLE:419] "[Workspace] Received file system change for agent_ws_7469afd0ad3e4800e6b203f34c6f12d2230e0aa6f7646e1c620b9fe3262f4a20: [object Object]", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:47:07.179 I/PackageManager( 1828): Dexopt with async: org.autobyteus.mobile, finished.
+05-21 21:47:07.179 D/PackageManager( 1828): FirstUseActivity packageName = org.autobyteus.mobile success = true
+05-21 21:47:07.179 I/PackageManager( 1828): FirstUseActivity Pinning optimized code org.autobyteus.mobile
+05-21 21:47:20.971 I/chromium(18157): [INFO:CONSOLE:51] "[toolLifecycleHandler] Dropping malformed TOOL_LOG payload [object Object]", source: http://100.127.30.107:29695/mobile/_nuxt/Du0oyj1B.js (51)
+05-21 21:47:21.642 I/chromium(18157): [INFO:CONSOLE:419] "[Workspace] Received file system change for agent_ws_7469afd0ad3e4800e6b203f34c6f12d2230e0aa6f7646e1c620b9fe3262f4a20: [object Object]", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:47:21.643 I/chromium(18157): [INFO:CONSOLE:387] "Received modify event for an unknown node with id 1a4e75ba-0ecc-5726-ab3a-e4f38347aec2", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (387)
+05-21 21:47:21.643 I/chromium(18157): [INFO:CONSOLE:387] "Received modify event for an unknown node with id b0772b19-9eaf-5638-9e4d-40e5e6737709", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (387)
+05-21 21:47:21.644 I/chromium(18157): [INFO:CONSOLE:419] "[Workspace] Received file system change for temp_ws_default: [object Object]", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (419)
+05-21 21:47:21.644 I/chromium(18157): [INFO:CONSOLE:387] "Received modify event for an unknown node with id b0772b19-9eaf-5638-9e4d-40e5e6737709", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (387)
+05-21 21:47:21.645 I/chromium(18157): [INFO:CONSOLE:387] "Received modify event for an unknown node with id 1a4e75ba-0ecc-5726-ab3a-e4f38347aec2", source: http://100.127.30.107:29695/mobile/_nuxt/iaM639hE.js (387)
+05-21 21:47:25.806 D/AndroidRuntime(18920): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+05-21 21:47:25.824 I/AndroidRuntime(18920): Using default boot image
+05-21 21:47:25.824 I/AndroidRuntime(18920): Leaving lock profiling enabled
+05-21 21:47:26.041 D/nativeloader(18920): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-21 21:47:26.284 D/AndroidRuntime(18920): Calling main entry com.android.commands.uiautomator.Launcher
+05-21 21:47:27.717 D/AndroidRuntime(18920): Shutting down VM

@@ -1,0 +1,34 @@
+# Electron macOS build artifacts
+
+Generated at: 2026-05-21T20:07:42Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error
+Branch: codex/android-mobile-pairing-qr-error
+HEAD: 80298db5a2e0ead4d9c01818316e21a4a844eba5 chore(ticket): record android tailscale release completion
+origin/personal: 80298db5a2e0ead4d9c01818316e21a4a844eba5 chore(ticket): record android tailscale release completion
+Build log: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-mobile-pairing-qr-error/build-logs/electron-mac-build-latest-personal-20260521T200339Z.log
+Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+Signing/notarization: local testing build only; macOS code signing skipped because signing identity is explicitly null and no Apple team ID was supplied.
+
+## Files
+- /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.dmg
+  - size: 368M
+  - sha256: af0a6842a88a11e3a37e5f5c69fa5aed48ae1e39fa491c3198e59decbfb36c9a
+- /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.dmg.blockmap
+  - size: 388K
+  - sha256: 61f9540a73e32d3e533ee0b2e953429d242db032319c215f512dbfb3ea8e3d7b
+- /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.zip
+  - size: 369M
+  - sha256: 3a993eb4ca2828c0878e6460f580dfef233f3ee7e65be3d4398f020389bea61e
+- /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.zip.blockmap
+  - size: 380K
+  - sha256: ddc6da8934b7a172ef144f53d39a29738201417f37ba8888586b7c4019c8eeda
+- /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-web/electron-dist/latest-mac.yml
+  - size: 4.0K
+  - sha256: 9bbe94700b2da23305b195e0db7adc8180c7fd70ef3b6b248fd9f8a43a1134fc
+
+## App bundle
+- /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+
+## Mobile web bundle freshness
+- dist-mobile index sha256: 2202235bf0ffd765e93b05bb9aa24b853d37c3360f2d2918f9873fea21e3cf0a
+- prepared server mobile-web index sha256: 2202235bf0ffd765e93b05bb9aa24b853d37c3360f2d2918f9873fea21e3cf0a

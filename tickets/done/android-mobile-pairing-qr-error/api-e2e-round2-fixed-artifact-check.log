@@ -1,0 +1,130 @@
+timestamp=2026-05-21T19:42:19Z
+branch=codex/android-mobile-pairing-qr-error
+== git status ==
+## codex/android-mobile-pairing-qr-error...origin/personal
+ M autobyteus-android/app/build.gradle.kts
+ M autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt
+ M autobyteus-android/app/src/main/AndroidManifest.xml
+ M autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt
+ M autobyteus-android/app/src/main/java/org/autobyteus/mobile/connection/ConnectionDiagnosticMapper.kt
+ M autobyteus-android/app/src/main/java/org/autobyteus/mobile/shell/AndroidExternalActions.kt
+ M autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+ M autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+ M autobyteus-web/composables/mobile/useMobileWorkCatalog.ts
+?? autobyteus-android/app/src/main/java/org/autobyteus/mobile/shell/QrScanCoordinator.kt
+?? autobyteus-web/composables/mobile/__tests__/
+?? tickets/done/android-mobile-pairing-qr-error/
+== fixed apk ==
+-rw-r--r--@ 1 normy  staff  3406020 May 21 21:33 /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+cf77a63a86fcf8fce3100666722368ad107b14451d35c9a37137448acfd4a7ff  /Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+== local fix verification logs tail ==
+AndroidX Core runtime class verification in fixed APK
+APK: autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+APK sha256:
+cf77a63a86fcf8fce3100666722368ad107b14451d35c9a37137448acfd4a7ff  autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+Dex files:
+classes3.dex
+classes4.dex
+classes5.dex
+classes6.dex
+classes.dex
+classes2.dex
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes.dex --
+  Class descriptor  : 'Landroidx/core/content/ContextCompat;'
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes2.dex --
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes3.dex --
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes4.dex --
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes5.dex --
+-- /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.3wvPgheGG9/classes6.dex --
+== gradle build log tail ==
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:checkDebugAarMetadata
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:mergeDebugResources
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs NO-SOURCE
+> Task :app:processDebugManifestForPackage
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:stripDebugDebugSymbols NO-SOURCE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:processDebugResources
+> Task :app:checkDebugAndroidTestAarMetadata
+> Task :app:mergeExtDexDebug
+> Task :app:processDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :app:compileDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :app:generateDebugAndroidTestResValues UP-TO-DATE
+> Task :app:mapDebugAndroidTestSourceSetPaths
+> Task :app:generateDebugAndroidTestResources UP-TO-DATE
+> Task :app:mergeDebugAndroidTestResources
+> Task :app:processDebugAndroidTestManifest
+> Task :app:compileDebugKotlin
+> Task :app:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processDebugAndroidTestResources
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :app:mergeDebugJavaResource
+> Task :app:testDebugUnitTest
+> Task :app:mergeProjectDexDebug
+> Task :app:compileDebugAndroidTestKotlin
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleDebug
+
+[Incubating] Problems report is available at: file:///Users/normy/autobyteus_org/autobyteus-worktrees/android-mobile-pairing-qr-error/autobyteus-android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 5s
+52 actionable tasks: 25 executed, 27 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.3.1/userguide/configuration_cache_enabling.html
+
+--- fixed APK artifact summary ---
+-rw-r--r--@ 1 normy  staff  3406020 May 21 21:33 autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+cf77a63a86fcf8fce3100666722368ad107b14451d35c9a37137448acfd4a7ff  autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+== current report result before update ==
+11:- Current Validation Round: 1
+77:| S-005 | REQ-001, AC-001 | Tap **Scan QR** and open app-owned scanner/camera UI | Fail | `api-e2e-scanner-ui.log`, `api-e2e-crash-buffer.log` |
+78:| S-006 | REQ-002, AC-002 | Camera permission denial diagnostic | Blocked by S-005 crash / practical device prompt interference | `api-e2e-current-after-permission-tap.log` shows device jumped to another app / MIUI permission flow was not reliably captured before granting camera for scanner launch. |
+79:| S-007 | REQ-003, AC-003 | Scanner cancel/empty-result recovery | Blocked by S-005 crash | Scanner activity cannot reach a stable running state. |
+80:| S-008 | REQ-004, AC-004 | Scan valid Phone Access QR and verify save/open pairing path | Blocked by S-005 crash | Scanner activity crashes before decode. |
+134:## Prior Failure Resolution Check (Mandatory On Round >1)
+172:### S-005: App-owned scanner launch
+226:Rationale: The reviewed design correctly chose an app-owned bundled scanner. The runtime failure is a missing APK dependency required by the chosen scanner library, not a requirement or design ambiguity. Likely correction area is Android Gradle/runtime dependency packaging for JourneyApps/AndroidX Core, followed by rebuilding/reinstalling the APK and rerunning S-005 through S-009.
+243:## Latest Authoritative Result
+246:- Result: `Fail`
