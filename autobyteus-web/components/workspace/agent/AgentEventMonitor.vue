@@ -12,7 +12,7 @@
 
     <div>
       <slot name="composerContext" />
-      <AgentUserInputForm />
+      <AgentUserInputForm :before-send="beforeSend" />
     </div>
   </div>
 </template>
@@ -30,5 +30,6 @@ defineProps<{
   agentName?: string;
   agentAvatarUrl?: string | null;
   interAgentSenderNameById?: Record<string, string>;
+  beforeSend?: () => void | Promise<void>;
 }>();
 </script>

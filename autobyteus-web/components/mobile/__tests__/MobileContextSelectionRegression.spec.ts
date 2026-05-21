@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
 import { createPinia, setActivePinia, type Pinia } from 'pinia';
 import MobileChat from '../MobileChat.vue';
 import MobileComposerContextTray from '../MobileComposerContextTray.vue';
@@ -9,6 +9,8 @@ import MobileTeamMemberFocusBar from '../MobileTeamMemberFocusBar.vue';
 import MobileToolActivityList from '../MobileToolActivityList.vue';
 import MobileWorkShell from '../MobileWorkShell.vue';
 import { useMobileFileContextCoordinator } from '~/composables/mobile/useMobileFileContextCoordinator';
+import { useMobilePendingTeamRunAttachments } from '~/composables/mobile/useMobilePendingTeamRunAttachments';
+import { useMobilePromotedRunContextSync } from '~/composables/mobile/useMobilePromotedRunContextSync';
 import { useMobileWorkCatalog } from '~/composables/mobile/useMobileWorkCatalog';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
@@ -23,18 +25,18 @@ import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
-import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamContext, AgentTeamMemberNode, TeamMemberNode } from '~/types/agent/AgentTeamContext';
 import type { Conversation } from '~/types/conversation';
 import type { MobileWorkContext } from '~/types/mobileWork';
 import { createWorkspaceContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 
-const { launchMobileRunMock } = vi.hoisted(() => ({
-  launchMobileRunMock: vi.fn(),
+const { createMobileRunFromConfigMock } = vi.hoisted(() => ({
+  createMobileRunFromConfigMock: vi.fn(),
 }));
 
 vi.mock('~/composables/mobile/useMobileRunLaunchCoordinator', () => ({
   useMobileRunLaunchCoordinator: () => ({
-    launchMobileRun: launchMobileRunMock,
+    createMobileRunFromConfig: createMobileRunFromConfigMock,
   }),
 }));
 
@@ -91,7 +93,7 @@ function seedActiveAgentRun(): AgentContext {
 }
 
 
-function seedActiveTeamRun(): AgentTeamContext {
+function seedActiveTeamRun(teamRunId = 'team-run-1'): AgentTeamContext {
   const leadNode: AgentTeamMemberNode = {
     memberKind: 'agent',
     memberName: 'lead',
@@ -111,7 +113,7 @@ function seedActiveTeamRun(): AgentTeamContext {
     agentDefinitionId: 'agent-1',
   };
   const context: AgentTeamContext = {
-    teamRunId: 'team-run-1',
+    teamRunId,
     config: {
       teamDefinitionId: 'team-1',
       teamDefinitionName: 'Software Team',
@@ -220,7 +222,7 @@ describe('mobile context selection stale-run regression', () => {
     setActivePinia(pinia);
     vi.clearAllMocks();
     seedCatalog();
-    launchMobileRunMock.mockResolvedValue({ context: agentRunContext });
+    createMobileRunFromConfigMock.mockResolvedValue({ context: agentRunContext });
   });
 
   it('does not show an existing run monitor after switching mobile Chat to a non-run context', async () => {
@@ -284,6 +286,131 @@ describe('mobile context selection stale-run regression', () => {
     expect(wrapper.text()).not.toContain('draft.md');
   });
 
+  it('reconciles mobile current agent-run context when a temporary run is promoted after first send', async () => {
+    const tempRunId = 'temp-agent-mobile-1';
+    const permanentRunId = 'agent-run-permanent-1';
+    const run = makeAgentContext(tempRunId);
+    const agentContextsStore = useAgentContextsStore();
+    const mobileWorkStore = useMobileWorkStore();
+    agentContextsStore.runs.set(tempRunId, run);
+    useAgentSelectionStore().selectRunWithoutShellNavigation(tempRunId, 'agent');
+    mobileWorkStore.selectContext({
+      kind: 'agent-run',
+      runId: tempRunId,
+      agentDefinitionId: 'agent-1',
+      title: 'Builder Agent',
+      summary: 'New agent run',
+      workspaceRootPath: '/Users/normy/project',
+      isActive: true,
+      lastActivityAt: '2026-05-18T16:00:00.000Z',
+      statusLabel: 'Ready',
+    }, 'chat');
+    useMobilePromotedRunContextSync();
+
+    agentContextsStore.promoteTemporaryId(tempRunId, permanentRunId);
+    await nextTick();
+
+    expect(useAgentSelectionStore().selectedRunId).toBe(permanentRunId);
+    expect(mobileWorkStore.currentContext?.kind).toBe('agent-run');
+    if (mobileWorkStore.currentContext?.kind === 'agent-run') {
+      expect(mobileWorkStore.currentContext.runId).toBe(permanentRunId);
+      expect(mobileWorkStore.currentContext.agentDefinitionId).toBe('agent-1');
+    }
+  });
+
+  it('reconciles mobile current team-run context and pending state when a temporary team is promoted after first send', async () => {
+    const tempTeamRunId = 'temp-team-mobile-1';
+    const permanentTeamRunId = 'team-permanent-1';
+    const teamContext = seedActiveTeamRun(tempTeamRunId);
+    const teamContextsStore = useAgentTeamContextsStore();
+    const mobileWorkStore = useMobileWorkStore();
+    const pendingAttachment = createWorkspaceContextAttachment('/Users/normy/project/pending-team.md');
+    mobileWorkStore.addPendingTeamRunAttachment(tempTeamRunId, pendingAttachment);
+    await teamContextsStore.focusMemberAndEnsureHydrated(tempTeamRunId, 'reviewer');
+    mobileWorkStore.updateFocusedTeamMember(tempTeamRunId, 'reviewer');
+    useMobilePromotedRunContextSync();
+
+    teamContextsStore.promoteTemporaryTeamRunId(tempTeamRunId, permanentTeamRunId);
+    await nextTick();
+
+    expect(useAgentSelectionStore().selectedRunId).toBe(permanentTeamRunId);
+    expect(mobileWorkStore.currentContext?.kind).toBe('team-run');
+    if (mobileWorkStore.currentContext?.kind === 'team-run') {
+      expect(mobileWorkStore.currentContext.teamRunId).toBe(permanentTeamRunId);
+      expect(mobileWorkStore.currentContext.focusedMemberRouteKey).toBe('reviewer');
+    }
+    expect(teamContext.teamRunId).toBe(permanentTeamRunId);
+    expect(mobileWorkStore.getPendingTeamRunAttachments(tempTeamRunId)).toHaveLength(0);
+    expect(mobileWorkStore.getPendingTeamRunAttachments(permanentTeamRunId).map((attachment) => attachment.locator)).toEqual([
+      '/Users/normy/project/pending-team.md',
+    ]);
+  });
+
+  it('keeps pending team run attachments visible across focus changes and flushes them to the focused leaf before send', async () => {
+    const teamContext = seedActiveTeamRun();
+    const mobileWorkStore = useMobileWorkStore();
+    const pendingAttachment = createWorkspaceContextAttachment('/Users/normy/project/team-draft.md');
+    mobileWorkStore.addPendingTeamRunAttachment('team-run-1', pendingAttachment);
+
+    const contextRef = ref(mobileWorkStore.currentContext);
+    const tray = mountWithPinia(MobileComposerContextTray, {
+      props: { context: contextRef.value },
+    });
+
+    expect(tray.text()).toContain('team-draft.md');
+    expect(teamContext.leafAgentContextsByRouteKey.get('lead')?.contextFilePaths).toHaveLength(0);
+    expect(teamContext.leafAgentContextsByRouteKey.get('reviewer')?.contextFilePaths).toHaveLength(0);
+
+    await useAgentTeamContextsStore().focusMemberAndEnsureHydrated('team-run-1', 'reviewer');
+    mobileWorkStore.updateFocusedTeamMember('team-run-1', 'reviewer');
+    contextRef.value = mobileWorkStore.currentContext;
+    await tray.setProps({ context: contextRef.value });
+
+    expect(tray.text()).toContain('team-draft.md');
+
+    const bridge = useMobilePendingTeamRunAttachments(contextRef);
+    await bridge.beforeSend();
+
+    expect(teamContext.leafAgentContextsByRouteKey.get('lead')?.contextFilePaths).toHaveLength(0);
+    expect(teamContext.leafAgentContextsByRouteKey.get('reviewer')?.contextFilePaths.map((attachment) => attachment.locator)).toEqual([
+      '/Users/normy/project/team-draft.md',
+    ]);
+    expect(mobileWorkStore.getPendingTeamRunAttachments('team-run-1')).toHaveLength(0);
+    expect(bridge.error.value).toBeNull();
+  });
+
+  it('blocks pending team run attachment flush for non-leaf focus without consuming pending files', async () => {
+    const teamContext = seedActiveTeamRun();
+    const subteamNode: TeamMemberNode = {
+      memberKind: 'agent_team',
+      memberName: 'qa-team',
+      displayName: 'QA Team',
+      memberPath: ['qa-team'],
+      memberRouteKey: 'qa-team',
+      teamDefinitionId: 'qa-team',
+      children: [],
+    };
+    teamContext.memberNodesByRouteKey.set(subteamNode.memberRouteKey, subteamNode);
+    teamContext.memberTree.push(subteamNode);
+    teamContext.focusedMemberRouteKey = subteamNode.memberRouteKey;
+
+    const mobileWorkStore = useMobileWorkStore();
+    mobileWorkStore.updateFocusedTeamMember('team-run-1', subteamNode.memberRouteKey);
+    mobileWorkStore.addPendingTeamRunAttachment(
+      'team-run-1',
+      createWorkspaceContextAttachment('/Users/normy/project/team-draft.md'),
+    );
+
+    const bridge = useMobilePendingTeamRunAttachments(ref(mobileWorkStore.currentContext));
+    await expect(bridge.beforeSend()).rejects.toThrow('Choose a team member before sending with pending context files.');
+
+    expect(mobileWorkStore.getPendingTeamRunAttachments('team-run-1').map((attachment) => attachment.locator)).toEqual([
+      '/Users/normy/project/team-draft.md',
+    ]);
+    expect(teamContext.leafAgentContextsByRouteKey.get('lead')?.contextFilePaths).toHaveLength(0);
+    expect(bridge.error.value).toBe('Choose a team member before sending with pending context files.');
+  });
+
   it('uses draft attachment count for run setup and launches with the next-run draft', async () => {
     seedActiveAgentRun().contextFilePaths.push(createWorkspaceContextAttachment('/Users/normy/project/active.md'));
     useMobileWorkStore().addDraftContextAttachment(createWorkspaceContextAttachment('/Users/normy/project/draft.md'));
@@ -299,15 +426,14 @@ describe('mobile context selection stale-run regression', () => {
     await wrapper.get('[data-testid="mobile-run-agent-select-option"]').trigger('click');
     await nextTick();
 
-    await wrapper.get('[data-testid="mobile-run-prompt"]').setValue('Use the attached draft context');
+    expect(wrapper.find('[data-testid="mobile-run-prompt"]').exists()).toBe(false);
     await wrapper.get('form').trigger('submit');
     await nextTick();
 
-    expect(launchMobileRunMock).toHaveBeenCalledWith({
+    expect(createMobileRunFromConfigMock).toHaveBeenCalledWith({
       kind: 'agent',
       agentDefinitionId: 'agent-1',
       workspaceId: 'workspace-1',
-      prompt: 'Use the attached draft context',
     });
   });
 

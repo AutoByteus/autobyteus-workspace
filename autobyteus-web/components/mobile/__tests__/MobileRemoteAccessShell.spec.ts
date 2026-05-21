@@ -303,9 +303,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
       'MobileFileViewer.vue',
       'MobileComposerContextTray.vue',
       'MobileLaunchTargetPicker.vue',
-      'MobileLaunchSummary.vue',
       'MobileLaunchRuntimeModelCard.vue',
-      'MobileTeamLaunchFocusPicker.vue',
       'MobileTeamMemberFocusBar.vue',
       'MobileActivityDigest.vue',
       'MobileTeamMessages.vue',
@@ -336,7 +334,10 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(runSetupSource).toContain('mobile-run-workspace-select');
     expect(runSetupSource).toContain('mobile-run-launch');
     expect(runSetupSource).toContain('MobileLaunchRuntimeModelCard');
-    expect(runSetupSource).toContain('MobileTeamLaunchFocusPicker');
+    expect(runSetupSource).toContain('mobile-run-setup-readiness');
+    expect(runSetupSource).not.toContain('mobile-run-prompt');
+    expect(runSetupSource).not.toContain('MobileLaunchSummary');
+    expect(runSetupSource).not.toContain('MobileTeamLaunchFocusPicker');
     expect(filesSource).toContain('MobileFileViewer');
     expect(fileViewerSource).toContain('authorized workspace file API');
     expect(fileViewerSource).toContain('mobile-file-attach');

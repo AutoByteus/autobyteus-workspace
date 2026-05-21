@@ -8,6 +8,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
   const currentContext = ref<MobileWorkContext | null>(null);
   const activeTab = ref<MobileTaskTab>('chat');
   const draftContextAttachments = ref<ContextAttachment[]>([]);
+  const pendingTeamRunAttachmentsByTeamRunId = ref<Record<string, ContextAttachment[]>>({});
   const focusedMemberRouteKeyByTeamRunId = ref<Record<string, string>>({});
   const runSetupIntent = ref<MobileRunSetupIntent | null>(null);
   const nextRunSetupRevision = ref(0);
@@ -63,6 +64,75 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     return attachments;
   }
 
+  function getPendingTeamRunAttachments(teamRunId: string): ContextAttachment[] {
+    return [...(pendingTeamRunAttachmentsByTeamRunId.value[teamRunId.trim()] || [])];
+  }
+
+  function hasPendingTeamRunAttachments(teamRunId: string): boolean {
+    return getPendingTeamRunAttachments(teamRunId).length > 0;
+  }
+
+  function setPendingTeamRunAttachments(teamRunId: string, attachments: ContextAttachment[]): void {
+    const normalizedTeamRunId = teamRunId.trim();
+    if (!normalizedTeamRunId) {
+      return;
+    }
+    const uniqueAttachments = attachments.filter((attachment, index, entries) => (
+      attachment.locator.trim() &&
+      entries.findIndex((entry) => entry.locator === attachment.locator) === index
+    ));
+    pendingTeamRunAttachmentsByTeamRunId.value = {
+      ...pendingTeamRunAttachmentsByTeamRunId.value,
+      [normalizedTeamRunId]: uniqueAttachments,
+    };
+  }
+
+  function addPendingTeamRunAttachment(teamRunId: string, attachment: ContextAttachment): boolean {
+    const normalizedTeamRunId = teamRunId.trim();
+    const locator = attachment.locator.trim();
+    if (!normalizedTeamRunId || !locator) {
+      return false;
+    }
+    const existing = pendingTeamRunAttachmentsByTeamRunId.value[normalizedTeamRunId] || [];
+    if (existing.some((entry) => entry.locator === locator)) {
+      return false;
+    }
+    setPendingTeamRunAttachments(normalizedTeamRunId, [...existing, attachment]);
+    return true;
+  }
+
+  function moveDraftAttachmentsToPendingTeamRun(teamRunId: string): ContextAttachment[] {
+    const attachments = consumeDraftContextAttachments();
+    attachments.forEach((attachment) => addPendingTeamRunAttachment(teamRunId, attachment));
+    return getPendingTeamRunAttachments(teamRunId);
+  }
+
+  function removePendingTeamRunAttachment(teamRunId: string, attachmentId: string): void {
+    const normalizedTeamRunId = teamRunId.trim();
+    if (!normalizedTeamRunId) {
+      return;
+    }
+    setPendingTeamRunAttachments(
+      normalizedTeamRunId,
+      getPendingTeamRunAttachments(normalizedTeamRunId).filter((entry) => entry.id !== attachmentId),
+    );
+  }
+
+  function clearPendingTeamRunAttachments(teamRunId: string): void {
+    const normalizedTeamRunId = teamRunId.trim();
+    if (!normalizedTeamRunId) {
+      return;
+    }
+    const { [normalizedTeamRunId]: _removed, ...remaining } = pendingTeamRunAttachmentsByTeamRunId.value;
+    pendingTeamRunAttachmentsByTeamRunId.value = remaining;
+  }
+
+  function consumePendingTeamRunAttachments(teamRunId: string): ContextAttachment[] {
+    const attachments = getPendingTeamRunAttachments(teamRunId);
+    clearPendingTeamRunAttachments(teamRunId);
+    return attachments;
+  }
+
   function rememberFocusedTeamMember(teamRunId: string, memberRouteKey: string): boolean {
     const normalizedTeamRunId = teamRunId.trim();
     const normalizedMemberRouteKey = memberRouteKey.trim();
@@ -106,12 +176,14 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     activeTab.value = 'chat';
     runSetupIntent.value = null;
     clearDraftContextAttachments();
+    pendingTeamRunAttachmentsByTeamRunId.value = {};
   }
 
   return {
     currentContext,
     activeTab,
     draftContextAttachments,
+    pendingTeamRunAttachmentsByTeamRunId,
     focusedMemberRouteKeyByTeamRunId,
     runSetupIntent,
     draftContextAttachmentCount,
@@ -123,6 +195,13 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     removeDraftContextAttachment,
     clearDraftContextAttachments,
     consumeDraftContextAttachments,
+    getPendingTeamRunAttachments,
+    hasPendingTeamRunAttachments,
+    addPendingTeamRunAttachment,
+    moveDraftAttachmentsToPendingTeamRun,
+    removePendingTeamRunAttachment,
+    clearPendingTeamRunAttachments,
+    consumePendingTeamRunAttachments,
     rememberFocusedTeamMember,
     getRememberedFocusedTeamMember,
     updateFocusedTeamMember,

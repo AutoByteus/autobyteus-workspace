@@ -94,6 +94,7 @@ import MobileTroubleshooting from '~/components/mobile/MobileTroubleshooting.vue
 import MobileUnpairConfirm from '~/components/mobile/MobileUnpairConfirm.vue';
 import MobileUnsupportedFeatureNotice from '~/components/mobile/MobileUnsupportedFeatureNotice.vue';
 import MobileWorkShell from '~/components/mobile/MobileWorkShell.vue';
+import { useMobilePromotedRunContextSync } from '~/composables/mobile/useMobilePromotedRunContextSync';
 import { useMobileWorkCatalog } from '~/composables/mobile/useMobileWorkCatalog';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
@@ -110,6 +111,7 @@ defineOptions({ name: 'MobileRemoteAccessShell' });
 
 const sessionStore = useMobileNodeSessionStore();
 const mobileWorkStore = useMobileWorkStore();
+useMobilePromotedRunContextSync();
 const runHistoryStore = useRunHistoryStore();
 const agentContextsStore = useAgentContextsStore();
 const teamContextsStore = useAgentTeamContextsStore();

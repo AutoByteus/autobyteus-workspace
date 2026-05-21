@@ -1,0 +1,51 @@
+# Live Mobile Configure-Then-Chat Validation Observations — Round 1
+
+- Browser target: `http://127.0.0.1:3000/mobile` served by local Nuxt dev server against Electron-started backend `http://127.0.0.1:29695`.
+- Backend status before validation: `/rest/remote-access/status` returned `phoneAccessEnabled: true`, `pairingAvailable: true`, `serverName: AutoByteus Desktop`.
+- Fresh validation pairing:
+  - Created remote-access pairing session via `POST /rest/remote-access/pairing-sessions`.
+  - Paired mobile browser session and reached Home as `AutoByteus Desktop / Connected`.
+  - Temporary paired device: `device_878880a915ac9883aa1cb1ac8a94bfb0`.
+- Agent create-only flow with draft file:
+  - Selected `Codex`, workspace `autobyteus-workspace-superrepo`, runtime `Codex App Server` (`codex_app_server`), model `gpt-5.5`.
+  - Injected mobile draft attachment `README.md` (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md`) into mobile draft state.
+  - Setup surface showed no `mobile-run-prompt`, no launch summary, and no team first-message target.
+  - Readiness copy was `Ready to create the run. Chat opens next.` and `Create run` was enabled without a first message.
+  - After `Create run`, Chat opened for temp agent run `temp-1779361920690-1`.
+  - No `prepareAgentRun`, `createAgentTeamRun`, or WebSocket send was observed during creation.
+  - Draft attachment transferred to the created agent context and appeared in the Chat composer context tray as `README.md`.
+- Team create-only flow with draft file:
+  - Selected `Software Engineering Team`, workspace `autobyteus-workspace-superrepo`, runtime `Codex App Server` (`codex_app_server`), model `gpt-5.5`.
+  - Injected mobile draft attachment `AGENTS.md` (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/AGENTS.md`) into mobile draft state.
+  - Setup surface showed no setup first-message prompt, no setup first-message-target picker, and no launch summary.
+  - Readiness copy was `Ready to create the run. Chat opens next.` with `Context for Chat / 1 file / AGENTS.md`.
+  - After `Create run`, Chat opened for temp team run `temp-team-1779362001211-139` focused on `solution_designer`.
+  - No `prepareAgentRun`, `createAgentTeamRun`, or WebSocket send was observed during creation.
+  - Draft attachment moved out of mobile draft state into pending team-run state keyed by `temp-team-1779362001211-139` and appeared in the Chat composer context tray as `AGENTS.md`.
+  - Changed focus in Chat to `api_e2e_engineer`; pending `AGENTS.md` remained visible and pending.
+- Team first send with pending attachment:
+  - Prompt: `Round 1 mobile configure-then-chat team send validation with pending AGENTS.md attachment to api_e2e_engineer. Reply exactly: config chat team OK.`
+  - Pending attachment flushed before send and cleared from pending state.
+  - WebSocket send targeted permanent team run `team_software-engineering-team_815176ad`, `target_member_route_key: api_e2e_engineer`, and `context_file_paths: ["/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/AGENTS.md"]`.
+  - Local focused member user message contained the prompt and `AGENTS.md` context attachment.
+  - Backend `getTeamMemberRunProjection(teamRunId: team_software-engineering-team_815176ad, memberRouteKey: api_e2e_engineer)` returned the user prompt and assistant reply `config chat team OK`.
+  - Blocking UI failure: after temp-to-permanent promotion, `agentSelection.selectedRunId` was `team_software-engineering-team_815176ad`, but `mobileWorkStore.currentContext.teamRunId` remained `temp-team-1779362001211-139`.
+  - The mobile Chat surface stayed selected but rendered `Opening conversation / The run is selected. Messages will appear here when hydration finishes.` for more than 10 seconds, with no composer, because `MobileChat` compared the stale temp `currentContext.teamRunId` against the promoted selected run id.
+- Agent first send with draft attachment:
+  - Prompt: `Round 1 mobile configure-then-chat agent send validation with README.md attachment. Reply exactly: config chat agent OK.`
+  - WebSocket send targeted permanent agent run `fbc9c22a-7d85-4985-a6db-182a2a9d0882` and `context_file_paths: ["/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md"]`.
+  - Local user message contained the prompt and `README.md` attachment.
+  - Backend `getRunProjection(runId: fbc9c22a-7d85-4985-a6db-182a2a9d0882)` returned the user prompt and assistant reply `config chat agent OK`; resume config recorded `agentDefinitionId: codex`, `runtimeKind: codex_app_server`, `llmModelIdentifier: gpt-5.5`.
+  - Blocking UI failure mirrored the team case: after temp-to-permanent promotion, `agentSelection.selectedRunId` was `fbc9c22a-7d85-4985-a6db-182a2a9d0882`, but `mobileWorkStore.currentContext.runId` remained `temp-1779361920690-1`.
+  - The mobile Chat surface rendered `Opening conversation / The run is selected. Messages will appear here when hydration finishes.` and the composer disappeared.
+- Invalid/non-leaf focus note:
+  - The normal mobile focus picker exposes only focusable leaf members, so invalid/non-leaf focus could not be selected through the live UI.
+  - A direct stale-focus probe made the composer disappear before send, so the invalid-focus `beforeSend` error path was not fully live-exercised. The focused Vitest suite still covers the blocking seam, and the temp-id promotion failure above is the blocking live issue.
+- Shared seam / regression checks:
+  - `pnpm -C autobyteus-web exec vitest run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts` passed: 4 files / 43 tests.
+  - Repository-wide `pnpm -C autobyteus-web exec nuxi typecheck` remains red from broad existing issues; filtering `/tmp/mobile-run-config-chat-flow-typecheck.log` for exact changed source files emitted no diagnostics. A broader `components/agentInput` filter surfaced unrelated existing `ContextFilePathInputArea.spec.ts` diagnostics.
+- Cleanup:
+  - Terminated validation agent run `fbc9c22a-7d85-4985-a6db-182a2a9d0882` and team run `team_software-engineering-team_815176ad`.
+  - Revoked temporary paired device `device_878880a915ac9883aa1cb1ac8a94bfb0`.
+  - Closed the validation browser tab.
+  - Stopped the local Nuxt dev server on port 3000 and verified no remaining listener.
