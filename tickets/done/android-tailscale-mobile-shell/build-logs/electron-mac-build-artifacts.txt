@@ -1,0 +1,17 @@
+# Electron macOS build artifacts
+UTC captured: 2026-05-21T17:08:04Z
+HEAD: dc992e286a429e110907533940fc54357369bdfc
+origin/personal: 4bd5c537e5bc840bace2828bb15710a86def6d2e
+merge-base HEAD origin/personal: 4bd5c537e5bc840bace2828bb15710a86def6d2e
+Latest origin/personal integrated: yes
+Build log: docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-latest-personal-20260521T170335Z.log
+
+## App bundles
+1.2G	autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+
+## Release files
+-rw-r--r--@ 1 normy  staff   362M May 21 19:06 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.dmg
+-rw-r--r--@ 1 normy  staff   386K May 21 19:06 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   360M May 21 19:07 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.zip
+-rw-r--r--@ 1 normy  staff   378K May 21 19:07 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.zip.blockmap
+-rw-r--r--@ 1 normy  staff   561B May 21 19:07 autobyteus-web/electron-dist/latest-mac.yml

@@ -139,3 +139,91 @@ Build log: /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mo
 Artifact summary: /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.txt
 SHA-256 checksums: /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.sha256
 Packaging note: local unsigned / not-notarized macOS testing build; code signing skipped because signing identity is explicitly null and no Apple team ID was supplied.
+
+# Delivery latest-origin/personal reintegration after user reminder
+UTC 2026-05-21T17:03:14Z
+
+## Git integration state
+HEAD: dc992e286a429e110907533940fc54357369bdfc
+origin/personal: 4bd5c537e5bc840bace2828bb15710a86def6d2e
+merge-base HEAD origin/personal: 4bd5c537e5bc840bace2828bb15710a86def6d2e
+ahead/behind HEAD...origin/personal: 3	0
+Latest origin/personal is integrated into ticket branch: YES
+
+## git diff --check after latest-base merge
+git diff --check after latest-base merge: PASS
+
+## Android instrumentation compile after latest-base merge
+Command: ANDROID_HOME=/Users/normy/Library/Android/sdk gradle -p autobyteus-android :app:compileDebugAndroidTestKotlin
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:bundleDebugClassesToCompileJar UP-TO-DATE
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :app:checkDebugAndroidTestAarMetadata UP-TO-DATE
+> Task :app:processDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :app:compileDebugAndroidTestNavigationResources UP-TO-DATE
+> Task :app:generateDebugAndroidTestResValues UP-TO-DATE
+> Task :app:mapDebugAndroidTestSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugAndroidTestResources UP-TO-DATE
+> Task :app:mergeDebugAndroidTestResources UP-TO-DATE
+> Task :app:processDebugAndroidTestManifest UP-TO-DATE
+> Task :app:processDebugAndroidTestResources UP-TO-DATE
+> Task :app:compileDebugAndroidTestKotlin UP-TO-DATE
+
+[Incubating] Problems report is available at: file:///Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.3.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 660ms
+28 actionable tasks: 28 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.3.1/userguide/configuration_cache_enabling.html
+Android instrumentation compile after latest-base merge: PASS
+
+# User-requested Electron macOS packaged build after latest origin/personal merge
+UTC 2026-05-21T17:08:07Z
+HEAD: dc992e286a429e110907533940fc54357369bdfc
+origin/personal: 4bd5c537e5bc840bace2828bb15710a86def6d2e
+merge-base HEAD origin/personal: 4bd5c537e5bc840bace2828bb15710a86def6d2e
+Latest origin/personal integrated: YES
+Command: cd autobyteus-web && NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+Result: PASS
+App bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.dmg
+ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.zip
+Build log: /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-latest-personal-20260521T170335Z.log
+Artifact summary: /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.txt
+SHA-256 checksums: /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.sha256
+Packaging note: local unsigned / not-notarized macOS testing build; code signing skipped because signing identity is explicitly null and no Apple team ID was supplied.
+
+# Final origin/personal freshness check after Electron rebuild
+UTC 2026-05-21T17:10:36Z
+Command: git fetch origin personal --prune --no-tags
+origin/personal before final fetch: 4bd5c537e5bc840bace2828bb15710a86def6d2e
+origin/personal after final fetch: 4bd5c537e5bc840bace2828bb15710a86def6d2e
+HEAD: dc992e286a429e110907533940fc54357369bdfc
+merge-base HEAD origin/personal: 4bd5c537e5bc840bace2828bb15710a86def6d2e
+ahead/behind HEAD...origin/personal: 3 0
+Result: latest origin/personal is still integrated after rebuild.
