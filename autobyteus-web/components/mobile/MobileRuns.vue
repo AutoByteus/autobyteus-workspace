@@ -22,8 +22,10 @@
       <MobileRunSetup
         v-if="showRunSetup"
         :context="context"
+        :setup-intent="runSetupIntent"
         @cancel="showRunSetup = false"
         @launched="onLaunched"
+        @setup-intent-consumed="mobileWorkStore.consumeRunSetupIntent"
       />
 
       <div v-else-if="recentItems.length" class="space-y-2" data-testid="mobile-runs-list">
@@ -53,10 +55,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import MobileReadableWorkRow from '~/components/mobile/MobileReadableWorkRow.vue';
 import MobileRunSetup from '~/components/mobile/MobileRunSetup.vue';
 import { useMobileWorkCatalog } from '~/composables/mobile/useMobileWorkCatalog';
+import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
 
 const props = defineProps<{
@@ -69,11 +72,19 @@ const emit = defineEmits<{
 }>();
 
 const { recentWorkItems } = useMobileWorkCatalog();
+const mobileWorkStore = useMobileWorkStore();
 const showRunSetup = ref(false);
+const runSetupIntent = computed(() => mobileWorkStore.runSetupIntent);
 const recentItems = computed(() => recentWorkItems.value.filter((item) => item.context.kind === 'agent-run' || item.context.kind === 'team-run'));
 
 function onLaunched(context: MobileWorkContext): void {
   showRunSetup.value = false;
   emit('selectContext', context);
 }
+
+watch(() => runSetupIntent.value?.revision, (revision) => {
+  if (revision) {
+    showRunSetup.value = true;
+  }
+}, { immediate: true });
 </script>

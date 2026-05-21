@@ -169,7 +169,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(wrapper.text()).toContain('phone-first mobile work shell');
   });
 
-  it('continues the latest run into one mobile work shell with Chat/Runs/Files/Activity bottom navigation', async () => {
+  it('continues the latest run into one mobile work shell with Chat/Runs/Files/Tools/Activity bottom navigation', async () => {
     const wrapper = mountShell();
     await nextTick();
     await wrapper.get('[data-testid="mobile-home-primary-action"]').trigger('click');
@@ -181,8 +181,8 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(wrapper.text()).toContain('Chat');
     expect(wrapper.text()).toContain('Runs');
     expect(wrapper.text()).toContain('Files');
+    expect(wrapper.text()).toContain('Tools');
     expect(wrapper.text()).toContain('Activity');
-    expect(wrapper.text()).not.toContain('Tools');
     expect(wrapper.text()).not.toContain('Running List');
 
     const runHistoryStore = useRunHistoryStore();
@@ -223,6 +223,69 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(wrapper.text()).not.toContain('AppLeftPanel');
   });
 
+  it('defaults no-recent mobile work picking to startable agents and teams', async () => {
+    const noRecentState: typeof initialState = {
+      ...initialState,
+      runHistory: {
+        ...initialState.runHistory,
+        workspaceGroups: [],
+      },
+    };
+
+    const wrapper = mountShell({ state: noRecentState });
+    await nextTick();
+    const switchWorkButton = wrapper.findAll('button').find((button) => button.text().includes('Switch work'));
+    expect(switchWorkButton).toBeTruthy();
+    await switchWorkButton!.trigger('click');
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-context-switcher"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-context-list"]').text()).toContain('Builder Agent');
+    expect(wrapper.text()).not.toContain('No matching agents');
+
+    await wrapper.get('[data-testid="mobile-context-segment-teams"]').trigger('click');
+    await nextTick();
+    expect(wrapper.find('[data-testid="mobile-context-list"]').text()).toContain('Software Team');
+    expect(wrapper.text()).not.toContain('No matching teams');
+  });
+
+  it('shows a retriable catalog error instead of a false empty agent segment', async () => {
+    const emptyAgentState: typeof initialState = {
+      ...initialState,
+      runHistory: {
+        ...initialState.runHistory,
+        workspaceGroups: [],
+      },
+      agentDefinition: {
+        ...initialState.agentDefinition,
+        agentDefinitions: [],
+        error: null,
+      },
+    } as typeof initialState;
+
+    const wrapper = mountShell({ state: emptyAgentState });
+    await flushPromises();
+
+    const agentDefinitionStore = useAgentDefinitionStore();
+    vi.mocked(agentDefinitionStore.fetchAllAgentDefinitions).mockImplementation(async () => {
+      agentDefinitionStore.$patch({ error: new Error('agent catalog down'), agentDefinitions: [] });
+    });
+
+    await wrapper.get('[data-testid="mobile-home-refresh"]').trigger('click');
+    await flushPromises();
+
+    const switchWorkButton = wrapper.findAll('button').find((button) => button.text().includes('Switch work'));
+    expect(switchWorkButton).toBeTruthy();
+    await switchWorkButton!.trigger('click');
+    await nextTick();
+    await wrapper.get('[data-testid="mobile-context-segment-agents"]').trigger('click');
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-context-error"]').text()).toContain('agent catalog down');
+    expect(wrapper.find('[data-testid="mobile-context-retry"]').exists()).toBe(true);
+    expect(wrapper.text()).not.toContain('No matching agents');
+  });
+
   it('keeps mobile components free from desktop shell imports and stale workspace routing', () => {
     const mobileDir = resolve(process.cwd(), 'components/mobile');
     const sourceFiles = [
@@ -233,6 +296,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
       'MobileChat.vue',
       'MobileRuns.vue',
       'MobileFiles.vue',
+      'MobileTools.vue',
       'MobileActivity.vue',
       'MobileReadableWorkRow.vue',
       'MobileRunSetup.vue',
@@ -264,6 +328,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     const activitySource = readFileSync(resolve(mobileDir, 'MobileActivity.vue'), 'utf-8');
     const activityDigestSource = readFileSync(resolve(mobileDir, 'MobileActivityDigest.vue'), 'utf-8');
     const chatSource = readFileSync(resolve(mobileDir, 'MobileChat.vue'), 'utf-8');
+    const toolsSource = readFileSync(resolve(mobileDir, 'MobileTools.vue'), 'utf-8');
 
     expect(runsSource).toContain('MobileRunSetup');
     expect(runSetupSource).toContain('mobile-run-agent-select');
@@ -279,6 +344,9 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(activitySource).toContain('MobileActivityDigest');
     expect(activityDigestSource).toContain('MobileTeamMessages');
     expect(activityDigestSource).toContain('MobileToolActivityList');
+    expect(toolsSource).toContain('Terminal');
+    expect(toolsSource).toContain('VncViewer');
+    expect(toolsSource).not.toContain('RightSideTabs');
     expect(`${runsSource}\n${filesSource}\n${activitySource}`).not.toContain('Full content loads through authorized file APIs when this file is opened from the mobile MVP.');
     expect(`${runsSource}\n${filesSource}\n${activitySource}`).not.toContain('Configuration is shown only after this explicit start action.');
   });
