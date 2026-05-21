@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import type { ContextAttachment } from '~/types/conversation';
-import type { MobileTaskTab, MobileWorkContext } from '~/types/mobileWork';
+import type { MobileRunSetupIntent, MobileRunSetupIntentRequest, MobileTaskTab, MobileWorkContext } from '~/types/mobileWork';
 import { preferredTabForMobileContext } from '~/types/mobileWork';
 
 export const useMobileWorkStore = defineStore('mobileWork', () => {
@@ -9,16 +9,36 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
   const activeTab = ref<MobileTaskTab>('chat');
   const draftContextAttachments = ref<ContextAttachment[]>([]);
   const focusedMemberRouteKeyByTeamRunId = ref<Record<string, string>>({});
+  const runSetupIntent = ref<MobileRunSetupIntent | null>(null);
+  const nextRunSetupRevision = ref(0);
 
   const draftContextAttachmentCount = computed(() => draftContextAttachments.value.length);
 
   function selectContext(context: MobileWorkContext, tab?: MobileTaskTab): void {
     currentContext.value = context;
     activeTab.value = tab ?? preferredTabForMobileContext(context);
+    runSetupIntent.value = null;
   }
 
   function setActiveTab(tab: MobileTaskTab): void {
     activeTab.value = tab;
+  }
+
+  function requestRunSetup(intent: MobileRunSetupIntentRequest): MobileRunSetupIntent {
+    nextRunSetupRevision.value += 1;
+    const nextIntent = {
+      ...intent,
+      revision: nextRunSetupRevision.value,
+    } as MobileRunSetupIntent;
+    runSetupIntent.value = nextIntent;
+    activeTab.value = 'runs';
+    return nextIntent;
+  }
+
+  function consumeRunSetupIntent(revision: number): void {
+    if (runSetupIntent.value?.revision === revision) {
+      runSetupIntent.value = null;
+    }
   }
 
   function addDraftContextAttachment(attachment: ContextAttachment): void {
@@ -84,6 +104,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
   function clearContext(): void {
     currentContext.value = null;
     activeTab.value = 'chat';
+    runSetupIntent.value = null;
     clearDraftContextAttachments();
   }
 
@@ -92,9 +113,12 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     activeTab,
     draftContextAttachments,
     focusedMemberRouteKeyByTeamRunId,
+    runSetupIntent,
     draftContextAttachmentCount,
     selectContext,
     setActiveTab,
+    requestRunSetup,
+    consumeRunSetupIntent,
     addDraftContextAttachment,
     removeDraftContextAttachment,
     clearDraftContextAttachments,

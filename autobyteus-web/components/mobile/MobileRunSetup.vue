@@ -135,7 +135,7 @@ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
-import type { MobileWorkContext, MobileWorkListItem } from '~/types/mobileWork';
+import type { MobileRunSetupIntent, MobileWorkContext, MobileWorkListItem } from '~/types/mobileWork';
 import {
   buildTeamMemberTreeFromDefinition,
   flattenLeafAgentMemberNodes,
@@ -150,11 +150,13 @@ type MobileLaunchPickerItem = {
 
 const props = defineProps<{
   context: MobileWorkContext | null;
+  setupIntent?: MobileRunSetupIntent | null;
 }>();
 
 const emit = defineEmits<{
   cancel: [];
   launched: [context: MobileWorkContext];
+  setupIntentConsumed: [revision: number];
 }>();
 
 const agentDefinitionStore = useAgentDefinitionStore();
@@ -337,6 +339,25 @@ function applyContextDefaults(): void {
   }
 }
 
+function applySetupIntentDefaults(intent: MobileRunSetupIntent | null | undefined): void {
+  if (!intent) {
+    return;
+  }
+  if (intent.kind === 'agent') {
+    mode.value = 'agent';
+    selectedAgentId.value = intent.agentDefinitionId;
+    selectedTeamId.value = '';
+    selectedTeamFocusRouteKey.value = '';
+  } else {
+    mode.value = 'team';
+    selectedTeamId.value = intent.teamDefinitionId;
+    selectedAgentId.value = '';
+  }
+  if (intent.workspaceId) {
+    selectedWorkspaceId.value = intent.workspaceId;
+  }
+}
+
 function clearInvalidSelections(): void {
   if (selectedAgentId.value && !agentChoices.value.some((item) => item.id === selectedAgentId.value)) selectedAgentId.value = '';
   if (selectedTeamId.value && !teamChoices.value.some((item) => item.id === selectedTeamId.value)) selectedTeamId.value = '';
@@ -419,11 +440,20 @@ watch(() => props.context, () => {
   selectedWorkspaceId.value = '';
   selectedTeamFocusRouteKey.value = '';
   applyContextDefaults();
+  applySetupIntentDefaults(props.setupIntent);
 }, { immediate: true });
 watch([agentItems, teamItems, workspaceItems], () => {
   clearInvalidSelections();
   applyContextDefaults();
+  applySetupIntentDefaults(props.setupIntent);
 });
+watch(() => props.setupIntent?.revision, (revision) => {
+  if (!revision) {
+    return;
+  }
+  applySetupIntentDefaults(props.setupIntent);
+  emit('setupIntentConsumed', revision);
+}, { immediate: true });
 watch([mode, selectedAgentId, selectedTeamId, selectedWorkspaceId, agentChoices, teamChoices], syncSelectedConfig, { immediate: true });
 watch(teamFocusRows, (rows) => {
   if (mode.value !== 'team') {

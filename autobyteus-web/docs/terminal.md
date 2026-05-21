@@ -21,6 +21,8 @@ autobyteus-web/
 ├── components/layout/
 │   ├── RightSideTabs.vue         # Tab container with Terminal tab
 │   └── RightSidebarStrip.vue     # Collapsed sidebar with Terminal icon
+├── components/mobile/
+│   └── MobileTools.vue           # Phone-sized Terminal/VNC shell
 ├── composables/
 │   ├── useRightSideTabs.ts       # Tab state management
 │   └── useTerminalSession.ts     # Terminal WebSocket session
@@ -32,6 +34,7 @@ autobyteus-web/
 flowchart TD
     subgraph "UI Layer"
         RightSideTabs[RightSideTabs.vue]
+        MobileTools[MobileTools.vue]
         Terminal[Terminal.vue]
         XTerm[xterm.js Library]
     end
@@ -41,6 +44,7 @@ flowchart TD
     end
 
     RightSideTabs --> Terminal
+    MobileTools --> Terminal
     Terminal --> XTerm
     Terminal --> WorkspaceStore
     Terminal --> TerminalSession[useTerminalSession.ts]
@@ -69,6 +73,7 @@ Main terminal component using xterm.js for rich terminal emulation.
 - **Ctrl+C support**: Interrupt current input
 - **Responsive sizing**: Auto-fits container with ResizeObserver
 - **Display preference integration**: Uses the shared app font-size store and refits when terminal font metrics change
+- **Explicit workspace override**: Accepts an optional `workspaceId` prop so mobile wrappers can connect to the workspace represented by the current mobile work context without mutating the desktop active-workspace store
 
 **Terminal Configuration (Light Theme):**
 
@@ -145,6 +150,15 @@ Tab container that hosts the Terminal alongside other workspace tools.
 | `todoList`    | To-Do      | Agent mode | TodoListPanel      |
 | `terminal`    | Terminal   | Always     | Terminal           |
 | `vnc`         | VNC Viewer | Always     | VncViewer          |
+
+### MobileTools.vue
+
+Phone-sized tool shell used by the `/mobile` Phone Access experience. It reuses the same `Terminal.vue` and `VncViewer.vue` tool owners instead of importing the desktop right-panel layout.
+
+- Terminal is shown only when the current mobile work context resolves to a workspace-backed context.
+- The wrapper passes `workspaceId` into `Terminal.vue`, so the WebSocket session connects to the selected mobile workspace even when the desktop active-workspace store is not the source of truth.
+- If no workspace is selected, the mobile tool surface shows a clear workspace-required state and routes the user back to work selection.
+- VNC uses the configured server host list and requires phone-reachable hostnames or private-network IPs.
 
 ## WebSocket Protocol (Summary)
 

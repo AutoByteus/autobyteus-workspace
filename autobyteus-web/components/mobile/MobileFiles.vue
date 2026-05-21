@@ -4,19 +4,29 @@
       <p class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Files</p>
       <h2 class="text-xl font-bold text-slate-950">{{ workspaceTitle }}</h2>
       <p class="mt-1 truncate text-sm text-slate-500">{{ workspaceSubtitle }}</p>
-      <input
-        v-model="search"
-        class="mt-3 w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
-        :placeholder="searchPlaceholder"
-        data-testid="mobile-files-search"
-      />
-      <div class="mt-3 flex gap-2 overflow-x-auto pb-1" data-testid="mobile-files-discovery-controls">
+      <div class="mt-3 flex items-center gap-2" data-testid="mobile-files-primary-controls">
+        <input
+          v-model="search"
+          class="min-w-0 flex-1 rounded-2xl border border-slate-300 px-4 py-3 text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          :placeholder="searchPlaceholder"
+          data-testid="mobile-files-search"
+        />
+        <button
+          type="button"
+          class="shrink-0 rounded-2xl border border-slate-300 px-3 py-3 text-sm font-bold text-slate-700"
+          data-testid="mobile-files-filters-toggle"
+          @click="showFilters = !showFilters"
+        >
+          Filters
+        </button>
+      </div>
+      <div v-if="showFilters" class="mt-3 grid grid-cols-2 gap-2 rounded-2xl bg-slate-50 p-3" data-testid="mobile-files-advanced-filters">
         <button
           v-for="filter in discoveryFilters"
           :key="filter.id"
           type="button"
-          class="shrink-0 rounded-full px-3 py-1.5 text-xs font-bold"
-          :class="activeDiscoveryFilter === filter.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'"
+          class="rounded-full px-3 py-1.5 text-xs font-bold"
+          :class="activeDiscoveryFilter === filter.id ? 'bg-blue-600 text-white' : 'bg-white text-slate-600'"
           :data-testid="`mobile-files-filter-${filter.id}`"
           @click="activeDiscoveryFilter = filter.id"
         >
@@ -24,8 +34,8 @@
         </button>
         <button
           type="button"
-          class="shrink-0 rounded-full px-3 py-1.5 text-xs font-bold"
-          :class="deepSearch ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'"
+          class="col-span-2 rounded-full px-3 py-1.5 text-xs font-bold"
+          :class="deepSearch ? 'bg-blue-600 text-white' : 'bg-white text-slate-600'"
           data-testid="mobile-files-deep-search"
           @click="deepSearch = !deepSearch"
         >
@@ -126,6 +136,7 @@ const folderStack = ref<MobileFileNode[]>([]);
 const previewNode = ref<MobileFileNode | null>(null);
 const lastAttachmentCount = ref(0);
 const deepSearch = ref(false);
+const showFilters = ref(false);
 const activeDiscoveryFilter = ref<'all' | 'recent' | 'attached' | 'markdown-code'>('all');
 
 const workspaceRootFromContext = computed(() => {

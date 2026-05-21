@@ -68,13 +68,11 @@
 
       <MobileContextSwitcher
         v-if="showContextSwitcher"
-        :recent-items="recentWorkItems"
-        :agent-items="agentItems"
-        :team-items="teamItems"
-        :workspace-items="workspaceItems"
+        :segments="catalogSegments"
         :selected-context="mobileWorkStore.currentContext"
         @close="showContextSwitcher = false"
         @select-context="openContext"
+        @retry-segment="retryCatalogSegment"
       />
 
       <MobileUnpairConfirm
@@ -103,7 +101,7 @@ import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { MobileFeatureId } from '~/utils/mobileFeatureGates';
-import type { MobileTaskTab, MobileWorkContext } from '~/types/mobileWork';
+import type { MobileCatalogSegmentId, MobileTaskTab, MobileWorkContext } from '~/types/mobileWork';
 import { preferredTabForMobileContext } from '~/types/mobileWork';
 import { clearMobileRunSelection, selectMobileRun } from '~/utils/mobile/mobileSelectionAdapter';
 
@@ -119,9 +117,8 @@ const route = useRoute();
 const {
   recentWorkItems,
   latestRunItem,
-  agentItems,
-  teamItems,
-  workspaceItems,
+  catalogSegments,
+  refreshMobileCatalogSegment,
   refreshMobileWorkCatalog,
 } = useMobileWorkCatalog();
 
@@ -135,11 +132,11 @@ const pendingPostPairRefresh = ref(false);
 const postPairRefreshPromise = ref<Promise<void> | null>(null);
 
 const unsupportedFeatureMessages: Partial<Record<MobileFeatureId, string>> = {
-  desktopWorkspace: 'The desktop workspace route is replaced by the phone-first mobile work shell. Use Home, Switch work, and Chat/Runs/Files/Activity instead.',
+  desktopWorkspace: 'The desktop workspace route is replaced by the phone-first mobile work shell. Use Home, Switch work, and Chat/Runs/Files/Tools/Activity instead.',
   desktopSettings: 'Desktop settings are managed from the desktop app. Phone Access exposes only mobile-safe connection controls.',
   desktopUpdates: 'Desktop update controls are not available from the phone client.',
   localFolderPicker: 'Local folder picking is not available from the phone client.',
-  applicationIframe: 'Application iframe surfaces are not part of the mobile MVP yet.',
+  applicationIframe: 'Application iframe surfaces are not part of the mobile shell yet.',
 };
 
 const unsupportedMessage = computed(() => {
@@ -185,8 +182,20 @@ async function openContext(context: MobileWorkContext, tab?: MobileTaskTab): Pro
   showContextSwitcher.value = false;
   const targetTab = tab ?? preferredTabForMobileContext(context);
   mobileWorkStore.selectContext(context, targetTab);
+  if (context.kind === 'agent-definition') {
+    mobileWorkStore.requestRunSetup({ kind: 'agent', agentDefinitionId: context.agentDefinitionId });
+  } else if (context.kind === 'team-definition') {
+    mobileWorkStore.requestRunSetup({ kind: 'team', teamDefinitionId: context.teamDefinitionId });
+  }
   screen.value = 'work';
   await openRunContext(context);
+}
+
+async function retryCatalogSegment(segmentId: MobileCatalogSegmentId): Promise<void> {
+  const success = await refreshMobileCatalogSegment(segmentId);
+  if (success) {
+    sessionStore.recordAuthorizedApiReachability(true);
+  }
 }
 
 async function continueLatestRun(): Promise<void> {

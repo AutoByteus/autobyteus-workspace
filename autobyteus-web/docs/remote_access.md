@@ -13,13 +13,15 @@ Phone Access lets a phone browser or PWA connect to the desktop-owned AutoByteus
 
 ## Mobile Shell and Desktop Boundary
 
-Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, and Activity views. Normal desktop routes, including desktop `/workspace` and browser desktop flows, continue to use the regular desktop shell and must not be rewritten to the mobile shell.
+Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, Tools, and Activity views. Normal desktop routes, including desktop `/workspace` and browser desktop flows, continue to use the regular desktop shell and must not be rewritten to the mobile shell.
 
 Stale or unsupported phone links such as `/mobile/workspace` stay inside the mobile experience and show an explicit unsupported-feature notice. Desktop-only workflows remain available from desktop/Electron and should not be forked or degraded by mobile journey refinements.
 
 The mobile shell can start new agent and team runs without falling back to hidden desktop defaults. The **Start new** surface uses the same launch configuration stores and runtime/model semantics as desktop: the user selects the run target, workspace, runtime/model, and first prompt, and launch stays disabled until those required choices are ready. For team launches, mobile also lets the user choose the initial leaf team member that receives the first prompt.
 
 For existing team runs, mobile exposes a **Message target** selector only on the work tabs where that focus affects the current run, such as Chat, Files, and Activity. The selector is intentionally hidden on the Runs tab and while **Start new** is open so it cannot be confused with the launch-time **First message target** selector. The current mobile client remembers the last valid focused member per team run for Recent-work reopen; that memory is client-local and is not a cross-device/backend persistence contract.
+
+The mobile **Tools** view exposes Terminal and VNC through phone-sized wrappers around the existing browser-compatible tool owners. Terminal uses the paired node's authenticated WebSocket endpoint for the selected workspace. VNC uses the configured server host list and noVNC viewer. VNC hosts must be reachable from the phone; desktop-only loopback hostnames should be replaced with LAN, VPN, or overlay addresses that the phone can open.
 
 ## Network Model
 
@@ -72,14 +74,14 @@ The local **Unpair this phone** action deletes only the phone's local session an
 
 ## Mobile Capability Gating
 
-The mobile MVP intentionally gates desktop-only features instead of exposing broken controls. Unsupported feature redirects use `/mobile/?unsupported=<feature>` and render a visible notice in both unpaired and paired states.
+The mobile shell gates truly desktop-only or Electron-only features instead of exposing broken controls. Unsupported feature redirects use `/mobile/?unsupported=<feature>` and render a visible notice in both unpaired and paired states. Terminal and VNC are mobile-supported when their normal workspace/session or host configuration is available.
 
 Examples of mobile-unsupported surfaces include:
 
 - desktop settings management;
 - desktop update controls;
 - local folder pickers that depend on Electron APIs;
-- application iframe surfaces outside the current mobile MVP.
+- application iframe surfaces outside the current mobile shell.
 
 Phone Access code paths must not call `window.electronAPI` or other Electron preload APIs.
 
@@ -106,4 +108,5 @@ The generated mobile output is copied to `autobyteus-web/dist-mobile/public`. Th
 - **Pairing code invalid or expired:** create a new QR. Codes are short-lived and single-use.
 - **Credential rejected after pairing:** check whether Phone Access was disabled or the device was revoked; pair again after re-enabling or revocation.
 - **WebSocket blocked:** confirm the private network/proxy permits WebSocket traffic to the server port.
+- **VNC host unreachable from phone:** configure VNC hosts with LAN, VPN, or overlay hostnames/IPs that the phone can reach; desktop-only loopback names such as `localhost` usually work only on the desktop host.
 - **Desktop-only screen on phone:** use the mobile shell link or supported mobile route; unsupported desktop features should render an explanatory mobile notice rather than a desktop shell.

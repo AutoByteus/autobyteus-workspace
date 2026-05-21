@@ -1,12 +1,35 @@
 <template>
   <div class="min-h-0 flex-1 space-y-3 overflow-y-auto p-5" data-testid="mobile-activity-digest">
-    <div class="flex gap-2 overflow-x-auto pb-1" data-testid="mobile-activity-filters">
+    <div class="grid grid-cols-4 gap-2" data-testid="mobile-activity-filters">
       <button
-        v-for="filter in filters"
+        v-for="filter in primaryFilters"
         :key="filter.id"
         type="button"
-        class="shrink-0 rounded-full px-3 py-1.5 text-xs font-bold"
+        class="rounded-full px-3 py-1.5 text-xs font-bold"
         :class="activeFilter === filter.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'"
+        :data-testid="`mobile-activity-filter-${filter.id}`"
+        @click="activeFilter = filter.id"
+      >
+        {{ filter.label }} · {{ filter.count }}
+      </button>
+    </div>
+    <div class="flex justify-end">
+      <button
+        type="button"
+        class="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-600"
+        data-testid="mobile-activity-more-filters"
+        @click="showAdvancedFilters = !showAdvancedFilters"
+      >
+        {{ showAdvancedFilters ? 'Hide issue filters' : 'Issue filters' }}
+      </button>
+    </div>
+    <div v-if="showAdvancedFilters" class="grid grid-cols-2 gap-2 rounded-2xl bg-slate-50 p-3" data-testid="mobile-activity-advanced-filters">
+      <button
+        v-for="filter in advancedFilters"
+        :key="filter.id"
+        type="button"
+        class="rounded-full px-3 py-1.5 text-xs font-bold"
+        :class="activeFilter === filter.id ? 'bg-blue-600 text-white' : 'bg-white text-slate-600'"
         :data-testid="`mobile-activity-filter-${filter.id}`"
         @click="activeFilter = filter.id"
       >
@@ -62,11 +85,6 @@
       <MobileToolActivityList :context="context" :filter="toolFilter" class="mt-3" />
     </article>
 
-    <MobileUnsupportedFeatureNotice
-      message="Interactive terminal, browser, and desktop tool panes are not supported in the phone shell yet. Their controls are disabled here; use desktop for those panes. Existing run/tool history remains readable above."
-      data-testid="mobile-activity-terminal-notice"
-    />
-
     <article v-if="!context" class="rounded-3xl border border-dashed border-slate-300 p-6 text-center">
       <p class="font-semibold text-slate-900">No work context selected</p>
       <p class="mt-2 text-sm text-slate-500">Choose work to see relevant activity.</p>
@@ -81,7 +99,6 @@
 import { computed, ref } from 'vue';
 import MobileTeamMessages from '~/components/mobile/MobileTeamMessages.vue';
 import MobileToolActivityList from '~/components/mobile/MobileToolActivityList.vue';
-import MobileUnsupportedFeatureNotice from '~/components/mobile/MobileUnsupportedFeatureNotice.vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
@@ -107,6 +124,7 @@ const teamContextsStore = useAgentTeamContextsStore();
 const teamCommunicationStore = useTeamCommunicationStore();
 const activeFilter = ref<ActivityFilter>('all');
 const showTeamMessages = ref(false);
+const showAdvancedFilters = ref(false);
 
 const activeTeamContext = computed(() => {
   if (props.context?.kind !== 'team-run') return null;
@@ -157,6 +175,8 @@ const filters = computed(() => [
   { id: 'errors' as const, label: 'Errors', count: errorActivities.value.length },
   { id: 'approvals' as const, label: 'Approvals', count: approvalActivities.value.length },
 ]);
+const primaryFilters = computed(() => filters.value.filter((filter) => ['all', 'tasks', 'messages', 'tools'].includes(filter.id)));
+const advancedFilters = computed(() => filters.value.filter((filter) => filter.id === 'errors' || filter.id === 'approvals'));
 const showTasks = computed(() => activeFilter.value === 'all' || activeFilter.value === 'tasks');
 const showMessages = computed(() => activeFilter.value === 'all' || activeFilter.value === 'messages');
 const showTools = computed(() => ['all', 'tools', 'errors', 'approvals'].includes(activeFilter.value));
