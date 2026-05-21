@@ -349,6 +349,16 @@ Dry-run preview:
 pnpm -C autobyteus-server-ts run cleanup:codex-e2e-history --memory-dir ./memory --dry-run
 ```
 
+If cleanup reports a legacy or minimal standalone `run_history_index.json`, run
+the explicit V2 migration/repair tool first and then retry cleanup:
+
+```bash
+node autobyteus-server-ts/scripts/migrate-agent-run-history-index-v2.mjs --memory-dir ./memory --apply
+```
+
+See `autobyteus-server-ts/scripts/run-history-index-migration.md` for dry-run,
+backup, and `createdAt` fallback details.
+
 Run full backend suite with Codex live transport enabled:
 
 ```bash

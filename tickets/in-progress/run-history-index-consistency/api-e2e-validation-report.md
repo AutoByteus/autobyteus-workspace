@@ -246,7 +246,7 @@ Updated durable validation after code review:
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| N/A | N/A | N/A | N/A | N/A | First validation round. |
+| Code review round 4 | CR-DV-001: stale standalone `lastKnownStatus` fixture fields in `tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts` | Validation-code Local Fix | Resolved | Removed all three standalone metadata `lastKnownStatus` fields; added `satisfies AgentRunMetadata`; `grep -n "lastKnownStatus" ...` returned no matches; relevant E2E sweep passed; `git diff --check HEAD` passed. | Returned to `code_reviewer` for durable-validation re-review. |
 
 ## Scenarios Checked
 
@@ -331,3 +331,73 @@ Key evidence:
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
 - Notes: Implementation behavior validated for the targeted API/E2E/executable surfaces. Because durable validation files were updated in this round, handoff goes to `code_reviewer`, not `delivery_engineer`.
+
+## Follow-Up: Relevant Existing Backend E2E Sweep
+
+After the initial handoff, the relevant existing backend E2E set was run explicitly:
+
+```bash
+./node_modules/.bin/vitest run \
+  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts \
+  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts \
+  tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts \
+  tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts \
+  tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts \
+  --reporter=verbose
+```
+
+Final result: `3 passed | 2 skipped` test files; `10 passed | 19 skipped` tests.
+
+Notes:
+
+- Passed executable E2E files:
+  - `tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts`
+  - `tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`
+  - `tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
+- Skipped E2E files were live-runtime suites gated by local runtime flags / binaries:
+  - `tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
+  - `tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts`
+- First attempt exposed two stale `run-projection-toolcalls-graphql.e2e.test.ts` team-member fixture failures caused by old `memberMetadata` fixture shape. The fixture was updated to current `memberTree` schema and the relevant E2E sweep passed afterward.
+- Additional durable validation path updated after this follow-up:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
+
+## Follow-Up: CR-DV-001 Durable Validation Local Fix
+
+Code review round 4 identified stale standalone persisted status fixture fields in:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
+
+Fix applied:
+
+- Removed the three obsolete standalone metadata fixture writes of `lastKnownStatus: "IDLE"`.
+- Added `satisfies AgentRunMetadata` to the three standalone metadata fixture literals so stale standalone persisted fields are caught by TypeScript-aware checks.
+- Verified the file has no remaining `lastKnownStatus` occurrences.
+
+Validation rerun:
+
+```bash
+./node_modules/.bin/vitest run \
+  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts \
+  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts \
+  tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts \
+  tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts \
+  tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts \
+  --reporter=verbose
+```
+
+Result: `3 passed | 2 skipped` test files; `10 passed | 19 skipped` tests.
+
+Skipped files remain the live-runtime suites gated by local runtime flags/binaries:
+
+- `tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts`
+- `tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts`
+
+Additional check:
+
+```bash
+git diff --check HEAD
+```
+
+Result: passed.
+
+Current validation classification after the local fix: `Pass`; durable validation changed after code review, so this package is returned again to `code_reviewer` before delivery resumes.

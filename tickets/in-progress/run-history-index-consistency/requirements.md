@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-Refined and approved for revised design direction on 2026-05-21 after user clarified that normal source code must keep `run_history_index.json` as the fast history catalog and must not scan all metadata directories for routine repair.
+Refined and approved for revised design direction on 2026-05-21 after user clarified that normal source code must keep `run_history_index.json` as the fast history catalog, must not scan all metadata directories during routine history listing, and should use the existing startup-once app-data migration framework for V1→V2 data migration.
 
 ## Goal / Problem Statement
 
@@ -16,7 +16,7 @@ The fix must:
 - update the index only for meaningful catalog changes;
 - serialize the full semantic catalog mutation, not only the physical JSON write;
 - remove direct index writers outside the catalog boundary;
-- keep full metadata scanning out of normal source paths and provide it only as an explicit migration/repair script plus README.
+- keep full metadata scanning out of normal history/list source paths and run it only inside the existing app-data migration framework, with optional script/docs for manual retry or operator repair.
 
 ## Investigation Findings
 
@@ -45,13 +45,13 @@ Durable standalone storage responsibilities:
 - Root cause classification: Boundary/ownership issue, duplicated policy/coordination, shared structure looseness.
 - Refactor needed now: Yes, bounded to standalone run-history index ownership and persisted field simplification.
 - Evidence basis: Source audit of run-history services/stores, lifecycle services, status projection, frontend run-history stores/components, cleanup script, and design-review feedback.
-- Design impact from review/user clarification: revised target keeps the history index as the normal list source and moves full metadata scan repair to explicit scripts, not app source.
+- Design impact from review/user clarification: revised target keeps the history index as the normal list source and moves full metadata scan repair out of the normal history-list source path into the startup-once app-data migration framework, with optional scripts only for fallback diagnostics.
 
 ## Recommendations
 
 1. Keep `run_history_index.json` as the steady-state standalone history catalog.
-2. Do not scan all metadata directories during normal startup/list for automatic repair.
-3. Provide `autobyteus-server-ts/scripts/migrate-agent-run-history-index-v2.mjs` and a README for explicit dry-run/apply migration or repair.
+2. Do not scan all metadata directories during normal history listing or catalog initialization for automatic repair; the startup app-data migration is the only automatic full-scan boundary.
+3. Add a new `AppDataMigrationDefinition` for run-history index V2 migration, register it as `requiredOnStartup`, and record completion in `app_data_migration_records`; keep optional script/docs only as manual fallback or operator repair.
 4. Simplify index row fields to `runId`, `agentDefinitionId`, `agentName`, `workspaceRootPath`, `summary`, `createdAt`, `archivedAt`, and `terminatedAt`.
 5. Remove `lastActivityAt`, `lastKnownStatus`, and `activationState` from the standalone index and metadata target.
 6. Keep `run_metadata.json` focused on resume/config and prepared/start facts.
@@ -70,12 +70,12 @@ Medium
 - U-002: Runtime activation/restore/activity no longer writes live status or activity timestamps to the index.
 - U-003: History listing reads the V2 index/in-memory catalog and overlays live status without scanning all metadata.
 - U-004: Archive/unarchive/terminate/delete/cancel update catalog rows through safe, serialized catalog methods.
-- U-005: Existing legacy/partial indexes can be repaired by an explicit script that scans metadata and writes V2 index rows.
+- U-005: Existing legacy/partial indexes are migrated by a startup-once app-data migration that scans metadata and writes V2 index rows; optional manual repair remains available for retries/diagnostics.
 - U-006: Standalone API/frontend fields are simplified without breaking team-run history fields.
 
 ## Out of Scope
 
-- Automatic source-code repair of all legacy partial indexes on normal startup/list.
+- Automatic source-code repair during normal history listing.
 - Replacing file storage with a database.
 - Full team-run history refactor.
 - Persistent historical failure-message UX for runs.
@@ -84,9 +84,9 @@ Medium
 ## Functional Requirements
 
 - FR-001: Normal standalone run-history listing must use `run_history_index.json`/in-memory catalog as the history-list source and must not scan all metadata directories for routine repair.
-- FR-002: A separate migration/repair script must be provided to scan `memory/agents/*/run_metadata.json` and rebuild or repair `run_history_index.json` when needed.
+- FR-002: A startup-once app-data migration must scan `memory/agents/*/run_metadata.json` and migrate/repair `run_history_index.json` to V2 when the migration has not already succeeded for this app-data database.
 - FR-003: The V2 standalone index row must include `runId`, `agentDefinitionId`, `agentName`, `workspaceRootPath`, `summary`, `createdAt`, `archivedAt`, and `terminatedAt`.
-- FR-004: The V2 standalone index row must not include `lastActivityAt`, `lastKnownStatus`, or `activationState`.
+- FR-004: The V2 standalone index must not include `lastActivityAt`, `lastKnownStatus`, `activationState`, or a file-level `version` attribute.
 - FR-005: Standalone metadata must retain resume/config fields required for restore: `runId`, `agentDefinitionId`, `workspaceRootPath`, `memoryDir`, `runtimeKind`, `llmModelIdentifier`, `llmConfig`, `autoExecuteTools`, `skillAccessMode`, `platformAgentRunId`, and `applicationExecutionContext` where applicable.
 - FR-006: Standalone metadata may retain prepared/start facts (`preparedAt`, `preparedExpiresAt`, `startedAt`) but must not persist transient `ACTIVATING` or `ACTIVATION_FAILED`.
 - FR-007: `AgentRunHistoryCatalogService` must be the only normal source-code owner of standalone index mutations.
@@ -106,23 +106,23 @@ Medium
 - AC-004: Given a new prepared run, success is not reported until metadata/config and index row are both committed; normal write failure rolls back newly-created metadata.
 - AC-005: Given termination, the V2 index row records `terminatedAt`; later resume is still allowed from metadata/config.
 - AC-006: Given archive/unarchive/delete/cancel requests, run IDs are validated for safe identity/path containment inside the catalog boundary.
-- AC-007: Given legacy data with metadata directories missing index rows, the explicit migration/repair script can dry-run and apply a repaired V2 index.
-- AC-008: Given legacy metadata lacks `createdAt`, the migration script derives it deterministically and reports last-resort fallbacks.
-- AC-009: Source schemas and new persisted standalone writes no longer include durable `lastKnownStatus`, `lastActivityAt`, `ACTIVATING`, or `ACTIVATION_FAILED`.
+- AC-007: Given legacy data with metadata directories missing index rows, the app-data migration runs once at startup, records its result, and writes a repaired V2 index; a failed/warning migration can be retried through the existing migration UI/runner.
+- AC-008: Given legacy metadata lacks `createdAt`, the app-data migration derives it deterministically and reports last-resort fallbacks in the migration summary/log.
+- AC-009: Source schemas and new persisted standalone writes no longer include durable `lastKnownStatus`, `lastActivityAt`, `ACTIVATING`, `ACTIVATION_FAILED`, or standalone index `version`.
 - AC-010: Standalone frontend history uses `createdAt` ordering and derived status; team history continues to work with existing team fields.
 
 ## Constraints / Dependencies
 
 - Existing user memory directories must be preserved.
 - The index remains a file-based JSON catalog.
-- The migration/repair script must be dry-run by default and create a backup before apply.
+- The app-data migration must create a backup before writing the V2 index and record details in the migration summary/log. Any optional standalone repair script should be dry-run by default.
 - Tests must use isolated temporary memory directories.
 
 ## Assumptions
 
 - Reading one compact index file is materially faster and simpler for normal frontend history than reading all metadata files on every startup/list.
 - Index write frequency is the main practical source of the reported fragility; removing live/activity writes and serializing semantic mutations substantially reduces risk.
-- A tiny crash window across metadata/index multi-file operations remains acceptable with explicit repair script support; fully eliminating it would require a database or journal out of scope.
+- A tiny crash window across metadata/index multi-file operations remains acceptable with app-data migration/manual repair support; fully eliminating it would require a database or journal out of scope.
 
 ## Risks / Open Questions
 
@@ -147,7 +147,7 @@ Medium
 - AC-004 validates that successful new runs are visible in history under normal failures.
 - AC-005 validates that termination is not a persisted live-status block.
 - AC-006 validates safe filesystem mutation ownership.
-- AC-007/AC-008 validate explicit legacy repair outside source code.
+- AC-007/AC-008 validate startup-once app-data migration repair outside the normal history-list path.
 - AC-009 validates schema simplification.
 - AC-010 validates standalone/team API coexistence.
 

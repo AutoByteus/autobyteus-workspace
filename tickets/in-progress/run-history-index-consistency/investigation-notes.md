@@ -46,8 +46,8 @@ User provided an old-Mac incident report dated 2026-05-19. For workspace `/Users
 | 2026-05-20 | Doc | `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/design-principles.md` | Required design guidance read | Design must identify data-flow spine, authoritative boundary, atomicity/serialization ownership, and avoid fragmented writers. | No |
 | 2026-05-20 | Command | `rg -n "run_history_index|RunHistoryIndex|recordRunCreated|recordRunActivity|rebuildIndexFromDisk" ...` | Find index readers/writers and lifecycle update paths | Relevant source lives under `autobyteus-server-ts/src/run-history` and `autobyteus-server-ts/src/agent-execution`; one maintenance script writes the file directly. | No |
 | 2026-05-20 | Code | `autobyteus-server-ts/src/run-history/store/agent-run-history-index-store.ts` | Audit atomicity and mutation mechanics | Uses per-instance `writeQueue`; `upsertRow`, `updateRow`, `mutateRow`, `removeRow` read current file then write temp+rename. No global/per-file queue, no fsync, no temp cleanup on failure. | Design stronger store boundary. |
-| 2026-05-20 | Code | `autobyteus-server-ts/src/run-history/services/agent-run-history-index-service.ts` | Audit index service behavior and rebuild | `recordRunCreated`, `recordRunRestored`, and activity with metadata upsert rows. `recordRunTerminated` only updates existing row. `rebuildIndexFromDisk` scans all run dirs but is a full rewrite. | Superseded design direction: keep the index as steady-state catalog, but remove high-frequency writes and move scan/rebuild to explicit script. |
-| 2026-05-20 | Code | `autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts` | Audit list source used by frontend | `listRunHistory` calls `rebuildIndexFromDisk` only when rows length is zero. Partial non-empty index is treated as authoritative and missing rows stay hidden. | Revised direction: normal source should use a V2 index catalog; legacy partial indexes are repaired by explicit script, not automatic metadata scan. |
+| 2026-05-20 | Code | `autobyteus-server-ts/src/run-history/services/agent-run-history-index-service.ts` | Audit index service behavior and rebuild | `recordRunCreated`, `recordRunRestored`, and activity with metadata upsert rows. `recordRunTerminated` only updates existing row. `rebuildIndexFromDisk` scans all run dirs but is a full rewrite. | Superseded design direction: keep the index as steady-state catalog, remove high-frequency writes, and move scan/rebuild to the startup-once app-data migration framework with optional script fallback. |
+| 2026-05-20 | Code | `autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts` | Audit list source used by frontend | `listRunHistory` calls `rebuildIndexFromDisk` only when rows length is zero. Partial non-empty index is treated as authoritative and missing rows stay hidden. | Revised direction: normal history-list source should use a V2 index catalog; legacy partial indexes are repaired by startup-once app-data migration, not list-time automatic metadata scan. |
 | 2026-05-20 | Code | `autobyteus-server-ts/src/run-history/services/workspace-run-history-service.ts` and `autobyteus-server-ts/src/api/graphql/types/run-history.ts` | Confirm frontend list path | `listWorkspaceRunHistory` uses `WorkspaceRunHistoryService`, which calls `AgentRunHistoryService.listRunHistory`. | Backend fix should surface in UI. |
 | 2026-05-20 | Code | `autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts` | Audit creation/activation sequence | `prepareAgentRun` writes metadata then index row. `activatePreparedRun` writes ACTIVATING metadata, creates runtime, writes ACTIVATED metadata, then upserts index. Crash/failure between metadata and index leaves durable metadata without row. | Remove dual write; update one per-run record/catalog boundary. |
 | 2026-05-20 | Code | `autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts` | Audit restore/activity/termination sequence | Restore/activity/termination write metadata before index update. Termination update is no-op if row missing. | Update index catalog facts and terminal facts through one catalog authority. |
@@ -93,7 +93,7 @@ User provided an old-Mac incident report dated 2026-05-19. For workspace `/Users
 | Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
 | --- | --- | --- | --- |
 | User incident report | `agents/<runId>` directories existed but index rows missing. | Metadata and index are not treated as one authoritative record. | Make per-run metadata/catalog authoritative; use legacy reconciliation only for migration/repair. |
-| `AgentRunHistoryService.listRunHistory` | Rebuild only if `rows.length === 0`. | Partial legacy index is a data repair problem; frequent/status index writes are the root source risk. | Keep V2 index as normal catalog; repair legacy partial data through explicit script. |
+| `AgentRunHistoryService.listRunHistory` | Rebuild only if `rows.length === 0`. | Partial legacy index is a data repair problem; frequent/status index writes are the root source risk. | Keep V2 index as normal catalog; repair legacy partial data through startup-once app-data migration, with optional script fallback. |
 | `AgentRunProvisioningService.prepareAgentRun` | Metadata write precedes index upsert. | Crash/write failure after metadata can create missing row. | Collapse lifecycle persistence into one per-run record/catalog update. |
 | `AgentRunHistoryIndexStore` | Queue is instance-local; read-modify-write uses target file snapshot. | Two store instances can race and lose a row. | Avoid correctness-critical global read-modify-write; if snapshots remain, own them behind one catalog writer. |
 | `cleanup-codex-e2e-run-history.mjs` | Direct `fs.writeFile` to index. | Bypasses store boundary and proves index ownership is leaky. | Remove/decommission direct global-index writer. |
@@ -156,7 +156,7 @@ The code intentionally persists per-run metadata before index rows in multiple l
 
 The user clarified why `run_history_index.json` was originally created: the frontend needs a fast run-history list, and a user may eventually have hundreds or thousands of runs. Re-reading every full metadata/config file on every frontend history render is not desirable.
 
-After further discussion on 2026-05-21, the final design direction is sharper: if normal source code always scans all metadata to repair or rebuild history, the index becomes redundant. Therefore the steady-state application should keep `run_history_index.json` as the normal fast standalone history catalog and should not scan all metadata directories during routine startup/list. Full scans belong to explicit migration/repair scripts only.
+After further discussion on 2026-05-21, the final design direction is sharper: if normal history-list source code always scans all metadata to repair or rebuild history, the index becomes redundant. Therefore the steady-state application should keep `run_history_index.json` as the normal fast standalone history catalog and should not scan all metadata directories during routine history listing or catalog initialization. Full scans belong to the startup-once app-data migration framework, with optional explicit migration/repair scripts only as fallback diagnostics.
 
 The corrected authority split is:
 
@@ -199,9 +199,9 @@ Yes, if the normal path does not scan all metadata. The V2 design preserves the 
 
 The better steady-state performance shape is:
 
-- normal startup/list: read V2 `run_history_index.json` only, then use in-memory catalog;
+- normal history listing/catalog initialization: read V2 `run_history_index.json` only, then use in-memory catalog;
 - catalog mutation: update the index only for meaningful catalog changes;
-- legacy/repair: run an explicit script that scans all metadata and writes a repaired V2 index.
+- legacy/repair: run `RunHistoryIndexV2AppDataMigration` through the existing app-data migration runner; optional explicit script may scan all metadata only as a fallback/manual repair tool.
 
 Final flush strategy for the V2 history index:
 
@@ -209,7 +209,7 @@ Final flush strategy for the V2 history index:
 - flush `run_history_index.json` synchronously after meaningful catalog changes because the write set is small: create/prepared identity, summary/title fill or explicit title change, archive/unarchive, terminate, delete/cancel prepared, and explicit migration/repair;
 - write the index atomically and through one owner;
 - do not flush for live status transitions or ordinary message activity;
-- if a crash leaves legacy/orphan data, use the explicit migration/repair script rather than source-code automatic scan.
+- if a crash leaves legacy/orphan data, use the app-data migration retry path or optional fallback repair script rather than normal history-list automatic scan.
 
 ### User refinement: keep history index, simplify updates
 
@@ -224,7 +224,7 @@ Final simplified index write events:
 - archive/unarchive: update `archivedAt`/visibility in the row;
 - terminate: update `terminatedAt` as a durable lifecycle fact;
 - delete/cancel prepared run: remove row;
-- explicit migration/repair script: reconcile index rows against per-run metadata outside the normal source path.
+- app-data migration/manual repair: reconcile index rows against per-run metadata outside the normal history-list source path.
 
 Do not write the index for live status transitions such as `ACTIVE`, `IDLE`, `ACTIVATING`, `PROCESSING`, or transient `ERROR`.
 
@@ -246,7 +246,7 @@ Fields to remove from the persisted history index/cache:
 
 ### `lastActivityAt` assessment
 
-User questioned whether `lastActivityAt` is needed in the persisted history index. The refined product judgment is that it should not be part of the normal startup/list cache. Creation-time ordering is enough for the intended history UX, and users usually work with a small set of recently created runs. Persisting `lastActivityAt` would turn every accepted message/activity into a history-index write, while bringing little value.
+User questioned whether `lastActivityAt` is needed in the persisted history index. The refined product judgment is that it should not be part of the normal history-list cache. Creation-time ordering is enough for the intended history UX, and users usually work with a small set of recently created runs. Persisting `lastActivityAt` would turn every accepted message/activity into a history-index write, while bringing little value.
 
 Recommended replacement:
 
@@ -343,8 +343,8 @@ Old or slower hardware plausibly increases timing windows between metadata and i
 
 - Do not accept a design that only changes `writeIndexFile`; that would improve durability but would not fix the dual-truth architecture or non-empty partial indexes like the reported case.
 - Do not accept a design that makes `lastKnownStatus`, `ACTIVATING`, or `ACTIVATION_FAILED` more durable. The architecture should remove those as persisted runtime state.
-- The intended governing owner should be a run-history catalog/per-run record boundary. Legacy index reconciliation is migration/repair only, not steady-state correctness.
-- Avoid frontend-side reconciliation or dual read paths. The backend run-history list source should expose one canonical V2 index-backed standalone list with derived live status; legacy metadata scanning belongs only to explicit scripts.
+- The intended governing owner should be a run-history catalog/per-run record boundary. Legacy index reconciliation is app-data migration/manual repair only, not steady-state correctness.
+- Avoid frontend-side reconciliation or dual read paths. The backend run-history list source should expose one canonical V2 index-backed standalone list with derived live status; legacy metadata scanning belongs only to the startup-once app-data migration or optional fallback scripts.
 
 
 ## Persisted Attribute Audit Addendum
@@ -357,14 +357,40 @@ Date: 2026-05-21
 
 Architecture review round 1 failed the initial design because it under-specified semantic mutation serialization, legacy `createdAt` migration, archive/delete/cancel safe identity ownership, and standalone/team API scope.
 
-The user then clarified a stronger product/design direction: if normal source code scans every metadata directory on startup/list, `run_history_index.json` becomes redundant. Therefore the revised target keeps `run_history_index.json` as the normal fast standalone history catalog. Normal application code should not scan all metadata to repair the index. Full scans belong in an explicit migration/repair script and README, consistent with the project's normal maintenance-script process and the no-backward-compatibility source-code policy.
+The user then clarified a stronger product/design direction: if normal history-list source code scans every metadata directory on startup/list, `run_history_index.json` becomes redundant. Therefore the revised target keeps `run_history_index.json` as the normal fast standalone history catalog. Normal history-list code should not scan all metadata to repair the index. Full scans were initially placed in an explicit script/README, then revised again after the app-data migration framework check: the primary path is a startup-once app-data migration recorded in the database, with scripts only as manual fallback diagnostics.
 
 Revised conclusions:
 
 - Normal history list path reads V2 `run_history_index.json` / in-memory catalog only, then overlays live status.
 - `run_metadata.json` is resume/config storage, not the history-list source.
 - The old-Mac bug is primarily addressed by removing high-frequency index writes (`lastActivityAt`, `lastKnownStatus`, live statuses) and routing rare catalog mutations through one serialized owner.
-- The source code should not retain automatic legacy repair. A script such as `autobyteus-server-ts/scripts/migrate-agent-run-history-index-v2.mjs` should scan all metadata only when the operator explicitly runs it.
-- The script must use deterministic `createdAt` fallback: existing V2 index `createdAt`, legacy metadata `createdAt`, legacy metadata `preparedAt`, legacy index `lastActivityAt`, metadata file birthtime, metadata file mtime, run directory birthtime, run directory mtime, then current migration time with warning.
+- The normal history-list source code should not retain automatic legacy repair. `RunHistoryIndexV2AppDataMigration` should scan all metadata only through the app-data migration runner, and a script such as `autobyteus-server-ts/scripts/migrate-agent-run-history-index-v2.mjs` should be optional/manual fallback only.
+- The app-data migration/fallback script must use deterministic `createdAt` fallback: existing V2 index `createdAt`, legacy metadata `createdAt`, legacy metadata `preparedAt`, legacy index `lastActivityAt`, metadata file birthtime, metadata file mtime, run directory birthtime, run directory mtime, then current migration time with warning.
 - Archive/delete/cancel safety should move behind the catalog boundary: raw external run IDs are accepted by catalog methods, normalized/validated internally, checked for containment under the agents root, and guarded against active-run deletion/archive.
 - Standalone API/frontend item fields may change to `createdAt`/`archivedAt`/`terminatedAt` plus derived status, while team-run history fields remain deferred and must not be removed in this task.
+
+
+## App Data Migration Framework Check
+
+Date: 2026-05-21
+
+The user pointed out that the project already has an app-data migration framework that runs during startup and records completed migrations in the database. Source inspection confirms this:
+
+- `autobyteus-server-ts/src/server-runtime.ts` runs `getAppDataMigrationRunner().runPending()` after Prisma migrations and before normal server bootstrap.
+- `autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts` runs registered definitions with `requiredOnStartup === true`, skips records whose status is `SUCCEEDED` or `SUCCEEDED_WITH_WARNINGS`, writes migration logs, and supports retry.
+- `autobyteus-server-ts/src/app-data-migrations/repositories/app-data-migration-record-repository.ts` records status in `app_data_migration_records`.
+- `autobyteus-server-ts/prisma/schema.prisma` contains `AppDataMigrationRecord`, mapped to `app_data_migration_records`.
+- `autobyteus-server-ts/src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.ts` is the existing pattern for a file/data migration over memory metadata.
+
+Revised migration design implication:
+
+- The run-history V1→V2 index migration should be implemented as a new `AppDataMigrationDefinition`, registered in `AppDataMigrationRegistry`, with `requiredOnStartup = true`.
+- This migration may scan all `memory/agents/*/run_metadata.json`, because it is a one-time app-data migration path, not the normal history-list path.
+- The normal `listWorkspaceRunHistory` path still must not scan all metadata.
+- A standalone script/README can remain useful as a manual fallback or diagnostic wrapper, but the primary compatibility path for existing user data should be startup-once app-data migration.
+
+## Standalone Index Version Attribute Judgment
+
+Date: 2026-05-21
+
+The user asked whether a persisted `version` attribute is needed in `run_history_index.json`. Design judgment: remove it from the standalone index target. The app-data migration framework already records migration execution/status in `app_data_migration_records`, and steady-state run-history source code should not support parallel V1/V2 schemas. A file-level `version` wrapper would add another persisted attribute with no product/runtime value and would encourage compatibility branching. The target standalone index file should be a plain JSON array of V2 catalog rows; strict row validation plus the startup app-data migration provide the necessary schema boundary. This judgment applies to standalone agent history only; team-run index cleanup remains deferred.

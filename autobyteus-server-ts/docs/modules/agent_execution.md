@@ -50,21 +50,23 @@ command-correlated post-handoff lifecycle signals: command-start `AGENT_STATUS
 initializing`, explicit `TURN_STARTED`, command-correlated `AGENT_STATUS`,
 terminal/error events after handoff, or coordinator activation/post failure
 handling. Restored runtime snapshots/readiness, WebSocket bind success,
-`statusHint=ACTIVE` alone, metadata `lastKnownStatus=ACTIVE`, and active runtime
-snapshot availability do not clear or replace the overlay. If activation fails
+`statusHint=ACTIVE` alone, persisted metadata, and active runtime snapshot
+availability do not clear or replace the overlay. If activation fails
 before runtime command evidence is available, the overlay moves to
 non-interruptible `error` and the acknowledgement includes the failure
 code/message.
 
 New standalone first-message flow uses `prepareAgentRun(...)`, not
 `createAgentRun(...)`, before the WebSocket command. Preparation creates a
-durable run identity, run metadata, history row, and memory directory with
-`activationState: "PREPARED"`, `platformAgentRunId: null`, and no active
+durable run identity, V2 history catalog row, run metadata, and memory directory
+with `preparedAt`, `preparedExpiresAt`, `platformAgentRunId: null`, and no active
 runtime. The first accepted `SEND_MESSAGE` activates that prepared identity
-through `activatePreparedRun(...)`, transitions metadata through `ACTIVATING`
-to `ACTIVATED`, and records the platform run id when one exists. Prepared runs
-can be explicitly cancelled before activation, and stale prepared identities are
-eligible for TTL cleanup without affecting activated or historical runs.
+through `activatePreparedRun(...)` and records `startedAt` plus the platform run
+id when one exists. Prepared runs can be explicitly cancelled before activation,
+and stale prepared identities are eligible for TTL cleanup without affecting
+activated or historical runs. Standalone `activationState` is not persisted; the
+`prepareAgentRun` response may still return `activationState: "PREPARED"` as a
+launch API response field.
 
 `AgentRun.postUserMessage(...)` remains the runtime-level status and turn
 authority once an `AgentRun` exists. Its runtime events are the source that

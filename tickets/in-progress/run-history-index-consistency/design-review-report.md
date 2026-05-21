@@ -5,40 +5,42 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/design-spec.md`
-- Current Review Round: 2
-- Trigger: Revised design handoff from `solution_designer` on 2026-05-21 after user clarified the index-as-catalog/no-normal-metadata-scan direction.
-- Prior Review Round Reviewed: Round 1 in `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/design-review-report.md`
-- Latest Authoritative Round: 2
-- Current-State Evidence Basis: Reviewed the revised requirements, investigation notes, persisted attribute audit, revised design spec, and prior round-1 findings. Reused source evidence from the same current worktree for run-history/index/metadata/provisioning/status/frontend/script paths.
+- Current Review Round: 3
+- Trigger: Latest design update from `solution_designer` on 2026-05-21 after user pointed out the existing app-data migration framework.
+- Prior Review Round Reviewed: Round 2 pass in this canonical report path.
+- Latest Authoritative Round: 3
+- Current-State Evidence Basis: Reviewed the latest requirements, investigation notes, persisted attribute audit, and design spec. Spot-checked existing app-data migration framework source: `server-runtime.ts`, `app-data-migration-runner.ts`, `app-data-migration-registry.ts`, `repositories/app-data-migration-record-repository.ts`, and `migrations/team-run-metadata-member-tree-migration.ts`.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial design handoff | N/A | 4 | Fail | No | Design direction was sound but under-specified semantic mutation serialization, `createdAt` migration, safe filesystem identity, and standalone/team API scope. |
-| 2 | Revised design after user clarification | 4 | 0 | Pass | Yes | Prior findings are resolved. Revised index-as-catalog direction is explicit and ready for implementation. |
+| 1 | Initial design handoff | N/A | 4 | Fail | No | Direction was sound but under-specified semantic mutation serialization, `createdAt` migration, safe filesystem identity, and standalone/team API scope. |
+| 2 | Revised index-as-catalog/no-normal-scan design | 4 | 0 | Pass | No | Prior findings were resolved; optional script was the primary legacy repair path. |
+| 3 | Design update to use startup app-data migration framework | 0 | 0 | Pass | Yes | Existing app-data migration framework is a better owner for automatic V1→V2 repair than an operator-only script; normal history listing remains index-only. |
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/design-spec.md` together with the revised requirements, investigation notes, persisted attribute audit, and round-1 review report.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/design-spec.md` together with the revised requirements, investigation notes, persisted attribute audit, and existing app-data migration source.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | The revised design identifies the task as bug fix + behavior cleanup + architecture refactor + performance-cache simplification. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Root cause is now framed as boundary/ownership issue, duplicated coordination, and shared-structure looseness, with evidence that high-frequency index writes and persisted live/status fields create fragility. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The design chooses a bounded standalone run-history refactor now; team-run cleanup and cross-process locks remain explicit deferrals. | None. |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Catalog owner, semantic mutation queue, V2 index schema, metadata simplification, offline migration script, safe identity resolver, and API/frontend field split support the revised architecture. | None. |
+| Assessment is present for the current task posture | Pass | The design continues to classify the work as a bug fix + behavior cleanup + architecture refactor + performance-cache simplification. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | The design ties the bug to over-frequent global index writes, stale read-modify-write exposure, direct script bypass, and persisted live/status fields. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The design keeps the bounded standalone refactor now; team-run cleanup and cross-process locking remain named deferrals. | None. |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | The latest design uses `AgentRunHistoryCatalogService` for steady-state semantic mutations and `RunHistoryIndexV2AppDataMigration` for one-time legacy/full-scan migration. | None. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | AR-DI-001 | High | Resolved | Revised spec adds catalog-level semantic mutation queue, initialization barrier, queued read/merge/write, in-memory update, atomic flush, and create rollback example. | Physical atomic writer is correctly separated from semantic serialization. |
-| 1 | AR-DI-002 | Medium | Resolved | Revised spec adds deterministic migration-script `createdAt` fallback order: V2 index, legacy metadata, preparedAt, legacy lastActivityAt, metadata birthtime/mtime, run-dir birthtime/mtime, migration time with warning. | Now script-scoped, consistent with no normal metadata scan. |
-| 1 | AR-DI-003 | Medium | Resolved | Revised spec assigns safe run-id/path validation to the catalog boundary/safe identity resolver; archive/delete/cancel accept raw IDs but validate internally; cleanup script must stop direct index rewriting. | Safety boundary is now explicit. |
-| 1 | AR-DI-004 | Medium | Resolved | Revised spec includes concrete GraphQL field-shape example: standalone rows use `createdAt`/`archivedAt`/`terminatedAt`; team rows retain `lastActivityAt`/`lastKnownStatus`. | Team refactor remains safely deferred. |
+| 1 | AR-DI-001 | High | Resolved | Semantic mutation queue remains in the design and is unaffected by the app-data migration update. | Still passed. |
+| 1 | AR-DI-002 | Medium | Resolved | Deterministic `createdAt` fallback is now assigned to the app-data migration/fallback script rather than only an operator script. | Still passed. |
+| 1 | AR-DI-003 | Medium | Resolved | Safe identity/path resolver remains catalog-owned for archive/delete/cancel; scripts must not direct-write unsafely. | Still passed. |
+| 1 | AR-DI-004 | Medium | Resolved | Standalone/team API split remains explicit; team fields are preserved. | Still passed. |
+| 2 | N/A | N/A | No unresolved findings | Round 2 passed. | Latest revision introduces no new finding. |
 
 ## Spine Inventory Verdict
 
@@ -48,7 +50,7 @@ Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-con
 | DS-002 | Catalog mutation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-003 | Runtime/command status projection | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-004 | Serialized semantic catalog mutation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-005 | Operator-run migration/repair | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-005 | Startup app-data migration | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-006 | Archive/delete/cancel filesystem-safe mutation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Subsystem / Capability-Area Allocation Verdict
@@ -56,20 +58,22 @@ Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-con
 | Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `run-history` services | Pass | Pass | Pass | Pass | Correct home for catalog service, semantic mutation queue, and safe identity. |
-| `run-history` stores | Pass | Pass | Pass | Pass | Stores remain persistence providers, not catalog policy owners. |
-| `agent-execution` services | Pass | Pass | Pass | Pass | Runtime services call semantic catalog methods for history changes and keep runtime execution concerns. |
-| `api/graphql` + frontend history | Pass | Pass | Pass | Pass | Standalone and team DTO shapes are explicitly separated. |
-| scripts / maintenance | Pass | Pass | Pass | Pass | Full metadata scans are isolated to explicit operator scripts. |
-| team-run history | Pass | Pass | Pass | Pass | Deferred as residual debt without contaminating standalone changes. |
+| `run-history` stores | Pass | Pass | Pass | Pass | Stores remain persistence providers. |
+| `agent-execution` services | Pass | Pass | Pass | Pass | Runtime lifecycle services request catalog mutations but do not own index policy. |
+| `app-data-migrations` | Pass | Pass | Pass | Pass | Existing required-on-startup migration framework is the correct automatic full-scan boundary. |
+| `api/graphql` + frontend history | Pass | Pass | Pass | Pass | Standalone and team DTO shapes remain separated. |
+| scripts / maintenance | Pass | Pass | Pass | Pass | Optional script remains a fallback/diagnostic path, not the primary migration owner. |
+| team-run history | Pass | Pass | Pass | Pass | Deferred without contaminating standalone changes. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? (`Pass`/`Fail`) | Shared File Choice Is Sound? (`Pass`/`Fail`/`N/A`) | Ownership Of Shared Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Atomic JSON writer | Pass | Pass | Pass | Pass | Correctly scoped to physical write safety only. |
-| Semantic catalog mutation queue | Pass | Pass | Pass | Pass | Correctly owned by catalog service or a tightly scoped catalog queue. |
-| Safe run identity/path validation | Pass | Pass | Pass | Pass | Correctly owned by run-history services and usable by scripts if needed. |
-| V2 index row derivation for migration script | Pass | Pass | Pass | Pass | Script-local or normalizer choice is acceptable if it does not become source auto-repair. |
+| Atomic JSON writer | Pass | Pass | Pass | Pass | Used by stores/migration/script for physical write safety. |
+| Semantic catalog mutation queue | Pass | Pass | Pass | Pass | Correctly distinct from physical writes. |
+| Safe run identity/path validation | Pass | Pass | Pass | Pass | Correctly attached to catalog/filesystem-affecting operations. |
+| V2 index row derivation / legacy migration mapper | Pass | Pass | Pass | Pass | Now belongs primarily to `RunHistoryIndexV2AppDataMigration`; optional script may reuse or mirror it. |
+| App-data migration record/log summary | Pass | Pass | Pass | Pass | Existing framework provides status, retry, logs, and summaries. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
@@ -77,68 +81,67 @@ Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-con
 | --- | --- | --- | --- | --- | --- | --- |
 | `AgentRunMetadataV2` | Pass | Pass | Pass | Pass | Pass | Resume/config plus prepared/start facts only. |
 | `AgentRunHistoryIndexRowRecordV2` | Pass | Pass | Pass | N/A | Pass | Standalone history catalog fields only. |
-| Standalone GraphQL/frontend history item | Pass | Pass | Pass | Pass | Pass | Uses `createdAt`, `archivedAt`, `terminatedAt`, derived `status`/`isActive`; no standalone `lastKnownStatus`/`lastActivityAt`. |
-| Team GraphQL/frontend history item | Pass | Pass with residual debt | Pass | Pass | Pass | Existing team fields are explicitly retained until follow-up. |
+| Standalone GraphQL/frontend history item | Pass | Pass | Pass | Pass | Pass | Uses `createdAt`, `archivedAt`, `terminatedAt`, and derived status fields. |
+| Team GraphQL/frontend history item | Pass | Pass with residual debt | Pass | Pass | Pass | Existing team fields are explicitly retained. |
+| App-data migration summary/details | Pass | Pass | Pass | N/A | Pass | Existing migration summary/detail structure fits this file-data migration. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? (`Pass`/`Fail`) | Replacement Owner / Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Removal / Decommission Scope Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Durable `lastKnownStatus` in standalone metadata/index | Pass | Pass | Pass | Pass | Removed from source steady-state writes and standalone API. |
-| Durable `activationState` | Pass | Pass | Pass | Pass | Replaced by prepared/start facts plus in-memory activation lock. |
+| Durable `lastKnownStatus` in standalone metadata/index | Pass | Pass | Pass | Pass | Removed from steady-state standalone writes/API. |
+| Durable `activationState` | Pass | Pass | Pass | Pass | Replaced by prepared/start facts and in-memory activation lock. |
 | `lastActivityAt` in standalone index | Pass | Pass | Pass | Pass | Replaced by `createdAt` ordering. |
-| Catalog fields in metadata target | Pass | Pass | Pass | Pass | Revised direction keeps summary/created/archive/terminate facts in index catalog. |
 | Lifecycle direct index service/store calls | Pass | Pass | Pass | Pass | Replaced by catalog service methods. |
-| Direct script index writes | Pass | Pass | Pass | Pass | Replaced by migration/cleanup script safe identity + atomic writer contract. |
-| Source-code full metadata scan repair | Pass | Pass | Pass | Pass | Replaced by explicit migration/repair script. |
-| Team index/status debt | Pass | Pass | Pass | Pass | Follow-up only; team fields preserved. |
+| Direct script writes to `run_history_index.json` | Pass | Pass | Pass | Pass | Cleanup and fallback scripts must use safe identity + atomic writer contract. |
+| Source-code full metadata scan repair in history listing | Pass | Pass | Pass | Pass | Replaced by startup-once app-data migration, not list-time behavior. |
+| Operator-only primary migration path | Pass | Pass | Pass | Pass | Replaced by app-data migration as primary; script is fallback only. |
+| Team index/status debt | Pass | Pass | Pass | Pass | Follow-up only. |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? (`Pass`/`Fail`) | Responsibility Matches The Intended Owner/Boundary? (`Pass`/`Fail`) | Responsibilities Were Re-Tightened After Shared-Structure Extraction? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `run-history/services/agent-run-history-catalog-service.ts` | Pass | Pass | Pass | Pass | Owns in-memory catalog, semantic queue, catalog mutations, and safe history operations. |
-| `run-history/services/agent-run-history-identity.ts` | Pass | Pass | N/A | Pass | Correctly scoped to safe run-history identity/path validation. |
+| `run-history/services/agent-run-history-catalog-service.ts` | Pass | Pass | Pass | Pass | Owns steady-state catalog and semantic mutations only. |
+| `run-history/services/agent-run-history-identity.ts` | Pass | Pass | N/A | Pass | Safe identity/path resolver is correctly scoped. |
 | `run-history/store/atomic-json-file-writer.ts` | Pass | Pass | N/A | Pass | Persistence mechanism only. |
 | `run-history/store/agent-run-history-index-*` | Pass | Pass | Pass | Pass | V2 index schema/IO only. |
 | `run-history/store/agent-run-metadata-*` | Pass | Pass | Pass | Pass | Resume/config/prepared-start metadata only. |
-| `agent-execution/services/*` | Pass | Pass | Pass | Pass | Runtime lifecycle services call catalog for history changes. |
+| `app-data-migrations/migrations/run-history-index-v2-migration.ts` | Pass | Pass | Pass | Pass | Correct owner for automatic full metadata scan and V2 index repair. |
+| `app-data-migrations/app-data-migration-registry.ts` | Pass | Pass | N/A | Pass | Correct registration point for `requiredOnStartup`. |
 | API/frontend files | Pass | Pass | Pass | Pass | Standalone/team field split is explicit. |
-| migration/cleanup scripts | Pass | Pass | Pass | Pass | Explicit maintenance ownership is clear. |
+| fallback repair/cleanup scripts | Pass | Pass | Pass | Pass | Optional/manual maintenance only. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? (`Pass`/`Fail`) | Forbidden Shortcuts Are Explicit? (`Pass`/`Fail`) | Direction Is Coherent With Ownership? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentRunHistoryCatalogService` | Pass | Pass | Pass | Pass | Authoritative standalone history mutation boundary. |
+| `AgentRunHistoryCatalogService` | Pass | Pass | Pass | Pass | Authoritative steady-state standalone history mutation boundary. |
+| `RunHistoryIndexV2AppDataMigration` | Pass | Pass | Pass | Pass | Authorized automatic full-scan boundary through startup migration runner. |
 | `AgentRunStatusProjectionService` | Pass | Pass | Pass | Pass | Live status remains non-persistent. |
-| `AgentRunMetadataStore` | Pass | Pass | Pass | Pass | Runtime restore/config reads are allowed; catalog/status fields are not written there. |
-| `AgentRunHistoryIndexStore` | Pass | Pass | Pass | Pass | Catalog-only source dependency. |
+| `AgentRunMetadataStore` | Pass | Pass | Pass | Pass | Runtime restore/config reads are allowed; catalog/status fields do not live there. |
+| `AgentRunHistoryIndexStore` | Pass | Pass | Pass | Pass | Internal to catalog/migration persistence use. |
 | API/frontend field dependencies | Pass | Pass | Pass | Pass | Team field deferral is explicit. |
-| Migration/repair scripts | Pass | Pass | Pass | Pass | Full metadata scanning is script-only. |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? (`Pass`/`Fail`) | Internal Owned Mechanisms Stay Internal? (`Pass`/`Fail`) | Caller Bypass Risk Is Controlled? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentRunHistoryCatalogService` | Pass | Pass | Pass | Pass | Semantic methods prevent index/store bypass. |
-| `AgentRunStatusProjectionService` | Pass | Pass | Pass | Pass | No persisted status fallback for standalone target. |
+| `AgentRunHistoryCatalogService` | Pass | Pass | Pass | Pass | Semantic methods prevent lifecycle/index-store bypass. |
+| `RunHistoryIndexV2AppDataMigration` | Pass | Pass | Pass | Pass | Full metadata scan is encapsulated in the migration framework, not list path. |
+| `AgentRunStatusProjectionService` | Pass | Pass | Pass | Pass | No persisted standalone status fallback. |
 | `AgentRunMetadataStore` | Pass | Pass | Pass | Pass | Store remains a metadata persistence provider. |
 | `AgentRunHistoryIndexStore` | Pass | Pass | Pass | Pass | No public lifecycle writer role. |
-| Migration/repair script | Pass | Pass | Pass | Pass | Source-code auto-repair is explicitly forbidden. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? (`Pass`/`Fail`) | Responsibility Is Singular? (`Pass`/`Fail`) | Identity Shape Is Explicit? (`Pass`/`Fail`) | Generic Boundary Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- |
 | `AgentRunHistoryCatalogService.listCatalogRows()` | Pass | Pass | Pass | Low | Pass |
-| `recordPreparedRun` | Pass | Pass | Pass | Low | Pass |
-| `recordRunStarted` | Pass | Pass | Pass | Low | Pass |
-| `recordRunSummary` | Pass | Pass | Pass | Low | Pass |
-| `recordRunTerminated` | Pass | Pass | Pass | Low | Pass |
-| `archiveRun` / `unarchiveRun` | Pass | Pass | Pass | Low | Pass |
-| `deleteRun` / `cancelPreparedRun` | Pass | Pass | Pass | Low | Pass |
-| `repairIndex` script CLI | Pass | Pass | Pass | Low | Pass |
+| Catalog mutation methods (`recordPreparedRun`, `recordRunStarted`, `recordRunSummary`, `recordRunTerminated`) | Pass | Pass | Pass | Low | Pass |
+| `archiveRun` / `unarchiveRun` / `deleteRun` / `cancelPreparedRun` | Pass | Pass | Pass | Low | Pass |
+| `RunHistoryIndexV2AppDataMigration.execute()` | Pass | Pass | Pass | Low | Pass |
+| Optional repair script CLI | Pass | Pass | Pass | Low | Pass |
 | GraphQL `listWorkspaceRunHistory` | Pass | Pass | Pass | Medium | Pass |
 
 ## Subsystem / Folder / File Placement Verdict
@@ -146,33 +149,36 @@ Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-con
 | Path / Item | Target Placement Is Clear? (`Pass`/`Fail`) | Folder Matches Owning Boundary? (`Pass`/`Fail`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `run-history/services/agent-run-history-catalog-service.ts` | Pass | Pass | Low | Pass | Correct domain-control placement. |
-| `run-history/services/agent-run-history-identity.ts` | Pass | Pass | Low | Pass | Correct if shared by catalog/script adapters; otherwise may remain private. |
+| `run-history/services/agent-run-history-identity.ts` | Pass | Pass | Low | Pass | Correct safe identity placement. |
 | `run-history/store/*` | Pass | Pass | Low | Pass | Correct persistence-provider placement. |
-| `agent-execution/services/*` | Pass | Pass | Medium | Pass | Runtime service edits are dependency-retargeting only. |
+| `app-data-migrations/migrations/run-history-index-v2-migration.ts` | Pass | Pass | Low | Pass | Correct startup data migration placement. |
+| `app-data-migrations/app-data-migration-registry.ts` | Pass | Pass | Low | Pass | Correct registration placement. |
+| `agent-execution/services/*` | Pass | Pass | Medium | Pass | Runtime service edits remain dependency-retargeting. |
 | `api/graphql/types` | Pass | Pass | Low | Pass | Existing separate standalone/team object classes support split. |
-| `autobyteus-server-ts/scripts` | Pass | Pass | Low | Pass | Correct home for migration/repair. |
-| frontend run-history files | Pass | Pass | Medium | Pass | Needs careful implementation, but design is clear. |
+| `autobyteus-server-ts/scripts` | Pass | Pass | Low | Pass | Correct home for optional manual repair. |
+| frontend run-history files | Pass | Pass | Medium | Pass | Careful implementation needed, design is clear. |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? (`Pass`/`Fail`) | Reuse / Extension Decision Is Sound? (`Pass`/`Fail`) | New Support Piece Is Justified? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Standalone catalog owner | Pass | Pass | Pass | Pass | New service is justified by ownership cleanup. |
-| Metadata/index persistence | Pass | Pass | Pass | Pass | Existing stores extended, not bypassed. |
-| Semantic mutation serialization | Pass | Pass | Pass | Pass | New queue is justified because physical writer queue is too low-level. |
-| Safe identity validation | Pass | Pass | Pass | Pass | Current service logic is moved/extracted with the filesystem-affecting owner. |
-| Legacy repair scan | Pass | Pass | Pass | Pass | Script-only path is sound for revised requirements. |
+| Standalone catalog owner | Pass | Pass | Pass | Pass | New service remains justified. |
+| Metadata/index persistence | Pass | Pass | Pass | Pass | Existing stores are extended. |
+| Semantic mutation serialization | Pass | Pass | Pass | Pass | New queue remains justified. |
+| Safe identity validation | Pass | Pass | Pass | Pass | Current history-service safety logic is moved/extracted with the filesystem owner. |
+| Automatic legacy repair scan | Pass | Pass | Pass | Pass | Existing app-data migration framework is the right reusable capability. |
+| Manual repair scan | Pass | Pass | N/A | Pass | Optional fallback only. |
 | Team cleanup | Pass | Pass | N/A | Pass | Correctly deferred. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? (`Yes`/`No`) | Clean-Cut Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- |
-| V1 standalone index/source auto-repair | No steady-state wrapper | Pass | Pass | Migration/repair is explicit script-only. |
+| V1 standalone index/source list auto-repair | No steady-state wrapper | Pass | Pass | V1→V2 repair is app-data migration, not history-list code. |
 | V1 standalone metadata status fields | No steady-state wrapper | Pass | Pass | Removed from written target. |
 | Standalone API `lastKnownStatus`/`lastActivityAt` | No | Pass | Pass | Replaced by derived status and `createdAt`. |
 | Team old fields during deferred team refactor | Yes, deliberate deferral | Pass | Pass | Explicitly preserved until team follow-up. |
-| Cleanup script direct-write behavior | No target retention | Pass | Pass | Must use safe script/catalog logic. |
+| Operator-only primary migration | No | Pass | Pass | Automatic app-data migration is primary; script fallback optional. |
 
 ## Migration / Refactor Safety Verdict
 
@@ -181,8 +187,8 @@ Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-con
 | V2 standalone index/metadata types | Pass | Pass | Pass | Pass |
 | Catalog service introduction | Pass | Pass | Pass | Pass |
 | Lifecycle service retargeting | Pass | Pass | Pass | Pass |
-| Offline migration/repair script | Pass | Pass | Pass | Pass |
-| Cleanup script refactor | Pass | Pass | Pass | Pass |
+| Startup app-data migration | Pass | Pass | Pass | Pass |
+| Optional repair/cleanup script refactor | Pass | Pass | Pass | Pass |
 | GraphQL/frontend standalone/team migration | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
@@ -190,8 +196,9 @@ Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-con
 | Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Normal history list without metadata scan | Yes | Pass | Pass | Pass | Clear. |
+| Startup app-data migration flow | Yes | Pass | Pass | Pass | Clear and mapped to existing runner/registry. |
 | Index row shape | Yes | Pass | Pass | Pass | Clear. |
-| Semantic mutation serialization | Yes | Pass | Pass | Pass | Concrete queued `recordPreparedRun` example provided. |
+| Semantic mutation serialization | Yes | Pass | Pass | Pass | Concrete queued `recordPreparedRun` example remains. |
 | Activity handling | Yes | Pass | Pass | Pass | Clear. |
 | Legacy `createdAt` migration | Yes | Pass | Pass | Pass | Concrete fallback chain provided. |
 | Safe delete identity | Yes | Pass | Pass | Pass | Clear. |
@@ -202,14 +209,15 @@ Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-con
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
 | Cross-process writes to one memory dir | In-process semantic queue does not protect multiple server processes. | Keep explicit residual risk; add lock/journal only if product supports concurrent writers. | Accepted residual. |
-| Crash window across metadata/index multi-file operations | File-based design is not a database transaction. | Use ordered writes, rollback for normal errors, and explicit repair script for crash/orphan cases. | Accepted residual. |
+| Post-migration crash window across metadata/index multi-file operations | A one-time app-data migration will not automatically rerun after a later successful migration record unless retried/versioned. | Treat as accepted file-based residual; optional repair script or future journal/locking task covers rare future inconsistency. | Accepted residual. |
+| App-data migration failure or warning | Users may not see legacy orphan metadata until migration succeeds/retries. | Existing runner supports retry/status/logs; optional script remains fallback. | Accepted residual. |
 | Team-run history analogous debt | Team index/status fields have similar smells. | Track as follow-up; preserve team API fields in this change. | Accepted residual. |
 
 ## Review Decision
 
-Pass: the design is ready for implementation.
+Pass: the design remains ready for implementation with the app-data migration update.
 
-The revised design is coherent with the updated requirement that `run_history_index.json` remains the normal fast standalone history catalog and that full metadata scans are script-only. The design now gives one owner to semantic catalog mutations, removes high-frequency persisted status/activity fields, scopes legacy repair to an explicit operator path, and preserves team history fields while standalone API/frontend fields change.
+The latest revision improves the prior round-2 design by using Autobyteus's existing required-on-startup app-data migration framework as the primary V1→V2 full-scan repair boundary. This preserves the key architecture rule that normal history listing/catalog initialization reads the compact V2 index only, while giving legacy users an automatic, recorded, retryable migration path.
 
 ## Findings
 
@@ -225,12 +233,12 @@ N/A — no open findings.
 
 ## Residual Risks
 
-- Existing partial/corrupt legacy indexes will not self-heal in normal app source; users/operators must run the explicit migration/repair script.
-- A process crash can still leave metadata/index or index/filesystem cross-file windows inconsistent; this is an accepted file-based storage residual with script repair guidance.
+- Normal history listing will not scan metadata to self-heal; legacy repair depends on the app-data migration succeeding or being retried.
+- A future crash after the V2 migration has already succeeded can still create a rare metadata/index or index/filesystem inconsistency; this remains an accepted file-based storage residual covered by manual repair/future hardening, not by routine list-time scans.
 - Cross-process locking remains deferred unless normal desktop operation permits multiple server processes writing the same memory directory.
 - Team-run history keeps analogous status/index debt until a follow-up refactor.
 
 ## Latest Authoritative Result
 
 - Review Decision: Pass
-- Notes: Prior round-1 findings AR-DI-001 through AR-DI-004 are resolved. Proceed to implementation using the revised index-as-catalog/no-normal-metadata-scan design.
+- Notes: Latest authoritative design is round 3. Proceed with the `RunHistoryIndexV2AppDataMigration` startup-once migration design, while keeping normal history list/catalog initialization index-only.

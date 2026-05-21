@@ -6,8 +6,9 @@
 
 ## Responsibilities
 
-- Persist agent run metadata and the agent history index.
+- Persist standalone agent run resume metadata and the V2 standalone history catalog index.
 - Persist team run metadata and the team history index.
+- Keep standalone index mutation behind `AgentRunHistoryCatalogService`; normal runtime, GraphQL, and lifecycle code must not rewrite `run_history_index.json` directly.
 - Expose resume configuration for stored runs:
   - agent: `agent-run-resume-config-service.ts`
   - team: `team-run-history-service.ts#getTeamRunResumeConfig(...)`
@@ -43,24 +44,26 @@ Team operations:
 
 The default `listWorkspaceRunHistory` response is intentionally a visible
 history tree, not a complete retention inventory. It excludes inactive
-standalone agent runs and inactive team runs whose metadata contains an
-`archivedAt` timestamp before workspace grouping and count projection. If an
-archived run or team is active again through a restore/resume path, it remains
-visible while active so live work is not hidden.
+standalone agent runs whose V2 catalog row contains `archivedAt` and inactive
+team runs whose metadata contains `archivedAt` before workspace grouping and
+count projection. If an archived run or team is active again through a
+restore/resume path, it remains visible while active so live work is not hidden.
 
 Archive is a non-destructive visibility action:
 
-- `archiveStoredRun(runId)` writes `archivedAt` in
+- `archiveStoredRun(runId)` writes `archivedAt` on the V2 standalone
+  catalog row in `memory/run_history_index.json` through
+  `AgentRunHistoryCatalogService`; it does not add standalone archive state to
   `memory/agents/<runId>/run_metadata.json`.
 - `archiveStoredTeamRun(teamRunId)` writes `archivedAt` in
   `memory/agent_teams/<teamRunId>/team_run_metadata.json`.
 - Archive keeps the run/team metadata, raw traces, projections, member
-  directories, and index rows on disk.
+  directories, and catalog/index rows on disk.
 - Archive rejects active runs/teams and invalid or path-unsafe ids before
-  metadata read/write.
-- Existing metadata with no `archivedAt` is visible by default, and metadata
-  normalization must preserve unrelated optional fields when archive state is
-  written.
+  catalog or metadata read/write.
+- Existing standalone catalog rows or team metadata with no `archivedAt` are
+  visible by default; team metadata normalization must preserve unrelated
+  optional fields when archive state is written.
 
 Permanent delete remains a separate destructive action. `deleteStoredRun` and
 `deleteStoredTeamRun` remove the persisted run/team storage and corresponding
@@ -70,36 +73,49 @@ remains retained on disk for future recovery tooling.
 
 ## Standalone Status Projection And Prepared Identities
 
-Standalone history rows expose both coarse durable state and current visible
-status projection:
+Standalone workspace history rows separate durable catalog facts from live
+runtime projection. The standalone GraphQL history item exposes these catalog
+facts from the V2 index:
+
+- `runId`
+- `summary`
+- `createdAt`
+- `archivedAt`
+- `terminatedAt`
+
+It also exposes list-time status projection fields:
 
 - `status`: public UI status (`offline`, `initializing`, `idle`, `running`, or
   `error`).
-- `lastKnownStatus`: durable coarse state (`ACTIVE`, `IDLE`, `ERROR`, or
-  `TERMINATED`).
-- `isActive`: whether the row represents active/current work for visibility and
-  archive filtering.
-- `shouldConnectStream`: whether the frontend should connect to `/ws/agent/:runId`
-  even when there is not yet an active runtime subject, for example while a
-  command overlay is initializing.
+- `isActive`: whether the row currently represents active/current work for
+  visibility and archive filtering.
+- `shouldConnectStream`: whether the frontend should connect to
+  `/ws/agent/:runId` even when there is not yet an active runtime subject, for
+  example while a command overlay is initializing.
 - `statusSource`: `COMMAND_OVERLAY`, `ACTIVE_RUNTIME`, `PREPARED_IDENTITY`,
   `HISTORICAL_METADATA`, `TERMINATED_METADATA`, or `MISSING`.
 
-Projection precedence is command overlay first, active runtime second, and
-prepared/historical metadata fallback third. A command overlay `initializing`
-projects as `isActive=true`, `shouldConnectStream=true`,
-`lastKnownStatus=ACTIVE`, and `statusSource=COMMAND_OVERLAY`; a command overlay
-`error` projects as non-interruptible `error` with `lastKnownStatus=ERROR`.
+Standalone history rows no longer expose or persist `lastKnownStatus`,
+`lastActivityAt`, or `activationState`. Live status is runtime/command-overlay
+state; the history catalog is not a durable status log. Projection precedence is
+command overlay first, active runtime second, and prepared/historical metadata
+fallback third. A command overlay `initializing` projects as active and stream
+connectable with `statusSource=COMMAND_OVERLAY`; a command overlay `error`
+projects as non-interruptible `error`. If a row has `terminatedAt` and no active
+projection, the list response reports `status=offline` and
+`statusSource=TERMINATED_METADATA`.
 
-Prepared-new run identities are explicit metadata state, not inferred from a
-missing `platformAgentRunId`. `activationState` is one of `PREPARED`,
-`ACTIVATING`, `ACTIVATED`, or `ACTIVATION_FAILED`; prepared metadata also stores
-`preparedAt` and `preparedExpiresAt`. A prepared identity has a memory directory
-and history row, but no runtime until the first backend-owned `SEND_MESSAGE`
-activates it. GraphQL `prepareAgentRun` and `cancelPreparedAgentRun` live on the
-agent-run resolver because they prepare runtime identity, but their metadata is
-projected here. Explicit cancellation and stale-prepared cleanup remove only
-unactivated prepared identities.
+Prepared-new run identities are explicit metadata facts, not inferred from a
+missing `platformAgentRunId` and not represented by a persisted
+`activationState`. Prepared metadata stores `preparedAt`, `preparedExpiresAt`,
+`platformAgentRunId: null`, resume configuration, and the memory directory. A
+prepared identity has a memory directory and V2 catalog row, but no runtime
+until the first backend-owned `SEND_MESSAGE` activates it. Activation records
+`startedAt` and the platform runtime id when available while preserving the
+catalog row. GraphQL `prepareAgentRun` may return `activationState: "PREPARED"`
+as a launch API response field, but that value is not a stored standalone
+history or metadata field. Explicit cancellation and stale-prepared cleanup
+remove only unactivated prepared identities.
 
 ## Persistence Files
 
@@ -112,7 +128,15 @@ Memory root:
 
 Standalone agent persisted files:
 
-- metadata: `memory/agents/<runId>/run_metadata.json`
+- V2 catalog index: `memory/run_history_index.json`, with rows containing only
+  `runId`, `agentDefinitionId`, `agentName`, `workspaceRootPath`, `summary`,
+  `createdAt`, `archivedAt`, and `terminatedAt`
+- metadata: `memory/agents/<runId>/run_metadata.json`, containing resume/config
+  and prepared/start facts such as `runId`, `agentDefinitionId`,
+  `workspaceRootPath`, `memoryDir`, `runtimeKind`, `llmModelIdentifier`,
+  `llmConfig`, `autoExecuteTools`, `skillAccessMode`, `platformAgentRunId`,
+  `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
+  `applicationExecutionContext`
 - runtime memory artifacts: `memory/agents/<runId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
 - segmented raw-trace archive after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_archive_manifest.json` plus `memory/agents/<runId>/raw_traces_archive/*.jsonl`
 
@@ -125,6 +149,18 @@ Team persisted files:
 
 Important identity/storage rules:
 
+- `AgentRunHistoryCatalogService` is the normal semantic owner for standalone
+  catalog mutations: prepare/create, first/explicit summary update,
+  archive/unarchive, terminate, delete/cancel, and catalog flush
+- ordinary message activity and live status transitions must not rewrite
+  `memory/run_history_index.json`
+- normal history listing reads the V2 index/in-memory catalog and applies live
+  status projection; it does not scan every `memory/agents/*/run_metadata.json`
+  to repair missing rows
+- explicit legacy/partial-index repair belongs to
+  `scripts/migrate-agent-run-history-index-v2.mjs`; see
+  `scripts/run-history-index-migration.md` before running cleanup against old
+  memory directories
 - standalone runs persist an explicit `memoryDir` in agent metadata
 - Codex and Claude standalone runs now write storage-only local memory in the same run directory as native AutoByteus runs; native AutoByteus memory remains owned by the native `autobyteus-ts` memory manager
 - standalone AutoByteus run ids are stored literally under `memory/agents/<runId>/...`
