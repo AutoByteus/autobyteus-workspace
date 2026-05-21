@@ -637,17 +637,18 @@ Run setup sub-screen: `S5_run_setup`
 Layout:
 
 - Header: `Start run`.
-- Shows only the required launch choices first: agent/team, workspace, runtime/model, and first prompt.
-- Team mode also shows `First message target`, limited to leaf team members that can receive the first prompt.
-- Target and member pickers use phone-friendly search/filtering rather than long native selects.
+- Shows only the required run-configuration choices first: agent/team, workspace, and runtime/model.
+- The setup does not collect the first chat message and does not show a team `First message target`; message composition and team focus selection happen in Chat after the run is created.
+- Target pickers use phone-friendly search/filtering rather than long native selects.
 - Advanced config remains collapsed or omitted unless it is required for the selected runtime/model.
-- Primary button: `Start`.
-- Launch readiness and blocking copy live in one setup summary; the primary button stays disabled until required target, workspace, prompt, and runtime/model choices are ready.
+- Primary button: `Create run`.
+- Launch readiness and blocking copy live in one compact action area; the primary button stays disabled until required target, workspace, and runtime/model choices are ready.
+- Draft context attachments selected before creation are preserved for the new Chat composer. Agent attachments move directly to the new agent run; team attachments remain pending at team-run scope until the first Chat send flushes them to the selected focused member.
 
 Actions:
 
 - `A5_setup_start`
-  - Starts the run using the selected runtime/model and, for team launches, sends the first prompt to the selected first-message target.
+  - Creates the run using the selected runtime/model without sending a prompt.
   - Success -> `S4_chat`.
 - `A5_setup_advanced`
   - Expands optional parameters.
@@ -658,7 +659,7 @@ Important improvement from current UI:
 
 - The current `Running List / Configuration` nested tabs are too abstract.
 - Configuration should appear only when starting or editing a run.
-- Existing team-run message focus is separate from launch setup: `Message target` can appear on Chat/Files/Activity for the opened team run, but it should not appear on Runs or compete with the setup's `First message target`.
+- Existing team-run message focus is separate from launch setup: `Message target` can appear on Chat/Files/Activity for the opened team run, but it should not appear on Runs or Start run setup.
 
 ### screen_id: S6_files
 

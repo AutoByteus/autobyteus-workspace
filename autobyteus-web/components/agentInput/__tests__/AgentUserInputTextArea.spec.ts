@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import { nextTick, reactive } from 'vue'
 import AgentUserInputTextArea from '../AgentUserInputTextArea.vue'
 
@@ -234,6 +234,52 @@ describe('AgentUserInputTextArea', () => {
     resolveSend?.()
     activeContextStoreMock.isSending = false
     await nextTick()
+  })
+
+  it('runs the optional beforeSend seam before sending without changing the synced requirement', async () => {
+    const context = createContext('ctx-before-send')
+    selectContext(context)
+    const events: string[] = []
+    const beforeSend = vi.fn().mockImplementation(() => {
+      events.push(`before:${activeContextStoreMock.activeAgentContext?.requirement ?? ''}`)
+    })
+    activeContextStoreMock.send.mockImplementation(() => {
+      events.push(`send:${activeContextStoreMock.activeAgentContext?.requirement ?? ''}`)
+      return Promise.resolve()
+    })
+
+    const wrapper = mount(AgentUserInputTextArea, {
+      props: { beforeSend },
+    })
+    await wrapper.find('textarea').setValue('message with pending mobile files')
+    await wrapper.find('button[title="Send message"]').trigger('click')
+    await flushPromises()
+
+    expect(beforeSend).toHaveBeenCalledTimes(1)
+    expect(activeContextStoreMock.send).toHaveBeenCalledTimes(1)
+    expect(events).toEqual([
+      'before:message with pending mobile files',
+      'send:message with pending mobile files',
+    ])
+  })
+
+  it('keeps activeContextStore.send untouched when the optional beforeSend seam blocks submission', async () => {
+    const context = createContext('ctx-before-send-block')
+    selectContext(context)
+    const beforeSend = vi.fn().mockRejectedValue(new Error('mobile pending attachment focus is invalid'))
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
+    const wrapper = mount(AgentUserInputTextArea, {
+      props: { beforeSend },
+    })
+    await wrapper.find('textarea').setValue('blocked until focus is valid')
+    await wrapper.find('button[title="Send message"]').trigger('click')
+    await flushPromises()
+
+    expect(beforeSend).toHaveBeenCalledTimes(1)
+    expect(activeContextStoreMock.send).not.toHaveBeenCalled()
+    expect(context.requirement).toBe('blocked until focus is valid')
+    consoleError.mockRestore()
   })
 
   it('keeps a debounced draft with the member that typed it when focus changes', async () => {

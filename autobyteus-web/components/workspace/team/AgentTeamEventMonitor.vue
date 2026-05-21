@@ -7,6 +7,7 @@
       :agent-name="focusedMemberDisplayName"
       :agent-avatar-url="focusedMemberAvatarUrl"
       :inter-agent-sender-name-by-id="interAgentSenderNameById"
+      :before-send="beforeSend"
       class="h-full"
     >
       <template #composerContext>
@@ -56,6 +57,10 @@ import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vu
 
 const teamContextsStore = useAgentTeamContextsStore();
 const { getInterAgentSenderNameById, getMemberAvatarUrl, getMemberDisplayName } = useTeamMemberPresentation();
+
+defineProps<{
+  beforeSend?: () => void | Promise<void>;
+}>();
 
 const activeTeam = computed(() => teamContextsStore.activeTeamContext);
 const focusedMember = computed(() => teamContextsStore.focusedMemberContext);

@@ -81,6 +81,10 @@ import { getFilePathsFromFolder } from '~/utils/fileExplorer/fileUtils';
 import type { TreeNode } from '~/utils/fileExplorer/TreeNode';
 import type { AgentContext } from '~/types/agent/AgentContext';
 
+const props = defineProps<{
+  beforeSend?: () => void | Promise<void>;
+}>();
+
 // Initialize stores
 const activeContextStore = useActiveContextStore();
 const voiceInputStore = useVoiceInputStore();
@@ -276,9 +280,13 @@ const handleBlur = () => {
 
 const handleSend = async () => {
   syncStoreImmediately();
-  const submittedContext = activeContextStore.activeAgentContext;
-  pendingLocalAcknowledgementContext = submittedContext;
+  let submittedContext: AgentContext | null = null;
   try {
+    if (props.beforeSend) {
+      await props.beforeSend();
+    }
+    submittedContext = activeContextStore.activeAgentContext;
+    pendingLocalAcknowledgementContext = submittedContext;
     const sendPromise = activeContextStore.send();
     syncPendingLocalAcknowledgement();
     await sendPromise;

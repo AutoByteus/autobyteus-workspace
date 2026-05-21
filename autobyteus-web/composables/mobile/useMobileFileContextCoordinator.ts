@@ -15,7 +15,7 @@ import {
 export const MOBILE_FILE_PREVIEW_MAX_CHARS = 120_000;
 
 export type MobilePreviewSupport = 'supported' | 'unsupported';
-export type MobileAttachmentTarget = 'active-run' | 'mobile-draft' | 'none';
+export type MobileAttachmentTarget = 'active-run' | 'mobile-draft' | 'pending-team-run' | 'none';
 
 const TEXT_PREVIEW_EXTENSIONS = new Set([
   '.c', '.cc', '.cpp', '.cs', '.css', '.go', '.h', '.hpp', '.html', '.java', '.js', '.json', '.jsx',
@@ -80,7 +80,14 @@ export function useMobileFileContextCoordinator() {
     || context.kind === 'team-definition'
   );
 
+  const hasPendingTeamRunAttachments = (context: MobileWorkContext | null): boolean => (
+    context?.kind === 'team-run' && mobileWorkStore.hasPendingTeamRunAttachments(context.teamRunId)
+  );
+
   const getVisibleContextAttachments = (context: MobileWorkContext | null): ContextAttachment[] => {
+    if (hasPendingTeamRunAttachments(context) && context?.kind === 'team-run') {
+      return mobileWorkStore.getPendingTeamRunAttachments(context.teamRunId);
+    }
     if (isActiveMobileRunContext(context)) {
       return [...activeContextStore.currentContextPaths];
     }
@@ -120,6 +127,10 @@ export function useMobileFileContextCoordinator() {
   }
 
   function removeVisibleContextAttachment(context: MobileWorkContext | null, attachmentId: string): void {
+    if (hasPendingTeamRunAttachments(context) && context?.kind === 'team-run') {
+      mobileWorkStore.removePendingTeamRunAttachment(context.teamRunId, attachmentId);
+      return;
+    }
     if (isActiveMobileRunContext(context)) {
       const activeIndex = activeContextStore.currentContextPaths.findIndex((entry) => entry.id === attachmentId);
       if (activeIndex !== -1) {
@@ -133,6 +144,10 @@ export function useMobileFileContextCoordinator() {
   }
 
   function clearVisibleContextAttachments(context: MobileWorkContext | null): void {
+    if (hasPendingTeamRunAttachments(context) && context?.kind === 'team-run') {
+      mobileWorkStore.clearPendingTeamRunAttachments(context.teamRunId);
+      return;
+    }
     if (isActiveMobileRunContext(context)) {
       activeContextStore.clearContextFilePaths();
       return;
@@ -147,6 +162,15 @@ export function useMobileFileContextCoordinator() {
     context: MobileWorkContext | null = mobileWorkStore.currentContext,
   ): { attached: boolean; attachment: ContextAttachment; target: MobileAttachmentTarget } {
     const attachment = createWorkspaceContextAttachment(filePath, inferContextAttachmentType(filePath));
+    if (hasPendingTeamRunAttachments(context) && context?.kind === 'team-run') {
+      const attached = addUniqueAttachment(
+        mobileWorkStore.getPendingTeamRunAttachments(context.teamRunId),
+        attachment,
+        (next) => mobileWorkStore.addPendingTeamRunAttachment(context.teamRunId, next),
+      );
+      return { attached, attachment, target: 'pending-team-run' };
+    }
+
     if (isActiveMobileRunContext(context)) {
       const attached = addUniqueAttachment(
         activeContextStore.currentContextPaths,
