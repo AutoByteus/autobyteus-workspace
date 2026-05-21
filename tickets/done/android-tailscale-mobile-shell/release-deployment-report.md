@@ -2,11 +2,11 @@
 
 ## Release / Publication / Deployment Scope
 
-Delivery has prepared the Android/Tailscale mobile shell ticket for user verification after code-review round 6 and API/E2E validation round 3 passed. At the user's request, delivery also read the README build guidance, rechecked/latest-integrated `origin/personal`, and produced a local packaged macOS Electron build from that integrated branch for testing. User verification has been received; repository finalization and release `v1.3.24` are now in progress.
+Delivery has prepared the Android/Tailscale mobile shell ticket for user verification after code-review round 6 and API/E2E validation round 3 passed. At the user's request, delivery also read the README build guidance, rechecked/latest-integrated `origin/personal`, and produced a local packaged macOS Electron build from that integrated branch for testing. User verification was received, the ticket was finalized into `personal`, and release `v1.3.24` was created and published. GitHub release workflows for desktop, messaging gateway, and server Docker all completed successfully.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/tickets/done/android-tailscale-mobile-shell/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-tailscale-mobile-shell/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Handoff summary records latest-base refresh, checkpoint commits, the latest `origin/personal` merge, implementation scope, code-review/API-E2E pass state, docs sync, delivery checks, user-requested Electron rebuild artifacts, residual notes, and the user-verification hold.
 
@@ -36,7 +36,7 @@ Delivery has prepared the Android/Tailscale mobile shell ticket for user verific
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/tickets/done/android-tailscale-mobile-shell/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-tailscale-mobile-shell/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `docs/android_mobile_access.md`; `autobyteus-web/docs/remote_access.md`; `autobyteus-android/README.md`
 - No-impact rationale (if applicable): `N/A`
@@ -48,42 +48,40 @@ Delivery has prepared the Android/Tailscale mobile shell ticket for user verific
 - Latest base requirement: `origin/personal@4bd5c537e5bc840bace2828bb15710a86def6d2e` is integrated into ticket branch HEAD `dc992e286a429e110907533940fc54357369bdfc`.
 - Command run from `autobyteus-web`: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`
 - Build result: `Passed` after merging latest `origin/personal`.
-- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.zip`
-- Latest metadata: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/latest-mac.yml`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/tickets/done/android-tailscale-mobile-shell/build-logs/electron-mac-build-latest-personal-20260521T170335Z.log`
-- Artifact summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/tickets/done/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.txt`
-- SHA-256 checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/tickets/done/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.sha256`
+- Local pre-release testing artifacts: built successfully in the dedicated ticket worktree before cleanup; those local `electron-dist` files were removed when the ticket worktree was cleaned up after release.
+- Final release artifacts: published on GitHub release `v1.3.24` at https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.24
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-tailscale-mobile-shell/build-logs/electron-mac-build-latest-personal-20260521T170335Z.log`
+- Artifact summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.txt`
+- SHA-256 checksums: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.sha256`
 - Signing/notarization: local testing build only; macOS code signing was skipped because the signing identity is explicitly null and no Apple team ID was supplied.
 - Release/deployment impact: build artifacts are local and ignored by Git; this was not a publication, GitHub release, deployment, or repository finalization step.
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/tickets/done/android-tailscale-mobile-shell`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-tailscale-mobile-shell`
 
 ## Version / Tag / Release Commit
 
-- Version bump: `Planned via release helper to 1.3.24`
-- Tag: `Planned: v1.3.24`
-- Release commit: `Pending release helper`
+- Version bump: `Completed: 1.3.23 -> 1.3.24`
+- Tag: `Created and pushed: v1.3.24`
+- Release commit: `6f926989` (`chore(release): bump workspace release version to 1.3.24`)
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/tickets/done/android-tailscale-mobile-shell/requirements.md` and upstream cumulative artifact package from code review / API-E2E handoffs.
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-tailscale-mobile-shell/requirements.md` and upstream cumulative artifact package from code review / API-E2E handoffs.
 - Ticket branch: `codex/android-tailscale-mobile-shell`
-- Ticket branch commit result: `Local checkpoints completed: c6df083ed3c27d81bceaff5cd811a57592039ec7 and 50d1a017; latest origin/personal merge completed at dc992e286a429e110907533940fc54357369bdfc; final delivery commit still pending user verification.`
-- Ticket branch push result: `Pending finalization push`
+- Ticket branch commit result: `Completed`; final ticket commit `1661f5eb` archived artifacts and release notes after local checkpoints `c6df083ed3c27d81bceaff5cd811a57592039ec7` and `50d1a017`, with latest origin/personal merge `dc992e286a429e110907533940fc54357369bdfc`.
+- Ticket branch push result: `Completed, then remote ticket branch deleted after merge`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: `N/A - verification pending`
-- Delivery-owned edits protected before re-integration: `Not needed yet`
-- Re-integration before final merge result: `Pending finalization after verification`
-- Target branch update result: `Pending`
-- Merge into target result: `Pending`
-- Push target branch result: `Pending`
-- Repository finalization status: `In progress after user verification`
+- Target advanced after user verification: `No`; `origin/personal` stayed at `4bd5c537e5bc840bace2828bb15710a86def6d2e` until finalization push.
+- Delivery-owned edits protected before re-integration: `Completed before latest-base merge via checkpoint commit 50d1a017`
+- Re-integration before final merge result: `Completed before user verification; latest origin/personal was integrated and rebuilt`
+- Target branch update result: `Completed`; `personal` advanced through finalization commit `1661f5eb` and release commit `6f926989`.
+- Merge into target result: `Completed`; finalization target fast-forwarded to the ticket branch state.
+- Push target branch result: `Completed`; `origin/personal` pushed.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): `N/A`
 
 ## Release / Publication / Deployment
@@ -91,18 +89,31 @@ Delivery has prepared the Android/Tailscale mobile shell ticket for user verific
 - Applicable: `Yes`; user requested a new release version after testing the rebuilt app.
 - Method: `Other`
 - Method reference / command: `pnpm release 1.3.24 -- --release-notes tickets/done/android-tailscale-mobile-shell/release-notes.md`
-- Release/publication/deployment result: `Pending release helper`
-- Release notes handoff result: `Created at tickets/done/android-tailscale-mobile-shell/release-notes.md`
+- Release/publication/deployment result: `Completed`; release helper pushed `personal` and tag `v1.3.24`, triggering release workflows.
+- Release notes handoff result: `Used by release helper and synced to .github/release-notes/release-notes.md`
 - Blocker (if applicable): `N/A`
+
+## Release Workflow Outcome
+
+- Release version: `1.3.24`
+- Release tag: `v1.3.24`
+- Release URL: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.24`
+- Release commit: `6f926989`
+- GitHub workflows triggered by tag push and completed successfully:
+  - Desktop Release: run `26241800115` — success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26241800115
+  - Release Messaging Gateway: run `26241800118` — success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26241800118
+  - Server Docker Release: run `26241800163` — success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26241800163
+- GitHub release assets observed: macOS ARM64/X64 DMG+ZIP+blockmaps, Linux AppImage, Windows installer, latest metadata files, managed messaging gateway package/checksum/metadata, and release manifest.
+- Docker release result: Server Docker workflow succeeded for tag `v1.3.24`; stable release path also publishes `latest` per documented workflow.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell`
-- Worktree cleanup result: `Pending user verification and repository finalization`
-- Worktree prune result: `Pending user verification and repository finalization`
-- Local ticket branch cleanup result: `Pending user verification and repository finalization`
-- Remote branch cleanup result: `Not required yet; ticket branch has not been pushed by delivery`
-- Blocker (if applicable): `User verification pending`
+- Worktree cleanup result: `Completed`; removed `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell`.
+- Worktree prune result: `Completed as part of git worktree remove`
+- Local ticket branch cleanup result: `Completed`; deleted `codex/android-tailscale-mobile-shell`.
+- Remote branch cleanup result: `Completed`; deleted `origin/codex/android-tailscale-mobile-shell`.
+- Blocker (if applicable): `N/A`
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -114,7 +125,7 @@ Delivery has prepared the Android/Tailscale mobile shell ticket for user verific
 
 - Release notes artifact created before release: `tickets/done/android-tailscale-mobile-shell/release-notes.md`
 - Archived release notes artifact used for release/publication: `tickets/done/android-tailscale-mobile-shell/release-notes.md`
-- Release notes status: `Created for release v1.3.24`
+- Release notes status: `Created and used for release v1.3.24`
 
 ## Deployment Steps
 
@@ -132,6 +143,10 @@ Completed pre-verification delivery steps:
 10. User verified the rebuilt app and requested finalization/release.
 11. Archived ticket artifacts to `tickets/done/android-tailscale-mobile-shell`.
 12. Prepared curated release notes for `v1.3.24`.
+13. Merged and pushed the finalized ticket to `origin/personal`.
+14. Ran `pnpm release 1.3.24 -- --release-notes tickets/done/android-tailscale-mobile-shell/release-notes.md`.
+15. Confirmed Desktop Release, Release Messaging Gateway, and Server Docker Release workflows completed successfully.
+16. Removed the dedicated ticket worktree and deleted local/remote ticket branches.
 
 ## Environment Or Migration Notes
 
@@ -146,8 +161,13 @@ Delivery checks after latest `origin/personal` merge:
 
 - `git diff --check` — passed.
 - `ANDROID_HOME=/Users/normy/Library/Android/sdk gradle -p autobyteus-android :app:compileDebugAndroidTestKotlin` — passed with non-blocking Gradle deprecation warnings.
-- Check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/tickets/done/android-tailscale-mobile-shell/delivery-post-integration-checks.log`.
-- User-requested Electron build: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac` — passed; log `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/tickets/done/android-tailscale-mobile-shell/build-logs/electron-mac-build-latest-personal-20260521T170335Z.log`; artifacts/checksums `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/tickets/done/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.sha256`.
+- Check log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-tailscale-mobile-shell/delivery-post-integration-checks.log`.
+- User-requested Electron build: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac` — passed; log `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-tailscale-mobile-shell/build-logs/electron-mac-build-latest-personal-20260521T170335Z.log`; artifacts/checksums `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.sha256`.
+
+Release verification:
+
+- `gh release view v1.3.24` showed a published, non-draft, non-prerelease GitHub release with expected desktop, messaging-gateway, metadata, and manifest assets.
+- `gh run view` confirmed all three release workflows completed with `success`.
 
 Latest upstream validation:
 
@@ -162,4 +182,4 @@ Before finalization, rollback is simply to stop and not merge/push this ticket b
 
 ## Final Status
 
-`User verified; finalization/release in progress. Delivery merged latest origin/personal@4bd5c537e5bc840bace2828bb15710a86def6d2e, reran integrated-state checks, refreshed handoff artifacts, and rebuilt the user-requested local packaged macOS Electron app from that integrated branch after code-review round 6 and API/E2E validation round 3 passed. Repository finalization, ticket archival, push/merge, release/deployment, and cleanup are intentionally paused until explicit user verification.`
+`Completed. User verified the rebuilt app; delivery finalized the ticket into personal, created release v1.3.24, verified all release workflows succeeded, and cleaned up the ticket worktree/branches. Delivery merged latest origin/personal@4bd5c537e5bc840bace2828bb15710a86def6d2e, reran integrated-state checks, refreshed handoff artifacts, and rebuilt the user-requested local packaged macOS Electron app from that integrated branch after code-review round 6 and API/E2E validation round 3 passed. Repository finalization, ticket archival, push/merge, release/deployment, and cleanup are complete.`
