@@ -323,6 +323,8 @@ const settingsMessages = {
   'settings.components.settings.PhoneAccessCard.reachableServerUrl': 'Reachable server URL',
   'settings.components.settings.PhoneAccessCard.refreshCandidates': 'Refresh candidates',
   'settings.components.settings.PhoneAccessCard.manualPrivateNetworkUrl': 'Manual/private-network URL',
+  'settings.components.settings.PhoneAccessCard.tailscaleGuidanceTitle': 'Travel setup tip',
+  'settings.components.settings.PhoneAccessCard.tailscaleGuidanceBody': 'Prefer a stable Tailscale Serve HTTPS URL such as https://desktop.tailnet-name.ts.net before creating the QR. Pairing with a LAN IP and later switching to a Tailscale hostname may require re-pairing because mobile credentials are origin-scoped.',
   'settings.components.settings.PhoneAccessCard.createQrCode': 'Create QR code',
   'settings.components.settings.PhoneAccessCard.revokeAllPhones': 'Revoke all phones',
   'settings.components.settings.PhoneAccessCard.pairedPhones': 'Paired phones',

@@ -1,0 +1,20 @@
+text: AutoByteus mobile
+text: Open the existing /mobile shell from a saved desktop node. Pair with the same stable Tailscale URL you expect to use while traveling.
+text: HTTP needs explicit acknowledgement
+text: http://normys-macbook-pro.tail0347f8.ts.net:29695/mobile uses cleartext HTTP. Prefer Tailscale Serve HTTPS for travel. Continue with HTTP only for a private LAN or tailnet you trust.
+
+Tick the HTTP acknowledgement box or switch to an https:// Tailscale Serve URL.
+text: SAVED NODES
+text: AutoByteus Desktop
+text: http://normys-macbook-pro.tail0347f8.ts.net:29695/mobile
+text: OPEN
+text: REMOVE
+text: PAIR OR ENTER NODE URL
+text: <pairing-link-redacted>
+text: I understand HTTP should only be used on a trusted private LAN/tailnet. Prefer Tailscale Serve HTTPS for travel.
+text: SAVE AND OPEN
+text: PASTE
+text: SCAN QR
+text: OPEN TAILSCALE
+text: Recommended setup
+text: Use Tailscale Serve HTTPS, for example https://desktop.tailnet-name.ts.net/mobile. If you pair with a LAN IP and later switch to a Tailscale hostname, WebView localStorage is a different origin and you may need to pair again.

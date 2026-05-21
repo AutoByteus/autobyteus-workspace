@@ -54,7 +54,7 @@
             <input
               v-model="store.manualServerBaseUrl"
               type="text"
-              placeholder="http://desktop-name.vpn:29695"
+              placeholder="https://desktop.tailnet-name.ts.net"
               class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
               data-testid="phone-access-manual-url"
             />
@@ -65,6 +65,10 @@
             >
               Use
             </button>
+          </div>
+          <div class="mt-2 rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs text-blue-900" data-testid="phone-access-tailscale-guidance">
+            <p class="font-semibold">{{ $t('settings.components.settings.PhoneAccessCard.tailscaleGuidanceTitle') }}</p>
+            <p class="mt-1">{{ $t('settings.components.settings.PhoneAccessCard.tailscaleGuidanceBody') }}</p>
           </div>
         </div>
 

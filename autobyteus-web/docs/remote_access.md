@@ -33,6 +33,7 @@ Supported setup profiles include:
 
 - **Same LAN:** use the desktop's LAN address and the AutoByteus server port when the local firewall allows it.
 - **Tailscale:** use the desktop's tailnet IP or MagicDNS hostname.
+- **Tailscale Serve HTTPS:** recommended for Android/travel; expose the desktop node as a stable HTTPS tailnet URL such as `https://desktop.tailnet-name.ts.net/mobile`.
 - **Headscale:** use the same Tailscale-compatible client flow against a self-hosted control plane.
 - **Company VPN / private DNS:** use the internal hostname or IP that resolves to the desktop/server node.
 - **NetBird, Netmaker, or WireGuard:** use the private overlay address or hostname that reaches the node.
@@ -45,6 +46,7 @@ The app-level pairing credential is still required. A private network or VPN is 
 2. Open **Settings -> Nodes**.
 3. Enable **Phone Access**.
 4. Pick a **Reachable server URL**. Prefer a non-loopback LAN/VPN URL for a real phone. Use **Manual/private-network URL** when the desired company VPN or overlay hostname is not auto-discovered.
+   - For Android travel, prefer entering the stable Tailscale Serve or MagicDNS URL before creating the QR. Use the same URL that the phone will use while away.
 5. Click **Create QR code**.
 6. Scan or open the QR/link on the phone before the one-time code expires.
 7. The phone exchanges the code for a per-device credential and stores the paired session.
@@ -54,6 +56,8 @@ Pairing codes are short-lived and single-use. The long-lived credential is retur
 ## Paired Phone Behavior
 
 A paired phone stores its session in browser `localStorage` under the mobile web origin. That is acceptable for the PWA MVP but should be treated as less protected than native secure storage. A future native wrapper should move the same credential into platform secure storage.
+
+Because this storage is origin-scoped, pair through the stable travel URL when possible. For example, pairing with `http://192.168.1.25:29695/mobile` and later opening `https://desktop.tailnet-name.ts.net/mobile` uses a different origin and may require re-pairing. The Android app saves the clean stable `/mobile` URL profile, not the one-time `?pairing=` URL.
 
 After pairing, the mobile shell:
 
@@ -103,9 +107,18 @@ This runs Nuxt generation with:
 
 The generated mobile output is copied to `autobyteus-web/dist-mobile/public`. The Electron/server preparation scripts run this build and copy the output into the packaged server bundle as `mobile-web/`, which the backend serves under `/mobile`.
 
+The native Android shell is built separately from `autobyteus-android/`:
+
+```bash
+ANDROID_HOME="$HOME/Library/Android/sdk" gradle -p autobyteus-android :app:assembleDebug
+```
+
+The Android shell loads the desktop-served `/mobile` URL in WebView. It does not bundle a separate copy of the AutoByteus mobile UI, run AutoByteus locally, or create a second pairing/credential protocol.
+
 ## Troubleshooting
 
 - **Phone cannot reach server:** verify the selected base URL from the phone, OS firewall/private-network ACLs, and VPN/overlay connection.
+- **Android over Tailscale cannot reach server:** verify Tailscale is connected on the phone, the desktop is online and awake, the app is not excluded by Tailscale split tunneling, and the saved URL is the same stable URL used during pairing.
 - **Pairing says disabled:** enable Phone Access from the desktop node before creating or using a QR.
 - **Pairing code invalid or expired:** create a new QR. Codes are short-lived and single-use.
 - **Credential rejected after pairing:** check whether Phone Access was disabled or the device was revoked; pair again after re-enabling or revocation.

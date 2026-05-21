@@ -323,6 +323,8 @@ const settingsMessages = {
   'settings.components.settings.PhoneAccessCard.reachableServerUrl': '可访问的服务器 URL',
   'settings.components.settings.PhoneAccessCard.refreshCandidates': '刷新候选项',
   'settings.components.settings.PhoneAccessCard.manualPrivateNetworkUrl': '手动/私有网络 URL',
+  'settings.components.settings.PhoneAccessCard.tailscaleGuidanceTitle': '出行设置提示',
+  'settings.components.settings.PhoneAccessCard.tailscaleGuidanceBody': '创建二维码前，优先使用稳定的 Tailscale Serve HTTPS URL，例如 https://desktop.tailnet-name.ts.net。若先用局域网 IP 配对，之后切换到 Tailscale 主机名，移动凭据会因浏览器来源不同而可能需要重新配对。',
   'settings.components.settings.PhoneAccessCard.createQrCode': '创建二维码',
   'settings.components.settings.PhoneAccessCard.revokeAllPhones': '撤销所有手机',
   'settings.components.settings.PhoneAccessCard.pairedPhones': '已配对手机',

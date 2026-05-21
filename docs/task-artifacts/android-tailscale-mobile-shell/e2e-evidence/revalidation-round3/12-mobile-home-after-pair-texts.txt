@@ -1,0 +1,25 @@
+text: AutoByteus · AutoByteus Desktop
+text: http://normys-macbook-pro.tail0347f8.ts.net:29695/mobile
+text: EDIT NODE
+text: RETRY
+text: BROWSER
+text: AUTOBYTEUS REMOTE ACCESS
+text: AutoByteus
+text: Mobile Home
+text: Refresh
+text: CURRENT NODE
+text: AutoByteus Desktop
+text: http://normys-macbook-pro.tail0347f8.ts.net:29695
+text: Connected
+text: PRIMARY NEXT ACTION Continue latest run /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifac...
+text: Recent work
+text: Switch work
+text: Software Engineering Team /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifac... Running · autobyteus-workspace-superrepo
+text: Software Engineering Team bug report from another old mac. # Autobyteus run history index bug report and local data repair ... Running · autobyteus-workspace-superrepo
+text: Codex Are you able to find out their customer service email? So I want to send the email to them. Running · temp_workspace
+text: Software Engineering Team Currently in the mobile view, I cannot, you know, if you look at the, when I start a new, I canno... Active · autobyteus-workspace-superrepo
+text: Software Engineering Team Currently on the front end, I'm able to import the agent packages and we support the GitHub, and ... Active · autobyteus-workspace-superrepo
+text: Choose work Recent, Agents, Teams, Workspaces
+text: Files Browse current workspace
+text: Troubleshoot Connection diagnostics
+text: Unpair Remove this phone

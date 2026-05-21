@@ -1,0 +1,11 @@
+text: AutoByteus mobile
+text: Open the existing /mobile shell from a saved desktop node. Pair with the same stable Tailscale URL you expect to use while traveling.
+text: PAIR OR ENTER NODE URL
+text: https://desktop.tailnet-name.ts.net/mobile
+text: I understand HTTP should only be used on a trusted private LAN/tailnet. Prefer Tailscale Serve HTTPS for travel.
+text: SAVE AND OPEN
+text: PASTE
+text: SCAN QR
+text: OPEN TAILSCALE
+text: Recommended setup
+text: Use Tailscale Serve HTTPS, for example https://desktop.tailnet-name.ts.net/mobile. If you pair with a LAN IP and later switch to a Tailscale hostname, WebView localStorage is a different origin and you may need to pair again.

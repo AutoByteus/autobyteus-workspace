@@ -1,0 +1,5 @@
+
+> autobyteus@1.3.23 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.

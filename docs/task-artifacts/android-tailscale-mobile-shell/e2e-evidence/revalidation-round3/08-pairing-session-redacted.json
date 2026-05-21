@@ -1,0 +1,11 @@
+{
+  "payload": {
+    "version": 1,
+    "serverBaseUrl": "http://normys-macbook-pro.tail0347f8.ts.net:29695",
+    "pairingCode": "LVRpzulKEvPyojW-VELEnlCr",
+    "expiresAt": "2026-05-21T15:36:37.924Z",
+    "serverName": "AutoByteus Desktop"
+  },
+  "qrText": "http://normys-macbook-pro.tail0347f8.ts.net:29695/mobile?pairing=<redacted>",
+  "mobileUrl": "http://normys-macbook-pro.tail0347f8.ts.net:29695/mobile?pairing=<redacted>"
+}

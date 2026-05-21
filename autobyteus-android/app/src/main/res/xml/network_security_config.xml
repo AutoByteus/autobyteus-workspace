@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- HTTP is enabled only so acknowledged private LAN/tailnet nodes can be used. The app's native URL normalizer and WebView policy still require explicit user acknowledgement and exact-origin loading. -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

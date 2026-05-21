@@ -1,0 +1,15 @@
+text: AutoByteus · AutoByteus Desktop
+text: http://normys-macbook-pro.tail0347f8.ts.net:29695/mobile
+text: EDIT NODE
+text: RETRY
+text: BROWSER
+text: AUTOBYTEUS REMOTE ACCESS
+text: Connect this phone
+text: Scan the Phone Access QR from desktop settings. The normal QR journey is one tap.
+text: Scan the QR code from Desktop > Settings > Nodes > Phone Access.
+text: No server URL, port, or token setup is needed in the normal flow.
+text: Paste pairing link
+text: THIS DEVICE NAME
+text: Phone
+text: Pair this phone
+text: Troubleshoot connection

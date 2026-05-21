@@ -1,0 +1,54 @@
+Thu May 21 17:26:42 CEST 2026
+## codex/android-tailscale-mobile-shell...origin/personal
+ M .gitignore
+ M autobyteus-web/components/settings/PhoneAccessCard.vue
+ M autobyteus-web/docs/remote_access.md
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M autobyteus-web/pages/mobile.vue
+?? autobyteus-android/
+?? autobyteus-web/public/icons/
+?? autobyteus-web/public/mobile.webmanifest
+?? docs/android_mobile_access.md
+?? docs/task-artifacts/
+.gitignore
+autobyteus-web/components/settings/PhoneAccessCard.vue
+autobyteus-web/docs/remote_access.md
+autobyteus-web/localization/messages/en/settings.ts
+autobyteus-web/localization/messages/zh-CN/settings.ts
+autobyteus-web/pages/mobile.vue
+--- Android source fix markers ---
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:19:import org.autobyteus.mobile.web.WebFileChooserCoordinator
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:29:    private lateinit var fileChooserCoordinator: WebFileChooserCoordinator
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:43:        fileChooserCoordinator = WebFileChooserCoordinator(this) { diagnostic -> showWebDiagnostic(diagnostic) }
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/AutoByteusWebView.kt:25:    private val fileChooserCoordinator: WebFileChooserCoordinator,
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/AutoByteusWebView.kt:47:            settings.allowFileAccess = false
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/AutoByteusWebView.kt:48:            settings.allowContentAccess = true
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/FileChooserRequestPolicy.kt:3:data class FileChooserRequestSpec(
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/FileChooserRequestPolicy.kt:10:        if (other !is FileChooserRequestSpec) return false
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/FileChooserRequestPolicy.kt:24:object FileChooserRequestPolicy {
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/FileChooserRequestPolicy.kt:25:    fun fromAcceptTypes(acceptTypes: Array<String>?, allowMultiple: Boolean): FileChooserRequestSpec {
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/FileChooserRequestPolicy.kt:32:        return FileChooserRequestSpec(
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:14:class WebFileChooserCoordinator(
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:18:    private var pendingFileChooser: ValueCallback<Array<Uri>>? = null
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:21:        override fun onShowFileChooser(
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:24:            fileChooserParams: FileChooserParams,
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:25:        ): Boolean = openFileChooser(
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:27:            spec = FileChooserRequestPolicy.fromAcceptTypes(
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:29:                allowMultiple = fileChooserParams.mode == FileChooserParams.MODE_OPEN_MULTIPLE,
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:46:    private fun openFileChooser(
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:48:        spec: FileChooserRequestSpec,
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:51:        pendingFileChooser = filePathCallback
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:63:    private fun buildPickerIntent(spec: FileChooserRequestSpec): Intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:90:        pendingFileChooser?.onReceiveValue(uris)
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:91:        pendingFileChooser = null
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/WebFileChooserCoordinator.kt:96:        private const val TAG = "AutoByteusFileChooser"
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:11:import org.autobyteus.mobile.web.WebFileChooserCoordinator
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:29:        assertNotEquals(AndroidExternalActions.QR_SCAN_REQUEST, WebFileChooserCoordinator.REQUEST_CODE)
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:46:                fileChooserCoordinator = WebFileChooserCoordinator(activity) {},
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:53:            assertTrue(webView.settings.allowContentAccess)
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:54:            assertFalse(webView.settings.allowFileAccess)
+autobyteus-android/app/src/test/java/org/autobyteus/mobile/web/FileChooserRequestPolicyTest.kt:9:class FileChooserRequestPolicyTest {
+autobyteus-android/app/src/test/java/org/autobyteus/mobile/web/FileChooserRequestPolicyTest.kt:12:        val spec = FileChooserRequestPolicy.fromAcceptTypes(emptyArray(), allowMultiple = false)
+autobyteus-android/app/src/test/java/org/autobyteus/mobile/web/FileChooserRequestPolicyTest.kt:21:        val spec = FileChooserRequestPolicy.fromAcceptTypes(arrayOf(" image/* "), allowMultiple = false)
+autobyteus-android/app/src/test/java/org/autobyteus/mobile/web/FileChooserRequestPolicyTest.kt:29:        val spec = FileChooserRequestPolicy.fromAcceptTypes(

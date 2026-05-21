@@ -10,3 +10,7 @@ autobyteus-server-ts/applications/
 autobyteus-server-ts/agent-teams/
 autobyteus-server-ts/extensions/
 autobyteus-server-ts/prisma/dev.db
+autobyteus-web/dist-mobile/
+autobyteus-android/.gradle/
+autobyteus-android/local.properties
+autobyteus-android/**/build/
