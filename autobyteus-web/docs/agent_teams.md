@@ -263,9 +263,20 @@ history rows.
 
 ## Package Refresh Behavior
 
-Package import/remove flows invalidate and reload Agent Teams together with Applications and Agents so application-owned teams appear or disappear immediately in the same session.
+Agent package import, removal, local reload, and managed GitHub update flows
+invalidate and reload Agent Teams together with Applications and Agents so
+package-owned teams appear, refresh, or disappear immediately in the same
+session.
 
-For definition updates outside the editor, use the package/Git/folder source workflow and then press **Reload** in the Agent Teams catalog. Reload refreshes the local agent and team definition catalogs from the configured sources and performs a network refetch; it does not copy definitions between nodes.
+For definition updates outside the editor, use **Settings → Agent Packages** as
+the source-aware package lifecycle surface. Local path packages remain
+user-owned: edit or pull the folder outside AutoByteus, then press the package
+row's **Reload** action so the backend validates and rescans the package.
+Public GitHub package rows can **Check again** for default-branch drift and
+**Update** the AutoByteus-managed package when an update is available or the
+installed revision is unknown. These actions refresh the local agent and team
+definition catalogs from configured package sources and perform a network
+refetch; they do not copy definitions between nodes.
 
 ## Featured Teams
 

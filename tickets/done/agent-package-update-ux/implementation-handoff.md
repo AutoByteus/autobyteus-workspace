@@ -2,11 +2,11 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-update-ux/tickets/agent-package-update-ux/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-update-ux/tickets/agent-package-update-ux/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-update-ux/tickets/agent-package-update-ux/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-update-ux/tickets/agent-package-update-ux/design-review-report.md`
-- Code review report (round 1 Local Fix request): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-update-ux/tickets/agent-package-update-ux/review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-update-ux/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-update-ux/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-update-ux/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-update-ux/design-review-report.md`
+- Code review report (round 1 Local Fix request): `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-update-ux/review-report.md`
 
 ## What Changed
 

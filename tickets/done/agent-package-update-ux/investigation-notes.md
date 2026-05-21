@@ -23,7 +23,7 @@ User reports that the Agent Packages frontend currently supports importing agent
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-update-ux`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-update-ux/tickets/agent-package-update-ux`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agent-package-update-ux`
 - Current Branch: `codex/agent-package-update-ux`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-update-ux`
 - Bootstrap Base Branch: `origin/personal`
