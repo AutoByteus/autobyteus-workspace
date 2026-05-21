@@ -24,14 +24,19 @@ const terminalElement = ref<HTMLDivElement | null>(null);
 const terminalInstance = shallowRef<Terminal | null>(null);
 const fitAddon = shallowRef<FitAddon | null>(null);
 
+const props = defineProps<{
+  workspaceId?: string;
+}>();
+
 const appFontSizeStore = useAppFontSizeStore();
 const { resolvedMetrics } = storeToRefs(appFontSizeStore);
 const terminalFontPx = computed(() => resolvedMetrics.value.terminalFontPx);
 const workspaceStore = useWorkspaceStore();
+const effectiveWorkspaceId = computed(() => props.workspaceId?.trim() || workspaceStore.activeWorkspace?.workspaceId || '');
 
 // Initialize the terminal session composable
 const session = useTerminalSession({
-  workspaceId: computed(() => workspaceStore.activeWorkspace?.workspaceId || '')
+  workspaceId: effectiveWorkspaceId,
 });
 
 let resizeObserver: ResizeObserver | null = null;
@@ -77,7 +82,7 @@ const scheduleInitializeTerminal = () => {
     initializeTerminal();
     if (pendingConnect) {
       pendingConnect = false;
-      if (workspaceStore.activeWorkspace?.workspaceId) {
+      if (effectiveWorkspaceId.value) {
         session.connect();
       }
     }
@@ -181,7 +186,7 @@ const connectTerminal = () => {
     scheduleInitializeTerminal();
     return;
   }
-  if (workspaceStore.activeWorkspace?.workspaceId) {
+  if (effectiveWorkspaceId.value) {
     session.connect();
   }
 };
@@ -206,12 +211,13 @@ onMounted(() => {
   connectTerminal();
 
   // Watch for workspace changes to reconnect
-  watch(() => workspaceStore.activeWorkspace?.workspaceId, (newId) => {
-    if (newId) {
-      session.disconnect();
-      // Small delay to ensure clean disconnect before reconnecting
-      setTimeout(() => session.connect(), 100);
+  watch(effectiveWorkspaceId, (newId) => {
+    session.disconnect();
+    if (!newId) {
+      return;
     }
+    // Small delay to ensure clean disconnect before reconnecting
+    setTimeout(() => session.connect(), 100);
   });
 
   // Setup resize observer for the container

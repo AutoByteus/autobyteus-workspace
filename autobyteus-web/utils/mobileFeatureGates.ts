@@ -8,6 +8,7 @@ export type MobileFeatureId =
   | 'runHistory'
   | 'workspaceFiles'
   | 'terminal'
+  | 'vnc'
   | 'desktopWorkspace'
   | 'desktopSettings'
   | 'desktopUpdates'
@@ -21,6 +22,8 @@ const supportedMobileFeatures = new Set<MobileFeatureId>([
   'agentTeamRuns',
   'runHistory',
   'workspaceFiles',
+  'terminal',
+  'vnc',
 ]);
 
 export function isMobileFeatureSupported(featureId: MobileFeatureId): boolean {
@@ -29,7 +32,7 @@ export function isMobileFeatureSupported(featureId: MobileFeatureId): boolean {
 
 export function assertMobileFeatureSupported(featureId: MobileFeatureId): void {
   if (!isMobileFeatureSupported(featureId)) {
-    throw new Error(`Feature '${featureId}' is not supported in the mobile client yet.`);
+    throw new Error(`Feature '${featureId}' is not available in the current mobile client context.`);
   }
 }
 

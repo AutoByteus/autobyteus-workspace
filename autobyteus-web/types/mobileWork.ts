@@ -1,4 +1,8 @@
-export type MobileTaskTab = 'chat' | 'runs' | 'files' | 'activity';
+export type MobileTaskTab = 'chat' | 'runs' | 'files' | 'tools' | 'activity';
+
+export type MobileCatalogSegmentId = 'recent' | 'agents' | 'teams' | 'workspaces';
+
+export type MobileCatalogSegmentStatus = 'idle' | 'loading' | 'success' | 'error';
 
 export type MobileWorkContext =
   | {
@@ -51,6 +55,39 @@ export type MobileWorkListItem = {
   meta: string;
   context: MobileWorkContext;
 };
+
+export type MobileCatalogSegmentState<TItem = MobileWorkListItem> = {
+  id: MobileCatalogSegmentId;
+  status: MobileCatalogSegmentStatus;
+  items: TItem[];
+  errorMessage: string;
+};
+
+export type MobileRunSetupIntent =
+  | {
+      kind: 'agent';
+      agentDefinitionId: string;
+      workspaceId?: string;
+      revision: number;
+    }
+  | {
+      kind: 'team';
+      teamDefinitionId: string;
+      workspaceId?: string;
+      revision: number;
+    };
+
+export type MobileRunSetupIntentRequest =
+  | {
+      kind: 'agent';
+      agentDefinitionId: string;
+      workspaceId?: string;
+    }
+  | {
+      kind: 'team';
+      teamDefinitionId: string;
+      workspaceId?: string;
+    };
 
 export function mobileWorkContextKey(context: MobileWorkContext): string {
   switch (context.kind) {

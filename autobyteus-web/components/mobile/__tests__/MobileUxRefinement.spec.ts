@@ -6,7 +6,9 @@ import MobileActivity from '../MobileActivity.vue';
 import MobileChat from '../MobileChat.vue';
 import MobileFiles from '../MobileFiles.vue';
 import MobileHome from '../MobileHome.vue';
+import MobileRuns from '../MobileRuns.vue';
 import MobileRunSetup from '../MobileRunSetup.vue';
+import MobileTools from '../MobileTools.vue';
 import { useAgentActivityStore, type ToolActivity } from '~/stores/agentActivityStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
@@ -282,6 +284,32 @@ describe('mobile Round 4 UX refinements', () => {
     expect(wrapper.get('[data-testid="mobile-run-launch"]').attributes('disabled')).toBeDefined();
   });
 
+  it('consumes a single-use setup intent so selected agents open visible setup preselected', async () => {
+    const mobileWorkStore = useMobileWorkStore();
+    const agentContext: MobileWorkContext = {
+      kind: 'agent-definition',
+      agentDefinitionId: 'agent-1',
+      title: 'Builder Agent',
+      description: 'Builds software',
+    };
+    mobileWorkStore.selectContext(agentContext, 'runs');
+    mobileWorkStore.requestRunSetup({ kind: 'agent', agentDefinitionId: 'agent-1' });
+
+    const wrapper = mountWithPinia(MobileRuns, {
+      props: { context: agentContext },
+      global: {
+        stubs: {
+          RuntimeModelConfigFields: { template: '<div data-testid="runtime-model-config-fields" />' },
+        },
+      },
+    });
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-run-setup"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="mobile-run-agent-select"]').text()).toContain('Builder Agent');
+    expect(mobileWorkStore.runSetupIntent).toBeNull();
+  });
+
   it('keeps context visibility adjacent to the mobile composer send decision', () => {
     const run = seedAgentRun();
     run.contextFilePaths.push(createWorkspaceContextAttachment('/Users/normy/project/active.md'));
@@ -301,7 +329,7 @@ describe('mobile Round 4 UX refinements', () => {
     expect(monitorHtml.indexOf('mobile-composer-context-tray')).toBeLessThan(monitorHtml.indexOf('Send message'));
   });
 
-  it('adds sticky folder context, recent/attached/type filters, and deliberate deep search to mobile Files', async () => {
+  it('keeps mobile Files browse-first while preserving secondary filters and deliberate deep search', async () => {
     useMobileWorkStore().addDraftContextAttachment(createWorkspaceContextAttachment('/Users/normy/project/attached.md'));
     useFileExplorerStore().fileExplorerStateByWorkspace.set('workspace-1', {
       openFolders: {},
@@ -330,6 +358,13 @@ describe('mobile Round 4 UX refinements', () => {
     });
 
     expect(wrapper.find('[data-testid="mobile-files-sticky-context"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-files-primary-controls"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-files-advanced-filters"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Markdown/code');
+
+    await wrapper.get('[data-testid="mobile-files-filters-toggle"]').trigger('click');
+    await nextTick();
+
     expect(wrapper.find('[data-testid="mobile-files-filter-recent"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-files-filter-attached"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-files-filter-markdown-code"]').exists()).toBe(true);
@@ -344,7 +379,7 @@ describe('mobile Round 4 UX refinements', () => {
     expect(wrapper.text()).toContain('attached.md');
   });
 
-  it('renders Activity as a compact digest with filters and expandable details', async () => {
+  it('renders Activity as a compact digest with secondary issue filters and no unsupported-tool notice', async () => {
     seedAgentRun();
     const activity: ToolActivity = {
       invocationId: 'tool-1',
@@ -365,12 +400,42 @@ describe('mobile Round 4 UX refinements', () => {
     });
 
     expect(wrapper.find('[data-testid="mobile-activity-digest"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="mobile-activity-filter-errors"]').exists()).toBe(true);
+    expect(wrapper.text()).not.toContain('Interactive terminal, browser, and desktop tool panes are not supported');
+    expect(wrapper.find('[data-testid="mobile-activity-filter-errors"]').exists()).toBe(false);
     expect(wrapper.text()).toContain('ANTHROPIC_API_KEY environment variable is not set');
+
+    await wrapper.get('[data-testid="mobile-activity-more-filters"]').trigger('click');
+    await nextTick();
+    expect(wrapper.find('[data-testid="mobile-activity-filter-errors"]').exists()).toBe(true);
 
     await wrapper.get('[data-testid="mobile-activity-filter-errors"]').trigger('click');
     await nextTick();
     expect(wrapper.find('[data-testid="mobile-tool-activity-row"]').exists()).toBe(true);
     expect(wrapper.text()).toContain('1 error/denied item');
+  });
+
+  it('renders mobile Tools with Terminal and VNC without requiring desktop right-panel layout', async () => {
+    const wrapper = mountWithPinia(MobileTools, {
+      props: { context: workspaceContext },
+      global: {
+        stubs: {
+          Terminal: { props: ['workspaceId'], template: '<div data-testid="terminal-stub">{{ workspaceId }}</div>' },
+          VncViewer: { template: '<div data-testid="vnc-stub" />' },
+        },
+      },
+    });
+
+    expect(wrapper.find('[data-testid="mobile-tools"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-tools-tab-terminal"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-tools-tab-vnc"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-terminal-panel"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="terminal-stub"]').text()).toContain('workspace-1');
+
+    await wrapper.get('[data-testid="mobile-tools-tab-vnc"]').trigger('click');
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-vnc-panel"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="vnc-stub"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('phone-reachable hostnames');
   });
 });
