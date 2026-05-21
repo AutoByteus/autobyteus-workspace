@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/review-report.md`
 - Current Validation Round: `1`
 - Trigger: Code-review pass from `code_reviewer` for branch `codex/mobile-functionality-parity`.
 - Prior Round Reviewed: `N/A`
@@ -126,7 +126,7 @@ The implementation already contained durable tests from the implementation stage
 
 ## Other Validation Artifacts
 
-- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/api-e2e-validation-report.md`
+- Validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/api-e2e-validation-report.md`
 - VNC screenshot: `/Users/normy/.autobyteus/browser-artifacts/ce867a-1779353702680.png`
 - 390px Files screenshot: `/Users/normy/.autobyteus/browser-artifacts/ce867a-1779353710647.png`
 

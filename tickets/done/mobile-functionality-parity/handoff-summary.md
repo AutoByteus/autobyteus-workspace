@@ -3,7 +3,7 @@
 ## Ticket
 
 - Ticket: `mobile-functionality-parity`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity` (removed after successful finalization; archived artifacts live under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity`)
 - Branch: `codex/mobile-functionality-parity`
 - Finalization target: `personal` / `origin/personal`
 - Handoff round: Finalized delivery handoff after user verification.
@@ -53,9 +53,9 @@
 ## Delivery-Owned Docs / Artifacts
 
 - Long-lived docs updated: `autobyteus-web/docs/remote_access.md`, `autobyteus-web/docs/terminal.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/done/mobile-functionality-parity/docs-sync-report.md`
-- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/done/mobile-functionality-parity/release-notes.md` (prepared but not used because the user requested no release)
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/done/mobile-functionality-parity/release-deployment-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/docs-sync-report.md`
+- Release notes draft: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/release-notes.md` (prepared but not used because the user requested no release)
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/release-deployment-report.md`
 
 ## Latest Authoritative API/E2E Validation Evidence
 

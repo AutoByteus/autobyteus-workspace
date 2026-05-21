@@ -3,15 +3,15 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/requirements.md`
 - Current Review Round: `1`
 - Trigger: Implementation handoff from `implementation_engineer` for `codex/mobile-functionality-parity`.
 - Prior Review Round Reviewed: `N/A`
 - Latest Authoritative Round: `1`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/implementation-handoff.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/implementation-handoff.md`
 - Validation Report Reviewed As Context: `N/A`
 - API / E2E Validation Started Yet: `No`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No`

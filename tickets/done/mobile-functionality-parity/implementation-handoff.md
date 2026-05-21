@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/design-review-report.md`
 
 ## What Changed
 

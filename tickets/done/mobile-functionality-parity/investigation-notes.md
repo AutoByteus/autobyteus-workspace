@@ -22,7 +22,7 @@ The user reports that mobile web currently loses functionality compared to deskt
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity
-- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity
+- Task Artifact Folder: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity
 - Current Branch: codex/mobile-functionality-parity
 - Current Worktree / Working Directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity
 - Bootstrap Base Branch: origin/personal

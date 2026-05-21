@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review of mobile functionality parity design package from `solution_designer`.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-functionality-parity/tickets/mobile-functionality-parity/design-spec.md` against the architecture design principles and the current codebase. The design is spine-first, identifies the mobile shell/catalog/setup/tools ownership boundaries, rejects stale mobile-MVP compatibility behavior, and maps the implementation to concrete existing files plus one new mobile-owned Tools presentation file.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-functionality-parity/design-spec.md` against the architecture design principles and the current codebase. The design is spine-first, identifies the mobile shell/catalog/setup/tools ownership boundaries, rejects stale mobile-MVP compatibility behavior, and maps the implementation to concrete existing files plus one new mobile-owned Tools presentation file.
 
 ## Task Design Health Assessment Verdict
 
