@@ -1,19 +1,12 @@
 import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type {
-  TeamRunDeleteLifecycleRecord,
   TeamRunIndexFileRecord,
   TeamRunIndexRowRecord,
-  TeamRunStatusRecord,
 } from "../store/team-run-history-index-record-types.js";
 import type { TeamRunMemberMetadata } from "../store/team-run-metadata-types.js";
-export {
-  TEAM_RUN_HISTORY_INDEX_RECORD_VERSION as TEAM_RUN_HISTORY_INDEX_VERSION,
-} from "../store/team-run-history-index-record-types.js";
 
-export type TeamRunKnownStatus = TeamRunStatusRecord;
-
-export type TeamRunDeleteLifecycle = TeamRunDeleteLifecycleRecord;
+export type TeamRunKnownStatus = "ACTIVE" | "IDLE" | "ERROR";
 
 export type TeamRunIndexRow = TeamRunIndexRowRecord;
 
@@ -40,10 +33,10 @@ export interface TeamRunHistoryItem {
   coordinatorMemberRouteKey: string;
   workspaceRootPath: string | null;
   summary: string;
-  lastActivityAt: string;
+  createdAt: string;
+  archivedAt: string | null;
+  terminatedAt: string | null;
   status: AgentApiStatus;
-  lastKnownStatus: TeamRunKnownStatus;
-  deleteLifecycle: TeamRunDeleteLifecycle;
   isActive: boolean;
   members: TeamRunMemberHistoryItem[];
   memberTree: TeamRunMemberMetadata[];

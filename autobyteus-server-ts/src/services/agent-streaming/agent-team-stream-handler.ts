@@ -343,8 +343,6 @@ export class AgentTeamStreamHandler {
     }
     await this.teamRunService.recordRunActivity(teamRun, {
       summary: content,
-      lastKnownStatus: "ACTIVE",
-      lastActivityAt: new Date().toISOString(),
     });
   }
 

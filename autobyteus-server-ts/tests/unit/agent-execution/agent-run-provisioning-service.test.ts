@@ -22,12 +22,10 @@ const buildMetadata = (
   skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: null,
-  lastKnownStatus: "IDLE",
-  activationState: "PREPARED",
   preparedAt: "2026-05-17T00:00:00.000Z",
   preparedExpiresAt: "2026-05-18T00:00:00.000Z",
+  startedAt: null,
   applicationExecutionContext: null,
-  archivedAt: null,
   ...overrides,
 });
 
@@ -38,11 +36,10 @@ describe("AgentRunProvisioningService", () => {
     writeMetadata: ReturnType<typeof vi.fn>;
     readMetadata: ReturnType<typeof vi.fn>;
   };
-  let historyIndexService: {
-    recordRunCreated: ReturnType<typeof vi.fn>;
-    recordRunRestored: ReturnType<typeof vi.fn>;
-    recordRunActivity: ReturnType<typeof vi.fn>;
-    removeRow: ReturnType<typeof vi.fn>;
+  let historyCatalogService: {
+    recordPreparedRun: ReturnType<typeof vi.fn>;
+    recordRunStarted: ReturnType<typeof vi.fn>;
+    cancelPreparedRun: ReturnType<typeof vi.fn>;
   };
   let agentRunManager: {
     hasActiveRun: ReturnType<typeof vi.fn>;
@@ -60,15 +57,37 @@ describe("AgentRunProvisioningService", () => {
     metadataService = {
       writeMetadata: vi.fn(async (runId: string, metadata: AgentRunMetadata) => {
         metadataByRunId.set(runId, metadata);
-        await fs.mkdir(metadata.memoryDir, { recursive: true });
       }),
       readMetadata: vi.fn(async (runId: string) => metadataByRunId.get(runId) ?? null),
     };
-    historyIndexService = {
-      recordRunCreated: vi.fn().mockResolvedValue(undefined),
-      recordRunRestored: vi.fn().mockResolvedValue(undefined),
-      recordRunActivity: vi.fn().mockResolvedValue(undefined),
-      removeRow: vi.fn().mockResolvedValue(undefined),
+    historyCatalogService = {
+      recordPreparedRun: vi.fn(async (input: { runId: string; metadata: AgentRunMetadata }) => {
+        metadataByRunId.set(input.runId, input.metadata);
+        await fs.mkdir(input.metadata.memoryDir, { recursive: true });
+      }),
+      recordRunStarted: vi.fn(async (input: {
+        runId: string;
+        platformAgentRunId?: string | null;
+        runtimeKind?: RuntimeKind;
+        startedAt?: string;
+      }) => {
+        const current = metadataByRunId.get(input.runId);
+        if (!current) {
+          return null;
+        }
+        const next: AgentRunMetadata = {
+          ...current,
+          platformAgentRunId: input.platformAgentRunId ?? current.platformAgentRunId,
+          runtimeKind: input.runtimeKind ?? current.runtimeKind,
+          startedAt: input.startedAt ?? current.startedAt ?? "2026-05-17T00:05:00.000Z",
+        };
+        metadataByRunId.set(input.runId, next);
+        return next;
+      }),
+      cancelPreparedRun: vi.fn(async (runId: string) => {
+        metadataByRunId.delete(runId);
+        return { success: true, message: `Run '${runId}' cancelled.` };
+      }),
     };
     agentRunManager = {
       hasActiveRun: vi.fn().mockReturnValue(false),
@@ -86,14 +105,14 @@ describe("AgentRunProvisioningService", () => {
   });
 
   const buildService = () => new AgentRunProvisioningService(memoryDir, {
-    agentRunManager: agentRunManager as any,
-    metadataService: metadataService as any,
-    historyIndexService: historyIndexService as any,
-    workspaceManager: workspaceManager as any,
-    agentDefinitionService: { getFreshAgentDefinitionById: vi.fn() } as any,
+    agentRunManager: agentRunManager as never,
+    metadataService: metadataService as never,
+    historyCatalogService: historyCatalogService as never,
+    workspaceManager: workspaceManager as never,
+    agentDefinitionService: { getFreshAgentDefinitionById: vi.fn() } as never,
   });
 
-  it("prepares a standalone run identity without creating an active runtime", async () => {
+  it("prepares a standalone run identity through the catalog without persisted live status", async () => {
     const service = buildService();
 
     const result = await service.prepareAgentRun({
@@ -113,24 +132,24 @@ describe("AgentRunProvisioningService", () => {
       preparedExpiresAt: expect.any(String),
     });
     expect(agentRunManager.createAgentRun).not.toHaveBeenCalled();
-    expect(metadataByRunId.get(result.runId)).toMatchObject({
-      runId: result.runId,
-      activationState: "PREPARED",
-      platformAgentRunId: null,
-      lastKnownStatus: "IDLE",
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-    });
-    expect(historyIndexService.recordRunCreated).toHaveBeenCalledWith(expect.objectContaining({
+    expect(historyCatalogService.recordPreparedRun).toHaveBeenCalledWith(expect.objectContaining({
       runId: result.runId,
       summary: "first message",
-      lastKnownStatus: "IDLE",
+      metadata: expect.objectContaining({
+        runId: result.runId,
+        platformAgentRunId: null,
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        startedAt: null,
+      }),
     }));
+    const recorded = historyCatalogService.recordPreparedRun.mock.calls[0][0].metadata;
+    expect(recorded).not.toHaveProperty("lastKnownStatus");
+    expect(recorded).not.toHaveProperty("activationState");
   });
 
-  it("marks prepared activation failures and permits retry from ACTIVATION_FAILED", async () => {
+  it("does not persist activation failure state and permits retry from prepared facts", async () => {
     const runId = "run-activation-retry";
-    const prepared = buildMetadata(memoryDir, runId);
-    metadataByRunId.set(runId, prepared);
+    metadataByRunId.set(runId, buildMetadata(memoryDir, runId));
     const createdRun = {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       getPlatformAgentRunId: () => "platform-run-1",
@@ -141,44 +160,36 @@ describe("AgentRunProvisioningService", () => {
     const service = buildService();
 
     await expect(service.activatePreparedRun(runId)).rejects.toThrow("runtime boot failed");
+    expect(historyCatalogService.recordRunStarted).not.toHaveBeenCalled();
     expect(metadataByRunId.get(runId)).toMatchObject({
-      activationState: "ACTIVATION_FAILED",
-      lastKnownStatus: "ERROR",
+      startedAt: null,
       platformAgentRunId: null,
     });
-    expect(historyIndexService.recordRunActivity).toHaveBeenCalledWith(expect.objectContaining({
-      runId,
-      lastKnownStatus: "ERROR",
-    }));
 
     const retried = await service.activatePreparedRun(runId);
 
     expect(retried).toBe(createdRun);
     expect(agentRunManager.createAgentRun).toHaveBeenCalledTimes(2);
-    expect(metadataByRunId.get(runId)).toMatchObject({
-      activationState: "ACTIVATED",
-      lastKnownStatus: "ACTIVE",
-      platformAgentRunId: "platform-run-1",
-    });
-    expect(historyIndexService.recordRunRestored).toHaveBeenCalledWith(expect.objectContaining({
+    expect(historyCatalogService.recordRunStarted).toHaveBeenCalledWith(expect.objectContaining({
       runId,
-      lastKnownStatus: "ACTIVE",
+      platformAgentRunId: "platform-run-1",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     }));
+    expect(metadataByRunId.get(runId)).toMatchObject({
+      platformAgentRunId: "platform-run-1",
+      startedAt: expect.any(String),
+    });
   });
 
-  it("cancels an unactivated prepared run by removing history and memory", async () => {
+  it("delegates prepared cancellation to the catalog boundary", async () => {
     const runId = "run-cancel-prepared";
-    const metadata = buildMetadata(memoryDir, runId);
-    metadataByRunId.set(runId, metadata);
-    await fs.mkdir(metadata.memoryDir, { recursive: true });
-    await fs.writeFile(path.join(metadata.memoryDir, "run_metadata.json"), "{}", "utf8");
+    metadataByRunId.set(runId, buildMetadata(memoryDir, runId));
     const service = buildService();
 
     const result = await service.cancelPreparedAgentRun(runId);
 
-    expect(result).toEqual({ success: true, message: "Prepared run cancelled." });
-    expect(historyIndexService.removeRow).toHaveBeenCalledWith(runId);
-    await expect(fs.stat(metadata.memoryDir)).rejects.toThrow();
+    expect(result).toEqual({ success: true, message: "Run 'run-cancel-prepared' cancelled." });
+    expect(historyCatalogService.cancelPreparedRun).toHaveBeenCalledWith(runId);
   });
 
   it("cleans up only expired prepared identities", async () => {
@@ -189,11 +200,11 @@ describe("AgentRunProvisioningService", () => {
     const fresh = buildMetadata(memoryDir, "run-fresh", {
       preparedExpiresAt: "2026-05-18T12:01:00.000Z",
     });
-    const failed = buildMetadata(memoryDir, "run-failed", {
-      activationState: "ACTIVATION_FAILED",
+    const started = buildMetadata(memoryDir, "run-started", {
       preparedExpiresAt: "2026-05-18T11:00:00.000Z",
+      startedAt: "2026-05-17T00:05:00.000Z",
     });
-    for (const metadata of [stale, fresh, failed]) {
+    for (const metadata of [stale, fresh, started]) {
       metadataByRunId.set(metadata.runId, metadata);
       await fs.mkdir(metadata.memoryDir, { recursive: true });
     }
@@ -202,10 +213,7 @@ describe("AgentRunProvisioningService", () => {
     const removed = await service.cleanupStalePreparedRuns(now);
 
     expect(removed).toBe(1);
-    expect(historyIndexService.removeRow).toHaveBeenCalledTimes(1);
-    expect(historyIndexService.removeRow).toHaveBeenCalledWith("run-stale");
-    await expect(fs.stat(stale.memoryDir)).rejects.toThrow();
-    await expect(fs.stat(fresh.memoryDir)).resolves.toBeTruthy();
-    await expect(fs.stat(failed.memoryDir)).resolves.toBeTruthy();
+    expect(historyCatalogService.cancelPreparedRun).toHaveBeenCalledTimes(1);
+    expect(historyCatalogService.cancelPreparedRun).toHaveBeenCalledWith("run-stale");
   });
 });

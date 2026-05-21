@@ -115,8 +115,6 @@ export class ChannelTeamRunFacade {
         }
         await this.teamRunService.recordRunActivity(teamRun, {
           summary: envelope.content,
-          lastKnownStatus: "ACTIVE",
-          lastActivityAt: new Date().toISOString(),
         });
         try {
           this.teamLiveMessagePublisher.publishExternalUserMessage({

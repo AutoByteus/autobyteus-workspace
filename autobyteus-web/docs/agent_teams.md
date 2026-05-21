@@ -202,6 +202,14 @@ backend may publish root `TEAM_STATUS initializing` without a member event.
 
 `agentTeamRunStore.terminateTeamRun()` treats backend termination as the authority for persisted teams. It tears down local stream/member state and marks the team resume config inactive only after `TerminateAgentTeamRun` succeeds. If backend termination fails, the store returns `false` and leaves the current local stream/member state and run-history activity cache unchanged. Local temporary teams are the exception: they have no persisted backend runtime and are torn down locally.
 
+Workspace team history is backed by the server V2 team catalog, not by durable
+live-status fields. `listWorkspaceRunHistory` returns team rows with
+`createdAt`, `archivedAt`, `terminatedAt`, derived aggregate status, leaf member
+statuses, and recursive `memberTree`. Frontend team tree rows may still expose
+local view-model `lastActivityAt`, `lastKnownStatus`, and delete-readiness
+fields for shared UI components, but those values are derived from the V2
+catalog row plus live status and are not persisted backend team-history fields.
+
 ## Reopen / Hydration Behavior
 
 `reconstructTeamRunConfigFromMetadata()` is the authoritative frontend reopen/hydration rule for existing team runs.

@@ -18,10 +18,9 @@ import {
   getTeamRunMetadataService,
 } from "../../run-history/services/team-run-metadata-service.js";
 import {
-  TeamRunHistoryIndexService,
-  getTeamRunHistoryIndexService,
-} from "../../run-history/services/team-run-history-index-service.js";
-import type { TeamRunKnownStatus } from "../../run-history/domain/team-run-history-index-types.js";
+  TeamRunHistoryCatalogService,
+  getTeamRunHistoryCatalogService,
+} from "../../run-history/services/team-run-history-catalog-service.js";
 import {
   SkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
@@ -67,7 +66,7 @@ export class TeamRunService {
   private readonly teamDefinitionService: AgentTeamDefinitionService;
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private readonly teamRunMetadataService: TeamRunMetadataService;
-  private readonly teamRunHistoryIndexService: TeamRunHistoryIndexService;
+  private readonly teamRunHistoryCatalogService: TeamRunHistoryCatalogService;
   private readonly workspaceManager: WorkspaceManager;
   private readonly memberLayout: TeamMemberMemoryLayout;
 
@@ -75,7 +74,7 @@ export class TeamRunService {
     agentTeamRunManager?: AgentTeamRunManager;
     teamDefinitionService?: AgentTeamDefinitionService;
     teamRunMetadataService?: TeamRunMetadataService;
-    teamRunHistoryIndexService?: TeamRunHistoryIndexService;
+    teamRunHistoryCatalogService?: TeamRunHistoryCatalogService;
     workspaceManager?: WorkspaceManager;
     memoryDir?: string;
   } = {}) {
@@ -85,8 +84,8 @@ export class TeamRunService {
       options.teamDefinitionService ?? AgentTeamDefinitionService.getInstance();
     this.teamRunMetadataService =
       options.teamRunMetadataService ?? getTeamRunMetadataService();
-    this.teamRunHistoryIndexService =
-      options.teamRunHistoryIndexService ?? getTeamRunHistoryIndexService();
+    this.teamRunHistoryCatalogService =
+      options.teamRunHistoryCatalogService ?? getTeamRunHistoryCatalogService();
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     this.memberLayout = new TeamMemberMemoryLayout(
       options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
@@ -222,13 +221,10 @@ export class TeamRunService {
     const run = await this.agentTeamRunManager.createTeamRun(plan.config);
     const metadata = await this.teamRunMetadataMapper.buildMetadata(run);
 
-    await this.teamRunMetadataService.writeMetadata(run.runId, metadata);
-    await this.teamRunHistoryIndexService.recordRunCreated({
+    await this.teamRunHistoryCatalogService.recordTeamRunCreated({
       teamRunId: run.runId,
       metadata,
       summary: "",
-      lastKnownStatus: "IDLE",
-      lastActivityAt: new Date().toISOString(),
     });
 
     return run;
@@ -260,13 +256,12 @@ export class TeamRunService {
         throw new Error(`Team run '${normalizedTeamRunId}' restore failed.`);
       }
 
-      const refreshedMetadata = await this.teamRunMetadataMapper.buildMetadata(teamRun);
-      await this.teamRunMetadataService.writeMetadata(normalizedTeamRunId, refreshedMetadata);
-      await this.teamRunHistoryIndexService.recordRunRestored({
+      const refreshedMetadata = await this.teamRunMetadataMapper.buildMetadata(teamRun, {
+        previousMetadata: metadata,
+      });
+      await this.teamRunHistoryCatalogService.recordTeamRunRestored({
         teamRunId: normalizedTeamRunId,
         metadata: refreshedMetadata,
-        lastKnownStatus: "ACTIVE",
-        lastActivityAt: new Date().toISOString(),
       });
 
       return teamRun;
@@ -300,31 +295,30 @@ export class TeamRunService {
     run: TeamRun,
     input: {
       summary?: string | null;
-      lastKnownStatus?: TeamRunKnownStatus;
-      lastActivityAt?: string;
     } = {},
   ): Promise<void> {
-    const metadata = await this.teamRunMetadataMapper.buildMetadata(run);
-    await this.teamRunMetadataService.writeMetadata(run.runId, metadata);
-    await this.teamRunHistoryIndexService.recordRunActivity({
+    await this.teamRunHistoryCatalogService.recordTeamRunSummary({
       teamRunId: run.runId,
-      metadata,
       summary: input.summary ?? "",
-      lastKnownStatus: input.lastKnownStatus ?? "ACTIVE",
-      lastActivityAt: input.lastActivityAt ?? new Date().toISOString(),
     });
   }
 
   async refreshRunMetadata(run: TeamRun): Promise<void> {
-    const metadata = await this.teamRunMetadataMapper.buildMetadata(run);
-    await this.teamRunMetadataService.writeMetadata(run.runId, metadata);
+    const previousMetadata = await this.teamRunMetadataService.readMetadata(run.runId);
+    const metadata = await this.teamRunMetadataMapper.buildMetadata(run, {
+      previousMetadata,
+    });
+    await this.teamRunHistoryCatalogService.refreshTeamRunMetadata({
+      teamRunId: run.runId,
+      metadata,
+    });
   }
 
   async terminateTeamRun(teamRunId: string): Promise<boolean> {
     const success = await this.agentTeamRunManager.terminateTeamRun(teamRunId);
 
     if (success) {
-      await this.teamRunHistoryIndexService.recordRunTerminated(teamRunId);
+      await this.teamRunHistoryCatalogService.recordTeamRunTerminated({ teamRunId });
     }
 
     return success;

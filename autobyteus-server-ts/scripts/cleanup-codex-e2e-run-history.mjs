@@ -52,10 +52,7 @@ const readIndex = async (indexPath) => {
   try {
     const raw = await fs.readFile(indexPath, "utf-8");
     const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.rows)) {
-      throw new Error("run_history_index.json has unexpected structure (rows missing)");
-    }
-    return parsed;
+    return validateV2Index(parsed, indexPath);
   } catch (error) {
     if (String(error).includes("ENOENT")) {
       return null;
@@ -64,14 +61,93 @@ const readIndex = async (indexPath) => {
   }
 };
 
-const writeIndex = async (indexPath, index) => {
-  await fs.mkdir(path.dirname(indexPath), { recursive: true });
-  await fs.writeFile(indexPath, `${JSON.stringify(index, null, 2)}\n`, "utf-8");
+const migrationGuidance = (indexPath) =>
+  `cleanup requires a valid V2 run_history_index.json at '${indexPath}'. Run scripts/migrate-agent-run-history-index-v2.mjs --memory-dir <memory-dir> --apply before cleanup.`;
+
+const nullableString = (value) => value === null || typeof value === "string";
+const allowedV2RowKeys = new Set([
+  "runId",
+  "agentDefinitionId",
+  "agentName",
+  "workspaceRootPath",
+  "summary",
+  "createdAt",
+  "archivedAt",
+  "terminatedAt",
+]);
+
+const normalizeV2Row = (row, rowIndex, indexPath) => {
+  if (!row || typeof row !== "object" || Array.isArray(row)) {
+    throw new Error(`${migrationGuidance(indexPath)} Invalid row at index ${rowIndex}.`);
+  }
+  if (Object.keys(row).some((key) => !allowedV2RowKeys.has(key))) {
+    throw new Error(`${migrationGuidance(indexPath)} Unexpected V2 field at row ${rowIndex}.`);
+  }
+  const runId = typeof row.runId === "string" ? row.runId.trim() : "";
+  const safeTarget = resolveSafeRunDir(path.dirname(indexPath), runId);
+  if (!safeTarget) {
+    throw new Error(`${migrationGuidance(indexPath)} Invalid runId at row ${rowIndex}.`);
+  }
+  for (const fieldName of ["agentDefinitionId", "agentName", "workspaceRootPath", "summary", "createdAt"]) {
+    if (typeof row[fieldName] !== "string") {
+      throw new Error(`${migrationGuidance(indexPath)} Missing V2 field '${fieldName}' at row ${rowIndex}.`);
+    }
+  }
+  if (!nullableString(row.archivedAt ?? null) || !nullableString(row.terminatedAt ?? null)) {
+    throw new Error(`${migrationGuidance(indexPath)} Invalid V2 timestamp field at row ${rowIndex}.`);
+  }
+  return {
+    runId,
+    agentDefinitionId: row.agentDefinitionId,
+    agentName: row.agentName,
+    workspaceRootPath: row.workspaceRootPath,
+    summary: row.summary,
+    createdAt: row.createdAt,
+    archivedAt: row.archivedAt ?? null,
+    terminatedAt: row.terminatedAt ?? null,
+  };
 };
 
-const removeRunDir = async (memoryDir, runId) => {
-  const runDirPath = path.join(memoryDir, "agents", runId);
-  await fs.rm(runDirPath, { recursive: true, force: true });
+const validateV2Index = (payload, indexPath) => {
+  if (!Array.isArray(payload)) {
+    throw new Error(migrationGuidance(indexPath));
+  }
+  return payload.map((row, index) => normalizeV2Row(row, index, indexPath));
+};
+
+const writeIndex = async (indexPath, index) => {
+  await fs.mkdir(path.dirname(indexPath), { recursive: true });
+  const tempPath = `${indexPath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
+  try {
+    await fs.writeFile(tempPath, `${JSON.stringify(index, null, 2)}\n`, "utf-8");
+    await fs.rename(tempPath, indexPath);
+  } catch (error) {
+    await fs.rm(tempPath, { force: true }).catch(() => undefined);
+    throw error;
+  }
+};
+
+const resolveSafeRunDir = (memoryDir, runId) => {
+  const normalizedRunId = typeof runId === "string" ? runId.trim() : "";
+  if (!normalizedRunId || normalizedRunId.startsWith("temp-")) {
+    return null;
+  }
+  if (path.isAbsolute(normalizedRunId) || path.posix.isAbsolute(normalizedRunId) || path.win32.isAbsolute(normalizedRunId)) {
+    return null;
+  }
+  if (/[\\/]/.test(normalizedRunId) || normalizedRunId === "." || normalizedRunId === "..") {
+    return null;
+  }
+  const agentsRoot = path.resolve(memoryDir, "agents");
+  const runDirPath = path.resolve(agentsRoot, normalizedRunId);
+  if (!runDirPath.startsWith(`${agentsRoot}${path.sep}`)) {
+    return null;
+  }
+  return { runId: normalizedRunId, runDirPath };
+};
+
+const removeRunDir = async (safeTarget) => {
+  await fs.rm(safeTarget.runDirPath, { recursive: true, force: true });
 };
 
 const printUsage = () => {
@@ -92,7 +168,7 @@ const main = async () => {
     return;
   }
 
-  const rows = Array.isArray(index.rows) ? index.rows : [];
+  const rows = index;
   const matchedRows = [];
   const preservedRows = [];
   for (const row of rows) {
@@ -103,15 +179,23 @@ const main = async () => {
     }
   }
 
+  const unsafeRunIds = matchedRows
+    .map((row) => row?.runId)
+    .filter((runId) => !resolveSafeRunDir(args.memoryDir, runId));
+  if (unsafeRunIds.length > 0) {
+    throw new Error(`Refusing to clean unsafe run ids: ${unsafeRunIds.join(", ")}`);
+  }
+
   let removedRunDirs = 0;
   if (!args.dryRun) {
+    await writeIndex(indexPath, preservedRows);
     for (const row of matchedRows) {
-      if (typeof row?.runId === "string" && row.runId.length > 0) {
-        await removeRunDir(args.memoryDir, row.runId);
+      const safeTarget = resolveSafeRunDir(args.memoryDir, row.runId);
+      if (safeTarget) {
+        await removeRunDir(safeTarget);
         removedRunDirs += 1;
       }
     }
-    await writeIndex(indexPath, { ...index, rows: preservedRows });
   }
 
   console.info(
@@ -123,6 +207,7 @@ const main = async () => {
         matchedRows: matchedRows.length,
         removedRunDirs: args.dryRun ? 0 : removedRunDirs,
         retainedRows: preservedRows.length,
+        unsafeRunIds,
       },
       null,
       2,

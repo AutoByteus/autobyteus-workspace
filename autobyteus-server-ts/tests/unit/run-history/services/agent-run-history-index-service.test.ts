@@ -1,45 +1,9 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
-import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
-import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { AgentRunHistoryIndexService } from "../../../../src/run-history/services/agent-run-history-index-service.js";
 import { AgentRunHistoryIndexStore } from "../../../../src/run-history/store/agent-run-history-index-store.js";
-
-vi.mock("../../../../src/agent-definition/services/agent-definition-service.js", () => ({
-  AgentDefinitionService: {
-    getInstance: () => ({
-      getAgentDefinitionById: vi.fn(),
-    }),
-  },
-}));
-
-vi.mock("../../../../src/agent-execution/services/agent-run-manager.js", () => ({
-  AgentRunManager: {
-    getInstance: () => ({
-      hasActiveRun: vi.fn().mockReturnValue(false),
-      listActiveRuns: vi.fn().mockReturnValue([]),
-    }),
-  },
-}));
-
-const buildMetadata = (
-  overrides: Partial<AgentRunMetadata> = {},
-): AgentRunMetadata => ({
-  runId: "run-1",
-  agentDefinitionId: "agent-def-1",
-  workspaceRootPath: "/tmp/workspace",
-  llmModelIdentifier: "model-1",
-  llmConfig: null,
-  autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-  platformAgentRunId: "thread-1",
-  lastKnownStatus: "IDLE",
-  ...overrides,
-});
 
 describe("AgentRunHistoryIndexService", () => {
   let memoryDir: string;
@@ -52,205 +16,33 @@ describe("AgentRunHistoryIndexService", () => {
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
-  it("records created runs using metadata and resolved agent names", async () => {
-    const { AgentRunHistoryIndexService } = await import(
-      "../../../../src/run-history/services/agent-run-history-index-service.js"
-    );
+  it("is a read-only adapter over the V2 standalone index store", async () => {
     const indexStore = new AgentRunHistoryIndexStore(memoryDir);
-    const service = new AgentRunHistoryIndexService(memoryDir, {
-      indexStore,
-      agentDefinitionService: {
-        getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Agent One" }),
+    await indexStore.writeIndex([
+      {
+        runId: "run-1",
+        agentDefinitionId: "agent-def-1",
+        agentName: "Agent One",
+        workspaceRootPath: "/tmp/workspace",
+        summary: "hello",
+        createdAt: "2026-03-26T10:00:00.000Z",
+        archivedAt: null,
+        terminatedAt: null,
       },
-      agentRunManager: {
-        hasActiveRun: vi.fn().mockReturnValue(false),
-        listActiveRuns: vi.fn().mockReturnValue([]),
+    ]);
+
+    const service = new AgentRunHistoryIndexService(memoryDir, { indexStore });
+    await expect(service.listRows()).resolves.toEqual([
+      {
+        runId: "run-1",
+        agentDefinitionId: "agent-def-1",
+        agentName: "Agent One",
+        workspaceRootPath: "/tmp/workspace",
+        summary: "hello",
+        createdAt: "2026-03-26T10:00:00.000Z",
+        archivedAt: null,
+        terminatedAt: null,
       },
-    });
-
-    await service.recordRunCreated({
-      runId: "run-1",
-      metadata: buildMetadata({ workspaceRootPath: "/tmp/workspace/" }),
-      summary: "  hello\nworld ",
-      lastKnownStatus: "ACTIVE",
-      lastActivityAt: "2026-03-26T10:00:00.000Z",
-    });
-
-    expect(await indexStore.getRow("run-1")).toEqual({
-      runId: "run-1",
-      agentDefinitionId: "agent-def-1",
-      agentName: "Agent One",
-      workspaceRootPath: "/tmp/workspace",
-      summary: "hello world",
-      lastActivityAt: "2026-03-26T10:00:00.000Z",
-      lastKnownStatus: "ACTIVE",
-    });
-  });
-
-  it("keeps the first recorded summary when later activity arrives", async () => {
-    const { AgentRunHistoryIndexService } = await import(
-      "../../../../src/run-history/services/agent-run-history-index-service.js"
-    );
-    const indexStore = new AgentRunHistoryIndexStore(memoryDir);
-    const service = new AgentRunHistoryIndexService(memoryDir, {
-      indexStore,
-      agentDefinitionService: {
-        getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Agent One" }),
-      },
-      agentRunManager: {
-        hasActiveRun: vi.fn().mockReturnValue(false),
-        listActiveRuns: vi.fn().mockReturnValue([]),
-      },
-    });
-
-    await service.recordRunCreated({
-      runId: "run-1",
-      metadata: buildMetadata(),
-      summary: "",
-      lastKnownStatus: "IDLE",
-      lastActivityAt: "2026-03-26T10:00:00.000Z",
-    });
-
-    await service.recordRunActivity({
-      runId: "run-1",
-      metadata: buildMetadata(),
-      summary: "first summary",
-      lastKnownStatus: "ACTIVE",
-      lastActivityAt: "2026-03-26T11:00:00.000Z",
-    });
-
-    await service.recordRunActivity({
-      runId: "run-1",
-      metadata: buildMetadata(),
-      summary: "second summary should not replace the first",
-      lastKnownStatus: "ACTIVE",
-      lastActivityAt: "2026-03-26T12:00:00.000Z",
-    });
-
-    expect((await indexStore.getRow("run-1"))?.summary).toBe("first summary");
-    expect((await indexStore.getRow("run-1"))?.lastActivityAt).toBe("2026-03-26T12:00:00.000Z");
-  });
-
-  it("keeps the first recorded summary when an earlier metadata lookup resolves after later activity", async () => {
-    const { AgentRunHistoryIndexService } = await import(
-      "../../../../src/run-history/services/agent-run-history-index-service.js"
-    );
-    const indexStore = new AgentRunHistoryIndexStore(memoryDir);
-    let resolveAgentName!: (value: { name: string }) => void;
-    const agentNamePromise = new Promise<{ name: string }>((resolve) => {
-      resolveAgentName = resolve;
-    });
-    const getAgentDefinitionById = vi.fn()
-      .mockReturnValueOnce(agentNamePromise)
-      .mockResolvedValue({ name: "Agent One" });
-    const service = new AgentRunHistoryIndexService(memoryDir, {
-      indexStore,
-      agentDefinitionService: {
-        getAgentDefinitionById,
-      },
-      agentRunManager: {
-        hasActiveRun: vi.fn().mockReturnValue(false),
-        listActiveRuns: vi.fn().mockReturnValue([]),
-      },
-    });
-
-    await indexStore.upsertRow({
-      runId: "run-1",
-      agentDefinitionId: "agent-def-1",
-      agentName: "Agent One",
-      workspaceRootPath: "/tmp/workspace",
-      summary: "",
-      lastKnownStatus: "IDLE",
-      lastActivityAt: "2026-03-26T10:00:00.000Z",
-    });
-
-    const firstActivity = service.recordRunActivity({
-      runId: "run-1",
-      metadata: buildMetadata(),
-      summary: "first summary",
-      lastKnownStatus: "ACTIVE",
-      lastActivityAt: "2026-03-26T11:00:00.000Z",
-    });
-    await vi.waitFor(() => {
-      expect(getAgentDefinitionById).toHaveBeenCalledTimes(1);
-    });
-    const secondActivity = service.recordRunActivity({
-      runId: "run-1",
-      metadata: buildMetadata(),
-      summary: "second summary should not replace the first",
-      lastKnownStatus: "ACTIVE",
-      lastActivityAt: "2026-03-26T12:00:00.000Z",
-    });
-
-    await Promise.resolve();
-    expect(getAgentDefinitionById).toHaveBeenCalledTimes(1);
-    resolveAgentName({ name: "Agent One" });
-    await Promise.all([firstActivity, secondActivity]);
-
-    expect((await indexStore.getRow("run-1"))?.summary).toBe("first summary");
-    expect((await indexStore.getRow("run-1"))?.lastActivityAt).toBe("2026-03-26T12:00:00.000Z");
-  });
-
-  it("marks runs as TERMINATED on recordRunTerminated", async () => {
-    const { AgentRunHistoryIndexService } = await import(
-      "../../../../src/run-history/services/agent-run-history-index-service.js"
-    );
-    const indexStore = new AgentRunHistoryIndexStore(memoryDir);
-    await indexStore.upsertRow({
-      runId: "run-1",
-      agentDefinitionId: "agent-def-1",
-      agentName: "Agent One",
-      workspaceRootPath: "/tmp/workspace",
-      summary: "",
-      lastActivityAt: "2026-03-26T10:00:00.000Z",
-      lastKnownStatus: "ACTIVE",
-    });
-    const service = new AgentRunHistoryIndexService(memoryDir, {
-      indexStore,
-      agentDefinitionService: {
-        getAgentDefinitionById: vi.fn(),
-      },
-      agentRunManager: {
-        hasActiveRun: vi.fn().mockReturnValue(false),
-        listActiveRuns: vi.fn().mockReturnValue([]),
-      },
-    });
-
-    await service.recordRunTerminated("run-1");
-
-    expect((await indexStore.getRow("run-1"))?.lastKnownStatus).toBe("TERMINATED");
-  });
-
-  it("preserves metadata lastKnownStatus during rebuild for inactive runs", async () => {
-    const { AgentRunHistoryIndexService } = await import(
-      "../../../../src/run-history/services/agent-run-history-index-service.js"
-    );
-    const metadataStore = new AgentRunMetadataStore(memoryDir);
-    await metadataStore.writeMetadata("run-terminated", buildMetadata({
-      runId: "run-terminated",
-      platformAgentRunId: null,
-      lastKnownStatus: "TERMINATED",
-    }));
-    const service = new AgentRunHistoryIndexService(memoryDir, {
-      metadataStore,
-      agentDefinitionService: {
-        getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Agent One" }),
-      },
-      agentRunManager: {
-        hasActiveRun: vi.fn((runId: string) => runId === "run-active"),
-        listActiveRuns: vi.fn().mockReturnValue(["run-active"]),
-      },
-    });
-    await metadataStore.writeMetadata("run-active", buildMetadata({
-      runId: "run-active",
-      lastKnownStatus: "IDLE",
-    }));
-
-    const rows = await service.rebuildIndexFromDisk();
-    const terminated = rows.find((row) => row.runId === "run-terminated");
-    const active = rows.find((row) => row.runId === "run-active");
-
-    expect(terminated?.lastKnownStatus).toBe("TERMINATED");
-    expect(active?.lastKnownStatus).toBe("ACTIVE");
+    ]);
   });
 });

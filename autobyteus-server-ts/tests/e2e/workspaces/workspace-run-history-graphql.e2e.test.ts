@@ -76,9 +76,13 @@ describe("Workspace run history GraphQL e2e", () => {
               {
                 runId: "run-1",
                 summary: "Plan the rollout",
-                lastActivityAt: "2026-04-12T01:00:00.000Z",
-                lastKnownStatus: "IDLE",
+                createdAt: "2026-04-12T01:00:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
+                status: "offline",
                 isActive: false,
+                shouldConnectStream: false,
+                statusSource: "INACTIVE",
               },
             ],
           },
@@ -95,10 +99,12 @@ describe("Workspace run history GraphQL e2e", () => {
                 coordinatorMemberRouteKey: "coordinator",
                 workspaceRootPath: "/ws/a",
                 summary: "Rebuild the workspace history sidebar",
-                lastActivityAt: "2026-04-12T01:05:00.000Z",
-                lastKnownStatus: "ACTIVE",
-                deleteLifecycle: "READY",
+                createdAt: "2026-04-12T01:05:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
+                status: "running",
                 isActive: true,
+                memberTree: [],
                 members: [
                   {
                     memberRouteKey: "coordinator",
@@ -126,9 +132,13 @@ describe("Workspace run history GraphQL e2e", () => {
             runs {
               runId
               summary
-              lastActivityAt
-              lastKnownStatus
+              createdAt
+              archivedAt
+              terminatedAt
+              status
               isActive
+              shouldConnectStream
+              statusSource
             }
           }
           teamDefinitions {
@@ -141,10 +151,12 @@ describe("Workspace run history GraphQL e2e", () => {
               coordinatorMemberRouteKey
               workspaceRootPath
               summary
-              lastActivityAt
-              lastKnownStatus
-              deleteLifecycle
+              createdAt
+              archivedAt
+              terminatedAt
+              status
               isActive
+              memberTree
               members {
                 memberRouteKey
                 memberName
@@ -177,9 +189,13 @@ describe("Workspace run history GraphQL e2e", () => {
               {
                 runId: "run-1",
                 summary: "Plan the rollout",
-                lastActivityAt: "2026-04-12T01:00:00.000Z",
-                lastKnownStatus: "IDLE",
+                createdAt: "2026-04-12T01:00:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
+                status: "offline",
                 isActive: false,
+                shouldConnectStream: false,
+                statusSource: "INACTIVE",
               },
             ],
           },
@@ -196,10 +212,12 @@ describe("Workspace run history GraphQL e2e", () => {
                 coordinatorMemberRouteKey: "coordinator",
                 workspaceRootPath: "/ws/a",
                 summary: "Rebuild the workspace history sidebar",
-                lastActivityAt: "2026-04-12T01:05:00.000Z",
-                lastKnownStatus: "ACTIVE",
-                deleteLifecycle: "READY",
+                createdAt: "2026-04-12T01:05:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
+                status: "running",
                 isActive: true,
+                memberTree: [],
                 members: [
                   {
                     memberRouteKey: "coordinator",
@@ -238,6 +256,121 @@ describe("Workspace run history GraphQL e2e", () => {
         expect.stringContaining('Cannot query field "agents"'),
         expect.stringContaining('Cannot query field "teamRuns"'),
       ]),
+    );
+  });
+
+  it("rejects removed persisted status/activity fields while team stable fields remain queryable", async () => {
+    listWorkspaceRunHistoryMock.mockResolvedValue([]);
+
+    const removedStandaloneFieldResult = await runGraphql(`
+      query RemovedStandaloneFields {
+        listWorkspaceRunHistory(limitPerAgent: 2) {
+          agentDefinitions {
+            runs {
+              runId
+              lastActivityAt
+              lastKnownStatus
+            }
+          }
+        }
+      }
+    `);
+
+    const removedStandaloneMessages = (removedStandaloneFieldResult.errors ?? []).map(
+      (error) => error.message,
+    );
+    expect(removedStandaloneMessages).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('Cannot query field "lastActivityAt"'),
+        expect.stringContaining('Cannot query field "lastKnownStatus"'),
+      ]),
+    );
+
+    const removedTeamFieldResult = await runGraphql(`
+      query RemovedTeamFields {
+        listWorkspaceRunHistory(limitPerAgent: 2) {
+          teamDefinitions {
+            runs {
+              teamRunId
+              lastActivityAt
+              lastKnownStatus
+              deleteLifecycle
+            }
+          }
+        }
+      }
+    `);
+
+    const removedTeamMessages = (removedTeamFieldResult.errors ?? []).map(
+      (error) => error.message,
+    );
+    expect(removedTeamMessages).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('Cannot query field "lastActivityAt"'),
+        expect.stringContaining('Cannot query field "lastKnownStatus"'),
+        expect.stringContaining('Cannot query field "deleteLifecycle"'),
+      ]),
+    );
+
+    listWorkspaceRunHistoryMock.mockResolvedValue([
+      {
+        workspaceRootPath: "/ws/a",
+        workspaceName: "workspace-a",
+        agentDefinitions: [],
+        teamDefinitions: [
+          {
+            teamDefinitionId: "team-def-1",
+            teamDefinitionName: "Software Engineering Team",
+            runs: [
+              {
+                teamRunId: "team-run-1",
+                teamDefinitionId: "team-def-1",
+                teamDefinitionName: "Software Engineering Team",
+                coordinatorMemberRouteKey: "coordinator",
+                workspaceRootPath: "/ws/a",
+                summary: "Team fields are intentionally retained",
+                createdAt: "2026-04-12T01:05:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
+                status: "running",
+                isActive: true,
+                memberTree: [],
+                members: [],
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+
+    const teamFieldResult = await execGraphql<{
+      listWorkspaceRunHistory: Array<{
+        teamDefinitions: Array<{
+          runs: Array<{
+            createdAt: string;
+            status: string;
+          }>;
+        }>;
+      }>;
+    }>(`
+      query TeamStableFieldsRemain {
+        listWorkspaceRunHistory(limitPerAgent: 2) {
+          teamDefinitions {
+            runs {
+              teamRunId
+              createdAt
+              status
+            }
+          }
+        }
+      }
+    `);
+
+    expect(teamFieldResult.listWorkspaceRunHistory[0]?.teamDefinitions[0]?.runs[0]).toEqual(
+      expect.objectContaining({
+        createdAt: "2026-04-12T01:05:00.000Z",
+        status: "running",
+      }),
     );
   });
 });

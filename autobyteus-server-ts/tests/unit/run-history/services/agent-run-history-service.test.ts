@@ -1,138 +1,122 @@
-import fs from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { describe, expect, it, vi } from "vitest";
+import {
+  AgentRunStatusProjectionService,
+  type AgentRunStatusProjection,
+} from "../../../../src/agent-execution/services/agent-run-status-projection-service.js";
+import { AgentRunHistoryService } from "../../../../src/run-history/services/agent-run-history-service.js";
 import type { RunHistoryIndexRow } from "../../../../src/run-history/domain/agent-run-history-index-types.js";
-import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
-import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
 
-const agentRunManagerMock = {
-  hasActiveRun: vi.fn<(runId: string) => boolean>(),
-  getActiveRun: vi.fn<(runId: string) => { getStatusSnapshot: () => { status: "offline" | "initializing" | "idle" | "running" | "error" } } | null>(),
-  listActiveRuns: vi.fn<() => string[]>(),
-};
-
-vi.mock("../../../../src/agent-execution/services/agent-run-manager.js", () => ({
-  AgentRunManager: {
-    getInstance: () => agentRunManagerMock,
-  },
-}));
-
-vi.mock("../../../../src/agent-definition/services/agent-definition-service.js", () => ({
-  AgentDefinitionService: {
-    getInstance: () => ({
-      getAgentDefinitionById: vi.fn(),
-    }),
-  },
-}));
-
-const buildAgentMetadata = (
-  runId: string,
-  memoryDir: string,
-  overrides: Partial<AgentRunMetadata> = {},
-): AgentRunMetadata => ({
-  runId,
+const buildRow = (overrides: Partial<RunHistoryIndexRow> = {}): RunHistoryIndexRow => ({
+  runId: "run-1",
   agentDefinitionId: "agent-def-1",
+  agentName: "Agent One",
   workspaceRootPath: "/tmp/workspace",
-  memoryDir: path.join(memoryDir, "agents", runId),
-  llmModelIdentifier: "model-1",
-  llmConfig: null,
-  autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-  platformAgentRunId: null,
-  lastKnownStatus: "IDLE",
+  summary: "summary",
+  createdAt: "2026-03-26T10:00:00.000Z",
   archivedAt: null,
-  applicationExecutionContext: null,
+  terminatedAt: null,
   ...overrides,
 });
 
-describe("AgentRunHistoryService", () => {
-  let memoryDir: string;
-  const createMetadataStore = (
-    metadataByRunId: Record<string, Partial<AgentRunMetadata> | null>,
-  ) => ({
-    readMetadata: vi.fn(async (runId: string) => {
-      const metadata = metadataByRunId[runId];
-      return metadata ? buildAgentMetadata(runId, memoryDir, metadata) : null;
+const buildProjection = (
+  overrides: Partial<AgentRunStatusProjection> = {},
+): AgentRunStatusProjection => ({
+  runId: overrides.runId ?? "run-1",
+  status: "offline",
+  canInterrupt: false,
+  isActive: false,
+  shouldConnectStream: false,
+  lastKnownStatus: "IDLE",
+  statusSource: "HISTORICAL_METADATA",
+  statusPayload: {
+    status: "offline",
+    can_interrupt: false,
+    agent_id: overrides.runId ?? "run-1",
+  },
+  command: null,
+  ...overrides,
+});
+
+const buildService = (options: {
+  rows?: RunHistoryIndexRow[];
+  projectionByRunId?: Record<string, Partial<AgentRunStatusProjection>>;
+  archiveResult?: { success: boolean; message: string };
+  deleteResult?: { success: boolean; message: string };
+} = {}) => {
+  const rows = options.rows ?? [];
+  const projectionByRunId = options.projectionByRunId ?? {};
+  const catalogService = {
+    listCatalogRows: vi.fn().mockResolvedValue(rows),
+    archiveRun: vi.fn().mockResolvedValue(options.archiveResult ?? {
+      success: true,
+      message: "archived",
     }),
-    writeMetadata: vi.fn(),
+    deleteRun: vi.fn().mockResolvedValue(options.deleteResult ?? {
+      success: true,
+      message: "deleted",
+    }),
+  };
+  const statusProjectionService = {
+    getCatalogListStatusProjection: vi.fn((runId: string) =>
+      buildProjection({ runId, ...(projectionByRunId[runId] ?? {}) }),
+    ),
+  };
+  const service = new AgentRunHistoryService("/tmp/memory", {
+    catalogService: catalogService as never,
+    statusProjectionService: statusProjectionService as never,
+    agentRunManager: {} as never,
+    metadataStore: {} as never,
   });
+  return { service, catalogService, statusProjectionService };
+};
 
-  beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-run-history-service-"));
-    agentRunManagerMock.hasActiveRun.mockReset();
-    agentRunManagerMock.getActiveRun.mockReset();
-    agentRunManagerMock.listActiveRuns.mockReset();
-    agentRunManagerMock.hasActiveRun.mockReturnValue(false);
-    agentRunManagerMock.getActiveRun.mockReturnValue(null);
-    agentRunManagerMock.listActiveRuns.mockReturnValue([]);
-  });
-
-  afterEach(async () => {
-    await fs.rm(memoryDir, { recursive: true, force: true });
-  });
-
-  it("lists grouped history from index rows and overlays live active state", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
-    );
-
-    const rows: RunHistoryIndexRow[] = [
-      {
-        runId: "run-active",
+describe("AgentRunHistoryService", () => {
+  it("lists grouped standalone history from V2 catalog rows and overlays live status", async () => {
+    const rows = [
+      buildRow({
+        runId: "run-active-older",
         agentDefinitionId: "agent-b",
         agentName: "Builder",
         workspaceRootPath: "/tmp/workspace-a/",
         summary: "older active row",
-        lastActivityAt: "2026-03-25T08:00:00.000Z",
-        lastKnownStatus: "IDLE",
-      },
-      {
+        createdAt: "2026-03-25T08:00:00.000Z",
+      }),
+      buildRow({
         runId: "run-idle-newer",
         agentDefinitionId: "agent-b",
         agentName: "Builder",
         workspaceRootPath: "/tmp/workspace-a",
         summary: "newer idle row",
-        lastActivityAt: "2026-03-26T08:00:00.000Z",
-        lastKnownStatus: "IDLE",
-      },
-      {
+        createdAt: "2026-03-26T08:00:00.000Z",
+      }),
+      buildRow({
         runId: "run-terminated",
         agentDefinitionId: "agent-a",
         agentName: "Analyst",
         workspaceRootPath: "/tmp/workspace-b",
         summary: "terminated row",
-        lastActivityAt: "2026-03-24T08:00:00.000Z",
-        lastKnownStatus: "TERMINATED",
-      },
+        createdAt: "2026-03-24T08:00:00.000Z",
+        terminatedAt: "2026-03-24T09:00:00.000Z",
+      }),
     ];
-
-    agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active"]);
-    agentRunManagerMock.getActiveRun.mockImplementation((runId) =>
-      runId === "run-active"
-        ? { getStatusSnapshot: () => ({ status: "running" as const, can_interrupt: false }) }
-        : null,
-    );
-
-    const service = new AgentRunHistoryService(memoryDir, {
-      indexService: {
-        listRows: vi.fn().mockResolvedValue(rows),
-        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
-        removeRow: vi.fn(),
+    const { service, catalogService, statusProjectionService } = buildService({
+      rows,
+      projectionByRunId: {
+        "run-active-older": {
+          status: "running",
+          isActive: true,
+          shouldConnectStream: true,
+          lastKnownStatus: "ACTIVE",
+          statusSource: "ACTIVE_RUNTIME",
+        },
       },
-      metadataStore: createMetadataStore(
-        Object.fromEntries(rows.map((row) => [
-          row.runId,
-          { lastKnownStatus: row.lastKnownStatus },
-        ])),
-      ) as any,
     });
 
     const result = await service.listRunHistory(1);
 
+    expect(catalogService.listCatalogRows).toHaveBeenCalledTimes(1);
+    expect(statusProjectionService.getCatalogListStatusProjection).toHaveBeenCalledTimes(2);
+    expect(statusProjectionService.getCatalogListStatusProjection).not.toHaveBeenCalledWith("run-active-older");
     expect(result).toEqual([
       {
         workspaceRootPath: "/tmp/workspace-a",
@@ -145,12 +129,13 @@ describe("AgentRunHistoryService", () => {
               {
                 runId: "run-idle-newer",
                 summary: "newer idle row",
-                lastActivityAt: "2026-03-26T08:00:00.000Z",
                 status: "offline",
-                lastKnownStatus: "IDLE",
                 isActive: false,
                 shouldConnectStream: false,
                 statusSource: "HISTORICAL_METADATA",
+                createdAt: "2026-03-26T08:00:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
               },
             ],
           },
@@ -167,12 +152,13 @@ describe("AgentRunHistoryService", () => {
               {
                 runId: "run-terminated",
                 summary: "terminated row",
-                lastActivityAt: "2026-03-24T08:00:00.000Z",
                 status: "offline",
-                lastKnownStatus: "TERMINATED",
                 isActive: false,
                 shouldConnectStream: false,
                 statusSource: "TERMINATED_METADATA",
+                createdAt: "2026-03-24T08:00:00.000Z",
+                archivedAt: null,
+                terminatedAt: "2026-03-24T09:00:00.000Z",
               },
             ],
           },
@@ -181,412 +167,112 @@ describe("AgentRunHistoryService", () => {
     ]);
   });
 
-  it("rebuilds the index from disk when the index is empty", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
-    );
-
-    const rebuildRows: RunHistoryIndexRow[] = [
-      {
-        runId: "run-1",
-        agentDefinitionId: "agent-1",
-        agentName: "Agent One",
-        workspaceRootPath: "/tmp/workspace",
-        summary: "rebuilt",
-        lastActivityAt: "2026-03-26T08:00:00.000Z",
-        lastKnownStatus: "IDLE",
-      },
-    ];
-
-    const indexService = {
-      listRows: vi.fn().mockResolvedValue([]),
-      rebuildIndexFromDisk: vi.fn().mockResolvedValue(rebuildRows),
-      removeRow: vi.fn(),
-    };
-
-    const service = new AgentRunHistoryService(memoryDir, {
-      indexService,
-      metadataStore: createMetadataStore(Object.fromEntries(rebuildRows.map((row) => [row.runId, {}]))) as any,
-    });
-    const result = await service.listRunHistory();
-
-    expect(indexService.rebuildIndexFromDisk).toHaveBeenCalledTimes(1);
-    expect(result).toHaveLength(1);
-    expect(result[0]?.agents[0]?.runs[0]?.runId).toBe("run-1");
-  });
-
-  it("uses an active runtime status snapshot for active history rows", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
-    );
-
-    const rows: RunHistoryIndexRow[] = [
-      {
-        runId: "run-active-idle",
-        agentDefinitionId: "agent-1",
-        agentName: "Agent One",
-        workspaceRootPath: "/tmp/workspace",
-        summary: "active idle runtime",
-        lastActivityAt: "2026-03-26T08:00:00.000Z",
-        lastKnownStatus: "IDLE",
-      },
-    ];
-    agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active-idle"]);
-    agentRunManagerMock.getActiveRun.mockImplementation((runId) =>
-      runId === "run-active-idle"
-        ? { getStatusSnapshot: () => ({ status: "idle" as const, can_interrupt: false }) }
-        : null,
-    );
-
-    const service = new AgentRunHistoryService(memoryDir, {
-      indexService: {
-        listRows: vi.fn().mockResolvedValue(rows),
-        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
-        removeRow: vi.fn(),
-      },
-      metadataStore: createMetadataStore({ "run-active-idle": {} }) as any,
-    });
-
-    const result = await service.listRunHistory();
-
-    expect(result[0]?.agents[0]?.runs[0]).toEqual(expect.objectContaining({
-      runId: "run-active-idle",
-      status: "idle",
-      isActive: true,
-      lastKnownStatus: "ACTIVE",
-    }));
-  });
-
-  it("repairs an active row summary from the projection first user message when the stored summary is a later user message", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
-    );
-
-    const rows: RunHistoryIndexRow[] = [
-      {
-        runId: "run-active",
-        agentDefinitionId: "agent-def-1",
-        agentName: "Agent",
-        workspaceRootPath: "/tmp/workspace",
-        summary: "do it",
-        lastActivityAt: "2026-03-26T12:00:00.000Z",
-        lastKnownStatus: "IDLE",
-      },
-    ];
-    const recordRecoveredSummary = vi.fn().mockResolvedValue(undefined);
-    agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active"]);
-    agentRunManagerMock.getActiveRun.mockImplementation((runId) =>
-      runId === "run-active"
-        ? { getStatusSnapshot: () => ({ status: "running" as const, can_interrupt: false }) }
-        : null,
-    );
-
-    const service = new AgentRunHistoryService(memoryDir, {
-      indexService: {
-        listRows: vi.fn().mockResolvedValue(rows),
-        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
-        removeRow: vi.fn(),
-        recordRecoveredSummary,
-      } as any,
-      metadataStore: createMetadataStore({ "run-active": {} }) as any,
-      agentRunViewProjectionService: {
-        getProjectionFromMetadata: vi.fn().mockResolvedValue({
-          runId: "run-active",
-          summary: "First task",
-          lastActivityAt: "2026-03-26T12:00:00.000Z",
-          activities: [],
-          conversation: [
-            { kind: "message", role: "user", content: "First task", ts: 1 },
-            { kind: "message", role: "assistant", content: "ok", ts: 2 },
-            { kind: "message", role: "user", content: "do it", ts: 3 },
-          ],
+  it("filters archived rows from normal listing without status projection work", async () => {
+    const { service, statusProjectionService } = buildService({
+      rows: [
+        buildRow({
+          runId: "run-archived-inactive",
+          summary: "hidden",
+          createdAt: "2026-03-27T08:00:00.000Z",
+          archivedAt: "2026-03-28T08:00:00.000Z",
         }),
-      } as any,
-    });
-
-    const result = await service.listRunHistory();
-
-    expect(result[0]?.agents[0]?.runs[0]).toEqual(expect.objectContaining({
-      runId: "run-active",
-      summary: "First task",
-      isActive: true,
-      lastKnownStatus: "ACTIVE",
-    }));
-    expect(recordRecoveredSummary).toHaveBeenCalledWith({
-      runId: "run-active",
-      summary: "First task",
-    });
-  });
-
-  it("preserves an active synthetic summary when it is not a later user message", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
-    );
-
-    const rows: RunHistoryIndexRow[] = [
-      {
-        runId: "run-active",
-        agentDefinitionId: "agent-def-1",
-        agentName: "Agent",
-        workspaceRootPath: "/tmp/workspace",
-        summary: "Memory compaction task task-1",
-        lastActivityAt: "2026-03-26T12:00:00.000Z",
-        lastKnownStatus: "IDLE",
-      },
-    ];
-    const recordRecoveredSummary = vi.fn().mockResolvedValue(undefined);
-    agentRunManagerMock.listActiveRuns.mockReturnValue(["run-active"]);
-    agentRunManagerMock.getActiveRun.mockImplementation((runId) =>
-      runId === "run-active"
-        ? { getStatusSnapshot: () => ({ status: "running" as const, can_interrupt: false }) }
-        : null,
-    );
-
-    const service = new AgentRunHistoryService(memoryDir, {
-      indexService: {
-        listRows: vi.fn().mockResolvedValue(rows),
-        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
-        removeRow: vi.fn(),
-        recordRecoveredSummary,
-      } as any,
-      metadataStore: createMetadataStore({ "run-active": {} }) as any,
-      agentRunViewProjectionService: {
-        getProjectionFromMetadata: vi.fn().mockResolvedValue({
-          runId: "run-active",
-          summary: "Summarize compacted memory blocks",
-          lastActivityAt: "2026-03-26T12:00:00.000Z",
-          activities: [],
-          conversation: [
-            {
-              kind: "message",
-              role: "user",
-              content: "Summarize compacted memory blocks",
-              ts: 1,
-            },
-          ],
+        buildRow({
+          runId: "run-visible",
+          summary: "visible",
+          createdAt: "2026-03-25T08:00:00.000Z",
         }),
-      } as any,
+      ],
     });
 
-    const result = await service.listRunHistory();
-
-    expect(result[0]?.agents[0]?.runs[0]?.summary).toBe("Memory compaction task task-1");
-    expect(recordRecoveredSummary).not.toHaveBeenCalled();
-  });
-
-  it("deletes the stored run directory and removes the index row", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
+    const result = await service.listRunHistory(3);
+    const runs = result.flatMap((workspace) =>
+      workspace.agents.flatMap((agent) => agent.runs),
     );
 
-    const runDir = path.join(memoryDir, "agents", "run-delete");
-    await fs.mkdir(runDir, { recursive: true });
-    await fs.writeFile(path.join(runDir, "run_metadata.json"), "{}", "utf-8");
+    expect(runs.map((run) => run.runId)).toEqual(["run-visible"]);
+    expect(statusProjectionService.getCatalogListStatusProjection).toHaveBeenCalledTimes(1);
+    expect(statusProjectionService.getCatalogListStatusProjection).toHaveBeenCalledWith("run-visible");
+  });
 
-    const indexService = {
-      listRows: vi.fn().mockResolvedValue([]),
-      rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
-      removeRow: vi.fn().mockResolvedValue(undefined),
-    };
-
-    const service = new AgentRunHistoryService(memoryDir, { indexService });
-    const result = await service.deleteStoredRun("run-delete");
-
-    expect(result).toEqual({
-      success: true,
-      message: "Run 'run-delete' deleted permanently.",
+  it("does not read metadata or project rows beyond the per-agent limit for catalog listing", async () => {
+    const rows = [
+      buildRow({ runId: "run-newest", createdAt: "2026-03-27T08:00:00.000Z" }),
+      buildRow({ runId: "run-middle", createdAt: "2026-03-26T08:00:00.000Z" }),
+      buildRow({ runId: "run-oldest", createdAt: "2026-03-25T08:00:00.000Z" }),
+    ];
+    const readMetadata = vi.fn().mockResolvedValue(null);
+    const statusProjectionService = new AgentRunStatusProjectionService({
+      agentRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as never,
+      metadataService: { readMetadata } as never,
     });
-    expect(indexService.removeRow).toHaveBeenCalledWith("run-delete");
-    await expect(fs.stat(runDir)).rejects.toThrow();
-  });
-
-  it("refuses to delete a live active run", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
-    );
-
-    agentRunManagerMock.hasActiveRun.mockReturnValue(true);
-
-    const indexService = {
-      listRows: vi.fn().mockResolvedValue([]),
-      rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
-      removeRow: vi.fn(),
-    };
-
-    const service = new AgentRunHistoryService(memoryDir, { indexService });
-    const result = await service.deleteStoredRun("run-active");
-
-    expect(result).toEqual({
-      success: false,
-      message: "Run is active. Terminate it before deleting history.",
+    const projectionSpy = vi.spyOn(statusProjectionService, "getCatalogListStatusProjection");
+    const service = new AgentRunHistoryService("/tmp/memory", {
+      catalogService: {
+        listCatalogRows: vi.fn().mockResolvedValue(rows),
+        archiveRun: vi.fn(),
+        deleteRun: vi.fn(),
+      } as never,
+      statusProjectionService,
+      agentRunManager: {} as never,
+      metadataStore: {} as never,
     });
-    expect(indexService.removeRow).not.toHaveBeenCalled();
+
+    const result = await service.listRunHistory(1);
+
+    expect(result[0]?.agents[0]?.runs.map((run) => run.runId)).toEqual(["run-newest"]);
+    expect(projectionSpy).toHaveBeenCalledTimes(1);
+    expect(projectionSpy).toHaveBeenCalledWith("run-newest");
+    expect(readMetadata).not.toHaveBeenCalled();
   });
 
-  it("archives a stored run by writing metadata without deleting memory or index rows", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
-    );
-
-    const metadataStore = new AgentRunMetadataStore(memoryDir);
-    const runDir = path.join(memoryDir, "agents", "run-archive");
-    await fs.mkdir(runDir, { recursive: true });
-    await fs.writeFile(path.join(runDir, "raw_traces.jsonl"), "{}", "utf-8");
-    await metadataStore.writeMetadata(
-      "run-archive",
-      buildAgentMetadata("run-archive", memoryDir, {
-        applicationExecutionContext: {
-          applicationId: "app-1",
-          bindingId: "binding-1",
-          producer: {
-            runId: "run-archive",
-            memberRouteKey: "agent",
-            memberName: "Agent",
-            displayName: "Agent",
-            runtimeKind: "AGENT",
-            teamPath: [],
-          },
+  it("uses catalog-list live overlays without metadata reads", async () => {
+    const { service } = buildService({
+      rows: [
+        buildRow({
+          runId: "run-visible",
+          summary: "visible",
+          createdAt: "2026-03-25T08:00:00.000Z",
+        }),
+      ],
+      projectionByRunId: {
+        "run-visible": {
+          status: "running",
+          isActive: true,
+          shouldConnectStream: true,
+          lastKnownStatus: "ACTIVE",
+          statusSource: "ACTIVE_RUNTIME",
         },
-      }),
-    );
-
-    const indexService = {
-      listRows: vi.fn().mockResolvedValue([]),
-      rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
-      removeRow: vi.fn(),
-    };
-    const service = new AgentRunHistoryService(memoryDir, {
-      indexService,
-      metadataStore,
+      },
     });
 
-    const result = await service.archiveStoredRun("run-archive");
-    const archivedMetadata = await metadataStore.readMetadata("run-archive");
-
-    expect(result.success).toBe(true);
-    expect(result.message).toBe("Run 'run-archive' archived.");
-    expect(archivedMetadata?.archivedAt).toEqual(expect.any(String));
-    expect(archivedMetadata?.applicationExecutionContext?.applicationId).toBe("app-1");
-    await expect(fs.stat(runDir)).resolves.toBeTruthy();
-    await expect(fs.stat(path.join(runDir, "raw_traces.jsonl"))).resolves.toBeTruthy();
-    expect(indexService.removeRow).not.toHaveBeenCalled();
-  });
-
-  it("refuses to archive a live active run without writing metadata", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
+    const result = await service.listRunHistory(3);
+    const runs = result.flatMap((workspace) =>
+      workspace.agents.flatMap((agent) => agent.runs),
     );
 
-    agentRunManagerMock.hasActiveRun.mockReturnValue(true);
-    const metadataStore = createMetadataStore({ "run-active": {} });
-    const service = new AgentRunHistoryService(memoryDir, {
-      indexService: {
-        listRows: vi.fn().mockResolvedValue([]),
-        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
-        removeRow: vi.fn(),
-      },
-      metadataStore: metadataStore as any,
-    });
-
-    const result = await service.archiveStoredRun("run-active");
-
-    expect(result).toEqual({
-      success: false,
-      message: "Run is active. Terminate it before archiving history.",
-    });
-    expect(metadataStore.readMetadata).not.toHaveBeenCalled();
-    expect(metadataStore.writeMetadata).not.toHaveBeenCalled();
-  });
-
-  it("rejects unsafe archive run IDs before metadata access and creates no out-of-root file", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
-    );
-
-    const metadataStore = createMetadataStore({});
-    const service = new AgentRunHistoryService(memoryDir, {
-      indexService: {
-        listRows: vi.fn().mockResolvedValue([]),
-        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
-        removeRow: vi.fn(),
-      },
-      metadataStore: metadataStore as any,
-    });
-
-    for (const unsafeRunId of ["", "   ", "temp-1", "../outside", "/tmp/outside", "foo/bar", "foo\\bar", ".", ".."]) {
-      const result = await service.archiveStoredRun(unsafeRunId);
-      expect(result.success).toBe(false);
-    }
-
-    expect(metadataStore.readMetadata).not.toHaveBeenCalled();
-    expect(metadataStore.writeMetadata).not.toHaveBeenCalled();
-    await expect(fs.stat(path.join(memoryDir, "outside", "run_metadata.json"))).rejects.toThrow();
-  });
-
-  it("filters archived inactive runs from listing while keeping archived active runs visible", async () => {
-    const { AgentRunHistoryService } = await import(
-      "../../../../src/run-history/services/agent-run-history-service.js"
-    );
-
-    const rows: RunHistoryIndexRow[] = [
-      {
-        runId: "run-archived-inactive",
-        agentDefinitionId: "agent-def-1",
-        agentName: "Agent",
-        workspaceRootPath: "/tmp/workspace",
-        summary: "hidden",
-        lastActivityAt: "2026-03-27T08:00:00.000Z",
-        lastKnownStatus: "IDLE",
-      },
-      {
-        runId: "run-archived-active",
-        agentDefinitionId: "agent-def-1",
-        agentName: "Agent",
-        workspaceRootPath: "/tmp/workspace",
-        summary: "visible active",
-        lastActivityAt: "2026-03-26T08:00:00.000Z",
-        lastKnownStatus: "IDLE",
-      },
-      {
-        runId: "run-visible",
-        agentDefinitionId: "agent-def-1",
-        agentName: "Agent",
-        workspaceRootPath: "/tmp/workspace",
-        summary: "visible",
-        lastActivityAt: "2026-03-25T08:00:00.000Z",
-        lastKnownStatus: "IDLE",
-      },
-    ];
-    agentRunManagerMock.listActiveRuns.mockReturnValue(["run-archived-active"]);
-    agentRunManagerMock.getActiveRun.mockImplementation((runId) =>
-      runId === "run-archived-active"
-        ? { getStatusSnapshot: () => ({ status: "running" as const, can_interrupt: false }) }
-        : null,
-    );
-
-    const service = new AgentRunHistoryService(memoryDir, {
-      indexService: {
-        listRows: vi.fn().mockResolvedValue(rows),
-        rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
-        removeRow: vi.fn(),
-      },
-      metadataStore: createMetadataStore({
-        "run-archived-inactive": { archivedAt: "2026-05-01T10:00:00.000Z" },
-        "run-archived-active": { archivedAt: "2026-05-01T10:00:00.000Z" },
-        "run-visible": {},
-      }) as any,
-    });
-
-    const result = await service.listRunHistory(2);
-    const runIds = result.flatMap((workspace) =>
-      workspace.agents.flatMap((agent) => agent.runs.map((run) => run.runId)),
-    );
-
-    expect(runIds).toEqual(["run-archived-active", "run-visible"]);
-    expect(result[0]?.agents[0]?.runs[0]).toEqual(expect.objectContaining({
-      runId: "run-archived-active",
+    expect(runs.map((run) => run.runId)).toEqual(["run-visible"]);
+    expect(runs[0]).toEqual(expect.objectContaining({
+      runId: "run-visible",
+      status: "running",
       isActive: true,
-      lastKnownStatus: "ACTIVE",
     }));
+  });
+
+  it("delegates archive and delete mutations to the catalog boundary", async () => {
+    const { service, catalogService } = buildService({
+      archiveResult: { success: true, message: "Run 'run-1' archived." },
+      deleteResult: { success: true, message: "Run 'run-1' deleted permanently." },
+    });
+
+    await expect(service.archiveStoredRun("run-1")).resolves.toEqual({
+      success: true,
+      message: "Run 'run-1' archived.",
+    });
+    await expect(service.deleteStoredRun("run-1")).resolves.toEqual({
+      success: true,
+      message: "Run 'run-1' deleted permanently.",
+    });
+    expect(catalogService.archiveRun).toHaveBeenCalledWith("run-1");
+    expect(catalogService.deleteRun).toHaveBeenCalledWith("run-1");
   });
 });

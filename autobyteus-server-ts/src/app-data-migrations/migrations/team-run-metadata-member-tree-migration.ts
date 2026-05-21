@@ -118,7 +118,6 @@ const convertLegacyMetadata = (payload: Record<string, unknown>, teamRunId: stri
     teamDefinitionName: readString(payload.teamDefinitionName),
     coordinatorMemberRouteKey,
     createdAt: readString(payload.createdAt) || now,
-    updatedAt: readString(payload.updatedAt) || now,
     archivedAt: readNullableString(payload.archivedAt),
     memberTree,
   }, teamRunId);

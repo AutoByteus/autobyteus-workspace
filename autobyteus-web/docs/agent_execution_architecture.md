@@ -175,10 +175,16 @@ Workspace history rows render `RunTreeRow.summary` as the visible one-line task
 title. For standalone agent runs that title should represent the initial
 non-empty user message, not the latest follow-up. When the history tree is
 merged with live single-agent contexts, `mergeRunTreeWithLiveContexts(...)`
-overlays active status and `lastActivityAt` from the live `AgentContext` while
-using the live conversation's first non-empty user message as the row summary
-when available. This prevents an active persisted row with a stale latest-message
-summary from overriding the known initial-message title in the sidebar.
+overlays active status and the live context's activity timestamp while using the
+live conversation's first non-empty user message as the row summary when
+available. Persisted standalone and team history rows arrive from GraphQL with
+`createdAt` plus derived live status fields, not durable `lastActivityAt`,
+`lastKnownStatus`, or delete-lifecycle fields. The frontend read model maps
+`createdAt` into the shared tree sort field for stored rows and derives local
+team-tree `lastActivityAt` / `lastKnownStatus` / delete readiness from V2
+catalog facts plus live status. This prevents an active persisted row with a
+stale latest-message summary from overriding the known initial-message title in
+the sidebar while keeping backend history catalogs out of live-status storage.
 
 If no live first-user-message summary is available, the frontend keeps the
 backend-provided history summary. Team row title behavior remains owned by the

@@ -29,7 +29,7 @@ export const normalizeTeamRuntimeStatus = (
   if (!normalized) return fallback;
   if (normalized === AgentTeamStatus.Error) return AgentTeamStatus.Error;
   if (normalized === AgentTeamStatus.Initializing) return AgentTeamStatus.Initializing;
-  if (normalized === AgentTeamStatus.Running || normalized === 'active') return AgentTeamStatus.Running;
+  if (normalized === AgentTeamStatus.Running || normalized === 'active' || normalized === 'processing') return AgentTeamStatus.Running;
   if (normalized === AgentTeamStatus.Idle) return AgentTeamStatus.Idle;
   if (normalized === AgentTeamStatus.Offline || normalized === 'terminated') return AgentTeamStatus.Offline;
   return fallback;

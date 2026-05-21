@@ -33,7 +33,7 @@ export const toHistoryTeamStatus = (
 
 export const toTeamRunStatus = (
   status: AgentTeamStatus,
-): Pick<TeamRunHistoryItem, 'isActive' | 'lastKnownStatus'> => {
+): { isActive: boolean; lastKnownStatus: 'ACTIVE' | 'IDLE' | 'ERROR' } => {
   if (status === AgentTeamStatus.Error) {
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
@@ -58,10 +58,22 @@ const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
   return AgentStatus.Offline;
 };
 
+const getLeafAgentContextsByRouteKey = (
+  teamContext: AgentTeamContext,
+): Map<string, AgentContext> => {
+  const candidate = teamContext.leafAgentContextsByRouteKey;
+  if (candidate instanceof Map) {
+    return candidate;
+  }
+  const legacyMembers = (teamContext as unknown as { members?: unknown }).members;
+  return legacyMembers instanceof Map ? legacyMembers as Map<string, AgentContext> : new Map();
+};
+
 export const summarizeTeamDraft = (teamContext: AgentTeamContext, draftSummaryPrefix: string): string => {
   const coordinatorMemberRouteKey = teamContext.coordinatorMemberRouteKey?.trim() || '';
+  const leafAgentContextsByRouteKey = getLeafAgentContextsByRouteKey(teamContext);
   const coordinatorContext = coordinatorMemberRouteKey
-    ? teamContext.leafAgentContextsByRouteKey.get(coordinatorMemberRouteKey) ?? null
+    ? leafAgentContextsByRouteKey.get(coordinatorMemberRouteKey) ?? null
     : null;
 
   const firstCoordinatorUserMessage = coordinatorContext?.state.conversation.messages.find(
@@ -72,7 +84,7 @@ export const summarizeTeamDraft = (teamContext: AgentTeamContext, draftSummaryPr
   }
 
   if (!coordinatorContext) {
-    const firstMemberContext = teamContext.leafAgentContextsByRouteKey.values().next().value ?? null;
+    const firstMemberContext = leafAgentContextsByRouteKey.values().next().value ?? null;
     const firstMemberUserMessage = firstMemberContext?.state.conversation.messages.find(
       (message) => message.type === 'user' && message.text?.trim().length > 0,
     );
@@ -86,7 +98,7 @@ export const summarizeTeamDraft = (teamContext: AgentTeamContext, draftSummaryPr
 
 export const resolveTeamLastActivityAt = (teamContext: AgentTeamContext): string => {
   let latest = '';
-  for (const member of teamContext.leafAgentContextsByRouteKey.values()) {
+  for (const member of getLeafAgentContextsByRouteKey(teamContext).values()) {
     const ts = member.state.conversation.updatedAt || member.state.conversation.createdAt || '';
     if (!ts) {
       continue;
@@ -107,7 +119,7 @@ export const resolveTeamWorkspaceRootPathFromContext = (
   if (fromTeamConfig) {
     return fromTeamConfig;
   }
-  for (const member of teamContext.leafAgentContextsByRouteKey.values()) {
+  for (const member of getLeafAgentContextsByRouteKey(teamContext).values()) {
     const fromMemberConfig = resolveWorkspaceRootPath(member.config.workspaceId);
     if (fromMemberConfig) {
       return fromMemberConfig;
@@ -130,7 +142,7 @@ export const buildTeamNodes = (params: {
   ) => AgentTeamStatus;
   toTeamRunStatus: (
     status: AgentTeamStatus,
-  ) => Pick<TeamRunHistoryItem, 'isActive' | 'lastKnownStatus'>;
+  ) => { isActive: boolean; lastKnownStatus: 'ACTIVE' | 'IDLE' | 'ERROR' };
   unassignedWorkspaceKey: string;
 }): TeamTreeNode[] => {
   const nodesByTeamRunId = new Map<string, TeamTreeNode>();
@@ -157,11 +169,11 @@ export const buildTeamNodes = (params: {
       teamDefinitionName: team.teamDefinitionName || 'Team',
       workspaceRootPath: normalizedWorkspaceRootPath,
       summary: team.summary,
-      lastActivityAt: team.lastActivityAt,
-      lastKnownStatus: team.lastKnownStatus,
+      lastActivityAt: team.createdAt,
+      lastKnownStatus: params.toTeamRunStatus(params.toHistoryTeamStatus(team)).lastKnownStatus,
       isActive: team.isActive,
       currentStatus: params.toHistoryTeamStatus(team),
-      deleteLifecycle: team.deleteLifecycle,
+      deleteLifecycle: 'READY' as const,
       focusedMemberRouteKey,
       members: sortedMembers,
       memberTree,
@@ -320,7 +332,7 @@ const buildTeamMemberConversation = (params: {
       id: `${params.teamRunId}::${params.normalizedMemberRouteKey}`,
       messages: [],
       createdAt: params.metadata.createdAt,
-      updatedAt: params.metadata.updatedAt,
+      updatedAt: params.metadata.createdAt,
       agentDefinitionId: params.member.agentDefinitionId,
       agentName: params.member.memberName,
       llmModelIdentifier: params.member.llmModelIdentifier,
@@ -329,7 +341,7 @@ const buildTeamMemberConversation = (params: {
   conversation.id = `${params.teamRunId}::${params.normalizedMemberRouteKey}`;
   if (conversation.messages.length === 0) {
     conversation.createdAt = params.metadata.createdAt;
-    conversation.updatedAt = params.projection?.lastActivityAt || params.metadata.updatedAt;
+    conversation.updatedAt = params.projection?.lastActivityAt || params.metadata.createdAt;
   } else if (params.projection?.lastActivityAt) {
     conversation.updatedAt = params.projection.lastActivityAt;
   }

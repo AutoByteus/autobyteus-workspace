@@ -104,18 +104,6 @@ const toRunStatus = (status: AgentStatus): { isActive: boolean; lastKnownStatus:
   return { isActive: true, lastKnownStatus: 'ACTIVE' };
 };
 
-const normalizeProjectionRunStatus = (
-  status: RunHistoryItem['lastKnownStatus'],
-): ProjectionRunKnownStatus => {
-  if (status === 'ERROR') {
-    return 'ERROR';
-  }
-  if (status === 'ACTIVE') {
-    return 'ACTIVE';
-  }
-  return 'IDLE';
-};
-
 export const buildRunHistoryTreeNodes = (params: {
   workspaceGroups: RunHistoryWorkspaceGroup[];
   agentAvatarByDefinitionId: Record<string, string>;
@@ -182,11 +170,16 @@ export const buildRunHistoryTreeNodes = (params: {
         agent.agentAvatarUrl ??
         agentAvatarByDefinitionId.get(agent.agentDefinitionId) ??
         null,
-      runs: agent.runs.map((run) => ({
-        ...run,
-        currentStatus: normalizeAgentRuntimeStatus(run.status),
-        lastKnownStatus: normalizeProjectionRunStatus(run.lastKnownStatus),
-      })),
+      runs: agent.runs.map((run) => {
+        const currentStatus = normalizeAgentRuntimeStatus(run.status);
+        const { lastKnownStatus } = toRunStatus(currentStatus);
+        return {
+          ...run,
+          lastActivityAt: run.createdAt,
+          currentStatus,
+          lastKnownStatus,
+        };
+      }),
     })),
   }));
 

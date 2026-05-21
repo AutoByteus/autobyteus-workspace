@@ -80,7 +80,6 @@ const toMemberRunMetadata = (
   skillAccessMode: member.skillAccessMode,
   runtimeKind: member.runtimeKind,
   platformAgentRunId: member.platformAgentRunId,
-  lastKnownStatus: "IDLE",
 });
 
 const resolveLivePlatformAgentRunId = (

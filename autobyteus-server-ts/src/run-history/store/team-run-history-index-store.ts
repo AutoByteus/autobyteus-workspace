@@ -1,117 +1,124 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import {
-  TEAM_RUN_HISTORY_INDEX_RECORD_VERSION,
-  TeamRunDeleteLifecycleRecord,
+import type {
   TeamRunIndexFileRecord,
   TeamRunIndexRowRecord,
-  TeamRunStatusRecord,
 } from "./team-run-history-index-record-types.js";
+import { atomicWriteJsonFile } from "./atomic-json-file-writer.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-const createEmptyIndex = (): TeamRunIndexFileRecord => ({
-  version: TEAM_RUN_HISTORY_INDEX_RECORD_VERSION,
-  rows: [],
-});
+const allowedRowKeys = new Set([
+  "teamRunId",
+  "teamDefinitionId",
+  "teamDefinitionName",
+  "workspaceRootPath",
+  "summary",
+  "createdAt",
+  "archivedAt",
+  "terminatedAt",
+]);
 
-const createTempPath = (filePath: string): string =>
-  `${filePath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
+const createEmptyIndex = (): TeamRunIndexFileRecord => [];
 
-const normalizeStatus = (
-  value: TeamRunStatusRecord,
-): TeamRunStatusRecord => {
-  if (value === "ERROR") {
-    return "ERROR";
+const normalizeSafeTeamRunId = (value: string): string => {
+  const teamRunId = value.trim();
+  if (
+    !teamRunId ||
+    path.isAbsolute(teamRunId) ||
+    path.posix.isAbsolute(teamRunId) ||
+    path.win32.isAbsolute(teamRunId) ||
+    /[\\/]/.test(teamRunId) ||
+    teamRunId === "." ||
+    teamRunId === ".."
+  ) {
+    throw new Error("teamRunId must be a safe team run identity.");
   }
-  if (value === "IDLE") {
-    return "IDLE";
-  }
-  return "ACTIVE";
+  return teamRunId;
 };
 
-const normalizeDeleteLifecycle = (
-  value: TeamRunDeleteLifecycleRecord,
-): TeamRunDeleteLifecycleRecord => {
-  return value === "CLEANUP_PENDING" ? "CLEANUP_PENDING" : "READY";
+const normalizeRequiredString = (value: string, fieldName: string): string => {
+  const normalized = value.trim();
+  if (!normalized) {
+    throw new Error(`${fieldName} cannot be empty.`);
+  }
+  return normalized;
 };
 
-const normalizeOptionalWorkspaceRootPath = (value: unknown): string | null => {
+const normalizeOptionalWorkspaceRootPath = (value: string | null): string | null => {
   if (typeof value !== "string") {
     return null;
   }
-  const normalized = value.trim();
-  if (!normalized) {
-    return null;
-  }
-  return canonicalizeWorkspaceRootPath(normalized);
+  const trimmed = value.trim();
+  return trimmed ? canonicalizeWorkspaceRootPath(trimmed) : null;
 };
 
+const normalizeOptionalTimestamp = (value: string | null | undefined): string | null =>
+  typeof value === "string" && value.trim() ? value.trim() : null;
+
 const normalizeRow = (row: TeamRunIndexRowRecord): TeamRunIndexRowRecord => ({
-  teamRunId: row.teamRunId.trim(),
-  teamDefinitionId: row.teamDefinitionId.trim(),
-  teamDefinitionName: row.teamDefinitionName.trim(),
+  teamRunId: normalizeSafeTeamRunId(row.teamRunId),
+  teamDefinitionId: normalizeRequiredString(row.teamDefinitionId, "teamDefinitionId"),
+  teamDefinitionName: normalizeRequiredString(row.teamDefinitionName, "teamDefinitionName"),
   workspaceRootPath: normalizeOptionalWorkspaceRootPath(row.workspaceRootPath),
   summary: row.summary.trim(),
-  lastActivityAt: row.lastActivityAt,
-  lastKnownStatus: normalizeStatus(row.lastKnownStatus),
-  deleteLifecycle: normalizeDeleteLifecycle(row.deleteLifecycle),
+  createdAt: normalizeRequiredString(row.createdAt, "createdAt"),
+  archivedAt: normalizeOptionalTimestamp(row.archivedAt),
+  terminatedAt: normalizeOptionalTimestamp(row.terminatedAt),
 });
 
 const parseIndexFile = (value: unknown): TeamRunIndexFileRecord | null => {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-  const payload = value as Record<string, unknown>;
-  if (typeof payload.version !== "number" || !Array.isArray(payload.rows)) {
+  if (!Array.isArray(value)) {
     return null;
   }
   const rows: TeamRunIndexRowRecord[] = [];
-  for (const row of payload.rows) {
+  for (const row of value) {
     if (!row || typeof row !== "object") {
       return null;
     }
-    const normalizedRow = row as Record<string, unknown>;
+    const candidate = row as Record<string, unknown>;
+    if (Object.keys(candidate).some((key) => !allowedRowKeys.has(key))) {
+      return null;
+    }
     if (
-      typeof normalizedRow.teamRunId !== "string" ||
-      typeof normalizedRow.teamDefinitionId !== "string" ||
-      typeof normalizedRow.teamDefinitionName !== "string" ||
-      (typeof normalizedRow.workspaceRootPath !== "string" &&
-        normalizedRow.workspaceRootPath !== null &&
-        normalizedRow.workspaceRootPath !== undefined) ||
-      typeof normalizedRow.summary !== "string" ||
-      typeof normalizedRow.lastActivityAt !== "string" ||
-      (normalizedRow.lastKnownStatus !== "ACTIVE" &&
-        normalizedRow.lastKnownStatus !== "IDLE" &&
-        normalizedRow.lastKnownStatus !== "ERROR") ||
-      (normalizedRow.deleteLifecycle !== "READY" &&
-        normalizedRow.deleteLifecycle !== "CLEANUP_PENDING")
+      typeof candidate.teamRunId !== "string" ||
+      typeof candidate.teamDefinitionId !== "string" ||
+      typeof candidate.teamDefinitionName !== "string" ||
+      (typeof candidate.workspaceRootPath !== "string" && candidate.workspaceRootPath !== null) ||
+      typeof candidate.summary !== "string" ||
+      typeof candidate.createdAt !== "string" ||
+      !(
+        candidate.archivedAt === undefined ||
+        candidate.archivedAt === null ||
+        typeof candidate.archivedAt === "string"
+      ) ||
+      !(
+        candidate.terminatedAt === undefined ||
+        candidate.terminatedAt === null ||
+        typeof candidate.terminatedAt === "string"
+      )
     ) {
       return null;
     }
-    rows.push(
-      normalizeRow({
-        teamRunId: String(normalizedRow.teamRunId),
-        teamDefinitionId: String(normalizedRow.teamDefinitionId),
-        teamDefinitionName: String(normalizedRow.teamDefinitionName),
-        workspaceRootPath:
-          typeof normalizedRow.workspaceRootPath === "string"
-            ? normalizedRow.workspaceRootPath
-            : null,
-        summary: String(normalizedRow.summary),
-        lastActivityAt: String(normalizedRow.lastActivityAt),
-        lastKnownStatus: normalizedRow.lastKnownStatus as TeamRunStatusRecord,
-        deleteLifecycle: normalizedRow.deleteLifecycle as TeamRunDeleteLifecycleRecord,
-      }),
-    );
+    try {
+      rows.push(normalizeRow({
+        teamRunId: candidate.teamRunId,
+        teamDefinitionId: candidate.teamDefinitionId,
+        teamDefinitionName: candidate.teamDefinitionName,
+        workspaceRootPath: candidate.workspaceRootPath ?? null,
+        summary: candidate.summary,
+        createdAt: candidate.createdAt,
+        archivedAt: candidate.archivedAt ?? null,
+        terminatedAt: candidate.terminatedAt ?? null,
+      }));
+    } catch {
+      return null;
+    }
   }
-  return {
-    version: payload.version,
-    rows,
-  };
+  return rows;
 };
 
 export class TeamRunHistoryIndexStore {
@@ -128,72 +135,17 @@ export class TeamRunHistoryIndexStore {
   }
 
   async listRows(): Promise<TeamRunIndexRowRecord[]> {
-    const index = await this.readIndex();
-    return index.rows;
+    return this.readIndex();
   }
 
   async getRow(teamRunId: string): Promise<TeamRunIndexRowRecord | null> {
     const rows = await this.listRows();
-    return rows.find((row) => row.teamRunId === teamRunId) ?? null;
+    return rows.find((row) => row.teamRunId === teamRunId.trim()) ?? null;
   }
 
-  async writeIndex(index: TeamRunIndexFileRecord): Promise<void> {
+  async writeIndex(rows: TeamRunIndexFileRecord): Promise<void> {
     await this.queueWrite(async () => {
-      await this.writeIndexFile({
-        version: TEAM_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows: index.rows.map(normalizeRow),
-      });
-    });
-  }
-
-  async upsertRow(row: TeamRunIndexRowRecord): Promise<void> {
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const rows = index.rows.filter((entry) => entry.teamRunId !== row.teamRunId);
-      rows.push(normalizeRow(row));
-      await this.writeIndexFile({
-        version: TEAM_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
-    });
-  }
-
-  async updateRow(
-    teamRunId: string,
-    patch: Partial<Omit<TeamRunIndexRowRecord, "teamRunId">>,
-  ): Promise<void> {
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const current = index.rows.find((row) => row.teamRunId === teamRunId);
-      if (!current) {
-        return;
-      }
-      const next: TeamRunIndexRowRecord = normalizeRow({
-        ...current,
-        ...patch,
-        teamRunId,
-      });
-      const rows = index.rows
-        .filter((row) => row.teamRunId !== teamRunId)
-        .concat(next);
-      await this.writeIndexFile({
-        version: TEAM_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
-    });
-  }
-
-  async removeRow(teamRunId: string): Promise<void> {
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const rows = index.rows.filter((row) => row.teamRunId !== teamRunId);
-      if (rows.length === index.rows.length) {
-        return;
-      }
-      await this.writeIndexFile({
-        version: TEAM_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
+      await atomicWriteJsonFile(this.indexFilePath, rows.map(normalizeRow));
     });
   }
 
@@ -209,29 +161,18 @@ export class TeamRunHistoryIndexStore {
   private async readIndexFile(): Promise<TeamRunIndexFileRecord> {
     try {
       const raw = await fs.readFile(this.indexFilePath, "utf-8");
-      const parsed = JSON.parse(raw);
+      const parsed = JSON.parse(raw) as unknown;
       const validated = parseIndexFile(parsed);
       if (!validated) {
         logger.warn(`Invalid team run history index format: ${this.indexFilePath}`);
         return createEmptyIndex();
       }
-      return {
-        version: TEAM_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows: validated.rows,
-      };
+      return validated;
     } catch (error) {
       if (!String(error).includes("ENOENT")) {
         logger.warn(`Failed reading team run history index: ${String(error)}`);
       }
       return createEmptyIndex();
     }
-  }
-
-  private async writeIndexFile(index: TeamRunIndexFileRecord): Promise<void> {
-    const directory = path.dirname(this.indexFilePath);
-    await fs.mkdir(directory, { recursive: true });
-    const tempPath = createTempPath(this.indexFilePath);
-    await fs.writeFile(tempPath, JSON.stringify(index, null, 2), "utf-8");
-    await fs.rename(tempPath, this.indexFilePath);
   }
 }

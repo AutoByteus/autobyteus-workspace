@@ -141,6 +141,13 @@ const buildMemberStatusSnapshotsFromHistory = (
     currentStatus: member.status,
   }));
 
+const getLeafAgentContextsByRouteKey = (teamContext: any): Map<string, any> => {
+  if (teamContext?.leafAgentContextsByRouteKey instanceof Map) {
+    return teamContext.leafAgentContextsByRouteKey;
+  }
+  return teamContext?.members instanceof Map ? teamContext.members : new Map();
+};
+
 const reconcileDiscoveredActiveRuns = async (
   store: RunHistoryFetchStoreLike,
 ): Promise<void> => {
@@ -213,7 +220,7 @@ const reconcileDiscoveredActiveRuns = async (
     if (teamContext.currentStatus !== AgentTeamStatus.Error) {
       teamContext.currentStatus = AgentTeamStatus.Offline;
     }
-    teamContext.leafAgentContextsByRouteKey.forEach((memberContext) => {
+    getLeafAgentContextsByRouteKey(teamContext).forEach((memberContext) => {
       if (memberContext.state.currentStatus !== AgentStatus.Error) {
         applyOfflineOrTerminalCleanup(memberContext);
       } else {
@@ -232,9 +239,11 @@ const reconcileDiscoveredActiveRuns = async (
         memberStatuses,
       }, {
         preserveLiveInterrupt: existingTeamContext.isSubscribed,
-        preserveCurrentStatus: existingTeamContext.isSubscribed,
+        preserveCurrentStatus:
+          existingTeamContext.isSubscribed &&
+          existingTeamContext.currentStatus !== AgentTeamStatus.Offline,
       });
-      existingTeamContext.leafAgentContextsByRouteKey.forEach((memberContext) => {
+      getLeafAgentContextsByRouteKey(existingTeamContext).forEach((memberContext) => {
         memberContext.config.isLocked = true;
       });
       if (!existingTeamContext.isSubscribed) {

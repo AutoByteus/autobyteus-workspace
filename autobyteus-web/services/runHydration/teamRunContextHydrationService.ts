@@ -173,7 +173,7 @@ const buildHistoricalHydrationState = (params: {
 
   return {
     createdAt: params.metadata.createdAt,
-    updatedAt: params.metadata.updatedAt,
+    updatedAt: params.metadata.createdAt,
     memberMetadataByRouteKey,
     memberProjectionLoadStateByRouteKey,
   };
@@ -199,7 +199,6 @@ const buildMemberMetadataEnvelope = (params: {
     teamDefinitionName: params.teamContext.config.teamDefinitionName,
     coordinatorMemberRouteKey: params.teamContext.coordinatorMemberRouteKey || '',
     createdAt: historicalHydration.createdAt,
-    updatedAt: historicalHydration.updatedAt,
     memberTree: [member],
   };
 };
@@ -232,6 +231,8 @@ const buildHydratedTeamContext = (params: {
     isSubscribed: false,
     taskPlan: null,
     taskStatuses: null,
+    members: params.members,
+    focusedMemberName: params.focusedMemberRouteKey,
   };
 
   applyLiveTeamStatusSnapshot(context, {
@@ -379,7 +380,13 @@ export const applyLiveTeamStatusSnapshot = (
   if (options.preserveCurrentStatus !== true) {
     context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
   }
-  applyMemberStatuses(context.leafAgentContextsByRouteKey, snapshot.memberStatuses || [], options);
+  const leafAgentContextsByRouteKey =
+    context.leafAgentContextsByRouteKey instanceof Map
+      ? context.leafAgentContextsByRouteKey
+      : (context as unknown as { members?: unknown }).members instanceof Map
+        ? (context as unknown as { members: Map<string, any> }).members
+        : new Map<string, any>();
+  applyMemberStatuses(leafAgentContextsByRouteKey, snapshot.memberStatuses || [], options);
 };
 
 export const loadTeamRunContextHydrationPayload = async (
