@@ -1,0 +1,149 @@
+text: AUTOBYTEUS REMOTE ACCESS
+text: AutoByteus
+text: Mobile Home
+text: Refresh
+text: CURRENT NODE
+text: AutoByteus Desktop
+text: http://normys-macbook-pro.tail0347f8.ts.net:29695
+text: Connected
+text: PRIMARY NEXT ACTION Start or choose work Pick a recent run, agent, team, or workspace without opening the desktop tree.
+text: Recent work
+text: Switch work
+text: No recent runs yet. Choose an agent, team, or workspace to start.
+text: Choose work Recent, Agents, Teams, Workspaces
+text: Files Browse current workspace
+text: Troubleshoot Connection diagnostics
+text: Unpair Remove this phone
+text: SWITCH WORK
+text: Choose work
+text: Close
+text: Recent
+text: Agents
+text: Teams
+text: Workspaces
+text: Memory Compactor Condenses settled AutoByteus interaction history into compact JSON memory. Agent
+text: Codex Codex Agent
+text: Professor Professor Agent
+text: Student Student Agent
+text: AudioTranscriber Transcribes audio recordings into one timestamped Markdown transcript file. Agent
+text: AudioGenerator An AI agent that converts text scripts into high-quality spoken audio. Agent
+text: Chapter Slide Planner Plans chapter-level teaching slides as a structured raw JSON package. Agent
+text: Chemistry Concept Visualizer Chemistry Concept Visualizer Agent
+text: Chemistry homework grader Chemistry homework grader Agent
+text: Chemistry Teacher Germany Chemistry Teacher Germany Agent
+text: Cinematic Storybook Director Cinematic Storybook Director Agent
+text: Clara’s Ocean Friends Story Creator Clara’s Ocean Friends Story Creator Agent
+text: coding agent coding agent Agent
+text: database manager dsb Agent
+text: Dictionary Word Audio Generates dictionary-style audio clips for individual words by creating one clear paused speech recording and cutting it into per-word files. Agent
+text: Gemini RPA PPT designer PPT Designer Agent
+text: Image Designer Image Designer Agent
+text: Infographics Creator Infographics Creator Agent
+text: Kid_Story_Teller Kid_Story_Teller Agent
+text: MCP Tool Manager An agent designed to manage Model Context Protocol (MCP) server configurations and discover their tools. Agent
+text: Media Editor Media Editor Agent
+text: niuzhirui_production_db_manager niuzhirui_production_db_manager Agent
+text: PPT Creator PPT Creator Agent
+text: PPT Designer Designs narrative-first slide decks using the bundled ppt-designer skill. Agent
+text: Presentation Designer Presentation Designer Agent
+text: project manager demo project manager Agent
+text: prompt generator prompt generator Agent
+text: prompt manager prompt manager Agent
+text: Publisher Publisher on wechat, xiaohongshu, tiktok and youtube short Agent
+text: ReflectionCards ReflectionCards Agent
+text: Reflective Storyteller Reflective Storyteller Agent
+text: requirement nks Agent
+text: requirement engineer requirement engineer Agent
+text: SlideImageGenerator SlideImageGenerator Agent
+text: SlideNarrator SlideNarrator Agent
+text: software architect Ryan is senior software architect Agent
+text: Software Developer Software Developer Agent
+text: TutorialVideoCreator An agent that transforms a series of screenshots into a polished tutorial video. It analyzes and orders the images, writes a script, generates a voiceover, and compiles everything into a final video file. Agent
+text: video subtitle burn in engineer Owns subtitle generation for existing recordings by normalizing media, transcribing audio, saving timestamped transcript artifacts, generating subtitle files, and producing subtitled videos. Agent
+text: Visual Book Storyteller Visual Book Storyteller Agent
+text: Visual Dialogue Weaver Visual Dialogue Weaver Agent
+text: VisualStoryteller This agent writes stories by breaking them down into scenes. For each scene, it provides a narrative description and a detailed prompt for an accompanying image. It does not use any tools. Agent
+text: WeChat Official Account Article Writer WeChat Official Account Article Writer Agent
+text: Weixin Linux desktop operator Safely operates the Ubuntu desktop Weixin client for verified group messaging, link sharing, image sharing, and setup checks after explicit user approval. Agent
+text: Daily Assistant General Agent Agent
+text: Pitch Practice Investor Simulates a startup investor for spoken pitch practice after studying user-provided startup materials. Agent
+text: Resume Designer Creates frontend-based resume packages from user input or supplied resume sources, renders them, and exports print-ready PDFs. Agent
+text: Software Tutorial Video Maker Turns supplied software screenshots and rough teaching notes into a short narrated tutorial video package using TTS narration and ffmpeg. Agent
+text: 细读经文的组员 以中文紧扣经文本身回应查经问题，在多轮讨论中不断把小组拉回文字本身。 Agent
+text: 提供上下文的组员 以中文补充段落背景、历史文化信息和平行经文，并在小组讨论中校正过度推论。 Agent
+text: 查经小组长 以中文带领真实查经小组的多轮讨论，提出问题、推动深入，并在最后整理小组共识。 Agent
+text: Clara Story Orchestrator Creates the canonical Clara story package and hands it to the Clara storybook builder. Agent
+text: Clara Storybook Builder Turns a saved Clara story package into a German-Chinese illustrated storybook without changing the canonical story. Agent
+text: LinkedIn marketer Creates LinkedIn-native posts and articles, adapts them to the marketer's voice and goal, and publishes them when requested. Agent
+text: Marketing Coordinator Routes marketing and publishing requests to the right platform specialist and coordinates cross-platform campaigns. Agent
+text: Weixin gongzhonghao marketer Translates, drafts, refines, publishes, and corrects Weixin Official Account articles after explicit user approval. Agent
+text: X marketer Drafts, refines, publishes, researches, and handles X/Twitter-native engagement outreach with explicit approval before any live post or reply action. Agent
+text: Xiaohongshu marketer Drafts, refines, publishes, and researches Xiaohongshu-native content and accounts with explicit approval required before any publish action. Agent
+text: Cinematic Frame Artist Cinematic Frame Artist Agent
+text: Cinematic Sound Designer Cinematic Sound Designer Agent
+text: Cinematic Storyboard Architect Cinematic Storyboard Architect Agent
+text: Cinematic Video Editor Cinematic Video Editor Agent
+text: AnimationDeveloper AnimationDeveloper Agent
+text: GeniusMathResolver GeniusMathResolver Agent
+text: SocraticMathTeacher SocraticMathTeacher Agent
+text: TutorialVideoAssembler Build the final tutorial video from a source video and a saved voiceover spec. Agent
+text: TutorialVoiceoverWriter Analyze a silent screen recording, write the canonical voiceover spec, and hand it to the tutorial video assembler. Agent
+text: article reviewer Critically reviews outlines and article drafts for structure, style fit, fidelity, and publication readiness. Agent
+text: article writer Builds a style-aware article package from brief through outline, draft, and revision handoff. Agent
+text: manga illustrator Locks the visual language, creates character reference sheets, and generates video-frame imagery by default, with page/panel imagery only when explicitly requested. Agent
+text: manga showrunner Creates the canonical story and character package for an original manga project and coordinates upstream creative direction. Agent
+text: storyboard director Turns the approved manga canon package into a production-ready storyboard and continuity ledger. Agent
+text: voice and video producer Adapts the approved manga visual package into speech assets, subtitles, and a motion-comic style final video. Agent
+text: narration-script-reviewer Performs full review of narrated presentation scripts and slide storyboards for logic, support, redundancy, spoken clarity, and readiness for slide production. Agent
+text: presentation-director Coordinates narrated presentation video projects and owns research, explanation structure, narration script, slide storyboard, and final explanation coherence. Agent
+text: slide-video-producer Produces still-slide visuals, narration audio, subtitles when needed, and final simple narrated presentation video exports. Agent
+text: CEO Simulated chief executive officer for the fictional Northstar Operating Company organization example. Agent
+text: CFO Simulated chief financial officer for the fictional Northstar Operating Company organization example. Agent
+text: Chief of Staff Simulated chief of staff for the fictional Northstar Operating Company organization example. Agent
+text: Chief People Officer Simulated chief people officer for the fictional Northstar Operating Company organization example. Agent
+text: COO Simulated chief operating officer for the fictional Northstar Operating Company organization example. Agent
+text: CPO Simulated chief product officer for the fictional Northstar Operating Company organization example. Agent
+text: CRO Simulated chief revenue officer for the fictional Northstar Operating Company organization example. Agent
+text: CTO Simulated chief technology officer for the fictional Northstar Operating Company organization example. Agent
+text: research engineer Owns the full research-engineering loop: paper understanding, minimal implementation, experiments, analysis, and next-loop decisions. Agent
+text: research reviewer Independently reviews research-engineering packages for paper faithfulness, implementation alignment, experiment validity, reproducibility, and overclaiming. Agent
+text: deck reviewer Reviews image-only pitch/research deck slides for research fidelity, readability, prompt-output quality, and readiness before final deck assembly. Agent
+text: deep researcher Performs deep research, writes the reasoning artifact, and prepares the evidence-backed handoff for deck planning. Agent
+text: infographic PowerPoint designer Turns an evidence-backed research handoff into an infographic-style slide deck and images-only PowerPoint package. Agent
+text: api e2e engineer Owns API, E2E, and broader executable validation work, including coverage design, environment setup, and evidence needed to prove real behavior across the actual system boundaries. Agent
+text: architecture reviewer Reviews the design spec before implementation and checks spine inventory, ownership, naming, interface boundaries, decoupling, and migration safety. Agent
+text: code reviewer Performs the engineering source review pass before API/E2E validation begins, and re-reviews repository-resident durable validation added during API/E2E. Agent
+text: delivery engineer Owns post-validation docs sync, final handoff, repository finalization, release/publication preparation, deployment execution, and rollout verification. Agent
+text: implementation engineer Executes the agreed design with a bias toward concrete delivery and clean change scope. Agent
+text: solution designer Bootstraps task context, investigates requests, refines requirements, and produces the design spec for review before implementation. Agent
+text: promo-director Coordinates software product promo video projects and owns product positioning, script, voiceover, measured timing, storyboard, CTA, and final message alignment. Agent
+text: promo-video-producer Produces optional captions, audio-led segments, motion graphics, edit assembly, final export, and QA for software product promotional videos. Agent
+text: visual-director Plans, generates, edits, polishes, and logs truthful promo visuals for software product promotional videos. Agent
+text: visual-reviewer Reviews produced promo visuals for truthfulness, non-text callout/highlight accuracy, UI readability, no-added-text discipline, aspect ratio, sensitive data, and readiness before video assembly. Agent
+text: Brief Studio Researcher Researches source material for Brief Studio and publishes research files for projection. Agent
+text: Brief Studio Writer Drafts the reviewable Brief Studio brief and publishes brief files for projection. Agent
+text: Infrastructure & Security Lead Simulated infrastructure and security lead for the fictional Northstar Operating Company organization example. Agent
+text: Platform Engineering Manager Simulated platform engineering manager for the fictional Northstar Operating Company organization example. Agent
+text: Product Engineering Manager Simulated product engineering manager for the fictional Northstar Operating Company organization example. Agent
+text: QA & Release Manager Simulated qa and release manager for the fictional Northstar Operating Company organization example. Agent
+text: VP Engineering Simulated vice president of engineering for the fictional Northstar Operating Company organization example. Agent
+text: Controller Simulated controller for the fictional Northstar Operating Company organization example. Agent
+text: Legal & Compliance Lead Simulated legal and compliance lead for the fictional Northstar Operating Company organization example. Agent
+text: People Operations Lead Simulated people operations lead for the fictional Northstar Operating Company organization example. Agent
+text: Talent Acquisition Lead Simulated talent acquisition lead for the fictional Northstar Operating Company organization example. Agent
+text: VP Finance Simulated vice president of finance for the fictional Northstar Operating Company organization example. Agent
+text: Business Operations Lead Simulated business operations lead for the fictional Northstar Operating Company organization example. Agent
+text: Customer Operations Lead Simulated customer operations lead for the fictional Northstar Operating Company organization example. Agent
+text: Data Analytics Lead Simulated data analytics lead for the fictional Northstar Operating Company organization example. Agent
+text: Vendor Operations Lead Simulated vendor operations lead for the fictional Northstar Operating Company organization example. Agent
+text: VP Operations Simulated vice president of operations for the fictional Northstar Operating Company organization example. Agent
+text: Growth Product Manager Simulated growth product manager for the fictional Northstar Operating Company organization example. Agent
+text: Platform Product Manager Simulated platform product manager for the fictional Northstar Operating Company organization example. Agent
+text: Product Design Lead Simulated product design lead for the fictional Northstar Operating Company organization example. Agent
+text: UX Research Lead Simulated ux research lead for the fictional Northstar Operating Company organization example. Agent
+text: VP Product Simulated vice president of product for the fictional Northstar Operating Company organization example. Agent
+text: Account Executive Manager Simulated account executive manager for the fictional Northstar Operating Company organization example. Agent
+text: Customer Success Lead Simulated customer success lead for the fictional Northstar Operating Company organization example. Agent
+text: Demand Generation Lead Simulated demand generation lead for the fictional Northstar Operating Company organization example. Agent
+text: Partnerships Lead Simulated partnerships lead for the fictional Northstar Operating Company organization example. Agent
+text: VP Sales Simulated vice president of sales for the fictional Northstar Operating Company organization example. Agent

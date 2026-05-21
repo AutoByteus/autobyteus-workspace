@@ -1,0 +1,6 @@
+Thu May 21 18:21:46 CEST 2026
+List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:2
+
+  mCurrentFocus=Window{2652e33 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+  mFocusedApp=ActivityRecord{22fce48 u0 org.autobyteus.mobile/.MainActivity t17597}

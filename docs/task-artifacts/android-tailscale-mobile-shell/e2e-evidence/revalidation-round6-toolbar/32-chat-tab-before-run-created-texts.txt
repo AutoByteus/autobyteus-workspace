@@ -1,0 +1,13 @@
+text: Home
+text: Software Engineering Team 6 members · Team profile
+text: Switch
+text: CHAT
+text: Start or open a run
+text: Use Runs to start a run from this profile, then return to Chat.
+text: Choose work
+text: Open Runs
+text: 💬 Chat
+text: ▶ Runs
+text: 📁 Files
+text: ⌘ Tools
+text: ● Activity

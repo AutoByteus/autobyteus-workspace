@@ -11,7 +11,6 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
-import org.autobyteus.mobile.connection.SavedNodeProfile
 
 class WebShellScreen(private val context: Context) {
     data class Callbacks(
@@ -20,10 +19,8 @@ class WebShellScreen(private val context: Context) {
         val onOpenInBrowser: () -> Unit,
     )
 
-    @Suppress("UNUSED_PARAMETER")
     fun render(
         webView: WebView,
-        profile: SavedNodeProfile,
         diagnostic: ConnectionDiagnostic? = null,
         callbacks: Callbacks,
     ): View {

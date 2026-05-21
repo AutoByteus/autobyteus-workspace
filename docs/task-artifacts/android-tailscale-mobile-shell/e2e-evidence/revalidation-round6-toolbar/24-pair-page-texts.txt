@@ -1,0 +1,10 @@
+text: AUTOBYTEUS REMOTE ACCESS
+text: Connect this phone
+text: Scan the Phone Access QR from desktop settings. The normal QR journey is one tap.
+text: Pairing link detected from desktop.
+text: Pair this phone with the selected AutoByteus node.
+text: Show pairing payload
+text: THIS DEVICE NAME
+text: Phone
+text: Pair this phone
+text: Troubleshoot connection

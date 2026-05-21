@@ -1,0 +1,93 @@
+[0,0][1080,2166]	false	android.widget.FrameLayout	com.google.android.documentsui:id/action_bar_root
+[0,0][1080,2166]	false	android.widget.FrameLayout	android:id/content
+[0,0][1080,2166]	false	android.view.ViewGroup	com.google.android.documentsui:id/coordinator_layout
+[0,104][1080,2166]	false	androidx.drawerlayout.widget.DrawerLayout	com.google.android.documentsui:id/drawer_layout
+[0,104][1080,1076]	false	android.widget.LinearLayout	com.google.android.documentsui:id/app_bar
+[0,104][1080,1076]	false	android.widget.FrameLayout	com.google.android.documentsui:id/collapsing_toolbar
+[0,236][1080,1076]	false	android.widget.LinearLayout	com.google.android.documentsui:id/directory_header
+[55,236][1080,368]	false	android.widget.LinearLayout	com.google.android.documentsui:id/search_chip_group
+[66,236][307,368]	true	android.widget.Button
+[329,236][571,368]	true	android.widget.Button
+[593,236][854,368]	true	android.widget.Button
+[876,236][1080,368]	true	android.widget.Button
+[0,412][1080,544]	false	android.widget.LinearLayout	com.google.android.documentsui:id/tabs_container
+[55,412][1025,544]	false	android.widget.HorizontalScrollView	com.google.android.documentsui:id/tabs
+[551,412][1014,544]	true	android.widget.LinearLayout
+[0,544][1080,911]	false	android.widget.LinearLayout	com.google.android.documentsui:id/apps_row
+[0,676][1080,911]	false	android.widget.LinearLayout	com.google.android.documentsui:id/apps_group
+[0,676][365,911]	true	android.widget.LinearLayout
+[138,693][226,781]	false	android.widget.ImageView	com.google.android.documentsui:id/app_icon
+[145,809][220,853]	false	android.widget.TextView	android:id/title
+[22,853][343,894]	false	android.widget.TextView	com.google.android.documentsui:id/summary
+[365,676][730,911]	true	android.widget.LinearLayout
+[503,693][591,781]	false	android.widget.ImageView	com.google.android.documentsui:id/app_icon
+[510,809][585,853]	false	android.widget.TextView	android:id/title
+[387,853][708,894]	false	android.widget.TextView	com.google.android.documentsui:id/summary
+[730,676][1080,911]	true	android.widget.LinearLayout
+[869,693][957,781]	false	android.widget.ImageView	com.google.android.documentsui:id/app_icon
+[875,809][950,853]	false	android.widget.TextView	android:id/title
+[752,853][1074,894]	false	android.widget.TextView	com.google.android.documentsui:id/summary
+[66,911][1014,1076]	false	android.widget.LinearLayout	com.google.android.documentsui:id/header_container
+[66,911][882,1076]	false	android.widget.TextView	com.google.android.documentsui:id/header_title
+[882,927][1014,1059]	false	androidx.appcompat.widget.LinearLayoutCompat	com.google.android.documentsui:id/sub_menu
+[882,927][1014,1059]	true	android.widget.Button	com.google.android.documentsui:id/sub_menu_grid
+[0,104][1080,236]	false	android.view.ViewGroup	com.google.android.documentsui:id/toolbar
+[0,104][154,236]	true	android.widget.ImageButton
+[816,104][948,236]	true	android.widget.Button	com.google.android.documentsui:id/option_menu_search
+[948,104][1080,236]	true	android.widget.ImageView
+[0,104][1080,2166]	false	android.widget.FrameLayout	com.google.android.documentsui:id/container_search_fragment
+[0,104][1080,2166]	false	android.widget.FrameLayout	com.google.android.documentsui:id/container_directory
+[0,104][1080,2166]	false	android.view.ViewGroup	com.google.android.documentsui:id/refresh_layout
+[0,104][1080,2166]	false	android.widget.GridView	com.google.android.documentsui:id/dir_list
+[0,1076][1080,1277]	true	android.widget.LinearLayout	com.google.android.documentsui:id/item_root
+[0,1076][198,1274]	false	android.widget.FrameLayout	com.google.android.documentsui:id/icon
+[44,1120][154,1230]	false	android.widget.ImageView	com.google.android.documentsui:id/icon_thumb
+[198,1118][838,1177]	false	android.widget.TextView	android:id/title
+[198,1188][838,1232]	false	android.widget.LinearLayout	com.google.android.documentsui:id/line2
+[198,1188][566,1232]	false	android.widget.TextView	com.google.android.documentsui:id/metadata
+[882,1076][1080,1274]	true	android.widget.FrameLayout	com.google.android.documentsui:id/preview_icon
+[0,1277][1080,1478]	true	android.widget.LinearLayout	com.google.android.documentsui:id/item_root
+[0,1277][198,1475]	false	android.widget.FrameLayout	com.google.android.documentsui:id/icon
+[44,1321][154,1431]	false	android.widget.ImageView	com.google.android.documentsui:id/icon_thumb
+[198,1319][838,1378]	false	android.widget.TextView	android:id/title
+[198,1389][838,1433]	false	android.widget.LinearLayout	com.google.android.documentsui:id/line2
+[198,1389][566,1433]	false	android.widget.TextView	com.google.android.documentsui:id/metadata
+[882,1277][1080,1475]	true	android.widget.FrameLayout	com.google.android.documentsui:id/preview_icon
+[0,1478][1080,1679]	true	android.widget.LinearLayout	com.google.android.documentsui:id/item_root
+[0,1478][198,1676]	false	android.widget.FrameLayout	com.google.android.documentsui:id/icon
+[44,1522][154,1632]	false	android.widget.ImageView	com.google.android.documentsui:id/icon_thumb
+[198,1520][838,1579]	false	android.widget.TextView	android:id/title
+[198,1590][838,1634]	false	android.widget.LinearLayout	com.google.android.documentsui:id/line2
+[198,1590][566,1634]	false	android.widget.TextView	com.google.android.documentsui:id/metadata
+[882,1478][1080,1676]	true	android.widget.FrameLayout	com.google.android.documentsui:id/preview_icon
+[0,1679][1080,1880]	true	android.widget.LinearLayout	com.google.android.documentsui:id/item_root
+[0,1679][198,1877]	false	android.widget.FrameLayout	com.google.android.documentsui:id/icon
+[44,1723][154,1833]	false	android.widget.ImageView	com.google.android.documentsui:id/icon_thumb
+[198,1721][838,1780]	false	android.widget.TextView	android:id/title
+[198,1791][838,1835]	false	android.widget.LinearLayout	com.google.android.documentsui:id/line2
+[198,1791][566,1835]	false	android.widget.TextView	com.google.android.documentsui:id/metadata
+[882,1679][1080,1877]	true	android.widget.FrameLayout	com.google.android.documentsui:id/preview_icon
+[0,1880][1080,2081]	true	android.widget.LinearLayout	com.google.android.documentsui:id/item_root
+[0,1880][198,2078]	false	android.widget.FrameLayout	com.google.android.documentsui:id/icon
+[44,1924][154,2034]	false	android.widget.ImageView	com.google.android.documentsui:id/icon_thumb
+[198,1922][838,1981]	false	android.widget.TextView	android:id/title
+[198,1992][838,2036]	false	android.widget.LinearLayout	com.google.android.documentsui:id/line2
+[198,1992][566,2036]	false	android.widget.TextView	com.google.android.documentsui:id/metadata
+[882,1880][1080,2078]	true	android.widget.FrameLayout	com.google.android.documentsui:id/preview_icon
+[0,2081][1080,2166]	true	android.widget.LinearLayout	com.google.android.documentsui:id/item_root
+[0,2081][198,2166]	false	android.widget.FrameLayout	com.google.android.documentsui:id/icon
+[44,2125][154,2166]	false	android.widget.ImageView	com.google.android.documentsui:id/icon_thumb
+[198,2123][838,2166]	false	android.widget.TextView	android:id/title
+[0,0][0,0]	false	android.widget.LinearLayout	com.google.android.documentsui:id/line2
+[0,0][0,0]	false	android.widget.TextView	com.google.android.documentsui:id/metadata
+[882,2081][1080,2166]	true	android.widget.FrameLayout	com.google.android.documentsui:id/preview_icon
+[0,0][0,0]	true	android.widget.LinearLayout	com.google.android.documentsui:id/item_root
+[0,0][0,0]	false	android.widget.FrameLayout	com.google.android.documentsui:id/icon
+[0,0][0,0]	false	android.widget.ImageView	com.google.android.documentsui:id/icon_thumb
+[0,0][0,0]	false	android.widget.TextView	android:id/title
+[0,0][0,0]	false	android.widget.LinearLayout	com.google.android.documentsui:id/line2
+[0,0][0,0]	false	android.widget.TextView	com.google.android.documentsui:id/metadata
+[0,0][0,0]	true	android.widget.FrameLayout	com.google.android.documentsui:id/preview_icon
+[0,104][33,2166]	false	android.view.View	com.google.android.documentsui:id/drawer_edge
+[0,0][0,0]	false	android.view.ViewGroup	com.google.android.documentsui:id/container_save
+[0,0][1080,104]	false	android.view.View	android:id/statusBarBackground

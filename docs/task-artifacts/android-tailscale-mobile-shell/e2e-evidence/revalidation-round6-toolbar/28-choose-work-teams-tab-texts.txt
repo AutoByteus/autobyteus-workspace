@@ -1,0 +1,45 @@
+text: AUTOBYTEUS REMOTE ACCESS
+text: AutoByteus
+text: Mobile Home
+text: Refresh
+text: CURRENT NODE
+text: AutoByteus Desktop
+text: http://normys-macbook-pro.tail0347f8.ts.net:29695
+text: Connected
+text: PRIMARY NEXT ACTION Start or choose work Pick a recent run, agent, team, or workspace without opening the desktop tree.
+text: Recent work
+text: Switch work
+text: No recent runs yet. Choose an agent, team, or workspace to start.
+text: Choose work Recent, Agents, Teams, Workspaces
+text: Files Browse current workspace
+text: Troubleshoot Connection diagnostics
+text: Unpair Remove this phone
+text: SWITCH WORK
+text: Choose work
+text: Close
+text: Recent
+text: Agents
+text: Teams
+text: Workspaces
+text: ClassRoomSimulation ClassRoomSimulation 2 members
+text: Bible Study Group 一个中文优先的三人查经小组，围绕单节或短段经文进行真实的小组式来回讨论，直到形成更深入的共同理解。 3 members
+text: Clara Ocean Friends Clara Ocean Friends story creation team 2 members
+text: Marketing Team Coordinates platform-native drafting, review, publishing, and research across LinkedIn, X, Xiaohongshu, and Weixin Official Account. 5 members
+text: Movie Maker cinematic stage play generation team 4 members
+text: Presentation_Chemie Presentation 3 members
+text: Socratic Math Team Socratic Math Team 3 members
+text: Video Tutorial Creation Team Create narrated software tutorial videos from source screen recordings. 2 members
+text: Article Writing Team A style-aware article-writing team for outline-first drafting, critical review, and revision until publication-ready quality. 2 members
+text: Manga Video Studio Team A story-first creative production team for original manga canon design, consistent image generation, and optional narrated motion-comic video delivery. 4 members
+text: Narrated Presentation Video Team A slide-based explainer and teaching-style video team for researched narration scripts, clean presentation visuals, voiceover, and simple still-slide video assembly. 3 members
+text: Northstar Operating Company A realistic fictional SaaS company simulation with an executive leadership team and nested department organizations. 13 members
+text: Research Engineering Team A lean research-engineering team for dynamic research tasks: investigation, planning, implementation when needed, empirical validation when needed, analysis, explanation, and iterative decisions. 2 members
+text: Research To Deck Team A three-specialist team for deep research, user-approved slide planning, image-only slide production, and independent deck review. 3 members
+text: Software Engineering Team A lightweight self-operating software engineering team for upstream solution design, implementation, validation, review, documentation sync, and final handoff. 6 members
+text: Software Product Promo Video Team A product-marketing video team for software products, mobile apps, websites, SaaS tools, and digital services. 4 members
+text: Brief Studio Team Coordinates a researcher and writer to produce one reviewable brief. 2 members
+text: Northstar Engineering Org Team Engineering department simulation for platform, product engineering, infrastructure/security, and QA/release execution. 5 members
+text: Northstar Finance & People Org Team Finance, people, legal, and talent operations simulation for budgets, hiring, compliance, and organizational health. 5 members
+text: Northstar Operations Org Team Operations department simulation for business operations, customer operations, vendors, analytics, and operating cadence. 5 members
+text: Northstar Product Org Team Product department simulation for roadmap planning, discovery, UX research, design, and product-market evidence. 5 members
+text: Northstar Revenue Org Team Revenue department simulation for sales, marketing, customer success, partnerships, pipeline, and retention. 5 members

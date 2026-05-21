@@ -1,0 +1,2 @@
+05-21 18:24:54.428 I/AutoByteusFileChooser( 2801): Opening Android file picker; allowMultiple=true; mime=*/*
+05-21 18:25:12.418 I/AutoByteusFileChooser( 2801): File picker returned one selected item.

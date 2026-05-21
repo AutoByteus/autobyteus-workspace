@@ -1,0 +1,2 @@
+  mCurrentFocus=Window{2652e33 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+  mFocusedApp=ActivityRecord{22fce48 u0 org.autobyteus.mobile/.MainActivity t17597}

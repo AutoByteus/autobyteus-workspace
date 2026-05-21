@@ -1,0 +1,37 @@
+--- environment ---
+Darwin MacBookPro 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:40 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T6000 arm64
+openjdk version "21.0.10" 2026-01-20
+OpenJDK Runtime Environment Homebrew (build 21.0.10)
+OpenJDK 64-Bit Server VM Homebrew (build 21.0.10, mixed mode, sharing)
+
+------------------------------------------------------------
+Gradle 9.3.1
+------------------------------------------------------------
+
+Build time:    2026-01-29 14:15:01 UTC
+Revision:      44f4e8d3122ee6e7cbf5a248d7e20b4ca666bda3
+
+Kotlin:        2.2.21
+Groovy:        4.0.29
+Ant:           Apache Ant(TM) version 1.10.15 compiled on August 25 2024
+Launcher JVM:  21.0.10 (Homebrew 21.0.10)
+Daemon JVM:    /opt/homebrew/Cellar/openjdk@21/21.0.10/libexec/openjdk.jdk/Contents/Home (no Daemon JVM specified, using current Java home)
+OS:            Mac OS X 26.2 aarch64
+
+Android Debug Bridge version 1.0.41
+Version 36.0.2-14143358
+Installed as /opt/homebrew/bin/adb
+Running on Darwin 25.2.0 (arm64)
+--- adb devices ---
+List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:2
+
+--- desktop status host ---
+{
+    "phoneAccessEnabled": true,
+    "pairingAvailable": true,
+    "compatibilityVersion": 1,
+    "serverName": "AutoByteus Desktop"
+}
+--- android tailnet status endpoint ---
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverName":"AutoByteus Desktop"}

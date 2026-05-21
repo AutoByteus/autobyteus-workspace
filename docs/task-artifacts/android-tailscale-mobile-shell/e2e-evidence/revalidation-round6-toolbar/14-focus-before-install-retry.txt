@@ -1,0 +1,2 @@
+  mCurrentFocus=Window{2181773 u0 com.miui.home/com.miui.home.launcher.Launcher}
+  mFocusedApp=ActivityRecord{ea3f167 u0 com.miui.home/.launcher.Launcher t2}

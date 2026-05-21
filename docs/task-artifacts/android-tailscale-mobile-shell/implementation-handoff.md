@@ -6,6 +6,8 @@
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/design-spec.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/design-review-report.md`
+- Android WebView toolbar UX rework note: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/android-webview-toolbar-ux-rework.md`
+- Android WebView toolbar UX evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/android-webview-toolbar-ux-rework-evidence.md`
 - Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/review-report.md`
 - API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/api-e2e-report.md`
 
@@ -17,6 +19,7 @@ Implemented the Android/Tailscale mobile shell ticket as an additive app-shell p
 - Added native saved-node setup UX for paste/share/manual URL entry, saved node restore, reset/remove, HTTP acknowledgement, Tailscale action, and external QR scanner launch.
 - Added Android-local profile, URL normalization, pairing-link parsing, reachability validation, diagnostics, and state classes.
 - Added a WebView host that loads the existing desktop-served `/mobile` shell and classifies navigation with exact parsed scheme/host/port/path checks.
+- Reworked the Android WebView shell healthy state to give the existing `/mobile` content the full usable app viewport with no persistent native title/URL/action toolbar above it.
 - Preserved pairing and credentials in the existing `/mobile` web flow; no native credential bridge and no JavaScript interface were added.
 - Added bounded Android WebView file chooser support for existing mobile `<input type="file">` upload controls via `WebChromeClient.onShowFileChooser`, `ACTION_OPEN_DOCUMENT`, pending `ValueCallback<Array<Uri>>`, and cancellation cleanup.
 - Added Android unit tests for normalizer, pairing parser, navigation policy, file chooser accept-type policy, and diagnostic mapping, plus instrumentation compile coverage for request-code wiring.
@@ -42,6 +45,22 @@ Implemented the Android/Tailscale mobile shell ticket as an additive app-shell p
 - Coverage: connected instrumentation compile coverage now asserts the WebView settings posture (`allowContentAccess == true`, `allowFileAccess == false`) and request-code separation; unit coverage still covers accept-type policy.
 - Boundary check: no JavaScript bridge, native credential bridge, Android product-client clone, duplicated pairing exchange, or backend run/chat/runtime change was added.
 
+
+## Local Fix Update For Code Review Finding `CR-002`
+
+- Finding fixed: removed obsolete `profile: SavedNodeProfile` API surface from `WebShellScreen.render()` after the healthy-state title/URL toolbar was removed.
+- Implementation: `WebShellScreen.render()` now accepts only the WebView, optional diagnostic, and callbacks; `MainActivity.renderCurrentWebShell()` and `AutoByteusMobileShellSmokeTest` call sites were updated accordingly.
+- Cleanup: removed `@Suppress("UNUSED_PARAMETER")`, the now-unused `SavedNodeProfile` import from `WebShellScreen.kt`, and the no-longer-needed test helper/call-site profile arguments.
+- Boundary check: this is a narrow Android UI API cleanup only; no backend, mobile web run/chat behavior, pairing protocol, `TrustedNavigationPolicy`, WebView file chooser, or WebView security posture change was made.
+
+## UX Rework Update For `REQ-ANDROID-UX-021` / `AC-ANDROID-UX-015`
+
+- User-requested issue fixed: the native Android wrapper no longer reserves a persistent top toolbar above healthy `/mobile` WebView content.
+- Implementation: `WebShellScreen.render()` now uses a full-viewport `FrameLayout` root and adds the WebView directly as the only child when `diagnostic == null`.
+- Recovery preservation: `Retry`, `Edit`, and `Browser` remain available in the diagnostic overlay when a recoverable WebView/native diagnostic is active. Connection-screen re-entry remains available through the existing Android back behavior/edit flow.
+- UI evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/android-webview-toolbar-ux-rework-evidence.md` records render-tree/source inspection showing the healthy state has no persistent native `EDIT NODE`, `RETRY`, or `BROWSER` header and documents the focused instrumentation coverage.
+- Boundary check: no backend, mobile web run/chat behavior, pairing protocol, `TrustedNavigationPolicy`, WebView file chooser, or WebView security posture change was made for this UX rework.
+
 ## Key Files Or Areas
 
 - Android project/build:
@@ -56,7 +75,7 @@ Implemented the Android/Tailscale mobile shell ticket as an additive app-shell p
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-android/app/src/main/java/org/autobyteus/mobile/shell/AndroidExternalActions.kt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-android/app/src/main/java/org/autobyteus/mobile/shell/ConnectionInputResolver.kt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/ConnectionScreen.kt`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt` — healthy state is now full-viewport WebView; recovery actions only overlay diagnostics.
 - Android connection/web boundaries:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-android/app/src/main/java/org/autobyteus/mobile/connection/SavedNodeProfile.kt`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-android/app/src/main/java/org/autobyteus/mobile/connection/SavedNodeStore.kt`
@@ -86,6 +105,8 @@ Implemented the Android/Tailscale mobile shell ticket as an additive app-shell p
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/localization/messages/zh-CN/settings.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/docs/remote_access.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/android_mobile_access.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/android-webview-toolbar-ux-rework.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/android-webview-toolbar-ux-rework-evidence.md`
 
 ## Important Assumptions
 
@@ -99,6 +120,7 @@ Implemented the Android/Tailscale mobile shell ticket as an additive app-shell p
 ## Known Risks
 
 - Live Android/Tailscale behavior still needs API/E2E validation on a USB-connected physical Android device. Implementation checks built and unit-tested the app but did not perform live pairing/restore.
+- The healthy-state native toolbar removal is covered by UI render-tree inspection/instrumentation compile coverage, but API/E2E should still capture a real-device screenshot showing healthy `/mobile` content without the persistent native `EDIT NODE` / `RETRY` / `BROWSER` header.
 - QR scan UX depends on an installed scanner app. Paste/share/manual URL setup is the reliable MVP path if no scanner exists.
 - Android WebView file chooser source wiring and content-URI readability are now implemented and compile/unit/instrumentation-covered, but the corrected attachment upload path still needs API/E2E device revalidation.
 - `pnpm -C autobyteus-web build:mobile-web` still reports existing bundle-size/dynamic-import warnings unrelated to this change.
@@ -121,7 +143,7 @@ Implemented the Android/Tailscale mobile shell ticket as an additive app-shell p
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: after the `CR-001` local fix, `MainActivity.kt` is 217 effective non-empty lines. No changed implementation source file exceeds 500 effective non-empty lines or crosses the proactive `>220` pressure threshold.
+- Notes: after the `CR-002` cleanup, `WebShellScreen.kt` is 70 effective non-empty lines and `MainActivity.kt` is 216 effective non-empty lines. No changed implementation source file exceeds 500 effective non-empty lines or crosses the proactive `>220` pressure threshold.
 
 ## Environment Or Dependency Notes
 
@@ -134,13 +156,13 @@ Implemented the Android/Tailscale mobile shell ticket as an additive app-shell p
 
 Implementation-scoped checks only:
 
-- `ANDROID_HOME=/Users/normy/Library/Android/sdk gradle -p autobyteus-android :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin` — Passed after `VAL-ANDROID-006` fix.
-- `pnpm -C autobyteus-web guard:web-boundary` — Passed after `VAL-ANDROID-006` fix.
-- `pnpm -C autobyteus-web guard:localization-boundary` — Passed after `VAL-ANDROID-006` fix.
-- `pnpm -C autobyteus-web audit:localization-literals` — Passed after `VAL-ANDROID-006` fix with zero unresolved findings; emitted the existing Node `MODULE_TYPELESS_PACKAGE_JSON` warning for the localization audit script.
+- `ANDROID_HOME=/Users/normy/Library/Android/sdk gradle -p autobyteus-android :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin` — Passed after the `CR-002` obsolete `WebShellScreen.render()` profile-parameter cleanup.
+- `pnpm -C autobyteus-web guard:web-boundary` — Passed after the Android WebView toolbar UX rework.
+- `pnpm -C autobyteus-web guard:localization-boundary` — Passed after the Android WebView toolbar UX rework.
+- `pnpm -C autobyteus-web audit:localization-literals` — Passed after the Android WebView toolbar UX rework with zero unresolved findings; emitted the existing Node `MODULE_TYPELESS_PACKAGE_JSON` warning for the localization audit script.
 - `pnpm -C autobyteus-web build:mobile-web` — Passed; emitted existing Vite chunk-size/dynamic-import warnings.
-- `git diff --check` — Passed.
-- Source file size guard script/check — Passed after `VAL-ANDROID-006` fix; largest changed Android source implementation file is `MainActivity.kt` at 217 effective non-empty lines.
+- `git diff --check` — Passed after the `CR-002` cleanup.
+- Source file size guard script/check — Passed after the `CR-002` cleanup; `WebShellScreen.kt` is 70 effective non-empty lines and largest changed Android source implementation file remains `MainActivity.kt` at 216 effective non-empty lines.
 
 ## Downstream Validation Hints / Suggested Scenarios
 
@@ -148,6 +170,7 @@ Implementation-scoped checks only:
   - `autobyteus-android/scripts/android-live-smoke.sh autobyteus-android/app/build/outputs/apk/debug/app-debug.apk docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence`
 - Validate paste/share/manual stable URL setup using `https://<desktop-machine>.<tailnet>.ts.net/mobile`.
 - Validate existing `/mobile?pairing=` flow opens and stores the web-side mobile credential.
+- Revalidate healthy WebView UX on a real Android device: open a reachable saved `/mobile` node and capture a screenshot showing no persistent native `EDIT NODE`, `RETRY`, or `BROWSER` header above the mobile content.
 - Revalidate `VAL-ANDROID-006` on a real Android device: tap the existing mobile upload control, confirm the native picker appears, select a small file, confirm `AutoByteusFileChooser` logs one selected item, and confirm the mobile composer increments to at least `Context Files (1)` or shows an upload placeholder/thumbnail.
 - Force-stop/reopen Android and confirm saved-node restore without a fresh scan when the same stable origin is reachable.
 - Test unreachable saved URL or Tailscale-off state and confirm the native recovery copy appears instead of a raw WebView error.

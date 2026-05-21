@@ -25,6 +25,10 @@ Draft context files attached before mobile run creation remain available for the
 
 The mobile **Tools** view exposes Terminal and VNC through phone-sized wrappers around the existing browser-compatible tool owners. Terminal uses the paired node's authenticated WebSocket endpoint for the selected workspace. VNC uses the configured server host list and noVNC viewer. VNC hosts must be reachable from the phone; desktop-only loopback hostnames should be replaced with LAN, VPN, or overlay addresses that the phone can open.
 
+## Browser/PWA App Shell Metadata
+
+The `/mobile` route links lightweight browser install metadata through `mobile.webmanifest`, mobile icons, standalone display mode, and theme-color/head tags. This metadata is intentionally limited to app-shell presentation for browser users; it does not add a service worker, offline authenticated cache, alternate API protocol, or cached credential path. If future work adds offline behavior, it must be designed separately so paired credentials and protected node data cannot become stale or broadly cached.
+
 ## Network Model
 
 AutoByteus does not require or special-case a VPN vendor. Phone Access only requires that the phone can reach the desktop/server node URL selected during pairing.

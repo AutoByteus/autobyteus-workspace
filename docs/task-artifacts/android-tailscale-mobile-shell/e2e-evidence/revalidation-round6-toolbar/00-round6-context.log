@@ -1,3 +1,17 @@
+Thu May 21 18:07:44 CEST 2026
+## codex/android-tailscale-mobile-shell...origin/personal [ahead 1]
+ M autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt
+ M autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt
+ M autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt
+ M autobyteus-web/docs/remote_access.md
+ M docs/task-artifacts/android-tailscale-mobile-shell/implementation-handoff.md
+ M docs/task-artifacts/android-tailscale-mobile-shell/review-report.md
+?? docs/task-artifacts/android-tailscale-mobile-shell/android-webview-toolbar-ux-rework-evidence.md
+?? docs/task-artifacts/android-tailscale-mobile-shell/delivery-post-integration-checks.log
+?? docs/task-artifacts/android-tailscale-mobile-shell/docs-sync-report.md
+?? docs/task-artifacts/android-tailscale-mobile-shell/handoff-summary.md
+?? docs/task-artifacts/android-tailscale-mobile-shell/release-deployment-report.md
+--- latest review report excerpt ---
 # Review Report
 
 ## Review Round Meta
@@ -191,3 +205,212 @@ Source/artifact inspection:
 - Review Decision: `Pass`
 - Score Summary: `9.3/10` (`93/100`)
 - Notes: `CR-002` is resolved. The Android WebView toolbar UX rework is source-review approved, and API/E2E can resume with the healthy-state screenshot validation plus pending attachment upload checks.
+--- toolbar UX doc excerpt ---
+# Android WebView Toolbar UX Rework
+
+## Status
+
+Design-impact / implementation rework requested on 2026-05-21 after user review of live Android screenshots.
+
+## User Feedback
+
+The current Android app shows a tall native header above the mobile web shell:
+
+- title: `AutoByteus · AutoByteus Desktop`
+- URL: `http://.../mobile`
+- buttons: `EDIT NODE`, `RETRY`, `BROWSER`
+
+The user flagged this as poor use of screen space because it pushes the actual AutoByteus mobile content downward. The desired product feel is an app-like full-screen mobile shell, not a browser wrapper with a permanent control bar.
+
+## Root Cause Found
+
+The header is native Android wrapper chrome, not the `/mobile` web page and not Android system UI.
+
+Current implementation path:
+
+- `autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt`
+- `WebShellScreen.render()` always calls `root.addView(toolbar(profile, callbacks))` before adding the WebView content.
+- `toolbar()` renders two `TextView`s and a horizontal row with three standard Android `Button`s: `Edit node`, `Retry`, and `Browser`.
+
+Those controls are useful recovery/utility actions, but the implementation currently displays them permanently in healthy WebView state.
+
+## Design Decision
+
+Healthy WebView state must be full-screen/immersive for the existing `/mobile` shell.
+
+Do not reserve persistent top layout space for native wrapper controls when the saved node is reachable and no diagnostic is active. The existing mobile web shell already owns its own header/navigation and should get the available application viewport.
+
+## Required Implementation Change
+
+1. Rework `WebShellScreen.render()` so, when `diagnostic == null`, it returns a layout where the WebView occupies the full usable app content area.
+2. Remove the permanent native toolbar from healthy WebView state.
+3. Keep native utility actions available through one of these acceptable patterns:
+   - diagnostic overlay only;
+   - connection screen after explicit re-entry/reset;
+   - compact overflow menu or bottom sheet that overlays content and does not push content down;
+   - another compact affordance approved by the same principle.
+4. The diagnostic/error state may still show prominent Retry/Edit/Open actions because recovery is the primary task in that state.
+5. Do not weaken `TrustedNavigationPolicy`, WebView security, saved-node persistence, or existing `/mobile` ownership while making the UI change.
+
+## Acceptance Check
+
+- With a saved reachable node and active WebView, screenshot/UI inspection shows no persistent native `EDIT NODE`, `RETRY`, or `BROWSER` header above the mobile web content.
+- The `/mobile` content begins at the app's usable top inset and uses the reclaimed vertical space.
+- Recovery actions are still reachable when a diagnostic occurs or through the selected compact re-entry/overflow pattern.
+- No backend, mobile web run/chat, or pairing protocol behavior changes are introduced.
+
+## Updated Upstream Artifacts
+
+- Requirements: added `REQ-ANDROID-UX-021` and `AC-ANDROID-UX-015`.
+- Investigation notes: recorded the implementation root cause in `WebShellScreen.kt`.
+- Design spec: added full-screen healthy WebView guidance, file responsibility updates, migration step `7A`, and implementation guidance.
+--- toolbar evidence doc excerpt ---
+# Android WebView Toolbar UX Rework Evidence
+
+## Evidence Type
+
+UI render-tree/source inspection plus focused Android instrumentation compile coverage. No backend, mobile web, pairing, navigation-policy, or WebView security behavior was changed for this UX rework.
+
+## Healthy WebView State Inspection
+
+- File inspected: `autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt`
+- `WebShellScreen.render()` now creates a `FrameLayout` root and adds the supplied `WebView` directly with `MATCH_PARENT` width and height.
+- When `diagnostic == null`, no native toolbar, title row, URL text, or wrapper action buttons are added above the WebView.
+- Removed healthy-state native controls: `Edit node`, `Retry`, and `Browser` no longer reserve any top layout space.
+
+Relevant implementation points:
+
+- `WebShellScreen.kt:26-35`: root is a `FrameLayout`; WebView is child `0` with full `MATCH_PARENT` layout params; diagnostic overlay is only added when `diagnostic != null`.
+- `WebShellScreen.kt:38-66`: recovery actions remain in the diagnostic overlay only (`Retry`, `Edit`, `Browser`).
+- `WebShellScreen.render()` no longer accepts an obsolete `SavedNodeProfile` parameter after `CR-002`; the removed toolbar path no longer leaves dead API surface or `UNUSED_PARAMETER` suppression behind.
+
+## Focused Coverage Added
+
+- File: `autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt`
+- Test: `healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar`
+  - Asserts healthy render root has exactly one child.
+  - Asserts that child is the WebView.
+  - Asserts WebView width/height are `MATCH_PARENT`.
+  - Asserts visible render-tree text does not contain `EDIT NODE`, `RETRY`, or `BROWSER`.
+- Test: `diagnosticWebShellKeepsRecoveryActionsInOverlay`
+  - Asserts diagnostic render keeps the WebView as child `0` and adds overlay child `1`.
+  - Asserts recovery actions remain available in diagnostic overlay.
+
+## Local Checks
+
+- `ANDROID_HOME=/Users/normy/Library/Android/sdk gradle -p autobyteus-android :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin` — Passed.
+- `git diff --check` — Passed.
+- Source size check — Passed; `WebShellScreen.kt` is 70 effective non-empty lines after the `CR-002` cleanup.
+- `pnpm -C autobyteus-web guard:web-boundary` — Passed.
+- `pnpm -C autobyteus-web guard:localization-boundary` — Passed.
+- `pnpm -C autobyteus-web audit:localization-literals` — Passed with the existing Node module-type warning.
+- `pnpm -C autobyteus-web build:mobile-web` — Passed with existing Vite dynamic-import/chunk-size warnings.
+
+## Downstream Screenshot Request
+
+API/E2E should capture the final physical-device screenshot after code review passes, showing healthy `/mobile` content without any persistent native `EDIT NODE`, `RETRY`, or `BROWSER` header above it.
+--- WebShellScreen.kt ---
+package org.autobyteus.mobile.ui
+
+import android.content.Context
+import android.graphics.Color
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
+import android.webkit.WebView
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.TextView
+import org.autobyteus.mobile.connection.ConnectionDiagnostic
+
+class WebShellScreen(private val context: Context) {
+    data class Callbacks(
+        val onEditNode: () -> Unit,
+        val onRetry: () -> Unit,
+        val onOpenInBrowser: () -> Unit,
+    )
+
+    fun render(
+        webView: WebView,
+        diagnostic: ConnectionDiagnostic? = null,
+        callbacks: Callbacks,
+    ): View {
+        (webView.parent as? ViewGroup)?.removeView(webView)
+        val root = FrameLayout(context).apply {
+            setBackgroundColor(Color.rgb(248, 250, 252))
+        }
+        root.addView(webView, FrameLayout.LayoutParams(match(), match()))
+        if (diagnostic != null) {
+            root.addView(overlay(diagnostic, callbacks), FrameLayout.LayoutParams(match(), match()))
+        }
+        return root
+    }
+
+    private fun overlay(diagnostic: ConnectionDiagnostic, callbacks: Callbacks): View {
+        val frame = FrameLayout(context).apply {
+            setBackgroundColor(Color.argb(235, 248, 250, 252))
+        }
+        val card = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(18), dp(18), dp(18), dp(18))
+            setBackgroundColor(Color.WHITE)
+        }
+        card.addView(TextView(context).apply {
+            text = diagnostic.title
+            textSize = 20f
+            setTextColor(Color.rgb(146, 64, 14))
+        })
+        card.addView(TextView(context).apply {
+            text = "${diagnostic.message}\n\n${diagnostic.recoveryAction}"
+            textSize = 14f
+            setTextColor(Color.rgb(51, 65, 85))
+        }, LinearLayout.LayoutParams(match(), wrap()).withTopMargin(8))
+        val row = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
+        row.addView(button("Retry") { callbacks.onRetry() }, LinearLayout.LayoutParams(0, wrap(), 1f).withEndMargin(6))
+        row.addView(button("Edit") { callbacks.onEditNode() }, LinearLayout.LayoutParams(0, wrap(), 1f).withStartMargin(6).withEndMargin(6))
+        row.addView(button("Browser") { callbacks.onOpenInBrowser() }, LinearLayout.LayoutParams(0, wrap(), 1f).withStartMargin(6))
+        card.addView(row, LinearLayout.LayoutParams(match(), wrap()).withTopMargin(14))
+        frame.addView(card, FrameLayout.LayoutParams(match(), wrap(), Gravity.CENTER).apply {
+            leftMargin = dp(20)
+            rightMargin = dp(20)
+        })
+        return frame
+    }
+
+    private fun button(textValue: String, onClick: () -> Unit): Button = Button(context).apply {
+        text = textValue
+        setTextColor(Color.rgb(30, 58, 138))
+        setOnClickListener { onClick() }
+    }
+
+    private fun dp(value: Int): Int = (value * context.resources.displayMetrics.density).toInt()
+}
+--- renderCurrentWebShell call sites ---
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:89:                assertFalse(visibleText.contains("EDIT NODE", ignoreCase = true))
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:90:                assertFalse(visibleText.contains("RETRY", ignoreCase = true))
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:91:                assertFalse(visibleText.contains("BROWSER", ignoreCase = true))
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:106:            recoveryAction = "Retry, edit the node, or open it externally.",
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:121:                assertTrue(visibleText.contains("Retry"))
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:122:                assertTrue(visibleText.contains("Edit"))
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:123:                assertTrue(visibleText.contains("Browser"))
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:131:        onEditNode = {},
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:132:        onRetry = {},
+autobyteus-android/app/src/androidTest/java/org/autobyteus/mobile/AutoByteusMobileShellSmokeTest.kt:133:        onOpenInBrowser = {},
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:188:                renderCurrentWebShell(null)
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:192:                renderCurrentWebShell(null)
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:199:        renderCurrentWebShell(null)
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:205:        renderCurrentWebShell(diagnostic)
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:208:    private fun renderCurrentWebShell(diagnostic: ConnectionDiagnostic?) {
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:220:        onEditNode = {
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:225:        onRetry = { currentWebHost?.loadTrusted(profile.mobileUrl) ?: validateAndOpen(profile, profile.mobileUrl, false) },
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/MainActivity.kt:226:        onOpenInBrowser = { externalActions.openExternal(profile.mobileUrl) },
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/ConnectionScreen.kt:12:import android.widget.EditText
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/ConnectionScreen.kt:62:        val input = EditText(context).apply {
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt:17:        val onEditNode: () -> Unit,
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt:18:        val onRetry: () -> Unit,
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt:19:        val onOpenInBrowser: () -> Unit,
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt:58:        row.addView(button("Retry") { callbacks.onRetry() }, LinearLayout.LayoutParams(0, wrap(), 1f).withEndMargin(6))
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt:59:        row.addView(button("Edit") { callbacks.onEditNode() }, LinearLayout.LayoutParams(0, wrap(), 1f).withStartMargin(6).withEndMargin(6))
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt:60:        row.addView(button("Browser") { callbacks.onOpenInBrowser() }, LinearLayout.LayoutParams(0, wrap(), 1f).withStartMargin(6))
+autobyteus-android/app/src/main/java/org/autobyteus/mobile/connection/ConnectionDiagnosticMapper.kt:86:        recoveryAction = "Retry, connect Tailscale, verify the desktop is online, or reset and pair again.",

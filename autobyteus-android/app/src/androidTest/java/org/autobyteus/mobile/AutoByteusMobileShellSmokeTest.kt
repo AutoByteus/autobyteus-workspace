@@ -70,13 +70,11 @@ class AutoByteusMobileShellSmokeTest {
     fun healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val context = instrumentation.targetContext
-        val profile = sampleProfile()
         instrumentation.runOnMainSync {
             val webView = WebView(context)
             try {
                 val root = WebShellScreen(context).render(
                     webView = webView,
-                    profile = profile,
                     diagnostic = null,
                     callbacks = noOpWebCallbacks(),
                 )
@@ -101,7 +99,6 @@ class AutoByteusMobileShellSmokeTest {
     fun diagnosticWebShellKeepsRecoveryActionsInOverlay() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val context = instrumentation.targetContext
-        val profile = sampleProfile()
         val diagnostic = ConnectionDiagnostic(
             kind = ConnectionFailureKind.WebViewLoadFailed,
             title = "Cannot load node",
@@ -113,7 +110,6 @@ class AutoByteusMobileShellSmokeTest {
             try {
                 val root = WebShellScreen(context).render(
                     webView = webView,
-                    profile = profile,
                     diagnostic = diagnostic,
                     callbacks = noOpWebCallbacks(),
                 )
@@ -130,10 +126,6 @@ class AutoByteusMobileShellSmokeTest {
             }
         }
     }
-
-    private fun sampleProfile(): SavedNodeProfile = SavedNodeProfile.fromNormalized(
-        NodeUrlNormalizer.normalize("https://desktop.tailnet-name.ts.net/mobile"),
-    )
 
     private fun noOpWebCallbacks(): WebShellScreen.Callbacks = WebShellScreen.Callbacks(
         onEditNode = {},

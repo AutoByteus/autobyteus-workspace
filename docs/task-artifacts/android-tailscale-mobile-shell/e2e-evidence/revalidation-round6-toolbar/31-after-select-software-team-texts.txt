@@ -1,0 +1,32 @@
+text: Home
+text: Software Engineering Team 6 members · Team profile
+text: Switch
+text: RUNS
+text: Start new run
+text: Close setup
+text: Start new work
+text: Choose a team, workspace, and runtime/model. You’ll select the message target in Chat.
+text: Hide
+text: Agent
+text: Team
+text: Team
+text: Software Engineering Team
+text: Change
+text: Workspace
+text: Choose a workspace intentionally
+text: Choose
+text: Runtime and model
+text: Pick the runtime and model this team run will use.
+text: Runtime
+text: AutoByteus
+text: Runtime backend for this launch.
+text: Default team model
+text: Select a model
+text: Select or confirm the model before launch.
+text: Choose a workspace before creating the run.
+text: Create run
+text: 💬 Chat
+text: ▶ Runs
+text: 📁 Files
+text: ⌘ Tools
+text: ● Activity

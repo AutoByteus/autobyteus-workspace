@@ -1,0 +1,9 @@
+onError: commandError=true message=INSTRUMENTATION_FAILED: org.autobyteus.mobile.test/androidx.test.runner.AndroidJUnitRunner
+android.util.AndroidException: INSTRUMENTATION_FAILED: org.autobyteus.mobile.test/androidx.test.runner.AndroidJUnitRunner
+	at com.android.commands.am.Instrument.run(Instrument.java:524)
+	at com.android.commands.am.Am.runInstrument(Am.java:199)
+	at com.android.commands.am.Am.onRun(Am.java:80)
+	at com.android.internal.os.BaseCommand.run(BaseCommand.java:62)
+	at com.android.commands.am.Am.main(Am.java:50)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:363)

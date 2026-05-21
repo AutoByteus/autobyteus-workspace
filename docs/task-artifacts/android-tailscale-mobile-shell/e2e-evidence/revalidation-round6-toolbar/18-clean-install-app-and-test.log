@@ -1,0 +1,12 @@
+Success
+Failure [DELETE_FAILED_INTERNAL_ERROR]
+Performing Streamed Install
+Success
+Performing Streamed Install
+Success
+package:org.autobyteus.mobile.test
+package:org.autobyteus.phoneavbridge.test
+package:org.autobyteus.roadinstinct.android.debug.test
+package:org.autobyteus.phoneavbridge
+package:org.autobyteus.roadinstinct.android.debug
+package:org.autobyteus.mobile

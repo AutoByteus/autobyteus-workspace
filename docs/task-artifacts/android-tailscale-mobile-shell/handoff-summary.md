@@ -1,0 +1,132 @@
+# Handoff Summary
+
+## Ticket
+
+- Ticket: `android-tailscale-mobile-shell`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell`
+- Branch: `codex/android-tailscale-mobile-shell`
+- Finalization target: `personal` / `origin/personal`
+- Handoff round: Delivery pre-verification handoff after code-review round 6, API/E2E validation round 3, latest-base refresh, docs sync, and delivery integrated-state checks.
+
+## Delivery State
+
+- Current state: Ready for user verification; local README-guided packaged Electron macOS build completed for user testing; not pushed, not merged to `personal`, not archived to `tickets/done`, and no release/deployment has been run.
+- User verification reference: `Pending explicit user verification`.
+- Base refresh: `git fetch origin personal --prune --no-tags` completed on 2026-05-21.
+- Bootstrap/reviewed base: `origin/personal@9a27e3d2686c36676e6061ed9aec2de430a9eba5` (`chore(ticket): record mobile chat flow finalization`).
+- Latest tracked base checked: `origin/personal@9a27e3d2686c36676e6061ed9aec2de430a9eba5` (`chore(ticket): record mobile chat flow finalization`).
+- New base commits integrated: `None`; the latest tracked remote base had not advanced.
+- Local checkpoint commit already present: `c6df083ed3c27d81bceaff5cd811a57592039ec7` (`chore(ticket): checkpoint android tailscale mobile shell`) protected the earlier reviewed/validated candidate before later round-6/round-3 updates.
+- Integration method: `Already current`; no merge or rebase was required.
+- Post-integration / post-API-E2E delivery check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/delivery-post-integration-checks.log`.
+
+## Implementation Summary
+
+- Added a new `autobyteus-android/` Android app shell package that loads the existing desktop-served `/mobile` shell in WebView.
+- Added native first-run saved-node setup for scan/share/paste/manual stable URL entry, HTTP acknowledgement, Tailscale-oriented diagnostics, reset/retry/browser actions, and app data restore.
+- Reused the existing Phone Access pairing and credential flow; no native credential bridge, JavaScript bridge, duplicate pairing exchange, Android runtime, or native run/chat client was added.
+- Reworked healthy Android WebView state to use the full app viewport without persistent native Edit/Retry/Browser chrome above `/mobile`; recovery actions remain in diagnostic overlay paths.
+- Cleaned up the WebView render API after code-review `CR-002`: `WebShellScreen.render()` no longer accepts an unused `SavedNodeProfile` parameter.
+- Added Android WebView file chooser support for existing mobile file upload controls with `ACTION_OPEN_DOCUMENT`, pending callback cleanup, request-code separation, and content-URI readable / direct-file-path disabled settings.
+- Added Android unit/instrumentation validation for URL normalization, pairing-link parsing, navigation policy, file chooser policy, diagnostics, request-code separation, WebView settings posture, and healthy/diagnostic WebView render-tree behavior.
+- Added mobile web/PWA app-shell metadata (`mobile.webmanifest`, icons, route head tags) without service worker/offline authenticated cache.
+- Updated Phone Access UI copy/guidance for stable Tailscale URLs.
+
+## Files Changed For Runtime / Validation
+
+- Android package: `autobyteus-android/**`
+- Web Phone Access/PWA docs and metadata:
+  - `autobyteus-web/components/settings/PhoneAccessCard.vue`
+  - `autobyteus-web/localization/messages/en/settings.ts`
+  - `autobyteus-web/localization/messages/zh-CN/settings.ts`
+  - `autobyteus-web/pages/mobile.vue`
+  - `autobyteus-web/public/mobile.webmanifest`
+  - `autobyteus-web/public/icons/autobyteus-mobile-192.png`
+  - `autobyteus-web/public/icons/autobyteus-mobile-512.png`
+- Long-lived docs:
+  - `docs/android_mobile_access.md`
+  - `autobyteus-web/docs/remote_access.md`
+  - `autobyteus-android/README.md`
+- Task artifacts and final validation evidence:
+  - `docs/task-artifacts/android-tailscale-mobile-shell/*.md`
+  - `docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence/revalidation-round3/`
+  - `docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence/revalidation-round6-toolbar/`
+
+## Delivery-Owned Docs / Artifacts
+
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/release-deployment-report.md`
+- Delivery post-integration checks: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/delivery-post-integration-checks.log`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/handoff-summary.md`
+- Toolbar UX evidence doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/android-webview-toolbar-ux-rework-evidence.md`
+- Release notes: `Not required before verification; no release/deployment has been requested for this handoff.`
+- User-requested Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-20260521T165307Z.log`
+- User-requested Electron artifact summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.txt`
+- User-requested Electron artifact checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.sha256`
+
+
+## User-Requested Electron macOS Build For Testing
+
+- README guidance read: `README.md` plus `autobyteus-web/README.md` Desktop Application Build / macOS Build With Logs (No Notarization).
+- Command run from `autobyteus-web`: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`.
+- Result: `Passed` on 2026-05-21; Electron builder completed DMG and ZIP generation.
+- App bundle for immediate local testing: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- Installer/package artifacts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.dmg`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.zip`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.dmg.blockmap`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.23.zip.blockmap`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/autobyteus-web/electron-dist/latest-mac.yml`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-20260521T165307Z.log`
+- Artifact summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.txt`
+- SHA-256 checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.sha256`
+- Packaging note: this is a local unsigned / not-notarized macOS build (`APPLE_TEAM_ID=` and code-signing identity skipped) intended for testing before repository finalization or release.
+
+## Latest Authoritative Upstream Validation Evidence
+
+- Code review round 6 result: Pass; `CR-002` cleanup resolved and no open code-review findings remain.
+- API/E2E round 3 result: Pass; no repository-resident durable validation code was added or updated in this round, so no return to code review is required.
+- Healthy WebView UX evidence: physical Android `/mobile` home screenshot shows no persistent native `EDIT NODE`, `RETRY`, or `BROWSER` toolbar above mobile content.
+- Android attachment upload evidence: live team-run Chat composer opened Android DocumentsUI, selected the first visible real image, logcat showed one selected item, and the composer showed `CONTEXT · 1 FILE` / `Context Files (1)`.
+- Canonical reports:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/api-e2e-report.md`
+- Key round-3 API/E2E evidence:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence/revalidation-round6-toolbar/25-healthy-webview-no-native-toolbar.png`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence/revalidation-round6-toolbar/26-healthy-toolbar-assertion.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence/revalidation-round6-toolbar/44-picker-open-structural-summary.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence/revalidation-round6-toolbar/45-logcat-filechooser-relevant.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence/revalidation-round6-toolbar/47-attachment-assertion.txt`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence/revalidation-round6-toolbar/48-final-executable-checks.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence/revalidation-round6-toolbar/49-sensitive-evidence-scan.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/e2e-evidence/revalidation-round6-toolbar/50-git-diff-check-after-report-update.log`
+
+## Checks Passed
+
+Latest code-review / API/E2E checks:
+
+- Code review round 6: `ANDROID_HOME=/Users/normy/Library/Android/sdk gradle -p autobyteus-android :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin` — Passed; `git diff --check` — Passed.
+- API/E2E round 3: Gradle unit/build/Android-test compile passed; direct physical-device instrumentation passed `OK (5 tests)`; `git diff --check`, web boundary, localization boundary, localization literal audit, and `pnpm -C autobyteus-web build:mobile-web` passed.
+- API/E2E sensitive evidence scan: no retained raw `pairing=` token or `content://` URI value in the round-3 evidence directory.
+
+Delivery checks after fetching latest `origin/personal`:
+
+- `git diff --check` — Passed.
+- `ANDROID_HOME=/Users/normy/Library/Android/sdk gradle -p autobyteus-android :app:compileDebugAndroidTestKotlin` — Passed; Gradle deprecation warnings remain non-blocking.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/delivery-post-integration-checks.log`.
+- User-requested packaged Electron macOS build: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac` — Passed; artifacts listed in `/Users/normy/autobyteus_org/autobyteus-worktrees/android-tailscale-mobile-shell/docs/task-artifacts/android-tailscale-mobile-shell/build-logs/electron-mac-build-artifacts.txt`.
+
+## Known Non-Blocking / Out-of-Scope Items
+
+- Packaged-Electron desktop-node smoke was not part of API/E2E validation, which used the development desktop/server node; a local unsigned packaged macOS artifact has now been built for user testing, but packaged-app runtime smoke remains pending user verification.
+- Full browser PWA install prompt behavior after hydration remains a browser follow-up only if release claims require it; source/build metadata and no-offline-cache boundary are documented.
+- Tailscale Serve HTTPS was not configured locally; validation used documented MagicDNS/tailnet HTTP with explicit Android acknowledgement.
+- Final Chat message send with the uploaded attachment was not executed after composer accepted it; the failed scope was composer attachment acceptance and is resolved.
+- Exhaustive unreachable saved-node diagnostic after the toolbar rework was not repeated; instrumentation verifies diagnostic recovery actions remain available in overlay state.
+- Gradle deprecation warnings remain a future Android toolchain maintenance item.
+
+## User Verification
+
+- Explicit user verification received: `No`.
+- Verification date: `Pending`.
+- Verification request: Please verify the integrated Android/Tailscale mobile shell behavior before finalization. Suggested focus: install/launch the debug APK, open/pair a stable Tailscale `/mobile` URL, confirm healthy `/mobile` content uses the full viewport with no native toolbar above it, confirm Chat attachment selection reaches the composer, and confirm saved-node restore after force-stop if practical.

@@ -1,0 +1,2 @@
+  mCurrentFocus=Window{90c151b u0 NotificationShade}
+  mFocusedApp=ActivityRecord{881ac49 u0 com.twitter.android/com.twitter.app.main.MainActivity t17583}

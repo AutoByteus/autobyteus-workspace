@@ -210,7 +210,6 @@ class MainActivity : Activity() {
         setContentView(
             webShellScreen.render(
                 webView = webHost.webView,
-                profile = webHost.profile,
                 diagnostic = diagnostic,
                 callbacks = webCallbacks(webHost.profile),
             ),

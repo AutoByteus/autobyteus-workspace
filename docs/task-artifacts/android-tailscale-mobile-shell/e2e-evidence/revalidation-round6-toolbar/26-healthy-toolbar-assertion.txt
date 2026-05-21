@@ -1,0 +1,19 @@
+forbidden_native_toolbar_text_found=False
+matched_lines=[]
+last_texts:
+text: AUTOBYTEUS REMOTE ACCESS
+text: AutoByteus
+text: Mobile Home
+text: Refresh
+text: CURRENT NODE
+text: AutoByteus Desktop
+text: http://normys-macbook-pro.tail0347f8.ts.net:29695
+text: Connected
+text: PRIMARY NEXT ACTION Start or choose work Pick a recent run, agent, team, or workspace without opening the desktop tree.
+text: Recent work
+text: Switch work
+text: No recent runs yet. Choose an agent, team, or workspace to start.
+text: Choose work Recent, Agents, Teams, Workspaces
+text: Files Browse current workspace
+text: Troubleshoot Connection diagnostics
+text: Unpair Remove this phone

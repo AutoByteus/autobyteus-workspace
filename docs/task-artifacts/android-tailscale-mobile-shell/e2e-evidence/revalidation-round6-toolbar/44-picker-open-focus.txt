@@ -1,0 +1,2 @@
+  mCurrentFocus=Window{250edb u0 com.google.android.documentsui/com.android.documentsui.picker.PickActivity}
+  mFocusedApp=ActivityRecord{962c5c u0 com.google.android.documentsui/com.android.documentsui.picker.PickActivity t17597}
