@@ -4,10 +4,10 @@
 
 - Review Entry Point: `Post-Validation Durable-Validation Re-Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/requirements.md`
-- Current Review Round: 5
-- Trigger: API/E2E returned the CR-DV-001 local validation-code fix for narrow re-review.
-- Prior Review Round Reviewed: Round 4 in this same report path.
-- Latest Authoritative Round: 5
+- Current Review Round: 8
+- Trigger: Round-7 API/E2E validation resumed and updated repository-resident durable integration validation.
+- Prior Review Round Reviewed: Round 7 in this same report path.
+- Latest Authoritative Round: 8
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/design-review-report.md`
@@ -23,40 +23,50 @@
 | 1 | Initial implementation handoff | N/A | 3 | Fail | No | CR-LF-001 cleanup pseudo-V2 writes, CR-LF-002 list metadata reads before limit, CR-LF-003 in-memory mutation commit before flush. |
 | 2 | Local-fix rework handoff | 3 | 0 | Pass | No | Prior implementation findings resolved; sent to API/E2E validation. |
 | 3 | API/E2E validation added durable tests | 0 | 0 | Pass | No | Durable validation code changes reviewed at that time were acceptable; sent to delivery. |
-| 4 | API/E2E follow-up added `run-projection-toolcalls-graphql.e2e.test.ts` fixture update | 0 | 1 | Fail | No | CR-DV-001 found stale standalone `lastKnownStatus` fixture fields. Routed to API/E2E for local validation-code cleanup. |
-| 5 | CR-DV-001 local validation-code fix | 1 | 0 | Pass | Yes | Stale standalone fields removed, typed fixture guards added, validation rerun evidence accepted. Ready for delivery to resume. |
+| 4 | API/E2E follow-up added `run-projection-toolcalls-graphql.e2e.test.ts` fixture update | 0 | 1 | Fail | No | CR-DV-001 found stale standalone `lastKnownStatus` fixture fields. |
+| 5 | CR-DV-001 local validation-code fix | 1 | 0 | Pass | No | Durable validation cleanup accepted and routed to delivery. |
+| 6 | Implementation update for plain-array V2 index plus startup app-data migration | 0 | 2 | Fail | No | CR-LF-004 and CR-LF-005 found repair-path row validation and fallback identity gaps. |
+| 7 | CR-LF-004/005 local-fix implementation update | 2 | 0 | Pass | No | Implementation review passed and API/E2E resumed. |
+| 8 | API/E2E updated `memory-layout-and-projection.integration.test.ts` durable validation | 0 | 0 | Pass | Yes | Updated integration fixture is acceptable; ready for delivery engineering. |
 
 ## Review Scope
 
-Round 5 scope is intentionally narrow per post-validation re-review rules:
+Round 8 scope is intentionally narrow per post-validation re-review rules:
 
-- CR-DV-001 fix in `autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`;
-- updated CR-DV-001 evidence in `api-e2e-validation-report.md`;
-- directly related metadata type context needed to verify the fixture now matches the standalone V2 metadata/catalog contract.
+- updated API/E2E validation report context;
+- repository-resident durable validation updated during API/E2E:
+  - `autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts`;
+- directly related implementation context needed to judge whether the integration fixture now encodes the reviewed catalog/team metadata contracts.
 
 Out of scope for this round:
 
-- re-reviewing implementation source accepted in rounds 2-3;
-- delivery documentation artifacts already present in the working tree after the prior pass;
-- live-runtime E2E execution gates that the validation report records as skipped.
+- re-reviewing implementation source accepted in round 7;
+- full API/E2E validation ownership and browser bridge setup;
+- delivery branch refresh and documentation finalization.
 
 Review checks performed:
 
-- Inspected the durable validation diff.
-- Verified all `lastKnownStatus` occurrences are removed from `run-projection-toolcalls-graphql.e2e.test.ts`.
-- Verified the three standalone metadata fixture literals now use `satisfies AgentRunMetadata`.
-- Verified no remaining `activationState` or `memberMetadata` occurrences in the follow-up durable validation file.
-- Read the validation report's CR-DV-001 follow-up section and accepted the recorded rerun evidence: `3 passed | 2 skipped` E2E files; `10 passed | 19 skipped` tests, with skips limited to live-runtime gates.
-- `git diff --check HEAD` passed in code-review verification.
+- Inspected the durable validation diff and current file excerpts.
+- Verified the single-agent fixture now goes through `AgentRunHistoryCatalogService`, uses the actual created run ID, expects a plain row-array index, and rejects obsolete standalone `lastKnownStatus` / `lastActivityAt` row fields.
+- Verified the standalone projection fixture no longer writes obsolete `lastKnownStatus` metadata.
+- Verified the team fixture updates use current `TeamRunConfig`, `TeamBackendKind`, `AgentTeamDefinition`, and `memberTree` shapes. Remaining team `lastKnownStatus` and projection `lastActivityAt` assertions are within explicitly deferred/team/projection scope.
+- Searched the updated durable validation file for stale `memberMetadata`, `runVersion`, `activationState`, and standalone persisted status patterns.
+- Ran targeted integration validation from `autobyteus-server-ts`:
+  - `./node_modules/.bin/vitest run tests/integration/run-history/memory-layout-and-projection.integration.test.ts --reporter=verbose`
+  - Result: 1 file / 12 tests passed.
+- Ran whitespace check from repository root via `git diff --check HEAD`.
+  - Result: passed.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | CR-LF-001 | High | Resolved | Round 2 accepted cleanup V2-only validation; no reopened issue in rounds 3-5. | No reopened implementation issue. |
-| 1 | CR-LF-002 | High | Resolved | Round 2 accepted metadata-free/limit-before-projection list implementation; no reopened issue in rounds 3-5. | No reopened implementation issue. |
-| 1 | CR-LF-003 | Medium | Resolved | Round 2 accepted staged mutation/flush-before-commit behavior; no reopened issue in rounds 3-5. | No reopened implementation issue. |
-| 4 | CR-DV-001 | Medium | Resolved | `run-projection-toolcalls-graphql.e2e.test.ts` has no `lastKnownStatus` matches; three standalone fixture literals now use `satisfies AgentRunMetadata`; validation report records the rerun pass. | Durable-validation local fix accepted. |
+| 1 | CR-LF-001 | High | Resolved | Cleanup behavior remains accepted; no reopen in this durable-validation fixture. | Not reopened. |
+| 1 | CR-LF-002 | High | Resolved | No new normal-list metadata scan behavior in this durable-validation fixture. | Not reopened. |
+| 1 | CR-LF-003 | Medium | Resolved | No new catalog mutation rollback issue in this durable-validation fixture. | Not reopened. |
+| 4 | CR-DV-001 | Medium | Resolved | The updated integration file no longer writes standalone `lastKnownStatus` metadata in the single-agent projection fixture. | Not reopened. |
+| 6 | CR-LF-004 | High | Resolved | API/E2E report records app-data/fallback repair validation; no durable-validation issue found. | Not reopened. |
+| 6 | CR-LF-005 | Medium | Resolved | API/E2E report records fallback `runIdMismatches` validation; no durable-validation issue found. | Not reopened. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
@@ -64,97 +74,92 @@ This round reviewed repository-resident durable validation code. The source-file
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts` | N/A - test file | N/A | N/A | File remains properly scoped to GraphQL run-projection E2E coverage. | Pass | Pass | None. |
+| `autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts` | N/A - integration test | N/A | N/A | File remains scoped to memory layout and projection integration. | Pass | Pass | None. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | CR-DV-001 fix removes stale standalone status persistence from durable validation and preserves the accepted V2 metadata/catalog split. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | The follow-up E2E still exercises the intended run-projection path; team-member fixtures use current `memberTree`. | None. |
-| Ownership boundary preservation and clarity | Pass | Standalone metadata fixtures now omit status and are type-guarded with `AgentRunMetadata`. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | The E2E remains scoped to run projection behavior. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The test continues to use existing metadata stores and GraphQL schema execution. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | No unnecessary production helper or repeated source structure was introduced. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Standalone fixture literals now satisfy the tight current `AgentRunMetadata` shape. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | No production coordination policy change. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | No new boundary introduced. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | File remains an appropriate GraphQL run-projection E2E test. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | No production dependency change. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | The validation fixture no longer encodes a status/metadata ownership blur. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | E2E file remains in the run-history GraphQL E2E area. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | No layout change. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | GraphQL projection queries remain subject-specific. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Test naming and fixture field names now align with current models. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | The added type guard is small and local to the fixture setup. | None. |
-| Patch-on-patch complexity control | Pass | The fix is narrow: remove stale fields and add type-aware guards. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | CR-DV-001 obsolete fixture fields are removed. | None. |
-| Test quality is acceptable for the changed behavior | Pass | The E2E now both passes and encodes the clean target standalone metadata shape. | None. |
-| Test maintainability is acceptable for the changed behavior | Pass | `satisfies AgentRunMetadata` reduces recurrence risk for stale standalone metadata fields. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | API/E2E rerun evidence passed; code-review recheck passed. | None. |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | No compatibility production mechanism introduced. | None. |
-| No legacy code retention for old behavior | Pass | No `lastKnownStatus`, `activationState`, or `memberMetadata` remains in the follow-up durable validation file. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Durable validation now exercises current standalone catalog and team metadata shapes. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Tests cover single-agent catalog writes, standalone projection, team metadata/index writes, and team-member projection. | None. |
+| Ownership boundary preservation and clarity | Pass | Single-agent create fixture depends on `AgentRunHistoryCatalogService`, not the low-level index service. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Integration fixture validates memory/projection behavior without adding production coordination. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Fixtures use current services/models rather than bespoke obsolete shapes. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Test-local builders remain limited and subject-specific. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Standalone index shape and team `memberTree` shape are separated. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | The test reinforces catalog-owned standalone index mutation. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | No new pass-through boundary introduced. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The integration file remains memory/projection focused. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Durable validation does not normalize a production boundary bypass. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Single-agent path uses the catalog owner; team path uses team services/index as intentionally deferred separate owner. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | File remains under integration/run-history. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Fixture stays in one integration file because it validates related memory-layout/projection surfaces. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | The test now uses actual created run ID and directory/team identities clearly. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Fixture names and updated model names are current. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Test setup duplication is acceptable for integration coverage. | None. |
+| Patch-on-patch complexity control | Pass | Validation update is bounded and keeps old fixture drift out. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete standalone `lastKnownStatus` metadata write, `memberMetadata`, and `runVersion` are removed from the updated file. | None. |
+| Test quality is acceptable for the changed behavior | Pass | The integration test now covers current catalog and team metadata paths; targeted rerun passed. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Fixtures use current models enough to reduce stale-shape recurrence. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | API/E2E validation report passed; durable-validation re-review passed. | None. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | Test no longer encodes old standalone metadata/index behavior. | None. |
+| No legacy code retention for old behavior | Pass | Remaining `lastKnownStatus` is team index assertion, which is explicitly deferred; no standalone legacy retention found. | None. |
 
 ## Review Scorecard (Mandatory)
 
 - Overall score (`/10`): 9.4
 - Overall score (`/100`): 94
-- Score calculation note: Simple average across the ten categories; review decision follows resolved findings and mandatory checks.
+- Score calculation note: Simple average across the ten categories. The pass decision follows resolved findings and mandatory check results.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Durable validation exercises the relevant projection path and current team-member fixture shape. | Live-runtime suites remain skipped by environment gates. | Execute live-runtime suites in a properly provisioned environment when release risk warrants. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Standalone metadata fixture no longer carries runtime status and is guarded by `AgentRunMetadata`. | This is still test-fixture validation rather than a stronger shared builder pattern. | Consider typed fixture helpers if more metadata fixtures accumulate. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.4 | GraphQL projection assertions remain clear and fixture setup now matches the storage contract. | Query blocks are verbose by nature in E2E tests. | No immediate action. |
-| `4` | `Separation of Concerns and File Placement` | 9.4 | Test placement and responsibility remain appropriate. | None material in this round. | None. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | `satisfies AgentRunMetadata` tightens fixture shape without creating a broad helper. | Repeated literals remain local test fixtures. | Extract a helper only if repetition grows. |
-| `6` | `Naming Quality and Local Readability` | 9.3 | Field names and type marker now communicate current metadata semantics. | Long fixture literals remain somewhat verbose. | Acceptable for E2E readability. |
-| `7` | `Validation Readiness` | 9.4 | Validation rerun passed for non-live relevant E2E files and skipped only gated runtime suites. | Runtime-gated tests are not executed locally. | Preserve skip rationale in delivery handoff. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | No runtime correctness issue found in this validation-code fix; accepted edge-case coverage remains from prior rounds. | Cross-process/crash-window reliability remains outside this task's accepted scope. | Future DB/journal work if reliability requirements increase. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Removed stale `lastKnownStatus`; no `activationState` or `memberMetadata` remains in the follow-up file. | Team-run legacy fields remain intentionally deferred outside this standalone scope. | Track team-run refactor separately. |
-| `10` | `Cleanup Completeness` | 9.4 | CR-DV-001 cleanup is complete and guarded. | Delivery must still reconcile existing docs/handoff artifacts against the final integrated branch. | Delivery refresh/integration remains required. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | Integration coverage follows the current catalog/projection/team spines. | Browser smoke was not rerun due unavailable bridge, per validation report. | Delivery should preserve that note. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | The single-agent fixture uses the catalog boundary. | Team index legacy fields remain deferred. | Track team follow-up separately. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Fixture identities now use actual created run IDs and current team member identity shapes. | Some `as never` fixture casts remain in test setup. | Acceptable for integration mocks. |
+| `4` | `Separation of Concerns and File Placement` | 9.4 | File remains appropriate for integration memory/projection validation. | Test setup is necessarily broad. | Keep fixture helpers small. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.4 | Standalone row array, standalone metadata, and team `memberTree` shapes are distinct. | Team legacy status fields remain by design. | Defer to team-run refactor. |
+| `6` | `Naming Quality and Local Readability` | 9.3 | Updated names align with current models. | Long integration fixture blocks remain verbose. | Acceptable for integration tests. |
+| `7` | `Validation Readiness` | 9.5 | API/E2E report passed, reviewer reran the changed integration file, and diff check passed. | Live-runtime tests remain gated/skipped. | Run in provisioned environment if release risk requires. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.3 | Updated integration coverage exercises current memory layout across runtime kinds. | Cross-process/crash-window residual remains accepted. | Future journal/database if needed. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | Obsolete standalone fixture fields are removed. | Migration-only legacy handling and team deferral remain. | Keep those isolated. |
+| `10` | `Cleanup Completeness` | 9.3 | Durable validation cleanup is complete in the updated file. | Delivery docs/integration refresh remains pending. | Delivery owns final reconciliation. |
 
 ## Findings
 
-No open findings in round 5.
+No open findings in round 8.
 
-### CR-DV-001 — Follow-up durable E2E fixture still writes removed standalone `lastKnownStatus` fields
-
-- Status: Resolved in round 5.
-- Evidence:
-  - `run-projection-toolcalls-graphql.e2e.test.ts` has no `lastKnownStatus` matches.
-  - The three standalone metadata fixture literals now end with `satisfies AgentRunMetadata`.
-  - Validation report records rerun result: `3 passed | 2 skipped` E2E files; `10 passed | 19 skipped` tests.
-  - `git diff --check HEAD` passed in code-review verification.
+No durable-validation code changes are required before delivery resumes.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for delivery engineering to resume. |
-| Tests | Test quality is acceptable | Pass | Durable validation now encodes the V2 standalone metadata shape cleanly. |
-| Tests | Test maintainability is acceptable | Pass | `satisfies AgentRunMetadata` catches future stale standalone metadata fields in these literals. |
+| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for delivery engineering. |
+| Tests | Test quality is acceptable | Pass | Updated durable integration validates the current catalog/team metadata contracts. |
+| Tests | Test maintainability is acceptable | Pass | Fixture drift from old standalone/team shapes was cleaned up. |
 | Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open findings. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No new compatibility mechanism introduced. |
-| No legacy old-behavior retention in changed scope | Pass | CR-DV-001 stale standalone status fields removed. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete durable-validation items remain in the follow-up file. |
+| No backward-compatibility mechanisms in changed scope | Pass | No new compatibility mechanism in durable validation. |
+| No legacy old-behavior retention in changed scope | Pass | No obsolete standalone persisted status/index fields remain in the updated integration fixture. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | `memberMetadata`, `runVersion`, and standalone `lastKnownStatus` metadata fixture usage were removed. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
 | Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| N/A | N/A | No open dead/obsolete/legacy items found in round 5 scope. | N/A | None. |
+| N/A | N/A | No open dead/obsolete/legacy items found in round 8 scope. | N/A | None. |
 
 ## Docs-Impact Verdict
 
-- Docs impact: `No` for CR-DV-001 itself.
-- Why: The accepted change is a validation-fixture cleanup and does not change user/operator behavior.
-- Files or areas likely affected: None from this round. Delivery should still refresh/integrate and update or confirm existing delivery documentation artifacts against the final branch state.
+- Docs impact: `Yes`
+- Why: API/E2E confirms migration/cleanup behavior and browser-smoke limitation; delivery should reconcile docs and handoff artifacts against the latest integrated state.
+- Files or areas likely affected:
+  - `autobyteus-server-ts/scripts/run-history-index-migration.md`
+  - run-history / agent-execution docs touched by this branch, if still changed after delivery refresh.
 
 ## Classification
 
@@ -168,14 +173,15 @@ No open findings in round 5.
 ## Residual Risks
 
 - The accepted file-storage residual remains: process crashes can still leave cross-file metadata/index/directory windows requiring explicit repair.
-- Legacy/orphan metadata absent from the V2 index remains invisible until the migration/repair script is run.
 - Cross-process locking remains deferred.
-- Team-run history retains analogous legacy fields until a separate follow-up.
-- Live-runtime E2E suites remain skipped unless a runtime-provisioned environment sets the required flags/binaries.
-- Branch refresh/integration and durable docs/final handoff remain delivery-owned.
+- Team-run history keeps analogous status/index/version debt until a follow-up refactor.
+- Users whose app-data migration ends in warning/failure may need manual retry/fallback script repair for rows that could not be migrated.
+- Live-runtime E2E files remain skipped unless a runtime-provisioned environment sets the required flags/binaries.
+- New browser smoke was not completed in this validation round because the browser bridge was unavailable; prior browser smoke remains historical evidence.
+- Branch refresh/integration and final docs/handoff remain delivery-owned.
 
 ## Latest Authoritative Result
 
 - Review Decision: Pass
 - Score Summary: 9.4/10 (94/100)
-- Notes: CR-DV-001 is resolved. Post-validation durable-validation re-review passes. The cumulative package is ready for `delivery_engineer`.
+- Notes: Post-validation durable-validation re-review passed. The cumulative package is ready for `delivery_engineer`.

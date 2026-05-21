@@ -3,8 +3,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const INDEX_VERSION = 2;
-
 const parseArgs = (argv) => {
   const args = {
     memoryDir: path.resolve(process.cwd(), "memory"),
@@ -59,6 +57,35 @@ const safeRunId = (value) => {
   return runId;
 };
 
+const trimTrailingSeparators = (value) => {
+  const parsedRoot = path.parse(value).root;
+  if (value === parsedRoot) {
+    return value;
+  }
+  return value.replace(/[\\/]+$/, "");
+};
+
+const canonicalizeWorkspaceRootPath = (value) => {
+  const trimmed = typeof value === "string" ? value.trim() : "";
+  if (!trimmed) {
+    throw new Error("workspaceRootPath cannot be empty.");
+  }
+  return trimTrailingSeparators(path.normalize(path.resolve(trimmed)));
+};
+
+const firstNonEmptyString = (...values) => {
+  for (const value of values) {
+    if (typeof value !== "string") {
+      continue;
+    }
+    const trimmed = value.trim();
+    if (trimmed) {
+      return trimmed;
+    }
+  }
+  return "";
+};
+
 const readJson = async (filePath) => {
   try {
     return JSON.parse(await fs.readFile(filePath, "utf-8"));
@@ -96,11 +123,19 @@ const statTimestamp = async (filePath, field) => {
 
 const readExistingIndex = async (indexPath) => {
   const payload = await readJson(indexPath);
-  if (!payload || typeof payload !== "object" || !Array.isArray(payload.rows)) {
+  if (payload === null) {
+    return { payload: null, rowsById: new Map(), invalid: false };
+  }
+  const rows = Array.isArray(payload)
+    ? payload
+    : payload && typeof payload === "object" && Array.isArray(payload.rows)
+      ? payload.rows
+      : null;
+  if (!rows) {
     return { payload: null, rowsById: new Map(), invalid: payload !== null };
   }
   const rowsById = new Map();
-  for (const row of payload.rows) {
+  for (const row of rows) {
     if (!row || typeof row !== "object") {
       continue;
     }
@@ -168,7 +203,14 @@ const normalizeRowFromMetadata = async ({ record, existingRow, migrationTime }) 
   if (!metadata || typeof metadata !== "object" || Array.isArray(metadata) || metadata.__readError) {
     return null;
   }
-  const runId = safeRunId(metadata.runId) || record.runId;
+  const rawMetadataRunId = typeof metadata.runId === "string" ? metadata.runId.trim() : "";
+  const safeMetadataRunId = safeRunId(metadata.runId);
+  const runIdMismatch = rawMetadataRunId && rawMetadataRunId !== record.runId
+    ? { directoryRunId: record.runId, metadataRunId: safeMetadataRunId ?? rawMetadataRunId }
+    : null;
+  const workspaceRootPath = canonicalizeWorkspaceRootPath(
+    firstNonEmptyString(metadata.workspaceRootPath, existingRow?.workspaceRootPath),
+  );
   const createdAt = await deriveCreatedAt({
     existingRow,
     metadata,
@@ -178,10 +220,10 @@ const normalizeRowFromMetadata = async ({ record, existingRow, migrationTime }) 
   });
   return {
     row: {
-      runId,
-      agentDefinitionId: String(metadata.agentDefinitionId || existingRow?.agentDefinitionId || "").trim() || runId,
-      agentName: String(existingRow?.agentName || metadata.agentName || metadata.agentDefinitionId || runId).trim() || runId,
-      workspaceRootPath: String(metadata.workspaceRootPath || existingRow?.workspaceRootPath || "").trim(),
+      runId: record.runId,
+      agentDefinitionId: String(metadata.agentDefinitionId || existingRow?.agentDefinitionId || "").trim() || record.runId,
+      agentName: String(existingRow?.agentName || metadata.agentName || metadata.agentDefinitionId || record.runId).trim() || record.runId,
+      workspaceRootPath,
       summary: String(existingRow?.summary || metadata.summary || "").trim(),
       createdAt: createdAt.value,
       archivedAt: timestamp(existingRow?.archivedAt ?? metadata.archivedAt) ?? null,
@@ -189,6 +231,7 @@ const normalizeRowFromMetadata = async ({ record, existingRow, migrationTime }) 
     },
     createdAtSource: createdAt.source,
     createdAtWarning: createdAt.warning,
+    runIdMismatch,
   };
 };
 
@@ -230,6 +273,8 @@ const main = async () => {
   const createdAtSources = [];
   const invalidMetadata = [];
   const invalidIdentities = [];
+  const invalidExistingRows = [];
+  const runIdMismatches = [];
 
   for (const record of metadataRecords) {
     if (record.invalidIdentity) {
@@ -240,11 +285,20 @@ const main = async () => {
       invalidMetadata.push({ runId: record.runId, error: record.metadata.__readError });
       continue;
     }
-    const normalized = await normalizeRowFromMetadata({
-      record,
-      existingRow: existing.rowsById.get(record.runId),
-      migrationTime,
-    });
+    let normalized = null;
+    try {
+      normalized = await normalizeRowFromMetadata({
+        record,
+        existingRow: existing.rowsById.get(record.runId),
+        migrationTime,
+      });
+    } catch (error) {
+      invalidMetadata.push({
+        runId: record.runId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      continue;
+    }
     if (!normalized) {
       invalidMetadata.push({ runId: record.runId, error: "missing or invalid run_metadata.json" });
       continue;
@@ -255,6 +309,9 @@ const main = async () => {
       source: normalized.createdAtSource,
       warning: normalized.createdAtWarning,
     });
+    if (normalized.runIdMismatch) {
+      runIdMismatches.push(normalized.runIdMismatch);
+    }
   }
 
   const staleRows = [];
@@ -264,23 +321,27 @@ const main = async () => {
     }
     staleRows.push(runId);
     if (!args.pruneStale && timestamp(row.createdAt)) {
-      rowsById.set(runId, {
-        runId,
-        agentDefinitionId: String(row.agentDefinitionId || runId),
-        agentName: String(row.agentName || row.agentDefinitionId || runId),
-        workspaceRootPath: String(row.workspaceRootPath || ""),
-        summary: String(row.summary || ""),
-        createdAt: timestamp(row.createdAt),
-        archivedAt: timestamp(row.archivedAt) ?? null,
-        terminatedAt: timestamp(row.terminatedAt) ?? null,
-      });
+      try {
+        rowsById.set(runId, {
+          runId,
+          agentDefinitionId: String(row.agentDefinitionId || runId).trim() || runId,
+          agentName: String(row.agentName || row.agentDefinitionId || runId).trim() || runId,
+          workspaceRootPath: canonicalizeWorkspaceRootPath(row.workspaceRootPath || ""),
+          summary: String(row.summary || "").trim(),
+          createdAt: timestamp(row.createdAt),
+          archivedAt: timestamp(row.archivedAt) ?? null,
+          terminatedAt: timestamp(row.terminatedAt) ?? null,
+        });
+      } catch (error) {
+        invalidExistingRows.push({
+          runId,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
     }
   }
 
-  const nextIndex = {
-    version: INDEX_VERSION,
-    rows: Array.from(rowsById.values()).sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-  };
+  const nextIndex = Array.from(rowsById.values()).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
   let backupPath = null;
   if (args.apply) {
@@ -295,11 +356,13 @@ const main = async () => {
     backupPath,
     existingRows: existing.rowsById.size,
     scannedMetadataDirs: metadataRecords.length,
-    outputRows: nextIndex.rows.length,
+    outputRows: nextIndex.length,
     staleRows,
     prunedStaleRows: args.pruneStale ? staleRows : [],
     invalidIdentities,
     invalidMetadata,
+    invalidExistingRows,
+    runIdMismatches,
     createdAtSources,
     invalidExistingIndex: existing.invalid,
   }, null, 2));

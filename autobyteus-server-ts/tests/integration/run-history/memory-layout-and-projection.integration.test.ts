@@ -7,7 +7,7 @@ import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
-import { AgentRunHistoryIndexService } from "../../../src/run-history/services/agent-run-history-index-service.js";
+import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
 import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
@@ -18,6 +18,8 @@ import { TeamRunHistoryService } from "../../../src/run-history/services/team-ru
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
+import { resolveSingleRuntimeTeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -59,12 +61,16 @@ const createTeamRun = (input: {
   workspaceId: string;
   workspaceRootPath: string;
 }): TeamRun => {
+  const teamBackendKind = resolveSingleRuntimeTeamBackendKind(input.runtimeKind);
   const config = new TeamRunConfig({
     teamDefinitionId: "team-def-1",
-    runtimeKind: input.runtimeKind,
+    teamBackendKind,
+    coordinatorMemberName: input.memberName,
     memberConfigs: [
       {
+        memberKind: "agent",
         memberName: input.memberName,
+        memberPath: [input.memberName],
         memberRouteKey: input.memberRouteKey,
         memberRunId: input.memberRunId,
         agentDefinitionId: "agent-def-1",
@@ -81,12 +87,14 @@ const createTeamRun = (input: {
 
   const backend: TeamRunBackend = {
     runId: input.runId,
-    runtimeKind: input.runtimeKind,
+    teamBackendKind,
     getRuntimeContext: () => ({
       coordinatorMemberRouteKey: input.memberRouteKey,
       memberContexts: [
         {
+          memberKind: "agent",
           memberName: input.memberName,
+          memberPath: [input.memberName],
           memberRouteKey: input.memberRouteKey,
           memberRunId: input.memberRunId,
           getPlatformAgentRunId: () => input.platformAgentRunId,
@@ -100,14 +108,14 @@ const createTeamRun = (input: {
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-    interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    interruptMember: vi.fn().mockResolvedValue({ accepted: true }),
     terminate: vi.fn().mockResolvedValue({ accepted: true }),
   };
 
   return new TeamRun({
     context: new TeamRunContext({
       runId: input.runId,
-      runtimeKind: input.runtimeKind,
+      teamBackendKind,
       coordinatorMemberName: input.memberName,
       config,
       runtimeContext: backend.getRuntimeContext(),
@@ -134,27 +142,26 @@ describe("memory layout and projection integration", () => {
     async (runtimeKind, platformAgentRunId) => {
       const memoryDir = await createTempMemoryDir();
       const workspaceRootPath = `/tmp/${runtimeKind}-workspace`;
-      const runId = `run-${runtimeKind}-1`;
-
       const agentRunManager = {
-        createAgentRun: vi.fn().mockResolvedValue(
-          createActiveRun({
-            runId,
+        createAgentRun: vi.fn().mockImplementation((config: AgentRunConfig, requestedRunId: string) =>
+          Promise.resolve(createActiveRun({
+            runId: requestedRunId,
             runtimeKind,
             platformAgentRunId,
-            memoryDir: path.join(memoryDir, "agents", runId),
-          }),
+            memoryDir: config.memoryDir,
+          })),
         ),
         getActiveRun: vi.fn().mockReturnValue(null),
         restoreAgentRun: vi.fn(),
         hasActiveRun: vi.fn().mockReturnValue(false),
       };
       const metadataService = new AgentRunMetadataService(memoryDir);
-      const historyIndexService = new AgentRunHistoryIndexService(memoryDir, {
+      const historyCatalogService = new AgentRunHistoryCatalogService(memoryDir, {
         agentDefinitionService: {
           getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Projection Agent" }),
         } as never,
         agentRunManager: {
+          getActiveRun: vi.fn().mockReturnValue(null),
           hasActiveRun: vi.fn().mockReturnValue(false),
           listActiveRuns: vi.fn().mockReturnValue([]),
         } as never,
@@ -162,7 +169,7 @@ describe("memory layout and projection integration", () => {
       const service = new AgentRunService(memoryDir, {
         agentRunManager: agentRunManager as never,
         metadataService,
-        historyIndexService,
+        historyCatalogService,
         workspaceManager: {
           ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
             workspaceId: "workspace-1",
@@ -180,7 +187,7 @@ describe("memory layout and projection integration", () => {
         } as never,
       });
 
-      await service.createAgentRun({
+      const created = await service.createAgentRun({
         agentDefinitionId: "agent-def-1",
         workspaceRootPath,
         llmModelIdentifier: "model-1",
@@ -190,11 +197,12 @@ describe("memory layout and projection integration", () => {
         runtimeKind,
       });
 
+      const runId = created.runId;
       const metadataPath = path.join(memoryDir, "agents", runId, "run_metadata.json");
       const indexPath = path.join(memoryDir, "run_history_index.json");
       const metadata = await readJson(metadataPath);
       const index = await readJson(indexPath);
-      const rows = Array.isArray(index.rows) ? index.rows : [];
+      const rows = Array.isArray(index) ? index : [];
       const row = rows.find(
         (candidate) => candidate && typeof candidate === "object" && (candidate as { runId?: string }).runId === runId,
       ) as Record<string, unknown> | undefined;
@@ -204,7 +212,9 @@ describe("memory layout and projection integration", () => {
       expect(metadata.platformAgentRunId).toBe(platformAgentRunId);
       expect(metadata.workspaceRootPath).toBe(workspaceRootPath);
       expect(row).toBeTruthy();
-      expect(row?.lastKnownStatus).toBe("IDLE");
+      expect(row).not.toHaveProperty("lastKnownStatus");
+      expect(row).not.toHaveProperty("lastActivityAt");
+      expect(row?.createdAt).toEqual(expect.any(String));
       expect(row?.workspaceRootPath).toBe(workspaceRootPath);
     },
   );
@@ -233,7 +243,6 @@ describe("memory layout and projection integration", () => {
         skillAccessMode: SkillAccessMode.NONE,
         runtimeKind,
         platformAgentRunId,
-        lastKnownStatus: "IDLE",
       }),
       "utf-8",
     );
@@ -333,10 +342,19 @@ describe("memory layout and projection integration", () => {
           terminateTeamRun: vi.fn(),
         } as never,
         teamDefinitionService: {
-          getDefinitionById: vi.fn().mockResolvedValue({
-            coordinatorMemberName: "Coordinator",
+          getDefinitionById: vi.fn().mockResolvedValue(new AgentTeamDefinition({
+            id: "team-def-1",
             name: "Projection Team",
-          }),
+            description: "Projection Team description",
+            instructions: "Projection Team instructions",
+            coordinatorMemberName: "Coordinator",
+            nodes: [new TeamMember({
+              memberName: "Coordinator",
+              ref: "agent-def-1",
+              refType: "agent",
+              refScope: "shared",
+            })],
+          })),
         } as never,
         teamRunMetadataService,
         teamRunHistoryIndexService,
@@ -387,10 +405,10 @@ describe("memory layout and projection integration", () => {
       ) as Record<string, unknown> | undefined;
 
       expect(metadata.teamRunId).toBe(teamRunId);
-      expect(metadata.memberMetadata).toHaveLength(1);
-      expect(metadata.memberMetadata[0]?.memberRunId).toBe(memberRunId);
-      expect(metadata.memberMetadata[0]?.platformAgentRunId).toBe(platformAgentRunId);
-      expect(metadata.memberMetadata[0]?.workspaceRootPath).toBe(workspaceRootPath);
+      expect(metadata.memberTree).toHaveLength(1);
+      expect(metadata.memberTree[0]?.memberRunId).toBe(memberRunId);
+      expect(metadata.memberTree[0]?.platformAgentRunId).toBe(platformAgentRunId);
+      expect(metadata.memberTree[0]?.workspaceRootPath).toBe(workspaceRootPath);
       expect(row).toBeTruthy();
       expect(row?.lastKnownStatus).toBe("IDLE");
       expect(row?.workspaceRootPath).toBe(workspaceRootPath);
@@ -418,12 +436,13 @@ describe("memory layout and projection integration", () => {
         teamDefinitionId: "team-def-1",
         teamDefinitionName: "Projection Team",
         coordinatorMemberRouteKey: memberRouteKey,
-        runVersion: 1,
         createdAt: "2026-03-29T00:00:00.000Z",
         updatedAt: "2026-03-29T00:00:00.000Z",
-        memberMetadata: [
+        memberTree: [
           {
+            memberKind: "agent",
             memberRouteKey,
+            memberPath: ["Coordinator"],
             memberName: "Coordinator",
             memberRunId,
             runtimeKind,
@@ -434,6 +453,7 @@ describe("memory layout and projection integration", () => {
             skillAccessMode: SkillAccessMode.NONE,
             llmConfig: null,
             workspaceRootPath: "/tmp/team-projection-workspace",
+            applicationExecutionContext: null,
           },
         ],
       }),

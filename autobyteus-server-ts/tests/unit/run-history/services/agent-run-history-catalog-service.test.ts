@@ -50,10 +50,7 @@ const buildIndexRow = (
 
 const cloneIndex = (
   index: AgentRunHistoryIndexFileRecord,
-): AgentRunHistoryIndexFileRecord => ({
-  version: index.version,
-  rows: index.rows.map((row) => ({ ...row })),
-});
+): AgentRunHistoryIndexFileRecord => index.map((row) => ({ ...row }));
 
 describe("AgentRunHistoryCatalogService", () => {
   let memoryDir: string;
@@ -86,10 +83,7 @@ describe("AgentRunHistoryCatalogService", () => {
     const { AgentRunHistoryCatalogService } = await import(
       "../../../../src/run-history/services/agent-run-history-catalog-service.js"
     );
-    let index: AgentRunHistoryIndexFileRecord = {
-      version: 2,
-      rows: initialRows.map((row) => ({ ...row })),
-    };
+    let index: AgentRunHistoryIndexFileRecord = initialRows.map((row) => ({ ...row }));
     const writeFailures: Error[] = [];
     const indexStore = {
       readIndex: vi.fn(async () => cloneIndex(index)),
@@ -141,22 +135,19 @@ describe("AgentRunHistoryCatalogService", () => {
 
     const indexPayload = JSON.parse(
       await fs.readFile(path.join(memoryDir, "run_history_index.json"), "utf-8"),
-    ) as { version: number; rows: Array<Record<string, unknown>> };
-    expect(indexPayload).toEqual({
-      version: 2,
-      rows: [
-        {
-          runId: "run-1",
-          agentDefinitionId: "agent-def-1",
-          agentName: "Agent One",
-          workspaceRootPath: "/tmp/workspace",
-          summary: "hello world",
-          createdAt: "2026-03-26T10:00:00.000Z",
-          archivedAt: null,
-          terminatedAt: null,
-        },
-      ],
-    });
+    ) as Array<Record<string, unknown>>;
+    expect(indexPayload).toEqual([
+      {
+        runId: "run-1",
+        agentDefinitionId: "agent-def-1",
+        agentName: "Agent One",
+        workspaceRootPath: "/tmp/workspace",
+        summary: "hello world",
+        createdAt: "2026-03-26T10:00:00.000Z",
+        archivedAt: null,
+        terminatedAt: null,
+      },
+    ]);
   });
 
   it("does not flush the index for a normal start/activity metadata update", async () => {
@@ -241,7 +232,7 @@ describe("AgentRunHistoryCatalogService", () => {
       summary: "original summary",
       terminatedAt: null,
     });
-    expect(getPersistedIndex().rows).toEqual([row]);
+    expect(getPersistedIndex()).toEqual([row]);
   });
 
   it("rolls back summary and termination state in memory when index flushes fail", async () => {
@@ -269,7 +260,7 @@ describe("AgentRunHistoryCatalogService", () => {
       summary: "original summary",
       terminatedAt: null,
     });
-    expect(getPersistedIndex().rows).toEqual([row]);
+    expect(getPersistedIndex()).toEqual([row]);
   });
 
   it("rolls back delete state and leaves the run directory when the index flush fails", async () => {
@@ -284,7 +275,7 @@ describe("AgentRunHistoryCatalogService", () => {
 
     await expect(service.getCatalogRow("run-1")).resolves.toMatchObject({ runId: "run-1" });
     await expect(fs.access(runDirPath)).resolves.toBeUndefined();
-    expect(getPersistedIndex().rows).toEqual([row]);
+    expect(getPersistedIndex()).toEqual([row]);
   });
 
   it("rolls back cancel state and leaves prepared metadata when the index flush fails", async () => {
@@ -305,6 +296,6 @@ describe("AgentRunHistoryCatalogService", () => {
 
     await expect(service.getCatalogRow("run-1")).resolves.toMatchObject({ runId: "run-1" });
     await expect(fs.access(metadataPath)).resolves.toBeUndefined();
-    expect(getPersistedIndex().rows).toEqual([row]);
+    expect(getPersistedIndex()).toEqual([row]);
   });
 });

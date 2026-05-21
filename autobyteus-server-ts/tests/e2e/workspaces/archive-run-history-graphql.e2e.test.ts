@@ -365,9 +365,8 @@ describe("Archive run history GraphQL e2e", () => {
       );
     }
 
-    await new AgentRunHistoryIndexStore(memoryDir).writeIndex({
-      version: 2,
-      rows: agentRuns.map((run, index) => ({
+    await new AgentRunHistoryIndexStore(memoryDir).writeIndex(
+      agentRuns.map((run, index) => ({
         runId: run.runId,
         agentDefinitionId: "agent-def-e2e",
         agentName: "E2E Agent",
@@ -377,7 +376,7 @@ describe("Archive run history GraphQL e2e", () => {
         archivedAt: run.archivedAt ?? null,
         terminatedAt: null,
       })),
-    });
+    );
 
     const teamRuns = [
       { teamRunId: "team-archive", summary: "archive this team" },
@@ -502,7 +501,7 @@ describe("Archive run history GraphQL e2e", () => {
     const teamIndex = JSON.parse(
       await fs.readFile(path.join(memoryDir, "team_run_history_index.json"), "utf-8"),
     );
-    const archivedAgentRow = agentIndex.rows.find((row: any) => row.runId === "run-agent-archive");
+    const archivedAgentRow = agentIndex.find((row: any) => row.runId === "run-agent-archive");
     expect(archivedAgentRow).toEqual(expect.objectContaining({
       archivedAt: expect.any(String),
       createdAt: "2026-05-01T08:00:00.000Z",

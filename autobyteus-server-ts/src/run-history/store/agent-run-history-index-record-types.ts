@@ -1,5 +1,3 @@
-export const AGENT_RUN_HISTORY_INDEX_RECORD_VERSION = 2;
-
 export interface AgentRunHistoryIndexRowRecord {
   runId: string;
   agentDefinitionId: string;
@@ -11,7 +9,4 @@ export interface AgentRunHistoryIndexRowRecord {
   terminatedAt?: string | null;
 }
 
-export interface AgentRunHistoryIndexFileRecord {
-  version: number;
-  rows: AgentRunHistoryIndexRowRecord[];
-}
+export type AgentRunHistoryIndexFileRecord = AgentRunHistoryIndexRowRecord[];

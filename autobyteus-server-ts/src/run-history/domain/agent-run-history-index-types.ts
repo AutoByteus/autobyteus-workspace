@@ -3,9 +3,6 @@ import type {
   AgentRunHistoryIndexRowRecord,
 } from "../store/agent-run-history-index-record-types.js";
 import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
-export {
-  AGENT_RUN_HISTORY_INDEX_RECORD_VERSION as RUN_HISTORY_INDEX_VERSION,
-} from "../store/agent-run-history-index-record-types.js";
 
 export type RunKnownStatus = "ACTIVE" | "IDLE" | "ERROR" | "TERMINATED";
 

@@ -65,10 +65,23 @@ const migrationGuidance = (indexPath) =>
   `cleanup requires a valid V2 run_history_index.json at '${indexPath}'. Run scripts/migrate-agent-run-history-index-v2.mjs --memory-dir <memory-dir> --apply before cleanup.`;
 
 const nullableString = (value) => value === null || typeof value === "string";
+const allowedV2RowKeys = new Set([
+  "runId",
+  "agentDefinitionId",
+  "agentName",
+  "workspaceRootPath",
+  "summary",
+  "createdAt",
+  "archivedAt",
+  "terminatedAt",
+]);
 
 const normalizeV2Row = (row, rowIndex, indexPath) => {
   if (!row || typeof row !== "object" || Array.isArray(row)) {
     throw new Error(`${migrationGuidance(indexPath)} Invalid row at index ${rowIndex}.`);
+  }
+  if (Object.keys(row).some((key) => !allowedV2RowKeys.has(key))) {
+    throw new Error(`${migrationGuidance(indexPath)} Unexpected V2 field at row ${rowIndex}.`);
   }
   const runId = typeof row.runId === "string" ? row.runId.trim() : "";
   const safeTarget = resolveSafeRunDir(path.dirname(indexPath), runId);
@@ -96,19 +109,10 @@ const normalizeV2Row = (row, rowIndex, indexPath) => {
 };
 
 const validateV2Index = (payload, indexPath) => {
-  if (
-    !payload ||
-    typeof payload !== "object" ||
-    Array.isArray(payload) ||
-    payload.version !== 2 ||
-    !Array.isArray(payload.rows)
-  ) {
+  if (!Array.isArray(payload)) {
     throw new Error(migrationGuidance(indexPath));
   }
-  return {
-    version: 2,
-    rows: payload.rows.map((row, index) => normalizeV2Row(row, index, indexPath)),
-  };
+  return payload.map((row, index) => normalizeV2Row(row, index, indexPath));
 };
 
 const writeIndex = async (indexPath, index) => {
@@ -164,7 +168,7 @@ const main = async () => {
     return;
   }
 
-  const rows = Array.isArray(index.rows) ? index.rows : [];
+  const rows = index;
   const matchedRows = [];
   const preservedRows = [];
   for (const row of rows) {
@@ -184,7 +188,7 @@ const main = async () => {
 
   let removedRunDirs = 0;
   if (!args.dryRun) {
-    await writeIndex(indexPath, { version: 2, rows: preservedRows });
+    await writeIndex(indexPath, preservedRows);
     for (const row of matchedRows) {
       const safeTarget = resolveSafeRunDir(args.memoryDir, row.runId);
       if (safeTarget) {

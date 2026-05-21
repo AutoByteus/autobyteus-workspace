@@ -9,31 +9,28 @@ const scriptPath = path.resolve(process.cwd(), "scripts/cleanup-codex-e2e-run-hi
 const seedRunHistory = async (memoryDir: string): Promise<void> => {
   await mkdir(path.join(memoryDir, "agents", "run-clean-target"), { recursive: true });
   await mkdir(path.join(memoryDir, "agents", "run-keep"), { recursive: true });
-  const index = {
-    version: 2,
-    rows: [
-      {
-        runId: "run-clean-target",
-        agentDefinitionId: "agent-def-1",
-        agentName: "Agent One",
-        workspaceRootPath: path.join(os.tmpdir(), "codex-continue-workspace-e2e-abc123"),
-        summary: "cleanup target",
-        createdAt: "2026-03-26T10:00:00.000Z",
-        archivedAt: null,
-        terminatedAt: null,
-      },
-      {
-        runId: "run-keep",
-        agentDefinitionId: "agent-def-2",
-        agentName: "Agent Two",
-        workspaceRootPath: path.join(os.tmpdir(), "customer-workspace"),
-        summary: "keep",
-        createdAt: "2026-03-26T11:00:00.000Z",
-        archivedAt: null,
-        terminatedAt: "2026-03-26T12:00:00.000Z",
-      },
-    ],
-  };
+  const index = [
+    {
+      runId: "run-clean-target",
+      agentDefinitionId: "agent-def-1",
+      agentName: "Agent One",
+      workspaceRootPath: path.join(os.tmpdir(), "codex-continue-workspace-e2e-abc123"),
+      summary: "cleanup target",
+      createdAt: "2026-03-26T10:00:00.000Z",
+      archivedAt: null,
+      terminatedAt: null,
+    },
+    {
+      runId: "run-keep",
+      agentDefinitionId: "agent-def-2",
+      agentName: "Agent Two",
+      workspaceRootPath: path.join(os.tmpdir(), "customer-workspace"),
+      summary: "keep",
+      createdAt: "2026-03-26T11:00:00.000Z",
+      archivedAt: null,
+      terminatedAt: "2026-03-26T12:00:00.000Z",
+    },
+  ];
   await writeFile(
     path.join(memoryDir, "run_history_index.json"),
     `${JSON.stringify(index, null, 2)}\n`,
@@ -63,14 +60,14 @@ const seedLegacyRunHistory = async (memoryDir: string): Promise<void> => {
   );
 };
 
-const readIndex = async (memoryDir: string): Promise<{ version: number; rows: Array<Record<string, unknown>> }> => {
+const readIndex = async (memoryDir: string): Promise<Array<Record<string, unknown>>> => {
   const raw = await readFile(path.join(memoryDir, "run_history_index.json"), "utf-8");
-  return JSON.parse(raw) as { version: number; rows: Array<Record<string, unknown>> };
+  return JSON.parse(raw) as Array<Record<string, unknown>>;
 };
 
 const readRowIds = async (memoryDir: string): Promise<string[]> => {
   const parsed = await readIndex(memoryDir);
-  return parsed.rows.map((row) => row.runId);
+  return parsed.map((row) => row.runId as string);
 };
 
 const exists = async (targetPath: string): Promise<boolean> => {
@@ -114,21 +111,18 @@ describe("cleanup-codex-e2e-run-history script", () => {
 
       const rowIds = await readRowIds(memoryDir);
       expect(rowIds).toEqual(["run-keep"]);
-      await expect(readIndex(memoryDir)).resolves.toEqual({
-        version: 2,
-        rows: [
-          {
-            runId: "run-keep",
-            agentDefinitionId: "agent-def-2",
-            agentName: "Agent Two",
-            workspaceRootPath: path.join(os.tmpdir(), "customer-workspace"),
-            summary: "keep",
-            createdAt: "2026-03-26T11:00:00.000Z",
-            archivedAt: null,
-            terminatedAt: "2026-03-26T12:00:00.000Z",
-          },
-        ],
-      });
+      await expect(readIndex(memoryDir)).resolves.toEqual([
+        {
+          runId: "run-keep",
+          agentDefinitionId: "agent-def-2",
+          agentName: "Agent Two",
+          workspaceRootPath: path.join(os.tmpdir(), "customer-workspace"),
+          summary: "keep",
+          createdAt: "2026-03-26T11:00:00.000Z",
+          archivedAt: null,
+          terminatedAt: "2026-03-26T12:00:00.000Z",
+        },
+      ]);
       expect(await exists(path.join(memoryDir, "agents", "run-clean-target"))).toBe(false);
       expect(await exists(path.join(memoryDir, "agents", "run-keep"))).toBe(true);
     } finally {

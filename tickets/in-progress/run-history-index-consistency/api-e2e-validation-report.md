@@ -9,16 +9,19 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/review-report.md`
-- Current Validation Round: 1
-- Trigger: Code review round 2 pass from `code_reviewer`; implementation ready for API/E2E validation.
-- Prior Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Validation Round: 4
+- Trigger: Code review round 7 pass after CR-LF-004/CR-LF-005 implementation repair; API/E2E validation resumed.
+- Prior Round Reviewed: Prior validation rounds and code review round 7.
+- Latest Authoritative Round: 4
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Code review round 2 pass | N/A | 0 blocking failures | Pass | Yes | Durable validation was updated; return to `code_reviewer` before delivery. |
+| 1 | Code review round 2 pass | N/A | 0 blocking failures | Pass | No | Durable validation was updated; returned to `code_reviewer` before delivery. |
+| 2 | User-requested relevant backend E2E sweep | N/A | Stale team-member E2E fixture shape found and fixed | Pass | No | Relevant existing backend E2E sweep passed after fixture update; returned to `code_reviewer`. |
+| 3 | CR-DV-001 validation-code local fix | CR-DV-001 | 0 | Pass | No | Removed obsolete standalone `lastKnownStatus` fixture fields; returned to `code_reviewer`. |
+| 4 | Code review round 7 implementation pass | CR-LF-004/CR-LF-005 implementation repairs plus prior validation-code findings | Stale integration validation fixture failures found and fixed | Pass | Yes | Round-7 implementation behavior passed focused API/E2E/executable validation. Repository-resident durable validation was updated again, so return to `code_reviewer`. |
 
 ## Validation Basis
 
@@ -97,6 +100,12 @@ Server:
 
 ```bash
 ./node_modules/.bin/tsc -p tsconfig.build.json --noEmit --pretty false
+```
+
+Result: passed.
+
+```bash
+git diff --check HEAD
 ```
 
 Result: passed.
@@ -401,3 +410,93 @@ git diff --check HEAD
 Result: passed.
 
 Current validation classification after the local fix: `Pass`; durable validation changed after code review, so this package is returned again to `code_reviewer` before delivery resumes.
+
+## Follow-Up: Round 7 Implementation Revalidation After CR-LF-004/CR-LF-005
+
+Trigger: code review round 7 passed the implementation repair for CR-LF-004 and CR-LF-005 and sent the task back to API/E2E validation.
+
+Focused validation additions and reruns:
+
+- Temporary executable app-data migration smoke created an isolated memory directory and ran `AppDataMigrationRunner` with the real `AppDataMigrationRecordRepository`/Prisma test database. It verified:
+  - `RUN_HISTORY_INDEX_V2_APP_DATA_MIGRATION_ID` is recorded in `app_data_migration_records` with `SUCCEEDED_WITH_WARNINGS` and `attempts: 1`;
+  - migration writes a plain row-array `run_history_index.json`;
+  - a row with missing `workspaceRootPath` is reported as failed and is not written;
+  - obsolete standalone fields (`lastActivityAt`, `lastKnownStatus`) are absent from output rows.
+  Result: `1` temporary test passed; temporary file was removed afterward.
+- Temporary fallback-script harness on copied legacy-style memory verified:
+  - `migrate-agent-run-history-index-v2.mjs --apply` reports `runIdMismatches` when metadata `runId` differs from the scanned directory ID;
+  - output row identity uses the directory run ID;
+  - metadata without usable `workspaceRootPath` is reported in `invalidMetadata` and skipped;
+  - cleanup dry-run reports one Codex E2E target without mutation;
+  - cleanup apply removes only the target row/directory and keeps the non-target directory/row.
+  Result: passed; temporary memory directory was removed afterward.
+- Existing durable integration validation initially failed in `tests/integration/run-history/memory-layout-and-projection.integration.test.ts` because its fixtures were stale after the catalog/team metadata refactors. This was a validation-code issue, not a production implementation failure. Fixes applied:
+  - single-agent create fixture now uses the current `AgentRunHistoryCatalogService` path and the actual provisioned run ID;
+  - team fixture now uses current `TeamRunConfig` / `TeamBackendKind` and `AgentTeamDefinition` topology;
+  - team metadata/projection fixtures now use `memberTree` and removed obsolete `runVersion`/`memberMetadata` shape;
+  - standalone projection fixture no longer writes obsolete `lastKnownStatus` metadata.
+  Rerun result: `tests/integration/run-history/memory-layout-and-projection.integration.test.ts` passed, `12` tests.
+
+Commands and results after the local durable-validation fixture fix:
+
+```bash
+./node_modules/.bin/vitest run   tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts   tests/unit/app-data-migrations/app-data-migration-runner.test.ts   tests/unit/run-history/store/agent-run-metadata-store.test.ts   tests/unit/run-history/agent-run-metadata-service.test.ts   tests/unit/run-history/store/agent-run-history-index-store.test.ts   tests/unit/run-history/services/agent-run-history-index-service.test.ts   tests/unit/run-history/services/agent-run-history-catalog-service.test.ts   tests/unit/run-history/services/agent-run-history-service.test.ts   tests/unit/agent-execution/agent-run-status-projection-service.test.ts   tests/unit/agent-execution/agent-run-provisioning-service.test.ts   tests/unit/agent-execution/agent-run-create-service.test.ts   tests/unit/agent-execution/agent-run-restore-service.test.ts   tests/unit/agent-execution/agent-run-termination-service.test.ts   tests/unit/agent-execution/agent-run-command-coordinator.test.ts   tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts   tests/unit/scripts/cleanup-codex-e2e-run-history.test.ts   tests/unit/scripts/migrate-agent-run-history-index-v2.test.ts   tests/integration/run-history/memory-layout-and-projection.integration.test.ts   --reporter=verbose
+```
+
+Result: `18` files passed / `78` tests passed.
+
+```bash
+./node_modules/.bin/vitest run   tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts   tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts   tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts   tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts   tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts   --reporter=verbose
+```
+
+Result: `3` files passed / `2` files skipped; `10` tests passed / `19` tests skipped. The skipped files remain live-runtime suites gated by local runtime flags/binaries.
+
+```bash
+./node_modules/.bin/tsc -p tsconfig.build.json --noEmit --pretty false
+```
+
+Result: passed.
+
+```bash
+git diff --check HEAD
+```
+
+Result: passed.
+
+Frontend/history reruns from `autobyteus-web`:
+
+```bash
+./node_modules/.bin/vitest run graphql/queries/__tests__/runHistoryQueries.spec.ts stores/__tests__/runHistoryStore.spec.ts -t "fetches run history tree|projects persisted history and temp drafts|overlays persisted run status|deleteRun|archiveRun|ListWorkspaceRunHistory|GetRunFileChanges" --reporter=verbose
+```
+
+Result: `2` files passed; `11` tests passed / `36` skipped by name filter.
+
+```bash
+./node_modules/.bin/vitest run composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts --reporter=verbose
+```
+
+Result: `3` files passed / `23` tests passed.
+
+```bash
+./node_modules/.bin/vitest run components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts -t "loads workspace list and history tree|selects run via runHistoryStore|renders active status indicator|does not render status indicator|renders delete action only for inactive history runs|renders archive action only for inactive persisted history runs|deletes inactive history run|archives inactive history run|does not render run-row configuration button" --reporter=verbose
+```
+
+Result: `1` file passed; `9` tests passed / `24` skipped by name filter.
+
+Browser note: a new in-app browser smoke was attempted during this resumed round, but the browser bridge returned `browser_bridge_unavailable`; no new browser result is claimed for round 4. The prior validation browser smoke remains historical evidence, and the round-7 server-side repair did not change frontend source.
+
+Repository-resident durable validation updated this round: `Yes`.
+
+Updated durable validation path:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts`
+
+Current validation classification: `Pass` after the local durable-validation fixture fix. Because repository-resident durable validation was updated after code review, this package must return to `code_reviewer` before delivery resumes.
+
+## Latest Authoritative Result After Round 7 Revalidation
+
+- Result values: `Pass` / `Fail` / `Blocked`
+- Result: `Pass`
+- Latest authoritative validation round: `4`
+- Recommended recipient: `code_reviewer`
+- Notes: Round-7 implementation behavior passed focused API/E2E/executable validation, but a repository-resident integration validation fixture was updated during API/E2E. Per workflow, delivery must wait for `code_reviewer` to re-review that durable validation change.

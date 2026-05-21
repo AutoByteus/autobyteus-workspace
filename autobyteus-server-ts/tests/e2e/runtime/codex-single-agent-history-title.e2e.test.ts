@@ -484,10 +484,8 @@ describeCodexRuntime("Codex single-agent run history title e2e (live runtime)", 
 
   const readIndexSummary = async (runId: string): Promise<string | null> => {
     const indexPath = getIndexPath();
-    const index = JSON.parse(await fs.readFile(indexPath, "utf-8")) as {
-      rows?: Array<Record<string, unknown>>;
-    };
-    const row = index.rows?.find((candidate) => candidate.runId === runId);
+    const index = JSON.parse(await fs.readFile(indexPath, "utf-8")) as Array<Record<string, unknown>>;
+    const row = index.find((candidate) => candidate.runId === runId);
     return typeof row?.summary === "string" ? row.summary : null;
   };
 

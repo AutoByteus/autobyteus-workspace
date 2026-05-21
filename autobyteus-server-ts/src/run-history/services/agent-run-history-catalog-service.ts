@@ -3,10 +3,7 @@ import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { RunHistoryIndexRow } from "../domain/agent-run-history-index-types.js";
-import {
-  AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-  type AgentRunHistoryIndexRowRecord,
-} from "../store/agent-run-history-index-record-types.js";
+import type { AgentRunHistoryIndexRowRecord } from "../store/agent-run-history-index-record-types.js";
 import { AgentRunHistoryIndexStore } from "../store/agent-run-history-index-store.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
@@ -56,6 +53,16 @@ const getState = (memoryDir: string): CatalogState => {
   };
   catalogStates.set(key, created);
   return created;
+};
+
+export const resetAgentRunHistoryCatalogState = (memoryDir: string): void => {
+  const state = catalogStates.get(path.resolve(memoryDir));
+  if (!state) {
+    return;
+  }
+  state.initialized = false;
+  state.initPromise = null;
+  state.rows = new Map();
 };
 
 const normalizeRow = (
@@ -429,8 +436,8 @@ export class AgentRunHistoryCatalogService {
     }
     if (!this.state.initPromise) {
       this.state.initPromise = this.indexStore.readIndex()
-        .then((index) => {
-          this.state.rows = new Map(index.rows.map((row) => {
+        .then((rows) => {
+          this.state.rows = new Map(rows.map((row) => {
             const normalized = normalizeRow(row);
             return [normalized.runId, normalized];
           }));
@@ -456,10 +463,7 @@ export class AgentRunHistoryCatalogService {
   }
 
   private async flushRows(rows: Map<string, AgentRunHistoryIndexRowRecord>): Promise<void> {
-    await this.indexStore.writeIndex({
-      version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-      rows: this.getSortedRows(rows),
-    });
+    await this.indexStore.writeIndex(this.getSortedRows(rows));
   }
 
   private async resolveAgentName(agentDefinitionId: string): Promise<string> {

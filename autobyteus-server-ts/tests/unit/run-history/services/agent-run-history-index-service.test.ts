@@ -18,21 +18,18 @@ describe("AgentRunHistoryIndexService", () => {
 
   it("is a read-only adapter over the V2 standalone index store", async () => {
     const indexStore = new AgentRunHistoryIndexStore(memoryDir);
-    await indexStore.writeIndex({
-      version: 2,
-      rows: [
-        {
-          runId: "run-1",
-          agentDefinitionId: "agent-def-1",
-          agentName: "Agent One",
-          workspaceRootPath: "/tmp/workspace",
-          summary: "hello",
-          createdAt: "2026-03-26T10:00:00.000Z",
-          archivedAt: null,
-          terminatedAt: null,
-        },
-      ],
-    });
+    await indexStore.writeIndex([
+      {
+        runId: "run-1",
+        agentDefinitionId: "agent-def-1",
+        agentName: "Agent One",
+        workspaceRootPath: "/tmp/workspace",
+        summary: "hello",
+        createdAt: "2026-03-26T10:00:00.000Z",
+        archivedAt: null,
+        terminatedAt: null,
+      },
+    ]);
 
     const service = new AgentRunHistoryIndexService(memoryDir, { indexStore });
     await expect(service.listRows()).resolves.toEqual([
