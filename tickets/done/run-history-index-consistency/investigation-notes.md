@@ -25,7 +25,7 @@ User provided an old-Mac incident report dated 2026-05-19. For workspace `/Users
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency`
 - Current Branch: `codex/run-history-index-consistency`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency`
 - Bootstrap Base Branch: `origin/personal`
@@ -63,9 +63,9 @@ User provided an old-Mac incident report dated 2026-05-19. For workspace `/Users
 | 2026-05-20 | Code | `autobyteus-web/stores/agentRunStore.ts` and `graphql/mutations/agentMutations.ts` | Confirm frontend dependency on prepared identity | Frontend prepares a permanent run id, promotes temp context, finalizes attachments, connects WebSocket, then sends first message. Prepared identity has product value even if enum representation is bad. | Preserve prepared identity concept unless UX is redesigned; simplify persisted representation. |
 | 2026-05-20 | Code | `autobyteus-web/stores/runHistoryReadModel.ts`, `runHistoryStore.ts`, `utils/runTreeProjection.ts`, `utils/runTreeLiveStatusMerge.ts`, `components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`, `composables/mobile/useMobileWorkCatalog.ts` | Audit frontend value of `lastKnownStatus` | Main history UI visual status/actions use derived `currentStatus`/`isActive`; `lastKnownStatus` is mostly copied/normalized or used for labels that can be derived from status. | Frontend should not force durable `lastKnownStatus` storage. |
 | 2026-05-20 | Code | `autobyteus-server-ts/src/application-engine/services/application-engine-host-service.ts`, `autobyteus-web/stores/applicationHostStore.ts`, `ApplicationShell.vue` | Answer user question about `lastFailure` | Existing `lastFailure` belongs to application engine status, not run history. It is used to show backend launch/worker failure reason. It should not be added to run metadata as part of this fix. | Keep out of run-history schema unless separate product requirement emerges. |
-| 2026-05-20 | Doc Artifact | `tickets/in-progress/run-history-index-consistency/persisted-attribute-audit.md` | Durable field audit | Classified standalone metadata/index fields, team metadata/index fields, activation states, `lastKnownStatus`, and adjacent `lastFailure`. | Feed requirements and design spec. |
+| 2026-05-20 | Doc Artifact | `tickets/done/run-history-index-consistency/persisted-attribute-audit.md` | Durable field audit | Classified standalone metadata/index fields, team metadata/index fields, activation states, `lastKnownStatus`, and adjacent `lastFailure`. | Feed requirements and design spec. |
 | 2026-05-21 | Doc | `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/design-principles.md` and `templates/design-spec-template.md` | Reload design principles and mandatory design structure before writing final design | Reinforced authoritative-boundary rule, data-flow spine inventory, removal/decommission plan, and no legacy dual-path behavior. | No |
-| 2026-05-21 | Doc Artifact | `tickets/in-progress/run-history-index-consistency/design-spec.md` | Target design production | Defines `AgentRunHistoryCatalogService`, simplified metadata/index V2 shapes, index-cache demotion, lifecycle field removal, migration sequence, and implementation guidance. | Architecture review. |
+| 2026-05-21 | Doc Artifact | `tickets/done/run-history-index-consistency/design-spec.md` | Target design production | Defines `AgentRunHistoryCatalogService`, simplified metadata/index V2 shapes, index-cache demotion, lifecycle field removal, migration sequence, and implementation guidance. | Architecture review. |
 | 2026-05-21 | Command | `git merge --ff-only origin/personal` in task worktree | Refresh task branch against latest tracked base before handoff | Fast-forwarded from `96703369` to `aa58fabc`; no run-history source conflicts; ticket artifacts remain untracked. | Architecture/implementation should use refreshed tree. |
 
 ## Current Behavior / Current Flow
@@ -308,7 +308,7 @@ That is a different subsystem. For run history, no current backend or frontend e
 
 The dedicated audit file is:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/persisted-attribute-audit.md`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency/persisted-attribute-audit.md`
 
 Key decisions from the audit:
 
@@ -349,7 +349,7 @@ Old or slower hardware plausibly increases timing windows between metadata and i
 
 ## Persisted Attribute Audit Addendum
 
-A dedicated attribute audit was updated at `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/persisted-attribute-audit.md`. It classifies every current standalone run metadata field and run-history index field, plus team metadata/index fields, by current use and recommended keep/remove/refactor posture.
+A dedicated attribute audit was updated at `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency/persisted-attribute-audit.md`. It classifies every current standalone run metadata field and run-history index field, plus team metadata/index fields, by current use and recommended keep/remove/refactor posture.
 
 ## Design Rework Addendum After Architecture Review Round 1
 
@@ -394,3 +394,50 @@ Revised migration design implication:
 Date: 2026-05-21
 
 The user asked whether a persisted `version` attribute is needed in `run_history_index.json`. Design judgment: remove it from the standalone index target. The app-data migration framework already records migration execution/status in `app_data_migration_records`, and steady-state run-history source code should not support parallel V1/V2 schemas. A file-level `version` wrapper would add another persisted attribute with no product/runtime value and would encourage compatibility branching. The target standalone index file should be a plain JSON array of V2 catalog rows; strict row validation plus the startup app-data migration provide the necessary schema boundary. This judgment applies to standalone agent history only; team-run index cleanup remains deferred.
+
+## Team Run History Refactor Scope Gap
+
+Date: 2026-05-21
+
+The user challenged the earlier standalone-only scope and asked whether agent team history has the same index/metadata problem. Source and local data inspection confirm yes.
+
+Evidence:
+
+- Team history index file exists at `memory/team_run_history_index.json`.
+- Current team index type is `TeamRunIndexFileRecord { version, rows }` with row fields `teamRunId`, `teamDefinitionId`, `teamDefinitionName`, `workspaceRootPath`, `summary`, `lastActivityAt`, `lastKnownStatus`, and `deleteLifecycle`.
+- `TeamRunHistoryService.listTeamRunHistory()` reads team index rows and rebuilds from metadata only when the index is empty. A non-empty but incomplete team index is trusted.
+- Current local data has 142 valid `memory/agent_teams/*/team_run_metadata.json` files but only 140 team index rows. Missing team metadata-backed runs: `team_software-engineering-team_1479a41d`, `team_software-engineering-team_918ba294`.
+- Existing team metadata migration `20260517_team_run_metadata_member_tree` succeeded and converts `memberMetadata` to `memberTree`; it does not repair `team_run_history_index.json`.
+- `TeamRunService.recordRunActivity()` writes team metadata and team history index on activity/status. `TeamRunMetadataMapper.buildMetadata()` currently sets `createdAt` and `updatedAt` to the current timestamp each time metadata is rebuilt, so these metadata timestamps are not reliable stable catalog facts.
+- Backend source search shows no writer that sets team `deleteLifecycle` to `CLEANUP_PENDING`; current personal behavior effectively uses `READY` only.
+
+Design implication:
+
+- The current design must no longer defer team-run history cleanup. Team run history has the same architecture smell and an observed partial-index issue.
+- Add a team history catalog/index refactor parallel to standalone: remove persisted team index `version`, `lastActivityAt`, `lastKnownStatus`, and currently-unused `deleteLifecycle`; use `createdAt`, `archivedAt`, and `terminatedAt` catalog facts; keep stable `teamDefinitionName`, `createdAt`, and `archivedAt` in team metadata and copy the catalog-relevant values into the team catalog; keep live status derived.
+- Add `TeamRunHistoryIndexV2AppDataMigration` to repair/migrate `team_run_history_index.json` from canonical team metadata. It should run after `TeamRunMetadataMemberTreeMigration`.
+- See `team-history-refactor-analysis.md` for the detailed field audit and target flow.
+
+## Team Metadata Stable Manifest Correction
+
+Date: 2026-05-21
+
+The user challenged the initial team metadata simplification that removed `teamDefinitionName`, `createdAt`, and `archivedAt`. Revised judgment: that was too aggressive. Team metadata is a team-run manifest, not only a minimal runtime resume config. Stable facts `teamDefinitionName`, `createdAt`, and `archivedAt` should remain in team metadata because they are low-write, useful for historical display/repair, and do not carry live runtime status. `createdAt` and `archivedAt` are also copied into the team history catalog for fast list ordering/filtering; rare archive/unarchive operations must update metadata and catalog together through the team catalog boundary. `updatedAt` remains the field to remove from the V2 target because it is activity-ish and currently rewritten on metadata refresh.
+
+## 2026-05-21 Architecture Review Round 5 Rework
+
+Architecture review round 5 failed the expanded design on two team-specific design-impact gaps:
+
+1. `TeamRunHistoryIndexV2AppDataMigration` row synthesis was under-specified, especially because legacy team metadata `createdAt` is known unreliable: `TeamRunMetadataMapper.buildMetadata()` rewrites `createdAt`/`updatedAt` to `now` on metadata refresh.
+2. The team catalog/list boundary was incomplete: team history rows need `memberTree`/members from metadata, but normal listing must still avoid full `agent_teams/*` scans and list-time repair.
+
+User clarification during this rework: keep stable team metadata facts `teamDefinitionName`, `createdAt`, and `archivedAt`; `updatedAt` is not needed. Final design decision: V2 team metadata keeps `teamDefinitionName`, `createdAt`, `archivedAt`, and `memberTree`, and removes `updatedAt` from the target. If a future product requirement needs a durable config-change timestamp, it should be introduced separately and must not become a history-list activity driver.
+
+Design response now recorded in `design-spec.md`:
+
+- Added a concrete team migration row synthesis algorithm with field-by-field fallbacks for `teamRunId`, `teamDefinitionId`, `teamDefinitionName`, `workspaceRootPath`, `summary`, `createdAt`, `archivedAt`, and `terminatedAt`.
+- `createdAt` fallback treats legacy team metadata `createdAt` as unreliable and prefers existing V2 row value, team directory birthtime, member prepared timestamps, and metadata birthtime before warning-level legacy metadata/activity fallbacks.
+- Migration reporting now distinguishes stale index rows, no-metadata directories, unsafe IDs, invalid/unsupported metadata, identity mismatches, and missing metadata-backed rows. The two observed missing team rows (`team_software-engineering-team_1479a41d`, `team_software-engineering-team_918ba294`) are covered by the missing-row repair case.
+- Added the normal team list/projection spine: `TeamRunHistoryCatalogService` supplies catalog rows from `team_run_history_index.json`; `TeamRunHistoryService` may read `team_run_metadata.json` only for selected indexed row IDs to project `memberTree`/members; `TeamRunStatusProjectionService` overlays live team/member status.
+- Explicitly forbidden in normal team listing: `listTeamRunIds()`, `rebuildIndexFromDisk()`, full `agent_teams/*` scan, stale-row removal, or missing-row repair.
+- Added concrete `TeamRunHistoryCatalogService` semantic methods and forbidden bypasses for `TeamRunService`, `TeamRunHistoryService`, scripts, and lifecycle code.

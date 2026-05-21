@@ -406,8 +406,8 @@ export class AgentRunHistoryCatalogService {
       const result = await operation(stagedRows);
       if (result.shouldFlush) {
         await this.flushRows(stagedRows);
+        this.state.rows = stagedRows;
       }
-      this.state.rows = stagedRows;
       return result.value;
     });
   }

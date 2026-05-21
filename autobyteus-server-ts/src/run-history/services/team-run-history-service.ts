@@ -1,35 +1,27 @@
-import fs from "node:fs/promises";
-import path from "node:path";
-import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
-import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type {
   AgentApiStatus,
   AgentStatusPayload,
 } from "../../agent-execution/domain/agent-status-payload.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import {
-  TeamRunHistoryItem,
-} from "../domain/team-run-history-index-types.js";
-import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
-import {
+import type { TeamRunHistoryItem } from "../domain/team-run-history-index-types.js";
+import type { TeamRunIndexRow } from "../domain/team-run-history-index-types.js";
+import type {
   TeamRunMetadata,
-  type TeamRunAgentMemberMetadata,
+  TeamRunAgentMemberMetadata,
 } from "../store/team-run-metadata-types.js";
 import {
   isUnsupportedLegacyTeamRunMetadataError,
   TeamRunMetadataStore,
   toLegacyTeamRunMetadataUpgradeRequiredError,
 } from "../store/team-run-metadata-store.js";
-import { extractSummaryFromRawTraces } from "./run-history-service-helpers.js";
-import { AgentRunViewProjectionService } from "./agent-run-view-projection-service.js";
 import {
-  TeamRunHistoryIndexService,
-  getTeamRunHistoryIndexService,
-} from "./team-run-history-index-service.js";
+  TeamRunHistoryCatalogService,
+  getTeamRunHistoryCatalogService,
+} from "./team-run-history-catalog-service.js";
+import { TeamRunStatusProjectionService } from "./team-run-status-projection-service.js";
 import {
   getTeamRunLeafAgentMetadata,
-  resolveTeamRunLeafAgentByRouteKey,
   resolveTeamWorkspaceRootPath,
 } from "./team-run-metadata-flattener.js";
 
@@ -55,38 +47,36 @@ export interface TeamRunResumeConfig {
 
 export class TeamRunHistoryService {
   private readonly metadataStore: TeamRunMetadataStore;
-  private readonly indexService: TeamRunHistoryIndexService;
+  private readonly catalogService: TeamRunHistoryCatalogService;
   private readonly teamRunManager: AgentTeamRunManager;
-  private readonly memberLayout: TeamMemberMemoryLayout;
-  private readonly agentRunViewProjectionService: AgentRunViewProjectionService;
+  private readonly statusProjectionService: TeamRunStatusProjectionService;
 
   constructor(
     memoryDir: string,
     options: {
       metadataStore?: TeamRunMetadataStore;
-      indexService?: TeamRunHistoryIndexService;
+      catalogService?: TeamRunHistoryCatalogService;
       teamRunManager?: AgentTeamRunManager;
-      agentRunViewProjectionService?: AgentRunViewProjectionService;
+      statusProjectionService?: TeamRunStatusProjectionService;
     } = {},
   ) {
     this.metadataStore = options.metadataStore ?? new TeamRunMetadataStore(memoryDir);
-    this.indexService =
-      options.indexService ?? getTeamRunHistoryIndexService();
+    this.catalogService = options.catalogService ?? getTeamRunHistoryCatalogService();
     this.teamRunManager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
-    this.memberLayout = new TeamMemberMemoryLayout(memoryDir);
-    this.agentRunViewProjectionService =
-      options.agentRunViewProjectionService ?? new AgentRunViewProjectionService(memoryDir);
+    this.statusProjectionService = options.statusProjectionService ??
+      new TeamRunStatusProjectionService(this.teamRunManager);
   }
 
   async listTeamRunHistory(): Promise<TeamRunHistoryItem[]> {
-    let rows = await this.indexService.listRows();
-    if (rows.length === 0) {
-      rows = await this.indexService.rebuildIndexFromDisk();
-    }
-
+    const rows = await this.catalogService.listCatalogRows();
     const items: TeamRunHistoryItem[] = [];
-    const staleTeamRunIds: string[] = [];
+
     for (const row of rows) {
+      const projection = this.statusProjectionService.getCatalogListStatusProjection(row.teamRunId);
+      if (row.archivedAt && !projection.isActive) {
+        continue;
+      }
+
       let metadata: TeamRunMetadata | null = null;
       try {
         metadata = await this.metadataStore.readMetadata(row.teamRunId);
@@ -100,62 +90,16 @@ export class TeamRunHistoryService {
         throw error;
       }
       if (!metadata) {
-        staleTeamRunIds.push(row.teamRunId);
+        logger.warn(
+          `Skipping indexed team run '${row.teamRunId}' because team_run_metadata.json is missing. Run the app-data migration or repair script if history is incomplete.`,
+        );
         continue;
       }
-      const activeTeamRun = this.teamRunManager.getActiveRun(row.teamRunId);
-      const isActive = activeTeamRun !== null;
-      if (metadata.archivedAt && !isActive) {
-        continue;
-      }
-      const memberStatusSnapshots =
-        typeof activeTeamRun?.getMemberStatusSnapshots === "function"
-          ? activeTeamRun.getMemberStatusSnapshots()
-          : [];
-      const status: AgentApiStatus = activeTeamRun
-        ? typeof activeTeamRun.getStatusSnapshot === "function"
-          ? activeTeamRun.getStatusSnapshot().status
-          : "running"
-        : row.lastKnownStatus === "ERROR"
-          ? "error"
-          : "offline";
-      const summary = await this.resolveSummary(row, metadata);
-      const coordinatorMemberRouteKey = resolveCoordinatorMemberRouteKey(metadata);
-      items.push({
-        teamRunId: row.teamRunId,
-        teamDefinitionId: row.teamDefinitionId,
-        teamDefinitionName: row.teamDefinitionName,
-        coordinatorMemberRouteKey,
-        workspaceRootPath: row.workspaceRootPath ?? resolveTeamWorkspaceRootPath(metadata) ?? null,
-        summary,
-        lastActivityAt: row.lastActivityAt,
-        status,
-        lastKnownStatus: isActive ? "ACTIVE" : row.lastKnownStatus,
-        deleteLifecycle: row.deleteLifecycle,
-        isActive,
-        members: getTeamRunLeafAgentMetadata(metadata).map((member) => ({
-          memberRouteKey: member.memberRouteKey,
-          memberName: member.memberName,
-          memberRunId: member.memberRunId,
-          status: this.resolveMemberHistoryStatus(member, memberStatusSnapshots),
-          runtimeKind: member.runtimeKind,
-          platformAgentRunId: member.platformAgentRunId,
-          agentDefinitionId: member.agentDefinitionId,
-          llmModelIdentifier: member.llmModelIdentifier,
-          autoExecuteTools: member.autoExecuteTools,
-          llmConfig: member.llmConfig ?? null,
-          workspaceRootPath: member.workspaceRootPath,
-        })),
-        memberTree: metadata.memberTree,
-      });
+
+      items.push(this.toHistoryItem(row, metadata, projection));
     }
 
-    if (staleTeamRunIds.length > 0) {
-      await Promise.all(staleTeamRunIds.map((teamRunId) => this.indexService.removeRow(teamRunId)));
-    }
-
-    items.sort((a, b) => b.lastActivityAt.localeCompare(a.lastActivityAt));
-    return items;
+    return items.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 
   async getTeamRunResumeConfig(teamRunId: string): Promise<TeamRunResumeConfig> {
@@ -179,136 +123,50 @@ export class TeamRunHistoryService {
   }
 
   async archiveStoredTeamRun(teamRunId: string): Promise<ArchiveStoredTeamRunResult> {
-    const normalizedTeamRunId = this.resolveSafeArchiveTeamRunId(teamRunId);
-    if (!normalizedTeamRunId) {
-      return {
-        success: false,
-        message: "Invalid team run ID path.",
-      };
-    }
-
-    if (this.isTeamRunActive(normalizedTeamRunId)) {
-      return {
-        success: false,
-        message: "Team run is active. Terminate it before archiving history.",
-      };
-    }
-
-    try {
-      const metadata = await this.metadataStore.readMetadata(normalizedTeamRunId);
-      if (!metadata) {
-        return {
-          success: false,
-          message: `Team run metadata not found for '${normalizedTeamRunId}'.`,
-        };
-      }
-
-      const archivedAt = metadata.archivedAt ?? new Date().toISOString();
-      await this.metadataStore.writeMetadata(normalizedTeamRunId, {
-        ...metadata,
-        archivedAt,
-      });
-
-      return {
-        success: true,
-        message: `Team run '${normalizedTeamRunId}' archived.`,
-      };
-    } catch (error) {
-      logger.warn(`Failed to archive stored team run '${normalizedTeamRunId}': ${String(error)}`);
-      return {
-        success: false,
-        message: `Failed to archive stored team run '${normalizedTeamRunId}'.`,
-      };
-    }
+    return this.catalogService.archiveTeamRun(teamRunId);
   }
 
   async deleteStoredTeamRun(teamRunId: string): Promise<DeleteStoredTeamRunResult> {
-    const normalizedTeamRunId = teamRunId.trim();
-    if (!normalizedTeamRunId) {
-      return {
-        success: false,
-        message: "Team run ID is required.",
-      };
-    }
-    if (this.isTeamRunActive(normalizedTeamRunId)) {
-      return {
-        success: false,
-        message: "Team run is active. Terminate it before deleting history.",
-      };
-    }
-    const safeTarget = this.resolveSafeTeamDirectory(normalizedTeamRunId);
-    if (!safeTarget) {
-      return {
-        success: false,
-        message: "Invalid team run ID path.",
-      };
-    }
-
-    try {
-      await fs.rm(safeTarget, { recursive: true, force: true });
-      await this.indexService.removeRow(normalizedTeamRunId);
-      return {
-        success: true,
-        message: `Team run '${normalizedTeamRunId}' deleted permanently.`,
-      };
-    } catch (error) {
-      logger.warn(`Failed to delete stored team run '${normalizedTeamRunId}': ${String(error)}`);
-      return {
-        success: false,
-        message: `Failed to delete stored team run '${normalizedTeamRunId}'.`,
-      };
-    }
+    return this.catalogService.deleteTeamRun(teamRunId);
   }
 
-  private resolveSafeTeamDirectory(teamRunId: string): string | null {
-    const teamsRoot = path.resolve(this.metadataStore.getTeamDirPath(""));
-    const targetPath = path.resolve(this.metadataStore.getTeamDirPath(teamRunId));
-    if (targetPath === teamsRoot) {
-      return null;
-    }
-    const targetWithinRoot = targetPath.startsWith(`${teamsRoot}${path.sep}`);
-    if (!targetWithinRoot) {
-      return null;
-    }
-    return targetPath;
-  }
-
-  private resolveSafeArchiveTeamRunId(teamRunId: string): string | null {
-    const normalizedTeamRunId = teamRunId.trim();
-    if (!this.isSafeArchiveIdentity(normalizedTeamRunId, "temp-")) {
-      return null;
-    }
-
-    const teamsRoot = path.resolve(this.memberLayout.getTeamRootDirPath());
-    const targetDir = path.resolve(teamsRoot, normalizedTeamRunId);
-    const metadataPath = path.resolve(targetDir, "team_run_metadata.json");
-    if (!this.isStrictlyInsideRoot(targetDir, teamsRoot)) {
-      return null;
-    }
-    if (!this.isStrictlyInsideRoot(metadataPath, teamsRoot)) {
-      return null;
-    }
-    return normalizedTeamRunId;
-  }
-
-  private isSafeArchiveIdentity(value: string, draftPrefix: string): boolean {
-    if (!value || value.startsWith(draftPrefix)) {
-      return false;
-    }
-    if (path.isAbsolute(value) || path.posix.isAbsolute(value) || path.win32.isAbsolute(value)) {
-      return false;
-    }
-    if (/[\\/]/.test(value)) {
-      return false;
-    }
-    const segments = value.split(/[\\/]+/);
-    return !segments.some((segment) => segment === "." || segment === "..");
-  }
-
-  private isStrictlyInsideRoot(candidatePath: string, rootPath: string): boolean {
-    const resolvedRoot = path.resolve(rootPath);
-    const resolvedCandidate = path.resolve(candidatePath);
-    return resolvedCandidate.startsWith(`${resolvedRoot}${path.sep}`);
+  private toHistoryItem(
+    row: TeamRunIndexRow,
+    metadata: TeamRunMetadata,
+    projection: {
+      isActive: boolean;
+      status: AgentApiStatus;
+      memberStatusSnapshots: AgentStatusPayload[];
+    },
+  ): TeamRunHistoryItem {
+    const coordinatorMemberRouteKey = resolveCoordinatorMemberRouteKey(metadata);
+    return {
+      teamRunId: row.teamRunId,
+      teamDefinitionId: row.teamDefinitionId,
+      teamDefinitionName: row.teamDefinitionName,
+      coordinatorMemberRouteKey,
+      workspaceRootPath: row.workspaceRootPath ?? resolveTeamWorkspaceRootPath(metadata) ?? null,
+      summary: row.summary,
+      createdAt: row.createdAt,
+      archivedAt: row.archivedAt ?? null,
+      terminatedAt: row.terminatedAt ?? null,
+      status: projection.status,
+      isActive: projection.isActive,
+      members: getTeamRunLeafAgentMetadata(metadata).map((member) => ({
+        memberRouteKey: member.memberRouteKey,
+        memberName: member.memberName,
+        memberRunId: member.memberRunId,
+        status: this.resolveMemberHistoryStatus(member, projection.memberStatusSnapshots),
+        runtimeKind: member.runtimeKind,
+        platformAgentRunId: member.platformAgentRunId,
+        agentDefinitionId: member.agentDefinitionId,
+        llmModelIdentifier: member.llmModelIdentifier,
+        autoExecuteTools: member.autoExecuteTools,
+        llmConfig: member.llmConfig ?? null,
+        workspaceRootPath: member.workspaceRootPath,
+      })),
+      memberTree: metadata.memberTree,
+    };
   }
 
   private isTeamRunActive(teamRunId: string): boolean {
@@ -325,86 +183,6 @@ export class TeamRunHistoryService {
     );
     return snapshot?.status ?? "offline";
   }
-
-  private async resolveSummary(
-    row: Pick<
-      TeamRunHistoryItem,
-      "teamRunId" | "summary" | "lastKnownStatus" | "lastActivityAt"
-    >,
-    metadata: TeamRunMetadata,
-  ): Promise<string> {
-    const existing = row.summary.trim();
-    if (existing) {
-      return existing;
-    }
-
-    const recovered = await this.extractSummaryFromCoordinator(metadata);
-    if (!recovered) {
-      return "";
-    }
-
-    await this.indexService.recordRunActivity({
-      teamRunId: row.teamRunId,
-      metadata,
-      summary: recovered,
-      lastKnownStatus: row.lastKnownStatus,
-      lastActivityAt: row.lastActivityAt,
-    });
-    return recovered;
-  }
-
-  private async extractSummaryFromCoordinator(metadata: TeamRunMetadata): Promise<string> {
-    const coordinatorMemberRouteKey = resolveCoordinatorMemberRouteKey(metadata);
-    const coordinatorMember =
-      resolveTeamRunLeafAgentByRouteKey(metadata, coordinatorMemberRouteKey) ??
-      getTeamRunLeafAgentMetadata(metadata)[0];
-
-    if (!coordinatorMember) {
-      return "";
-    }
-
-    const teamDir = this.memberLayout.getTeamDirPath(metadata.teamRunId);
-    const memberStore = new MemoryFileStore(teamDir, {
-      runRootSubdir: "",
-      warnOnMissingFiles: false,
-    });
-
-    const rawTraceSummary = extractSummaryFromRawTraces(
-      memberStore.readRawTracesActive(coordinatorMember.memberRunId, 300),
-      memberStore.readRawTracesArchive(coordinatorMember.memberRunId, 300),
-    );
-    if (rawTraceSummary) {
-      return rawTraceSummary;
-    }
-
-    const resolvedProjection = await this.agentRunViewProjectionService.getProjectionFromMetadata({
-      runId: coordinatorMember.memberRunId,
-      metadata: this.toMemberRunMetadata(metadata, coordinatorMember),
-    });
-    return resolvedProjection.summary?.trim() || "";
-  }
-
-  private toMemberRunMetadata(
-    metadata: TeamRunMetadata,
-    member: TeamRunAgentMemberMetadata,
-  ): AgentRunMetadata {
-    return {
-      runId: member.memberRunId,
-      agentDefinitionId: member.agentDefinitionId,
-      workspaceRootPath:
-        member.workspaceRootPath ??
-        resolveTeamWorkspaceRootPath(metadata) ??
-        process.cwd(),
-      memoryDir: this.memberLayout.getMemberDirPath(metadata.teamRunId, member.memberRunId),
-      llmModelIdentifier: member.llmModelIdentifier,
-      llmConfig: member.llmConfig ?? null,
-      autoExecuteTools: member.autoExecuteTools,
-      skillAccessMode: member.skillAccessMode,
-      runtimeKind: member.runtimeKind,
-      platformAgentRunId: member.platformAgentRunId,
-    };
-  }
-
 }
 
 const resolveCoordinatorMemberRouteKey = (metadata: TeamRunMetadata): string =>

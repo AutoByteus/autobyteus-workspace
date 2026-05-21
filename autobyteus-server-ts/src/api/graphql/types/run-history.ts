@@ -99,16 +99,16 @@ class WorkspaceHistoryTeamRunItemObject {
   summary!: string;
 
   @Field(() => String)
-  lastActivityAt!: string;
+  createdAt!: string;
+
+  @Field(() => String, { nullable: true })
+  archivedAt?: string | null;
+
+  @Field(() => String, { nullable: true })
+  terminatedAt?: string | null;
 
   @Field(() => String)
   status!: string;
-
-  @Field(() => String)
-  lastKnownStatus!: string;
-
-  @Field(() => String)
-  deleteLifecycle!: string;
 
   @Field(() => Boolean)
   isActive!: boolean;

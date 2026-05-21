@@ -12,6 +12,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-metadata-store.js";
+import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
 import { TeamMemberMemoryLayout } from "../../../src/agent-memory/store/team-member-memory-layout.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writer.js";
@@ -571,9 +572,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       teamDefinitionId: "team-definition-1",
       teamDefinitionName: "Tool Projection Validation Team",
       coordinatorMemberRouteKey: "coordinator",
-      runVersion: 1,
       createdAt: new Date(USER_TS * 1000).toISOString(),
-      updatedAt: new Date(ASSISTANT_TS * 1000).toISOString(),
       memberTree: [
         {
           memberKind: "agent",
@@ -592,7 +591,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
           applicationExecutionContext: null,
         },
       ],
-    });
+    } satisfies TeamRunMetadata);
 
     const memberDir = new TeamMemberMemoryLayout(memoryDir).getMemberDirPath(
       TEAM_RUN_ID,
@@ -676,9 +675,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       teamDefinitionId: "team-definition-local-replay-absent",
       teamDefinitionName: "Local Replay Absent Team",
       coordinatorMemberRouteKey: "coordinator",
-      runVersion: 1,
       createdAt: new Date(USER_TS * 1000).toISOString(),
-      updatedAt: new Date(ASSISTANT_TS * 1000).toISOString(),
       memberTree: [
         {
           memberKind: "agent",
@@ -697,7 +694,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
           applicationExecutionContext: null,
         },
       ],
-    });
+    } satisfies TeamRunMetadata);
 
     const result = await execGraphql<{ getTeamMemberRunProjection: ProjectionPayload }>(
       `

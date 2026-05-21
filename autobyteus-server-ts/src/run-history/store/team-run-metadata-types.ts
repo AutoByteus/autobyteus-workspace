@@ -45,7 +45,6 @@ export interface TeamRunMetadata {
   teamDefinitionName: string;
   coordinatorMemberRouteKey: string;
   createdAt: string;
-  updatedAt: string;
   archivedAt?: string | null;
   memberTree: TeamRunMemberMetadata[];
 }

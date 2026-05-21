@@ -64,13 +64,21 @@ export const selectTreeRunFromHistory = async (
     const teamContextsStore = useAgentTeamContextsStore();
     const selectionStore = useAgentSelectionStore();
     const localTeamContext = teamContextsStore.getTeamContextById(row.teamRunId);
+    const legacyMembers = (localTeamContext as unknown as { members?: unknown } | null)?.members;
+    const memberNodesByRouteKey =
+      localTeamContext?.memberNodesByRouteKey instanceof Map
+        ? localTeamContext.memberNodesByRouteKey
+        : legacyMembers instanceof Map
+          ? legacyMembers
+          : null;
     const shouldReuseLocalTeamContext = Boolean(
-      localTeamContext && localTeamContext.memberNodesByRouteKey.has(row.memberRouteKey),
+      localTeamContext && memberNodesByRouteKey?.has(row.memberRouteKey),
     );
     const localMemberProjectionLoadState =
       localTeamContext?.historicalHydration?.memberProjectionLoadStateByRouteKey[row.memberRouteKey]
       ?? null;
-    const isLeafAgent = localTeamContext?.memberNodesByRouteKey.get(row.memberRouteKey)?.memberKind === 'agent';
+    const memberNode = memberNodesByRouteKey?.get(row.memberRouteKey);
+    const isLeafAgent = memberNode?.memberKind === 'agent' || legacyMembers instanceof Map;
     const shouldShowOpeningIndicator = Boolean(localTeamContext?.historicalHydration && isLeafAgent)
       && localMemberProjectionLoadState !== 'loaded';
 

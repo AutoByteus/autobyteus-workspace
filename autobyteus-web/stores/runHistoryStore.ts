@@ -293,7 +293,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
     },
 
     markTeamAsActive(teamRunId: string): void {
-      const now = new Date().toISOString();
       this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
         ...workspace,
         teamDefinitions: workspace.teamDefinitions.map((teamDefinition) => ({
@@ -305,8 +304,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
                   ...team,
                   isActive: true,
                   status: AgentTeamStatus.Running,
-                  lastKnownStatus: 'ACTIVE',
-                  lastActivityAt: now,
                 }),
         })),
       }));
@@ -321,7 +318,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
     },
 
     markTeamAsInactive(teamRunId: string): void {
-      const now = new Date().toISOString();
       this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
         ...workspace,
         teamDefinitions: workspace.teamDefinitions.map((teamDefinition) => ({
@@ -332,13 +328,11 @@ export const useRunHistoryStore = defineStore('runHistory', {
               : {
                   ...team,
                   isActive: false,
-                  status: team.lastKnownStatus === 'ERROR' ? AgentTeamStatus.Error : AgentTeamStatus.Offline,
+                  status: team.status === AgentTeamStatus.Error ? AgentTeamStatus.Error : AgentTeamStatus.Offline,
                   members: team.members.map((member) => ({
                     ...member,
                     status: AgentStatus.Offline,
                   })),
-                  lastKnownStatus: team.lastKnownStatus === 'ERROR' ? 'ERROR' : 'IDLE',
-                  lastActivityAt: now,
                 }),
         })),
       }));
@@ -372,24 +366,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
           ...teamDefinition,
           runs: teamDefinition.runs.map((team) => {
             const isActive = activeSet.has(team.teamRunId);
-            const lastKnownStatus = isActive
-              ? 'ACTIVE'
-              : team.lastKnownStatus === 'ERROR'
-                ? 'ERROR'
-                : 'IDLE';
             return {
               ...team,
               isActive,
               status: isActive
                 ? AgentTeamStatus.Running
-                : team.lastKnownStatus === 'ERROR'
+                : team.status === AgentTeamStatus.Error
                   ? AgentTeamStatus.Error
                   : AgentTeamStatus.Offline,
               members: team.members.map((member) => ({
                 ...member,
                 status: isActive ? member.status : AgentStatus.Offline,
               })),
-              lastKnownStatus,
             };
           }),
         })),

@@ -90,10 +90,10 @@ export interface TeamRunHistoryItem {
   coordinatorMemberRouteKey: string;
   workspaceRootPath?: string | null;
   summary: string;
-  lastActivityAt: string;
+  createdAt: string;
+  archivedAt?: string | null;
+  terminatedAt?: string | null;
   status: AgentTeamStatus;
-  lastKnownStatus: TeamRunKnownStatus;
-  deleteLifecycle: TeamRunDeleteLifecycle;
   isActive: boolean;
   memberTree?: TeamRunMetadataMember[] | null;
   members: TeamRunMemberHistoryItem[];
@@ -147,7 +147,6 @@ export interface TeamRunMetadataPayload {
   teamDefinitionName: string;
   coordinatorMemberRouteKey: string;
   createdAt: string;
-  updatedAt: string;
   archivedAt?: string | null;
   memberTree: TeamRunMetadataMember[];
 }

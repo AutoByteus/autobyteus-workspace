@@ -30,10 +30,10 @@ export const ListWorkspaceRunHistory = gql`
           coordinatorMemberRouteKey
           workspaceRootPath
           summary
-          lastActivityAt
+          createdAt
+          archivedAt
+          terminatedAt
           status
-          lastKnownStatus
-          deleteLifecycle
           isActive
           memberTree
           members {

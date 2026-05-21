@@ -12,7 +12,7 @@ describe('GetRunFileChanges query', () => {
 });
 
 describe('ListWorkspaceRunHistory query', () => {
-  it('uses the V2 standalone history shape while retaining team history fields', () => {
+  it('uses V2 standalone and team history catalog shapes without persisted live fields', () => {
     const source = ListWorkspaceRunHistory.loc?.source.body ?? '';
     const standaloneRunsBlock = source.match(/agentDefinitions[\s\S]*?runs[\s\S]*?}\s*}\s*teamDefinitions/)?.[0] ?? '';
     const teamRunsBlock = source.match(/teamDefinitions[\s\S]*?runs[\s\S]*?members/)?.[0] ?? '';
@@ -24,8 +24,12 @@ describe('ListWorkspaceRunHistory query', () => {
     expect(standaloneRunsBlock).not.toContain('lastActivityAt');
     expect(standaloneRunsBlock).not.toContain('lastKnownStatus');
 
-    expect(teamRunsBlock).toContain('lastActivityAt');
-    expect(teamRunsBlock).toContain('lastKnownStatus');
-    expect(teamRunsBlock).toContain('deleteLifecycle');
+    expect(teamRunsBlock).toContain('createdAt');
+    expect(teamRunsBlock).toContain('archivedAt');
+    expect(teamRunsBlock).toContain('terminatedAt');
+    expect(teamRunsBlock).toContain('status');
+    expect(teamRunsBlock).not.toContain('lastActivityAt');
+    expect(teamRunsBlock).not.toContain('lastKnownStatus');
+    expect(teamRunsBlock).not.toContain('deleteLifecycle');
   });
 });

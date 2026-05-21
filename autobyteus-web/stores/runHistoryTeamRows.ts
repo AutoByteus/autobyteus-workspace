@@ -1,5 +1,6 @@
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { AgentContext } from '~/types/agent/AgentContext';
 import type {
   TeamMemberTreeRow,
   TeamRunHistoryItem,
@@ -9,7 +10,7 @@ import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStat
 
 const toTeamMemberRunStatus = (
   status: AgentStatus,
-): Pick<TeamRunHistoryItem, 'isActive' | 'lastKnownStatus'> => {
+): Pick<TeamMemberTreeRow, 'isActive' | 'lastKnownStatus'> => {
   if (status === AgentStatus.Error) {
     return { isActive: false, lastKnownStatus: 'ERROR' };
   }
@@ -37,9 +38,9 @@ const buildLeafRowFromHistory = (
     memberRunId: member.memberRunId,
     workspaceRootPath: member.workspaceRootPath ?? null,
     summary: team.summary,
-    lastActivityAt: team.lastActivityAt,
+    lastActivityAt: team.createdAt,
     currentStatus,
-    deleteLifecycle: team.deleteLifecycle,
+    deleteLifecycle: 'READY' as const,
     children: [],
   };
 };
@@ -66,9 +67,9 @@ const buildRowsFromMetadataTree = (
         coordinatorMemberRouteKey: member.coordinatorMemberRouteKey ?? null,
         workspaceRootPath: null,
         summary: team.summary,
-        lastActivityAt: team.lastActivityAt,
+        lastActivityAt: team.createdAt,
         currentStatus,
-        deleteLifecycle: team.deleteLifecycle,
+        deleteLifecycle: 'READY' as const,
         children: buildRowsFromMetadataTree(team, member.memberTree, memberByRouteKey),
       };
     }
@@ -86,9 +87,9 @@ const buildRowsFromMetadataTree = (
       memberRunId: member.memberRunId,
       workspaceRootPath: member.workspaceRootPath ?? null,
       summary: team.summary,
-      lastActivityAt: team.lastActivityAt,
+      lastActivityAt: team.createdAt,
       currentStatus,
-      deleteLifecycle: team.deleteLifecycle,
+      deleteLifecycle: 'READY' as const,
       children: [],
     };
   });
@@ -115,6 +116,24 @@ export const buildTeamRowsFromContext = (
   fallbackLastActivityAt: string,
   resolveWorkspaceRootPath: (workspaceId: string | null) => string,
 ): TeamMemberTreeRow[] => {
+  const leafAgentContextsByRouteKey =
+    teamContext.leafAgentContextsByRouteKey instanceof Map
+      ? teamContext.leafAgentContextsByRouteKey
+      : (teamContext as unknown as { members?: unknown }).members instanceof Map
+        ? (teamContext as unknown as { members: Map<string, AgentContext> }).members
+        : new Map<string, AgentContext>();
+  const sourceTree = Array.isArray(teamContext.memberTree) && teamContext.memberTree.length > 0
+    ? teamContext.memberTree
+    : Array.from(leafAgentContextsByRouteKey.entries()).map(([memberRouteKey, memberContext]) => ({
+      memberKind: 'agent' as const,
+      memberRouteKey,
+      memberPath: [memberRouteKey],
+      memberName: memberContext.config.agentDefinitionName || memberRouteKey,
+      displayName: memberContext.config.agentDefinitionName || memberRouteKey,
+      memberRunId: memberContext.state.runId,
+      agentDefinitionId: memberContext.config.agentDefinitionId || memberRouteKey,
+    }));
+
   const visit = (nodes: AgentTeamContext['memberTree']): TeamMemberTreeRow[] =>
     nodes.map((node) => {
       if (node.memberKind === 'agent_team') {
@@ -140,7 +159,7 @@ export const buildTeamRowsFromContext = (
         };
       }
 
-      const memberContext = teamContext.leafAgentContextsByRouteKey.get(node.memberRouteKey);
+      const memberContext = leafAgentContextsByRouteKey.get(node.memberRouteKey);
       const currentStatus = normalizeAgentRuntimeStatus(memberContext?.state.currentStatus ?? AgentStatus.Offline);
       return {
         ...toTeamMemberRunStatus(currentStatus),
@@ -163,5 +182,5 @@ export const buildTeamRowsFromContext = (
       };
     });
 
-  return visit(teamContext.memberTree);
+  return visit(sourceTree);
 };

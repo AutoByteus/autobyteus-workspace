@@ -99,10 +99,12 @@ describe("Workspace run history GraphQL e2e", () => {
                 coordinatorMemberRouteKey: "coordinator",
                 workspaceRootPath: "/ws/a",
                 summary: "Rebuild the workspace history sidebar",
-                lastActivityAt: "2026-04-12T01:05:00.000Z",
-                lastKnownStatus: "ACTIVE",
-                deleteLifecycle: "READY",
+                createdAt: "2026-04-12T01:05:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
+                status: "running",
                 isActive: true,
+                memberTree: [],
                 members: [
                   {
                     memberRouteKey: "coordinator",
@@ -149,10 +151,12 @@ describe("Workspace run history GraphQL e2e", () => {
               coordinatorMemberRouteKey
               workspaceRootPath
               summary
-              lastActivityAt
-              lastKnownStatus
-              deleteLifecycle
+              createdAt
+              archivedAt
+              terminatedAt
+              status
               isActive
+              memberTree
               members {
                 memberRouteKey
                 memberName
@@ -208,10 +212,12 @@ describe("Workspace run history GraphQL e2e", () => {
                 coordinatorMemberRouteKey: "coordinator",
                 workspaceRootPath: "/ws/a",
                 summary: "Rebuild the workspace history sidebar",
-                lastActivityAt: "2026-04-12T01:05:00.000Z",
-                lastKnownStatus: "ACTIVE",
-                deleteLifecycle: "READY",
+                createdAt: "2026-04-12T01:05:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
+                status: "running",
                 isActive: true,
+                memberTree: [],
                 members: [
                   {
                     memberRouteKey: "coordinator",
@@ -253,7 +259,7 @@ describe("Workspace run history GraphQL e2e", () => {
     );
   });
 
-  it("rejects removed standalone status/activity fields while team fields remain queryable", async () => {
+  it("rejects removed persisted status/activity fields while team stable fields remain queryable", async () => {
     listWorkspaceRunHistoryMock.mockResolvedValue([]);
 
     const removedStandaloneFieldResult = await runGraphql(`
@@ -270,13 +276,39 @@ describe("Workspace run history GraphQL e2e", () => {
       }
     `);
 
-    const removedMessages = (removedStandaloneFieldResult.errors ?? []).map(
+    const removedStandaloneMessages = (removedStandaloneFieldResult.errors ?? []).map(
       (error) => error.message,
     );
-    expect(removedMessages).toEqual(
+    expect(removedStandaloneMessages).toEqual(
       expect.arrayContaining([
         expect.stringContaining('Cannot query field "lastActivityAt"'),
         expect.stringContaining('Cannot query field "lastKnownStatus"'),
+      ]),
+    );
+
+    const removedTeamFieldResult = await runGraphql(`
+      query RemovedTeamFields {
+        listWorkspaceRunHistory(limitPerAgent: 2) {
+          teamDefinitions {
+            runs {
+              teamRunId
+              lastActivityAt
+              lastKnownStatus
+              deleteLifecycle
+            }
+          }
+        }
+      }
+    `);
+
+    const removedTeamMessages = (removedTeamFieldResult.errors ?? []).map(
+      (error) => error.message,
+    );
+    expect(removedTeamMessages).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('Cannot query field "lastActivityAt"'),
+        expect.stringContaining('Cannot query field "lastKnownStatus"'),
+        expect.stringContaining('Cannot query field "deleteLifecycle"'),
       ]),
     );
 
@@ -297,10 +329,10 @@ describe("Workspace run history GraphQL e2e", () => {
                 coordinatorMemberRouteKey: "coordinator",
                 workspaceRootPath: "/ws/a",
                 summary: "Team fields are intentionally retained",
-                lastActivityAt: "2026-04-12T01:05:00.000Z",
+                createdAt: "2026-04-12T01:05:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
                 status: "running",
-                lastKnownStatus: "ACTIVE",
-                deleteLifecycle: "READY",
                 isActive: true,
                 memberTree: [],
                 members: [],
@@ -315,19 +347,19 @@ describe("Workspace run history GraphQL e2e", () => {
       listWorkspaceRunHistory: Array<{
         teamDefinitions: Array<{
           runs: Array<{
-            lastActivityAt: string;
-            lastKnownStatus: string;
+            createdAt: string;
+            status: string;
           }>;
         }>;
       }>;
     }>(`
-      query TeamFieldsRemain {
+      query TeamStableFieldsRemain {
         listWorkspaceRunHistory(limitPerAgent: 2) {
           teamDefinitions {
             runs {
               teamRunId
-              lastActivityAt
-              lastKnownStatus
+              createdAt
+              status
             }
           }
         }
@@ -336,8 +368,8 @@ describe("Workspace run history GraphQL e2e", () => {
 
     expect(teamFieldResult.listWorkspaceRunHistory[0]?.teamDefinitions[0]?.runs[0]).toEqual(
       expect.objectContaining({
-        lastActivityAt: "2026-04-12T01:05:00.000Z",
-        lastKnownStatus: "ACTIVE",
+        createdAt: "2026-04-12T01:05:00.000Z",
+        status: "running",
       }),
     );
   });

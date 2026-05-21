@@ -8,7 +8,7 @@ import type {
   AppDataMigrationSummary,
 } from "../domain/app-data-migration-types.js";
 import type { AgentRunHistoryIndexRowRecord } from "../../run-history/store/agent-run-history-index-record-types.js";
-import { atomicWriteJsonFile } from "../../run-history/store/atomic-json-file-writer.js";
+import { AgentRunHistoryIndexStore } from "../../run-history/store/agent-run-history-index-store.js";
 import { compactSummary } from "../../run-history/services/run-history-service-helpers.js";
 import { resetAgentRunHistoryCatalogState } from "../../run-history/services/agent-run-history-catalog-service.js";
 import { canonicalizeWorkspaceRootPath } from "../../run-history/utils/workspace-path-normalizer.js";
@@ -323,7 +323,7 @@ export class RunHistoryIndexV2AppDataMigration implements AppDataMigrationDefini
 
     const summaryBeforeWrite = buildSummary(details);
     const status = summaryBeforeWrite.failedCount > 0
-      ? summaryBeforeWrite.migratedCount + summaryBeforeWrite.skippedCount > 0
+      ? summaryBeforeWrite.migratedCount > 0
         ? "SUCCEEDED_WITH_WARNINGS"
         : "FAILED"
       : "SUCCEEDED";
@@ -333,7 +333,7 @@ export class RunHistoryIndexV2AppDataMigration implements AppDataMigrationDefini
       const nextRows = Array.from(rowsById.values())
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
       backupPath = await backupIndex(indexPath);
-      await atomicWriteJsonFile(indexPath, nextRows);
+      await new AgentRunHistoryIndexStore(this.memoryDir).writeIndex(nextRows);
       resetAgentRunHistoryCatalogState(this.memoryDir);
     }
 

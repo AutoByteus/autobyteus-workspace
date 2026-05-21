@@ -2,17 +2,17 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/investigation-notes.md`
-- Persisted Attribute Audit: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/persisted-attribute-audit.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/review-report.md`
-- Current Validation Round: 4
-- Trigger: Code review round 7 pass after CR-LF-004/CR-LF-005 implementation repair; API/E2E validation resumed.
-- Prior Round Reviewed: Prior validation rounds and code review round 7.
-- Latest Authoritative Round: 4
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency/investigation-notes.md`
+- Persisted Attribute Audit: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency/persisted-attribute-audit.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency/review-report.md`
+- Current Validation Round: 5
+- Trigger: Code review round 9 pass for the expanded team-run history index/metadata scope; user requested agent-team E2E parity/quantity coverage.
+- Prior Round Reviewed: Prior validation rounds and code review round 9.
+- Latest Authoritative Round: 5
 
 ## Round History
 
@@ -21,7 +21,8 @@
 | 1 | Code review round 2 pass | N/A | 0 blocking failures | Pass | No | Durable validation was updated; returned to `code_reviewer` before delivery. |
 | 2 | User-requested relevant backend E2E sweep | N/A | Stale team-member E2E fixture shape found and fixed | Pass | No | Relevant existing backend E2E sweep passed after fixture update; returned to `code_reviewer`. |
 | 3 | CR-DV-001 validation-code local fix | CR-DV-001 | 0 | Pass | No | Removed obsolete standalone `lastKnownStatus` fixture fields; returned to `code_reviewer`. |
-| 4 | Code review round 7 implementation pass | CR-LF-004/CR-LF-005 implementation repairs plus prior validation-code findings | Stale integration validation fixture failures found and fixed | Pass | Yes | Round-7 implementation behavior passed focused API/E2E/executable validation. Repository-resident durable validation was updated again, so return to `code_reviewer`. |
+| 4 | Code review round 7 implementation pass | CR-LF-004/CR-LF-005 implementation repairs plus prior validation-code findings | Stale integration validation fixture failures found and fixed | Pass | No | Round-7 implementation behavior passed focused API/E2E/executable validation. Repository-resident durable validation was updated, so returned to `code_reviewer`. |
+| 5 | Code review round 9 implementation pass + user request for agent-team E2E parity | Expanded team-run history index/metadata scope plus prior validation-code findings | Stale team validation fixtures and GraphQL E2E expectations found and fixed | Pass | Yes | Team GraphQL/list/archive/migration/projection validation now uses strict V2 team catalog rows and asserts team visible-row quantity. Repository-resident durable validation changed, so return to `code_reviewer`. |
 
 ## Validation Basis
 
@@ -31,7 +32,7 @@ Validated against FR-001 through FR-014 and AC-001 through AC-010, with emphasis
 - ordinary activity/status does not rewrite `run_history_index.json` solely for status/activity;
 - prepare/create/start/restore/terminate/archive/delete/cancel-prepared lifecycle behavior remains covered by executable tests;
 - migration/repair and cleanup scripts work on copied legacy-style memory data;
-- frontend GraphQL query/store/mobile/desktop history surfaces consume the new standalone shape while team-run fields remain retained.
+- frontend GraphQL query/store/mobile/desktop history surfaces consume the stable standalone/team catalog shapes while deriving UI-only activity/status fields locally.
 
 ## Compatibility / Legacy Scope Check
 
@@ -45,7 +46,7 @@ Notes:
 
 - Legacy scanning remains script-only in `migrate-agent-run-history-index-v2.mjs`, consistent with the approved design.
 - Cleanup rejects legacy/minimal indexes and tells operators to run migration first; validation reproduced that rejection.
-- Team-run `lastActivityAt` / `lastKnownStatus` retention is intentional deferred scope, not standalone compatibility.
+- Team-run topology/member fields are retained; team persisted/API workspace-list live/activity fields are removed from the catalog/API shape, with UI-only activity/status derived in the frontend.
 
 ## Validation Surfaces / Modes
 
@@ -236,7 +237,7 @@ Updated durable validation after code review:
 
 ## Other Validation Artifacts
 
-- This report: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/in-progress/run-history-index-consistency/api-e2e-validation-report.md`
+- This report: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/tickets/done/run-history-index-consistency/api-e2e-validation-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 
@@ -500,3 +501,150 @@ Current validation classification: `Pass` after the local durable-validation fix
 - Latest authoritative validation round: `4`
 - Recommended recipient: `code_reviewer`
 - Notes: Round-7 implementation behavior passed focused API/E2E/executable validation, but a repository-resident integration validation fixture was updated during API/E2E. Per workflow, delivery must wait for `code_reviewer` to re-review that durable validation change.
+
+## Follow-Up: Round 9 Expanded Team-Run History Revalidation
+
+Trigger: code review round 9 passed the expanded implementation that brings team-run history index/metadata into the same clean V2 catalog model as standalone agent runs. The user also requested agent-team E2E parity/quantity coverage similar to individual-agent history validation.
+
+Scope clarification: `TeamRunMetadataMemberTreeMigration` is an existing prerequisite migration, not a new feature owned by this ticket. Round-9 validation references and runs it only to verify startup ordering and to ensure the new `TeamRunHistoryIndexV2AppDataMigration` consumes canonical `memberTree` metadata. The only source change in the member-tree migration for this ticket is the small schema-alignment cleanup that stops writing removed `updatedAt` into converted team metadata.
+
+Initial resumed validation result:
+
+- The first focused backend run exposed stale repository-resident validation fixtures, not production behavior failures:
+  - `tests/integration/run-history/memory-layout-and-projection.integration.test.ts` still injected the removed team index-service boundary and expected wrapped/legacy team index fields.
+  - `tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts` ran only the member-tree migration, but the current startup flow also requires `TeamRunHistoryIndexV2AppDataMigration` before normal workspace history listing.
+  - `tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts` still queried removed team workspace-list fields (`lastActivityAt`, `lastKnownStatus`, `deleteLifecycle`).
+  - `tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts` still wrote a wrapped legacy team index and injected the removed team index-service boundary.
+
+Durable validation fixes applied during API/E2E:
+
+- `tests/integration/run-history/memory-layout-and-projection.integration.test.ts`
+  - Team creation validation now injects `TeamRunHistoryCatalogService` and reads a strict plain-array `team_run_history_index.json`.
+  - The team index assertion now checks `createdAt` plus absence of `lastKnownStatus`, `lastActivityAt`, and `deleteLifecycle`.
+- `tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts`
+  - Historical migration validation now runs both required startup migrations in order: member-tree migration, then `TeamRunHistoryIndexV2AppDataMigration`.
+  - Workspace history validation now injects `TeamRunHistoryCatalogService`, proving normal list reads the generated V2 catalog instead of scanning/repairing metadata directories.
+  - Unsafe historical team metadata remains excluded while safe/current rows remain listable.
+- `tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts`
+  - Workspace history GraphQL E2E now uses the current team stable fields: `createdAt`, `archivedAt`, `terminatedAt`, `status`, `isActive`, `memberTree`, and `members`.
+  - It now explicitly rejects removed persisted team fields (`lastActivityAt`, `lastKnownStatus`, `deleteLifecycle`) just like standalone removed-field coverage.
+- `tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`
+  - Archive/list E2E now seeds strict V2 team index rows through `TeamRunHistoryIndexStore.writeIndex([...])`.
+  - It injects `TeamRunHistoryCatalogService` and verifies archive updates the plain team V2 row without legacy live fields.
+  - It includes an explicit visible team-row quantity assertion (`4` visible seeded team runs before archive), giving agent-team E2E quantity coverage analogous to individual-agent seeded-list assertions.
+- `tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
+  - Team metadata fixtures now use current `TeamRunMetadata` literals and no longer write obsolete `runVersion` / `updatedAt` fields.
+- `tests/unit/run-history/services/workspace-run-history-service.test.ts`
+  - Team workspace-group fixture shape now matches current stable team fields.
+
+Round-9 validation commands and results:
+
+```bash
+./node_modules/.bin/vitest run \
+  tests/unit/app-data-migrations/run-history-index-v2-migration.test.ts \
+  tests/unit/app-data-migrations/team-run-metadata-member-tree-migration.test.ts \
+  tests/unit/app-data-migrations/team-run-history-index-v2-migration.test.ts \
+  tests/unit/app-data-migrations/app-data-migration-runner.test.ts \
+  tests/unit/run-history/store/agent-run-metadata-store.test.ts \
+  tests/unit/run-history/agent-run-metadata-service.test.ts \
+  tests/unit/run-history/store/agent-run-history-index-store.test.ts \
+  tests/unit/run-history/store/team-run-history-index-store.test.ts \
+  tests/unit/run-history/store/team-run-metadata-store.test.ts \
+  tests/unit/run-history/services/agent-run-history-index-service.test.ts \
+  tests/unit/run-history/services/agent-run-history-catalog-service.test.ts \
+  tests/unit/run-history/services/agent-run-history-service.test.ts \
+  tests/unit/run-history/services/team-run-history-index-service.test.ts \
+  tests/unit/run-history/services/team-run-history-catalog-service.test.ts \
+  tests/unit/run-history/services/team-run-history-service.test.ts \
+  tests/unit/run-history/services/workspace-run-history-service.test.ts \
+  tests/unit/agent-execution/agent-run-status-projection-service.test.ts \
+  tests/unit/agent-execution/agent-run-provisioning-service.test.ts \
+  tests/unit/agent-execution/agent-run-create-service.test.ts \
+  tests/unit/agent-execution/agent-run-restore-service.test.ts \
+  tests/unit/agent-execution/agent-run-termination-service.test.ts \
+  tests/unit/agent-execution/agent-run-command-coordinator.test.ts \
+  tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts \
+  tests/unit/agent-team-execution/team-run-service.test.ts \
+  tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts \
+  tests/unit/scripts/cleanup-codex-e2e-run-history.test.ts \
+  tests/unit/scripts/migrate-agent-run-history-index-v2.test.ts \
+  tests/integration/run-history/memory-layout-and-projection.integration.test.ts \
+  tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts \
+  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts \
+  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts \
+  tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts \
+  --reporter=verbose
+```
+
+Result: `32` files passed / `126` tests passed.
+
+```bash
+./node_modules/.bin/tsc -p tsconfig.build.json --noEmit --pretty false
+```
+
+Result: passed.
+
+Frontend/history rerun from `autobyteus-web`:
+
+```bash
+./node_modules/.bin/vitest run graphql/queries/__tests__/runHistoryQueries.spec.ts stores/__tests__/runHistoryStore.spec.ts --reporter=verbose
+```
+
+Result: `2` files passed / `47` tests passed.
+
+```bash
+git diff --check HEAD
+```
+
+Result: passed.
+
+Browser note: no new browser smoke is claimed for this round. The validation focus was backend GraphQL/API/E2E, durable migration/list/archive/projection coverage, and frontend query/store executable tests.
+
+Repository-resident durable validation updated this round: `Yes`.
+
+Updated durable validation paths:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/autobyteus-server-ts/tests/integration/app-data-migrations/team-run-metadata-member-tree-history.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/autobyteus-server-ts/tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/autobyteus-server-ts/tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/autobyteus-server-ts/tests/unit/run-history/services/workspace-run-history-service.test.ts`
+
+Current validation classification: `Pass` after updating stale durable validation to the round-9 team V2 catalog/API shape. Because repository-resident durable validation was updated after code review, this package must return to `code_reviewer` before delivery resumes.
+
+## Latest Authoritative Result After Round 9 Revalidation
+
+- Result values: `Pass` / `Fail` / `Blocked`
+- Result: `Pass`
+- Latest authoritative validation round: `5`
+- Recommended recipient: `code_reviewer`
+- Notes: Expanded team-run history behavior passed focused API/E2E/executable validation, including team GraphQL quantity/list/archive/migration/projection coverage. Delivery must wait for `code_reviewer` to re-review the durable validation changes made during API/E2E.
+
+## Follow-Up: CR-DV-002 Durable Validation Local Fix
+
+Code review round 10 identified one remaining stale team metadata fixture in:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/run-history-index-consistency/autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts`
+
+Fix applied:
+
+- Removed obsolete `updatedAt` from the raw `team_run_metadata.json` fixture used by the team-member projection integration test.
+- Introduced a `const metadata = { ... } satisfies TeamRunMetadata` fixture object before `JSON.stringify(metadata)`, so future obsolete team metadata fields are caught by TypeScript-aware validation of the fixture contract.
+- Confirmed `rg -n "updatedAt|runVersion" tests/integration/run-history/memory-layout-and-projection.integration.test.ts` returns no matches.
+
+Validation rerun:
+
+```bash
+./node_modules/.bin/vitest run tests/integration/run-history/memory-layout-and-projection.integration.test.ts --reporter=verbose
+```
+
+Result: `1` file passed / `12` tests passed.
+
+```bash
+git diff --check HEAD
+```
+
+Result: passed.
+
+Current validation classification after CR-DV-002 local fix: `Pass`; durable validation changed after code review, so this package is returned again to `code_reviewer` before delivery resumes.

@@ -144,25 +144,27 @@ So the audit result is split:
 
 Current type: `autobyteus-server-ts/src/run-history/store/team-run-metadata-types.ts`.
 
+Updated judgment after team-history investigation: team metadata should mirror the standalone principle. It should be resume/config/topology only; history-list catalog facts belong in `team_run_history_index.json`.
+
 | Field | Current purpose found in code | Value classification | Recommendation |
 | --- | --- | --- | --- |
-| `teamRunId` | Identity. | Essential. | Keep. |
-| `teamDefinitionId` | Restore/display. | Essential. | Keep. |
-| `teamDefinitionName` | Display, denormalized. | Useful display cache. | Keep if historical display should survive definition rename/delete. |
-| `coordinatorMemberRouteKey` | Restore/execution topology. | Essential. | Keep. |
-| `createdAt` | Display/sorting fallback. | Durable fact. | Keep. |
-| `updatedAt` | Sorting/activity fallback. | Useful catalog fact. | Keep. |
-| `archivedAt` | Hide inactive archived teams. | Durable user action. | Keep. |
-| `memberTree` | Recursive restore topology and member configs. | Essential for team restore/projection. | Keep. Audit member fields before simplifying. |
+| `teamRunId` | Identity and restore key. | Essential resume fact. | Keep. |
+| `teamDefinitionId` | Restore team definition/config. | Essential resume fact. | Keep. |
+| `teamDefinitionName` | Historical display name / team-run manifest snapshot. | Stable manifest/display fact. | Keep in metadata and copy to team history catalog. |
+| `coordinatorMemberRouteKey` | Restore routing and focused-member fallback. | Essential resume/topology fact. | Keep. |
+| `createdAt` | Stable creation/list ordering. Current mapper rewrites it on metadata rebuild. | Durable manifest fact; current write behavior is wrong. | Keep in metadata and copy to catalog; fix mapper so refresh/restore preserves it. |
+| `updatedAt` | Activity/metadata refresh timestamp. | High-frequency activity-ish field. | Remove from target metadata; do not use for normal history ordering. |
+| `archivedAt` | Hide inactive archived teams. | Durable lifecycle/visibility fact. | Keep in metadata and copy to catalog; update through one serialized archive operation. |
+| `memberTree` | Recursive restore topology and member configs. | Essential for team restore/projection. | Keep. |
 
 ## Team Member Metadata Fields
 
 | Field group | Current purpose | Recommendation |
 | --- | --- | --- |
-| Identity/path: `memberKind`, `memberRouteKey`, `memberPath`, `memberName`, `memberRunId` | Team topology, duplicate names, storage ids. | Keep. |
-| Descriptive: `role`, `description` | Display/context. | Keep only if used in team UI/projection; otherwise candidate for derive-from-definition. |
-| Agent runtime config: `runtimeKind`, `platformAgentRunId`, `agentDefinitionId`, `llmModelIdentifier`, `autoExecuteTools`, `skillAccessMode`, `llmConfig`, `workspaceRootPath`, `applicationExecutionContext` | Restore team member runtime. | Keep if team runs must be restorable/replayable. |
-| Subteam: `teamDefinitionId`, `teamRunId`, `coordinatorMemberRouteKey`, `memberTree` | Nested team restore. | Keep if nested teams remain supported. |
+| Identity/path: `memberKind`, `memberRouteKey`, `memberPath`, `memberName`, `memberRunId` | Team topology, member addressing, storage ids. | Keep. |
+| Descriptive: `role`, `description` | Config/display context. | Keep for now; low-write and part of team topology/config. |
+| Agent runtime config: `runtimeKind`, `platformAgentRunId`, `agentDefinitionId`, `llmModelIdentifier`, `autoExecuteTools`, `skillAccessMode`, `llmConfig`, `workspaceRootPath`, `applicationExecutionContext` | Restore team member runtime. | Keep. `platformAgentRunId` is backend run mapping, not live display status. |
+| Subteam: `teamDefinitionId`, `teamRunId`, `coordinatorMemberRouteKey`, `memberTree` | Nested team restore/topology. | Keep while nested teams remain supported. |
 
 ## Team `team_run_history_index.json` Row
 
@@ -170,14 +172,18 @@ Current type: `autobyteus-server-ts/src/run-history/store/team-run-history-index
 
 | Field | Current purpose found in code | Value classification | Recommendation |
 | --- | --- | --- | --- |
-| `teamRunId` | Identity. | Essential if snapshot exists. | Keep only as derived snapshot identity. |
-| `teamDefinitionId` | Grouping/display. | Display/catalog. | Derive from team metadata. |
-| `teamDefinitionName` | Display. | Display/catalog. | Derive from team metadata or keep denormalized in metadata. |
-| `workspaceRootPath` | Grouping. | Display/catalog. | Derive from team metadata/member tree. |
-| `summary` | List title. | Display/catalog. | Move authoritative summary into team metadata/catalog or derive from coordinator traces. |
-| `lastActivityAt` | Sorting. | Display/catalog. | Use team metadata `updatedAt` or catalog activity fact. |
-| `lastKnownStatus` | UI fallback/live-ish state. | Runtime-ish mixed status. | Remove from persisted snapshot; derive API status from live team manager plus durable facts. |
-| `deleteLifecycle` | Used by frontend to show/hide destructive delete actions and reserve `CLEANUP_PENDING`. | Possibly real lifecycle fact for deferred destructive cleanup; currently personal mostly uses `READY`. | Keep only if deferred cleanup remains a product path. Otherwise remove when team delete lifecycle is simplified. |
+| file-level `version` | Schema marker. | Redundant with app-data migration records. | Remove; target file is a plain row array. |
+| `teamRunId` | Identity. | Essential catalog identity. | Keep. |
+| `teamDefinitionId` | Grouping/display. | Catalog fact. | Keep in catalog row. |
+| `teamDefinitionName` | Display. | Catalog/display fact. | Keep in catalog row. |
+| `workspaceRootPath` | Workspace grouping. | Catalog fact. | Keep in catalog row. |
+| `summary` | List title. | Catalog fact. | Keep in catalog row; update only on first/explicit summary fill. |
+| `lastActivityAt` | Sorting/display recency. | High-frequency activity-ish field. | Remove; use stable `createdAt` ordering for list and compute detailed activity on demand. |
+| `lastKnownStatus` | UI fallback/live-ish state. | Runtime/status field. | Remove; derive API status from active team manager/runtime projection. |
+| `deleteLifecycle` | Frontend delete/archive affordance gating; reserves `CLEANUP_PENDING`. Backend never writes `CLEANUP_PENDING` in current source. | Currently redundant. | Remove now; future deferred cleanup should use its own cleanup-job state. |
+| `createdAt` | Not present today. | Stable catalog ordering. | Add. |
+| `archivedAt` | Currently in metadata. | Visibility catalog fact. | Add. |
+| `terminatedAt` | Not present today. | Durable lifecycle catalog fact. | Add if terminate display/audit is needed; does not block resume. |
 
 ## Frontend Usage Summary
 

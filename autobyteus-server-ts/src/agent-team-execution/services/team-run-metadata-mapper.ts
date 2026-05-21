@@ -65,7 +65,10 @@ export class TeamRunMetadataMapper {
     });
   }
 
-  async buildMetadata(run: TeamRun): Promise<TeamRunMetadata> {
+  async buildMetadata(
+    run: TeamRun,
+    options: { previousMetadata?: TeamRunMetadata | null } = {},
+  ): Promise<TeamRunMetadata> {
     const config = run.config;
     if (!config) {
       throw new Error(`Team run '${run.runId}' is missing config.`);
@@ -74,7 +77,8 @@ export class TeamRunMetadataMapper {
     const definition = await this.dependencies.teamDefinitionService.getDefinitionById(
       config.teamDefinitionId,
     );
-    const timestamp = new Date().toISOString();
+    const previousMetadata = options.previousMetadata ?? null;
+    const createdAt = previousMetadata?.createdAt?.trim() || new Date().toISOString();
     const runtimeMemberContextByRunId = new Map<string, RuntimeMemberMetadataSnapshot>();
     this.collectRuntimeMemberSnapshots(
       run.getRuntimeContext() as RuntimeTeamRunContext,
@@ -96,10 +100,13 @@ export class TeamRunMetadataMapper {
     return {
       teamRunId: run.runId,
       teamDefinitionId: config.teamDefinitionId,
-      teamDefinitionName: definition?.name?.trim() || config.teamDefinitionId,
+      teamDefinitionName:
+        previousMetadata?.teamDefinitionName?.trim() ||
+        definition?.name?.trim() ||
+        config.teamDefinitionId,
       coordinatorMemberRouteKey,
-      createdAt: timestamp,
-      updatedAt: timestamp,
+      createdAt,
+      archivedAt: previousMetadata?.archivedAt ?? null,
       memberTree,
     };
   }

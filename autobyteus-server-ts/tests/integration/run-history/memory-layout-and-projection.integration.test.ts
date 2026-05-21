@@ -12,7 +12,7 @@ import { AgentRunViewProjectionService } from "../../../src/run-history/services
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { TeamRunMetadataService } from "../../../src/run-history/services/team-run-metadata-service.js";
-import { TeamRunHistoryIndexService } from "../../../src/run-history/services/team-run-history-index-service.js";
+import { TeamRunHistoryCatalogService } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { TeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { TeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
@@ -325,7 +325,7 @@ describe("memory layout and projection integration", () => {
       });
 
       const teamRunMetadataService = new TeamRunMetadataService(memoryDir);
-      const teamRunHistoryIndexService = new TeamRunHistoryIndexService(memoryDir, {
+      const teamRunHistoryCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
         teamRunManager: {
           listActiveRuns: vi.fn().mockReturnValue([]),
           getActiveRun: vi.fn().mockReturnValue(null),
@@ -357,7 +357,7 @@ describe("memory layout and projection integration", () => {
           })),
         } as never,
         teamRunMetadataService,
-        teamRunHistoryIndexService,
+        teamRunHistoryCatalogService,
         workspaceManager: {
           ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
             workspaceId: "workspace-1",
@@ -396,7 +396,7 @@ describe("memory layout and projection integration", () => {
       const indexPath = path.join(memoryDir, "team_run_history_index.json");
       const metadata = (await readJson(metadataPath)) as unknown as TeamRunMetadata;
       const index = await readJson(indexPath);
-      const rows = Array.isArray(index.rows) ? index.rows : [];
+      const rows = Array.isArray(index) ? index : [];
       const row = rows.find(
         (candidate) =>
           candidate &&
@@ -410,7 +410,10 @@ describe("memory layout and projection integration", () => {
       expect(metadata.memberTree[0]?.platformAgentRunId).toBe(platformAgentRunId);
       expect(metadata.memberTree[0]?.workspaceRootPath).toBe(workspaceRootPath);
       expect(row).toBeTruthy();
-      expect(row?.lastKnownStatus).toBe("IDLE");
+      expect(row).not.toHaveProperty("lastKnownStatus");
+      expect(row).not.toHaveProperty("lastActivityAt");
+      expect(row).not.toHaveProperty("deleteLifecycle");
+      expect(row?.createdAt).toEqual(expect.any(String));
       expect(row?.workspaceRootPath).toBe(workspaceRootPath);
     },
   );
@@ -429,34 +432,34 @@ describe("memory layout and projection integration", () => {
     const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
     const memberDir = path.join(teamDir, memberRunId);
     await fs.mkdir(memberDir, { recursive: true });
+    const metadata = {
+      teamRunId,
+      teamDefinitionId: "team-def-1",
+      teamDefinitionName: "Projection Team",
+      coordinatorMemberRouteKey: memberRouteKey,
+      createdAt: "2026-03-29T00:00:00.000Z",
+      memberTree: [
+        {
+          memberKind: "agent",
+          memberRouteKey,
+          memberPath: ["Coordinator"],
+          memberName: "Coordinator",
+          memberRunId,
+          runtimeKind,
+          platformAgentRunId,
+          agentDefinitionId: "agent-def-1",
+          llmModelIdentifier: "model-1",
+          autoExecuteTools: true,
+          skillAccessMode: SkillAccessMode.NONE,
+          llmConfig: null,
+          workspaceRootPath: "/tmp/team-projection-workspace",
+          applicationExecutionContext: null,
+        },
+      ],
+    } satisfies TeamRunMetadata;
     await fs.writeFile(
       path.join(teamDir, "team_run_metadata.json"),
-      JSON.stringify({
-        teamRunId,
-        teamDefinitionId: "team-def-1",
-        teamDefinitionName: "Projection Team",
-        coordinatorMemberRouteKey: memberRouteKey,
-        createdAt: "2026-03-29T00:00:00.000Z",
-        updatedAt: "2026-03-29T00:00:00.000Z",
-        memberTree: [
-          {
-            memberKind: "agent",
-            memberRouteKey,
-            memberPath: ["Coordinator"],
-            memberName: "Coordinator",
-            memberRunId,
-            runtimeKind,
-            platformAgentRunId,
-            agentDefinitionId: "agent-def-1",
-            llmModelIdentifier: "model-1",
-            autoExecuteTools: true,
-            skillAccessMode: SkillAccessMode.NONE,
-            llmConfig: null,
-            workspaceRootPath: "/tmp/team-projection-workspace",
-            applicationExecutionContext: null,
-          },
-        ],
-      }),
+      JSON.stringify(metadata),
       "utf-8",
     );
     await fs.writeFile(

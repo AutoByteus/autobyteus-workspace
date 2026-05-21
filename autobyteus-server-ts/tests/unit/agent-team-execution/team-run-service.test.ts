@@ -17,10 +17,12 @@ describe("TeamRunService", () => {
       writeMetadata: vi.fn().mockResolvedValue(undefined),
       readMetadata: vi.fn(),
     } as any;
-    const teamRunHistoryIndexService = {
-      recordRunCreated: vi.fn().mockResolvedValue(undefined),
-      recordRunActivity: vi.fn().mockResolvedValue(undefined),
-      recordRunRestored: vi.fn().mockResolvedValue(undefined),
+    const teamRunHistoryCatalogService = {
+      recordTeamRunCreated: vi.fn().mockResolvedValue(undefined),
+      recordTeamRunSummary: vi.fn().mockResolvedValue(undefined),
+      recordTeamRunRestored: vi.fn().mockResolvedValue(undefined),
+      recordTeamRunTerminated: vi.fn().mockResolvedValue(undefined),
+      refreshTeamRunMetadata: vi.fn().mockResolvedValue(undefined),
     } as any;
     const workspaceManager = {
       ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
@@ -42,7 +44,7 @@ describe("TeamRunService", () => {
       agentTeamRunManager,
       teamDefinitionService,
       teamRunMetadataService,
-      teamRunHistoryIndexService,
+      teamRunHistoryCatalogService,
       workspaceManager,
       memoryDir: "/tmp/team-run-service-test",
     });
@@ -52,7 +54,7 @@ describe("TeamRunService", () => {
       mocks: {
         agentTeamRunManager,
         teamRunMetadataService,
-        teamRunHistoryIndexService,
+        teamRunHistoryCatalogService,
         workspaceManager,
       },
     };
@@ -310,16 +312,15 @@ describe("TeamRunService", () => {
         coordinatorMemberName: "Coordinator",
       }),
     );
-    expect(mocks.teamRunHistoryIndexService.recordRunCreated).toHaveBeenCalledWith(
+    expect(mocks.teamRunHistoryCatalogService.recordTeamRunCreated).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: "team-1",
         summary: "",
-        lastKnownStatus: "IDLE",
-      }),
+              }),
     );
   });
 
-  it("records ACTIVE summary through recordRunActivity", async () => {
+  it("records summary through the team catalog boundary", async () => {
     const { service, mocks } = createSubject();
     const activeRun = {
       runId: "team-1",
@@ -348,14 +349,12 @@ describe("TeamRunService", () => {
 
     await service.recordRunActivity(activeRun, {
       summary: "First external message",
-      lastKnownStatus: "ACTIVE",
     });
 
-    expect(mocks.teamRunHistoryIndexService.recordRunActivity).toHaveBeenCalledWith(
+    expect(mocks.teamRunHistoryCatalogService.recordTeamRunSummary).toHaveBeenCalledWith(
       expect.objectContaining({
         teamRunId: "team-1",
         summary: "First external message",
-        lastKnownStatus: "ACTIVE",
       }),
     );
   });

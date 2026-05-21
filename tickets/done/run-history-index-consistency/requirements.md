@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-Refined and approved for revised design direction on 2026-05-21 after user clarified that normal source code must keep `run_history_index.json` as the fast history catalog, must not scan all metadata directories during routine history listing, and should use the existing startup-once app-data migration framework for V1→V2 data migration.
+Refined for revised design direction on 2026-05-21 after user clarified that normal source code must keep history index files as fast catalogs, must not scan all metadata directories during routine history listing, and should use the existing startup-once app-data migration framework for V1→V2 data migration. Further refined after local evidence showed team run history has the same partial-index and persisted live/status field problem.
 
 ## Goal / Problem Statement
 
@@ -16,7 +16,8 @@ The fix must:
 - update the index only for meaningful catalog changes;
 - serialize the full semantic catalog mutation, not only the physical JSON write;
 - remove direct index writers outside the catalog boundary;
-- keep full metadata scanning out of normal history/list source paths and run it only inside the existing app-data migration framework, with optional script/docs for manual retry or operator repair.
+- keep full metadata scanning out of normal history/list source paths and run it only inside the existing app-data migration framework, with optional script/docs for manual retry or operator repair;
+- apply the same catalog simplification to team run history, not only standalone agent history.
 
 ## Investigation Findings
 
@@ -58,7 +59,7 @@ Durable standalone storage responsibilities:
 7. Add `AgentRunHistoryCatalogService` as the only semantic standalone index mutation owner.
 8. Serialize the whole catalog mutation: initialization barrier, current row read, merge, any needed metadata mutation, in-memory catalog update, and atomic index flush.
 9. Retarget lifecycle services and cleanup scripts so they do not directly write the index.
-10. Scope API/frontend cleanup to standalone history items while team-run history fields remain deferred.
+10. Extend API/frontend cleanup to team run history as well: team rows should use stable catalog timestamps and derived live status instead of persisted `lastActivityAt`/`lastKnownStatus`.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
 
@@ -71,13 +72,12 @@ Medium
 - U-003: History listing reads the V2 index/in-memory catalog and overlays live status without scanning all metadata.
 - U-004: Archive/unarchive/terminate/delete/cancel update catalog rows through safe, serialized catalog methods.
 - U-005: Existing legacy/partial indexes are migrated by a startup-once app-data migration that scans metadata and writes V2 index rows; optional manual repair remains available for retries/diagnostics.
-- U-006: Standalone API/frontend fields are simplified without breaking team-run history fields.
+- U-006: Standalone and team API/frontend fields are simplified while keeping separate subject-specific shapes.
 
 ## Out of Scope
 
 - Automatic source-code repair during normal history listing.
 - Replacing file storage with a database.
-- Full team-run history refactor.
 - Persistent historical failure-message UX for runs.
 - Cross-process locking unless evidence shows multiple server processes normally share one memory dir.
 
@@ -96,7 +96,12 @@ Medium
 - FR-011: `terminatedAt` is a catalog lifecycle fact and must not block resume by itself.
 - FR-012: Cleanup scripts must not bypass safe index/catalog mutation rules.
 - FR-013: Standalone GraphQL/frontend history item shape must remove `lastActivityAt`/`lastKnownStatus` and use `createdAt` plus derived live status.
-- FR-014: Team-run GraphQL/frontend history fields must remain current/deferred unless a separate team refactor is explicitly added.
+- FR-014: Team-run history index must be refactored to a V2 plain row-array catalog and must not persist `version`, `lastActivityAt`, `lastKnownStatus`, or currently-unused `deleteLifecycle`.
+- FR-015: Team-run metadata must be focused on resume/config/topology plus stable team-run manifest/lifecycle facts. It must keep `teamDefinitionName`, `createdAt`, `archivedAt`, `memberTree`, and member runtime config, and the V2 target must remove `updatedAt`.
+- FR-016: A startup-once team history app-data migration must scan `memory/agent_teams/*/team_run_metadata.json` after canonical member-tree migration and migrate/repair `team_run_history_index.json`.
+- FR-017: Team history migration must synthesize V2 rows with deterministic field fallback rules for `createdAt`, `teamDefinitionName`, `workspaceRootPath`, `summary`, `archivedAt`, and `terminatedAt`, and must report stale rows, unsafe IDs, missing metadata, invalid metadata, and repaired missing rows.
+- FR-018: Normal team history listing must use `team_run_history_index.json`/in-memory catalog as the catalog source and may read `team_run_metadata.json` only for indexed team-run rows selected for topology/member projection; it must not scan `agent_teams/*` or rebuild/repair the team index in the list path.
+- FR-019: `TeamRunHistoryCatalogService` must be the only normal source-code owner of team index mutations, with semantic methods for create/restore/summary, terminate, archive/unarchive, delete/cancel, and list catalog rows.
 
 ## Acceptance Criteria
 
@@ -109,7 +114,12 @@ Medium
 - AC-007: Given legacy data with metadata directories missing index rows, the app-data migration runs once at startup, records its result, and writes a repaired V2 index; a failed/warning migration can be retried through the existing migration UI/runner.
 - AC-008: Given legacy metadata lacks `createdAt`, the app-data migration derives it deterministically and reports last-resort fallbacks in the migration summary/log.
 - AC-009: Source schemas and new persisted standalone writes no longer include durable `lastKnownStatus`, `lastActivityAt`, `ACTIVATING`, `ACTIVATION_FAILED`, or standalone index `version`.
-- AC-010: Standalone frontend history uses `createdAt` ordering and derived status; team history continues to work with existing team fields.
+- AC-010: Standalone and team frontend history use stable catalog ordering and derived status without requiring persisted `lastKnownStatus`.
+- AC-011: Given team metadata exists but `team_run_history_index.json` is missing the row, the team history app-data migration repairs the missing row and records the result.
+- AC-012: Given current personal team history, absence of a real `CLEANUP_PENDING` backend state means `deleteLifecycle` is not required in the persisted team catalog or GraphQL history row.
+- AC-013: Given team metadata exists but has no legacy index row, the team migration writes a V2 row using the specified deterministic fallback rules and logs the row as a missing-row repair.
+- AC-014: Given normal team history listing after migration, the backend does not call team directory discovery/rebuild; it reads catalog rows first and only reads metadata by indexed `teamRunId` for member topology projection.
+- AC-015: Given team lifecycle events, source code calls `TeamRunHistoryCatalogService` semantic methods rather than `TeamRunHistoryIndexStore`/legacy index service directly.
 
 ## Constraints / Dependencies
 
@@ -127,7 +137,7 @@ Medium
 ## Risks / Open Questions
 
 - OQ-001: Whether process crashes during the small create/delete cross-file window need a stronger journal in a future task.
-- OQ-002: Whether team-run history should receive the same cleanup in the next refactor.
+- OQ-002: Whether any future deferred-cleanup job state should replace team `deleteLifecycle`; current source has no backend `CLEANUP_PENDING` writer.
 - OQ-003: Whether future history scale requires moving from JSON index to SQLite or another transactional catalog.
 
 ## Requirement-To-Use-Case Coverage
@@ -136,8 +146,8 @@ Medium
 - U-002: FR-004, FR-006, FR-009, FR-010; AC-002, AC-009
 - U-003: FR-001; AC-001
 - U-004: FR-007, FR-008, FR-011, FR-012; AC-003, AC-005, AC-006
-- U-005: FR-002; AC-007, AC-008
-- U-006: FR-013, FR-014; AC-010
+- U-005: FR-002, FR-016, FR-017; AC-007, AC-008, AC-011, AC-013
+- U-006: FR-013, FR-014, FR-018, FR-019; AC-010, AC-014, AC-015
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -149,7 +159,7 @@ Medium
 - AC-006 validates safe filesystem mutation ownership.
 - AC-007/AC-008 validate startup-once app-data migration repair outside the normal history-list path.
 - AC-009 validates schema simplification.
-- AC-010 validates standalone/team API coexistence.
+- AC-010 validates derived status for both standalone and team history; AC-011 validates team index repair; AC-012 validates `deleteLifecycle` removal/current no-op status.
 
 ## Approval Status
 
