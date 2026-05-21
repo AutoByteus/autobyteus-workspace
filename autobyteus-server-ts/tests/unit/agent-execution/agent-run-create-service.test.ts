@@ -1,56 +1,82 @@
 import { describe, expect, it, vi } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
+import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 
-describe("AgentRunService create", () => {
-  const createSubject = () => {
-    const activeRun = {
-      runId: "run-created",
+const createSubject = () => {
+  const metadataByRunId = new Map<string, AgentRunMetadata>();
+  const agentRunManager = {
+    getActiveRun: vi.fn().mockReturnValue(null),
+    hasActiveRun: vi.fn().mockReturnValue(false),
+    createAgentRun: vi.fn(async (_config: unknown, runId: string) => ({
+      runId,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       config: {
-        memoryDir: "/tmp/agent-run-service-test/agents/run-created",
+        memoryDir: `/tmp/agent-run-service-test/agents/${runId}`,
       },
       getPlatformAgentRunId: vi.fn().mockReturnValue("thread-created"),
-    };
-    const agentRunManager = {
-      getActiveRun: vi.fn(),
-      hasActiveRun: vi.fn().mockReturnValue(false),
-      createAgentRun: vi.fn().mockResolvedValue(activeRun),
-    } as any;
-    const metadataService = {
-      readMetadata: vi.fn().mockResolvedValue(null),
-      writeMetadata: vi.fn().mockResolvedValue(undefined),
-    };
-    const historyIndexService = {
-      recordRunCreated: vi.fn().mockResolvedValue(undefined),
-      recordRunActivity: vi.fn().mockResolvedValue(undefined),
-    } as any;
-    const workspaceManager = {
-      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
-        workspaceId: "workspace-1",
-      }),
-      getWorkspaceById: vi.fn(),
-    } as any;
+    })),
+  } as never;
+  const metadataService = {
+    readMetadata: vi.fn(async (runId: string) => metadataByRunId.get(runId) ?? null),
+    writeMetadata: vi.fn(async (runId: string, metadata: AgentRunMetadata) => {
+      metadataByRunId.set(runId, metadata);
+    }),
+  };
+  const historyCatalogService = {
+    recordPreparedRun: vi.fn(async (input: { runId: string; metadata: AgentRunMetadata }) => {
+      metadataByRunId.set(input.runId, input.metadata);
+    }),
+    recordRunStarted: vi.fn(async (input: {
+      runId: string;
+      runtimeKind?: RuntimeKind;
+      platformAgentRunId?: string | null;
+      startedAt?: string;
+    }) => {
+      const current = metadataByRunId.get(input.runId);
+      if (!current) {
+        return null;
+      }
+      const next = {
+        ...current,
+        runtimeKind: input.runtimeKind ?? current.runtimeKind,
+        platformAgentRunId: input.platformAgentRunId ?? current.platformAgentRunId,
+        startedAt: input.startedAt ?? "2026-05-17T00:05:00.000Z",
+      };
+      metadataByRunId.set(input.runId, next);
+      return next;
+    }),
+    recordRunSummary: vi.fn().mockResolvedValue(undefined),
+    recordRunTerminated: vi.fn().mockResolvedValue(undefined),
+  };
+  const workspaceManager = {
+    ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
+      workspaceId: "workspace-1",
+    }),
+    getWorkspaceById: vi.fn(),
+  } as never;
 
-    const service = new AgentRunService("/tmp/agent-run-service-test", {
+  const service = new AgentRunService("/tmp/agent-run-service-test", {
+    agentRunManager,
+    metadataService: metadataService as never,
+    historyCatalogService: historyCatalogService as never,
+    workspaceManager,
+  });
+
+  return {
+    service,
+    metadataByRunId,
+    mocks: {
       agentRunManager,
       metadataService,
-      historyIndexService,
+      historyCatalogService,
       workspaceManager,
-    });
-
-    return {
-      service,
-      mocks: {
-        agentRunManager,
-        metadataService,
-        historyIndexService,
-        workspaceManager,
-      },
-    };
+    },
   };
+};
 
-  it("preserves the existing default IDLE/empty history semantics", async () => {
+describe("AgentRunService create", () => {
+  it("creates via prepared catalog row then start fact without persisted live status", async () => {
     const { service, mocks } = createSubject();
 
     const result = await service.createAgentRun({
@@ -59,34 +85,35 @@ describe("AgentRunService create", () => {
       llmModelIdentifier: "gpt-test",
       autoExecuteTools: false,
       llmConfig: null,
-      skillAccessMode: "PRELOADED_ONLY" as any,
+      skillAccessMode: "PRELOADED_ONLY" as never,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     });
 
-    expect(result).toEqual({
-      runId: "run-created",
-    });
+    expect(result.runId).toEqual(expect.any(String));
     expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledWith("/tmp/workspace");
-    expect(mocks.metadataService.writeMetadata).toHaveBeenCalledWith(
-      "run-created",
-      expect.objectContaining({
-        runId: "run-created",
-        lastKnownStatus: "IDLE",
+    expect(mocks.historyCatalogService.recordPreparedRun).toHaveBeenCalledWith(expect.objectContaining({
+      runId: result.runId,
+      summary: "",
+      metadata: expect.objectContaining({
+        runId: result.runId,
         workspaceRootPath: "/tmp/workspace",
+        platformAgentRunId: null,
+        startedAt: null,
       }),
-    );
-    expect(mocks.historyIndexService.recordRunCreated).toHaveBeenCalledWith(
-      expect.objectContaining({
-        runId: "run-created",
-        summary: "",
-        lastKnownStatus: "IDLE",
-      }),
-    );
+    }));
+    const preparedMetadata = mocks.historyCatalogService.recordPreparedRun.mock.calls[0][0].metadata;
+    expect(preparedMetadata).not.toHaveProperty("lastKnownStatus");
+    expect(preparedMetadata).not.toHaveProperty("activationState");
+    expect(mocks.historyCatalogService.recordRunStarted).toHaveBeenCalledWith(expect.objectContaining({
+      runId: result.runId,
+      platformAgentRunId: "thread-created",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    }));
   });
 
-  it("records run activity after the run already exists", async () => {
-    const { service, mocks } = createSubject();
-    mocks.metadataService.readMetadata.mockResolvedValue({
+  it("records activity by updating resume metadata and catalog summary only", async () => {
+    const { service, metadataByRunId, mocks } = createSubject();
+    metadataByRunId.set("run-created", {
       runId: "run-created",
       agentDefinitionId: "agent-def-1",
       workspaceRootPath: "/tmp/workspace",
@@ -94,34 +121,32 @@ describe("AgentRunService create", () => {
       llmModelIdentifier: "gpt-test",
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: "PRELOADED_ONLY",
+      skillAccessMode: "PRELOADED_ONLY" as never,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: "thread-old",
-      lastKnownStatus: "IDLE",
+      preparedAt: "2026-05-17T00:00:00.000Z",
+      preparedExpiresAt: "2026-05-18T00:00:00.000Z",
+      startedAt: "2026-05-17T00:05:00.000Z",
     });
     const activeRun = {
       runId: "run-created",
       getPlatformAgentRunId: vi.fn().mockReturnValue("thread-created"),
-    } as any;
+    } as never;
 
-    await service.recordRunActivity(activeRun, {
-      summary: "First external message",
-      lastKnownStatus: "ACTIVE",
-    });
+    await service.recordRunActivity(activeRun, { summary: "First external message" });
 
     expect(mocks.metadataService.writeMetadata).toHaveBeenCalledWith(
       "run-created",
       expect.objectContaining({
         runId: "run-created",
-        lastKnownStatus: "ACTIVE",
+        platformAgentRunId: "thread-created",
       }),
     );
-    expect(mocks.historyIndexService.recordRunActivity).toHaveBeenCalledWith(
-      expect.objectContaining({
-        runId: "run-created",
-        summary: "First external message",
-        lastKnownStatus: "ACTIVE",
-      }),
-    );
+    const writtenMetadata = mocks.metadataService.writeMetadata.mock.calls[0][1];
+    expect(writtenMetadata).not.toHaveProperty("lastKnownStatus");
+    expect(mocks.historyCatalogService.recordRunSummary).toHaveBeenCalledWith({
+      runId: "run-created",
+      summary: "First external message",
+    });
   });
 });

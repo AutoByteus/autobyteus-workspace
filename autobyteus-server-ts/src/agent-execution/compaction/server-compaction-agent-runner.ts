@@ -183,7 +183,6 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
   ): Promise<void> {
     await agentRunService.recordRunActivity(run, {
       summary: `Memory compaction task ${taskId}`,
-      lastKnownStatus: "ACTIVE",
     }).catch((error) => {
       console.warn(
         `Failed to record compactor agent run activity for '${run.runId}': ${String(error)}`,

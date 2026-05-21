@@ -51,16 +51,66 @@ export class AgentRunStatusProjectionService {
     commandRegistry?: AgentRunCommandRegistry;
   } = {}) {}
 
+  getCatalogListStatusProjection(runId: string): AgentRunStatusProjection {
+    const normalizedRunId = runId.trim();
+    const liveProjection = this.getOverlayOrActiveProjection(normalizedRunId);
+    if (liveProjection) {
+      return liveProjection;
+    }
+    return this.fromMetadataFallback({
+      runId: normalizedRunId,
+      status: "offline",
+      lastKnownStatus: "IDLE",
+      statusSource: "HISTORICAL_METADATA",
+    });
+  }
+
   async getRunStatusProjection(runId: string): Promise<AgentRunStatusProjection> {
     const normalizedRunId = runId.trim();
-    const agentRunManager = this.deps.agentRunManager ?? AgentRunManager.getInstance();
     const metadataService = this.deps.metadataService ?? getAgentRunMetadataService();
+    const liveProjection = this.getOverlayOrActiveProjection(normalizedRunId);
+    if (liveProjection) {
+      return liveProjection;
+    }
+
+    const metadata = normalizedRunId ? await metadataService.readMetadata(normalizedRunId) : null;
+    if (!metadata) {
+      return this.fromMetadataFallback({
+        runId: normalizedRunId,
+        status: "offline",
+        lastKnownStatus: "TERMINATED",
+        statusSource: "MISSING",
+      });
+    }
+
+    if (metadata.preparedAt && !metadata.startedAt) {
+      return this.fromMetadataFallback({
+        runId: normalizedRunId,
+        status: "offline",
+        lastKnownStatus: "IDLE",
+        statusSource: "PREPARED_IDENTITY",
+      });
+    }
+
+    return this.fromMetadataFallback({
+      runId: normalizedRunId,
+      status: "offline",
+      lastKnownStatus: "IDLE",
+      statusSource: "HISTORICAL_METADATA",
+    });
+  }
+
+  private getOverlayOrActiveProjection(normalizedRunId: string): AgentRunStatusProjection | null {
+    if (!normalizedRunId) {
+      return null;
+    }
+    const agentRunManager = this.deps.agentRunManager ?? AgentRunManager.getInstance();
     const overlayStore = this.deps.overlayStore ?? getAgentRunCommandStatusOverlayStore();
     const commandRegistry = this.deps.commandRegistry ?? getAgentRunCommandRegistry();
 
-    const activeRun = normalizedRunId ? agentRunManager.getActiveRun(normalizedRunId) : null;
-    const overlay = normalizedRunId ? overlayStore.getOverlay(normalizedRunId) : null;
-    const inFlight = normalizedRunId ? commandRegistry.getInFlightRecord(normalizedRunId) : null;
+    const activeRun = agentRunManager.getActiveRun(normalizedRunId);
+    const overlay = overlayStore.getOverlay(normalizedRunId);
+    const inFlight = commandRegistry.getInFlightRecord(normalizedRunId);
 
     if (overlay) {
       const overlayRecord = overlay.messageId
@@ -102,50 +152,7 @@ export class AgentRunStatusProjectionService {
       });
     }
 
-    const metadata = normalizedRunId ? await metadataService.readMetadata(normalizedRunId) : null;
-    if (!metadata) {
-      return this.fromMetadataFallback({
-        runId: normalizedRunId,
-        status: "offline",
-        lastKnownStatus: "TERMINATED",
-        statusSource: "MISSING",
-      });
-    }
-
-    const activationState = metadata.activationState ?? "ACTIVATED";
-    if (activationState === "PREPARED") {
-      return this.fromMetadataFallback({
-        runId: normalizedRunId,
-        status: "offline",
-        lastKnownStatus: "IDLE",
-        statusSource: "PREPARED_IDENTITY",
-      });
-    }
-
-    if (metadata.lastKnownStatus === "ERROR" || activationState === "ACTIVATION_FAILED") {
-      return this.fromMetadataFallback({
-        runId: normalizedRunId,
-        status: "error",
-        lastKnownStatus: "ERROR",
-        statusSource: "HISTORICAL_METADATA",
-      });
-    }
-
-    if (metadata.lastKnownStatus === "TERMINATED") {
-      return this.fromMetadataFallback({
-        runId: normalizedRunId,
-        status: "offline",
-        lastKnownStatus: "TERMINATED",
-        statusSource: "TERMINATED_METADATA",
-      });
-    }
-
-    return this.fromMetadataFallback({
-      runId: normalizedRunId,
-      status: "offline",
-      lastKnownStatus: "IDLE",
-      statusSource: "HISTORICAL_METADATA",
-    });
+    return null;
   }
 
 

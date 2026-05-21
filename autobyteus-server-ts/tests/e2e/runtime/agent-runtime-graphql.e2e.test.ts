@@ -1104,7 +1104,9 @@ const defineRuntimeSuite = (input: {
               agentDefinitionId
               runs {
                 runId
-                lastKnownStatus
+                createdAt
+                status
+                statusSource
                 isActive
               }
             }
@@ -1158,7 +1160,9 @@ const defineRuntimeSuite = (input: {
               agentDefinitionId: string;
               runs: Array<{
                 runId: string;
-                lastKnownStatus: string;
+                createdAt: string;
+                status: string;
+                statusSource: string;
                 isActive: boolean;
               }>;
             }>;

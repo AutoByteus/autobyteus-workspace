@@ -402,7 +402,6 @@ export class TeamRunHistoryService {
       skillAccessMode: member.skillAccessMode,
       runtimeKind: member.runtimeKind,
       platformAgentRunId: member.platformAgentRunId,
-      lastKnownStatus: "IDLE",
     };
   }
 

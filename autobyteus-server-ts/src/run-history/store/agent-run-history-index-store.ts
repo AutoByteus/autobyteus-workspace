@@ -5,6 +5,7 @@ import {
   AgentRunHistoryIndexFileRecord,
   AgentRunHistoryIndexRowRecord,
 } from "./agent-run-history-index-record-types.js";
+import { atomicWriteJsonFile } from "./atomic-json-file-writer.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -15,9 +16,6 @@ const createEmptyIndex = (): AgentRunHistoryIndexFileRecord => ({
   rows: [],
 });
 
-const createTempPath = (filePath: string): string =>
-  `${filePath}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`;
-
 const normalizeRow = (
   row: AgentRunHistoryIndexRowRecord,
 ): AgentRunHistoryIndexRowRecord => ({
@@ -26,8 +24,9 @@ const normalizeRow = (
   agentName: row.agentName,
   workspaceRootPath: row.workspaceRootPath,
   summary: row.summary,
-  lastActivityAt: row.lastActivityAt,
-  lastKnownStatus: row.lastKnownStatus,
+  createdAt: row.createdAt,
+  archivedAt: row.archivedAt ?? null,
+  terminatedAt: row.terminatedAt ?? null,
 });
 
 const parseIndexFile = (value: unknown): AgentRunHistoryIndexFileRecord | null => {
@@ -35,7 +34,10 @@ const parseIndexFile = (value: unknown): AgentRunHistoryIndexFileRecord | null =
     return null;
   }
   const payload = value as Record<string, unknown>;
-  if (typeof payload.version !== "number" || !Array.isArray(payload.rows)) {
+  if (
+    payload.version !== AGENT_RUN_HISTORY_INDEX_RECORD_VERSION ||
+    !Array.isArray(payload.rows)
+  ) {
     return null;
   }
   const rows: AgentRunHistoryIndexRowRecord[] = [];
@@ -50,11 +52,7 @@ const parseIndexFile = (value: unknown): AgentRunHistoryIndexFileRecord | null =
       typeof candidate.agentName !== "string" ||
       typeof candidate.workspaceRootPath !== "string" ||
       typeof candidate.summary !== "string" ||
-      typeof candidate.lastActivityAt !== "string" ||
-      (candidate.lastKnownStatus !== "ACTIVE" &&
-        candidate.lastKnownStatus !== "IDLE" &&
-        candidate.lastKnownStatus !== "ERROR" &&
-        candidate.lastKnownStatus !== "TERMINATED")
+      typeof candidate.createdAt !== "string"
     ) {
       return null;
     }
@@ -65,8 +63,11 @@ const parseIndexFile = (value: unknown): AgentRunHistoryIndexFileRecord | null =
         agentName: candidate.agentName,
         workspaceRootPath: candidate.workspaceRootPath,
         summary: candidate.summary,
-        lastActivityAt: candidate.lastActivityAt,
-        lastKnownStatus: candidate.lastKnownStatus,
+        createdAt: candidate.createdAt,
+        archivedAt:
+          typeof candidate.archivedAt === "string" ? candidate.archivedAt : null,
+        terminatedAt:
+          typeof candidate.terminatedAt === "string" ? candidate.terminatedAt : null,
       }),
     );
   }
@@ -109,92 +110,6 @@ export class AgentRunHistoryIndexStore {
     });
   }
 
-  async upsertRow(row: AgentRunHistoryIndexRowRecord): Promise<void> {
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const rows = index.rows.filter((entry) => entry.runId !== row.runId);
-      rows.push(normalizeRow(row));
-      await this.writeIndexFile({
-        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
-    });
-  }
-
-  async updateRow(
-    runId: string,
-    patch: Partial<Omit<AgentRunHistoryIndexRowRecord, "runId">>,
-  ): Promise<void> {
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const current = index.rows.find((row) => row.runId === runId);
-      if (!current) {
-        return;
-      }
-      const next: AgentRunHistoryIndexRowRecord = {
-        ...current,
-        ...patch,
-        runId,
-      };
-      const rows = index.rows
-        .filter((row) => row.runId !== runId)
-        .concat(normalizeRow(next));
-      await this.writeIndexFile({
-        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
-    });
-  }
-
-  async mutateRow(
-    runId: string,
-    reducer: (
-      current: AgentRunHistoryIndexRowRecord | null,
-    ) =>
-      | AgentRunHistoryIndexRowRecord
-      | null
-      | Promise<AgentRunHistoryIndexRowRecord | null>,
-  ): Promise<AgentRunHistoryIndexRowRecord | null> {
-    let result: AgentRunHistoryIndexRowRecord | null = null;
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const current =
-        index.rows.find((row) => row.runId === runId) ?? null;
-      const next = await reducer(current ? normalizeRow(current) : null);
-      if (!next) {
-        return;
-      }
-
-      const normalized = normalizeRow({
-        ...next,
-        runId,
-      });
-      const rows = index.rows
-        .filter((row) => row.runId !== runId)
-        .concat(normalized);
-      await this.writeIndexFile({
-        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
-      result = normalized;
-    });
-    return result;
-  }
-
-  async removeRow(runId: string): Promise<void> {
-    await this.queueWrite(async () => {
-      const index = await this.readIndexFile();
-      const rows = index.rows.filter((row) => row.runId !== runId);
-      if (rows.length === index.rows.length) {
-        return;
-      }
-      await this.writeIndexFile({
-        version: AGENT_RUN_HISTORY_INDEX_RECORD_VERSION,
-        rows,
-      });
-    });
-  }
-
   private queueWrite(task: () => Promise<void>): Promise<void> {
     const next = this.writeQueue.then(task, task);
     this.writeQueue = next.then(
@@ -227,10 +142,6 @@ export class AgentRunHistoryIndexStore {
   }
 
   private async writeIndexFile(index: AgentRunHistoryIndexFileRecord): Promise<void> {
-    const directory = path.dirname(this.indexFilePath);
-    await fs.mkdir(directory, { recursive: true });
-    const tempPath = createTempPath(this.indexFilePath);
-    await fs.writeFile(tempPath, JSON.stringify(index, null, 2), "utf-8");
-    await fs.rename(tempPath, this.indexFilePath);
+    await atomicWriteJsonFile(this.indexFilePath, index);
   }
 }

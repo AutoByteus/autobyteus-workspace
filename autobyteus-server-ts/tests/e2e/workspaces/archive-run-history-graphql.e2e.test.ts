@@ -7,7 +7,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { AgentRunHistoryIndexService } from "../../../src/run-history/services/agent-run-history-index-service.js";
+import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
 import { TeamRunHistoryIndexService } from "../../../src/run-history/services/team-run-history-index-service.js";
 import { AgentRunHistoryIndexStore } from "../../../src/run-history/store/agent-run-history-index-store.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
@@ -19,6 +19,7 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 
 const harness = vi.hoisted(() => ({
   agentRunManager: {
+    getActiveRun: vi.fn<(runId: string) => unknown | null>(),
     hasActiveRun: vi.fn<(runId: string) => boolean>(),
     listActiveRuns: vi.fn<() => string[]>(),
   },
@@ -107,8 +108,6 @@ const buildAgentMetadata = (
   skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: null,
-  lastKnownStatus: "IDLE",
-  archivedAt: null,
   applicationExecutionContext: null,
   ...overrides,
 });
@@ -125,9 +124,11 @@ const buildTeamMetadata = (
   createdAt: "2026-05-01T08:00:00.000Z",
   updatedAt: "2026-05-01T08:05:00.000Z",
   archivedAt: null,
-  memberMetadata: [
+  memberTree: [
     {
+      memberKind: "agent",
       memberRouteKey: "coordinator",
+      memberPath: ["coordinator"],
       memberName: "Coordinator",
       memberRunId: `${teamRunId}-member`,
       runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -223,10 +224,17 @@ describe("Archive run history GraphQL e2e", () => {
     harness.agentRunManager.hasActiveRun.mockImplementation(
       (runId: string) => runId === "run-agent-active",
     );
-    harness.agentRunManager.listActiveRuns.mockReturnValue([
-      "run-agent-active",
-      "run-agent-archived-active",
-    ]);
+    harness.agentRunManager.getActiveRun.mockImplementation((runId: string) =>
+      runId === "run-agent-active"
+        ? {
+            getStatusSnapshot: () => ({
+              status: "running",
+              can_interrupt: false,
+            }),
+          }
+        : null,
+    );
+    harness.agentRunManager.listActiveRuns.mockReturnValue(["run-agent-active"]);
     harness.teamRunManager.getActiveRun.mockImplementation((teamRunId: string) =>
       teamRunId === "team-active" || teamRunId === "team-archived-active"
         ? { teamRunId }
@@ -248,10 +256,18 @@ describe("Archive run history GraphQL e2e", () => {
       "../../../src/run-history/services/workspace-run-history-service.js"
     );
 
-    const agentIndexService = new AgentRunHistoryIndexService(memoryDir);
     const teamIndexService = new TeamRunHistoryIndexService(memoryDir);
+    const agentCatalogService = new AgentRunHistoryCatalogService(memoryDir, {
+      metadataStore: agentMetadataStore,
+      agentRunManager: harness.agentRunManager as any,
+      agentDefinitionService: {
+        getAgentDefinitionById: async (agentDefinitionId: string) => ({
+          name: agentDefinitionId === "agent-def-e2e" ? "E2E Agent" : agentDefinitionId,
+        }),
+      },
+    });
     harness.services.agentRunHistoryService = new AgentRunHistoryService(memoryDir, {
-      indexService: agentIndexService,
+      catalogService: agentCatalogService,
       metadataStore: agentMetadataStore,
     });
     harness.services.teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
@@ -302,8 +318,13 @@ describe("Archive run history GraphQL e2e", () => {
               agentDefinitionId
               runs {
                 runId
-                lastKnownStatus
+                createdAt
+                archivedAt
+                terminatedAt
+                status
                 isActive
+                shouldConnectStream
+                statusSource
               }
             }
             teamDefinitions {
@@ -331,8 +352,8 @@ describe("Archive run history GraphQL e2e", () => {
       { runId: "run-agent-visible", summary: "visible agent" },
       { runId: "run-agent-active", summary: "active agent" },
       {
-        runId: "run-agent-archived-active",
-        summary: "archived active agent",
+        runId: "run-agent-pre-archived",
+        summary: "pre-archived agent",
         archivedAt: "2026-05-01T09:00:00.000Z",
       },
     ];
@@ -340,22 +361,21 @@ describe("Archive run history GraphQL e2e", () => {
       await seedRunFile(path.join(memoryDir, "agents", run.runId), run.summary);
       await agentMetadataStore.writeMetadata(
         run.runId,
-        buildAgentMetadata(run.runId, memoryDir, {
-          archivedAt: run.archivedAt ?? null,
-        }),
+        buildAgentMetadata(run.runId, memoryDir),
       );
     }
 
     await new AgentRunHistoryIndexStore(memoryDir).writeIndex({
-      version: 1,
+      version: 2,
       rows: agentRuns.map((run, index) => ({
         runId: run.runId,
         agentDefinitionId: "agent-def-e2e",
         agentName: "E2E Agent",
         workspaceRootPath: WORKSPACE_ROOT,
         summary: run.summary,
-        lastActivityAt: `2026-05-01T08:0${index}:00.000Z`,
-        lastKnownStatus: run.runId === "run-agent-active" ? "ACTIVE" : "IDLE",
+        createdAt: `2026-05-01T08:0${index}:00.000Z`,
+        archivedAt: run.archivedAt ?? null,
+        terminatedAt: null,
       })),
     });
 
@@ -374,7 +394,7 @@ describe("Archive run history GraphQL e2e", () => {
         archivedAt: teamRun.archivedAt ?? null,
       });
       await seedRunFile(
-        path.join(memoryDir, "agent_teams", teamRun.teamRunId, metadata.memberMetadata[0]!.memberRunId),
+        path.join(memoryDir, "agent_teams", teamRun.teamRunId, metadata.memberTree[0]!.memberRunId),
         teamRun.summary,
       );
       await teamMetadataStore.writeMetadata(teamRun.teamRunId, metadata);
@@ -402,9 +422,9 @@ describe("Archive run history GraphQL e2e", () => {
         "run-agent-archive",
         "run-agent-visible",
         "run-agent-active",
-        "run-agent-archived-active",
       ]),
     );
+    expect(flattenAgentRunIds(beforeArchive)).not.toContain("run-agent-pre-archived");
     expect(flattenTeamRunIds(beforeArchive)).toEqual(
       expect.arrayContaining([
         "team-archive",
@@ -452,7 +472,7 @@ describe("Archive run history GraphQL e2e", () => {
 
     const archivedAgentMetadata = await agentMetadataStore.readMetadata("run-agent-archive");
     const archivedTeamMetadata = await teamMetadataStore.readMetadata("team-archive");
-    expect(archivedAgentMetadata?.archivedAt).toEqual(expect.any(String));
+    expect(archivedAgentMetadata).not.toHaveProperty("archivedAt");
     expect(archivedTeamMetadata?.archivedAt).toEqual(expect.any(String));
 
     await expect(
@@ -482,7 +502,14 @@ describe("Archive run history GraphQL e2e", () => {
     const teamIndex = JSON.parse(
       await fs.readFile(path.join(memoryDir, "team_run_history_index.json"), "utf-8"),
     );
-    expect(agentIndex.rows.map((row: any) => row.runId)).toContain("run-agent-archive");
+    const archivedAgentRow = agentIndex.rows.find((row: any) => row.runId === "run-agent-archive");
+    expect(archivedAgentRow).toEqual(expect.objectContaining({
+      archivedAt: expect.any(String),
+      createdAt: "2026-05-01T08:00:00.000Z",
+      terminatedAt: null,
+    }));
+    expect(archivedAgentRow).not.toHaveProperty("lastKnownStatus");
+    expect(archivedAgentRow).not.toHaveProperty("lastActivityAt");
     expect(teamIndex.rows.map((row: any) => row.teamRunId)).toContain("team-archive");
 
     const afterArchive = await queryHistory();
@@ -492,9 +519,9 @@ describe("Archive run history GraphQL e2e", () => {
       expect.arrayContaining([
         "run-agent-visible",
         "run-agent-active",
-        "run-agent-archived-active",
       ]),
     );
+    expect(flattenAgentRunIds(afterArchive)).not.toContain("run-agent-pre-archived");
     expect(flattenTeamRunIds(afterArchive)).toEqual(
       expect.arrayContaining([
         "team-visible",
@@ -502,18 +529,10 @@ describe("Archive run history GraphQL e2e", () => {
         "team-archived-active",
       ]),
     );
-    const activeArchivedAgentRun = afterArchive
-      .flatMap((workspace) => workspace.agentDefinitions)
-      .flatMap((agent) => agent.runs)
-      .find((run) => run.runId === "run-agent-archived-active");
     const activeArchivedTeamRun = afterArchive
       .flatMap((workspace) => workspace.teamDefinitions)
       .flatMap((team) => team.runs)
       .find((run) => run.teamRunId === "team-archived-active");
-    expect(activeArchivedAgentRun).toEqual(expect.objectContaining({
-      isActive: true,
-      lastKnownStatus: "ACTIVE",
-    }));
     expect(activeArchivedTeamRun).toEqual(expect.objectContaining({
       isActive: true,
       lastKnownStatus: "ACTIVE",

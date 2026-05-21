@@ -76,9 +76,13 @@ describe("Workspace run history GraphQL e2e", () => {
               {
                 runId: "run-1",
                 summary: "Plan the rollout",
-                lastActivityAt: "2026-04-12T01:00:00.000Z",
-                lastKnownStatus: "IDLE",
+                createdAt: "2026-04-12T01:00:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
+                status: "offline",
                 isActive: false,
+                shouldConnectStream: false,
+                statusSource: "INACTIVE",
               },
             ],
           },
@@ -126,9 +130,13 @@ describe("Workspace run history GraphQL e2e", () => {
             runs {
               runId
               summary
-              lastActivityAt
-              lastKnownStatus
+              createdAt
+              archivedAt
+              terminatedAt
+              status
               isActive
+              shouldConnectStream
+              statusSource
             }
           }
           teamDefinitions {
@@ -177,9 +185,13 @@ describe("Workspace run history GraphQL e2e", () => {
               {
                 runId: "run-1",
                 summary: "Plan the rollout",
-                lastActivityAt: "2026-04-12T01:00:00.000Z",
-                lastKnownStatus: "IDLE",
+                createdAt: "2026-04-12T01:00:00.000Z",
+                archivedAt: null,
+                terminatedAt: null,
+                status: "offline",
                 isActive: false,
+                shouldConnectStream: false,
+                statusSource: "INACTIVE",
               },
             ],
           },
@@ -238,6 +250,95 @@ describe("Workspace run history GraphQL e2e", () => {
         expect.stringContaining('Cannot query field "agents"'),
         expect.stringContaining('Cannot query field "teamRuns"'),
       ]),
+    );
+  });
+
+  it("rejects removed standalone status/activity fields while team fields remain queryable", async () => {
+    listWorkspaceRunHistoryMock.mockResolvedValue([]);
+
+    const removedStandaloneFieldResult = await runGraphql(`
+      query RemovedStandaloneFields {
+        listWorkspaceRunHistory(limitPerAgent: 2) {
+          agentDefinitions {
+            runs {
+              runId
+              lastActivityAt
+              lastKnownStatus
+            }
+          }
+        }
+      }
+    `);
+
+    const removedMessages = (removedStandaloneFieldResult.errors ?? []).map(
+      (error) => error.message,
+    );
+    expect(removedMessages).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('Cannot query field "lastActivityAt"'),
+        expect.stringContaining('Cannot query field "lastKnownStatus"'),
+      ]),
+    );
+
+    listWorkspaceRunHistoryMock.mockResolvedValue([
+      {
+        workspaceRootPath: "/ws/a",
+        workspaceName: "workspace-a",
+        agentDefinitions: [],
+        teamDefinitions: [
+          {
+            teamDefinitionId: "team-def-1",
+            teamDefinitionName: "Software Engineering Team",
+            runs: [
+              {
+                teamRunId: "team-run-1",
+                teamDefinitionId: "team-def-1",
+                teamDefinitionName: "Software Engineering Team",
+                coordinatorMemberRouteKey: "coordinator",
+                workspaceRootPath: "/ws/a",
+                summary: "Team fields are intentionally retained",
+                lastActivityAt: "2026-04-12T01:05:00.000Z",
+                status: "running",
+                lastKnownStatus: "ACTIVE",
+                deleteLifecycle: "READY",
+                isActive: true,
+                memberTree: [],
+                members: [],
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+
+    const teamFieldResult = await execGraphql<{
+      listWorkspaceRunHistory: Array<{
+        teamDefinitions: Array<{
+          runs: Array<{
+            lastActivityAt: string;
+            lastKnownStatus: string;
+          }>;
+        }>;
+      }>;
+    }>(`
+      query TeamFieldsRemain {
+        listWorkspaceRunHistory(limitPerAgent: 2) {
+          teamDefinitions {
+            runs {
+              teamRunId
+              lastActivityAt
+              lastKnownStatus
+            }
+          }
+        }
+      }
+    `);
+
+    expect(teamFieldResult.listWorkspaceRunHistory[0]?.teamDefinitions[0]?.runs[0]).toEqual(
+      expect.objectContaining({
+        lastActivityAt: "2026-04-12T01:05:00.000Z",
+        lastKnownStatus: "ACTIVE",
+      }),
     );
   });
 });

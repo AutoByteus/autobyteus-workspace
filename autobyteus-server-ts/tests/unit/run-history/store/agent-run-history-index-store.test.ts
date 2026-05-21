@@ -15,16 +15,22 @@ describe("AgentRunHistoryIndexStore", () => {
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
-  it("persists and reads TERMINATED status rows", async () => {
+  it("persists and reads V2 catalog rows without live status fields", async () => {
     const store = new AgentRunHistoryIndexStore(memoryDir);
-    await store.upsertRow({
-      runId: "run-1",
-      agentDefinitionId: "agent-def-1",
-      agentName: "Agent One",
-      workspaceRootPath: "/tmp/workspace",
-      summary: "done",
-      lastActivityAt: "2026-03-26T10:00:00.000Z",
-      lastKnownStatus: "TERMINATED",
+    await store.writeIndex({
+      version: 2,
+      rows: [
+        {
+          runId: "run-1",
+          agentDefinitionId: "agent-def-1",
+          agentName: "Agent One",
+          workspaceRootPath: "/tmp/workspace",
+          summary: "done",
+          createdAt: "2026-03-26T10:00:00.000Z",
+          archivedAt: null,
+          terminatedAt: "2026-03-26T11:00:00.000Z",
+        },
+      ],
     });
 
     await expect(store.getRow("run-1")).resolves.toEqual({
@@ -33,29 +39,34 @@ describe("AgentRunHistoryIndexStore", () => {
       agentName: "Agent One",
       workspaceRootPath: "/tmp/workspace",
       summary: "done",
-      lastActivityAt: "2026-03-26T10:00:00.000Z",
-      lastKnownStatus: "TERMINATED",
+      createdAt: "2026-03-26T10:00:00.000Z",
+      archivedAt: null,
+      terminatedAt: "2026-03-26T11:00:00.000Z",
     });
   });
 
-  it("updates an existing row in place", async () => {
-    const store = new AgentRunHistoryIndexStore(memoryDir);
-    await store.upsertRow({
-      runId: "run-1",
-      agentDefinitionId: "agent-def-1",
-      agentName: "Agent One",
-      workspaceRootPath: "/tmp/workspace",
-      summary: "old",
-      lastActivityAt: "2026-03-26T10:00:00.000Z",
-      lastKnownStatus: "IDLE",
-    });
+  it("does not treat legacy V1 status rows as a normal source catalog", async () => {
+    await fs.writeFile(
+      path.join(memoryDir, "run_history_index.json"),
+      JSON.stringify({
+        version: 1,
+        rows: [
+          {
+            runId: "run-1",
+            agentDefinitionId: "agent-def-1",
+            agentName: "Agent One",
+            workspaceRootPath: "/tmp/workspace",
+            summary: "legacy",
+            lastActivityAt: "2026-03-26T10:00:00.000Z",
+            lastKnownStatus: "ACTIVE",
+          },
+        ],
+      }),
+      "utf-8",
+    );
 
-    await store.updateRow("run-1", {
-      summary: "new",
-      lastKnownStatus: "ACTIVE",
-    });
-
-    expect((await store.getRow("run-1"))?.summary).toBe("new");
-    expect((await store.getRow("run-1"))?.lastKnownStatus).toBe("ACTIVE");
+    await expect(storeRows(memoryDir)).resolves.toEqual([]);
   });
 });
+
+const storeRows = async (memoryDir: string) => new AgentRunHistoryIndexStore(memoryDir).listRows();

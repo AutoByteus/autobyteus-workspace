@@ -20,8 +20,9 @@ const metadata: AgentRunMetadata = {
   skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: "thread-1",
-  lastKnownStatus: "IDLE",
-  activationState: "ACTIVATED",
+  preparedAt: "2026-05-17T00:00:00.000Z",
+  preparedExpiresAt: "2026-05-18T00:00:00.000Z",
+  startedAt: "2026-05-17T00:05:00.000Z",
 };
 
 const createFakeRun = (options: {

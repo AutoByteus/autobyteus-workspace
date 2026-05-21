@@ -17,9 +17,9 @@ const buildMetadata = (overrides: Partial<AgentRunMetadata> = {}): AgentRunMetad
   skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: null,
-  lastKnownStatus: "IDLE",
-  activationState: "ACTIVATED",
-  archivedAt: null,
+  preparedAt: null,
+  preparedExpiresAt: null,
+  startedAt: "2026-03-26T10:00:00.000Z",
   applicationExecutionContext: null,
   ...overrides,
 });
@@ -66,7 +66,11 @@ describe("AgentRunStatusProjectionService", () => {
 
   it("projects prepared identity as offline without starting runtime", async () => {
     const projection = await buildService({
-      metadata: buildMetadata({ activationState: "PREPARED" }),
+      metadata: buildMetadata({
+        preparedAt: "2026-03-26T10:00:00.000Z",
+        preparedExpiresAt: "2026-03-27T10:00:00.000Z",
+        startedAt: null,
+      }),
     }).getRunStatusProjection("run-1");
 
     expect(projection).toMatchObject({

@@ -20,8 +20,9 @@ const buildMetadata = (
   skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: "thread-1",
-  lastKnownStatus: "IDLE",
-  archivedAt: null,
+  preparedAt: "2026-05-01T09:00:00.000Z",
+  preparedExpiresAt: "2026-05-02T09:00:00.000Z",
+  startedAt: "2026-05-01T09:05:00.000Z",
   applicationExecutionContext: null,
   ...overrides,
 });
@@ -37,14 +38,12 @@ describe("AgentRunMetadataStore", () => {
     await fs.rm(memoryDir, { recursive: true, force: true });
   });
 
-  it("round-trips persisted metadata including lastKnownStatus", async () => {
+  it("round-trips V2 resume/config metadata without durable history status fields", async () => {
     const store = new AgentRunMetadataStore(memoryDir);
     await store.writeMetadata("run-1", buildMetadata({
       workspaceRootPath: "/tmp/workspace/",
       memoryDir: path.join(memoryDir, "agents", "run-1"),
       platformAgentRunId: "  thread-1  ",
-      lastKnownStatus: "TERMINATED",
-      archivedAt: "2026-05-01T10:00:00.000Z",
       applicationExecutionContext: {
         applicationId: "app-1",
         bindingId: "binding-1",
@@ -59,14 +58,19 @@ describe("AgentRunMetadataStore", () => {
       },
     }));
 
+    const raw = JSON.parse(
+      await fs.readFile(store.getMetadataPath("run-1"), "utf-8"),
+    ) as Record<string, unknown>;
+    expect(raw).not.toHaveProperty("lastKnownStatus");
+    expect(raw).not.toHaveProperty("activationState");
+    expect(raw).not.toHaveProperty("archivedAt");
+
     const metadata = await store.readMetadata("run-1");
 
     expect(metadata).toEqual(buildMetadata({
       workspaceRootPath: "/tmp/workspace",
       memoryDir: path.join(memoryDir, "agents", "run-1"),
       platformAgentRunId: "thread-1",
-      lastKnownStatus: "TERMINATED",
-      archivedAt: "2026-05-01T10:00:00.000Z",
       applicationExecutionContext: {
         applicationId: "app-1",
         bindingId: "binding-1",
@@ -82,7 +86,7 @@ describe("AgentRunMetadataStore", () => {
     }));
   });
 
-  it("defaults missing lastKnownStatus to IDLE for older metadata files", async () => {
+  it("ignores legacy durable status fields when reading older metadata files", async () => {
     const store = new AgentRunMetadataStore(memoryDir);
     const metadataPath = store.getMetadataPath("run-legacy");
     await fs.mkdir(path.dirname(metadataPath), { recursive: true });
@@ -98,15 +102,26 @@ describe("AgentRunMetadataStore", () => {
         skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         platformAgentRunId: "thread-legacy",
+        lastKnownStatus: "TERMINATED",
+        activationState: "ACTIVATION_FAILED",
+        archivedAt: "2026-05-01T10:00:00.000Z",
       }),
       "utf-8",
     );
 
     const metadata = await store.readMetadata("run-legacy");
 
-    expect(metadata?.memoryDir).toBe(path.join(memoryDir, "agents", "run-legacy"));
-    expect(metadata?.lastKnownStatus).toBe("IDLE");
-    expect(metadata?.archivedAt).toBeNull();
-    expect(metadata?.applicationExecutionContext).toBeNull();
+    expect(metadata).toEqual(expect.objectContaining({
+      runId: "run-legacy",
+      memoryDir: path.join(memoryDir, "agents", "run-legacy"),
+      platformAgentRunId: "thread-legacy",
+      preparedAt: null,
+      preparedExpiresAt: null,
+      startedAt: null,
+      applicationExecutionContext: null,
+    }));
+    expect(metadata).not.toHaveProperty("lastKnownStatus");
+    expect(metadata).not.toHaveProperty("activationState");
+    expect(metadata).not.toHaveProperty("archivedAt");
   });
 });

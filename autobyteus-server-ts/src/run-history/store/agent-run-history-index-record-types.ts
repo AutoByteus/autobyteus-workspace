@@ -1,6 +1,4 @@
-export const AGENT_RUN_HISTORY_INDEX_RECORD_VERSION = 1;
-
-export type AgentRunStatusRecord = "ACTIVE" | "IDLE" | "ERROR" | "TERMINATED";
+export const AGENT_RUN_HISTORY_INDEX_RECORD_VERSION = 2;
 
 export interface AgentRunHistoryIndexRowRecord {
   runId: string;
@@ -8,8 +6,9 @@ export interface AgentRunHistoryIndexRowRecord {
   agentName: string;
   workspaceRootPath: string;
   summary: string;
-  lastActivityAt: string;
-  lastKnownStatus: AgentRunStatusRecord;
+  createdAt: string;
+  archivedAt?: string | null;
+  terminatedAt?: string | null;
 }
 
 export interface AgentRunHistoryIndexFileRecord {

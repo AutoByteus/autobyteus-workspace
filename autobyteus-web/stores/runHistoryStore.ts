@@ -211,7 +211,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
         };
       }
 
-      const now = new Date().toISOString();
       this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
         ...workspace,
         agentDefinitions: workspace.agentDefinitions.map((agent) => ({
@@ -222,8 +221,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
                   ...run,
                   isActive: true,
                   status: AgentStatus.Running,
-                  lastKnownStatus: 'ACTIVE',
-                  lastActivityAt: now,
                 }
               : run,
           ),
@@ -248,7 +245,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
         };
       }
 
-      const now = new Date().toISOString();
       this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
         ...workspace,
         agentDefinitions: workspace.agentDefinitions.map((agent) => ({
@@ -258,12 +254,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
               ? {
                   ...run,
                   isActive: false,
-                  status: run.lastKnownStatus === 'ERROR' ? AgentStatus.Error : AgentStatus.Offline,
-                  lastKnownStatus:
-                    run.lastKnownStatus === 'ERROR' || run.lastKnownStatus === 'TERMINATED'
-                      ? run.lastKnownStatus
-                      : 'IDLE',
-                  lastActivityAt: now,
+                  status: AgentStatus.Offline,
                 }
               : run,
           ),
@@ -291,20 +282,10 @@ export const useRunHistoryStore = defineStore('runHistory', {
           ...agent,
           runs: agent.runs.map((run) => {
             const isActive = activeSet.has(run.runId);
-            const lastKnownStatus = isActive
-              ? 'ACTIVE'
-              : run.lastKnownStatus === 'ERROR' || run.lastKnownStatus === 'TERMINATED'
-                ? run.lastKnownStatus
-                : 'IDLE';
             return {
               ...run,
               isActive,
-              status: isActive
-                ? AgentStatus.Running
-                : run.lastKnownStatus === 'ERROR'
-                  ? AgentStatus.Error
-                  : AgentStatus.Offline,
-              lastKnownStatus,
+              status: isActive ? AgentStatus.Running : AgentStatus.Offline,
             };
           }),
         })),

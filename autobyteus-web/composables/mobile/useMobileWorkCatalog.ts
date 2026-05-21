@@ -47,8 +47,8 @@ export function useMobileWorkCatalog() {
             summary: summarizeRun(run),
             workspaceRootPath: workspace.workspaceRootPath,
             isActive: run.isActive,
-            lastActivityAt: run.lastActivityAt,
-            statusLabel: toStatusLabel(run.lastKnownStatus, run.isActive),
+            lastActivityAt: run.createdAt,
+            statusLabel: toStatusLabel(run.status, run.isActive),
           };
           items.push({
             key: `agent-run:${run.runId}`,

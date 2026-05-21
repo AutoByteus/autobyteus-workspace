@@ -10,9 +10,10 @@ export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 export interface RunHistoryItem {
   runId: string;
   summary: string;
-  lastActivityAt: string;
+  createdAt: string;
+  archivedAt?: string | null;
+  terminatedAt?: string | null;
   status: AgentStatus;
-  lastKnownStatus: RunKnownStatus;
   isActive: boolean;
   shouldConnectStream?: boolean;
   statusSource?: string;

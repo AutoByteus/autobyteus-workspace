@@ -11,9 +11,10 @@ export const ListWorkspaceRunHistory = gql`
         runs {
           runId
           summary
-          lastActivityAt
+          createdAt
+          archivedAt
+          terminatedAt
           status
-          lastKnownStatus
           isActive
           shouldConnectStream
           statusSource

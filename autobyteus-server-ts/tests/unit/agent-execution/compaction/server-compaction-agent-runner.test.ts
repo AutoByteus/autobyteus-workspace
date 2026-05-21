@@ -238,7 +238,6 @@ describe("ServerCompactionAgentRunner", () => {
         run,
         expect.objectContaining({
           summary: "Memory compaction task task-1",
-          lastKnownStatus: "ACTIVE",
         }),
       );
       expect(agentRunService.terminateAgentRun).toHaveBeenCalledWith("compaction-run-1");
