@@ -11,6 +11,8 @@ import type {
   TeamRunMetadataPayload,
   TeamMemberRunProjectionPayload,
 } from '~/stores/runHistoryTypes';
+import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference';
+import { createWorkspaceReference } from '~/utils/workspaceReference';
 import { buildConversationFromProjection } from '~/services/runHydration/runProjectionConversation';
 import { hydrateActivitiesFromProjection } from '~/services/runHydration/runProjectionActivityHydration';
 import { normalizeTeamRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
@@ -115,11 +117,17 @@ export const resolveTeamWorkspaceRootPathFromContext = (
   resolveWorkspaceRootPath: (workspaceId: string | null) => string,
   unassignedWorkspaceKey: string,
 ): string => {
+  if (teamContext.config.workspaceReference?.workspaceRootPath) {
+    return teamContext.config.workspaceReference.workspaceRootPath;
+  }
   const fromTeamConfig = resolveWorkspaceRootPath(teamContext.config.workspaceId);
   if (fromTeamConfig) {
     return fromTeamConfig;
   }
   for (const member of getLeafAgentContextsByRouteKey(teamContext).values()) {
+    if (member.config.workspaceReference?.workspaceRootPath) {
+      return member.config.workspaceReference.workspaceRootPath;
+    }
     const fromMemberConfig = resolveWorkspaceRootPath(member.config.workspaceId);
     if (fromMemberConfig) {
       return fromMemberConfig;
@@ -351,14 +359,15 @@ const buildTeamMemberConversation = (params: {
 
 const buildTeamMemberConfig = (params: {
   member: ReturnType<typeof flattenTeamRunAgentMetadata>[number];
-  workspaceId: string | null;
+  workspaceReference: WorkspaceReference | null;
   isActive: boolean;
 }): AgentRunConfig => ({
   agentDefinitionId: params.member.agentDefinitionId,
   agentDefinitionName: params.member.memberName,
   llmModelIdentifier: params.member.llmModelIdentifier,
   runtimeKind: params.member.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
-  workspaceId: params.workspaceId,
+  workspaceId: params.workspaceReference?.workspaceId ?? null,
+  workspaceReference: params.workspaceReference,
   autoExecuteTools: params.member.autoExecuteTools,
   skillAccessMode: params.member.skillAccessMode ?? 'PRELOADED_ONLY',
   llmConfig: params.member.llmConfig ?? null,
@@ -389,7 +398,14 @@ export const applyProjectionToTeamMemberContext = (params: {
 
   params.memberContext.config = buildTeamMemberConfig({
     member: params.member,
-    workspaceId: params.memberContext.config.workspaceId,
+    workspaceReference:
+      params.memberContext.config.workspaceReference ||
+      (params.memberContext.config.workspaceId && params.member.workspaceRootPath
+        ? createWorkspaceReference({
+            workspaceId: params.memberContext.config.workspaceId,
+            workspaceRootPath: params.member.workspaceRootPath,
+          })
+        : null),
     isActive: params.isActive,
   });
   params.memberContext.state.runId = memberRunId;
@@ -407,31 +423,35 @@ export const applyProjectionToTeamMemberContext = (params: {
   }
 };
 
-export const buildTeamMemberContexts = async (params: {
+interface TeamMemberContextBuildResult {
+  members: Map<string, AgentContext>;
+  primaryWorkspaceReference: WorkspaceReference | null;
+  memberWorkspaceReferencesByRouteKey: Record<string, WorkspaceReference>;
+}
+
+const buildTeamMemberContextsFromReferences = (params: {
   teamRunId: string;
   metadata: TeamRunMetadataPayload;
   isActive: boolean;
   projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
   toTeamMemberKey: (member: { memberRouteKey: string; memberName: string }) => string;
-  ensureWorkspaceByRootPath: (path: string) => Promise<string | null>;
-}): Promise<{ members: Map<string, AgentContext>; firstWorkspaceId: string | null }> => {
+  memberWorkspaceReferencesByRouteKey: Record<string, WorkspaceReference>;
+}): TeamMemberContextBuildResult => {
   const members = new Map<string, AgentContext>();
-  let firstWorkspaceId: string | null = null;
+  let primaryWorkspaceReference: WorkspaceReference | null = null;
   for (const member of flattenTeamRunAgentMetadata(params.metadata.memberTree)) {
     const normalizedMemberRouteKey = params.toTeamMemberKey(member).trim();
     if (!normalizedMemberRouteKey) {
       continue;
     }
-    let workspaceId: string | null = null;
-    if (member.workspaceRootPath) {
-      workspaceId = await params.ensureWorkspaceByRootPath(member.workspaceRootPath);
-      if (workspaceId && !firstWorkspaceId) {
-        firstWorkspaceId = workspaceId;
-      }
+    const workspaceReference =
+      params.memberWorkspaceReferencesByRouteKey[normalizedMemberRouteKey] ?? null;
+    if (workspaceReference && !primaryWorkspaceReference) {
+      primaryWorkspaceReference = workspaceReference;
     }
     const memberConfig = buildTeamMemberConfig({
       member,
-      workspaceId,
+      workspaceReference,
       isActive: params.isActive,
     });
     const memberRunId = member.memberRunId || normalizedMemberRouteKey;
@@ -452,5 +472,67 @@ export const buildTeamMemberContexts = async (params: {
     );
   }
 
-  return { members, firstWorkspaceId };
+  return {
+    members,
+    primaryWorkspaceReference,
+    memberWorkspaceReferencesByRouteKey: params.memberWorkspaceReferencesByRouteKey,
+  };
+};
+
+export const buildLiveTeamMemberContexts = async (params: {
+  teamRunId: string;
+  metadata: TeamRunMetadataPayload;
+  isActive: boolean;
+  projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
+  toTeamMemberKey: (member: { memberRouteKey: string; memberName: string }) => string;
+  activateWorkspaceByRootPath: (path: string) => Promise<string | null>;
+  resolveWorkspaceReferenceByRootPath: (path: string) => Promise<WorkspaceReference | null>;
+}): Promise<TeamMemberContextBuildResult> => {
+  const memberWorkspaceReferencesByRouteKey: Record<string, WorkspaceReference> = {};
+  for (const member of flattenTeamRunAgentMetadata(params.metadata.memberTree)) {
+    const normalizedMemberRouteKey = params.toTeamMemberKey(member).trim();
+    if (!normalizedMemberRouteKey || !member.workspaceRootPath) {
+      continue;
+    }
+    const activatedWorkspaceId = await params.activateWorkspaceByRootPath(member.workspaceRootPath);
+    const resolvedReference = await params.resolveWorkspaceReferenceByRootPath(member.workspaceRootPath);
+    const workspaceReference = resolvedReference || (activatedWorkspaceId
+      ? createWorkspaceReference({
+          workspaceId: activatedWorkspaceId,
+          workspaceRootPath: member.workspaceRootPath,
+        })
+      : null);
+    if (workspaceReference) {
+      memberWorkspaceReferencesByRouteKey[normalizedMemberRouteKey] = workspaceReference;
+    }
+  }
+  return buildTeamMemberContextsFromReferences({
+    ...params,
+    memberWorkspaceReferencesByRouteKey,
+  });
+};
+
+export const buildHistoricalTeamMemberContextShells = async (params: {
+  teamRunId: string;
+  metadata: TeamRunMetadataPayload;
+  projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
+  toTeamMemberKey: (member: { memberRouteKey: string; memberName: string }) => string;
+  resolveWorkspaceReferenceByRootPath: (path: string) => Promise<WorkspaceReference | null>;
+}): Promise<TeamMemberContextBuildResult> => {
+  const memberWorkspaceReferencesByRouteKey: Record<string, WorkspaceReference> = {};
+  for (const member of flattenTeamRunAgentMetadata(params.metadata.memberTree)) {
+    const normalizedMemberRouteKey = params.toTeamMemberKey(member).trim();
+    if (!normalizedMemberRouteKey || !member.workspaceRootPath) {
+      continue;
+    }
+    const workspaceReference = await params.resolveWorkspaceReferenceByRootPath(member.workspaceRootPath);
+    if (workspaceReference) {
+      memberWorkspaceReferencesByRouteKey[normalizedMemberRouteKey] = workspaceReference;
+    }
+  }
+  return buildTeamMemberContextsFromReferences({
+    ...params,
+    isActive: false,
+    memberWorkspaceReferencesByRouteKey,
+  });
 };

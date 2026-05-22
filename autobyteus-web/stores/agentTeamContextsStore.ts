@@ -127,6 +127,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           llmModelIdentifier: memberRecord.llmModelIdentifier,
           runtimeKind: memberRecord.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
           workspaceId: memberRecord.workspaceId ?? null,
+          workspaceReference: memberRecord.workspaceReference ?? null,
           autoExecuteTools: memberRecord.autoExecuteTools,
           skillAccessMode: memberRecord.skillAccessMode,
           llmConfig: memberRecord.llmConfig,

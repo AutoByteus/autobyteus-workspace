@@ -320,3 +320,119 @@ After the computer restart, continued in the same dedicated worktree/branch and 
 - Additional design tightening:
   - Added explicit `WorkspaceDesktopLayout.vue` ownership for desktop collapsed right-panel unmount/visibility so AC-003 has a concrete file target.
   - Expanded the route cleanup pseudocode to catch `connect()` rejection and to close the socket only when it is still open, while leaving handler-level setup cleanup authoritative for leases/sessions.
+
+## Late Release Blocker: Historical Run Open Eager Workspace Activation
+
+### Context
+
+During packaged Electron validation of the current-ticket implementation, the user observed that opening a historical run row was very slow. The user noted that after opening the run, clicking the Files area was fast, suggesting the workspace/file-system cost may already have been paid during history-row opening. The user clarified this is not a follow-up because the current ticket cannot be released if history opening is too slow.
+
+A temporary separate worktree/ticket was mistakenly created for `history-run-lazy-workspace-activation`; it was removed and the scope was folded back into the current `codex-agent-spawn-ebadf-root-cause` ticket as a same-ticket design-impact rework.
+
+### Required design-reference reload
+
+Per user request, reloaded the shared solution-designer design guidance before revising scope:
+
+- Source: `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/design-principles.md`
+  - Relevant principles: spine inventory, ownership clarity, authoritative boundary rule, explicit identity shapes, no mixed subject/generic boundary, no compatibility/dual-path retention.
+- Source: `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/references/design-examples.md`
+  - Relevant examples: request-flow shape, generic-list/generalist-boundary bad practice, thin facade vs governing owner distinction.
+
+### Current code path evidence
+
+| Date | Source Type | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
+| --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | Code | `autobyteus-web/stores/runHistoryLoadActions.ts` | Find history row open path | `openHistoricalRun()` passes `ensureWorkspaceByRootPath` into `openAgentRun()`; `ensureRunHistoryWorkspaceByRootPath()` may call `workspaceStore.fetchAllWorkspaces()` and then `workspaceStore.createWorkspace({ root_path })`. | Replace history-open eager creation with lazy workspace reference. |
+| 2026-05-22 | Code | `autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts` | Find run-open coordinator responsibility | `openAgentRun()` calls `loadRunContextHydrationPayload()` before selecting/upserting the run context. | Preserve history-open coordinator but change workspace dependency contract. |
+| 2026-05-22 | Code | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | Find hydration root cause | `loadRunContextHydrationPayload()` calls `input.ensureWorkspaceByRootPath(resumeConfig.metadataConfig.workspaceRootPath)` before building `AgentRunConfig`. | Main frontend coupling to remove. |
+| 2026-05-22 | Code | `autobyteus-server-ts/src/workspaces/workspace-manager.ts` | Check backend workspace creation semantics | `WorkspaceManager.createWorkspace()` always awaits `workspace.initialize()`; `ensureWorkspaceByRootPath()` delegates to `createWorkspace()`. | Need cheap reference/activation split. |
+| 2026-05-22 | Code | `autobyteus-server-ts/src/workspaces/filesystem-workspace.ts` | Check initialization cost | `initialize()` calls `fileExplorer.buildWorkspaceDirectoryTree(1)`. | Confirms history open can pay tree traversal. |
+| 2026-05-22 | Code | `autobyteus-server-ts/src/workspaces/workspace-id-mapping-store.ts` | Check root path identity capability | `buildFilesystemWorkspaceId(rootPath)` deterministically hashes root path; mappings persist id-to-root. | Reuse as identity owner; do not add ad hoc helper. |
+| 2026-05-22 | Code | `autobyteus-server-ts/src/workspaces/workspace-path-utils.ts` | Check canonicalization | `canonicalizeWorkspaceRootPath()` normalizes/resolves/trims trailing separators. | Canonical path can serve as local filesystem identity basis. |
+| 2026-05-22 | Code | `autobyteus-server-ts/src/api/graphql/types/workspace.ts` and `WorkspaceConverter` | Check API shape | `createWorkspace` returns `WorkspaceInfo` including shallow `fileExplorer`; `workspaces` serializes shallow tree. | Existing `WorkspaceInfo` is too heavy for history workspace identity. |
+| 2026-05-22 | Code | `autobyteus-server-ts/src/api/graphql/types/file-explorer.ts` | Check later file explorer activation path | `folderChildren()` uses `getOrCreateWorkspace(workspaceId)` and may call `buildWorkspaceDirectoryTree()` for unloaded folders. | Lazy activation still needs loading state; folder-scope optimization may be separate if needed. |
+
+### Current history-open flow
+
+```text
+User clicks historical run row
+-> runHistoryStore.openRun()
+-> openHistoricalRun()
+-> openAgentRun()
+-> loadRunContextHydrationPayload()
+-> GraphQL getRunProjection + getAgentRunResumeConfig + getRunFileChanges
+-> ensureWorkspaceByRootPath(resumeConfig.metadataConfig.workspaceRootPath)
+-> workspaceStore.fetchAllWorkspaces() or workspaceStore.createWorkspace()
+-> backend WorkspaceManager.createWorkspace()
+-> FileSystemWorkspace.initialize()
+-> fileExplorer.buildWorkspaceDirectoryTree(1)
+-> run context is finally built/selected
+```
+
+### Root-cause refinement
+
+The original watcher design issue is fixed at the live monitoring layer, but the current ticket still has a related workspace lifecycle boundary issue:
+
+- Historical run viewing needs historical metadata, not a live/current workspace.
+- `workspaceRootPath` is already persisted in `RunMetadataConfigPayload` and is the meaningful historical identity.
+- `AgentRunConfig.workspaceId` pressure causes history hydration to convert root path into live workspace id immediately.
+- That conversion goes through a heavyweight workspace creation boundary that also initializes a file tree.
+
+Classification update: `Boundary Or Ownership Issue / Shared Structure Looseness` in addition to the original watcher `Missing Invariant`. `WorkspaceInfo` and `AgentRunConfig.workspaceId` are too coarse for this use case because they collapse distinct subjects:
+
+1. historical workspace reference,
+2. current initialized workspace metadata,
+3. file explorer snapshot.
+
+### Revised design direction
+
+Fold this into the same ticket:
+
+- Historical run opening should hydrate using `workspaceRootPath`/cheap workspace reference only.
+- Server should expose or reuse a cheap reference boundary that canonicalizes root path and derives deterministic workspace id without initializing `FileSystemWorkspace` or building a tree.
+- Workspace-dependent surfaces/actions should explicitly activate/initialize workspace at their own boundary: Files, Terminal, resume/rerun, context picker, and similar.
+- Missing/inaccessible workspace paths must not block viewing stored history; errors surface only when workspace-dependent functionality is used.
+
+## Architecture Review Round 3 Findings And Revision Notes
+
+Architecture review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-review-report.md`
+
+Decision: Fail — Design Impact. Prior watcher findings AR-001 and AR-002 remain resolved. The new blockers were AR-003 (`WorkspaceReference` not integrated into run context/config data model) and AR-004 (team historical hydration path not concretely designed).
+
+### Additional current code evidence for AR-003
+
+| Date | Source Type | Exact Source / Query / Command | Why Consulted | Relevant Findings | Design Follow-Up |
+| --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | Code | `autobyteus-web/types/agent/AgentRunConfig.ts` | Check current config shape | `AgentRunConfig` has `workspaceId: string | null` and no `workspaceReference` companion carrying root path/display metadata. | Define `workspaceId` as deterministic reference id only and add `workspaceReference`. |
+| 2026-05-22 | Code | `autobyteus-web/types/agent/TeamRunConfig.ts` | Check team config shape | `TeamRunConfig` has `workspaceId: string | null` and no primary/team workspace reference. | Add `workspaceReference`; define primary/team reference semantics. |
+| 2026-05-22 | Code | `autobyteus-web/types/agent/AgentContext.ts` | Check context ownership | `AgentContext` only carries `config` and `state`; workspace identity is consumed through config. | Keep reference in config; do not duplicate activation state in context. |
+| 2026-05-22 | Code | `autobyteus-web/types/agent/AgentTeamContext.ts` | Check historical team state | `HistoricalTeamHydrationState` stores member metadata and projection load state but no per-member workspace reference map. | Add `memberWorkspaceReferencesByRouteKey`. |
+| 2026-05-22 | Code | `autobyteus-web/stores/workspace.ts` | Check active workspace selectors | `activeWorkspace()` reads selected `config.workspaceId` and returns `workspaces[workspaceId]`; `currentWorkspaceTree()` reads `activeWorkspace.fileExplorer`. | Add `activeWorkspaceReference`; keep `activeWorkspace` initialized-only; do not activate from getter. |
+| 2026-05-22 | Code | `autobyteus-web/components/workspace/config/RunConfigPanel.vue` | Check display consumer | `resolveWorkspacePath(workspaceId)` displays paths from `workspaceStore.workspaces[workspaceId]` only. | Display from `config.workspaceReference` before initialized workspace lookup. |
+| 2026-05-22 | Code | `autobyteus-web/stores/agentRunStore.ts` | Check send/resume path | `sendUserInputAndSubscribe()` derives `workspaceRootPath` from `workspaceStore.workspaces[workspaceId]` when `workspaceId` exists and falls back to resume metadata only when no workspace id exists. | Prefer `config.workspaceReference.workspaceRootPath` for existing/historical runs; do not initialize to recover path. |
+| 2026-05-22 | Code | `autobyteus-web/components/workspace/tools/Terminal.vue` | Check workspace-dependent action consumer | Terminal derives `effectiveWorkspaceId` from prop or `workspaceStore.activeWorkspace?.workspaceId`, so historical references without initialized workspace cannot connect through a clear activation boundary. | Terminal must activate focused/active `WorkspaceReference` before connecting. |
+
+AR-003 design decision:
+
+- `WorkspaceReference` is a metadata-only identity/display object: deterministic `workspaceId`, canonical `workspaceRootPath`, display name, and kind. It does not include file explorer tree and does not include mutable activation status.
+- Mutable activation state is centrally owned by `WorkspaceStore`, keyed by reference id.
+- `AgentRunConfig.workspaceId` and `TeamRunConfig.workspaceId` mean deterministic reference id only, not proof that `WorkspaceStore.workspaces[workspaceId]` exists.
+- Target configs carry both `workspaceId` and `workspaceReference`; initialized `WorkspaceInfo` remains exclusively in `WorkspaceStore.workspaces`.
+
+### Additional current code evidence for AR-004
+
+| Date | Source Type | Exact Source / Query / Command | Why Consulted | Relevant Findings | Design Follow-Up |
+| --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | Code | `autobyteus-web/stores/runHistorySelectionActions.ts` | Check team history entrypoint | `openTeamMemberRunFromHistory()` calls `openTeamRun()` and passes `ensureWorkspaceByRootPath`. | Team historical open must pass/use a cheap reference resolver, not eager activation. |
+| 2026-05-22 | Code | `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | Check team open coordinator | `openTeamRun()` consumes `firstWorkspaceId` from hydration and reconstructs `TeamRunConfig` with it. | Replace `firstWorkspaceId` handoff with `primaryWorkspaceReference`. |
+| 2026-05-22 | Code | `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | Check live/historical team branches | Both live and historical branches call `buildTeamMemberContexts({ ensureWorkspaceByRootPath })`; historical branch fetches focused projection but still builds all members through the eager helper. | Split live activation helper from historical shell/reference helper. |
+| 2026-05-22 | Code | `autobyteus-web/stores/runHistoryTeamHelpers.ts` | Check member context builder | `buildTeamMemberContexts()` loops every flattened agent member and calls `ensureWorkspaceByRootPath(member.workspaceRootPath)` before building member config. | Historical helper must resolve `WorkspaceReference` only and must not call activation. |
+| 2026-05-22 | Code | `autobyteus-web/utils/teamRunConfigUtils.ts` | Check config reconstruction | `reconstructTeamRunConfigFromMetadata({ firstWorkspaceId })` writes that id into `TeamRunConfig.workspaceId` and loses root-path/display metadata. | Accept `primaryWorkspaceReference` and derive `workspaceId` from it. |
+| 2026-05-22 | Code | `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:ensureHistoricalTeamMemberHydrated` | Check sibling hydration | Sibling focus fetches projection and applies it to existing member context; it does not inherently need workspace activation if shell references already exist. | Keep this path projection-only; no workspace activation. |
+
+AR-004 design decision:
+
+- Historical team hydration gets its own spine: team row/member click -> team open coordinator -> historical team hydration -> member workspace references -> shell contexts -> focused projection render.
+- The current generic `buildTeamMemberContexts({ ensureWorkspaceByRootPath })` must be split into live and historical helpers because the activation mode differs by branch.
+- Historical team shells carry per-member `workspaceReference` values and a team-level `primaryWorkspaceReference`; `firstWorkspaceId` is removed/replaced or, if temporarily retained during refactor, documented as a reference id only.
+- Focusing a historical sibling member hydrates projection only; Files/Terminal/context for a focused member activates that member's reference at the action boundary.

@@ -248,6 +248,14 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+const createHistoryCatalogServiceMock = () => ({
+  recordTeamRunCreated: vi.fn().mockResolvedValue(undefined),
+  recordTeamRunRestored: vi.fn().mockResolvedValue(undefined),
+  recordTeamRunSummary: vi.fn().mockResolvedValue(undefined),
+  recordTeamRunTerminated: vi.fn().mockResolvedValue(undefined),
+  refreshTeamRunMetadata: vi.fn().mockResolvedValue(undefined),
+});
+
 describe("TeamRunService integration", () => {
   it.each([
     RuntimeKind.AUTOBYTEUS,
@@ -292,12 +300,7 @@ describe("TeamRunService integration", () => {
           writeMetadata: vi.fn(),
           readMetadata: vi.fn(),
         } as never,
-        teamRunHistoryIndexService: {
-          recordRunCreated: vi.fn(),
-          recordRunRestored: vi.fn(),
-          recordRunActivity: vi.fn(),
-          recordRunTerminated: vi.fn(),
-        } as never,
+        teamRunHistoryCatalogService: createHistoryCatalogServiceMock() as never,
         workspaceManager: {
           ensureWorkspaceByRootPath: vi.fn(),
           getWorkspaceById: vi.fn(),
@@ -358,12 +361,7 @@ describe("TeamRunService integration", () => {
         writeMetadata: vi.fn(),
         readMetadata: vi.fn(),
       } as never,
-      teamRunHistoryIndexService: {
-        recordRunCreated: vi.fn(),
-        recordRunRestored: vi.fn(),
-        recordRunActivity: vi.fn(),
-        recordRunTerminated: vi.fn(),
-      } as never,
+      teamRunHistoryCatalogService: createHistoryCatalogServiceMock() as never,
       workspaceManager: {
         ensureWorkspaceByRootPath: vi.fn(),
         getWorkspaceById: vi.fn(),
@@ -436,12 +434,7 @@ describe("TeamRunService integration", () => {
         writeMetadata: vi.fn().mockResolvedValue(undefined),
         readMetadata: vi.fn(),
       };
-      const historyIndexService = {
-        recordRunCreated: vi.fn().mockResolvedValue(undefined),
-        recordRunRestored: vi.fn(),
-        recordRunActivity: vi.fn(),
-        recordRunTerminated: vi.fn(),
-      };
+      const historyCatalogService = createHistoryCatalogServiceMock();
       const teamDefinitionService = {
         getDefinitionById: vi.fn().mockResolvedValue(
           createTeamDefinition({
@@ -462,7 +455,7 @@ describe("TeamRunService integration", () => {
         agentTeamRunManager: agentTeamRunManager as never,
         teamDefinitionService: teamDefinitionService as never,
         teamRunMetadataService: metadataService as never,
-        teamRunHistoryIndexService: historyIndexService as never,
+        teamRunHistoryCatalogService: historyCatalogService as never,
         workspaceManager: workspaceManager as never,
         memoryDir: "/tmp/memory",
       });
@@ -479,21 +472,23 @@ describe("TeamRunService integration", () => {
           teamBackendKind,
         }),
       );
-      expect(metadataService.writeMetadata).toHaveBeenCalledWith(
-        "team-run-1",
+      expect(historyCatalogService.recordTeamRunCreated).toHaveBeenCalledWith(
         expect.objectContaining({
-          teamDefinitionId: "team-def-1",
-          teamDefinitionName: "Team One",
-          memberTree: [
-            expect.objectContaining({
-              platformAgentRunId,
-              llmModelIdentifier,
-              workspaceRootPath: "/tmp/team-workspace",
-            }),
-          ],
+          teamRunId: "team-run-1",
+          summary: "",
+          metadata: expect.objectContaining({
+            teamDefinitionId: "team-def-1",
+            teamDefinitionName: "Team One",
+            memberTree: [
+              expect.objectContaining({
+                platformAgentRunId,
+                llmModelIdentifier,
+                workspaceRootPath: "/tmp/team-workspace",
+              }),
+            ],
+          }),
         }),
       );
-      expect(historyIndexService.recordRunCreated).toHaveBeenCalledTimes(1);
     },
   );
 
@@ -555,12 +550,7 @@ describe("TeamRunService integration", () => {
       writeMetadata: vi.fn().mockResolvedValue(undefined),
       readMetadata: vi.fn(),
     };
-    const historyIndexService = {
-      recordRunCreated: vi.fn().mockResolvedValue(undefined),
-      recordRunRestored: vi.fn(),
-      recordRunActivity: vi.fn(),
-      recordRunTerminated: vi.fn(),
-    };
+    const historyCatalogService = createHistoryCatalogServiceMock();
     const teamDefinitionService = {
       getDefinitionById: vi.fn().mockResolvedValue(
         createTeamDefinition({
@@ -584,7 +574,7 @@ describe("TeamRunService integration", () => {
       agentTeamRunManager: agentTeamRunManager as never,
       teamDefinitionService: teamDefinitionService as never,
       teamRunMetadataService: metadataService as never,
-      teamRunHistoryIndexService: historyIndexService as never,
+      teamRunHistoryCatalogService: historyCatalogService as never,
       workspaceManager: workspaceManager as never,
       memoryDir: "/tmp/memory",
     });
@@ -602,24 +592,26 @@ describe("TeamRunService integration", () => {
         coordinatorMemberName: "Coordinator",
       }),
     );
-    expect(metadataService.writeMetadata).toHaveBeenCalledWith(
-      "team-run-mixed-1",
+    expect(historyCatalogService.recordTeamRunCreated).toHaveBeenCalledWith(
       expect.objectContaining({
-        memberTree: expect.arrayContaining([
-          expect.objectContaining({
-            memberName: "Coordinator",
-            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-            platformAgentRunId: "thread-mixed-1",
-          }),
-          expect.objectContaining({
-            memberName: "Reviewer",
-            runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-            platformAgentRunId: "session-mixed-1",
-          }),
-        ]),
+        teamRunId: "team-run-mixed-1",
+        summary: "",
+        metadata: expect.objectContaining({
+          memberTree: expect.arrayContaining([
+            expect.objectContaining({
+              memberName: "Coordinator",
+              runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+              platformAgentRunId: "thread-mixed-1",
+            }),
+            expect.objectContaining({
+              memberName: "Reviewer",
+              runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+              platformAgentRunId: "session-mixed-1",
+            }),
+          ]),
+        }),
       }),
     );
-    expect(historyIndexService.recordRunCreated).toHaveBeenCalledTimes(1);
   });
 
   it.each([
@@ -655,12 +647,7 @@ describe("TeamRunService integration", () => {
         writeMetadata: vi.fn().mockResolvedValue(undefined),
         readMetadata: vi.fn().mockResolvedValue(metadata),
       };
-      const historyIndexService = {
-        recordRunCreated: vi.fn(),
-        recordRunRestored: vi.fn().mockResolvedValue(undefined),
-        recordRunActivity: vi.fn(),
-        recordRunTerminated: vi.fn(),
-      };
+      const historyCatalogService = createHistoryCatalogServiceMock();
       const teamDefinitionService = {
         getDefinitionById: vi.fn().mockResolvedValue(
           createTeamDefinition({
@@ -682,7 +669,7 @@ describe("TeamRunService integration", () => {
         agentTeamRunManager: agentTeamRunManager as never,
         teamDefinitionService: teamDefinitionService as never,
         teamRunMetadataService: metadataService as never,
-        teamRunHistoryIndexService: historyIndexService as never,
+        teamRunHistoryCatalogService: historyCatalogService as never,
         workspaceManager: workspaceManager as never,
         memoryDir: "/tmp/memory",
       });
@@ -710,17 +697,18 @@ describe("TeamRunService integration", () => {
           platformAgentRunId,
         );
       }
-      expect(metadataService.writeMetadata).toHaveBeenCalledWith(
-        metadata.teamRunId,
+      expect(historyCatalogService.recordTeamRunRestored).toHaveBeenCalledWith(
         expect.objectContaining({
-          memberTree: [
-            expect.objectContaining({
-              platformAgentRunId,
-            }),
-          ],
+          teamRunId: metadata.teamRunId,
+          metadata: expect.objectContaining({
+            memberTree: [
+              expect.objectContaining({
+                platformAgentRunId,
+              }),
+            ],
+          }),
         }),
       );
-      expect(historyIndexService.recordRunRestored).toHaveBeenCalledTimes(1);
     },
   );
 
@@ -746,12 +734,7 @@ describe("TeamRunService integration", () => {
       writeMetadata: vi.fn().mockResolvedValue(undefined),
       readMetadata: vi.fn().mockResolvedValue(metadata),
     };
-    const historyIndexService = {
-      recordRunCreated: vi.fn(),
-      recordRunRestored: vi.fn().mockResolvedValue(undefined),
-      recordRunActivity: vi.fn(),
-      recordRunTerminated: vi.fn(),
-    };
+    const historyCatalogService = createHistoryCatalogServiceMock();
     const teamDefinitionService = {
       getDefinitionById: vi.fn().mockResolvedValue(
         createTeamDefinition({
@@ -776,7 +759,7 @@ describe("TeamRunService integration", () => {
       agentTeamRunManager: agentTeamRunManager as never,
       teamDefinitionService: teamDefinitionService as never,
       teamRunMetadataService: metadataService as never,
-      teamRunHistoryIndexService: historyIndexService as never,
+      teamRunHistoryCatalogService: historyCatalogService as never,
       workspaceManager: workspaceManager as never,
       memoryDir: "/tmp/memory",
     });
@@ -802,22 +785,23 @@ describe("TeamRunService integration", () => {
         }),
       ]),
     );
-    expect(metadataService.writeMetadata).toHaveBeenCalledWith(
-      metadata.teamRunId,
+    expect(historyCatalogService.recordTeamRunRestored).toHaveBeenCalledWith(
       expect.objectContaining({
-        memberTree: expect.arrayContaining([
-          expect.objectContaining({
-            memberName: "Coordinator",
-            platformAgentRunId: "thread-mixed-1",
-          }),
-          expect.objectContaining({
-            memberName: "Reviewer",
-            platformAgentRunId: "session-mixed-1",
-          }),
-        ]),
+        teamRunId: metadata.teamRunId,
+        metadata: expect.objectContaining({
+          memberTree: expect.arrayContaining([
+            expect.objectContaining({
+              memberName: "Coordinator",
+              platformAgentRunId: "thread-mixed-1",
+            }),
+            expect.objectContaining({
+              memberName: "Reviewer",
+              platformAgentRunId: "session-mixed-1",
+            }),
+          ]),
+        }),
       }),
     );
-    expect(historyIndexService.recordRunRestored).toHaveBeenCalledTimes(1);
   });
 
   it("records termination history only when team termination succeeds", async () => {
@@ -825,12 +809,7 @@ describe("TeamRunService integration", () => {
       .fn()
       .mockResolvedValueOnce(true)
       .mockResolvedValueOnce(false);
-    const historyIndexService = {
-      recordRunCreated: vi.fn(),
-      recordRunRestored: vi.fn(),
-      recordRunActivity: vi.fn(),
-      recordRunTerminated: vi.fn().mockResolvedValue(undefined),
-    };
+    const historyCatalogService = createHistoryCatalogServiceMock();
     const service = new TeamRunService({
       agentTeamRunManager: {
         createTeamRun: vi.fn(),
@@ -845,7 +824,7 @@ describe("TeamRunService integration", () => {
         writeMetadata: vi.fn(),
         readMetadata: vi.fn(),
       } as never,
-      teamRunHistoryIndexService: historyIndexService as never,
+      teamRunHistoryCatalogService: historyCatalogService as never,
       workspaceManager: {
         ensureWorkspaceByRootPath: vi.fn(),
         getWorkspaceById: vi.fn(),
@@ -854,7 +833,9 @@ describe("TeamRunService integration", () => {
 
     await expect(service.terminateTeamRun("team-run-1")).resolves.toBe(true);
     await expect(service.terminateTeamRun("team-run-2")).resolves.toBe(false);
-    expect(historyIndexService.recordRunTerminated).toHaveBeenCalledTimes(1);
-    expect(historyIndexService.recordRunTerminated).toHaveBeenCalledWith("team-run-1");
+    expect(historyCatalogService.recordTeamRunTerminated).toHaveBeenCalledTimes(1);
+    expect(historyCatalogService.recordTeamRunTerminated).toHaveBeenCalledWith({
+      teamRunId: "team-run-1",
+    });
   });
 });

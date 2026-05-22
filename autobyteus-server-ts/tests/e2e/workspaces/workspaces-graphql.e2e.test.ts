@@ -8,7 +8,9 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { AppConfig } from "../../../src/config/app-config.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { canonicalizeWorkspaceRootPath } from "../../../src/workspaces/workspace-path-utils.js";
 const workspaceManager = getWorkspaceManager();
 
 const getLocalFileExplorerState = async (workspaceId: string) => {
@@ -164,6 +166,70 @@ describe("Workspaces GraphQL e2e", () => {
     ).toBe(true);
 
     await expect(getLocalFileExplorerState(created.createWorkspace.workspaceId)).resolves.toMatchObject({
+      watcher: null,
+      leaseCount: 0,
+    });
+  });
+
+  it("resolves a deterministic workspace reference without initializing the workspace", async () => {
+    const rootPath = path.join(tempRoot, "test_ws_root");
+    const rootPathWithTrailingSeparator = `${rootPath}${path.sep}`;
+    const expectedRootPath = canonicalizeWorkspaceRootPath(rootPathWithTrailingSeparator);
+    const expectedWorkspaceId = buildFilesystemWorkspaceId(expectedRootPath);
+
+    const referenceQuery = `
+      query ResolveWorkspaceReference($rootPath: String!) {
+        workspaceReference(rootPath: $rootPath) {
+          workspaceId
+          workspaceRootPath
+          displayName
+          kind
+        }
+      }
+    `;
+
+    const first = await execGraphql<{
+      workspaceReference: {
+        workspaceId: string;
+        workspaceRootPath: string;
+        displayName: string;
+        kind: string;
+      };
+    }>(referenceQuery, { rootPath: rootPathWithTrailingSeparator });
+
+    expect(first.workspaceReference).toEqual({
+      workspaceId: expectedWorkspaceId,
+      workspaceRootPath: expectedRootPath,
+      displayName: "test_ws_root",
+      kind: "filesystem",
+    });
+    expect(workspaceManager.getWorkspaceById(expectedWorkspaceId)).toBeUndefined();
+    expect(new Set(workspaceManager.getAllWorkspaces().map((ws) => ws.workspaceId))).toEqual(initialIds);
+
+    const repeated = await execGraphql<{
+      workspaceReference: { workspaceId: string; workspaceRootPath: string };
+    }>(referenceQuery, { rootPath });
+
+    expect(repeated.workspaceReference.workspaceId).toBe(expectedWorkspaceId);
+    expect(repeated.workspaceReference.workspaceRootPath).toBe(expectedRootPath);
+    expect(workspaceManager.getWorkspaceById(expectedWorkspaceId)).toBeUndefined();
+
+    const createMutation = `
+      mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+        createWorkspace(input: $input) {
+          workspaceId
+          absolutePath
+        }
+      }
+    `;
+
+    const created = await execGraphql<{
+      createWorkspace: { workspaceId: string; absolutePath: string | null };
+    }>(createMutation, { input: { rootPath } });
+
+    expect(created.createWorkspace.workspaceId).toBe(expectedWorkspaceId);
+    expect(created.createWorkspace.absolutePath).toBe(expectedRootPath);
+    await expect(getLocalFileExplorerState(expectedWorkspaceId)).resolves.toMatchObject({
       watcher: null,
       leaseCount: 0,
     });

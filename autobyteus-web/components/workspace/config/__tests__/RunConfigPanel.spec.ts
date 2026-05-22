@@ -71,6 +71,8 @@ vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => ({
     createWorkspace: vi.fn(),
     workspaces: {},
+    workspaceReferencesById: {},
+    registerWorkspaceInfoReference: vi.fn(),
     allWorkspaces: [],
     tempWorkspaceId: null,
     tempWorkspace: null,
@@ -124,7 +126,7 @@ describe('RunConfigPanel', () => {
 
   it('renders Agent Form when Agent Template set', async () => {
     const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
-    const store = useAgentRunConfigStore()
+    const store = useAgentRunConfigStore() as any
     store.config = { agentDefinitionId: 'def-1', workspaceId: null } as any
     store.isConfigured = true
 
@@ -139,7 +141,7 @@ describe('RunConfigPanel', () => {
 
   it('renders Team Form when Team Template set', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
-    const store = useTeamRunConfigStore()
+    const store = useTeamRunConfigStore() as any
     store.config = { teamDefinitionId: 'team-def-1', workspaceId: null } as any
     store.launchReadiness = { canLaunch: false, blockingIssues: [], unresolvedMembers: [] } as any
 
@@ -157,7 +159,7 @@ describe('RunConfigPanel', () => {
 
   it('triggers team run on button click when launch readiness passes', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
-    const teamStore = useTeamRunConfigStore()
+    const teamStore = useTeamRunConfigStore() as any
     teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: 'ws-1' } as any
     teamStore.launchReadiness = { canLaunch: true, blockingIssues: [], unresolvedMembers: [] } as any
 
@@ -170,14 +172,14 @@ describe('RunConfigPanel', () => {
     await wrapper.find('.run-btn').trigger('click')
 
     const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore')
-    const contextStore = useAgentTeamContextsStore()
+    const contextStore = useAgentTeamContextsStore() as any
     expect(contextStore.createRunFromTemplate).toHaveBeenCalled()
     expect(teamStore.clearConfig).toHaveBeenCalled()
   })
 
   it('disables team run and shows the blocking message when mixed-runtime readiness fails', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
-    const teamStore = useTeamRunConfigStore()
+    const teamStore = useTeamRunConfigStore() as any
     teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: 'ws-1' } as any
     teamStore.launchReadiness = {
       canLaunch: false,
@@ -213,7 +215,7 @@ describe('RunConfigPanel', () => {
 
   it('disables team run when workspace is missing', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
-    const teamStore = useTeamRunConfigStore()
+    const teamStore = useTeamRunConfigStore() as any
     teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: null } as any
     teamStore.launchReadiness = {
       canLaunch: false,
@@ -233,7 +235,7 @@ describe('RunConfigPanel', () => {
 
   it('blocks agent run when workspace is missing (defensive path)', async () => {
     const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
-    const agentStore = useAgentRunConfigStore()
+    const agentStore = useAgentRunConfigStore() as any
     agentStore.config = {
       agentDefinitionId: 'def-1',
       agentDefinitionName: 'Agent def-1',
@@ -251,14 +253,14 @@ describe('RunConfigPanel', () => {
     await wrapper.find('.run-btn').trigger('click')
 
     const { useAgentContextsStore } = await import('~/stores/agentContextsStore')
-    const contextStore = useAgentContextsStore()
+    const contextStore = useAgentContextsStore() as any
     expect(contextStore.createRunFromTemplate).not.toHaveBeenCalled()
     expect(agentStore.setWorkspaceError).toHaveBeenCalledWith('Workspace is required to run an agent.')
   })
 
   it('keeps draft agent configuration editable for workspace selection events', async () => {
     const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore')
-    const agentStore = useAgentRunConfigStore()
+    const agentStore = useAgentRunConfigStore() as any
     agentStore.config = {
       agentDefinitionId: 'def-1',
       agentDefinitionName: 'Agent def-1',
@@ -278,13 +280,16 @@ describe('RunConfigPanel', () => {
 
     form.vm.$emit('select-existing', 'ws-draft-new')
 
-    expect(agentStore.updateAgentConfig).toHaveBeenCalledWith({ workspaceId: 'ws-draft-new' })
+    expect(agentStore.updateAgentConfig).toHaveBeenCalledWith({
+      workspaceId: 'ws-draft-new',
+      workspaceReference: null,
+    })
     expect(agentStore.config?.workspaceId).toBe('ws-draft-new')
   })
 
   it('keeps draft team configuration editable for workspace selection events', async () => {
     const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore')
-    const teamStore = useTeamRunConfigStore()
+    const teamStore = useTeamRunConfigStore() as any
     teamStore.config = {
       teamDefinitionId: 'team-def-1',
       teamDefinitionName: 'Team team-def-1',
@@ -303,7 +308,10 @@ describe('RunConfigPanel', () => {
 
     form.vm.$emit('select-existing', 'ws-draft-new')
 
-    expect(teamStore.updateConfig).toHaveBeenCalledWith({ workspaceId: 'ws-draft-new' })
+    expect(teamStore.updateConfig).toHaveBeenCalledWith({
+      workspaceId: 'ws-draft-new',
+      workspaceReference: null,
+    })
     expect(teamStore.config?.workspaceId).toBe('ws-draft-new')
   })
 
@@ -312,7 +320,7 @@ describe('RunConfigPanel', () => {
     selectionStore.selectRun('run-1', 'agent')
 
     const { useAgentContextsStore } = await import('~/stores/agentContextsStore')
-    const contextStore = useAgentContextsStore()
+    const contextStore = useAgentContextsStore() as any
     contextStore.activeRun = {
       config: {
         agentDefinitionId: 'def-1',
@@ -342,7 +350,7 @@ describe('RunConfigPanel', () => {
     selectionStore.selectRun('run-1', 'agent')
 
     const { useAgentContextsStore } = await import('~/stores/agentContextsStore')
-    const contextStore = useAgentContextsStore()
+    const contextStore = useAgentContextsStore() as any
     contextStore.activeRun = {
       config: {
         agentDefinitionId: 'def-1',
@@ -370,7 +378,7 @@ describe('RunConfigPanel', () => {
     selectionStore.selectRun('team-run-1', 'team')
 
     const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore')
-    const contextStore = useAgentTeamContextsStore()
+    const contextStore = useAgentTeamContextsStore() as any
     contextStore.activeTeamContext = {
       config: {
         teamDefinitionId: 'team-def-1',

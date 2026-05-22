@@ -309,7 +309,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           memberConfigs = buildTeamRunMemberConfigRecords({
             config: activeTeam.config,
             leafMembers,
-          }).map((memberConfig) => ({
+          }).map(({ workspaceReference: _workspaceReference, ...memberConfig }) => ({
             ...memberConfig,
             skillAccessMode: memberConfig.skillAccessMode as TeamMemberConfigInput['skillAccessMode'],
           }));

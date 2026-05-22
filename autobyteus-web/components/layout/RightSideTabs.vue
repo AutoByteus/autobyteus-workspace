@@ -128,8 +128,13 @@ watch(() => currentAgentRunId.value ? todoStore.getTodos(currentAgentRunId.value
 
 // Auto-switch to Files tab when a file is opened
 watch(() => {
-    const wsId = activeContextStore.activeConfig?.workspaceId || (selectionStore.selectedType === 'team' ? workspaceStore.activeWorkspace?.workspaceId : null);
-    const targetId = wsId || workspaceStore.activeWorkspace?.workspaceId || '';
+    const wsId =
+      activeContextStore.activeConfig?.workspaceReference?.workspaceId ||
+      activeContextStore.activeConfig?.workspaceId ||
+      (selectionStore.selectedType === 'team'
+        ? workspaceStore.activeWorkspaceReference?.workspaceId || workspaceStore.activeWorkspace?.workspaceId
+        : null);
+    const targetId = wsId || workspaceStore.activeWorkspaceReference?.workspaceId || workspaceStore.activeWorkspace?.workspaceId || '';
     if (!targetId) return [];
     return fileExplorerStore.getOpenFiles(targetId);
 }, (openFiles) => {

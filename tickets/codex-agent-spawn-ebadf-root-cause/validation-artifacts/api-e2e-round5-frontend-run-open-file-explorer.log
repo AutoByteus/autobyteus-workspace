@@ -1,0 +1,180 @@
+
+> autobyteus@1.3.26 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/runHistoryStore.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts components/fileExplorer/__tests__/FileExplorer.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/agentInput/__tests__/ContextFilePathInputArea.spec.ts services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+
+stderr | services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/tools/__tests__/Terminal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/tools/__tests__/Terminal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/ContextFilePathInputArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > constructor > uses provided wsEndpoint
+[FileExplorerStreaming] Connecting to ws://custom:9000/ws/file-explorer/workspace-1...
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > constructor > URL-encodes deterministic workspace ids when opening the websocket
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/root%3A%2Ftmp%2Fmy%2Fworkspace...
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > connect > creates WebSocket connection with correct URL
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-123...
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > connect > sets state to connecting
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts (2 tests) 33ms
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > connect > does not reconnect if already connected to same workspace
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: sess-1
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > message handling > calls onConnect with session ID on CONNECTED message
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: sess-123
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > message handling > calls onFileSystemChange on FILE_SYSTEM_CHANGE message
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: sess-1
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > message handling > calls onError on ERROR message
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+
+stderr | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > message handling > calls onError on ERROR message
+[FileExplorerStreaming] Server error: { code: 'WORKSPACE_NOT_FOUND', message: 'Not found' }
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > disconnect > closes WebSocket connection
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] WebSocket disconnected: 1000 Normal closure
+[FileExplorerStreaming] Disconnected
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > disconnect > resets state to disconnected
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: sess-1
+[FileExplorerStreaming] WebSocket disconnected: 1000 Normal closure
+[FileExplorerStreaming] Disconnected
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > disconnect > calls onDisconnect callback when connection closes
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: sess-1
+[FileExplorerStreaming] WebSocket disconnected: 1000 Normal closure
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > state property > returns connecting after connect called
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > state property > returns connected after CONNECTED message
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: s1
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > retry policy > does not retry when closed with non-retryable close code
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] WebSocket disconnected: 4004 Workspace not found
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > retry policy > does not retry when server sends non-retryable error code before close
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] WebSocket disconnected: 1011 Rejected
+
+stderr | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > retry policy > does not retry when server sends non-retryable error code before close
+[FileExplorerStreaming] Server error: { code: 'WORKSPACE_NOT_FOUND', message: 'Workspace ws-1 not found' }
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > retry policy > keeps backoff progression when transport opens but protocol never connects
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] WebSocket disconnected: 1011 Transient
+[FileExplorerStreaming] Scheduling reconnection in 1000ms (attempt 1)
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] WebSocket disconnected: 1011 Transient again
+[FileExplorerStreaming] Scheduling reconnection in 2000ms (attempt 2)
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts (4 tests) 5ms
+ ✓ services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts (18 tests) 11ms
+ ✓ services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts (2 tests) 6ms
+ ✓ services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts (1 test) 3ms
+ ✓ components/agentInput/__tests__/ContextFilePathInputArea.spec.ts (4 tests) 61ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (45 tests) 56ms
+ ✓ components/fileExplorer/__tests__/FileExplorer.spec.ts (2 tests) 41ms
+stderr | services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts (5 tests) 28ms
+stdout | services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts (2 tests) 3ms
+
+ Test Files  10 passed (10)
+      Tests  85 passed (85)
+   Start at  20:04:12
+   Duration  6.37s (transform 3.59s, setup 39.67s, collect 2.57s, tests 247ms, environment 2.68s, prepare 2.01s)
+

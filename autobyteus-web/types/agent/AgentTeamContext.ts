@@ -4,6 +4,7 @@ import type { Task, TaskStatus } from '~/types/taskManagement';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { TeamRunMetadataAgentMember } from '~/stores/runHistoryTypes';
+import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference';
 
 export type TeamMemberNodeKind = 'agent' | 'agent_team';
 
@@ -42,6 +43,7 @@ export interface HistoricalTeamHydrationState {
   updatedAt: string;
   memberMetadataByRouteKey: Record<string, TeamRunMetadataAgentMember>;
   memberProjectionLoadStateByRouteKey: Record<string, TeamMemberProjectionLoadState>;
+  memberWorkspaceReferencesByRouteKey: Record<string, WorkspaceReference>;
 }
 
 /**

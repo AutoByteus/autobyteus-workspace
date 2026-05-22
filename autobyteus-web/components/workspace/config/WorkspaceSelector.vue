@@ -145,6 +145,7 @@ const props = defineProps<{
   workspaceId: string | null;
   isLoading: boolean;
   error: string | null;
+  initialPath?: string;
   disabled?: boolean;
   workspaceLocked?: boolean;
   workspaceLockedMessage?: string;
@@ -165,7 +166,7 @@ const canBrowseForFolder = computed(() => canUseLocalFolderPicker({
 
 // Local state
 const mode = ref<'existing' | 'new'>('new');
-const tempPath = ref('');
+const tempPath = ref(props.initialPath || '');
 const successMessage = ref<string | null>(null);
 const isInteractionDisabled = computed(() => (props.disabled ?? false) || (props.workspaceLocked ?? false));
 const workspaceLocked = computed(() => props.workspaceLocked === true);
@@ -208,6 +209,22 @@ const selectedWorkspace = computed(() => {
   return workspaceStore.workspaces[props.workspaceId] || null;
 });
 
+const updateDisplayOnlyState = () => {
+  if (props.workspaceId && selectedWorkspace.value) {
+    successMessage.value = `Workspace: ${selectedWorkspace.value.name}`;
+    mode.value = 'existing';
+    return;
+  }
+  if (props.initialPath) {
+    tempPath.value = props.initialPath;
+    successMessage.value = `Workspace: ${props.initialPath}`;
+    mode.value = 'new';
+    return;
+  }
+  successMessage.value = null;
+  mode.value = 'new';
+};
+
 const maybeAutoSelectDefaultWorkspace = (): boolean => {
   if (props.workspaceId || isInteractionDisabled.value) {
     return false;
@@ -223,6 +240,11 @@ const maybeAutoSelectDefaultWorkspace = (): boolean => {
 
 // Initialize mode based on available workspaces
 onMounted(async () => {
+  if (isInteractionDisabled.value) {
+    updateDisplayOnlyState();
+    return;
+  }
+
   // Fetch all workspaces and ensure temp workspace is available
   try {
     await workspaceStore.fetchAllWorkspaces();
@@ -247,31 +269,63 @@ onMounted(async () => {
   if (props.workspaceId && selectedWorkspace.value) {
     successMessage.value = `Workspace: ${selectedWorkspace.value.name}`;
     mode.value = 'existing';
+  } else if (props.initialPath) {
+    successMessage.value = `Workspace: ${props.initialPath}`;
+    mode.value = 'new';
   }
 });
 
 // Watch for workspace changes
 watch(() => props.workspaceId, (newId) => {
+  if (isInteractionDisabled.value) {
+    updateDisplayOnlyState();
+    return;
+  }
   if (newId && workspaceStore.workspaces[newId]) {
     const ws = workspaceStore.workspaces[newId];
     successMessage.value = `Workspace: ${ws.name}`;
     return;
   }
+  if (newId && props.initialPath) {
+    successMessage.value = `Workspace: ${props.initialPath}`;
+    return;
+  }
   maybeAutoSelectDefaultWorkspace();
+});
+
+watch(() => props.initialPath, (newPath) => {
+  if (newPath && !tempPath.value) {
+    tempPath.value = newPath;
+  }
+  if (isInteractionDisabled.value) {
+    updateDisplayOnlyState();
+    return;
+  }
+  if (props.workspaceId && newPath && !selectedWorkspace.value) {
+    successMessage.value = `Workspace: ${newPath}`;
+  }
 });
 
 watch(
   () => workspaceStore.tempWorkspaceId,
   () => {
+    if (isInteractionDisabled.value) return;
     maybeAutoSelectDefaultWorkspace();
   },
 );
 
 // Watch for workspace options changes - update mode if workspaces become available
 watch(workspaceOptions, (newOptions) => {
+  if (isInteractionDisabled.value) return;
   if (newOptions.length > 0 && mode.value === 'new' && !tempPath.value) {
     // Auto-switch to existing mode if workspaces become available
     mode.value = 'existing';
+  }
+});
+
+watch(isInteractionDisabled, (disabled) => {
+  if (disabled) {
+    updateDisplayOnlyState();
   }
 });
 

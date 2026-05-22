@@ -17,7 +17,12 @@
       </div>
     </div>
     <div class="file-explorer-content flex-grow overflow-y-auto relative">
-      <div v-if="!hasWorkspaces" class="flex flex-col items-center justify-center h-full text-center text-gray-500 italic p-4">{{ $t('tools.components.fileExplorer.FileExplorer.no_workspaces_available_add_a_workspace') }}</div>
+      <div v-if="isActivatingWorkspace" class="flex flex-col items-center justify-center h-full text-center text-gray-500 italic p-4">Loading workspace…</div>
+      <div v-else-if="activationError" class="flex flex-col items-center justify-center h-full text-center text-red-600 p-4">
+        <p>{{ activationError }}</p>
+        <button class="mt-2 text-sm underline" type="button" @click="activateCurrentWorkspace">Retry</button>
+      </div>
+      <div v-else-if="!hasWorkspaceTarget" class="flex flex-col items-center justify-center h-full text-center text-gray-500 italic p-4">{{ $t('tools.components.fileExplorer.FileExplorer.no_workspaces_available_add_a_workspace') }}</div>
       <div v-else-if="searchLoading" class="text-gray-500 italic">{{ $t('tools.components.fileExplorer.FileExplorer.loading_search_results') }}</div>
       <div v-else-if="displayedFiles.length === 0 && searchQuery" class="text-gray-500 italic">{{ $t('tools.components.fileExplorer.FileExplorer.no_files_match_your_search') }}</div>
       <div v-else class="space-y-2">
@@ -28,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted, onUnmounted, nextTick, toRef, provide } from 'vue';
+import { ref, watch, computed, onMounted, onUnmounted, nextTick, provide } from 'vue';
 import FileItem from "~/components/fileExplorer/FileItem.vue";
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useWorkspaceFileExplorer } from '~/composables/useWorkspaceFileExplorer';
@@ -40,8 +45,10 @@ const props = defineProps<{
 }>();
 
 const workspaceStore = useWorkspaceStore();
-// Use the new composable scoped to the provided workspace ID
-const explorer = useWorkspaceFileExplorer(toRef(props, 'workspaceId'));
+const activatedWorkspaceId = ref<string | null>(props.workspaceId || null);
+const isActivatingWorkspace = ref(false);
+const activationError = ref<string | null>(null);
+const explorer = useWorkspaceFileExplorer(activatedWorkspaceId);
 
 // Provide the explorer instance to all children (FileItem)
 provide('workspaceFileExplorer', explorer);
@@ -49,17 +56,28 @@ provide('workspaceFileExplorer', explorer);
 const searchQuery = ref('');
 const searchInputRef = ref<HTMLInputElement | null>(null);
 
-const hasWorkspaces = computed(() => workspaceStore.allWorkspaceIds.length > 0);
 const searchLoading = computed(() => explorer.isSearchLoading.value);
 
-// Determine the relevant workspace (prop-based or active store-based)
-const currentWorkspace = computed(() => {
+const explicitWorkspace = computed(() =>
+  props.workspaceId ? workspaceStore.workspaces[props.workspaceId] || null : null,
+);
+
+const requestedWorkspaceReference = computed(() => {
   if (props.workspaceId) {
-    return workspaceStore.workspaces[props.workspaceId];
+    return workspaceStore.workspaceReferencesById[props.workspaceId] || null;
   }
-  return workspaceStore.activeWorkspace;
+  return workspaceStore.activeWorkspaceReference;
+});
+
+// Determine the relevant initialized workspace after explicit activation.
+const currentWorkspace = computed(() => {
+  const workspaceId = activatedWorkspaceId.value || props.workspaceId || '';
+  return workspaceId ? workspaceStore.workspaces[workspaceId] || null : null;
 });
 const activeWorkspace = currentWorkspace; // Alias for template compatibility
+const hasWorkspaceTarget = computed(() =>
+  Boolean(requestedWorkspaceReference.value || explicitWorkspace.value || currentWorkspace.value),
+);
 const liveSessionConsumerId = `file-explorer:${++fileExplorerConsumerCounter}`;
 let releaseLiveSession: (() => void) | null = null;
 
@@ -67,6 +85,48 @@ const releaseCurrentLiveSession = () => {
   releaseLiveSession?.();
   releaseLiveSession = null;
 };
+
+let activationSequence = 0;
+const activateCurrentWorkspace = async () => {
+  const sequence = ++activationSequence;
+  activationError.value = null;
+
+  if (explicitWorkspace.value) {
+    activatedWorkspaceId.value = explicitWorkspace.value.workspaceId;
+    return;
+  }
+
+  const reference = requestedWorkspaceReference.value;
+  if (!reference) {
+    activatedWorkspaceId.value = null;
+    return;
+  }
+
+  isActivatingWorkspace.value = true;
+  try {
+    const workspace = await workspaceStore.ensureWorkspaceInitialized(reference);
+    if (sequence === activationSequence) {
+      activatedWorkspaceId.value = workspace.workspaceId;
+    }
+  } catch (error: any) {
+    if (sequence === activationSequence) {
+      activatedWorkspaceId.value = null;
+      activationError.value = error?.message || 'Failed to load workspace.';
+    }
+  } finally {
+    if (sequence === activationSequence) {
+      isActivatingWorkspace.value = false;
+    }
+  }
+};
+
+watch(
+  () => requestedWorkspaceReference.value?.workspaceId || props.workspaceId || '',
+  () => {
+    activateCurrentWorkspace();
+  },
+  { immediate: true },
+);
 
 watch(() => currentWorkspace.value?.workspaceId ?? '', (workspaceId) => {
   releaseCurrentLiveSession();

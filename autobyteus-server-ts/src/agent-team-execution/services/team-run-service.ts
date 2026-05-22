@@ -12,6 +12,8 @@ import {
   runtimeKindFromString,
 } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
+import { FILESYSTEM_WORKSPACE_ID_PREFIX } from "../../workspaces/workspace-id-mapping-store.js";
+import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
 import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import {
   TeamRunMetadataService,
@@ -196,14 +198,41 @@ export class TeamRunService {
   }
 
   async createTeamRun(input: CreateTeamRunInput): Promise<TeamRun> {
+    const workspaceActivationsByCanonicalRoot = new Map<
+      string,
+      Promise<{ workspaceId: string; workspaceRootPath: string }>
+    >();
+
+    const ensureWorkspaceOnceByRootPath = (
+      rawRootPath: string,
+    ): Promise<{ workspaceId: string; workspaceRootPath: string }> => {
+      const canonicalRootPath = canonicalizeWorkspaceRootPath(rawRootPath);
+      const existingActivation = workspaceActivationsByCanonicalRoot.get(canonicalRootPath);
+      if (existingActivation) {
+        return existingActivation;
+      }
+      const activation = this.workspaceManager.ensureWorkspaceByRootPath(canonicalRootPath)
+        .then((workspace) => ({
+          workspaceId: workspace.workspaceId,
+          workspaceRootPath: workspace.getBasePath?.() ?? canonicalRootPath,
+        }));
+      workspaceActivationsByCanonicalRoot.set(canonicalRootPath, activation);
+      return activation;
+    };
+
     const memberConfigs = await Promise.all(
       input.memberConfigs.map(async (memberConfig) => {
-        let workspaceId = memberConfig.workspaceId ?? null;
-        const workspaceRootPath = memberConfig.workspaceRootPath?.trim() || null;
+        let workspaceId = memberConfig.workspaceId?.trim() || null;
+        let workspaceRootPath = memberConfig.workspaceRootPath?.trim() || null;
 
-        if (workspaceRootPath && !workspaceId) {
-          const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(workspaceRootPath);
+        if (workspaceRootPath) {
+          const workspace = await ensureWorkspaceOnceByRootPath(workspaceRootPath);
           workspaceId = workspace.workspaceId;
+          workspaceRootPath = workspace.workspaceRootPath;
+        } else if (workspaceId?.startsWith(FILESYSTEM_WORKSPACE_ID_PREFIX)) {
+          throw new Error(
+            "workspaceRootPath is required when launching a team with a filesystem workspace reference.",
+          );
         }
 
         return {

@@ -186,7 +186,12 @@ const workspaceStore = useWorkspaceStore();
 
 const activeContext = computed(() => activeContextStore.activeAgentContext);
 const workspaceId = computed(
-  () => activeContext.value?.config.workspaceId ?? workspaceStore.activeWorkspace?.workspaceId ?? null,
+  () =>
+    activeContext.value?.config.workspaceReference?.workspaceId ??
+    activeContext.value?.config.workspaceId ??
+    workspaceStore.activeWorkspaceReference?.workspaceId ??
+    workspaceStore.activeWorkspace?.workspaceId ??
+    null,
 );
 const isEmbeddedElectronRuntime = computed(
   () => windowNodeContextStore.isEmbeddedWindow && typeof window !== 'undefined' && Boolean(window.electronAPI),
@@ -250,7 +255,21 @@ const {
   },
   openWorkspaceFile: (locator, resolvedWorkspaceId) => {
     if (!resolvedWorkspaceId) return;
-    fileExplorerStore.openFile(locator, resolvedWorkspaceId);
+    const open = (workspaceIdToOpen: string) => fileExplorerStore.openFile(locator, workspaceIdToOpen);
+    if (workspaceStore.workspaces[resolvedWorkspaceId]) {
+      open(resolvedWorkspaceId);
+      return;
+    }
+    const reference =
+      activeContext.value?.config.workspaceReference ||
+      workspaceStore.workspaceReferencesById[resolvedWorkspaceId] ||
+      workspaceStore.activeWorkspaceReference;
+    if (!reference) {
+      return;
+    }
+    workspaceStore.ensureWorkspaceInitialized(reference)
+      .then((workspace) => open(workspace.workspaceId))
+      .catch((error) => console.warn('Failed to activate workspace for attachment:', error));
   },
   getWorkspaceId: () => workspaceId.value,
   getIsEmbeddedElectronRuntime: () => isEmbeddedElectronRuntime.value,

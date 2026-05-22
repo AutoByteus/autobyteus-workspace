@@ -14,4 +14,14 @@ export const GetAllWorkspaces = gql`
   }
 `
 
-
+export const GetWorkspaceReference = gql`
+  query GetWorkspaceReference($rootPath: String!) {
+    workspaceReference(rootPath: $rootPath) {
+      __typename
+      workspaceId
+      workspaceRootPath
+      displayName
+      kind
+    }
+  }
+`

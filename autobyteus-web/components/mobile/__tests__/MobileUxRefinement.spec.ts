@@ -52,6 +52,7 @@ function makeAgentRunConfig(): AgentRunConfig {
     llmModelIdentifier: 'test-model',
     runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
     workspaceId: 'workspace-1',
+    workspaceReference: null,
     autoExecuteTools: false,
     skillAccessMode: 'GLOBAL_DISCOVERY',
     isLocked: false,

@@ -2,6 +2,13 @@ import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from "ty
 import { GraphQLJSON } from "graphql-scalars";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { WorkspaceConverter } from "../converters/workspace-converter.js";
+import {
+  buildFilesystemWorkspaceId,
+} from "../../../workspaces/workspace-id-mapping-store.js";
+import {
+  canonicalizeWorkspaceRootPath,
+  workspaceDisplayNameFromRootPath,
+} from "../../../workspaces/workspace-path-utils.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -35,6 +42,21 @@ export class CreateWorkspaceInput {
   rootPath!: string;
 }
 
+@ObjectType()
+export class WorkspaceReferenceInfo {
+  @Field(() => String)
+  workspaceId!: string;
+
+  @Field(() => String)
+  workspaceRootPath!: string;
+
+  @Field(() => String)
+  displayName!: string;
+
+  @Field(() => String)
+  kind!: "filesystem";
+}
+
 @Resolver()
 export class WorkspaceResolver {
   private get workspaceManager() {
@@ -55,6 +77,24 @@ export class WorkspaceResolver {
     } catch (error) {
       logger.error(`Failed to fetch all workspaces: ${String(error)}`);
       throw new Error("Unable to fetch workspaces at this time.");
+    }
+  }
+
+  @Query(() => WorkspaceReferenceInfo)
+  async workspaceReference(
+    @Arg("rootPath", () => String) rootPath: string,
+  ): Promise<WorkspaceReferenceInfo> {
+    try {
+      const workspaceRootPath = canonicalizeWorkspaceRootPath(rootPath);
+      return {
+        workspaceId: buildFilesystemWorkspaceId(workspaceRootPath),
+        workspaceRootPath,
+        displayName: workspaceDisplayNameFromRootPath(workspaceRootPath),
+        kind: "filesystem",
+      };
+    } catch (error) {
+      logger.error(`Failed to resolve workspace reference: ${String(error)}`);
+      throw new Error(String(error));
     }
   }
 

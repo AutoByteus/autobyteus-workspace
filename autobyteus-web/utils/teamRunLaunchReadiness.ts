@@ -55,10 +55,17 @@ export const evaluateTeamRunLaunchReadiness = (
   const blockingIssues: TeamRunLaunchBlockingIssue[] = []
   const unresolvedMembers: TeamRunLaunchReadiness['unresolvedMembers'] = []
 
-  if (!config.workspaceId) {
+  const workspaceId = config.workspaceId?.trim() || ''
+  const workspaceRootPath = config.workspaceReference?.workspaceRootPath?.trim() || ''
+  const needsReferenceRootPath =
+    Boolean(config.workspaceReference) || workspaceId.startsWith('agent_ws_')
+
+  if (!workspaceId || (needsReferenceRootPath && !workspaceRootPath)) {
     blockingIssues.push({
       code: 'WORKSPACE_REQUIRED',
-      message: 'Workspace is required to run a team.',
+      message: needsReferenceRootPath
+        ? 'Workspace root path is required to run a reference-backed team.'
+        : 'Workspace is required to run a team.',
     })
   }
 

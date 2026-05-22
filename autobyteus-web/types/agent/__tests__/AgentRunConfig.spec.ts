@@ -10,6 +10,7 @@ describe('AgentRunConfig', () => {
       llmModelIdentifier: 'gpt-4-turbo',
       runtimeKind: 'autobyteus',
       workspaceId: 'ws-456',
+      workspaceReference: null,
       autoExecuteTools: true,
       skillAccessMode: 'PRELOADED_ONLY',
       isLocked: false,
@@ -31,6 +32,7 @@ describe('AgentRunConfig', () => {
       llmModelIdentifier: 'gpt-4',
       runtimeKind: 'autobyteus',
       workspaceId: null,
+      workspaceReference: null,
       autoExecuteTools: false,
       skillAccessMode: 'PRELOADED_ONLY',
       isLocked: false,
@@ -46,6 +48,7 @@ describe('AgentRunConfig', () => {
       llmModelIdentifier: 'gpt-4',
       runtimeKind: 'autobyteus',
       workspaceId: null,
+      workspaceReference: null,
       autoExecuteTools: false,
       skillAccessMode: 'PRELOADED_ONLY',
       isLocked: true, // Locked after first message

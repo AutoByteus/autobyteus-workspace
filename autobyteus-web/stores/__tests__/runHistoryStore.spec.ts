@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useRunHistoryStore } from '../runHistoryStore';
 
-const buildWorkspaceHistoryGroup = (workspace: Record<string, any>) => {
+const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
   const {
     agents,
     agentDefinitions,
@@ -58,6 +58,15 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>) => {
 const flattenWorkspaceGroupTeamRuns = (workspaceGroup: Record<string, any> | undefined): Array<any> =>
   workspaceGroup?.teamDefinitions?.flatMap((definition: any) => definition.runs) ?? [];
 
+const asTeamMemberTreeRow = (row: Record<string, any>): any => ({
+  memberKind: 'agent',
+  memberPath: [row.memberRouteKey],
+  displayName: row.memberName,
+  currentStatus: 'offline',
+  children: [],
+  ...row,
+});
+
 const buildTeamResumeMetadata = (input: {
   teamRunId?: string;
   teamDefinitionId?: string;
@@ -65,7 +74,7 @@ const buildTeamResumeMetadata = (input: {
   coordinatorMemberRouteKey?: string;
   createdAt?: string;
   members?: Array<Record<string, any>>;
-} = {}) => ({
+} = {}): any => ({
   teamRunId: input.teamRunId ?? 'team-1',
   teamDefinitionId: input.teamDefinitionId ?? 'team-def-1',
   teamDefinitionName: input.teamDefinitionName ?? 'Team Alpha',
@@ -134,8 +143,15 @@ const {
       workspacesFetched: true,
       allWorkspaces: [] as Array<{ workspaceId: string; absolutePath: string; name?: string }>,
       workspaces: {} as Record<string, any>,
+      workspaceReferencesById: {} as Record<string, any>,
       fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
       createWorkspace: vi.fn().mockResolvedValue('ws-created'),
+      resolveWorkspaceReferenceByRootPath: vi.fn(async (rootPath: string) => ({
+        workspaceId: `ref:${rootPath}`,
+        workspaceRootPath: rootPath,
+        displayName: rootPath.split('/').filter(Boolean).pop() || rootPath,
+        kind: 'filesystem',
+      })),
     },
     agentDefinitionStoreMock: {
       agentDefinitions: [{ id: 'agent-def-1', name: 'SuperAgent', avatarUrl: 'https://a' }],
@@ -333,8 +349,15 @@ describe('runHistoryStore', () => {
     workspaceStoreMock.workspacesFetched = true;
     workspaceStoreMock.allWorkspaces = [];
     workspaceStoreMock.workspaces = {};
+    workspaceStoreMock.workspaceReferencesById = {};
     workspaceStoreMock.fetchAllWorkspaces.mockResolvedValue(undefined);
     workspaceStoreMock.createWorkspace.mockResolvedValue('ws-created');
+    workspaceStoreMock.resolveWorkspaceReferenceByRootPath.mockImplementation(async (rootPath: string) => ({
+      workspaceId: `ref:${rootPath}`,
+      workspaceRootPath: rootPath,
+      displayName: rootPath.split('/').filter(Boolean).pop() || rootPath,
+      kind: 'filesystem',
+    }));
 
     agentDefinitionStoreMock.agentDefinitions = [
       { id: 'agent-def-1', name: 'SuperAgent', avatarUrl: 'https://a' },
@@ -564,6 +587,7 @@ describe('runHistoryStore', () => {
     expect(hydrateLiveRunContextMock).toHaveBeenCalledWith({
       runId: 'run-live-1',
       fallbackAgentName: 'SuperAgent',
+      resolveWorkspaceReferenceByRootPath: expect.any(Function),
       ensureWorkspaceByRootPath: expect.any(Function),
       currentStatus: 'running',
     });
@@ -571,6 +595,7 @@ describe('runHistoryStore', () => {
     expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith({
       teamRunId: 'team-live-1',
       memberRouteKey: null,
+      resolveWorkspaceReferenceByRootPath: expect.any(Function),
       ensureWorkspaceByRootPath: expect.any(Function),
       currentStatus: 'running',
       memberStatuses: [{
@@ -993,6 +1018,19 @@ describe('runHistoryStore', () => {
       }),
     );
     expect(store.isRuntimeLockedForRun('run-2')).toBe(true);
+    expect(workspaceStoreMock.resolveWorkspaceReferenceByRootPath).toHaveBeenCalledWith('/ws/a');
+    expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
+    expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        config: expect.objectContaining({
+          workspaceId: 'ref:/ws/a',
+          workspaceReference: expect.objectContaining({
+            workspaceId: 'ref:/ws/a',
+            workspaceRootPath: '/ws/a',
+          }),
+        }),
+      }),
+    );
     expect(agentRunStoreMock.connectToAgentStream).not.toHaveBeenCalled();
     expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('run-2', 'agent');
     expect(store.selectedRunId).toBe('run-2');
@@ -1212,10 +1250,13 @@ describe('runHistoryStore', () => {
     });
 
     expect(agentRunConfigStoreMock.setTemplate).toHaveBeenCalled();
-    expect(agentRunConfigStoreMock.updateAgentConfig).toHaveBeenCalledWith({
+    expect(agentRunConfigStoreMock.updateAgentConfig).toHaveBeenCalledWith(expect.objectContaining({
       workspaceId: 'ws-1',
       llmModelIdentifier: 'model-default',
-    });
+      workspaceReference: expect.objectContaining({
+        workspaceRootPath: '/ws/a',
+      }),
+    }));
     expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
     expect(selectionStoreMock.clearSelection).toHaveBeenCalled();
     expect(agentContextsStoreMock.createRunFromTemplate).not.toHaveBeenCalled();
@@ -1581,7 +1622,7 @@ describe('runHistoryStore', () => {
     const store = useRunHistoryStore();
     const openRunSpy = vi.spyOn(store, 'openRun').mockResolvedValue(undefined);
 
-    await store.selectTreeRun({
+    await store.selectTreeRun(asTeamMemberTreeRow({
       runId: 'run-1',
       summary: 'Persisted run',
       lastActivityAt: '2026-01-01T00:00:00.000Z',
@@ -1590,7 +1631,7 @@ describe('runHistoryStore', () => {
       isActive: false,
       source: 'history',
       isDraft: false,
-    });
+    }));
 
     expect(openRunSpy).toHaveBeenCalledWith('run-1');
   });
@@ -1602,7 +1643,7 @@ describe('runHistoryStore', () => {
       state: { conversation: { messages: [] } },
     });
 
-    await store.selectTreeRun({
+    await store.selectTreeRun(asTeamMemberTreeRow({
       runId: 'temp-1',
       summary: 'New - SuperAgent',
       lastActivityAt: '2026-01-01T00:00:00.000Z',
@@ -1611,7 +1652,7 @@ describe('runHistoryStore', () => {
       isActive: false,
       source: 'draft',
       isDraft: true,
-    });
+    }));
 
     expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('temp-1', 'agent');
     expect(store.selectedRunId).toBe('temp-1');
@@ -2002,7 +2043,7 @@ describe('runHistoryStore', () => {
     const store = useRunHistoryStore();
     const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
 
-    await store.selectTreeRun({
+    await store.selectTreeRun(asTeamMemberTreeRow({
       teamRunId: 'team-1',
       memberRouteKey: 'super_agent',
       memberName: 'Super Agent',
@@ -2013,7 +2054,7 @@ describe('runHistoryStore', () => {
       lastKnownStatus: 'IDLE',
       isActive: false,
       deleteLifecycle: 'READY',
-    });
+    }));
 
     expect(openTeamMemberRunSpy).toHaveBeenCalledWith('team-1', 'super_agent');
   });
@@ -2047,7 +2088,7 @@ describe('runHistoryStore', () => {
       taskStatuses: null,
     });
 
-    await store.selectTreeRun({
+    await store.selectTreeRun(asTeamMemberTreeRow({
       teamRunId: 'team-1',
       memberRouteKey: 'super_agent',
       memberName: 'Super Agent',
@@ -2058,7 +2099,7 @@ describe('runHistoryStore', () => {
       lastKnownStatus: 'IDLE',
       isActive: false,
       deleteLifecycle: 'READY',
-    });
+    }));
 
     expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
     expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'super_agent');
@@ -2096,7 +2137,7 @@ describe('runHistoryStore', () => {
       taskStatuses: null,
     });
 
-    await store.selectTreeRun({
+    await store.selectTreeRun(asTeamMemberTreeRow({
       teamRunId: 'temp-team-1',
       memberRouteKey: 'super_agent',
       memberName: 'Super Agent',
@@ -2107,7 +2148,7 @@ describe('runHistoryStore', () => {
       lastKnownStatus: 'IDLE',
       isActive: false,
       deleteLifecycle: 'READY',
-    });
+    }));
 
     expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
     expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('temp-team-1', 'super_agent');
@@ -2152,7 +2193,7 @@ describe('runHistoryStore', () => {
       taskStatuses: null,
     });
 
-    await store.selectTreeRun({
+    await store.selectTreeRun(asTeamMemberTreeRow({
       teamRunId: 'team-1',
       memberRouteKey: 'architect_reviewer',
       memberName: 'Architect Reviewer',
@@ -2163,7 +2204,7 @@ describe('runHistoryStore', () => {
       lastKnownStatus: 'IDLE',
       isActive: false,
       deleteLifecycle: 'READY',
-    });
+    }));
 
     expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
     expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'architect_reviewer');
@@ -2222,7 +2263,7 @@ describe('runHistoryStore', () => {
       taskStatuses: null,
     });
 
-    const selectionPromise = store.selectTreeRun({
+    const selectionPromise = store.selectTreeRun(asTeamMemberTreeRow({
       teamRunId: 'team-1',
       memberRouteKey: 'architect_reviewer',
       memberName: 'Architect Reviewer',
@@ -2233,12 +2274,12 @@ describe('runHistoryStore', () => {
       lastKnownStatus: 'IDLE',
       isActive: false,
       deleteLifecycle: 'READY',
-    });
+    }));
 
     await Promise.resolve();
     expect(store.openingRun).toBe(true);
 
-    resolveHydration?.();
+    (resolveHydration as unknown as () => void)();
     await selectionPromise;
 
     expect(store.openingRun).toBe(false);
@@ -2275,7 +2316,7 @@ describe('runHistoryStore', () => {
       taskStatuses: null,
     });
 
-    await store.selectTreeRun({
+    await store.selectTreeRun(asTeamMemberTreeRow({
       teamRunId: 'team-1',
       memberRouteKey: 'super_agent',
       memberName: 'Super Agent',
@@ -2286,7 +2327,7 @@ describe('runHistoryStore', () => {
       lastKnownStatus: 'IDLE',
       isActive: false,
       deleteLifecycle: 'READY',
-    });
+    }));
 
     expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
     expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'super_agent');
@@ -2373,6 +2414,20 @@ describe('runHistoryStore', () => {
       super_agent: 'loaded',
       architect_reviewer: 'unloaded',
     });
+    expect(workspaceStoreMock.resolveWorkspaceReferenceByRootPath).toHaveBeenCalledWith('/ws/a');
+    expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
+    expect(hydratedTeam.config.workspaceReference).toEqual(
+      expect.objectContaining({
+        workspaceId: 'ref:/ws/a',
+        workspaceRootPath: '/ws/a',
+      }),
+    );
+    expect(hydratedTeam.historicalHydration?.memberWorkspaceReferencesByRouteKey.super_agent).toEqual(
+      expect.objectContaining({
+        workspaceId: 'ref:/ws/a',
+        workspaceRootPath: '/ws/a',
+      }),
+    );
     expect(projectionQueryCalls).toEqual(['super_agent']);
     expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
     expect(store.selectedTeamRunId).toBe('team-1');
@@ -2673,7 +2728,7 @@ describe('runHistoryStore', () => {
     expect(existingTeamContextUnsubscribeSpy).toHaveBeenCalledTimes(1);
     expect(existingTeamContext.unsubscribe).toBeUndefined();
     expect(existingTeamContext.isSubscribed).toBe(false);
-    expect(existingTeamContext.historicalHydration).not.toBeNull();
+    expect((existingTeamContext as any).historicalHydration).not.toBeNull();
   });
 
   it('deleteRun removes local state and refreshes tree when backend succeeds', async () => {

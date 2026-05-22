@@ -30,6 +30,7 @@
         :workspace-id="config.workspaceId"
         :is-loading="workspaceLoadingState.isLoading"
         :error="workspaceLoadingState.error"
+        :initial-path="initialPath || workspaceLoadingState.loadedPath || ''"
         :disabled="isFormReadOnly"
         @select-existing="handleSelectExisting"
         @load-new="handleLoadNew"

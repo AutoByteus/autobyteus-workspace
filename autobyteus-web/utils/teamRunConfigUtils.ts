@@ -7,6 +7,7 @@ import {
   type SkillAccessMode,
 } from '~/types/agent/AgentRunConfig'
 import type { MemberConfigOverride, TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference'
 import { normalizeModelIdentifier, normalizeRuntimeKind } from '~/composables/useDefinitionLaunchDefaults'
 
 const hasOwn = <T extends object>(value: T, key: PropertyKey): boolean =>
@@ -218,7 +219,7 @@ export const hasMeaningfulMemberOverride = (
 
 export const reconstructTeamRunConfigFromMetadata = (params: {
   metadata: TeamRunMetadataPayload
-  firstWorkspaceId: string | null
+  primaryWorkspaceReference: WorkspaceReference | null
   isLocked: boolean
 }): TeamRunConfig => {
   const members = flattenTeamRunAgentMetadata(params.metadata.memberTree).filter((member) =>
@@ -229,7 +230,8 @@ export const reconstructTeamRunConfigFromMetadata = (params: {
       teamDefinitionId: params.metadata.teamDefinitionId,
       teamDefinitionName: params.metadata.teamDefinitionName,
       runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
-      workspaceId: params.firstWorkspaceId,
+      workspaceId: params.primaryWorkspaceReference?.workspaceId ?? null,
+      workspaceReference: params.primaryWorkspaceReference,
       llmModelIdentifier: '',
       llmConfig: null,
       autoExecuteTools: false,
@@ -298,7 +300,8 @@ export const reconstructTeamRunConfigFromMetadata = (params: {
     teamDefinitionId: params.metadata.teamDefinitionId,
     teamDefinitionName: params.metadata.teamDefinitionName,
     runtimeKind,
-    workspaceId: params.firstWorkspaceId,
+    workspaceId: params.primaryWorkspaceReference?.workspaceId ?? null,
+    workspaceReference: params.primaryWorkspaceReference,
     llmModelIdentifier,
     llmConfig,
     autoExecuteTools,

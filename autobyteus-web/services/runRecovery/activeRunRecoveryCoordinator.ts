@@ -1,4 +1,5 @@
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type {
   RunHistoryWorkspaceGroup,
@@ -21,6 +22,7 @@ import {
   applyActiveRuntimePlaceholder,
   applyMemberOrHistoryStatusSnapshot,
 } from '~/services/runStatus/agentRuntimeStatusState';
+import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference';
 
 const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
   if (
@@ -38,6 +40,7 @@ const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
 export interface RecoverActiveRunsFromHistoryInput {
   workspaceGroups: RunHistoryWorkspaceGroup[];
   ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
+  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
   findAgentNameByRunId: (runId: string) => string | null;
   setRunResumeConfig: (resumeConfig: RunResumeConfigPayload) => void;
   setTeamResumeConfig: (resumeConfig: TeamRunResumeConfigPayload) => void;
@@ -59,6 +62,9 @@ const applyTeamHistoryStatusToExistingContext = (
   existingTeamContext: AgentTeamContext,
   teamRun: TeamRunHistoryItem,
 ): void => {
+  const preserveCurrentMemberStatuses =
+    existingTeamContext.isSubscribed &&
+    existingTeamContext.currentStatus !== AgentTeamStatus.Offline;
   const statusByKey = new Map(
     teamRun.members
       .map((member) => [member.memberRouteKey.trim(), member.status] as const)
@@ -81,7 +87,7 @@ const applyTeamHistoryStatusToExistingContext = (
       matchedStatus ? normalizeAgentRuntimeStatus(matchedStatus) : preserveCanonicalMemberStatus(memberContext.state.currentStatus),
       {
         preserveLiveInterrupt: existingTeamContext.isSubscribed,
-        preserveCurrentStatus: existingTeamContext.isSubscribed,
+        preserveCurrentStatus: preserveCurrentMemberStatuses,
       },
     );
   });
@@ -111,6 +117,7 @@ export const recoverActiveRunsFromHistory = async (
       const result = await openAgentRun({
         runId,
         fallbackAgentName: input.findAgentNameByRunId(runId),
+        resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
         ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
         selectRun: false,
       });
@@ -137,6 +144,7 @@ export const recoverActiveRunsFromHistory = async (
       const result = await openTeamRun({
         teamRunId,
         memberRouteKey: null,
+        resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
         ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
         selectRun: false,
       });

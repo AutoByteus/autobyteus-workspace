@@ -2,6 +2,7 @@ import type {
   AgentRuntimeKind,
   SkillAccessMode,
 } from '~/types/agent/AgentRunConfig'
+import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference'
 
 export interface MemberConfigOverride {
   agentDefinitionId: string
@@ -16,6 +17,7 @@ export interface TeamRunConfig {
   teamDefinitionName: string
   runtimeKind: AgentRuntimeKind
   workspaceId: string | null
+  workspaceReference: WorkspaceReference | null
   llmModelIdentifier: string
   llmConfig?: Record<string, unknown> | null
   autoExecuteTools: boolean

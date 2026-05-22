@@ -1,0 +1,150 @@
+## Changed durable validation files
+autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts
+
+## Removed/legacy watcher API references
+
+## Workspace reference activation hotspots
+autobyteus-web/stores/workspaceReferenceActions.ts:88:export const resolveWorkspaceReferenceByRootPathForStore = async (
+autobyteus-web/stores/workspaceReferenceActions.ts:125:export const ensureWorkspaceInitializedForStore = async (
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:305:          ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:366:        ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:449:        ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:568:      ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:662:        ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:752:      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
+autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts:829:        ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:29:      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:139:    mocks.workspaceManager.ensureWorkspaceByRootPath.mockResolvedValue({
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:179:    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledTimes(1);
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:180:    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledWith(workspaceRootPath);
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:206:    mocks.workspaceManager.ensureWorkspaceByRootPath.mockImplementation(async (rootPath: string) => {
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:257:    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledTimes(2);
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:258:    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledWith(coordinatorRootPath);
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:259:    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledWith(reviewerRootPath);
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:297:    })).rejects.toThrow("workspaceRootPath is required");
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:299:    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:33:  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:34:  ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:217:  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:218:  ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:244:    activateWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:245:    resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:280:  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:324:    resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:394:    if (!input.ensureWorkspaceByRootPath) {
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:401:      resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:402:      ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:410:    resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts:107:        ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts:196:        ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts:182:        workspaceReference(rootPath: $rootPath) {
+autobyteus-web/services/runHydration/runContextHydrationService.ts:43:  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+autobyteus-web/services/runHydration/runContextHydrationService.ts:44:  ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
+autobyteus-web/services/runHydration/runContextHydrationService.ts:102:  let workspaceReference = await input.resolveWorkspaceReferenceByRootPath(
+autobyteus-web/services/runHydration/runContextHydrationService.ts:105:  if (resumeConfig.isActive && input.ensureWorkspaceByRootPath) {
+autobyteus-web/services/runHydration/runContextHydrationService.ts:106:    const activatedWorkspaceId = await input.ensureWorkspaceByRootPath(
+autobyteus-web/components/agentInput/ContextFilePathInputArea.vue:270:    workspaceStore.ensureWorkspaceInitialized(reference)
+autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts:137:      resolveWorkspaceReferenceByRootPath: vi.fn(),
+autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts:138:      ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts:185:      resolveWorkspaceReferenceByRootPath: vi.fn(),
+autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts:186:      ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts:42:  ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
+autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts:43:  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts:120:        resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts:121:        ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts:147:        resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts:148:        ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts:7:  ensureWorkspaceByRootPathMock,
+autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts:8:  resolveWorkspaceReferenceByRootPathMock,
+autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts:12:  ensureWorkspaceByRootPathMock: vi.fn(),
+autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts:13:  resolveWorkspaceReferenceByRootPathMock: vi.fn(),
+autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts:25:  ensureRunHistoryWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
+autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts:26:  resolveRunHistoryWorkspaceReferenceByRootPath: resolveWorkspaceReferenceByRootPathMock,
+autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts:94:      resolveWorkspaceReferenceByRootPath: resolveWorkspaceReferenceByRootPathMock,
+autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts:95:      ensureWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
+autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts:110:      resolveWorkspaceReferenceByRootPath: resolveWorkspaceReferenceByRootPathMock,
+autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts:111:      ensureWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
+autobyteus-web/services/workspace/workspaceNavigationService.ts:86:      resolveWorkspaceReferenceByRootPath: resolveRunHistoryWorkspaceReferenceByRootPath,
+autobyteus-web/services/workspace/workspaceNavigationService.ts:87:      ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
+autobyteus-web/services/workspace/workspaceNavigationService.ts:95:    resolveWorkspaceReferenceByRootPath: resolveRunHistoryWorkspaceReferenceByRootPath,
+autobyteus-web/services/workspace/workspaceNavigationService.ts:96:    ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:149:      resolveWorkspaceReferenceByRootPath: vi.fn(async (rootPath: string) => ({
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:355:    workspaceStoreMock.resolveWorkspaceReferenceByRootPath.mockImplementation(async (rootPath: string) => ({
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:590:      resolveWorkspaceReferenceByRootPath: expect.any(Function),
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:591:      ensureWorkspaceByRootPath: expect.any(Function),
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:598:      resolveWorkspaceReferenceByRootPath: expect.any(Function),
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:599:      ensureWorkspaceByRootPath: expect.any(Function),
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:1021:    expect(workspaceStoreMock.resolveWorkspaceReferenceByRootPath).toHaveBeenCalledWith('/ws/a');
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:1427:    const workspaceId = await store.ensureWorkspaceByRootPath('/ws/a');
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:1443:    const workspaceId = await store.ensureWorkspaceByRootPath('/ws/a');
+autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:2417:    expect(workspaceStoreMock.resolveWorkspaceReferenceByRootPath).toHaveBeenCalledWith('/ws/a');
+autobyteus-web/utils/__tests__/teamRunConfigUtils.spec.ts:121:      primaryWorkspaceReference: workspaceReference('ws-1'),
+autobyteus-web/utils/__tests__/teamRunConfigUtils.spec.ts:177:      primaryWorkspaceReference: workspaceReference('ws-2'),
+autobyteus-web/utils/__tests__/teamRunConfigUtils.spec.ts:242:      primaryWorkspaceReference: workspaceReference('ws-duplicate-leaf'),
+autobyteus-web/utils/__tests__/teamRunConfigUtils.spec.ts:333:      primaryWorkspaceReference: workspaceReference('ws-3'),
+autobyteus-web/stores/runHistoryTeamHelpers.ts:489:  resolveWorkspaceReferenceByRootPath: (path: string) => Promise<WorkspaceReference | null>;
+autobyteus-web/stores/runHistoryTeamHelpers.ts:498:    const resolvedReference = await params.resolveWorkspaceReferenceByRootPath(member.workspaceRootPath);
+autobyteus-web/stores/runHistoryTeamHelpers.ts:520:  resolveWorkspaceReferenceByRootPath: (path: string) => Promise<WorkspaceReference | null>;
+autobyteus-web/stores/runHistoryTeamHelpers.ts:528:    const workspaceReference = await params.resolveWorkspaceReferenceByRootPath(member.workspaceRootPath);
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:202:      resolveWorkspaceReferenceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:203:      ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:225:      resolveWorkspaceReferenceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:226:      ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:276:      resolveWorkspaceReferenceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:277:      ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:325:      resolveWorkspaceReferenceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts:326:      ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts:127:      resolveWorkspaceReferenceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts:128:      ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts:173:      resolveWorkspaceReferenceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts:174:      ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-web/stores/runHistoryStore.ts:127:      const workspaceId = await this.ensureWorkspaceByRootPath(options.workspaceRootPath);
+autobyteus-web/stores/runHistoryStore.ts:131:      const workspaceReference = await this.resolveWorkspaceReferenceByRootPath(options.workspaceRootPath);
+autobyteus-web/stores/runHistoryStore.ts:464:    async ensureWorkspaceByRootPath(rootPath: string): Promise<string | null> {
+autobyteus-web/stores/runHistoryStore.ts:468:    async resolveWorkspaceReferenceByRootPath(rootPath: string) {
+autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts:128:      resolveWorkspaceReferenceByRootPath: vi.fn(),
+autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts:129:      ensureWorkspaceByRootPath: vi.fn(),
+autobyteus-web/stores/workspace.ts:31:  ensureWorkspaceInitializedForStore,
+autobyteus-web/stores/workspace.ts:34:  resolveWorkspaceReferenceByRootPathForStore,
+autobyteus-web/stores/workspace.ts:98:    async resolveWorkspaceReferenceByRootPath(
+autobyteus-web/stores/workspace.ts:101:      return resolveWorkspaceReferenceByRootPathForStore(this, rootPath);
+autobyteus-web/stores/workspace.ts:104:    async ensureWorkspaceInitialized(reference: WorkspaceReference): Promise<WorkspaceInfo> {
+autobyteus-web/stores/workspace.ts:105:      return ensureWorkspaceInitializedForStore(this, reference) as Promise<WorkspaceInfo>;
+autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:40:  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:41:  ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
+autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts:22:  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts:23:  ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
+autobyteus-web/components/fileExplorer/FileExplorer.vue:107:    const workspace = await workspaceStore.ensureWorkspaceInitialized(reference);
+autobyteus-web/stores/runHistoryLoadActions.ts:62:  ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
+autobyteus-web/stores/runHistoryLoadActions.ts:63:  resolveWorkspaceReferenceByRootPath(rootPath: string): Promise<WorkspaceReference | null>;
+autobyteus-web/stores/runHistoryLoadActions.ts:205:        resolveWorkspaceReferenceByRootPath: (rootPath: string) =>
+autobyteus-web/stores/runHistoryLoadActions.ts:206:          store.resolveWorkspaceReferenceByRootPath(rootPath),
+autobyteus-web/stores/runHistoryLoadActions.ts:207:        ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
+autobyteus-web/stores/runHistoryLoadActions.ts:263:        resolveWorkspaceReferenceByRootPath: (rootPath: string) =>
+autobyteus-web/stores/runHistoryLoadActions.ts:264:          store.resolveWorkspaceReferenceByRootPath(rootPath),
+autobyteus-web/stores/runHistoryLoadActions.ts:265:        ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
+autobyteus-web/stores/runHistoryLoadActions.ts:293:      resolveWorkspaceReferenceByRootPath: (rootPath: string) =>
+autobyteus-web/stores/runHistoryLoadActions.ts:294:        store.resolveWorkspaceReferenceByRootPath(rootPath),
+autobyteus-web/stores/runHistoryLoadActions.ts:315:    return await workspaceStore.resolveWorkspaceReferenceByRootPath(rootPath);
+autobyteus-server-ts/src/workspaces/workspace-manager.ts:58:  async ensureWorkspaceByRootPath(rootPath: string): Promise<FileSystemWorkspace> {
+autobyteus-server-ts/src/workspaces/workspace-manager.ts:93:      return this.ensureWorkspaceByRootPath(filesystemRootPath);
+autobyteus-web/stores/runHistorySelectionActions.ts:29:  ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
+autobyteus-web/stores/runHistorySelectionActions.ts:30:  resolveWorkspaceReferenceByRootPath(rootPath: string): Promise<WorkspaceReference | null>;
+autobyteus-web/stores/runHistorySelectionActions.ts:45:      resolveWorkspaceReferenceByRootPath: (path: string) =>
+autobyteus-web/stores/runHistorySelectionActions.ts:46:        store.resolveWorkspaceReferenceByRootPath(path),
+autobyteus-web/stores/runHistorySelectionActions.ts:47:      ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
+autobyteus-server-ts/src/file-explorer/operations/base-file-operation.ts:16:      throw new Error("FileExplorer with a valid workspaceRootPath is required.");
+autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts:288:    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(
+autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts:155:    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(
+autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts:251:      throw new Error(`workspaceRootPath is required when ${action} a run.`);
+autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts:261:    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(workspaceRootPath);
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:52:    ensureWorkspaceInitialized: vi.fn(async () => ({ workspaceId: 'workspace-1' })),
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:113:    workspaceStoreState.ensureWorkspaceInitialized.mockResolvedValue({ workspaceId: 'workspace-1' });
+autobyteus-web/components/workspace/tools/Terminal.vue:217:    const workspace = await workspaceStore.ensureWorkspaceInitialized(reference);
+autobyteus-server-ts/src/api/graphql/types/workspace.ts:84:  async workspaceReference(
+autobyteus-server-ts/src/agent-team-execution/backends/autobyteus/autobyteus-agent-config-builder.ts:229:      workspaceInstance = await this.workspaceManager.ensureWorkspaceByRootPath(
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts:214:      const activation = this.workspaceManager.ensureWorkspaceByRootPath(canonicalRootPath)
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts:234:            "workspaceRootPath is required when launching a team with a filesystem workspace reference.",
+autobyteus-server-ts/src/agent-team-execution/services/team-run-metadata-mapper.ts:35:  "ensureWorkspaceByRootPath" | "getWorkspaceById"
+autobyteus-server-ts/src/agent-team-execution/services/team-run-metadata-mapper.ts:138:      const workspace = await this.dependencies.workspaceManager.ensureWorkspaceByRootPath(

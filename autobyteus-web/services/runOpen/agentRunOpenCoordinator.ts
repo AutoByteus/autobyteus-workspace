@@ -12,13 +12,15 @@ import {
   hydrateRunFileChanges,
   mergeHydratedRunFileChanges,
 } from '~/services/runHydration/runFileChangeHydrationService';
+import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference';
 
 export type RunOpenSelectionMode = 'desktop' | 'mobile';
 
 export interface OpenRunWithCoordinatorInput {
   runId: string;
   fallbackAgentName: string | null;
-  ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
+  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+  ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
   selectRun?: boolean;
   selectionMode?: RunOpenSelectionMode;
 }

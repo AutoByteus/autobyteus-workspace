@@ -1,0 +1,238 @@
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+> vitest tests/integration/agent-team-execution/team-run-service.integration.test.ts
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:62270) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > builds member configs from a launch preset by flattening nested team definitions for autobyteus
+[2026-05-22T18:01:21.810Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts (13 tests | 9 failed) 139ms
+     ✓ builds member configs from a launch preset by flattening nested team definitions for autobyteus 7ms
+     ✓ builds member configs from a launch preset by flattening nested team definitions for codex_app_server 0ms
+     ✓ builds member configs from a launch preset by flattening nested team definitions for claude_agent_sdk 0ms
+     ✓ detects circular nested team definitions while building launch preset member configs 1ms
+     × creates a autobyteus team run, persists metadata/history, and resolves member workspace roots 8ms
+     × creates a codex_app_server team run, persists metadata/history, and resolves member workspace roots 1ms
+     × creates a claude_agent_sdk team run, persists metadata/history, and resolves member workspace roots 2ms
+     × selects the mixed backend during create and persists mixed member metadata 1ms
+     × restores a autobyteus team run with the correct member runtime context and refreshed metadata/history 58ms
+     × restores a codex_app_server team run with the correct member runtime context and refreshed metadata/history 23ms
+     × restores a claude_agent_sdk team run with the correct member runtime context and refreshed metadata/history 11ms
+     × restores a mixed team run with mixed runtime member contexts and refreshed metadata/history 13ms
+     × records termination history only when team termination succeeds 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > creates a autobyteus team run, persists metadata/history, and resolves member workspace roots
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > creates a codex_app_server team run, persists metadata/history, and resolves member workspace roots
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > creates a claude_agent_sdk team run, persists metadata/history, and resolves member workspace roots
+Error: Team run 'team-run-1' already exists in team history.
+ ❯ src/run-history/services/team-run-history-catalog-service.ts:171:15
+    169|       const row = rowFromMetadata({ ...input.metadata, teamRunId: inpu…
+    170|       if (this.state.rows.has(row.teamRunId) || await this.metadataSto…
+    171|         throw new Error(`Team run '${row.teamRunId}' already exists in…
+       |               ^
+    172|       }
+    173|       await this.metadataStore.writeMetadata(row.teamRunId, {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > selects the mixed backend during create and persists mixed member metadata
+Error: Team run 'team-run-mixed-1' already exists in team history.
+ ❯ src/run-history/services/team-run-history-catalog-service.ts:171:15
+    169|       const row = rowFromMetadata({ ...input.metadata, teamRunId: inpu…
+    170|       if (this.state.rows.has(row.teamRunId) || await this.metadataSto…
+    171|         throw new Error(`Team run '${row.teamRunId}' already exists in…
+       |               ^
+    172|       }
+    173|       await this.metadataStore.writeMetadata(row.teamRunId, {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > restores a autobyteus team run with the correct member runtime context and refreshed metadata/history
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'team-run-autobyteus', …(1) ]
+
+Number of calls: 0
+
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:713:45
+    711|         );
+    712|       }
+    713|       expect(metadataService.writeMetadata).toHaveBeenCalledWith(
+       |                                             ^
+    714|         metadata.teamRunId,
+    715|         expect.objectContaining({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > restores a codex_app_server team run with the correct member runtime context and refreshed metadata/history
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'team-run-codex_app_server', …(1) ]
+
+Number of calls: 0
+
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:713:45
+    711|         );
+    712|       }
+    713|       expect(metadataService.writeMetadata).toHaveBeenCalledWith(
+       |                                             ^
+    714|         metadata.teamRunId,
+    715|         expect.objectContaining({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > restores a claude_agent_sdk team run with the correct member runtime context and refreshed metadata/history
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'team-run-claude_agent_sdk', …(1) ]
+
+Number of calls: 0
+
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:713:45
+    711|         );
+    712|       }
+    713|       expect(metadataService.writeMetadata).toHaveBeenCalledWith(
+       |                                             ^
+    714|         metadata.teamRunId,
+    715|         expect.objectContaining({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > restores a mixed team run with mixed runtime member contexts and refreshed metadata/history
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'team-run-mixed-restore-1', …(1) ]
+
+Number of calls: 0
+
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:805:43
+    803|       ]),
+    804|     );
+    805|     expect(metadataService.writeMetadata).toHaveBeenCalledWith(
+       |                                           ^
+    806|       metadata.teamRunId,
+    807|       expect.objectContaining({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/integration/agent-team-execution/team-run-service.integration.test.ts > TeamRunService integration > records termination history only when team termination succeeds
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/integration/agent-team-execution/team-run-service.integration.test.ts:857:53
+    855|     await expect(service.terminateTeamRun("team-run-1")).resolves.toBe…
+    856|     await expect(service.terminateTeamRun("team-run-2")).resolves.toBe…
+    857|     expect(historyIndexService.recordRunTerminated).toHaveBeenCalledTi…
+       |                                                     ^
+    858|     expect(historyIndexService.recordRunTerminated).toHaveBeenCalledWi…
+    859|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 4 passed (13)
+   Start at  20:01:15
+   Duration  5.97s (transform 3.88s, setup 23ms, import 5.23s, tests 139ms, environment 0ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

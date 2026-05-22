@@ -179,6 +179,7 @@ describe('MemberOverrideItem', () => {
 
   const defaultProps = {
     memberName: 'Reviewer',
+    memberRouteKey: 'reviewer',
     agentDefinitionId: 'agent-reviewer',
     override: undefined,
     globalRuntimeKind: 'autobyteus',
@@ -227,7 +228,7 @@ describe('MemberOverrideItem', () => {
 
     const events = wrapper.emitted('update:override') || []
     expect(events[0]).toEqual([
-      'Reviewer',
+      'reviewer',
       {
         agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'claude_agent_sdk',
@@ -258,7 +259,7 @@ describe('MemberOverrideItem', () => {
 
     const events = wrapper.emitted('update:override') || []
     expect(events.at(-1)).toEqual([
-      'Reviewer',
+      'reviewer',
       {
         agentDefinitionId: 'agent-reviewer',
         llmModelIdentifier: 'gpt-5.3-codex',
@@ -282,12 +283,12 @@ describe('MemberOverrideItem', () => {
     await nextTick()
     await nextTick()
 
-    await wrapper.get('#override-runtime-Reviewer').setValue('claude_agent_sdk')
+    await wrapper.get('#override-runtime-reviewer').setValue('claude_agent_sdk')
     await nextTick()
 
     const events = wrapper.emitted('update:override') || []
     expect(events.at(-1)).toEqual([
-      'Reviewer',
+      'reviewer',
       {
         agentDefinitionId: 'agent-reviewer',
         runtimeKind: 'claude_agent_sdk',
@@ -311,12 +312,12 @@ describe('MemberOverrideItem', () => {
     await nextTick()
     await nextTick()
 
-    await wrapper.get('#override-runtime-Reviewer').setValue('')
+    await wrapper.get('#override-runtime-reviewer').setValue('')
     await nextTick()
 
     const events = wrapper.emitted('update:override') || []
     expect(events.at(-1)).toEqual([
-      'Reviewer',
+      'reviewer',
       null,
     ])
   })
@@ -347,7 +348,7 @@ describe('MemberOverrideItem', () => {
 
     const events = wrapper.emitted('update:override') || []
     expect(events.at(-1)).toEqual([
-      'Reviewer',
+      'reviewer',
       null,
     ])
   })
@@ -368,13 +369,13 @@ describe('MemberOverrideItem', () => {
     await nextTick()
     await nextTick()
 
-    await wrapper.get('#override-runtime-Reviewer').setValue('')
+    await wrapper.get('#override-runtime-reviewer').setValue('')
     await nextTick()
 
     const events = wrapper.emitted('update:override') || []
     const cleanedOverride = (events.at(-1)?.[1] ?? null) as MemberConfigOverride | null
     const memberOverrides: Record<string, MemberConfigOverride> = cleanedOverride
-      ? { Reviewer: cleanedOverride }
+      ? { reviewer: cleanedOverride }
       : {}
 
     const readiness = evaluateTeamRunLaunchReadiness(
@@ -383,6 +384,7 @@ describe('MemberOverrideItem', () => {
         teamDefinitionName: 'Research Team',
         runtimeKind: 'autobyteus',
         workspaceId: 'ws-1',
+        workspaceReference: null,
         llmModelIdentifier: 'gpt-5.4',
         llmConfig: { thinking_level: 5 },
         autoExecuteTools: false,
@@ -405,6 +407,7 @@ describe('MemberOverrideItem', () => {
           teamDefinitionName: 'Research Team',
           runtimeKind: 'autobyteus',
           workspaceId: 'ws-1',
+          workspaceReference: null,
           llmModelIdentifier: 'gpt-5.4',
           llmConfig: { thinking_level: 5 },
           autoExecuteTools: false,
@@ -431,9 +434,75 @@ describe('MemberOverrideItem', () => {
         autoExecuteTools: false,
         skillAccessMode: 'PRELOADED_ONLY',
         workspaceId: 'ws-1',
+        workspaceReference: null,
         workspaceRootPath: undefined,
       },
     ])
+  })
+
+  it('serializes team workspace root path from workspace reference for launch inputs', () => {
+    const workspaceReference = {
+      workspaceId: 'agent_ws_reference',
+      workspaceRootPath: '/tmp/ReferenceTeam',
+      displayName: 'ReferenceTeam',
+      kind: 'filesystem' as const,
+    }
+
+    const records = buildTeamRunMemberConfigRecords({
+      config: {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Research Team',
+        runtimeKind: 'codex_app_server',
+        workspaceId: workspaceReference.workspaceId,
+        workspaceReference,
+        llmModelIdentifier: 'gpt-5.4',
+        llmConfig: { reasoning_effort: 'high' },
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        memberOverrides: {},
+        isLocked: false,
+      },
+      leafMembers: [
+        {
+          memberName: 'Reviewer',
+          memberRouteKey: 'reviewer',
+          agentDefinitionId: 'agent-reviewer',
+        },
+      ],
+    })
+
+    expect(records[0]).toEqual(expect.objectContaining({
+      workspaceId: workspaceReference.workspaceId,
+      workspaceReference,
+      workspaceRootPath: '/tmp/ReferenceTeam',
+    }))
+  })
+
+  it('blocks reference-backed team launch readiness when the root path is missing', () => {
+    const readiness = evaluateTeamRunLaunchReadiness(
+      {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Research Team',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'agent_ws_reference_only',
+        workspaceReference: null,
+        llmModelIdentifier: 'gpt-5.4',
+        llmConfig: { reasoning_effort: 'high' },
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        memberOverrides: {},
+        isLocked: false,
+      },
+      {
+        codex_app_server: ['gpt-5.4'],
+      },
+    )
+
+    expect(readiness.canLaunch).toBe(false)
+    expect(readiness.blockingIssues).toContainEqual(expect.objectContaining({
+      code: 'WORKSPACE_REQUIRED',
+      message: 'Workspace root path is required to run a reference-backed team.',
+    }))
   })
 
   it('passes missing historical config state into member model config display', async () => {
@@ -455,7 +524,7 @@ describe('MemberOverrideItem', () => {
 
     expect(wrapper.text()).toContain('Not recorded for this historical run')
     expect(wrapper.find('[data-testid="missing-historical-config-value"]').exists()).toBe(true)
-    expect(wrapper.find('select[id^="config-Reviewer"]').exists()).toBe(false)
+    expect(wrapper.find('select[id^="config-reviewer"]').exists()).toBe(false)
   })
 
 })

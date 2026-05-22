@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick } from 'vue';
 
@@ -35,6 +35,21 @@ const {
     activeWorkspace: {
       workspaceId: 'workspace-1',
     } as { workspaceId: string } | null,
+    activeWorkspaceReference: {
+      workspaceId: 'workspace-1',
+      workspaceRootPath: '/tmp/workspace-1',
+      displayName: 'workspace-1',
+      kind: 'filesystem',
+    },
+    workspaceReferencesById: {
+      'workspace-1': {
+        workspaceId: 'workspace-1',
+        workspaceRootPath: '/tmp/workspace-1',
+        displayName: 'workspace-1',
+        kind: 'filesystem',
+      },
+    },
+    ensureWorkspaceInitialized: vi.fn(async () => ({ workspaceId: 'workspace-1' })),
   },
 }));
 
@@ -86,6 +101,16 @@ describe('Terminal.vue', () => {
     sessionMock.errorMessage.value = '';
     sessionMock.isConnected.value = false;
     workspaceStoreState.activeWorkspace = { workspaceId: 'workspace-1' };
+    workspaceStoreState.activeWorkspaceReference = {
+      workspaceId: 'workspace-1',
+      workspaceRootPath: '/tmp/workspace-1',
+      displayName: 'workspace-1',
+      kind: 'filesystem',
+    };
+    workspaceStoreState.workspaceReferencesById = {
+      'workspace-1': workspaceStoreState.activeWorkspaceReference,
+    };
+    workspaceStoreState.ensureWorkspaceInitialized.mockResolvedValue({ workspaceId: 'workspace-1' });
 
     setActivePinia(createPinia());
 
@@ -130,6 +155,7 @@ describe('Terminal.vue', () => {
 
     await nextTick();
     await nextTick();
+    await flushPromises();
 
     expect(terminalConstructorSpy).toHaveBeenCalledWith(expect.objectContaining({ fontSize: 14 }));
     expect(terminalInstances).toHaveLength(1);
@@ -153,6 +179,7 @@ describe('Terminal.vue', () => {
 
     await nextTick();
     await nextTick();
+    await flushPromises();
 
     expect(terminalInstances).toHaveLength(1);
     expect(fitAddonInstances).toHaveLength(1);

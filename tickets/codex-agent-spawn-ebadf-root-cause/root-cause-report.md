@@ -179,3 +179,44 @@ Two edge cases are now explicitly part of the durable fix:
 
 1. Mobile has a nested `RightSideTabs` instance in the tools panel. Because mobile already has a dedicated Files/Explorer panel, the tools-side `RightSideTabs` must suppress the `files` tab and never render `FileExplorerLayout`.
 2. The file-explorer WebSocket route must clean up pending async `connect()` work when the socket closes before a `sessionId` exists. Late-created sessions must be disconnected, and handler setup failures after watcher lease acquisition must release the lease.
+
+## Same-Ticket Release Blocker: Slow Historical Run Opening
+
+After the watcher lifecycle implementation, validation of the packaged Electron build exposed a related release blocker: opening historical run rows can be very slow. Code-path inspection shows this is not caused by live watchers directly; it is caused by historical run hydration eagerly resolving the stored `workspaceRootPath` into a current live `workspaceId` through workspace creation/initialization.
+
+Current path:
+
+```text
+openHistoricalRun
+-> openAgentRun
+-> loadRunContextHydrationPayload
+-> ensureWorkspaceByRootPath(workspaceRootPath)
+-> workspaceStore.createWorkspace / backend WorkspaceManager.createWorkspace
+-> FileSystemWorkspace.initialize
+-> buildWorkspaceDirectoryTree(1)
+```
+
+Root-cause refinement:
+
+- Historical run viewing is read-only and only needs stored projection/resume/file-change data plus `workspaceRootPath` as metadata.
+- Current code treats `workspaceId` as mandatory for historical config hydration, and resolving it goes through initialized workspace state.
+- `WorkspaceInfo` mixes workspace identity/metadata with file explorer tree snapshot, making it too heavy for history display.
+
+Durable fix direction in the same ticket:
+
+1. Introduce/use a cheap workspace reference boundary based on canonical `workspaceRootPath` and deterministic `workspaceId` without file tree initialization.
+2. Hydrate historical runs with that lazy workspace reference, not by creating/initializing a workspace.
+3. Move actual workspace activation to workspace-dependent actions: Files, Terminal, resume/rerun, context picker, and similar.
+4. Missing local paths should not block viewing stored history; they should error only when the user requests current workspace functionality.
+
+## Round 3 Design Refinement: Workspace Identity vs Activation Ambiguity
+
+Architecture review round 3 identified that the same history-open root cause also appears in the shared frontend data model:
+
+- `AgentRunConfig.workspaceId` and `TeamRunConfig.workspaceId` were used as if they represented an initialized workspace handle, but history viewing only needs deterministic workspace identity and root-path display metadata.
+- Team historical hydration has a separate path that currently builds every member context through `buildTeamMemberContexts()` and calls `ensureWorkspaceByRootPath()` for every member workspace path.
+
+Root-cause refinement:
+
+- The slow history-open symptom is not only a local call-site defect. It is a shared-structure looseness and boundary issue: deterministic workspace identity, initialized workspace payload, and file explorer snapshot were allowed to collapse into `workspaceId`/`WorkspaceInfo` usage.
+- The corrected invariant is: `workspaceId` in run/team configs is a stable reference id only; initialized workspace payload belongs to `WorkspaceStore.workspaces`; workspace activation is explicit at Files/Terminal/context or other workspace-dependent action boundaries.

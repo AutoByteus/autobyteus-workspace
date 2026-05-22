@@ -134,6 +134,7 @@ describe('recoverActiveRunsFromHistory', () => {
 
     await recoverActiveRunsFromHistory({
       workspaceGroups: activeTeamWorkspaceGroups as any,
+      resolveWorkspaceReferenceByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
       findAgentNameByRunId: vi.fn(),
       setRunResumeConfig: vi.fn(),
@@ -181,6 +182,7 @@ describe('recoverActiveRunsFromHistory', () => {
         }],
         teamDefinitions: [],
       }] as any,
+      resolveWorkspaceReferenceByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
       findAgentNameByRunId: vi.fn(),
       setRunResumeConfig: vi.fn(),

@@ -37,6 +37,7 @@ import {
   ensureRunHistoryWorkspaceByRootPath,
   fetchRunHistoryTree,
   openHistoricalRun,
+  resolveRunHistoryWorkspaceReferenceByRootPath,
   type RunHistorySelectionMode,
 } from '~/stores/runHistoryLoadActions';
 import {
@@ -127,6 +128,10 @@ export const useRunHistoryStore = defineStore('runHistory', {
       if (!workspaceId) {
         throw new Error(`Workspace '${options.workspaceRootPath}' could not be resolved.`);
       }
+      const workspaceReference = await this.resolveWorkspaceReferenceByRootPath(options.workspaceRootPath);
+      if (!workspaceReference) {
+        throw new Error(`Workspace '${options.workspaceRootPath}' reference could not be resolved.`);
+      }
 
       const agentRunConfigStore = useAgentRunConfigStore();
       const llmProviderConfigStore = useLLMProviderConfigStore();
@@ -176,6 +181,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
           agentDefinitionName: definition.name,
           agentAvatarUrl: definition.avatarUrl ?? seed.agentAvatarUrl ?? null,
           workspaceId,
+          workspaceReference,
           llmModelIdentifier: resolvedModelIdentifier,
           llmConfig: preserveSeedLlmConfig ? (seed.llmConfig ?? null) : null,
           isLocked: false,
@@ -184,6 +190,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
         agentRunConfigStore.setTemplate(definition);
         agentRunConfigStore.updateAgentConfig({
           workspaceId,
+          workspaceReference,
           llmModelIdentifier: resolvedModelIdentifier,
         });
       }
@@ -456,6 +463,10 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     async ensureWorkspaceByRootPath(rootPath: string): Promise<string | null> {
       return await ensureRunHistoryWorkspaceByRootPath(rootPath);
+    },
+
+    async resolveWorkspaceReferenceByRootPath(rootPath: string) {
+      return await resolveRunHistoryWorkspaceReferenceByRootPath(rootPath);
     },
 
     findAgentNameByRunId(runId: string): string | null {

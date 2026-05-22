@@ -6,167 +6,227 @@
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-spec.md`
 - Root-cause report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/root-cause-report.md`
+- Design-impact rework artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-impact-rework-history-lazy-workspace.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-review-report.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`
-- API/E2E failing rerun log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/backend-file-explorer-websocket-lifecycle-e2e-rerun.log`
-- Durable API/E2E test added upstream: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts`
+- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/review-report.md`
+- Prior API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`
+- Delivery docs sync report from prior pass: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/docs-sync-report.md`
+- Delivery/release report from prior pass: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/release-deployment-report.md`
+- Prior handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/handoff-summary.md`
 
 ## What Changed
 
-Implemented the reviewed watcher-lifecycle refactor for the Codex `spawn EBADF` investigation:
+Implemented the architecture-review-round-4 lazy workspace-reference rework on top of the existing watcher lifecycle refactor:
 
-- Removed frontend auto-starting file-explorer streams from workspace create/fetch/register paths.
-- Added visible-consumer live-session ownership in `WorkspaceStore` and `FileExplorer.vue` so a workspace is watched only while a visible file explorer owns a live consumer.
-- Changed desktop right-panel collapse from hidden retention to unmounting, preventing hidden Files content from keeping a live watcher.
-- Made the mobile dedicated `explorer` panel the only mobile live file-explorer surface; mobile tools mode filters out Files and disables auto-switch-to-files.
-- Replaced backend direct watcher startup with reference-counted watcher leases, idempotent lease release, and awaited watcher close.
-- Added route-level cleanup for close-before-connect-resolves and handler-level atomic cleanup for setup/send failure.
-- Split filename search indexing from persistent live monitoring; search now refreshes a full snapshot on demand without starting a watcher.
-- Added diagnostic-only Codex app-server spawn failure context for `EBADF`/`EMFILE`/`ENFILE` style failures: error code, best-effort open file descriptor count, cwd, command, args, runtime label, process fs read/write counters, and descriptor-pressure hint.
-- Updated TS tests and the legacy `.js` test mirrors in changed areas so stale old API references are removed from the repository.
-
-Round 2 local fixes from code review:
-
-- CR-001: `FileExplorerStreamHandler.streamLoop()` now self-cleans connected stream send/parse/stream failures by removing the active task, closing the session, releasing the watcher lease exactly once, and closing the socket with 1011 when appropriate.
-- CR-002: Reacquiring a visible file explorer now refreshes the root plus already-open descendant folders in depth order, preserving visible open state while reconciling stale child lists and node-index entries through `openFolderRefresh.ts`.
-- CR-003: Codex spawn diagnostics now include `runtime=codex_app_server`, `cwd`, `command`, and `args`, with unit assertions for descriptor-pressure and ENOENT paths.
-
-API/E2E round 1 local fix (`E2E-FEWS-001`):
-
-- `FileSystemWatcher.events()` now returns a cancellable per-subscriber async iterator; `return()` unsubscribes that subscriber and wakes any pending `queue.pop()` without stopping other subscribers on the shared watcher.
-- `EventBatcher.getBatchedEvents()` now returns a cancellable async iterator; `return()` wakes pending batched consumers and propagates cancellation to the source event generator.
-- `FileExplorerSession.close()` now releases its watcher lease before waiting on generator/forwarder shutdown, eliminating the close/release circular wait where final lease release was needed to stop the watcher and unblock real subscriber queues.
-- Added focused coverage for idle stream return/unsubscribe behavior while a second subscriber stays live, plus EventBatcher pending-consumer cancellation coverage. The durable real WebSocket lifecycle E2E added by API/E2E now passes locally for the local fix reproduction.
+- Added a backend `workspaceReference(rootPath:)` GraphQL query that canonicalizes a filesystem root path and returns a deterministic workspace reference without creating or initializing a workspace.
+- Added frontend `WorkspaceReference` types and reference utilities; `AgentRunConfig.workspaceId` and `TeamRunConfig.workspaceId` now represent deterministic reference IDs, with `workspaceReference` carrying root/display data and not implying initialization.
+- Extended `WorkspaceStore` with a reference cache and explicit activation owner: `resolveWorkspaceReferenceByRootPath()` is cheap, while `ensureWorkspaceInitialized(reference)` is the only UI activation path that calls workspace creation/initialization.
+- Updated standalone run hydration so inactive/historical open paths resolve references only; active run recovery may activate explicitly.
+- Split team run hydration into live vs historical helpers. Historical team viewing builds member shells and per-member workspace references without calling `workspaceStore.createWorkspace()`, backend `WorkspaceManager.createWorkspace()`, or `FileSystemWorkspace.initialize()` just to display history.
+- Updated the historical team/member path through `openTeamMemberRunFromHistory -> openTeamRun -> loadTeamRunContextHydrationPayload -> loadHistoricalTeamRunContextHydrationPayload -> buildHistoricalTeamMemberContextShells` with `primaryWorkspaceReference` and member reference storage.
+- Made workspace-dependent UI surfaces reference-aware:
+  - `FileExplorer.vue` explicitly activates the requested reference before tree/search/live-session work.
+  - `Terminal.vue` explicitly activates the requested reference before terminal connection.
+  - context-file path opening, right-side tabs, mobile setup/launch, run config forms, workspace selector, and workspace/mobile layout now use references where workspace identity is needed before initialization.
+- Preserved the previous file-explorer watcher lifecycle work: visible file-explorer consumers own live sessions, search remains snapshot-only, backend watcher leases are reference-counted/awaited, close-before-connect cleanup is present, connected send/loop failures clean up sessions/leases, and the real WebSocket lifecycle E2E remains green locally.
+- Added/updated focused tests for historical standalone/team reference-only opening, workspace surface activation, config/reference propagation, route/open coordinators, mobile launch/setup, and type fixtures impacted by `workspaceReference`.
+- Addressed round-6 code review Local Fix items:
+  - `CR-005`: `WorkspaceSelector` is now side-effect-free when disabled/read-only/locked. It does not call `fetchAllWorkspaces()`, auto-select temp workspaces, or emit `select-existing` in display-only mode, while still showing the supplied path/reference metadata.
+  - `CR-006`: team launch serialization now carries `workspaceReference.workspaceRootPath`; frontend launch readiness blocks deterministic reference IDs without a usable root path; backend `TeamRunService.createTeamRun()` activates/normalizes from `workspaceRootPath` even when `workspaceId` is present and rejects filesystem reference IDs that arrive without a root path.
+  - `CR-007`: frontend workspace-reference root-path cache keys now preserve canonical path case, matching backend deterministic ID semantics on case-sensitive filesystems.
+- Addressed round-7 code review Local Fix item:
+  - `CR-008`: backend team launch now dedupes workspace activation per distinct canonical workspace root within a single create-team request. Same-root members share one `ensureWorkspaceByRootPath()` activation promise, distinct roots still activate once each, and filesystem reference IDs without root paths remain rejected.
 
 ## Key Files Or Areas
 
-Backend source:
+Backend:
 
-- `autobyteus-server-ts/src/file-explorer/base-file-explorer.ts`
-- `autobyteus-server-ts/src/file-explorer/local-file-explorer.ts`
-- `autobyteus-server-ts/src/file-explorer/file-explorer.ts`
-- `autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts`
-- `autobyteus-server-ts/src/file-explorer/watcher/event-batcher.ts`
-- `autobyteus-server-ts/src/file-explorer/file-name-indexer.ts`
-- `autobyteus-server-ts/src/workspaces/filesystem-workspace.ts`
-- `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts`
-- `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session-manager.ts`
-- `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts`
-- `autobyteus-server-ts/src/api/websocket/file-explorer.ts`
-- `autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts`
+- `autobyteus-server-ts/src/api/graphql/types/workspace.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts`
 
-Frontend source:
+Frontend reference and activation model:
 
+- `autobyteus-web/types/workspace/WorkspaceReference.ts`
+- `autobyteus-web/utils/workspaceReference.ts`
+- `autobyteus-web/stores/workspaceReferenceActions.ts`
 - `autobyteus-web/stores/workspace.ts`
-- `autobyteus-web/utils/fileExplorer/openFolderRefresh.ts`
+- `autobyteus-web/graphql/queries/workspace_queries.ts`
+- `autobyteus-web/types/graphql-tag.d.ts`
+
+Run/team config and hydration:
+
+- `autobyteus-web/types/agent/AgentRunConfig.ts`
+- `autobyteus-web/types/agent/TeamRunConfig.ts`
+- `autobyteus-web/types/agent/AgentTeamContext.ts`
+- `autobyteus-web/services/runHydration/runContextHydrationService.ts`
+- `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`
+- `autobyteus-web/services/runHydration/teamRunStatusHydration.ts`
+- `autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts`
+- `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+- `autobyteus-web/stores/runHistoryLoadActions.ts`
+- `autobyteus-web/stores/runHistorySelectionActions.ts`
+- `autobyteus-web/stores/runHistoryStore.ts`
+- `autobyteus-web/stores/runHistoryTeamHelpers.ts`
+- `autobyteus-web/utils/teamRunConfigUtils.ts`
+- `autobyteus-web/utils/teamRunMemberConfigBuilder.ts`
+- `autobyteus-web/utils/teamRunLaunchReadiness.ts`
+- `autobyteus-web/stores/agentTeamRunStore.ts`
+
+Workspace-dependent UI surfaces:
+
 - `autobyteus-web/components/fileExplorer/FileExplorer.vue`
-- `autobyteus-web/components/layout/WorkspaceDesktopLayout.vue`
-- `autobyteus-web/components/layout/WorkspaceMobileLayout.vue`
+- `autobyteus-web/components/workspace/tools/Terminal.vue`
+- `autobyteus-web/components/agentInput/ContextFilePathInputArea.vue`
+- `autobyteus-web/components/workspace/config/RunConfigPanel.vue`
+- `autobyteus-web/components/workspace/config/WorkspaceSelector.vue`
+- `autobyteus-web/components/workspace/config/AgentRunConfigForm.vue`
+- `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`
 - `autobyteus-web/components/layout/RightSideTabs.vue`
+- `autobyteus-web/components/layout/WorkspaceMobileLayout.vue`
+- `autobyteus-web/components/mobile/MobileRunSetup.vue`
+- `autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts`
 
-Tests:
+Watcher lifecycle helper splits retained from earlier implementation:
 
-- `autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts` (added by API/E2E; rerun locally for the Local Fix)
-- `autobyteus-server-ts/tests/unit/api/websocket/file-explorer.test.ts` (new)
-- `autobyteus-server-ts/tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts` (new)
-- `autobyteus-server-ts/tests/unit/file-explorer/local-file-explorer.test.ts`
-- `autobyteus-server-ts/tests/unit/file-explorer/file-name-indexer.test.ts`
-- `autobyteus-server-ts/tests/unit/file-explorer/watcher/event-batcher.test.ts`
-- `autobyteus-server-ts/tests/unit/services/file-explorer-streaming/file-explorer-session*.test.ts`
-- `autobyteus-server-ts/tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts`
-- `autobyteus-server-ts/tests/integration/file-explorer/file-name-indexer.integration.test.ts`
-- `autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts`
-- `autobyteus-server-ts/tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts`
-- `autobyteus-web/stores/__tests__/workspaceStore.spec.ts`
-- `autobyteus-web/components/fileExplorer/__tests__/FileExplorer.spec.ts`
-- `autobyteus-web/components/layout/__tests__/RightSideTabs.spec.ts`
-- `autobyteus-web/components/layout/__tests__/WorkspaceDesktopLayout.spec.ts`
+- `autobyteus-web/stores/workspaceFileExplorerLiveActions.ts`
 
 ## Important Assumptions
 
-- Codex app-server client changes are diagnostic-only on failure paths; no retry, fallback behavior, process command, args, cwd, or normal spawn semantics were intentionally changed.
-- File search is request/response snapshot work, not a live-monitoring owner.
-- Visible `FileExplorer` components are the only frontend owners of file-explorer live watcher streams.
-- The API/E2E-authored durable WebSocket lifecycle test is now part of the repository state and therefore this updated state must return through code review before API/E2E resumes.
-- Durable documentation updates are left for delivery after code review/API-E2E because `autobyteus-web/docs/file_explorer.md` still documents old `connectToFileSystemChanges`/`disconnectFromFileSystemChanges` names.
+- `workspaceId` is now a deterministic reference ID, not proof that a workspace has been initialized.
+- Historical run/team display must remain cheap and side-effect-light; only explicit workspace-dependent surfaces/actions activate from a `WorkspaceReference`.
+- Read-only/locked config display is intentionally passive and must not fetch workspace lists or auto-select a temp/default workspace.
+- Team launch is an explicit workspace-dependent boundary and must carry/activate the canonical root path rather than relying on a reference ID being pre-initialized or mapped.
+- Within a single team launch, each distinct canonical workspace root should be activated once and reused for all member configs referencing that root.
+- Active run recovery can still initialize because live stream recovery is an active runtime path, not passive history display.
+- The Codex app-server client changes from the previous watcher lifecycle implementation remain diagnostic-only on failure paths.
+- The durable real WebSocket lifecycle E2E added by API/E2E stays in the repository state and should continue to be reviewed/executed downstream.
 
 ## Known Risks
 
-- Full app typechecks still fail from pre-existing/baseline config and typing issues unrelated to this implementation. See local checks below.
-- The actual EBADF/descriptor-pressure symptom is environment/load-sensitive. Local implementation checks validate lifecycle mechanics and diagnostics plumbing, but downstream API/E2E should still run the high-churn visible/collapsed/mobile watcher scenarios.
-- Existing repository tracks legacy `.js` mirrors for some server tests while Vitest includes only `tests/**/*.test.ts`; changed mirrors in touched areas were updated to avoid stale old API references, but the TS tests remain the authoritative executed tests.
+- Full frontend `nuxi typecheck` still fails because of broad existing/baseline project type issues outside the changed files. Final grep of the typecheck log found no errors in changed frontend files and no remaining `workspaceReference` missing-fixture errors.
+- The history lazy-workspace behavior is primarily guarded by store/service/component unit tests; downstream API/E2E should still exercise actual UI flows for historical run/team display and then explicit Files/Terminal activation.
+- `WorkspaceReference` is a new client-visible shape; generated GraphQL types were not regenerated in this implementation pass. The frontend query uses a local typed result through Apollo.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: Refactor watcher ownership and lifecycle to remove accidental persistent file monitoring; add diagnostic-only spawn failure context.
-- Reviewed root-cause classification: descriptor pressure from frontend/backend watcher lifecycle leaks can surface as Codex child-process `spawn EBADF`.
+- Reviewed change posture: refactor/behavior change for lazy historical workspace references on top of the watcher lifecycle refactor.
+- Reviewed root-cause classification: boundary/ownership issue; historical display paths were treating workspace IDs as initialized-workspace proof and could trigger filesystem initialization merely to view history.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`.
-- Evidence / notes: Frontend stream ownership now follows visible consumers; backend live watcher ownership is through leases; search no longer starts a live watcher; WebSocket pending-connect cleanup, setup-failure cleanup, connected stream send-failure cleanup, open-folder refresh, spawn diagnostic context, and real watcher subscriber cancellation are covered by targeted tests and the API/E2E local-fix reproduction rerun.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; round-4 design was sufficient for implementation.
+- Evidence / notes: hydration/opening tests assert reference resolution without `createWorkspace` for historical standalone/team paths; workspace surfaces now activate explicitly via `ensureWorkspaceInitialized(reference)`.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`.
 - Legacy old-behavior retained in scope: `No`.
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for source/tests in implementation scope; durable docs are explicitly deferred to delivery.
-- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`.
-- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`; no design-impact reroute was needed.
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`; source line guard found no changed source implementation file over 500 effective non-empty lines.
-- Notes: `autobyteus-web/stores/fileExplorer.ts` was intentionally not changed to avoid leaving an existing >500-line source file in the changed set. CR-002 tree-refresh reconciliation was extracted to `autobyteus-web/utils/fileExplorer/openFolderRefresh.ts`.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for implementation-owned source/tests.
+- Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; `WorkspaceReference` is a focused filesystem reference shape and activation state is separate.
+- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`; helper splits were used to keep owners tight.
+- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
+- Notes: final source-size guard found no changed source implementation file over 500 effective non-empty lines. Largest changed implementation files: `runHistoryTeamHelpers.ts` 498, `workspace.ts` 490, `teamRunContextHydrationService.ts` 479.
 
 ## Environment Or Dependency Notes
 
-- The worktree did not have local `node_modules`. For local checks only, temporary symlinks to `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.../node_modules` were created and removed before handoff.
-- Frontend test setup required generated Nuxt artifacts; `pnpm -C autobyteus-web exec nuxt prepare` was used earlier in the implementation session.
-- No package/dependency changes were made.
+- No package dependency changes were made.
+- Added `autobyteus-web/types/graphql-tag.d.ts` to provide a local type declaration for the already-used `graphql-tag` dependency so changed query files no longer surface the existing missing-module type error.
+- Validation logs for this implementation pass are under `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/`.
 
 ## Local Implementation Checks Run
 
-Passed:
+Latest round-7 Local Fix checks:
 
-- `pnpm -C autobyteus-server-ts test tests/unit/file-explorer/watcher/event-batcher.test.ts tests/unit/file-explorer/file-name-indexer.test.ts tests/unit/file-explorer/local-file-explorer.test.ts tests/unit/services/file-explorer-streaming/file-explorer-session-manager.test.ts tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts tests/unit/api/websocket/file-explorer.test.ts tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts`
-  - Result: pass, 8 files / 47 tests.
-- `pnpm -C autobyteus-server-ts test tests/integration/file-explorer/file-name-indexer.integration.test.ts tests/integration/file-explorer/file-system-watcher.integration.test.ts tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts`
-  - Result: pass, 3 files / 17 tests.
+- `pnpm -C autobyteus-server-ts test tests/unit/agent-team-execution/team-run-service.test.ts`
+  - Result: pass, 1 file / 11 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/backend-team-run-service-round7-localfix.log`
 - `pnpm -C autobyteus-server-ts build:full`
-  - Result: pass, including built-in agents bootstrap smoke check.
-- `pnpm -C autobyteus-web test:nuxt components/fileExplorer/__tests__/FileExplorer.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/layout/__tests__/WorkspaceDesktopLayout.spec.ts stores/__tests__/workspaceStore.spec.ts`
-  - Result: pass, 4 files / 30 tests.
-- `node -e "const { spawn } = require('node:child_process'); const child=spawn('/bin/echo',['codex-spawn-probe-ok']); child.stdout.on('data',d=>process.stdout.write(d)); child.on('error',e=>{ console.error(e); process.exit(1); }); child.on('exit',code=>process.exit(code??1));"`
-  - Result: pass, prints `codex-spawn-probe-ok`.
-- Effective source line guard script across changed source implementation files.
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/backend-build-full-round7-localfix.log`
+- `git diff --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/diff-check-round7-localfix.log`
+- Changed-source size guard.
   - Result: pass, no changed source implementation file over 500 effective non-empty lines.
-- Source direct watcher API grep: `grep -R "\.startWatcher\|\.stopWatcher\|startWatcher()\|stopWatcher()" -n autobyteus-server-ts/src autobyteus-web --exclude-dir=node_modules`
-  - Result: only the authoritative `FileExplorer` methods and `LocalFileExplorer` lease owner call them; no frontend/caller-level bypasses found.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/source-size-guard-round7-localfix.log`
 
-API/E2E local-fix reproduction rerun requested by API/E2E engineer; this is not a downstream validation sign-off:
+Latest round-6 Local Fix checks:
 
+- `pnpm -C autobyteus-web test:nuxt components/workspace/config/__tests__/WorkspaceSelector.spec.ts components/workspace/config/__tests__/RunConfigPanel.spec.ts components/workspace/config/__tests__/MemberOverrideItem.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/workspaceReferenceActions.spec.ts stores/__tests__/teamRunConfigStore.spec.ts utils/__tests__/teamRunConfigUtils.spec.ts`
+  - Result: pass, 7 files / 69 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-round6-localfix-tests.log`
+- `pnpm -C autobyteus-server-ts test tests/unit/agent-team-execution/team-run-service.test.ts`
+  - Result: pass, 1 file / 10 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/backend-team-run-service-round6-localfix.log`
+- `pnpm -C autobyteus-server-ts build:full`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/backend-build-full-round6-localfix.log`
+- `git diff --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/diff-check-round6-localfix.log`
+- Changed-source size guard.
+  - Result: pass, no changed source implementation file over 500 effective non-empty lines.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/source-size-guard-round6-localfix.log`
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm -C autobyteus-web exec nuxi typecheck`
+  - Result: fail due existing/baseline project-wide type errors outside this local fix.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-nuxi-typecheck-round6-localfix.log`
+  - Changed-file grep: `changed_file_error_count=0`.
+  - Grep log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-nuxi-typecheck-round6-localfix-changed-file-grep.log`
+
+Earlier implementation checks retained from the round-4 handoff:
+
+- `pnpm -C autobyteus-server-ts build:full`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/backend-build-full-rerun.log`
 - `pnpm -C autobyteus-server-ts test tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts`
-  - Result: command completed successfully, 1 file / 3 tests. It exercises watcher-free create/search, shared real watcher leases across two real WebSocket clients, real `FILE_SYSTEM_CHANGE` delivery, early-close cleanup, repeated open/close cleanup, descriptor-growth guard, and child-process spawn health.
-- `pnpm -C autobyteus-server-ts test tests/unit/file-explorer/watcher/event-batcher.test.ts tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts`
-  - Result: command completed successfully after adding `Symbol.asyncDispose` for build/type compatibility, 2 files / 5 tests.
+  - Result: pass, 1 file / 3 tests. This is a local implementation confidence rerun of the durable API/E2E reproduction, not downstream sign-off.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/backend-file-explorer-websocket-lifecycle-e2e-impl-rerun.log`
+- `pnpm -C autobyteus-web test:nuxt stores/__tests__/runHistoryStore.spec.ts`
+  - Result: pass, 45 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-runhistorystore-rerun5.log`
+- `pnpm -C autobyteus-web test:nuxt services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts`
+  - Result: pass, 7 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-runopen-rerun2.log`
+- `pnpm -C autobyteus-web test:nuxt services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts`
+  - Result: pass, 2 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-runrecovery-rerun3.log`
+- `pnpm -C autobyteus-web test:nuxt components/fileExplorer/__tests__/FileExplorer.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/workspace/config/__tests__/RunConfigPanel.spec.ts components/workspace/config/__tests__/AgentRunConfigForm.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts components/workspace/config/__tests__/WorkspaceSelector.spec.ts components/agentInput/__tests__/ContextFilePathInputArea.spec.ts stores/__tests__/workspaceStore.spec.ts services/workspace/__tests__/workspaceNavigationService.spec.ts`
+  - Result: pass, 10 files / 72 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-workspace-surfaces-rerun3.log`
+- `pnpm -C autobyteus-web test:nuxt components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts composables/mobile/__tests__/useMobileWorkCatalog.spec.ts`
+  - Result: pass, 4 files / 37 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-mobile-rerun.log`
+- `pnpm -C autobyteus-web test:nuxt components/workspace/config/__tests__/MemberOverrideItem.spec.ts`
+  - Result: pass, 8 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-memberoverride-rerun3.log`
+- `pnpm -C autobyteus-web test:nuxt utils/__tests__/teamRunConfigUtils.spec.ts services/workspace/__tests__/workspaceNavigationService.spec.ts`
+  - Result: pass, 13 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-config-workspacenav-rerun.log`
+- `pnpm -C autobyteus-web test:nuxt types/agent/__tests__/AgentContext.spec.ts types/agent/__tests__/AgentRunConfig.spec.ts`
+  - Result: pass, 5 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-agent-types-rerun.log`
+- Final changed-source size guard.
+  - Result: pass, no changed source implementation file over 500 effective non-empty lines.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/source-size-guard-final.log`
 
-Attempted / currently failing due existing baseline issues:
+Attempted / not passing because of existing baseline issues:
 
+- `NODE_OPTIONS=--max-old-space-size=8192 pnpm -C autobyteus-web exec nuxi typecheck`
+  - Result: fail due existing/baseline project-wide type errors in unrelated build scripts/components/tests/stores.
+  - Final log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-nuxi-typecheck-final.log`
+  - Follow-up grep result: no errors in changed frontend files; no remaining `workspaceReference` missing-fixture errors.
 - `pnpm -C autobyteus-server-ts typecheck`
-  - Result: fails with existing `TS6059` because `tsconfig.json` includes `tests` while `rootDir` is `src`; `pnpm -C autobyteus-server-ts build:full` passed against `tsconfig.build.json`.
-- `pnpm -C autobyteus-web exec nuxi typecheck`
-  - Result: fails with existing/baseline type errors across build scripts, unrelated components/tests/stores, missing `~/stores/agents`, and Apollo typings; grep found no errors in changed frontend files, including `openFolderRefresh.ts`.
+  - Earlier result remains fail due existing `TS6059` rootDir/tests include issue. `build:full` passed against `tsconfig.build.json`.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/backend-typecheck-rerun.log`
 
 ## Downstream Validation Hints / Suggested Scenarios
 
-- Desktop: create/fetch workspaces without opening Files; confirm no file-explorer WebSocket and no watcher lease are opened until Files is actually visible.
-- Desktop: open Files, switch to another right-side tab, collapse the right panel, and navigate workspaces; confirm live session release and watcher close are awaited after the last visible consumer leaves.
-- Mobile: verify only the dedicated `explorer` panel can render `FileExplorer`; mobile tools should not list Files, should not auto-switch to Files, and should not instantiate `FileExplorerLayout`.
-- WebSocket race: open file-explorer WebSocket and close before auth/connect resolves; confirm late sessions are disconnected and watcher leases are released.
-- Setup failure: simulate watcher unavailable and send failure after session registration; confirm `WATCHER_UNAVAILABLE`/`SESSION_ERROR` behavior and lease/session cleanup.
-- Connected stream failure: simulate a `FILE_SYSTEM_CHANGE` send failure after CONNECTED succeeds; confirm session close and watcher lease release.
-- Real watcher subscriber cancellation: close one of two real file-explorer WebSockets while both share one watcher; confirm the first session release decrements the lease while the second session/watcher remains live, then final close stops the watcher.
-- Search: run file search without any visible file explorer; confirm search refreshes snapshot/index and no live watcher lease is acquired.
-- Descriptor pressure: repeat the original high-churn reproduction while capturing Codex app-server spawn diagnostics; expect EBADF/EMFILE/ENFILE errors to include code, open_fds, fs_read/fs_write, cwd, command, args, runtime, and the descriptor-pressure hint.
+- Historical standalone run: open from history and verify no workspace initialization happens until Files/Terminal/context workspace action is invoked.
+- Historical team run/member: open from history through the focused member path and verify per-member references exist but no workspace is created just for display or lazy member hydration.
+- Files surface: open Files from a historical selection and verify `ensureWorkspaceInitialized(reference)` happens once, loading/error UI is visible, and live file-explorer session ownership starts only after activation.
+- Terminal surface: open Terminal from a historical selection and verify activation is explicit before session connect.
+- Mobile: verify setup/launch carries references, mobile Tools still excludes Files, and dedicated mobile Explorer remains the only mobile file-explorer live surface.
+- Regression from previous watcher work: repeat collapse/switch/unmount/close-before-connect and real WebSocket lifecycle checks to confirm watcher leases still release promptly.
 
 ## API / E2E / Executable Validation Still Required
 
-API/E2E validation should resume after code re-review. The specific failing durable WebSocket lifecycle E2E was rerun locally for the Local Fix and now completes successfully, but broader downstream validation remains owned by `api_e2e_engineer`.
+Code review should run before API/E2E resumes. After re-review, API/E2E should validate the full user flow for historical display without workspace initialization and explicit Files/Terminal activation, plus the existing high-churn watcher lifecycle scenarios.

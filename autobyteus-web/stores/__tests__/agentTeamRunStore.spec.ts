@@ -79,7 +79,9 @@ const buildTeamContext = (params: {
   currentStatus?: AgentTeamStatus
   unsubscribe?: (() => void) | undefined
 }) => {
-  const memberTree = Object.keys(params.memberContexts).map(buildAgentNode);
+  const memberTree = Object.keys(params.memberContexts).map((memberRouteKey) =>
+    buildAgentNode(memberRouteKey),
+  );
   const memberNodesByRouteKey = new Map(memberTree.map((node) => [node.memberRouteKey, node]));
   return {
     teamRunId: params.teamRunId,
@@ -170,7 +172,9 @@ vi.mock('~/stores/contextFileUploadStore', () => ({
 }));
 
 vi.mock('~/composables/useRuntimeScopedModelSelection', () => ({
-  loadRuntimeProviderGroupsForSelection: vi.fn(async (runtimeKind: string) => runtimeProviderLookup[runtimeKind] ?? []),
+  loadRuntimeProviderGroupsForSelection: vi.fn(async (runtimeKind: string) =>
+    (runtimeProviderLookup as Record<string, any[]>)[runtimeKind] ?? [],
+  ),
 }));
 
 describe('agentTeamRunStore', () => {
@@ -734,6 +738,12 @@ describe('agentTeamRunStore', () => {
   });
 
   it('fans out mixed member runtimes when launching a temporary team', async () => {
+    const workspaceReference = {
+      workspaceId: 'agent_ws_reference',
+      workspaceRootPath: '/tmp/ReferenceTeam',
+      displayName: 'ReferenceTeam',
+      kind: 'filesystem' as const,
+    };
     const focusedMember = {
       isSending: false,
       state: {
@@ -751,7 +761,8 @@ describe('agentTeamRunStore', () => {
       config: {
         teamDefinitionId: 'team-def-1',
         runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
+        workspaceId: workspaceReference.workspaceId,
+        workspaceReference,
         llmModelIdentifier: 'gpt-5.3-codex',
         llmConfig: { reasoning_effort: 'high' },
         autoExecuteTools: false,
@@ -816,6 +827,8 @@ describe('agentTeamRunStore', () => {
                 memberName: 'professor',
                 agentDefinitionId: 'agent-a',
                 runtimeKind: 'codex_app_server',
+                workspaceId: workspaceReference.workspaceId,
+                workspaceRootPath: workspaceReference.workspaceRootPath,
                 skillAccessMode: 'GLOBAL_DISCOVERY',
                 llmConfig: { reasoning_effort: 'medium' },
               }),
@@ -824,6 +837,8 @@ describe('agentTeamRunStore', () => {
                 agentDefinitionId: 'agent-b',
                 runtimeKind: 'claude_agent_sdk',
                 llmModelIdentifier: 'claude-sonnet',
+                workspaceId: workspaceReference.workspaceId,
+                workspaceRootPath: workspaceReference.workspaceRootPath,
                 skillAccessMode: 'GLOBAL_DISCOVERY',
                 llmConfig: { thinking_enabled: true },
               }),

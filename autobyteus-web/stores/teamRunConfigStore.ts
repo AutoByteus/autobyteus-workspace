@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import { buildTeamRunTemplate } from '~/composables/useDefinitionLaunchDefaults'
 import { type TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference'
+import { createWorkspaceReference } from '~/utils/workspaceReference'
 import {
   evaluateTeamRunLaunchReadiness,
   type RuntimeModelCatalogs,
@@ -102,6 +104,9 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     updateConfig(updates: Partial<TeamRunConfig>) {
       if (this.config) {
         Object.assign(this.config, updates)
+        if ('workspaceId' in updates && !('workspaceReference' in updates)) {
+          this.config.workspaceReference = null
+        }
       }
     },
 
@@ -130,12 +135,20 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     /**
      * Set workspace as successfully loaded.
      */
-    setWorkspaceLoaded(workspaceId: string, path: string) {
+    setWorkspaceLoaded(
+      workspaceId: string,
+      path: string,
+      workspaceReference: WorkspaceReference | null = null,
+    ) {
       this.workspaceLoadingState.isLoading = false
       this.workspaceLoadingState.loadedPath = path
       this.workspaceLoadingState.error = null
       if (this.config) {
         this.config.workspaceId = workspaceId
+        this.config.workspaceReference = workspaceReference ?? createWorkspaceReference({
+          workspaceId,
+          workspaceRootPath: path,
+        })
       }
     },
 
@@ -158,6 +171,7 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
       }
       if (this.config) {
         this.config.workspaceId = null
+        this.config.workspaceReference = null
       }
     },
 

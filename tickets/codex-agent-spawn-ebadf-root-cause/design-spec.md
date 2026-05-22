@@ -1,8 +1,8 @@
-# Design Spec: Demand-Driven File Explorer Watchers to Prevent `spawn EBADF`
+# Design Spec: Demand-Driven File Explorer Watchers and Lazy Historical Workspace Activation
 
 Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-spec.md`
 Date: 2026-05-22
-Status: Ready for architecture review
+Status: Revised for architecture review round 4 after AR-003/AR-004 design-impact findings
 
 Related artifacts:
 
@@ -14,6 +14,16 @@ Revision after architecture review round 1:
 
 - AR-001 covered by making the dedicated mobile `explorer` panel the only mobile file-explorer live surface and requiring mobile tools `RightSideTabs` to suppress the `files` tab/render path.
 - AR-002 covered by assigning raw WebSocket pending-connect cleanup to `api/websocket/file-explorer.ts` and atomic lease/session setup cleanup to `FileExplorerStreamHandler.connect()`.
+
+Same-ticket release-blocker revision after implementation/delivery validation:
+
+- Slow historical run opening is now in scope because the current-ticket build is not releasable if history rows eagerly initialize workspaces.
+- Historical run viewing must use canonical `workspaceRootPath` / cheap workspace reference and must not create/initialize a workspace or build file trees until the user opens Files, Terminal, resume/rerun, context picker, or another workspace-dependent action.
+
+Revision after architecture review round 3:
+
+- AR-003 covered by defining `WorkspaceReference` as the run/team config identity companion, making `workspaceId` a deterministic reference id rather than initialization proof, and assigning initialized workspace payload/activation state exclusively to `WorkspaceStore`.
+- AR-004 covered by adding the team historical hydration spine and splitting live member workspace activation from historical member context shell/reference building. Historical team open builds focused-member and sibling shells with per-member references and does not call `ensureWorkspaceByRootPath()` for every member.
 
 ## Current-State Read
 
@@ -59,9 +69,34 @@ Backend watcher startup is also too implicit:
 - `FileExplorerStreamHandler.disconnect()` closes the session but has no explicit watcher lease to release.
 - `autobyteus-server-ts/src/api/websocket/file-explorer.ts` currently stores `sessionId` only after async `connect()` resolves. If the socket closes before that resolution, the close handler sees `sessionId === null` and returns. After watcher leases are introduced, that race could leak a late-created session/lease unless the route tracks pending connect cleanup.
 
+### Current implemented historical run open path
+
+After the watcher lifecycle implementation, a separate same-ticket release blocker remains:
+
+- `autobyteus-web/stores/runHistoryLoadActions.ts:openHistoricalRun()` calls `openAgentRun()`.
+- `openAgentRun()` calls `loadRunContextHydrationPayload()`.
+- `loadRunContextHydrationPayload()` calls `input.ensureWorkspaceByRootPath(resumeConfig.metadataConfig.workspaceRootPath)` before building the run config or selecting the run.
+- `ensureRunHistoryWorkspaceByRootPath()` may call `workspaceStore.fetchAllWorkspaces()` and then `workspaceStore.createWorkspace({ root_path })`.
+- Backend `WorkspaceManager.createWorkspace()` awaits `FileSystemWorkspace.initialize()`.
+- `FileSystemWorkspace.initialize()` calls `fileExplorer.buildWorkspaceDirectoryTree(1)`.
+
+This means opening a historical run can still pay filesystem workspace activation/tree-scan cost before the user opens Files or any other workspace-dependent surface. The historical payload already contains `workspaceRootPath`, which is enough to display historical metadata. A live/current initialized workspace is not needed for read-only history viewing.
+
+### Current implemented historical team/member open path
+
+Team history has a separate eager path that must not be hidden behind the standalone agent fix:
+
+- `autobyteus-web/stores/runHistorySelectionActions.ts:openTeamMemberRunFromHistory()` calls `openTeamRun()` and passes `ensureWorkspaceByRootPath`.
+- `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:openTeamRun()` calls `loadTeamRunContextHydrationPayload()` and receives `firstWorkspaceId` for `TeamRunConfig` reconstruction.
+- `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:loadHistoricalTeamRunContextHydrationPayload()` fetches the focused member projection, but then calls `buildTeamMemberContexts({ ensureWorkspaceByRootPath })`.
+- `autobyteus-web/stores/runHistoryTeamHelpers.ts:buildTeamMemberContexts()` loops all flattened agent members and calls `ensureWorkspaceByRootPath(member.workspaceRootPath)` for each member with a path before building that member config.
+- `autobyteus-web/utils/teamRunConfigUtils.ts:reconstructTeamRunConfigFromMetadata({ firstWorkspaceId })` writes that id into `TeamRunConfig.workspaceId` without retaining the root-path/display reference.
+
+Therefore historical team/member viewing can multiply the same eager workspace activation cost across all team members, even when only one focused member projection is being viewed.
+
 ### Current ownership problem
 
-The file watcher currently behaves as a property of a loaded workspace/index, but product intent says it is a property of a visible file-explorer experience. This boundary mismatch lets inactive workspaces retain recursive watchers and file descriptors indefinitely.
+The file watcher currently behaves as a property of a loaded workspace/index, but product intent says it is a property of a visible file-explorer experience. This boundary mismatch lets inactive workspaces retain recursive watchers and file descriptors indefinitely. The late history-open blocker exposes the same deeper ownership issue at the workspace identity layer: historical run viewing depends on current workspace activation because `workspaceId`, workspace metadata, and file-explorer snapshot are currently coupled too tightly.
 
 ## Intended Change
 
@@ -85,16 +120,23 @@ Backend pending-connect target decision:
 - The stream handler owns atomic session/lease setup once `connect()` is called.
 - Both layers must be idempotent: route late cleanup may call `disconnect(sessionId)` after `connect()` resolves, while handler setup failure must release all resources before returning/rejecting.
 
+Historical run lazy-workspace target decision:
+
+- Historical run opening is a read-only history-view use case and must not activate the filesystem workspace.
+- Canonical `workspaceRootPath` is the persisted historical workspace identity; deterministic `workspaceId` is a derived reference, not proof that a workspace is initialized.
+- Add or expose a cheap filesystem workspace reference boundary that canonicalizes root path, derives deterministic `workspaceId`, returns display name, and optionally persists mapping without calling `FileSystemWorkspace.initialize()` or building a file tree.
+- Files, Terminal, resume/rerun, context picker, and any other workspace-dependent surface/action must explicitly activate/initialize the workspace at its own boundary and show loading/errors there.
+
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture (`Feature`/`Bug Fix`/`Behavior Change`/`Refactor`/`Cleanup`/`Performance`/`Larger Requirement`): Bug Fix + Refactor + Performance
 - Current design issue found (`Yes`/`No`/`Unclear`): Yes
-- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue / Missing Invariant
+- Root cause classification (`Local Implementation Defect`/`Missing Invariant`/`Boundary Or Ownership Issue`/`Duplicated Policy Or Coordination`/`File Placement Or Responsibility Drift`/`Shared Structure Looseness`/`Legacy Or Compatibility Pressure`/`No Design Issue Found`/`Unclear`): Boundary Or Ownership Issue / Missing Invariant / Shared Structure Looseness
 - Refactor needed now (`Yes`/`No`/`Deferred`/`Unclear`): Yes
-- Evidence: The current Electron server had 10k+ descriptors; direct reproduction showed new Codex app-server spawns fail with `spawn EBADF`; independent watcher-pressure probes reproduced the same `spawn EBADF`; current code starts watchers from workspace fetch/indexing rather than visible file-explorer demand.
-- Design response: Move watcher ownership to explicit frontend live-consumer acquisition and backend watcher leases; decommission automatic workspace-load watcher startup.
-- Refactor rationale: A local Codex retry does not remove the descriptor leak/pressure. The defective boundary is file-explorer/watch lifecycle ownership.
-- Intentional deferrals and residual risk, if any: Full workspace cache eviction can be deferred if watcher resources are released correctly. Memory use from cached trees may remain but is not the direct `spawn EBADF` cause.
+- Evidence: The current Electron server had 10k+ descriptors; direct reproduction showed new Codex app-server spawns fail with `spawn EBADF`; independent watcher-pressure probes reproduced the same `spawn EBADF`; current code starts watchers from workspace fetch/indexing rather than visible file-explorer demand. Late release validation showed history rows can still be slow because history hydration eagerly resolves `workspaceRootPath` to live `workspaceId` through workspace creation/initialization and shallow tree traversal.
+- Design response: Move watcher ownership to explicit frontend live-consumer acquisition and backend watcher leases; decommission automatic workspace-load watcher startup; split historical workspace reference from initialized workspace activation so history viewing does not scan the filesystem.
+- Refactor rationale: A local Codex retry or file-descriptor limit increase does not remove descriptor pressure or history-open latency. The defective boundaries are file-explorer/watch lifecycle ownership and historical-run workspace identity vs activation ownership.
+- Intentional deferrals and residual risk, if any: Full workspace cache eviction can be deferred if watcher resources are released correctly. Folder-scoped file explorer traversal can be deferred only if history-open no longer performs tree traversal and Files opening has an acceptable loading state.
 
 ## Terminology
 
@@ -103,15 +145,20 @@ Backend pending-connect target decision:
 - **Watcher lease**: Backend lifecycle token representing one active reason to keep a workspace watcher alive.
 - **Visible consumer**: A mounted and visible file explorer surface: desktop Files tab with panel visible, dedicated mobile explorer panel, or skill detail embedded file explorer. Mobile `RightSideTabs` in the tools panel is explicitly not a file-explorer visible consumer.
 - **Pending file-explorer connection**: A WebSocket route attachment whose async backend `connect()` has started but has not yet returned a `sessionId`.
+- **Workspace reference**: A cheap identity/display object for a filesystem workspace: deterministic `workspaceId`, canonical `workspaceRootPath`, display name, and kind/display metadata. It contains no file tree and does not imply initialization.
+- **Workspace activation state**: Frontend store-owned status for a workspace reference (`uninitialized`, `activating`, `initialized`, or `error`). Activation state is not duplicated into every run config.
+- **Activated workspace**: A backend `FileSystemWorkspace` that has been created/initialized enough for workspace-dependent features such as Files, Terminal, or runtime launch. In the frontend, activation is represented by `WorkspaceStore.workspaces[workspaceId]` plus activation state `initialized`.
 
 ## Design Reading Order
 
 1. Data-flow spine inventory
 2. Ownership model
-3. Frontend live-consumer design
-4. Backend watcher lease design
-5. Search/snapshot behavior
-6. File responsibilities and migration sequence
+3. Workspace reference / activation data model
+4. Historical team hydration model
+5. Frontend live-consumer design
+6. Backend watcher lease design
+7. Search/snapshot behavior
+8. File responsibilities and migration sequence
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -130,12 +177,20 @@ Backend pending-connect target decision:
 | DS-005 | Primary End-to-End | Search/folder/file operation | Query/mutation result returned | GraphQL file explorer resolver | Must work without persistent watcher. |
 | DS-006 | Bounded Local | Child-process spawn failure | Resource-pressure diagnostic log | Runtime client / spawn boundary | Makes future `EBADF` diagnosis fast. |
 | DS-007 | Bounded Local | WebSocket attach/early close | Pending connect cleaned up or skipped | file-explorer WebSocket route + `FileExplorerStreamHandler` | Prevents watcher/session leaks when socket closes before `connect()` resolves. |
+| DS-008 | Primary End-to-End | Historical standalone agent run row opened | Conversation/activity/config rendered with workspace reference but without workspace activation | Run history open/hydration owner | Keeps agent history viewing fast and independent from filesystem scans. |
+| DS-009 | Primary End-to-End | Workspace-dependent action from historical run | Workspace reference is activated and action proceeds using initialized handle or root path | Workspace activation boundary | Moves filesystem initialization to Files/Terminal/context action boundary and keeps resume/rerun from initializing merely to recover root path. |
+| DS-010 | Primary End-to-End | Historical team/member row opened | Focused member history plus sibling shells rendered with per-member references and no eager member workspace activation | Team run history open/hydration owner | Covers the separate team path that currently resolves every member workspace. |
+| DS-011 | Primary End-to-End | Historical team sibling member focused | Sibling projection hydrated without workspace activation | Team historical member hydration owner | Allows team history navigation without triggering filesystem initialization for each member. |
 
 ## Primary Execution Spine(s)
 
 - DS-001: `WorkspaceStore.fetchAllWorkspaces/createWorkspace/registerSkillWorkspace -> GraphQL workspace query/mutation -> WorkspaceManager -> FileSystemWorkspace.initialize(shallow snapshot only) -> WorkspaceConverter -> frontend WorkspaceStore tree state`
 - DS-002: `Visible FileExplorer component -> WorkspaceStore.acquireFileExplorerLiveSession(workspaceId, consumerId) -> FileExplorerStreamingService.connect -> /ws/file-explorer/:workspaceId -> route pending-connection context -> FileExplorerStreamHandler.connect -> BaseFileExplorer.acquireWatcherLease -> FileExplorerSession -> CONNECTED -> WorkspaceStore.refreshWorkspaceSnapshot`
 - DS-005: `FileExplorer search/folder/open/mutation UI -> FileExplorerStore/WorkspaceStore -> GraphQL file explorer resolver -> FileSystemWorkspace/LocalFileExplorer -> snapshot traversal/read/write/search -> result/change event -> frontend state update`
+- DS-008: `Agent history row click -> openHistoricalRun -> openAgentRun -> loadRunContextHydrationPayload -> getRunProjection/getAgentRunResumeConfig/getRunFileChanges -> resolveWorkspaceReferenceByRootPath(workspaceRootPath) -> AgentRunConfig{workspaceId, workspaceReference} -> historical agent context rendered`
+- DS-009: `Historical Files/Terminal/context action -> WorkspaceStore.ensureWorkspaceInitialized(workspaceReference) -> backend workspace activation -> WorkspaceStore.workspaces[workspaceId] populated -> feature-specific loading/result or error`; `resume/rerun -> AgentRunConfig.workspaceReference.workspaceRootPath -> prepare/launch runtime` and activates only if that feature needs initialized workspace state.
+- DS-010: `Team history/member row click -> openTeamMemberRunFromHistory -> openTeamRun -> loadTeamRunContextHydrationPayload -> loadHistoricalTeamRunContextHydrationPayload -> buildHistoricalTeamMemberContextShells -> focused projection fetch -> AgentTeamContext{config.workspaceReference, member workspaceReferences} rendered`
+- DS-011: `Historical team member focus -> ensureHistoricalTeamMemberHydrated -> fetchTeamMemberProjection -> applyProjectionToTeamMemberContext -> mark member projection loaded`, with no call to workspace activation.
 
 ## Spine Narratives (Mandatory)
 
@@ -148,6 +203,10 @@ Backend pending-connect target decision:
 | DS-005 | Search/open/mutations are request/response operations and do not require active live monitoring. Mutations return explicit change events to update UI immediately. | File query/mutation request | GraphQL file explorer resolver | Search indexing, ripgrep fallback, permission errors |
 | DS-006 | Spawn failures log resource context and distinguish descriptor pressure from missing binaries. | Spawn attempt | Runtime client/spawn boundary | lsof/fd count diagnostic should be best-effort |
 | DS-007 | The WebSocket route registers close/error cleanup before auth/connect, tracks `closed`, `connectPromise`, and `sessionId`, skips connect if already closed, and disconnects a late session if close happened before `connect()` resolved. Handler `connect()` guarantees no retained lease/session on null/reject. | Pending file-explorer connection | Route owns socket lifecycle; handler owns session/lease setup atomicity | Remote auth rejection, send failure, setup failure |
+| DS-008 | Historical standalone agent hydration uses stored projection/resume/file-change data plus a cheap workspace reference. It does not create or initialize the workspace. | Historical agent context, workspace reference | Run history open/hydration owner | Agent definition lookup, run file-change hydration |
+| DS-009 | When the user asks for current workspace functionality from history, that action activates the referenced workspace and owns loading/error feedback. Resume/rerun can use the canonical root path from the reference without activating solely to recover that path. | Workspace activation request, initialized workspace or root-path launch input | Workspace activation boundary | Missing path handling, feature-specific loading |
+| DS-010 | Historical team hydration builds a primary team workspace reference and per-member references, creates all leaf member shells, fetches only the focused member projection, and renders the team without initializing each member workspace. | Historical team context, member shells, member workspace references | Team run history open/hydration owner | Team communication hydration, status normalization |
+| DS-011 | Focusing a sibling member hydrates only that member projection and updates the existing shell; it does not resolve/activate the member workspace. | Historical team member projection | Team historical member hydration owner | Projection load-state dedupe/error state |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -163,6 +222,17 @@ Backend pending-connect target decision:
 - `FileExplorer`: low-level local filesystem explorer and actual `FileSystemWatcher` holder.
 - `FileSystemWatcher`: chokidar adapter/event source.
 - `FileNameIndexer`: snapshot filename index owner, no longer live watcher owner by default.
+- `openHistoricalRun` / `openAgentRun`: standalone historical run open coordinator; must not activate workspaces for read-only history viewing.
+- `loadRunContextHydrationPayload`: standalone historical projection/resume hydration owner; produces lazy workspace reference and `AgentRunConfig` fields with one meaning.
+- `openTeamMemberRunFromHistory` / `openTeamRun`: team historical run open coordinator; must not activate all member workspaces.
+- `loadTeamRunContextHydrationPayload`: branches live vs historical team hydration and owns the team-specific reference/activation split.
+- `buildHistoricalTeamMemberContextShells`: target historical team helper that builds member `AgentContext` shells with per-member `WorkspaceReference` values and no activation.
+- `buildLiveTeamMemberContexts`: target live-team helper that may activate member workspaces when live/recovery semantics require it.
+- `AgentRunConfig` / `TeamRunConfig`: run config identity carriers; `workspaceId` means deterministic workspace identity/reference id and `workspaceReference` carries root-path/display metadata.
+- `AgentContext` / `AgentTeamContext`: context containers that carry config references and do not separately own workspace activation.
+- `WorkspaceIdMappingStore` / workspace reference resolver: canonical root-path-to-deterministic-id owner without file-tree initialization.
+- `WorkspaceStore`: initialized workspace payload and activation-state owner; non-null config `workspaceId` is not sufficient to read `WorkspaceStore.workspaces[workspaceId]` without null handling.
+- Workspace activation boundary: action-specific owner that turns a reference into an initialized workspace only when needed.
 
 ## Ownership Map
 
@@ -177,6 +247,15 @@ Backend pending-connect target decision:
 - `FileExplorer` owns concrete filesystem operations and the actual watcher object, but not higher-level consumer policy.
 - `FileExplorerSession` owns session event generator cancellation so subscribers do not remain registered after disconnect.
 - `FileNameIndexer` owns snapshot index content and optional refresh, not persistent live monitoring.
+- Run-history hydration owns historical run view data and historical workspace reference shape; it must not own current workspace activation.
+- `AgentRunConfig.workspaceId` and `TeamRunConfig.workspaceId` mean stable deterministic workspace identity/reference id. They do not mean that `WorkspaceStore.workspaces[workspaceId]` exists.
+- `AgentRunConfig.workspaceReference` and `TeamRunConfig.workspaceReference` carry root path/display metadata. When `workspaceId` is non-null, the corresponding config must also carry a matching `workspaceReference` in target code.
+- `AgentContext` and team member `AgentContext` instances consume workspace identity only through their config; they do not own activation state or duplicate workspace payload.
+- `AgentTeamContext.config.workspaceReference` is the primary/team-level display reference, chosen from the coordinator member workspace reference when present, otherwise the first member workspace reference. Focused-member workspace actions use the focused leaf member context's reference before falling back to the team primary reference.
+- `HistoricalTeamHydrationState` owns member metadata, projection load state, and the per-member workspace reference map for historical team shells.
+- Workspace reference resolution owns canonical path normalization, deterministic id derivation, display name, and mapping persistence; it must not build file trees.
+- `WorkspaceStore` owns initialized `WorkspaceInfo` payloads in `workspaces`, cheap references in `workspaceReferencesById`, and activation state in `workspaceActivationStateById`. `activeWorkspace` returns only initialized payload; `activeWorkspaceReference` returns the selected config reference without activation.
+- Workspace activation owns the transition from reference to initialized workspace for Files/Terminal/context actions; it owns loading/error state at that action boundary. Activation does not rewrite run config identity fields unless a bug is detected between returned id and reference id.
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -185,6 +264,169 @@ Backend pending-connect target decision:
 | `FileExplorerStreamingService` | Frontend `WorkspaceStore` live-consumer registry | Browser WebSocket transport adapter | Workspace-wide policy deciding which workspaces deserve monitoring |
 | `/ws/file-explorer/:workspaceId` route | Route pending-connection cleanup + `FileExplorerStreamHandler` | HTTP/WebSocket boundary and socket close/error owner | Watcher lease policy beyond pairing pending/late session cleanup with socket lifecycle |
 | GraphQL file explorer resolver | `FileSystemWorkspace` / `LocalFileExplorer` | Request/response API boundary | Persistent live watcher ownership |
+| Historical run open/hydration functions | Run history projection/resume services + workspace reference resolver | UI/store boundary for opening stored runs | Workspace activation or file tree scanning |
+| Workspace reference resolver | `WorkspaceIdMappingStore` and canonical path utilities | Cheap identity/display boundary | Initialized workspace lifecycle or file explorer snapshots |
+
+
+## Workspace Reference And Run Context Data Model (AR-003 Target)
+
+### Authoritative semantics
+
+| Field / Store Slot | Target Meaning | Initialization Implication | Owner |
+| --- | --- | --- | --- |
+| `WorkspaceReference.workspaceId` | Deterministic identity for a canonical filesystem root path | None; identity only | Workspace reference resolver / `WorkspaceStore.workspaceReferencesById` |
+| `WorkspaceReference.workspaceRootPath` | Canonical server filesystem path used by history display and runtime launch | None | Workspace reference resolver |
+| `AgentRunConfig.workspaceId` | Stable workspace reference id for the run | None; may be present while `WorkspaceStore.workspaces[workspaceId]` is absent | Run config |
+| `AgentRunConfig.workspaceReference` | Root-path/display companion for `workspaceId` | None | Run config hydration/config stores |
+| `TeamRunConfig.workspaceId` | Stable primary/team workspace reference id | None | Team config |
+| `TeamRunConfig.workspaceReference` | Primary/team display reference; coordinator member reference if present, otherwise first member reference | None | Team config reconstruction |
+| `AgentContext.config.workspaceReference` | Workspace reference for that agent/member context | None | Agent context config |
+| `AgentTeamContext.historicalHydration.memberWorkspaceReferencesByRouteKey` | Per-member historical workspace references | None | Historical team hydration state |
+| `WorkspaceStore.workspaces[workspaceId]` | Initialized `WorkspaceInfo` payload, including file-explorer snapshot | Yes, this is the initialized frontend payload | `WorkspaceStore` |
+| `WorkspaceStore.workspaceActivationStateById[workspaceId]` | Activation status/error for a reference | Status only; does not duplicate config | `WorkspaceStore` |
+
+Target type shape, names illustrative but required semantics:
+
+```ts
+export interface WorkspaceReference {
+  workspaceId: string;
+  workspaceRootPath: string;
+  displayName: string;
+  kind: 'filesystem';
+}
+
+export type WorkspaceActivationStatus = 'uninitialized' | 'activating' | 'initialized' | 'error';
+
+export interface WorkspaceActivationState {
+  status: WorkspaceActivationStatus;
+  error: string | null;
+}
+
+export interface AgentRunConfig {
+  workspaceId: string | null;              // deterministic reference id, not initialization proof
+  workspaceReference: WorkspaceReference | null;
+  // existing fields...
+}
+
+export interface TeamRunConfig {
+  workspaceId: string | null;              // primary deterministic reference id, not initialization proof
+  workspaceReference: WorkspaceReference | null;
+  // existing fields...
+}
+```
+
+Clean-cut invariant: in target code, `workspaceId !== null` for a filesystem workspace requires `workspaceReference !== null` and `workspaceReference.workspaceId === workspaceId`. Consumers must not use `workspaceId` alone to imply an initialized workspace. If a draft config is created from an already initialized workspace, the draft config still receives both `workspaceId` and `workspaceReference` from the selected `WorkspaceInfo`.
+
+### Hydration and activation transitions
+
+Standalone historical agent open:
+
+1. `loadRunContextHydrationPayload()` reads `resumeConfig.metadataConfig.workspaceRootPath`.
+2. It calls `resolveWorkspaceReferenceByRootPath(workspaceRootPath)` or equivalent metadata-only resolver.
+3. It builds `AgentRunConfig` with `workspaceId = reference.workspaceId` and `workspaceReference = reference`.
+4. It upserts/selects `AgentContext` without inserting `WorkspaceInfo` into `WorkspaceStore.workspaces` and without calling `workspaceStore.createWorkspace()`.
+
+Workspace-dependent action after history open:
+
+1. The action reads the selected config reference (`activeWorkspaceReference`, focused team member reference, or explicit prop reference).
+2. If the action needs initialized workspace state, it calls `WorkspaceStore.ensureWorkspaceInitialized(reference)`.
+3. `WorkspaceStore.ensureWorkspaceInitialized(reference)` returns the existing `WorkspaceInfo` if `workspaces[reference.workspaceId]` exists; otherwise it records activation status `activating`, calls the backend activation/create boundary, validates the returned id equals `reference.workspaceId`, stores the `WorkspaceInfo`, records status `initialized`, and returns the payload.
+4. If activation fails, the store records status `error`; the historical run context/config remains intact and displayable. No run config field is cleared or rewritten.
+5. Resume/rerun must use `config.workspaceReference.workspaceRootPath` as the launch/root-path input when `WorkspaceInfo` is absent. It must not initialize the file tree solely to recover root path. If a runtime path truly requires an initialized workspace handle, the resume/rerun action owns that explicit activation and error display.
+
+### Store selectors and display/action consumers
+
+`WorkspaceStore` target selectors:
+
+- `activeWorkspaceReference`: reads the current selected agent config reference, or for selected team reads the focused leaf member config reference and falls back to team config reference, or for draft screens reads the draft config reference.
+- `activeWorkspace`: returns `workspaces[activeWorkspaceReference.workspaceId] ?? null`; it does not activate and does not fall back to creating workspace state.
+- `currentWorkspaceTree`: continues to return `activeWorkspace?.fileExplorer ?? null`; a null tree is valid for unactivated history selections.
+- `workspaceActivationState(referenceOrId)`: exposes loading/error state for Files/Terminal/context actions and config display.
+
+Display consumers:
+
+- `RunConfigPanel.vue` / config forms must display path/name from `config.workspaceReference.workspaceRootPath` / `displayName` first, falling back to initialized `WorkspaceStore.workspaces[workspaceId]` only when the reference is absent during draft construction.
+- History rows and selected historical config views must tolerate `WorkspaceStore.workspaces[workspaceId] === undefined`.
+
+Action consumers:
+
+- `FileExplorer.vue` / `FileExplorerLayout` must resolve a `WorkspaceReference` first, call `ensureWorkspaceInitialized(reference)`, then use the initialized `workspaceId` for folder fetches and live-session acquisition. Loading/error belongs in the file explorer surface.
+- `Terminal.vue` must not derive a missing id solely from `workspaceStore.activeWorkspace`. It must use an explicit reference/initialized workspace path: ensure the focused reference is initialized, then connect `useTerminalSession` with the initialized id; failure is shown in Terminal.
+- `agentRunStore.sendUserInputAndSubscribe()` must prefer `config.workspaceReference.workspaceRootPath` over `WorkspaceStore.workspaces[workspaceId]` for existing/historical runs, and must not create a workspace merely to recover `workspaceRootPath`.
+- Context picker/file attachment features that browse the filesystem must call activation before listing. Context-file artifacts already attached to history remain displayable from history metadata without activation.
+
+## Historical Team Hydration Data Model And Flow (AR-004 Target)
+
+Historical team open uses a different path from standalone agents and must be designed explicitly:
+
+```text
+openTeamMemberRunFromHistory
+-> openTeamRun
+-> loadTeamRunContextHydrationPayload
+-> loadHistoricalTeamRunContextHydrationPayload
+-> resolve member WorkspaceReferences without activation
+-> buildHistoricalTeamMemberContextShells
+-> fetch focused member projection only
+-> AgentTeamContext rendered
+```
+
+### Live vs historical split
+
+`teamRunContextHydrationService.ts` must keep separate branches with separate workspace contracts:
+
+| Branch | Helper | Workspace Contract | Why |
+| --- | --- | --- | --- |
+| Live/active team recovery | `buildLiveTeamMemberContexts` | May call a clearly named activation function such as `activateWorkspaceByRootPathForLiveRun()` when active team semantics require initialized workspaces | Active/recovered runs may need current workspace handles. |
+| Historical team viewing | `buildHistoricalTeamMemberContextShells` | May call only `resolveWorkspaceReferenceByRootPath()` / `resolveWorkspaceReferencesByRootPaths()`; must not call `ensureWorkspaceByRootPath()` | History viewing is read-only and must not initialize every member workspace. |
+
+The current generic `buildTeamMemberContexts({ ensureWorkspaceByRootPath })` shape must be removed or split because it hides the activation mode and makes the historical path accidentally eager.
+
+### Historical member shells
+
+`buildHistoricalTeamMemberContextShells` target responsibilities:
+
+1. Flatten all agent members from team metadata.
+2. Resolve each `member.workspaceRootPath` to a `WorkspaceReference` through a cheap resolver. A batched resolver is preferred to keep team open bounded, but repeated cheap single-reference calls are acceptable only if they do not activate workspace state.
+3. Build each member `AgentRunConfig` with `workspaceId = memberReference?.workspaceId ?? null` and `workspaceReference = memberReference`.
+4. Build each leaf `AgentContext` as a shell with metadata-derived conversation/status and no projection for siblings not yet loaded.
+5. Apply the focused member projection only to the focused member context.
+6. Return `{ members, primaryWorkspaceReference, memberWorkspaceReferencesByRouteKey }`.
+
+Primary/team reference selection:
+
+- `primaryWorkspaceReference` is chosen from the coordinator/focused member reference when available, otherwise the first member reference in metadata order.
+- `TeamRunConfig.workspaceId = primaryWorkspaceReference?.workspaceId ?? null`.
+- `TeamRunConfig.workspaceReference = primaryWorkspaceReference`.
+- The old `firstWorkspaceId` local return must be renamed/replaced with `primaryWorkspaceReference` / `firstWorkspaceReference`. If a temporary local variable named `firstWorkspaceId` remains during refactor, it must be documented and typed as a reference id only, not an initialized workspace id.
+
+`HistoricalTeamHydrationState` target addition:
+
+```ts
+export interface HistoricalTeamHydrationState {
+  createdAt: string;
+  updatedAt: string;
+  memberMetadataByRouteKey: Record<string, TeamRunMetadataAgentMember>;
+  memberProjectionLoadStateByRouteKey: Record<string, TeamMemberProjectionLoadState>;
+  memberWorkspaceReferencesByRouteKey: Record<string, WorkspaceReference>;
+}
+```
+
+Focused member and sibling behavior:
+
+- Initial historical team open fetches the focused member projection and builds unloaded sibling shells. It does not activate the focused member workspace or any sibling workspace.
+- `ensureHistoricalTeamMemberHydrated()` fetches a sibling projection and applies it to the existing member context. It must not resolve/activate workspace state because each shell already has its reference.
+- Files/Terminal/context actions inside a selected team member use that focused member's `AgentContext.config.workspaceReference` and then follow DS-009 activation rules.
+
+### Team file mappings for current code
+
+| Current File | Required Target Behavior |
+| --- | --- |
+| `autobyteus-web/stores/runHistorySelectionActions.ts` | `openTeamMemberRunFromHistory()` passes a cheap reference resolver for historical opening and does not pass an activation function into the historical branch. |
+| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | Receives hydration payload with `primaryWorkspaceReference` rather than `firstWorkspaceId`; reconstructs `TeamRunConfig` with `workspaceReference`. |
+| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | Branches live vs historical with different helper contracts; historical branch never calls `ensureWorkspaceByRootPath`. |
+| `autobyteus-web/stores/runHistoryTeamHelpers.ts` | Splits `buildTeamMemberContexts()` into live activation and historical shell/reference builders; `applyProjectionToTeamMemberContext()` preserves existing `workspaceReference` when applying projections. |
+| `autobyteus-web/utils/teamRunConfigUtils.ts` | Replaces `reconstructTeamRunConfigFromMetadata({ firstWorkspaceId })` with `reconstructTeamRunConfigFromMetadata({ primaryWorkspaceReference })`, deriving `workspaceId` from the reference id. |
+| `autobyteus-web/types/agent/AgentTeamContext.ts` | Extends `HistoricalTeamHydrationState` with `memberWorkspaceReferencesByRouteKey` and imports the shared `WorkspaceReference` type. |
 
 ## Removal / Decommission Plan (Mandatory)
 
@@ -198,6 +440,11 @@ Backend pending-connect target decision:
 | `ensureWatcherStarted()` as general public caller API | Too easy to bypass lease lifecycle | `acquireWatcherLease(reason)` | In This Change | Existing direct calls should be migrated. |
 | Session close without generator return | Can leave subscriber stuck until next event | `FileExplorerSession.close()` awaits generator cancellation | In This Change | Prevents event subscriber leaks. |
 | Route close handler that returns when `sessionId` is null | Misses close-before-connect-resolves cleanup | Pending-connection cleanup context with `closed`, `connectPromise`, `sessionId`, idempotent cleanup | In This Change | Fixes AR-002. |
+| Historical standalone run hydration requiring `ensureWorkspaceByRootPath()` before display | Couples read-only history viewing to workspace activation/tree scan | Lazy `WorkspaceReference` from `workspaceRootPath`; action-specific activation | In This Change | Same-ticket release blocker. |
+| Historical team member context building through generic `buildTeamMemberContexts({ ensureWorkspaceByRootPath })` | Eagerly activates every member workspace for read-only team history | Split live `buildLiveTeamMemberContexts` from historical `buildHistoricalTeamMemberContextShells` with cheap references | In This Change | Resolves AR-004. |
+| `firstWorkspaceId` as the only team config workspace output | Ambiguous whether id is initialized workspace or reference id and loses root path/display metadata | `primaryWorkspaceReference` / `firstWorkspaceReference` plus `TeamRunConfig.workspaceReference` | In This Change | `workspaceId` derives from reference id only. |
+| `RunConfigPanel` display path only from `WorkspaceStore.workspaces[workspaceId]` | Historical config display becomes blank or pressures activation when workspace is uninitialized | Display from `config.workspaceReference` first | In This Change | Resolves AR-003 display-consumer gap. |
+| Using `WorkspaceInfo` with `fileExplorer` snapshot as the identity shape for history workspace display | Pulls file tree snapshot into metadata/reference use cases | Cheap workspace reference shape without tree payload | In This Change | Prevents accidental scans. |
 
 ## Return Or Event Spine(s) (If Applicable)
 
@@ -239,6 +486,10 @@ Snapshot refresh on open:
 | Pending WebSocket cleanup | DS-007 | file-explorer WebSocket route | Pair close/error with connect promise and late session id cleanup | Async connect can finish after socket close | If misplaced only in handler, route can still ignore early close and leak late sessions. |
 | Echo suppression | DS-003, DS-005 | `FileExplorerStore` | Avoid double-applying self-initiated mutation events | Existing behavior should remain | If owned by watcher lease, UI mutation semantics leak backend. |
 | FD/resource diagnostics | DS-006 | Runtime spawn boundary | Better logs for EBADF/EMFILE | Debugging support | If put in file explorer only, other spawn failures remain opaque. |
+| Historical workspace reference display | DS-008, DS-010 | Run/team history hydration / run config display | Show workspace path/name without initializing the workspace | History view needs metadata only | If placed on workspace activation main line, history rows stay slow. |
+| Workspace activation loading/error | DS-009 | Files/Terminal/resume/context action owner | Surface missing path or initialization failures only when current workspace functionality is requested | Historical viewing should tolerate missing local paths | If placed in history hydration, read-only viewing blocks on filesystem availability. |
+| Team member workspace reference shells | DS-010, DS-011 | Team historical hydration | Preserve per-member root-path identity while keeping siblings unloaded | Team history has multiple workspace roots | If omitted, helper code will keep activating all member workspaces. |
+| Run config reference display fallback | DS-008, DS-010 | Config panel/forms | Use config reference when initialized workspace payload is absent | Historical selected configs must still show path/name | If display reads only `WorkspaceStore.workspaces`, UI pressures activation. |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -250,6 +501,10 @@ Snapshot refresh on open:
 | Backend watcher lifecycle | `LocalFileExplorer` / `FileExplorer` | Extend | Existing filesystem boundary and watcher holder | N/A |
 | Filename index | `FileNameIndexer` | Extend/refine | Existing index owner; remove live-monitor responsibility | N/A |
 | Spawn diagnostics | Codex runtime client / shared utility if present | Extend | Existing spawn boundary knows command/cwd | New utility only if repeated across spawn call sites. |
+| Cheap workspace identity/reference | `WorkspaceIdMappingStore` + `workspace-path-utils` | Extend | Existing owner already canonicalizes root paths and derives deterministic filesystem workspace ids | N/A |
+| Historical standalone run hydration | `runContextHydrationService` / run open services | Extend | Existing owner hydrates projection/resume config; change its workspace contract from eager activation to lazy reference | N/A |
+| Historical team run hydration | `teamRunContextHydrationService`, `runHistoryTeamHelpers`, `teamRunOpenCoordinator`, `teamRunConfigUtils` | Extend | Existing team path is distinct and currently activates every member workspace; split live activation from historical references/shells | N/A |
+| Run config/context workspace identity | `AgentRunConfig`, `TeamRunConfig`, `AgentContext`, `AgentTeamContext`, `WorkspaceStore` selectors | Extend | Existing `workspaceId` is used by many display/action consumers; give it one meaning and add reference companion | N/A |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -261,6 +516,10 @@ Snapshot refresh on open:
 | Backend local file explorer | Watcher lease refcount, watcher start/stop | DS-004 | `LocalFileExplorer`, `FileExplorer` | Extend | Primary backend lifecycle fix. |
 | Backend search/index | Snapshot/on-demand index, no default watcher | DS-005 | `FileNameIndexer`, search strategies | Extend/refine | Avoid permanent monitoring. |
 | Runtime diagnostics | EBADF/EMFILE logging | DS-006 | Codex client/spawn boundary | Extend | Secondary but useful. |
+| Standalone run history hydration/opening | Projection/resume/file-change hydration, lazy workspace reference, no activation during history view | DS-008, DS-009 | `openHistoricalRun`, `openAgentRun`, `loadRunContextHydrationPayload` | Extend | Same-ticket release-blocker fix for standalone agents. |
+| Team run history hydration/opening | Focused-member projection, sibling shells, per-member workspace references, no eager member activation | DS-010, DS-011 | `openTeamMemberRunFromHistory`, `openTeamRun`, `loadTeamRunContextHydrationPayload`, `runHistoryTeamHelpers` | Extend | Same-ticket release-blocker fix for teams. |
+| Run/team config data model | Stable workspace reference id plus root-path/display companion in configs/contexts | DS-008, DS-009, DS-010, DS-011 | `AgentRunConfig`, `TeamRunConfig`, `AgentContext`, `AgentTeamContext` | Extend | `workspaceId` is identity only; initialized payload lives in `WorkspaceStore`. |
+| Workspace identity/reference | Canonical root-path identity, deterministic id, and display name without tree | DS-008, DS-009, DS-010 | `WorkspaceIdMappingStore`, workspace GraphQL reference boundary, `WorkspaceStore` reference state | Extend | Avoid `WorkspaceInfo` snapshot payload for metadata-only reference. |
 
 ## Draft File Responsibility Mapping
 
@@ -282,6 +541,24 @@ Snapshot refresh on open:
 | `autobyteus-server-ts/src/workspaces/filesystem-workspace.ts` | Backend workspace | Workspace lifecycle | Shallow init only; no background watcher-triggering index; on-demand search refresh | Existing workspace owner | FileNameIndexer |
 | `autobyteus-server-ts/src/file-explorer/file-name-indexer.ts` | Backend search/index | Snapshot index owner | Refresh snapshot index, optional event handling only if explicitly leased in future | Existing index owner | N/A |
 | `autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts` | Runtime diagnostics | Spawn boundary | Log EBADF/EMFILE diagnostic context | Existing Codex spawn site | Optional diagnostics helper |
+| `autobyteus-web/services/runHydration/runContextHydrationService.ts` | Run history hydration | Historical run hydration owner | Stop requiring eager `ensureWorkspaceByRootPath`; produce config/reference from `workspaceRootPath` | Existing hydration owner | `WorkspaceReference` |
+| `autobyteus-web/stores/runHistoryLoadActions.ts` | Run history opening | History open action owner | Replace history-only workspace creation fallback with cheap reference resolution or no activation | Existing history-open entry | `WorkspaceReference` |
+| `autobyteus-web/types/workspace/WorkspaceReference.ts` or equivalent | Workspace identity/reference | Shared type owner | Define metadata-only reference and activation-state types | Prevent duplicate local shapes across config, store, GraphQL mappers | `WorkspaceReference` |
+| `autobyteus-web/types/agent/AgentRunConfig.ts` | Run config model | Agent run config boundary | Add `workspaceReference`; document `workspaceId` as deterministic reference id, not initialization proof | Existing agent run config type | `WorkspaceReference` |
+| `autobyteus-web/types/agent/TeamRunConfig.ts` | Team config model | Team run config boundary | Add `workspaceReference`; document `workspaceId` as primary deterministic reference id | Existing team run config type | `WorkspaceReference` |
+| `autobyteus-web/types/agent/AgentContext.ts` | Agent context | Config/state container | No extra workspace state; carries reference through `config` only | Avoid duplicate activation state in context | `AgentRunConfig` |
+| `autobyteus-web/types/agent/AgentTeamContext.ts` | Team context | Team context container | Add member workspace references to historical hydration state | Current holder of member metadata/load state | `WorkspaceReference` |
+| `autobyteus-web/stores/runHistorySelectionActions.ts` | Team history selection | Team history open action owner | Pass reference resolver, not eager activation, into historical team open path | Existing team history entrypoint | `WorkspaceReference` |
+| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | Team run opening | Team open coordinator | Consume `primaryWorkspaceReference` and reconstruct config with reference | Existing team run coordinator | `WorkspaceReference` |
+| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | Team history hydration | Team hydration owner | Split live activation branch from historical reference/shell branch | Existing team hydration owner | `WorkspaceReference` |
+| `autobyteus-web/stores/runHistoryTeamHelpers.ts` | Team member context building | Team member shell/config builder | Split `buildTeamMemberContexts` into live and historical helpers; historical helper never calls `ensureWorkspaceByRootPath` | Current location of eager per-member activation | `WorkspaceReference` |
+| `autobyteus-web/utils/teamRunConfigUtils.ts` | Team config reconstruction | Team config mapper | Replace `firstWorkspaceId` input with `primaryWorkspaceReference` | Existing mapper for metadata to config | `WorkspaceReference` |
+| `autobyteus-web/components/workspace/config/RunConfigPanel.vue` | Run/team config display | Config display consumer | Resolve loaded path/name from `config.workspaceReference` before `WorkspaceStore.workspaces` | Existing display of selected run/team config | `WorkspaceReference` |
+| `autobyteus-web/stores/agentRunStore.ts` | Agent send/resume | Runtime launch action owner | Use `config.workspaceReference.workspaceRootPath` for existing/historical runs; no workspace creation solely to recover path | Existing send/prepare run path | `WorkspaceReference` |
+| `autobyteus-web/components/workspace/tools/Terminal.vue` | Terminal UI | Workspace-dependent action owner | Ensure active/focused reference is initialized before connecting terminal session | Existing terminal entrypoint | Workspace activation API |
+| `autobyteus-web/stores/workspace.ts` | Frontend workspace state/reference | Workspace reference + activation owner | Store cheap references separately from initialized workspace tree entries; expose `activeWorkspaceReference` and `ensureWorkspaceInitialized` | Existing workspace UI state owner | `WorkspaceReference` |
+| `autobyteus-server-ts/src/workspaces/workspace-id-mapping-store.ts` | Workspace identity | Root path identity owner | Expose deterministic id/canonical root path reference semantics without initializing workspace | Existing id mapping owner | `WorkspaceReference` DTO |
+| `autobyteus-server-ts/src/api/graphql/types/workspace.ts` | Workspace GraphQL API | Workspace reference/activation boundary | Add distinct cheap reference query/mutation or reshape create/resolve boundary so history can resolve identity without `WorkspaceInfo.fileExplorer` | Existing workspace API owner | `WorkspaceReference` DTO |
 
 ## Reusable Owned Structures Check
 
@@ -292,6 +569,9 @@ Snapshot refresh on open:
 | Mobile right-tabs mode | Inline prop type in `RightSideTabs.vue` unless reused | Frontend layout | Distinguishes desktop right panel from mobile tools usage | Yes | Yes | A second global tabs store |
 | Pending file-explorer route context | Inline local state in `api/websocket/file-explorer.ts` unless tests benefit from helper | Backend WebSocket route | Tracks `closed`, `sessionId`, and `connectPromise` for one raw socket | Yes | Yes | A generic WebSocket framework |
 | Spawn resource diagnostic formatter | Create only if multiple spawn sites use it | Runtime management | Avoid duplicating EBADF/EMFILE diagnosis | Yes | Yes | Heavy lsof dependency in hot path |
+| Workspace reference shape | `autobyteus-web/types/workspace/WorkspaceReference.ts` plus backend/GraphQL DTO mapping | Workspace identity/reference | Needed by run history hydration, team member shells, config display, and later activation surfaces | Yes | Yes | A replacement for initialized workspace tree state |
+| Workspace activation state | `WorkspaceStore` state type | Frontend workspace activation | Centralizes `uninitialized`/`activating`/`initialized`/`error` instead of duplicating status into each config | Yes | Yes | A second copy of run config identity |
+| Team member workspace reference map | `HistoricalTeamHydrationState.memberWorkspaceReferencesByRouteKey` | Historical team hydration | Focused/sibling member actions need per-member identity without activation | Yes | Yes | A workspace payload cache |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -302,6 +582,13 @@ Snapshot refresh on open:
 | Mobile right-tabs mode | Yes | Yes | Low | One mode field decides whether file tab can exist; do not infer from viewport deep inside `RightSideTabs`. |
 | Pending route context | Yes | Yes | Low | Keep lifecycle fields local to one socket; avoid parallel closed/session state in handler. |
 | File stream connection state | Mostly | Yes | Medium | Keep connection state in `FileExplorerStreamingService`; keep visible consumer counts in `WorkspaceStore`. |
+| `WorkspaceReference` | Yes | Yes | Low | Keep minimal: `workspaceId`, `workspaceRootPath`, `displayName`, `kind`; do not include `fileExplorer` tree or mutable activation status. |
+| `WorkspaceActivationState` | Yes | Yes | Low | Keep mutable state centrally in `WorkspaceStore`, keyed by reference id. Do not duplicate across run/team configs. |
+| `AgentRunConfig.workspaceId` | Yes | Yes | Low | Means deterministic workspace reference id only. Initialized payload is `WorkspaceStore.workspaces[workspaceId]`, not this field. |
+| `AgentRunConfig.workspaceReference` | Yes | Yes | Low | Root path/display companion for `workspaceId`; required whenever a filesystem workspace id exists in target code. |
+| `TeamRunConfig.workspaceId` | Yes | Yes | Low | Means primary/team deterministic workspace reference id only. It may be uninitialized. |
+| `TeamRunConfig.workspaceReference` | Yes | Yes | Low | Primary/team display reference derived from coordinator/focused/first member reference. |
+| `HistoricalTeamHydrationState.memberWorkspaceReferencesByRouteKey` | Yes | Yes | Low | Per-member references for history shells; not a workspace payload cache and not activation state. |
 
 ## Final File Responsibility Mapping
 
@@ -324,6 +611,24 @@ Snapshot refresh on open:
 | `autobyteus-server-ts/src/workspaces/filesystem-workspace.ts` | Backend workspace | Workspace owner | Remove background full scan watcher path; initialize shallow; refresh index/tree on demand for search/folder | Existing workspace lifecycle owner | FileNameIndexer |
 | `autobyteus-server-ts/src/file-explorer/file-name-indexer.ts` | Backend search/index | Snapshot index owner | Split snapshot build from live monitoring; default no watcher | Keeps search index focused | N/A |
 | `autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts` | Runtime diagnostics | Spawn boundary | Add contextual logging for EBADF/EMFILE | Current Codex spawn site | Optional helper |
+| `autobyteus-web/services/runHydration/runContextHydrationService.ts` | Run history hydration | Historical run hydration owner | Build historical config/context from projection/resume data and lazy workspace reference; no eager `ensureWorkspaceByRootPath` for history view | Existing hydration owner | `WorkspaceReference` |
+| `autobyteus-web/stores/runHistoryLoadActions.ts` | Run history opening | History open action owner | Remove history-open fallback that creates workspace for display; route activation only for workspace-dependent actions | Existing history open owner | `WorkspaceReference` |
+| `autobyteus-web/types/workspace/WorkspaceReference.ts` or equivalent | Workspace identity/reference | Shared type owner | Define metadata-only reference and activation-state types; no `fileExplorer` tree | Prevent repeated ambiguous shapes | `WorkspaceReference` |
+| `autobyteus-web/types/agent/AgentRunConfig.ts` | Run config model | Agent run config boundary | Add `workspaceReference`; define `workspaceId` as deterministic reference id, not initialized workspace proof | Existing shared agent config type | `WorkspaceReference` |
+| `autobyteus-web/types/agent/TeamRunConfig.ts` | Team config model | Team run config boundary | Add `workspaceReference`; define `workspaceId` as primary deterministic reference id | Existing shared team config type | `WorkspaceReference` |
+| `autobyteus-web/types/agent/AgentContext.ts` | Agent context | Config/state container | Keep workspace reference in `config`; do not add duplicate activation state | Context should not own workspace lifecycle | `AgentRunConfig` |
+| `autobyteus-web/types/agent/AgentTeamContext.ts` | Team context | Team context container | Extend `HistoricalTeamHydrationState` with `memberWorkspaceReferencesByRouteKey`; keep focused member reference in leaf context config | Existing team context shell owner | `WorkspaceReference` |
+| `autobyteus-web/stores/runHistorySelectionActions.ts` | Team history selection | Team history open action owner | Pass reference resolver into historical team open; no eager activation for member workspaces | Existing team-history selection entry | `WorkspaceReference` |
+| `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | Team run opening | Team open coordinator | Use hydration payload `primaryWorkspaceReference` instead of `firstWorkspaceId` to reconstruct `TeamRunConfig` | Existing coordinator | `WorkspaceReference` |
+| `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts` | Team history hydration | Team hydration owner | Split live activation helper from historical shell/reference helper; historical branch never calls `ensureWorkspaceByRootPath` | Existing branch owner | `WorkspaceReference` |
+| `autobyteus-web/stores/runHistoryTeamHelpers.ts` | Team member context building | Team member config/shell builder | Replace generic `buildTeamMemberContexts` with `buildLiveTeamMemberContexts` and `buildHistoricalTeamMemberContextShells`; preserve member `workspaceReference` on projection apply | Current source of eager per-member activation | `WorkspaceReference` |
+| `autobyteus-web/utils/teamRunConfigUtils.ts` | Team config reconstruction | Team config mapper | Replace `firstWorkspaceId` input with `primaryWorkspaceReference`; derive `workspaceId` from reference id | Current `firstWorkspaceId` ambiguity owner | `WorkspaceReference` |
+| `autobyteus-web/components/workspace/config/RunConfigPanel.vue` | Run/team config display | Config display consumer | Display path/name from `config.workspaceReference` before initialized workspace lookup | Existing config display | `WorkspaceReference` |
+| `autobyteus-web/stores/agentRunStore.ts` | Agent send/resume | Runtime launch action owner | Prefer `config.workspaceReference.workspaceRootPath` for historical/existing runs; do not initialize file tree solely to recover root path | Existing send/prepare run owner | `WorkspaceReference` |
+| `autobyteus-web/components/workspace/tools/Terminal.vue` | Terminal UI | Workspace-dependent action owner | Resolve/focused reference and call workspace activation before connecting terminal session | Existing terminal entrypoint | Workspace activation API |
+| `autobyteus-web/stores/workspace.ts` | Frontend workspace state/reference | Workspace reference and activation owner | Maintain cheap references separately from initialized workspace entries; expose `activeWorkspaceReference`, `workspaceActivationState`, and `ensureWorkspaceInitialized` | Existing workspace store | `WorkspaceReference` |
+| `autobyteus-server-ts/src/workspaces/workspace-id-mapping-store.ts` | Workspace identity | Canonical root-path identity owner | Provide deterministic id/canonical root path mapping for references without initialization | Existing mapping owner | `WorkspaceReference` values |
+| `autobyteus-server-ts/src/api/graphql/types/workspace.ts` | Workspace GraphQL API | Workspace reference/activation boundary | Expose cheap reference resolution separately from initialized workspace/tree payload | Existing workspace API owner | `WorkspaceReference` GraphQL type |
 
 ## Ownership Boundaries
 
@@ -332,6 +637,15 @@ Frontend boundary:
 - Components declare visibility; they must not create raw `FileExplorerStreamingService` instances directly.
 - `WorkspaceStore` decides whether a backend stream should be open for a workspace based on active visible consumers.
 - `FileExplorerStreamingService` is transport only.
+
+Run history / workspace identity boundary:
+
+- Run history hydration owns historical view data. It may depend on a cheap workspace reference but must not initialize workspace state.
+- Run/team configs own workspace identity/reference fields only: deterministic `workspaceId` and root-path/display `workspaceReference`.
+- `WorkspaceStore` owns initialized workspace payloads and activation state; contexts/configs do not own or duplicate activation status.
+- Team historical hydration owns member reference shells and focused/sibling projection load state. It must not use the live team member workspace activation helper.
+- Workspace identity/reference resolution owns canonical path normalization and deterministic id derivation. It must not build file trees.
+- Workspace activation owns the transition to initialized workspace state for Files, Terminal, context picker, and resume/rerun only when initialized handle is truly needed.
 
 Backend boundary:
 
@@ -350,6 +664,10 @@ Backend boundary:
 | `BaseFileExplorer.acquireWatcherLease` | watcher refcount/start/stop | `FileExplorerStreamHandler`, future backend live consumers | Direct `ensureWatcherStarted()` + never release | Add lease API semantics |
 | `FileExplorer.stopWatcher` | `FileSystemWatcher.stop/close`, nulling watcher | `LocalFileExplorer.close/release` | External code mutates `fileWatcher` or starts watcher | Add explicit public method on `LocalFileExplorer`/`FileExplorer` |
 | GraphQL file explorer resolver | read/write/search/folder operations | UI stores | Operations starting live watchers implicitly | Keep operations request/response only |
+| Workspace reference resolver | canonical path, deterministic workspace id, display metadata | run/team history hydration, config display, activation actions | Calling `createWorkspace()`/`WorkspaceInfo.fileExplorer` just to display history workspace metadata | Add cheap reference API and activation API split |
+| Run/team config workspace fields | `workspaceId` reference id plus `workspaceReference` root-path/display companion | run hydration, team hydration, config display, send/resume actions | Treating config `workspaceId` as initialized workspace proof or looking up path only in `WorkspaceStore.workspaces` | Define one meaning per field and require the reference companion |
+| Team historical hydration boundary | member metadata, member reference shells, focused projection load state | `openTeamRun`, member focus actions | Generic `buildTeamMemberContexts({ ensureWorkspaceByRootPath })` activating every member | Split live activation helper from historical shell builder |
+| Workspace activation boundary | current initialized workspace and file tree readiness | Files, Terminal, context picker, and resume/rerun only when initialized handle is truly needed | History hydration directly initializing workspace | Move activation to feature action boundary |
 
 ## Dependency Rules
 
@@ -361,6 +679,13 @@ Backend boundary:
 - `FileNameIndexer` may read `BaseFileExplorer.getTree()` and refresh indexes; it must not start watchers by default.
 - `FileExplorer` may own concrete watcher start/stop; `WorkspaceManager` must not call watcher start as part of workspace cache creation.
 - Search and file operations must not require an active live stream.
+- History hydration may depend on workspace reference resolution but must not call workspace activation/create/initialize.
+- Standalone agent history hydration writes both `config.workspaceId` and `config.workspaceReference`; it must not leave `workspaceId` as an ambiguous initialized-only token.
+- Historical team hydration writes a primary `TeamRunConfig.workspaceReference` and per-member `AgentRunConfig.workspaceReference` values; it must not call `ensureWorkspaceByRootPath()` for all members.
+- Workspace reference resolution may use canonical path and mapping store; it must not import file explorer/tree traversal.
+- `WorkspaceStore.activeWorkspace` must not activate or create workspace state. It returns initialized `WorkspaceInfo` only.
+- Files/Terminal/context actions must call explicit workspace activation before assuming initialized workspace state.
+- Resume/rerun must use `config.workspaceReference.workspaceRootPath` when initialized `WorkspaceInfo` is absent and must not initialize a workspace solely to recover the root path.
 
 ## Interface Boundary Mapping
 
@@ -375,6 +700,12 @@ Backend boundary:
 | `FileExplorerStreamingService.connect(workspaceId)` | Transport connection | Open WS and parse messages | workspace id | Store-owned only. |
 | Route pending connection cleanup | Raw WebSocket attachment | Pair close/error with async connect and late session id cleanup | `workspaceId`, raw socket, pending state | Implemented in `api/websocket/file-explorer.ts`, not in UI. |
 | `FileExplorerStreamHandler.connect` | Backend stream session | Create session and watcher lease atomically or clean up fully | connection adapter, workspace id | Must leave no lease/session on null/reject. |
+| `resolveWorkspaceReferenceByRootPath` (name illustrative) | Workspace reference | Canonicalize root path and return deterministic identity/display without initialization | `workspaceRootPath: string` | Must not call `FileSystemWorkspace.initialize()`. |
+| `resolveWorkspaceReferencesByRootPaths` (optional batched name) | Workspace reference | Resolve multiple member roots to references without activation | canonical root paths | Preferred for historical team hydration. |
+| `WorkspaceStore.ensureWorkspaceInitialized` (name illustrative) | Workspace activation | Create/initialize workspace for a feature action and populate `WorkspaceStore.workspaces` | `WorkspaceReference` | Called by Files/Terminal/context, not history display. |
+| `loadRunContextHydrationPayload` | Historical standalone run hydration | Hydrate history context and `AgentRunConfig{workspaceId, workspaceReference}` | `runId`, resume/projection data, reference resolver | Must not require initialized workspace for offline history view. |
+| `loadTeamRunContextHydrationPayload` | Team run hydration | Branch live activation vs historical references/shells | `teamRunId`, focused member key, reference resolver, live activation function only for live branch | Historical branch must not call `ensureWorkspaceByRootPath`. |
+| `buildHistoricalTeamMemberContextShells` | Historical team member shells | Build member contexts with per-member `workspaceReference` and unloaded projection state | team metadata + projection map + reference map | Replaces generic helper for history. |
 
 ## Interface Boundary Check
 
@@ -386,6 +717,11 @@ Backend boundary:
 | `FileNameIndexer.start` current method | No | N/A | High | Split snapshot index from live monitoring. |
 | Current route close handler with `sessionId === null` return | No | No | High | Replace with pending-connection cleanup that disconnects a late session after early close. |
 | Mobile tools `RightSideTabs` current `files` tab | No | N/A | High | Add no-files/mobile-tools mode so this context cannot mount `FileExplorerLayout`. |
+| Current `ensureWorkspaceByRootPath` in standalone history hydration | No | Partially | High | Replace with cheap workspace reference for history view and explicit activation for workspace-dependent actions. |
+| Current `buildTeamMemberContexts({ ensureWorkspaceByRootPath })` in historical team hydration | No | No | High | Split live activation from historical shell/reference building. |
+| `AgentRunConfig.workspaceId` as ambiguous initialized-or-reference field | No | No | High | Define as deterministic reference id and add `workspaceReference`. |
+| `TeamRunConfig.workspaceId` / `firstWorkspaceId` as ambiguous initialized-or-reference field | No | No | High | Define as primary reference id and pass `primaryWorkspaceReference`. |
+| `WorkspaceInfo` as history workspace display shape | No | Partially | High | Do not use tree-bearing `WorkspaceInfo` for metadata-only reference; add `WorkspaceReference`. |
 
 ## Route / Handler Cleanup Contract For Pending Connections
 
@@ -465,6 +801,7 @@ The handler must make setup atomic:
 - **Lease/ref-count lifecycle**: used for backend watcher lifetime because multiple stream sessions may share one watcher.
 - **Visible consumer registry**: frontend equivalent to leases; one stream per workspace while one or more visible file explorers exist.
 - **Snapshot + live delta**: file tree is refreshed on open, then live deltas apply only while visible.
+- **Reference/activation split**: used for historical workspaces so identity/display is cheap and current filesystem activation is explicit at feature-action boundaries.
 
 ## Target Subsystem / Folder / File Mapping
 
@@ -483,6 +820,10 @@ The handler must make setup atomic:
 | `autobyteus-server-ts/src/services/file-explorer-streaming/*` | Folder | Backend file-explorer WS subsystem | Session lifecycle, lease setup/teardown, event streaming | Existing subsystem | Filename search policy; raw socket pending state beyond handler contract |
 | `autobyteus-server-ts/src/workspaces/filesystem-workspace.ts` | File | Workspace lifecycle | Shallow initialization; on-demand full snapshot/search index | Existing workspace owner | Persistent watcher startup |
 | `autobyteus-server-ts/src/file-explorer/file-name-indexer.ts` | File | Search index | Snapshot index refresh and query data | Existing index owner | Watcher ownership by default |
+| `autobyteus-web/services/runHydration/runContextHydrationService.ts` | File | Historical run hydration | Lazy workspace reference in run context without eager activation | Existing hydration owner | Workspace create/initialize calls for history display |
+| `autobyteus-web/stores/runHistoryLoadActions.ts` | File | History open actions | Remove display-time workspace creation; invoke activation only for workspace-dependent paths | Existing history action owner | File tree loading |
+| `autobyteus-server-ts/src/workspaces/workspace-id-mapping-store.ts` | File | Workspace identity | Deterministic id/canonical root reference | Existing mapping owner | File tree initialization |
+| `autobyteus-server-ts/src/api/graphql/types/workspace.ts` | File | Workspace GraphQL boundary | Separate cheap reference resolution from initialized workspace payload | Existing workspace API owner | Mixed metadata+tree identity for history |
 
 ## Folder Boundary Check
 
@@ -503,6 +844,10 @@ The handler must make setup atomic:
 | Backend watcher lease | `const lease = await fileExplorer.acquireWatcherLease('file-explorer-ws'); try { ... } finally { await lease.release(); }` | `await ensureWatcherStarted(); return subscribe();` with no release owner | Makes cleanup unavoidable. |
 | Mobile visibility | `<FileExplorer v-if="activeMobilePanel === 'explorer'" />` and `<RightSideTabs mode="mobile-tools" />` filters out `files` | `<FileExplorer v-show="activeMobilePanel === 'explorer'" />` or mobile tools `RightSideTabs` rendering `FileExplorerLayout` while hidden | Hidden mounted component or nested files tab would keep live monitoring active. |
 | WebSocket early close | Route registers cleanup before connect; if close happens first, late `sessionId` is immediately disconnected after `connectPromise` settles | Close handler returns because `sessionId` is null | Prevents lease/session leaks during async setup races. |
+| History open | `workspaceRootPath -> WorkspaceReference -> AgentRunConfig{workspaceId, workspaceReference} -> render history` | `workspaceRootPath -> createWorkspace -> initialize -> build tree -> render history` | Keeps read-only history viewing independent from filesystem activation. |
+| Config identity split | `workspaceId='fs_abcd'` means stable identity; `workspaceReference.workspaceRootPath='/repo'`; `WorkspaceStore.workspaces.fs_abcd` may be absent | Treating any non-null `workspaceId` as an initialized `WorkspaceInfo` key and failing/creating when missing | Removes ambiguity that caused eager activation. |
+| Historical team open | `member roots -> member WorkspaceReferences -> shell contexts -> focused projection` | `for each member root -> ensureWorkspaceByRootPath -> create/init workspace` | Team history must not scale with member workspace initialization. |
+| Team sibling focus | `ensureHistoricalTeamMemberHydrated -> fetch projection -> apply to existing shell` | `focus sibling -> initialize sibling workspace before showing conversation` | Keeps team navigation read-only until Files/Terminal/context action. |
 | Search | `searchFiles()` refreshes snapshot index or uses ripgrep without watcher | `FileNameIndexer.start()` starts recursive watcher at workspace init | Search is user request/response, not live monitoring. |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -515,6 +860,8 @@ The handler must make setup atomic:
 | Keep mobile tools `RightSideTabs` file tab and rely on `FileExplorer.vue` to notice visibility | Less layout API change | Rejected | Mobile tools right tabs use no-files mode; dedicated mobile Explorer panel owns mobile file live subscription. |
 | Keep route close handler as session-id-only cleanup | Simpler route | Rejected | Track pending connection and disconnect late sessions after close-before-connect-resolves. |
 | Retry Codex spawn after EBADF without watcher lifecycle fix | Quick symptom patch | Rejected as primary fix | Add diagnostics only; fix descriptor pressure at source. |
+| Keep history hydration eager workspace creation because active run config expects `workspaceId` | Smaller code change | Rejected | Add lazy workspace reference and explicit activation boundary. |
+| Use `WorkspaceInfo` with shallow `fileExplorer` as workspace reference | Reuses existing GraphQL shape | Rejected | Add metadata-only reference shape without tree payload. |
 
 ## Derived Layering (If Useful)
 
@@ -526,6 +873,7 @@ Layering after refactor:
 - Backend route/transport/session layer: `api/websocket/file-explorer.ts`, `FileExplorerStreamHandler`, `FileExplorerSessionManager`, `FileExplorerSession`.
 - Backend domain boundary: `BaseFileExplorer`, `LocalFileExplorer`.
 - Backend adapter: `FileExplorer`, `FileSystemWatcher`/chokidar.
+- History/reference layer: run history hydration + workspace reference resolver sits beside workspace state and must not cross into file explorer activation until a feature action requests it.
 
 No upper layer should bypass the layer immediately below it to start watchers directly.
 
@@ -550,9 +898,17 @@ No upper layer should bypass the layer immediately below it to start watchers di
    - Update desktop visibility so collapsed `WorkspaceDesktopLayout` right panel unmounts `RightSideTabs` or passes an explicit hidden state that prevents `FileExplorerLayout` from mounting.
    - Update mobile visibility so hidden explorer surfaces unmount or release interest.
    - Add a mobile-tools/no-files mode to `RightSideTabs` and pass it from `WorkspaceMobileLayout` so mobile tools cannot render `FileExplorerLayout`.
-5. Diagnostics:
+5. Historical run lazy workspace activation:
+   - Add cheap workspace reference shape/API using canonical `workspaceRootPath` and deterministic `workspaceId`; no file tree payload and no mutable activation status in the reference.
+   - Extend `AgentRunConfig` and `TeamRunConfig` with `workspaceReference`; document and migrate `workspaceId` to mean deterministic reference id only.
+   - Extend `WorkspaceStore` with `workspaceReferencesById`, activation state keyed by reference id, `activeWorkspaceReference`, and `ensureWorkspaceInitialized(reference)`. Keep `activeWorkspace` initialized-only.
+   - Change `loadRunContextHydrationPayload()` and standalone history-open actions to hydrate references without calling `ensureWorkspaceByRootPath()`/`createWorkspace()` for read-only history display.
+   - Split team hydration: live branch may use activation; historical branch uses `buildHistoricalTeamMemberContextShells`, `primaryWorkspaceReference`, and `memberWorkspaceReferencesByRouteKey` without calling `ensureWorkspaceByRootPath()` for members.
+   - Update `teamRunOpenCoordinator.ts` and `teamRunConfigUtils.ts` to replace `firstWorkspaceId` handoff with `primaryWorkspaceReference`.
+   - Update display/action consumers: `RunConfigPanel` displays from reference, `FileExplorer`/`Terminal` activate at action boundary, and `agentRunStore` uses reference root path for resume/rerun without file-tree activation solely to recover the path.
+6. Diagnostics:
    - Add EBADF/EMFILE diagnostic logging around Codex app-server spawn.
-6. Validation:
+7. Validation:
    - Run unit tests for store, components, leases, sessions.
    - Run local descriptor/spawn probe.
    - Manually reproduce original Codex scenario.
@@ -576,9 +932,18 @@ Frontend tests:
 - In mobile-tools mode, `RightSideTabs.vue` filters out `files` and cannot mount `FileExplorerLayout`.
 - `WorkspaceMobileLayout.vue` mounts dedicated explorer only on active `explorer` panel and passes no-files mode to tools `RightSideTabs`.
 - Multiple consumers for same workspace keep one connection until final release.
+- Opening a historical standalone agent run does not call `workspaceStore.createWorkspace()` when only rendering conversation/activity/config.
+- Historical standalone agent context has `config.workspaceReference` and deterministic `config.workspaceId`, but `WorkspaceStore.workspaces[workspaceId]` may remain absent until activation.
+- Historical run UI displays workspace path/name from `WorkspaceReference` before activation, including in `RunConfigPanel` selection mode.
+- Opening Files/Terminal/context after historical selection triggers explicit workspace activation and shows loading/error as needed.
+- Resume/rerun uses `config.workspaceReference.workspaceRootPath` when initialized workspace payload is absent and does not initialize the file tree solely to recover root path.
+- Opening a historical team run with multiple member workspace paths does not call `ensureWorkspaceByRootPath`, `workspaceStore.createWorkspace`, backend `WorkspaceManager.createWorkspace`, or `FileSystemWorkspace.initialize()`.
+- Historical team context has team-level `config.workspaceReference`, per-member `AgentContext.config.workspaceReference`, and `historicalHydration.memberWorkspaceReferencesByRouteKey`; `WorkspaceStore.workspaces` remains uninitialized for those references until a workspace-dependent action.
+- Focusing a sibling in historical team history fetches/applies that member projection but does not activate that member workspace.
 
 Executable/manual validation:
 
 - Repeat file explorer open/close cycles on large workspaces and verify `lsof` count returns near baseline.
 - Verify `child_process.spawn('/bin/echo', ['ok'])` succeeds after cycles.
 - Verify a fresh `Codex` `codex_app_server` run with `gpt-5.5` starts in `autobyteus-tutorial-videos` after normal use.
+- In packaged Electron, opening representative historical run rows is fast and does not log workspace initialization/tree traversal until Files/Terminal/resume/context is used.

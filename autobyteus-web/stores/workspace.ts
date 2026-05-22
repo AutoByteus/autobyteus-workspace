@@ -16,9 +16,33 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useFileExplorerStore } from '~/stores/fileExplorer'
-import { FileExplorerStreamingService } from '~/services/fileExplorerStreaming/FileExplorerStreamingService'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
-import { getOpenFolderPathsForRefresh, replaceFolderChildren } from '~/utils/fileExplorer/openFolderRefresh'
+import { replaceFolderChildren } from '~/utils/fileExplorer/openFolderRefresh'
+import type {
+  WorkspaceActivationState,
+  WorkspaceReference,
+} from '~/types/workspace/WorkspaceReference'
+import {
+  normalizeWorkspaceRootPath as normalizeRootPath,
+  workspaceReferenceFromWorkspaceInfo,
+} from '~/utils/workspaceReference'
+import {
+  cacheWorkspaceReferenceForStore,
+  ensureWorkspaceInitializedForStore,
+  findWorkspaceInfoByRootPathForStore,
+  registerWorkspaceInfoReferenceForStore,
+  resolveWorkspaceReferenceByRootPathForStore,
+} from '~/stores/workspaceReferenceActions'
+import {
+  acquireFileExplorerLiveSessionForStore,
+  clearFileExplorerLiveSessionForWorkspaceForStore,
+  connectFileExplorerLiveStreamForStore,
+  disconnectAllFileExplorerLiveStreamsForStore,
+  disconnectFileExplorerLiveStreamForStore,
+  refreshFileExplorerSnapshotForStore,
+  releaseFileExplorerLiveSessionForStore,
+} from '~/stores/workspaceFileExplorerLiveActions'
+import type { FileExplorerStreamingService } from '~/services/fileExplorerStreaming/FileExplorerStreamingService'
 
 export interface WorkspaceInfo {
   workspaceId: string;
@@ -32,37 +56,55 @@ export interface WorkspaceInfo {
 
 interface WorkspaceState {
   workspaces: Record<string, WorkspaceInfo>;
+  workspaceReferencesById: Record<string, WorkspaceReference>;
+  workspaceReferenceIdsByRootPath: Record<string, string>;
+  workspaceActivationStateById: Record<string, WorkspaceActivationState>;
   loading: boolean;
   error: any;
   workspacesFetched: boolean;
   fileSystemConnections: Map<string, FileExplorerStreamingService>;
   fileExplorerLiveConsumers: Map<string, Set<string>>;
   fileExplorerSnapshotRefreshes: Map<string, Promise<void>>;
+  workspaceActivationTasks: Map<string, Promise<WorkspaceInfo>>;
 }
-
-const normalizeRootPath = (value: string | null | undefined): string => {
-  const source = (value || '').trim();
-  if (!source) {
-    return '';
-  }
-  const normalized = source.replace(/\\/g, '/');
-  if (normalized === '/') {
-    return normalized;
-  }
-  return normalized.replace(/\/+$/, '');
-};
 
 export const useWorkspaceStore = defineStore('workspace', {
   state: (): WorkspaceState => ({
     workspaces: {},
+    workspaceReferencesById: {},
+    workspaceReferenceIdsByRootPath: {},
+    workspaceActivationStateById: {},
     loading: false,
     error: null,
     workspacesFetched: false,
     fileSystemConnections: new Map(),
     fileExplorerLiveConsumers: new Map(),
     fileExplorerSnapshotRefreshes: new Map(),
+    workspaceActivationTasks: new Map(),
   }),
   actions: {    
+    cacheWorkspaceReference(reference: WorkspaceReference | null | undefined) {
+      cacheWorkspaceReferenceForStore(this, reference);
+    },
+
+    registerWorkspaceInfoReference(workspace: WorkspaceInfo): WorkspaceReference | null {
+      return registerWorkspaceInfoReferenceForStore(this, workspace) as WorkspaceReference | null;
+    },
+
+    findWorkspaceInfoByRootPath(rootPath: string): WorkspaceInfo | null {
+      return findWorkspaceInfoByRootPathForStore(this, rootPath) as WorkspaceInfo | null;
+    },
+
+    async resolveWorkspaceReferenceByRootPath(
+      rootPath: string | null | undefined,
+    ): Promise<WorkspaceReference | null> {
+      return resolveWorkspaceReferenceByRootPathForStore(this, rootPath);
+    },
+
+    async ensureWorkspaceInitialized(reference: WorkspaceReference): Promise<WorkspaceInfo> {
+      return ensureWorkspaceInitializedForStore(this, reference) as Promise<WorkspaceInfo>;
+    },
+
     removeWorkspaceEntriesByRootPath(rootPath: string | null | undefined) {
       const normalizedTarget = normalizeRootPath(rootPath);
       if (!normalizedTarget) {
@@ -117,6 +159,7 @@ export const useWorkspaceStore = defineStore('workspace', {
             workspaceConfig: config,
             absolutePath: newWorkspace.absolutePath ?? null,
           };
+          this.registerWorkspaceInfoReference(this.workspaces[newWorkspace.workspaceId]);
           
           return newWorkspace.workspaceId;
         } else {
@@ -194,6 +237,7 @@ export const useWorkspaceStore = defineStore('workspace', {
               absolutePath: ws.absolutePath ?? null,
               isTemp: (ws as any).isTemp ?? false,
             };
+            this.registerWorkspaceInfoReference(this.workspaces[ws.workspaceId]);
           });
           this.workspacesFetched = true;
         }
@@ -219,6 +263,10 @@ export const useWorkspaceStore = defineStore('workspace', {
       this.disconnectAllFileExplorerLiveStreams();
 
       this.workspaces = {};
+      this.workspaceReferencesById = {};
+      this.workspaceReferenceIdsByRootPath = {};
+      this.workspaceActivationStateById = {};
+      this.workspaceActivationTasks.clear();
       this.workspacesFetched = false;
       this.loading = false;
       this.error = null;
@@ -288,115 +336,31 @@ export const useWorkspaceStore = defineStore('workspace', {
      * while at least one consumer is present for a workspace.
      */
     acquireFileExplorerLiveSession(workspaceId: string, consumerId: string): () => void {
-      if (!workspaceId || !consumerId) {
-        return () => undefined;
-      }
-
-      let consumers = this.fileExplorerLiveConsumers.get(workspaceId);
-      if (!consumers) {
-        consumers = new Set();
-        this.fileExplorerLiveConsumers.set(workspaceId, consumers);
-      }
-
-      const alreadyRegistered = consumers.has(consumerId);
-      consumers.add(consumerId);
-      if (!alreadyRegistered && consumers.size === 1) {
-        this.connectFileExplorerLiveStream(workspaceId);
-      }
-      this.refreshFileExplorerSnapshot(workspaceId);
-
-      return () => this.releaseFileExplorerLiveSession(workspaceId, consumerId);
+      return acquireFileExplorerLiveSessionForStore(this as any, workspaceId, consumerId);
     },
 
     releaseFileExplorerLiveSession(workspaceId: string, consumerId: string) {
-      const consumers = this.fileExplorerLiveConsumers.get(workspaceId);
-      if (!consumers) {
-        return;
-      }
-
-      consumers.delete(consumerId);
-      if (consumers.size === 0) {
-        this.fileExplorerLiveConsumers.delete(workspaceId);
-        this.disconnectFileExplorerLiveStream(workspaceId);
-      }
+      releaseFileExplorerLiveSessionForStore(this as any, workspaceId, consumerId);
     },
 
     connectFileExplorerLiveStream(workspaceId: string) {
-      if (this.fileSystemConnections.has(workspaceId)) {
-        return;
-      }
-
-      console.log(`[Workspace] Connecting to file system changes for workspace: ${workspaceId}`);
-      const windowNodeContextStore = useWindowNodeContextStore();
-      const wsEndpoint = windowNodeContextStore.getBoundEndpoints().fileExplorerWs;
-
-      const service = new FileExplorerStreamingService(wsEndpoint, {
-        onFileSystemChange: (event: FileSystemChangeEvent) => {
-          console.log(`[Workspace] Received file system change for ${workspaceId}:`, event);
-          this.handleFileSystemChange(workspaceId, event, 'stream');
-        },
-        onConnect: (sessionId: string) => {
-          console.log(`[Workspace] Connected to file system changes: ${sessionId}`);
-        },
-        onDisconnect: (reason?: string) => {
-          console.log(`[Workspace] Disconnected from file system changes: ${reason}`);
-        },
-        onError: (error: Error) => {
-          console.error(`[Workspace] File system WebSocket error for ${workspaceId}:`, error);
-        }
-      });
-
-      service.connect(workspaceId);
-      this.fileSystemConnections.set(workspaceId, service);
+      connectFileExplorerLiveStreamForStore(this as any, workspaceId);
     },
 
     disconnectFileExplorerLiveStream(workspaceId: string) {
-      const service = this.fileSystemConnections.get(workspaceId);
-      if (service) {
-        service.disconnect();
-        this.fileSystemConnections.delete(workspaceId);
-        console.log(`[Workspace] Disconnected from file system watcher for workspace: ${workspaceId}`);
-      }
+      disconnectFileExplorerLiveStreamForStore(this as any, workspaceId);
     },
 
     disconnectAllFileExplorerLiveStreams() {
-      for (const workspaceId of Array.from(this.fileSystemConnections.keys())) {
-        this.disconnectFileExplorerLiveStream(workspaceId);
-      }
-      this.fileExplorerLiveConsumers.clear();
-      this.fileExplorerSnapshotRefreshes.clear();
+      disconnectAllFileExplorerLiveStreamsForStore(this as any);
     },
 
     clearFileExplorerLiveSessionForWorkspace(workspaceId: string) {
-      this.fileExplorerLiveConsumers.delete(workspaceId);
-      this.fileExplorerSnapshotRefreshes.delete(workspaceId);
-      this.disconnectFileExplorerLiveStream(workspaceId);
+      clearFileExplorerLiveSessionForWorkspaceForStore(this as any, workspaceId);
     },
 
     refreshFileExplorerSnapshot(workspaceId: string): Promise<void> {
-      const activeRefresh = this.fileExplorerSnapshotRefreshes.get(workspaceId);
-      if (activeRefresh) {
-        return activeRefresh;
-      }
-
-      const fileExplorerStore = useFileExplorerStore();
-      const openFolderPaths = getOpenFolderPathsForRefresh(
-        fileExplorerStore._getWorkspaceState(workspaceId)?.openFolders || {},
-      );
-      const refreshTask = (async () => {
-        await this.fetchFolderChildren(workspaceId, '');
-        for (const folderPath of openFolderPaths) {
-          await this.fetchFolderChildren(workspaceId, folderPath);
-        }
-      })()
-        .catch((error) => {
-          console.warn(`[Workspace] Failed to refresh file explorer snapshot for ${workspaceId}:`, error);
-        })
-        .finally(() => {
-          this.fileExplorerSnapshotRefreshes.delete(workspaceId);
-        });
-      this.fileExplorerSnapshotRefreshes.set(workspaceId, refreshTask);
-      return refreshTask;
+      return refreshFileExplorerSnapshotForStore(this as any, workspaceId);
     },
 
     /**
@@ -520,28 +484,65 @@ export const useWorkspaceStore = defineStore('workspace', {
   },
 
   getters: {
-    activeWorkspace(): WorkspaceInfo | null {
+    activeWorkspaceReference(): WorkspaceReference | null {
       const selectionStore = useAgentSelectionStore();
       const agentContextsStore = useAgentContextsStore();
       const teamContextsStore = useAgentTeamContextsStore();
       const agentRunConfigStore = useAgentRunConfigStore();
       const teamRunConfigStore = useTeamRunConfigStore();
 
+      let reference: WorkspaceReference | null = null;
       let workspaceId: string | null = null;
 
       if (selectionStore.selectedType === 'agent') {
-        workspaceId = agentContextsStore.activeRun?.config.workspaceId || null;
+        const config = agentContextsStore.activeRun?.config || null;
+        reference = config?.workspaceReference || null;
+        workspaceId = config?.workspaceId || null;
       } else if (selectionStore.selectedType === 'team') {
-        workspaceId = teamContextsStore.activeTeamContext?.config.workspaceId || null;
+        const teamContext = teamContextsStore.activeTeamContext;
+        const focusedConfig = teamContext
+          ? teamContext.leafAgentContextsByRouteKey.get(teamContext.focusedMemberRouteKey)?.config || null
+          : null;
+        reference = focusedConfig?.workspaceReference || teamContext?.config.workspaceReference || null;
+        workspaceId = focusedConfig?.workspaceId || teamContext?.config.workspaceId || null;
       } else {
-        workspaceId =
-          agentRunConfigStore.config?.workspaceId ||
-          teamRunConfigStore.config?.workspaceId ||
-          null;
+        const config = agentRunConfigStore.config || teamRunConfigStore.config || null;
+        reference = config?.workspaceReference || null;
+        workspaceId = config?.workspaceId || null;
       }
 
+      if (reference) {
+        return reference;
+      }
+      if (!workspaceId) {
+        return null;
+      }
+      return this.workspaceReferencesById[workspaceId]
+        || workspaceReferenceFromWorkspaceInfo(this.workspaces[workspaceId])
+        || null;
+    },
+
+    activeWorkspace(): WorkspaceInfo | null {
+      const workspaceId = this.activeWorkspaceReference?.workspaceId || null;
       return workspaceId ? this.workspaces[workspaceId] : null;
     },
+
+    workspaceActivationState: (state) =>
+      (referenceOrId: WorkspaceReference | string | null | undefined): WorkspaceActivationState => {
+        const workspaceId = typeof referenceOrId === 'string'
+          ? referenceOrId
+          : referenceOrId?.workspaceId || '';
+        if (!workspaceId) {
+          return { status: 'uninitialized', error: null };
+        }
+        if (state.workspaces[workspaceId]) {
+          return { status: 'initialized', error: null };
+        }
+        return state.workspaceActivationStateById[workspaceId] || {
+          status: 'uninitialized',
+          error: null,
+        };
+      },
     
     allWorkspaceIds: (state): string[] => Object.keys(state.workspaces),
     allWorkspaces: (state): WorkspaceInfo[] => Object.values(state.workspaces),

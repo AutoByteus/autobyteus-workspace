@@ -1,5 +1,12 @@
 <template>
   <div class="terminal-container h-full flex flex-col" ref="terminalContainer">
+    <div v-if="isActivatingWorkspace" class="bg-blue-50 border-l-4 border-blue-400 text-blue-700 p-2 mb-2">
+      <p class="text-sm">Loading workspace terminal…</p>
+    </div>
+    <div v-else-if="activationError" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-2">
+      <p class="text-sm">{{ activationError }}</p>
+      <button @click="connectTerminal" class="text-xs underline mt-1">Retry workspace load</button>
+    </div>
     <div v-if="session.errorMessage.value" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-2">
       <p class="text-sm">{{ session.errorMessage.value }}</p>
       <button @click="connectTerminal" class="text-xs underline mt-1">{{ $t('workspace.components.workspace.tools.Terminal.retry_connection') }}</button>
@@ -16,8 +23,7 @@ import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
 import { useAppFontSizeStore } from '~/stores/appFontSizeStore';
 import { useWorkspaceStore } from '~/stores/workspace';
-import { useTerminalSession }
-from '~/composables/useTerminalSession';
+import { useTerminalSession } from '~/composables/useTerminalSession';
 
 const terminalContainer = ref<HTMLDivElement | null>(null);
 const terminalElement = ref<HTMLDivElement | null>(null);
@@ -32,7 +38,19 @@ const appFontSizeStore = useAppFontSizeStore();
 const { resolvedMetrics } = storeToRefs(appFontSizeStore);
 const terminalFontPx = computed(() => resolvedMetrics.value.terminalFontPx);
 const workspaceStore = useWorkspaceStore();
-const effectiveWorkspaceId = computed(() => props.workspaceId?.trim() || workspaceStore.activeWorkspace?.workspaceId || '');
+const activatedWorkspaceId = ref<string | null>(props.workspaceId?.trim() || null);
+const isActivatingWorkspace = ref(false);
+const activationError = ref<string | null>(null);
+const explicitWorkspace = computed(() =>
+  props.workspaceId?.trim() ? workspaceStore.workspaces[props.workspaceId.trim()] || null : null,
+);
+const requestedWorkspaceReference = computed(() => {
+  if (props.workspaceId?.trim()) {
+    return workspaceStore.workspaceReferencesById[props.workspaceId.trim()] || null;
+  }
+  return workspaceStore.activeWorkspaceReference;
+});
+const effectiveWorkspaceId = computed(() => activatedWorkspaceId.value || '');
 
 // Initialize the terminal session composable
 const session = useTerminalSession({
@@ -42,6 +60,7 @@ const session = useTerminalSession({
 let resizeObserver: ResizeObserver | null = null;
 let initScheduled = false;
 let pendingConnect = false;
+let activationSequence = 0;
 
 const safeFit = () => {
   if (!fitAddon.value || !terminalElement.value || !terminalInstance.value) {
@@ -82,9 +101,7 @@ const scheduleInitializeTerminal = () => {
     initializeTerminal();
     if (pendingConnect) {
       pendingConnect = false;
-      if (effectiveWorkspaceId.value) {
-        session.connect();
-      }
+      connectTerminal();
     }
   };
 
@@ -180,13 +197,49 @@ const initializeTerminal = () => {
   terminalInstance.value.writeln('\x1b[1m➜ Connected to Workspace Terminal\x1b[0m');
 };
 
-const connectTerminal = () => {
+const ensureWorkspaceForTerminal = async (): Promise<string> => {
+  const sequence = ++activationSequence;
+  activationError.value = null;
+
+  if (explicitWorkspace.value) {
+    activatedWorkspaceId.value = explicitWorkspace.value.workspaceId;
+    return explicitWorkspace.value.workspaceId;
+  }
+
+  const reference = requestedWorkspaceReference.value;
+  if (!reference) {
+    activatedWorkspaceId.value = null;
+    throw new Error('No workspace is selected for the terminal.');
+  }
+
+  isActivatingWorkspace.value = true;
+  try {
+    const workspace = await workspaceStore.ensureWorkspaceInitialized(reference);
+    if (sequence === activationSequence) {
+      activatedWorkspaceId.value = workspace.workspaceId;
+    }
+    return workspace.workspaceId;
+  } catch (error: any) {
+    if (sequence === activationSequence) {
+      activatedWorkspaceId.value = null;
+      activationError.value = error?.message || 'Failed to load workspace terminal.';
+    }
+    throw error;
+  } finally {
+    if (sequence === activationSequence) {
+      isActivatingWorkspace.value = false;
+    }
+  }
+};
+
+const connectTerminal = async () => {
   if (!terminalInstance.value) {
     pendingConnect = true;
     scheduleInitializeTerminal();
     return;
   }
-  if (effectiveWorkspaceId.value) {
+  const workspaceId = await ensureWorkspaceForTerminal().catch(() => '');
+  if (workspaceId) {
     session.connect();
   }
 };
@@ -211,14 +264,13 @@ onMounted(() => {
   connectTerminal();
 
   // Watch for workspace changes to reconnect
-  watch(effectiveWorkspaceId, (newId) => {
-    session.disconnect();
-    if (!newId) {
-      return;
-    }
-    // Small delay to ensure clean disconnect before reconnecting
-    setTimeout(() => session.connect(), 100);
-  });
+  watch(
+    () => requestedWorkspaceReference.value?.workspaceId || props.workspaceId?.trim() || '',
+    async () => {
+      session.disconnect();
+      await connectTerminal();
+    },
+  );
 
   // Setup resize observer for the container
   if (terminalContainer.value) {

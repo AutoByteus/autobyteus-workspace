@@ -164,20 +164,21 @@ const configTitle = computed(() => {
   return $t('workspace.components.workspace.config.RunConfigPanel.title.configuration')
 })
 
-const resolveWorkspacePath = (workspaceId: string | null): string => {
-  if (!workspaceId) return ''
-  const workspace = workspaceStore.workspaces[workspaceId]
+const resolveWorkspacePath = (config: Pick<AgentRunConfig | TeamRunConfig, 'workspaceId' | 'workspaceReference'> | null): string => {
+  if (config?.workspaceReference?.workspaceRootPath) return config.workspaceReference.workspaceRootPath
+  if (!config?.workspaceId) return ''
+  const workspace = workspaceStore.workspaces[config.workspaceId]
   return workspace?.absolutePath || workspace?.workspaceConfig?.root_path || workspace?.workspaceConfig?.rootPath || ''
 }
 
 const effectiveWorkspaceLoadingState = computed(() => {
   if (isSelectionMode.value) {
-    const workspaceId = effectiveTeamConfig.value?.workspaceId || effectiveAgentConfig.value?.workspaceId || null
-    return { isLoading: false, error: null, loadedPath: resolveWorkspacePath(workspaceId) || null }
+    const config = effectiveTeamConfig.value || effectiveAgentConfig.value || null
+    return { isLoading: false, error: null, loadedPath: resolveWorkspacePath(config) || null }
   }
   if (effectiveTeamConfig.value) {
     const base = teamRunConfigStore.workspaceLoadingState
-    const fallbackPath = resolveWorkspacePath(effectiveTeamConfig.value.workspaceId)
+    const fallbackPath = resolveWorkspacePath(effectiveTeamConfig.value)
     return {
       ...base,
       loadedPath: base.loadedPath || fallbackPath || null,
@@ -185,7 +186,7 @@ const effectiveWorkspaceLoadingState = computed(() => {
   }
   if (effectiveAgentConfig.value) {
     const base = runConfigStore.workspaceLoadingState
-    const fallbackPath = resolveWorkspacePath(effectiveAgentConfig.value.workspaceId)
+    const fallbackPath = resolveWorkspacePath(effectiveAgentConfig.value)
     return {
       ...base,
       loadedPath: base.loadedPath || fallbackPath || null,
@@ -196,14 +197,13 @@ const effectiveWorkspaceLoadingState = computed(() => {
 
 const initialWorkspacePath = computed(() => {
   if (isSelectionMode.value) {
-    const workspaceId = effectiveTeamConfig.value?.workspaceId || effectiveAgentConfig.value?.workspaceId || null
-    return resolveWorkspacePath(workspaceId)
+    return resolveWorkspacePath(effectiveTeamConfig.value || effectiveAgentConfig.value || null)
   }
   if (effectiveTeamConfig.value) {
-    return teamRunConfigStore.workspaceLoadingState.loadedPath || resolveWorkspacePath(effectiveTeamConfig.value.workspaceId)
+    return teamRunConfigStore.workspaceLoadingState.loadedPath || resolveWorkspacePath(effectiveTeamConfig.value)
   }
   if (effectiveAgentConfig.value) {
-    return runConfigStore.workspaceLoadingState.loadedPath || resolveWorkspacePath(effectiveAgentConfig.value.workspaceId)
+    return runConfigStore.workspaceLoadingState.loadedPath || resolveWorkspacePath(effectiveAgentConfig.value)
   }
   return ''
 })
@@ -212,12 +212,16 @@ const handleSelectExisting = (workspaceId: string) => {
   if (isSelectionMode.value) {
     return
   }
+  const selectedWorkspace = workspaceStore.workspaces[workspaceId] || null
+  const workspaceReference = workspaceStore.workspaceReferencesById[workspaceId]
+    || (selectedWorkspace ? workspaceStore.registerWorkspaceInfoReference(selectedWorkspace) : null)
+    || null
 
   if (effectiveTeamConfig.value) {
-    teamRunConfigStore.updateConfig({ workspaceId })
+    teamRunConfigStore.updateConfig({ workspaceId, workspaceReference })
     setActiveTab('files')
   } else if (effectiveAgentConfig.value) {
-    runConfigStore.updateAgentConfig({ workspaceId })
+    runConfigStore.updateAgentConfig({ workspaceId, workspaceReference })
     setActiveTab('files')
   }
 }
@@ -231,7 +235,8 @@ const handleLoadNew = async (path: string) => {
     teamRunConfigStore.setWorkspaceLoading(true)
     try {
       const workspaceId = await workspaceStore.createWorkspace({ root_path: path })
-      teamRunConfigStore.setWorkspaceLoaded(workspaceId, path)
+      const workspaceReference = workspaceStore.workspaceReferencesById[workspaceId] || null
+      teamRunConfigStore.setWorkspaceLoaded(workspaceId, path, workspaceReference)
       setActiveTab('files')
     } catch (error: any) {
       teamRunConfigStore.setWorkspaceError(error?.message || 'Failed to load workspace')
@@ -243,7 +248,8 @@ const handleLoadNew = async (path: string) => {
     runConfigStore.setWorkspaceLoading(true)
     try {
       const workspaceId = await workspaceStore.createWorkspace({ root_path: path })
-      runConfigStore.setWorkspaceLoaded(workspaceId, path)
+      const workspaceReference = workspaceStore.workspaceReferencesById[workspaceId] || null
+      runConfigStore.setWorkspaceLoaded(workspaceId, path, workspaceReference)
       setActiveTab('files')
     } catch (error: any) {
       runConfigStore.setWorkspaceError(error?.message || 'Failed to load workspace')

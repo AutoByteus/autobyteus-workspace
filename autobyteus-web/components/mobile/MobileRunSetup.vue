@@ -122,6 +122,7 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+import { useWorkspaceStore } from '~/stores/workspace';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { MobileRunSetupIntent, MobileWorkContext, MobileWorkListItem } from '~/types/mobileWork';
@@ -149,6 +150,7 @@ const agentRunConfigStore = useAgentRunConfigStore();
 const teamDefinitionStore = useAgentTeamDefinitionStore();
 const teamRunConfigStore = useTeamRunConfigStore();
 const mobileWorkStore = useMobileWorkStore();
+const workspaceStore = useWorkspaceStore();
 const { agentItems, teamItems, workspaceItems } = useMobileWorkCatalog();
 const { createMobileRunFromConfig } = useMobileRunLaunchCoordinator();
 const mode = ref<'agent' | 'team'>('agent');
@@ -297,6 +299,14 @@ function clearInvalidSelections(): void {
 }
 
 function syncSelectedConfig(): void {
+  const selectedWorkspace = selectedWorkspaceId.value
+    ? workspaceStore.workspaces[selectedWorkspaceId.value] || null
+    : null;
+  const selectedWorkspaceReference = selectedWorkspaceId.value
+    ? workspaceStore.workspaceReferencesById[selectedWorkspaceId.value]
+      || (selectedWorkspace ? workspaceStore.registerWorkspaceInfoReference(selectedWorkspace) : null)
+      || null
+    : null;
   if (mode.value === 'agent') {
     teamRunConfigStore.clearConfig();
     if (!selectedAgentId.value) {
@@ -311,7 +321,10 @@ function syncSelectedConfig(): void {
       agentRunConfigStore.setTemplate(definition);
     }
     if (selectedWorkspaceId.value) {
-      agentRunConfigStore.updateAgentConfig({ workspaceId: selectedWorkspaceId.value });
+      agentRunConfigStore.updateAgentConfig({
+        workspaceId: selectedWorkspaceId.value,
+        workspaceReference: selectedWorkspaceReference,
+      });
     }
     return;
   }
@@ -329,7 +342,10 @@ function syncSelectedConfig(): void {
     teamRunConfigStore.setTemplate(definition);
   }
   if (selectedWorkspaceId.value) {
-    teamRunConfigStore.updateConfig({ workspaceId: selectedWorkspaceId.value });
+    teamRunConfigStore.updateConfig({
+      workspaceId: selectedWorkspaceId.value,
+      workspaceReference: selectedWorkspaceReference,
+    });
   }
 }
 
