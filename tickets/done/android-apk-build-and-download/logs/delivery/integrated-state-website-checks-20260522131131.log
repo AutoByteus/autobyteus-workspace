@@ -1,0 +1,27 @@
+## Website workspace integrated-state checks
+Date: 2026-05-22T11:11:31Z
++ git status --short --branch
+## codex/android-apk-build-and-download...origin/main [ahead 1]
++ git rev-parse --short=12 HEAD
+4c21423b5eb0
++ git rev-parse --short=12 origin/main
+751fa4fb9e92
++ git diff --check origin/main...HEAD
++ cd backend && uv run --extra dev pytest tests/e2e/test_downloads.py tests/e2e/test_download_tracking.py tests/integration_tests/services/download/test_github_release_service.py tests/integration_tests/services/download/test_executable_type_service.py -q
+...............................                                          [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.9/site-packages/urllib3/__init__.py:35
+  /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-com-android-apk-download/backend/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+    warnings.warn(
+
+tests/e2e/test_downloads.py::test_get_latest_downloads_for_frontend_uses_github_backed_autobyteus_client
+  /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-com-android-apk-download/backend/.venv/lib/python3.9/site-packages/strawberry/fastapi/router.py:16: DeprecationWarning: The 'lia' package has been renamed to 'cross_web'. Please update your imports from 'from lia import ...' to 'from cross_web import ...'. The 'lia' package will be removed in a future version.
+    from lia import HTTPException, StarletteRequestAdapter
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+31 passed, 2 warnings in 0.74s
++ cd frontend && yarn validate:android-download
+yarn run v1.22.22
+$ node scripts/validate-android-download-wiring.mjs
+Android download frontend wiring validated.
+Done in 0.42s.

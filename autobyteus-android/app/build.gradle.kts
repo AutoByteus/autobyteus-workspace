@@ -5,6 +5,37 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+val androidVersionName = System.getenv("ANDROID_VERSION_NAME")
+    ?.takeIf { it.isNotBlank() }
+    ?: "0.1.0"
+
+val androidVersionCode = System.getenv("ANDROID_VERSION_CODE")
+    ?.takeIf { it.isNotBlank() }
+    ?.let { rawVersionCode ->
+        val parsedVersionCode = rawVersionCode.toIntOrNull()
+        if (parsedVersionCode == null || parsedVersionCode !in 1..2_100_000_000) {
+            throw GradleException(
+                "ANDROID_VERSION_CODE must be an integer from 1 to 2100000000; received '$rawVersionCode'.",
+            )
+        }
+        parsedVersionCode
+    }
+    ?: 1
+
+val ciKeystorePath = System.getenv("ANDROID_KEYSTORE_PATH")?.takeIf { it.isNotBlank() }
+val ciKeystorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")?.takeIf { it.isNotBlank() }
+val ciKeyAlias = System.getenv("ANDROID_KEY_ALIAS")?.takeIf { it.isNotBlank() }
+val ciKeyPassword = System.getenv("ANDROID_KEY_PASSWORD")?.takeIf { it.isNotBlank() }
+val ciSigningValues = listOf(ciKeystorePath, ciKeystorePassword, ciKeyAlias, ciKeyPassword)
+val ciReleaseSigningEnabled = ciSigningValues.all { it != null }
+
+if (ciSigningValues.any { it != null } && !ciReleaseSigningEnabled) {
+    throw GradleException(
+        "Android release signing is incomplete. Set ANDROID_KEYSTORE_PATH, ANDROID_KEYSTORE_PASSWORD, " +
+            "ANDROID_KEY_ALIAS, and ANDROID_KEY_PASSWORD together.",
+    )
+}
+
 android {
     namespace = "org.autobyteus.mobile"
     compileSdk = 35
@@ -13,9 +44,20 @@ android {
         applicationId = "org.autobyteus.mobile"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = androidVersionCode
+        versionName = androidVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        if (ciReleaseSigningEnabled) {
+            create("ciRelease") {
+                storeFile = file(ciKeystorePath!!)
+                storePassword = ciKeystorePassword
+                keyAlias = ciKeyAlias
+                keyPassword = ciKeyPassword
+            }
+        }
     }
 
     buildTypes {
@@ -25,6 +67,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            if (ciReleaseSigningEnabled) {
+                signingConfig = signingConfigs.getByName("ciRelease")
+            }
         }
     }
 

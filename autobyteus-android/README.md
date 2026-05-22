@@ -41,13 +41,13 @@ Prerequisites:
 
 - JDK 17+;
 - Android SDK with platform 35;
-- Gradle 9.x, or run through the Gradle version available in your environment;
 - `ANDROID_HOME` pointing at the Android SDK when it is not discoverable automatically.
 
 From the repository root:
 
 ```bash
-ANDROID_HOME="$HOME/Library/Android/sdk" gradle -p autobyteus-android :app:assembleDebug
+cd autobyteus-android
+ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:assembleDebug
 ```
 
 The debug APK is written to:
@@ -55,6 +55,31 @@ The debug APK is written to:
 ```text
 autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
 ```
+
+## Release signing and CI artifacts
+
+The Android app reads release version and signing inputs from environment variables so CI can build from a tag without editing source files:
+
+- `ANDROID_VERSION_NAME` overrides the manifest version name.
+- `ANDROID_VERSION_CODE` overrides the manifest version code and must be an integer from `1` to `2100000000`.
+- `ANDROID_KEYSTORE_PATH`
+- `ANDROID_KEYSTORE_PASSWORD`
+- `ANDROID_KEY_ALIAS`
+- `ANDROID_KEY_PASSWORD`
+
+When all signing variables are present, `./gradlew :app:assembleRelease` produces a signed release APK at:
+
+```text
+autobyteus-android/app/build/outputs/apk/release/app-release.apk
+```
+
+The repository release workflow `.github/workflows/release-android.yml` decodes `ANDROID_KEYSTORE_B64` from GitHub Secrets into `ANDROID_KEYSTORE_PATH`, exports the version variables from the release tag, and publishes only signed release APK assets named like:
+
+```text
+AutoByteus_personal_android-1.3.25-release.apk
+```
+
+Manual workflow-dispatch build-only runs may upload a private debug workflow artifact named like `AutoByteus_personal_android-0.1.0-ci.123-debug.apk` when signing secrets are absent. Debug APKs must not be uploaded to GitHub Releases or surfaced by the website download flow.
 
 The launcher icon is an Android adaptive icon. Keep foreground artwork within the common launcher safe area before packaging; the current AutoByteus foreground vector scales the logo group to `0.66` around the `54,54` viewport center so circle, rounded, and squircle masks do not crop the mark. When changing `app/src/main/res/drawable/ic_launcher_foreground.xml` or launcher mipmaps, rebuild the APK and capture resource inspection plus mask preview or device-launcher evidence.
 
@@ -70,8 +95,9 @@ adb shell am start -n org.autobyteus.mobile/.MainActivity
 ## Implementation-scoped checks
 
 ```bash
-ANDROID_HOME="$HOME/Library/Android/sdk" gradle -p autobyteus-android :app:testDebugUnitTest
-ANDROID_HOME="$HOME/Library/Android/sdk" gradle -p autobyteus-android :app:assembleDebug :app:compileDebugAndroidTestKotlin
+cd autobyteus-android
+ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:testDebugUnitTest
+ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:assembleDebug :app:compileDebugAndroidTestKotlin
 ```
 
 ## Real-device validation handoff
