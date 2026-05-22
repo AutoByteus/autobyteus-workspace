@@ -6,10 +6,10 @@ Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-sp
 
 - Review Entry Point: `Post-Validation Durable-Validation Re-Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/requirements.md`
-- Current Review Round: `3`
-- Trigger: Fresh full re-review requested by the user after implementation's local fix for API/E2E failure `E2E-FEWS-001`; API/E2E had added repository-resident durable validation and the implementation changed watcher/session cancellation code before API/E2E resumes.
-- Prior Review Round Reviewed: `2`
-- Latest Authoritative Round: `3`
+- Current Review Round: `5`
+- Trigger: API/E2E completed the round 4 `CR-004` Local Fix in repository-resident durable validation and requested narrow re-review before delivery resumes.
+- Prior Review Round Reviewed: `4`
+- Latest Authoritative Round: `5`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-review-report.md`
@@ -22,174 +22,163 @@ Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-sp
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial implementation handoff | N/A | CR-001, CR-002, CR-003 | Fail | No | Bounded local fixes were required before API/E2E. |
-| 2 | Local-fix re-review | CR-001, CR-002, CR-003 | None | Pass | No | Ready for initial API/E2E validation. |
-| 3 | Post-validation local fix for `E2E-FEWS-001` and durable E2E re-review | CR-001, CR-002, CR-003, `E2E-FEWS-001` | None | Pass | Yes | Current source and durable E2E are ready for API/E2E to resume; this is not downstream validation sign-off. |
+| 1 | Initial implementation handoff | N/A | CR-001, CR-002, CR-003 | Fail | No | Bounded implementation local fixes were required before API/E2E. |
+| 2 | Implementation local-fix re-review | CR-001, CR-002, CR-003 | None | Pass | No | Ready for initial API/E2E validation. |
+| 3 | Post-validation local fix for `E2E-FEWS-001` and durable WebSocket E2E re-review | CR-001, CR-002, CR-003, `E2E-FEWS-001` | None | Pass | No | Source and durable WebSocket E2E were acceptable for API/E2E to resume. |
+| 4 | API/E2E round 3 expanded workspace/file-explorer durable E2E updates | CR-001, CR-002, CR-003, `E2E-FEWS-001` | CR-004 | Fail | No | File-operations E2E allowed missing write/delete explicit change events. |
+| 5 | API/E2E round 4 `CR-004` durable-validation Local Fix | CR-004 | None | Pass | Yes | `CR-004` is resolved; delivery may resume from the current API/E2E-passed state. |
 
 ## Review Scope
 
-This was a fresh full review, not a delta-only review. I reloaded the review-relevant artifact chain and reviewed the current source state against the requirements/design, prior review, validation report, and durable E2E test.
+Round 5 was a refreshed post-validation durable-validation re-review centered on the API/E2E-owned `CR-004` fix and its directly related evidence. I reloaded the review-relevant artifact chain, prior round 4 review finding, updated API/E2E report, and the changed durable E2E source rather than relying only on the handoff summary.
 
-Round 3 review scope included:
+In scope:
 
-- all previously reviewed visible-consumer, watcher-lease, search/indexing, frontend visibility, and spawn-diagnostic changes;
-- post-validation local fix code in `EventBatcher`, `FileSystemWatcher`, and `FileExplorerSession` that addresses pending stream cancellation and watcher release order;
-- directly related route/handler/session-manager behavior for early close, connected-stream send failure, and idempotent disconnect;
-- API/E2E-added durable test `autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts`;
-- validation evidence, including the pre-fix failing API/E2E log and fresh reviewer-run local reproduction evidence.
+- `autobyteus-server-ts/tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts`
+  - Changed in this local fix to require non-empty write/delete `changes` arrays and expected explicit event types/identifiers.
+- Related expanded durable E2E files retained in the verification run:
+  - `autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts`
+  - `autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts`
+  - `autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts`
+- Validation evidence:
+  - API/E2E log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round4-expanded-workspace-file-explorer-e2e.log`
+  - Reviewer-run log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round5-expanded-workspace-file-explorer-e2e.log`
 
-Reviewer verification performed in round 3:
+Out of scope except as context:
 
-- Because this worktree still lacks local backend/root dependency installs, I temporarily symlinked dependency installs from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` only while running checks, then removed those temporary symlinks afterward. The only pre-existing dependency symlink left in place is `autobyteus-web/node_modules`.
-- `pnpm -C autobyteus-server-ts test tests/unit/file-explorer/watcher/event-batcher.test.ts tests/unit/file-explorer/file-name-indexer.test.ts tests/unit/file-explorer/local-file-explorer.test.ts tests/unit/services/file-explorer-streaming/file-explorer-session-manager.test.ts tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts tests/unit/api/websocket/file-explorer.test.ts tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts` — Pass, 8 files / 47 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round3-backend-targeted-unit.log`.
-- `pnpm -C autobyteus-server-ts test tests/integration/file-explorer/file-name-indexer.integration.test.ts tests/integration/file-explorer/file-system-watcher.integration.test.ts tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts` — Pass, 3 files / 17 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round3-backend-file-explorer-integration.log`.
-- Focused lifecycle run including the durable E2E: `pnpm -C autobyteus-server-ts test tests/unit/file-explorer/watcher/event-batcher.test.ts tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts tests/integration/file-explorer/file-system-watcher.integration.test.ts tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts` — Pass, 5 files / 34 tests; the durable E2E itself passed, 1 file / 3 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round3-backend-focused-lifecycle.log`.
-- `pnpm -C autobyteus-server-ts build:full` — Pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round3-backend-build-full.log`.
-- `pnpm -C autobyteus-web test:nuxt components/fileExplorer/__tests__/FileExplorer.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/layout/__tests__/WorkspaceDesktopLayout.spec.ts stores/__tests__/workspaceStore.spec.ts` — Pass, 4 files / 30 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round3-frontend-targeted.log`.
-- `git diff --check -- autobyteus-server-ts/src autobyteus-server-ts/tests autobyteus-web/components autobyteus-web/stores autobyteus-web/utils` — Pass, no whitespace errors.
-- Stale watcher API grep for `ensureWatcherStarted`, `connectToFileSystemChanges`, `disconnectFromFileSystemChanges`, `FileNameIndexer.start`, and related old start/stop names under source/test scope — Pass, no matches.
+- Product implementation code; API/E2E stated this was an API/E2E durable-validation Local Fix and no product implementation behavior failure was exposed.
+- Delivery-started docs/build artifacts; delivery should refresh them after this pass.
 
-Note: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/backend-file-explorer-websocket-lifecycle-e2e-rerun.log` remains the upstream pre-fix failing API/E2E evidence. The fresh reviewer-run passing evidence is recorded in `code-review-round3-backend-focused-lifecycle.log`. API/E2E still owns resumed validation sign-off.
+Reviewer verification performed in round 5:
+
+- `git diff --check -- autobyteus-server-ts/tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts` — Pass, no whitespace errors.
+- `pnpm -C autobyteus-server-ts test tests/e2e/workspaces/workspaces-graphql.e2e.test.ts tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts` — Pass, 4 files / 12 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round5-expanded-workspace-file-explorer-e2e.log`.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | CR-001 | High | Resolved | `FileExplorerStreamHandler.streamLoop()` still self-cleans connected send/parse/stream failures by deleting the active task, closing the session, releasing through `FileExplorerSession.close()`, and closing the socket with 1011 (`autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:123-160`). Round 3 targeted unit tests pass. | No regression observed in round 3. |
-| 1 | CR-002 | High | Resolved | Visible file-explorer reacquisition still refreshes root plus already-open descendants through `refreshFileExplorerSnapshot()` and `openFolderRefresh.ts` (`autobyteus-web/stores/workspace.ts:376-399`, `autobyteus-web/utils/fileExplorer/openFolderRefresh.ts:3-43`). Frontend targeted tests pass. | No regression observed in round 3. |
-| 1 | CR-003 | Medium | Resolved | `describeCodexAppServerSpawnFailure()` still includes runtime, cwd, command, args, code, open fd count, fs counters, and descriptor-pressure hint only for descriptor-pressure codes (`autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts:323-347`). Unit diagnostics tests pass. | No regression observed in round 3. |
-| API/E2E Round 1 | E2E-FEWS-001 | High | Resolved for code-review/local-fix gate | The API/E2E failure showed real websocket disconnects did not release watcher leases promptly. Current source makes `FileSystemWatcher.events()` per-subscriber cancellable (`file-system-watcher.ts:121-190`), makes `EventBatcher.getBatchedEvents()` cancellable and source-propagating (`event-batcher.ts:43-145`), and releases the watcher lease before waiting on generator/forwarder shutdown in `FileExplorerSession.closeOnce()` (`file-explorer-session.ts:83-107`). Fresh focused run passed the durable E2E's 3 lifecycle tests. | API/E2E must resume and own final validation sign-off; code review finds the local fix acceptable. |
+| 1 | CR-001 | High | Resolved | No product stream-handler code was changed in round 5; prior pass remains accepted. | No regression in this durable-validation scope. |
+| 1 | CR-002 | High | Resolved | No frontend reacquisition code was changed in round 5; prior pass remains accepted. | No regression in this durable-validation scope. |
+| 1 | CR-003 | Medium | Resolved | No Codex diagnostic code was changed in round 5; prior pass remains accepted. | No regression in this durable-validation scope. |
+| API/E2E Round 1 | `E2E-FEWS-001` | High | Resolved | Prior WebSocket lifecycle E2E remained in the round 5 expanded run, which passed 4 files / 12 tests. | API/E2E latest authoritative report remains Pass. |
+| 4 | CR-004 | High | Resolved | `file-operations-graphql.e2e.test.ts:117-119` now asserts write changes are non-empty and contain `add` or `modify`; `file-operations-graphql.e2e.test.ts:149-156` now asserts delete changes are non-empty and contain a `delete` change with `node_id` and `parent_id`. Reviewer-run expanded E2E passed. | This was a validation-code gap only; tightening did not expose a product failure. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
+This round reviewed changed E2E validation code only. The source-file hard limit does not apply to unit, integration, API, or E2E test files. No changed product implementation source was in round 5 scope.
+
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/api/websocket/file-explorer.ts` | 122 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/file-explorer/base-file-explorer.ts` | 26 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/file-explorer/file-explorer.ts` | 161 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/file-explorer/file-name-indexer.ts` | 61 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/file-explorer/local-file-explorer.ts` | 146 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/file-explorer/watcher/event-batcher.ts` | 154 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts` | 239 | Pass | Review threshold exceeded | Pass | Pass | Pass | No action for this gate; this file remains the correct owner for subscriber fan-out and per-subscriber cancellation. |
-| `autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client.ts` | 338 | Pass | Review threshold exceeded | Pass | Pass | Pass | No action; diagnostics remain cohesive with the Codex app-server client boundary. |
-| `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session-manager.ts` | 59 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts` | 96 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts` | 181 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/workspaces/filesystem-workspace.ts` | 114 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/fileExplorer/FileExplorer.vue` | 139 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/layout/RightSideTabs.vue` | 139 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/layout/WorkspaceDesktopLayout.vue` | 112 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/layout/WorkspaceMobileLayout.vue` | 170 | Pass | Pass | Pass | Pass | Pass | None. |
-| `autobyteus-web/stores/workspace.ts` | 487 | Pass but close to hard limit | Review threshold exceeded | Pass | Pass | Pass | No action for this gate; avoid further store growth in later work. |
-| `autobyteus-web/utils/fileExplorer/openFolderRefresh.ts` | 38 | Pass | Pass | Pass | Pass | Pass | None. |
+| N/A — no changed product implementation source in round 5 scope. | N/A | N/A | N/A | N/A | N/A | N/A | None. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The original Boundary Or Ownership Issue / Missing Invariant response remains preserved: live watcher ownership is visible-consumer plus backend lease driven, and the local fix strengthens the missing cancellation invariant. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Workspace load/search without watch, visible file-explorer watch, websocket close, per-subscriber event return, and watcher final-release spines are visible in source and tests. | None. |
-| Ownership boundary preservation and clarity | Pass | `LocalFileExplorer` owns watcher lease counts; `FileSystemWatcher` owns subscriber fan-out; `EventBatcher` owns batching cancellation; `FileExplorerSession` owns stream lifetime and lease release. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Spawn diagnostics and frontend open-folder refresh remain attached to their owning subsystems without competing with watcher/session lifecycle. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The local fix uses existing watcher/session/batcher owners rather than adding a parallel lifecycle coordinator. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | `WatcherLease` remains centralized; cancellation behavior is implemented at the existing stream owners rather than copied in callers. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | No broad shared DTO/base was introduced; the cancellable iterator shapes are local to their stream owners. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Watcher reference counting, socket cleanup, and batch cancellation each have a single owner. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | No new pass-through layer was introduced; the touched files each own lifecycle or reconciliation behavior. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The cancellation fix is split along existing responsibilities and does not push backend details into frontend or route code. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Callers use `BaseFileExplorer.acquireWatcherLease()`/`subscribe()` and do not reach around to watcher internals. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Route depends on the stream handler; handler depends on session manager and `BaseFileExplorer`; frontend components depend on `WorkspaceStore`. No mixed-level dependency was introduced. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Durable E2E is under `tests/e2e/file-explorer`; unit/integration tests live next to their owning backend/frontend areas. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The local fix does not create new folders or artificial modules; existing files absorb their own cancellation invariants. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Lease, subscribe, websocket connect/disconnect, and diagnostic APIs remain explicit and subject-specific. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `getBatchedEvents`, `createSubscriptionStream`, `acquireWatcherLease`, and `releaseWatcherLease` names match behavior. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicate watcher or socket cleanup policy found. | None. |
-| Patch-on-patch complexity control | Pass | The post-validation fix is bounded to stream cancellation/release ordering and does not add compatibility paths. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | Stale watcher API grep found no old implementation/test references in reviewed source scope. | None. |
-| Test quality is acceptable for the changed behavior | Pass | Tests cover pending batched-stream return, idle watcher-stream return while another subscriber remains live, real websocket multi-consumer release, early close, repeated open/close, spawn probe, frontend visibility ownership, and diagnostics. | None. |
-| Test maintainability is acceptable for the changed behavior | Pass | The durable E2E uses real Fastify/ws/workspace/watcher paths with behavior-level assertions; unit tests isolate the cancellation contracts. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | Ready for API/E2E to resume. Not ready for delivery until API/E2E completes sign-off. | None. |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | Old auto-watch and indexer live-watch paths remain removed; no compatibility wrapper added. | None. |
-| No legacy code retention for old behavior | Pass | Reviewed source keeps the clean-cut visible-consumer lifecycle. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | The requirements/design still frame the work as a watcher ownership/lifecycle invariant; round 5 validation strengthens that invariant without product-code changes. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | The durable tests continue to cover workspace create payload, GraphQL folder/search snapshots, GraphQL file operations, and WebSocket live watcher lifecycle. | None. |
+| Ownership boundary preservation and clarity | Pass | E2E tests call public GraphQL/WebSocket surfaces and use test-only watcher/lease introspection only to validate the no-live-watcher invariant. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Round 5 stayed limited to validation assertions and did not mix unrelated delivery docs or product concerns into tests. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The fix extends existing durable E2E assertions; no new parallel harness or product helper was introduced. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Local parsed event assertions remain small and appropriate for the E2E file. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | No shared product or test data model was broadened. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Watcher-free lifecycle policy remains product-owned; tests only assert behavior. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | No new indirection layer was added. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The file-operation assertions live in the file-operations GraphQL E2E, matching the API subject. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | No product dependency direction changed. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No product caller boundary bypass was added; test-only internal state checks remain scoped to invariant validation. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | The changed durable validation remains under `tests/e2e/file-explorer`. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The assertion fix stayed in the existing relevant E2E file. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Write/delete/create/rename GraphQL operations are still exercised through their explicit API subjects. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `writeEvent`, `deleteEvent`, and `deleteChange` are clear and local. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No material duplication introduced by the assertion tightening. | None. |
+| Patch-on-patch complexity control | Pass | The local fix replaces conditional assertions with direct behavior assertions and does not add compatibility paths. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | The obsolete conditional guards from CR-004 were removed. | None. |
+| Test quality is acceptable for the changed behavior | Pass | Write now fails on empty changes and requires `add`/`modify`; delete now fails on empty changes and requires a `delete` change with identifiers; watcher-free assertions remain in place. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Assertions are explicit, readable, and do not overfit to ordering where any expected change in the result is sufficient. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | API/E2E report is Pass; reviewer-run expanded E2E is Pass; CR-004 is resolved. | Delivery may resume and refresh docs/build artifacts against the current state. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | No compatibility or dual-path product behavior was added. | None. |
+| No legacy code retention for old behavior | Pass | No old auto-watch/persistent watcher behavior was reintroduced by round 5 validation changes. | None. |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `9.2`
-- Overall score (`/100`): `92`
+- Overall score (`/10`): `9.3`
+- Overall score (`/100`): `93`
 - Score calculation note: simple average for trend visibility only; review decision is based on findings and mandatory checks, not the average.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.2 | The implementation preserves all required main/event spines, including the post-validation close/cancel/release path. | API/E2E still needs to resume final validation in its own stage. | API/E2E should confirm the same lifecycle in the full validation environment. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Watcher leases, subscribers, batching, sessions, routes, and frontend visibility each remain owned by the right boundary. | `WorkspaceStore` remains broad and near the size limit. | Future frontend changes should extract before adding more store responsibilities. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.2 | Stream/lease APIs are explicit; diagnostics remain runtime-specific. | Manual async iterator contracts require careful maintenance. | Keep cancellation tests with future stream changes. |
-| `4` | `Separation of Concerns and File Placement` | 9.1 | Post-validation fix lands in existing stream owners and durable validation is correctly placed. | `FileSystemWatcher` and Codex client exceed the 220 review threshold but remain cohesive. | Split only if future behavior adds a new concern. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | No loose shared model or kitchen-sink structure was introduced. | Existing frontend workspace state remains a broad aggregate. | No immediate action. |
-| `6` | `Naming Quality and Local Readability` | 9.2 | New and changed lifecycle names are clear and local. | Existing logs are noisy in tests. | Optional log cleanup can happen later if needed. |
-| `7` | `Validation Readiness` | 9.1 | Reviewer-run backend unit, integration, durable E2E, backend build, and frontend targeted suites all pass. | Full typechecks remain baseline-blocked per handoff; API/E2E sign-off is still pending. | API/E2E should resume with the current state and record sign-off evidence. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.1 | The fix directly covers the circular wait/idle close edge and preserves multi-subscriber behavior. | Real packaged Electron descriptor pressure still requires API/E2E/environment validation. | Re-run high-churn and original Codex activation scenarios downstream. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | The old persistent watcher behavior remains removed without dual paths. | Durable docs still need delivery-stage updates after validation. | Delivery should update docs after API/E2E passes. |
-| `10` | `Cleanup Completeness` | 9.2 | No stale watcher API references or whitespace issues found; temporary symlinks were removed. | Upstream failing validation log remains as historical evidence, which can be confusing without the new passing log. | API/E2E should add/record final resumed validation logs. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | Expanded durable tests now enforce the relevant workspace, GraphQL file-explorer, file-operation, and WebSocket watcher-lifecycle spines. | Some assertions use internal watcher-state introspection because this invariant is not externally visible. | Keep that introspection narrow and test-only. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Product ownership boundaries are unchanged; tests validate behavior through API surfaces. | Test helper touches internal watcher fields. | Do not promote the test helper into product code. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Write/delete command response contracts are now asserted directly. | Exact event cardinality is not asserted; the test allows additional legitimate events. | If product later promises exact cardinality, tighten then. |
+| `4` | `Separation of Concerns and File Placement` | 9.4 | The local fix stayed in the existing file-operations GraphQL E2E. | None material. | Preserve current placement. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | No loose shared structures or kitchen-sink fixtures were introduced. | Parsed event types are local ad hoc shapes, acceptable for this E2E. | Extract only if repeated more broadly. |
+| `6` | `Naming Quality and Local Readability` | 9.3 | The fixed assertions are straightforward and readable. | None material. | None. |
+| `7` | `Validation Readiness` | 9.4 | API/E2E's round 4 log and reviewer-run round 5 log both pass 4 E2E files / 12 tests; CR-004 is resolved. | Delivery must refresh already-started docs/build artifacts against this updated state. | Delivery should proceed with its integrated-state checks. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Durable coverage now catches missing explicit change events for write/delete while preserving watcher-free checks. | Runtime descriptor pressure remains environment-sensitive and was already covered by API/E2E high-churn evidence, not rerun in this narrow code review. | Preserve high-churn evidence in delivery package. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No old watcher behavior, compatibility wrapper, or dual path was introduced. | None material. | None. |
+| `10` | `Cleanup Completeness` | 9.2 | Obsolete conditional guards are gone; diff check passed. | Delivery-started artifacts from before this pass must be reconciled by delivery. | Delivery should refresh final artifacts from this latest state. |
 
 ## Findings
 
-No unresolved round 3 findings.
+No unresolved round 5 findings.
 
 Resolved history retained:
 
-- CR-001: Resolved in round 2 and still resolved in round 3 — connected stream send/parse/stream failure closes the session and releases the watcher lease exactly once.
-- CR-002: Resolved in round 2 and still resolved in round 3 — visible file-explorer reacquisition refreshes root plus already-open descendant folders with node-index reconciliation.
-- CR-003: Resolved in round 2 and still resolved in round 3 — Codex spawn diagnostics include runtime, cwd, command, args, code, open_fds, fs counters, and descriptor-pressure hint where applicable.
-- `E2E-FEWS-001`: Resolved for this code-review/local-fix gate in round 3 — cancellable per-subscriber watcher streams, cancellable batching, and lease-before-generator-wait session close remove the deadlock observed by the API/E2E durable test; fresh reviewer-run durable E2E passed.
+- CR-001: Resolved in round 2 and still resolved in round 5 — connected stream send/parse/stream failure cleanup remains accepted.
+- CR-002: Resolved in round 2 and still resolved in round 5 — visible file-explorer reacquisition refresh remains accepted.
+- CR-003: Resolved in round 2 and still resolved in round 5 — Codex spawn diagnostics remain accepted.
+- `E2E-FEWS-001`: Resolved for the current code-review context — durable WebSocket lifecycle coverage still passes in the expanded E2E command.
+- CR-004: Resolved in round 5 — file-operation durable E2E now fails on empty write/delete explicit change arrays and requires expected event content.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E to resume. This review does not replace API/E2E validation sign-off and does not route to delivery. |
-| Tests | Test quality is acceptable | Pass | Tests cover both isolated cancellation contracts and real websocket lifecycle behavior. |
-| Tests | Test maintainability is acceptable | Pass | Tests use behavior-level assertions with appropriate targeted introspection for lease/watcher counts. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No unresolved review findings; API/E2E can resume from `E2E-FEWS-001`. |
+| Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for delivery to resume from the latest API/E2E-passed and code-reviewed state. |
+| Tests | Test quality is acceptable | Pass | `CR-004` is fixed; write/delete explicit event assertions now fail on empty arrays and check expected content. |
+| Tests | Test maintainability is acceptable | Pass | The tests remain behavior-level and in the correct durable E2E files. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No unresolved findings remain. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No compatibility wrappers or dual watcher paths were added. |
-| No legacy old-behavior retention in changed scope | Pass | Workspace-load stream auto-connect and indexer watcher startup remain removed from source/tests. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete implementation source found in reviewed scope. |
+| No backward-compatibility mechanisms in changed scope | Pass | No compatibility wrapper or dual watcher path was added. |
+| No legacy old-behavior retention in changed scope | Pass | No old auto-watch/persistent watcher behavior was reintroduced. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Obsolete conditional assertion guards from CR-004 were removed. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
 | Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| None found in implementation source scope. | N/A | N/A | N/A | N/A |
+| None found in round 5 reviewed scope. | N/A | N/A | N/A | N/A |
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: Durable docs should describe the validated visible-consumer/watcher-lease model and Codex `spawn EBADF` descriptor-pressure troubleshooting after API/E2E completes.
-- Files or areas likely affected: `autobyteus-web/docs/file_explorer.md`, runtime troubleshooting notes for Codex app-server spawn failures, and any watcher lifecycle developer documentation.
+- Why: Delivery-stage docs should reflect the validated visible-consumer/watcher-lease model and the now-reviewed expanded durable E2E coverage. Delivery had already started docs/build artifacts before this re-review; those should be refreshed against the latest state.
+- Files or areas likely affected: `autobyteus-server-ts/docs/modules/file_explorer.md`, `autobyteus-web/docs/file_explorer.md`, and ticket delivery artifacts.
 
 ## Classification
 
-- Pass is the review outcome. No failure classification applies in round 3.
+- Pass is the review outcome. No failure classification applies in round 5.
 
 ## Recommended Recipient
 
-`api_e2e_engineer`
+`delivery_engineer`
 
-Routing note: API/E2E should resume validation from the current implementation state and durable E2E test. Do not route to delivery until API/E2E signs off.
+Routing note: Delivery should resume from this latest code-reviewed state, refresh any already-started docs/build/finalization artifacts, and continue with its integrated-state checks.
 
 ## Residual Risks
 
-- The original `spawn EBADF` failure is descriptor-pressure and packaged Electron/macOS-state sensitive; API/E2E still needs to complete its broader environment validation and original Codex activation checks.
-- Full server/web typechecks remain blocked by baseline issues per the implementation handoff; reviewer-run targeted suites and backend `build:full` passed.
-- `autobyteus-web/stores/workspace.ts` remains close to the 500-line hard limit; later frontend changes should avoid growing it.
-- The upstream pre-fix failing rerun log remains in the artifact package as historical evidence; downstream should use fresh resumed validation logs for final sign-off.
+- Delivery-started docs/build artifacts already exist in the worktree and may predate the `CR-004` fix; delivery must refresh them from this latest state.
+- The original Codex `spawn EBADF` symptom is descriptor-pressure/environment sensitive; API/E2E's high-churn and durable WebSocket evidence remain the primary validation artifacts for that risk.
+- Full typechecks were previously reported as baseline-blocked; targeted checks and backend build evidence remain the current validation basis.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Score Summary: `9.2/10` (`92/100`); all mandatory categories are at or above the clean-pass target.
-- Notes: Fresh full re-review completed. Prior code-review findings remain resolved, `E2E-FEWS-001` is resolved for the code-review/local-fix gate, durable E2E passed in reviewer-run evidence, and API/E2E may resume.
+- Score Summary: `9.3/10` (`93/100`); all mandatory categories are at or above the clean-pass target.
+- Notes: Round 5 refreshed the relevant artifacts and reviewed the `CR-004` durable-validation Local Fix. The fix is adequate, reviewer-run expanded E2E passed, no unresolved findings remain, and delivery may resume.

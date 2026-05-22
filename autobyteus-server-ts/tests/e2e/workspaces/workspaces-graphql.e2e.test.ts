@@ -11,6 +11,22 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 const workspaceManager = getWorkspaceManager();
 
+const getLocalFileExplorerState = async (workspaceId: string) => {
+  const workspace = workspaceManager.getWorkspaceById(workspaceId);
+  if (!workspace) {
+    throw new Error(`Workspace not found in test: ${workspaceId}`);
+  }
+  const fileExplorer = await workspace.getFileExplorer();
+  const local = fileExplorer as unknown as {
+    watcherLeaseCount?: number;
+    adaptee?: { fileWatcher?: unknown };
+  };
+  return {
+    watcher: local.adaptee?.fileWatcher ?? null,
+    leaseCount: local.watcherLeaseCount ?? 0,
+  };
+};
+
 describe("Workspaces GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
@@ -146,6 +162,11 @@ describe("Workspaces GraphQL e2e", () => {
     expect(
       explorerTree.children.some((child) => child.name === "README.md"),
     ).toBe(true);
+
+    await expect(getLocalFileExplorerState(created.createWorkspace.workspaceId)).resolves.toMatchObject({
+      watcher: null,
+      leaseCount: 0,
+    });
   });
 
   it("creates and lists the temp workspace with the backend-selected app-data-relative path", async () => {

@@ -8,17 +8,19 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/review-report.md`
-- Current Validation Round: `2`
-- Trigger: Code review round 3 passed after implementation fixed API/E2E failure `E2E-FEWS-001`; user emphasized that enough real E2E coverage is extremely important.
-- Prior Round Reviewed: `1`
-- Latest Authoritative Round: `2`
+- Current Validation Round: `4`
+- Trigger: Code review round 4 failed API/E2E-owned durable validation on `CR-004`; write/delete GraphQL E2E assertions allowed empty `changes` arrays despite claiming explicit change-event coverage.
+- Prior Round Reviewed: `3`
+- Latest Authoritative Round: `4`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Code review round 2 pass + user request for strong real E2E coverage | N/A | `E2E-FEWS-001` | Fail | No | Added a real Fastify + `ws` file-explorer WebSocket lifecycle E2E. It found that real disconnects could leave watcher leases/sessions alive until workspace close. |
-| 2 | Code review round 3 pass after local fix for `E2E-FEWS-001` | `E2E-FEWS-001` | None | Pass | Yes | Re-ran the durable real E2E, targeted backend/frontend suites, builds, Electron tests, stale-reference probes, and an added multi-process macOS high-churn embedded-server harness with real GraphQL, WebSocket, filesystem watcher, descriptor sampling, and Codex app-server model-catalog activation. |
+| 2 | Code review round 3 pass after local fix for `E2E-FEWS-001` | `E2E-FEWS-001` | None | Pass | No | Re-ran the durable real E2E, targeted backend/frontend suites, builds, Electron tests, stale-reference probes, and an added multi-process macOS high-churn embedded-server harness with real GraphQL, WebSocket, filesystem watcher, descriptor sampling, and Codex app-server model-catalog activation. |
+| 3 | User requested broader assurance that existing workspace/file-explorer E2E coverage was updated where relevant | None | None | Pass | No | Audited existing workspace/file-explorer E2E coverage and updated three durable GraphQL E2E files to assert watcher-free behavior for createWorkspace shallow payloads, folder/search snapshots, and file create/write/read/delete/rename operations without a visible file-explorer stream. |
+| 4 | Code review round 4 Local Fix for `CR-004` in API/E2E-owned durable validation | `CR-004` | None | Pass | Yes | Tightened `file-operations-graphql.e2e.test.ts` so write/delete assertions fail on empty `changes` arrays and require expected explicit change events while preserving watcher-free assertions. Expanded E2E rerun passed. |
 
 ## Validation Basis
 
@@ -48,6 +50,7 @@ Validation was derived from the reviewed requirements/design, updated implementa
 - Frontend Nuxt/Vitest component/store tests for visible-consumer ownership, desktop right-panel unmounting, mobile tools suppression, and refresh-on-reacquire behavior.
 - Full Electron Vitest suite for native desktop support code.
 - Production Nuxt build.
+- Existing workspace/file-explorer GraphQL E2E tests updated to assert the broader workspace APIs remain watcher-free when no file-explorer stream is visible.
 - Temporary macOS multi-process harness that launched the built backend `dist/app.js` as a separate process with an isolated app data directory, then exercised real GraphQL create/search/folder APIs, real file-explorer WebSockets, real filesystem change delivery, descriptor-count sampling through `lsof`, repeated churn, and Codex app-server model-catalog activation.
 
 ## Platform / Runtime Targets
@@ -86,6 +89,7 @@ No upgrade/restart/version migration was in scope. Lifecycle validation focused 
 | `SCN-011` | Native desktop support-code regression surface | Electron Vitest suite | Pass | `api-e2e-round2-frontend-electron-tests.log`: 24 files passed / 96 tests passed, 1 skipped real-release test. |
 | `SCN-012` | Frontend production build | Nuxt production build | Pass | `api-e2e-round2-frontend-nuxt-build.log`: build complete; warnings are existing chunk-size/dynamic-import warnings, not failures. |
 | `SCN-013` | Stale watcher API/source reference removal | Source/test greps | Pass | `api-e2e-round2-stale-watcher-api-grep.log` empty; `api-e2e-round2-direct-watcher-api-grep.log` only authoritative `FileExplorer` methods and `LocalFileExplorer` lease owner calls. |
+| `SCN-014` | Broader workspace/file-explorer GraphQL E2E remains watcher-free without a visible stream (`REQ-001`, `REQ-005`, `REQ-006`, `REQ-008`, `REQ-012`, `AC-001`, `AC-006`, `AC-012`) | Updated existing durable E2E tests: workspaces GraphQL, file-explorer GraphQL, file-operations GraphQL | Pass | `api-e2e-round4-expanded-workspace-file-explorer-e2e.log`: 4 E2E files / 12 tests passed. New/tightened assertions cover createWorkspace shallow fileExplorer payload, folderChildren/search snapshot refresh, and file write/read/delete/create/rename operations without creating watcher leases; write/delete now fail on empty changes arrays. |
 
 ## Test Scope
 
@@ -105,7 +109,7 @@ Round 1 added durable repository-resident E2E test:
 
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts`
 
-Round 2 did **not** add or update repository-resident durable validation after code review round 3. It only added temporary validation-artifact harness/log files under the ticket `validation-artifacts` directory.
+Round 3 **did** update repository-resident durable validation after code review round 3, because the user clarified that broader workspace/file-explorer E2E coverage should be audited and strengthened. Round 4 tightened those durable assertions for `CR-004`. The updated durable tests are existing E2E files, not product implementation files.
 
 The durable E2E covers:
 
@@ -119,8 +123,13 @@ The durable E2E covers:
 - Paths added or updated:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts`
 - Returned through `code_reviewer` before delivery: `Yes`; code review round 3 passed and specifically reviewed the durable E2E.
-- Repository-resident durable validation added or updated after code review round 3: `No`
-- Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/review-report.md`
+- Repository-resident durable validation added or updated after code review round 3: `Yes`
+- Paths updated after code review round 3:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts`
+- Returned through `code_reviewer` before delivery resumes: `Pending; this round routes to code_reviewer because durable E2E changed after code review round 3.`
+- Latest post-validation code review artifact before this round: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/review-report.md`
 
 ## Other Validation Artifacts
 
@@ -140,6 +149,8 @@ Round 2 final/resumed evidence:
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round2-embedded-server-high-churn.json`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round2-embedded-server-high-churn-server.stdout.log`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round2-embedded-server-high-churn-server.stderr.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round3-expanded-workspace-file-explorer-e2e.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round4-expanded-workspace-file-explorer-e2e.log`
 
 Historical/pre-fix evidence retained:
 
@@ -163,6 +174,8 @@ Historical/pre-fix evidence retained:
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
 | 1 | `E2E-FEWS-001` — real WebSocket disconnect/early-close/repeated open-close lifecycle left watcher leases/sessions alive until workspace close | `Local Fix` to implementation_engineer | Resolved | `api-e2e-round2-file-explorer-websocket-lifecycle.log`; `api-e2e-round2-backend-focused-lifecycle.log`; `api-e2e-round2-embedded-server-high-churn.json` | Durable E2E now passes 1 file / 3 tests. High-churn separate-server fd samples return to 33 after final shared close, repeated 20 cycles, and 10 early-close cycles. |
+| 2 | Broader workspace/file-explorer E2E coverage did not yet assert watcher-free behavior across existing GraphQL workspace/file APIs | Coverage gap, not product failure | Resolved | `api-e2e-round3-expanded-workspace-file-explorer-e2e.log` | Existing durable E2E files were updated; 4 E2E files / 12 tests passed. |
+| 3 / Code review round 4 | `CR-004` — write/delete durable E2E assertions allowed empty explicit change arrays | `Local Fix` to API/E2E durable validation | Resolved | `api-e2e-round4-expanded-workspace-file-explorer-e2e.log` | Write now asserts non-empty changes and at least one `add`/`modify`; delete now asserts non-empty changes plus a `delete` change with required identifiers. Expanded E2E passed 4 files / 12 tests. |
 
 ## Scenarios Checked
 
@@ -200,6 +213,11 @@ Historical/pre-fix evidence retained:
 
 ## Passed
 
+- `git diff --check -- autobyteus-server-ts/tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts`
+  - Result: Pass.
+- `pnpm -C autobyteus-server-ts test tests/e2e/workspaces/workspaces-graphql.e2e.test.ts tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts`
+  - Round 4 result after `CR-004` fix: Pass, 4 files / 12 tests.
+  - Round 3 result before `CR-004` fix: Pass, 4 files / 12 tests.
 - `pnpm -C autobyteus-server-ts test tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts`
   - Result: Pass, 1 file / 3 tests.
 - `pnpm -C autobyteus-server-ts test tests/unit/file-explorer/watcher/event-batcher.test.ts tests/unit/file-explorer/file-name-indexer.test.ts tests/unit/file-explorer/local-file-explorer.test.ts tests/unit/services/file-explorer-streaming/file-explorer-session-manager.test.ts tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts tests/unit/api/websocket/file-explorer.test.ts tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts`
@@ -247,18 +265,18 @@ None for API/E2E sign-off. The packaged `.app` launch gap is recorded as a resid
 
 ## Classification
 
-- `Local Fix`: not used in the latest authoritative round; prior `E2E-FEWS-001` is resolved.
+- `Local Fix`: used for API/E2E-owned durable-validation assertion gap `CR-004`; resolved in round 4. Prior implementation local fix `E2E-FEWS-001` remains resolved.
 - `Design Impact`: not used.
 - `Requirement Gap`: not used.
 - `Unclear`: not used.
 
 ## Recommended Recipient
 
-`delivery_engineer`
+`code_reviewer`
 
 ## Evidence / Notes
 
-The user explicitly emphasized that enough real E2E tests are extremely important. The validation suite now includes a durable real backend E2E that previously found a real leak and now passes after the implementation fix, plus a separate-process high-churn macOS harness that verifies descriptor release and Codex app-server activation after repeated watcher lifecycle churn.
+The user explicitly emphasized that enough real E2E tests are extremely important, then clarified that existing workspace/file-explorer E2E coverage should also be audited and updated where relevant. The validation suite now includes a durable real backend WebSocket E2E that previously found a real leak and now passes after the implementation fix, a separate-process high-churn macOS harness, and expanded existing GraphQL workspace/file-explorer E2E coverage that proves broader workspace APIs remain watcher-free without a visible file-explorer stream. `CR-004` is resolved in the durable validation: write/delete assertions now fail on empty `changes` arrays and require explicit expected change events.
 
 Durable docs still need delivery-phase update: `autobyteus-web/docs/file_explorer.md` documents old stream method names and old watcher behavior.
 
@@ -266,4 +284,4 @@ Durable docs still need delivery-phase update: `autobyteus-web/docs/file_explore
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: API/E2E validation signs off the current implementation state. No repository-resident durable validation was added or changed after code review round 3, so this can proceed to `delivery_engineer` for integrated-state refresh and documentation sync.
+- Notes: API/E2E validation signs off the current implementation state, but repository-resident durable validation was updated after code review round 3. Per workflow, this must return through `code_reviewer` before delivery resumes.
