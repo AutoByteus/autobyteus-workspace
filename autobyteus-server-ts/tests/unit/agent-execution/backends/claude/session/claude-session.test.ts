@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
+import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
@@ -103,6 +105,7 @@ const createSession = (input: {
   autoExecuteTools?: boolean;
   query?: ClaudeSdkQueryLike;
   queries?: ClaudeSdkQueryLike[];
+  contextFileLocalPathResolver?: { resolve: (uri: string) => string | null };
 } = {}) => {
   const sessionMessageCache = new ClaudeSessionMessageCache();
   const interruptQuery = vi.fn(async () => undefined);
@@ -155,6 +158,7 @@ const createSession = (input: {
       } as never,
       activeQueriesByRunId,
       toolingCoordinator,
+      contextFileLocalPathResolver: input.contextFileLocalPathResolver,
       isRunSessionActive: () => true,
       terminateRunSession,
     },
@@ -180,6 +184,62 @@ describe("ClaudeSession", () => {
     await expect(session.sendTurn(new AgentInputUserMessage("hello"))).rejects.toThrow(
       "Claude runtime turn is already active for run 'run-1'.",
     );
+  });
+
+  it("caches and sends local context file reference paths in user content", async () => {
+    const { session, sessionMessageCache, startQueryTurn } = createSession({
+      query: createResultQuery("run-1"),
+    });
+
+    await session.sendTurn(
+      new AgentInputUserMessage("inspect this", undefined, [
+        new ContextFile("/abs/proof.png", ContextFileType.IMAGE),
+      ]),
+    );
+    await waitFor(() => startQueryTurn.mock.calls.length === 1, "Claude query start");
+
+    const expectedContent = "inspect this\n\nReference files:\n- /abs/proof.png";
+    expect(sessionMessageCache.getCachedMessages("run-1")).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        role: "user",
+        content: expectedContent,
+      }),
+    ]));
+    expect(startQueryTurn.mock.calls[0]?.[0]).toMatchObject({
+      prompt: expectedContent,
+    });
+  });
+
+  it("resolves finalized context-file locators before caching and sending user content", async () => {
+    const resolve = vi.fn((uri: string) =>
+      uri === "/rest/runs/run-1/context-files/proof.png" ? "/resolved/proof.png" : null,
+    );
+    const { session, sessionMessageCache, startQueryTurn } = createSession({
+      query: createResultQuery("run-1"),
+      contextFileLocalPathResolver: { resolve },
+    });
+
+    await session.sendTurn(
+      new AgentInputUserMessage("inspect this", undefined, [
+        new ContextFile(
+          "/rest/runs/run-1/context-files/proof.png",
+          ContextFileType.IMAGE,
+        ),
+      ]),
+    );
+    await waitFor(() => startQueryTurn.mock.calls.length === 1, "Claude query start");
+
+    const expectedContent = "inspect this\n\nReference files:\n- /resolved/proof.png";
+    expect(sessionMessageCache.getCachedMessages("run-1")).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        role: "user",
+        content: expectedContent,
+      }),
+    ]));
+    expect(startQueryTurn.mock.calls[0]?.[0]).toMatchObject({
+      prompt: expectedContent,
+    });
+    expect(resolve).toHaveBeenCalledWith("/rest/runs/run-1/context-files/proof.png");
   });
 
   it("applies idle status before emitting normal turn completion", async () => {

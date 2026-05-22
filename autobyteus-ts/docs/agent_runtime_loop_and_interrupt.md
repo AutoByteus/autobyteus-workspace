@@ -90,6 +90,9 @@ uses these collaborators:
 - `AgentInputPipeline`
   - converts external user/inter-agent triggers into an `LLMUserMessage`;
   - runs configured input processors;
+  - preserves current-turn context-file media payloads and appends a generated
+    `Reference files:` block for context files that resolve to local absolute
+    paths;
   - preserves inter-agent metadata such as `sender_agent_id`,
     `original_message_type`, and `reference_files`;
   - adds exactly one generated `Reference files:` block to recipient-visible
@@ -299,6 +302,26 @@ Failed LLM streams are not treated as interrupts. Streaming handlers emit
 terminal `SEGMENT_END` events with `failed: true` and an error message for
 open segments; `ToolInvocationAdapter` suppresses failed partial tool segments
 so they do not become invocations, tool results, or same-turn continuations.
+
+## Current User Context File References
+
+Current user context files are handled separately from inter-agent
+`reference_files`. The native input path lets the mandatory
+`UserInputContextBuildingProcessor` resolve finalized context-file locators into
+local filesystem paths, then `buildLLMUserMessage(...)` appends exactly one
+generated `Reference files:` block for the local absolute paths that remain
+usable by later agents.
+
+The reference block supplements, but does not replace, existing multimodal
+payloads. Image, audio, and video context files still populate the corresponding
+`LLMUserMessage` media arrays. Non-local HTTP(S) URLs, data URLs, empty values,
+malformed `file:` URLs, and unresolved `/rest/.../context-files/...` locators
+are intentionally omitted from `Reference files:` so the text never advertises a
+non-file value as a local server path.
+
+The generated paths are model-visible absolute server paths by design. This is
+intended for the trusted local/server workflow where downstream agents may need
+to copy the same paths into explicit handoff `reference_files`.
 
 ## Inter-Agent Reference Files
 

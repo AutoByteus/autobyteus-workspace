@@ -12,14 +12,30 @@ const makeContextFiles = () => [
 ];
 
 describe('buildLLMUserMessage', () => {
-  it('builds a message with media urls', () => {
+  it('builds a message with media urls and reference file paths', () => {
     const message = new AgentInputUserMessage('hello', undefined, makeContextFiles());
     const llmMessage = buildLLMUserMessage(message);
 
     expect(llmMessage.image_urls).toEqual(['file:///image.png']);
     expect(llmMessage.audio_urls).toEqual(['file:///audio.mp3']);
     expect(llmMessage.video_urls).toEqual(['file:///video.mp4']);
-    expect(llmMessage.content).toBe('hello');
+    expect(llmMessage.content).toBe(
+      'hello\n\nReference files:\n- /image.png\n- /audio.mp3\n- /video.mp4\n- /notes.txt'
+    );
+  });
+
+  it('dedupes reference file paths while preserving media arrays', () => {
+    const message = new AgentInputUserMessage('hello', undefined, [
+      new ContextFile('/abs/proof.png', ContextFileType.IMAGE),
+      new ContextFile('/abs/proof.png', ContextFileType.IMAGE),
+      new ContextFile('/abs/notes.txt', ContextFileType.TEXT)
+    ]);
+    const llmMessage = buildLLMUserMessage(message);
+
+    expect(llmMessage.image_urls).toEqual(['/abs/proof.png', '/abs/proof.png']);
+    expect(llmMessage.content).toBe(
+      'hello\n\nReference files:\n- /abs/proof.png\n- /abs/notes.txt'
+    );
   });
 
   it('handles messages without context files', () => {

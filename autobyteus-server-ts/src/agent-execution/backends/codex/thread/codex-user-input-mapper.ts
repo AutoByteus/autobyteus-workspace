@@ -1,13 +1,22 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  appendContextFileReferenceSection,
+  collectContextFileReferencePaths,
+  type ContextFileReferenceSectionOptions,
+} from "autobyteus-ts/agent/message/context-file-reference-section.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import type { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
-import { asObject, asString, type JsonObject } from "../codex-app-server-json.js";
+import { type JsonObject } from "../codex-app-server-json.js";
 import { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
 
 const HTTP_URL_PATTERN = /^https?:\/\//i;
 const IMAGE_DATA_URL_PATTERN = /^data:image\//i;
 const contextFileLocalPathResolver = new ContextFileLocalPathResolver();
+const contextFileReferenceOptions: ContextFileReferenceSectionOptions = {
+  resolveUri: (uri) => contextFileLocalPathResolver.resolve(uri),
+};
 
 const resolveLocalPathUri = (uri: string): string | null => {
   const normalizedUri = uri.trim();
@@ -53,6 +62,9 @@ const toCodexImageInput = (rawUri: string): JsonObject | null => {
   return { type: "localImage", path: uri };
 };
 
+const isEligibleReferenceFile = (contextFile: ContextFile): boolean =>
+  collectContextFileReferencePaths([contextFile], contextFileReferenceOptions).length > 0;
+
 export const toCodexUserInput = (
   message: AgentInputUserMessage,
 ): Array<JsonObject> => {
@@ -72,14 +84,18 @@ export const toCodexUserInput = (
       continue;
     }
 
-    if (contextFile.uri.trim()) {
+    if (!isEligibleReferenceFile(contextFile) && contextFile.uri.trim()) {
       textLines.push(`Context file: ${contextFile.uri.trim()}`);
     }
   }
 
   inputs.unshift({
     type: "text",
-    text: textLines.filter((line) => line.length > 0).join("\n"),
+    text: appendContextFileReferenceSection(
+      textLines.filter((line) => line.length > 0).join("\n"),
+      message.contextFiles,
+      contextFileReferenceOptions,
+    ),
     text_elements: [],
   });
   return inputs;

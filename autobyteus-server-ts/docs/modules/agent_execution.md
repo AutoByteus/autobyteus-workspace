@@ -24,6 +24,18 @@ Runtime managers compose definitions, prompts, tools, processors, and workspace 
 
 `AgentRun.postUserMessage(...)` exposes an internal command-observer seam. Observers are notified only after the message is accepted, and observer failures are isolated from the user-message result.
 
+Current user context-file references are part of runtime input construction, not
+Team Communication metadata. For native AutoByteus turns, the shared
+`autobyteus-ts` message builder appends a generated `Reference files:` block
+after context-file resolution. Server-owned direct runtimes with their own input
+mapping, including Codex and Claude Agent SDK sessions, must use the same
+context-file reference-section utility with `ContextFileLocalPathResolver` so
+finalized `/rest/.../context-files/...` locators become model-visible absolute
+local paths when they resolve. This intentionally exposes server filesystem
+paths to the selected runtime/model provider for attached current-turn context
+files; unresolved or non-local values must be omitted rather than rendered as
+reference files.
+
 See [Agent Memory](./agent_memory.md) for the storage-only recorder contract and memory-file boundaries.
 
 ## Standalone Command Lifecycle
