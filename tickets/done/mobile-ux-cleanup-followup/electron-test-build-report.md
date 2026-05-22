@@ -64,4 +64,4 @@ The Electron prepare-server flow rebuilt and copied the `/mobile` bundle. The ge
 
 - The build emitted expected dependency/build warnings such as large Nuxt chunks, optional/unresolved dependency diagnostics from electron-builder, and unsigned macOS signing/notarization messages for a local test build.
 - `prepare-server` rebuilt mobile web assets and bundled them into `resources/server/mobile-web` before Electron packaging.
-- No repository finalization, release tag, deployment, or ticket cleanup was performed.
+- No release tag or deployment was performed. After user verification, repository finalization completed and the dedicated ticket worktree was removed, so the local DMG/ZIP paths above are historical test-build evidence rather than retained release artifacts.
