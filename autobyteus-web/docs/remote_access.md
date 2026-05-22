@@ -13,15 +13,17 @@ Phone Access lets a phone browser, PWA, or AutoByteus Android shell connect to t
 
 ## Mobile Shell and Desktop Boundary
 
-Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, Tools, and Activity views. Normal desktop routes, including desktop `/workspace` and browser desktop flows, continue to use the regular desktop shell and must not be rewritten to the mobile shell.
+Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, Artifacts, Tools, and Activity views. Normal desktop routes, including desktop `/workspace` and browser desktop flows, continue to use the regular desktop shell and must not be rewritten to the mobile shell.
 
 Stale or unsupported phone links such as `/mobile/workspace` stay inside the mobile experience and show an explicit unsupported-feature notice. Desktop-only workflows remain available from desktop/Electron and should not be forked or degraded by mobile journey refinements.
 
 The mobile shell can start new agent and team runs without falling back to hidden desktop defaults. The **Start new** surface uses the same launch configuration stores and runtime/model semantics as desktop: the user selects the run target, workspace, and runtime/model, then creates the run. It does not collect or send the first chat message. After creation, mobile opens the new run on Chat and the user sends from the normal composer.
 
-For team runs, mobile exposes a **Message target** selector only on the work tabs where that focus affects the current run, such as Chat, Files, and Activity. The selector is intentionally hidden on the Runs tab and while **Start new** is open because team-message focus belongs to Chat, not run configuration. The current mobile client remembers the last valid focused member per team run for Recent-work reopen; that memory is client-local and is not a cross-device/backend persistence contract.
+For team runs, mobile exposes a **Message target** selector only on the work tabs where that focus affects the current run, such as Chat, Files, Artifacts, and Activity. The selector is intentionally hidden on the Runs tab and while **Start new** is open because team-message focus belongs to Chat, not run configuration. The current mobile client remembers the last valid focused member per team run for Recent-work reopen; that memory is client-local and is not a cross-device/backend persistence contract.
 
 Draft context files attached before mobile run creation remain available for the first Chat send. Agent-run draft files transfer into the new agent composer tray. Team-run draft files remain mobile-owned pending attachments keyed by the team run until the first Chat send, then flush to the currently selected focused leaf member.
+
+The mobile **Artifacts** view exposes run-scoped generated and touched files through the existing run artifact store and authorized artifact content viewer. It is separate from Files: Files browses a workspace, while Artifacts follows the selected agent run or focused team member run.
 
 The mobile **Tools** view exposes Terminal and VNC through phone-sized wrappers around the existing browser-compatible tool owners. Terminal uses the paired node's authenticated WebSocket endpoint for the selected workspace. VNC uses the configured server host list and noVNC viewer. VNC hosts must be reachable from the phone; desktop-only loopback hostnames should be replaced with LAN, VPN, or overlay addresses that the phone can open.
 
@@ -100,14 +102,15 @@ The local **Unpair this phone** action deletes only the phone's local session an
 
 ## Mobile Capability Gating
 
-The mobile shell gates truly desktop-only or Electron-only features instead of exposing broken controls. Unsupported feature redirects use `/mobile/?unsupported=<feature>` and render a visible notice in both unpaired and paired states. Terminal and VNC are mobile-supported when their normal workspace/session or host configuration is available.
+The mobile shell gates truly desktop-only or Electron-only features instead of exposing broken controls. Unsupported feature redirects use `/mobile/?unsupported=<feature>` and render a visible notice in both unpaired and paired states. Terminal, VNC, and run Artifacts are mobile-supported when their normal workspace/session, host, or run context is available. Browser remains unsupported in the current mobile shell because the existing Browser surface is Electron-owned through preload IPC and native WebContentsView projection.
 
 Examples of mobile-unsupported surfaces include:
 
 - desktop settings management;
 - desktop update controls;
 - local folder pickers that depend on Electron APIs;
-- application iframe surfaces outside the current mobile shell.
+- application iframe surfaces outside the current mobile shell;
+- the desktop Browser tab, which depends on Electron Browser IPC/native surface projection.
 
 Phone Access code paths must not call `window.electronAPI` or other Electron preload APIs.
 

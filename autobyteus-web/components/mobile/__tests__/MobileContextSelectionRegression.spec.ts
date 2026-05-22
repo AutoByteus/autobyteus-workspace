@@ -479,12 +479,16 @@ describe('mobile context selection stale-run regression', () => {
           MobileChat: { template: '<div data-testid="mobile-chat-stub" />' },
           MobileRuns: { template: '<div data-testid="mobile-runs-stub" />' },
           MobileFiles: { template: '<div data-testid="mobile-files-stub" />' },
+          MobileArtifacts: { template: '<div data-testid="mobile-artifacts-stub" />' },
           MobileActivity: { template: '<div data-testid="mobile-activity-stub" />' },
         },
       },
     });
 
     expect(wrapper.find('[data-testid="mobile-team-member-focus-bar"]').exists()).toBe(false);
+
+    expect(wrapper.find('[data-testid="mobile-tab-artifacts"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="mobile-tab-artifacts"]').text()).toContain('Artifacts');
 
     await wrapper.setProps({ activeTab: 'chat' });
     await nextTick();
@@ -495,6 +499,11 @@ describe('mobile context selection stale-run regression', () => {
     expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).not.toContain('Message target');
     expect(wrapper.get('[data-testid="mobile-team-focus-select"]').attributes('aria-label')).toBe('Message target');
     expect(wrapper.get('[data-testid="mobile-team-focus-select-toggle"]').attributes('aria-label')).toBe('Change message target');
+
+    await wrapper.setProps({ activeTab: 'artifacts' });
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-team-member-focus-bar"]').exists()).toBe(true);
   });
 
   it('keeps non-chat tabs in a bounded block task surface so h-full roots fill the viewport', async () => {
@@ -508,6 +517,7 @@ describe('mobile context selection stale-run regression', () => {
           MobileChat: { template: '<div data-testid="mobile-chat-stub" />' },
           MobileRuns: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-runs-stub" />' },
           MobileFiles: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-files-stub" />' },
+          MobileArtifacts: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-artifacts-stub" />' },
           MobileTools: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-tools-stub" />' },
           MobileActivity: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-activity-stub" />' },
         },
@@ -521,6 +531,7 @@ describe('mobile context selection stale-run regression', () => {
     for (const [tab, testId] of [
       ['runs', 'mobile-runs-stub'],
       ['files', 'mobile-files-stub'],
+      ['artifacts', 'mobile-artifacts-stub'],
       ['tools', 'mobile-tools-stub'],
       ['activity', 'mobile-activity-stub'],
     ] as const) {

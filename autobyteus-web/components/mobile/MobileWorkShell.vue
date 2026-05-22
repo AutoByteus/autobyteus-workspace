@@ -33,6 +33,11 @@
         :context="context"
         @choose-work="$emit('switchContext')"
       />
+      <MobileArtifacts
+        v-else-if="activeTab === 'artifacts'"
+        :context="context"
+        @choose-work="$emit('switchContext')"
+      />
       <MobileTools
         v-else-if="activeTab === 'tools'"
         :context="context"
@@ -45,12 +50,12 @@
       />
     </main>
 
-    <nav class="grid shrink-0 grid-cols-5 border-t border-slate-200 bg-white/95" aria-label="Mobile work tasks" data-testid="mobile-bottom-nav">
+    <nav class="grid shrink-0 grid-cols-6 border-t border-slate-200 bg-white/95" aria-label="Mobile work tasks" data-testid="mobile-bottom-nav">
       <button
         v-for="tab in tabs"
         :key="tab.id"
         type="button"
-        class="flex flex-col items-center justify-center gap-0.5 py-2 text-center text-[11px] font-semibold transition"
+        class="flex flex-col items-center justify-center gap-0.5 py-1.5 text-center text-[10px] font-semibold transition"
         :class="activeTab === tab.id ? 'text-blue-700' : 'text-slate-500'"
         :aria-label="tab.label"
         :aria-current="activeTab === tab.id ? 'page' : undefined"
@@ -58,7 +63,7 @@
         @click="$emit('update:activeTab', tab.id)"
       >
         <span
-          class="block rounded-full px-2 py-0.5 text-sm leading-none"
+          class="block rounded-full px-1.5 py-0.5 text-sm leading-none"
           :class="activeTab === tab.id ? 'bg-blue-50' : ''"
           aria-hidden="true"
         >
@@ -73,6 +78,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import MobileActivity from '~/components/mobile/MobileActivity.vue';
+import MobileArtifacts from '~/components/mobile/MobileArtifacts.vue';
 import MobileChat from '~/components/mobile/MobileChat.vue';
 import MobileFiles from '~/components/mobile/MobileFiles.vue';
 import MobileRuns from '~/components/mobile/MobileRuns.vue';
@@ -99,6 +105,7 @@ const tabs: Array<{ id: MobileTaskTab; label: string; icon: string }> = [
   { id: 'chat', label: 'Chat', icon: '💬' },
   { id: 'runs', label: 'Runs', icon: '▶' },
   { id: 'files', label: 'Files', icon: '📁' },
+  { id: 'artifacts', label: 'Artifacts', icon: '▣' },
   { id: 'tools', label: 'Tools', icon: '⌘' },
   { id: 'activity', label: 'Activity', icon: '●' },
 ];

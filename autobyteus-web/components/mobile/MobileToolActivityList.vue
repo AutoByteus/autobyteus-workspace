@@ -33,11 +33,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useActiveContextStore } from '~/stores/activeContextStore';
+import { computed, toRef } from 'vue';
+import { useMobileFocusedRunIdentity } from '~/composables/mobile/useMobileFocusedRunIdentity';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
 import type { ToolInvocationStatus } from '~/types/segments';
 
@@ -45,23 +43,8 @@ const props = defineProps<{
   context: MobileWorkContext | null;
 }>();
 
-const activeContextStore = useActiveContextStore();
 const activityStore = useAgentActivityStore();
-const selectionStore = useAgentSelectionStore();
-const teamContextsStore = useAgentTeamContextsStore();
-const runId = computed(() => {
-  if (props.context?.kind === 'agent-run') {
-    if (selectionStore.selectedType !== 'agent' || selectionStore.selectedRunId !== props.context.runId) return '';
-    return activeContextStore.activeAgentContext?.state.runId === props.context.runId ? props.context.runId : '';
-  }
-  if (props.context?.kind === 'team-run') {
-    if (selectionStore.selectedType !== 'team' || selectionStore.selectedRunId !== props.context.teamRunId) return '';
-    const team = teamContextsStore.getTeamContextById(props.context.teamRunId);
-    if (!team || team.focusedMemberRouteKey !== props.context.focusedMemberRouteKey) return '';
-    return activeContextStore.activeAgentContext?.state.runId || '';
-  }
-  return '';
-});
+const { focusedRunId: runId } = useMobileFocusedRunIdentity(toRef(props, 'context'));
 const activities = computed(() => {
   return runId.value ? activityStore.getActivities(runId.value) : [];
 });

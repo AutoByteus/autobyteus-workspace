@@ -175,7 +175,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(wrapper.text()).toContain('phone-first mobile work shell');
   });
 
-  it('opens a recent run row into one mobile work shell with Chat/Runs/Files/Tools/Activity bottom navigation', async () => {
+  it('opens a recent run row into one mobile work shell with Chat/Runs/Files/Artifacts/Tools/Activity bottom navigation', async () => {
     const wrapper = mountShell();
     await nextTick();
     await wrapper.get('[data-testid="mobile-readable-work-row"]').trigger('click');
@@ -314,6 +314,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
       'MobileFiles.vue',
       'MobileTools.vue',
       'MobileActivity.vue',
+      'MobileArtifacts.vue',
       'MobileReadableWorkRow.vue',
       'MobileRunSetup.vue',
       'MobileFileViewer.vue',
@@ -330,6 +331,9 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(combined).not.toContain('AppLeftPanel');
     expect(combined).not.toContain('WorkspaceMobileLayout');
     expect(combined).not.toContain('RightSideTabs');
+    expect(combined).not.toContain('ArtifactsTab');
+    expect(combined).not.toContain('BrowserPanel');
+    expect(combined).not.toContain('window.electronAPI');
     expect(combined).not.toContain('to="/workspace"');
   });
 
@@ -341,6 +345,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     const fileViewerSource = readFileSync(resolve(mobileDir, 'MobileFileViewer.vue'), 'utf-8');
     const activitySource = readFileSync(resolve(mobileDir, 'MobileActivity.vue'), 'utf-8');
     const activityDigestSource = readFileSync(resolve(mobileDir, 'MobileActivityDigest.vue'), 'utf-8');
+    const artifactsSource = readFileSync(resolve(mobileDir, 'MobileArtifacts.vue'), 'utf-8');
     const chatSource = readFileSync(resolve(mobileDir, 'MobileChat.vue'), 'utf-8');
     const toolsSource = readFileSync(resolve(mobileDir, 'MobileTools.vue'), 'utf-8');
 
@@ -361,6 +366,11 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(activitySource).toContain('MobileActivityDigest');
     expect(activityDigestSource).toContain('MobileTeamMessages');
     expect(activityDigestSource).toContain('MobileToolActivityList');
+    expect(artifactsSource).toContain('ArtifactContentViewer');
+    expect(artifactsSource).toContain('useRunFileChangesStore');
+    expect(artifactsSource).toContain('toAgentArtifactViewerItem');
+    expect(artifactsSource).not.toContain('ArtifactsTab');
+    expect(artifactsSource).not.toContain('BrowserPanel');
     expect(toolsSource).toContain('Terminal');
     expect(toolsSource).toContain('VncViewer');
     expect(toolsSource).not.toContain('RightSideTabs');

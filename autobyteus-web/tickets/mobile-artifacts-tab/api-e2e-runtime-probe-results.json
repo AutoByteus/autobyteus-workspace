@@ -1,0 +1,216 @@
+{
+  "result": "pass",
+  "validationUrl": "http://127.0.0.1:64244/__mobile-artifacts-validation?backendBase=http%3A%2F%2F127.0.0.1%3A64243&credential=runtime_mobile_secret",
+  "backendPort": 64243,
+  "devPort": 64244,
+  "viewport": {
+    "width": 320,
+    "height": 568
+  },
+  "scenarios": {
+    "phoneNavContainment": {
+      "nav": {
+        "count": 6,
+        "labels": [
+          "💬Chat",
+          "▶Runs",
+          "📁Files",
+          "▣Artifacts",
+          "⌘Tools",
+          "●Activity"
+        ],
+        "rect": {
+          "x": 0,
+          "y": 520,
+          "width": 320,
+          "height": 48,
+          "right": 320,
+          "bottom": 568
+        },
+        "buttonRects": [
+          {
+            "x": 0,
+            "y": 521,
+            "width": 53.33,
+            "height": 47,
+            "right": 53.33,
+            "bottom": 568
+          },
+          {
+            "x": 53.33,
+            "y": 521,
+            "width": 53.33,
+            "height": 47,
+            "right": 106.66,
+            "bottom": 568
+          },
+          {
+            "x": 106.66,
+            "y": 521,
+            "width": 53.33,
+            "height": 47,
+            "right": 159.98,
+            "bottom": 568
+          },
+          {
+            "x": 159.98,
+            "y": 521,
+            "width": 53.34,
+            "height": 47,
+            "right": 213.33,
+            "bottom": 568
+          },
+          {
+            "x": 213.33,
+            "y": 521,
+            "width": 53.33,
+            "height": 47,
+            "right": 266.66,
+            "bottom": 568
+          },
+          {
+            "x": 266.66,
+            "y": 521,
+            "width": 53.33,
+            "height": 47,
+            "right": 319.98,
+            "bottom": 568
+          }
+        ],
+        "minButtonLeft": 0,
+        "maxButtonRight": 319.98
+      },
+      "document": {
+        "htmlScrollWidth": 320,
+        "bodyScrollWidth": 320,
+        "htmlScrollHeight": 568,
+        "bodyScrollHeight": 568,
+        "bodyOverflowX": "visible",
+        "htmlOverflowX": "visible"
+      }
+    },
+    "artifactViewerContainment": {
+      "agent": {
+        "artifactViewer": {
+          "x": 0,
+          "y": 305.39,
+          "width": 320,
+          "height": 214.61,
+          "right": 320,
+          "bottom": 520
+        },
+        "artifactViewerShell": {
+          "x": 0,
+          "y": 305.39,
+          "width": 320,
+          "height": 214.61,
+          "right": 320,
+          "bottom": 520
+        },
+        "artifactViewerOverflow": "hidden"
+      },
+      "pdf": {
+        "artifactViewer": {
+          "x": 0,
+          "y": 305.39,
+          "width": 320,
+          "height": 214.61,
+          "right": 320,
+          "bottom": 520
+        },
+        "artifactViewerShell": {
+          "x": 0,
+          "y": 305.39,
+          "width": 320,
+          "height": 214.61,
+          "right": 320,
+          "bottom": 520
+        }
+      }
+    },
+    "contentFetchRequests": [
+      {
+        "method": "OPTIONS",
+        "pathname": "/rest/runs/runtime-agent-run/file-change-content",
+        "path": "docs/runtime-readme.md",
+        "authorization": ""
+      },
+      {
+        "method": "GET",
+        "pathname": "/rest/runs/runtime-agent-run/file-change-content",
+        "path": "docs/runtime-readme.md",
+        "authorization": "Bearer runtime_mobile_secret"
+      },
+      {
+        "method": "OPTIONS",
+        "pathname": "/rest/runs/runtime-agent-run/file-change-content",
+        "path": "reports/runtime-output.pdf",
+        "authorization": ""
+      },
+      {
+        "method": "GET",
+        "pathname": "/rest/runs/runtime-agent-run/file-change-content",
+        "path": "reports/runtime-output.pdf",
+        "authorization": "Bearer runtime_mobile_secret"
+      },
+      {
+        "method": "OPTIONS",
+        "pathname": "/rest/runs/runtime-lead-run/file-change-content",
+        "path": "lead/lead-artifact.txt",
+        "authorization": ""
+      },
+      {
+        "method": "GET",
+        "pathname": "/rest/runs/runtime-lead-run/file-change-content",
+        "path": "lead/lead-artifact.txt",
+        "authorization": "Bearer runtime_mobile_secret"
+      },
+      {
+        "method": "OPTIONS",
+        "pathname": "/rest/runs/runtime-reviewer-run/file-change-content",
+        "path": "review/reviewer-artifact.txt",
+        "authorization": ""
+      },
+      {
+        "method": "GET",
+        "pathname": "/rest/runs/runtime-reviewer-run/file-change-content",
+        "path": "review/reviewer-artifact.txt",
+        "authorization": "Bearer runtime_mobile_secret"
+      }
+    ],
+    "staleIsolation": {
+      "staleText": "Artifacts\n\nWaiting for the selected run context.\n\nSelect an active run\n\nThe current mobile context no longer matches the selected run or focused team member.\n\nChoose run"
+    },
+    "teamFocusSwitch": {
+      "leadContentExcerpt": "Artifacts1 artifact for the focused run.1📄lead-artifact.txtlead/lead-artifact.txtfileavailablelead/lead-artifact.txt12# lead/lead-artifact.txtRuntime mobile artifact content fetched with credentials.",
+      "reviewerContentExcerpt": "Artifacts1 artifact for the focused run.1📄reviewer-artifact.txtreview/reviewer-artifact.txtfileavailablereview/reviewer-artifact.txt",
+      "finalState": {
+        "activeTab": "artifacts",
+        "currentContext": {
+          "kind": "team-run",
+          "teamRunId": "runtime-team-run",
+          "teamDefinitionId": "team-1",
+          "title": "Runtime Team",
+          "summary": "Runtime validation team",
+          "workspaceRootPath": "/tmp/mobile-artifacts-validation",
+          "focusedMemberRouteKey": "reviewer",
+          "isActive": true,
+          "lastActivityAt": "2026-05-22T15:00:00.000Z",
+          "statusLabel": "Running"
+        },
+        "selectedRunId": "runtime-team-run",
+        "selectedType": "team",
+        "focusedTeamMember": "reviewer"
+      }
+    }
+  },
+  "consoleMessages": [
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log: serverStore: Initializing server config",
+    "log: serverStore: Not in Electron environment. Skipping server initialization.",
+    "info: <Suspense> is an experimental feature and its API will likely change.",
+    "log: ServerLoading: Component mounted with status: running",
+    "warning: [Vue warn]: Invalid prop: type check failed for prop \"url\". Expected String with value \"null\", got Null  \n  at <PdfViewer url=null content=null onUpdate:modelValue=fn  ... > \n  at <FileViewer key=3 file= {path: reports/runtime-output.pdf, type: PDF, content: null, url: null} mode=\"preview\"  ... > \n  at <ArtifactContentViewer artifact= {id: runtime-agent-run:reports/runtime-output.pdf, runId: runtime-agent-run, path: reports/runtime-output.pdf, type: pdf, status: available} refresh-signal=0 > \n  at <MobileArtifacts key=3 context= {kind: agent-run, runId: runtime-agent-run, agentDefinitionId: agent-1, title: Runtime Agent, summary: Runtime validation run} onChooseWork=fn > \n  at <MobileWorkShell context= {kind: agent-run, runId: runtime-agent-run, agentDefinitionId: agent-1, title: Runtime Agent, summary: Runtime validation run} active-tab=\"artifacts\" onHome=fn<noop>  ... > \n  at <MobileArtifactsValidation onVnodeUnmounted=fn<onVnodeUnmounted> ref=Ref< Proxy(Object) > > \n  at <RouteProvider key=\"/__mobile-artifacts-validation\" vnode= {__v_isVNode: true, __v_skip: true, type: Object, props: Object, key: null} route= {fullPath: /__mobile-artifacts-validation?backendBase=http://127.0.0.1:64243&credential=runtime_mobile_secret, hash: , query: Object, name: __mobile-artifacts-validation, path: /__mobile-artifacts-validation}  ... > \n  at <RouterView name=undefined route=undefined > \n  at <NuxtPage> \n  at <NuxtLayoutProvider layoutProps= {ref: RefImpl} key=undefined name=false  ... > \n  at <NuxtLayout key=2 > \n  at <AppLocalizationGate> \n  at <App key=4 > \n  at <NuxtRoot>"
+  ]
+}
