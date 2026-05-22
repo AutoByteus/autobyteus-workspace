@@ -1,0 +1,32 @@
+{
+  "result": "passed",
+  "source": "autobyteus-android/app/src/main/res/drawable/ic_launcher_foreground.xml",
+  "scaleX": 0.66,
+  "scaleY": 0.66,
+  "pivotX": 54,
+  "pivotY": 54,
+  "originalOuterCircleBoundsDp": [
+    6,
+    6,
+    102,
+    102
+  ],
+  "scaledOuterCircleBoundsDp": [
+    22.32,
+    22.32,
+    85.68,
+    85.68
+  ],
+  "centeredAdaptiveSafeZoneDp": [
+    18,
+    18,
+    90,
+    90
+  ],
+  "previewPng": "android-icon-preview-round2.png",
+  "masksPreviewed": [
+    "circle",
+    "rounded",
+    "squircle"
+  ]
+}

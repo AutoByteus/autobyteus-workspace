@@ -25,6 +25,22 @@ Draft context files attached before mobile run creation remain available for the
 
 The mobile **Tools** view exposes Terminal and VNC through phone-sized wrappers around the existing browser-compatible tool owners. Terminal uses the paired node's authenticated WebSocket endpoint for the selected workspace. VNC uses the configured server host list and noVNC viewer. VNC hosts must be reachable from the phone; desktop-only loopback hostnames should be replaced with LAN, VPN, or overlay addresses that the phone can open.
 
+## Mobile UX Contract
+
+This contract is limited to the `/mobile` phone shell. Compact-copy policy belongs in mobile presentation code and must not change desktop journeys, core stores, backend services, GraphQL/REST/WebSocket contracts, or runtime behavior. Shared monitor layout changes for the mobile shell must either be mobile-opt-in or behavior-neutral for existing desktop callers.
+
+The paired phone shell is intentionally compact. Mobile Home shows AutoByteus identity, node connection state, node address, current work, recent work rows, and switching/troubleshooting actions without repeating desktop-style section labels such as `Mobile Home`, `Current node`, `Current work context`, or a duplicate `Primary next action` card. Recent/current work cards are the resume/open affordance; the old one-off continue-latest action is not part of the mobile contract.
+
+Mobile work headers show the selected work name plus compact status, path, or profile metadata. Default compact mobile metadata should not append visible `Agent run` or `Team run` type suffixes. Type semantics may remain available through structured context and accessible labels when needed.
+
+Mobile Chat owns a fixed viewport-height work frame. The transcript/feed is the scroll owner (`overscroll-contain`), while the composer and bottom tab navigation stay anchored inside the viewport. Work-screen wrappers must keep `min-h-0`, `overflow-hidden`, and safe-area-aware containment across each flex boundary so long conversations cannot create document/body scroll or blank space below the controls.
+
+For team runs, Chat/Files/Activity can expose a compact target picker with the focused member name and `Change` action. Preserve accessible naming for the target control, but do not reintroduce visible duplicate copy such as `Message target`, `Current: ...`, or explanatory alignment text once a target is selected.
+
+Mobile Activity exposes concrete category filters: Tasks, Messages, and Tools. The previous aggregate `All` filter/view is intentionally absent so each tab has a distinct purpose. Error and approval filters may remain available as secondary issue filters for tool activity.
+
+Mobile Tools keeps routine copy short: show Terminal/VNC controls and the selected workspace/path, reserve explanatory guidance for actionable empty, setup, or error states, and keep persistent reachability guidance in docs/troubleshooting rather than the default tool panel.
+
 ## Browser/PWA App Shell Metadata
 
 The `/mobile` route links lightweight browser install metadata through `mobile.webmanifest`, mobile icons, standalone display mode, and theme-color/head tags. This metadata is intentionally limited to app-shell presentation for browser users; it does not add a service worker, offline authenticated cache, alternate API protocol, or cached credential path. If future work adds offline behavior, it must be designed separately so paired credentials and protected node data cannot become stale or broadly cached.

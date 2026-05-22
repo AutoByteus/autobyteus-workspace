@@ -1,0 +1,76 @@
+{
+  "result": "passed",
+  "devBaseUrl": "http://127.0.0.1:3325",
+  "backendBaseUrl": "http://127.0.0.1:8925",
+  "viewport": "390x844",
+  "results": [
+    "VE-001 paired mobile Home compact copy/recent rows passed",
+    "VE-002 long mobile Chat scroll containment passed",
+    "VE-003 Activity without All passed",
+    "VE-004 Tools compact copy passed",
+    "VE-005 team compact header/target/accessibility passed"
+  ],
+  "metricsBefore": {
+    "innerWidth": 390,
+    "innerHeight": 844,
+    "scrollY": 0,
+    "documentScrollTop": 0,
+    "documentScrollHeight": 844,
+    "feedClientHeight": 561,
+    "feedScrollHeight": 8960,
+    "feedScrollTop": 8399,
+    "feedTop": 81,
+    "feedBottom": 642,
+    "navTop": 779,
+    "navBottom": 844,
+    "shellTop": 0,
+    "shellBottom": 844,
+    "textareaTop": 700,
+    "textareaBottom": 756
+  },
+  "afterWindowScroll": {
+    "scrollY": 0,
+    "documentScrollTop": 0
+  },
+  "afterWheel": {
+    "scrollY": 0,
+    "documentScrollTop": 0,
+    "feedScrollTop": 8399
+  },
+  "afterTouchSwipe": {
+    "scrollY": 0,
+    "documentScrollTop": 0,
+    "feedScrollTop": 8411
+  },
+  "graphQlOps": [
+    "ListWorkspaceRunHistory",
+    "GetAgentDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAllWorkspaces",
+    "GetRunProjection",
+    "GetAgentRunResumeConfig",
+    "GetRunFileChanges",
+    "GetTeamRunResumeConfig",
+    "GetTeamMemberRunProjection",
+    "GetTeamCommunicationMessages"
+  ],
+  "consoleMessages": [
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "info: <Suspense> is an experimental feature and its API will likely change.",
+    "log: [Workspace] Connecting to file system changes for workspace: workspace-1",
+    "log: [FileExplorerStreaming] Connecting to ws://127.0.0.1:8925/ws/file-explorer/workspace-1?access_token=%5BREDACTED%5D...",
+    "error: [FileExplorerStreaming] WebSocket error: Event",
+    "log: [FileExplorerStreaming] WebSocket disconnected: 1006 ",
+    "log: [FileExplorerStreaming] Scheduling reconnection in 1000ms (attempt 1)"
+  ],
+  "screenshots": [
+    "mobile-home-round2-390x844.png",
+    "mobile-chat-scroll-round2-390x844.png",
+    "mobile-activity-round2-390x844.png",
+    "mobile-tools-round2-390x844.png",
+    "mobile-team-target-round2-390x844.png"
+  ]
+}

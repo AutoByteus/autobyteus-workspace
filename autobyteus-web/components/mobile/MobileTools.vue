@@ -1,9 +1,8 @@
 <template>
   <section class="flex h-full flex-col overflow-hidden" data-testid="mobile-tools">
     <header class="shrink-0 border-b border-slate-200 bg-white px-5 py-4">
-      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Tools</p>
       <h2 class="text-xl font-bold text-slate-950">Terminal and VNC</h2>
-      <p class="mt-1 truncate text-sm text-slate-500">{{ workspaceSubtitle }}</p>
+      <p v-if="workspaceSubtitle" class="mt-1 truncate text-sm text-slate-500">{{ workspaceSubtitle }}</p>
       <div class="mt-3 grid grid-cols-2 gap-2" data-testid="mobile-tools-tabs">
         <button
           v-for="tool in tools"
@@ -38,10 +37,10 @@
         v-else-if="activeTool === 'terminal'"
         class="flex h-[58vh] min-h-[22rem] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
         data-testid="mobile-terminal-panel"
+        aria-label="Workspace terminal"
       >
         <div class="shrink-0 border-b border-slate-200 px-4 py-3">
-          <p class="text-sm font-bold text-slate-950">Workspace Terminal</p>
-          <p class="mt-1 break-all text-xs text-slate-500">{{ terminalWorkspaceLabel }}</p>
+          <p class="break-all text-xs text-slate-500">{{ terminalWorkspaceLabel }}</p>
         </div>
         <Terminal class="min-h-0 flex-1" :workspace-id="terminalWorkspaceId" />
       </article>
@@ -51,9 +50,6 @@
         class="min-h-[24rem] rounded-3xl border border-slate-200 bg-white p-4 shadow-sm"
         data-testid="mobile-vnc-panel"
       >
-        <div class="mb-3 rounded-2xl bg-blue-50 px-3 py-2 text-sm text-blue-800">
-          VNC uses the configured server hosts. Use phone-reachable hostnames or private-network IPs rather than desktop-only loopback addresses.
-        </div>
         <div class="h-[62vh] min-h-[22rem] overflow-hidden rounded-2xl border border-slate-200">
           <VncViewer />
         </div>
@@ -126,6 +122,6 @@ const workspaceSubtitle = computed(() => {
   if (props.context?.kind === 'agent-definition' || props.context?.kind === 'team-definition') {
     return 'Choose or launch a workspace-backed run before opening Terminal.';
   }
-  return 'Terminal needs a workspace; VNC uses configured reachable hosts.';
+  return '';
 });
 </script>

@@ -43,7 +43,7 @@ export function useMobilePromotedRunContextSync() {
     mobileWorkStore.selectContext({
       ...context,
       runId: selectedRunId,
-      summary: context.summary || promotedRun.state.conversation.id || 'Agent run',
+      summary: context.summary || promotedRun.state.conversation.id || 'Agent',
       isActive: true,
       lastActivityAt: new Date().toISOString(),
     }, mobileWorkStore.activeTab);

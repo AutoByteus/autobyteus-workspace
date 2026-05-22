@@ -56,6 +56,8 @@ The debug APK is written to:
 autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
+The launcher icon is an Android adaptive icon. Keep foreground artwork within the common launcher safe area before packaging; the current AutoByteus foreground vector scales the logo group to `0.66` around the `54,54` viewport center so circle, rounded, and squircle masks do not crop the mark. When changing `app/src/main/res/drawable/ic_launcher_foreground.xml` or launcher mipmaps, rebuild the APK and capture resource inspection plus mask preview or device-launcher evidence.
+
 ## Install and launch with adb
 
 ```bash
