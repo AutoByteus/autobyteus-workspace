@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/design-spec.md`
 - Current Review Round: 6
 - Trigger: Correction to the previous auto-detection proposal. User clarified that AutoByteus must not run Tailscale commands, even read-only status commands; Phone Setup remains instruction/copy-command driven and the user manually pastes the Tailscale Serve HTTPS MagicDNS `/mobile` URL into Phone Access.
 - Prior Review Round Reviewed: Round 5 in this same canonical report path.

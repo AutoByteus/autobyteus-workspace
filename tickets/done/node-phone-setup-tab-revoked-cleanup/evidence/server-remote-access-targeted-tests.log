@@ -1,8 +1,8 @@
 
- RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-server-ts
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
 
 Prisma schema loaded from prisma/schema.prisma
-Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
 
 Applying migration `20260203074245_init`
 Applying migration `20260208094000_add_external_channel_tables`
@@ -52,7 +52,7 @@ migrations/
 
 stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS QR pairing and mobile credential behavior
 Platform detection: Windows=false
-App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-server-ts
+App root directory: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
 App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-u0MXi2
 AppConfig instance created.
 

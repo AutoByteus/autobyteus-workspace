@@ -3,8 +3,8 @@
 ## Ticket
 
 - Ticket: `node-phone-setup-tab-revoked-cleanup`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/node-phone-setup-tab-revoked-cleanup`
 - Finalization target from bootstrap context: `origin/personal` (`fcf435ec1894de13fad54002cd70e62d59dd12b8`)
 
@@ -25,19 +25,19 @@
 - Latest API/E2E validation: round 4, pass, no product failures and no blockers.
 - No repository-resident durable validation was added or updated during API/E2E round 4, so no additional code-review pass is required before delivery.
 - Existing durable Fastify REST E2E test remains present and passed the latest targeted rerun:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-server-ts/tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts`
 
 ## Cumulative Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/implementation-handoff.md`
-- Latest code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/review-report.md`
-- Latest API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/delivery-release-deployment-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/implementation-handoff.md`
+- Latest code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/review-report.md`
+- Latest API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/delivery-release-deployment-report.md`
 
 ## What Is Ready For User Verification
 
@@ -73,31 +73,31 @@
 
 ## Long-Lived Docs Synced
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/README.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/docs/remote_access.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/docs/settings.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-server-ts/docs/features/remote_access.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/docs/android_mobile_access.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-android/README.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/remote_access.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/features/remote_access.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/docs/android_mobile_access.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-android/README.md`
 
-Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/docs-sync-report.md`
+Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/docs-sync-report.md`
 
 ## Verification Evidence Already Collected Upstream
 
 Round-6 / API-E2E round-4 evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-guide-and-phone-access-validation-summary.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-guide-direct-commands.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-phone-access-manual-url.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-phone-access-manual-qr.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-http-candidate-warning.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-mock-backend-observed.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-no-tailscale-detector-static-audit.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-web-targeted-nuxt-tests.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-server-remote-access-targeted-tests.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-web-guards-server-noemit-and-diff.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-guide-and-phone-access-validation-summary.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-guide-direct-commands.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-phone-access-manual-url.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-phone-access-manual-qr.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-http-candidate-warning.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-mock-backend-observed.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-no-tailscale-detector-static-audit.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-web-targeted-nuxt-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-server-remote-access-targeted-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-web-guards-server-noemit-and-diff.log`
 
-Earlier evidence remains relevant for original non-round-6 scenarios and is preserved under `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence`.
+Earlier evidence remains relevant for original non-round-6 scenarios and is preserved under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence`.
 
 ## Current Local Electron Build For User Testing
 
@@ -113,21 +113,21 @@ Build result: Passed.
 
 Primary local test artifacts:
 
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg` (379,642,102 bytes)
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip` (377,081,677 bytes)
-- App bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg.blockmap` (394,055 bytes)
-- ZIP blockmap: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip.blockmap` (387,490 bytes)
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-electron-rebuild-mac-20260522-193742.log`
-- SHA-256 hashes: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-electron-rebuild-mac-20260522-193742-shasums.txt`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg` (379,642,102 bytes)
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip` (377,081,677 bytes)
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG blockmap: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg.blockmap` (394,055 bytes)
+- ZIP blockmap: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip.blockmap` (387,490 bytes)
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-electron-rebuild-mac-20260522-193742.log`
+- SHA-256 hashes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-electron-rebuild-mac-20260522-193742-shasums.txt`
 
 SHA-256 values:
 
 ```text
-4c5ac47bafd4d3e7c4462111d9c76c79eed9ebe02d9aa67be0edaed8f628cd2c  /Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg
-ec50944cb9eddd271319cce7e5ac515f0c7cb9254852cc66ae6826b47fb3dc13  /Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip
-840ae7a0292cec0455098478b28e2ff665a12c8ab75581ef4de59a8a8bdd72b4  /Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg.blockmap
-fb0c982ebb5b26092abef6ce3bc07d444e20e6c982d3359794ee080d33ec4e05  /Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip.blockmap
+4c5ac47bafd4d3e7c4462111d9c76c79eed9ebe02d9aa67be0edaed8f628cd2c  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg
+ec50944cb9eddd271319cce7e5ac515f0c7cb9254852cc66ae6826b47fb3dc13  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip
+840ae7a0292cec0455098478b28e2ff665a12c8ab75581ef4de59a8a8bdd72b4  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg.blockmap
+fb0c982ebb5b26092abef6ce3bc07d444e20e6c982d3359794ee080d33ec4e05  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip.blockmap
 ```
 
 Build note: `APPLE_SIGNING_IDENTITY` was not set, so the local macOS build is unsigned and intended for local verification only, not distribution.
@@ -152,10 +152,27 @@ Suggested user verification:
 ## User Verification Received
 
 - Verification received from user on 2026-05-22: "i have tested it. It works. the tailscale. now finalize the ticket, and release a new version".
-- Ticket archival was performed by moving this artifact package to `tickets/done/node-phone-setup-tab-revoked-cleanup/`.
-- Repository finalization and release are now authorized and in progress. Target release version: `v1.3.27`.
+- Ticket archival completed: `tickets/done/node-phone-setup-tab-revoked-cleanup/`.
 
-## Release Notes
+## Finalization And Release Completed
 
-- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/release-notes.md`
-- Target release version: `v1.3.27`
+- Ticket branch commit: `37ddd9a900159351184b4cfc65aeb791854bd112` (`feat(remote-access): harden phone setup pairing flow`).
+- Ticket branch push: completed to `origin/codex/node-phone-setup-tab-revoked-cleanup`.
+- Finalization target: `origin/personal`.
+- Target merge: fast-forwarded `personal` to `37ddd9a900159351184b4cfc65aeb791854bd112` and pushed.
+- Release helper command: `pnpm release 1.3.27 -- --release-notes tickets/done/node-phone-setup-tab-revoked-cleanup/release-notes.md`.
+- Release commit: `8b8dda587e1f00e318aab60eec3c3c237bdde1e0` (`chore(release): bump workspace release version to 1.3.27`).
+- Release tag: `v1.3.27` targeting `8b8dda587e1f00e318aab60eec3c3c237bdde1e0`.
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.27
+- Release workflows completed successfully:
+  - Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26309397148
+  - Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26309397155
+  - Release Messaging Gateway: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26309397150
+  - Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26309397147
+- Cleanup completed: dedicated ticket worktree removed, local ticket branch deleted, remote ticket branch deleted, and worktrees pruned.
+
+## Final Artifact Paths
+
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/handoff-summary.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/delivery-release-deployment-report.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/release-notes.md`

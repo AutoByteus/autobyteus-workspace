@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/requirements.md`
 - Current Review Round: 6
 - Trigger: Round 6 implementation handoff for the manual/user-controlled Tailscale flow, macOS Tailscale.app direct-command-only Phone Setup guide, and retained Round 5 HTTP-candidate default-selection fix.
 - Prior Review Round Reviewed: 4 (no open findings existed; Round 5 behavior is reviewed as part of this Round 6 implementation state)
 - Latest Authoritative Round: 6
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/api-e2e-validation-report.md` (prior validation report from before this Round 6 addendum)
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/api-e2e-validation-report.md` (prior validation report from before this Round 6 addendum)
 - API / E2E Validation Started Yet: `Yes` — prior validation passed, but this implementation addendum requires downstream continuation/re-validation.
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `No` — existing durable E2E validation remains in the worktree and was rerun; Round 6 changed implementation/UI/docs/tests around guide and QR-target selection, not the durable E2E test code.
 

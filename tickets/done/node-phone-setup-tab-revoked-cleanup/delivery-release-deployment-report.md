@@ -2,17 +2,17 @@
 
 ## Release / Publication / Deployment Scope
 
-- Scope: Delivery-stage integrated-state refresh, long-lived docs sync confirmation, local macOS Electron rebuild for user verification, and finalization hold.
+- Scope: Delivery-stage integrated-state refresh, long-lived docs sync, user verification, repository finalization, release `v1.3.27`, workflow verification, and cleanup.
 - Ticket: `node-phone-setup-tab-revoked-cleanup`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup`
-- Branch: `codex/node-phone-setup-tab-revoked-cleanup`
-- Release/deployment applicability before user verification: Not applicable. This handoff is for local user testing only.
+- Final repository path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup`
+- Finalization target: `origin/personal`
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Rewritten after API/E2E round 4 / code-review round 6 and the latest local Electron rebuild.
+- Notes: Updated after release workflows completed successfully.
 
 ## Initial Delivery Integration Refresh
 
@@ -21,14 +21,14 @@
 - Base advanced since bootstrap or previous refresh: `No`
 - New base commits integrated into the ticket branch: `No`
 - Local checkpoint commit result: `Not needed`
-- Integration method: `Already current`
+- Integration method: `Already current` before delivery edits; final target merge used fast-forward.
 - Integration result: `Completed`
 - Post-integration executable checks rerun: `No`
 - Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): `HEAD...origin/personal` was `0 0`; no base commits were integrated, and the latest authoritative code review round 6 plus API/E2E round 4 validation already passed on the same branch state.
+- No-rerun rationale: `HEAD...origin/personal` was `0 0`; no base commits were integrated, and code-review round 6 plus API/E2E round 4 validation already passed on the same branch state.
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
-- Blocker (if applicable): None
+- Blocker: None
 
 ## User Verification
 
@@ -40,112 +40,119 @@
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/README.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/docs/remote_access.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/docs/settings.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-server-ts/docs/features/remote_access.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/docs/android_mobile_access.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-android/README.md`
-- No-impact rationale (if applicable): N/A
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/remote_access.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/settings.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/features/remote_access.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/docs/android_mobile_access.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-android/README.md`
+- No-impact rationale: N/A
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup`
 
 ## Version / Tag / Release Commit
 
-- Version bump: Planned through `pnpm release 1.3.27 -- --release-notes tickets/done/node-phone-setup-tab-revoked-cleanup/release-notes.md`.
-- Tag: Planned `v1.3.27`.
-- Release commit: Planned through the release helper after target branch finalization.
-- Reason: User has authorized finalization and release.
+- Previous release version: `1.3.26`
+- New release version: `1.3.27`
+- Release helper command: `pnpm release 1.3.27 -- --release-notes tickets/done/node-phone-setup-tab-revoked-cleanup/release-notes.md`
+- Version bump result: `Completed`
+- Version files updated by release helper:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/package.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-message-gateway/package.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.github/release-notes/release-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json`
+- Release commit: `8b8dda587e1f00e318aab60eec3c3c237bdde1e0`
+- Release tag: `v1.3.27`
+- Release tag target commit: `8b8dda587e1f00e318aab60eec3c3c237bdde1e0`
+- Branch push result: `Completed` (`personal` pushed to origin)
+- Tag push result: `Completed` (`v1.3.27` pushed to origin)
 
 ## Repository Finalization
 
 - Bootstrap context source: Ticket branch based on `origin/personal`.
 - Ticket branch: `codex/node-phone-setup-tab-revoked-cleanup`
-- Ticket branch commit result: Not performed; waiting for explicit user verification.
-- Ticket branch push result: Not performed; waiting for explicit user verification.
+- Ticket branch commit result: `Completed` (`37ddd9a900159351184b4cfc65aeb791854bd112`)
+- Ticket branch push result: `Completed` (`origin/codex/node-phone-setup-tab-revoked-cleanup`)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: N/A; verification not received yet.
+- Target advanced after user verification: `No` before merge; target was current with remote.
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Target branch update result: Not performed.
-- Merge into target result: Not performed.
-- Push target branch result: Not performed.
-- Repository finalization status: `In progress`
-- Blocker (if applicable): None
+- Target branch update result: `Completed`; `personal` fast-forwarded to ticket commit then release commit.
+- Merge into target result: `Completed` via fast-forward merge to `37ddd9a900159351184b4cfc65aeb791854bd112`.
+- Push target branch result: `Completed`; final release commit `8b8dda587e1f00e318aab60eec3c3c237bdde1e0` pushed to `origin/personal`.
+- Repository finalization status: `Completed`
+- Blocker: None
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `pnpm release 1.3.27 -- --release-notes tickets/done/node-phone-setup-tab-revoked-cleanup/release-notes.md`
-- Release/publication/deployment result: `In progress`
-- Release notes handoff result: `Updated`
-- Blocker (if applicable): None
+- Release/publication/deployment result: `Completed`
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.27
+- Release notes handoff result: `Used`
+- Workflow verification:
+  - Desktop Release: `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26309397148
+  - Android APK Release: `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26309397155
+  - Release Messaging Gateway: `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26309397150
+  - Server Docker Release: `success` — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26309397147
+- Published release assets observed: macOS ARM64/x64 DMG+ZIP+blockmaps, Windows installer, Linux AppImage, Android release APK, managed messaging gateway archive/manifest/checksums, updater metadata, and release manifest.
+- Blocker: None
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup`
-- Worktree cleanup result: `Deferred`
-- Worktree prune result: `Deferred`
-- Local ticket branch cleanup result: `Deferred`
-- Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup is deferred until finalization/release completion is verified.
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
+- Blocker: None
 
-## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
+## Escalation / Reroute
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A; finalization is on normal user-verification hold.
+- Why final handoff could not complete: N/A
 
 ## Release Notes Summary
 
-- Release notes artifact created before release: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/release-notes.md`
-- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/release-notes.md`
-- Release notes status: `Updated`
+- Release notes artifact created before release: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/release-notes.md`
+- Curated release notes copied to: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.github/release-notes/release-notes.md`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/release-notes.md`
+- Release notes status: `Used`
 
 ## Deployment Steps
 
-- None performed.
-- Local user-test build command completed:
-
-```bash
-pnpm -C autobyteus-web build:electron:mac
-```
+- Merged verified ticket branch into `personal`.
+- Ran documented release helper for `1.3.27`.
+- Verified GitHub release workflows completed successfully.
+- Verified GitHub Release `v1.3.27` exists and includes expected release assets.
 
 ## Environment Or Migration Notes
 
-- Build environment: macOS arm64 local worktree.
-- Build output flavor/version: `AutoByteus_personal_macos-arm64-1.3.26`.
-- Primary output artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg` (379,642,102 bytes)
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip` (377,081,677 bytes)
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg.blockmap` (394,055 bytes)
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip.blockmap` (387,490 bytes)
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-electron-rebuild-mac-20260522-193742.log`
-- SHA-256 hashes: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-electron-rebuild-mac-20260522-193742-shasums.txt`
-- Code signing/notarization: Not performed. `APPLE_SIGNING_IDENTITY` was not set; electron-builder skipped macOS code signing. These artifacts are for local verification only.
+- No database migration was required.
+- Local pre-release Electron build was unsigned and used only for user verification; published release artifacts were produced by the GitHub release workflows.
 
 ## Verification Checks
 
-- Base refresh: `git fetch origin personal` succeeded; `HEAD...origin/personal` remained `0 0`.
-- Latest upstream validation: Code-review round 6 passed; API/E2E round 4 passed.
-- Local Electron rebuild: Passed (`pnpm -C autobyteus-web build:electron:mac`).
-- Build warnings: Known/non-blocking warnings were observed for bundle chunk size, dependency deprecations/peer dependencies, and unsigned macOS build due to missing signing identity.
-- Delivery whitespace check: `git diff --check` passed after this artifact refresh.
+- `git diff --check` passed before final ticket commit and after target merge.
+- Code-review round 6 passed.
+- API/E2E round 4 passed.
+- User verified Tailscale behavior in the rebuilt Electron app.
+- Release workflows for desktop, Android APK, messaging gateway, and server Docker all completed with `success`.
 
 ## Rollback Criteria
 
-- Do not finalize if user testing finds any regression in Settings -> Nodes tab separation, direct macOS Phone Setup guide commands, HTTPS-only QR creation, manual MagicDNS `/mobile` handling, HTTP diagnostic candidate behavior, or active/revoked paired-device separation.
-- Do not publish these exact local artifacts as a release because they are unsigned/not notarized.
+- If release `v1.3.27` must be rolled back, use the previous stable release `v1.3.26` and its published assets/images.
+- Revert candidates: release commit `8b8dda587e1f00e318aab60eec3c3c237bdde1e0` for version-only metadata, and ticket commit `37ddd9a900159351184b4cfc65aeb791854bd112` for product changes.
 
 ## Final Status
 
-`User verified; finalization and release in progress.`
+`Completed: ticket finalized, released as v1.3.27, workflows successful, cleanup complete.`

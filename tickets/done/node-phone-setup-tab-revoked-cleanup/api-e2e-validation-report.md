@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/review-report.md`
 - Current Validation Round: 4
 - Trigger: Code-review round 6 pass for the manual/user-controlled Tailscale flow, direct-macOS-only Phone Setup guide, and retained HTTP diagnostic candidate behavior.
 - Prior Round Reviewed: API/E2E round 3 pass for the previous macOS/Tailscale guide correction; latest code review round 6 supersedes that guide shape.
@@ -59,7 +59,7 @@ The round-6 addendum removes automatic/local Tailscale detection and legacy gene
 
 ## Platform / Runtime Targets
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/node-phone-setup-tab-revoked-cleanup`
 - Host runtime: macOS/Darwin arm64, Node `v22.21.1`, pnpm `10.28.2`.
 - Backend test runner: Vitest `4.0.18` in `autobyteus-server-ts`.
@@ -132,7 +132,7 @@ No repository-resident durable validation was added or updated during round 4.
 
 Round 1 had added durable validation:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/autobyteus-server-ts/tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts`
 
 That round-1 durable validation has since been returned through code review and was re-run successfully in rounds 2, 3, and 4.
 
@@ -141,23 +141,23 @@ That round-1 durable validation has since been returned through code review and 
 - Repository-resident durable validation added or updated this round: `No`
 - Paths added or updated this round: N/A
 - If `Yes`, returned through `code_reviewer` before delivery: N/A for round 4. Round 1 durable validation was already returned through `code_reviewer`; latest review report round 6 is pass.
-- Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/review-report.md`
+- Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/review-report.md`
 
 ## Other Validation Artifacts
 
 Round 4 evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-guide-and-phone-access-validation-summary.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-guide-direct-commands.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-phone-access-manual-url.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-phone-access-manual-qr.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-http-candidate-warning.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-mock-backend-observed.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-mock-phone-access-backend.mjs`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-no-tailscale-detector-static-audit.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-web-targeted-nuxt-tests.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-server-remote-access-targeted-tests.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-web-guards-server-noemit-and-diff.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-guide-and-phone-access-validation-summary.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-guide-direct-commands.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-phone-access-manual-url.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-phone-access-manual-qr.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-browser-http-candidate-warning.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-mock-backend-observed.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-mock-phone-access-backend.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-no-tailscale-detector-static-audit.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-web-targeted-nuxt-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-server-remote-access-targeted-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence/round6-web-guards-server-noemit-and-diff.log`
 
 Earlier evidence remains in the same evidence directory and is still relevant for non-addendum and prior-addendum history.
 
@@ -287,7 +287,7 @@ No product failure found. Workflow classification: pass with no repository-resid
 
 ## Evidence / Notes
 
-The key round-4 executable evidence is in `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence` and listed above. Prior docs sync/delivery/handoff artifacts predate the round-6 implementation addendum and should be refreshed by delivery against the current integrated state.
+The key round-4 executable evidence is in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/evidence` and listed above. Prior docs sync/delivery/handoff artifacts predate the round-6 implementation addendum and should be refreshed by delivery against the current integrated state.
 
 ## Latest Authoritative Result
 

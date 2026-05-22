@@ -25,10 +25,10 @@ Reference screenshot: `/Users/normy/.autobyteus/server-data/memory/agent_teams/t
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup`
 - Current Branch: `codex/node-phone-setup-tab-revoked-cleanup`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin personal` succeeded on 2026-05-22.
 - Task Branch: `codex/node-phone-setup-tab-revoked-cleanup`
@@ -44,7 +44,7 @@ Reference screenshot: `/Users/normy/.autobyteus/server-data/memory/agent_teams/t
 | 2026-05-22 | Command | `pwd && git rev-parse --show-toplevel && git status --short --branch && git remote -v` | Bootstrap repository identity and current state | Root is superrepo, current shared branch was `personal`, origin is `AutoByteus/autobyteus-workspace`. | No |
 | 2026-05-22 | Command | `git remote show origin`, `git worktree list --porcelain` | Resolve base branch and existing task worktrees | Remote HEAD/base is `personal`; no matching task worktree existed. | No |
 | 2026-05-22 | Command | `git fetch origin personal` | Refresh tracked base before creating task branch | Fetch succeeded. | No |
-| 2026-05-22 | Setup | `git branch codex/node-phone-setup-tab-revoked-cleanup origin/personal`; `git worktree add /Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup codex/node-phone-setup-tab-revoked-cleanup` | Create mandatory dedicated ticket worktree | Worktree created at task root on branch `codex/node-phone-setup-tab-revoked-cleanup`. | No |
+| 2026-05-22 | Setup | `git branch codex/node-phone-setup-tab-revoked-cleanup origin/personal`; `git worktree add /Users/normy/autobyteus_org/autobyteus-workspace-superrepo codex/node-phone-setup-tab-revoked-cleanup` | Create mandatory dedicated ticket worktree | Worktree created at task root on branch `codex/node-phone-setup-tab-revoked-cleanup`. | No |
 | 2026-05-22 | Other | User screenshot reference file | Understand reported UI state | Screenshot shows Paired Phones card listing multiple entries with red revoked timestamps and Revoke buttons still visible/disabled-looking. | No |
 | 2026-05-22 | Command | `rg -n "revok|paired phones|Paired Phones|pairedPhones|pairing|Tailscale|tailscale|Docker" -S autobyteus-web autobyteus-server-ts autobyteus-android autobyteus-message-gateway` | Locate affected UI, backend, docs, and Android hints | Found PhoneAccessCard, phoneAccessStore, remote-access REST/service/store, Android README/ConnectionScreen, remote_access docs, localization, Docker tab files. | No |
 | 2026-05-22 | Code | `autobyteus-web/components/settings/PhoneAccessCard.vue` | Inspect current paired-phone rendering | The component renders `store.devices` directly, shows `device.revokedAt`, disables revoke for revoked rows, and disables Revoke all only when `store.devices.length === 0`. | Yes, change to active device source and remove revoked-row display. |
@@ -235,7 +235,7 @@ Follow-up probe showed the desktop runtime could technically read Tailscale JSON
 
 ## Notes For Architect Reviewer
 
-Design spec produced at `/Users/normy/autobyteus_org/autobyteus-worktrees/node-phone-setup-tab-revoked-cleanup/tickets/done/node-phone-setup-tab-revoked-cleanup/design-spec.md`. Key review focus areas:
+Design spec produced at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/node-phone-setup-tab-revoked-cleanup/design-spec.md`. Key review focus areas:
 
 - Backend active/revoked split: design makes `PairedDeviceService` the authoritative owner and changes `GET /remote-access/devices` to active-only with a separate revoked-history endpoint.
 - Retained revoked records remain in persistence for auth/history; active UI must not treat them as active phones.
