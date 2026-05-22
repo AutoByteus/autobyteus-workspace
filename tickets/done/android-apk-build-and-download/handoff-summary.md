@@ -149,3 +149,29 @@ Generated Android build outputs from delivery validation were removed after the 
 ## Awaiting User Verification
 
 Please verify this integrated handoff state. After explicit user approval, delivery should refresh both target branches again, protect any delivery-owned edits, archive the ticket under `tickets/done/android-apk-build-and-download/`, commit/push the ticket branches, merge into the recorded target branches, and only then run any requested release/deployment path.
+
+## Finalization / Release Completion Update
+
+- User approval: received on 2026-05-22 when the user requested finalization plus a new release.
+- Main workspace finalization: ticket branch fast-forward merged into `personal` and pushed to `origin/personal`.
+- Website finalization: ticket branch fast-forward merged into `main` and pushed to `origin/main`.
+- Main workspace release: `v1.3.26` published at https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.26.
+- Website release/deployment: `v1.0.23` published at https://github.com/AutoByteus/autobyteus-com-workspace/releases/tag/v1.0.23; deploy workflow passed.
+- Android APK GitHub asset: `AutoByteus_personal_android-1.3.26-release.apk` is present on the workspace GitHub Release.
+- Post-release APK verification: downloaded release APK plus `.sha256`, checksum passed, and `apksigner verify --verbose` confirmed APK Signature Scheme v2 with one signer.
+- Production website API verification: `https://autobyteus.com/rest/downloads?platform=android` returns Android version `1.3.26`; `https://autobyteus.com/rest/download/autobyteus/android/latest` returns `307` to the GitHub APK asset.
+- Cleanup: dedicated main and website ticket worktrees removed; local and remote ticket branches deleted.
+
+## User Test Instructions
+
+Download from the GitHub Release or from the production website Android download path:
+
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.26
+- APK asset: `AutoByteus_personal_android-1.3.26-release.apk`
+- Website redirect path: https://autobyteus.com/rest/download/autobyteus/android/latest
+
+If a debug/local APK is already installed on the phone, uninstall it first because Android will not upgrade across different signing keys. Then install the release APK normally or with:
+
+```bash
+adb install -r AutoByteus_personal_android-1.3.26-release.apk
+```

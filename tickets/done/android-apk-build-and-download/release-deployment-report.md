@@ -167,3 +167,42 @@ If a future release/deployment is performed and Android APK download support nee
 ## Final Status
 
 Pre-finalization delivery handoff is prepared and validation is passing. Final repository handoff is paused pending explicit user verification.
+
+## Finalization Completion Update
+
+- User verification/approval received: `Yes` — user requested finalization and release on 2026-05-22.
+- Ticket archived to `tickets/done/android-apk-build-and-download`: `Yes`.
+- Main ticket branch push: `Completed` — `origin/codex/android-apk-build-and-download` was pushed before merge, then deleted after successful finalization.
+- Main target merge: `Completed` — fast-forwarded `personal` through ticket commit `210a3edaa3c8` and pushed `origin/personal`.
+- Website ticket branch push: `Completed` — `origin/codex/android-apk-build-and-download` was pushed before merge, then deleted after successful finalization.
+- Website target merge: `Completed` — fast-forwarded `main` through `b15c52a2e15b` and pushed `origin/main`.
+- Main workspace release: `Completed` — `v1.3.26` created by `scripts/desktop-release.sh release 1.3.26 --release-notes tickets/done/android-apk-build-and-download/release-notes.md` and pushed to GitHub.
+- Main release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.26
+- Website release/deployment: `Completed` — `v1.0.23` GitHub Release published and production deploy workflow passed.
+- Website release URL: https://github.com/AutoByteus/autobyteus-com-workspace/releases/tag/v1.0.23
+- Dedicated ticket worktree cleanup: `Completed` for both worktrees.
+- Local ticket branch cleanup: `Completed` for both repositories.
+- Remote ticket branch cleanup: `Completed` for both repositories.
+
+## Release Workflow Results
+
+| Repository | Workflow | Run | Result |
+| --- | --- | --- | --- |
+| AutoByteus/autobyteus-workspace | Android APK Release | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26286341793 | Success |
+| AutoByteus/autobyteus-workspace | Desktop Release | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26286341741 | Success |
+| AutoByteus/autobyteus-workspace | Release Messaging Gateway | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26286341796 | Success |
+| AutoByteus/autobyteus-workspace | Server Docker Release | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26286341707 | Success |
+| AutoByteus/autobyteus-com-workspace | Deploy on Release | https://github.com/AutoByteus/autobyteus-com-workspace/actions/runs/26286363268 | Success |
+
+## Post-Release Verification Evidence
+
+- GitHub Release `v1.3.26` contains `AutoByteus_personal_android-1.3.26-release.apk` and `AutoByteus_personal_android-1.3.26-release.apk.sha256`.
+- Downloaded release APK verification directory: `/Users/normy/autobyteus_org/release-artifacts/autobyteus-workspace-v1.3.26/`.
+- `sha256sum -c AutoByteus_personal_android-1.3.26-release.apk.sha256` — passed.
+- `apksigner verify --verbose AutoByteus_personal_android-1.3.26-release.apk` — passed; APK Signature Scheme v2 verified with one signer.
+- `curl https://autobyteus.com/rest/downloads?platform=android` — returned Android download version `1.3.26`, filename `AutoByteus_personal_android-1.3.26-release.apk`, and size `1846667`.
+- `curl https://autobyteus.com/rest/download/autobyteus/android/latest` — returned `HTTP/1.1 307 Temporary Redirect` with `x-autobyteus_com-platform: android`, `x-autobyteus_com-version: 1.3.26`, and `location: https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.26/AutoByteus_personal_android-1.3.26-release.apk`.
+
+## Final Completion Status
+
+Repository finalization, GitHub release publication, website deployment, post-release Android APK verification, and cleanup are complete. User handset installation remains the only manual follow-up.
