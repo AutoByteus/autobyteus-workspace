@@ -1,7 +1,8 @@
 <template>
   <div
     :id="conversationScrollContainerId"
-    class="h-full min-h-0 overflow-y-auto"
+    class="h-full min-h-0 overflow-y-auto overscroll-contain"
+    data-testid="agent-conversation-feed"
     @scroll="handleConversationScroll"
   >
     <div class="rounded-xl bg-white">

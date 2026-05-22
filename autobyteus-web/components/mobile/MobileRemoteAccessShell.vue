@@ -1,5 +1,5 @@
 <template>
-  <main class="min-h-screen bg-slate-100 text-slate-900" data-testid="mobile-remote-access-shell">
+  <main :class="shellClass" data-testid="mobile-remote-access-shell">
     <MobilePairingBootstrap
       v-if="!sessionStore.isPaired"
       @paired="onPaired"
@@ -38,7 +38,6 @@
         :current-context="mobileWorkStore.currentContext"
         :recent-items="recentWorkItems"
         @refresh-status="checkStatus"
-        @continue-latest="continueLatestRun"
         @select-context="openContext"
         @open-work-picker="openContextSwitcher"
         @open-files="openFiles"
@@ -118,7 +117,6 @@ const teamContextsStore = useAgentTeamContextsStore();
 const route = useRoute();
 const {
   recentWorkItems,
-  latestRunItem,
   catalogSegments,
   refreshMobileCatalogSegment,
   refreshMobileWorkCatalog,
@@ -145,6 +143,12 @@ const unsupportedMessage = computed(() => {
   const feature = String(route.query.unsupported ?? '') as MobileFeatureId;
   return unsupportedFeatureMessages[feature] ?? null;
 });
+const shellClass = computed(() => [
+  'bg-slate-100 text-slate-900',
+  screen.value === 'work'
+    ? 'fixed inset-0 h-screen h-[100dvh] overflow-hidden overscroll-none'
+    : 'min-h-screen',
+]);
 
 async function checkStatus(): Promise<void> {
   const [statusResult, catalogResult] = await Promise.allSettled([
@@ -198,15 +202,6 @@ async function retryCatalogSegment(segmentId: MobileCatalogSegmentId): Promise<v
   if (success) {
     sessionStore.recordAuthorizedApiReachability(true);
   }
-}
-
-async function continueLatestRun(): Promise<void> {
-  const item = latestRunItem.value;
-  if (!item) {
-    openContextSwitcher();
-    return;
-  }
-  await openContext(item.context, 'chat');
 }
 
 function openFiles(): void {

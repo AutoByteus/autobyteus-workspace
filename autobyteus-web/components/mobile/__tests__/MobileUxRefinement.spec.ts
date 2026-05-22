@@ -207,6 +207,11 @@ describe('mobile Round 4 UX refinements', () => {
     expect(wrapper.get('[data-testid="mobile-home-status-card"]').text()).toContain('Phone Access status unavailable');
     expect(wrapper.get('[data-testid="mobile-home-status-card"]').text()).not.toContain('Cannot reach AutoByteus desktop');
     expect(wrapper.get('[data-testid="mobile-home-status-card"]').text()).not.toContain('Offline');
+    expect(wrapper.text()).not.toContain('Mobile Home');
+    expect(wrapper.text()).not.toContain('Current node');
+    expect(wrapper.text()).not.toContain('Current work context');
+    expect(wrapper.text()).not.toContain('Primary next action');
+    expect(wrapper.find('[data-testid="mobile-home-primary-action"]').exists()).toBe(false);
   });
 
   it('uses configure-only mobile setup without first-message entry or launch summary', async () => {
@@ -396,8 +401,10 @@ describe('mobile Round 4 UX refinements', () => {
 
     expect(wrapper.find('[data-testid="mobile-activity-digest"]').exists()).toBe(true);
     expect(wrapper.text()).not.toContain('Interactive terminal, browser, and desktop tool panes are not supported');
+    expect(wrapper.find('[data-testid="mobile-activity-filter-all"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="mobile-activity-filters"]').text()).not.toContain('All');
     expect(wrapper.find('[data-testid="mobile-activity-filter-errors"]').exists()).toBe(false);
-    expect(wrapper.text()).toContain('ANTHROPIC_API_KEY environment variable is not set');
+    expect(wrapper.text()).not.toContain('ANTHROPIC_API_KEY environment variable is not set');
 
     await wrapper.get('[data-testid="mobile-activity-more-filters"]').trigger('click');
     await nextTick();
@@ -424,6 +431,8 @@ describe('mobile Round 4 UX refinements', () => {
     expect(wrapper.find('[data-testid="mobile-tools-tab-terminal"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-tools-tab-vnc"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-terminal-panel"]').exists()).toBe(true);
+    expect(wrapper.text()).not.toContain('Tools');
+    expect(wrapper.text()).not.toContain('Workspace Terminal');
     expect(wrapper.get('[data-testid="terminal-stub"]').text()).toContain('workspace-1');
 
     await wrapper.get('[data-testid="mobile-tools-tab-vnc"]').trigger('click');
@@ -431,6 +440,6 @@ describe('mobile Round 4 UX refinements', () => {
 
     expect(wrapper.find('[data-testid="mobile-vnc-panel"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="vnc-stub"]').exists()).toBe(true);
-    expect(wrapper.text()).toContain('phone-reachable hostnames');
+    expect(wrapper.text()).not.toContain('phone-reachable hostnames');
   });
 });

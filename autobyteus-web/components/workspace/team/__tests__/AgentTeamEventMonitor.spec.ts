@@ -146,6 +146,13 @@ describe('AgentTeamEventMonitor.vue', () => {
 
     const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
     expect(monitor.exists()).toBe(true);
+    expect(wrapper.get('[data-testid="agent-team-event-monitor"]').classes()).toEqual(expect.arrayContaining([
+      'h-full',
+      'min-h-0',
+      'flex-col',
+      'overflow-hidden',
+    ]));
+    expect(monitor.classes()).toEqual(expect.arrayContaining(['min-h-0', 'flex-1', 'overflow-hidden']));
     expect(monitor.props('interAgentSenderNameById')).toEqual({
       member_a111: 'Professor',
       member_b222: 'Student',

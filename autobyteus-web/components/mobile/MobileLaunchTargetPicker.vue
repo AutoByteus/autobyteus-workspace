@@ -1,9 +1,9 @@
 <template>
-  <section class="rounded-2xl border border-blue-200 bg-white p-3" :data-testid="testId">
+  <section class="rounded-2xl border border-blue-200 bg-white p-3" :data-testid="testId" :aria-label="label">
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0">
-        <p class="text-sm font-bold text-blue-950">{{ label }}</p>
-        <p class="mt-1 truncate text-sm" :class="selectedItem ? 'text-slate-700' : 'text-slate-500'">
+        <p v-if="showLabel" class="text-sm font-bold text-blue-950">{{ label }}</p>
+        <p class="truncate text-sm" :class="[showLabel ? 'mt-1' : '', selectedItem ? 'text-slate-700' : 'text-slate-500']">
           {{ selectedItem ? selectedItem.label : placeholder }}
         </p>
       </div>
@@ -21,7 +21,7 @@
       <input
         v-model="query"
         class="w-full rounded-xl border border-blue-200 bg-white px-3 py-2 text-sm"
-        :placeholder="`Search ${label.toLowerCase()}`"
+        :placeholder="`Search ${searchNoun}`"
         :data-testid="`${testId}-search`"
       />
       <div v-if="groupedItems.length" class="mt-3 max-h-64 space-y-3 overflow-y-auto">
@@ -42,7 +42,7 @@
         </section>
       </div>
       <p v-else class="mt-3 rounded-xl border border-dashed border-blue-200 bg-white p-3 text-sm text-slate-500">
-        No matching {{ label.toLowerCase() }}.
+        No matching {{ searchNoun }}.
       </p>
     </div>
   </section>
@@ -58,13 +58,18 @@ type MobileLaunchPickerItem = {
   group?: string;
 };
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   label: string;
   placeholder: string;
   items: MobileLaunchPickerItem[];
   modelValue: string;
   testId: string;
-}>();
+  showLabel?: boolean;
+  itemNoun?: string;
+}>(), {
+  showLabel: true,
+  itemNoun: '',
+});
 
 const emit = defineEmits<{
   'update:modelValue': [value: string];
@@ -73,6 +78,7 @@ const emit = defineEmits<{
 const isOpen = ref(false);
 const query = ref('');
 
+const searchNoun = computed(() => props.itemNoun || props.label.toLowerCase());
 const selectedItem = computed(() => props.items.find((item) => item.id === props.modelValue) ?? null);
 const filteredItems = computed(() => {
   const normalizedQuery = query.value.trim().toLowerCase();

@@ -4,7 +4,6 @@
       <div>
         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">AutoByteus Remote Access</p>
         <h1 class="mt-2 text-3xl font-bold text-slate-950">AutoByteus</h1>
-        <p class="mt-1 text-sm text-slate-500">Mobile Home</p>
       </div>
       <button
         type="button"
@@ -17,11 +16,14 @@
       </button>
     </header>
 
-    <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-xl" data-testid="mobile-home-status-card">
+    <div
+      class="rounded-3xl border border-slate-200 bg-white p-5 shadow-xl"
+      data-testid="mobile-home-status-card"
+      aria-label="Current node"
+    >
       <div class="flex items-start justify-between gap-3">
         <div class="min-w-0">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Current node</p>
-          <p class="mt-1 truncate text-base font-semibold text-slate-950">{{ nodeLabel }}</p>
+          <p class="truncate text-base font-semibold text-slate-950">{{ nodeLabel }}</p>
           <p class="mt-1 break-all font-mono text-xs text-slate-500">{{ serverBaseUrl }}</p>
         </div>
         <span class="shrink-0 rounded-full px-3 py-1 text-xs font-semibold" :class="statusPillClass">
@@ -35,9 +37,12 @@
         :message="noticeMessage"
       />
 
-      <div v-if="currentContext" class="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-3">
-        <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">Current work context</p>
-        <p class="mt-1 font-semibold text-slate-950">{{ contextTitle }}</p>
+      <div
+        v-if="currentContext"
+        class="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-3"
+        aria-label="Current work context"
+      >
+        <p class="font-semibold text-slate-950">{{ contextTitle }}</p>
         <p class="mt-1 text-sm text-slate-600">{{ contextSubtitle }}</p>
       </div>
 
@@ -47,18 +52,6 @@
         <p class="mt-1 text-xs">{{ effectiveDiagnostic.recoveryAction }}</p>
       </div>
     </div>
-
-    <button
-      type="button"
-      class="mt-5 rounded-3xl border border-blue-200 bg-blue-600 p-5 text-left text-white shadow-xl transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-      :disabled="!primaryActionEnabled"
-      data-testid="mobile-home-primary-action"
-      @click="activatePrimaryAction"
-    >
-      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-100">Primary next action</p>
-      <p class="mt-2 text-xl font-bold">{{ primaryActionTitle }}</p>
-      <p class="mt-1 text-sm text-blue-100">{{ primaryActionDetail }}</p>
-    </button>
 
     <section class="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div class="flex items-center justify-between gap-3">
@@ -122,13 +115,12 @@ const props = defineProps<{
   recentItems: MobileWorkListItem[];
 }>();
 
-const emit = defineEmits<{
+defineEmits<{
   refreshStatus: [];
   openWorkPicker: [];
   openFiles: [];
   openTroubleshooting: [];
   requestUnpair: [];
-  continueLatest: [];
   selectContext: [context: MobileWorkContext];
 }>();
 
@@ -159,16 +151,4 @@ const statusPillClass = computed(() => {
 });
 const contextTitle = computed(() => mobileWorkContextTitle(props.currentContext));
 const contextSubtitle = computed(() => mobileWorkContextSubtitle(props.currentContext));
-const latestItem = computed(() => props.recentItems[0] ?? null);
-const primaryActionEnabled = computed(() => props.status?.phoneAccessEnabled !== false);
-const primaryActionTitle = computed(() => latestItem.value ? 'Continue latest run' : 'Start or choose work');
-const primaryActionDetail = computed(() => latestItem.value?.detail || 'Pick a recent run, agent, team, or workspace without opening the desktop tree.');
-
-function activatePrimaryAction(): void {
-  if (latestItem.value) {
-    emit('continueLatest');
-    return;
-  }
-  emit('openWorkPicker');
-}
 </script>

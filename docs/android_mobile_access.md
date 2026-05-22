@@ -80,6 +80,8 @@ API/E2E should run this against a physical Android phone when available.
 - Phone Access enabled on the desktop/server node.
 - A stable URL such as `https://<desktop-machine>.<tailnet>.ts.net/mobile`.
 
+For local development validation against a host-only mock or dev node, API/E2E may use an ADB bridge such as `adb reverse tcp:<phone-visible-port> tcp:<host-port>` so the physical phone can reach the host service. Record the reverse mapping and the device id/model/Android version in evidence, then run `adb reverse --remove-all` during cleanup. Do not rely on display size or density overrides for final UI evidence; if an override was used during setup, reset it before the passing run and record `adb shell wm size` / `adb shell wm density` after cleanup.
+
 ### Desktop-node modes
 
 Record the mode used in validation evidence:
@@ -129,4 +131,5 @@ Record the mode used in validation evidence:
 10. Mobile Home/catalog freshness: confirm the saved-node relaunch renders Mobile Home/recent work and does not show `Error 500` or `Cannot read properties of undefined (reading 'localeCompare')`. If that error appears after a source fix, first suspect a stale desktop-served `/mobile` bundle.
 11. Travel/reachability simulation: keep Android on Tailscale and avoid relying on the LAN-only URL. If practical, test with Wi-Fi disabled or from another network.
 12. Failure diagnostic: disconnect Tailscale or temporarily save an unreachable URL and confirm the native recovery copy appears instead of a raw WebView error page.
-13. Evidence capture: include screenshots, logcat, APK path/hash, served mobile bundle path/hash, desktop-node mode, stable URL shape, attachment-upload result, and backend/mobile status observations.
+13. Launcher icon safe-area check: when launcher resources change, inspect or preview the packaged adaptive icon foreground against common launcher masks. The AutoByteus logo should stay fully visible inside the adaptive safe zone; the current vector foreground is expected to use a centered `scaleX=0.66` / `scaleY=0.66` group around pivot `(54,54)` before packaging. Record the preview/device evidence used.
+14. Evidence capture: include screenshots, logcat, APK path/hash, served mobile bundle path/hash, desktop-node mode, stable URL shape or ADB reverse mapping, device id/model/Android version, post-cleanup display size/density when ADB display controls were touched, attachment-upload result, backend/mobile status observations, and launcher icon preview/device evidence when icon resources changed.

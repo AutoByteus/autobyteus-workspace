@@ -1,18 +1,18 @@
 <template>
-  <section class="flex h-full flex-col" data-testid="mobile-chat">
+  <section class="flex h-full min-h-0 flex-1 flex-col overflow-hidden" data-testid="mobile-chat">
     <AgentEventMonitor
       v-if="selectedAgentContext"
       :conversation="selectedAgentContext.state.conversation"
       :compaction-status="selectedAgentContext.state.compactionStatus"
       :agent-name="selectedAgentContext.config.agentDefinitionName"
       :agent-avatar-url="selectedAgentContext.config.agentAvatarUrl"
-      class="min-h-0 flex-1"
+      class="min-h-0 flex-1 overflow-hidden"
     >
       <template #composerContext>
         <MobileComposerContextTray :context="context" />
       </template>
     </AgentEventMonitor>
-    <AgentTeamEventMonitor v-else-if="selectedTeamContext" :before-send="beforeSend" class="min-h-0 flex-1">
+    <AgentTeamEventMonitor v-else-if="selectedTeamContext" :before-send="beforeSend" class="min-h-0 flex-1 overflow-hidden">
       <template #composerContext>
         <p
           v-if="pendingTeamAttachmentError"
@@ -24,7 +24,7 @@
         <MobileComposerContextTray :context="context" />
       </template>
     </AgentTeamEventMonitor>
-    <div v-else class="flex h-full items-center justify-center p-6 text-center">
+    <div v-else class="flex h-full min-h-0 flex-1 items-center justify-center overflow-y-auto p-6 text-center">
       <div class="max-w-sm rounded-3xl border border-slate-200 bg-slate-50 p-6">
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Chat</p>
         <h2 class="mt-2 text-xl font-bold text-slate-950">{{ emptyTitle }}</h2>

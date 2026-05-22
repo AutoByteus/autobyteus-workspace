@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-0 flex-1 space-y-3 overflow-y-auto p-5" data-testid="mobile-activity-digest">
-    <div class="grid grid-cols-4 gap-2" data-testid="mobile-activity-filters">
+    <div class="grid grid-cols-3 gap-2" data-testid="mobile-activity-filters">
       <button
         v-for="filter in primaryFilters"
         :key="filter.id"
@@ -114,7 +114,7 @@ defineEmits<{
   chooseWork: [];
 }>();
 
-type ActivityFilter = 'all' | 'tasks' | 'messages' | 'tools' | 'errors' | 'approvals';
+type ActivityFilter = 'tasks' | 'messages' | 'tools' | 'errors' | 'approvals';
 type MobileToolActivityFilter = 'all' | 'errors' | 'approvals';
 
 const activeContextStore = useActiveContextStore();
@@ -122,7 +122,7 @@ const activityStore = useAgentActivityStore();
 const selectionStore = useAgentSelectionStore();
 const teamContextsStore = useAgentTeamContextsStore();
 const teamCommunicationStore = useTeamCommunicationStore();
-const activeFilter = ref<ActivityFilter>('all');
+const activeFilter = ref<ActivityFilter>('tasks');
 const showTeamMessages = ref(false);
 const showAdvancedFilters = ref(false);
 
@@ -168,18 +168,17 @@ const toolActivities = computed(() => runId.value ? activityStore.getActivities(
 const errorActivities = computed(() => toolActivities.value.filter((activity) => activity.status === 'error' || activity.status === 'denied'));
 const approvalActivities = computed(() => toolActivities.value.filter((activity) => activity.status === 'awaiting-approval'));
 const filters = computed(() => [
-  { id: 'all' as const, label: 'All', count: taskCards.value.length + teamMessages.value.length + toolActivities.value.length },
   { id: 'tasks' as const, label: 'Tasks', count: taskCards.value.length },
   { id: 'messages' as const, label: 'Messages', count: teamMessages.value.length },
   { id: 'tools' as const, label: 'Tools', count: toolActivities.value.length },
   { id: 'errors' as const, label: 'Errors', count: errorActivities.value.length },
   { id: 'approvals' as const, label: 'Approvals', count: approvalActivities.value.length },
 ]);
-const primaryFilters = computed(() => filters.value.filter((filter) => ['all', 'tasks', 'messages', 'tools'].includes(filter.id)));
+const primaryFilters = computed(() => filters.value.filter((filter) => ['tasks', 'messages', 'tools'].includes(filter.id)));
 const advancedFilters = computed(() => filters.value.filter((filter) => filter.id === 'errors' || filter.id === 'approvals'));
-const showTasks = computed(() => activeFilter.value === 'all' || activeFilter.value === 'tasks');
-const showMessages = computed(() => activeFilter.value === 'all' || activeFilter.value === 'messages');
-const showTools = computed(() => ['all', 'tools', 'errors', 'approvals'].includes(activeFilter.value));
+const showTasks = computed(() => activeFilter.value === 'tasks');
+const showMessages = computed(() => activeFilter.value === 'messages');
+const showTools = computed(() => ['tools', 'errors', 'approvals'].includes(activeFilter.value));
 const toolFilter = computed<MobileToolActivityFilter>(() => activeFilter.value === 'errors' || activeFilter.value === 'approvals' ? activeFilter.value : 'all');
 const visibleToolCount = computed(() => {
   if (toolFilter.value === 'errors') return errorActivities.value.length;
