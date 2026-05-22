@@ -2,13 +2,13 @@
 
 ## Release / Publication / Deployment Scope
 
-Delivery completed latest-base reintegration, docs sync, ticket archival, and release-notes preparation for ticket `context-file-reference-paths`. User verification has been received and the user requested both finalization and a new version. Repository finalization and release are in scope for this delivery run.
+Delivery completed latest-base reintegration, docs sync, ticket archival, repository finalization, release version bump, tag publication, GitHub Release publication, release workflow monitoring, and local ticket worktree cleanup for ticket `context-file-reference-paths`. The user explicitly requested finalization and a new version.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-file-reference-paths/tickets/done/context-file-reference-paths/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/context-file-reference-paths/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: Handoff records the latest `origin/personal` reintegration, validation summary, docs sync, release notes, and release plan.
+- Notes: Handoff records the latest `origin/personal` reintegration, validation summary, docs sync, release notes, repository finalization, release workflow results, and cleanup.
 
 ## Initial Delivery Integration Refresh
 
@@ -36,7 +36,7 @@ Delivery completed latest-base reintegration, docs sync, ticket archival, and re
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-file-reference-paths/tickets/done/context-file-reference-paths/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/context-file-reference-paths/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md`
@@ -49,66 +49,83 @@ Delivery completed latest-base reintegration, docs sync, ticket archival, and re
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-file-reference-paths/tickets/done/context-file-reference-paths`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/context-file-reference-paths`
 
 ## Version / Tag / Release Commit
 
-Release requested. Planned release version is `1.3.25` unless the final pre-release tag check shows a newer version. Release notes source is `tickets/done/context-file-reference-paths/release-notes.md`.
+- Version released: `1.3.25`
+- Release commit: `b67d5428ff1afb4523941ae832175a786e325da5`
+- Release tag: `v1.3.25`
+- GitHub Release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.25`
+- Curated release notes source: `tickets/done/context-file-reference-paths/release-notes.md`
+- Curated release notes target: `.github/release-notes/release-notes.md`
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-file-reference-paths/tickets/done/context-file-reference-paths/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/context-file-reference-paths/investigation-notes.md`
 - Ticket branch: `codex/context-file-reference-paths`
-- Ticket branch commit result: Pending final archive commit
-- Ticket branch push result: Pending
+- Ticket branch commit result: `Completed — 7dd9ff9f862c3da46b892a1d5060fa105144354e`
+- Ticket branch push result: `Completed — origin/codex/context-file-reference-paths`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `Yes — origin/personal advanced from b64bfe508f1c8844a1f7e18f8a7fee4623c0e5d0 to b8c50b3eb580a8c84ff869757442c9f1f1e60d21 before finalization`
 - Delivery-owned edits protected before re-integration: `Completed — checkpoint commit b8710a0ab0e69ffe5277c9739a99d7cf234465d5`
 - Re-integration before final merge result: `Completed — merge commit 4936fab5341c922853a0434baf580e869f4feeaf`
-- Target branch update result: Pending
-- Merge into target result: Pending
-- Push target branch result: Pending
-- Repository finalization status: `Blocked`
-- Blocker (if applicable): In progress; final archive commit/push/merge not yet completed.
+- Target branch update result: `Completed — personal was current with origin/personal at b8c50b3eb580a8c84ff869757442c9f1f1e60d21 before target merge`
+- Merge into target result: `Completed — merge commit 70e942dacb57e4d6d385ab5ed2b9e363d866b2c0`
+- Push target branch result: `Completed — initial target push advanced origin/personal to 70e942dacb57e4d6d385ab5ed2b9e363d866b2c0; release helper then advanced origin/personal to b67d5428ff1afb4523941ae832175a786e325da5; this report-only cleanup record is pushed afterward as the final target HEAD`
+- Repository finalization status: `Completed`
+- Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
 - Method: `Documented Command`
-- Method reference / command: planned `pnpm release 1.3.25 -- --release-notes tickets/done/context-file-reference-paths/release-notes.md`
-- Release/publication/deployment result: `Blocked`
+- Method reference / command: `pnpm release 1.3.25 -- --release-notes tickets/done/context-file-reference-paths/release-notes.md`
+- Release/publication/deployment result: `Completed`
 - Release notes handoff result: `Used`
-- Blocker (if applicable): Release waits for repository finalization to `personal`.
+- Blocker (if applicable): N/A
+
+GitHub Actions release workflow results for `v1.3.25`:
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Desktop Release | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26273670039` | `success` |
+| Release Messaging Gateway | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26273670038` | `success` |
+| Server Docker Release | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26273670037` | `success` |
+
+GitHub Release `v1.3.25` was published as a stable release with desktop installer/update assets, messaging gateway package assets, and `release-manifest.json`.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-file-reference-paths`
-- Worktree cleanup result: `Not required` before finalization completes
-- Worktree prune result: `Not required` before finalization completes
-- Local ticket branch cleanup result: `Not required` before finalization completes
+- Worktree cleanup result: `Completed — removed /Users/normy/autobyteus_org/autobyteus-worktrees/context-file-reference-paths`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed — deleted local codex/context-file-reference-paths`
 - Remote branch cleanup result: `Not required`
-- Blocker (if applicable): Cleanup deferred until repository finalization and release are safe.
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A at this stage.
+- Why final handoff could not complete: N/A
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-file-reference-paths/tickets/done/context-file-reference-paths/release-notes.md`
-- Archived release notes artifact used for release/publication: Pending release execution.
+- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/context-file-reference-paths/release-notes.md`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/context-file-reference-paths/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-Pending release execution. No separate deployment command has been run outside the release helper.
+- `pnpm release 1.3.25 -- --release-notes tickets/done/context-file-reference-paths/release-notes.md` updated package versions, synced curated release notes, synced the managed messaging release manifest, committed the release bump, created annotated tag `v1.3.25`, pushed `personal`, and pushed the tag.
+- Tag push triggered the desktop, messaging gateway, and server Docker release workflows.
+- All three release workflows completed successfully.
 
 ## Environment Or Migration Notes
 
-- No schema migration, data migration, installer, updater, or restart path is required for the implementation.
+- No schema migration, data migration, installer, updater, or restart path is required for the implementation itself.
 - The behavior intentionally makes resolved local context-file paths model-visible in native, Codex, and Claude runtime input text. This is a security/privacy consideration for deployments that send prompts to remote model providers.
 
 ## Verification Checks
@@ -131,10 +148,18 @@ Post-latest-base reintegration checks:
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
 - `git diff --check` — passed.
 
+Release verification:
+
+- `pnpm release 1.3.25 -- --release-notes tickets/done/context-file-reference-paths/release-notes.md` — completed and pushed branch/tag.
+- `gh run view` polling confirmed Desktop Release, Release Messaging Gateway, and Server Docker Release all completed with `success`.
+- `gh release view v1.3.25` confirmed a non-draft, non-prerelease GitHub Release exists with expected release assets.
+
 ## Rollback Criteria
 
-Before target merge, reset or discard the ticket branch if final release criteria change. After target merge, rollback by reverting the final merge/commit if resolved context-file absolute paths should no longer be model-visible or if direct runtime adapters regress input handling. If release is published, follow with a corrective patch release from the reverted/fixed `personal` state.
+- If the context-file reference behavior must be rolled back after release, revert the context-file reference merge on `personal`, then publish a corrective patch release from the reverted/fixed state.
+- If only release packaging is faulty, use the documented manual recovery path for the existing tag or publish a corrective release after fixing packaging.
+- No data migration rollback is needed for this ticket.
 
 ## Final Status
 
-Finalization and release are in progress from a ticket branch based on latest `origin/personal`.
+`Repository finalization and release completed.` The ticket is archived, `personal` has the finalized implementation and release bump, tag `v1.3.25` is pushed, GitHub Release `v1.3.25` is published, release workflows succeeded, and local ticket worktree cleanup is complete.
