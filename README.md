@@ -267,6 +267,7 @@ pnpm android:server:stop
 
 - Workflow files:
   - `.github/workflows/release-desktop.yml`
+  - `.github/workflows/release-android.yml`
   - `.github/workflows/release-messaging-gateway.yml`
   - `.github/workflows/release-server-docker.yml`
 - Triggers:
@@ -275,6 +276,7 @@ pnpm android:server:stop
 - Artifacts:
   - macOS ARM64 DMG + blockmap
   - Linux x64 AppImage + blockmap
+  - signed Android APK on the same GitHub Release
   - managed messaging runtime package assets on the same GitHub Release
   - Docker Hub server image for `linux/amd64,linux/arm64`
 - Release notes:
@@ -284,10 +286,20 @@ pnpm android:server:stop
 - Version/tag sync is mandatory:
   - `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` versions must both match the release tag version (`vX.Y.Z`).
   - The release helper synchronizes both package versions and the bundled managed messaging manifest before tagging.
-  - The desktop and messaging-gateway release workflows enforce those checks and fail on mismatch.
+  - The desktop, Android, and messaging-gateway release workflows enforce those checks and fail on mismatch.
+- Android APK release:
+  - public Android publishing uses `.github/workflows/release-android.yml`
+  - release tags and publish-enabled manual runs require signing secrets and build `AutoByteus_personal_android-X.Y.Z-release.apk`
+  - manual workflow-dispatch build-only runs can upload a private `android-apk` workflow artifact without publishing a GitHub Release
+  - debug APKs are allowed only as manual build-only workflow artifacts and must not be uploaded to GitHub Releases
 - Server Docker tags:
   - stable release tags publish `autobyteus/autobyteus-server:X.Y.Z` and `autobyteus/autobyteus-server:latest`
   - prerelease tags such as `v1.2.7-rc1` publish only `autobyteus/autobyteus-server:1.2.7-rc1`
+- Required GitHub repository secrets for Android APK publish:
+  - `ANDROID_KEYSTORE_B64`
+  - `ANDROID_KEYSTORE_PASSWORD`
+  - `ANDROID_KEY_ALIAS`
+  - `ANDROID_KEY_PASSWORD`
 - Required GitHub repository secrets for Docker Hub publish:
   - `DOCKERHUB_USERNAME`
   - `DOCKERHUB_TOKEN`
@@ -305,7 +317,7 @@ Use the release helper script from repo root:
 # 1) Write short functional release notes in the ticket, for example:
 #    tickets/done/<ticket-name>/release-notes.md
 # 2) Prepare the release (bump desktop + gateway package versions, sync curated notes and managed messaging manifest, commit, create tag, push branch+tag)
-#    This starts the desktop, messaging-gateway, and server Docker release workflows because the pushed tag matches v*.
+#    This starts the desktop, Android APK, messaging-gateway, and server Docker release workflows because the pushed tag matches v*.
 pnpm release 1.2.7 -- --release-notes tickets/done/<ticket-name>/release-notes.md
 
 # Optional manual build-only validation (no GitHub release publish)
@@ -319,7 +331,7 @@ pnpm release:manual-dispatch v1.2.7 --ref personal
 Important:
 
 - Do not run `release:manual-dispatch` immediately after a fresh `release` for the same version.
-- `release` already pushes `vX.Y.Z`, and the tag push starts `.github/workflows/release-desktop.yml`, `.github/workflows/release-messaging-gateway.yml`, and `.github/workflows/release-server-docker.yml`.
+- `release` already pushes `vX.Y.Z`, and the tag push starts `.github/workflows/release-desktop.yml`, `.github/workflows/release-android.yml`, `.github/workflows/release-messaging-gateway.yml`, and `.github/workflows/release-server-docker.yml`.
 - `release:manual-dispatch` is the manual recovery / re-publish path for an existing tag, not the normal second step of a new release.
 - Curated release notes should stay user-facing and functional only; use `.github/release-notes/template.md` as the repo-level format reference.
 

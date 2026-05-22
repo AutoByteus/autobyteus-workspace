@@ -1,0 +1,441 @@
+name: Android APK Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      publish_release:
+        description: "Publish signed APK to GitHub Releases"
+        required: false
+        default: false
+        type: boolean
+      release_tag:
+        description: "Release tag to publish/update when publish_release is enabled (example: v1.2.7 or v1.2.7-rc1)"
+        required: false
+        type: string
+      release_ref:
+        description: "Git ref to build from during manual dispatch (branch, tag, or SHA). Defaults to release_tag when omitted."
+        required: false
+        type: string
+      prerelease:
+        description: "Mark manual-dispatch release as prerelease"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-apk-release-${{ github.event.inputs.release_tag || github.ref_name || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  prepare-release:
+    name: Resolve Android Release Metadata
+    runs-on: ubuntu-latest
+    outputs:
+      release_tag: ${{ steps.meta.outputs.release_tag }}
+      release_ref: ${{ steps.meta.outputs.release_ref }}
+      version_name: ${{ steps.meta.outputs.version_name }}
+      version_code: ${{ steps.meta.outputs.version_code }}
+      prerelease: ${{ steps.meta.outputs.prerelease }}
+      publish_release: ${{ steps.meta.outputs.publish_release }}
+      enforce_version: ${{ steps.meta.outputs.enforce_version }}
+      release_sha: ${{ steps.sha.outputs.release_sha }}
+    steps:
+      - name: Resolve release metadata
+        id: meta
+        env:
+          INPUT_PUBLISH_RELEASE: ${{ github.event.inputs.publish_release || 'false' }}
+          INPUT_RELEASE_TAG: ${{ github.event.inputs.release_tag || '' }}
+          INPUT_RELEASE_REF: ${{ github.event.inputs.release_ref || '' }}
+          INPUT_PRERELEASE: ${{ github.event.inputs.prerelease || 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          validate_release_tag() {
+            local tag="$1"
+            if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z][0-9A-Za-z.-]*)?$ ]]; then
+              echo "::error::Invalid release_tag '$tag'. Expected a semantic tag like v1.2.7 or v1.2.7-rc1."
+              exit 1
+            fi
+          }
+
+          calculate_android_version_code() {
+            local version="$1"
+            if [[ ! "$version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)(-([0-9A-Za-z][0-9A-Za-z.-]*))?$ ]]; then
+              echo "::error::Invalid Android version '$version'. Expected X.Y.Z or X.Y.Z-prerelease." >&2
+              exit 1
+            fi
+
+            local major="${BASH_REMATCH[1]}"
+            local minor="${BASH_REMATCH[2]}"
+            local patch="${BASH_REMATCH[3]}"
+            local prerelease_label="${BASH_REMATCH[5]:-}"
+
+            if (( 10#$major > 209 )); then
+              echo "::error::Android versionCode formula supports major <= 209; received major=$major." >&2
+              exit 1
+            fi
+            if (( 10#$minor > 999 )); then
+              echo "::error::Android versionCode formula supports minor <= 999 to avoid collisions; received minor=$minor." >&2
+              exit 1
+            fi
+            if (( 10#$patch > 99 )); then
+              echo "::error::Android versionCode formula supports patch <= 99 to avoid collisions; received patch=$patch." >&2
+              exit 1
+            fi
+
+            local base=$(( 10#$major * 10000000 + 10#$minor * 10000 + 10#$patch * 100 ))
+            local suffix=99
+
+            if [[ -n "$prerelease_label" ]]; then
+              local prerelease_number
+              prerelease_number="$(grep -Eo '[0-9]+' <<< "$prerelease_label" | tail -n1 || true)"
+              if [[ -z "$prerelease_number" ]]; then
+                echo "::error::Prerelease '$prerelease_label' must include a numeric sequence from 1 to 98 for Android versionCode." >&2
+                exit 1
+              fi
+              if (( 10#$prerelease_number < 1 || 10#$prerelease_number > 98 )); then
+                echo "::error::Prerelease number '$prerelease_number' must be in 1..98 to avoid duplicate/colliding Android versionCodes." >&2
+                exit 1
+              fi
+              suffix=$(( 10#$prerelease_number ))
+            fi
+
+            local version_code=$(( base + suffix ))
+            if (( version_code < 1 || version_code > 2100000000 )); then
+              echo "::error::Computed Android versionCode $version_code is outside 1..2100000000." >&2
+              exit 1
+            fi
+            echo "$version_code"
+          }
+
+          validate_run_number_version_code() {
+            local run_number="$1"
+            if [[ ! "$run_number" =~ ^[0-9]+$ ]] || (( 10#$run_number < 1 || 10#$run_number > 2100000000 )); then
+              echo "::error::GitHub run number '$run_number' cannot be used as an Android versionCode." >&2
+              exit 1
+            fi
+            echo "$(( 10#$run_number ))"
+          }
+
+          RELEASE_TAG=""
+          RELEASE_REF=""
+          VERSION_NAME=""
+          VERSION_CODE=""
+          PUBLISH_RELEASE="false"
+          PRERELEASE="false"
+          ENFORCE_VERSION="false"
+
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            RELEASE_TAG="${GITHUB_REF_NAME}"
+            validate_release_tag "$RELEASE_TAG"
+            RELEASE_REF="$RELEASE_TAG"
+            VERSION_NAME="${RELEASE_TAG#v}"
+            VERSION_CODE="$(calculate_android_version_code "$VERSION_NAME")"
+            PUBLISH_RELEASE="true"
+            ENFORCE_VERSION="true"
+            if [[ "$VERSION_NAME" == *-* ]]; then
+              PRERELEASE="true"
+            fi
+          else
+            PUBLISH_RELEASE="${INPUT_PUBLISH_RELEASE}"
+            RELEASE_TAG="${INPUT_RELEASE_TAG}"
+
+            if [[ "$PUBLISH_RELEASE" == "true" && -z "$RELEASE_TAG" ]]; then
+              echo "::error::release_tag is required when publish_release is true."
+              exit 1
+            fi
+
+            if [[ -n "$RELEASE_TAG" ]]; then
+              validate_release_tag "$RELEASE_TAG"
+              VERSION_NAME="${RELEASE_TAG#v}"
+              VERSION_CODE="$(calculate_android_version_code "$VERSION_NAME")"
+              RELEASE_REF="${INPUT_RELEASE_REF:-$RELEASE_TAG}"
+              ENFORCE_VERSION="true"
+              if [[ "$VERSION_NAME" == *-* || "$INPUT_PRERELEASE" == "true" ]]; then
+                PRERELEASE="true"
+              fi
+            else
+              VERSION_NAME="0.1.0-ci.${GITHUB_RUN_NUMBER}"
+              VERSION_CODE="$(validate_run_number_version_code "${GITHUB_RUN_NUMBER}")"
+              RELEASE_REF="${INPUT_RELEASE_REF:-$GITHUB_REF_NAME}"
+              PRERELEASE="true"
+            fi
+          fi
+
+          {
+            echo "release_tag=$RELEASE_TAG"
+            echo "release_ref=$RELEASE_REF"
+            echo "version_name=$VERSION_NAME"
+            echo "version_code=$VERSION_CODE"
+            echo "prerelease=$PRERELEASE"
+            echo "publish_release=$PUBLISH_RELEASE"
+            echo "enforce_version=$ENFORCE_VERSION"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Checkout release ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.meta.outputs.release_ref }}
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Validate workspace package versions match release tag
+        if: ${{ steps.meta.outputs.enforce_version == 'true' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG_VERSION="${{ steps.meta.outputs.version_name }}"
+          DESKTOP_VERSION="$(grep -m1 '"version"' autobyteus-web/package.json | sed -E 's/.*\"version\": \"([^\"]+)\".*/\1/')"
+          GATEWAY_VERSION="$(grep -m1 '"version"' autobyteus-message-gateway/package.json | sed -E 's/.*\"version\": \"([^\"]+)\".*/\1/')"
+          echo "Release tag version: $TAG_VERSION"
+          echo "Desktop package version: $DESKTOP_VERSION"
+          echo "Gateway package version: $GATEWAY_VERSION"
+          if [[ "$DESKTOP_VERSION" != "$TAG_VERSION" ]]; then
+            echo "::error::autobyteus-web/package.json version ($DESKTOP_VERSION) must match release tag ($TAG_VERSION)."
+            exit 1
+          fi
+          if [[ "$GATEWAY_VERSION" != "$TAG_VERSION" ]]; then
+            echo "::error::autobyteus-message-gateway/package.json version ($GATEWAY_VERSION) must match release tag ($TAG_VERSION)."
+            exit 1
+          fi
+
+      - name: Validate bundled managed messaging manifest matches release tag
+        if: ${{ steps.meta.outputs.enforce_version == 'true' }}
+        shell: bash
+        run: |
+          node autobyteus-message-gateway/scripts/build-runtime-package.mjs \
+            --check-release-manifest \
+            --release-tag "${{ steps.meta.outputs.release_tag }}"
+
+      - name: Resolve release commit SHA
+        id: sha
+        shell: bash
+        run: |
+          set -euo pipefail
+          RELEASE_SHA="$(git rev-list -n 1 "${{ steps.meta.outputs.release_ref }}")"
+          echo "release_sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Summarize Android release plan
+        shell: bash
+        run: |
+          {
+            echo "### Android APK release plan"
+            echo ""
+            echo "Release ref: \`${{ steps.meta.outputs.release_ref }}\`"
+            echo "Release tag: \`${{ steps.meta.outputs.release_tag || 'not publishing' }}\`"
+            echo "Version name: \`${{ steps.meta.outputs.version_name }}\`"
+            echo "Version code: \`${{ steps.meta.outputs.version_code }}\`"
+            echo "Publish release: \`${{ steps.meta.outputs.publish_release }}\`"
+            echo "Prerelease: \`${{ steps.meta.outputs.prerelease }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  build-android:
+    name: Build Android APK
+    needs: prepare-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-release.outputs.release_ref }}
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK platform
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Build APK
+        id: build
+        working-directory: autobyteus-android
+        env:
+          PUBLISH_RELEASE: ${{ needs.prepare-release.outputs.publish_release }}
+          ANDROID_VERSION_NAME: ${{ needs.prepare-release.outputs.version_name }}
+          ANDROID_VERSION_CODE: ${{ needs.prepare-release.outputs.version_code }}
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./gradlew
+
+          signing_value_count=0
+          for value in "${ANDROID_KEYSTORE_B64:-}" "${ANDROID_KEYSTORE_PASSWORD:-}" "${ANDROID_KEY_ALIAS:-}" "${ANDROID_KEY_PASSWORD:-}"; do
+            if [[ -n "$value" ]]; then
+              signing_value_count=$((signing_value_count + 1))
+            fi
+          done
+
+          if (( signing_value_count > 0 && signing_value_count < 4 )); then
+            echo "::error::Incomplete Android signing secrets. Configure ANDROID_KEYSTORE_B64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, and ANDROID_KEY_PASSWORD together."
+            exit 1
+          fi
+
+          signing_complete="false"
+          if (( signing_value_count == 4 )); then
+            signing_complete="true"
+          fi
+
+          if [[ "$PUBLISH_RELEASE" == "true" && "$signing_complete" != "true" ]]; then
+            echo "::error::Signed release APK publishing requires ANDROID_KEYSTORE_B64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, and ANDROID_KEY_PASSWORD. Debug APKs are not published to GitHub Releases."
+            exit 1
+          fi
+
+          apk_channel="debug"
+          apk_path="app/build/outputs/apk/debug/app-debug.apk"
+          gradle_task=":app:assembleDebug"
+
+          if [[ "$signing_complete" == "true" ]]; then
+            keystore_path="${RUNNER_TEMP}/android-release-keystore.jks"
+            printf '%s' "$ANDROID_KEYSTORE_B64" | base64 --decode > "$keystore_path"
+            chmod 600 "$keystore_path"
+            export ANDROID_KEYSTORE_PATH="$keystore_path"
+            apk_channel="release"
+            apk_path="app/build/outputs/apk/release/app-release.apk"
+            gradle_task=":app:assembleRelease"
+          fi
+
+          ./gradlew --no-daemon clean "$gradle_task"
+
+          if [[ ! -f "$apk_path" ]]; then
+            echo "::error::APK not found at $apk_path."
+            exit 1
+          fi
+
+          artifact_dir="${RUNNER_TEMP}/android-apk"
+          mkdir -p "$artifact_dir"
+          apk_name="AutoByteus_personal_android-${ANDROID_VERSION_NAME}-${apk_channel}.apk"
+          cp "$apk_path" "$artifact_dir/$apk_name"
+          (cd "$artifact_dir" && sha256sum "$apk_name" > "$apk_name.sha256")
+
+          {
+            echo "apk_name=$apk_name"
+            echo "apk_channel=$apk_channel"
+            echo "artifact_dir=$artifact_dir"
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "### Android APK built"
+            echo ""
+            echo "APK: \`$apk_name\`"
+            echo "Channel: \`$apk_channel\`"
+            echo "Version name: \`$ANDROID_VERSION_NAME\`"
+            echo "Version code: \`$ANDROID_VERSION_CODE\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Android APK workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: |
+            ${{ steps.build.outputs.artifact_dir }}/*.apk
+            ${{ steps.build.outputs.artifact_dir }}/*.apk.sha256
+          if-no-files-found: error
+
+  publish-release:
+    name: Publish Android APK To GitHub Release
+    if: ${{ needs.prepare-release.outputs.publish_release == 'true' }}
+    needs:
+      - prepare-release
+      - build-android
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-release.outputs.release_ref }}
+          fetch-depth: 0
+
+      - name: Download Android APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: android-apk
+          path: release-artifacts
+
+      - name: Validate publishable APK artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_apk_count="$(find release-artifacts -type f -name '*-release.apk' | wc -l | tr -d ' ')"
+          debug_apk_count="$(find release-artifacts -type f -name '*-debug.apk' | wc -l | tr -d ' ')"
+          if [[ "$release_apk_count" != "1" ]]; then
+            echo "::error::Expected exactly one signed release APK artifact, found $release_apk_count."
+            find release-artifacts -maxdepth 2 -type f -print
+            exit 1
+          fi
+          if [[ "$debug_apk_count" != "0" ]]; then
+            echo "::error::Debug APK artifact found in publish-enabled run; debug APKs must not be uploaded to GitHub Releases."
+            find release-artifacts -maxdepth 2 -type f -print
+            exit 1
+          fi
+
+      - name: Resolve release notes mode
+        id: release_notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          CURATED_PATH=".github/release-notes/release-notes.md"
+          if [[ -f "$CURATED_PATH" ]] && grep -Eq '\S' "$CURATED_PATH"; then
+            echo "has_curated_notes=true" >> "$GITHUB_OUTPUT"
+            echo "release_notes_path=$CURATED_PATH" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Release notes mode"
+              echo ""
+              echo "Using curated release notes from \`$CURATED_PATH\`."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "has_curated_notes=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Release notes mode"
+              echo ""
+              echo "Curated release notes file missing in the tagged revision; falling back to generated GitHub notes."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Publish Android APK asset with curated notes
+        if: ${{ steps.release_notes.outputs.has_curated_notes == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.prepare-release.outputs.release_tag }}
+          target_commitish: ${{ needs.prepare-release.outputs.release_sha }}
+          draft: false
+          prerelease: ${{ needs.prepare-release.outputs.prerelease }}
+          body_path: ${{ steps.release_notes.outputs.release_notes_path }}
+          files: |
+            release-artifacts/*.apk
+            release-artifacts/*.apk.sha256
+
+      - name: Publish Android APK asset with generated notes fallback
+        if: ${{ steps.release_notes.outputs.has_curated_notes != 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.prepare-release.outputs.release_tag }}
+          target_commitish: ${{ needs.prepare-release.outputs.release_sha }}
+          draft: false
+          prerelease: ${{ needs.prepare-release.outputs.prerelease }}
+          generate_release_notes: true
+          files: |
+            release-artifacts/*.apk
+            release-artifacts/*.apk.sha256
