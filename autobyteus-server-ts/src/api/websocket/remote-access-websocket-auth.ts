@@ -25,6 +25,7 @@ const closeCodeByFailure: Record<RemoteAccessAuthFailureCode, number> = {
   REMOTE_ACCESS_PAIRING_EXPIRED: 4401,
   REMOTE_ACCESS_PAIRING_INVALID: 4401,
   REMOTE_ACCESS_PAIRING_CONSUMED: 4401,
+  REMOTE_ACCESS_HTTPS_REQUIRED: 4403,
 };
 
 const parseRequestUrl = (request: FastifyRequest): URL =>

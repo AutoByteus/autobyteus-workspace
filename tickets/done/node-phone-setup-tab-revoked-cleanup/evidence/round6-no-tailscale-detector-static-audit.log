@@ -1,0 +1,91 @@
+# Round 6 no local Tailscale execution/detector static audit
+2026-05-22T19:19:25.757758+02:00
+Scope: git tracked/untracked non-ignored remote-access, Phone Access, Phone Setup, docs, and tests; generated build artifacts and ticket evidence are excluded.
+
+## Forbidden implementation/source tokens
+### TailscaleServeUrlDetector
+No source/docs shipped-behavior matches.
+### tailscale_serve_https
+No source/docs shipped-behavior matches.
+### status --json
+No source/docs shipped-behavior matches.
+### InstallTailscaleCLI.scpt
+No source/docs shipped-behavior matches.
+### /usr/local/bin/tailscale
+No source/docs shipped-behavior matches.
+
+## Process execution / local Tailscale inspection tokens in targeted source
+No process execution, status --json, detector, or fabricated Serve HTTPS candidate tokens in targeted source.
+
+## Relevant candidate implementation lines
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:4: import type { RemoteAccessUrlCandidate, RemoteAccessUrlCandidateKind } from "../domain/models.js";
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:16: const isLanIp = (address: string): boolean =>
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:26: const uniqueCandidates = (candidates: RemoteAccessUrlCandidate[]): RemoteAccessUrlCandidate[] => {
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:28: const result: RemoteAccessUrlCandidate[] = [];
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:29: for (const candidate of candidates) {
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:30: const key = candidate.serverBaseUrl.toLowerCase();
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:35: result.push(candidate);
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:40: export class AddressCandidateService {
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:41: listCandidates(input?: { manualServerBaseUrl?: string | null }): RemoteAccessUrlCandidate[] {
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:44: const port = configuredUrl.port || (configuredUrl.protocol === "https:" ? "443" : "80");
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:46: const candidates: RemoteAccessUrlCandidate[] = [
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:48: id: "loopback",
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:49: kind: "loopback",
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:61: const kind: RemoteAccessUrlCandidateKind = isTailnetLikeIp(addressInfo.address)
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:62: ? "tailnet_like"
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:63: : isLanIp(addressInfo.address)
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:64: ? "lan"
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:65: : "lan";
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:66: candidates.push({
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:69: label: kind === "tailnet_like" ? `Tailnet-like address (${interfaceName})` : `Private/LAN address (${interfaceName})`,
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:76: if (input?.manualServerBaseUrl?.trim()) {
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:77: candidates.push({
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:78: id: "manual",
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:79: kind: "manual",
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:80: label: "Manual URL",
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:81: serverBaseUrl: normalizeNodeBaseUrl(input.manualServerBaseUrl),
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:82: source: "manual",
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:86: return uniqueCandidates(candidates);
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:90: let singleton: AddressCandidateService | null = null;
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:92: export const getAddressCandidateService = (): AddressCandidateService => {
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:93: singleton ??= new AddressCandidateService();
+autobyteus-server-ts/src/remote-access/services/address-candidate-service.ts:97: export const resetAddressCandidateServiceForTests = (): void => {
+autobyteus-web/stores/phoneAccessStore.ts:8: RemoteAccessUrlCandidate,
+autobyteus-web/stores/phoneAccessStore.ts:19: const candidates = ref<RemoteAccessUrlCandidate[]>([]);
+autobyteus-web/stores/phoneAccessStore.ts:23: const selectedServerBaseUrl = ref('');
+autobyteus-web/stores/phoneAccessStore.ts:24: const manualServerBaseUrl = ref('');
+autobyteus-web/stores/phoneAccessStore.ts:31: const raw = selectedServerBaseUrl.value.trim();
+autobyteus-web/stores/phoneAccessStore.ts:36: isHttps: false,
+autobyteus-web/stores/phoneAccessStore.ts:42: const isHttps = new URL(normalizedBaseUrl).protocol === 'https:';
+autobyteus-web/stores/phoneAccessStore.ts:46: isHttps,
+autobyteus-web/stores/phoneAccessStore.ts:47: message: isHttps
+autobyteus-web/stores/phoneAccessStore.ts:49: : 'Phone Access pairing requires an HTTPS URL. Paste a Tailscale Serve URL such as https://<machine>.<tailnet>.ts.net/mobile.',
+autobyteus-web/stores/phoneAccessStore.ts:55: isHttps: false,
+autobyteus-web/stores/phoneAccessStore.ts:61: function normalizeHttpsCandidate(candidate: RemoteAccessUrlCandidate): string | null {
+autobyteus-web/stores/phoneAccessStore.ts:63: const normalizedBaseUrl = normalizeNodeBaseUrl(candidate.serverBaseUrl);
+autobyteus-web/stores/phoneAccessStore.ts:64: return new URL(normalizedBaseUrl).protocol === 'https:' ? normalizedBaseUrl : null;
+autobyteus-web/stores/phoneAccessStore.ts:70: function selectDefaultCandidate(): void {
+autobyteus-web/stores/phoneAccessStore.ts:71: if (selectedServerBaseUrl.value) {
+autobyteus-web/stores/phoneAccessStore.ts:74: const httpsCandidates = candidates.value
+autobyteus-web/stores/phoneAccessStore.ts:75: .map((candidate) => ({ candidate, normalizedBaseUrl: normalizeHttpsCandidate(candidate) }))
+autobyteus-web/stores/phoneAccessStore.ts:76: .filter((entry): entry is { candidate: RemoteAccessUrlCandidate; normalizedBaseUrl: string } => Boolean(entry.normalizedBaseUrl));
+autobyteus-web/stores/phoneAccessStore.ts:77: const preferred = httpsCandidates.find((entry) => entry.candidate.kind !== 'loopback') || httpsCandidates[0];
+autobyteus-web/stores/phoneAccessStore.ts:78: selectedServerBaseUrl.value = preferred?.normalizedBaseUrl || '';
+autobyteus-web/stores/phoneAccessStore.ts:85: const [settingsResponse, candidatesResponse, activeDevicesResponse, revokedDevicesResponse] = await Promise.all([
+autobyteus-web/stores/phoneAccessStore.ts:87: apiService.get<{ candidates: RemoteAccessUrlCandidate[] }>('/remote-access/address-candidates'),
+autobyteus-web/stores/phoneAccessStore.ts:92: candidates.value = candidatesResponse.data.candidates;
+autobyteus-web/stores/phoneAccessStore.ts:95: selectDefaultCandidate();
+autobyteus-web/stores/phoneAccessStore.ts:114: async function refreshCandidates(): Promise<void> {
+autobyteus-web/stores/phoneAccessStore.ts:116: if (manualServerBaseUrl.value.trim()) {
+autobyteus-web/stores/phoneAccessStore.ts:117: params.manualServerBaseUrl = manualServerBaseUrl.value.trim();
+autobyteus-web/stores/phoneAccessStore.ts:119: const response = await apiService.get<{ candidates: RemoteAccessUrlCandidate[] }>('/remote-access/address-candidates', { params });
+autobyteus-web/stores/phoneAccessStore.ts:120: candidates.value = response.data.candidates;
+autobyteus-web/stores/phoneAccessStore.ts:121: if (manualServerBaseUrl.value.trim()) {
+autobyteus-web/stores/phoneAccessStore.ts:122: selectedServerBaseUrl.value = normalizeNodeBaseUrl(manualServerBaseUrl.value);
+autobyteus-web/stores/phoneAccessStore.ts:124: selectDefaultCandidate();
+autobyteus-web/stores/phoneAccessStore.ts:135: if (!selectedServerBaseUrl.value.trim()) {
+autobyteus-web/stores/phoneAccessStore.ts:141: if (!validation.isValid || !validation.isHttps) {
+autobyteus-web/stores/phoneAccessStore.ts:178: candidates,
+autobyteus-web/stores/phoneAccessStore.ts:182: selectedServerBaseUrl,
+autobyteus-web/stores/phoneAccessStore.ts:183: manualServerBaseUrl,
+autobyteus-web/stores/phoneAccessStore.ts:191: refreshCandidates,

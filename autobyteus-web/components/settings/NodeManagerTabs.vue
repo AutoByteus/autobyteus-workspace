@@ -40,6 +40,7 @@ const { t } = useLocalization();
 
 const nodeManagerTabs = [
   { id: 'manage', labelKey: 'settings.components.settings.NodeManager.tabs.manageNodes' },
+  { id: 'phoneSetup', labelKey: 'settings.components.settings.NodeManager.tabs.phoneSetup' },
   { id: 'dockerGuide', labelKey: 'settings.components.settings.NodeManager.tabs.dockerGuide' },
 ];
 </script>

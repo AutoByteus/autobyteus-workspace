@@ -19,7 +19,7 @@ Use the same URL at pairing time that the Android phone will use while traveling
 https://<desktop-machine>.<tailnet>.ts.net/mobile
 ```
 
-That is usually provided by Tailscale Serve HTTPS. Direct MagicDNS/tailnet-IP HTTP URLs can be used for private development or LAN/tailnet fallback only after explicit HTTP acknowledgement in the app.
+That is usually provided by Tailscale Serve HTTPS. New desktop-created Phone Access pairing QR codes require an `https://` URL; direct MagicDNS/tailnet-IP HTTP URLs are not accepted for new desktop pairing-session creation.
 
 Why this matters: the MVP credential remains in WebView-local `localStorage`, which is origin-scoped. Pairing with a LAN URL and later opening a different Tailscale origin can require re-pairing.
 
@@ -27,10 +27,18 @@ Why this matters: the MVP credential remains in WebView-local `localStorage`, wh
 
 1. Start the AutoByteus desktop/server node.
 2. Ensure the desktop is signed into Tailscale and reachable by the stable URL.
-3. Open **Settings -> Nodes -> Phone Access**.
-4. Enable Phone Access.
-5. Enter or select the stable Tailscale URL.
-6. Create the QR/link.
+3. Open **Settings -> Nodes -> Phone Setup**.
+4. On macOS with Tailscale.app installed, use the app-direct Serve commands from the Phone Setup guide. AutoByteus only shows copyable commands; it does not run Tailscale or inspect local Tailscale state:
+
+   ```bash
+   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695
+   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve status
+   ```
+
+5. Copy the HTTPS MagicDNS URL from `serve status` and use the `/mobile` shell shape, for example `https://<desktop-machine>.<tailnet>.ts.net/mobile`. Prefer the full MagicDNS hostname/FQDN shown by Tailscale; IPv4/IPv6 and HTTP interface candidates such as `http://100.x.y.z:29695` are diagnostics only.
+6. Enable Phone Access.
+7. Paste the stable HTTPS Tailscale `/mobile` URL. AutoByteus stores the canonical server base without `/mobile` and derives REST/GraphQL/WebSocket URLs from that base.
+8. Create the QR/link.
 
 ## Android setup
 

@@ -1,0 +1,2 @@
+41a4da788dd8df84c8210bac6b01057f4ed5450b8b6ddbe1ed7c30e5fb39c237  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.dmg
+324e57968922da05405c0659cd1ffb2bb100d00524875a21d47521aa5de098f9  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.26.zip

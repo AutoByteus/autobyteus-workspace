@@ -1,0 +1,23 @@
+# Round 4 non-mutating macOS Tailscale.app executable probe
+Fri May 22 18:20:00 CEST 2026
+## direct app executable path
+-rwxr-xr-x  1 root  wheel  9726288 May 22 16:54 /Applications/Tailscale.app/Contents/MacOS/Tailscale
+## optional bundled installer script path (not executed)
+-rw-r--r--  1 root  wheel  2992 Mar 27 19:37 /Applications/Tailscale.app/Contents/Resources/InstallTailscaleCLI.scpt
+## direct executable version
+1.98.2
+  tailscale commit: aaf7caef13becf6989e9e81f66412f3edc564c38
+  long version: 1.98.2-taaf7caef1-gc4a37aed9
+  other commit: c4a37aed97b8b6dcc3fb32d87281c069fd2359d7
+  go version: go1.26.3 (tailscale/go e877d97384)
+## direct executable status --json summary
+BackendState= Running
+Self.DNSName= normys-macbook-pro.tail0347f8.ts.net.
+Self.TailscaleIPs= 100.127.30.107,fd7a:115c:a1e0::4336:1e6b
+PeerCount= 1
+## direct executable serve status (read-only)
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:29695
+
+## skipped mutating commands
+Did not run serve --bg 29695 or serve reset; those mutate Tailscale Serve configuration.
