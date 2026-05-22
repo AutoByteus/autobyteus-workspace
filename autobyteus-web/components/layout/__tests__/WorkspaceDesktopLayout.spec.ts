@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import WorkspaceDesktopLayout from '../WorkspaceDesktopLayout.vue';
+import { useRightPanel } from '~/composables/useRightPanel';
 
 vi.mock('../RightSideTabs.vue', () => ({
   default: { template: '<div class="right-tabs-stub"></div>' },
@@ -23,6 +24,13 @@ const TeamWorkspaceViewValue = { template: '<div class="team-view"></div>' };
 const RunConfigPanelValue = { template: '<div class="run-config-view"></div>' };
 
 describe('WorkspaceDesktopLayout', () => {
+  beforeEach(() => {
+    const { isRightPanelVisible, toggleRightPanel } = useRightPanel();
+    if (!isRightPanelVisible.value) {
+      toggleRightPanel();
+    }
+  });
+
   const mountComponent = (initialState = {}) => {
     return shallowMount(WorkspaceDesktopLayout, {
       global: {
@@ -147,5 +155,21 @@ describe('WorkspaceDesktopLayout', () => {
 
     expect(wrapper.find('.team-view').exists()).toBe(true);
     expect(wrapper.find('workspace-center-loading-overlay-stub').exists()).toBe(true);
+  });
+
+  it('unmounts RightSideTabs when the right panel is collapsed', () => {
+    const { isRightPanelVisible, toggleRightPanel } = useRightPanel();
+    if (isRightPanelVisible.value) {
+      toggleRightPanel();
+    }
+
+    const wrapper = mountComponent({
+      agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    expect(wrapper.find('[data-test="workspace-right-panel"]').exists()).toBe(false);
+    expect(wrapper.find('.right-tabs-stub').exists()).toBe(false);
+    expect(wrapper.find('.right-strip-stub').exists()).toBe(true);
   });
 });

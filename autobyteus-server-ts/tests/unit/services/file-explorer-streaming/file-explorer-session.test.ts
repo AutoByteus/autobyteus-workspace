@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { FileExplorerSession } from "../../../../src/services/file-explorer-streaming/file-explorer-session.js";
 
 const createEventStream = (events: string[], delayMs = 0) => {
@@ -35,7 +35,7 @@ describe("FileExplorerSession", () => {
     for await (const event of session.events()) {
       received.push(event);
       if (received.length >= 2) {
-        session.close();
+        await session.close();
         break;
       }
     }
@@ -61,7 +61,7 @@ describe("FileExplorerSession", () => {
       for await (const event of session.events()) {
         received.push(event);
         if (received.length >= 3) {
-          session.close();
+          await session.close();
           break;
         }
       }
@@ -81,6 +81,20 @@ describe("FileExplorerSession", () => {
     await session.start();
     await session.start();
 
-    session.close();
+    await session.close();
+  });
+
+  it("releases its watcher lease once when closed", async () => {
+    const lease = {
+      reason: "test",
+      release: vi.fn().mockResolvedValue(undefined),
+    };
+    const session = new FileExplorerSession("sess-4", "ws-4", createEventStream([]), lease);
+
+    await session.start();
+    await session.close();
+    await session.close();
+
+    expect(lease.release).toHaveBeenCalledTimes(1);
   });
 });

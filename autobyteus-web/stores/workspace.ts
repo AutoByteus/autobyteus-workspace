@@ -18,6 +18,7 @@ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useFileExplorerStore } from '~/stores/fileExplorer'
 import { FileExplorerStreamingService } from '~/services/fileExplorerStreaming/FileExplorerStreamingService'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { getOpenFolderPathsForRefresh, replaceFolderChildren } from '~/utils/fileExplorer/openFolderRefresh'
 
 export interface WorkspaceInfo {
   workspaceId: string;
@@ -35,6 +36,8 @@ interface WorkspaceState {
   error: any;
   workspacesFetched: boolean;
   fileSystemConnections: Map<string, FileExplorerStreamingService>;
+  fileExplorerLiveConsumers: Map<string, Set<string>>;
+  fileExplorerSnapshotRefreshes: Map<string, Promise<void>>;
 }
 
 const normalizeRootPath = (value: string | null | undefined): string => {
@@ -56,6 +59,8 @@ export const useWorkspaceStore = defineStore('workspace', {
     error: null,
     workspacesFetched: false,
     fileSystemConnections: new Map(),
+    fileExplorerLiveConsumers: new Map(),
+    fileExplorerSnapshotRefreshes: new Map(),
   }),
   actions: {    
     removeWorkspaceEntriesByRootPath(rootPath: string | null | undefined) {
@@ -74,7 +79,7 @@ export const useWorkspaceStore = defineStore('workspace', {
         if (normalizedWorkspaceRoot !== normalizedTarget) {
           continue;
         }
-        this.disconnectFromFileSystemChanges(workspaceId);
+        this.clearFileExplorerLiveSessionForWorkspace(workspaceId);
         delete this.workspaces[workspaceId];
       }
     },
@@ -94,7 +99,7 @@ export const useWorkspaceStore = defineStore('workspace', {
         });
 
         if (errors && errors.length > 0) {
-          throw new Error(errors.map(e => e.message).join(', '));
+          throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
         }
 
         if (data?.createWorkspace) {
@@ -113,9 +118,6 @@ export const useWorkspaceStore = defineStore('workspace', {
             absolutePath: newWorkspace.absolutePath ?? null,
           };
           
-          // Connect to WebSocket for file system changes
-          this.connectToFileSystemChanges(newWorkspace.workspaceId);
-
           return newWorkspace.workspaceId;
         } else {
           throw new Error('Failed to create workspace: No data returned.');
@@ -145,9 +147,7 @@ export const useWorkspaceStore = defineStore('workspace', {
         }
 
         if (force) {
-          for (const workspaceId of Array.from(this.fileSystemConnections.keys())) {
-            this.disconnectFromFileSystemChanges(workspaceId);
-          }
+          this.disconnectAllFileExplorerLiveStreams();
           this.workspaces = {};
           this.workspacesFetched = false;
         }
@@ -178,11 +178,11 @@ export const useWorkspaceStore = defineStore('workspace', {
         }
 
         if (errors && errors.length > 0) {
-          throw new Error(errors.map(e => e.message).join(', '));
+          throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
         }
 
         if (data?.workspaces) {
-          data.workspaces.forEach(ws => {
+          data.workspaces.forEach((ws: any) => {
             const treeNode = convertJsonToTreeNode(ws.fileExplorer);
             const nodeIdToNode = createNodeIdToNodeDictionary(treeNode);
             this.workspaces[ws.workspaceId] = {
@@ -194,8 +194,6 @@ export const useWorkspaceStore = defineStore('workspace', {
               absolutePath: ws.absolutePath ?? null,
               isTemp: (ws as any).isTemp ?? false,
             };
-            // Connect to WebSocket for file system changes
-            this.connectToFileSystemChanges(ws.workspaceId);
           });
           this.workspacesFetched = true;
         }
@@ -218,9 +216,7 @@ export const useWorkspaceStore = defineStore('workspace', {
       const reload = options?.reload ?? true;
       console.info(`[Workspace] Resetting workspace state due to ${reason}`);
 
-      for (const workspaceId of Array.from(this.fileSystemConnections.keys())) {
-        this.disconnectFromFileSystemChanges(workspaceId);
-      }
+      this.disconnectAllFileExplorerLiveStreams();
 
       this.workspaces = {};
       this.workspacesFetched = false;
@@ -288,11 +284,44 @@ export const useWorkspaceStore = defineStore('workspace', {
     },
 
     /**
-     * Connect to WebSocket for real-time file system changes.
-     * Replaces the GraphQL subscription with direct WebSocket connection.
+     * Registers a visible file explorer consumer and keeps one live stream open
+     * while at least one consumer is present for a workspace.
      */
-    connectToFileSystemChanges(workspaceId: string) {
-      // If already connected for this workspace, do nothing.
+    acquireFileExplorerLiveSession(workspaceId: string, consumerId: string): () => void {
+      if (!workspaceId || !consumerId) {
+        return () => undefined;
+      }
+
+      let consumers = this.fileExplorerLiveConsumers.get(workspaceId);
+      if (!consumers) {
+        consumers = new Set();
+        this.fileExplorerLiveConsumers.set(workspaceId, consumers);
+      }
+
+      const alreadyRegistered = consumers.has(consumerId);
+      consumers.add(consumerId);
+      if (!alreadyRegistered && consumers.size === 1) {
+        this.connectFileExplorerLiveStream(workspaceId);
+      }
+      this.refreshFileExplorerSnapshot(workspaceId);
+
+      return () => this.releaseFileExplorerLiveSession(workspaceId, consumerId);
+    },
+
+    releaseFileExplorerLiveSession(workspaceId: string, consumerId: string) {
+      const consumers = this.fileExplorerLiveConsumers.get(workspaceId);
+      if (!consumers) {
+        return;
+      }
+
+      consumers.delete(consumerId);
+      if (consumers.size === 0) {
+        this.fileExplorerLiveConsumers.delete(workspaceId);
+        this.disconnectFileExplorerLiveStream(workspaceId);
+      }
+    },
+
+    connectFileExplorerLiveStream(workspaceId: string) {
       if (this.fileSystemConnections.has(workspaceId)) {
         return;
       }
@@ -321,16 +350,53 @@ export const useWorkspaceStore = defineStore('workspace', {
       this.fileSystemConnections.set(workspaceId, service);
     },
 
-    /**
-     * Disconnect from file system changes WebSocket.
-     */
-    disconnectFromFileSystemChanges(workspaceId: string) {
+    disconnectFileExplorerLiveStream(workspaceId: string) {
       const service = this.fileSystemConnections.get(workspaceId);
       if (service) {
         service.disconnect();
         this.fileSystemConnections.delete(workspaceId);
         console.log(`[Workspace] Disconnected from file system watcher for workspace: ${workspaceId}`);
       }
+    },
+
+    disconnectAllFileExplorerLiveStreams() {
+      for (const workspaceId of Array.from(this.fileSystemConnections.keys())) {
+        this.disconnectFileExplorerLiveStream(workspaceId);
+      }
+      this.fileExplorerLiveConsumers.clear();
+      this.fileExplorerSnapshotRefreshes.clear();
+    },
+
+    clearFileExplorerLiveSessionForWorkspace(workspaceId: string) {
+      this.fileExplorerLiveConsumers.delete(workspaceId);
+      this.fileExplorerSnapshotRefreshes.delete(workspaceId);
+      this.disconnectFileExplorerLiveStream(workspaceId);
+    },
+
+    refreshFileExplorerSnapshot(workspaceId: string): Promise<void> {
+      const activeRefresh = this.fileExplorerSnapshotRefreshes.get(workspaceId);
+      if (activeRefresh) {
+        return activeRefresh;
+      }
+
+      const fileExplorerStore = useFileExplorerStore();
+      const openFolderPaths = getOpenFolderPathsForRefresh(
+        fileExplorerStore._getWorkspaceState(workspaceId)?.openFolders || {},
+      );
+      const refreshTask = (async () => {
+        await this.fetchFolderChildren(workspaceId, '');
+        for (const folderPath of openFolderPaths) {
+          await this.fetchFolderChildren(workspaceId, folderPath);
+        }
+      })()
+        .catch((error) => {
+          console.warn(`[Workspace] Failed to refresh file explorer snapshot for ${workspaceId}:`, error);
+        })
+        .finally(() => {
+          this.fileExplorerSnapshotRefreshes.delete(workspaceId);
+        });
+      this.fileExplorerSnapshotRefreshes.set(workspaceId, refreshTask);
+      return refreshTask;
     },
 
     /**
@@ -397,17 +463,7 @@ export const useWorkspaceStore = defineStore('workspace', {
             return;
           }
 
-          // Clear existing children and add new ones from server
-          folderNode.children = [];
-          for (const childData of folderData.children) {
-            const childNode = TreeNode.fromObject(childData);
-            folderNode.addChild(childNode);
-            // Add to nodeIdToNode lookup
-            workspace.nodeIdToNode[childNode.id] = childNode;
-          }
-
-          // Mark folder as loaded
-          folderNode.childrenLoaded = true;
+          replaceFolderChildren(folderNode, folderData.children, workspace.nodeIdToNode);
         }
       } catch (error) {
         console.error('Error fetching folder children:', error);
@@ -416,7 +472,7 @@ export const useWorkspaceStore = defineStore('workspace', {
 
     /**
      * Registers a skill workspace without persisting it to the backend database.
-     * Starts with an empty tree and connects to the file system watcher.
+     * Starts with an empty tree. Live file watching is acquired only by a visible FileExplorer.
      * Returns the generated workspaceId.
      */
     registerSkillWorkspace(skillId: string): string {
@@ -440,9 +496,6 @@ export const useWorkspaceStore = defineStore('workspace', {
              absolutePath: null, // Unknown until interactions happen, or not needed
         };
 
-        // Connect to WS immediately to start receiving events
-        this.connectToFileSystemChanges(workspaceId);
-        
         // Trigger a fetch of the root children to populate the tree
         this.fetchFolderChildren(workspaceId, "");
 
@@ -455,7 +508,7 @@ export const useWorkspaceStore = defineStore('workspace', {
     unregisterSkillWorkspace(workspaceId: string) {
         if (!this.workspaces[workspaceId]) return;
         
-        this.disconnectFromFileSystemChanges(workspaceId);
+        this.clearFileExplorerLiveSessionForWorkspace(workspaceId);
         delete this.workspaces[workspaceId];
         
         // Also cleanup file explorer state if any

@@ -1,0 +1,7 @@
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:30:  async startWatcher(): Promise<void> {
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:46:      await this.stopWatcher();
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:138:    await this.stopWatcher();
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:141:  async stopWatcher(): Promise<void> {
+autobyteus-server-ts/src/file-explorer/local-file-explorer.ts:106:      this.watcherStartPromise = this.adaptee.startWatcher().finally(() => {
+autobyteus-server-ts/src/file-explorer/local-file-explorer.ts:127:      await this.stopWatcherIfUnused();
+autobyteus-server-ts/src/file-explorer/local-file-explorer.ts:148:      this.watcherStopPromise = this.adaptee.stopWatcher().finally(() => {

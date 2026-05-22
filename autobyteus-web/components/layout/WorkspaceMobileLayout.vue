@@ -18,7 +18,7 @@
     <!-- Mobile Panels -->
     <div class="flex-1 bg-white shadow overflow-hidden relative mt-2"> 
       <!-- File Explorer -->
-      <div v-if="hasActiveWorkspace" v-show="activeMobilePanel === 'explorer'" class="h-full p-0 overflow-auto">
+      <div v-if="hasActiveWorkspace && activeMobilePanel === 'explorer'" class="h-full p-0 overflow-auto">
         <FileExplorer />
       </div>
 
@@ -68,7 +68,7 @@
 
       <!-- Right Side Tools (Terminal, VNC etc) -->
       <div v-show="activeMobilePanel === 'tools'" class="h-full p-0 overflow-auto">
-        <RightSideTabs />
+        <RightSideTabs mode="mobile-tools" />
       </div>
     </div>
 

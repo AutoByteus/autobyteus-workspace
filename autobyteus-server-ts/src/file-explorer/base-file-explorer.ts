@@ -1,6 +1,11 @@
 import type { FileSystemChangeEvent } from "./file-system-changes.js";
 import type { TreeNode } from "./tree-node.js";
 
+export type WatcherLease = {
+  readonly reason: string;
+  release(): Promise<void>;
+};
+
 export abstract class BaseFileExplorer {
   abstract get rootPath(): string;
 
@@ -29,7 +34,7 @@ export abstract class BaseFileExplorer {
 
   abstract renameFileOrFolder(targetPath: string, newName: string): Promise<FileSystemChangeEvent>;
 
-  abstract ensureWatcherStarted(loop?: unknown): Promise<void>;
+  abstract acquireWatcherLease(reason: string): Promise<WatcherLease>;
 
   abstract subscribe(): AsyncGenerator<string, void, void>;
 

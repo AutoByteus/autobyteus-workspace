@@ -1,0 +1,73 @@
+
+> autobyteus@1.3.24 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/workspaceStore.spec.ts components/fileExplorer/__tests__/FileExplorer.spec.ts components/layout/__tests__/RightSideTabs.spec.ts components/layout/__tests__/WorkspaceDesktopLayout.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+
+stderr | stores/__tests__/workspaceStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/WorkspaceDesktopLayout.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/workspaceStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/WorkspaceDesktopLayout.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/workspaceStore.spec.ts > workspaceStore > createWorkspace > should throw error if mutation fails
+Error creating workspace: Error: GraphQL Error
+    at Proxy.createWorkspace (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/stores/workspace.ts:102:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > createWorkspace > should replace stale workspace entries with the same root path
+[Workspace] Disconnected from file system watcher for workspace: stale-ws
+
+stderr | stores/__tests__/workspaceStore.spec.ts > workspaceStore > fetchAllWorkspaces > should ignore stale query results when backend binding revision changes mid-flight
+[Workspace] Ignoring workspace query result for stale revision 1; current revision is 2
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > resetWorkspaceStateForBackendContextChange > disconnects all streams and clears workspace state without reload
+[Workspace] Resetting workspace state due to backend_context_changed
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > opens one stream for multiple visible consumers and disconnects after final release
+[Workspace] Connecting to file system changes for workspace: ws-1
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > returns an idempotent release function for duplicate consumer acquisition
+[Workspace] Connecting to file system changes for workspace: ws-1
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > refreshes already-open folders when a visible file explorer is reacquired
+[Workspace] Connecting to file system changes for workspace: ws-1
+
+ ✓ stores/__tests__/workspaceStore.spec.ts (14 tests) 39ms
+ ✓ components/fileExplorer/__tests__/FileExplorer.spec.ts (2 tests) 48ms
+ ✓ components/layout/__tests__/WorkspaceDesktopLayout.spec.ts (9 tests) 44ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts (5 tests) 29ms
+
+ Test Files  4 passed (4)
+      Tests  30 passed (30)
+   Start at  11:45:15
+   Duration  5.33s (transform 3.24s, setup 14.62s, collect 2.35s, tests 160ms, environment 695ms, prepare 461ms)
+

@@ -1,4 +1,5 @@
 import { AsyncQueue } from "../../file-explorer/watcher/event-batcher.js";
+import type { WatcherLease } from "../../file-explorer/base-file-explorer.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -13,15 +14,20 @@ export class FileExplorerSession {
   private active = true;
   private eventQueue = new AsyncQueue<string | null>();
   private forwarder: Promise<void> | null = null;
+  private eventGenerator: AsyncGenerator<string, void, void> | null = null;
+  private watcherLease: WatcherLease | null;
+  private closePromise: Promise<void> | null = null;
 
   constructor(
     sessionId: string,
     workspaceId: string,
     eventStreamFactory: () => AsyncGenerator<string, void, void>,
+    watcherLease: WatcherLease | null = null,
   ) {
     this.sessionId = sessionId;
     this.workspaceId = workspaceId;
     this.eventStreamFactory = eventStreamFactory;
+    this.watcherLease = watcherLease;
 
     logger.info(`FileExplorerSession created: ${sessionId} for workspace ${workspaceId}`);
   }
@@ -36,8 +42,10 @@ export class FileExplorerSession {
   }
 
   private async forwardEvents(): Promise<void> {
+    const generator = this.eventStreamFactory();
+    this.eventGenerator = generator;
     try {
-      for await (const event of this.eventStreamFactory()) {
+      for await (const event of generator) {
         if (!this.active) {
           break;
         }
@@ -46,6 +54,9 @@ export class FileExplorerSession {
     } catch (error) {
       logger.error(`Session ${this.sessionId}: Error forwarding events: ${String(error)}`);
     } finally {
+      if (this.eventGenerator === generator) {
+        this.eventGenerator = null;
+      }
       this.eventQueue.push(null);
     }
   }
@@ -60,9 +71,41 @@ export class FileExplorerSession {
     }
   }
 
-  close(): void {
+  async close(): Promise<void> {
+    if (this.closePromise) {
+      return this.closePromise;
+    }
+
+    this.closePromise = this.closeOnce();
+    return this.closePromise;
+  }
+
+  private async closeOnce(): Promise<void> {
     this.active = false;
     this.eventQueue.push(null);
+
+    const lease = this.watcherLease;
+    this.watcherLease = null;
+    try {
+      await lease?.release();
+    } catch (error) {
+      logger.error(`Session ${this.sessionId}: Error releasing watcher lease: ${String(error)}`);
+    }
+
+    try {
+      await this.eventGenerator?.return?.();
+    } catch (error) {
+      logger.error(`Session ${this.sessionId}: Error cancelling event generator: ${String(error)}`);
+    }
+
+    if (this.forwarder) {
+      try {
+        await this.forwarder;
+      } catch {
+        // ignore
+      }
+    }
+
     logger.info(`FileExplorerSession closed: ${this.sessionId}`);
   }
 }

@@ -26,12 +26,12 @@
 
     <!-- Right Panel -->
     <div
-      v-show="isRightPanelVisible"
+      v-if="isRightPanelVisible"
       :style="{ width: rightPanelWidth + 'px' }"
       class="bg-white p-0 shadow flex flex-col flex-none min-h-0 min-w-0 overflow-hidden relative"
       data-test="workspace-right-panel"
     >
-      <RightSideTabs />
+      <RightSideTabs mode="desktop" />
     </div>
 
     <RightSidebarStrip v-if="!isRightPanelVisible" />

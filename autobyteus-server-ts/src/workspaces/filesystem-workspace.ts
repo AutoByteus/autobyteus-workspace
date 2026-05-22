@@ -27,7 +27,7 @@ export class FileSystemWorkspace {
   private fileExplorer: BaseFileExplorer;
   private searchStrategy: BaseFileSearchStrategy | null = null;
   private fileNameIndexer: FileNameIndexer | null = null;
-  private backgroundInitTask: Promise<void> | null = null;
+  private searchSnapshotRefreshTask: Promise<void> | null = null;
 
   constructor(config: WorkspaceInput) {
     this.config = {
@@ -81,21 +81,7 @@ export class FileSystemWorkspace {
     this.fileNameIndexer = new FileNameIndexer(this.fileExplorer);
     this.searchStrategy = this.createSearchStrategy();
 
-    logger.info(`Initialized FileSystemWorkspace at ${this.rootPath} (Shallow). Starting background full scan...`);
-
-    this.backgroundInitTask = this.completeFullInitialization();
-  }
-
-  private async completeFullInitialization(): Promise<void> {
-    try {
-      await this.fileExplorer.buildWorkspaceDirectoryTree();
-      if (this.fileNameIndexer) {
-        await this.fileNameIndexer.start();
-      }
-      logger.info(`Background full initialization for ${this.rootPath} completed.`);
-    } catch (error) {
-      logger.error(`Background initialization failed for ${this.rootPath}: ${String(error)}`);
-    }
+    logger.info(`Initialized FileSystemWorkspace at ${this.rootPath} (shallow snapshot only).`);
   }
 
   private createSearchStrategy(): BaseFileSearchStrategy {
@@ -112,7 +98,25 @@ export class FileSystemWorkspace {
       this.searchStrategy = this.createSearchStrategy();
     }
 
+    await this.refreshSearchSnapshotIndex();
     return this.searchStrategy.search(this.rootPath, query);
+  }
+
+  private async refreshSearchSnapshotIndex(): Promise<void> {
+    if (!this.fileNameIndexer) {
+      this.fileNameIndexer = new FileNameIndexer(this.fileExplorer);
+    }
+
+    if (!this.searchSnapshotRefreshTask) {
+      this.searchSnapshotRefreshTask = (async () => {
+        await this.fileExplorer.buildWorkspaceDirectoryTree();
+        await this.fileNameIndexer?.refreshSnapshotIndex();
+      })().finally(() => {
+        this.searchSnapshotRefreshTask = null;
+      });
+    }
+
+    await this.searchSnapshotRefreshTask;
   }
 
   async getFileExplorer(): Promise<BaseFileExplorer> {
@@ -122,18 +126,14 @@ export class FileSystemWorkspace {
   async close(): Promise<void> {
     logger.info(`Closing FileSystemWorkspace ${this.workspaceId}`);
 
-    if (this.backgroundInitTask) {
+    if (this.searchSnapshotRefreshTask) {
       try {
-        await this.backgroundInitTask;
+        await this.searchSnapshotRefreshTask;
       } catch {
-        // ignore
+        // ignore refresh failure during close
       }
     }
 
     await this.fileExplorer.close();
-
-    if (this.fileNameIndexer) {
-      await this.fileNameIndexer.stop();
-    }
   }
 }

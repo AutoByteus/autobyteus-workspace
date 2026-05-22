@@ -32,8 +32,15 @@ describe("LocalFileExplorer", () => {
       removeFileOrFolder: vi.fn(),
       moveFileOrFolder: vi.fn(),
       renameFileOrFolder: vi.fn(),
-      startWatcher: vi.fn().mockResolvedValue(undefined),
-      close: vi.fn(),
+      startWatcher: vi.fn().mockImplementation(async () => {
+        mockAdaptee.fileWatcher = { events: vi.fn() };
+      }),
+      stopWatcher: vi.fn().mockImplementation(async () => {
+        mockAdaptee.fileWatcher = null;
+      }),
+      close: vi.fn().mockImplementation(async () => {
+        mockAdaptee.fileWatcher = null;
+      }),
       fileWatcher: null,
       workspaceRootPath: "/fake/path",
     };
@@ -116,32 +123,64 @@ describe("LocalFileExplorer", () => {
     expect(mockAdaptee.renameFileOrFolder).toHaveBeenCalledWith("src.txt", "renamed.txt");
   });
 
-  it("delegates close", async () => {
+  it("delegates close and clears active watcher leases", async () => {
     const explorer = new LocalFileExplorer("/fake/path");
+    await explorer.acquireWatcherLease("test");
     await explorer.close();
 
     expect(mockAdaptee.close).toHaveBeenCalled();
   });
 
-  it("starts watcher when ensureWatcherStarted is called", async () => {
+  it("starts watcher when first watcher lease is acquired", async () => {
     const explorer = new LocalFileExplorer("/fake/path");
 
-    await explorer.ensureWatcherStarted();
+    const lease = await explorer.acquireWatcherLease("test");
 
-    expect(mockAdaptee.startWatcher).toHaveBeenCalled();
+    expect(mockAdaptee.startWatcher).toHaveBeenCalledTimes(1);
+    await lease.release();
+    expect(mockAdaptee.stopWatcher).toHaveBeenCalledTimes(1);
   });
 
-  it("returns events from watcher", () => {
+  it("shares one watcher across multiple leases and stops after the final release", async () => {
+    const explorer = new LocalFileExplorer("/fake/path");
+
+    const first = await explorer.acquireWatcherLease("first");
+    const second = await explorer.acquireWatcherLease("second");
+
+    expect(mockAdaptee.startWatcher).toHaveBeenCalledTimes(1);
+
+    await first.release();
+    expect(mockAdaptee.stopWatcher).not.toHaveBeenCalled();
+
+    await second.release();
+    expect(mockAdaptee.stopWatcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("makes watcher lease release idempotent", async () => {
+    const explorer = new LocalFileExplorer("/fake/path");
+
+    const lease = await explorer.acquireWatcherLease("test");
+    await lease.release();
+    await lease.release();
+
+    expect(mockAdaptee.stopWatcher).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns events from watcher", async () => {
     const mockEvents = { marker: true };
-    mockAdaptee.fileWatcher = {
-      events: vi.fn().mockReturnValue(mockEvents),
-    };
+    mockAdaptee.startWatcher.mockImplementation(async () => {
+      mockAdaptee.fileWatcher = {
+        events: vi.fn().mockReturnValue(mockEvents),
+      };
+    });
 
     const explorer = new LocalFileExplorer("/fake/path");
+    const lease = await explorer.acquireWatcherLease("test");
     const result = explorer.subscribe();
 
     expect(mockAdaptee.fileWatcher.events).toHaveBeenCalled();
     expect(result).toBe(mockEvents);
+    await lease.release();
   });
 
   it("throws if subscribe is called before watcher is ready", () => {
@@ -149,6 +188,8 @@ describe("LocalFileExplorer", () => {
 
     const explorer = new LocalFileExplorer("/fake/path");
 
-    expect(() => explorer.subscribe()).toThrowError("Watcher is not running. Call ensureWatcherStarted() first.");
+    expect(() => explorer.subscribe()).toThrowError(
+      "Watcher is not running. Acquire a watcher lease before subscribing.",
+    );
   });
 });

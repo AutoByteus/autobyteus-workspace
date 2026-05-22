@@ -5,7 +5,7 @@
       <TabList
         class="flex-1 min-w-0"
         :tabs="visibleTabs"
-        :selected-tab="activeTab"
+        :selected-tab="effectiveActiveTab"
         @select="handleTabSelect"
       />
       <button 
@@ -22,25 +22,25 @@
 
     <!-- Tab Content -->
     <div data-test="right-side-tab-content-shell" class="flex-1 min-h-0 overflow-hidden relative">
-      <div v-if="activeTab === 'files'" class="h-full min-h-0">
+      <div v-if="filesTabEnabled && effectiveActiveTab === 'files'" class="h-full min-h-0">
         <FileExplorerLayout />
       </div>
-      <div v-if="activeTab === 'teamMembers'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'teamMembers'" class="h-full min-h-0">
         <TeamOverviewPanel />
       </div>
-      <div v-if="activeTab === 'terminal'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'terminal'" class="h-full min-h-0">
         <Terminal />
       </div>
-      <div v-if="activeTab === 'vnc'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'vnc'" class="h-full min-h-0">
         <VncViewer />
       </div>
-      <div v-if="activeTab === 'artifacts'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'artifacts'" class="h-full min-h-0">
         <ArtifactsTab />
       </div>
-      <div v-if="activeTab === 'browser'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'browser'" class="h-full min-h-0">
         <BrowserPanel />
       </div>
-      <div v-if="activeTab === 'progress'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'progress'" class="h-full min-h-0">
         <ProgressPanel />
       </div>
     </div>
@@ -65,18 +65,39 @@ import ProgressPanel from '~/components/progress/ProgressPanel.vue';
 import BrowserPanel from '~/components/workspace/tools/BrowserPanel.vue';
 import { useWorkspaceStore } from '~/stores/workspace';
 
+const props = withDefaults(defineProps<{
+  mode?: 'desktop' | 'mobile-tools'
+}>(), {
+  mode: 'desktop',
+});
+
 const selectionStore = useAgentSelectionStore();
 const activeContextStore = useActiveContextStore();
 const fileExplorerStore = useFileExplorerStore();
 const todoStore = useAgentTodoStore();
 const workspaceStore = useWorkspaceStore();
 
-const { activeTab, visibleTabs, setActiveTab } = useRightSideTabs();
+const { activeTab, visibleTabs: baseVisibleTabs, setActiveTab } = useRightSideTabs();
 const { toggleRightPanel } = useRightPanel();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
+const filesTabEnabled = computed(() => props.mode !== 'mobile-tools');
+const visibleTabs = computed(() =>
+  filesTabEnabled.value
+    ? baseVisibleTabs.value
+    : baseVisibleTabs.value.filter((tab) => tab.name !== 'files'),
+);
+const effectiveActiveTab = computed(() => {
+  if (filesTabEnabled.value || activeTab.value !== 'files') {
+    return activeTab.value;
+  }
+  return visibleTabs.value[0]?.name ?? 'terminal';
+});
 
 const handleTabSelect = (tabName: string) => {
+  if (!filesTabEnabled.value && tabName === 'files') {
+    return;
+  }
   setActiveTab(tabName as any);
 };
 
@@ -112,7 +133,7 @@ watch(() => {
     if (!targetId) return [];
     return fileExplorerStore.getOpenFiles(targetId);
 }, (openFiles) => {
-  if (openFiles.length > 0 && activeTab.value !== 'files') {
+  if (filesTabEnabled.value && openFiles.length > 0 && activeTab.value !== 'files') {
     setActiveTab('files');
   }
 }, { deep: true });

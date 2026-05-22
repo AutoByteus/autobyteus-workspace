@@ -38,10 +38,12 @@ export class FileExplorer {
         explorer: FileExplorer,
         ignoreStrategies: TraversalIgnoreStrategy[],
       ) => FileSystemWatcher;
-      this.fileWatcher = new FileSystemWatcher(this, this.ignoreStrategies);
-      this.fileWatcher.start();
-      await this.fileWatcher.waitUntilReady();
+      const watcher = new FileSystemWatcher(this, this.ignoreStrategies);
+      this.fileWatcher = watcher;
+      watcher.start();
+      await watcher.waitUntilReady();
     } catch (error) {
+      await this.stopWatcher();
       throw new Error(`FileSystemWatcher not available: ${String(error)}`);
     }
   }
@@ -133,9 +135,17 @@ export class FileExplorer {
   }
 
   async close(): Promise<void> {
-    if (this.fileWatcher) {
-      this.fileWatcher.stop();
+    await this.stopWatcher();
+  }
+
+  async stopWatcher(): Promise<void> {
+    const watcher = this.fileWatcher;
+    if (!watcher) {
+      return;
     }
+
+    this.fileWatcher = null;
+    await watcher.stop();
   }
 
   suppressWatcherPaths(paths: string[]): void {

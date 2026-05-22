@@ -40,40 +40,108 @@ export class EventBatcher {
     this.batchWindowMs = batchWindowSeconds * 1000;
   }
 
-  async *getBatchedEvents(): AsyncGenerator<string, void, void> {
+  getBatchedEvents(): AsyncGenerator<string, void, void> {
     const queue = new AsyncQueue<QueueItem>();
     const collector = this.collect(queue);
+    void collector.catch(() => undefined);
 
-    let done = false;
-    try {
-      while (!done) {
+    let closed = false;
+    let ended = false;
+    let sourceCancellationStarted = false;
+
+    const doneResult = (): IteratorResult<string, void> => ({
+      done: true,
+      value: undefined,
+    });
+
+    const cancelSource = (): void => {
+      if (sourceCancellationStarted) {
+        return;
+      }
+      sourceCancellationStarted = true;
+      const cancellation = this.eventGenerator.return?.();
+      if (cancellation) {
+        void cancellation.catch(() => undefined);
+      }
+    };
+
+    const close = (): void => {
+      if (closed) {
+        return;
+      }
+      closed = true;
+      queue.push(null);
+      cancelSource();
+    };
+
+    const next = async (): Promise<IteratorResult<string, void>> => {
+      while (!closed) {
+        if (ended) {
+          close();
+          return doneResult();
+        }
+
         const firstEvent = await queue.pop();
-        if (firstEvent === null) {
-          break;
+        if (firstEvent === null || closed) {
+          ended = true;
+          close();
+          return doneResult();
         }
 
         const batchedEvents = [firstEvent];
         await this.sleep(this.batchWindowMs);
+        if (closed) {
+          return doneResult();
+        }
 
         while (queue.size > 0) {
-          const next = queue.tryPop();
-          if (next === null) {
-            done = true;
+          const nextItem = queue.tryPop();
+          if (nextItem === null) {
+            ended = true;
             break;
           }
-          if (next !== undefined) {
-            batchedEvents.push(next);
+          if (nextItem !== undefined) {
+            batchedEvents.push(nextItem);
           }
+        }
+        if (closed) {
+          return doneResult();
         }
 
         const composite = this.createCompositeEvent(batchedEvents);
         if (composite) {
-          yield composite;
+          return {
+            done: false,
+            value: composite,
+          };
+        }
+
+        if (ended) {
+          close();
+          return doneResult();
         }
       }
-    } finally {
-      collector.catch(() => undefined);
-    }
+
+      return doneResult();
+    };
+
+    const iterator: AsyncGenerator<string, void, void> = {
+      next,
+      return: async () => {
+        close();
+        return doneResult();
+      },
+      throw: async (error?: unknown) => {
+        close();
+        throw error;
+      },
+      [Symbol.asyncDispose]: async () => {
+        close();
+      },
+      [Symbol.asyncIterator]: () => iterator,
+    };
+
+    return iterator;
   }
 
   private async collect(queue: AsyncQueue<QueueItem>): Promise<void> {

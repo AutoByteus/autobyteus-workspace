@@ -77,7 +77,7 @@ const createMoveEvent = (): FileSystemChangeEvent => ({
       new_parent_id: "done",
     },
   ],
-});
+} as unknown as FileSystemChangeEvent);
 
 const getRenderedPaths = (wrapper: ReturnType<typeof mount>) =>
   wrapper
@@ -89,6 +89,7 @@ describe("FileExplorer", () => {
   let pinia: ReturnType<typeof createPinia>;
 
   beforeEach(() => {
+    vi.restoreAllMocks();
     pinia = createPinia();
     setActivePinia(pinia);
     mutateMock.mockReset();
@@ -97,6 +98,7 @@ describe("FileExplorer", () => {
   it("renders moved descendants under the new folder after mutation and streamed echo replay", async () => {
     const workspaceStore = useWorkspaceStore();
     const fileExplorerStore = useFileExplorerStore();
+    vi.spyOn(workspaceStore, "acquireFileExplorerLiveSession").mockReturnValue(vi.fn());
     const root = createWorkspaceTree();
 
     workspaceStore.workspaces["ws-1"] = {
@@ -176,5 +178,41 @@ describe("FileExplorer", () => {
     ]);
     expect(explorerState.openFolders["tickets/in-progress/ticket-123"]).toBeUndefined();
     expect(explorerState.openFolders["tickets/done/ticket-123"]).toBe(true);
+  });
+
+  it("acquires a visible live session and releases it on unmount", async () => {
+    const workspaceStore = useWorkspaceStore();
+    const release = vi.fn();
+    const acquire = vi.spyOn(workspaceStore, "acquireFileExplorerLiveSession").mockReturnValue(release);
+    const root = createWorkspaceTree();
+
+    workspaceStore.workspaces["ws-live"] = {
+      workspaceId: "ws-live",
+      name: "Live Workspace",
+      fileExplorer: root,
+      nodeIdToNode: createNodeIdToNodeDictionary(root),
+      workspaceConfig: {},
+      absolutePath: "/tmp/live-workspace",
+    };
+
+    const wrapper = mount(FileExplorer, {
+      props: {
+        workspaceId: "ws-live",
+      },
+      global: {
+        plugins: [pinia],
+        stubs: {
+          FileContextMenu: true,
+          ConfirmDeleteDialog: true,
+          AddFileOrFolderDialog: true,
+        },
+      },
+    });
+
+    expect(acquire).toHaveBeenCalledWith("ws-live", expect.stringMatching(/^file-explorer:/));
+
+    wrapper.unmount();
+
+    expect(release).toHaveBeenCalledTimes(1);
   });
 });

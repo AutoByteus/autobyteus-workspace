@@ -33,6 +33,8 @@ import FileItem from "~/components/fileExplorer/FileItem.vue";
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useWorkspaceFileExplorer } from '~/composables/useWorkspaceFileExplorer';
 
+let fileExplorerConsumerCounter = 0;
+
 const props = defineProps<{
   workspaceId?: string
 }>();
@@ -58,6 +60,20 @@ const currentWorkspace = computed(() => {
   return workspaceStore.activeWorkspace;
 });
 const activeWorkspace = currentWorkspace; // Alias for template compatibility
+const liveSessionConsumerId = `file-explorer:${++fileExplorerConsumerCounter}`;
+let releaseLiveSession: (() => void) | null = null;
+
+const releaseCurrentLiveSession = () => {
+  releaseLiveSession?.();
+  releaseLiveSession = null;
+};
+
+watch(() => currentWorkspace.value?.workspaceId ?? '', (workspaceId) => {
+  releaseCurrentLiveSession();
+  if (workspaceId) {
+    releaseLiveSession = workspaceStore.acquireFileExplorerLiveSession(workspaceId, liveSessionConsumerId);
+  }
+}, { immediate: true });
 
 const displayedFiles = computed(() => {
   if (searchQuery.value) {
@@ -100,6 +116,7 @@ onUnmounted(() => {
   if (searchDebounceTimer) {
     clearTimeout(searchDebounceTimer);
   }
+  releaseCurrentLiveSession();
 });
 
 watch(currentWorkspace, (newWorkspace) => {

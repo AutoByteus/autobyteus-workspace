@@ -220,6 +220,43 @@ describe("FileSystemWatcher integration", () => {
   );
 
   it(
+    "returns one idle event stream without stopping other subscribers",
+    { timeout: 15000 },
+    async () => {
+      const firstStream = explorer.fileWatcher?.events();
+      const secondStream = explorer.fileWatcher?.events();
+      if (!firstStream || !secondStream || !firstStream.return) {
+        throw new Error("Watcher streams not started");
+      }
+
+      const pendingFirstRead = firstStream.next();
+      const returned = await Promise.race([
+        firstStream.return(),
+        new Promise<IteratorResult<string, void>>((_, reject) =>
+          setTimeout(() => reject(new Error("Timed out returning idle stream")), 500),
+        ),
+      ]);
+      expect(returned.done).toBe(true);
+
+      const pendingResult = await Promise.race([
+        pendingFirstRead,
+        new Promise<IteratorResult<string, void>>((_, reject) =>
+          setTimeout(() => reject(new Error("Timed out unwinding pending idle stream read")), 500),
+        ),
+      ]);
+      expect(pendingResult.done).toBe(true);
+
+      const filePath = path.join(workspace, "second-subscriber-still-live.txt");
+      const event = await expectEventAfterAction(secondStream, () =>
+        fs.writeFile(filePath, "second subscriber stays active", { encoding: "utf-8" }),
+      );
+      expect(event.changes.some((change) => change.type === ChangeType.ADD)).toBe(true);
+
+      await secondStream.return?.();
+    },
+  );
+
+  it(
     "emits move/rename event",
     { timeout: 15000 },
     async () => {

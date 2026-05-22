@@ -90,6 +90,7 @@ describe('workspaceStore', () => {
       expect(store.workspaces['ws-123']).toBeDefined();
       expect(store.workspaces['ws-123'].name).toBe('Test WS');
       expect(store.workspaces['ws-123'].fileExplorer).toBeInstanceOf(TreeNode);
+      expect(mockStreamingInstances).toHaveLength(0);
     });
 
     it('should throw error if mutation fails', async () => {
@@ -178,6 +179,7 @@ describe('workspaceStore', () => {
         expect(store.workspaces['ws-1']).toBeDefined();
         expect(store.workspaces['ws-2']).toBeDefined();
         expect(store.workspacesFetched).toBe(true);
+        expect(mockStreamingInstances).toHaveLength(0);
       });
 
       it('should ignore stale query results when backend binding revision changes mid-flight', async () => {
@@ -368,6 +370,109 @@ describe('workspaceStore', () => {
       expect(store.fileSystemConnections.size).toBe(0);
       expect(Object.keys(store.workspaces)).toHaveLength(0);
       expect(store.workspacesFetched).toBe(false);
+    });
+  });
+
+  describe('file explorer live sessions', () => {
+    it('opens one stream for multiple visible consumers and disconnects after final release', () => {
+      const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
+      setActivePinia(pinia);
+      const store = useWorkspaceStore();
+      store.workspaces['ws-1'] = {
+        workspaceId: 'ws-1',
+        name: 'One',
+        fileExplorer: new TreeNode('root', '', false, [], 'root-id'),
+        nodeIdToNode: {},
+        workspaceConfig: {},
+        absolutePath: '/tmp/one',
+      };
+      vi.spyOn(store, 'fetchFolderChildren').mockResolvedValue(undefined);
+
+      const releaseA = store.acquireFileExplorerLiveSession('ws-1', 'consumer-a');
+      const releaseB = store.acquireFileExplorerLiveSession('ws-1', 'consumer-b');
+
+      expect(mockStreamingInstances).toHaveLength(1);
+      expect(mockStreamingInstances[0].connect).toHaveBeenCalledWith('ws-1');
+
+      releaseA();
+      expect(mockStreamingInstances[0].disconnect).not.toHaveBeenCalled();
+
+      releaseB();
+      expect(mockStreamingInstances[0].disconnect).toHaveBeenCalledTimes(1);
+      expect(store.fileSystemConnections.size).toBe(0);
+    });
+
+    it('returns an idempotent release function for duplicate consumer acquisition', () => {
+      const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
+      setActivePinia(pinia);
+      const store = useWorkspaceStore();
+      vi.spyOn(store, 'fetchFolderChildren').mockResolvedValue(undefined);
+
+      const release = store.acquireFileExplorerLiveSession('ws-1', 'consumer-a');
+      store.acquireFileExplorerLiveSession('ws-1', 'consumer-a');
+
+      expect(mockStreamingInstances).toHaveLength(1);
+      release();
+      release();
+
+      expect(mockStreamingInstances[0].disconnect).toHaveBeenCalledTimes(1);
+    });
+
+    it('refreshes already-open folders when a visible file explorer is reacquired', async () => {
+      const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
+      setActivePinia(pinia);
+      const store = useWorkspaceStore();
+      const fileExplorerStore = useFileExplorerStore();
+      const oldFile = new TreeNode('old.txt', 'src/old.txt', true, [], 'old-file');
+      const srcFolder = new TreeNode('src', 'src', false, [oldFile], 'src-id', true);
+      const root = new TreeNode('root', '', false, [srcFolder], 'root-id', true);
+      store.workspaces['ws-1'] = {
+        workspaceId: 'ws-1',
+        name: 'One',
+        fileExplorer: root,
+        nodeIdToNode: { 'root-id': root, 'src-id': srcFolder, 'old-file': oldFile },
+        workspaceConfig: {},
+        absolutePath: '/tmp/one',
+      };
+      fileExplorerStore._getOrCreateWorkspaceState('ws-1').openFolders.src = true;
+      mockQuery.mockImplementation(async ({ variables }: any) => {
+        const folderPath = variables.folderPath;
+        return {
+          data: {
+            folderChildren: JSON.stringify(folderPath === ''
+              ? {
+                  id: 'root-id',
+                  name: 'root',
+                  path: '',
+                  is_file: false,
+                  children: [{ id: 'src-id', name: 'src', path: 'src', is_file: false, children: [] }],
+                }
+              : {
+                  id: 'src-id',
+                  name: 'src',
+                  path: 'src',
+                  is_file: false,
+                  children: [{ id: 'new-file', name: 'new.txt', path: 'src/new.txt', is_file: true, children: [] }],
+                }),
+          },
+        };
+      });
+
+      store.acquireFileExplorerLiveSession('ws-1', 'consumer-a');
+      const refreshTask = store.fileExplorerSnapshotRefreshes.get('ws-1');
+      expect(refreshTask).toBeDefined();
+      await refreshTask;
+
+      expect(mockQuery).toHaveBeenNthCalledWith(1, expect.objectContaining({
+        variables: { workspaceId: 'ws-1', folderPath: '' },
+      }));
+      expect(mockQuery).toHaveBeenNthCalledWith(2, expect.objectContaining({
+        variables: { workspaceId: 'ws-1', folderPath: 'src' },
+      }));
+      const refreshedSrc = store.workspaces['ws-1'].nodeIdToNode['src-id'];
+      expect(refreshedSrc.children.map((child: TreeNode) => child.path)).toEqual(['src/new.txt']);
+      expect(store.workspaces['ws-1'].nodeIdToNode['old-file']).toBeUndefined();
+      expect(store.workspaces['ws-1'].nodeIdToNode['new-file']).toBeDefined();
     });
   });
 });
