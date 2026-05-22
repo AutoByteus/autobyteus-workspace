@@ -214,13 +214,15 @@ describe('mobile Round 4 UX refinements', () => {
     expect(wrapper.find('[data-testid="mobile-home-primary-action"]').exists()).toBe(false);
   });
 
-  it('uses configure-only mobile setup without first-message entry or launch summary', async () => {
+  it('uses concise configure-only mobile setup without first-message entry or launch summary', async () => {
     const wrapper = mountWithPinia(MobileRunSetup, {
       props: { context: workspaceContext },
     });
     await nextTick();
 
-    expect(wrapper.text()).toContain('Choose an agent, workspace, and runtime/model. You’ll type the first message in Chat.');
+    expect(wrapper.text()).not.toContain('Start new work');
+    expect(wrapper.text()).not.toContain('Choose an agent, workspace, and runtime/model. You’ll type the first message in Chat.');
+    expect(wrapper.text()).not.toContain('Pick the runtime and model');
     expect(wrapper.text()).not.toContain('focused member');
     expect(wrapper.find('[data-testid="mobile-run-prompt"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="mobile-launch-summary"]').exists()).toBe(false);
@@ -248,7 +250,7 @@ describe('mobile Round 4 UX refinements', () => {
 
     await wrapper.get('[data-testid="mobile-run-setup-team-mode"]').trigger('click');
     await nextTick();
-    expect(wrapper.text()).toContain('Choose a team, workspace, and runtime/model. You’ll select the message target in Chat.');
+    expect(wrapper.text()).not.toContain('Choose a team, workspace, and runtime/model. You’ll select the message target in Chat.');
     expect(wrapper.find('[data-testid="mobile-run-prompt"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="mobile-team-launch-focus-select"]').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('First message target');
@@ -360,6 +362,9 @@ describe('mobile Round 4 UX refinements', () => {
     expect(wrapper.find('[data-testid="mobile-files-sticky-context"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-files-primary-controls"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-files-advanced-filters"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Files');
+    expect(wrapper.text()).not.toContain('Current folder');
+    expect(wrapper.text()).not.toContain('Workspace-wide search');
     expect(wrapper.text()).not.toContain('Markdown/code');
 
     await wrapper.get('[data-testid="mobile-files-filters-toggle"]').trigger('click');
@@ -379,7 +384,7 @@ describe('mobile Round 4 UX refinements', () => {
     expect(wrapper.text()).toContain('attached.md');
   });
 
-  it('renders Activity as a compact digest with secondary issue filters and no unsupported-tool notice', async () => {
+  it('renders Activity as a compact digest without secondary issue filters or redundant headers', async () => {
     seedAgentRun();
     const activity: ToolActivity = {
       invocationId: 'tool-1',
@@ -400,20 +405,24 @@ describe('mobile Round 4 UX refinements', () => {
     });
 
     expect(wrapper.find('[data-testid="mobile-activity-digest"]').exists()).toBe(true);
+    expect(wrapper.text()).not.toContain('Task and team updates');
+    expect(wrapper.text()).not.toContain('Right-panel information becomes cards and sheets on phone.');
     expect(wrapper.text()).not.toContain('Interactive terminal, browser, and desktop tool panes are not supported');
     expect(wrapper.find('[data-testid="mobile-activity-filter-all"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="mobile-activity-filters"]').text()).not.toContain('All');
+    expect(wrapper.find('[data-testid="mobile-activity-more-filters"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-activity-advanced-filters"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="mobile-activity-filter-errors"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-activity-filter-approvals"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Issue filters');
+    expect(wrapper.text()).not.toContain('Approvals');
     expect(wrapper.text()).not.toContain('ANTHROPIC_API_KEY environment variable is not set');
 
-    await wrapper.get('[data-testid="mobile-activity-more-filters"]').trigger('click');
-    await nextTick();
-    expect(wrapper.find('[data-testid="mobile-activity-filter-errors"]').exists()).toBe(true);
-
-    await wrapper.get('[data-testid="mobile-activity-filter-errors"]').trigger('click');
+    await wrapper.get('[data-testid="mobile-activity-filter-tools"]').trigger('click');
     await nextTick();
     expect(wrapper.find('[data-testid="mobile-tool-activity-row"]').exists()).toBe(true);
-    expect(wrapper.text()).toContain('1 error/denied item');
+    expect(wrapper.text()).toContain('1 activity item');
+    expect(wrapper.text()).toContain('ANTHROPIC_API_KEY environment variable is not set');
   });
 
   it('renders mobile Tools with Terminal and VNC without requiring desktop right-panel layout', async () => {

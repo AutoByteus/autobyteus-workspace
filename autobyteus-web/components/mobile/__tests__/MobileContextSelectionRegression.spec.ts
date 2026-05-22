@@ -446,6 +446,8 @@ describe('mobile context selection stale-run regression', () => {
     });
 
     expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).toContain('lead');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).not.toContain('Change');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select-toggle"]').attributes('aria-label')).toBe('Change message target');
 
     await wrapper.get('[data-testid="mobile-team-focus-select-toggle"]').trigger('click');
     await nextTick();
@@ -489,9 +491,10 @@ describe('mobile context selection stale-run regression', () => {
 
     expect(wrapper.find('[data-testid="mobile-team-member-focus-bar"]').exists()).toBe(true);
     expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).toContain('lead');
-    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).toContain('Change');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).not.toContain('Change');
     expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).not.toContain('Message target');
     expect(wrapper.get('[data-testid="mobile-team-focus-select"]').attributes('aria-label')).toBe('Message target');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select-toggle"]').attributes('aria-label')).toBe('Change message target');
   });
 
   it('keeps non-chat tabs in a bounded block task surface so h-full roots fill the viewport', async () => {

@@ -2,9 +2,6 @@
   <section class="rounded-3xl border border-blue-200 bg-white p-4" data-testid="mobile-launch-runtime-model-card">
     <div class="mb-3">
       <p class="text-sm font-bold text-blue-950">Runtime and model</p>
-      <p class="mt-1 text-xs text-blue-700">
-        Pick the runtime and model this {{ variant === 'team' ? 'team' : 'agent' }} run will use.
-      </p>
     </div>
 
     <RuntimeModelConfigFields
@@ -13,9 +10,7 @@
       :llm-config="llmConfig"
       :disabled="disabled"
       :read-only="disabled"
-      runtime-help-text="Runtime backend for this launch."
       :model-label="modelLabel"
-      model-help-text="Select or confirm the model before launch."
       :id-prefix="idPrefix"
       @update:runtime-kind="$emit('update:runtimeKind', $event)"
       @update:llm-model-identifier="$emit('update:llmModelIdentifier', $event)"

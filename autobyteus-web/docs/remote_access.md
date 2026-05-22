@@ -35,9 +35,9 @@ Mobile work headers show the selected work name plus compact status, path, or pr
 
 Mobile Chat owns a fixed viewport-height work frame. The transcript/feed is the scroll owner (`overscroll-contain`), while the composer and bottom tab navigation stay anchored inside the viewport. Work-screen wrappers must keep `min-h-0`, `overflow-hidden`, and safe-area-aware containment across each flex boundary so long conversations cannot create document/body scroll or blank space below the controls.
 
-For team runs, Chat/Files/Activity can expose a compact target picker with the focused member name and `Change` action. Preserve accessible naming for the target control, but do not reintroduce visible duplicate copy such as `Message target`, `Current: ...`, or explanatory alignment text once a target is selected.
+For team runs, Chat/Files/Activity can expose a compact target picker with the focused member name and a symbolic chevron/dropdown affordance instead of a visible `Change` action. Preserve accessible naming for the target control, but do not reintroduce visible duplicate copy such as `Message target`, `Current: ...`, or explanatory alignment text once a target is selected.
 
-Mobile Activity exposes concrete category filters: Tasks, Messages, and Tools. The previous aggregate `All` filter/view is intentionally absent so each tab has a distinct purpose. Error and approval filters may remain available as secondary issue filters for tool activity.
+Mobile Activity exposes concrete category filters: Tasks, Messages, and Tools. The previous aggregate `All` filter/view is intentionally absent so each tab has a distinct purpose. Do not add separate mobile-only issue filters such as Errors or Approvals; error and approval state should remain visible on the relevant tool/activity rows instead of through extra filter controls.
 
 Mobile Tools keeps routine copy short: show Terminal/VNC controls and the selected workspace/path, reserve explanatory guidance for actionable empty, setup, or error states, and keep persistent reachability guidance in docs/troubleshooting rather than the default tool panel.
 
