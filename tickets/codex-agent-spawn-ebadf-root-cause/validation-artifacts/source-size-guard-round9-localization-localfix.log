@@ -1,0 +1,4 @@
+autobyteus-web/components/workspace/tools/Terminal.vue: 301 effective non-empty lines
+autobyteus-web/localization/messages/en/workspace.ts: 66 effective non-empty lines
+autobyteus-web/localization/messages/zh-CN/workspace.ts: 66 effective non-empty lines
+PASS: no changed source implementation file exceeds 500 effective non-empty lines

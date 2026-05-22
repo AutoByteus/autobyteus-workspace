@@ -55,6 +55,7 @@ const messages = {
   'workspace.components.workspace.agent.ArtifactContentViewer.file_change_is_still_pending_server_side_capture': 'This file change is still pending server-side capture.',
   'workspace.components.workspace.agent.ArtifactContentViewer.failed_to_fetch_artifact_content': 'Failed to fetch artifact content',
   'workspace.components.workspace.agent.ArtifactList.agent_artifacts': 'Agent Artifacts',
+  'workspace.components.workspace.tools.Terminal.retry_workspace_load': 'Retry workspace load',
   'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title': 'LLM config',
   'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help': 'Optional runtime, model, and LLM settings.',
   'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.clear': 'Clear config',

@@ -55,6 +55,7 @@ const messages = {
   'workspace.components.workspace.agent.ArtifactContentViewer.file_change_is_still_pending_server_side_capture': '该文件变更仍在等待服务器端捕获。',
   'workspace.components.workspace.agent.ArtifactContentViewer.failed_to_fetch_artifact_content': '获取工件内容失败',
   'workspace.components.workspace.agent.ArtifactList.agent_artifacts': '智能体产物',
+  'workspace.components.workspace.tools.Terminal.retry_workspace_load': '重试加载工作区',
   'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title': 'LLM 配置',
   'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help': '可选的运行时、模型和 LLM 设置。',
   'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.clear': '清除配置',
