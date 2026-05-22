@@ -1,4 +1,5 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { appendContextFileReferenceSection } from "autobyteus-ts/agent/message/context-file-reference-section.js";
 import {
   logger,
   asString,
@@ -27,6 +28,7 @@ import { ClaudeTextSegmentProjector } from "./claude-text-segment-projector.js";
 import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
 import { processOrderedClaudeContentBlocks } from "./claude-session-content-block-processor.js";
 import type { ClaudeSdkClient, ClaudeSdkQueryLike } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
+import { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
 
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
 
@@ -35,12 +37,14 @@ const formatClaudeRuntimeError = (error: unknown): string =>
 
 type ClaudeSessionTurnExecutionInput = { turnId: string; content: string; abortController: AbortController };
 type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
+type ContextFilePathResolverLike = Pick<ContextFileLocalPathResolver, "resolve">;
 
 export type ClaudeSessionDependencies = {
   sessionMessageCache: ClaudeSessionMessageCache;
   sdkClient: ClaudeSdkClient;
   activeQueriesByRunId: Map<string, ClaudeSdkQueryLike>;
   toolingCoordinator: ClaudeSessionToolUseCoordinator;
+  contextFileLocalPathResolver?: ContextFilePathResolverLike;
   isRunSessionActive: () => boolean;
   terminateRunSession: () => Promise<void>;
 };
@@ -62,6 +66,7 @@ export class ClaudeSession {
   private currentStatus: ClaudeSessionStatus;
   private isInterruptingActiveTurn = false;
   private rawClaudeChunkSequence = 0;
+  private readonly contextFileLocalPathResolver: ContextFilePathResolverLike;
 
   constructor(input: ClaudeSessionStateInput) {
     this.runContext = input.runContext;
@@ -71,6 +76,8 @@ export class ClaudeSession {
     this.runContext.runtimeContext.activeTurnId =
       input.activeTurnId ?? input.runContext.runtimeContext.activeTurnId ?? null;
     this.currentStatus = this.runContext.runtimeContext.activeTurnId ? "RUNNING" : "IDLE";
+    this.contextFileLocalPathResolver =
+      input.dependencies.contextFileLocalPathResolver ?? new ContextFileLocalPathResolver();
   }
 
   get runId(): string {
@@ -139,7 +146,11 @@ export class ClaudeSession {
   }
 
   async sendTurn(message: AgentInputUserMessage): Promise<{ turnId: string | null }> {
-    const content = asString(message.content);
+    const content = asString(
+      appendContextFileReferenceSection(message.content, message.contextFiles, {
+        resolveUri: (uri) => this.contextFileLocalPathResolver.resolve(uri),
+      }),
+    );
     if (!content) {
       throw new Error("Claude runtime message content is required.");
     }
