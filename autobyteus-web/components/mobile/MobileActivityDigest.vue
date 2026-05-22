@@ -13,29 +13,6 @@
         {{ filter.label }} · {{ filter.count }}
       </button>
     </div>
-    <div class="flex justify-end">
-      <button
-        type="button"
-        class="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-600"
-        data-testid="mobile-activity-more-filters"
-        @click="showAdvancedFilters = !showAdvancedFilters"
-      >
-        {{ showAdvancedFilters ? 'Hide issue filters' : 'Issue filters' }}
-      </button>
-    </div>
-    <div v-if="showAdvancedFilters" class="grid grid-cols-2 gap-2 rounded-2xl bg-slate-50 p-3" data-testid="mobile-activity-advanced-filters">
-      <button
-        v-for="filter in advancedFilters"
-        :key="filter.id"
-        type="button"
-        class="rounded-full px-3 py-1.5 text-xs font-bold"
-        :class="activeFilter === filter.id ? 'bg-blue-600 text-white' : 'bg-white text-slate-600'"
-        :data-testid="`mobile-activity-filter-${filter.id}`"
-        @click="activeFilter = filter.id"
-      >
-        {{ filter.label }} · {{ filter.count }}
-      </button>
-    </div>
 
     <article v-if="showTasks" class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" data-testid="mobile-activity-task-plan">
       <div class="flex items-start justify-between gap-3">
@@ -82,7 +59,7 @@
         </div>
         <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{{ visibleToolCount }}</span>
       </div>
-      <MobileToolActivityList :context="context" :filter="toolFilter" class="mt-3" />
+      <MobileToolActivityList :context="context" class="mt-3" />
     </article>
 
     <article v-if="!context" class="rounded-3xl border border-dashed border-slate-300 p-6 text-center">
@@ -114,8 +91,7 @@ defineEmits<{
   chooseWork: [];
 }>();
 
-type ActivityFilter = 'tasks' | 'messages' | 'tools' | 'errors' | 'approvals';
-type MobileToolActivityFilter = 'all' | 'errors' | 'approvals';
+type ActivityFilter = 'tasks' | 'messages' | 'tools';
 
 const activeContextStore = useActiveContextStore();
 const activityStore = useAgentActivityStore();
@@ -124,7 +100,6 @@ const teamContextsStore = useAgentTeamContextsStore();
 const teamCommunicationStore = useTeamCommunicationStore();
 const activeFilter = ref<ActivityFilter>('tasks');
 const showTeamMessages = ref(false);
-const showAdvancedFilters = ref(false);
 
 const activeTeamContext = computed(() => {
   if (props.context?.kind !== 'team-run') return null;
@@ -165,26 +140,16 @@ const runId = computed(() => {
   return '';
 });
 const toolActivities = computed(() => runId.value ? activityStore.getActivities(runId.value) : []);
-const errorActivities = computed(() => toolActivities.value.filter((activity) => activity.status === 'error' || activity.status === 'denied'));
-const approvalActivities = computed(() => toolActivities.value.filter((activity) => activity.status === 'awaiting-approval'));
 const filters = computed(() => [
   { id: 'tasks' as const, label: 'Tasks', count: taskCards.value.length },
   { id: 'messages' as const, label: 'Messages', count: teamMessages.value.length },
   { id: 'tools' as const, label: 'Tools', count: toolActivities.value.length },
-  { id: 'errors' as const, label: 'Errors', count: errorActivities.value.length },
-  { id: 'approvals' as const, label: 'Approvals', count: approvalActivities.value.length },
 ]);
 const primaryFilters = computed(() => filters.value.filter((filter) => ['tasks', 'messages', 'tools'].includes(filter.id)));
-const advancedFilters = computed(() => filters.value.filter((filter) => filter.id === 'errors' || filter.id === 'approvals'));
 const showTasks = computed(() => activeFilter.value === 'tasks');
 const showMessages = computed(() => activeFilter.value === 'messages');
-const showTools = computed(() => ['tools', 'errors', 'approvals'].includes(activeFilter.value));
-const toolFilter = computed<MobileToolActivityFilter>(() => activeFilter.value === 'errors' || activeFilter.value === 'approvals' ? activeFilter.value : 'all');
-const visibleToolCount = computed(() => {
-  if (toolFilter.value === 'errors') return errorActivities.value.length;
-  if (toolFilter.value === 'approvals') return approvalActivities.value.length;
-  return toolActivities.value.length;
-});
+const showTools = computed(() => activeFilter.value === 'tools');
+const visibleToolCount = computed(() => toolActivities.value.length);
 const taskPlanSummary = computed(() => {
   if (!hasTeamContext.value) return 'Select a team run to see task activity.';
   if (!taskCards.value.length) return 'No task plan updates yet.';
@@ -198,8 +163,6 @@ const messageSummary = computed(() => {
 const toolSummary = computed(() => {
   if (!runId.value) return 'Select a run to see run and tool history.';
   if (!toolActivities.value.length) return 'No tool activity has been recorded for this run yet.';
-  if (toolFilter.value === 'errors') return `${errorActivities.value.length} error/denied item${errorActivities.value.length === 1 ? '' : 's'}.`;
-  if (toolFilter.value === 'approvals') return `${approvalActivities.value.length} approval item${approvalActivities.value.length === 1 ? '' : 's'}.`;
   return `${toolActivities.value.length} activity item${toolActivities.value.length === 1 ? '' : 's'}; rows are compact by default.`;
 });
 </script>

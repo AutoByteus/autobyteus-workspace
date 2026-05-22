@@ -45,18 +45,26 @@
       />
     </main>
 
-    <nav class="grid shrink-0 grid-cols-5 border-t border-slate-200 bg-white" aria-label="Mobile work tasks" data-testid="mobile-bottom-nav">
+    <nav class="grid shrink-0 grid-cols-5 border-t border-slate-200 bg-white/95" aria-label="Mobile work tasks" data-testid="mobile-bottom-nav">
       <button
         v-for="tab in tabs"
         :key="tab.id"
         type="button"
-        class="py-3 text-center text-xs font-semibold transition"
-        :class="activeTab === tab.id ? 'bg-blue-50 text-blue-700' : 'text-slate-500'"
+        class="flex flex-col items-center justify-center gap-0.5 py-2 text-center text-[11px] font-semibold transition"
+        :class="activeTab === tab.id ? 'text-blue-700' : 'text-slate-500'"
+        :aria-label="tab.label"
+        :aria-current="activeTab === tab.id ? 'page' : undefined"
         :data-testid="`mobile-tab-${tab.id}`"
         @click="$emit('update:activeTab', tab.id)"
       >
-        <span class="block text-base">{{ tab.icon }}</span>
-        {{ tab.label }}
+        <span
+          class="block rounded-full px-2 py-0.5 text-sm leading-none"
+          :class="activeTab === tab.id ? 'bg-blue-50' : ''"
+          aria-hidden="true"
+        >
+          {{ tab.icon }}
+        </span>
+        <span>{{ tab.label }}</span>
       </button>
     </nav>
   </section>

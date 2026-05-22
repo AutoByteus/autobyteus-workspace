@@ -204,7 +204,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(runHistoryStore.openRun).toHaveBeenCalledWith('run-1', { selectionMode: 'mobile' });
   });
 
-  it('keeps Start new as a focused mobile setup surface instead of mixing recent history', async () => {
+  it('keeps New run as a focused mobile setup surface instead of mixing recent history', async () => {
     const wrapper = mountShell();
     await nextTick();
     await wrapper.get('[data-testid="mobile-readable-work-row"]').trigger('click');
@@ -219,7 +219,8 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
 
     expect(wrapper.find('[data-testid="mobile-run-setup"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-runs-list"]').exists()).toBe(false);
-    expect(wrapper.get('[data-testid="mobile-runs"]').text()).toContain('Start new run');
+    expect(wrapper.get('[data-testid="mobile-runs"]').text()).toContain('New run');
+    expect(wrapper.get('[data-testid="mobile-runs"]').text()).not.toContain('Active and recent runs');
   });
 
   it('shows a focused context switcher with Recent, Agents, Teams, and Workspaces instead of the desktop tree', async () => {

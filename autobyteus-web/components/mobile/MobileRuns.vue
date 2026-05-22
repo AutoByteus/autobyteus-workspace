@@ -3,8 +3,7 @@
     <header class="shrink-0 border-b border-slate-200 bg-white px-5 py-4">
       <div class="flex items-center justify-between gap-3">
         <div class="min-w-0">
-          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Runs</p>
-          <h2 class="text-xl font-bold text-slate-950">{{ showRunSetup ? 'Start new run' : 'Active and recent runs' }}</h2>
+          <h2 class="text-xl font-bold text-slate-950">{{ showRunSetup ? 'New run' : 'Active runs' }}</h2>
         </div>
         <button
           type="button"
@@ -40,7 +39,7 @@
       </div>
       <div v-else class="rounded-3xl border border-dashed border-slate-300 p-6 text-center" data-testid="mobile-runs-empty">
         <p class="font-semibold text-slate-900">No runs loaded</p>
-        <p class="mt-2 text-sm text-slate-500">Start new work or choose an existing run from the context switcher.</p>
+        <p class="mt-2 text-sm text-slate-500">Start a run or choose an existing run from the context switcher.</p>
         <div class="mt-4 grid gap-2">
           <button type="button" class="rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white" @click="showRunSetup = true">
             Start new run

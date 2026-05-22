@@ -1,7 +1,7 @@
 <template>
   <section
     v-if="context?.kind === 'team-run'"
-    class="shrink-0 border-b border-blue-100 bg-blue-50 px-4 py-3"
+    class="shrink-0 border-b border-blue-100 bg-blue-50 px-4 py-2"
     data-testid="mobile-team-member-focus-bar"
     aria-label="Message target"
   >
@@ -14,6 +14,7 @@
       test-id="mobile-team-focus-select"
       :show-label="false"
       item-noun="members"
+      toggle-variant="chevron"
       @update:model-value="handleFocusChange"
     />
     <div

@@ -43,7 +43,6 @@ import type { ToolInvocationStatus } from '~/types/segments';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
-  filter?: 'all' | 'errors' | 'approvals';
 }>();
 
 const activeContextStore = useActiveContextStore();
@@ -64,14 +63,7 @@ const runId = computed(() => {
   return '';
 });
 const activities = computed(() => {
-  const rows = runId.value ? activityStore.getActivities(runId.value) : [];
-  if (props.filter === 'errors') {
-    return rows.filter((activity) => activity.status === 'error' || activity.status === 'denied');
-  }
-  if (props.filter === 'approvals') {
-    return rows.filter((activity) => activity.status === 'awaiting-approval');
-  }
-  return rows;
+  return runId.value ? activityStore.getActivities(runId.value) : [];
 });
 
 function statusClass(status: ToolInvocationStatus): string {

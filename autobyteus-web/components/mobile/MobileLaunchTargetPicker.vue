@@ -1,6 +1,11 @@
 <template>
-  <section class="rounded-2xl border border-blue-200 bg-white p-3" :data-testid="testId" :aria-label="label">
-    <div class="flex items-start justify-between gap-3">
+  <section
+    class="rounded-2xl border border-blue-200 bg-white"
+    :class="toggleVariant === 'chevron' ? 'p-2.5' : 'p-3'"
+    :data-testid="testId"
+    :aria-label="label"
+  >
+    <div class="flex items-center justify-between gap-3">
       <div class="min-w-0">
         <p v-if="showLabel" class="text-sm font-bold text-blue-950">{{ label }}</p>
         <p class="truncate text-sm" :class="[showLabel ? 'mt-1' : '', selectedItem ? 'text-slate-700' : 'text-slate-500']">
@@ -9,11 +14,19 @@
       </div>
       <button
         type="button"
-        class="shrink-0 rounded-xl border border-blue-200 px-3 py-2 text-sm font-semibold text-blue-700"
+        class="shrink-0 border font-semibold transition"
+        :class="toggleVariant === 'chevron'
+          ? 'flex h-9 w-9 items-center justify-center rounded-full border-blue-100 bg-blue-50 text-lg leading-none text-blue-700'
+          : 'rounded-xl border-blue-200 px-3 py-2 text-sm text-blue-700'"
         :data-testid="`${testId}-toggle`"
+        :aria-label="toggleAccessibleLabel"
+        :title="toggleAccessibleLabel"
+        :aria-expanded="isOpen"
+        aria-haspopup="listbox"
         @click="isOpen = !isOpen"
       >
-        {{ selectedItem ? 'Change' : 'Choose' }}
+        <span v-if="toggleVariant === 'chevron'" aria-hidden="true">⌄</span>
+        <span v-else>{{ selectedItem ? 'Change' : 'Choose' }}</span>
       </button>
     </div>
 
@@ -66,9 +79,11 @@ const props = withDefaults(defineProps<{
   testId: string;
   showLabel?: boolean;
   itemNoun?: string;
+  toggleVariant?: 'button' | 'chevron';
 }>(), {
   showLabel: true,
   itemNoun: '',
+  toggleVariant: 'button',
 });
 
 const emit = defineEmits<{
@@ -80,6 +95,10 @@ const query = ref('');
 
 const searchNoun = computed(() => props.itemNoun || props.label.toLowerCase());
 const selectedItem = computed(() => props.items.find((item) => item.id === props.modelValue) ?? null);
+const toggleAccessibleLabel = computed(() => {
+  const label = props.label.toLowerCase();
+  return `${selectedItem.value ? 'Change' : 'Choose'} ${label}`;
+});
 const filteredItems = computed(() => {
   const normalizedQuery = query.value.trim().toLowerCase();
   if (!normalizedQuery) return props.items;
