@@ -53,6 +53,11 @@ describe('AgentConversationFeed', () => {
     expect(renderedMessages[1].attributes('data-test')).toBe('ai-message');
     expect(wrapper.text()).toContain('cool. did you get answer?');
     expect(wrapper.text()).toContain('Based on the tool execution I have enough information to respond.');
+    expect(wrapper.get('[data-testid="agent-conversation-feed"]').classes()).toEqual(expect.arrayContaining([
+      'h-full',
+      'min-h-0',
+      'overflow-y-auto',
+    ]));
   });
 
   it('can hide token-cost and total-usage metadata for smaller tiles', () => {

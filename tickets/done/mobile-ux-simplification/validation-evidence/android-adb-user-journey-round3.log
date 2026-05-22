@@ -1,0 +1,1335 @@
+[2026-05-22T05:36:24.752Z] mock/proxy listening on http://127.0.0.1:3330
+[2026-05-22T05:36:24.930Z] [nuxt] > autobyteus@1.3.24 dev /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 3331
+[2026-05-22T05:36:25.392Z] [nuxt] │
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+[2026-05-22T05:36:25.398Z] [nuxt] ➜ Local:    http://127.0.0.1:3331/
+  ➜ Network:  use --host to expose
+[2026-05-22T05:36:25.468Z] [nuxt] isElectronBuild false
+[2026-05-22T05:36:25.485Z] [nuxt] [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+[2026-05-22T05:36:26.196Z] [nuxt] ✔ Vite client built in 38ms
+[2026-05-22T05:36:26.793Z] [nuxt] ✔ Vite server built in 596ms
+[2026-05-22T05:36:28.775Z] [nuxt] [nitro] ✔ Nuxt Nitro server built in 581ms
+[2026-05-22T05:36:28.777Z] [nuxt] ℹ Vite client warmed up in 1ms
+[2026-05-22T05:36:29.278Z] Nuxt mobile route ready HTTP 200
+[2026-05-22T05:36:29.281Z] mock status ready HTTP 200
+[2026-05-22T05:36:29.281Z] adb install -r /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+[2026-05-22T05:36:29.775Z] stdout: Performing Streamed Install
+Success
+[2026-05-22T05:36:29.775Z] adb devices -l
+[2026-05-22T05:36:29.796Z] stdout: List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:6
+[2026-05-22T05:36:29.796Z] adb shell getprop ro.product.model
+[2026-05-22T05:36:29.850Z] stdout: 2109119DG
+[2026-05-22T05:36:29.850Z] adb shell getprop ro.build.version.release
+[2026-05-22T05:36:29.959Z] stdout: 12
+[2026-05-22T05:36:29.959Z] adb shell wm size
+[2026-05-22T05:36:30.125Z] stdout: Physical size: 1080x2400
+[2026-05-22T05:36:30.125Z] adb shell wm density
+[2026-05-22T05:36:30.193Z] stdout: Physical density: 440
+[2026-05-22T05:36:30.194Z] adb reverse --remove-all
+[2026-05-22T05:36:30.215Z] adb reverse tcp:3330 tcp:3330
+[2026-05-22T05:36:30.248Z] stdout: 3330
+[2026-05-22T05:36:30.248Z] adb reverse --list
+[2026-05-22T05:36:30.268Z] stdout: UsbFfs tcp:3330 tcp:3330
+[2026-05-22T05:36:30.268Z] adb shell input keyevent KEYCODE_WAKEUP
+[2026-05-22T05:36:30.306Z] adb shell pm clear org.autobyteus.mobile
+[2026-05-22T05:36:30.393Z] stdout: Success
+[2026-05-22T05:36:30.393Z] adb shell am start -a android.intent.action.SEND -t text/plain --es android.intent.extra.TEXT http://127.0.0.1:3330/mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovLzEyNy4wLjAuMTozMzMwIiwicGFpcmluZ0NvZGUiOiJBREItUEFJUi1ST1VORDMiLCJleHBpcmVzQXQiOiIyMDI2LTA1LTIyVDA5OjMwOjAwLjAwMFoiLCJzZXJ2ZXJOYW1lIjoiRGVza3RvcCBOb2RlIn0 -n org.autobyteus.mobile/.MainActivity
+[2026-05-22T05:36:30.483Z] stdout: Starting: Intent { act=android.intent.action.SEND typ=text/plain cmp=org.autobyteus.mobile/.MainActivity (has extras) }
+[2026-05-22T05:36:34.423Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-native-http-ack-round3.png
+[2026-05-22T05:36:34.424Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:36:37.084Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:36:37.084Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:36:37.151Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.ScrollView" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="true" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.LinearLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable=
+[2026-05-22T05:36:37.152Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:36:39.823Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:36:39.823Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:36:39.886Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.ScrollView" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="true" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.LinearLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable=
+[2026-05-22T05:36:39.886Z] adb shell input tap 540 1318
+[2026-05-22T05:36:41.480Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:36:44.134Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:36:44.134Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:36:44.204Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.ScrollView" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="true" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.LinearLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable=
+[2026-05-22T05:36:44.204Z] adb shell input tap 294 1462
+[2026-05-22T05:36:45.810Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:36:48.496Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:36:48.496Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:36:48.567Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node NAF="true" index="0" text="" resource-id="" class="android.webkit.WebView" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="true" enabled="true" foc
+[2026-05-22T05:36:50.068Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:36:52.760Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:36:52.760Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:36:52.834Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.webkit.WebView" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="fa
+[2026-05-22T05:36:54.339Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:36:57.010Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:36:57.010Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:36:57.093Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.webkit.WebView" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="fa
+[2026-05-22T05:36:57.460Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-web-pairing-round3.png
+[2026-05-22T05:36:57.460Z] adb shell input tap 540 1590
+[2026-05-22T05:37:03.571Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:37:06.302Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:37:06.303Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:37:06.370Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.webkit.WebView" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="fa
+[2026-05-22T05:37:06.370Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:37:09.122Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:37:09.122Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:37:09.190Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.webkit.WebView" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="fa
+[2026-05-22T05:37:09.191Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:37:11.918Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:37:11.918Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:37:11.988Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.webkit.WebView" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="fa
+[2026-05-22T05:37:11.988Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:37:15.560Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:37:15.561Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:37:15.627Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.webkit.WebView" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="fa
+[2026-05-22T05:37:16.107Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-failure.png
+[2026-05-22T05:37:16.107Z] adb reverse --remove-all
+[2026-05-22T05:39:41.610Z] proxy http://127.0.0.1:3330
+[2026-05-22T05:39:41.784Z] [nuxt] > autobyteus@1.3.24 dev /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 3331
+[2026-05-22T05:39:42.179Z] [nuxt] │
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+[2026-05-22T05:39:42.185Z] [nuxt] ➜ Local:    http://127.0.0.1:3331/
+  ➜ Network:  use --host to expose
+[2026-05-22T05:39:42.253Z] [nuxt] isElectronBuild false
+[2026-05-22T05:39:42.269Z] [nuxt] [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+[2026-05-22T05:39:42.935Z] [nuxt] ✔ Vite client built in 35ms
+[2026-05-22T05:39:43.481Z] [nuxt] ✔ Vite server built in 546ms
+[2026-05-22T05:39:45.337Z] [nuxt] [nitro] ✔ Nuxt Nitro server built in 521ms
+[2026-05-22T05:39:45.339Z] [nuxt] ℹ Vite client warmed up in 1ms
+[2026-05-22T05:39:45.970Z] nuxt mobile ready 200
+[2026-05-22T05:39:45.970Z] adb install -r /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+[2026-05-22T05:39:46.468Z] stdout: Performing Streamed Install
+Success
+[2026-05-22T05:39:46.468Z] adb reverse --remove-all
+[2026-05-22T05:39:46.499Z] adb reverse tcp:3330 tcp:3330
+[2026-05-22T05:39:46.539Z] stdout: 3330
+[2026-05-22T05:39:46.539Z] adb devices -l
+[2026-05-22T05:39:46.555Z] stdout: List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:6
+[2026-05-22T05:39:46.556Z] adb shell getprop ro.product.model
+[2026-05-22T05:39:46.677Z] stdout: 2109119DG
+[2026-05-22T05:39:46.678Z] adb shell getprop ro.build.version.release
+[2026-05-22T05:39:46.754Z] stdout: 12
+[2026-05-22T05:39:46.754Z] adb shell wm size
+[2026-05-22T05:39:46.889Z] stdout: Physical size: 1080x2400
+[2026-05-22T05:39:46.889Z] adb shell wm density
+[2026-05-22T05:39:46.946Z] stdout: Physical density: 440
+[2026-05-22T05:39:46.946Z] adb shell input keyevent KEYCODE_WAKEUP
+[2026-05-22T05:39:46.986Z] adb shell am force-stop org.autobyteus.mobile
+[2026-05-22T05:39:47.023Z] adb shell am start -n org.autobyteus.mobile/.MainActivity
+[2026-05-22T05:39:47.077Z] stdout: Starting: Intent { cmp=org.autobyteus.mobile/.MainActivity }
+[2026-05-22T05:39:47.077Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:39:50.222Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:39:50.222Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:39:50.222Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:39:50.311Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.ScrollView" package="org.autobyteus.mobile" content-desc="" chec
+[2026-05-22T05:39:51.812Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:39:54.441Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:39:54.441Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:39:54.441Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:39:54.535Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:39:56.036Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:39:59.179Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:39:59.179Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:39:59.179Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:39:59.248Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:39:59.248Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:40:02.315Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:40:02.315Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:40:02.315Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:40:02.385Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:40:02.823Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png
+[2026-05-22T05:40:02.823Z] adb shell input tap 360 930
+[2026-05-22T05:40:03.016Z] unknown GraphQL CreateWorkspace
+[2026-05-22T05:40:09.922Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:40:12.660Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:40:12.661Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:40:12.661Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:40:12.728Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:40:14.229Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:40:17.798Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:40:17.798Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:40:17.798Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:40:17.861Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:40:19.363Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:40:22.133Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:40:22.133Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:40:22.133Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:40:22.204Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:40:23.706Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:40:26.372Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:40:26.372Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:40:26.372Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:40:26.424Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:40:27.926Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:40:30.571Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:40:30.572Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:40:30.572Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:40:30.643Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:40:32.144Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:40:35.160Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:40:35.160Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:40:35.160Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:40:35.253Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:40:36.755Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:41:07.904Z] proxy http://127.0.0.1:3330
+[2026-05-22T05:41:08.069Z] [nuxt] > autobyteus@1.3.24 dev /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 3331
+[2026-05-22T05:41:08.455Z] [nuxt] │
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+[2026-05-22T05:41:08.461Z] [nuxt] ➜ Local:    http://127.0.0.1:3331/
+  ➜ Network:  use --host to expose
+[2026-05-22T05:41:08.530Z] [nuxt] isElectronBuild false
+[2026-05-22T05:41:08.546Z] [nuxt] [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+[2026-05-22T05:41:09.205Z] [nuxt] ✔ Vite client built in 35ms
+[2026-05-22T05:41:09.755Z] [nuxt] ✔ Vite server built in 550ms
+[2026-05-22T05:41:11.582Z] [nuxt] [nitro] ✔ Nuxt Nitro server built in 532ms
+[2026-05-22T05:41:11.584Z] [nuxt] ℹ Vite client warmed up in 0ms
+[2026-05-22T05:41:12.229Z] nuxt mobile ready 200
+[2026-05-22T05:41:12.229Z] adb install -r /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+[2026-05-22T05:41:12.789Z] stdout: Performing Streamed Install
+Success
+[2026-05-22T05:41:12.790Z] adb reverse --remove-all
+[2026-05-22T05:41:12.819Z] adb reverse tcp:3330 tcp:3330
+[2026-05-22T05:41:12.840Z] stdout: 3330
+[2026-05-22T05:41:12.841Z] adb devices -l
+[2026-05-22T05:41:12.858Z] stdout: List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:6
+[2026-05-22T05:41:12.858Z] adb shell getprop ro.product.model
+[2026-05-22T05:41:12.944Z] stdout: 2109119DG
+[2026-05-22T05:41:12.944Z] adb shell getprop ro.build.version.release
+[2026-05-22T05:41:13.064Z] stdout: 12
+[2026-05-22T05:41:13.064Z] adb shell wm size
+[2026-05-22T05:41:13.152Z] stdout: Physical size: 1080x2400
+[2026-05-22T05:41:13.152Z] adb shell wm density
+[2026-05-22T05:41:13.198Z] stdout: Physical density: 440
+[2026-05-22T05:41:13.198Z] adb shell input keyevent KEYCODE_WAKEUP
+[2026-05-22T05:41:13.239Z] adb shell am force-stop org.autobyteus.mobile
+[2026-05-22T05:41:13.281Z] adb shell am start -n org.autobyteus.mobile/.MainActivity
+[2026-05-22T05:41:13.340Z] stdout: Starting: Intent { cmp=org.autobyteus.mobile/.MainActivity }
+[2026-05-22T05:41:18.341Z] adb shell input tap 120 190
+[2026-05-22T05:41:20.434Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:41:24.109Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:41:24.110Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:41:24.110Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:41:24.205Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:41:24.205Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:41:26.887Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:41:26.887Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:41:26.887Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:41:26.969Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:41:27.395Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png
+[2026-05-22T05:41:27.395Z] adb shell input tap 360 930
+[2026-05-22T05:41:34.499Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:41:37.247Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:41:37.247Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:41:37.247Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:41:37.334Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:41:38.835Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:41:41.526Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:41:41.527Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:41:41.527Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:41:41.605Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:41:43.107Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:41:45.821Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:41:45.821Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:41:45.821Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:41:45.890Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:41:47.392Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:41:50.122Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:41:50.122Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:41:50.122Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:41:50.208Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:41:51.709Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:41:54.469Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:41:54.469Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:41:54.469Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:41:54.574Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:41:56.076Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:41:58.823Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:41:58.824Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:41:58.824Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:41:58.907Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:00.409Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:03.142Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:03.142Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:03.142Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:03.209Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:04.710Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:07.458Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:07.458Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:07.458Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:07.528Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:09.028Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:11.763Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:11.763Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:11.764Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:11.828Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:13.331Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:16.067Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:16.067Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:16.067Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:16.150Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:17.652Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:20.386Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:20.387Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:20.387Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:20.472Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:21.974Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:24.701Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:24.701Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:24.701Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:24.785Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:26.288Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:29.049Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:29.049Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:29.049Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:29.153Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:30.656Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:33.605Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:33.606Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:33.606Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:33.689Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:35.190Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:37.960Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:37.963Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:37.963Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:38.049Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:39.551Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:42.326Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:42.326Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:42.326Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:42.409Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:43.910Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:46.583Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:46.583Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:46.583Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:46.667Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:48.168Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:50.940Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:50.940Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:50.940Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:51.024Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:52.525Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:55.298Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:55.298Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:55.299Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:55.356Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:42:56.857Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:42:59.605Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:42:59.605Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:42:59.605Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:42:59.688Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:43:01.189Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:43:03.905Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:43:03.905Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:43:03.905Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:43:03.968Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:43:05.904Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-failure.png
+[2026-05-22T05:43:05.904Z] adb reverse --remove-all
+[2026-05-22T05:43:58.782Z] proxy http://127.0.0.1:3330
+[2026-05-22T05:43:58.954Z] [nuxt] > autobyteus@1.3.24 dev /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 3331
+[2026-05-22T05:43:59.345Z] [nuxt] │
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+[2026-05-22T05:43:59.351Z] [nuxt] ➜ Local:    http://127.0.0.1:3331/
+  ➜ Network:  use --host to expose
+[2026-05-22T05:43:59.421Z] [nuxt] isElectronBuild false
+[2026-05-22T05:43:59.437Z] [nuxt] [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+[2026-05-22T05:44:00.102Z] [nuxt] ✔ Vite client built in 35ms
+[2026-05-22T05:44:00.662Z] [nuxt] ✔ Vite server built in 560ms
+[2026-05-22T05:44:02.504Z] [nuxt] [nitro] ✔ Nuxt Nitro server built in 507ms
+[2026-05-22T05:44:02.506Z] [nuxt] ℹ Vite client warmed up in 1ms
+[2026-05-22T05:44:03.143Z] nuxt mobile ready 200
+[2026-05-22T05:44:03.143Z] adb install -r /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+[2026-05-22T05:44:03.660Z] stdout: Performing Streamed Install
+Success
+[2026-05-22T05:44:03.661Z] adb reverse --remove-all
+[2026-05-22T05:44:03.711Z] adb reverse tcp:3330 tcp:3330
+[2026-05-22T05:44:03.741Z] stdout: 3330
+[2026-05-22T05:44:03.741Z] adb devices -l
+[2026-05-22T05:44:03.761Z] stdout: List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:6
+[2026-05-22T05:44:03.761Z] adb shell getprop ro.product.model
+[2026-05-22T05:44:03.826Z] stdout: 2109119DG
+[2026-05-22T05:44:03.826Z] adb shell getprop ro.build.version.release
+[2026-05-22T05:44:03.915Z] stdout: 12
+[2026-05-22T05:44:03.915Z] adb shell wm size
+[2026-05-22T05:44:04.046Z] stdout: Physical size: 1080x2400
+[2026-05-22T05:44:04.046Z] adb shell wm density
+[2026-05-22T05:44:04.119Z] stdout: Physical density: 440
+[2026-05-22T05:44:04.119Z] adb shell input keyevent KEYCODE_WAKEUP
+[2026-05-22T05:44:04.164Z] adb shell am force-stop org.autobyteus.mobile
+[2026-05-22T05:44:04.206Z] adb shell am start -n org.autobyteus.mobile/.MainActivity
+[2026-05-22T05:44:04.256Z] stdout: Starting: Intent { cmp=org.autobyteus.mobile/.MainActivity }
+[2026-05-22T05:44:09.259Z] adb shell input tap 120 190
+[2026-05-22T05:44:11.366Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:44:14.083Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:44:14.083Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:44:14.083Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:44:14.168Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:44:14.168Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:44:16.836Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:44:16.837Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:44:16.837Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:44:16.895Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:44:17.318Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png
+[2026-05-22T05:44:17.318Z] adb shell input tap 360 930
+[2026-05-22T05:44:24.435Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:44:27.873Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:44:27.873Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:44:27.873Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:44:27.974Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:44:28.442Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-round3.png
+[2026-05-22T05:44:28.442Z] adb shell input swipe 540 1900 540 450 650
+[2026-05-22T05:44:30.416Z] adb shell input swipe 540 1900 540 450 650
+[2026-05-22T05:44:32.393Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:44:35.976Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:44:35.976Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:44:35.976Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:44:36.069Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:44:36.486Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-after-swipe-round3.png
+[2026-05-22T05:44:36.486Z] adb shell input tap 970 2100
+[2026-05-22T05:44:39.094Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:44:41.835Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:44:41.835Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:44:41.835Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:44:41.926Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:44:41.926Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:44:44.660Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:44:44.660Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:44:44.660Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:44:44.754Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:44:44.755Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:44:47.459Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:44:47.459Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:44:47.459Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:44:47.528Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:44:47.942Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-activity-round3.png
+[2026-05-22T05:44:47.942Z] adb shell input tap 755 2100
+[2026-05-22T05:44:51.051Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:44:53.822Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:44:53.823Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:44:53.823Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:44:53.908Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:44:53.908Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:44:56.660Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:44:56.660Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:44:56.660Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:44:56.743Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:44:57.163Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-tools-round3.png
+[2026-05-22T05:44:57.163Z] adb shell input tap 100 180
+[2026-05-22T05:44:59.764Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:02.769Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:02.769Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:02.769Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:02.854Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:02.855Z] adb shell input tap 350 1260
+[2026-05-22T05:45:09.937Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:13.413Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:13.414Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:13.414Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:13.512Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:15.014Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:18.415Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:18.416Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:18.416Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:18.487Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:19.991Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:23.931Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:23.931Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:23.931Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:24.013Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:25.515Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:29.052Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:29.052Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:29.052Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:29.151Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:30.653Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:34.131Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:34.131Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:34.131Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:34.239Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:35.741Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:38.477Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:38.477Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:38.477Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:38.563Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:40.065Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:42.815Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:42.815Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:42.816Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:42.888Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:44.389Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:47.585Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:47.585Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:47.585Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:47.668Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:49.170Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:51.950Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:51.950Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:51.950Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:52.065Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:53.566Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:45:56.759Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:45:56.759Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:45:56.759Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:45:56.847Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:45:58.348Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:46:02.737Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:46:02.737Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:46:02.737Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:46:02.824Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:46:04.325Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:46:07.084Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:46:07.085Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:46:07.085Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:46:07.169Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:46:07.170Z] adb shell uiautomator dump /sdcard/window.xml
+[2026-05-22T05:46:09.903Z] stdout: UI hierchary dumped to: /sdcard/window.xml
+[2026-05-22T05:46:09.903Z] stderr: java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+	at libcore.io.IoBridge.open(IoBridge.java:574)
+	at java.io.FileInputStream.<init>(FileInputStream.java:179)
+	at java.io.FileInputStream.<init>(FileInputStream.java:133)
+	at java.io.FileReader.<init>(FileReader.java:60)
+	at miui.content.res.ThemeCompatibilityLoader.getVersion(ThemeCompatibilityLoader.java:108)
+	at miui.content.res.ThemeCompatibilityLoader.getConfigDocumentTree(ThemeCompatibilityLoader.java:126)
+	at miui.content.res.ThemeCompatibilityLoader.loadConfig(ThemeCompatibilityLoader.java:59)
+	at miui.content.res.ThemeCompatibility.<clinit>(ThemeCompatibility.java:31)
+	at android.content.res.MiuiResourcesImpl.<clinit>(MiuiResourcesImpl.java:41)
+	at android.content.res.MiuiResources.<init>(MiuiResources.java:58)
+	at android.content.res.IMiuiResourceImpl.createResources(IMiuiResourceImpl.java:13)
+	at android.content.res.ThemeManagerStub.createMiuiResources(ThemeManagerStub.java:56)
+	at android.content.res.Resources.getSystem(Resources.java:235)
+	at android.util.MiuiMultiWindowAdapter.<clinit>(MiuiMultiWindowAdapter.java:81)
+	at com.xiaomi.freeform.
+[2026-05-22T05:46:09.903Z] adb exec-out cat /sdcard/window.xml
+[2026-05-22T05:46:09.987Z] stdout: <?xml version='1.0' encoding='UTF-8' standalone='yes' ?><hierarchy rotation="0"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,0][1080,2166]"><node index="0" text="" resource-id="android:id/content" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" checkable="false" checked="false" clickable="false" enabled="true" focusable="false" focused="false" scrollable="false" long-clickable="false" password="false" selected="false" bounds="[0,104][1080,2166]"><node index="0" text="" resource-id="" class="android.widget.FrameLayout" package="org.autobyteus.mobile" content-desc="" che
+[2026-05-22T05:46:10.434Z] screenshot /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-team-target-round3.png
+[2026-05-22T05:46:10.435Z] adb reverse --remove-all

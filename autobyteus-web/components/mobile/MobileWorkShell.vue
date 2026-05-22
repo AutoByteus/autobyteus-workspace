@@ -1,5 +1,5 @@
 <template>
-  <section class="flex h-screen h-[100dvh] flex-col bg-slate-100 text-slate-900" data-testid="mobile-work-shell">
+  <section class="flex h-screen h-[100dvh] min-h-0 flex-col overflow-hidden overscroll-none bg-slate-100 text-slate-900" data-testid="mobile-work-shell">
     <header class="flex shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 shadow-sm" data-testid="mobile-work-header">
       <button type="button" class="rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700" @click="$emit('home')">
         Home

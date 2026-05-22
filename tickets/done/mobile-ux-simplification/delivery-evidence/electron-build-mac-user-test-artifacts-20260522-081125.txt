@@ -1,0 +1,11 @@
+Electron macOS user-test build artifacts generated on 2026-05-22 08:11:25 CEST (+0200)
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo
+Branch: codex/mobile-ux-simplification
+HEAD: b64bfe508f1c8844a1f7e18f8a7fee4623c0e5d0
+
+Artifacts:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/ (directory, size: 1.2G)
+- /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.dmg (size: 362M)
+- /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.dmg.blockmap (size: 387K)
+- /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.zip (size: 360M)
+- /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.zip.blockmap (size: 378K)

@@ -64,6 +64,26 @@ describe('AgentEventMonitor.vue', () => {
     expect(wrapper.find('[data-testid="agent-input-stub"]').exists()).toBe(true);
   });
 
+  it('keeps the shared monitor as a bounded flex column for mobile and desktop shells', () => {
+    const wrapper = mount(AgentEventMonitor, {
+      props: { conversation },
+      global: {
+        stubs: {
+          AgentUserInputForm: { template: '<div data-testid="agent-input-stub" />' },
+          AgentConversationFeed: { template: '<div data-testid="agent-feed-stub" />' },
+          CompactionStatusBanner: { template: '<div data-testid="compaction-banner-stub" />' },
+        },
+      },
+    });
+
+    expect(wrapper.get('[data-testid="agent-event-monitor"]').classes()).toEqual(expect.arrayContaining([
+      'h-full',
+      'min-h-0',
+      'flex-col',
+      'overflow-hidden',
+    ]));
+  });
+
   it('forwards compaction status into the banner component', () => {
     const wrapper = mount(AgentEventMonitor, {
       props: {

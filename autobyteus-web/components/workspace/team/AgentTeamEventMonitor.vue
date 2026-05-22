@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full">
+  <div class="flex h-full min-h-0 flex-col overflow-hidden" data-testid="agent-team-event-monitor">
     <AgentEventMonitor
       v-if="conversationOfFocusedMember"
       :conversation="conversationOfFocusedMember"
@@ -8,7 +8,7 @@
       :agent-avatar-url="focusedMemberAvatarUrl"
       :inter-agent-sender-name-by-id="interAgentSenderNameById"
       :before-send="beforeSend"
-      class="h-full"
+      class="min-h-0 flex-1 overflow-hidden"
     >
       <template #composerContext>
         <slot name="composerContext" />
@@ -16,7 +16,7 @@
     </AgentEventMonitor>
     <div
       v-else-if="focusedMemberNode?.memberKind === 'agent_team'"
-      class="h-full overflow-y-auto p-6"
+      class="min-h-0 flex-1 overflow-y-auto p-6"
     >
       <div class="rounded-xl border border-slate-200 bg-slate-50 p-5">
         <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -38,7 +38,7 @@
         </div>
       </div>
     </div>
-    <div v-else class="p-8 text-center text-gray-500 h-full flex items-center justify-center">
+    <div v-else class="flex min-h-0 flex-1 items-center justify-center overflow-y-auto p-8 text-center text-gray-500">
       <div v-if="!activeTeam">
         <p>{{ $t('workspace.components.workspace.team.AgentTeamEventMonitor.no_active_team_session') }}</p>
       </div>
