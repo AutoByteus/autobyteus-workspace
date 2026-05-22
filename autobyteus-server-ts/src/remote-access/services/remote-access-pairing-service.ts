@@ -25,10 +25,27 @@ const generatePairingCode = (): string => randomBytes(18).toString("base64url");
 const encodePairingParam = (payload: RemoteAccessPairingPayload): string =>
   Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
 
-const buildMobileUrl = (serverBaseUrl: string, payload: RemoteAccessPairingPayload): string => {
-  const url = new URL("/mobile", serverBaseUrl);
+export const buildMobileUrlFromServerBaseUrl = (
+  serverBaseUrl: string,
+  payload: RemoteAccessPairingPayload,
+): string => {
+  const url = new URL(serverBaseUrl);
+  const basePath = url.pathname.replace(/\/+$/, "");
+  url.pathname = `${basePath}/mobile`;
+  url.search = "";
+  url.hash = "";
   url.searchParams.set("pairing", encodePairingParam(payload));
   return url.toString();
+};
+
+const assertHttpsServerBaseUrl = (serverBaseUrl: string): void => {
+  if (new URL(serverBaseUrl).protocol !== "https:") {
+    throw new RemoteAccessError(
+      "REMOTE_ACCESS_HTTPS_REQUIRED",
+      "Phone Access pairing requires an HTTPS server URL.",
+      400,
+    );
+  }
 };
 
 export class RemoteAccessPairingService {
@@ -56,6 +73,7 @@ export class RemoteAccessPairingService {
     this.pruneExpiredSessions();
     const createdAtMs = nowMs();
     const serverBaseUrl = normalizeNodeBaseUrl(input.serverBaseUrl);
+    assertHttpsServerBaseUrl(serverBaseUrl);
     const payload: RemoteAccessPairingPayload = {
       version: 1,
       serverBaseUrl,
@@ -71,7 +89,7 @@ export class RemoteAccessPairingService {
       createdAt: toIso(createdAtMs),
     });
 
-    const mobileUrl = buildMobileUrl(serverBaseUrl, payload);
+    const mobileUrl = buildMobileUrlFromServerBaseUrl(serverBaseUrl, payload);
     return {
       payload,
       qrText: mobileUrl,

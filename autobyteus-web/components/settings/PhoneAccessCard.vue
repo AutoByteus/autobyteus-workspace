@@ -30,6 +30,42 @@
 
     <div class="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
       <div class="space-y-4">
+        <div class="rounded-xl border border-blue-100 bg-blue-50/70 p-4">
+          <label class="text-xs font-semibold uppercase tracking-wide text-blue-800">{{ $t('settings.components.settings.PhoneAccessCard.manualPrivateNetworkUrl') }}</label>
+          <p class="mt-1 text-xs leading-5 text-blue-900" data-testid="phone-access-manual-url-help">
+            {{ $t('settings.components.settings.PhoneAccessCard.serveHttpsUrlHelp') }}
+          </p>
+          <div class="mt-2 flex gap-2">
+            <input
+              v-model="store.manualServerBaseUrl"
+              type="text"
+              placeholder="https://desktop.tailnet-name.ts.net/mobile"
+              class="min-w-0 flex-1 rounded-lg border border-blue-200 px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              data-testid="phone-access-manual-url"
+              @input="store.selectedServerBaseUrl = ($event.target as HTMLInputElement).value"
+            />
+            <button
+              type="button"
+              class="rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50"
+              data-testid="phone-access-use-manual-url"
+              @click="store.refreshCandidates"
+            >
+              {{ $t('settings.components.settings.PhoneAccessCard.useManualUrl') }}
+            </button>
+          </div>
+          <p class="mt-2 text-xs text-blue-900" data-testid="phone-access-normalized-url-note">
+            {{ $t('settings.components.settings.PhoneAccessCard.baseMobileContract') }}
+          </p>
+          <div
+            v-if="selectedUrlWarning"
+            class="mt-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900"
+            data-testid="phone-access-url-warning"
+          >
+            <p class="font-semibold">{{ $t('settings.components.settings.PhoneAccessCard.httpsRequiredTitle') }}</p>
+            <p class="mt-1">{{ selectedUrlWarning }}</p>
+          </div>
+        </div>
+
         <div>
           <div class="flex items-center justify-between gap-2">
             <label class="text-xs font-semibold uppercase tracking-wide text-slate-600">{{ $t('settings.components.settings.PhoneAccessCard.reachableServerUrl') }}</label>
@@ -42,41 +78,21 @@
             class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
             data-testid="phone-access-candidate-select"
           >
+            <option value="">{{ $t('settings.components.settings.PhoneAccessCard.candidatePlaceholder') }}</option>
             <option v-for="candidate in store.candidates" :key="candidate.id" :value="candidate.serverBaseUrl">
               {{ candidate.label }} — {{ candidate.serverBaseUrl }}
             </option>
           </select>
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold uppercase tracking-wide text-slate-600">{{ $t('settings.components.settings.PhoneAccessCard.manualPrivateNetworkUrl') }}</label>
-          <div class="mt-2 flex gap-2">
-            <input
-              v-model="store.manualServerBaseUrl"
-              type="text"
-              placeholder="https://desktop.tailnet-name.ts.net"
-              class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
-              data-testid="phone-access-manual-url"
-            />
-            <button
-              type="button"
-              class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-              @click="store.refreshCandidates"
-            >
-              Use
-            </button>
-          </div>
-          <div class="mt-2 rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs text-blue-900" data-testid="phone-access-tailscale-guidance">
-            <p class="font-semibold">{{ $t('settings.components.settings.PhoneAccessCard.tailscaleGuidanceTitle') }}</p>
-            <p class="mt-1">{{ $t('settings.components.settings.PhoneAccessCard.tailscaleGuidanceBody') }}</p>
-          </div>
+          <p class="mt-2 text-xs text-slate-500" data-testid="phone-access-candidate-diagnostic-note">
+            {{ $t('settings.components.settings.PhoneAccessCard.httpCandidateDiagnosticNote') }}
+          </p>
         </div>
 
         <div class="flex flex-wrap gap-2">
           <button
             type="button"
             class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50"
-            :disabled="!store.phoneAccessEnabled || !store.selectedServerBaseUrl"
+            :disabled="!canCreatePairingSession"
             data-testid="phone-access-create-qr"
             @click="onCreateQr"
           >
@@ -85,7 +101,7 @@
           <button
             type="button"
             class="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50"
-            :disabled="store.devices.length === 0"
+            :disabled="store.activeDevices.length === 0"
             data-testid="phone-access-revoke-all"
             @click="onRevokeAll"
           >
@@ -94,27 +110,58 @@
         </div>
 
         <div>
-          <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-600">{{ $t('settings.components.settings.PhoneAccessCard.pairedPhones') }}</h4>
-          <div v-if="store.devices.length === 0" class="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">
-            {{ $t('settings.components.settings.PhoneAccessCard.noPhonesPaired') }}
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-600">{{ $t('settings.components.settings.PhoneAccessCard.pairedPhones') }}</h4>
+            <div class="inline-flex w-fit rounded-full border border-slate-200 bg-slate-100 p-1" role="tablist" :aria-label="$t('settings.components.settings.PhoneAccessCard.deviceViewsAria')">
+              <button
+                type="button"
+                role="tab"
+                class="rounded-full px-3 py-1.5 text-xs font-semibold transition"
+                :class="deviceListView === 'active' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+                :aria-selected="deviceListView === 'active'"
+                data-testid="phone-access-devices-tab-active"
+                @click="deviceListView = 'active'"
+              >
+                {{ $t('settings.components.settings.PhoneAccessCard.activeDevicesTab', { count: store.activeDevices.length }) }}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                class="rounded-full px-3 py-1.5 text-xs font-semibold transition"
+                :class="deviceListView === 'revoked' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+                :aria-selected="deviceListView === 'revoked'"
+                data-testid="phone-access-devices-tab-revoked"
+                @click="deviceListView = 'revoked'"
+              >
+                {{ $t('settings.components.settings.PhoneAccessCard.revokedDevicesTab', { count: store.revokedDevices.length }) }}
+              </button>
+            </div>
           </div>
-          <div v-else class="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200">
-            <div v-for="device in store.devices" :key="device.deviceId" class="flex flex-col gap-2 p-3 md:flex-row md:items-center md:justify-between">
+
+          <div v-if="visibleDevices.length === 0" class="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500" data-testid="phone-access-devices-empty">
+            {{ deviceListView === 'active' ? $t('settings.components.settings.PhoneAccessCard.noActivePhonesPaired') : $t('settings.components.settings.PhoneAccessCard.noRevokedPhones') }}
+          </div>
+          <div v-else class="mt-2 divide-y divide-slate-100 rounded-lg border border-slate-200" data-testid="phone-access-devices-list">
+            <div v-for="device in visibleDevices" :key="device.deviceId" class="flex flex-col gap-2 p-3 md:flex-row md:items-center md:justify-between" :data-testid="`phone-access-device-${device.deviceId}`">
               <div class="min-w-0">
                 <p class="text-sm font-medium text-slate-900">{{ device.displayName }}</p>
                 <p class="break-all font-mono text-xs text-slate-500">{{ device.clientFacingBaseUrl }}</p>
                 <p class="mt-1 text-xs text-slate-500">
-                  Paired {{ formatDate(device.createdAt) }} · Last seen {{ device.lastSeenAt ? formatDate(device.lastSeenAt) : 'never' }}
-                  <span v-if="device.revokedAt" class="text-red-600"> · Revoked {{ formatDate(device.revokedAt) }}</span>
+                  {{ $t('settings.components.settings.PhoneAccessCard.pairedAt', { date: formatDate(device.createdAt) }) }} ·
+                  {{ $t('settings.components.settings.PhoneAccessCard.lastSeenAt', { date: device.lastSeenAt ? formatDate(device.lastSeenAt) : $t('settings.components.settings.PhoneAccessCard.neverSeen') }) }}
+                  <span v-if="deviceListView === 'revoked' && device.revokedAt" class="text-red-600">
+                    · {{ $t('settings.components.settings.PhoneAccessCard.revokedAt', { date: formatDate(device.revokedAt) }) }}
+                  </span>
                 </p>
               </div>
               <button
+                v-if="deviceListView === 'active'"
                 type="button"
-                class="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50"
-                :disabled="Boolean(device.revokedAt)"
+                class="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50"
+                data-testid="phone-access-revoke-device"
                 @click="store.revokeDevice(device.deviceId)"
               >
-                Revoke
+                {{ $t('settings.components.settings.PhoneAccessCard.revokePhone') }}
               </button>
             </div>
           </div>
@@ -143,13 +190,33 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { usePhoneAccessStore } from '~/stores/phoneAccessStore';
 import { toQrCodeDataUrl } from '~/services/qr/qrCodeDataUrlService';
 
 const store = usePhoneAccessStore();
 const { t: $t } = useLocalization();
 const qrDataUrl = ref<string | null>(null);
+const deviceListView = ref<'active' | 'revoked'>('active');
+
+const selectedUrlWarning = computed(() => (
+  store.selectedServerBaseUrl.trim()
+    ? store.selectedUrlValidation.isValid && !store.selectedUrlValidation.isHttps
+      ? $t('settings.components.settings.PhoneAccessCard.httpsRequiredBody')
+      : store.selectedUrlValidation.message
+    : null
+));
+
+const canCreatePairingSession = computed(() => (
+  store.phoneAccessEnabled
+  && Boolean(store.selectedServerBaseUrl.trim())
+  && store.selectedUrlValidation.isValid
+  && store.selectedUrlValidation.isHttps
+));
+
+const visibleDevices = computed(() => (
+  deviceListView.value === 'active' ? store.activeDevices : store.revokedDevices
+));
 
 const formatDate = (value: string): string => new Date(value).toLocaleString();
 

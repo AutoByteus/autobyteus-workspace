@@ -1,0 +1,16 @@
+{
+  "pairingPosts": [
+    {
+      "serverBaseUrl": "https://machine.tailnet.ts.net",
+      "serverName": "AutoByteus Desktop"
+    }
+  ],
+  "candidateRequests": [
+    {
+      "manualServerBaseUrl": ""
+    },
+    {
+      "manualServerBaseUrl": "https://machine.tailnet.ts.net/mobile"
+    }
+  ]
+}

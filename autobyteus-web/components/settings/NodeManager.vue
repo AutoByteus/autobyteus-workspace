@@ -15,8 +15,6 @@
       >
         <CurrentWindowNodeCard :node-name="currentNode?.name || $t('settings.components.settings.NodeManager.currentNodeUnknown')" :node-type-label="currentNodeTypeLabel" :base-url="currentNode?.baseUrl" />
 
-        <PhoneAccessCard v-if="windowNodeContextStore.isEmbeddedWindow" />
-
         <RemoteBrowserSharingPanel />
 
         <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -131,7 +129,23 @@
         </section>
       </div>
       <div
-        v-else
+        v-else-if="activeTab === 'phoneSetup'"
+        id="node-manager-panel-phoneSetup"
+        class="mx-auto w-full max-w-7xl space-y-5"
+        role="tabpanel"
+        aria-labelledby="node-manager-tab-phoneSetup"
+        data-testid="node-manager-panel-phoneSetup"
+      >
+        <PhoneSetupGuideCard />
+
+        <PhoneAccessCard v-if="windowNodeContextStore.isEmbeddedWindow" />
+        <section v-else class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900" data-testid="phone-setup-remote-unavailable">
+          <h3 class="font-semibold text-amber-950">{{ $t('settings.components.settings.NodeManager.phoneSetupUnavailableTitle') }}</h3>
+          <p class="mt-1">{{ $t('settings.components.settings.NodeManager.phoneSetupUnavailableDescription') }}</p>
+        </section>
+      </div>
+      <div
+        v-else-if="activeTab === 'dockerGuide'"
         id="node-manager-panel-dockerGuide"
         class="mx-auto w-full max-w-7xl"
         role="tabpanel"
@@ -150,6 +164,7 @@ import CurrentWindowNodeCard from '~/components/settings/CurrentWindowNodeCard.v
 import DockerNodeStartGuideCard from '~/components/settings/DockerNodeStartGuideCard.vue';
 import NodeManagerTabs from '~/components/settings/NodeManagerTabs.vue';
 import PhoneAccessCard from '~/components/settings/PhoneAccessCard.vue';
+import PhoneSetupGuideCard from '~/components/settings/PhoneSetupGuideCard.vue';
 import RemoteBrowserSharingPanel from '~/components/settings/RemoteBrowserSharingPanel.vue';
 import RemoteNodePairingControls from '~/components/settings/RemoteNodePairingControls.vue';
 import { useLocalization } from '~/composables/useLocalization';
@@ -161,7 +176,7 @@ import { validateServerHostConfiguration } from '~/utils/nodeHostValidation';
 
 const { t } = useLocalization();
 
-type NodeManagerTabId = 'manage' | 'dockerGuide';
+type NodeManagerTabId = 'manage' | 'phoneSetup' | 'dockerGuide';
 
 const nodeStore = useNodeStore();
 const remoteBrowserSharingStore = useRemoteBrowserSharingStore();

@@ -5,6 +5,16 @@ export class RemoteAccessUrlError extends Error {
   }
 }
 
+const RESERVED_SURFACE_SEGMENTS = new Set(["mobile", "rest", "graphql", "ws"]);
+
+const stripReservedSurfacePath = (pathname: string): string => {
+  const withoutTrailingSlash = pathname.replace(/\/+$/, "");
+  const segments = withoutTrailingSlash.split("/").filter(Boolean);
+  const reservedIndex = segments.findIndex((segment) => RESERVED_SURFACE_SEGMENTS.has(segment.toLowerCase()));
+  const baseSegments = reservedIndex >= 0 ? segments.slice(0, reservedIndex) : segments;
+  return baseSegments.length > 0 ? `/${baseSegments.join("/")}` : "";
+};
+
 export const normalizeNodeBaseUrl = (value: string): string => {
   const raw = String(value ?? "").trim();
   if (!raw) {
@@ -20,9 +30,6 @@ export const normalizeNodeBaseUrl = (value: string): string => {
   if (!["http:", "https:"].includes(parsed.protocol)) {
     throw new RemoteAccessUrlError("Server base URL must use http or https.");
   }
-  parsed.hash = "";
-  parsed.search = "";
-  parsed.pathname = parsed.pathname.replace(/\/+$/, "");
-  const normalized = parsed.toString().replace(/\/+$/, "");
-  return normalized;
+  const normalizedPath = stripReservedSurfacePath(parsed.pathname);
+  return `${parsed.protocol}//${parsed.host}${normalizedPath}`.replace(/\/+$/, "");
 };
