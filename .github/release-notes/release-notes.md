@@ -1,7 +1,12 @@
-# AutoByteus 1.3.24 Release Notes
+# Release Notes: Context File Reference Paths
 
-- Added an Android mobile shell for opening the existing AutoByteus `/mobile` experience from a stable Tailscale node URL.
-- Added first-run Android setup for QR/share/paste/manual node URL entry, HTTP acknowledgement, saved-node restore, and recovery actions.
-- Updated the healthy Android WebView experience to use the full viewport without a persistent native toolbar above mobile content.
-- Added Android file picker support for mobile Chat attachments so selected files reach the composer context.
-- Added mobile app metadata and updated Phone Access guidance for stable Tailscale URL use.
+## What's New
+- Attached context files now add a `Reference files:` section to the runtime-visible user message when the server can resolve them to local absolute paths.
+
+## Improvements
+- Native AutoByteus, Codex, and Claude runs can expose the same resolved context-file paths in message text, making follow-up agent handoffs and validation easier.
+- Native AutoByteus and Codex keep their existing multimodal/image payload behavior while also showing the text references.
+
+## Notes
+- Absolute server-side file paths are intentionally visible to the selected runtime/model provider for resolved local context files.
+- HTTP/data URLs and unresolved context-file locators are omitted from `Reference files:` so they are not mistaken for local files.
