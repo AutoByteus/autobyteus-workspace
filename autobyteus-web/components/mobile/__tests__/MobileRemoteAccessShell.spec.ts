@@ -142,18 +142,25 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     vi.clearAllMocks();
   });
 
-  it('lands paired phones on Mobile Home with current node, primary action, and no desktop workspace link', async () => {
+  it('lands paired phones on compact Home with current node data, recent work, and no desktop workspace link', async () => {
     const wrapper = mountShell();
     await nextTick();
     await nextTick();
 
     expect(wrapper.find('[data-testid="mobile-home"]').exists()).toBe(true);
     expect(wrapper.text()).toContain('Desktop Node');
-    expect(wrapper.text()).toContain('Continue latest run');
     expect(wrapper.text()).toContain('Recent work');
+    expect(wrapper.text()).toContain('Builder Agent');
+    expect(wrapper.text()).not.toContain('Mobile Home');
+    expect(wrapper.text()).not.toContain('Current node');
+    expect(wrapper.text()).not.toContain('Current work context');
+    expect(wrapper.text()).not.toContain('Primary next action');
+    expect(wrapper.text()).not.toContain('Continue latest run');
+    expect(wrapper.find('[data-testid="mobile-home-primary-action"]').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('Workspace and runs');
     expect(wrapper.html()).not.toContain('href="/workspace"');
     expect(wrapper.find('[data-testid="mobile-bottom-nav"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="mobile-remote-access-shell"]').classes()).not.toContain('fixed');
   });
 
   it('explains stale desktop workspace redirects inside the paired mobile home', async () => {
@@ -168,30 +175,39 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(wrapper.text()).toContain('phone-first mobile work shell');
   });
 
-  it('continues the latest run into one mobile work shell with Chat/Runs/Files/Tools/Activity bottom navigation', async () => {
+  it('opens a recent run row into one mobile work shell with Chat/Runs/Files/Tools/Activity bottom navigation', async () => {
     const wrapper = mountShell();
     await nextTick();
-    await wrapper.get('[data-testid="mobile-home-primary-action"]').trigger('click');
+    await wrapper.get('[data-testid="mobile-readable-work-row"]').trigger('click');
     await nextTick();
     await nextTick();
 
     expect(wrapper.find('[data-testid="mobile-work-shell"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-bottom-nav"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="mobile-remote-access-shell"]').classes()).toEqual(expect.arrayContaining([
+      'fixed',
+      'inset-0',
+      'h-[100dvh]',
+      'overflow-hidden',
+      'overscroll-none',
+    ]));
     expect(wrapper.text()).toContain('Chat');
     expect(wrapper.text()).toContain('Runs');
     expect(wrapper.text()).toContain('Files');
     expect(wrapper.text()).toContain('Tools');
     expect(wrapper.text()).toContain('Activity');
+    expect(wrapper.get('[data-testid="mobile-work-header"]').text()).not.toContain('Agent run');
+    expect(wrapper.get('[data-testid="mobile-work-header"]').text()).not.toContain('Team run');
     expect(wrapper.text()).not.toContain('Running List');
 
     const runHistoryStore = useRunHistoryStore();
     expect(runHistoryStore.openRun).toHaveBeenCalledWith('run-1', { selectionMode: 'mobile' });
   });
 
-  it('keeps Start new as a focused mobile setup surface instead of mixing recent history', async () => {
+  it('keeps New run as a focused mobile setup surface instead of mixing recent history', async () => {
     const wrapper = mountShell();
     await nextTick();
-    await wrapper.get('[data-testid="mobile-home-primary-action"]').trigger('click');
+    await wrapper.get('[data-testid="mobile-readable-work-row"]').trigger('click');
     await nextTick();
     useMobileWorkStore().$patch({ activeTab: 'runs' });
     await nextTick();
@@ -203,7 +219,8 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
 
     expect(wrapper.find('[data-testid="mobile-run-setup"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-runs-list"]').exists()).toBe(false);
-    expect(wrapper.get('[data-testid="mobile-runs"]').text()).toContain('Start new run');
+    expect(wrapper.get('[data-testid="mobile-runs"]').text()).toContain('New run');
+    expect(wrapper.get('[data-testid="mobile-runs"]').text()).not.toContain('Active and recent runs');
   });
 
   it('shows a focused context switcher with Recent, Agents, Teams, and Workspaces instead of the desktop tree', async () => {

@@ -117,9 +117,9 @@ export function mobileWorkContextSubtitle(context: MobileWorkContext | null): st
   }
   switch (context.kind) {
     case 'agent-run':
-      return `${context.statusLabel} · Agent run`;
+      return context.statusLabel;
     case 'team-run':
-      return `${context.statusLabel} · Team run`;
+      return context.statusLabel;
     case 'agent-definition':
       return 'Agent profile';
     case 'team-definition':

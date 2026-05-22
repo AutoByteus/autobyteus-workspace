@@ -21,6 +21,11 @@ This document describes how file/media bytes are served in `autobyteus-server-ts
   - `src/context-files/services/context-file-finalization-service.ts`
   - `src/context-files/services/context-file-read-service.ts`
   - `src/context-files/services/context-file-local-path-resolver.ts`
+- Runtime-visible context-file reference rendering:
+  - `autobyteus-ts/src/agent/message/context-file-reference-section.ts`
+  - `autobyteus-ts/src/agent/message/multimodal-message-builder.ts`
+  - `src/agent-execution/backends/codex/thread/codex-user-input-mapper.ts`
+  - `src/agent-execution/backends/claude/session/claude-session.ts`
 - Assistant-message URL transformation:
   - `src/agent-customization/processors/response-customization/media-url-transformer-processor.ts`
 - Run-scoped artifact preview route:
@@ -74,7 +79,8 @@ The actual artifact/output files remain where the runtime wrote them.
 2. `ContextFileUploadService` writes the bytes under the draft context-file tree and returns an uploaded descriptor with `storedFilename`, `displayName`, `locator`, and `phase='draft'`.
 3. The send owner creates or restores the final run/team-member identity, then posts `/rest/context-files/finalize` with `attachments[{ storedFilename, displayName }]`.
 4. `ContextFileFinalizationService` moves the bytes into run/member-owned `context_files/`, returns final locators, and preserves the original uploaded `displayName` instead of deriving it from the sanitized stored filename.
-5. Prompt-building and Codex mapping resolve only the final `/rest/.../context-files/...` locators back to local filesystem paths.
+5. Prompt-building, Codex mapping, and Claude session text mapping resolve only the final `/rest/.../context-files/...` locators back to local filesystem paths.
+6. If one or more context files resolve to local absolute paths, the runtime-visible current user message text includes one generated `Reference files:` block listing those paths. Native AutoByteus and Codex still preserve their existing media payloads (`image_urls` / `localImage`) in addition to the text block; Claude receives the text reference only.
 
 ### Run-scoped artifact preview flow
 
@@ -89,7 +95,9 @@ The actual artifact/output files remain where the runtime wrote them.
 
 - Conversation media transformation, composer context-file storage, and Artifacts-tab preview serving are intentionally separate concerns.
 - Browser-uploaded composer attachments no longer depend on shared `/rest/files/...` media storage for send-time runtime consumption.
-- Finalized context-file locators are the only uploaded-file locators that prompt-building/Codex path resolution may translate back to local files.
+- Finalized context-file locators are the only uploaded-file locators that prompt-building, Codex path resolution, and Claude text mapping may translate back to local files.
+- Runtime-visible `Reference files:` blocks list complete server-side local paths. This intentionally exposes host filesystem paths to the selected runtime/model provider for the current trusted local/server deployment model so later agents can copy the paths into explicit `reference_files` handoffs when needed.
+- HTTP(S) URLs, data URLs, malformed `file:` URLs, empty values, and unresolved context-file locators must not be emitted as local `Reference files:` entries.
 - Artifacts preview depends on run-indexed paths, not arbitrary filesystem reads.
 - Generic `file_path`/`filePath` fields are not artifact evidence by themselves; generated-output rows require a known output-producing tool plus explicit output/destination metadata or that tool's known result shape.
 - Legacy tool-result media-copy processors are no longer part of the Artifacts path.

@@ -44,6 +44,14 @@ from the thread-local pending MCP call before the pending state is removed, so
 terminal lifecycle events and storage-only memory retain the same arguments
 that the live segment showed.
 
+Codex turn input mapping preserves context-file media continuity while making
+local file paths visible in text. `toCodexUserInput(...)` resolves finalized
+`/rest/.../context-files/...` locators through the server context-file local
+path resolver, appends one generated `Reference files:` block to the text item
+for local absolute paths, and keeps eligible images as `localImage` items.
+HTTP(S), data URL, empty, malformed, and unresolved locator values are not
+listed as local reference files.
+
 ## Model Catalog And Fast Mode Configuration
 
 Codex launch-time model configuration is driven by the Codex App Server

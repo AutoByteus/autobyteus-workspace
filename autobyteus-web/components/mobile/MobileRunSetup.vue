@@ -1,10 +1,6 @@
 <template>
   <form class="space-y-4 rounded-3xl border border-blue-200 bg-blue-50 p-4" data-testid="mobile-run-setup" @submit.prevent="createRun">
-    <div class="flex items-start justify-between gap-3">
-      <div>
-        <p class="text-sm font-bold text-blue-950">Start new work</p>
-        <p class="mt-1 text-sm text-blue-800">{{ setupHelpText }}</p>
-      </div>
+    <div class="flex justify-end">
       <button type="button" class="rounded-lg border border-blue-200 px-3 py-1.5 text-xs font-semibold text-blue-700" @click="$emit('cancel')">
         Hide
       </button>
@@ -161,9 +157,6 @@ const selectedTeamId = ref('');
 const selectedWorkspaceId = ref('');
 const creating = ref(false);
 const error = ref<string | null>(null);
-const setupHelpText = computed(() => mode.value === 'team'
-  ? 'Choose a team, workspace, and runtime/model. You’ll select the message target in Chat.'
-  : 'Choose an agent, workspace, and runtime/model. You’ll type the first message in Chat.');
 const draftAttachments = computed(() => mobileWorkStore.draftContextAttachments);
 
 const workspaceIdByRootPath = computed(() => new Map(workspaceItems.value.flatMap((item) => item.context.kind === 'workspace'

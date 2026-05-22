@@ -1,16 +1,16 @@
 <template>
-  <div class="flex flex-col h-full p-4 gap-3">
-    <CompactionStatusBanner :status="compactionStatus ?? null" />
+  <div class="flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4" data-testid="agent-event-monitor">
+    <CompactionStatusBanner class="shrink-0" :status="compactionStatus ?? null" />
 
     <AgentConversationFeed
-      class="flex-1"
+      class="min-h-0 flex-1"
       :conversation="conversation"
       :agent-name="agentName"
       :agent-avatar-url="agentAvatarUrl"
       :inter-agent-sender-name-by-id="interAgentSenderNameById"
     />
 
-    <div>
+    <div class="shrink-0">
       <slot name="composerContext" />
       <AgentUserInputForm :before-send="beforeSend" />
     </div>

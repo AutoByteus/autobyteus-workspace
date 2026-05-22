@@ -90,7 +90,7 @@ export function useMobileWorkCatalog() {
             kind: 'agent-run',
             runId: run.runId,
             agentDefinitionId: agent.agentDefinitionId,
-            title: agent.agentName || 'Agent run',
+            title: agent.agentName || 'Agent',
             summary: summarizeRun(run),
             workspaceRootPath: workspace.workspaceRootPath,
             isActive: run.isActive,
@@ -120,7 +120,7 @@ export function useMobileWorkCatalog() {
             kind: 'team-run',
             teamRunId: run.teamRunId,
             teamDefinitionId: run.teamDefinitionId,
-            title: run.teamDefinitionName || team.teamDefinitionName || 'Team run',
+            title: run.teamDefinitionName || team.teamDefinitionName || 'Team',
             summary: summarizeTeamRun(run),
             workspaceRootPath: workspace.workspaceRootPath,
             focusedMemberRouteKey,
@@ -150,8 +150,6 @@ export function useMobileWorkCatalog() {
       return bTime.localeCompare(aTime);
     });
   });
-
-  const latestRunItem = computed(() => recentWorkItems.value[0] ?? null);
 
   const agentItems = computed<MobileWorkListItem[]>(() => agentDefinitionStore.agentDefinitions.map((agent) => {
     const context: MobileWorkContext = {
@@ -315,7 +313,6 @@ export function useMobileWorkCatalog() {
 
   return {
     recentWorkItems,
-    latestRunItem,
     agentItems,
     teamItems,
     workspaceItems,

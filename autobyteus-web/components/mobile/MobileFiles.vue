@@ -1,7 +1,6 @@
 <template>
   <section class="flex h-full flex-col overflow-hidden" data-testid="mobile-files">
     <header class="shrink-0 border-b border-slate-200 bg-white px-5 py-4">
-      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-600">Files</p>
       <h2 class="text-xl font-bold text-slate-950">{{ workspaceTitle }}</h2>
       <p class="mt-1 truncate text-sm text-slate-500">{{ workspaceSubtitle }}</p>
       <div class="mt-3 flex items-center gap-2" data-testid="mobile-files-primary-controls">
@@ -58,8 +57,7 @@
 
       <template v-else>
         <div class="sticky top-0 z-10 -mx-5 mb-3 border-b border-slate-100 bg-white/95 px-5 py-3 backdrop-blur" data-testid="mobile-files-sticky-context">
-          <p class="text-xs font-bold uppercase tracking-[0.14em] text-blue-600">{{ deepSearch ? 'Workspace-wide search' : 'Current folder' }}</p>
-          <p class="mt-1 break-words text-sm font-semibold text-slate-900">{{ currentFolderLabel }}</p>
+          <p class="break-words text-sm font-semibold text-slate-900">{{ currentFolderLabel }}</p>
           <div v-if="breadcrumb.length > 1" class="mt-2 flex flex-wrap gap-2 text-sm">
             <button
               v-for="(crumb, index) in breadcrumb"

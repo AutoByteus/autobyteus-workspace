@@ -1,0 +1,37 @@
+{
+  "result": "passed",
+  "validationRound": 3,
+  "adbInstalled": true,
+  "installedViaAdb": true,
+  "displayOverrideUsed": false,
+  "device": {
+    "model": "2109119DG",
+    "android": "12",
+    "wmSize": "Physical size: 1080x2400",
+    "wmDensity": "Physical density: 440"
+  },
+  "devices": "List of devices attached\ndfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:6\n\n",
+  "package": "org.autobyteus.mobile",
+  "baseUrl": "http://127.0.0.1:3330",
+  "journey": [
+    "ADB install -r debug APK",
+    "ADB reverse host mock/Nuxt server to physical Android phone",
+    "Launch installed native shell without changing phone display size/density",
+    "Validate paired Home on real phone UI with Desktop Node, Weather Checker, Software Team",
+    "Open Weather Checker user journey and observe get_weather result",
+    "Swipe long Weather Checker chat and verify bottom controls remain visible by screenshot",
+    "Open Activity and verify compact Tasks/Messages/Tools filters visually",
+    "Open Tools and verify compact Terminal and VNC header plus weather workspace path visually",
+    "Open Software Team and verify compact Coordinator/Change target row visually"
+  ],
+  "evidence": {
+    "home": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png",
+    "chat": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-round3.png",
+    "chatAfterSwipe": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-after-swipe-round3.png",
+    "activity": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-activity-round3.png",
+    "tools": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-tools-round3.png",
+    "team": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-team-target-round3.png",
+    "nativeHttpAck": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-native-http-ack-round3.png",
+    "webPairing": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-web-pairing-round3.png"
+  }
+}

@@ -445,7 +445,9 @@ describe('mobile context selection stale-run regression', () => {
       props: { context: useMobileWorkStore().currentContext },
     });
 
-    expect(wrapper.get('[data-testid="mobile-team-focus-label"]').text()).toContain('lead');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).toContain('lead');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).not.toContain('Change');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select-toggle"]').attributes('aria-label')).toBe('Change message target');
 
     await wrapper.get('[data-testid="mobile-team-focus-select-toggle"]').trigger('click');
     await nextTick();
@@ -465,7 +467,7 @@ describe('mobile context selection stale-run regression', () => {
     expect(useMobileWorkStore().getRememberedFocusedTeamMember('team-run-1')).toBe('reviewer');
   });
 
-  it('hides existing-run Message target on Runs while keeping it on focused work tabs', async () => {
+  it('hides existing-run target selector on Runs while keeping compact target controls on focused work tabs', async () => {
     seedActiveTeamRun();
     const wrapper = mountWithPinia(MobileWorkShell, {
       props: {
@@ -488,7 +490,47 @@ describe('mobile context selection stale-run regression', () => {
     await nextTick();
 
     expect(wrapper.find('[data-testid="mobile-team-member-focus-bar"]').exists()).toBe(true);
-    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).toContain('Message target');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).toContain('lead');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).not.toContain('Change');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').text()).not.toContain('Message target');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select"]').attributes('aria-label')).toBe('Message target');
+    expect(wrapper.get('[data-testid="mobile-team-focus-select-toggle"]').attributes('aria-label')).toBe('Change message target');
+  });
+
+  it('keeps non-chat tabs in a bounded block task surface so h-full roots fill the viewport', async () => {
+    const wrapper = mountWithPinia(MobileWorkShell, {
+      props: {
+        context: agentRunContext,
+        activeTab: 'runs',
+      },
+      global: {
+        stubs: {
+          MobileChat: { template: '<div data-testid="mobile-chat-stub" />' },
+          MobileRuns: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-runs-stub" />' },
+          MobileFiles: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-files-stub" />' },
+          MobileTools: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-tools-stub" />' },
+          MobileActivity: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-activity-stub" />' },
+        },
+      },
+    });
+
+    const taskSurface = wrapper.get('[data-testid="mobile-work-task-surface"]');
+    expect(taskSurface.classes()).toEqual(expect.arrayContaining(['min-h-0', 'flex-1', 'overflow-hidden']));
+    expect(taskSurface.classes()).not.toContain('flex');
+
+    for (const [tab, testId] of [
+      ['runs', 'mobile-runs-stub'],
+      ['files', 'mobile-files-stub'],
+      ['tools', 'mobile-tools-stub'],
+      ['activity', 'mobile-activity-stub'],
+    ] as const) {
+      await wrapper.setProps({ activeTab: tab });
+      await nextTick();
+
+      const activeTabRoot = wrapper.get(`[data-testid="${testId}"]`);
+      expect(activeTabRoot.classes()).toEqual(expect.arrayContaining(['h-full', 'overflow-hidden']));
+      expect(wrapper.get('[data-testid="mobile-work-task-surface"]').classes()).not.toContain('flex');
+    }
   });
 
   it('prefers remembered valid team focus when mapping Recent team runs and falls back safely when stale', () => {

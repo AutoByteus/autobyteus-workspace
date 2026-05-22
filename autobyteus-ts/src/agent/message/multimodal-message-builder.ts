@@ -1,4 +1,5 @@
 import { AgentInputUserMessage } from './agent-input-user-message.js';
+import { appendContextFileReferenceSection } from './context-file-reference-section.js';
 import { ContextFileType } from './context-file-type.js';
 import { LLMUserMessage } from '../../llm/user-message.js';
 
@@ -21,7 +22,10 @@ export function buildLLMUserMessage(agentInputUserMessage: AgentInputUserMessage
   }
 
   return new LLMUserMessage({
-    content: agentInputUserMessage.content,
+    content: appendContextFileReferenceSection(
+      agentInputUserMessage.content,
+      agentInputUserMessage.contextFiles
+    ),
     image_urls: imageUrls.length > 0 ? imageUrls : undefined,
     audio_urls: audioUrls.length > 0 ? audioUrls : undefined,
     video_urls: videoUrls.length > 0 ? videoUrls : undefined
