@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/design-review-report.md`
 
 ## What Changed
 
@@ -57,18 +57,18 @@
 
 ## Code Review Rework Notes
 
-- Review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/review-report.md`
+- Review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/review-report.md`
 - Blocking finding addressed: `CR-001`.
 - Resolution: `MobileWorkShell` task surface was changed back from a row flex container to the bounded block contract `min-h-0 flex-1 overflow-hidden bg-white`. This keeps all active tab roots (`MobileChat`, `MobileRuns`, `MobileFiles`, `MobileTools`, `MobileActivity`) within the same full-surface block layout and avoids content-width flex-item behavior for non-chat tabs.
 - Test added: `MobileContextSelectionRegression.spec.ts` now asserts the task surface is bounded but not a flex row and iterates Runs/Files/Tools/Activity roots to verify their `h-full`/`overflow-hidden` roots are hosted by that non-flex task surface.
 
 ## API/E2E Rework Notes
 
-- Validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-report.md`
+- Validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-report.md`
 - Blocking failure addressed: `VE-002`.
 - Failure evidence reviewed:
-  - Blank-region screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-e2e-failure.png`
-  - Failure JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-failure.json`
+  - Blank-region screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-e2e-failure.png`
+  - Failure JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-failure.json`
 - Resolution: when `MobileRemoteAccessShell` is showing the work screen, its root now uses `fixed inset-0 h-screen h-[100dvh] overflow-hidden overscroll-none` instead of normal document flow. This removes the long transcript from document-height calculations so `window.scrollTo(...)` cannot land the viewport below the controls. Home/troubleshooting/pairing screens keep the normal `min-h-screen` layout so they can remain page-scrollable if their content exceeds the viewport.
 - Additional containment: `MobileWorkShell` and `AgentEventMonitor` now use `overscroll-none`; `AgentConversationFeed` uses `overscroll-contain` so touch overscroll remains local to the transcript feed.
 - Test added/adjusted: `MobileRemoteAccessShell.spec.ts` now asserts Home is not fixed, and that opening a recent run switches the shell root to the fixed/viewport/overflow-hidden/overscroll-none work-screen contract.

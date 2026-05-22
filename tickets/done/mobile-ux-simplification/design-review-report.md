@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review handoff from `solution_designer` for ticket `mobile-ux-simplification`.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/design-spec.md` at branch `codex/mobile-ux-simplification` against the architecture review principles. The spec is spine-led, identifies concrete owners, names removals as first-class scope, rejects compatibility modes, and provides an implementation sequence tied to current files.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/design-spec.md` at branch `codex/mobile-ux-simplification` against the architecture review principles. The spec is spine-led, identifies concrete owners, names removals as first-class scope, rejects compatibility modes, and provides an implementation sequence tied to current files.
 
 ## Task Design Health Assessment Verdict
 

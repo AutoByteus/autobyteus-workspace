@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/review-report.md`
 - Current Validation Round: 3
 - Trigger: User explicitly required ADB physical-device validation after Round 2 browser/APK validation, including the Weather Checker user journey.
 - Prior Round Reviewed: 2
@@ -140,33 +140,33 @@ Note: the implementation-owned durable assertion update in `MobileRemoteAccessSh
 
 Round 3 ADB physical-device pass artifacts:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-summary.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-after-swipe-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-activity-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-tools-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-team-target-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-native-http-ack-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-web-pairing-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-summary.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-after-swipe-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-activity-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-tools-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-team-target-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-native-http-ack-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-web-pairing-round3.png`
 
 Round 2 pass artifacts:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-home-round2-390x844.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-chat-scroll-round2-390x844.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-activity-round2-390x844.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-tools-round2-390x844.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-team-target-round2-390x844.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-round2-summary.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-icon-preview-round2.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-icon-preview-round2.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-home-round2-390x844.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-chat-scroll-round2-390x844.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-activity-round2-390x844.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-tools-round2-390x844.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-team-target-round2-390x844.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-round2-summary.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-icon-preview-round2.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-icon-preview-round2.json`
 
 Prior Round 1 failure artifacts retained for history:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-home-390x844.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-e2e-failure.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-failure.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-home-390x844.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-e2e-failure.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-failure.json`
 
 ## Temporary Validation Methods / Scaffolding
 
@@ -198,10 +198,10 @@ Prior Round 1 failure artifacts retained for history:
 
 - Result: Passed.
 - Evidence:
-  - Browser screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-home-round2-390x844.png`
-  - Browser summary JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-round2-summary.json`
-  - ADB physical-device screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png`
-  - ADB summary JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-summary.json`
+  - Browser screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-home-round2-390x844.png`
+  - Browser summary JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-round2-summary.json`
+  - ADB physical-device screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png`
+  - ADB summary JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-summary.json`
 - Assertions confirmed paired status and recent agent/team rows while removed-copy strings and removed primary-action test id were absent in browser, and the installed phone UI presented the compact Home with Weather Checker/Software Team rows.
 
 ### VE-002 — Long mobile Chat transcript scroll containment
@@ -234,27 +234,27 @@ Prior Round 1 failure artifacts retained for history:
 
 - Result: Passed.
 - Evidence:
-  - Browser screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-activity-round2-390x844.png`
-  - Browser summary JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-round2-summary.json`
-  - ADB physical-device screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-activity-round3.png`
+  - Browser screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-activity-round2-390x844.png`
+  - Browser summary JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-round2-summary.json`
+  - ADB physical-device screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-activity-round3.png`
 - Assertions confirmed Activity uses Tasks/Messages/Tools without the removed `All` filter.
 
 ### VE-004 — Mobile Tools compact copy and removed old helper copy
 
 - Result: Passed.
 - Evidence:
-  - Browser screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-tools-round2-390x844.png`
-  - Browser summary JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-round2-summary.json`
-  - ADB physical-device screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-tools-round3.png`
+  - Browser screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-tools-round2-390x844.png`
+  - Browser summary JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-round2-summary.json`
+  - ADB physical-device screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-tools-round3.png`
 - Assertions confirmed compact Terminal/VNC presentation and absence of the removed verbose Tools copy.
 
 ### VE-005 — Team compact header and target row
 
 - Result: Passed.
 - Evidence:
-  - Browser screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-team-target-round2-390x844.png`
-  - Browser summary JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-round2-summary.json`
-  - ADB physical-device screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-team-target-round3.png`
+  - Browser screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-team-target-round2-390x844.png`
+  - Browser summary JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/mobile-browser-e2e-round2-summary.json`
+  - ADB physical-device screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-team-target-round3.png`
 - Assertions confirmed compact team target text, removal of verbose visible labels, preservation of the `Message target` accessible label, compact work header metadata, and physical-device visibility of `Coordinator` / `Change`.
 
 ### VE-006 — Desktop/shared monitor regression smoke
@@ -271,9 +271,9 @@ Prior Round 1 failure artifacts retained for history:
 
 - Result: Passed.
 - Evidence:
-  - Visual preview: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-icon-preview-round2.png`
-  - Preview JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-icon-preview-round2.json`
-  - ADB install/user journey summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-summary.json`
+  - Visual preview: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-icon-preview-round2.png`
+  - Preview JSON: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-icon-preview-round2.json`
+  - ADB install/user journey summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-summary.json`
 - Commands/checks:
   - `ANDROID_HOME="$HOME/Library/Android/sdk" gradle :app:assembleDebug` from `autobyteus-android` passed.
   - `adb install -r autobyteus-android/app/build/outputs/apk/debug/app-debug.apk` passed on physical device `dfd6c5c0`.
@@ -306,8 +306,8 @@ Prior Round 1 failure artifacts retained for history:
   - Tools displayed compact Terminal/VNC copy and `/Users/normy/weather-checker`.
   - Software Team displayed compact `Coordinator` and `Change` target row.
 - Evidence:
-  - Summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-summary.json`
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3.log`
+  - Summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-summary.json`
+  - Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3.log`
   - Screenshots listed under Round 3 artifacts above.
 
 ## Passed

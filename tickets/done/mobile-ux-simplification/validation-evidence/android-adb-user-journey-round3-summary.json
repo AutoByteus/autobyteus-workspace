@@ -25,13 +25,13 @@
     "Open Software Team and verify compact Coordinator/Change target row visually"
   ],
   "evidence": {
-    "home": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png",
-    "chat": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-round3.png",
-    "chatAfterSwipe": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-after-swipe-round3.png",
-    "activity": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-activity-round3.png",
-    "tools": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-tools-round3.png",
-    "team": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-team-target-round3.png",
-    "nativeHttpAck": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-native-http-ack-round3.png",
-    "webPairing": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-web-pairing-round3.png"
+    "home": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png",
+    "chat": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-round3.png",
+    "chatAfterSwipe": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-after-swipe-round3.png",
+    "activity": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-activity-round3.png",
+    "tools": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-tools-round3.png",
+    "team": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-team-target-round3.png",
+    "nativeHttpAck": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-native-http-ack-round3.png",
+    "webPairing": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-web-pairing-round3.png"
   }
 }

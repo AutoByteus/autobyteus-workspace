@@ -4,9 +4,9 @@
 
 - Ticket: `mobile-ux-simplification`
 - Branch: `codex/mobile-ux-simplification`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo` (removed during final cleanup)
 - Finalization target recorded by bootstrap: `personal` / `origin/personal`
-- Current delivery state: User verified. Ticket archived to `tickets/done/mobile-ux-simplification`; repository finalization is being completed into `personal`/`origin/personal`. No release/version/deployment will be performed per user instruction.
+- Current delivery state: User verified. Ticket archived to `tickets/done/mobile-ux-simplification`; repository finalization completed into `personal`/`origin/personal`. No release/version/deployment was performed per user instruction.
 
 ## Integrated-State Refresh
 
@@ -35,7 +35,7 @@
 
 ## Mobile-Only Clarification Audit
 
-- Clarification artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/mobile-only-clarification-audit.md`
+- Clarification artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/mobile-only-clarification-audit.md`
 - Upstream clarification result: No code rework requested by solution design.
 - Scope boundary preserved: no `autobyteus-web/stores/*`, `autobyteus-server-ts/*`, GraphQL/REST/WebSocket/backend/runtime service, or desktop route/shell files are changed.
 - Implementation remains mobile-focused: changed mobile UI/composable/type files cover the requested `/mobile` presentation behavior; Android changes are launcher-resource/docs only.
@@ -48,8 +48,8 @@
 
 Authoritative upstream validation/review results:
 
-- Code review Round 3: Pass — `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/review-report.md`
-- API/E2E Round 3: Pass — `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-report.md`
+- Code review Round 3: Pass — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/review-report.md`
+- API/E2E Round 3: Pass — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-report.md`
 
 Latest API/E2E pass covered:
 
@@ -62,14 +62,14 @@ Latest API/E2E pass covered:
 
 Round 3 ADB evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-summary.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-after-swipe-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-activity-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-tools-round3.png`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-team-target-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3-summary.json`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-user-journey-round3.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-home-weather-checker-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-weather-checker-chat-after-swipe-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-activity-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-tools-round3.png`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/validation-evidence/android-adb-team-target-round3.png`
 
 Delivery-owned check after docs sync:
 
@@ -77,7 +77,7 @@ Delivery-owned check after docs sync:
 
 ## Documentation Sync Summary
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/docs-sync-report.md`
 - Docs result: Updated.
 - Long-lived docs updated:
   - `autobyteus-web/docs/remote_access.md` — added the compact mobile UX contract, scroll containment contract, mobile-only/core-boundary clarification, Activity/Tools/team-target compact behavior, and removed-copy guidance.
@@ -88,7 +88,7 @@ Delivery-owned check after docs sync:
 
 ## Release Notes Status
 
-- Release notes artifact prepared: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/release-notes.md`
+- Release notes artifact prepared: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/release-notes.md`
 - Release/publication/deployment status: Not performed. User verification has been received; ticket archival/final repository merge are authorized, but no release, tag, version bump, publication, or deployment will be performed.
 
 
@@ -99,12 +99,12 @@ Delivery-owned check after docs sync:
 - Build command run from `autobyteus-web`: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm build:electron:mac`
 - Build result: Passed (`BUILD_EXIT_STATUS=0`) on 2026-05-22 08:10 CEST.
 - Signing/notarization: skipped for local test because Apple signing identity variables were intentionally empty; macOS may warn that the app is unsigned/not notarized.
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-20260522-080713.log`
-- Artifact list: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-artifacts-20260522-081125.txt`
-- SHA-256 file: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-sha256-20260522-081125.txt`
-- Test app bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.zip`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-20260522-080713.log`
+- Artifact list: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-artifacts-20260522-081125.txt`
+- SHA-256 file: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-sha256-20260522-081125.txt`
+- Test app bundle: transient pre-cleanup path `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: transient pre-cleanup path `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.dmg`
+- ZIP: transient pre-cleanup path `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.24.zip`
 - Non-blocking build warnings observed: existing dynamic/static import chunk warning for `file_explorer_queries.ts`, large chunk-size warnings, dependency peer/deprecation warnings, and skipped macOS code signing due to empty signing identity.
 
 ## User Verification Hold
@@ -117,15 +117,24 @@ Delivery-owned check after docs sync:
 ## Finalization Record
 
 - User verification received: Yes — `i tested it works. lets finalize the ticket, and no need to release a new version`.
-- Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification`.
+- Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification`.
 - Finalization target: `personal` / `origin/personal`.
 - Finalization target refresh after user verification: `git fetch --prune origin` passed; `origin/personal` remained `b64bfe508f1c8844a1f7e18f8a7fee4623c0e5d0`, matching ticket branch `HEAD` before the finalization commit.
 - Target advanced after user verification: No.
 - Renewed verification required: No.
-- Repository finalization status: Authorized and in progress in this delivery run; no release/version/deployment will be performed.
+- Repository finalization status: Completed in this delivery run; no release/version/deployment was performed.
 
 ## Residual Risks / Follow-Up
 
 - No open code-review or API/E2E blockers remain.
 - No Android home-screen launcher icon screenshot was captured from the physical device; launcher icon safe-area validation remains covered by APK build/resource inspection plus generated adaptive-mask preview, and Round 3 proved the APK installs and launches on a real phone.
 - Browser E2E used temporary scripts/mock servers that API/E2E cleaned up; durable repository tests cover component/layout contracts, but not a permanent browser E2E suite for all mobile scenarios.
+
+## Finalization Commit / Cleanup Record
+
+- Ticket branch commit: `7ac8d7adf71c71a8f7580a1c86ad9a43fba88190` (`fix(mobile): simplify remote access mobile UX`).
+- Ticket branch push: completed to `origin/codex/mobile-ux-simplification`.
+- Target merge commit: `a65bd3d6516e7a453783c1557b573954cbb2c25d` on `personal`.
+- Target push: completed to `origin/personal` at `a65bd3d6516e7a453783c1557b573954cbb2c25d`.
+- Dedicated ticket worktree removed and pruned; local ticket branch `codex/mobile-ux-simplification` deleted. Remote ticket branch retained as the pushed ticket-branch record.
+- Unrelated pre-existing untracked file in the main workspace was left untouched: `autobyteus-server-ts/tmp-repro-chokidar-spawn-ebadf.mjs`.

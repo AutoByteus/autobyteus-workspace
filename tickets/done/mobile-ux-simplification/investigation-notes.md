@@ -23,7 +23,7 @@ On 2026-05-22 the user reported that the mobile AutoByteus remote access UI cont
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification`
 - Current Branch: `codex/mobile-ux-simplification`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo`
 - Bootstrap Base Branch: `origin/personal`

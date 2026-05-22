@@ -6,7 +6,7 @@ Delivery completed integrated-state refresh, docs sync, mobile-only clarificatio
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Handoff records integrated-state refresh, validation summary including Round 3 ADB physical-device evidence, local macOS Electron user-test build evidence, mobile-only clarification audit, docs sync, release notes, verification hold, and finalization plan.
 
@@ -31,7 +31,7 @@ Delivery completed integrated-state refresh, docs sync, mobile-only clarificatio
 
 ## Mobile-Only Clarification / Audit
 
-- Clarification artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/mobile-only-clarification-audit.md`
+- Clarification artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/mobile-only-clarification-audit.md`
 - Audit result: No code rework requested by solution design.
 - Preserved boundary: no core stores, backend services, GraphQL/REST/WebSocket APIs, runtime behavior, desktop routes, or desktop journeys are intentionally changed.
 - Only non-mobile source touches: `AgentConversationFeed.vue`, `AgentEventMonitor.vue`, and `AgentTeamEventMonitor.vue`; they are layout-containment-only shared monitor changes and were covered by desktop/shared monitor validation.
@@ -49,37 +49,37 @@ Delivery completed integrated-state refresh, docs sync, mobile-only clarificatio
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-web/docs/remote_access.md`, `docs/android_mobile_access.md`, `autobyteus-android/README.md`
 - Round 3 ADB validation incorporated into docs/artifacts: `Yes`
-- Clarification audit incorporated: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/mobile-only-clarification-audit.md`
+- Clarification audit incorporated: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/mobile-only-clarification-audit.md`
 - No-impact rationale (if applicable): N/A
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification`
 
 ## Version / Tag / Release Commit
 
-No version bump, tag, release commit, publication, or deployment will be performed. The user explicitly requested finalization with no new release/version. A local unsigned/not-notarized macOS ARM64 Electron build was produced only for user testing.
+No version bump, tag, release commit, publication, or deployment will be performed. The user explicitly requested finalization with no new release/version. A local unsigned/not-notarized macOS ARM64 Electron build was produced only for user testing; generated app/DMG/ZIP outputs were transient and removed with the dedicated ticket worktree cleanup.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/investigation-notes.md`
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/investigation-notes.md`
 - Ticket branch: `codex/mobile-ux-simplification`
-- Ticket branch commit result: `Authorized and staged — final archival commit created immediately after this report update`
-- Ticket branch push result: `Pending after final archival commit`
+- Ticket branch commit result: `Completed — 7ac8d7adf71c71a8f7580a1c86ad9a43fba88190`
+- Ticket branch push result: `Completed — origin/codex/mobile-ux-simplification`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `No`
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed — target did not advance`
-- Target branch update result: `Pending after ticket branch push`
-- Merge into target result: `Pending after ticket branch push`
-- Push target branch result: `Pending after target merge`
-- Repository finalization status: `Authorized and pending final commit/push/target merge at archived-ticket commit time`
+- Target branch update result: `Completed — personal was already current with origin/personal before merge`
+- Merge into target result: `Completed — merge commit a65bd3d6516e7a453783c1557b573954cbb2c25d`
+- Push target branch result: `Completed — initial target push advanced origin/personal to merge commit a65bd3d6516e7a453783c1557b573954cbb2c25d; this report-only cleanup record is pushed afterward as the final target HEAD`
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A
 
 ## Release / Publication / Deployment
@@ -95,9 +95,9 @@ No version bump, tag, release commit, publication, or deployment will be perform
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo`
-- Worktree cleanup result: `Pending after target push`
-- Worktree prune result: `Pending after worktree removal`
-- Local ticket branch cleanup result: `Pending after target push`
+- Worktree cleanup result: `Completed — removed /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed — deleted local codex/mobile-ux-simplification`
 - Remote branch cleanup result: `Not required`
 - Blocker (if applicable): N/A after target push; cleanup proceeds only after repository finalization is safe.
 
@@ -109,7 +109,7 @@ No version bump, tag, release commit, publication, or deployment will be perform
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/release-notes.md`
+- Release notes artifact created before verification: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/release-notes.md`
 - Archived release notes artifact used for release/publication: N/A — no release/publication per user instruction.
 - Release notes status: `Updated`
 
@@ -135,9 +135,9 @@ Authoritative upstream checks:
 - Android `gradle :app:assembleDebug`, APK resource inspection, XML static assertion, and adaptive-mask preview: passed.
 - Round 3 physical-device ADB validation: passed for APK install, native HTTP/pairing, paired Home, Weather Checker long Chat scroll, Activity, Tools, and Software Team compact target row; no repository-resident durable validation was added by API/E2E after code review.
 - Local macOS Electron user-test build: passed (`BUILD_EXIT_STATUS=0`) using `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm build:electron:mac`.
-  - Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-20260522-080713.log`
-  - Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-artifacts-20260522-081125.txt`
-  - SHA-256: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-ux-simplification-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-sha256-20260522-081125.txt`
+  - Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-20260522-080713.log`
+  - Artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-artifacts-20260522-081125.txt`
+  - SHA-256: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-ux-simplification/delivery-evidence/electron-build-mac-user-test-sha256-20260522-081125.txt`
 
 Delivery-owned check:
 
@@ -151,4 +151,4 @@ Delivery-owned check:
 
 ## Final Status
 
-`Repository finalization authorized after user verification; final commit/push/target merge are being completed in this delivery run.` The mobile-only clarification, Round 3 ADB physical-device validation, and local macOS Electron user-test build are preserved in delivery artifacts. No release/version/deployment will be performed.
+`Repository finalization completed after user verification. No release/version/deployment was performed.` The mobile-only clarification, Round 3 ADB physical-device validation, and local macOS Electron user-test build are preserved in delivery artifacts. No release/version/deployment will be performed.
