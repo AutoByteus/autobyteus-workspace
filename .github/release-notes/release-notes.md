@@ -1,19 +1,12 @@
-# Release Notes: Phone Setup and Tailscale Mobile Access
-
 ## What's New
 
-- Added a dedicated **Settings → Nodes → Phone Setup** experience for mobile setup, Tailscale guidance, and phone pairing.
-- Added copyable macOS Tailscale app commands for Serve foreground/background, Serve status, and Serve reset.
-- Added clear MagicDNS guidance for creating a phone QR code from an HTTPS `/mobile` URL.
+- Workspaces history now opens in a cleaner, compact view that shows workspace rows first.
 
 ## Improvements
 
-- Phone QR creation now requires HTTPS for desktop-created pairing sessions.
-- HTTP and IP address candidates are shown as diagnostics only, instead of being auto-selected for QR creation.
-- Active paired phones and revoked/history records are separated so retained revoked devices are visible without being actionable.
+- Expanding a workspace now reveals agent and team groups without immediately expanding every run list.
+- Selected agent/team restore still reveals only the needed path, while manual collapses stay respected across quiet history refreshes.
 
 ## Fixes
 
-- Fixed revoked phone records appearing in the active paired-phone list.
-- Fixed pairing URL handling so `/mobile` links are shown to phones while the backend stores the canonical server base URL.
-- Removed stale macOS Tailscale wrapper/installer guidance from the Phone Setup flow.
+- Prevented quiet refreshes from reopening the same auto-revealed history path after the user manually collapses it.
