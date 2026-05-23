@@ -17,7 +17,7 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/docs/agent_execution_architecture.md` | Existing durable frontend architecture doc already describes workspace history row ownership, row titles, archive/delete actions, refresh semantics, and related run-history contracts. | `Updated` | Added a new `Workspace History Progressive Disclosure` section next to existing workspace-history sections. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md` | Existing durable frontend architecture doc already describes workspace history row ownership, row titles, archive/delete actions, refresh semantics, and related run-history contracts. | `Updated` | Added a new `Workspace History Progressive Disclosure` section next to existing workspace-history sections. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/README.md` | Checked for user-facing or contributor docs that describe Workspaces history tree default expansion behavior. | `No change` | README does not document this Workspaces sidebar history interaction; adding detailed UI-state behavior there would duplicate the architecture doc. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/ARCHITECTURE.md` | Checked for frontend architecture coverage of workspace history/sidebar behavior. | `No change` | Existing file remains high-level and does not carry detailed run-history tree interaction contracts. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/docs/agent_teams.md` | Checked because the ticket includes team-definition groups and selected team-run reveal behavior. | `No change` | Agent-team docs cover team definitions, launch/readiness, and team run semantics, not workspace history tree expansion-state ownership. |
@@ -26,7 +26,7 @@
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/docs/agent_execution_architecture.md` | Architecture/UX interaction contract | Added `Workspace History Progressive Disclosure` with default-collapsed workspaces, workspace expansion revealing only group rows, collapsed agent/team run lists until explicit expansion, manual expansion preservation across quiet refresh, newly added workspace expansion, and one-shot selected-path reveal rules. | Keeps durable workspace history tree behavior aligned with the final integrated implementation. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md` | Architecture/UX interaction contract | Added `Workspace History Progressive Disclosure` with default-collapsed workspaces, workspace expansion revealing only group rows, collapsed agent/team run lists until explicit expansion, manual expansion preservation across quiet refresh, newly added workspace expansion, and one-shot selected-path reveal rules. | Keeps durable workspace history tree behavior aligned with the final integrated implementation. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -66,7 +66,7 @@
 - Latest tracked base integrated: `origin/personal` at `5e298019731f407d1888eabc7859ae6823e4f8a1`.
 - Integration method: merge after safety checkpoint; integrated HEAD `6b9dd57fb816dced73100d288e039eaed03fa2cb`.
 - Long-lived docs impact from the base refresh: No additional docs changes required for the Workspaces run-history progressive-disclosure ticket. The existing docs update in `autobyteus-web/docs/agent_execution_architecture.md` remains accurate after the merge.
-- Post-refresh executable verification: macOS Electron personal rebuild passed; see `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/latest-personal-electron-rebuild-addendum.md`.
+- Post-refresh executable verification: macOS Electron personal rebuild passed; see `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/collapsed-workspace-run-history/latest-personal-electron-rebuild-addendum.md`.
 
 
 ## User Verification Addendum — 2026-05-23

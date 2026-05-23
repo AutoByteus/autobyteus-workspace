@@ -26,7 +26,7 @@ Screenshot observation: the left sidebar Workspaces region shows multiple worksp
 
 - Project Type (`Git`/`Non-Git`): Git.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history`.
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history`.
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/collapsed-workspace-run-history`.
 - Current Branch: `codex/collapsed-workspace-run-history`.
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history`.
 - Bootstrap Base Branch: `origin/personal`.

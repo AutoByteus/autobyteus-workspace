@@ -4,7 +4,7 @@
 
 - Workflow progression completed through delivery-stage integrated-state refresh, docs sync, user verification, ticket archival, and release preparation.
 - Ticket has been archived to `tickets/done/collapsed-workspace-run-history/` after explicit user verification/completion approval.
-- Repository finalization and the requested release are in progress.
+- Repository finalization, release, and cleanup are complete.
 
 ## Integrated-State Refresh
 
@@ -92,10 +92,10 @@ Suggested manual spot-check in the Workspaces history sidebar:
 - Rebuilt macOS Electron with explicit personal flavor override:
   - `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm --filter ./autobyteus-web build:electron:mac`
 - Personal Electron build passed and produced the test DMG:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg`
-- Rebuild addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/latest-personal-electron-rebuild-addendum.md`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/evidence/electron-rebuild-mac-personal-20260522-223407-summary.log`
-- SHA-256 sums: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/evidence/electron-rebuild-mac-personal-20260522-223407-shasums.txt`
+  - Pre-cleanup local test DMG used for verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg` (removed with the dedicated ticket worktree after release).
+- Rebuild addendum: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/collapsed-workspace-run-history/latest-personal-electron-rebuild-addendum.md`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/collapsed-workspace-run-history/evidence/electron-rebuild-mac-personal-20260522-223407-summary.log`
+- SHA-256 sums: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/collapsed-workspace-run-history/evidence/electron-rebuild-mac-personal-20260522-223407-shasums.txt`
 
 
 ## User Verification And Finalization Approval — 2026-05-23
@@ -106,4 +106,14 @@ Suggested manual spot-check in the Workspaces history sidebar:
 - Renewed verification required: `No`; the finalization target had not advanced beyond the user-tested integrated state.
 - Release requested: `Yes`; next release version selected as `1.3.28` because the current package version/latest tag is `1.3.27` / `v1.3.27`.
 - Release notes prepared: `tickets/done/collapsed-workspace-run-history/release-notes.md`.
-- Next action: archive this ticket to `tickets/done/collapsed-workspace-run-history/`, commit and push the ticket branch, merge into `personal`, then run the documented desktop release flow for `v1.3.28`.
+- Final action completed: archived this ticket, committed/pushed the ticket branch, merged into `personal`, and ran the documented desktop release flow for `v1.3.28`.
+
+
+## Finalization And Release Completion — 2026-05-23
+
+- Ticket branch final commit: `32e09b57789116e12d89a77adfba62260d919122`.
+- Repository finalization: `personal` fast-forwarded to the ticket commit and was pushed to `origin/personal`.
+- Release completed: `v1.3.28` from release commit `f5bb05dfbdea9d29f73e2403c9568d26301feaa2`.
+- GitHub release workflow: `release-desktop.yml` run `26322422109` completed successfully.
+- Release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.28
+- Cleanup completed: dedicated ticket worktree and local/remote ticket branches were removed after merge/release.
