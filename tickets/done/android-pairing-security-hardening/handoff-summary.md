@@ -6,7 +6,7 @@
 - Code review result: `Pass — ready for delivery` (round 3).
 - API/E2E validation result: `Pass` (round 1) with durable validation additions re-reviewed by code review.
 - User verification/completion approval: `Received` — 2026-05-23 user message: "perfect. its working.  lets finalize, and release a new version".
-- Required hold: Cleared. Repository finalization and release `v1.3.29` are proceeding.
+- Required hold: Cleared. Repository finalization and release `v1.3.29` are complete.
 
 ## Integrated-State Refresh
 
@@ -156,6 +156,18 @@
 - Cleanup: validation Docker/Tailscale state restored, dedicated ticket worktree removed, worktree registry pruned, and local/remote ticket branches deleted.
 - Local unsigned verification build archive retained at `/Users/normy/autobyteus_org/release-artifacts/android-pairing-security-hardening-v1.3.29-local/`.
 
+## Release Publication Verification — 2026-05-23
+
+- GitHub release: `v1.3.29` — https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.29
+- Release workflow status: all tag-triggered workflows completed successfully:
+  - Desktop Release — success after rerunning the failed publish job once; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449223, attempt 2.
+  - Android APK Release — success; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449242.
+  - Release Messaging Gateway — success; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449244.
+  - Server Docker Release — success; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449239.
+- GitHub release assets verified: 19 assets, including macOS arm64/x64 DMG+ZIP artifacts and updater metadata, Windows EXE and updater metadata, Linux AppImage and updater metadata, Android release APK plus checksum, message gateway package/checksum/metadata, and release manifest.
+- Docker image verified: `autobyteus/autobyteus-server:1.3.29` manifest list exists with `linux/amd64` and `linux/arm64` platforms; digest `sha256:921a466580ca01620dd1072300023e3cf9c50e091fefbfda9e8de89e36edf5f9`.
+- Release verification evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/release-verification-20260523.log`.
+
 ## Remaining Action
 
-- Monitor GitHub release workflows if release artifact publication status is needed. No local repository action remains.
+- No remaining local repository action. GitHub release workflows for desktop, Android APK, messaging gateway, and server Docker have all completed successfully for `v1.3.29`.

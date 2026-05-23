@@ -1,0 +1,47 @@
+Release verification timestamp: 2026-05-23T11:47:38Z
+
+--- release workflows for v1.3.29 ---
+Release Messaging Gateway | status=completed | conclusion=success | event=push | branch=v1.3.29 | sha=680420a8de5dfdbc87e9037457f306dc6d292184 | url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449244
+Android APK Release | status=completed | conclusion=success | event=push | branch=v1.3.29 | sha=680420a8de5dfdbc87e9037457f306dc6d292184 | url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449242
+Server Docker Release | status=completed | conclusion=success | event=push | branch=v1.3.29 | sha=680420a8de5dfdbc87e9037457f306dc6d292184 | url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449239
+Desktop Release | status=completed | conclusion=success | event=push | branch=v1.3.29 | sha=680420a8de5dfdbc87e9037457f306dc6d292184 | url=https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449223
+
+--- desktop rerun summary ---
+{"attempt":2,"conclusion":"success","status":"completed","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449223"}
+
+--- GitHub release assets ---
+tag=v1.3.29 draft=False prerelease=False url=https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.29
+AutoByteus_personal_android-1.3.29-release.apk | size=1846667 | digest=sha256:48d053e890e720388e4531651ae093640cbea7f63622ac9ef08bb486bd942abe | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_android-1.3.29-release.apk
+AutoByteus_personal_android-1.3.29-release.apk.sha256 | size=113 | digest=sha256:eca11e2f4a53cad35c3dfebfd23a86240f0a8584ad35f93aeae4a0f5f217fecf | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_android-1.3.29-release.apk.sha256
+AutoByteus_personal_linux-1.3.29.AppImage | size=352189818 | digest=sha256:57d08e6514bd3a75c207a2848ed4c6a1264f56c8ce537c2f8a7a2b9946d9c7be | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_linux-1.3.29.AppImage
+AutoByteus_personal_macos-arm64-1.3.29.dmg | size=412802558 | digest=sha256:0c3e2bd6f0b7945b7c692db6f1497c6dda8340c463d0494026e60f39b43f4c8f | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_macos-arm64-1.3.29.dmg
+AutoByteus_personal_macos-arm64-1.3.29.dmg.blockmap | size=430197 | digest=sha256:ce4360ba08cefd61968bf84a2b62be9415d2aefe73b85c1751793acb5635f6db | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_macos-arm64-1.3.29.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.3.29.zip | size=409187899 | digest=sha256:d0746c6b79a518482cf64a8e26cdc82b2eae9eb50c2f48af776ac0790cd4e01e | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_macos-arm64-1.3.29.zip
+AutoByteus_personal_macos-arm64-1.3.29.zip.blockmap | size=405886 | digest=sha256:34fe5ca400861e5606a34019ebc7a1ff3774a0a71c8c1cfe415578c6d887f64e | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_macos-arm64-1.3.29.zip.blockmap
+AutoByteus_personal_macos-x64-1.3.29.dmg | size=437968961 | digest=sha256:f8cb3ee08edd884436404e02bcb3dd1cfb15b046850cc7db03f6916db50e3333 | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_macos-x64-1.3.29.dmg
+AutoByteus_personal_macos-x64-1.3.29.dmg.blockmap | size=455747 | digest=sha256:454daceda6a9c15750db62a648f5282e3a373476f93431864034c4a3ee070f62 | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_macos-x64-1.3.29.dmg.blockmap
+AutoByteus_personal_macos-x64-1.3.29.zip | size=433768786 | digest=sha256:d0b6f9096c56e6d12cc8b6f7884764b980bbe9ce3fab6fc10d9f99bf25025a16 | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_macos-x64-1.3.29.zip
+AutoByteus_personal_macos-x64-1.3.29.zip.blockmap | size=443264 | digest=sha256:e47c501853c667c9882d85c941dece8e3f022e38a7ad6a12124d67cea0bec59b | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_macos-x64-1.3.29.zip.blockmap
+AutoByteus_personal_windows-1.3.29.exe | size=281524830 | digest=sha256:e6a04fe2ef6c10261fbcb5e22946a64c57a792527ae4b989b040004d7bf3901b | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/AutoByteus_personal_windows-1.3.29.exe
+autobyteus-message-gateway-1.3.29-node-generic.tar.gz | size=43013727 | digest=sha256:cce41864666631db9aed5a22b84a336e93a086ac12f5cd5da823ebc0027e9ef0 | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/autobyteus-message-gateway-1.3.29-node-generic.tar.gz
+autobyteus-message-gateway-1.3.29-node-generic.tar.gz.json | size=429 | digest=sha256:d9d316c26f1db958728cd6a6851ce18f41e9f7c1b6c4f3e0c64bb7e7bdbe0c51 | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/autobyteus-message-gateway-1.3.29-node-generic.tar.gz.json
+autobyteus-message-gateway-1.3.29-node-generic.tar.gz.sha256 | size=120 | digest=sha256:a62f254a07774068e721acc3b26699325fd3ae1304210aab295ac796de0366d9 | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/autobyteus-message-gateway-1.3.29-node-generic.tar.gz.sha256
+latest-linux.yml | size=405 | digest=sha256:598483bdbb89ce2c3e3d1a9131feafb69e0b1789884d61a98190cde0c54142b3 | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/latest-linux.yml
+latest-mac.yml | size=897 | digest=sha256:606eecbfd01b5fe9b3021ff551db69810e1156407b7fdf2ec197e1b3e5db2376 | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/latest-mac.yml
+latest.yml | size=354 | digest=sha256:c912c73e262823fe1cc05730c2d1b36b78f89936918777fae5cd789e265dd458 | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/latest.yml
+release-manifest.json | size=867 | digest=sha256:aadb3c4888c83df94ef1bf6869b3c626fec5cc5c2bbb66ad1f393afda45d5bd8 | https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.3.29/release-manifest.json
+asset_count=19
+
+--- Docker manifest autobyteus/autobyteus-server:1.3.29 ---
+Name:      docker.io/autobyteus/autobyteus-server:1.3.29
+MediaType: application/vnd.docker.distribution.manifest.list.v2+json
+Digest:    sha256:921a466580ca01620dd1072300023e3cf9c50e091fefbfda9e8de89e36edf5f9
+           
+Manifests: 
+  Name:      docker.io/autobyteus/autobyteus-server:1.3.29@sha256:464a983baf70fc1ad38cf05d843c9419a014ea7cf9a5fd43b5930289052d96a4
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/amd64
+             
+  Name:      docker.io/autobyteus/autobyteus-server:1.3.29@sha256:e79387638e519b428230accb78c9602fcda64ee9df298abf7ec70722dbda4f5a
+  MediaType: application/vnd.docker.distribution.manifest.v2+json
+  Platform:  linux/arm64

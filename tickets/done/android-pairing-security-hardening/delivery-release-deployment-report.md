@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-This ticket is a Phase One Android pairing / mobile-safe Docker node security hardening package. Delivery has completed latest-base integration, post-integration checks, and docs sync. Repository finalization, ticket archival, branch push/merge, release, publication, deployment, and cleanup are intentionally not performed yet because the delivery workflow requires explicit user verification/completion first.
+This ticket is a Phase One Android pairing / mobile-safe Docker node security hardening package. Delivery completed latest-base integration, post-integration checks, docs sync, explicit user-verification hold, ticket archival, branch push/merge into `personal`, release `v1.3.29`, publication verification, and cleanup.
 
 ## Handoff Summary
 
@@ -24,7 +24,7 @@ This ticket is a Phase One Android pairing / mobile-safe Docker node security ha
 - No-rerun rationale (only if no new base commits were integrated): N/A
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`; final pre-handoff `git fetch --prune origin` confirmed `origin/personal` remained `2369377c4752a1d742401f7f3d366d7aa24bb03b`, merge-base equals that revision, and the ticket branch is `2 ahead / 0 behind` before uncommitted delivery docs/artifact edits.
-- Blocker (if applicable): N/A for preparation; finalization is held pending explicit user verification.
+- Blocker (if applicable): N/A; user verification was received and finalization completed.
 
 ## User Verification
 
@@ -49,8 +49,8 @@ This ticket is a Phase One Android pairing / mobile-safe Docker node security ha
 ## Version / Tag / Release Commit
 
 - Release notes artifact created: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/release-notes.md`
-- Planned release version: `1.3.29` (`v1.3.29`) after repository finalization.
-- Version bump, release commit, tag, and workflow-triggering push are pending the repository finalization step.
+- Release version: `1.3.29` (`v1.3.29`).
+- Version bump, release commit, annotated tag, and workflow-triggering push completed.
 
 ## Repository Finalization
 
@@ -67,16 +67,16 @@ This ticket is a Phase One Android pairing / mobile-safe Docker node security ha
 - Merge into target result: `Completed`; `personal` fast-forwarded from `2369377c4752a1d742401f7f3d366d7aa24bb03b` to ticket commit `ec74ea23b66fd3b73fbb48360d53d3faa679ffbc`.
 - Push target branch result: `Completed`; `origin/personal` was pushed after ticket merge, then pushed again by the release helper to release commit `680420a8de5dfdbc87e9037457f306dc6d292184`.
 - Repository finalization status: `Completed`
-- Blocker (if applicable): N/A; user verification received and finalization is proceeding.
+- Blocker (if applicable): N/A; user verification received and finalization completed.
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `pnpm release 1.3.29 -- --release-notes tickets/done/android-pairing-security-hardening/release-notes.md`
-- Release/publication/deployment result: `Completed`; release helper pushed `origin/personal` and tag `v1.3.29`.
+- Release/publication/deployment result: `Completed`; release helper pushed `origin/personal` and tag `v1.3.29`; all tag-triggered release workflows completed successfully after one rerun of the Desktop Release publish job.
 - Release notes handoff result: `Used`
-- Blocker (if applicable): N/A; release waits for repository finalization first.
+- Blocker (if applicable): N/A. The initial Desktop Release publish job failed with a transient GitHub `Bad credentials` error; rerunning failed jobs for run `26331449223` succeeded on attempt 2 and published the desktop assets.
 
 ## Post-Finalization Cleanup
 
@@ -91,11 +91,11 @@ This ticket is a Phase One Android pairing / mobile-safe Docker node security ha
 
 - Classification: N/A
 - Recommended recipient: N/A
-- Why final handoff could not complete: N/A for handoff preparation. Repository finalization is intentionally held for user verification.
+- Why final handoff could not complete: N/A; final handoff can complete.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification: `No`; release was requested in the verification/finalization message.
+- Release notes artifact created before release: `Yes`; release was requested in the verification/finalization message and notes were created before running the release helper.
 - Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/release-notes.md`
 - Release notes status: `Updated`
 
@@ -141,9 +141,21 @@ Stop finalization and route back to the appropriate upstream owner if user verif
 - mobile Tools/Terminal/VNC controls are visible in the standard `/mobile` shell;
 - raw node-admin claim secrets or pairing credentials appear in logs, normal node snapshots, evidence, or renderer localStorage.
 
+## Release Publication Verification
+
+- GitHub release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.29
+- Release verification evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/release-verification-20260523.log`
+- Tag-triggered workflow results:
+  - Desktop Release: `success` after one failed-job rerun; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449223, attempt 2. The first publish attempt failed at `softprops/action-gh-release` with `Bad credentials`; attempt 2 reused the successful build artifacts and published successfully.
+  - Android APK Release: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449242.
+  - Release Messaging Gateway: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449244.
+  - Server Docker Release: `success`; run https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26331449239.
+- GitHub Release asset verification: 19 assets present, including macOS arm64/x64 DMG+ZIP artifacts and updater metadata, Windows EXE and updater metadata, Linux AppImage and updater metadata, Android release APK plus checksum, message gateway package/checksum/metadata, and release manifest.
+- Docker publication verification: `docker buildx imagetools inspect autobyteus/autobyteus-server:1.3.29` resolved a multi-platform manifest list for `linux/amd64` and `linux/arm64`; digest `sha256:921a466580ca01620dd1072300023e3cf9c50e091fefbfda9e8de89e36edf5f9`.
+
 ## Final Status
 
-Finalization complete. Ticket artifacts are archived, `personal` was updated and pushed, release `v1.3.29` was created and pushed, validation resources were cleaned up, and the dedicated ticket worktree/branches were removed.
+Finalization complete. Ticket artifacts are archived, `personal` was updated and pushed, release `v1.3.29` was created and published, all release workflows completed successfully, validation resources were cleaned up, and the dedicated ticket worktree/branches were removed.
 
 
 ## Finalization Completion Addendum — 2026-05-23
@@ -155,3 +167,4 @@ Finalization complete. Ticket artifacts are archived, `personal` was updated and
 - Release command log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/release-command-20260523.log`.
 - Cleanup log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/final-cleanup-20260523.log`.
 - Local unsigned verification build archive retained at `/Users/normy/autobyteus_org/release-artifacts/android-pairing-security-hardening-v1.3.29-local/`; official release artifacts are produced by the tag-triggered GitHub workflows.
+- Release verification log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/release-verification-20260523.log`.
