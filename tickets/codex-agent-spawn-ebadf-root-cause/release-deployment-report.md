@@ -42,9 +42,16 @@ This section supersedes the older 1.3.26 delivery/build evidence below.
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `69c867f919a015b775245ffd8052e23861df838cfa7cfb50151b25eafb59bc5d` |
 
 
+
+## Latest Delivery Status — Blocked On Latest-Base Merge (2026-05-23)
+
+Delivery attempted the post API/E2E Round 7 integrated-state refresh against latest `origin/personal@74218467a2f7786c82f3e97b9190058d2cb83bd2`. A local safety checkpoint of the Round 12-reviewed / Round 7 API/E2E-passed candidate was created at `8d2cda4ed85d529802ed7caf66aa010b0e65f303`, then `git merge --no-edit origin/personal` produced conflicts in mobile/terminal source, mobile tests, and `autobyteus-web/docs/terminal.md`. The merge was aborted to preserve the reviewed candidate cleanly. Delivery is blocked until implementation resolves the latest-base merge conflicts.
+
+Blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round13-latest-personal-merge-conflicts.md`
+
 ## Current Status
 
-`Ready for user verification` — the latest-base checked branch built the requested macOS Electron artifacts successfully after the round-9 localization Local Fix, and the DMG verified successfully. Repository finalization, ticket archival, push/merge, release publication, and deployment have not been run and are intentionally held until explicit user verification.
+`Blocked` — the latest-base checked branch built the requested macOS Electron artifacts successfully after the round-9 localization Local Fix, and the DMG verified successfully. Repository finalization, ticket archival, push/merge, release publication, and deployment have not been run. Delivery is blocked before user verification by latest-base merge conflicts.
 
 ## Release / Publication / Deployment Scope
 
