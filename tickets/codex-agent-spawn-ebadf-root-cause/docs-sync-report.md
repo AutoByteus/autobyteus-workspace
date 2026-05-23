@@ -5,9 +5,18 @@
 - Ticket: `codex-agent-spawn-ebadf-root-cause`
 - Trigger: API/E2E round 5 passed, repository-resident durable validation was re-reviewed by code review round 9, delivery was asked to read the Electron README and produce a macOS Electron build, and a delivery-discovered localization Local Fix was returned by implementation.
 - Bootstrap base reference: not explicitly recorded in upstream artifacts; delivery inferred the tracked base/finalization target from the ticket branch upstream, `origin/personal`.
-- Latest tracked base used for the current delivery refresh: `origin/personal@fcf435ec1894de13fad54002cd70e62d59dd12b8`.
+- Latest tracked base used for the current delivery refresh: `origin/personal@5875b06d87d3c92b80c0dfa3675eea844324cb7c`.
 - Integrated branch reference used for docs sync and build verification: `916e90349d4719638930ad3eae5a92c768a6ab95` after confirming latest `origin/personal` and committing the round-9 localization Local Fix checkpoint.
 - Current delivery status: docs remain synchronized with the round-9-reviewed implementation plus the narrow localization Local Fix; the requested Electron artifacts were built and verified locally; repository finalization remains paused pending explicit user verification.
+
+
+## Latest Delivery Refresh — 2026-05-23
+
+- Remote base advanced after the prior delivery handoff. Delivery fetched and merged `origin/personal@5875b06d87d3c92b80c0dfa3675eea844324cb7c` into the ticket branch.
+- Integrated build-source HEAD: `03f093c73e25070f560f11dbf486cf5bd0ee1d8a`.
+- Post-merge durable validation passed: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-post-latest-personal-integrated-checks-20260523061140.log`.
+- Current macOS Electron build passed for version `1.3.28`, and DMG verification passed. Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-latest-personal-20260523061215.log`.
+- Docs impact from the latest base refresh and rebuild: no additional long-lived docs changes required for this ticket; existing file-explorer watcher-lifecycle docs remain applicable.
 
 ## Why Docs Were Updated
 

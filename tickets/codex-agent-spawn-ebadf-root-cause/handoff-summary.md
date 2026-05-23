@@ -1,5 +1,47 @@
 # Handoff Summary — codex-agent-spawn-ebadf-root-cause
 
+## Latest Refresh — 2026-05-23 (Authoritative)
+
+This section supersedes the older 1.3.26 delivery/build evidence below.
+
+- User request: remote `origin/personal` was updated; refresh this ticket branch to latest `origin/personal` and rebuild Electron.
+- Latest remote base fetched: `origin/personal@5875b06d87d3c92b80c0dfa3675eea844324cb7c`.
+- Pre-refresh safety checkpoint for prior delivery evidence: `2204d6762d8fcb1d3c7dd7fc4096fe382df50586`.
+- Integration method: merged `origin/personal` into `codex/codex-agent-spawn-ebadf-root-cause`.
+- Integrated build-source HEAD: `03f093c73e25070f560f11dbf486cf5bd0ee1d8a`.
+- Final post-build fetch check: `origin/personal` remained `5875b06d87d3c92b80c0dfa3675eea844324cb7c`; branch relation at build-source HEAD was `8	0` (ahead, behind).
+- Version built from latest base: `1.3.28`.
+- Repository finalization/push/merge/release/deployment: not run.
+
+### Latest Integrated Checks
+
+- Diff check: `git diff --check origin/personal...HEAD -- autobyteus-server-ts autobyteus-web ':!tickets/**/validation-artifacts/**'` — pass.
+- Durable validation: `pnpm -C autobyteus-server-ts test tests/e2e/workspaces/workspaces-graphql.e2e.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts` — pass, 2 files / 18 tests.
+- Integrated check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-post-latest-personal-integrated-checks-20260523061140.log`.
+
+### Latest Electron Build And Verification
+
+- README path used: local macOS verbose/no-notarization build command from `autobyteus-web/README.md`.
+- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm -C autobyteus-web build:electron:mac`.
+- Build result: pass.
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-latest-personal-20260523061215.log`.
+- Build path included `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, backend `prepare-server` / `build:full`, Nuxt generate, Electron transpile/build, DMG, ZIP, and blockmap creation.
+- Signing/notarization: local README no-notarization path; Electron Builder reported `isPublish: false` for artifacts and skipped macOS code signing because identity was explicitly null.
+- DMG verification: `hdiutil verify /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.28.dmg` — pass; checksum valid.
+- DMG verify log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-dmg-verify-latest-personal-20260523061656.log`.
+- Artifact summary/checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-artifacts-latest-personal-20260523061656.txt`.
+
+### Latest Built Electron Artifacts
+
+| Artifact | Size bytes | SHA-256 |
+| --- | ---: | --- |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.28.dmg` | 379802488 | `7640735094d31e6de79e2e45fb829b23e581e8e3aa8dabd01d19b3f501618609` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.28.dmg.blockmap` | 396041 | `a3bea1def953c7fce0423f0458822a09c324d0840e44fc35758ede095c8ce135` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.28.zip` | 377112269 | `b5770b3ac3dad7125e0eadaeef269428ed03c9486e848515ae65d477d5af7e23` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.28.zip.blockmap` | 386733 | `68f666ed20d1f1e8d5123660f05e33ca25a4f6e99209c38694cb264ef1e26d8b` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `69c867f919a015b775245ffd8052e23861df838cfa7cfb50151b25eafb59bc5d` |
+
+
 ## Status
 
 Ready for user verification. Delivery refreshed the ticket branch against the latest tracked `origin/personal`, read the Electron README build guidance, reran the post-round9 durable validation, resolved the delivery-discovered localization build blocker through implementation, rebuilt macOS Electron from the current branch state, and verified the generated DMG. Repository finalization, pushing/merging, ticket archival, publication, and deployment are intentionally paused until explicit user verification.
