@@ -1,0 +1,23 @@
+## live port check after cleanup
+
+## git status --short (relevant round8/report paths)
+ M tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-01-agents-list-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-02-run-config-no-files-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-03-files-visible-tree-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-04-readme-open-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-05-search-results-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-06-right-panel-collapsed-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-backend-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.json
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.mjs
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-server-data-20260523/
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-stack-20260523.json
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-start-stack-20260523.sh
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-workspace-20260523/
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-report-diff-check-20260523.log
+
+## git diff --check report
+git diff --check report: PASS
