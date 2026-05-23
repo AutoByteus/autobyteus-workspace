@@ -63,6 +63,25 @@ Published file patterns:
 - `**/latest-linux.yml`
 - `**/latest.yml`
 
+### Cross-Workflow Release Timing
+
+The desktop, Android, messaging-gateway, and server Docker workflows are all
+triggered by the same `v*` tag. The GitHub Release is shared across asset
+families, so another publish job can make the release visible before
+`release-desktop.yml` has uploaded the desktop updater metadata and binaries.
+
+Until the Desktop Release workflow completes, updater checks can legitimately
+encounter missing `latest-mac.yml`, `latest-linux.yml`, `latest.yml`, missing
+ZIP/AppImage/installer assets, or other provider metadata gaps. The desktop app
+classifies those failures as `release-preparing` and shows safe retry copy while
+keeping raw provider diagnostics in Electron logs.
+
+Operationally, treat release-time updater errors as incomplete deployment until
+the desktop workflow has finished and the published release contains all file
+patterns above. A separate release-orchestration improvement would be required
+to prevent the public/latest release from being visible before desktop updater
+assets are ready.
+
 ## Optional Apple Signing/Notarization Secrets
 
 If omitted, macOS build still runs but output is unsigned and not notarized.

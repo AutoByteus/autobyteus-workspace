@@ -1,0 +1,16 @@
+validation_tmp=/tmp/autobyteus-docker-validation.TX2HSr
+target_index=50
+
+state_file=/tmp/autobyteus-docker-validation.TX2HSr/state/nodes/autobyteus-server-50.env
+node=autobyteus-server-50
+container=autobyteus-server-50
+backend_port=50747
+before_rotate_runtime_assertions=PASS
+before_rotate_ports={"5900/tcp": [{"HostIp": "127.0.0.1", "HostPort": "50748"}], "6080/tcp": [{"HostIp": "127.0.0.1", "HostPort": "50749"}], "8000/tcp": [{"HostIp": "127.0.0.1", "HostPort": "50747"}], "9223/tcp": [{"HostIp": "127.0.0.1", "HostPort": "50750"}]}
+before_rotate_mount_types=["volume", "volume", "volume"]
+state_file_mode=0o600
+after_rotate_runtime_assertions=PASS
+old_claim_id=nac_W9QrAglYc2UnZyM_-O0JaYm6
+new_claim_id=nac_tCYX9rSJjJyLnssGD2RcYZva
+cleanup=removed container autobyteus-server-50 and volumes for autobyteus-server-50
+tmp_removed=/tmp/autobyteus-docker-validation.TX2HSr

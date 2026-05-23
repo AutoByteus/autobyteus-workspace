@@ -1,0 +1,25 @@
+== tap Create run from mobile WebView with DeepSeek model ==
+run_files_before=2
+== UI after Create run ==
+{'text': '', 'desc': '', 'res': 'android:id/content', 'class': 'android.widget.FrameLayout', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': '__nuxt', 'class': 'android.view.View', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'app', 'class': 'android.view.View', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': 'Home', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[44,139][220,244]', 'clickable': 'true'}
+{'text': 'Memory Compactor Ready', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[247,137][819,247]', 'clickable': 'true'}
+{'text': 'Switch', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[847,139][1036,244]', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'agent-conversation-scroll-temp-1779523368070-1-33', 'class': 'android.widget.TextView', 'bounds': '[44,324][1036,1715]', 'clickable': 'false'}
+{'text': 'Context Files (0) (drag, paste, or upload)', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[77,1776][902,1844]', 'clickable': 'true'}
+{'text': '', 'desc': 'Upload files', 'res': '', 'class': 'android.widget.Button', 'bounds': '[924,1770][1001,1850]', 'clickable': 'true'}
+{'text': 'Send message', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[913,1954][1012,2056]', 'clickable': 'true'}
+{'text': '', 'desc': 'Chat', 'res': '', 'class': 'android.widget.Button', 'bounds': '[0,2122][272,2166]', 'clickable': 'true'}
+{'text': '', 'desc': 'Runs', 'res': '', 'class': 'android.widget.Button', 'bounds': '[269,2122][541,2166]', 'clickable': 'true'}
+{'text': '', 'desc': 'Files', 'res': '', 'class': 'android.widget.Button', 'bounds': '[539,2122][811,2166]', 'clickable': 'true'}
+{'text': '', 'desc': 'Activity', 'res': '', 'class': 'android.widget.Button', 'bounds': '[808,2122][1080,2166]', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'teleports', 'class': 'android.widget.TextView', 'bounds': '[0,0][0,0]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/statusBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][1080,104]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/navigationBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][0,0]', 'clickable': 'false'}
+== Docker node memory/run files after mobile create run ==
+/home/autobyteus/data/memory/run_history_index.json
+/home/autobyteus/data/memory/team_run_history_index.json
+== paired devices after create run ==
+{"devices":[{"deviceId":"device_e3020efa09dc2cdfcc5d33760ba698de","displayName":"Phone","clientFacingBaseUrl":"https://normys-macbook-pro.tail0347f8.ts.net","createdAt":"2026-05-23T07:58:13.888Z","lastSeenAt":"2026-05-23T08:01:58.427Z","revokedAt":null}]}

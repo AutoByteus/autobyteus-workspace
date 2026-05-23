@@ -1,0 +1,4 @@
+== tailscale serve status before temporary Docker switch ==
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:29695
+

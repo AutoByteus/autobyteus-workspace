@@ -1,0 +1,12 @@
+container=autobyteus-phone-docker-current
+image=autobyteus-server:android-phone-current
+container_id=be572999f8145f261e54176c860f97c058723c6ec2d2fd7f887277882e89ba6a
+backend_port=53245
+vnc_port=53246
+novnc_port=53247
+debug_port=53248
+claim_id=nac_HufCW0Rd4jRpUcGuYYIuPxfV
+claim_secret=REDACTED
+claim_hash=70ef8a11b65fbfaf6e56aaa48d78d1cfd854808d45f69d175564ec93f3ec2fb2
+secret_file=/Users/normy/.autobyteus/live-phone-docker-node.env
+status_ready=1

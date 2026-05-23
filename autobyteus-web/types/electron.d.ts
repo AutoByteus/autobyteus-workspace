@@ -1,3 +1,4 @@
+import type { AppUpdateState } from '../shared/appUpdateTypes';
 import type {
   NodeRegistryChange,
   NodeRegistrySnapshot,
@@ -6,6 +7,11 @@ import type {
   RemoteBrowserSharingSettingsResult,
   WindowNodeContext,
 } from './node';
+import type {
+  NodeAdminClaimHeadersResult,
+  NodeAdminClaimSummary,
+  RegisterNodeAdminClaimInput,
+} from './nodeAdminClaim';
 import type {
   BrowserHostBounds,
   BrowserShellNavigateTabRequest,
@@ -23,29 +29,6 @@ import type {
 } from '../electron/extensions/types';
 
 type Cleanup = () => void;
-
-type AppUpdateStatus =
-  | 'idle'
-  | 'checking'
-  | 'available'
-  | 'downloading'
-  | 'downloaded'
-  | 'installing'
-  | 'no-update'
-  | 'error';
-
-type AppUpdateState = {
-  status: AppUpdateStatus;
-  currentVersion: string;
-  availableVersion: string | null;
-  downloadPercent: number | null;
-  downloadTransferredBytes: number | null;
-  downloadTotalBytes: number | null;
-  releaseNotes: string | null;
-  message: string;
-  error: string | null;
-  checkedAt: string | null;
-};
 
 type ServerStatusPayload = {
   status: 'starting' | 'running' | 'error' | 'restarting' | 'shutting-down';
@@ -82,6 +65,13 @@ declare global {
       upsertNodeRegistry: (change: NodeRegistryChange) => Promise<NodeRegistrySnapshot>;
       getNodeRegistrySnapshot: () => Promise<NodeRegistrySnapshot>;
       onNodeRegistryUpdated: (callback: (snapshot: NodeRegistrySnapshot) => void) => Cleanup;
+      getNodeAdminClaimSummary: (nodeId: string, managementBaseUrl: string) => Promise<NodeAdminClaimSummary>;
+      registerNodeAdminClaim: (input: RegisterNodeAdminClaimInput) => Promise<NodeAdminClaimSummary>;
+      getNodeAdminClaimHeaders: (
+        nodeId: string,
+        managementBaseUrl: string,
+      ) => Promise<NodeAdminClaimHeadersResult>;
+      clearNodeAdminClaim: (nodeId: string, managementBaseUrl: string) => Promise<NodeAdminClaimSummary>;
       getRemoteBrowserSharingSettings: () => Promise<RemoteBrowserSharingSettings>;
       updateRemoteBrowserSharingSettings: (
         settings: RemoteBrowserSharingSettings,

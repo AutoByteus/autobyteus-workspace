@@ -1,0 +1,47 @@
+# syntax=docker/dockerfile:1
+# Temporary API/E2E validation Dockerfile for the current worktree only.
+# It intentionally copies all required workspace packages and patches so the
+# current branch can be built into a real remote-server image before upstream
+# packaging Dockerfile fixes are considered by implementation/review.
+FROM node:22-bookworm AS builder
+WORKDIR /app
+
+RUN corepack enable
+
+COPY . .
+
+RUN pnpm install --no-frozen-lockfile
+RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+RUN pnpm -C autobyteus-server-ts build
+
+FROM node:22-bookworm-slim AS runtime
+WORKDIR /app
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl curl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable && corepack prepare pnpm@10.30.2 --activate
+
+COPY --from=builder /app/package.json /app/pnpm-workspace.yaml /app/pnpm-lock.yaml ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/autobyteus-ts ./autobyteus-ts
+COPY --from=builder /app/autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+COPY --from=builder /app/autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+COPY --from=builder /app/autobyteus-application-frontend-sdk ./autobyteus-application-frontend-sdk
+COPY --from=builder /app/autobyteus-application-devkit ./autobyteus-application-devkit
+COPY --from=builder /app/autobyteus-server-ts ./autobyteus-server-ts
+
+COPY docker/remote-server-entrypoint.sh /usr/local/bin/remote-server-entrypoint.sh
+RUN chmod +x /usr/local/bin/remote-server-entrypoint.sh
+
+ENV NODE_ENV=production \
+    AUTOBYTEUS_BIND_HOST=0.0.0.0 \
+    AUTOBYTEUS_SERVER_PORT=8000 \
+    AUTOBYTEUS_DATA_DIR=/home/autobyteus/data \
+    LOG_LEVEL=INFO \
+    AUTOBYTEUS_HTTP_ACCESS_LOG_MODE=errors \
+    AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY=false
+
+EXPOSE 8000
+ENTRYPOINT ["/usr/local/bin/remote-server-entrypoint.sh"]

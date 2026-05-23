@@ -1,0 +1,43 @@
+# API/E2E duplicate provider event renderer probe (expected acceptance: one toast)
+Date: 2026-05-23T05:32:11Z
+
+> autobyteus@1.3.27 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run tmp-api-e2e-duplicate-toast-probe.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+
+stderr | tmp-api-e2e-duplicate-toast-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tmp-api-e2e-duplicate-toast-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ tmp-api-e2e-duplicate-toast-probe.spec.ts (1 test | 1 failed) 4ms
+   × api/e2e duplicate provider error-event probe > does not emit a second visible toast when the same provider error follows the manual-check rejection as updater-event 4ms
+     → expected "spy" to be called 1 times, but got 2 times
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tmp-api-e2e-duplicate-toast-probe.spec.ts > api/e2e duplicate provider error-event probe > does not emit a second visible toast when the same provider error follows the manual-check rejection as updater-event
+AssertionError: expected "spy" to be called 1 times, but got 2 times
+ ❯ tmp-api-e2e-duplicate-toast-probe.spec.ts:46:26
+     44|     });
+     45| 
+     46|     expect(addToastMock).toHaveBeenCalledTimes(1);
+       |                          ^
+     47|   });
+     48| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  07:32:14
+   Duration  4.98s (transform 2.79s, setup 4.30s, collect 38ms, tests 4ms, environment 182ms, prepare 212ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

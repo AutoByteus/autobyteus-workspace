@@ -1,0 +1,43 @@
+== installed AutoByteus app info (existing device app; debug APK install was blocked by signature mismatch) ==
+  Package [org.autobyteus.mobile] (fd6d4bd):
+    versionCode=10032699 minSdk=26 targetSdk=35
+    versionName=1.3.26
+    firstInstallTime=2026-05-22 14:18:11
+    lastUpdateTime=2026-05-22 14:18:11
+    installerPackageName=com.google.android.packageinstaller
+    signatures=PackageSignatures{88d0a03 version:2, signatures:[6992b009], past signatures:[]}
+== create HTTPS pairing session against Docker node ==
+{
+  "payload": {
+    "version": 1,
+    "serverBaseUrl": "https://normys-macbook-pro.tail0347f8.ts.net",
+    "pairingCode": "REDACTED",
+    "expiresAt": "2026-05-23T07:59:34.570Z",
+    "serverName": "AutoByteus Docker Node"
+  },
+  "qrText": "REDACTED",
+  "mobileUrl": "REDACTED"
+}
+mobile_url=REDACTED
+== launch existing installed Android app with HTTPS pairing URL via ACTION_SEND ==
+Starting: Intent { act=android.intent.action.SEND typ=text/plain cmp=org.autobyteus.mobile/.MainActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Activity: org.autobyteus.mobile/.MainActivity
+TotalTime: 230
+WaitTime: 233
+Complete
+== wait for app validation/webview load ==
+== paired devices after Android launch ==
+{"devices":[]}
+== top activity ==
+    mResumedActivity: ActivityRecord{87c7638 u0 org.autobyteus.mobile/.MainActivity t17739}
+      * Hist #0: ActivityRecord{87c7638 u0 org.autobyteus.mobile/.MainActivity t17739}
+      * Hist #0: ActivityRecord{dc435fd u0 com.tailscale.ipn/.MainActivity t17737}
+      * Hist #0: ActivityRecord{8beefc3 u0 com.tencent.mm/.ui.LauncherUI t17665}
+      * Hist #0: ActivityRecord{ea3f167 u0 com.miui.home/.launcher.Launcher t2}
+      * Hist #0: ActivityRecord{3171f89 u0 com.linkedin.android/.infra.navigation.MainActivity t17712}
+      * Hist #0: ActivityRecord{636ec10 u0 com.twitter.android/com.twitter.app.main.MainActivity t17715}
+      * Hist #1: ActivityRecord{63d3222 u0 com.miui.notes/.ui.activity.EditActivity t17714}
+      * Hist #0: ActivityRecord{4f822d5 u0 com.miui.notes/.ui.NotesListActivity t17714}
+      * Hist #0: ActivityRecord{1a48a00 u0 com.google.android.gm/.ui.MailActivityGmail t17722}

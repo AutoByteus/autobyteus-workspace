@@ -1,4 +1,4 @@
-export type MobileTaskTab = 'chat' | 'runs' | 'files' | 'tools' | 'activity';
+export type MobileTaskTab = 'chat' | 'runs' | 'files' | 'activity';
 
 export type MobileCatalogSegmentId = 'recent' | 'agents' | 'teams' | 'workspaces';
 

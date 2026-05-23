@@ -23,6 +23,7 @@ describe('dockerNodeLauncherCommands', () => {
       'macos-linux-install',
       'windows-powershell-install',
       'direct-new-container',
+      'direct-admin-claim-show',
       'direct-upgrade-all',
       'direct-destroy-all',
       'direct-reset',
@@ -41,7 +42,8 @@ describe('dockerNodeLauncherCommands', () => {
       `powershell -NoProfile -ExecutionPolicy Bypass -Command "irm ${dockerNodeLauncherScriptUrls.powershell} | iex; autobyteus-docker install"`,
     );
     expect(commands.filter((command) => command.phase === 'direct').map((command) => command.command)).toEqual([
-      'autobyteus-docker new-container',
+      'autobyteus-docker new-container --profile mobile-safe',
+      'autobyteus-docker admin-claim show --name autobyteus-server-0',
       'autobyteus-docker upgrade --all',
       'autobyteus-docker destroy --all',
       'autobyteus-docker reset',

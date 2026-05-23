@@ -1,0 +1,38 @@
+== build assets layer 2026-05-23T10:40:17+0200 ==
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.phone-current-assets-layer
+#1 transferring dockerfile: 277B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/autobyteus-server:android-phone-current
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 282B done
+#3 DONE 0.0s
+
+#4 [1/2] FROM docker.io/library/autobyteus-server:android-phone-current@sha256:ace22c12b9819f3ec6226f7751eb2d1a9434e4bcb38509156a6cf11bd1919488
+#4 resolve docker.io/library/autobyteus-server:android-phone-current@sha256:ace22c12b9819f3ec6226f7751eb2d1a9434e4bcb38509156a6cf11bd1919488 0.0s done
+#4 DONE 0.1s
+
+#5 [internal] load build context
+#5 transferring context: 15.26kB 0.3s done
+#5 DONE 0.3s
+
+#6 [2/2] COPY autobyteus-web/dist-mobile/public /app/autobyteus-server-ts/mobile-web
+#6 DONE 0.1s
+
+#7 exporting to image
+#7 exporting layers
+#7 exporting layers 0.4s done
+#7 exporting manifest sha256:df71e2a3557eb48b3fdc0021d8ff21373b8dc567258ab4174d9779dfa54b76bc
+#7 exporting manifest sha256:df71e2a3557eb48b3fdc0021d8ff21373b8dc567258ab4174d9779dfa54b76bc done
+#7 exporting config sha256:45ad696a3f95460c9579ff7a2dbab450dd3ec4be73bfb9e3996f046aa9bed3a1 done
+#7 exporting attestation manifest sha256:a76b408aca1c7c38c50c6d226de26260b3a5f85d7f65ff0c2292e62553ff2582 0.0s done
+#7 exporting manifest list sha256:86037427b73fd8be3e9ee8b18e48a740f1bb5e37b50d4cc6b10953a9e98f1e8a done
+#7 naming to docker.io/library/autobyteus-server:android-phone-current-with-assets done
+#7 unpacking to docker.io/library/autobyteus-server:android-phone-current-with-assets 0.1s done
+#7 DONE 0.5s
+autobyteus-server:android-phone-current                           86037427b73f   2.39GB
+autobyteus-server:android-phone-current-with-assets               86037427b73f   2.39GB

@@ -2,13 +2,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises, mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import { createPinia, setActivePinia, type Pinia } from "pinia";
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 import MobileActivity from "../MobileActivity.vue";
 import MobileChat from "../MobileChat.vue";
 import MobileFiles from "../MobileFiles.vue";
 import MobileHome from "../MobileHome.vue";
 import MobileRuns from "../MobileRuns.vue";
 import MobileRunSetup from "../MobileRunSetup.vue";
-import MobileTools from "../MobileTools.vue";
 import {
   useAgentActivityStore,
   type ToolActivity,
@@ -773,72 +774,10 @@ describe("mobile Round 4 UX refinements", () => {
     expect(releaseSecondLiveSession).toHaveBeenCalledTimes(1);
   });
 
-  it("renders mobile Tools with Terminal and VNC without requiring desktop right-panel layout", async () => {
-    useWorkspaceStore().workspaces = {};
-    const wrapper = mountWithPinia(MobileTools, {
-      props: { context: workspaceContext },
-      global: {
-        stubs: {
-          Terminal: {
-            props: ["target"],
-            template:
-              '<div data-testid="terminal-stub">{{ target?.rootPath }}</div>',
-          },
-          VncViewer: { template: '<div data-testid="vnc-stub" />' },
-        },
-      },
-    });
-
-    expect(wrapper.find('[data-testid="mobile-tools"]').exists()).toBe(true);
+  it("keeps interactive Terminal and VNC out of mobile refinement surfaces", () => {
     expect(
-      wrapper.find('[data-testid="mobile-tools-tab-terminal"]').exists(),
-    ).toBe(true);
-    expect(wrapper.find('[data-testid="mobile-tools-tab-vnc"]').exists()).toBe(
-      true,
-    );
-    expect(wrapper.find('[data-testid="mobile-terminal-panel"]').exists()).toBe(
-      true,
-    );
-    expect(wrapper.text()).not.toContain("Tools");
-    expect(wrapper.text()).not.toContain("Workspace Terminal");
-    expect(wrapper.get('[data-testid="terminal-stub"]').text()).toContain(
-      "/Users/normy/project",
-    );
-
-    await wrapper.get('[data-testid="mobile-tools-tab-vnc"]').trigger("click");
-    await nextTick();
-
-    expect(wrapper.find('[data-testid="mobile-vnc-panel"]').exists()).toBe(
-      true,
-    );
-    expect(wrapper.find('[data-testid="vnc-stub"]').exists()).toBe(true);
-    expect(wrapper.text()).not.toContain("phone-reachable hostnames");
+      existsSync(resolve(process.cwd(), "components/mobile/MobileTools.vue")),
+    ).toBe(false);
   });
 
-  it("renders mobile Terminal from run root-path context with an empty workspace store", async () => {
-    useWorkspaceStore().workspaces = {};
-    const wrapper = mountWithPinia(MobileTools, {
-      props: { context: agentRunContext },
-      global: {
-        stubs: {
-          Terminal: {
-            props: ["target"],
-            template:
-              '<div data-testid="terminal-stub">{{ target?.rootPath }}::{{ target?.workspaceId || "no-workspace-id" }}</div>',
-          },
-          VncViewer: { template: '<div data-testid="vnc-stub" />' },
-        },
-      },
-    });
-
-    expect(wrapper.find('[data-testid="mobile-tools-no-workspace"]').exists()).toBe(
-      false,
-    );
-    expect(wrapper.find('[data-testid="mobile-terminal-panel"]').exists()).toBe(
-      true,
-    );
-    expect(wrapper.get('[data-testid="terminal-stub"]').text()).toContain(
-      "/Users/normy/project::no-workspace-id",
-    );
-  });
 });

@@ -213,7 +213,7 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
     expect(wrapper.text()).toContain("phone-first mobile work shell");
   });
 
-  it("opens a recent run row into one mobile work shell with Chat/Runs/Files/Tools/Activity bottom navigation", async () => {
+  it("opens a recent run row into one mobile work shell with Chat/Runs/Files/Activity bottom navigation", async () => {
     const wrapper = mountShell();
     await nextTick();
     await wrapper
@@ -242,8 +242,11 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
     expect(wrapper.text()).toContain("Chat");
     expect(wrapper.text()).toContain("Runs");
     expect(wrapper.text()).toContain("Files");
-    expect(wrapper.text()).toContain("Tools");
     expect(wrapper.text()).toContain("Activity");
+    expect(wrapper.find('[data-testid="mobile-tab-tools"]').exists()).toBe(
+      false,
+    );
+    expect(wrapper.text()).not.toContain("Terminal and VNC");
     expect(
       wrapper.get('[data-testid="mobile-work-header"]').text(),
     ).not.toContain("Agent run");
@@ -413,7 +416,6 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
       "MobileChat.vue",
       "MobileRuns.vue",
       "MobileFiles.vue",
-      "MobileTools.vue",
       "MobileActivity.vue",
       "MobileReadableWorkRow.vue",
       "MobileRunSetup.vue",
@@ -466,8 +468,8 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
       resolve(mobileDir, "MobileChat.vue"),
       "utf-8",
     );
-    const toolsSource = readFileSync(
-      resolve(mobileDir, "MobileTools.vue"),
+    const workShellSource = readFileSync(
+      resolve(mobileDir, "MobileWorkShell.vue"),
       "utf-8",
     );
 
@@ -488,20 +490,19 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
     expect(activitySource).toContain("MobileActivityDigest");
     expect(activityDigestSource).toContain("MobileTeamMessages");
     expect(activityDigestSource).toContain("MobileToolActivityList");
-    expect(toolsSource).toContain("Terminal");
-    expect(toolsSource).toContain("VncViewer");
-    expect(toolsSource).toContain("createTerminalTarget");
-    expect(toolsSource).not.toContain("RightSideTabs");
-    expect(toolsSource).not.toContain(":workspace-id");
-    expect(toolsSource).not.toContain("allWorkspaces");
+    expect(workShellSource).not.toContain("MobileTools");
     expect(filesSource).toContain("useWorkspaceFileExplorer");
     expect(filesSource).toContain("acquireFileExplorerLiveSession");
     expect(filesSource).not.toContain(".fileExplorer");
     expect(filesSource).not.toContain("allWorkspaces");
-    expect(`${runsSource}\n${filesSource}\n${activitySource}`).not.toContain(
+    expect(`${runsSource}
+${filesSource}
+${activitySource}`).not.toContain(
       "Full content loads through authorized file APIs when this file is opened from the mobile MVP.",
     );
-    expect(`${runsSource}\n${filesSource}\n${activitySource}`).not.toContain(
+    expect(`${runsSource}
+${filesSource}
+${activitySource}`).not.toContain(
       "Configuration is shown only after this explicit start action.",
     );
   });

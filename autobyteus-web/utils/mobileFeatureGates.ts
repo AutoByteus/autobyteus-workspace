@@ -7,8 +7,6 @@ export type MobileFeatureId =
   | 'agentTeamRuns'
   | 'runHistory'
   | 'workspaceFiles'
-  | 'terminal'
-  | 'vnc'
   | 'desktopWorkspace'
   | 'desktopSettings'
   | 'desktopUpdates'
@@ -22,8 +20,6 @@ const supportedMobileFeatures = new Set<MobileFeatureId>([
   'agentTeamRuns',
   'runHistory',
   'workspaceFiles',
-  'terminal',
-  'vnc',
 ]);
 
 export function isMobileFeatureSupported(featureId: MobileFeatureId): boolean {

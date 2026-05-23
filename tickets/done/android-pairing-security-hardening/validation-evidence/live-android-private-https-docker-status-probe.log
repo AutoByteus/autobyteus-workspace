@@ -1,0 +1,6 @@
+== Android shell probe to private HTTPS Docker serve ==
+100.127.30.107  normys-macbook-pro  ryan.zheng.work@  macOS    -                                               
+100.75.247.102  2109119dg           ryan.zheng.work@  android  active; relay "nue"; offline, last seen 2m ago  
+* Could not resolve host: normys-macbook-pro.tail0347f8.ts.net
+* Closing connection 0
+curl: (6) Could not resolve host: normys-macbook-pro.tail0347f8.ts.net

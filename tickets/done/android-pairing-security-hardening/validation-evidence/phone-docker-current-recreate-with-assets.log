@@ -1,0 +1,41 @@
+== recreate current Docker container with assets image 2026-05-23T10:41:19+0200 ==
+container_id=67fd7bc4e5509d8469bc4697a635ca95b89ab67fe82719a989ccff1245fba7e0
+ready=1
+{"phoneAccessEnabled":false,"pairingAvailable":false,"compatibilityVersion":1,"serverInstanceId":"srv_yMmLpSR_ZYBAaGUJQzgZ1mOJfuUQkUwg","serverName":"AutoByteus Desktop"}
+== mobile asset probe before phone-access enable ==
+HTTP/1.1 200 OK
+vary: Origin
+content-type: text/html
+Date: Sat, 23 May 2026 08:41:25 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+== enable phone access ==
+{"settings":{"phoneAccessEnabled":true,"updatedAt":"2026-05-23T08:41:25.387Z","updatedBy":"loopback-desktop"}}
+== status after enable ==
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_yMmLpSR_ZYBAaGUJQzgZ1mOJfuUQkUwg","serverName":"AutoByteus Desktop"}
+== inspect mobile assets in container ==
+total 80
+drwxr-xr-x 13 root root  4096 May 23 08:30 .
+drwxr-xr-x  1 root root  4096 May 23 08:41 ..
+-rw-r--r--  1 root root  1540 May 23 08:29 200.html
+-rw-r--r--  1 root root  1540 May 23 08:29 404.html
+drwxr-xr-x  3 root root 12288 May 23 08:30 _nuxt
+drwxr-xr-x  2 root root  4096 May 23 08:30 agent-teams
+drwxr-xr-x  2 root root  4096 May 23 08:30 agents
+drwxr-xr-x  2 root root  4096 May 23 08:30 applications
+-rw-r--r--  1 root root  1153 May 23 08:29 autobyteus-icon.svg
+drwxr-xr-x  2 root root  4096 May 23 08:30 icons
+-rw-r--r--  1 root root  1540 May 23 08:29 index.html
+drwxr-xr-x  2 root root  4096 May 23 08:30 media
+drwxr-xr-x  2 root root  4096 May 23 08:30 memory
+-rw-r--r--  1 root root   713 May 23 08:29 mobile.webmanifest
+drwxr-xr-x  2 root root  4096 May 23 08:30 settings
+drwxr-xr-x  2 root root  4096 May 23 08:30 skills
+drwxr-xr-x  2 root root  4096 May 23 08:30 tools
+drwxr-xr-x  2 root root  4096 May 23 08:30 workspace
+176
+== Tailscale private status from host ==
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_yMmLpSR_ZYBAaGUJQzgZ1mOJfuUQkUwg","serverName":"AutoByteus Desktop"}
+== Android private status ==
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_yMmLpSR_ZYBAaGUJQzgZ1mOJfuUQkUwg","serverName":"AutoByteus Desktop"}

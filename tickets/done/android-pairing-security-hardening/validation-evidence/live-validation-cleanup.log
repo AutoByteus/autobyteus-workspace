@@ -1,0 +1,25 @@
+== restore original Tailscale Serve target ==
+Available within your tailnet:
+
+https://normys-macbook-pro.tail0347f8.ts.net/
+|-- proxy http://127.0.0.1:29695
+
+Serve started and running in the background.
+To disable the proxy, run: tailscale serve --https=443 off
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:29695
+
+== cleanup live validation Docker container/volumes ==
+autobyteus-live-validation-android-pairing
+autobyteus-live-validation-android-pairing-workspace
+autobyteus-live-validation-android-pairing-data
+autobyteus-live-validation-android-pairing-root-home
+== remove generated staged mobile web bundle from source tree ==
+== cleanup complete status ==
+== remove temporary validation image if unused ==
+Untagged: autobyteus-server:android-pairing-live-validation
+Deleted: sha256:c7bb9e12592f1b39b09511af1b647b450f1392f84477dce6f4141accf9ef6aab
+== final serve status ==
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:29695
+

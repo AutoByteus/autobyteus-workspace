@@ -1,0 +1,228 @@
+05-23 09:56:14.160 I/ActivityManager( 1828): Force stopping org.autobyteus.mobile appid=10514 user=0: from process:14287
+05-23 09:56:14.163 I/ActivityManager( 1828): Killing 12539:org.autobyteus.mobile/u0a514 (adj 701): stop org.autobyteus.mobile due to from process:14287
+05-23 09:56:14.165 D/PerfImpl( 1828): perfProcessKillBoost: org.autobyteus.mobile, 12539, 0
+05-23 09:56:14.170 W/ActivityTaskManager( 1828): Force removing ActivityRecord{87c7638 u0 org.autobyteus.mobile/.MainActivity t17739 f}}: app died, no saved state
+05-23 09:56:14.171 W/InputManager-JNI( 1828): Input channel object '304664f org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+05-23 09:56:14.171 W/UsageStatsService( 1828): Unexpected activity event reported! (org.autobyteus.mobile/org.autobyteus.mobile.MainActivity event : 23 instanceId : 173553045)
+05-23 09:56:14.210 V/ActivityManager( 1828): Got obituary of 12539:org.autobyteus.mobile
+05-23 09:56:14.263 I/ActivityTaskManager( 1828): START u0 {act=android.intent.action.SEND typ=text/plain flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity (has extras)} from uid 2000
+05-23 09:56:14.287 D/PerfImpl( 1828): perfAnimBoost: org.autobyteus.mobile
+05-23 09:56:14.300 D/PerfImpl( 1828): perfColdLaunchBoost: org.autobyteus.mobile, 14305, 101
+05-23 09:56:14.300 D/Boost   ( 1828): hostingType=pre-top-activity, hostingName={org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}, callerPackage=others, isSystem=true, isBoostNeeded=false.
+05-23 09:56:14.301 I/ActivityManager( 1828): Start proc 14305:org.autobyteus.mobile/u0a514 for pre-top-activity {org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} caller=others
+05-23 09:56:14.318 D/PerfImpl( 1828): perfColdLaunchBoost: org.autobyteus.mobile, 14305, 103
+05-23 09:56:14.328 D/AppObserver( 3541): ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10514, mForegroundPid=14305, mLastForegroundPackageName='com.tailscale.ipn', mLastForegroundUid=10182, mLastForegroundPid=11433, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+05-23 09:56:14.328 I/ProcessMonitor(30248): onForegroundInfoChanged: ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10514, mForegroundPid=14305, mLastForegroundPackageName='com.tailscale.ipn', mLastForegroundUid=10182, mLastForegroundPid=11433, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+05-23 09:56:14.328 I/GST     ( 6361): forePkg: org.autobyteus.mobile, preForePkg: com.tailscale.ipn
+05-23 09:56:14.328 D/PerfEngineController( 6348): ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10514, mForegroundPid=14305, mLastForegroundPackageName='com.tailscale.ipn', mLastForegroundUid=10182, mLastForegroundPid=11433, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+05-23 09:56:14.328 I/ThermalInfoCollector( 6348): collectForgroundAppsInfo: com.tailscale.ipn
+05-23 09:56:14.329 I/GameBoosterService(30248): onForegroundInfoChanged: Cur=org.autobyteus.mobile	 last=com.tailscale.ipn
+05-23 09:56:14.329 D/AutoInstallService( 7658): onForegroundInfoChanged: org.autobyteus.mobile
+05-23 09:56:14.329 D/LS-ForegroundStatusManager( 6348): handleMessage ForegroundInfoChanged. pkg = org.autobyteus.mobile, uid = 10514, mCurrentForegroundUid = 10182
+05-23 09:56:14.336 D/GameBoosterService(30248): onGameStatusChange foreground:ForegroundInfo{mForegroundPackageName='org.autobyteus.mobile', mForegroundUid=10514, mForegroundPid=14305, mLastForegroundPackageName='com.tailscale.ipn', mLastForegroundUid=10182, mLastForegroundPid=11433, mMultiWindowForegroundPackageName='null', mMultiWindowForegroundUid=-1, mFlags=1}
+05-23 09:56:14.347 D/nativeloader(14305): Configuring clns-4 for other apk /data/app/~~jlSUF76u8v7yfOh4F4SC2A==/org.autobyteus.mobile-Tg70o9SD2_2MxvQSJlr0rQ==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~jlSUF76u8v7yfOh4F4SC2A==/org.autobyteus.mobile-Tg70o9SD2_2MxvQSJlr0rQ==/lib/arm64, permitted_path=/data:/mnt/expand:/data/user/0/org.autobyteus.mobile
+05-23 09:56:14.353 V/GraphicsEnvironment(14305): ANGLE Developer option for 'org.autobyteus.mobile' set to: 'default'
+05-23 09:56:14.354 I/ForceDarkHelperStubImpl(14305): initialize for org.autobyteus.mobile , ForceDarkOrigin
+05-23 09:56:14.390 W/RecentsModel( 3541): getRunningTask   taskInfo=TaskInfo{userId=0 taskId=17740 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.SEND typ=text/plain flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity } baseActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} topActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} origActivity=null realActivity=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} numActivities=1 lastActiveTime=587004349 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true token=WCT{android.window.IWindowContainerToken$Stub$Proxy@8791fa} topActivityType=1 pictureInPictureParams=PictureInPictureParams( aspectRatio=null sourceRectHint=null hasSetActions=false isAutoPipEnabled=false isSeamlessResizeEnabled=true) displayCutoutSafeInsets=Rect(0, 104 - 0, 0) topActivityInfo=ActivityInfo{98f83ab org.autobyteus.mobile.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=true topActivityInSizeCompat=false locusId= null windowMode=1}
+05-23 09:56:14.390 W/RecentsModel( 3541): getTaskInfoIgnoreHomeAndFreeform   taskInfo=ComponentInfo{org.autobyteus.mobile/org.autobyteus.mobile.MainActivity}
+05-23 09:56:14.391 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17740   userId=0   baseIntent=Intent { act=android.intent.action.SEND typ=text/plain flg=0x10000000 cmp=org.autobyteus.mobile/.MainActivity }
+05-23 09:56:14.391 E/ActivityManagerWrapper( 3541): getRecentTasks: taskId=17737   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.tailscale.ipn/.MainActivity }
+05-23 09:56:14.404 V/MiuiActivityTaskManagerServiceEx( 1828): dispatchActivityLifeState r = ActivityRecord{ac4863c u0 org.autobyteus.mobile/.MainActivity t17740}
+05-23 09:56:14.404 D/RecentsImpl( 3541): mActivityStateObserver org.autobyteus.mobile.MainActivity
+05-23 09:56:14.404 W/RecentsImpl( 3541): onResumed className=org.autobyteus.mobile.MainActivity   mIsInAnotherPro=false   isKeyguardLocked=false
+05-23 09:56:14.412 D/WindowManager( 1828): Input focus has changed to Window{bd864a5 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} display=0
+05-23 09:56:14.450 D/PerfImpl( 1828): perfFirstDrawBoost: org.autobyteus.mobile, 14305, 1
+05-23 09:56:14.452 I/ActivityTaskManager( 1828): Displayed org.autobyteus.mobile/.MainActivity: +188ms
+05-23 09:56:14.455 I/DisplayFrameSetting( 6348): homeToAppEnd pkg=org.autobyteus.mobile
+05-23 09:56:14.472 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+05-23 09:56:14.474 W/InputManager-JNI( 1828): Input channel object '1d7204b Splash Screen org.autobyteus.mobile (client)' was disposed without first being removed with the input manager!
+05-23 09:56:14.604 I/WebViewFactory(14305): Loading com.google.android.webview version 148.0.7778.120 (code 777812003)
+05-23 09:56:14.609 D/nativeloader(14305): Configuring clns-5 for other apk /apex/com.android.extservices/javalib/android.ext.adservices.jar. target_sdk_version=36, uses_libraries=ALL, library_path=/data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/lib/arm64:/data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+05-23 09:56:14.612 D/nativeloader(14305): Configuring clns-6 for other apk /data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/lib/arm64:/data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+05-23 09:56:14.623 I/cr_WVCFactoryProvider(14305): version=148.0.7778.120 (777812003) minSdkVersion=29 multiprocess=true packageId=127 splits=<none>
+05-23 09:56:14.625 D/nativeloader(14305): Load /data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk!/lib/arm64-v8a/libwebviewchromium.so using class loader ns clns-6 (caller=/data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk): ok
+05-23 09:56:14.627 D/nativeloader(14305): Load /system/lib64/libwebviewchromium_plat_support.so using class loader ns clns-6 (caller=/data/app/~~7R7M0WAUAv5bPV_6RjoY_g==/com.google.android.webview-kjyrsaNyq26poExzU_K5aw==/base.apk): ok
+05-23 09:56:14.636 I/cr_LibraryLoader(14305): Successfully loaded native library
+05-23 09:56:14.637 I/cr_CachingUmaRecorder(14305): Flushed 20 samples from 19 histograms, 0 samples were dropped.
+05-23 09:56:14.639 I/cr_ChildProcLH(14305): ScopedServiceBindingBatch.tryActivate: false
+05-23 09:56:14.640 I/cr_CombinedPProvider(14305): #registerProvider() provider:WV.wk@40d6a25 isPolicyCacheEnabled:false policyProvidersSize:0
+05-23 09:56:14.641 I/cr_PolicyProvider(14305): #setManagerAndSource() 0
+05-23 09:56:14.642 I/cr_DisplayManager(14305): Is Display Topology available: false
+05-23 09:56:14.652 D/Boost   ( 1828): hostingType=, hostingName={org.autobyteus.mobile/org.chromium.content.app.SandboxedProcessService0:0}, callerPackage=org.autobyteus.mobile, isSystem=false, isBoostNeeded=false.
+05-23 09:56:14.653 I/ActivityManager( 1828): Start proc 14348:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0i714 for  {org.autobyteus.mobile/org.chromium.content.app.SandboxedProcessService0:0} caller=org.autobyteus.mobile
+05-23 09:56:14.653 I/cr_CombinedPProvider(14305): #linkNativeInternal() 1
+05-23 09:56:14.653 I/cr_AppResProvider(14305): #getApplicationRestrictionsFromUserManager() Bundle[EMPTY_PARCEL]
+05-23 09:56:14.653 I/cr_PolicyProvider(14305): #notifySettingsAvailable() 0
+05-23 09:56:14.653 I/cr_CombinedPProvider(14305): #onSettingsAvailable() 0
+05-23 09:56:14.653 I/cr_CombinedPProvider(14305): #flushPolicies()
+05-23 09:56:14.678 I/ForceDarkHelperStubImpl(14348): initialize for org.autobyteus.mobile , ForceDarkOrigin
+05-23 09:56:14.681 I/cr_WebViewApkApp(14348): version=148.0.7778.120 (777812003) minSdkVersion=29 processName=com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0 splits=<none>
+05-23 09:56:14.683 I/cr_ChildProcessService(14348): Creating new ChildProcessService pid=14348
+05-23 09:56:14.703 W/chromium(14305): [WARNING:android_webview/browser/network_service/net_helpers.cc:137] HTTP Cache size is: 20971520
+05-23 09:56:14.743 D/ConnectivityService( 1828): requestNetwork for uid/pid:10514/14305 activeRequest: null callbackRequest: 49664 [NetworkRequest [ REQUEST id=49665, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10514 RequestorUid: 10514 RequestorPkg: org.autobyteus.mobile UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|NC|LP
+05-23 09:56:14.744 D/UntrustedWifiNetworkFactory( 1828): got request NetworkRequest [ REQUEST id=49665, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10514 RequestorUid: 10514 RequestorPkg: org.autobyteus.mobile UnderlyingNetworks: Null] ]
+05-23 09:56:14.744 D/OemPaidWifiNetworkFactory( 1828): got request NetworkRequest [ REQUEST id=49665, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10514 RequestorUid: 10514 RequestorPkg: org.autobyteus.mobile UnderlyingNetworks: Null] ]
+05-23 09:56:14.781 W/cr_media(14305): BLUETOOTH_CONNECT permission is missing.
+05-23 09:56:14.783 W/cr_media(14305): getBluetoothAdapter() requires BLUETOOTH permission
+05-23 09:56:14.783 W/cr_media(14305): registerBluetoothIntentsIfNeeded: Requires BLUETOOTH permission
+05-23 09:56:14.784 I/cr_LibraryLoader(14348): Successfully loaded native library
+05-23 09:56:14.785 I/cr_CachingUmaRecorder(14348): Flushed 2 samples from 2 histograms, 0 samples were dropped.
+05-23 09:56:14.785 W/chromium(14348): [WARNING:content/app/android/content_main_android.cc:82] android_setCpu already initialized
+05-23 09:56:14.813 W/chromium(14348): [WARNING:content/child/runtime_features.cc:540] Fenced frames cannot be enabled in this configuration. Use --enable-features=FencedFrames instead.
+05-23 09:56:14.813 W/chromium(14348): [WARNING:content/child/runtime_features.cc:565] Topics cannot be enabled in this configuration. Use --enable-features=BrowsingTopics in addition.
+05-23 09:56:14.813 W/chromium(14348): [WARNING:content/child/runtime_features.cc:586] SharedStorage cannot be enabled in this configuration. Use --enable-features=SharedStorageAPI in addition.
+05-23 09:56:14.817 I/chromium(14348): [INFO:third_party/skia/src/ports/SkFontMgr_android_parser.cpp:723] [SkFontMgr Android Parser] '/product/etc/fonts_customization.xml' could not be opened
+05-23 09:56:14.817 I/chromium(14348): 
+05-23 09:56:14.882 W/cr_VAUtil(14305): Unknown profile: 16 for codec video/dolby-vision
+05-23 09:56:14.883 W/cr_VAUtil(14305): Unknown profile: 16 for codec video/dolby-vision
+05-23 09:56:19.995 D/ProfileInstaller(14305): Skipping profile installation for org.autobyteus.mobile
+05-23 09:56:20.138 W/ip      (14428): type=1400 audit(0.0:543859): avc: denied { bind } for scontext=u:r:untrusted_app:s0:c182,c256,c512,c768 tcontext=u:r:untrusted_app:s0:c182,c256,c512,c768 tclass=netlink_route_socket permissive=0 bug=b/155595000 app=com.tailscale.ipn
+05-23 09:56:20.154 W/ip      (14429): type=1400 audit(0.0:543860): avc: denied { bind } for scontext=u:r:untrusted_app:s0:c182,c256,c512,c768 tcontext=u:r:untrusted_app:s0:c182,c256,c512,c768 tclass=netlink_route_socket permissive=0 bug=b/155595000 app=com.tailscale.ipn
+05-23 09:56:33.402 D/nativeloader(14442): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-23 09:56:33.757 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.759 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.761 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.763 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.764 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.765 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.782 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.785 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.786 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.787 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.789 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.790 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.791 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.791 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.792 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.793 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.794 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.794 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.795 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.796 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.797 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.798 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.798 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.800 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.801 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.801 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.802 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.803 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.804 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.805 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.806 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.806 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.807 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.808 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.809 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.810 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.810 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.811 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.812 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.813 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.814 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.814 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.815 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.816 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.817 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.818 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.819 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.819 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.820 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.821 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.822 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.823 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.823 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.824 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.825 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.826 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.827 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.827 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.828 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.829 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.830 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.831 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.832 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.833 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.834 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.835 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.836 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.837 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.838 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.839 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.839 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:33.840 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:34.821 I/cr_A11yState(14305): Enabled accessibility services list updated. []
+05-23 09:56:34.822 I/cr_A11yState(14305): Informing listeners of changes.
+05-23 09:56:34.822 I/cr_A11yState(14305): New AccessibilityState: State{isComplexUserInteractionServiceEnabled=false, isTouchExplorationEnabled=false, isPerformGesturesEnabled=false, isAnyAccessibilityServiceEnabled=false, isAccessibilityToolPresent=false, isTextShowPasswordEnabled=true, isOnlyAutofillRunning=false, isOnlyPasswordManagersEnabled=false, isKnownScreenReaderEnabled=false}
+05-23 09:56:35.009 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.016 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.016 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.020 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.023 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.024 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.028 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.029 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.029 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.029 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.029 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.030 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.030 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.030 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.031 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.031 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.031 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.032 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.033 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.033 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.034 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.034 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.034 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.035 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.035 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.035 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.036 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.036 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.036 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.037 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.037 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.037 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.038 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.038 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.038 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.039 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.039 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.039 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.039 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.040 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.040 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.040 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.041 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.041 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.041 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.042 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.042 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.042 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.042 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.043 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.043 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.043 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.044 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.044 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.044 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.045 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.045 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.046 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.047 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.047 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.048 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.048 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.048 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.048 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.049 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.049 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.049 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.049 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.050 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.050 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.051 W/WindowManager( 1828): Cannot find window which accessibility connection is added to
+05-23 09:56:35.052 W/WindowManager( 1828): Cannot find window which accessibility connection is added to

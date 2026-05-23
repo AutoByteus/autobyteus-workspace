@@ -4,6 +4,7 @@ import { getAddressCandidateService } from "../../remote-access/services/address
 import { getPairedDeviceService } from "../../remote-access/services/paired-device-service.js";
 import { getRemoteAccessPairingService } from "../../remote-access/services/remote-access-pairing-service.js";
 import { getRemoteAccessSettingsService } from "../../remote-access/services/remote-access-settings-service.js";
+import { getServerInstanceIdentityService } from "../../remote-access/services/server-instance-identity-service.js";
 
 const sendRemoteAccessError = (reply: { code: (statusCode: number) => { send: (payload: unknown) => unknown } }, error: unknown) => {
   if (error instanceof RemoteAccessError) {
@@ -27,6 +28,7 @@ export async function registerRemoteAccessRoutes(app: FastifyInstance): Promise<
       phoneAccessEnabled: settings.phoneAccessEnabled,
       pairingAvailable: settings.phoneAccessEnabled,
       compatibilityVersion: 1,
+      serverInstanceId: await getServerInstanceIdentityService().getServerInstanceId(),
       serverName: "AutoByteus Desktop",
     };
   });

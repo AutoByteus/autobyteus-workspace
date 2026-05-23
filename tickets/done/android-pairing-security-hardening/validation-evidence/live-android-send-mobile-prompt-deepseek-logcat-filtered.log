@@ -1,0 +1,266 @@
+05-23 10:03:45.611 D/ProcessState(16776): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:03:45.617 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 322915520, channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-23 10:03:45.620 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 322915520, channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-23 10:03:45.647 D/InputMethodManager(14305): showSoftInput() view=android.webkit.WebView{febc3ce VFEDHVC.. .F...... 0,0-1080,2166 aid=1073741834} flags=0 reason=SHOW_SOFT_INPUT
+05-23 10:03:45.652 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=2c0a1, inputTypeString=WebEditText[MultiLine|CapSentences|AutoCorrect], enableLearning=true, autoCorrection=true, autoComplete=true, imeOptions=12000001, privateImeOptions=null, actionName=NONE, actionLabel=null, initialSelStart=0, initialSelEnd=0, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, true)
+05-23 10:03:45.655 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInputView():1532 onStartInputView(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=2c0a1, inputTypeString=WebEditText[MultiLine|CapSentences|AutoCorrect], enableLearning=true, autoCorrection=true, autoComplete=true, imeOptions=12000001, privateImeOptions=null, actionName=NONE, actionLabel=null, initialSelStart=0, initialSelEnd=0, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+05-23 10:03:45.667 I/AndroidIME( 5757): AbstractIme.onActivate():95 AsyncChineseProcessorBasedIme.onActivate() : EditorInfo = EditorInfo{packageName=org.autobyteus.mobile, inputType=2c0a1, inputTypeString=WebEditText[MultiLine|CapSentences|AutoCorrect], enableLearning=true, autoCorrection=true, autoComplete=true, imeOptions=12000001, privateImeOptions=null, actionName=NONE, actionLabel=null, initialSelStart=0, initialSelEnd=0, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}, IncognitoMode = false, DeviceLocked = false
+05-23 10:03:45.668 I/AndroidIME( 5757): AbstractIme.onActivate():95 ProcessorBasedIme.onActivate() : EditorInfo = EditorInfo{packageName=org.autobyteus.mobile, inputType=2c0a1, inputTypeString=WebEditText[MultiLine|CapSentences|AutoCorrect], enableLearning=true, autoCorrection=true, autoComplete=true, imeOptions=12000001, privateImeOptions=null, actionName=NONE, actionLabel=null, initialSelStart=0, initialSelEnd=0, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}, IncognitoMode = false, DeviceLocked = false
+05-23 10:03:45.686 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:45.686 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:45.749 W/arat    (12598): Failed to retrieve prediction data. [CONTEXT service_id=177 ]
+05-23 10:03:45.749 W/arat    (12598): 	at java.util.concurrent.FutureTask.run(FutureTask.java:317)
+05-23 10:03:45.749 W/arat    (12598): 	at bjix.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):66)
+05-23 10:03:45.749 W/arat    (12598): 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1154)
+05-23 10:03:45.749 W/arat    (12598): 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:652)
+05-23 10:03:45.749 W/arat    (12598): 	at bjoo.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):8)
+05-23 10:03:45.749 W/arat    (12598): 	at java.lang.Thread.run(Thread.java:1564)
+05-23 10:03:45.749 W/arat    (12598): 	at hjua.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):47)
+05-23 10:03:45.749 W/arat    (12598): 	at hjua.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):53)
+05-23 10:03:45.749 W/arat    (12598): 	at hjtf.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):129)
+05-23 10:03:45.749 W/arat    (12598): 	at hjua.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):53)
+05-23 10:03:45.749 W/arat    (12598): 	at hjtf.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):129)
+05-23 10:03:45.749 W/arat    (12598): 	at hjua.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):53)
+05-23 10:03:45.749 W/arat    (12598): 	at hjwj.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):5)
+05-23 10:03:45.749 W/arat    (12598): 	at hjua.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):53)
+05-23 10:03:45.749 W/arat    (12598): 	at hjxp.run(:com.google.android.gms@261833029@26.18.33 (190400-913931251):64)
+05-23 10:03:46.097 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:46.097 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:46.182 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:46.182 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:46.695 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:46.695 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:46.716 D/ProcessState(16800): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:03:46.724 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.748 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:44 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.756 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:44 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.771 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.779 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:40 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.786 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:40 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.789 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:33 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.793 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:33 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.798 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:29 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.801 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:29 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.804 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:47 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.806 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:47 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.810 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:33 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.812 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:33 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.815 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.818 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:12 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.820 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:12 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.822 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.826 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:9 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.832 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:9 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.840 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:7 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.842 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:7 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.848 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:46 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.851 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:46 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.853 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:33 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.855 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:33 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.858 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:44 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.862 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:44 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.867 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:40 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.870 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:40 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.873 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:53 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.878 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:53 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.928 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.932 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:12 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.933 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:12 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.935 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.938 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:9 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.939 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:9 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.941 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:7 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.944 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:7 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.948 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.951 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:43 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.952 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:43 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.954 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.957 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.960 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:39 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.964 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:39 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.967 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.972 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.978 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:12 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.982 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:12 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.984 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:59 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.987 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:9 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.989 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:9 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.991 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:7 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:46.997 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:7 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.000 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:43 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.002 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:43 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.005 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:42 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.007 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:42 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.013 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:40 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.018 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:40 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.025 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:53 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.030 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:53 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.033 D/MIUIInput( 1828): [KeyEvent] publisher action:0x0,  keyCode:56 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.035 D/MIUIInput( 1828): [KeyEvent] publisher action:0x1,  keyCode:56 , 322916626,channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)' 
+05-23 10:03:47.677 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:47.677 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:48.136 D/ProcessState(16814): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:03:48.163 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:48.163 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:48.684 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:48.684 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:49.171 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:49.675 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:49.675 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:50.171 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:50.171 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:50.678 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:50.678 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:51.178 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:51.178 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:51.669 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:51.670 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:52.184 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:52.184 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:52.676 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:52.676 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:53.176 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:53.177 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:53.673 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:53.673 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:54.168 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:54.168 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:54.681 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:54.681 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:55.178 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:55.178 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:55.390 W/ContextImpl( 3489): Calling a method in the system process without a qualified user: android.app.ContextImpl.bindService:1906 android.content.ContextWrapper.bindService:822 android.service.quickaccesswallet.QuickAccessWalletClientImpl.connectInternal:349 android.service.quickaccesswallet.QuickAccessWalletClientImpl.$r8$lambda$ZVs3IwfL14SOwWl64RtuB_VVX0M:0 android.service.quickaccesswallet.QuickAccessWalletClientImpl$$ExternalSyntheticLambda4.run:2 
+05-23 10:03:55.676 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:55.676 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:56.185 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:56.185 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:56.679 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:56.679 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:57.181 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:57.181 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:57.672 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:57.672 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:58.166 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:58.167 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:58.678 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:58.678 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:59.174 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:59.174 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:59.660 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:59.660 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:00.033 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:00.033 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:00.180 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:00.180 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:00.424 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:00.424 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:00.676 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:00.676 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:01.170 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:01.170 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:01.680 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:02.172 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:02.172 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:02.674 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:02.674 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:03.164 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:03.164 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:03.673 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:03.673 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:04.169 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:04.169 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:04.679 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:04.679 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:05.176 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:05.176 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:05.672 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:05.672 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:06.168 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:06.169 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:06.677 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:06.677 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:07.173 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:07.173 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:07.664 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:07.664 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:08.182 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:08.182 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:08.679 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:08.679 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:09.173 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:09.173 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:09.682 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:09.683 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:10.178 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:10.178 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:10.420 E/KernelRpmStatsReader( 6348): java.io.FileNotFoundException: /sys/power/rpmh_stats/master_stats: open failed: EACCES (Permission denied)
+05-23 10:04:10.420 E/KernelRpmStatsReader( 6348): 	at android.os.HandlerThread.run(HandlerThread.java:67)
+05-23 10:04:10.420 E/KernelRpmStatsReader( 6348): Caused by: android.system.ErrnoException: open failed: EACCES (Permission denied)
+05-23 10:04:10.678 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:10.678 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:11.163 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:11.163 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:11.669 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:11.669 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:12.170 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:12.170 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:12.676 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:12.676 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:13.174 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:13.174 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:13.682 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:13.682 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:14.181 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:14.181 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:14.670 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:14.670 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:15.184 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:15.184 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:15.677 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:15.677 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:16.176 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:16.176 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:16.667 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:16.667 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:17.175 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:17.175 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:17.680 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:17.680 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:18.175 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:18.175 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:18.304 D/AndroidRuntime(17077): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+05-23 10:04:18.312 I/AndroidRuntime(17077): Using default boot image
+05-23 10:04:18.312 I/AndroidRuntime(17077): Leaving lock profiling enabled
+05-23 10:04:18.316 E/app_process(17077): Error reading named image component header for /system/framework/boot.art, error: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 10:04:18.316 E/app_process(17077): Could not create image space with image file '/system/framework/boot.art!/apex/com.android.art/etc/boot-image.prof:/system/framework/boot-framework.art!/system/etc/boot-image.prof'. Attempting to fall back to imageless running. Error was: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 10:04:18.530 D/nativeloader(17077): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-23 10:04:18.676 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:18.676 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:18.728 D/ProcessState(17077): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:04:18.729 D/AndroidRuntime(17077): Calling main entry com.android.commands.uiautomator.Launcher
+05-23 10:04:18.765 I/AssetManagerImpl (17077): Load libmiui_runtime
+05-23 10:04:18.768 D/nativeloader(17077): Load libmiui_runtime.so using system ns (caller=/system/framework/miui-framework.jar): ok
+05-23 10:04:18.774 I/MessageMonitor(17077): Load libmiui_runtime
+05-23 10:04:18.860 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:18.860 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:19.177 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:19.178 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:19.665 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:19.665 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:19.949 D/ThemeCompatibility(17077): getVersion(): /data/system/theme_config/theme_compatibility.xml  java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+05-23 10:04:20.009 W/AssetManagerImpl (17077): 'idmap2 --scan' failed: no static="true" overlays targeting "miui" will be loaded
+05-23 10:04:20.018 V/MediaProvider( 4430): isAppCloneUserPair failed. Users: 0 and 0
+05-23 10:04:20.042 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:20.042 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:20.048 D/hw-ProcessState(17077): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:04:20.048 D/AndroidRuntime(17077): Shutting down VM
+05-23 10:04:20.163 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:20.164 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:20.682 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:20.682 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:21.177 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:21.178 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:21.290 D/ProcessState(17119): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:04:21.315 D/hw-ProcessState(17119): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:04:21.661 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:21.661 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]

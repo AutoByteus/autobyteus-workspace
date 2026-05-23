@@ -1,0 +1,15 @@
+== phone shell tailnet HTTP/HTTPS connectivity after Tailscale app launch ==
+100.127.30.107  normys-macbook-pro  ryan.zheng.work@  macOS    -                                               
+100.75.247.102  2109119dg           ryan.zheng.work@  android  active; relay "nue"; offline, last seen 1m ago  
+-- https MagicDNS current serve target (still pre-existing host backend unless changed) --
+* Could not resolve host: normys-macbook-pro.tail0347f8.ts.net
+* Closing connection 0
+curl: (6) Could not resolve host: normys-macbook-pro.tail0347f8.ts.net
+
+-- direct tailnet IP to Docker port (expected refused/unreachable because Docker port bound 127.0.0.1) --
+*   Trying 100.127.30.107:51428...
+* connect to 100.127.30.107 port 51428 failed: Network is unreachable
+* Failed to connect to 100.127.30.107 port 51428: Network is unreachable
+* Closing connection 0
+curl: (7) Failed to connect to 100.127.30.107 port 51428: Network is unreachable
+

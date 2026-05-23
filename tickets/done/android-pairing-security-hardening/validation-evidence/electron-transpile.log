@@ -1,0 +1,5 @@
+## Electron transpile
+
+> autobyteus@1.3.28 transpile-electron /Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/autobyteus-web
+> tsc -p electron/tsconfig.json
+

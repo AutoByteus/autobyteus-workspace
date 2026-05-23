@@ -1,0 +1,5 @@
+== install debug APK allowing version downgrade ==
+-rw-r--r--@ 1 normy  staff   2.3M May 23 09:52 autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+Performing Streamed Install
+adb: failed to install autobyteus-android/app/build/outputs/apk/debug/app-debug.apk: Failure [INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package org.autobyteus.mobile signatures do not match previously installed version; ignoring!]
+

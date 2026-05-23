@@ -1,0 +1,251 @@
+== send minimal mobile prompt in DeepSeek-created run ==
+-- tap chat input and type --
+-- tap send --
+== UI after prompt send ==
+{'text': '', 'desc': '', 'res': 'android:id/content', 'class': 'android.widget.FrameLayout', 'bounds': '[0,104][1080,1569]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': '__nuxt', 'class': 'android.view.View', 'bounds': '[0,104][1080,1569]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'app', 'class': 'android.view.View', 'bounds': '[0,104][1080,1569]', 'clickable': 'false'}
+{'text': 'Home', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[44,139][220,244]', 'clickable': 'true'}
+{'text': 'Memory Compactor Ready', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[247,137][819,247]', 'clickable': 'true'}
+{'text': 'Switch', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[847,139][1036,244]', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'agent-conversation-scroll-temp-1779523368070-1-46', 'class': 'android.widget.TextView', 'bounds': '[44,324][1036,1014]', 'clickable': 'false'}
+{'text': 'Context Files (0) (drag, paste, or upload)', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[77,1074][902,1143]', 'clickable': 'true'}
+{'text': '', 'desc': 'Upload files', 'res': '', 'class': 'android.widget.Button', 'bounds': '[924,1069][1001,1149]', 'clickable': 'true'}
+{'text': 'Please％20reply％20％20另一', 'desc': '', 'res': '', 'class': 'android.widget.EditText', 'bounds': '[44,1171][1034,1360]', 'clickable': 'true'}
+{'text': 'Send message', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[913,1253][1012,1355]', 'clickable': 'true'}
+{'text': '', 'desc': 'Chat', 'res': '', 'class': 'android.widget.Button', 'bounds': '[0,1424][272,1569]', 'clickable': 'true'}
+{'text': '', 'desc': 'Runs', 'res': '', 'class': 'android.widget.Button', 'bounds': '[269,1424][541,1569]', 'clickable': 'true'}
+{'text': '', 'desc': 'Files', 'res': '', 'class': 'android.widget.Button', 'bounds': '[539,1424][811,1569]', 'clickable': 'true'}
+{'text': '', 'desc': 'Activity', 'res': '', 'class': 'android.widget.Button', 'bounds': '[808,1424][1080,1569]', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'teleports', 'class': 'android.widget.TextView', 'bounds': '[0,1567][1080,1567]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/statusBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][1080,104]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/navigationBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][0,0]', 'clickable': 'false'}
+== Docker node run-related paths after prompt ==
+/home/autobyteus/data/agents/autobyteus-memory-compactor/agent-config.json
+/home/autobyteus/data/agents/autobyteus-memory-compactor/agent.md
+/home/autobyteus/data/memory/run_history_index.json
+/home/autobyteus/data/memory/team_run_history_index.json
+== run history JSON after prompt ==
+[]
+
+== Docker logs tail after prompt ==
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+(node:1) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Running Prisma migrations...
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/data/db/production.db"
+
+SQLite database production.db created at file:/home/autobyteus/data/db/production.db
+
+13 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' updated to 'autobyteus-memory-compactor'
+Initialized 'AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID' with 'autobyteus-memory-compactor'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 1 items.
+AgentRunManager initialized.
+[2026-05-23T07:48:18.604Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+{"level":30,"time":1779522498712,"pid":1,"hostname":"4eb8aa2be1d9","msg":"Server listening at http://0.0.0.0:8000"}
+[2026-05-23T07:48:18.712Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+[2026-05-23T07:48:18.714Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8000
+Creating temp workspace at: /home/autobyteus/workspace
+Initialized FileSystemWorkspace at /home/autobyteus/workspace. Call initialize() to build file tree.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Starting directory traversal for: '/home/autobyteus/workspace' with max_depth=1
+Directory traversal for '/home/autobyteus/workspace' completed in 0.0010 seconds.
+Initialized FileSystemWorkspace at /home/autobyteus/workspace (Shallow). Starting background full scan...
+Starting directory traversal for: '/home/autobyteus/workspace' with max_depth=null
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Pre-loaded 1 agent definitions into cache.
+[2026-05-23T07:48:18.741Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Loaded tool group: Browser Tools
+No Autobyteus server hosts configured. Skipping Autobyteus image model discovery.
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'list_available_tools'
+Successfully registered tool definition: 'list_input_processors'
+Successfully registered tool definition: 'list_llm_response_processors'
+Successfully registered tool definition: 'list_lifecycle_processors'
+Successfully registered tool definition: 'list_tool_result_processors'
+Loaded tool group: Tool Management Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'create_skill_version'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+[2026-05-23T07:48:18.752Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Pre-loaded 0 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Directory traversal for '/home/autobyteus/workspace' completed in 0.0290 seconds.
+FileNameIndexer starting...
+FileSystemWatcher initialized for '/home/autobyteus/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /home/autobyteus/workspace
+Discovering Ollama models from host: http://host.docker.internal:11434
+FileNameIndexer started monitoring
+Background full initialization for /home/autobyteus/workspace completed.
+Could not connect to Ollama server at http://host.docker.internal:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://host.docker.internal:1234
+Finished LM Studio discovery. Total models registered: 28
+No Autobyteus LLM server hosts configured. Skipping discovery.
+Successfully fetched 49 models from LLMFactory.
+LLM models cache populated with 49 items.
+Pre-loaded 49 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 6 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4
+Image models by runtime: api=6
+Image models cache populated with 6 items.
+Pre-loaded 6 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+No Autobyteus server hosts configured. Skipping Autobyteus audio model discovery.
+Successfully fetched 4 audio models from AudioClientFactory.
+Audio models by provider: OPENAI=1, GEMINI=3
+Audio models by runtime: api=4
+Audio models cache populated with 4 items.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1779522587608,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-3","method":"PUT","url":"/rest/remote-access/settings","statusCode":401,"elapsedMs":0.8272500038146973,"msg":"http request completed"}
+{"level":40,"time":1779522617498,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-5","method":"PUT","url":"/rest/remote-access/settings","statusCode":403,"elapsedMs":0.7018330097198486,"msg":"http request completed"}
+{"level":40,"time":1779522975261,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-y","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.2148749828338623,"msg":"http request completed"}
+{"level":40,"time":1779522975459,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-11","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3475419878959656,"msg":"http request completed"}
+{"level":40,"time":1779522975473,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-12","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.3414999842643738,"msg":"http request completed"}
+{"level":40,"time":1779522975522,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-15","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":1.1694169640541077,"msg":"http request completed"}
+{"level":40,"time":1779522975524,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-16","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.4858330488204956,"msg":"http request completed"}
+{"level":40,"time":1779522975577,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-18","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.6726670265197754,"msg":"http request completed"}
+{"level":40,"time":1779522975624,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-19","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":1.2737079858779907,"msg":"http request completed"}
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: 63ef5892-4cde-4ef9-877c-cecc9fc9cddf for workspace temp_ws_default
+Created file explorer session 63ef5892-4cde-4ef9-877c-cecc9fc9cddf for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 63ef5892-4cde-4ef9-877c-cecc9fc9cddf for workspace temp_ws_default
+{"level":40,"time":1779523196030,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-1s","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":3.220917046070099,"msg":"http request completed"}
+{"level":40,"time":1779523215595,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-1t","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.3296669721603394,"msg":"http request completed"}
+{"level":40,"time":1779523220318,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-1u","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.8026670217514038,"msg":"http request completed"}
+{"level":40,"time":1779523221525,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-1v","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.6979159712791443,"msg":"http request completed"}
+FileExplorerSession closed: 63ef5892-4cde-4ef9-877c-cecc9fc9cddf
+Closed file explorer session 63ef5892-4cde-4ef9-877c-cecc9fc9cddf. Active sessions: 0
+File explorer WebSocket disconnected: 63ef5892-4cde-4ef9-877c-cecc9fc9cddf
+{"level":40,"time":1779523273908,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-2h","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.30662500858306885,"msg":"http request completed"}
+{"level":40,"time":1779523274083,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-2k","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.3577499985694885,"msg":"http request completed"}
+{"level":40,"time":1779523274098,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-2n","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.4802500009536743,"msg":"http request completed"}
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: 16883a86-5d54-42a8-a7e0-99fb3b9a1b53 for workspace temp_ws_default
+Created file explorer session 16883a86-5d54-42a8-a7e0-99fb3b9a1b53 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 16883a86-5d54-42a8-a7e0-99fb3b9a1b53 for workspace temp_ws_default
+{"level":40,"time":1779523325896,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-2y","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":2.5548329949378967,"msg":"http request completed"}
+{"level":40,"time":1779523327851,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-2z","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.6966670155525208,"msg":"http request completed"}
+{"level":40,"time":1779523425787,"pid":1,"hostname":"4eb8aa2be1d9","reqId":"req-31","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.7147080302238464,"msg":"http request completed"}

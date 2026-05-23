@@ -1,0 +1,17 @@
+# API/E2E round 2 targeted Electron updater tests
+Date: 2026-05-23T05:47:39Z
+
+> autobyteus@1.3.27 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run electron/updater/__tests__/appUpdater.spec.ts electron/updater/__tests__/appUpdateErrorClassifier.spec.ts
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ ✓ updater/__tests__/appUpdater.spec.ts (8 tests) 17ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  07:47:40
+   Duration  354ms (transform 91ms, setup 0ms, collect 119ms, tests 22ms, environment 0ms, prepare 160ms)
+

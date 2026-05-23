@@ -1,0 +1,43 @@
+05-23 10:04:39.164 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:39.164 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:39.180 D/ProcessState(17234): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:04:39.186 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 322969090, channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-23 10:04:39.190 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 322969090, channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-23 10:04:39.260 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:39.260 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:39.274 I/GoogleInputMethodService( 5757): GoogleInputMethodService.onStartInput():1446 onStartInput(EditorInfo{EditorInfo{packageName=org.autobyteus.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=12000000, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, true)
+05-23 10:04:42.819 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:42.819 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:44.333 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:44.333 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:04:56.680 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:04:56.680 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:05:00.043 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:05:00.043 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:05:06.690 E/KernelRpmStatsReader( 6348): java.io.FileNotFoundException: /sys/power/rpmh_stats/master_stats: open failed: EACCES (Permission denied)
+05-23 10:05:06.690 E/KernelRpmStatsReader( 6348): 	at android.os.HandlerThread.run(HandlerThread.java:67)
+05-23 10:05:06.690 E/KernelRpmStatsReader( 6348): Caused by: android.system.ErrnoException: open failed: EACCES (Permission denied)
+05-23 10:05:11.026 D/vendor.qti.bluetooth@1.0-ibs_handler(  981): ProcessIbsCmd: TX SM is awake already, stop wack timer if running
+05-23 10:05:24.339 D/AndroidRuntime(17397): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+05-23 10:05:24.343 I/AndroidRuntime(17397): Using default boot image
+05-23 10:05:24.343 I/AndroidRuntime(17397): Leaving lock profiling enabled
+05-23 10:05:24.346 E/app_process(17397): Error reading named image component header for /system/framework/boot.art, error: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 10:05:24.346 E/app_process(17397): Could not create image space with image file '/system/framework/boot.art!/apex/com.android.art/etc/boot-image.prof:/system/framework/boot-framework.art!/system/etc/boot-image.prof'. Attempting to fall back to imageless running. Error was: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 10:05:24.558 D/nativeloader(17397): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-23 10:05:24.747 D/ProcessState(17397): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:05:24.747 D/AndroidRuntime(17397): Calling main entry com.android.commands.uiautomator.Launcher
+05-23 10:05:24.782 I/AssetManagerImpl (17397): Load libmiui_runtime
+05-23 10:05:24.785 D/nativeloader(17397): Load libmiui_runtime.so using system ns (caller=/system/framework/miui-framework.jar): ok
+05-23 10:05:24.790 I/MessageMonitor(17397): Load libmiui_runtime
+05-23 10:05:24.880 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:05:24.880 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:05:25.990 D/ThemeCompatibility(17397): getVersion(): /data/system/theme_config/theme_compatibility.xml  java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+05-23 10:05:26.053 W/OverlayConfig(17397): 'idmap2 create-multiple' failed: no mutable="false" overlays targeting "android" will be loaded
+05-23 10:05:26.053 W/AssetManagerImpl (17397): 'idmap2 --scan' failed: no static="true" overlays targeting "miui" will be loaded
+05-23 10:05:26.063 V/MediaProvider( 4430): isAppCloneUserPair failed. Users: 0 and 0
+05-23 10:05:26.084 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:05:26.084 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:05:26.090 D/hw-ProcessState(17397): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:05:26.090 D/AndroidRuntime(17397): Shutting down VM
+05-23 10:05:27.372 D/ProcessState(17426): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:05:27.404 D/hw-ProcessState(17426): Binder ioctl to enable oneway spam detection failed: Invalid argument

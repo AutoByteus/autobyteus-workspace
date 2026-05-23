@@ -1,0 +1,2 @@
+$ git diff --check origin/personal...HEAD -- autobyteus-web autobyteus-server-ts autobyteus-ts autobyteus-android autobyteus-message-gateway docs scripts .github README.md
+PASS

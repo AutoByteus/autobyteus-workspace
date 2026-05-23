@@ -1,0 +1,37 @@
+== verify Tailscale app UI/status before retry ==
+100.127.30.107  normys-macbook-pro  ryan.zheng.work@  macOS    -  
+100.75.247.102  2109119dg           ryan.zheng.work@  android  -  
+== create fresh HTTPS pairing session against Docker node ==
+{
+  "payload": {
+    "version": 1,
+    "serverBaseUrl": "https://normys-macbook-pro.tail0347f8.ts.net",
+    "pairingCode": "REDACTED",
+    "expiresAt": "2026-05-23T08:01:13.959Z",
+    "serverName": "AutoByteus Docker Node"
+  },
+  "qrText": "REDACTED",
+  "mobileUrl": "REDACTED"
+}
+mobile_url=REDACTED
+== launch existing installed Android app with HTTPS pairing URL via ACTION_SEND after Tailscale foreground ==
+Starting: Intent { act=android.intent.action.SEND typ=text/plain cmp=org.autobyteus.mobile/.MainActivity (has extras) }
+Status: ok
+LaunchState: COLD
+Activity: org.autobyteus.mobile/.MainActivity
+TotalTime: 188
+WaitTime: 190
+Complete
+== paired devices after Android retry ==
+{"devices":[]}
+== top activity ==
+    mResumedActivity: ActivityRecord{ac4863c u0 org.autobyteus.mobile/.MainActivity t17740}
+      * Hist #0: ActivityRecord{ac4863c u0 org.autobyteus.mobile/.MainActivity t17740}
+      * Hist #0: ActivityRecord{dc435fd u0 com.tailscale.ipn/.MainActivity t17737}
+      * Hist #0: ActivityRecord{f5db77c u0 com.linkedin.android/.infra.navigation.MainActivity t17712}
+      * Hist #0: ActivityRecord{ea3f167 u0 com.miui.home/.launcher.Launcher t2}
+      * Hist #0: ActivityRecord{8beefc3 u0 com.tencent.mm/.ui.LauncherUI t17665}
+      * Hist #0: ActivityRecord{636ec10 u0 com.twitter.android/com.twitter.app.main.MainActivity t17715}
+      * Hist #1: ActivityRecord{63d3222 u0 com.miui.notes/.ui.activity.EditActivity t17714}
+      * Hist #0: ActivityRecord{4f822d5 u0 com.miui.notes/.ui.NotesListActivity t17714}
+      * Hist #0: ActivityRecord{1a48a00 u0 com.google.android.gm/.ui.MailActivityGmail t17722}

@@ -21,9 +21,9 @@ describe("RemoteAccessRoutePolicy", () => {
   it("classifies core route families", () => {
     expect(classifyHttpRoute("GET", "/rest/health")).toBe("PUBLIC_HEALTH");
     expect(classifyHttpRoute("GET", "/rest/remote-access/status")).toBe("PUBLIC_HEALTH_STATUS");
-    expect(classifyHttpRoute("POST", "/rest/remote-access/pairing-sessions")).toBe("LOCAL_ONLY");
+    expect(classifyHttpRoute("POST", "/rest/remote-access/pairing-sessions")).toBe("PHONE_ACCESS_OWNER");
     expect(classifyHttpRoute("POST", "/rest/remote-access/pairing-exchanges")).toBe("PUBLIC_PAIRING_EXCHANGE");
-    expect(classifyHttpRoute("GET", "/rest/remote-access/devices/revoked")).toBe("LOCAL_ONLY");
+    expect(classifyHttpRoute("GET", "/rest/remote-access/devices/revoked")).toBe("PHONE_ACCESS_OWNER");
     expect(classifyHttpRoute("POST", "/graphql")).toBe("LOCAL_OR_MOBILE");
     expect(classifyHttpRoute("GET", "/graphql", { upgrade: "websocket" })).toBe("LOCAL_OR_MOBILE_WS");
     expect(classifyHttpRoute("GET", "/rest/new-unclassified-route")).toBe("DEFAULT_PROTECTED");
@@ -55,7 +55,7 @@ describe("RemoteAccessRoutePolicy", () => {
   });
 
   it("allows loopback local-only management routes using peer socket address", async () => {
-    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never);
+    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never, { validateHeaders: vi.fn() } as never);
     await expect(policy.authorizeHttpRequest(request({
       method: "GET",
       url: "/rest/remote-access/devices",
@@ -64,7 +64,15 @@ describe("RemoteAccessRoutePolicy", () => {
   });
 
   it("keeps revoked device history local-only for loopback and rejects remote callers", async () => {
-    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never);
+    const nodeAdminService = {
+      validateHeaders: vi.fn(() => ({
+        ok: false as const,
+        statusCode: 401,
+        code: "REMOTE_ACCESS_ADMIN_CLAIM_REQUIRED" as const,
+        message: "missing claim",
+      })),
+    };
+    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never, nodeAdminService as never);
 
     await expect(policy.authorizeHttpRequest(request({
       method: "GET",
@@ -77,17 +85,46 @@ describe("RemoteAccessRoutePolicy", () => {
       url: "/rest/remote-access/devices/revoked",
       remoteAddress: "100.64.1.2",
       headers: { authorization: "Bearer mobile-token" },
-    }))).resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_LOCAL_ONLY" });
+    }))).resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_ADMIN_CLAIM_REQUIRED" });
+    expect(nodeAdminService.validateHeaders).toHaveBeenCalled();
   });
 
-  it("does not trust Host or forwarded headers for local-only management routes", async () => {
-    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never);
+  it("does not trust Host or forwarded headers for Phone Access owner routes", async () => {
+    const nodeAdminService = {
+      validateHeaders: vi.fn(() => ({
+        ok: false as const,
+        statusCode: 401,
+        code: "REMOTE_ACCESS_ADMIN_CLAIM_REQUIRED" as const,
+        message: "missing claim",
+      })),
+    };
+    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never, nodeAdminService as never);
     await expect(policy.authorizeHttpRequest(request({
       method: "GET",
       url: "/rest/remote-access/address-candidates",
       remoteAddress: "100.64.1.2",
       headers: { host: "127.0.0.1:29695", origin: "http://127.0.0.1:29695", "x-forwarded-for": "127.0.0.1" },
-    }))).resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_LOCAL_ONLY" });
+    }))).resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_ADMIN_CLAIM_REQUIRED" });
+  });
+
+  it("allows non-loopback Phone Access owner routes with a valid node-admin claim only", async () => {
+    const nodeAdminService = {
+      validateHeaders: vi.fn(() => ({
+        ok: true as const,
+        context: { mode: "node_admin_claim" as const, isAuthenticated: true, nodeAdminClaimId: "nac_1" },
+      })),
+    };
+    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never, nodeAdminService as never);
+
+    await expect(policy.authorizeHttpRequest(request({
+      method: "PUT",
+      url: "/rest/remote-access/settings",
+      remoteAddress: "172.17.0.1",
+      headers: {
+        "X-Autobyteus-Node-Admin-Claim-Id": "nac_1",
+        "X-Autobyteus-Node-Admin-Claim": "secret",
+      },
+    }))).resolves.toMatchObject({ ok: true, context: { mode: "node_admin_claim" } });
   });
 
   it("keeps channel ingress outside mobile credential auth", () => {

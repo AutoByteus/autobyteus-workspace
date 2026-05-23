@@ -35,6 +35,8 @@ import { registerBrowserPairingIpcHandlers } from './browser/register-browser-pa
 import { RemoteBrowserSharingSettingsStore } from './browser/remote-browser-sharing-settings-store';
 import { WorkspaceShellWindow } from './shell/workspace-shell-window';
 import { WorkspaceShellWindowRegistry } from './shell/workspace-shell-window-registry';
+import { NodeAdminClaimStore } from './nodeAdminClaimStore';
+import { registerNodeAdminClaimIpcHandlers } from './register-node-admin-claim-ipc-handlers';
 
 const serverStatusManager = new ServerStatusManager(serverManager);
 const appUpdater = new AppUpdater();
@@ -43,6 +45,7 @@ let browserRuntime: BrowserRuntime | null = null
 let browserPairingStateController: BrowserPairingStateController | null = null
 let browserBridgeAuthRegistry: BrowserBridgeAuthRegistry | null = null
 let remoteBrowserSharingSettingsStore: RemoteBrowserSharingSettingsStore | null = null
+let nodeAdminClaimStore: NodeAdminClaimStore | null = null
 const shellWindowRegistry = new WorkspaceShellWindowRegistry();
 
 const shutdownTimeoutMs = 8000;
@@ -228,6 +231,7 @@ function applyNodeRegistryChange(change: NodeRegistryChange): NodeRegistrySnapsh
       throw new Error(`Node does not exist: ${change.nodeId}`);
     }
     browserPairingStateController?.handleNodeRemoval(change.nodeId)
+    nodeAdminClaimStore?.clear(change.nodeId)
     closeNodeWindowIfOpen(change.nodeId);
     existingNodes.splice(removeIndex, 1);
   } else if (change.type === 'rename') {
@@ -302,6 +306,7 @@ function installIpcHandlers(): void {
   });
 
   ipcMain.handle('get-node-registry-snapshot', async () => nodeRegistrySnapshot);
+  registerNodeAdminClaimIpcHandlers(ipcMain, () => nodeAdminClaimStore);
   registerBrowserShellIpcHandlers(ipcMain, () => browserRuntime);
   registerBrowserPairingIpcHandlers(ipcMain, () => browserPairingStateController);
 
@@ -499,6 +504,7 @@ async function bootstrap(): Promise<void> {
   saveNodeRegistrySnapshot(app.getPath('userData'), nodeRegistrySnapshot);
 
   await app.whenReady();
+  nodeAdminClaimStore = new NodeAdminClaimStore(app.getPath('userData'));
   managedExtensionService = new ManagedExtensionService(getCanonicalBaseDataPath());
   appUpdater.initialize();
   const authRegistry = new BrowserBridgeAuthRegistry()

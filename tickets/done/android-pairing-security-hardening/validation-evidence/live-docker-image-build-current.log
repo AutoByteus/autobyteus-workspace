@@ -1,0 +1,459 @@
+== mobile web staged files ==
+176
+autobyteus-server-ts/mobile-web/200.html
+autobyteus-server-ts/mobile-web/404.html
+autobyteus-server-ts/mobile-web/autobyteus-icon.svg
+autobyteus-server-ts/mobile-web/index.html
+autobyteus-server-ts/mobile-web/mobile.webmanifest
+== docker build current validation image ==
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.remote-server.validation
+#1 transferring dockerfile: 2.00kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.6s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+#3 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm
+#4 ...
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#5 DONE 0.5s
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm
+#4 DONE 0.5s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 282B done
+#6 DONE 0.0s
+
+#7 [runtime  1/14] FROM docker.io/library/node:22-bookworm-slim@sha256:7af03b14a13c8cdd38e45058fd957bf00a72bbe17feac43b1c15a689c029c732
+#7 resolve docker.io/library/node:22-bookworm-slim@sha256:7af03b14a13c8cdd38e45058fd957bf00a72bbe17feac43b1c15a689c029c732 0.0s done
+#7 DONE 0.0s
+
+#8 [runtime  2/14] WORKDIR /app
+#8 CACHED
+
+#9 [builder 1/7] FROM docker.io/library/node:22-bookworm@sha256:1031993481795705055273f2eef0c24597abdcb277d6e058c82f78cbbdef92a6
+#9 resolve docker.io/library/node:22-bookworm@sha256:1031993481795705055273f2eef0c24597abdcb277d6e058c82f78cbbdef92a6 0.0s done
+#9 DONE 0.0s
+
+#10 [builder 2/7] WORKDIR /app
+#10 CACHED
+
+#11 [builder 3/7] RUN corepack enable
+#11 CACHED
+
+#12 [internal] load build context
+#12 transferring context: 179.82MB 2.3s done
+#12 DONE 2.3s
+
+#13 [builder 4/7] COPY . .
+#13 DONE 0.9s
+
+#14 [builder 5/7] RUN pnpm install --no-frozen-lockfile
+#14 0.210 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+#14 1.694 Scope: all 11 workspace projects
+#14 1.798 Lockfile is up to date, resolution step is skipped
+#14 1.887 Progress: resolved 1, reused 0, downloaded 0, added 0
+#14 2.007 Packages: +1747
+#14 2.007 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#14 2.433 
+#14 2.433    ╭──────────────────────────────────────────────╮
+#14 2.433    │                                              │
+#14 2.433    │     Update available! 10.28.2 → 11.2.2.      │
+#14 2.433    │     Changelog: https://pnpm.io/v/11.2.2      │
+#14 2.433    │   To update, run: corepack use pnpm@11.2.2   │
+#14 2.433    │                                              │
+#14 2.433    ╰──────────────────────────────────────────────╯
+#14 2.433 
+#14 2.888 Progress: resolved 1747, reused 0, downloaded 70, added 70
+#14 ...
+
+#15 [runtime  3/14] RUN apt-get update   && apt-get install -y --no-install-recommends openssl curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#15 0.243 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#15 0.277 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#15 0.291 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+#15 0.375 Get:4 http://deb.debian.org/debian bookworm/main arm64 Packages [8690 kB]
+#15 1.095 Get:5 http://deb.debian.org/debian bookworm-updates/main arm64 Packages [6936 B]
+#15 1.097 Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [303 kB]
+#15 2.038 Fetched 9254 kB in 2s (5050 kB/s)
+#15 2.038 Reading package lists...
+#15 2.678 Reading package lists...
+#15 3.197 Building dependency tree...
+#15 3.325 Reading state information...
+#15 3.479 The following additional packages will be installed:
+#15 3.479   libbrotli1 libcurl4 libgssapi-krb5-2 libk5crypto3 libkeyutils1 libkrb5-3
+#15 3.479   libkrb5support0 libldap-2.5-0 libnghttp2-14 libpsl5 librtmp1 libsasl2-2
+#15 3.480   libsasl2-modules-db libssh2-1 libssl3
+#15 3.480 Suggested packages:
+#15 3.480   krb5-doc krb5-user
+#15 3.480 Recommended packages:
+#15 3.480   krb5-locales libldap-common publicsuffix libsasl2-modules
+#15 3.616 The following NEW packages will be installed:
+#15 3.616   ca-certificates curl libbrotli1 libcurl4 libgssapi-krb5-2 libk5crypto3
+#15 3.616   libkeyutils1 libkrb5-3 libkrb5support0 libldap-2.5-0 libnghttp2-14 libpsl5
+#15 3.617   librtmp1 libsasl2-2 libsasl2-modules-db libssh2-1 libssl3 openssl
+#15 3.710 0 upgraded, 18 newly installed, 0 to remove and 2 not upgraded.
+#15 3.710 Need to get 5497 kB of archives.
+#15 3.710 After this operation, 15.1 MB of additional disk space will be used.
+#15 3.710 Get:1 http://deb.debian.org/debian bookworm/main arm64 libssl3 arm64 3.0.20-1~deb12u1 [1821 kB]
+#15 4.007 Get:2 http://deb.debian.org/debian bookworm/main arm64 openssl arm64 3.0.20-1~deb12u1 [1405 kB]
+#15 4.120 Get:3 http://deb.debian.org/debian bookworm/main arm64 ca-certificates all 20230311+deb12u1 [155 kB]
+#15 4.139 Get:4 http://deb.debian.org/debian bookworm/main arm64 libbrotli1 arm64 1.0.9-2+b6 [269 kB]
+#15 4.161 Get:5 http://deb.debian.org/debian-security bookworm-security/main arm64 libkrb5support0 arm64 1.20.1-2+deb12u5 [32.6 kB]
+#15 4.163 Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 libk5crypto3 arm64 1.20.1-2+deb12u5 [79.9 kB]
+#15 4.172 Get:7 http://deb.debian.org/debian bookworm/main arm64 libkeyutils1 arm64 1.6.3-2 [8844 B]
+#15 4.183 Get:8 http://deb.debian.org/debian-security bookworm-security/main arm64 libkrb5-3 arm64 1.20.1-2+deb12u5 [316 kB]
+#15 4.207 Get:9 http://deb.debian.org/debian-security bookworm-security/main arm64 libgssapi-krb5-2 arm64 1.20.1-2+deb12u5 [124 kB]
+#15 4.227 Get:10 http://deb.debian.org/debian bookworm/main arm64 libsasl2-modules-db arm64 2.1.28+dfsg-10 [20.8 kB]
+#15 4.236 Get:11 http://deb.debian.org/debian bookworm/main arm64 libsasl2-2 arm64 2.1.28+dfsg-10 [58.0 kB]
+#15 4.251 Get:12 http://deb.debian.org/debian bookworm/main arm64 libldap-2.5-0 arm64 2.5.13+dfsg-5 [171 kB]
+#15 4.265 Get:13 http://deb.debian.org/debian-security bookworm-security/main arm64 libnghttp2-14 arm64 1.52.0-1+deb12u3 [69.0 kB]
+#15 4.270 Get:14 http://deb.debian.org/debian bookworm/main arm64 libpsl5 arm64 0.21.2-1 [58.6 kB]
+#15 4.275 Get:15 http://deb.debian.org/debian bookworm/main arm64 librtmp1 arm64 2.4+20151223.gitfa8646d.1-2+b2 [59.4 kB]
+#15 4.293 Get:16 http://deb.debian.org/debian bookworm/main arm64 libssh2-1 arm64 1.10.0-3+b1 [172 kB]
+#15 4.315 Get:17 http://deb.debian.org/debian bookworm/main arm64 libcurl4 arm64 7.88.1-10+deb12u14 [367 kB]
+#15 4.355 Get:18 http://deb.debian.org/debian bookworm/main arm64 curl arm64 7.88.1-10+deb12u14 [309 kB]
+#15 4.493 debconf: delaying package configuration, since apt-utils is not installed
+#15 4.517 Fetched 5497 kB in 1s (7292 kB/s)
+#15 4.539 Selecting previously unselected package libssl3:arm64.
+#15 4.539 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 6090 files and directories currently installed.)
+#15 4.554 Preparing to unpack .../00-libssl3_3.0.20-1~deb12u1_arm64.deb ...
+#15 4.557 Unpacking libssl3:arm64 (3.0.20-1~deb12u1) ...
+#15 4.663 Selecting previously unselected package openssl.
+#15 4.664 Preparing to unpack .../01-openssl_3.0.20-1~deb12u1_arm64.deb ...
+#15 4.666 Unpacking openssl (3.0.20-1~deb12u1) ...
+#15 4.749 Selecting previously unselected package ca-certificates.
+#15 4.750 Preparing to unpack .../02-ca-certificates_20230311+deb12u1_all.deb ...
+#15 4.752 Unpacking ca-certificates (20230311+deb12u1) ...
+#15 4.776 Selecting previously unselected package libbrotli1:arm64.
+#15 4.777 Preparing to unpack .../03-libbrotli1_1.0.9-2+b6_arm64.deb ...
+#15 4.778 Unpacking libbrotli1:arm64 (1.0.9-2+b6) ...
+#15 4.810 Selecting previously unselected package libkrb5support0:arm64.
+#15 4.811 Preparing to unpack .../04-libkrb5support0_1.20.1-2+deb12u5_arm64.deb ...
+#15 4.813 Unpacking libkrb5support0:arm64 (1.20.1-2+deb12u5) ...
+#15 4.829 Selecting previously unselected package libk5crypto3:arm64.
+#15 4.830 Preparing to unpack .../05-libk5crypto3_1.20.1-2+deb12u5_arm64.deb ...
+#15 4.832 Unpacking libk5crypto3:arm64 (1.20.1-2+deb12u5) ...
+#15 4.849 Selecting previously unselected package libkeyutils1:arm64.
+#15 4.850 Preparing to unpack .../06-libkeyutils1_1.6.3-2_arm64.deb ...
+#15 4.851 Unpacking libkeyutils1:arm64 (1.6.3-2) ...
+#15 4.868 Selecting previously unselected package libkrb5-3:arm64.
+#15 4.868 Preparing to unpack .../07-libkrb5-3_1.20.1-2+deb12u5_arm64.deb ...
+#15 4.870 Unpacking libkrb5-3:arm64 (1.20.1-2+deb12u5) ...
+#15 4.910 Selecting previously unselected package libgssapi-krb5-2:arm64.
+#15 4.910 Preparing to unpack .../08-libgssapi-krb5-2_1.20.1-2+deb12u5_arm64.deb ...
+#15 4.912 Unpacking libgssapi-krb5-2:arm64 (1.20.1-2+deb12u5) ...
+#15 4.933 Selecting previously unselected package libsasl2-modules-db:arm64.
+#15 4.934 Preparing to unpack .../09-libsasl2-modules-db_2.1.28+dfsg-10_arm64.deb ...
+#15 4.937 Unpacking libsasl2-modules-db:arm64 (2.1.28+dfsg-10) ...
+#15 4.954 Selecting previously unselected package libsasl2-2:arm64.
+#15 4.954 Preparing to unpack .../10-libsasl2-2_2.1.28+dfsg-10_arm64.deb ...
+#15 4.956 Unpacking libsasl2-2:arm64 (2.1.28+dfsg-10) ...
+#15 4.978 Selecting previously unselected package libldap-2.5-0:arm64.
+#15 4.979 Preparing to unpack .../11-libldap-2.5-0_2.5.13+dfsg-5_arm64.deb ...
+#15 4.981 Unpacking libldap-2.5-0:arm64 (2.5.13+dfsg-5) ...
+#15 5.006 Selecting previously unselected package libnghttp2-14:arm64.
+#15 5.007 Preparing to unpack .../12-libnghttp2-14_1.52.0-1+deb12u3_arm64.deb ...
+#15 5.008 Unpacking libnghttp2-14:arm64 (1.52.0-1+deb12u3) ...
+#15 5.028 Selecting previously unselected package libpsl5:arm64.
+#15 5.029 Preparing to unpack .../13-libpsl5_0.21.2-1_arm64.deb ...
+#15 5.031 Unpacking libpsl5:arm64 (0.21.2-1) ...
+#15 5.050 Selecting previously unselected package librtmp1:arm64.
+#15 5.050 Preparing to unpack .../14-librtmp1_2.4+20151223.gitfa8646d.1-2+b2_arm64.deb ...
+#15 5.052 Unpacking librtmp1:arm64 (2.4+20151223.gitfa8646d.1-2+b2) ...
+#15 5.070 Selecting previously unselected package libssh2-1:arm64.
+#15 5.071 Preparing to unpack .../15-libssh2-1_1.10.0-3+b1_arm64.deb ...
+#15 5.073 Unpacking libssh2-1:arm64 (1.10.0-3+b1) ...
+#15 5.150 Selecting previously unselected package libcurl4:arm64.
+#15 5.151 Preparing to unpack .../16-libcurl4_7.88.1-10+deb12u14_arm64.deb ...
+#15 5.152 Unpacking libcurl4:arm64 (7.88.1-10+deb12u14) ...
+#15 5.185 Selecting previously unselected package curl.
+#15 5.186 Preparing to unpack .../17-curl_7.88.1-10+deb12u14_arm64.deb ...
+#15 5.188 Unpacking curl (7.88.1-10+deb12u14) ...
+#15 5.223 Setting up libkeyutils1:arm64 (1.6.3-2) ...
+#15 5.229 Setting up libpsl5:arm64 (0.21.2-1) ...
+#15 5.234 Setting up libbrotli1:arm64 (1.0.9-2+b6) ...
+#15 5.239 Setting up libssl3:arm64 (3.0.20-1~deb12u1) ...
+#15 5.247 Setting up libnghttp2-14:arm64 (1.52.0-1+deb12u3) ...
+#15 5.255 Setting up libkrb5support0:arm64 (1.20.1-2+deb12u5) ...
+#15 5.265 Setting up libsasl2-modules-db:arm64 (2.1.28+dfsg-10) ...
+#15 5.274 Setting up librtmp1:arm64 (2.4+20151223.gitfa8646d.1-2+b2) ...
+#15 5.280 Setting up libk5crypto3:arm64 (1.20.1-2+deb12u5) ...
+#15 5.286 Setting up libsasl2-2:arm64 (2.1.28+dfsg-10) ...
+#15 5.292 Setting up libssh2-1:arm64 (1.10.0-3+b1) ...
+#15 5.298 Setting up libkrb5-3:arm64 (1.20.1-2+deb12u5) ...
+#15 5.302 Setting up openssl (3.0.20-1~deb12u1) ...
+#15 5.310 Setting up libldap-2.5-0:arm64 (2.5.13+dfsg-5) ...
+#15 5.316 Setting up ca-certificates (20230311+deb12u1) ...
+#15 5.375 debconf: unable to initialize frontend: Dialog
+#15 5.375 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#15 5.375 debconf: falling back to frontend: Readline
+#15 5.375 debconf: unable to initialize frontend: Readline
+#15 5.375 debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC contains: /etc/perl /usr/local/lib/aarch64-linux-gnu/perl/5.36.0 /usr/local/share/perl/5.36.0 /usr/lib/aarch64-linux-gnu/perl5/5.36 /usr/share/perl5 /usr/lib/aarch64-linux-gnu/perl-base /usr/lib/aarch64-linux-gnu/perl/5.36 /usr/share/perl/5.36 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 7.)
+#15 5.375 debconf: falling back to frontend: Teletype
+#15 5.814 Updating certificates in /etc/ssl/certs...
+#15 6.185 142 added, 0 removed; done.
+#15 6.216 Setting up libgssapi-krb5-2:arm64 (1.20.1-2+deb12u5) ...
+#15 6.223 Setting up libcurl4:arm64 (7.88.1-10+deb12u14) ...
+#15 6.235 Setting up curl (7.88.1-10+deb12u14) ...
+#15 6.247 Processing triggers for libc-bin (2.36-9+deb12u14) ...
+#15 6.276 Processing triggers for ca-certificates (20230311+deb12u1) ...
+#15 6.279 Updating certificates in /etc/ssl/certs...
+#15 6.606 0 added, 0 removed; done.
+#15 6.606 Running hooks in /etc/ca-certificates/update.d...
+#15 6.607 done.
+#15 DONE 6.9s
+
+#14 [builder 5/7] RUN pnpm install --no-frozen-lockfile
+#14 3.887 Progress: resolved 1747, reused 0, downloaded 197, added 197
+#14 4.888 Progress: resolved 1747, reused 0, downloaded 305, added 307
+#14 5.228 Packages are hard linked from the content-addressable store to the virtual store.
+#14 5.228   Content-addressable store is at: /root/.local/share/pnpm/store/v10
+#14 5.228   Virtual store is at:             node_modules/.pnpm
+#14 5.888 Progress: resolved 1747, reused 0, downloaded 382, added 383
+#14 ...
+
+#16 [runtime  4/14] RUN corepack enable && corepack prepare pnpm@10.30.2 --activate
+#16 0.330 Preparing pnpm@10.30.2 for immediate activation...
+#16 DONE 2.9s
+
+#14 [builder 5/7] RUN pnpm install --no-frozen-lockfile
+#14 6.889 Progress: resolved 1747, reused 0, downloaded 495, added 496
+#14 7.890 Progress: resolved 1747, reused 0, downloaded 553, added 555
+#14 8.890 Progress: resolved 1747, reused 0, downloaded 690, added 691
+#14 9.891 Progress: resolved 1747, reused 0, downloaded 777, added 779
+#14 10.89 Progress: resolved 1747, reused 0, downloaded 859, added 861
+#14 11.89 Progress: resolved 1747, reused 0, downloaded 952, added 954
+#14 12.89 Progress: resolved 1747, reused 0, downloaded 1064, added 1066
+#14 13.89 Progress: resolved 1747, reused 0, downloaded 1193, added 1195
+#14 14.89 Progress: resolved 1747, reused 0, downloaded 1312, added 1314
+#14 15.89 Progress: resolved 1747, reused 0, downloaded 1380, added 1382
+#14 16.89 Progress: resolved 1747, reused 0, downloaded 1451, added 1453
+#14 17.90 Progress: resolved 1747, reused 0, downloaded 1538, added 1539
+#14 18.90 Progress: resolved 1747, reused 0, downloaded 1610, added 1612
+#14 19.90 Progress: resolved 1747, reused 0, downloaded 1713, added 1714
+#14 20.90 Progress: resolved 1747, reused 0, downloaded 1737, added 1739
+#14 21.90 Progress: resolved 1747, reused 0, downloaded 1741, added 1743
+#14 22.90 Progress: resolved 1747, reused 0, downloaded 1743, added 1745
+#14 23.91 Progress: resolved 1747, reused 0, downloaded 1744, added 1746
+#14 28.66 Progress: resolved 1747, reused 0, downloaded 1745, added 1746
+#14 28.66 Progress: resolved 1747, reused 0, downloaded 1745, added 1747, done
+#14 29.52 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+#14 29.52 .../node_modules/protobufjs postinstall$ node scripts/postinstall
+#14 29.59 .../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+#14 29.59 .../node_modules/protobufjs postinstall$ node scripts/postinstall
+#14 29.65 .../sharp@0.33.5/node_modules/sharp install$ node install/check
+#14 29.65 .../node_modules/protobufjs postinstall: Done
+#14 29.69 .../node_modules/protobufjs postinstall: Done
+#14 29.69 .../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+#14 29.74 .../node-pty@1.1.0/node_modules/node-pty install$ node scripts/prebuild.js || node-gyp rebuild
+#14 29.78 .../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+#14 29.81 .../node-pty@1.1.0/node_modules/node-pty install: [32m> Checking prebuilds...[0m
+#14 29.81 .../node-pty@1.1.0/node_modules/node-pty install: [33m> Rebuilding because directory /app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/linux-arm64 does not exist[0m
+#14 29.81 .../sharp@0.33.5/node_modules/sharp install: Done
+#14 29.81 .../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+#14 29.85 .../node-pty@1.1.0/node_modules/node-pty install: gyp info it worked if it ends with ok
+#14 29.85 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node-gyp@11.5.0
+#14 29.85 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node@22.22.3 | linux | arm64
+#14 29.85 .../node_modules/@parcel/watcher install: Done
+#14 29.86 .../node_modules/electron postinstall$ node install.js
+#14 29.92 .../node-pty@1.1.0/node_modules/node-pty install: gyp info find Python using Python version 3.11.2 found at "/usr/bin/python3"
+#14 29.93 .../node_modules/vue-demi postinstall: Done
+#14 30.05 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v22.22.3/node-v22.22.3-headers.tar.gz
+#14 30.24 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v22.22.3/node-v22.22.3-headers.tar.gz
+#14 31.42 .../node_modules/@prisma/engines postinstall: Done
+#14 35.16 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v22.22.3/SHASUMS256.txt
+#14 35.20 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v22.22.3/SHASUMS256.txt
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn /usr/bin/python3
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/gyp/gyp_main.py',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'binding.gyp',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-f',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'make',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/config.gypi',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/addon.gypi',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node-gyp/22.22.3/include/node/common.gypi',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dlibrary=shared_library',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dvisibility=default',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_root_dir=/root/.cache/node-gyp/22.22.3',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_gyp_dir=/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_lib_file=/root/.cache/node-gyp/22.22.3/<(target_arch)/node.lib',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dmodule_root_dir=/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_engine=v8',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--depth=.',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--no-parallel',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--generator-output',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'build',
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Goutput_dir=.'
+#14 35.89 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args ]
+#14 36.04 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn make
+#14 36.04 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [ 'BUILDTYPE=Release', '-C', 'build' ]
+#14 36.04 .../node-pty@1.1.0/node_modules/node-pty install: make: Entering directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#14 36.04 .../node-pty@1.1.0/node_modules/node-pty install:   TOUCH Release/obj.target/../../../node-addon-api@7.1.1/node_modules/node-addon-api/node_addon_api_except.stamp
+#14 36.05 .../node-pty@1.1.0/node_modules/node-pty install:   CXX(target) Release/obj.target/pty/src/unix/pty.o
+#14 37.18 .../node-pty@1.1.0/node_modules/node-pty install:   SOLINK_MODULE(target) Release/obj.target/pty.node
+#14 37.23 .../node-pty@1.1.0/node_modules/node-pty install:   COPY Release/pty.node
+#14 37.24 .../node-pty@1.1.0/node_modules/node-pty install: make: Leaving directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#14 37.24 .../node-pty@1.1.0/node_modules/node-pty install: gyp info ok 
+#14 37.25 .../node-pty@1.1.0/node_modules/node-pty install: Done
+#14 37.25 .../node-pty@1.1.0/node_modules/node-pty postinstall$ node scripts/post-install.js
+#14 37.29 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Cleaning release folder...[0m
+#14 37.29 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Moving conpty.dll...[0m
+#14 37.29 .../node-pty@1.1.0/node_modules/node-pty postinstall:   SKIPPED (not Windows)
+#14 37.30 .../node-pty@1.1.0/node_modules/node-pty postinstall: Done
+#14 47.73 .../node_modules/electron postinstall: Done
+#14 48.26 .../prisma@5.22.0/node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+#14 48.31 .../prisma@5.22.0/node_modules/prisma preinstall: Done
+#14 48.39 .../node_modules/@whiskeysockets/baileys preinstall$ node ./engine-requirements.js
+#14 48.43 .../node_modules/@prisma/client postinstall$ node scripts/postinstall.js
+#14 48.46 .../node_modules/@whiskeysockets/baileys preinstall: Done
+#14 48.79 .../node_modules/@prisma/client postinstall: prisma:warn We could not find your Prisma schema in the default locations (see: https://pris.ly/d/prisma-schema-location).
+#14 48.79 .../node_modules/@prisma/client postinstall: If you have a Prisma schema file in a custom path, you will need to run
+#14 48.79 .../node_modules/@prisma/client postinstall: `prisma generate --schema=./path/to/your/schema.prisma` to generate Prisma Client.
+#14 48.79 .../node_modules/@prisma/client postinstall: If you do not have a Prisma schema file yet, you can ignore this message.
+#14 48.80 .../node_modules/@prisma/client postinstall: Done
+#14 50.04 
+#14 50.06 autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+#14 50.12 autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+#14 50.13 autobyteus-ts postinstall: Done
+#14 50.29 ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+#14 50.29 │                                                                              │
+#14 50.29 │   Ignored build scripts: lzma-native@8.0.6.                                  │
+#14 50.29 │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+#14 50.29 │   to run scripts.                                                            │
+#14 50.29 │                                                                              │
+#14 50.29 ╰──────────────────────────────────────────────────────────────────────────────╯
+#14 50.37 Done in 48.9s using pnpm v10.28.2
+#14 DONE 50.7s
+
+#17 [builder 6/7] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#17 1.594 Prisma schema loaded from prisma/schema.prisma
+#17 5.556 
+#17 5.556 ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 185ms
+#17 5.556 
+#17 5.556 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#17 5.556 
+#17 5.556 Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+#17 5.556 
+#17 DONE 5.9s
+
+#18 [builder 7/7] RUN pnpm -C autobyteus-server-ts build
+#18 0.328 
+#18 0.328 > autobyteus-server-ts@0.1.1 prebuild /app/autobyteus-server-ts
+#18 0.328 > pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+#18 0.328 
+#18 0.563 
+#18 0.563 > autobyteus-server-ts@0.1.1 prepare:shared /app/autobyteus-server-ts
+#18 0.563 > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+#18 0.563 
+#18 0.797 Scope: 3 of 11 workspace projects
+#18 0.802 autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+#18 0.803 autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+#18 1.652 autobyteus-application-sdk-contracts build: Done
+#18 7.568 autobyteus-ts build: [verify:runtime-deps] OK
+#18 7.570 autobyteus-ts build: Done
+#18 7.571 autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+#18 8.249 autobyteus-application-backend-sdk build: Done
+#18 8.822 Prisma schema loaded from prisma/schema.prisma
+#18 9.261 
+#18 9.261 ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 145ms
+#18 9.261 
+#18 9.261 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#18 9.261 
+#18 9.261 Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+#18 9.261 
+#18 9.485 
+#18 9.485 > autobyteus-server-ts@0.1.1 build /app/autobyteus-server-ts
+#18 9.485 > pnpm run build:full
+#18 9.485 
+#18 9.731 
+#18 9.731 > autobyteus-server-ts@0.1.1 build:full /app/autobyteus-server-ts
+#18 9.731 > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-built-in-agents-bootstrap.mjs
+#18 9.731 
+#18 18.34 Successfully registered tool definition: 'read_file'
+#18 18.34 Successfully registered tool definition: 'write_file'
+#18 18.34 Successfully registered tool definition: 'edit_file'
+#18 18.34 Successfully registered tool definition: 'replace_in_file'
+#18 18.34 Successfully registered tool definition: 'insert_in_file'
+#18 18.34 Successfully registered tool definition: 'load_skill'
+#18 18.34 Successfully registered tool definition: 'run_bash'
+#18 18.34 Successfully registered tool definition: 'start_background_process'
+#18 18.34 Successfully registered tool definition: 'get_background_processes'
+#18 18.35 Successfully registered tool definition: 'get_process_output'
+#18 18.35 Successfully registered tool definition: 'stop_background_process'
+#18 18.35 Successfully registered tool definition: 'search_web'
+#18 18.35 Successfully registered tool definition: 'read_media_file'
+#18 18.35 Successfully registered tool definition: 'download_media'
+#18 18.35 Successfully registered tool definition: 'read_url'
+#18 18.35 Successfully registered tool definition: 'send_message_to'
+#18 18.35 Successfully registered tool definition: 'assign_task_to'
+#18 18.35 Successfully registered tool definition: 'create_tasks'
+#18 18.35 Successfully registered tool definition: 'create_task'
+#18 18.35 Successfully registered tool definition: 'get_my_tasks'
+#18 18.35 Successfully registered tool definition: 'get_task_plan_status'
+#18 18.35 Successfully registered tool definition: 'update_task_status'
+#18 18.35 Successfully registered tool definition: 'add_todo'
+#18 18.35 Successfully registered tool definition: 'create_todo_list'
+#18 18.35 Successfully registered tool definition: 'get_todo_list'
+#18 18.35 Successfully registered tool definition: 'update_todo_status'
+#18 18.35 AgentFactory (Singleton) initialized.
+#18 18.35 AgentTeamFactory (Singleton) initialized.
+#18 18.39 Platform detection: Windows=false
+#18 18.39 App root directory: /app/autobyteus-server-ts
+#18 18.39 App data directory: /app/autobyteus-server-ts
+#18 18.39 (node:191) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+#18 18.39 (Use `node --trace-warnings ...` to show where the warning was created)
+#18 18.42 Built-in agents bootstrap smoke check passed.
+#18 DONE 18.6s
+
+#19 [runtime  5/14] COPY --from=builder /app/package.json /app/pnpm-workspace.yaml /app/pnpm-lock.yaml ./
+#19 DONE 0.1s
+
+#20 [runtime  6/14] COPY --from=builder /app/node_modules ./node_modules
+#20 DONE 8.3s
+
+#21 [runtime  7/14] COPY --from=builder /app/autobyteus-ts ./autobyteus-ts
+#21 DONE 0.8s
+
+#22 [runtime  8/14] COPY --from=builder /app/autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#22 DONE 0.0s
+
+#23 [runtime  9/14] COPY --from=builder /app/autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#23 DONE 0.0s
+
+#24 [runtime 10/14] COPY --from=builder /app/autobyteus-application-frontend-sdk ./autobyteus-application-frontend-sdk
+#24 DONE 0.0s
+
+#25 [runtime 11/14] COPY --from=builder /app/autobyteus-application-devkit ./autobyteus-application-devkit
+#25 DONE 0.0s
+
+#26 [runtime 12/14] COPY --from=builder /app/autobyteus-server-ts ./autobyteus-server-ts
+#26 DONE 0.4s
+
+#27 [runtime 13/14] COPY docker/remote-server-entrypoint.sh /usr/local/bin/remote-server-entrypoint.sh
+#27 DONE 0.0s
+
+#28 [runtime 14/14] RUN chmod +x /usr/local/bin/remote-server-entrypoint.sh
+#28 DONE 0.1s
+
+#29 exporting to image
+#29 exporting layers
+#29 exporting layers 43.8s done
+#29 exporting manifest sha256:3d02ebf539a1ede6a74314ae988d56a839566122648dacf7d888979cc5c7cea4 done
+#29 exporting config sha256:f308bfd6fb265ec4faedbe617fd6d59277961cbe9b3a3af0dab3ebd178633837 done
+#29 exporting attestation manifest sha256:ccd079495dc21d93671162efe06cba5b2c52050aaca5fe58cd80f45ced7a96e2 done
+#29 exporting manifest list sha256:c7bb9e12592f1b39b09511af1b647b450f1392f84477dce6f4141accf9ef6aab done
+#29 naming to docker.io/library/autobyteus-server:android-pairing-live-validation done
+#29 unpacking to docker.io/library/autobyteus-server:android-pairing-live-validation
+#29 unpacking to docker.io/library/autobyteus-server:android-pairing-live-validation 12.9s done
+#29 DONE 56.8s

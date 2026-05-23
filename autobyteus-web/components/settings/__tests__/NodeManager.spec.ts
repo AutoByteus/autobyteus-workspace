@@ -227,7 +227,7 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
   });
 
-  it('shows a remote-node unavailable note instead of Phone Access controls in remote windows', async () => {
+  it('shows Phone Access controls in remote windows so a Docker node claim can be registered', async () => {
     windowNodeContextStoreMock.nodeId = 'remote-1';
     windowNodeContextStoreMock.isEmbeddedWindow = false;
     const wrapper = mount(NodeManager);
@@ -236,8 +236,8 @@ describe('NodeManager', () => {
     await wrapper.get('[data-testid="node-manager-tab-phoneSetup"]').trigger('click');
 
     expect(wrapper.find('[data-testid="phone-setup-guide-card"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="phone-access-card"]').exists()).toBe(false);
-    expect(wrapper.find('[data-testid="phone-setup-remote-unavailable"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="phone-access-card"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="phone-setup-remote-unavailable"]').exists()).toBe(false);
   });
 
   it('renders the Docker node start guide only in the Docker guide tab', async () => {

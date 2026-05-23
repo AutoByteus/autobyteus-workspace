@@ -25,4 +25,10 @@ describe("redactSensitiveUrl", () => {
       "/mobile?pairing_code=%5BREDACTED%5D&pairingCode=%5BREDACTED%5D&status=check",
     );
   });
+
+  it("redacts node-admin claim query variants if they appear in diagnostics", () => {
+    expect(redactSensitiveUrl("/rest/remote-access/settings?node_admin_claim=secret&x-autobyteus-node-admin-claim-id=nac_1")).toBe(
+      "/rest/remote-access/settings?node_admin_claim=%5BREDACTED%5D&x-autobyteus-node-admin-claim-id=%5BREDACTED%5D",
+    );
+  });
 });

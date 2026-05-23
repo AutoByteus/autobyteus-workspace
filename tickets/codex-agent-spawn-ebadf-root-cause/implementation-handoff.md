@@ -14,6 +14,7 @@
 - Prior delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/release-deployment-report.md`
 - Prior handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/handoff-summary.md`
 - Prior delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round9-electron-build-localization.md`
+- Latest-base merge-conflict delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round13-latest-personal-merge-conflicts.md`
 - API/E2E round-6 Terminal FD failure evidence and durable validation: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
 
 ## What Changed
@@ -35,8 +36,9 @@ Implemented the architecture-review-round-7 steady-state target:
 - Kept the earlier delivery localization fix: `Terminal.vue` no longer has the hard-coded `Retry workspace load` literal; localization audit passes.
 - Round-10 local fix: Terminal now uses an explicit root-path `TerminalTarget`; `useTerminalSession` opens `/ws/terminal/{sessionId}?cwd=...` instead of workspace-id/materialized-workspace URLs, and `Terminal.vue` no longer calls workspace activation before connecting.
 - Round-10 local fix: backend Terminal WebSocket validates/canonicalizes cwd directly, has route-level close/error/close-before-connect cleanup, disconnects late sessions if close wins the connect race, and terminal handler/PTY manager clean up partially created sessions and send/read-loop failures.
-- Round-10 local fix: mobile Tools derives terminal targets from `MobileWorkContext` root paths with no initialized workspace-store dependency; mobile Files activates from metadata/root path only when the visible Files surface opens, uses the file-explorer store/composable, and owns/releases visible live-session ownership.
+- Round-10/13 local fix: mobile Files activates from metadata/root path only when the visible Files surface opens, uses the file-explorer store/composable, and owns/releases visible live-session ownership. After merging latest `origin/personal`, the mobile Tools/Terminal/VNC surface remains deleted per the latest mobile shell architecture; interactive Terminal is desktop/workspace-tool only for mobile Phone Access.
 - Round-12 local fix for `E2E-TERMFD-001`: terminal close-before-connect now aborts pending startup through an `AbortSignal`, exposes in-flight sessions to `PtySessionManager.closeSession()` so cleanup can close them before `start()` resolves, suppresses expected startup-abort error handling, and hardens `autobyteus-ts` `PtySession.close()` to destroy node-pty socket/write-stream resources, dispose listeners, resolve pending reads, and reject startup if close wins.
+- Round-13 delivery local fix: integrated latest `origin/personal@74218467a2f7786c82f3e97b9190058d2cb83bd2`, resolved mobile/terminal/test/docs merge conflicts, preserved the Round-12/7 Terminal FD lifecycle fixes, kept latest-base deletion of `MobileTools.vue`, and reconciled `autobyteus-web/docs/terminal.md` to describe root-path desktop Terminal plus no mobile Phone Access Terminal/VNC page.
 
 ## Key Files Or Areas
 
@@ -80,7 +82,6 @@ Frontend:
 - `autobyteus-web/components/fileExplorer/FileExplorer.vue`
 - `autobyteus-web/components/workspace/tools/Terminal.vue`
 - `autobyteus-web/components/mobile/MobileFiles.vue`
-- `autobyteus-web/components/mobile/MobileTools.vue`
 - `autobyteus-web/components/workspace/config/*`
 - `autobyteus-web/services/runHydration/*`
 - `autobyteus-web/services/runOpen/*`
@@ -95,6 +96,7 @@ Removed obsolete source/test paths:
 
 - `autobyteus-server-ts/src/file-explorer/base-file-explorer.ts`
 - `autobyteus-server-ts/src/file-explorer/local-file-explorer.ts`
+- `autobyteus-web/components/mobile/MobileTools.vue`
 - `autobyteus-web/types/workspace/WorkspaceReference.ts`
 - `autobyteus-web/utils/workspaceReference.ts`
 - `autobyteus-web/stores/workspaceReferenceActions.ts`
@@ -143,6 +145,27 @@ Removed obsolete source/test paths:
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
 
+Round-13 latest-base merge-conflict integration checks:
+
+- `git diff --check HEAD -- autobyteus-web autobyteus-server-ts autobyteus-android autobyteus-message-gateway docs scripts .github README.md`
+  - Result: pass.
+  - Scope note: source/docs scoped because the merge brings upstream `tickets/done/**` validation logs from `origin/personal`; those upstream archived logs are not source/docs and were not edited for this ticket.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round13-diff-check-20260523.log`
+- `git diff --check origin/personal...HEAD -- autobyteus-web autobyteus-server-ts autobyteus-ts autobyteus-android autobyteus-message-gateway docs scripts .github README.md`
+  - Result: pass after committing the latest-base merge.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round13-post-merge-source-docs-diff-check-20260523.log`
+- `pnpm -C autobyteus-web test:nuxt run components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts`
+  - Result: pass, 5 files / 48 tests.
+  - Covers the merged mobile shell with no `MobileTools.vue`, mobile Files metadata/file-explorer/live-session ownership, cwd-based Terminal frontend session behavior, and Terminal component root-path target behavior.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round13-frontend-mobile-terminal-tests-20260523.log`
+- `pnpm -C autobyteus-server-ts test tests/unit/services/terminal/pty-session-manager.test.ts tests/unit/services/terminal/terminal-handler.test.ts tests/integration/terminal/terminal-websocket.integration.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
+  - Result: pass, 4 files / 26 tests.
+  - Covers the preserved backend Terminal FD lifecycle behavior after latest-base integration: close-before-connect churn, invalid cwd rejection, partial setup cleanup, and real PTY close/release.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round13-backend-terminal-targeted-20260523.log`
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: pass, zero unresolved findings.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round13-frontend-localization-audit-20260523.log`
+
 Round-12 local-fix checks for `E2E-TERMFD-001`:
 
 - `pnpm -C autobyteus-ts exec vitest --run tests/unit/tools/terminal/pty-session.test.ts`
@@ -177,7 +200,7 @@ Round-10 local-fix checks:
   - Result: pass.
   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round10-diff-check-20260523.log`
 - Focused Terminal/mobile boundary grep.
-  - Result: pass; no old terminal workspace-id route/materialized-workspace lookup, no Terminal component workspace activation, and no Mobile Files/Tools `.fileExplorer`/`allWorkspaces`/workspace-id Terminal prop path. Positive grep confirms root-path `TerminalTarget`, `useWorkspaceFileExplorer`, and mobile visible live-session ownership.
+  - Result: pass; no old terminal workspace-id route/materialized-workspace lookup, no Terminal component workspace activation, and no Mobile Files `.fileExplorer`/`allWorkspaces`/workspace-id Terminal prop path. Positive grep confirms root-path `TerminalTarget`, `useWorkspaceFileExplorer`, and mobile visible live-session ownership.
   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round10-boundary-grep-20260523.log`
 - Legacy steady-state concept grep after round-10 changes.
   - Result: pass; no `WorkspaceReference`, `workspaceReference`, `WorkspaceActivation`, `ensureWorkspaceInitialized`, `WorkspaceInfo.fileExplorer`, `BaseFileExplorer`, `LocalFileExplorer`, direct `getFileExplorer()`, or direct `workspace.searchFiles()` matches in backend/frontend source/test scope.
@@ -194,7 +217,7 @@ Round-10 local-fix checks:
   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round10-backend-build-full-20260523.log`
 - `pnpm -C autobyteus-web test:nuxt composables/__tests__/useTerminalSession.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts`
   - Result: pass, 5 files / 47 tests.
-  - Covers cwd terminal URL, no Terminal workspace activation, Mobile Tools root-path targets with empty workspace store, Mobile Files metadata activation/file-explorer store/live-session ownership, and mobile static boundary guards.
+  - Covers cwd terminal URL, no Terminal workspace activation, then-current Mobile Tools root-path targets with empty workspace store, Mobile Files metadata activation/file-explorer store/live-session ownership, and mobile static boundary guards. Round-13 latest-base integration superseded the Mobile Tools surface by keeping it deleted.
   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round10-frontend-terminal-mobile-tests-20260523.log`
 - `pnpm -C autobyteus-web audit:localization-literals`
   - Result: pass, zero unresolved findings.

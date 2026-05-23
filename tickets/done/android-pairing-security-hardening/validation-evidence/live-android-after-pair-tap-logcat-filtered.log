@@ -1,0 +1,27 @@
+05-23 09:58:13.815 D/ProcessState(14615): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 09:58:13.820 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 322583723, channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-23 09:58:13.824 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 322583723, channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-23 09:58:13.891 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 09:58:13.985 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 09:58:14.150 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 09:58:22.890 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 09:58:26.298 D/gojni   (11433): 9.1M/164.9M Received error: PollNetMap: unexpected EOF
+05-23 09:58:26.407 E/FirebaseMessaging(11735): Topic operation failed: SERVICE_NOT_AVAILABLE. Will retry Topic operation.
+05-23 09:58:27.986 E/app_process(14643): Error reading named image component header for /system/framework/boot.art, error: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 09:58:27.986 E/app_process(14643): Could not create image space with image file '/system/framework/boot.art!/apex/com.android.art/etc/boot-image.prof:/system/framework/boot-framework.art!/system/etc/boot-image.prof'. Attempting to fall back to imageless running. Error was: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 09:58:28.198 D/nativeloader(14643): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-23 09:58:28.387 D/ProcessState(14643): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 09:58:28.520 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 09:58:28.684 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 09:58:28.686 W/System  ( 3489): A resource failed to call release. 
+05-23 09:58:28.686 W/System  ( 3489): A resource failed to call release. 
+05-23 09:58:28.686 W/System  ( 3489): A resource failed to call close. 
+05-23 09:58:28.687 W/System  ( 3489): A resource failed to call close. 
+05-23 09:58:28.687 W/System  ( 3489): A resource failed to call release. 
+05-23 09:58:29.629 D/ThemeCompatibility(14643): getVersion(): /data/system/theme_config/theme_compatibility.xml  java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+05-23 09:58:29.713 W/OverlayConfig(14643): 'idmap2 create-multiple' failed: no mutable="false" overlays targeting "android" will be loaded
+05-23 09:58:29.724 V/MediaProvider( 4430): isAppCloneUserPair failed. Users: 0 and 0
+05-23 09:58:29.748 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 09:58:29.754 D/hw-ProcessState(14643): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 09:58:30.851 D/ProcessState(14666): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 09:58:30.878 D/hw-ProcessState(14666): Binder ioctl to enable oneway spam detection failed: Invalid argument

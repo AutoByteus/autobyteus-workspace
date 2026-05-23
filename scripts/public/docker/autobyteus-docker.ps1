@@ -8,7 +8,8 @@ $Script:LauncherLabelKey = 'com.autobyteus.launcher'
 $Script:LauncherLabelValue = 'server-docker'
 $Script:NodeLabelKey = 'com.autobyteus.nodeName'
 $Script:ConfigLabelKey = 'com.autobyteus.configHash'
-$Script:ConfigHashVersion = 'v2'
+$Script:ProfileLabelKey = 'com.autobyteus.profile'
+$Script:ConfigHashVersion = 'v3'
 $Script:NodeNamePrefix = 'autobyteus-server'
 $Script:DefaultNodeName = "$($Script:NodeNamePrefix)-0"
 $Script:DefaultImage = 'autobyteus/autobyteus-server'
@@ -18,6 +19,9 @@ $Script:PublicPowerShellScriptUrl = 'https://raw.githubusercontent.com/AutoByteu
 $Script:WorkspaceContainerPath = '/home/autobyteus/workspace'
 $Script:SharedContainerPath = '/home/autobyteus/shared'
 $Script:TempWorkspaceEnvValue = $Script:WorkspaceContainerPath
+$Script:DefaultProfile = 'standard'
+$Script:MobileSafeProfile = 'mobile-safe'
+$Script:NodeAdminClaimScope = 'phone-access-management'
 
 function Show-AutoByteusDockerHelp {
 @"
@@ -30,6 +34,8 @@ Usage:
 Commands:
   install            Install or replace the local autobyteus-docker CLI
   new-container      Create a new Docker node with automatic indexed name and ports
+  admin-claim show   Show the node-admin claim for a mobile-safe Docker node
+  admin-claim rotate Rotate the node-admin claim and recreate that mobile-safe node
   upgrade --all      Upgrade all managed Docker nodes to the latest image
   destroy --all      Remove all managed Docker nodes, keeping named volumes
   reset              Destroy all managed Docker nodes, then create autobyteus-server-0
@@ -48,6 +54,7 @@ Options:
   --name <name>      Friendly node name for status/logs/urls/stop (default: $Script:DefaultNodeName)
   --tag <tag>        Docker image tag (default: $Script:DefaultTag)
   --image <image>    Docker image repository or full image ref (default: $Script:DefaultImage)
+  --profile <name>   Docker profile for new/reset nodes: standard or mobile-safe (default: standard)
   --all              Required for upgrade/destroy; also applies stop/status/workspace/storage to all managed nodes
   -h, --help         Show this help
 
@@ -124,7 +131,7 @@ function Install-Launcher {
 
   Write-LauncherInfo "Installed AutoByteus Docker launcher: $ps1Path"
   Write-Host "Command shim: $cmdPath"
-  Write-Host "Next commands:`n  autobyteus-docker new-container`n  autobyteus-docker workspace paths`n  autobyteus-docker storage`n  autobyteus-docker urls"
+  Write-Host "Next commands:`n  autobyteus-docker new-container --profile mobile-safe`n  autobyteus-docker admin-claim show --name autobyteus-server-0`n  autobyteus-docker workspace paths`n  autobyteus-docker storage`n  autobyteus-docker urls"
   if (Test-DirectoryOnPath $installDir) { Write-LauncherInfo 'Install directory is already on PATH.'; return }
   Write-Host "PATH guidance:`n  This shell cannot find 'autobyteus-docker' until $installDir is on User PATH.`n  Use direct path now:`n    powershell -NoProfile -ExecutionPolicy Bypass -File `"$ps1Path`" new-container`n  To add this directory to your User PATH without admin rights, run:`n    [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'User') + ';$installDir', 'User')`n  Then open a new PowerShell window."
 }
@@ -164,6 +171,36 @@ function Get-ImageRef([string]$Image, [string]$Tag) {
   $leaf = Split-Path -Leaf $Image
   if ($Image.Contains('@') -or $leaf.Contains(':')) { return $Image }
   "$Image`:$Tag"
+}
+
+function Get-StringSha256([string]$Value) {
+  $sha = [System.Security.Cryptography.SHA256]::Create()
+  try { ($sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($Value)) | ForEach-Object { $_.ToString('x2') }) -join '' } finally { $sha.Dispose() }
+}
+
+function New-Base64UrlRandom([int]$ByteCount) {
+  $bytes = [byte[]]::new($ByteCount)
+  [System.Security.Cryptography.RandomNumberGenerator]::Fill($bytes)
+  [Convert]::ToBase64String($bytes).TrimEnd('=').Replace('+', '-').Replace('/', '_')
+}
+
+function New-NodeAdminClaim {
+  $secret = "nas_$(New-Base64UrlRandom 32)"
+  [pscustomobject]@{
+    claimId = "nac_$(New-Base64UrlRandom 18)"
+    secret = $secret
+    hash = Get-StringSha256 $secret
+    scope = $Script:NodeAdminClaimScope
+  }
+}
+
+function Normalize-Profile([string]$Profile) {
+  if ([string]::IsNullOrWhiteSpace($Profile)) { return $Script:DefaultProfile }
+  switch ($Profile) {
+    { $_ -in @('standard', 'default', 'compat') } { return $Script:DefaultProfile }
+    { $_ -in @('mobile-safe', 'mobile_safe', 'mobile') } { return $Script:MobileSafeProfile }
+    default { Fail-Launcher "Unknown Docker profile: $Profile. Use standard or mobile-safe." }
+  }
 }
 
 function Test-ContainerExists([string]$ContainerName) {
@@ -325,8 +362,40 @@ function Get-NextNodeName {
 
 function Print-Urls($State) {
   $nodeName = [string]$State.nodeName
+  $profile = if ($State.profile) { [string]$State.profile } else { $Script:DefaultProfile }
+  if ($profile -eq $Script:MobileSafeProfile) {
 @"
 AutoByteus Docker node: $nodeName
+Profile: mobile-safe
+Container: $($State.containerName)
+Image: $($State.imageRef)
+Backend: http://localhost:$($State.backendPort)
+GraphQL: http://localhost:$($State.backendPort)/graphql
+noVNC: http://localhost:$($State.noVncPort) (localhost-bound)
+VNC: localhost:$($State.vncPort) (localhost-bound)
+Chrome debug: localhost:$($State.debugPort) (localhost-bound)
+Workspace: private Docker named volume $(Normalize-NodeName $nodeName)-workspace
+Shared host bind mounts: disabled by default in mobile-safe profile
+Private app data: /home/autobyteus/data -> $(Normalize-NodeName $nodeName)-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus, open the node window, then register the node-admin claim.
+"@ | Write-Host
+    if ($State.nodeAdminClaimCreated -eq $true) {
+@"
+
+Mobile-safe node-admin claim (store this locally; it is not inside the container):
+  Claim ID: $($State.nodeAdminClaimId)
+  Claim secret: $($State.nodeAdminClaimSecret)
+  Scope: $($State.nodeAdminClaimScope)
+To show it later: autobyteus-docker admin-claim show --name $nodeName
+"@ | Write-Host
+    } else {
+      Write-Host "Node-admin claim: run `"autobyteus-docker admin-claim show --name $nodeName`" when you need to register this node in the desktop app."
+    }
+    return
+  }
+@"
+AutoByteus Docker node: $nodeName
+Profile: standard
 Container: $($State.containerName)
 Image: $($State.imageRef)
 Backend: http://localhost:$($State.backendPort)
@@ -378,8 +447,10 @@ function Set-StateProperty($State, [string]$Name, $Value) {
 function Get-StateConfigHash($State) {
   $nodeName = [string]$State.nodeName
   $volumePrefix = Normalize-NodeName $nodeName
+  $profile = if ($State.profile) { [string]$State.profile } else { $Script:DefaultProfile }
   $text = @(
     "version=$Script:ConfigHashVersion",
+    "profile=$profile",
     "node=$nodeName",
     "image=$($State.imageRef)",
     "backend=$($State.backendPort)",
@@ -396,16 +467,33 @@ function Get-StateConfigHash($State) {
     "shared_workspace_target=$Script:SharedContainerPath",
     "temp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
     "server_host=http://localhost:$($State.backendPort)",
-    "vnc_hosts=localhost:$($State.noVncPort)"
+    "vnc_hosts=localhost:$($State.noVncPort)",
+    "claim_id=$($State.nodeAdminClaimId)",
+    "claim_hash=$($State.nodeAdminClaimHash)"
   ) -join "`n"
-  $sha = [System.Security.Cryptography.SHA256]::Create()
-  try { ($sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($text)) | ForEach-Object { $_.ToString('x2') }) -join '' } finally { $sha.Dispose() }
+  Get-StringSha256 $text
 }
 
 function Test-StateHasPorts($State) { $State -and $State.backendPort -and $State.vncPort -and $State.noVncPort -and $State.debugPort }
 
-function New-NodeState([string]$NodeName, [string]$ContainerName, [string]$ImageRef, $Ports, [string]$CreatedAt) {
-  [pscustomobject]@{ nodeName = $NodeName; containerName = $ContainerName; backendPort = [int]$Ports.backend; vncPort = [int]$Ports.vnc; noVncPort = [int]$Ports.noVnc; debugPort = [int]$Ports.debug; imageRef = $ImageRef; configHash = ''; createdAt = $CreatedAt; updatedAt = Get-NowUtc }
+function Ensure-MobileSafeClaim($State) {
+  if ($State.profile -ne $Script:MobileSafeProfile) { return }
+  if ($State.nodeAdminClaimId -and $State.nodeAdminClaimSecret -and $State.nodeAdminClaimHash) {
+    if (-not $State.nodeAdminClaimScope) { Set-StateProperty $State 'nodeAdminClaimScope' $Script:NodeAdminClaimScope }
+    return
+  }
+  $claim = New-NodeAdminClaim
+  Set-StateProperty $State 'nodeAdminClaimId' $claim.claimId
+  Set-StateProperty $State 'nodeAdminClaimSecret' $claim.secret
+  Set-StateProperty $State 'nodeAdminClaimHash' $claim.hash
+  Set-StateProperty $State 'nodeAdminClaimScope' $claim.scope
+  Set-StateProperty $State 'nodeAdminClaimCreated' $true
+}
+
+function New-NodeState([string]$NodeName, [string]$ContainerName, [string]$ImageRef, $Ports, [string]$CreatedAt, [string]$Profile) {
+  $state = [pscustomobject]@{ nodeName = $NodeName; containerName = $ContainerName; backendPort = [int]$Ports.backend; vncPort = [int]$Ports.vnc; noVncPort = [int]$Ports.noVnc; debugPort = [int]$Ports.debug; imageRef = $ImageRef; profile = $Profile; configHash = ''; createdAt = $CreatedAt; updatedAt = Get-NowUtc }
+  Ensure-MobileSafeClaim $state
+  $state
 }
 
 function Test-BindFailure([string]$Output) {
@@ -444,10 +532,11 @@ function Get-ContainerStartFailure([string]$ContainerName) {
   "container $ContainerName did not reach running state (status=$($state.Status) running=$($state.Running) exitCode=$($state.ExitCode) error=$($state.Error))"
 }
 
-function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults) {
+function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults, [string]$RequestedProfile = $Script:DefaultProfile) {
   $existingState = Read-NodeState $NodeName
   $containerName = if ($existingState) { $existingState.containerName } else { $NodeName }
   $createdAt = if ($existingState) { $existingState.createdAt } else { Get-NowUtc }
+  $profile = if ($existingState -and $existingState.profile) { Normalize-Profile $existingState.profile } else { Normalize-Profile $RequestedProfile }
 
   if ((Test-ContainerExists $containerName) -and -not (Test-ManagedContainer $containerName)) {
     Fail-Launcher "Container $containerName already exists and is not managed by this launcher. Use --name with another friendly name."
@@ -462,6 +551,9 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
   $state = $existingState
   if ($state) {
     $state.imageRef = $ImageRef
+    Set-StateProperty $state 'profile' $profile
+    Set-StateProperty $state 'nodeAdminClaimCreated' $false
+    Ensure-MobileSafeClaim $state
     Set-StateProperty $state 'configHash' (Get-StateConfigHash $state)
   }
 
@@ -509,48 +601,73 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
     if ($attempt -gt 1 -or -not $state) {
       $ports = Select-Ports $PreferDefaults
       $PreferDefaults = $false
-      $state = New-NodeState $NodeName $containerName $ImageRef $ports $createdAt
+      $state = New-NodeState $NodeName $containerName $ImageRef $ports $createdAt $profile
     } else {
       $state.imageRef = $ImageRef
+      Set-StateProperty $state 'profile' $profile
+      Set-StateProperty $state 'nodeAdminClaimCreated' $false
+      Ensure-MobileSafeClaim $state
     }
     Set-StateProperty $state 'configHash' (Get-StateConfigHash $state)
 
     if (Test-ContainerExists $containerName) { & docker rm -f $containerName *> $null }
     $stateNodeName = [string]$state.nodeName
-    Ensure-SharedWorkspaceDirs $stateNodeName
+    if ($profile -ne $Script:MobileSafeProfile) {
+      Ensure-SharedWorkspaceDirs $stateNodeName
+    }
     $nodeWorkspaceHost = Get-NodeWorkspaceHostPath $stateNodeName
     $sharedWorkspaceHost = Get-SharedWorkspaceHostPath
     $outputFile = [System.IO.Path]::GetTempFileName()
     try {
-      & docker run -d `
-        --name $state.containerName `
-        --restart unless-stopped `
-        --cap-add SYS_ADMIN `
-        --security-opt seccomp=unconfined `
-        --label "$Script:LauncherLabelKey=$Script:LauncherLabelValue" `
-        --label "$Script:NodeLabelKey=$($state.nodeName)" `
-        --label "$Script:ConfigLabelKey=$($state.configHash)" `
-        -p "$($state.backendPort):8000" `
-        -p "$($state.vncPort):5900" `
-        -p "$($state.noVncPort):6080" `
-        -p "$($state.debugPort):9223" `
-        -e AUTOBYTEUS_WORKSPACE_ROOT=/app `
-        -e AUTOBYTEUS_DATA_DIR=/home/autobyteus/data `
-        -e AUTOBYTEUS_BIND_HOST=0.0.0.0 `
-        -e AUTOBYTEUS_SERVER_PORT=8000 `
-        -e "AUTOBYTEUS_SERVER_HOST=http://localhost:$($state.backendPort)" `
-        -e "AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:$($state.noVncPort)" `
-        -e APP_ENV=production `
-        -e DB_TYPE=sqlite `
-        -e LOG_LEVEL=INFO `
-        -e AUTOBYTEUS_SKIP_SYNC=1 `
-        -e "AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue" `
-        -v "$(Normalize-NodeName $stateNodeName)-workspace:/app/autobyteus-server-ts/workspace" `
-        -v "$(Normalize-NodeName $stateNodeName)-data:/home/autobyteus/data" `
-        -v "$(Normalize-NodeName $stateNodeName)-root-home:/root" `
-        --mount "type=bind,source=$nodeWorkspaceHost,target=$Script:WorkspaceContainerPath" `
-        --mount "type=bind,source=$sharedWorkspaceHost,target=$Script:SharedContainerPath" `
-        $state.imageRef *> $outputFile
+      $runArgs = @(
+        'run', '-d',
+        '--name', $state.containerName,
+        '--restart', 'unless-stopped',
+        '--label', "$Script:LauncherLabelKey=$Script:LauncherLabelValue",
+        '--label', "$Script:NodeLabelKey=$($state.nodeName)",
+        '--label', "$Script:ConfigLabelKey=$($state.configHash)",
+        '--label', "$Script:ProfileLabelKey=$profile",
+        '-e', 'AUTOBYTEUS_WORKSPACE_ROOT=/app',
+        '-e', 'AUTOBYTEUS_DATA_DIR=/home/autobyteus/data',
+        '-e', 'AUTOBYTEUS_BIND_HOST=0.0.0.0',
+        '-e', 'AUTOBYTEUS_SERVER_PORT=8000',
+        '-e', "AUTOBYTEUS_SERVER_HOST=http://localhost:$($state.backendPort)",
+        '-e', "AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:$($state.noVncPort)",
+        '-e', 'APP_ENV=production',
+        '-e', 'DB_TYPE=sqlite',
+        '-e', 'LOG_LEVEL=INFO',
+        '-e', 'AUTOBYTEUS_SKIP_SYNC=1',
+        '-e', "AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
+        '-v', "$(Normalize-NodeName $stateNodeName)-workspace:/app/autobyteus-server-ts/workspace",
+        '-v', "$(Normalize-NodeName $stateNodeName)-data:/home/autobyteus/data",
+        '-v', "$(Normalize-NodeName $stateNodeName)-root-home:/root"
+      )
+      if ($profile -eq $Script:MobileSafeProfile) {
+        $runArgs += @(
+          '-p', "127.0.0.1:$($state.backendPort):8000",
+          '-p', "127.0.0.1:$($state.vncPort):5900",
+          '-p', "127.0.0.1:$($state.noVncPort):6080",
+          '-p', "127.0.0.1:$($state.debugPort):9223",
+          '-e', 'AUTOBYTEUS_NODE_PROFILE=mobile-safe',
+          '-e', "AUTOBYTEUS_NODE_ADMIN_CLAIM_ID=$($state.nodeAdminClaimId)",
+          '-e', "AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH=$($state.nodeAdminClaimHash)",
+          '-e', "AUTOBYTEUS_NODE_ADMIN_CLAIM_SCOPE=$($state.nodeAdminClaimScope)"
+        )
+      } else {
+        $runArgs += @(
+          '--cap-add', 'SYS_ADMIN',
+          '--security-opt', 'seccomp=unconfined',
+          '-p', "$($state.backendPort):8000",
+          '-p', "$($state.vncPort):5900",
+          '-p', "$($state.noVncPort):6080",
+          '-p', "$($state.debugPort):9223",
+          '-e', 'AUTOBYTEUS_NODE_PROFILE=standard',
+          '--mount', "type=bind,source=$nodeWorkspaceHost,target=$Script:WorkspaceContainerPath",
+          '--mount', "type=bind,source=$sharedWorkspaceHost,target=$Script:SharedContainerPath"
+        )
+      }
+      $runArgs += $state.imageRef
+      & docker @runArgs *> $outputFile
       $exitCode = $LASTEXITCODE
       $output = Get-Content -Raw -Path $outputFile
     } finally {
@@ -642,20 +759,22 @@ function Upgrade-AllNodes([string]$ImageRef) {
   $imageIds = @(Get-ManagedContainerImageIds)
   foreach ($node in $nodes) {
     $preferDefaults = $node -eq $Script:DefaultNodeName
-    Start-Node $node $ImageRef $preferDefaults
+    $state = Read-NodeState $node
+    $profile = if ($state -and $state.profile) { $state.profile } else { $Script:DefaultProfile }
+    Start-Node $node $ImageRef $preferDefaults $profile
   }
   Remove-UnusedImageIds $imageIds
 }
 
-function New-Container([string]$ImageRef) {
+function New-Container([string]$ImageRef, [string]$Profile) {
   $nodeName = Get-NextNodeName
   $preferDefaults = $nodeName -eq $Script:DefaultNodeName
-  Start-Node $nodeName $ImageRef $preferDefaults
+  Start-Node $nodeName $ImageRef $preferDefaults $Profile
 }
 
-function Reset-Nodes([string]$ImageRef) {
+function Reset-Nodes([string]$ImageRef, [string]$Profile) {
   Destroy-AllNodes
-  Start-Node $Script:DefaultNodeName $ImageRef $true
+  Start-Node $Script:DefaultNodeName $ImageRef $true $Profile
 }
 
 function Get-ImageRefForNodeOrDefault([string]$NodeName, [string]$FallbackImageRef) {
@@ -707,8 +826,14 @@ function Apply-WorkspaceToNode([string]$NodeName, [string]$FallbackImageRef) {
   }
   $nodeImageRef = Get-ImageRefForNodeOrDefault $NodeName $FallbackImageRef
   $preferDefaults = $NodeName -eq $Script:DefaultNodeName
-  Write-LauncherInfo "Applying shared workspace bind mounts to $NodeName. Named volumes will be kept."
-  Start-Node $NodeName $nodeImageRef $preferDefaults
+  $state = Read-NodeState $NodeName
+  $profile = if ($state -and $state.profile) { $state.profile } else { $Script:DefaultProfile }
+  if ($profile -eq $Script:MobileSafeProfile) {
+    Write-LauncherInfo "$NodeName uses the mobile-safe profile; automatic shared host bind mounts stay disabled."
+  } else {
+    Write-LauncherInfo "Applying shared workspace bind mounts to $NodeName. Named volumes will be kept."
+  }
+  Start-Node $NodeName $nodeImageRef $preferDefaults $profile
 }
 
 function Apply-Workspace([string]$FilterName, [bool]$ShowAll, [string]$FallbackImageRef) {
@@ -738,7 +863,8 @@ function Show-Status([string]$FilterName) {
       if (Test-ContainerExists $state.containerName) {
         $status = & docker inspect --format '{{.State.Status}}' $state.containerName 2>$null
       }
-      '{0,-24} {1,-24} {2,-14} http://localhost:{3} ({4})' -f $state.nodeName, $state.containerName, $status, $state.backendPort, $state.imageRef | Write-Host
+      $profile = if ($state.profile) { $state.profile } else { $Script:DefaultProfile }
+      '{0,-24} {1,-24} {2,-14} http://localhost:{3} ({4}, {5})' -f $state.nodeName, $state.containerName, $status, $state.backendPort, $state.imageRef, $profile | Write-Host
       $any = $true
     }
   }
@@ -769,6 +895,38 @@ function Show-Logs([string]$NodeName, [string[]]$ExtraArgs) {
   & docker logs @ExtraArgs $state.containerName
 }
 
+function Show-AdminClaim([string]$NodeName) {
+  $state = Read-NodeState $NodeName
+  if (-not $state) { Fail-Launcher "No launcher state found for $NodeName. Run 'autobyteus-docker new-container --profile mobile-safe' first." }
+  if ($state.profile -ne $Script:MobileSafeProfile) { Fail-Launcher "$NodeName is not a mobile-safe Docker node." }
+  if (-not $state.nodeAdminClaimId -or -not $state.nodeAdminClaimSecret) { Fail-Launcher "No node-admin claim is stored for $NodeName; recreate it with the mobile-safe profile." }
+@"
+AutoByteus mobile-safe node-admin claim: $($state.nodeName)
+Management backend: http://localhost:$($state.backendPort)
+Claim ID: $($state.nodeAdminClaimId)
+Claim secret: $($state.nodeAdminClaimSecret)
+Scope: $($state.nodeAdminClaimScope)
+
+Paste the claim ID and secret into the Docker node window Phone Setup screen.
+"@ | Write-Host
+}
+
+function Rotate-AdminClaim([string]$NodeName, [string]$FallbackImageRef) {
+  $state = Read-NodeState $NodeName
+  if (-not $state) { Fail-Launcher "No launcher state found for $NodeName. Run new-container first." }
+  if ($state.profile -ne $Script:MobileSafeProfile) { Fail-Launcher "$NodeName is not a mobile-safe Docker node." }
+  $claim = New-NodeAdminClaim
+  Set-StateProperty $state 'nodeAdminClaimId' $claim.claimId
+  Set-StateProperty $state 'nodeAdminClaimSecret' $claim.secret
+  Set-StateProperty $state 'nodeAdminClaimHash' $claim.hash
+  Set-StateProperty $state 'nodeAdminClaimScope' $claim.scope
+  Set-StateProperty $state 'nodeAdminClaimCreated' $true
+  Save-NodeState $state
+  if (Test-ContainerExists $state.containerName) { & docker rm -f $state.containerName *> $null }
+  $imageRef = if ($state.imageRef) { $state.imageRef } else { $FallbackImageRef }
+  Start-Node $NodeName $imageRef ($NodeName -eq $Script:DefaultNodeName) $Script:MobileSafeProfile
+}
+
 function Resolve-TargetName([string]$ExplicitName) {
   if ($ExplicitName) { return Normalize-NodeName $ExplicitName }
   $Script:DefaultNodeName
@@ -780,12 +938,14 @@ function Invoke-AutoByteusDocker {
   if ($cmd -in @('help', '-h', '--help')) { Show-AutoByteusDockerHelp; return }
 
   $stopAll = $false; $nameArg = ''; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $extra = @()
+  $profile = $Script:DefaultProfile
   for ($i = 1; $i -lt $CommandArgs.Count; $i += 1) {
     switch ($CommandArgs[$i]) {
       '--all' { $stopAll = $true }
       '--name' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--name requires a value' }; $nameArg = $CommandArgs[$i] }
       '--tag' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--tag requires a value' }; $tag = $CommandArgs[$i] }
       '--image' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--image requires a value' }; $image = $CommandArgs[$i] }
+      '--profile' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--profile requires a value' }; $profile = Normalize-Profile $CommandArgs[$i] }
       { $_ -in @('-h', '--help') } { Show-AutoByteusDockerHelp; return }
       default {
         if (-not $nameArg -and $cmd -in @('urls', 'ports', 'status', 'ps', 'stop', 'logs')) { $nameArg = $CommandArgs[$i] }
@@ -802,7 +962,7 @@ function Invoke-AutoByteusDocker {
     }
   }
 
-  if ($cmd -notin @('new-container', 'upgrade', 'destroy', 'reset', 'workspace', 'storage', 'urls', 'ports', 'status', 'ps', 'stop', 'logs')) {
+  if ($cmd -notin @('new-container', 'upgrade', 'destroy', 'reset', 'workspace', 'storage', 'urls', 'ports', 'status', 'ps', 'stop', 'logs', 'admin-claim')) {
     Show-AutoByteusDockerHelp
     exit 1
   }
@@ -817,7 +977,7 @@ function Invoke-AutoByteusDocker {
       if ($extra.Count -gt 0) { Fail-Launcher "Unknown new-container option(s): $($extra -join ' ')" }
       if ($stopAll) { Fail-Launcher 'new-container creates one node and does not accept --all.' }
       if ($nameArg) { Fail-Launcher 'new-container always chooses the next indexed name; do not pass --name.' }
-      New-Container $imageRef
+      New-Container $imageRef $profile
     }
     'upgrade' {
       if ($extra.Count -gt 0) { Fail-Launcher "Unknown upgrade option(s): $($extra -join ' ')" }
@@ -835,7 +995,13 @@ function Invoke-AutoByteusDocker {
       if ($extra.Count -gt 0) { Fail-Launcher "Unknown reset option(s): $($extra -join ' ')" }
       if ($stopAll) { Fail-Launcher 'reset already applies to all managed nodes and does not accept --all.' }
       if ($nameArg) { Fail-Launcher "reset always recreates $Script:DefaultNodeName; do not pass --name." }
-      Reset-Nodes $imageRef
+      Reset-Nodes $imageRef $profile
+    }
+    'admin-claim' {
+      $adminAction = if ($extra.Count -gt 0) { $extra[0] } else { 'show' }
+      if ($adminAction -notin @('show', 'rotate')) { Fail-Launcher "Unknown admin-claim subcommand: $adminAction. Use show or rotate." }
+      if ($extra.Count -gt 1) { Fail-Launcher "Unknown admin-claim option(s): $($extra[1..($extra.Count - 1)] -join ' ')" }
+      if ($adminAction -eq 'show') { Show-AdminClaim $nodeName } else { Rotate-AdminClaim $nodeName $imageRef }
     }
     'workspace' {
       $workspaceAction = if ($extra.Count -gt 0) { $extra[0] } else { 'paths' }

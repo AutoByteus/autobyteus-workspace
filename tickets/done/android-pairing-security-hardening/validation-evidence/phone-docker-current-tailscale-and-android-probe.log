@@ -1,0 +1,24 @@
+== adb devices ==
+List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:11
+
+== Tailscale Serve before switch ==
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:29695
+
+== Switch Tailscale Serve to current Docker backend ==
+Available within your tailnet:
+
+https://normys-macbook-pro.tail0347f8.ts.net/
+|-- proxy http://127.0.0.1:53245
+
+Serve started and running in the background.
+To disable the proxy, run: tailscale serve --https=443 off
+== Tailscale Serve after switch ==
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:53245
+
+== Host private HTTPS status ==
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_W6jGaj5YVX0oiwBapX9FmC_Ssz5UGxj9","serverName":"AutoByteus Desktop"}
+== Android Tailscale HTTPS status attempt ==
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_W6jGaj5YVX0oiwBapX9FmC_Ssz5UGxj9","serverName":"AutoByteus Desktop"}

@@ -1,0 +1,12 @@
+## adb devices -l
+List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:11
+
+## adb shell getprop summary
+state=device
+serial=dfd6c5c0
+Xiaomi
+2109119DG
+12
+31
+arm64-v8a

@@ -1,0 +1,140 @@
+05-23 10:02:48.049 D/ProcessState(15505): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:48.054 D/MIUIInput( 1828): [MotionEvent] publisher action=0x0, 322857957, channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-23 10:02:48.058 D/MIUIInput( 1828): [MotionEvent] publisher action=0x1, 322857957, channel 'bd864a5 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity (server)'
+05-23 10:02:48.184 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:02:48.184 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:02:49.988 D/ProcessState(15514): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:50.461 W/com.xingin.xhs(15514): Failed to find entry 'classes.dex': Entry not found
+05-23 10:02:50.463 W/com.xingin.xhs(15514): Failed to find entry 'classes.dex': Entry not found
+05-23 10:02:50.747 E/DynamiteModule(15514): Failed to load module descriptor class: No field MODULE_ID in class Lcom/google/android/gms/dynamite/descriptors/com/google/android/gms/measurement/dynamite/ModuleDescriptor; (declaration of 'com.google.android.gms.dynamite.descriptors.com.google.android.gms.measurement.dynamite.ModuleDescriptor' appears in /data/app/~~fynmWDm0igarPHzWXQGjYg==/com.xingin.xhs-dZXJFPzfc6K9n-7k1e_C_A==/base.apk!classes2.dex)
+05-23 10:02:50.893 E/DynamiteModule(15514): Failed to load module descriptor class: No field MODULE_ID in class Lcom/google/android/gms/dynamite/descriptors/com/google/android/gms/measurement/dynamite/ModuleDescriptor; (declaration of 'com.google.android.gms.dynamite.descriptors.com.google.android.gms.measurement.dynamite.ModuleDescriptor' appears in /data/app/~~fynmWDm0igarPHzWXQGjYg==/com.xingin.xhs-dZXJFPzfc6K9n-7k1e_C_A==/base.apk!classes2.dex)
+05-23 10:02:51.046 I/FA      (15514): To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+05-23 10:02:51.046 I/FA      (15514): To enable faster debug mode event logging run:
+05-23 10:02:51.222 I/filehook(15514): >>>>> hooked. stub: 7970c25060, status: 0, caller_path_name: /system/lib64/libandroid_runtime.so, sym_name: open, new_func: 78ea8d4068, prev_func: 7a1cd01598, arg: 0
+05-23 10:02:51.232 I/filehook(15514): >>>>> hooked. stub: 7970c25060, status: 0, caller_path_name: /apex/com.android.runtime/lib64/bionic/libc.so, sym_name: open, new_func: 78ea8d4068, prev_func: 7a1cd01598, arg: 0
+05-23 10:02:51.399 W/UnsafeUtil(15514): platform method missing - proto runtime falling back to safer methods: java.lang.NoSuchMethodException: sun.misc.Unsafe.copyMemory [class java.lang.Object, long, class java.lang.Object, long, long]
+05-23 10:02:51.537 D/nativeloader(15514): Load libmsaoaidsec.so using class loader ns clns-5 (caller=/data/app/~~fynmWDm0igarPHzWXQGjYg==/com.xingin.xhs-dZXJFPzfc6K9n-7k1e_C_A==/base.apk!classes17.dex): dlopen failed: library "libmsaoaidsec.so" not found
+05-23 10:02:51.600 W/redcache(15514): [netcache] :httpdns run thread 0x788f125880 begin!
+05-23 10:02:51.603 W/Looper  (15514): PerfMonitor longMsg : seq=2 plan=10:02:50.008 late=6ms wall=1588ms running=602ms runnable=337ms io=369ms h=android.app.ActivityThread$H w=110 procState=-1
+05-23 10:02:51.659 W/Looper  (15514): PerfMonitor doFrame : time=0ms vsyncFrame=0 latency=534ms procState=-1 historyMsgCount=14 (msgIndex=1 wall=1588ms seq=2 running=602ms runnable=337ms io=369ms late=6ms h=android.app.ActivityThread$H w=110)
+05-23 10:02:51.678 I/filehook(15514): >>>>> hooked. stub: 7970c25140, status: 0, caller_path_name: /system/lib64/libandroid_runtime.so, sym_name: __open_2, new_func: 78ea8d4150, prev_func: 7a1cd0173c, arg: 0
+05-23 10:02:51.679 I/filehook(15514): >>>>> hooked. stub: 7970c25140, status: 0, caller_path_name: /apex/com.android.runtime/lib64/bionic/libc.so, sym_name: __open_2, new_func: 78ea8d4150, prev_func: 7a1cd0173c, arg: 0
+05-23 10:02:51.689 I/filehook(15514): >>>>> hooked. stub: 7970c25140, status: 0, caller_path_name: /system/lib64/libmiui_runtime.so, sym_name: __open_2, new_func: 78ea8d4150, prev_func: 7a1cd0173c, arg: 0
+05-23 10:02:51.695 I/filehook(15514): >>>>> hooked. stub: 7970c25140, status: 0, caller_path_name: /system/lib64/libwebviewchromium_loader.so, sym_name: __open_2, new_func: 78ea8d4150, prev_func: 7a1cd0173c, arg: 0
+05-23 10:02:51.723 I/filehook(15514): >>>>> hooked. stub: 7970c25300, status: 0, caller_path_name: /apex/com.android.runtime/lib64/bionic/libc.so, sym_name: mkdir, new_func: 78ea8d41bc, prev_func: 7a1cd00b9c, arg: 0
+05-23 10:02:51.992 W/s0      (15514): platform method missing - proto runtime falling back to safer methods: java.lang.NoSuchMethodException: sun.misc.Unsafe.copyMemory [class java.lang.Object, long, class java.lang.Object, long, long]
+05-23 10:02:52.072 D/hw-ProcessState(15514): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:52.299 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:02:52.299 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:02:52.403 E/WVCdm   (  990): Failed to close cdm. status 12
+05-23 10:02:52.665 E/FSA2_CpgSessionManager(10808): Failed to initialize schema
+05-23 10:02:52.943 I/ModelProfile(15514): CHECK_GL_ERROR Init glGetError = 0, line = 152, 
+05-23 10:02:52.943 I/ModelProfile(15514): CHECK_GL_ERROR Init glGetError = 0, line = 171, 
+05-23 10:02:53.077 I/CCodecConfig( 1816): query failed after returning 7 values (BAD_INDEX)
+05-23 10:02:53.087 E/Codec2-ComponentInterface( 1725): We have a failed config
+05-23 10:02:53.089 D/CCodecConfig( 1816): config failed => CORRUPTED
+05-23 10:02:53.090 I/CCodecConfig( 1816): query failed after returning 7 values (BAD_INDEX)
+05-23 10:02:53.095 E/Codec2-ComponentInterface( 1725): We have a failed config
+05-23 10:02:53.137 D/audio_hw_primary(  978): adev_get_parameters:audio_karaoke_running
+05-23 10:02:53.137 D/audio_hw_primary(  978): get para : audio_karaoke_running = false
+05-23 10:02:53.137 D/soundtrigger(  978): audio_extn_sound_trigger_get_parameters input string<audio_karaoke_running=>
+05-23 10:02:53.137 D/soundtrigger(  978): extract_sm_handle input string <audio_karaoke_running=> param string <audio_karaoke_running=>
+05-23 10:02:53.137 D/audio_hw_extn(  978): audio_extn_get_parameters: returns audio_karaoke_running=false
+05-23 10:02:53.137 V/msm8974_platform(  978): platform_get_parameters: exit: returns - audio_karaoke_running=false
+05-23 10:02:53.137 D/audio_hw_primary(  978): adev_get_parameters: exit: returns - audio_karaoke_running=false
+05-23 10:02:53.181 E/volume_listener(  978): check_and_set_gain_dep_cal: Failed to set gain dep cal level
+05-23 10:02:53.184 E/audioserver( 1182): open /proc/1816/cmdline error
+05-23 10:02:53.186 D/ACDB-LOADER(  978): Error: ACDB_CMD_GET_PERSISTENT_AUDPROC_INSTANCE_COMMON_TABLE_SIZE returned -18
+05-23 10:02:53.186 D/ACDB-LOADER(  978): Error: Invalid Audproc persist size = -18
+05-23 10:02:53.193 D/android.hardware.audio.service(  978): Failed to fetch the lookup information of the device 0000271B 
+05-23 10:02:53.193 D/ACDB-LOADER(  978): Error: ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE_SIZE Returned = -19
+05-23 10:02:53.193 D/android.hardware.audio.service(  978): Failed to fetch the lookup information of the device 0000271B 
+05-23 10:02:53.193 D/ACDB-LOADER(  978): Error: ACDB AudProc vol returned = -19
+05-23 10:02:53.197 E/ActivityThread(15514): Failed to find provider info for com.vivo.push.sdk.service.SystemPushConfig
+05-23 10:02:53.197 E/ActivityThread(15514): Failed to find provider info for com.vivo.push.sdk.service.SystemPushConfig
+05-23 10:02:53.239 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-23 10:02:53.239 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-23 10:02:53.239 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-23 10:02:53.239 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-23 10:02:53.239 E/ACDB-LOADER(  978): [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+05-23 10:02:53.239 D/audio_hw_primary(  978): out_write: retry previous failed cal level set
+05-23 10:02:53.239 D/android.hardware.audio.service(  978): Failed to fetch the lookup information of the device 0000271B 
+05-23 10:02:53.239 D/ACDB-LOADER(  978): Error: ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE_SIZE Returned = -19
+05-23 10:02:53.239 D/android.hardware.audio.service(  978): Failed to fetch the lookup information of the device 0000271B 
+05-23 10:02:53.239 D/ACDB-LOADER(  978): Error: ACDB AudProc vol returned = -19
+05-23 10:02:53.696 E/xysponge(15514): ThrowOutOfMemoryError hook 成功
+05-23 10:02:53.998 E/audioserver( 1182): open /proc/1816/cmdline error
+05-23 10:02:54.330 D/ProcessState(15990): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:54.542 D/android.hardware.audio.service(  978): Failed to fetch the lookup information of the device 0000271B 
+05-23 10:02:54.542 D/ACDB-LOADER(  978): Error: ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE_SIZE Returned = -19
+05-23 10:02:54.542 D/android.hardware.audio.service(  978): Failed to fetch the lookup information of the device 0000271B 
+05-23 10:02:54.542 D/ACDB-LOADER(  978): Error: ACDB AudProc vol returned = -19
+05-23 10:02:54.558 W/AMessage( 1816): failed to post message as target looper for handler 0 is gone.
+05-23 10:02:54.748 D/AndroidRuntime(15991): >>>>>> START com.android.internal.os.RuntimeInit uid 10418 <<<<<<
+05-23 10:02:54.769 I/AndroidRuntime(15991): Using default boot image
+05-23 10:02:54.769 I/AndroidRuntime(15991): Leaving lock profiling enabled
+05-23 10:02:54.788 E/app_process64(15991): Error reading named image component header for /system/framework/boot.art, error: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 10:02:54.788 E/app_process64(15991): Could not create image space with image file '/system/framework/boot.art!/apex/com.android.art/etc/boot-image.prof:/system/framework/boot-framework.art!/system/etc/boot-image.prof'. Attempting to fall back to imageless running. Error was: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 10:02:54.934 W/System  (15514): A resource failed to call ZipFile.close. 
+05-23 10:02:54.935 W/System  (15514): A resource failed to call ZipFile.close. 
+05-23 10:02:54.935 W/System  (15514): A resource failed to call ZipFile.close. 
+05-23 10:02:55.116 D/AndroidRuntime(16002): >>>>>> START com.android.internal.os.RuntimeInit uid 10418 <<<<<<
+05-23 10:02:55.145 I/AndroidRuntime(16002): Using default boot image
+05-23 10:02:55.145 I/AndroidRuntime(16002): Leaving lock profiling enabled
+05-23 10:02:55.164 E/app_process64(16002): Error reading named image component header for /system/framework/boot.art, error: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 10:02:55.164 E/app_process64(16002): Could not create image space with image file '/system/framework/boot.art!/apex/com.android.art/etc/boot-image.prof:/system/framework/boot-framework.art!/system/etc/boot-image.prof'. Attempting to fall back to imageless running. Error was: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 10:02:56.110 D/nativeloader(15991): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-23 10:02:56.170 D/nativeloader(16002): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-23 10:02:56.949 D/ProcessState(16002): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:56.949 D/AndroidRuntime(16002): Calling main entry com/xingin/tiny/daemon/e
+05-23 10:02:56.957 D/ProcessState(15991): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:56.957 D/AndroidRuntime(15991): Calling main entry com/xingin/tiny/daemon/e
+05-23 10:02:56.985 D/nativeloader(16002): InitDefaultPublicLibraries for_preload=0: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-23 10:02:56.992 D/nativeloader(15991): InitDefaultPublicLibraries for_preload=0: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-23 10:02:57.087 I/AssetManagerImpl (16002): Load libmiui_runtime
+05-23 10:02:57.089 D/nativeloader(16002): Load libmiui_runtime.so using system ns (caller=/system/framework/miui-framework.jar): ok
+05-23 10:02:57.096 I/MessageMonitor(16002): Load libmiui_runtime
+05-23 10:02:57.114 D/ProcessState(16046): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:57.468 D/ThemeCompatibility(16002): getVersion(): /data/system/theme_config/theme_compatibility.xml  java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+05-23 10:02:57.612 W/OverlayConfig(16002): 'idmap2 create-multiple' failed: no mutable="false" overlays targeting "android" will be loaded
+05-23 10:02:57.614 W/AssetManagerImpl (16002): 'idmap2 --scan' failed: no static="true" overlays targeting "miui" will be loaded
+05-23 10:02:58.183 D/ProcessState(16069): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:58.184 D/AndroidRuntime(16064): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+05-23 10:02:58.187 I/AndroidRuntime(16064): Using default boot image
+05-23 10:02:58.187 I/AndroidRuntime(16064): Leaving lock profiling enabled
+05-23 10:02:58.190 E/app_process(16064): Error reading named image component header for /system/framework/boot.art, error: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 10:02:58.190 E/app_process(16064): Could not create image space with image file '/system/framework/boot.art!/apex/com.android.art/etc/boot-image.prof:/system/framework/boot-framework.art!/system/etc/boot-image.prof'. Attempting to fall back to imageless running. Error was: Unable to open file "/system/framework/arm64/boot.art" for reading image header
+05-23 10:02:58.407 D/nativeloader(16064): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so:liblistenjni.qti.so:liblistensoundmodel2.qti.so
+05-23 10:02:58.613 D/ProcessState(16064): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:58.613 D/AndroidRuntime(16064): Calling main entry com.android.commands.uiautomator.Launcher
+05-23 10:02:58.623 D/ProcessState(16086): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:58.633 I/AssetManagerImpl (16064): Load libmiui_runtime
+05-23 10:02:58.635 D/nativeloader(16064): Load libmiui_runtime.so using system ns (caller=/system/framework/miui-framework.jar): ok
+05-23 10:02:58.641 I/MessageMonitor(16064): Load libmiui_runtime
+05-23 10:02:58.716 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:02:58.716 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:02:59.796 D/ThemeCompatibility(16064): getVersion(): /data/system/theme_config/theme_compatibility.xml  java.io.FileNotFoundException: /data/system/theme_config/theme_compatibility.xml: open failed: ENOENT (No such file or directory)
+05-23 10:02:59.859 W/OverlayConfig(16064): 'idmap2 create-multiple' failed: no mutable="false" overlays targeting "android" will be loaded
+05-23 10:02:59.860 W/AssetManagerImpl (16064): 'idmap2 --scan' failed: no static="true" overlays targeting "miui" will be loaded
+05-23 10:02:59.869 V/MediaProvider( 4430): isAppCloneUserPair failed. Users: 0 and 0
+05-23 10:02:59.902 D/hw-ProcessState(16064): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:02:59.903 D/AndroidRuntime(16064): Shutting down VM
+05-23 10:02:59.913 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:02:59.913 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:00.028 E/ANDR-PERF-OPTSHANDLER( 1122): Can't process request: noroot_thread is not running
+05-23 10:03:00.028 E/ANDR-PERF-RESOURCEQS( 1122): Failed to apply optimization [7, 3]
+05-23 10:03:01.071 D/ProcessState(16148): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:03:01.089 D/hw-ProcessState(16148): Binder ioctl to enable oneway spam detection failed: Invalid argument
+05-23 10:03:01.203 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.209 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.213 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.216 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.268 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.271 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.272 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.323 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.325 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.328 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.330 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.332 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.
+05-23 10:03:01.382 I/CCTUploader(12598): Failed to get auth token for log sources [[DRIVE]] because the account doesn't exist on the device.

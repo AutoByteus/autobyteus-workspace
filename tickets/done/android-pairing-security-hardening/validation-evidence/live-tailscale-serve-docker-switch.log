@@ -1,0 +1,15 @@
+== temporarily point private Tailscale HTTPS serve to current Docker backend ==
+target=http://127.0.0.1:51428
+Available within your tailnet:
+
+https://normys-macbook-pro.tail0347f8.ts.net/
+|-- proxy http://127.0.0.1:51428
+
+Serve started and running in the background.
+To disable the proxy, run: tailscale serve --https=443 off
+== serve status after switch ==
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:51428
+
+== host HTTPS status through Tailscale serve ==
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_vjovB7NEtfkUF22ziCmQAd1Yrb4FrxTj","serverName":"AutoByteus Desktop"}

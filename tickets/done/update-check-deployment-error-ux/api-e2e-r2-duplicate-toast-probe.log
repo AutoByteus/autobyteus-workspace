@@ -1,0 +1,25 @@
+# API/E2E round 2 duplicate provider event renderer probe
+Date: 2026-05-23T05:49:16Z
+
+> autobyteus@1.3.27 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run tmp-api-e2e-r2-duplicate-toast-probe.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+
+stderr | tmp-api-e2e-r2-duplicate-toast-probe.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tmp-api-e2e-r2-duplicate-toast-probe.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tmp-api-e2e-r2-duplicate-toast-probe.spec.ts (1 test) 2ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  07:49:18
+   Duration  4.91s (transform 2.74s, setup 4.27s, collect 28ms, tests 2ms, environment 159ms, prepare 140ms)
+

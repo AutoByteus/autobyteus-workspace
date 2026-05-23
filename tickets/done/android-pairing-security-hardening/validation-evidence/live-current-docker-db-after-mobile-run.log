@@ -1,0 +1,8 @@
+== Docker node database tables after mobile-created run ==
+_prisma_migrations          channel_delivery_events   
+agent_artifacts             channel_message_receipts  
+agent_definitions           mcp_server_configurations 
+agent_prompt_mappings       prompts                   
+agent_team_definitions      sync_tombstones           
+app_data_migration_records  token_usage_records       
+== likely run tables schema/counts ==
