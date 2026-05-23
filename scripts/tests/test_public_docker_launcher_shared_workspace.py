@@ -42,6 +42,56 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("IMAGE_REF=autobyteus/test:v1", state_text)
             self.assertRegex(state_text, r"CONFIG_HASH=[0-9a-f]{64}")
 
+    def test_mobile_safe_profile_omits_privileged_mounts_and_injects_claim_hash_only(self) -> None:
+        with fake_docker_environment() as env:
+            result = run_launcher(
+                env,
+                "new-container",
+                "--profile",
+                "mobile-safe",
+                "--image",
+                "autobyteus/test",
+                "--tag",
+                "v1",
+            )
+
+            self.assertIn("Profile: mobile-safe", result.stdout)
+            self.assertIn("Shared host bind mounts: disabled by default in mobile-safe profile", result.stdout)
+            self.assertIn("Mobile-safe node-admin claim", result.stdout)
+
+            run_args = read_last_run_args(env)
+            self.assertNotIn("--cap-add", run_args)
+            self.assertNotIn("SYS_ADMIN", run_args)
+            self.assertNotIn("--security-opt", run_args)
+            self.assertNotIn("seccomp=unconfined", run_args)
+            self.assertEqual(
+                "",
+                any_arg_starting_with(run_args, "type=bind,source="),
+                "mobile-safe profile must not add automatic host bind mounts",
+            )
+            self.assertTrue(has_localhost_port_mapping(run_args, "8000"), run_args)
+            self.assertTrue(has_localhost_port_mapping(run_args, "5900"), run_args)
+            self.assertTrue(has_localhost_port_mapping(run_args, "6080"), run_args)
+            self.assertTrue(has_localhost_port_mapping(run_args, "9223"), run_args)
+            self.assertIn("AUTOBYTEUS_NODE_PROFILE=mobile-safe", run_args)
+            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_SCOPE=phone-access-management", run_args)
+
+            state_file = Path(env["AUTOBYTEUS_DOCKER_STATE_DIR"]) / "nodes" / "autobyteus-server-0.env"
+            state_text = state_file.read_text(encoding="utf-8")
+            self.assertIn("PROFILE=mobile-safe", state_text)
+            self.assertRegex(state_text, r"NODE_ADMIN_CLAIM_ID=nac_[A-Za-z0-9_-]+")
+            self.assertRegex(state_text, r"NODE_ADMIN_CLAIM_SECRET=nas_[A-Za-z0-9_-]+")
+            self.assertRegex(state_text, r"NODE_ADMIN_CLAIM_HASH=[0-9a-f]{64}")
+            self.assertIn("NODE_ADMIN_CLAIM_SCOPE_VALUE=phone-access-management", state_text)
+
+            claim_id = read_state_value(state_text, "NODE_ADMIN_CLAIM_ID")
+            claim_secret = read_state_value(state_text, "NODE_ADMIN_CLAIM_SECRET")
+            claim_hash = read_state_value(state_text, "NODE_ADMIN_CLAIM_HASH")
+            self.assertIn(f"AUTOBYTEUS_NODE_ADMIN_CLAIM_ID={claim_id}", run_args)
+            self.assertIn(f"AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH={claim_hash}", run_args)
+            self.assertNotIn(claim_secret, run_args)
+            self.assertNotIn(f"AUTOBYTEUS_NODE_ADMIN_CLAIM_SECRET={claim_secret}", run_args)
+
     def test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping(self) -> None:
         with fake_docker_environment() as env:
             shared_root = Path(env["AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR"])
@@ -91,7 +141,14 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
         powershell_text = POWERSHELL_LAUNCHER.read_text(encoding="utf-8")
 
         for text in (bash_text, powershell_text):
-            self.assertIn("v2", text)
+            self.assertIn("v3", text)
+            self.assertIn("mobile-safe", text)
+            self.assertIn("phone-access-management", text)
+            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_ID", text)
+            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH", text)
+            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_SCOPE", text)
+            self.assertNotIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_SECRET=", text)
+            self.assertIn("127.0.0.1:", text)
             self.assertIn("/home/autobyteus/workspace", text)
             self.assertIn("/home/autobyteus/shared", text)
             self.assertIn("AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR", text)
@@ -100,6 +157,30 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("workspace apply", text)
             self.assertIn("storage", text)
             self.assertIn("type=bind,source=", text)
+            self.assertIn("admin-claim show", text)
+            self.assertIn("admin-claim rotate", text)
+
+    def test_mobile_safe_run_arg_contract_is_encoded_in_both_public_launchers(self) -> None:
+        bash_block = extract_mobile_safe_run_block(
+            BASH_LAUNCHER.read_text(encoding="utf-8"),
+            'if [[ "$profile" == "$MOBILE_SAFE_PROFILE" ]]; then',
+            'else',
+        )
+        powershell_block = extract_mobile_safe_run_block(
+            POWERSHELL_LAUNCHER.read_text(encoding="utf-8"),
+            'if ($profile -eq $Script:MobileSafeProfile)',
+            '} else {',
+        )
+
+        for block in (bash_block, powershell_block):
+            self.assertNotIn("SYS_ADMIN", block)
+            self.assertNotIn("seccomp=unconfined", block)
+            self.assertNotIn("type=bind,source=", block)
+            self.assertIn("127.0.0.1:", block)
+            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_ID", block)
+            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH", block)
+            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_SCOPE", block)
+            self.assertNotIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_SECRET", block)
 
     def test_powershell_launcher_parses_when_pwsh_is_available(self) -> None:
         if not shutil.which("pwsh"):
@@ -116,6 +197,37 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             text=True,
             capture_output=True,
         )
+
+
+def any_arg_starting_with(args: list[str], prefix: str) -> str:
+    for arg in args:
+        if arg.startswith(prefix):
+            return arg
+    return ""
+
+
+def read_state_value(state_text: str, key: str) -> str:
+    prefix = f"{key}="
+    for line in state_text.splitlines():
+        if line.startswith(prefix):
+            return line[len(prefix):]
+    raise AssertionError(f"state key not found: {key}")
+
+
+def has_localhost_port_mapping(args: list[str], container_port: str) -> bool:
+    suffix = f":{container_port}"
+    return any(arg.startswith("127.0.0.1:") and arg.endswith(suffix) for arg in args)
+
+
+def extract_mobile_safe_run_block(text: str, branch_marker: str, else_marker: str) -> str:
+    claim_hash_index = text.index("AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH")
+    start = text.rfind(branch_marker, 0, claim_hash_index)
+    if start < 0:
+        raise AssertionError(f"mobile-safe run branch not found: {branch_marker}")
+    end = text.find(else_marker, claim_hash_index)
+    if end < 0:
+        raise AssertionError(f"mobile-safe run branch else marker not found: {else_marker}")
+    return text[start:end]
 
 
 def run_launcher(env: dict[str, str], *args: str) -> subprocess.CompletedProcess[str]:

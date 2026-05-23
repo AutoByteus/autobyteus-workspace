@@ -175,7 +175,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(wrapper.text()).toContain('phone-first mobile work shell');
   });
 
-  it('opens a recent run row into one mobile work shell with Chat/Runs/Files/Tools/Activity bottom navigation', async () => {
+  it('opens a recent run row into one mobile work shell with Chat/Runs/Files/Activity bottom navigation', async () => {
     const wrapper = mountShell();
     await nextTick();
     await wrapper.get('[data-testid="mobile-readable-work-row"]').trigger('click');
@@ -194,8 +194,9 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(wrapper.text()).toContain('Chat');
     expect(wrapper.text()).toContain('Runs');
     expect(wrapper.text()).toContain('Files');
-    expect(wrapper.text()).toContain('Tools');
     expect(wrapper.text()).toContain('Activity');
+    expect(wrapper.find('[data-testid="mobile-tab-tools"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Terminal and VNC');
     expect(wrapper.get('[data-testid="mobile-work-header"]').text()).not.toContain('Agent run');
     expect(wrapper.get('[data-testid="mobile-work-header"]').text()).not.toContain('Team run');
     expect(wrapper.text()).not.toContain('Running List');
@@ -312,7 +313,6 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
       'MobileChat.vue',
       'MobileRuns.vue',
       'MobileFiles.vue',
-      'MobileTools.vue',
       'MobileActivity.vue',
       'MobileReadableWorkRow.vue',
       'MobileRunSetup.vue',
@@ -342,7 +342,6 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     const activitySource = readFileSync(resolve(mobileDir, 'MobileActivity.vue'), 'utf-8');
     const activityDigestSource = readFileSync(resolve(mobileDir, 'MobileActivityDigest.vue'), 'utf-8');
     const chatSource = readFileSync(resolve(mobileDir, 'MobileChat.vue'), 'utf-8');
-    const toolsSource = readFileSync(resolve(mobileDir, 'MobileTools.vue'), 'utf-8');
 
     expect(runsSource).toContain('MobileRunSetup');
     expect(runSetupSource).toContain('mobile-run-agent-select');
@@ -361,9 +360,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(activitySource).toContain('MobileActivityDigest');
     expect(activityDigestSource).toContain('MobileTeamMessages');
     expect(activityDigestSource).toContain('MobileToolActivityList');
-    expect(toolsSource).toContain('Terminal');
-    expect(toolsSource).toContain('VncViewer');
-    expect(toolsSource).not.toContain('RightSideTabs');
+    expect(readFileSync(resolve(mobileDir, 'MobileWorkShell.vue'), 'utf-8')).not.toContain('MobileTools');
     expect(`${runsSource}\n${filesSource}\n${activitySource}`).not.toContain('Full content loads through authorized file APIs when this file is opened from the mobile MVP.');
     expect(`${runsSource}\n${filesSource}\n${activitySource}`).not.toContain('Configuration is shown only after this explicit start action.');
   });

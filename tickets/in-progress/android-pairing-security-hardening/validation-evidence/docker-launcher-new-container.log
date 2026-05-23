@@ -1,0 +1,95 @@
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+bc537942b222: Pulling fs layer
+6019c6b6bc0a: Pulling fs layer
+5e62c63c0c7f: Pulling fs layer
+4c439e750b7b: Pulling fs layer
+0f9a23282cec: Pulling fs layer
+7f8e3c6325e2: Pulling fs layer
+ceb4f9b28f68: Pulling fs layer
+9c2986360d50: Pulling fs layer
+73e9df86e57b: Pulling fs layer
+d50b198e866d: Pulling fs layer
+fa9307b95ffc: Pulling fs layer
+b94663c065e1: Pulling fs layer
+88ec5d1c211c: Pulling fs layer
+ddd831dde3de: Pulling fs layer
+6d77020fb9ac: Pulling fs layer
+35c12db4da4b: Pulling fs layer
+c66bb548500f: Pulling fs layer
+6880e0539e9d: Pulling fs layer
+3412bb019f02: Pulling fs layer
+beb7fe93620e: Pulling fs layer
+797a834fccaf: Pulling fs layer
+5e62c63c0c7f: Download complete
+5e62c63c0c7f: Pull complete
+bc537942b222: Download complete
+6d77020fb9ac: Download complete
+9c2986360d50: Download complete
+ddd831dde3de: Download complete
+6880e0539e9d: Download complete
+beb7fe93620e: Download complete
+7f8e3c6325e2: Download complete
+35c12db4da4b: Download complete
+c66bb548500f: Download complete
+3412bb019f02: Download complete
+797a834fccaf: Download complete
+6019c6b6bc0a: Download complete
+73e9df86e57b: Download complete
+d50b198e866d: Download complete
+fa9307b95ffc: Download complete
+b94663c065e1: Download complete
+88ec5d1c211c: Download complete
+0f9a23282cec: Download complete
+0f9a23282cec: Pull complete
+4c439e750b7b: Download complete
+ceb4f9b28f68: Download complete
+ceb4f9b28f68: Pull complete
+6019c6b6bc0a: Pull complete
+4c439e750b7b: Pull complete
+7f8e3c6325e2: Pull complete
+9c2986360d50: Pull complete
+d50b198e866d: Pull complete
+fa9307b95ffc: Pull complete
+b94663c065e1: Pull complete
+88ec5d1c211c: Pull complete
+bc537942b222: Pull complete
+6d77020fb9ac: Pull complete
+ddd831dde3de: Pull complete
+35c12db4da4b: Pull complete
+c66bb548500f: Pull complete
+3412bb019f02: Pull complete
+797a834fccaf: Pull complete
+bc537942b222: Pull complete
+6d77020fb9ac: Pull complete
+ddd831dde3de: Pull complete
+6880e0539e9d: Pull complete
+beb7fe93620e: Pull complete
+35c12db4da4b: Pull complete
+c66bb548500f: Pull complete
+3412bb019f02: Pull complete
+797a834fccaf: Pull complete
+73e9df86e57b: Pull complete
+Digest: sha256:37ba590c0dc9dceab9760ab877deda864853b742dd70981f2c784ea2341b6fa8
+Status: Downloaded newer image for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started autobyteus-server-50.
+AutoByteus Docker node: autobyteus-server-50
+Profile: mobile-safe
+Container: autobyteus-server-50
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:50747
+GraphQL: http://localhost:50747/graphql
+noVNC: http://localhost:50749 (localhost-bound)
+VNC: localhost:50748 (localhost-bound)
+Chrome debug: localhost:50750 (localhost-bound)
+Workspace: private Docker named volume autobyteus-server-50-workspace
+Shared host bind mounts: disabled by default in mobile-safe profile
+Private app data: /home/autobyteus/data -> autobyteus-server-50-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus, open the node window, then register the node-admin claim.
+
+Mobile-safe node-admin claim (store this locally; it is not inside the container):
+  Claim ID: nac_W9QrAglYc2UnZyM_-O0JaYm6
+  Claim secret: [REDACTED_IN_VALIDATION_EVIDENCE]
+  Scope: phone-access-management
+To show it later: autobyteus-docker admin-claim show --name autobyteus-server-50

@@ -7,6 +7,12 @@ const SENSITIVE_QUERY_KEYS = new Set([
   "pairing",
   "pairing_code",
   "pairingcode",
+  "node_admin_claim",
+  "nodeadminclaim",
+  "node_admin_claim_id",
+  "nodeadminclaimid",
+  "x-autobyteus-node-admin-claim",
+  "x-autobyteus-node-admin-claim-id",
 ]);
 
 const REDACTED_VALUE = "[REDACTED]";

@@ -1,0 +1,20 @@
+== close model dropdown / return to setup ==
+{'text': '', 'desc': '', 'res': 'android:id/content', 'class': 'android.widget.FrameLayout', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': 'AutoByteus mobile', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[55,181][1025,277]', 'clickable': 'false'}
+{'text': 'Open the existing /mobile shell from a saved desktop node. Pair with the same stable Tailscale URL you expect to use while traveling.', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[55,277][1025,429]', 'clickable': 'false'}
+{'text': 'SAVED NODES', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[55,451][1025,495]', 'clickable': 'false'}
+{'text': 'AutoByteus Desktop', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[93,528][987,587]', 'clickable': 'false'}
+{'text': 'https://normys-macbook-pro.tail0347f8.ts.net/mobile', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[93,587][987,631]', 'clickable': 'false'}
+{'text': 'OPEN', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[93,641][532,773]', 'clickable': 'true'}
+{'text': 'REMOVE', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[548,641][987,773]', 'clickable': 'true'}
+{'text': 'PAIR OR ENTER NODE URL', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[55,838][1025,882]', 'clickable': 'false'}
+{'text': 'https://desktop.tailnet-name.ts.net/mobile', 'desc': '', 'res': '', 'class': 'android.widget.EditText', 'bounds': '[55,890][1025,1069]', 'clickable': 'true'}
+{'text': 'I understand HTTP should only be used on a trusted private LAN/tailnet. Prefer Tailscale Serve HTTPS for travel.', 'desc': '', 'res': '', 'class': 'android.widget.CheckBox', 'bounds': '[55,1069][1025,1201]', 'clickable': 'true'}
+{'text': 'SAVE AND OPEN', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[55,1213][532,1345]', 'clickable': 'true'}
+{'text': 'PASTE', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[548,1213][1025,1345]', 'clickable': 'true'}
+{'text': 'SCAN QR', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[55,1353][532,1485]', 'clickable': 'true'}
+{'text': 'OPEN TAILSCALE', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[548,1353][1025,1485]', 'clickable': 'true'}
+{'text': 'Recommended setup', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[93,1532][987,1588]', 'clickable': 'false'}
+{'text': 'Use Tailscale Serve HTTPS, for example https://desktop.tailnet-name.ts.net/mobile. If you pair with a LAN IP and later switch to a Tailscale hostname, WebView localStorage is a different origin and you may need to pair again.', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[93,1592][987,1808]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/statusBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][1080,104]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/navigationBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][0,0]', 'clickable': 'false'}

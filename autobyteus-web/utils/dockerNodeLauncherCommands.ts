@@ -6,6 +6,7 @@ export type DockerLauncherCommandId =
   | 'macos-linux-install'
   | 'windows-powershell-install'
   | 'direct-new-container'
+  | 'direct-admin-claim-show'
   | 'direct-upgrade-all'
   | 'direct-destroy-all'
   | 'direct-reset'
@@ -87,7 +88,17 @@ export function buildDockerNodeLauncherCommands(): DockerLauncherCommand[] {
       platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
       titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.title',
       descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.description',
-      command: buildDirectLauncherCommand(['new-container']),
+      command: buildDirectLauncherCommand(['new-container', '--profile', 'mobile-safe']),
+      isPrimary: true,
+    },
+    {
+      id: 'direct-admin-claim-show',
+      phase: 'direct',
+      platform: 'installed-cli',
+      platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
+      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.adminClaimShow.title',
+      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.adminClaimShow.description',
+      command: buildDirectLauncherCommand(['admin-claim', 'show', '--name', 'autobyteus-server-0']),
       isPrimary: true,
     },
     {

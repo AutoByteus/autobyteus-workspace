@@ -508,7 +508,6 @@ describe('mobile context selection stale-run regression', () => {
           MobileChat: { template: '<div data-testid="mobile-chat-stub" />' },
           MobileRuns: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-runs-stub" />' },
           MobileFiles: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-files-stub" />' },
-          MobileTools: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-tools-stub" />' },
           MobileActivity: { template: '<section class="flex h-full flex-col overflow-hidden" data-testid="mobile-activity-stub" />' },
         },
       },
@@ -521,7 +520,6 @@ describe('mobile context selection stale-run regression', () => {
     for (const [tab, testId] of [
       ['runs', 'mobile-runs-stub'],
       ['files', 'mobile-files-stub'],
-      ['tools', 'mobile-tools-stub'],
       ['activity', 'mobile-activity-stub'],
     ] as const) {
       await wrapper.setProps({ activeTab: tab });

@@ -1,0 +1,20 @@
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:latest
+latest: Pulling from autobyteus/autobyteus-server
+Digest: sha256:37ba590c0dc9dceab9760ab877deda864853b742dd70981f2c784ea2341b6fa8
+Status: Image is up to date for autobyteus/autobyteus-server:latest
+docker.io/autobyteus/autobyteus-server:latest
+[AutoByteus Docker] Started autobyteus-server-50.
+AutoByteus Docker node: autobyteus-server-50
+Profile: mobile-safe
+Container: autobyteus-server-50
+Image: autobyteus/autobyteus-server:latest
+Backend: http://localhost:50747
+GraphQL: http://localhost:50747/graphql
+noVNC: http://localhost:50749 (localhost-bound)
+VNC: localhost:50748 (localhost-bound)
+Chrome debug: localhost:50750 (localhost-bound)
+Workspace: private Docker named volume autobyteus-server-50-workspace
+Shared host bind mounts: disabled by default in mobile-safe profile
+Private app data: /home/autobyteus/data -> autobyteus-server-50-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus, open the node window, then register the node-admin claim.
+Node-admin claim: run "autobyteus-docker admin-claim show --name autobyteus-server-50" when you need to register this node in the desktop app.

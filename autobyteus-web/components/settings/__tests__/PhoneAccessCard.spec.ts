@@ -43,14 +43,28 @@ const { phoneAccessStoreMock, translateMock, toQrCodeDataUrlMock } = vi.hoisted(
       isLoading: false,
       error: null,
       info: null,
+      nodeAdminClaimState: 'configured',
+      nodeAdminClaimSummary: null,
+      nodeAdminClaimIdInput: '',
+      nodeAdminClaimSecretInput: '',
+      advertisedUrlVerified: false,
+      advertisedUrlVerificationMessage: null,
       phoneAccessEnabled: true,
+      requiresNodeAdminClaim: false,
+      managementBaseUrl: 'http://127.0.0.1:29695',
+      currentNodeName: 'AutoByteus Desktop',
+      canManagePhoneAccess: true,
       selectedUrlValidation: {
         normalizedBaseUrl: 'https://desktop.tailnet.ts.net',
         isValid: true,
         isHttps: true,
-        message: null,
+        isAndroidFacing: true,
+        message: null as string | null,
       },
       loadAll: vi.fn().mockResolvedValue(undefined),
+      loadNodeAdminClaimSummary: vi.fn().mockResolvedValue(undefined),
+      registerNodeAdminClaim: vi.fn().mockResolvedValue(undefined),
+      clearNodeAdminClaim: vi.fn().mockResolvedValue(undefined),
       setEnabled: vi.fn().mockResolvedValue(undefined),
       refreshCandidates: vi.fn().mockResolvedValue(undefined),
       createPairingSession: vi.fn().mockResolvedValue(undefined),
@@ -84,13 +98,22 @@ describe('PhoneAccessCard', () => {
     phoneAccessStoreMock.isLoading = false;
     phoneAccessStoreMock.error = null;
     phoneAccessStoreMock.info = null;
+    phoneAccessStoreMock.nodeAdminClaimState = 'configured';
+    phoneAccessStoreMock.nodeAdminClaimSummary = null;
+    phoneAccessStoreMock.nodeAdminClaimIdInput = '';
+    phoneAccessStoreMock.nodeAdminClaimSecretInput = '';
+    phoneAccessStoreMock.advertisedUrlVerified = false;
+    phoneAccessStoreMock.advertisedUrlVerificationMessage = null;
+    phoneAccessStoreMock.requiresNodeAdminClaim = false;
+    phoneAccessStoreMock.canManagePhoneAccess = true;
     phoneAccessStoreMock.selectedServerBaseUrl = 'https://desktop.tailnet.ts.net';
     phoneAccessStoreMock.manualServerBaseUrl = '';
     phoneAccessStoreMock.selectedUrlValidation = {
       normalizedBaseUrl: 'https://desktop.tailnet.ts.net',
       isValid: true,
       isHttps: true,
-      message: null,
+      isAndroidFacing: true,
+      message: null as string | null,
     };
   });
 
@@ -118,6 +141,7 @@ describe('PhoneAccessCard', () => {
       normalizedBaseUrl: 'http://192.168.1.25:29695',
       isValid: true,
       isHttps: false,
+      isAndroidFacing: true,
       message: 'Phone Access pairing requires an HTTPS URL.',
     };
 
@@ -135,7 +159,8 @@ describe('PhoneAccessCard', () => {
       normalizedBaseUrl: 'https://desktop.tailnet.ts.net',
       isValid: true,
       isHttps: true,
-      message: null,
+      isAndroidFacing: true,
+      message: null as string | null,
     };
 
     const wrapper = mount(PhoneAccessCard);

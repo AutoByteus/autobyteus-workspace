@@ -1,0 +1,23 @@
+== tailscale android package launch attempt ==
+priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
+com.tailscale.ipn/.MainActivity
+  bash arg: -p
+  bash arg: com.tailscale.ipn
+  bash arg: 1
+args: [-p, com.tailscale.ipn, 1]
+ arg: "-p"
+ arg: "com.tailscale.ipn"
+ arg: "1"
+data="com.tailscale.ipn"
+Events injected: 1
+## Network stats: elapsed time=84ms (0ms mobile, 0ms wifi, 84ms not connected)
+-- tailscale status self after launching phone app --
+100.127.30.107  normys-macbook-pro  ryan.zheng.work@  macOS    -  
+100.75.247.102  2109119dg           ryan.zheng.work@  android  -  
+-- phone direct tailnet ping after launching app --
+PING 100.127.30.107 (100.127.30.107) 56(84) bytes of data.
+From 62.155.240.20: icmp_seq=1 Destination Net Unreachable
+
+--- 100.127.30.107 ping statistics ---
+1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms
+

@@ -4,6 +4,12 @@ import type { ContextAttachment } from '~/types/conversation';
 import type { MobileRunSetupIntent, MobileRunSetupIntentRequest, MobileTaskTab, MobileWorkContext } from '~/types/mobileWork';
 import { preferredTabForMobileContext } from '~/types/mobileWork';
 
+const normalizeMobileTaskTab = (tab: MobileTaskTab | string | null | undefined): MobileTaskTab => (
+  tab === 'chat' || tab === 'runs' || tab === 'files' || tab === 'activity'
+    ? tab
+    : 'chat'
+);
+
 export const useMobileWorkStore = defineStore('mobileWork', () => {
   const currentContext = ref<MobileWorkContext | null>(null);
   const activeTab = ref<MobileTaskTab>('chat');
@@ -17,12 +23,12 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
 
   function selectContext(context: MobileWorkContext, tab?: MobileTaskTab): void {
     currentContext.value = context;
-    activeTab.value = tab ?? preferredTabForMobileContext(context);
+    activeTab.value = normalizeMobileTaskTab(tab ?? preferredTabForMobileContext(context));
     runSetupIntent.value = null;
   }
 
-  function setActiveTab(tab: MobileTaskTab): void {
-    activeTab.value = tab;
+  function setActiveTab(tab: MobileTaskTab | string): void {
+    activeTab.value = normalizeMobileTaskTab(tab);
   }
 
   function requestRunSetup(intent: MobileRunSetupIntentRequest): MobileRunSetupIntent {

@@ -7,6 +7,11 @@ import type {
   WindowNodeContext,
 } from './node';
 import type {
+  NodeAdminClaimHeadersResult,
+  NodeAdminClaimSummary,
+  RegisterNodeAdminClaimInput,
+} from './nodeAdminClaim';
+import type {
   BrowserHostBounds,
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
@@ -82,6 +87,13 @@ declare global {
       upsertNodeRegistry: (change: NodeRegistryChange) => Promise<NodeRegistrySnapshot>;
       getNodeRegistrySnapshot: () => Promise<NodeRegistrySnapshot>;
       onNodeRegistryUpdated: (callback: (snapshot: NodeRegistrySnapshot) => void) => Cleanup;
+      getNodeAdminClaimSummary: (nodeId: string, managementBaseUrl: string) => Promise<NodeAdminClaimSummary>;
+      registerNodeAdminClaim: (input: RegisterNodeAdminClaimInput) => Promise<NodeAdminClaimSummary>;
+      getNodeAdminClaimHeaders: (
+        nodeId: string,
+        managementBaseUrl: string,
+      ) => Promise<NodeAdminClaimHeadersResult>;
+      clearNodeAdminClaim: (nodeId: string, managementBaseUrl: string) => Promise<NodeAdminClaimSummary>;
       getRemoteBrowserSharingSettings: () => Promise<RemoteBrowserSharingSettings>;
       updateRemoteBrowserSharingSettings: (
         settings: RemoteBrowserSharingSettings,

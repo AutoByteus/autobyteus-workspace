@@ -1,0 +1,12 @@
+== Docker node run history index files after mobile-created run ==
+run_history_index.json:
+[]
+
+team_run_history_index.json:
+[]
+
+== Docker node data directory run-related paths ==
+/home/autobyteus/data/agents/autobyteus-memory-compactor/agent-config.json
+/home/autobyteus/data/agents/autobyteus-memory-compactor/agent.md
+/home/autobyteus/data/memory/run_history_index.json
+/home/autobyteus/data/memory/team_run_history_index.json

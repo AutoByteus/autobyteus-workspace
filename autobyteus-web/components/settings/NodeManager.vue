@@ -138,11 +138,7 @@
       >
         <PhoneSetupGuideCard />
 
-        <PhoneAccessCard v-if="windowNodeContextStore.isEmbeddedWindow" />
-        <section v-else class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900" data-testid="phone-setup-remote-unavailable">
-          <h3 class="font-semibold text-amber-950">{{ $t('settings.components.settings.NodeManager.phoneSetupUnavailableTitle') }}</h3>
-          <p class="mt-1">{{ $t('settings.components.settings.NodeManager.phoneSetupUnavailableDescription') }}</p>
-        </section>
+        <PhoneAccessCard />
       </div>
       <div
         v-else-if="activeTab === 'dockerGuide'"

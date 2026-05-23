@@ -10,6 +10,10 @@ import {
   getRemoteAccessAuthService,
   type RemoteAccessAuthService,
 } from "../../remote-access/services/remote-access-auth-service.js";
+import {
+  getRemoteNodeAdminService,
+  type RemoteNodeAdminService,
+} from "../../remote-access/services/remote-node-admin-service.js";
 import { isLoopbackPeerAddress } from "./remote-access-local-trust.js";
 
 const normalizeMethod = (method: string): string => String(method || "GET").toUpperCase();
@@ -76,7 +80,7 @@ export const classifyHttpRoute = (
     || /^\/rest\/remote-access\/devices\/[^/]+$/.test(path)
     || path === "/rest/remote-access/settings"
   ) {
-    return "LOCAL_ONLY";
+    return "PHONE_ACCESS_OWNER";
   }
   if (path === "/graphql") {
     if (isGraphqlWebSocketUpgrade(normalizedMethod, path, headers)) {
@@ -111,6 +115,14 @@ const allowedWithoutAuth = new Set<RemoteAccessRouteClassification>([
   "EXTERNAL_SIGNATURE",
 ]);
 
+const normalizeHeaders = (headers: FastifyRequest["headers"]): Record<string, string | string[] | undefined> => {
+  const normalized: Record<string, string | string[] | undefined> = {};
+  for (const [key, value] of Object.entries(headers)) {
+    normalized[key.toLowerCase()] = value as string | string[] | undefined;
+  }
+  return normalized;
+};
+
 const reject = (
   statusCode: number,
   code: RemoteAccessAuthorizationResult extends infer T
@@ -131,7 +143,10 @@ const readWebSocketQueryCredential = (request: FastifyRequest): string | null =>
 };
 
 export class RemoteAccessRoutePolicy {
-  constructor(private readonly authService: RemoteAccessAuthService = getRemoteAccessAuthService()) {}
+  constructor(
+    private readonly authService: RemoteAccessAuthService = getRemoteAccessAuthService(),
+    private readonly nodeAdminService: RemoteNodeAdminService = getRemoteNodeAdminService(),
+  ) {}
 
   classifyRequest(request: FastifyRequest): RemoteAccessRouteClassification {
     return classifyHttpRoute(request.method, request.url, request.headers as Record<string, unknown>);
@@ -148,6 +163,12 @@ export class RemoteAccessRoutePolicy {
       return isLoopbackPeerAddress(peerAddress)
         ? { ok: true, context: { mode: "loopback", isAuthenticated: true } }
         : reject(403, "REMOTE_ACCESS_LOCAL_ONLY", "This endpoint is only available from the local desktop.");
+    }
+    if (routeClass === "PHONE_ACCESS_OWNER") {
+      if (isLoopbackPeerAddress(peerAddress)) {
+        return { ok: true, context: { mode: "loopback", isAuthenticated: true } };
+      }
+      return this.nodeAdminService.validateHeaders(normalizeHeaders(request.headers));
     }
     if (routeClass === "LOCAL_DEV_ONLY") {
       return isLoopbackPeerAddress(peerAddress)

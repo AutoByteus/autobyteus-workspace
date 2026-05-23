@@ -20,6 +20,17 @@ class PairingLinkParserTest {
     }
 
     @Test
+    fun parsesDockerNodePairingPayloadUsingAdvertisedHttpsOrigin() {
+        val payload = payloadParam("https://docker.tailnet.ts.net", "AutoByteus Docker Node")
+        val parsed = PairingLinkParser.parse("https://docker.tailnet.ts.net/mobile?pairing=$payload")
+
+        assertTrue(parsed.hasPairingPayload)
+        assertEquals("https://docker.tailnet.ts.net/mobile?pairing=$payload", parsed.webViewUrl)
+        assertEquals("https://docker.tailnet.ts.net/mobile", parsed.profile.mobileUrl)
+        assertEquals("AutoByteus Docker Node", parsed.profile.displayName)
+    }
+
+    @Test
     fun parsesRawJsonPairingPayload() {
         val json = """{"version":1,"serverBaseUrl":"http://desktop.local:29695","pairingCode":"abc","expiresAt":"2026-05-21T00:00:00.000Z","serverName":"Home Desktop"}"""
         val parsed = PairingLinkParser.parse(json)

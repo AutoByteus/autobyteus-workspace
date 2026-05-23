@@ -1,0 +1,7 @@
+AutoByteus mobile-safe node-admin claim: autobyteus-server-50
+Management backend: http://localhost:50747
+Claim ID: nac_W9QrAglYc2UnZyM_-O0JaYm6
+Claim secret: [REDACTED_IN_VALIDATION_EVIDENCE]
+Scope: phone-access-management
+
+Paste the claim ID and secret into the Docker node window Phone Setup screen.

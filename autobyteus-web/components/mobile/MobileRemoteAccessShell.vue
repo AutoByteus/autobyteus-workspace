@@ -132,7 +132,7 @@ const pendingPostPairRefresh = ref(false);
 const postPairRefreshPromise = ref<Promise<void> | null>(null);
 
 const unsupportedFeatureMessages: Partial<Record<MobileFeatureId, string>> = {
-  desktopWorkspace: 'The desktop workspace route is replaced by the phone-first mobile work shell. Use Home, Switch work, and Chat/Runs/Files/Tools/Activity instead.',
+  desktopWorkspace: 'The desktop workspace route is replaced by the phone-first mobile work shell. Use Home, Switch work, and Chat/Runs/Files/Activity instead.',
   desktopSettings: 'Desktop settings are managed from the desktop app. Phone Access exposes only mobile-safe connection controls.',
   desktopUpdates: 'Desktop update controls are not available from the phone client.',
   localFolderPicker: 'Local folder picking is not available from the phone client.',
