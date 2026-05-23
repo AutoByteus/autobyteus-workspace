@@ -1,0 +1,25 @@
+# API/E2E temporary renderer integration probe
+Date: 2026-05-23T05:26:48Z
+
+> autobyteus@1.3.27 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run tmp-api-e2e-app-update-ui.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+
+stderr | tmp-api-e2e-app-update-ui.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tmp-api-e2e-app-update-ui.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tmp-api-e2e-app-update-ui.spec.ts (7 tests) 39ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  07:26:50
+   Duration  4.59s (transform 2.72s, setup 3.92s, collect 84ms, tests 39ms, environment 140ms, prepare 174ms)
+

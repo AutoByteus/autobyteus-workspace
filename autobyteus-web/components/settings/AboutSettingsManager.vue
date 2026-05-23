@@ -73,6 +73,7 @@
 import { computed, onMounted } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useAppUpdateStore } from '~/stores/appUpdateStore';
+import { getSettingsAppUpdateErrorMessageKey } from '~/utils/appUpdateErrorDisplay';
 
 const appUpdateStore = useAppUpdateStore();
 const { t } = useLocalization();
@@ -131,11 +132,7 @@ const statusMessage = computed(() => {
     case 'no-update':
       return t('settings.components.settings.AboutSettingsManager.message.noUpdate');
     case 'error':
-      return appUpdateStore.error
-        ? t('settings.components.settings.AboutSettingsManager.message.errorWithDetail', {
-            error: appUpdateStore.error,
-          })
-        : t('settings.components.settings.AboutSettingsManager.message.error');
+      return t(getSettingsAppUpdateErrorMessageKey(appUpdateStore.errorKind));
     default:
       return t('settings.components.settings.AboutSettingsManager.message.idle');
   }

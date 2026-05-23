@@ -1,31 +1,16 @@
 import { defineStore } from 'pinia';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
+import type { AppUpdateState, AppUpdateStatus } from '~/shared/appUpdateTypes';
+import {
+  buildAppUpdateErrorToastSignature,
+  getAppUpdateErrorToastMessageKey,
+  isQuietStartupAppUpdateError,
+} from '~/utils/appUpdateErrorDisplay';
 
 type Cleanup = () => void;
 
-type AppUpdateStatus =
-  | 'idle'
-  | 'checking'
-  | 'available'
-  | 'downloading'
-  | 'downloaded'
-  | 'installing'
-  | 'no-update'
-  | 'error';
-
-type AppUpdateStatePayload = {
-  status: AppUpdateStatus;
-  currentVersion: string;
-  availableVersion: string | null;
-  downloadPercent: number | null;
-  downloadTransferredBytes: number | null;
-  downloadTotalBytes: number | null;
-  releaseNotes: string | null;
-  message: string;
-  error: string | null;
-  checkedAt: string | null;
-};
+type AppUpdateStatePayload = AppUpdateState;
 
 let updateStateCleanup: Cleanup | null = null;
 let noUpdateHideTimer: ReturnType<typeof setTimeout> | null = null;
@@ -48,6 +33,7 @@ interface AppUpdateStoreState extends AppUpdateStatePayload {
   isElectron: boolean;
   visible: boolean;
   dismissedVersion: string | null;
+  lastErrorToastSignature: string | null;
 }
 
 const DEFAULT_STATE: AppUpdateStatePayload = {
@@ -59,7 +45,8 @@ const DEFAULT_STATE: AppUpdateStatePayload = {
   downloadTotalBytes: null,
   releaseNotes: null,
   message: '',
-  error: null,
+  errorKind: null,
+  errorOperation: null,
   checkedAt: null,
 };
 
@@ -70,6 +57,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     isElectron: typeof window !== 'undefined' && Boolean(window.electronAPI),
     visible: false,
     dismissedVersion: null,
+    lastErrorToastSignature: null,
   }),
 
   getters: {
@@ -121,14 +109,15 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       try {
         const initialState = await window.electronAPI.getAppUpdateState();
         this.applyRemoteState(initialState);
-      } catch (error) {
+      } catch {
         const { addToast } = useToasts();
         addToast(t('settings.updates.store.initializeFailed'), 'error');
         this.applyRemoteState({
           ...DEFAULT_STATE,
           status: 'error',
           message: t('settings.updates.store.initializeFailed'),
-          error: error instanceof Error ? error.message : t('settings.updates.store.unknownError'),
+          errorKind: 'unknown',
+          errorOperation: 'updater-event',
           checkedAt: new Date().toISOString(),
         });
       }
@@ -139,8 +128,20 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         return;
       }
 
-      const nextState = await window.electronAPI.checkForAppUpdates();
-      this.applyRemoteState(nextState);
+      try {
+        const nextState = await window.electronAPI.checkForAppUpdates();
+        this.applyRemoteState(nextState);
+      } catch {
+        this.applyRemoteState({
+          ...DEFAULT_STATE,
+          status: 'error',
+          currentVersion: this.currentVersion,
+          message: t('settings.updates.store.errors.unknown'),
+          errorKind: 'unknown',
+          errorOperation: 'manual-check',
+          checkedAt: new Date().toISOString(),
+        });
+      }
     },
 
     async downloadUpdate(): Promise<void> {
@@ -148,8 +149,18 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         return;
       }
 
-      const nextState = await window.electronAPI.downloadAppUpdate();
-      this.applyRemoteState(nextState);
+      try {
+        const nextState = await window.electronAPI.downloadAppUpdate();
+        this.applyRemoteState(nextState);
+      } catch {
+        this.applyRemoteState({
+          status: 'error',
+          message: t('settings.updates.store.errors.download'),
+          errorKind: 'download',
+          errorOperation: 'download',
+          checkedAt: new Date().toISOString(),
+        });
+      }
     },
 
     async installUpdateAndRestart(): Promise<void> {
@@ -160,17 +171,19 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       this.applyRemoteState({
         status: 'installing',
         message: t('settings.updates.store.installingAndRestarting'),
-        error: null,
+        errorKind: null,
+        errorOperation: null,
       });
 
       let result: { accepted: boolean };
       try {
         result = await window.electronAPI.installAppUpdateAndRestart();
-      } catch (error) {
+      } catch {
         this.applyRemoteState({
           status: 'error',
           message: t('settings.updates.store.restartInstallFailed'),
-          error: error instanceof Error ? error.message : t('settings.updates.store.unknownError'),
+          errorKind: 'install',
+          errorOperation: 'install',
           checkedAt: new Date().toISOString(),
         });
         return;
@@ -207,16 +220,25 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         : this.downloadTotalBytes;
       this.releaseNotes = payload.releaseNotes !== undefined ? payload.releaseNotes : this.releaseNotes;
       this.message = payload.message ?? '';
-      this.error = payload.error !== undefined ? payload.error : this.error;
+      this.errorKind = payload.errorKind !== undefined ? payload.errorKind : this.errorKind;
+      this.errorOperation = payload.errorOperation !== undefined ? payload.errorOperation : this.errorOperation;
+      if (payload.status && payload.status !== 'error') {
+        this.errorKind = null;
+        this.errorOperation = null;
+      }
       this.checkedAt = payload.checkedAt ?? this.checkedAt;
       clearNoUpdateHideTimer();
+
+      const isQuietError = isQuietStartupAppUpdateError(this);
 
       if (this.status === 'available') {
         if (!this.availableVersion || this.availableVersion !== this.dismissedVersion) {
           this.visible = true;
         }
-      } else if (this.status === 'downloading' || this.status === 'downloaded' || this.status === 'installing' || this.status === 'checking' || this.status === 'error') {
+      } else if (this.status === 'downloading' || this.status === 'downloaded' || this.status === 'installing' || this.status === 'checking') {
         this.visible = true;
+      } else if (this.status === 'error') {
+        this.visible = !isQuietError;
       } else if (this.status === 'no-update') {
         this.visible = true;
         noUpdateHideTimer = setTimeout(() => {
@@ -227,14 +249,22 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         }, NO_UPDATE_HIDE_DELAY_MS);
       }
 
+      if (this.status !== 'error') {
+        this.lastErrorToastSignature = null;
+      }
+
       if (this.status === 'downloaded') {
         const { addToast } = useToasts();
         addToast(t('settings.updates.store.downloadedRestartToInstall'), 'success');
       }
 
-      if (this.status === 'error' && this.error) {
-        const { addToast } = useToasts();
-        addToast(t('settings.updates.store.updateErrorWithDetail', { error: this.error }), 'error');
+      if (this.status === 'error' && !isQuietError) {
+        const signature = buildAppUpdateErrorToastSignature(this.errorKind, this.errorOperation, this.message);
+        if (signature !== this.lastErrorToastSignature) {
+          this.lastErrorToastSignature = signature;
+          const { addToast } = useToasts();
+          addToast(t(getAppUpdateErrorToastMessageKey(this.errorKind)), 'error');
+        }
       }
     },
   },

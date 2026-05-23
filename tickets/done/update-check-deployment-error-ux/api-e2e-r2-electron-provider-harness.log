@@ -1,0 +1,203 @@
+# API/E2E round 2 Electron packaged-mode simulated provider harness
+Date: 2026-05-23T05:50:49Z
+Electron binary: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/electron@38.8.2/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron
+Electron: v38.8.2
+\n## Scenario: manual-network-double
+{
+  "scenario": "manual-network-double",
+  "result": "pass",
+  "mode": "manual-check",
+  "rendererEventCount": 2,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "network",
+    "errorOperation": "manual-check",
+    "message": "Could not reach the update server. AutoByteus is still usable; try again later.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": {
+    "status": "error",
+    "errorKind": "network",
+    "errorOperation": "manual-check",
+    "message": "Could not reach the update server. AutoByteus is still usable; try again later.",
+    "hasLegacyErrorField": false
+  },
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "duplicateProviderEventSuppressed": true,
+  "providerCalls": {
+    "checkForUpdates": 1,
+    "downloadUpdate": 0,
+    "quitAndInstall": 0
+  }
+}
+\n## Scenario: manual-release-preparing
+{
+  "scenario": "manual-release-preparing",
+  "result": "pass",
+  "mode": "manual-check",
+  "rendererEventCount": 2,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "release-preparing",
+    "errorOperation": "manual-check",
+    "message": "The latest update is still being prepared on GitHub. Try again in a few minutes.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": {
+    "status": "error",
+    "errorKind": "release-preparing",
+    "errorOperation": "manual-check",
+    "message": "The latest update is still being prepared on GitHub. Try again in a few minutes.",
+    "hasLegacyErrorField": false
+  },
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "duplicateProviderEventSuppressed": null,
+  "providerCalls": {
+    "checkForUpdates": 1,
+    "downloadUpdate": 0,
+    "quitAndInstall": 0
+  }
+}
+\n## Scenario: manual-metadata-long
+{
+  "scenario": "manual-metadata-long",
+  "result": "pass",
+  "mode": "manual-check",
+  "rendererEventCount": 2,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "metadata",
+    "errorOperation": "manual-check",
+    "message": "Update information is incomplete right now. Try again in a few minutes.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": {
+    "status": "error",
+    "errorKind": "metadata",
+    "errorOperation": "manual-check",
+    "message": "Update information is incomplete right now. Try again in a few minutes.",
+    "hasLegacyErrorField": false
+  },
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "duplicateProviderEventSuppressed": null,
+  "providerCalls": {
+    "checkForUpdates": 1,
+    "downloadUpdate": 0,
+    "quitAndInstall": 0
+  }
+}
+\n## Scenario: startup-network
+{
+  "scenario": "startup-network",
+  "result": "pass",
+  "mode": "startup-check",
+  "rendererEventCount": 2,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "network",
+    "errorOperation": "startup-check",
+    "message": "Could not reach the update server. AutoByteus is still usable; try again later.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": null,
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "duplicateProviderEventSuppressed": null,
+  "providerCalls": {
+    "checkForUpdates": 1,
+    "downloadUpdate": 0,
+    "quitAndInstall": 0
+  }
+}
+\n## Scenario: startup-release-preparing
+{
+  "scenario": "startup-release-preparing",
+  "result": "pass",
+  "mode": "startup-check",
+  "rendererEventCount": 2,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "release-preparing",
+    "errorOperation": "startup-check",
+    "message": "The latest update is still being prepared on GitHub. Try again in a few minutes.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": null,
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "duplicateProviderEventSuppressed": null,
+  "providerCalls": {
+    "checkForUpdates": 1,
+    "downloadUpdate": 0,
+    "quitAndInstall": 0
+  }
+}
+[56906:0523/075053.090463:ERROR:base/process/process_mac.cc:98] task_policy_set TASK_SUPPRESSION_POLICY: (os/kern) invalid argument (4)
+\n## Scenario: download-failure
+{
+  "scenario": "download-failure",
+  "result": "pass",
+  "mode": "download",
+  "rendererEventCount": 3,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "download",
+    "errorOperation": "download",
+    "message": "The update download was interrupted. Check your connection and try again.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": {
+    "status": "error",
+    "errorKind": "download",
+    "errorOperation": "download",
+    "message": "The update download was interrupted. Check your connection and try again.",
+    "hasLegacyErrorField": false
+  },
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "duplicateProviderEventSuppressed": null,
+  "providerCalls": {
+    "checkForUpdates": 0,
+    "downloadUpdate": 1,
+    "quitAndInstall": 0
+  }
+}
+\n## Scenario: install-failure
+{
+  "scenario": "install-failure",
+  "result": "pass",
+  "mode": "install",
+  "rendererEventCount": 3,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "install",
+    "errorOperation": "install",
+    "message": "The update was downloaded, but AutoByteus could not restart to install it. Try again.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": {
+    "status": "error",
+    "errorKind": "install",
+    "errorOperation": "install",
+    "message": "The update was downloaded, but AutoByteus could not restart to install it. Try again.",
+    "hasLegacyErrorField": false
+  },
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "duplicateProviderEventSuppressed": null,
+  "providerCalls": {
+    "checkForUpdates": 0,
+    "downloadUpdate": 0,
+    "quitAndInstall": 1
+  }
+}

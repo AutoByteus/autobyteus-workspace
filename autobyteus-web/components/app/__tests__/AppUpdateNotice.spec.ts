@@ -12,6 +12,7 @@ const { appUpdateStoreMock } = vi.hoisted(() => {
     progressLabel: '0%',
     downloadPercent: null as number | null,
     releaseNotes: null as string | null,
+    errorKind: null as string | null,
     dismissNotice: vi.fn(),
     checkForUpdates: vi.fn().mockResolvedValue(undefined),
     downloadUpdate: vi.fn().mockResolvedValue(undefined),
@@ -37,6 +38,7 @@ describe('AppUpdateNotice', () => {
     appUpdateStoreMock.progressLabel = '0%';
     appUpdateStoreMock.downloadPercent = null;
     appUpdateStoreMock.releaseNotes = null;
+    appUpdateStoreMock.errorKind = null;
     appUpdateStoreMock.dismissNotice.mockClear();
     appUpdateStoreMock.checkForUpdates.mockClear();
     appUpdateStoreMock.downloadUpdate.mockClear();
@@ -87,6 +89,19 @@ describe('AppUpdateNotice', () => {
     expect(wrapper.find('[data-testid="app-update-installing"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="app-update-install"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="app-update-dismiss"]').exists()).toBe(false);
+  });
+
+
+  it('renders classified updater errors without raw diagnostics', () => {
+    appUpdateStoreMock.status = 'error';
+    appUpdateStoreMock.errorKind = 'network';
+    appUpdateStoreMock.message = 'net::ERR_CONNECTION_CLOSED';
+
+    const wrapper = mount(AppUpdateNotice);
+    const text = wrapper.text();
+
+    expect(text).toContain('Couldn’t reach the update server');
+    expect(text).not.toContain('net::ERR_CONNECTION_CLOSED');
   });
 
   it('hides when shouldShow is false', () => {

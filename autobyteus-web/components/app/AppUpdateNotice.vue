@@ -111,6 +111,7 @@
 import { computed } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useAppUpdateStore } from '~/stores/appUpdateStore';
+import { getAppUpdateNoticeErrorMessageKey } from '~/utils/appUpdateErrorDisplay';
 
 const appUpdateStore = useAppUpdateStore();
 const { t } = useLocalization();
@@ -162,11 +163,7 @@ const statusMessage = computed(() => {
   }
 
   if (appUpdateStore.status === 'error') {
-    return appUpdateStore.error
-      ? t('shell.components.app.AppUpdateNotice.statusMessage.errorWithDetail', {
-          error: appUpdateStore.error,
-        })
-      : t('shell.components.app.AppUpdateNotice.statusMessage.error');
+    return t(getAppUpdateNoticeErrorMessageKey(appUpdateStore.errorKind));
   }
 
   if (appUpdateStore.status === 'checking') {
