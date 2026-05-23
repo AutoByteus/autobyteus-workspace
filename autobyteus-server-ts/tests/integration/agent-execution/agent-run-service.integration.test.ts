@@ -41,6 +41,67 @@ const createMetadata = (input: {
   lastKnownStatus: "IDLE",
 });
 
+const createRunHistoryHarness = (
+  initialMetadata: AgentRunMetadata[] = [],
+) => {
+  const metadataByRunId = new Map<string, AgentRunMetadata>(
+    initialMetadata.map((metadata) => [metadata.runId, { ...metadata }]),
+  );
+  const metadataService = {
+    writeMetadata: vi.fn().mockImplementation(
+      async (runId: string, metadata: AgentRunMetadata) => {
+        metadataByRunId.set(runId, { ...metadata, runId });
+      },
+    ),
+    readMetadata: vi.fn().mockImplementation(async (runId: string) => {
+      const metadata = metadataByRunId.get(runId);
+      return metadata ? { ...metadata } : null;
+    }),
+  };
+  const historyCatalogService = {
+    recordPreparedRun: vi.fn().mockImplementation(
+      async (input: { runId: string; metadata: AgentRunMetadata }) => {
+        metadataByRunId.set(input.runId, {
+          ...input.metadata,
+          runId: input.runId,
+        });
+      },
+    ),
+    recordRunStarted: vi.fn().mockImplementation(
+      async (input: {
+        runId: string;
+        runtimeKind?: RuntimeKind;
+        platformAgentRunId?: string | null;
+        startedAt?: string;
+      }) => {
+        const metadata = metadataByRunId.get(input.runId);
+        if (!metadata) {
+          return null;
+        }
+        const updated: AgentRunMetadata = {
+          ...metadata,
+          runtimeKind: input.runtimeKind ?? metadata.runtimeKind,
+          platformAgentRunId:
+            input.platformAgentRunId === undefined
+              ? metadata.platformAgentRunId
+              : input.platformAgentRunId,
+          startedAt: input.startedAt ?? metadata.startedAt ?? new Date(0).toISOString(),
+        };
+        metadataByRunId.set(input.runId, updated);
+        return { ...updated };
+      },
+    ),
+    recordRunSummary: vi.fn().mockResolvedValue(undefined),
+    recordRunTerminated: vi.fn().mockResolvedValue(undefined),
+  };
+
+  return {
+    metadataByRunId,
+    metadataService,
+    historyCatalogService,
+  };
+};
+
 afterEach(() => {
   vi.clearAllMocks();
 });
@@ -69,15 +130,8 @@ describe("AgentRunService integration", () => {
         restoreAgentRun: vi.fn(),
         hasActiveRun: vi.fn().mockReturnValue(false),
       };
-      const metadataService = {
-        writeMetadata: vi.fn().mockResolvedValue(undefined),
-        readMetadata: vi.fn(),
-      };
-      const historyIndexService = {
-        recordRunCreated: vi.fn().mockResolvedValue(undefined),
-        recordRunRestored: vi.fn(),
-        recordRunTerminated: vi.fn(),
-      };
+      const { metadataByRunId, metadataService, historyCatalogService } =
+        createRunHistoryHarness();
       const workspaceManager = {
         ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
           workspaceId: "workspace-123",
@@ -88,7 +142,7 @@ describe("AgentRunService integration", () => {
       const service = new AgentRunService("/tmp/memory", {
         agentRunManager: agentRunManager as never,
         metadataService: metadataService as never,
-        historyIndexService: historyIndexService as never,
+        historyCatalogService: historyCatalogService as never,
         workspaceManager: workspaceManager as never,
         agentDefinitionService: {
           getFreshAgentDefinitionById: vi.fn().mockResolvedValue({
@@ -119,17 +173,34 @@ describe("AgentRunService integration", () => {
         }),
         expectedPreparedRunId,
       );
-      expect(metadataService.writeMetadata).toHaveBeenCalledWith(
-        expectedPreparedRunId,
+      expect(metadataByRunId.get(expectedPreparedRunId)).toEqual(
         expect.objectContaining({
           runId: expectedPreparedRunId,
           runtimeKind,
           workspaceRootPath: "/tmp/project",
           memoryDir: `/tmp/memory/agents/${expectedPreparedRunId}`,
           platformAgentRunId,
+          preparedAt: expect.any(String),
+          startedAt: expect.any(String),
         }),
       );
-      expect(historyIndexService.recordRunCreated).toHaveBeenCalledTimes(1);
+      expect(historyCatalogService.recordPreparedRun).toHaveBeenCalledWith(
+        expect.objectContaining({
+          runId: expectedPreparedRunId,
+          metadata: expect.objectContaining({
+            runId: expectedPreparedRunId,
+            preparedAt: expect.any(String),
+            startedAt: null,
+          }),
+        }),
+      );
+      expect(historyCatalogService.recordRunStarted).toHaveBeenCalledWith(
+        expect.objectContaining({
+          runId: expectedPreparedRunId,
+          runtimeKind,
+          platformAgentRunId,
+        }),
+      );
     },
   );
 
@@ -158,15 +229,8 @@ describe("AgentRunService integration", () => {
         restoreAgentRun: vi.fn().mockResolvedValue(restoredRun),
         hasActiveRun: vi.fn().mockReturnValue(false),
       };
-      const metadataService = {
-        writeMetadata: vi.fn().mockResolvedValue(undefined),
-        readMetadata: vi.fn().mockResolvedValue(metadata),
-      };
-      const historyIndexService = {
-        recordRunCreated: vi.fn(),
-        recordRunRestored: vi.fn().mockResolvedValue(undefined),
-        recordRunTerminated: vi.fn(),
-      };
+      const { metadataService, historyCatalogService } =
+        createRunHistoryHarness([metadata]);
       const workspaceManager = {
         ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
           workspaceId: `ws-${runtimeKind}`,
@@ -177,7 +241,7 @@ describe("AgentRunService integration", () => {
       const service = new AgentRunService("/tmp/memory", {
         agentRunManager: agentRunManager as never,
         metadataService: metadataService as never,
-        historyIndexService: historyIndexService as never,
+        historyCatalogService: historyCatalogService as never,
         workspaceManager: workspaceManager as never,
       });
 
@@ -193,15 +257,13 @@ describe("AgentRunService integration", () => {
       } else {
         expect(restoredContext.runtimeContext).toBeNull();
       }
-      expect(metadataService.writeMetadata).toHaveBeenCalledWith(
-        metadata.runId,
+      expect(historyCatalogService.recordRunStarted).toHaveBeenCalledWith(
         expect.objectContaining({
-          lastKnownStatus: "ACTIVE",
-          memoryDir: metadata.memoryDir,
+          runId: metadata.runId,
+          runtimeKind,
           platformAgentRunId: `${platformAgentRunId}-new`,
         }),
       );
-      expect(historyIndexService.recordRunRestored).toHaveBeenCalledTimes(1);
     },
   );
 
@@ -236,19 +298,18 @@ describe("AgentRunService integration", () => {
   });
 
   it("terminates native and runtime runs with the correct route and updates history/metadata", async () => {
-    const metadataService = {
-      writeMetadata: vi.fn().mockResolvedValue(undefined),
-      readMetadata: vi.fn().mockResolvedValue(createMetadata({
+    const { metadataService, historyCatalogService } = createRunHistoryHarness([
+      createMetadata({
         runId: "run-term-1",
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         platformAgentRunId: "native-1",
-      })),
-    };
-    const historyIndexService = {
-      recordRunCreated: vi.fn(),
-      recordRunRestored: vi.fn(),
-      recordRunTerminated: vi.fn().mockResolvedValue(undefined),
-    };
+      }),
+      createMetadata({
+        runId: "run-term-2",
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        platformAgentRunId: "session-2",
+      }),
+    ]);
     const nativeRun = createActiveRun({
       runId: "run-term-1",
       runtimeKind: RuntimeKind.AUTOBYTEUS,
@@ -274,7 +335,7 @@ describe("AgentRunService integration", () => {
     const service = new AgentRunService("/tmp/memory", {
       agentRunManager: agentRunManager as never,
       metadataService: metadataService as never,
-      historyIndexService: historyIndexService as never,
+      historyCatalogService: historyCatalogService as never,
       workspaceManager: {
         ensureWorkspaceByRootPath: vi.fn(),
         getWorkspaceById: vi.fn(),
@@ -282,11 +343,6 @@ describe("AgentRunService integration", () => {
     });
 
     const nativeResult = await service.terminateAgentRun("run-term-1");
-    metadataService.readMetadata.mockResolvedValueOnce(createMetadata({
-      runId: "run-term-2",
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      platformAgentRunId: "session-2",
-    }));
     const runtimeResult = await service.terminateAgentRun("run-term-2");
 
     expect(nativeResult).toMatchObject({
@@ -302,11 +358,24 @@ describe("AgentRunService integration", () => {
     expect(metadataService.writeMetadata).toHaveBeenCalledWith(
       "run-term-1",
       expect.objectContaining({
-        lastKnownStatus: "TERMINATED",
+        lastKnownStatus: "IDLE",
         platformAgentRunId: "native-1-updated",
       }),
     );
-    expect(historyIndexService.recordRunTerminated).toHaveBeenCalledTimes(2);
+    expect(metadataService.writeMetadata).toHaveBeenCalledWith(
+      "run-term-2",
+      expect.objectContaining({
+        lastKnownStatus: "IDLE",
+        platformAgentRunId: "session-2-updated",
+      }),
+    );
+    expect(historyCatalogService.recordRunTerminated).toHaveBeenCalledTimes(2);
+    expect(historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({
+      runId: "run-term-1",
+    });
+    expect(historyCatalogService.recordRunTerminated).toHaveBeenCalledWith({
+      runId: "run-term-2",
+    });
   });
 
   it("returns not_found when termination target is missing or unaccepted", async () => {
