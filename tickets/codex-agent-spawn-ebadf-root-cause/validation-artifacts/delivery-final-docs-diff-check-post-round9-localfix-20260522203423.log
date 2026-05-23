@@ -1,0 +1,7 @@
+# Final delivery docs diff check
+UTC 2026-05-22T18:34:23Z
+repo=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+HEAD=916e90349d4719638930ad3eae5a92c768a6ab95
+origin/personal=fcf435ec1894de13fad54002cd70e62d59dd12b8
+command=git diff --check
+result=pass

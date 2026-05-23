@@ -1,0 +1,29 @@
+# Electron macOS arm64 artifact summary
+UTC 2026-05-22T18:29:47Z
+repo=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+HEAD=916e90349d4719638930ad3eae5a92c768a6ab95
+origin/personal=fcf435ec1894de13fad54002cd70e62d59dd12b8
+ahead_behind=6	0
+build_log=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-post-round9-localfix-20260522202518.log
+dmg_verify_log=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-dmg-verify-post-round9-localfix-20260522202943.log
+
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.dmg
+  size_bytes=379612024
+  mtime=2026-05-22T20:27:41+0200
+  sha256=2d884552172c01f6788662406dc7c6a0b309264b11ba3e525ef64e321923caed
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.dmg.blockmap
+  size_bytes=395345
+  mtime=2026-05-22T20:27:43+0200
+  sha256=bc28888f594c5789526970e26449807d1d9c68eed6eae3d0fb2f9672959e4dc1
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.zip
+  size_bytes=377096354
+  mtime=2026-05-22T20:29:02+0200
+  sha256=014c65a3de538d5a5ffd8f204ece88fed9d22eb7303914e92f81f86fb63afaeb
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.zip.blockmap
+  size_bytes=387394
+  mtime=2026-05-22T20:29:04+0200
+  sha256=39a16ed91a2010505678ebe4122167b1da36b8ae8dcefbd3771a30db4be672b2
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml
+  size_bytes=561
+  mtime=2026-05-22T20:29:04+0200
+  sha256=5ee44db55e8695ba67ef8d2db9a84957f55c1863d464d0660b23c99c3af87634

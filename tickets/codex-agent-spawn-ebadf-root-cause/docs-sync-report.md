@@ -3,26 +3,28 @@
 ## Scope
 
 - Ticket: `codex-agent-spawn-ebadf-root-cause`
-- Trigger: API/E2E validation passed, repository-resident durable validation was re-reviewed by code review round 5, and delivery was asked to ensure the ticket branch is based on the latest `origin/personal` before producing a macOS Electron build.
+- Trigger: API/E2E round 5 passed, repository-resident durable validation was re-reviewed by code review round 9, delivery was asked to read the Electron README and produce a macOS Electron build, and a delivery-discovered localization Local Fix was returned by implementation.
 - Bootstrap base reference: not explicitly recorded in upstream artifacts; delivery inferred the tracked base/finalization target from the ticket branch upstream, `origin/personal`.
 - Latest tracked base used for the current delivery refresh: `origin/personal@fcf435ec1894de13fad54002cd70e62d59dd12b8`.
-- Integrated branch reference used for docs sync: `717b6719616887bce70a4e0c7158432420bb834c` after merging latest `origin/personal`.
-- Current delivery status: docs remain synchronized with the round-5-reviewed implementation and latest-base integrated state; finalization remains paused pending explicit user verification.
+- Integrated branch reference used for docs sync and build verification: `916e90349d4719638930ad3eae5a92c768a6ab95` after confirming latest `origin/personal` and committing the round-9 localization Local Fix checkpoint.
+- Current delivery status: docs remain synchronized with the round-9-reviewed implementation plus the narrow localization Local Fix; the requested Electron artifacts were built and verified locally; repository finalization remains paused pending explicit user verification.
 
 ## Why Docs Were Updated
 
 - Summary: delivery updated `autobyteus-web/docs/file_explorer.md` because it still described old stream method names and implied workspace/subscription-driven watcher behavior. The doc now records the integrated implementation: visible file explorer consumers acquire/release live sessions, one frontend WebSocket stream is shared per workspace, GraphQL snapshot/search/file operations stay watcher-free, backend watcher leases are owned by WebSocket sessions, and mutation echoes are filtered. Delivery also expanded `autobyteus-server-ts/docs/modules/file_explorer.md` from a stub into backend watcher/resource invariants and durable E2E coverage.
-- Round 5 re-check: code review round 5 changed durable validation only; no product behavior or public docs semantics changed. Delivery rechecked the docs after merging latest `origin/personal@fcf435ec1894de13fad54002cd70e62d59dd12b8` and no additional docs edits were needed beyond refreshing this report/handoff metadata.
+- Round 9 re-check: API/E2E round 5 added or updated durable validation for `workspaceReference(rootPath:)` and current `TeamRunHistoryCatalogService` boundaries; code review round 9 passed that durable validation. Those validation updates did not require additional long-lived docs edits beyond this report/handoff metadata because the product-facing file-explorer/watcher contract was already documented.
+- Localization Local Fix re-check: implementation replaced the hard-coded Terminal retry label with localized catalog keys. This only corrected a localization audit failure in the Electron build path and did not change the documented file-explorer or watcher behavior.
 - Why this should live in long-lived project docs: future file-explorer, workspace, and Codex app-server runtime changes need the watcher-lifecycle contract to avoid reintroducing leaked chokidar watchers, descriptor pressure, or stale frontend stream ownership assumptions.
 
 ## Long-Lived Docs Reviewed
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/docs/file_explorer.md` | Explicit API/E2E delivery note said it documented old stream method names and old watcher behavior. | Updated | Replaced stale live-sync documentation with visible-consumer live sessions, snapshot refresh, watcher lease lifecycle, backend files, and current workspace-scoped store usage. Rechecked after the round-5 validation-only change and latest-base merge. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/docs/modules/file_explorer.md` | Backend watcher lease/resource invariants were durable runtime knowledge but the doc was only a short source index. | Updated | Added snapshot operation contract, WebSocket lease lifecycle, resource-safety invariants, Codex spawn diagnostics, and durable E2E reference. Rechecked after the round-5 validation-only change and latest-base merge. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/docs/file_explorer.md` | Explicit API/E2E delivery note said it documented old stream method names and old watcher behavior. | Updated | Replaced stale live-sync documentation with visible-consumer live sessions, snapshot refresh, watcher lease lifecycle, backend files, and current workspace-scoped store usage. Rechecked after round-9 durable validation and localization Local Fix. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/docs/modules/file_explorer.md` | Backend watcher lease/resource invariants were durable runtime knowledge but the doc was only a short source index. | Updated | Added snapshot operation contract, WebSocket lease lifecycle, resource-safety invariants, Codex spawn diagnostics, and durable E2E reference. Rechecked after round-9 durable validation and localization Local Fix. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/docs/content_rendering.md` | Related from file explorer doc for file-content rendering behavior. | No change | Rendering behavior was not changed by this ticket. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/docs/terminal.md` | Related active-workspace doc from file explorer page. | No change | Terminal behavior was not changed by this ticket. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/docs/terminal.md` | Related active-workspace doc from file explorer page and touched by the localization Local Fix. | No change | Terminal runtime behavior did not change; the Local Fix only localized an existing retry label. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/README.md` | User explicitly asked delivery to read the README before building Electron. | No change | README already documents `pnpm build:electron:mac`, `electron-dist`, and the local macOS verbose/no-notarization command pattern. |
 
 ## Docs Updated
 
@@ -41,6 +43,8 @@
 | Mutation echo filtering | Frontend applies mutation results immediately and filters later stream echoes; text saves use modify-echo suppression. | `implementation-handoff.md`, `review-report.md` | `autobyteus-web/docs/file_explorer.md` |
 | Descriptor-pressure diagnostics | Codex app-server spawn failures now include runtime command/cwd/args/error/open-fd diagnostics and descriptor-pressure hints for `EBADF`/`EMFILE`/`ENFILE`. | `root-cause-report.md`, `implementation-handoff.md`, `api-e2e-validation-report.md` | `autobyteus-server-ts/docs/modules/file_explorer.md` |
 | Round 5 durable validation tightening | Expanded E2E now requires explicit non-empty write/delete change events instead of allowing empty `changes` arrays. | `review-report.md`, `api-e2e-validation-report.md` | Durable test source only; no long-lived behavioral docs change required. |
+| Round 9 durable validation coverage | `workspaceReference(rootPath:)` is covered without workspace initialization, later create reuses deterministic identity, and team-run history catalog assertions reflect the current service boundary. | `review-report.md`, `api-e2e-validation-report.md` | Durable test source only; no long-lived behavioral docs change required. |
+| High-churn descriptor/Codex activation evidence | Embedded backend high-churn validation showed watcher-light snapshot APIs, no open/close leak, successful child-process spawn, and Codex app-server provider activation after churn. | `api-e2e-validation-report.md` | `autobyteus-server-ts/docs/modules/file_explorer.md` |
 
 ## Removed / Replaced Components Recorded
 
@@ -49,17 +53,18 @@
 | Old frontend docs for `subscribeToWorkspaceChanges`, `connectToFileSystemChanges`, and `disconnectFromFileSystemChanges` as component-facing stream APIs. | `acquireFileExplorerLiveSession(workspaceId, consumerId)` / `releaseFileExplorerLiveSession(workspaceId, consumerId)` with internal `connectFileExplorerLiveStream` / `disconnectFileExplorerLiveStream`. | `autobyteus-web/docs/file_explorer.md` |
 | Workspace-load or search-driven persistent watcher assumptions. | Request/response snapshot operations that do not start live watchers. | `autobyteus-web/docs/file_explorer.md`, `autobyteus-server-ts/docs/modules/file_explorer.md` |
 | Always-on watcher lifetime tied to cached workspace/file explorer objects. | Session-owned watcher leases tied to live WebSocket lifecycle and visible frontend consumers. | `autobyteus-web/docs/file_explorer.md`, `autobyteus-server-ts/docs/modules/file_explorer.md` |
+| Hard-coded Terminal retry label found by the delivery Electron build. | Localized `$t('workspace.components.workspace.tools.Terminal.retry_workspace_load')` with English and Chinese catalog entries. | Source/localization catalogs; no long-lived docs update required. |
 
 ## No-Impact Decision
 
-- Docs impact after code review round 5: no additional long-lived docs edits were needed.
-- Rationale: round 5 tightened repository-resident durable validation expectations for GraphQL file operation change events and did not alter product behavior or the file-explorer runtime contract already documented.
+- Docs impact after code review round 9 and the localization Local Fix: no additional long-lived docs edits were needed.
+- Rationale: round 9 changed durable validation coverage, and the later Local Fix changed only localization wiring for an existing Terminal retry label. Neither changed the file-explorer watcher lifecycle, workspace reference behavior, team-run history behavior, or Electron build instructions already documented.
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Documentation sync is complete against integrated branch state `717b6719616887bce70a4e0c7158432420bb834c`; repository finalization is intentionally paused pending explicit user verification.
+- Notes: Documentation sync is complete against latest-base checked branch state `916e90349d4719638930ad3eae5a92c768a6ab95`; current macOS Electron artifacts were built and DMG-verified; repository finalization is intentionally paused pending explicit user verification.
 
 ## Blocked Or Escalated Follow-Up
 
