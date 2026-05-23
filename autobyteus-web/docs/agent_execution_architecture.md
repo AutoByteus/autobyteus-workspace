@@ -191,6 +191,34 @@ backend-provided history summary. Team row title behavior remains owned by the
 team-history path and is not reinterpreted by the standalone live-context
 overlay.
 
+### Workspace History Progressive Disclosure
+
+The Workspaces sidebar history tree uses progressive disclosure for its
+ordinary desktop render. `WorkspaceAgentRunsTreePanel.vue` wires the tree state
+from `useWorkspaceHistoryTreeState(...)`, and
+`WorkspaceHistoryWorkspaceSection.vue` renders only the visible level for the
+current expansion state.
+
+- Workspace rows default collapsed after history loads, so the initial tree
+  shows workspace names only.
+- Expanding a workspace reveals the next-level standalone-agent groups and
+  team-definition groups for that workspace.
+- Standalone run rows and team-run rows stay collapsed until the user expands
+  the specific agent group or team-definition group.
+- Manual workspace, agent-group, team-definition-group, and team-run expansion
+  choices are kept in component-local tree state and are not reset by quiet
+  history refreshes while the history panel remains mounted.
+- Newly added workspaces are explicitly opened after creation so the add flow
+  still lands the user in the workspace they just created.
+
+When an existing run or team run is selected before its history ancestry is
+visible, `useWorkspaceHistoryTreeState(...)` performs a one-shot selected-path
+reveal. The reveal expands only the selected run/team's workspace and containing
+agent or team-definition group, and for selected team runs also opens that team
+run's member row. After the selected path has been revealed for the stable
+selection key, later quiet refreshes must not reopen the same path if the user
+manually collapses it.
+
 ### Workspace History Archive And Delete Actions
 
 `components/workspace/history/WorkspaceAgentRunsTreePanel.vue` owns the

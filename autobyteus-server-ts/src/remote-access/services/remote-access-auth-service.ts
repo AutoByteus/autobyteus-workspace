@@ -51,7 +51,7 @@ export class RemoteAccessAuthService {
       return rejection(401, "REMOTE_ACCESS_AUTH_REQUIRED", "Remote Access credential is required.");
     }
 
-    const device = await this.deviceService.findActiveDeviceByCredential(normalizedCredential);
+    const device = await this.deviceService.findDeviceByCredential(normalizedCredential);
     if (!device) {
       return rejection(401, "REMOTE_ACCESS_AUTH_INVALID", "Remote Access credential is invalid.");
     }

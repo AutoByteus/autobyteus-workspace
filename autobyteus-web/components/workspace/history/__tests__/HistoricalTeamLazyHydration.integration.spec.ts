@@ -74,12 +74,13 @@ const buildTeamResumeConfigResponse = () => ({
       teamDefinitionId: 'team-def-1',
       teamDefinitionName: 'Software Engineering Team',
       coordinatorMemberRouteKey: 'solution_designer',
-      runVersion: 1,
       createdAt: '2026-01-01T00:00:00.000Z',
       updatedAt: '2026-01-01T00:05:00.000Z',
-      memberMetadata: [
+      memberTree: [
         {
+          memberKind: 'agent',
           memberRouteKey: 'solution_designer',
+          memberPath: ['solution_designer'],
           memberName: 'solution_designer',
           memberRunId: 'member-run-sd',
           agentDefinitionId: 'agent-sd',
@@ -91,7 +92,9 @@ const buildTeamResumeConfigResponse = () => ({
           workspaceRootPath: '/ws/a',
         },
         {
+          memberKind: 'agent',
           memberRouteKey: 'architect_reviewer',
+          memberPath: ['architect_reviewer'],
           memberName: 'architect_reviewer',
           memberRunId: 'member-run-ar',
           agentDefinitionId: 'agent-ar',
@@ -103,7 +106,9 @@ const buildTeamResumeConfigResponse = () => ({
           workspaceRootPath: '/ws/a',
         },
         {
+          memberKind: 'agent',
           memberRouteKey: 'code_reviewer',
+          memberPath: ['code_reviewer'],
           memberName: 'code_reviewer',
           memberRunId: 'member-run-cr',
           agentDefinitionId: 'agent-cr',
@@ -251,6 +256,7 @@ vi.mock('~/graphql/queries/runHistoryQueries', () => ({
   GetAgentRunResumeConfig: 'GetAgentRunResumeConfig',
   GetTeamRunResumeConfig: 'GetTeamRunResumeConfig',
   GetTeamMemberRunProjection: 'GetTeamMemberRunProjection',
+  GetTeamCommunicationMessages: 'GetTeamCommunicationMessages',
 }));
 
 vi.mock('~/graphql/mutations/runHistoryMutations', () => ({
@@ -364,6 +370,20 @@ describe('Historical team lazy hydration integration', () => {
     },
   });
 
+  const expandTeamDefinitionGroup = async (wrapper: any) => {
+    const workspaceRow = wrapper.get('[data-test="workspace-row"][data-workspace-root="/ws/a"]');
+    if (workspaceRow.attributes('aria-expanded') !== 'true') {
+      await workspaceRow.trigger('click');
+      await flushPromises();
+    }
+
+    const teamDefinitionRow = wrapper.get('[data-test="workspace-team-definition-row-team-def-1"]');
+    if (teamDefinitionRow.attributes('aria-expanded') !== 'true') {
+      await teamDefinitionRow.trigger('click');
+      await flushPromises();
+    }
+  };
+
   it('opens a historical team through the sidebar and lazily hydrates only the newly selected member', async () => {
     const projectionCalls: string[] = [];
     let resumeConfigCalls = 0;
@@ -394,6 +414,13 @@ describe('Historical team lazy hydration integration', () => {
         };
       }
 
+      if (query === 'GetTeamCommunicationMessages') {
+        return {
+          data: { getTeamCommunicationMessages: [] },
+          errors: [],
+        };
+      }
+
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -405,12 +432,13 @@ describe('Historical team lazy hydration integration', () => {
     await flushPromises();
 
     expect(runHistoryStore.workspaceGroups).toHaveLength(1);
+    await expandTeamDefinitionGroup(wrapper);
     await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
     await flushPromises();
 
     const hydratedTeam = teamContextsStore.getTeamContextById('team-1');
     expect(hydratedTeam).toBeTruthy();
-    expect(hydratedTeam?.focusedMemberName).toBe('solution_designer');
+    expect(hydratedTeam?.focusedMemberRouteKey).toBe('solution_designer');
     expect(hydratedTeam?.members.get('solution_designer')?.state.conversation.messages.length).toBe(2);
     expect(hydratedTeam?.members.get('architect_reviewer')?.state.conversation.messages.length).toBe(0);
     expect(hydratedTeam?.historicalHydration?.memberProjectionLoadStateByRouteKey).toEqual({
@@ -427,11 +455,12 @@ describe('Historical team lazy hydration integration', () => {
     await wrapper.get('[data-test="workspace-team-member-team-1-architect_reviewer"]').trigger('click');
     await flushPromises();
 
+    const refocusedTeam = teamContextsStore.getTeamContextById('team-1');
     expect(resumeConfigCalls).toBe(1);
     expect(projectionCalls).toEqual(['solution_designer', 'architect_reviewer']);
-    expect(hydratedTeam?.focusedMemberName).toBe('architect_reviewer');
-    expect(hydratedTeam?.members.get('architect_reviewer')?.state.conversation.messages.length).toBe(2);
-    expect(hydratedTeam?.historicalHydration?.memberProjectionLoadStateByRouteKey).toEqual({
+    expect(refocusedTeam?.focusedMemberRouteKey).toBe('architect_reviewer');
+    expect(refocusedTeam?.members.get('architect_reviewer')?.state.conversation.messages.length).toBe(2);
+    expect(refocusedTeam?.historicalHydration?.memberProjectionLoadStateByRouteKey).toEqual({
       solution_designer: 'loaded',
       architect_reviewer: 'loaded',
       code_reviewer: 'unloaded',
@@ -468,6 +497,13 @@ describe('Historical team lazy hydration integration', () => {
         };
       }
 
+      if (query === 'GetTeamCommunicationMessages') {
+        return {
+          data: { getTeamCommunicationMessages: [] },
+          errors: [],
+        };
+      }
+
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -476,6 +512,7 @@ describe('Historical team lazy hydration integration', () => {
 
     await flushPromises();
 
+    await expandTeamDefinitionGroup(wrapper);
     await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
     await flushPromises();
 

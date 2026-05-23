@@ -1,0 +1,5 @@
+8fc55649716ab744d8ee1198f2532f98cfcca3232c7ae0d0be4e0c64fc89949d  /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg
+92dcd81b708c05d3b131491d57410700bafb3a9cfb68e6b46ffc080b22b260d9  /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg.blockmap
+6b7235c6492d5343627624451e6f92d5e9f9934a629cb7142be88edaac4dbc7c  /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip
+2068d5ad8d4389190ffdad03cf66397560cf6fab9a2facf690dff28ca2e697b5  /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip.blockmap
+09186ced38481320fdfc5735e902d0abcb3322eacc31f9791c66dd3e1001950e  /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/latest-mac.yml

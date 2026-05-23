@@ -80,7 +80,11 @@ export async function registerRemoteAccessRoutes(app: FastifyInstance): Promise<
   });
 
   app.get("/remote-access/devices", async () => ({
-    devices: await getPairedDeviceService().listDeviceSummaries(),
+    devices: await getPairedDeviceService().listActiveDeviceSummaries(),
+  }));
+
+  app.get("/remote-access/devices/revoked", async () => ({
+    devices: await getPairedDeviceService().listRevokedDeviceSummaries(),
   }));
 
   app.delete<{ Params: { deviceId: string } }>("/remote-access/devices/:deviceId", async (request, reply) => {

@@ -72,6 +72,7 @@ export const classifyHttpRoute = (
     path === "/rest/remote-access/address-candidates"
     || path === "/rest/remote-access/pairing-sessions"
     || path === "/rest/remote-access/devices"
+    || path === "/rest/remote-access/devices/revoked"
     || /^\/rest\/remote-access\/devices\/[^/]+$/.test(path)
     || path === "/rest/remote-access/settings"
   ) {

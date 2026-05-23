@@ -3,6 +3,9 @@
     <button
       type="button"
       class="flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+      data-test="workspace-row"
+      :data-workspace-root="workspaceNode.workspaceRootPath"
+      :aria-expanded="state.isWorkspaceExpanded(workspaceNode.workspaceRootPath)"
       @click="state.toggleWorkspace(workspaceNode.workspaceRootPath)"
     >
       <Icon
@@ -31,6 +34,10 @@
           <button
             type="button"
             class="flex min-w-0 flex-1 items-center text-left"
+            data-test="workspace-agent-row"
+            :data-workspace-root="workspaceNode.workspaceRootPath"
+            :data-agent-definition-id="agentNode.agentDefinitionId"
+            :aria-expanded="state.isAgentExpanded(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId)"
             @click="state.toggleAgent(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId)"
           >
             <Icon
@@ -152,12 +159,13 @@
             type="button"
             class="flex w-full items-center rounded-md px-2 py-1 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
             :data-test="`workspace-team-definition-row-${group.key}`"
-            @click="toggleTeamDefinition(group.key)"
+            :aria-expanded="state.isTeamDefinitionExpanded(workspaceNode.workspaceRootPath, group.key)"
+            @click="state.toggleTeamDefinition(workspaceNode.workspaceRootPath, group.key)"
           >
             <Icon
               icon="heroicons:chevron-down-20-solid"
               class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
-              :class="isTeamDefinitionExpanded(group.key) ? 'rotate-0' : '-rotate-90'"
+              :class="state.isTeamDefinitionExpanded(workspaceNode.workspaceRootPath, group.key) ? 'rotate-0' : '-rotate-90'"
             />
             <span
               class="mr-1.5 inline-block h-2 w-2 flex-shrink-0 rounded-full"
@@ -179,7 +187,7 @@
             <span class="ml-1 text-xs text-gray-400">({{ group.runs.length }})</span>
           </button>
 
-          <div v-if="isTeamDefinitionExpanded(group.key)" class="ml-3 mt-0.5 space-y-0.5">
+          <div v-if="state.isTeamDefinitionExpanded(workspaceNode.workspaceRootPath, group.key)" class="ml-3 mt-0.5 space-y-0.5">
             <div
               v-for="team in group.runs"
               :key="team.teamRunId"
@@ -299,25 +307,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type {
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
   WorkspaceHistorySectionState,
 } from '~/components/workspace/history/workspaceHistorySectionContracts';
+import {
+  buildWorkspaceTeamDefinitionDisplayGroups,
+  type WorkspaceHistoryTeamDefinitionDisplayGroup,
+} from '~/components/workspace/history/workspaceHistoryTeamDefinitionGroups';
 import type { TeamRunHistoryDefinitionGroup, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-
-type TeamDefinitionGroup = {
-  key: string;
-  teamDefinitionId: string;
-  teamDefinitionName: string;
-  runs: TeamTreeNode[];
-  representativeRun: TeamTreeNode;
-  status: AgentTeamStatus;
-};
 
 const props = defineProps<{
   workspaceNode: RunTreeWorkspaceNode;
@@ -328,111 +330,17 @@ const props = defineProps<{
   actions: WorkspaceHistorySectionActions;
 }>();
 
-const expandedTeamDefinitions = ref<Record<string, boolean>>({});
-
-const resolveTeamDefinitionGroupKey = (team: Pick<TeamTreeNode, 'teamDefinitionId' | 'teamDefinitionName' | 'teamRunId'>): string =>
-  team.teamDefinitionId?.trim() || team.teamDefinitionName?.trim() || 'team';
-
-const buildDisplayGroupsFromTeamNodes = (teams: TeamTreeNode[]): TeamDefinitionGroup[] => {
-  const groups = new Map<string, TeamDefinitionGroup>();
-
-  for (const team of teams) {
-    const key = resolveTeamDefinitionGroupKey(team);
-    const existing = groups.get(key);
-    if (existing) {
-      existing.runs.push(team);
-      if (existing.representativeRun.lastActivityAt < team.lastActivityAt) {
-        existing.representativeRun = team;
-        existing.status = team.currentStatus;
-      }
-      continue;
-    }
-
-    groups.set(key, {
-      key,
-      teamDefinitionId: team.teamDefinitionId,
-      teamDefinitionName: team.teamDefinitionName || 'Team',
-      runs: [team],
-      representativeRun: team,
-      status: team.currentStatus,
-    });
-  }
-
-  return Array.from(groups.values());
-};
-
-const buildDisplayGroupsFromHistory = (
-  historyGroups: TeamRunHistoryDefinitionGroup[],
-  teamNodes: TeamTreeNode[],
-): TeamDefinitionGroup[] => {
-  const teamNodeByRunId = new Map(teamNodes.map((team) => [team.teamRunId, team]));
-  const seenRunIds = new Set<string>();
-  const displayGroups: TeamDefinitionGroup[] = [];
-
-  for (const historyGroup of historyGroups) {
-    const runs = historyGroup.runs
-      .map((run) => {
-        const node = teamNodeByRunId.get(run.teamRunId) ?? null;
-        if (node) {
-          seenRunIds.add(node.teamRunId);
-        }
-        return node;
-      })
-      .filter((team): team is TeamTreeNode => team !== null);
-
-    if (runs.length === 0) {
-      continue;
-    }
-
-    let representativeRun = runs[0]!;
-    for (const run of runs) {
-      if (representativeRun.lastActivityAt < run.lastActivityAt) {
-        representativeRun = run;
-      }
-    }
-
-    displayGroups.push({
-      key:
-        historyGroup.teamDefinitionId.trim()
-        || historyGroup.teamDefinitionName.trim()
-        || representativeRun.teamRunId,
-      teamDefinitionId: historyGroup.teamDefinitionId,
-      teamDefinitionName: historyGroup.teamDefinitionName || representativeRun.teamDefinitionName || 'Team',
-      runs,
-      representativeRun,
-      status: representativeRun.currentStatus,
-    });
-  }
-
-  const leftoverRuns = teamNodes.filter((team) => !seenRunIds.has(team.teamRunId));
-  if (leftoverRuns.length > 0) {
-    displayGroups.push(...buildDisplayGroupsFromTeamNodes(leftoverRuns));
-  }
-
-  return displayGroups;
-};
-
-const groupedTeamDefinitions = computed<TeamDefinitionGroup[]>(() => {
-  if (props.workspaceTeamHistoryGroups.length === 0) {
-    return buildDisplayGroupsFromTeamNodes(props.workspaceTeams);
-  }
-  return buildDisplayGroupsFromHistory(props.workspaceTeamHistoryGroups, props.workspaceTeams);
-});
+const groupedTeamDefinitions = computed<WorkspaceHistoryTeamDefinitionDisplayGroup[]>(() =>
+  buildWorkspaceTeamDefinitionDisplayGroups(
+    props.workspaceTeamHistoryGroups,
+    props.workspaceTeams,
+  ),
+);
 
 const flattenTeamMembers = (team: TeamTreeNode): TeamTreeNode['members'] => {
   const flatten = (members: TeamTreeNode['memberTree']): TeamTreeNode['members'] =>
     members.flatMap((member) => [member, ...flatten(member.children)]);
   return flatten(team.memberTree.length > 0 ? team.memberTree : team.members);
-};
-
-const isTeamDefinitionExpanded = (groupKey: string): boolean =>
-  expandedTeamDefinitions.value[groupKey] ?? true;
-
-const toggleTeamDefinition = (groupKey: string): void => {
-  expandedTeamDefinitions.value = {
-    ...expandedTeamDefinitions.value,
-    [groupKey]: !isTeamDefinitionExpanded(groupKey),
-  };
 };
 
 const USER_REQUIREMENT_PREFIX = /^\s*(?:\*\*)?\s*(?:\[\s*user requirement\s*\]|user requirement)\s*(?:\*\*)?\s*[:\-]?\s*/i;

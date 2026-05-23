@@ -1,0 +1,62 @@
+
+> autobyteus@1.3.26 test:nuxt /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+> cross-env NUXT_TEST=true vitest utils/__tests__/nodeEndpoints.spec.ts utils/__tests__/phoneSetupGuideCommands.spec.ts stores/__tests__/phoneAccessStore.spec.ts components/settings/__tests__/PhoneSetupGuideCard.spec.ts components/settings/__tests__/PhoneAccessCard.spec.ts components/settings/__tests__/NodeManager.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+
+stderr | utils/__tests__/nodeEndpoints.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/phoneAccessStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/PhoneSetupGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/PhoneAccessCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/phoneSetupGuideCommands.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/phoneAccessStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/PhoneAccessCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/PhoneSetupGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/nodeEndpoints.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/phoneSetupGuideCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/nodeEndpoints.spec.ts (6 tests) 4ms
+ ✓ utils/__tests__/phoneSetupGuideCommands.spec.ts (2 tests) 2ms
+ ✓ components/settings/__tests__/PhoneSetupGuideCard.spec.ts (2 tests) 21ms
+ ✓ stores/__tests__/phoneAccessStore.spec.ts (4 tests) 8ms
+ ✓ components/settings/__tests__/PhoneAccessCard.spec.ts (2 tests) 35ms
+ ✓ components/settings/__tests__/NodeManager.spec.ts (9 tests) 80ms
+
+ Test Files  6 passed (6)
+      Tests  25 passed (25)
+   Start at  16:11:32
+   Duration  5.60s (transform 2.98s, setup 27.57s, collect 575ms, tests 149ms, environment 1.88s, prepare 1.24s)

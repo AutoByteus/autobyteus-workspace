@@ -53,10 +53,30 @@ const {
   pickFolderPathMock,
   addToastMock,
 } = vi.hoisted(() => {
+  const normalizeMember = (member: any): any => ({
+    ...member,
+    memberKind: member.memberKind ?? 'agent',
+    memberRouteKey: member.memberRouteKey ?? member.memberName ?? '',
+    memberPath: member.memberPath ?? [member.memberRouteKey ?? member.memberName ?? ''],
+    displayName: member.displayName ?? member.memberName ?? member.memberRouteKey ?? '',
+    currentStatus: member.currentStatus ?? member.status ?? 'offline',
+    children: (member.children ?? []).map(normalizeMember),
+  });
+
+  const normalizeTeamNode = (team: any): any => ({
+    ...team,
+    focusedMemberRouteKey: team.focusedMemberRouteKey ?? team.focusedMemberName ?? '',
+    members: (team.members ?? []).map(normalizeMember),
+    memberTree: (team.memberTree ?? []).map(normalizeMember),
+  });
+
+  const normalizeTeamNodes = (teams: any[]): any[] => teams.map(normalizeTeamNode);
+
   const state = {
     loading: false,
     error: null as string | null,
     selectedRunId: null as string | null,
+    selectedTeamRunId: null as string | null,
     workspaceGroups: [] as any[],
     teamNodesByWorkspace: {} as Record<string, any[]>,
     nodes: [
@@ -118,13 +138,21 @@ const {
       get selectedRunId() {
         return state.selectedRunId;
       },
+      get selectedTeamRunId() {
+        return state.selectedTeamRunId;
+      },
       get workspaceGroups() {
         return state.workspaceGroups;
       },
       fetchTree: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
       getTreeNodes: vi.fn(() => state.nodes),
-      getTeamNodes: vi.fn((workspaceRootPath: string) => state.teamNodesByWorkspace[workspaceRootPath] || []),
+      getTeamNodes: vi.fn((workspaceRootPath?: string) => {
+        if (!workspaceRootPath) {
+          return normalizeTeamNodes(Object.values(state.teamNodesByWorkspace).flat());
+        }
+        return normalizeTeamNodes(state.teamNodesByWorkspace[workspaceRootPath] || []);
+      }),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn().mockResolvedValue(undefined),
       createDraftRun: vi.fn().mockResolvedValue('temp-2'),
@@ -238,6 +266,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     runHistoryState.loading = false;
     runHistoryState.error = null;
     runHistoryState.selectedRunId = null;
+    runHistoryState.selectedTeamRunId = null;
     runHistoryState.nodes = [
       {
         workspaceRootPath: '/ws/a',
@@ -337,12 +366,91 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     },
   });
 
+  const expandWorkspace = async (wrapper: any, workspaceRootPath = '/ws/a') => {
+    const workspaceRow = wrapper.get(
+      `[data-test="workspace-row"][data-workspace-root="${workspaceRootPath}"]`,
+    );
+    if (workspaceRow.attributes('aria-expanded') !== 'true') {
+      await workspaceRow.trigger('click');
+      await flushPromises();
+    }
+  };
+
+  const expandAgentGroup = async (
+    wrapper: any,
+    workspaceRootPath = '/ws/a',
+    agentDefinitionId = 'agent-def-1',
+  ) => {
+    await expandWorkspace(wrapper, workspaceRootPath);
+    const agentRow = wrapper.get(
+      `[data-test="workspace-agent-row"][data-workspace-root="${workspaceRootPath}"][data-agent-definition-id="${agentDefinitionId}"]`,
+    );
+    if (agentRow.attributes('aria-expanded') !== 'true') {
+      await agentRow.trigger('click');
+      await flushPromises();
+    }
+  };
+
+  const expandTeamDefinitionGroup = async (
+    wrapper: any,
+    workspaceRootPath = '/ws/a',
+    groupKey = 'team-def-1',
+  ) => {
+    await expandWorkspace(wrapper, workspaceRootPath);
+    const teamDefinitionRow = wrapper.get(`[data-test="workspace-team-definition-row-${groupKey}"]`);
+    if (teamDefinitionRow.attributes('aria-expanded') !== 'true') {
+      await teamDefinitionRow.trigger('click');
+      await flushPromises();
+    }
+  };
+
   it('loads workspace list and history tree on mount', async () => {
     mountComponent();
     await flushPromises();
 
     expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
     expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders workspace rows collapsed by default', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('autobyteus_org');
+    expect(wrapper.text()).not.toContain('SuperAgent');
+    expect(wrapper.text()).not.toContain('Describe messaging bindings');
+    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('false');
+  });
+
+  it('shows groups after opening a workspace but keeps run histories collapsed', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedMemberName: 'super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    expect(wrapper.text()).toContain('SuperAgent');
+    expect(wrapper.text()).toContain('Teams');
+    expect(wrapper.text()).toContain('Team Alpha');
+    expect(wrapper.text()).not.toContain('Describe messaging bindings');
+    expect(wrapper.text()).not.toContain('Team summary');
+    expect(wrapper.find('[data-test="workspace-agent-row"][data-agent-definition-id="agent-def-1"]').attributes('aria-expanded')).toBe('false');
+    expect(wrapper.find('[data-test="workspace-team-definition-row-team-def-1"]').attributes('aria-expanded')).toBe('false');
   });
 
   it('refreshes run history quietly on the background interval while mounted', async () => {
@@ -365,6 +473,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('renders agent avatar image when the tree node provides avatar URL', async () => {
     const wrapper = mountComponent();
     await flushPromises();
+    await expandWorkspace(wrapper);
 
     const avatar = wrapper.find('img[alt="SuperAgent avatar"]');
     expect(avatar.exists()).toBe(true);
@@ -391,6 +500,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('selects run via runHistoryStore.selectTreeRun and emits run-selected', async () => {
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
 
     const runButton = wrapper.findAll('button').find((button) =>
       button.text().includes('Describe messaging bindings'),
@@ -411,6 +521,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('creates draft run from agent row plus button and emits run-created', async () => {
     const wrapper = mountComponent();
     await flushPromises();
+    await expandWorkspace(wrapper);
 
     const createButtons = wrapper.findAll('button[title="New run with this agent"]');
     expect(createButtons.length).toBe(1);
@@ -496,6 +607,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
 
     expect(wrapper.text()).toContain('Teams');
     const groupRow = wrapper.find('[data-test="workspace-team-definition-row-team-def-1"]');
@@ -603,6 +715,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
 
     const row = wrapper.find('[data-test="workspace-team-row-team-1"]');
     expect(row.exists()).toBe(true);
@@ -690,6 +803,8 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
+    await expandTeamDefinitionGroup(wrapper);
 
     expect(wrapper.text()).toContain('Build a stable sidebar label');
     expect(wrapper.text()).toContain('Build the demo fruit shop');
@@ -716,6 +831,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandWorkspace(wrapper);
 
     const teamAvatar = wrapper.find('img[alt="Team Alpha avatar"]');
     expect(teamAvatar.exists()).toBe(true);
@@ -755,6 +871,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
 
     const teamRow = wrapper.find('[data-test="workspace-team-row-team-1"]');
     expect(teamRow.exists()).toBe(true);
@@ -799,6 +916,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
 
     const teamRow = wrapper.find('[data-test="workspace-team-row-team-1"]');
     expect(teamRow.exists()).toBe(true);
@@ -841,6 +959,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
 
     const deleteButtons = wrapper.findAll('button[title="Delete team history permanently"]');
     expect(deleteButtons).toHaveLength(1);
@@ -866,6 +985,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
 
     const archiveButtons = wrapper.findAll('button[title="Archive team history"]');
     expect(archiveButtons).toHaveLength(1);
@@ -904,6 +1024,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
 
     const configButton = wrapper.find('[data-test="workspace-team-config-team-1"]');
     expect(configButton.exists()).toBe(false);
@@ -929,6 +1050,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
     const vm = wrapper.vm as any;
 
     const deleteButton = wrapper.find('button[title="Delete team history permanently"]');
@@ -966,6 +1088,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
 
     const archiveButton = wrapper.find('button[title="Archive team history"]');
     expect(archiveButton.exists()).toBe(true);
@@ -1051,14 +1174,16 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
   it('renders active status indicator for active runs', async () => {
     const wrapper = mountComponent();
-    await nextTick();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
     const activeDot = wrapper.find('.bg-blue-500.animate-pulse');
     expect(activeDot.exists()).toBe(true);
   });
 
   it('does not render status indicator for inactive runs', async () => {
     const wrapper = mountComponent();
-    await nextTick();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
     const statusDots = wrapper.findAll('span.bg-blue-500.animate-pulse');
     expect(statusDots).toHaveLength(1);
   });
@@ -1066,6 +1191,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('renders delete action only for inactive history runs', async () => {
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
 
     const deleteButtons = wrapper.findAll('button[title="Delete run permanently"]');
     expect(deleteButtons).toHaveLength(1);
@@ -1074,6 +1200,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('renders archive action only for inactive persisted history runs', async () => {
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
 
     const archiveButtons = wrapper.findAll('button[title="Archive run"]');
     expect(archiveButtons).toHaveLength(1);
@@ -1082,6 +1209,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('terminates active run from row action without selecting the row', async () => {
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
 
     const terminateButton = wrapper.find('button[title="Terminate run"]');
     expect(terminateButton.exists()).toBe(true);
@@ -1097,6 +1225,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     agentRunStoreMock.terminateRun.mockResolvedValueOnce(false);
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
 
     const terminateButton = wrapper.find('button[title="Terminate run"]');
     await terminateButton.trigger('click');
@@ -1108,6 +1237,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('deletes inactive history run from row action without selecting the row', async () => {
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
     const vm = wrapper.vm as any;
 
     const deleteButton = wrapper.find('button[title="Delete run permanently"]');
@@ -1125,6 +1255,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('archives inactive history run from row action without selecting the row', async () => {
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
 
     const archiveButton = wrapper.find('button[title="Archive run"]');
     expect(archiveButton.exists()).toBe(true);
@@ -1141,6 +1272,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     runHistoryStoreMock.archiveRun.mockResolvedValueOnce(false);
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
 
     const archiveButton = wrapper.find('button[title="Archive run"]');
     await archiveButton.trigger('click');
@@ -1152,6 +1284,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('does not call delete when confirmation is cancelled', async () => {
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
     const vm = wrapper.vm as any;
 
     const deleteButton = wrapper.find('button[title="Delete run permanently"]');
@@ -1169,6 +1302,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     runHistoryStoreMock.deleteRun.mockResolvedValueOnce(false);
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
     const vm = wrapper.vm as any;
 
     const deleteButton = wrapper.find('button[title="Delete run permanently"]');

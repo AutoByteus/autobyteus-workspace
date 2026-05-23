@@ -31,7 +31,9 @@ The route policy classifies every HTTP request before normal route handling:
   - `PUT /rest/remote-access/settings`
   - `GET /rest/remote-access/address-candidates`
   - `POST /rest/remote-access/pairing-sessions`
-  - `GET/DELETE /rest/remote-access/devices`
+  - `GET /rest/remote-access/devices` for active paired-device summaries
+  - `GET /rest/remote-access/devices/revoked` for revoked/history summaries
+  - `DELETE /rest/remote-access/devices`
 - Local-or-mobile protected routes:
   - `POST /graphql`
   - `/ws/*` and GraphQL WebSocket upgrades
@@ -45,9 +47,11 @@ Loopback peers are treated as local desktop access for management and protected 
 
 1. Desktop loopback enables Phone Access with `PUT /rest/remote-access/settings`.
 2. Desktop loopback creates a pairing session with `POST /rest/remote-access/pairing-sessions` and a selected client-facing `serverBaseUrl`.
-3. The service creates a five-minute, single-use pairing code and returns a `/mobile?pairing=<payload>` URL suitable for a QR code or copy/paste.
-4. The phone calls `POST /rest/remote-access/pairing-exchanges` with the pairing code and server base URL.
-5. The backend creates a paired device record and returns the only copy of the raw credential to the phone.
+3. The service normalizes the selected URL to the canonical server base. Reserved AutoByteus surfaces such as `/mobile`, `/rest`, `/graphql`, and `/ws` are stripped while deployment base paths are preserved.
+4. New desktop-created pairing sessions require `https://` after normalization.
+5. The service creates a five-minute, single-use pairing code and returns a `/mobile?pairing=<payload>` URL suitable for a QR code or copy/paste. The pairing payload stores the canonical server base, while the returned mobile URL appends `/mobile` for the user-facing shell.
+6. The phone calls `POST /rest/remote-access/pairing-exchanges` with the pairing code and server base URL.
+7. The backend creates a paired device record and returns the only copy of the raw credential to the phone.
 
 Pairing sessions are in-memory, short-lived, and consumed during exchange. Paired devices persist under the app data directory in `remote-access/paired-devices.json`; only a SHA-256 credential hash is stored.
 
@@ -102,7 +106,7 @@ Remote Access data lives under the app data directory:
 - `remote-access/settings.json` stores `phoneAccessEnabled` and update metadata.
 - `remote-access/paired-devices.json` stores device id, display name, credential hash, client-facing base URL, created/last-seen/revoked timestamps.
 
-Disabling Phone Access does not delete paired-device records. While disabled, new pairing sessions are rejected and existing non-loopback mobile credentials fail with `PHONE_ACCESS_DISABLED`.
+Disabling Phone Access does not delete paired-device records. Revoking a device marks its `revokedAt` timestamp and retains the record for history and revoked-credential diagnostics. `GET /rest/remote-access/devices` returns active devices only; local desktop management can read retained revoked rows through `GET /rest/remote-access/devices/revoked`. While disabled, new pairing sessions are rejected and existing non-loopback mobile credentials fail with `PHONE_ACCESS_DISABLED`.
 
 ## Validation Coverage
 
@@ -112,6 +116,6 @@ The delivery validation for this feature covered:
 - backend-generated `/mobile?pairing=...` bootstrapping into the phone shell;
 - pairing exchange, persisted mobile session reload, and mobile deep links;
 - REST, GraphQL, WebSocket, and protected resource auth rejection/acceptance over a LAN/private base;
-- per-device revoke and revoke-all invalidation;
+- per-device revoke and revoke-all invalidation, including active-list vs revoked-history separation;
 - Phone Access enabled state and credential usability after backend restart against the same app data;
 - seeded agent/team visibility through paired mobile GraphQL/routes.

@@ -1,0 +1,123 @@
+{
+  "validatedAt": "2026-05-22T18:20:00+02:00",
+  "url": "http://127.0.0.1:30123/settings?section=nodes",
+  "result": "Pass",
+  "observations": {
+    "phoneSetupTabSelected": true,
+    "guideVisible": true,
+    "containsTargetHttpsMobileUrlShape": true,
+    "containsMagicDnsFqdnGuidance": true,
+    "statesIpv4Ipv6AreDiagnostics": true,
+    "containsMacosNoteDirectPrimary": true,
+    "containsAllPrimaryDirectMacosCommands": true,
+    "directMacosCommandsBeforeGenericServe": true,
+    "containsGenericLinuxWindowsAliasLabeling": true,
+    "containsOptionalTroubleshootingWrapperCopy": true,
+    "copyButtonsAllExact": true
+  },
+  "renderedCommandOrder": [
+    "linux-install",
+    "macos-direct-serve-foreground",
+    "macos-direct-serve-background",
+    "macos-direct-serve-status",
+    "macos-direct-serve-reset",
+    "tailscale-up",
+    "tailscale-status",
+    "serve-foreground",
+    "serve-background",
+    "serve-status",
+    "serve-reset",
+    "macos-wrapper-manual-install",
+    "macos-cli-install"
+  ],
+  "copyChecks": [
+    {
+      "id": "macos-direct-serve-foreground",
+      "expected": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve 29695",
+      "actual": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve 29695",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "macos-direct-serve-background",
+      "expected": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695",
+      "actual": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "macos-direct-serve-status",
+      "expected": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve status",
+      "actual": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve status",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "macos-direct-serve-reset",
+      "expected": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve reset",
+      "actual": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve reset",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "tailscale-up",
+      "expected": "tailscale up",
+      "actual": "tailscale up",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "tailscale-status",
+      "expected": "tailscale status",
+      "actual": "tailscale status",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "serve-foreground",
+      "expected": "tailscale serve 29695",
+      "actual": "tailscale serve 29695",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "serve-background",
+      "expected": "tailscale serve --bg 29695",
+      "actual": "tailscale serve --bg 29695",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "serve-status",
+      "expected": "tailscale serve status",
+      "actual": "tailscale serve status",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "serve-reset",
+      "expected": "tailscale serve reset",
+      "actual": "tailscale serve reset",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "macos-wrapper-manual-install",
+      "expected": "sudo sh -c 'cat > /usr/local/bin/tailscale <<\"EOF\"\n#!/bin/sh\nexec /Applications/Tailscale.app/Contents/MacOS/Tailscale \"$@\"\nEOF\nchmod +x /usr/local/bin/tailscale'",
+      "actual": "sudo sh -c 'cat > /usr/local/bin/tailscale <<\"EOF\"\n#!/bin/sh\nexec /Applications/Tailscale.app/Contents/MacOS/Tailscale \"$@\"\nEOF\nchmod +x /usr/local/bin/tailscale'",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "macos-cli-install",
+      "expected": "osascript /Applications/Tailscale.app/Contents/Resources/InstallTailscaleCLI.scpt",
+      "actual": "osascript /Applications/Tailscale.app/Contents/Resources/InstallTailscaleCLI.scpt",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    }
+  ],
+  "notes": [
+    "Browser-side navigator.clipboard.writeText was stubbed to record exact copied text without modifying the system clipboard.",
+    "The mock REST backend was used only to render the settings page; the guide content and copy buttons were validated in the running Nuxt app."
+  ]
+}

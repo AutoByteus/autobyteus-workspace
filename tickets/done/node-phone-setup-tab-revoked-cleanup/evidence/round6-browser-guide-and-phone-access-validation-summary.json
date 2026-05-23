@@ -1,0 +1,96 @@
+{
+  "validatedAt": "2026-05-22T19:22:00+02:00",
+  "url": "http://127.0.0.1:30123/settings?section=nodes",
+  "result": "Pass",
+  "observations": {
+    "phoneSetupTabSelected": true,
+    "guideVisible": true,
+    "phoneAccessVisible": true,
+    "macosInstallLinkOnly": true,
+    "directCommandCardsOnly": true,
+    "noGenericCliCards": true,
+    "noGenericCliText": true,
+    "noWrapperInstallerText": true,
+    "statesNoTailscaleInspection": true,
+    "containsMagicDnsFqdnGuidance": true,
+    "statesIpv4Ipv6AndPortDiagnostics": true,
+    "copyButtonsAllExact": true,
+    "manualUrlHelpPrimary": true,
+    "initialHttpOnlyCandidatesNotAutoSelected": true,
+    "httpCandidateDiagnosticOptionsPresent": true,
+    "selectedHttpShowsHttpsRequiredAndNoPost": true,
+    "manualHttpsCreatesQr": true
+  },
+  "installLinkIds": ["macos"],
+  "commandIds": [
+    "macos-direct-serve-foreground",
+    "macos-direct-serve-background",
+    "macos-direct-serve-status",
+    "macos-direct-serve-reset"
+  ],
+  "copyChecks": [
+    {
+      "id": "macos-direct-serve-foreground",
+      "expected": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve 29695",
+      "actual": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve 29695",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "macos-direct-serve-background",
+      "expected": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695",
+      "actual": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "macos-direct-serve-status",
+      "expected": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve status",
+      "actual": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve status",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    },
+    {
+      "id": "macos-direct-serve-reset",
+      "expected": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve reset",
+      "actual": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve reset",
+      "exact": true,
+      "buttonTextAfterClick": "Copied"
+    }
+  ],
+  "initialCandidateSelection": {
+    "selectedValue": "",
+    "createButtonDisabled": true,
+    "options": [
+      { "value": "", "text": "Paste Serve HTTPS URL above, or choose an HTTPS candidate" },
+      { "value": "http://100.64.1.2:29695", "text": "Tailnet-like address (diagnostic) — http://100.64.1.2:29695" },
+      { "value": "http://192.168.1.25:29695", "text": "Private/LAN address (diagnostic) — http://192.168.1.25:29695" }
+    ]
+  },
+  "selectedHttpCandidateCheck": {
+    "selected": "http://100.64.1.2:29695",
+    "warning": "HTTPS URL required\n\nCreate QR requires a private HTTPS URL. Paste a Tailscale Serve URL such as https://<machine>.<tailnet>.ts.net/mobile.",
+    "createButtonDisabled": true,
+    "pairingPostsAfterClickAttempt": []
+  },
+  "manualHttpsCheck": {
+    "manualInput": "https://machine.tailnet.ts.net/mobile",
+    "selectedAfterRefresh": "https://machine.tailnet.ts.net",
+    "createButtonDisabled": false,
+    "pairingPostsAfterCreate": [
+      { "serverBaseUrl": "https://machine.tailnet.ts.net", "serverName": "AutoByteus Desktop" }
+    ],
+    "qrTextPrefix": "https://machine.tailnet.ts.net/mobile?pairing=",
+    "qrTextStartedWithPrefix": true
+  },
+  "visibleGuidance": {
+    "manualHelp": "After running Serve/status in the guide, copy the HTTPS MagicDNS hostname, append /mobile, and paste it here. It normally looks like https://<machine>.<tailnet>.ts.net/mobile without :29695.",
+    "normalizedNote": "Paste the /mobile URL here. AutoByteus stores the clean server base internally and creates the QR with /mobile.",
+    "diagnosticNote": "HTTP interface candidates such as http://100.x.y.z:29695 or LAN addresses are diagnostics only. The :29695 port belongs to local HTTP reachability, not the Tailscale Serve HTTPS QR target."
+  },
+  "notes": [
+    "Browser-side navigator.clipboard.writeText was stubbed to record exact copied text without modifying the system clipboard.",
+    "The mock REST backend intentionally returned HTTP-only tailnet/LAN candidates by default to prove they are not auto-selected and do not POST pairing sessions.",
+    "The HTTPS manual URL path was validated by typing https://machine.tailnet.ts.net/mobile and confirming the POST used normalized serverBaseUrl https://machine.tailnet.ts.net while QR text used /mobile."
+  ]
+}
