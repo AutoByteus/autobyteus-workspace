@@ -1,0 +1,2 @@
+$ rg -n "historyIndexService|recordRunCreated|recordRunRestored" autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts
+PASS: no stale legacy run-history mock references remain

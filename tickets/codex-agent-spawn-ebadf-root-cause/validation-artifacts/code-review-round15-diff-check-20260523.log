@@ -1,0 +1,2 @@
+$ git diff --check -- autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md
+PASS

@@ -1,0 +1,20 @@
+# final staged delivery diff check round15
+utc_start=2026-05-23T13:30:47Z
+head=044a0caf1c7c8e2bbb65a598377a36a1cd3976bd
+origin_personal=74218467a2f7786c82f3e97b9190058d2cb83bd2
+## git diff --cached --check
+staged_diff_check=pass
+## git diff --cached --stat
+ .../docs-sync-report.md                            |    40 +-
+ .../handoff-summary.md                             |    68 +-
+ .../release-deployment-report.md                   |    57 +-
+ .../review-report.md                               |   186 +-
+ .../code-review-round15-diff-check-20260523.log    |     2 +
+ ...ew-round15-legacy-run-history-grep-20260523.log |     2 +
+ ...nd15-run-graphql-integration-tests-20260523.log |   329 +
+ ...cts-round15-current-reviewed-20260523152657.txt |    28 +
+ ...ify-round15-current-reviewed-20260523152657.log |    25 +
+ ...mac-round15-current-reviewed-20260523152141.log | 75532 +++++++++++++++++++
+ ...ntegrated-run-history-checks-20260523152104.log |   369 +
+ 11 files changed, 76457 insertions(+), 181 deletions(-)
+utc_end=2026-05-23T13:30:48Z
