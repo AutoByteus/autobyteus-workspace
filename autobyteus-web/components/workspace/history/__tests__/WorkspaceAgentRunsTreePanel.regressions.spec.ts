@@ -19,10 +19,31 @@ const {
   windowNodeContextStoreMock,
   addToastMock,
 } = vi.hoisted(() => {
+  const normalizeMember = (member: any): any => ({
+    ...member,
+    memberKind: member.memberKind ?? 'agent',
+    memberRouteKey: member.memberRouteKey ?? member.memberName ?? '',
+    memberPath: member.memberPath ?? [member.memberRouteKey ?? member.memberName ?? ''],
+    displayName: member.displayName ?? member.memberName ?? member.memberRouteKey ?? '',
+    currentStatus: member.currentStatus ?? member.status ?? 'offline',
+    children: (member.children ?? []).map(normalizeMember),
+  });
+
+  const normalizeTeamNode = (team: any): any => ({
+    ...team,
+    focusedMemberRouteKey: team.focusedMemberRouteKey ?? team.focusedMemberName ?? '',
+    members: (team.members ?? []).map(normalizeMember),
+    memberTree: (team.memberTree ?? []).map(normalizeMember),
+  });
+
+  const normalizeTeamNodes = (teams: any[]): any[] => teams.map(normalizeTeamNode);
+
   const state = {
     loading: false,
     error: null as string | null,
     selectedRunId: null as string | null,
+    selectedTeamRunId: null as string | null,
+    workspaceGroups: [] as any[],
     nodes: [
       {
         workspaceRootPath: '/ws/a',
@@ -71,10 +92,21 @@ const {
       get selectedRunId() {
         return state.selectedRunId;
       },
+      get selectedTeamRunId() {
+        return state.selectedTeamRunId;
+      },
+      get workspaceGroups() {
+        return state.workspaceGroups;
+      },
       fetchTree: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
       getTreeNodes: vi.fn(() => state.nodes),
-      getTeamNodes: vi.fn((workspaceRootPath: string) => state.teamNodesByWorkspace[workspaceRootPath] || []),
+      getTeamNodes: vi.fn((workspaceRootPath?: string) => {
+        if (!workspaceRootPath) {
+          return normalizeTeamNodes(Object.values(state.teamNodesByWorkspace).flat());
+        }
+        return normalizeTeamNodes(state.teamNodesByWorkspace[workspaceRootPath] || []);
+      }),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn(),
       createDraftRun: vi.fn().mockResolvedValue('temp-2'),
@@ -179,6 +211,8 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
     runHistoryState.loading = false;
     runHistoryState.error = null;
     runHistoryState.selectedRunId = null;
+    runHistoryState.selectedTeamRunId = null;
+    runHistoryState.workspaceGroups = [];
     runHistoryState.teamNodesByWorkspace = {};
     selectionStoreMock.selectedType = null;
     selectionStoreMock.selectedRunId = null;
@@ -210,6 +244,44 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
       },
     },
   });
+
+  const expandWorkspace = async (wrapper: any, workspaceRootPath = '/ws/a') => {
+    const workspaceRow = wrapper.get(
+      `[data-test="workspace-row"][data-workspace-root="${workspaceRootPath}"]`,
+    );
+    if (workspaceRow.attributes('aria-expanded') !== 'true') {
+      await workspaceRow.trigger('click');
+      await flushPromises();
+    }
+  };
+
+  const expandAgentGroup = async (
+    wrapper: any,
+    workspaceRootPath = '/ws/a',
+    agentDefinitionId = 'agent-def-1',
+  ) => {
+    await expandWorkspace(wrapper, workspaceRootPath);
+    const agentRow = wrapper.get(
+      `[data-test="workspace-agent-row"][data-workspace-root="${workspaceRootPath}"][data-agent-definition-id="${agentDefinitionId}"]`,
+    );
+    if (agentRow.attributes('aria-expanded') !== 'true') {
+      await agentRow.trigger('click');
+      await flushPromises();
+    }
+  };
+
+  const expandTeamDefinitionGroup = async (
+    wrapper: any,
+    workspaceRootPath = '/ws/a',
+    groupKey = 'team-def-1',
+  ) => {
+    await expandWorkspace(wrapper, workspaceRootPath);
+    const teamDefinitionRow = wrapper.get(`[data-test="workspace-team-definition-row-${groupKey}"]`);
+    if (teamDefinitionRow.attributes('aria-expanded') !== 'true') {
+      await teamDefinitionRow.trigger('click');
+      await flushPromises();
+    }
+  };
 
   it('routes team top-row clicks through persisted member hydration instead of blind team selection', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
@@ -244,6 +316,7 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
 
     await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
     await flushPromises();
@@ -332,6 +405,7 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
   it('removes a draft agent row through the local close path', async () => {
     const wrapper = mountComponent();
     await flushPromises();
+    await expandAgentGroup(wrapper);
 
     await wrapper.get('button[title="Remove draft run"]').trigger('click');
     await flushPromises();
@@ -374,6 +448,7 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
 
     const wrapper = mountComponent();
     await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
 
     await wrapper.get('button[title="Remove draft team"]').trigger('click');
     await flushPromises();
