@@ -35,7 +35,7 @@ Relevant instructions applied:
 
 - Command: `corepack enable && pnpm install`
 - Result: Passed.
-- Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/evidence/pnpm-install-20260522-222939.log`
+- Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/collapsed-workspace-run-history/evidence/pnpm-install-20260522-222939.log`
 
 ## Electron Rebuild
 
@@ -44,8 +44,8 @@ Relevant instructions applied:
 - Build flavor resolved by script: `personal`
 - Version: `1.3.27`
 - Architecture: `arm64`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/evidence/electron-rebuild-mac-personal-20260522-223407-summary.log`
-- SHA-256 sums: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/evidence/electron-rebuild-mac-personal-20260522-223407-shasums.txt`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/collapsed-workspace-run-history/evidence/electron-rebuild-mac-personal-20260522-223407-summary.log`
+- SHA-256 sums: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/collapsed-workspace-run-history/evidence/electron-rebuild-mac-personal-20260522-223407-shasums.txt`
 
 ## Test Artifacts
 
