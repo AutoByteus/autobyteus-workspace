@@ -1,0 +1,44 @@
+# Electron personal macOS rebuild summary
+Source full command/result summarized from local build log generated on 2026-05-22.
+
+Command: AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm --filter ./autobyteus-web build:electron:mac
+Started: 2026-05-22T22:34:07+02:00
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history
+HEAD: 6b9dd57fb816dced73100d288e039eaed03fa2cb
+origin/personal: 5e298019731f407d1888eabc7859ae6823e4f8a1
+Resolved build flavor: personal
+Artifact base name: AutoByteus_personal
+Requested architecture: AUTO
+Build completed: [
+Finished: 2026-05-22T22:38:29+02:00
+Personal Electron dist outputs:
+
+## Guard/build pass markers
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+[0;32m   Server files prepared successfully!   [0m
+[Electron Module] Production build completed successfully
+Build completed: [
+
+## Generated artifacts
+  • executing       file=hdiutil args=convert /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/t-4Vh4ml/0.dmg -ov -format UDZO -o /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg -imagekey zlib-level=9 -quiet
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg.blockmap
+  • spawning        command=/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/node_modules/.pnpm/app-builder-bin@5.0.0-alpha.10/node_modules/app-builder-bin/mac/app-builder_arm64 blockmap --input /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg --output /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg.blockmap
+  "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg.blockmap",
+  "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg",
+                      Creating archive: /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip
+  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip.blockmap
+  • spawning        command=/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/node_modules/.pnpm/app-builder-bin@5.0.0-alpha.10/node_modules/app-builder-bin/mac/app-builder_arm64 blockmap --input /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip --output /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip.blockmap
+  "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip.blockmap",
+  "safeArtifactName": "AutoByteus_personal_macos-arm64-1.3.27.zip.blockmap",
+  "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip",
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip.blockmap',
+  '/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip'
+/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg
+/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg.blockmap
+/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip
+/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip.blockmap
+/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/latest-mac.yml

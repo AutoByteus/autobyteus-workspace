@@ -1,0 +1,27 @@
+Command: corepack enable && pnpm install
+Started: 2026-05-22T22:29:39+02:00
+Scope: all 11 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1756
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1756, reused 1754, downloaded 0, added 144
+Progress: resolved 1756, reused 1754, downloaded 0, added 453
+Progress: resolved 1756, reused 1754, downloaded 0, added 657
+Progress: resolved 1756, reused 1754, downloaded 0, added 854
+Progress: resolved 1756, reused 1754, downloaded 0, added 1244
+Progress: resolved 1756, reused 1754, downloaded 0, added 1575
+Progress: resolved 1756, reused 1754, downloaded 0, added 1756, done
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: lzma-native@8.0.6.                                  │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 7.6s using pnpm v10.28.2
+Finished: 2026-05-22T22:29:47+02:00

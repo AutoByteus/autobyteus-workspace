@@ -17,6 +17,8 @@ export interface WorkspaceHistorySectionState {
   toggleWorkspace: (workspaceRootPath: string) => void;
   isAgentExpanded: (workspaceRootPath: string, agentDefinitionId: string) => boolean;
   toggleAgent: (workspaceRootPath: string, agentDefinitionId: string) => void;
+  isTeamDefinitionExpanded: (workspaceRootPath: string, groupKey: string) => boolean;
+  toggleTeamDefinition: (workspaceRootPath: string, groupKey: string) => void;
   isTeamExpanded: (teamRunId: string) => boolean;
   runStatusClass: (status: AgentStatus) => string;
   teamStatusClass: (status: AgentTeamStatus) => string;
