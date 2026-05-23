@@ -1,33 +1,21 @@
 # Delivery Blocker — Round 13 Latest `origin/personal` Merge Conflicts
 
-## Status
+## Current Status
 
-- Ticket: `codex-agent-spawn-ebadf-root-cause`
-- Delivery phase: post API/E2E Round 7 / post code-review Round 12 integrated-state refresh
-- Current ticket branch: `codex/codex-agent-spawn-ebadf-root-cause`
-- Reviewed/validated candidate checkpoint created by delivery: `8d2cda4ed85d529802ed7caf66aa010b0e65f303`
-- Latest tracked base attempted: `origin/personal@74218467a2f7786c82f3e97b9190058d2cb83bd2`
-- Merge base before the failed refresh: `5875b06d87d3c92b80c0dfa3675eea844324cb7c`
-- Branch relation after aborting the failed merge: `10	10` (left=commits ahead of `origin/personal`, right=commits behind)
-- Classification: `Local Fix`
-- Recommended recipient: `implementation_engineer`
-- Current status: blocked; merge was aborted to restore the reviewed/validated candidate checkpoint cleanly.
+- Status: `Resolved`
+- Resolution owner: `implementation_engineer`
+- Resolution merge commit: `5c5cb3dabefbc94115647fd342f59b37844cfa7d`
+- Latest tracked base integrated: `origin/personal@74218467a2f7786c82f3e97b9190058d2cb83bd2`
+- Branch relation reported by implementation after merge: ahead `12` / behind `0`
+- Delivery resumed and verified the integrated state on 2026-05-23.
+- Delivery integrated check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round13-integrated-docs-and-focused-checks-20260523144738.log`
+- Current Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round13-latest-personal-20260523144913.log`
 
-## What Delivery Did
+## Original Blocker Summary
 
-1. Fetched latest `origin/personal`.
-2. Found the ticket branch was behind latest `origin/personal` by 10 commits.
-3. Verified the dirty worktree represented the Round 12 code-reviewed / Round 7 API/E2E-passed candidate.
-4. Ran `git diff --check` successfully before checkpointing.
-5. Created local safety checkpoint:
-   - `8d2cda4ed85d529802ed7caf66aa010b0e65f303` — `checkpoint: preserve round 12 reviewed terminal fd candidate`
-6. Attempted latest-base merge:
-   - `git merge --no-edit origin/personal`
-7. The merge produced code/test/docs conflicts, so delivery aborted the merge per delivery workflow instead of guessing resolutions.
+Delivery initially attempted the post API/E2E Round 7 integrated-state refresh against latest `origin/personal@74218467a2f7786c82f3e97b9190058d2cb83bd2`. A local safety checkpoint of the Round 12-reviewed / Round 7 API/E2E-passed candidate was created at `8d2cda4ed85d529802ed7caf66aa010b0e65f303`, then `git merge --no-edit origin/personal` produced conflicts in mobile/terminal source, mobile tests, and `autobyteus-web/docs/terminal.md`. Delivery aborted the merge and routed the Local Fix to implementation instead of guessing code/test/docs resolutions.
 
-## Merge Conflicts
-
-The attempted merge reported conflicts in:
+## Original Merge Conflicts
 
 ```text
 CONFLICT (content): autobyteus-web/components/layout/WorkspaceMobileLayout.vue
@@ -38,42 +26,29 @@ CONFLICT (content): autobyteus-web/components/mobile/__tests__/MobileUxRefinemen
 CONFLICT (content): autobyteus-web/docs/terminal.md
 ```
 
-Unmerged file list captured before abort:
+## Resolution Notes From Implementation
 
-```text
-autobyteus-web/components/layout/WorkspaceMobileLayout.vue
-autobyteus-web/components/mobile/MobileTools.vue
-autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
-autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
-autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts
-autobyteus-web/docs/terminal.md
-```
+- Preserved the Round 12 / API-E2E Round 7 Terminal FD lifecycle fixes.
+- Kept latest-base mobile shell behavior: `autobyteus-web/components/mobile/MobileTools.vue` remains deleted; mobile Phone Access no longer exposes interactive Terminal/VNC tools.
+- Preserved mobile Files lazy metadata/file-explorer/live-session behavior and reconciled tests around the latest mobile bottom nav.
+- Reconciled `autobyteus-web/docs/terminal.md` to describe root-path desktop/workspace Terminal and explicitly no mobile Phone Access Terminal/VNC page.
+- No conflict markers remain in the conflicted files.
 
-`git diff --check` during the conflicted merge reported conflict markers in the same files, including `autobyteus-web/docs/terminal.md`.
+## Post-Resolution Checks
 
-## Why This Blocks Delivery
+Implementation checks:
 
-Delivery must complete docs sync and final handoff against an integrated latest-base state. Because the latest `origin/personal` merge conflicts in mobile/terminal source, tests, and Terminal documentation, delivery cannot truthfully verify final integrated behavior or complete the requested docs sync/no-impact decision. The conflicts are code/test/doc integration work, not a delivery-local documentation edit.
+- Source/docs scoped post-merge diff check: pass — `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round13-post-merge-source-docs-diff-check-20260523.log`
+- Frontend mobile/Terminal focused tests: pass, 5 files / 48 tests — `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round13-frontend-mobile-terminal-tests-20260523.log`
+- Backend Terminal targeted tests including real lifecycle E2E: pass, 4 files / 26 tests — `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round13-backend-terminal-targeted-20260523.log`
+- Frontend localization audit: pass — `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round13-frontend-localization-audit-20260523.log`
 
-## Required Follow-Up
+Delivery checks after resuming:
 
-Implementation should merge or otherwise integrate latest `origin/personal@74218467a2f7786c82f3e97b9190058d2cb83bd2` into the ticket branch and resolve the conflicts, paying special attention to:
+- Latest base confirmation, source/docs diff check, conflict marker grep, docs assertions, frontend focused tests, and backend terminal focused tests: pass — `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round13-integrated-docs-and-focused-checks-20260523144738.log`
+- Current macOS Electron build: pass — `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round13-latest-personal-20260523144913.log`
+- DMG verification: pass — `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-dmg-verify-round13-latest-personal-20260523145444.log`
 
-- preserving Round 12/7 Terminal FD lifecycle fixes and durable validation;
-- preserving latest-base mobile shell / mobile work changes from `origin/personal`;
-- deciding whether `MobileTools.vue` should remain deleted per latest base or be retained/adapted for this ticket;
-- reconciling `MobileUxRefinement.spec.ts` because it is both a durable validation file from this ticket and touched by latest-base mobile changes;
-- reconciling `autobyteus-web/docs/terminal.md` so delivery can verify final terminal behavior documentation against integrated code.
+## Final Disposition
 
-After conflicts are resolved, please run at minimum:
-
-1. `git diff --check`
-2. Relevant frontend mobile/terminal tests that cover the conflict files
-3. Relevant backend/terminal checks or the same focused validation set from Round 7 if affected
-4. Return to delivery for latest-base refresh confirmation and docs sync/final handoff.
-
-## Current Clean State After Abort
-
-- Current `HEAD`: `8d2cda4ed85d529802ed7caf66aa010b0e65f303`
-- Latest `origin/personal`: `74218467a2f7786c82f3e97b9190058d2cb83bd2`
-- Working tree after abort: clean before writing this blocker artifact.
+This blocker no longer blocks delivery. Delivery handoff is ready for user verification; repository finalization remains paused by normal workflow until the user explicitly verifies/authorizes completion.

@@ -1,0 +1,20 @@
+# final staged delivery diff check
+utc_start=2026-05-23T12:59:38Z
+head=5c5cb3dabefbc94115647fd342f59b37844cfa7d
+origin_personal=74218467a2f7786c82f3e97b9190058d2cb83bd2
+note=generated delivery logs were normalized for trailing whitespace before this final staged check
+## git diff --cached --check
+staged_diff_check=pass
+## git diff --cached --stat
+ ...cker-round13-latest-personal-merge-conflicts.md |    85 +-
+ .../docs-sync-report.md                            |    72 +-
+ .../handoff-summary.md                             |   202 +-
+ .../release-deployment-report.md                   |   144 +-
+ ...acts-round13-latest-personal-20260523145444.txt |    28 +
+ ...rify-round13-latest-personal-20260523145444.log |    23 +
+ ...-mac-round13-latest-personal-20260523144913.log | 75543 +++++++++++++++++++
+ ...heck-round13-latest-personal-20260523145834.log |    17 +
+ ...heck-round13-latest-personal-20260523145924.log |   274 +
+ ...ated-docs-and-focused-checks-20260523144738.log |   568 +
+ 10 files changed, 76635 insertions(+), 321 deletions(-)
+utc_end=2026-05-23T12:59:38Z

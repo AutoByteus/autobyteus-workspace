@@ -1,145 +1,93 @@
 # Handoff Summary — codex-agent-spawn-ebadf-root-cause
 
-## Latest Refresh — 2026-05-23 (Authoritative)
+## Current Status — 2026-05-23 (Authoritative)
 
-This section supersedes the older 1.3.26 delivery/build evidence below.
+`Ready for user verification; local Electron build complete; repository finalization/release/deployment not run.`
 
-- User request: remote `origin/personal` was updated; refresh this ticket branch to latest `origin/personal` and rebuild Electron.
-- Latest remote base fetched: `origin/personal@5875b06d87d3c92b80c0dfa3675eea844324cb7c`.
-- Pre-refresh safety checkpoint for prior delivery evidence: `2204d6762d8fcb1d3c7dd7fc4096fe382df50586`.
-- Integration method: merged `origin/personal` into `codex/codex-agent-spawn-ebadf-root-cause`.
-- Integrated build-source HEAD: `03f093c73e25070f560f11dbf486cf5bd0ee1d8a`.
-- Final post-build fetch check: `origin/personal` remained `5875b06d87d3c92b80c0dfa3675eea844324cb7c`; branch relation at build-source HEAD was `8	0` (ahead, behind).
-- Version built from latest base: `1.3.28`.
-- Repository finalization/push/merge/release/deployment: not run.
-
-### Latest Integrated Checks
-
-- Diff check: `git diff --check origin/personal...HEAD -- autobyteus-server-ts autobyteus-web ':!tickets/**/validation-artifacts/**'` — pass.
-- Durable validation: `pnpm -C autobyteus-server-ts test tests/e2e/workspaces/workspaces-graphql.e2e.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts` — pass, 2 files / 18 tests.
-- Integrated check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-post-latest-personal-integrated-checks-20260523061140.log`.
-
-### Latest Electron Build And Verification
-
-- README path used: local macOS verbose/no-notarization build command from `autobyteus-web/README.md`.
-- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm -C autobyteus-web build:electron:mac`.
-- Build result: pass.
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-latest-personal-20260523061215.log`.
-- Build path included `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, backend `prepare-server` / `build:full`, Nuxt generate, Electron transpile/build, DMG, ZIP, and blockmap creation.
-- Signing/notarization: local README no-notarization path; Electron Builder reported `isPublish: false` for artifacts and skipped macOS code signing because identity was explicitly null.
-- DMG verification: `hdiutil verify /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.28.dmg` — pass; checksum valid.
-- DMG verify log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-dmg-verify-latest-personal-20260523061656.log`.
-- Artifact summary/checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-artifacts-latest-personal-20260523061656.txt`.
-
-### Latest Built Electron Artifacts
-
-| Artifact | Size bytes | SHA-256 |
-| --- | ---: | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.28.dmg` | 379802488 | `7640735094d31e6de79e2e45fb829b23e581e8e3aa8dabd01d19b3f501618609` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.28.dmg.blockmap` | 396041 | `a3bea1def953c7fce0423f0458822a09c324d0840e44fc35758ede095c8ce135` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.28.zip` | 377112269 | `b5770b3ac3dad7125e0eadaeef269428ed03c9486e848515ae65d477d5af7e23` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.28.zip.blockmap` | 386733 | `68f666ed20d1f1e8d5123660f05e33ca25a4f6e99209c38694cb264ef1e26d8b` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `69c867f919a015b775245ffd8052e23861df838cfa7cfb50151b25eafb59bc5d` |
-
-
-
-## Latest Delivery Status — Blocked On Latest-Base Merge (2026-05-23)
-
-Delivery attempted the post API/E2E Round 7 integrated-state refresh against latest `origin/personal@74218467a2f7786c82f3e97b9190058d2cb83bd2`. A local safety checkpoint of the Round 12-reviewed / Round 7 API/E2E-passed candidate was created at `8d2cda4ed85d529802ed7caf66aa010b0e65f303`, then `git merge --no-edit origin/personal` produced conflicts in mobile/terminal source, mobile tests, and `autobyteus-web/docs/terminal.md`. The merge was aborted to preserve the reviewed candidate cleanly. Delivery is blocked until implementation resolves the latest-base merge conflicts.
-
-Blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round13-latest-personal-merge-conflicts.md`
-
-## Status
-
-Blocked on latest-base merge conflicts. Delivery refreshed the ticket branch against the latest tracked `origin/personal`, read the Electron README build guidance, reran the post-round9 durable validation, resolved the delivery-discovered localization build blocker through implementation, rebuilt macOS Electron from the current branch state, and verified the generated DMG. Repository finalization, pushing/merging, ticket archival, publication, and deployment are intentionally paused until explicit user verification.
+Delivery resumed after implementation resolved Round 13 latest-`origin/personal` merge conflicts. The ticket branch is based on the latest fetched `origin/personal`, the final integrated docs/source checks passed, and the requested macOS Electron package was built from current state and DMG-verified.
 
 ## Branch / Integration State
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause`
 - Ticket branch: `codex/codex-agent-spawn-ebadf-root-cause`
 - Inferred base/finalization target: `origin/personal`
-- Latest base fetched after the successful Electron build: `origin/personal@fcf435ec1894de13fad54002cd70e62d59dd12b8`
-- Current protected HEAD used for the build: `916e90349d4719638930ad3eae5a92c768a6ab95`
-- Branch relation after final fetch: `6	0` (left=commits ahead of `origin/personal`, right=commits behind)
-- Latest-base merge needed after round 9/localization fix: no; `origin/personal` had not advanced beyond the integrated base.
-- Round-9 reviewed-state checkpoint: `d1a650278c35b9f7ba086b550ee7bc10a2abc6c5` (`checkpoint: preserve round 9 reviewed workspace reference state`)
-- Localization Local Fix checkpoint: `916e90349d4719638930ad3eae5a92c768a6ab95` (`checkpoint: preserve round 9 localization local fix`)
+- Latest remote base fetched before and after build: `origin/personal@74218467a2f7786c82f3e97b9190058d2cb83bd2`
+- Round 13 latest-base merge commit from implementation: `5c5cb3dabefbc94115647fd342f59b37844cfa7d`
+- Merge base at build time: `74218467a2f7786c82f3e97b9190058d2cb83bd2`
+- Branch relation at build time: `12 0` (left=commits ahead of `origin/personal`, right=commits behind)
+- Post-build fetch result: `origin/personal` remained `74218467a2f7786c82f3e97b9190058d2cb83bd2`; no additional integration was needed.
+- Repository finalization/push/merge/release/deployment: not run; waiting for explicit user verification.
 
-## README / Electron Build Path Used
+## README / Electron Build Guidance Used
 
 - README reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/README.md`
-- Relevant README guidance: macOS Electron builds use `pnpm build:electron:mac`; local verbose macOS builds can use `NO_TIMESTAMP=1 APPLE_TEAM_ID=` with Electron Builder debug logging to avoid notarization/timestamping.
-- Command run from repo root:
+- README build path: `pnpm build:electron:mac`, output in `electron-dist`.
+- README local macOS no-notarization/logging path used with `pnpm -C autobyteus-web` from the repository root.
+- Executed command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm -C autobyteus-web build:electron:mac`.
 
-```bash
-NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm -C autobyteus-web build:electron:mac
-```
+## Integrated Checks
 
-## Delivery Blocker Resolution
+- Latest-base/source-docs focused check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round13-integrated-docs-and-focused-checks-20260523144738.log`
+- Base confirmation in that log:
+  - `HEAD=5c5cb3dabefbc94115647fd342f59b37844cfa7d`
+  - `origin/personal=74218467a2f7786c82f3e97b9190058d2cb83bd2`
+  - `merge_base=74218467a2f7786c82f3e97b9190058d2cb83bd2`
+  - `ahead_behind=12 0`
+- Source/docs scoped diff check: pass.
+- Conflict marker grep for previously conflicted mobile/terminal files: pass.
+- Docs assertions for `file_explorer.md`, `terminal.md`, and absence of `MobileTools.vue`: pass.
+- Frontend focused tests: `pnpm -C autobyteus-web test:nuxt components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts` — pass, 5 files / 48 tests.
+- Backend terminal focused tests: `pnpm -C autobyteus-server-ts test tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts tests/integration/terminal/terminal-websocket.integration.test.ts tests/integration/terminal/terminal-websocket-wsl.integration.test.ts tests/unit/services/terminal/pty-session-manager.test.ts` — pass, 3 files / 17 tests plus 1 skipped WSL test.
 
-- Historical blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round9-electron-build-localization.md`
-- Failed pre-fix build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-post-round9-20260522201658.log`
-- Resolution: implementation replaced the hard-coded `Retry workspace load` literal in `autobyteus-web/components/workspace/tools/Terminal.vue` with `$t('workspace.components.workspace.tools.Terminal.retry_workspace_load')` and added English / Chinese catalog entries.
-- Implementation Local Fix checks:
-  - `pnpm -C autobyteus-web audit:localization-literals` — pass, zero unresolved findings. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-localization-literals-round9-localfix.log`
-  - `pnpm -C autobyteus-web test:nuxt components/workspace/tools/__tests__/Terminal.spec.ts` — pass, 1 file / 2 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/frontend-terminal-spec-round9-localfix.log`
-  - `git diff --check` — pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/diff-check-round9-localization-localfix.log`
-  - Changed-source size guard — pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/source-size-guard-round9-localization-localfix.log`
+## Electron Build And Verification
 
-## Integrated Checks And Build Evidence
-
-1. Source/docs scoped diff check:
-   - Command: `git diff --check origin/personal...HEAD -- autobyteus-server-ts autobyteus-web ':!tickets/**/validation-artifacts/**'`
-   - Result: pass.
-2. Durable validation test rerun:
-   - Command: `pnpm -C autobyteus-server-ts test tests/e2e/workspaces/workspaces-graphql.e2e.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts`
-   - Result: pass, 2 files / 18 tests.
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-post-round9-integrated-durable-validation-20260522201638.log`
-3. Current macOS Electron build after localization Local Fix:
-   - Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm -C autobyteus-web build:electron:mac`
-   - Result: pass.
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-post-round9-localfix-20260522202518.log`
-   - Build path included `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, backend `prepare-server` / `build:full`, Nuxt generate, Electron transpile/build, DMG, ZIP, and blockmap creation.
-   - Signing/notarization: local README no-notarization path; build log reports `notarize: false` and `skipped macOS code signing reason=identity explicitly is set to null`.
-4. DMG verification:
-   - Command: `hdiutil verify /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.dmg`
-   - Result: pass; `hdiutil` reported checksum is valid.
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-dmg-verify-post-round9-localfix-20260522202943.log`
-5. Artifact summary / checksums:
-   - Summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-artifacts-post-round9-localfix-20260522202943.txt`
-6. Final delivery docs diff check:
-   - Command: `git diff --check`
-   - Result: pass.
-   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-final-docs-diff-check-post-round9-localfix-20260522203423.log`
+- Version built: `1.3.29`
+- Build result: pass.
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round13-latest-personal-20260523144913.log`
+- Build path included `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`, backend `prepare-server` / `build:full`, mobile web asset generation, Electron Nuxt generation, Electron transpile/build, DMG, ZIP, and blockmap creation.
+- Signing/notarization: local README no-notarization path; Electron Builder reported `notarize: false`, `dmg.sign: false`, and skipped macOS code signing because identity was explicitly null.
+- Publish: Electron Builder publish configuration was present, but artifact events reported `isPublish: false`; no release publication was run.
+- DMG verification command: `hdiutil verify /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.29.dmg` — pass; checksum valid.
+- DMG verify log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-dmg-verify-round13-latest-personal-20260523145444.log`
+- Artifact summary/checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-artifacts-round13-latest-personal-20260523145444.txt`
 
 ## Built Electron Artifacts
 
 | Artifact | Size bytes | SHA-256 |
 | --- | ---: | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.dmg` | 379612024 | `2d884552172c01f6788662406dc7c6a0b309264b11ba3e525ef64e321923caed` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.dmg.blockmap` | 395345 | `bc28888f594c5789526970e26449807d1d9c68eed6eae3d0fb2f9672959e4dc1` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.zip` | 377096354 | `014c65a3de538d5a5ffd8f204ece88fed9d22eb7303914e92f81f86fb63afaeb` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.zip.blockmap` | 387394 | `39a16ed91a2010505678ebe4122167b1da36b8ae8dcefbd3771a30db4be672b2` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `5ee44db55e8695ba67ef8d2db9a84957f55c1863d464d0660b23c99c3af87634` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.29.dmg` | 379662053 | `f44bcdb650a69f08c37ea5b9982b724b39b6c9824c93e6a2b0b731d3c73ca79a` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.29.dmg.blockmap` | 393162 | `f397bb76c608e3934cf1e0d786f538e6ef98b23f3432985f7de82ba4eb07ab18` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.29.zip` | 377141131 | `a5c13c4822994f651b77c5ec79af035322532555f1059e6f90613e895e5aa433` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.29.zip.blockmap` | 387118 | `f957168ee78d4c33b4ec3d5ee72817b6dcefad8c1422c2b0e6ea909e8b1156b4` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `24b5179760e2e8639e4a1b64f192af34ae779f6b61fc34fd4ddc89f85c50945e` |
 
-## Upstream Validation Notes Preserved
+## Docs Sync
 
-- API/E2E round 5 durable validation added coverage for `workspaceReference(rootPath:)` without workspace initialization, subsequent create with the same deterministic identity, and no watcher lease after create.
-- Team-run service integration now asserts the current `TeamRunHistoryCatalogService` boundary for create, restore, and terminate.
-- High-churn embedded backend validation exercised watcher-light GraphQL operations, visible WebSocket descriptor behavior, repeated open/close and early-close cycles, child-process spawn, and Codex app-server provider activation after churn.
-- Full frontend/backend typechecks were not rerun in this delivery pass; the upstream baseline typecheck distinction remains preserved. Current evidence is from focused durable validation, implementation Local Fix checks, Electron build pipeline, and DMG verification.
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/docs-sync-report.md`
+- Result: pass.
+- Delivery verified final integrated long-lived docs:
+  - `autobyteus-web/docs/file_explorer.md` documents visible live sessions and watcher-light snapshot APIs.
+  - `autobyteus-web/docs/terminal.md` documents root-path terminal sessions and no mobile Phone Access Terminal/VNC page.
+  - `autobyteus-server-ts/docs/modules/file_explorer.md` remains the backend watcher/resource invariant reference.
+- No additional long-lived docs edits were needed by delivery after Round 13; implementation had already reconciled `terminal.md` during conflict resolution.
 
-## Cumulative Artifact Package
+## Upstream Validation / Review Context
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-spec.md`
-- Design impact rework: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-impact-rework-history-lazy-workspace.md`
-- Root-cause report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/root-cause-report.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/docs-sync-report.md`
-- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/release-deployment-report.md`
-- Historical delivery blocker: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round9-electron-build-localization.md`
+- API/E2E Round 7 result: pass; prior `E2E-TERMFD-001` resolved.
+- Code review Round 12 accepted durable validation for terminal lifecycle and mobile UX behavior.
+- Round 13 implementation preserved Terminal FD lifecycle fixes while integrating latest `origin/personal` mobile behavior.
+- Known non-blocking residuals from upstream review/validation remain unchanged: internal terminal grouping still uses an old `workspaceId` parameter name; shell self-exit manager cleanup is outside this blocker; `MobileFiles.vue` remains close to the 500-line source guard.
+
+## Repository Finalization Hold
+
+- Ticket moved to `tickets/done/<ticket-name>`: no.
+- Ticket branch pushed: no.
+- Merged into finalization target: no.
+- Release/tag/deploy: no.
+- Cleanup of worktree/branches: no.
+- Required next step: user verifies the generated local Electron artifact and explicitly authorizes any finalization/release/deployment work.
+
+## Rollback / Re-Entry Criteria
+
+- If the Electron artifact fails to launch, cannot open the embedded backend, regresses file-explorer watcher behavior, or regresses Terminal lifecycle behavior, do not finalize. Route to implementation/API-E2E with this handoff, the build log, and reproduction notes.
+- If `origin/personal` advances before finalization, refresh the ticket branch again, rerun required checks/builds as needed, and request renewed verification if user-facing handoff state changes.
