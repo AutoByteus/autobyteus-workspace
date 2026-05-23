@@ -1,0 +1,11 @@
+# Final cleanup - 2026-05-23
+
+- Copied local unsigned verification Electron artifacts to `/Users/normy/autobyteus_org/release-artifacts/android-pairing-security-hardening-v1.3.29-local/` before removing the dedicated ticket worktree.
+- Removed validation Docker container `autobyteus-phone-docker-current`.
+- Removed validation Docker volumes `autobyteus-phone-docker-current-workspace`, `autobyteus-phone-docker-current-data`, and `autobyteus-phone-docker-current-root-home`.
+- Removed local validation Docker image tag `autobyteus-server:android-phone-current`.
+- Restored Tailscale Serve to proxy `https://normys-macbook-pro.tail0347f8.ts.net/` to `http://127.0.0.1:29695`.
+- Removed dedicated ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening`.
+- Pruned git worktree registry.
+- Deleted local branch `codex/android-pairing-security-hardening`.
+- Deleted remote branch `origin/codex/android-pairing-security-hardening`.

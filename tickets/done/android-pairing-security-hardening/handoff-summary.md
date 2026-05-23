@@ -99,11 +99,11 @@
   - `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts` — passed, 1 file / 2 tests.
   - `pnpm -C autobyteus-web exec vitest run stores/__tests__/phoneAccessStore.spec.ts utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts components/settings/__tests__/PhoneAccessCard.spec.ts` — passed, 3 files / 20 tests; only non-blocking KaTeX quirks-mode warnings.
   - `git diff --check` — passed before and after delivery docs sync.
-- Delivery integrated-state check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/delivery-integrated-checks-20260523.log`.
+- Delivery integrated-state check log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/delivery-integrated-checks-20260523.log`.
 
 ## Docs Sync Status
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/docs-sync-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/docs-sync-report.md`
 - Long-lived docs updated/reviewed:
   - `README.md`
   - `docs/android_mobile_access.md`
@@ -145,9 +145,17 @@
 - Final target refresh after verification: `origin/personal` remained at `2369377c4752a1d742401f7f3d366d7aa24bb03b`; renewed verification is not required.
 - Release requested: `Yes`; next patch release planned as `v1.3.29`.
 
+## Finalization And Release Completion — 2026-05-23
+
+- Final ticket branch commit: `ec74ea23b66fd3b73fbb48360d53d3faa679ffbc`.
+- Ticket branch push: completed to `origin/codex/android-pairing-security-hardening` before target merge.
+- Repository finalization: `personal` fast-forwarded to the ticket commit and was pushed to `origin/personal`.
+- Release: `pnpm release 1.3.29 -- --release-notes tickets/done/android-pairing-security-hardening/release-notes.md` completed and pushed tag `v1.3.29`.
+- Release commit: `680420a8de5dfdbc87e9037457f306dc6d292184`.
+- Release tag: `v1.3.29`.
+- Cleanup: validation Docker/Tailscale state restored, dedicated ticket worktree removed, worktree registry pruned, and local/remote ticket branches deleted.
+- Local unsigned verification build archive retained at `/Users/normy/autobyteus_org/release-artifacts/android-pairing-security-hardening-v1.3.29-local/`.
+
 ## Remaining Action
 
-- Commit/push the archived ticket branch.
-- Fast-forward `personal` to the ticket branch and push it.
-- Run the documented release helper for `1.3.29` using `tickets/done/android-pairing-security-hardening/release-notes.md`.
-- Clean up the dedicated ticket worktree and ticket branches after finalization is safe.
+- Monitor GitHub release workflows if release artifact publication status is needed. No local repository action remains.

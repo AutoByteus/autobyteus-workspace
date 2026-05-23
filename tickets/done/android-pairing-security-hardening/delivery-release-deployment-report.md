@@ -6,7 +6,7 @@ This ticket is a Phase One Android pairing / mobile-safe Docker node security ha
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Notes: Handoff summary was created after merging latest tracked `origin/personal`, rerunning relevant checks, refreshing docs, and confirming `origin/personal` had not advanced again before handoff.
 
@@ -36,7 +36,7 @@ This ticket is a Phase One Android pairing / mobile-safe Docker node security ha
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `README.md`; `docs/android_mobile_access.md`; `autobyteus-web/docs/remote_access.md`; `autobyteus-web/docs/settings.md`; `autobyteus-web/docs/terminal.md`; `autobyteus-server-ts/docs/features/remote_access.md`; `docs/future-tickets/mobile-backend-authorization-hardening.md`
 - No-impact rationale (if applicable): N/A
@@ -44,29 +44,29 @@ This ticket is a Phase One Android pairing / mobile-safe Docker node security ha
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/`
 
 ## Version / Tag / Release Commit
 
-- Release notes artifact created: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/release-notes.md`
+- Release notes artifact created: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/release-notes.md`
 - Planned release version: `1.3.29` (`v1.3.29`) after repository finalization.
 - Version bump, release commit, tag, and workflow-triggering push are pending the repository finalization step.
 
 ## Repository Finalization
 
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/investigation-notes.md` (`Bootstrap Base Branch: origin/personal`; `Expected Finalization Target: personal`)
+- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/investigation-notes.md` (`Bootstrap Base Branch: origin/personal`; `Expected Finalization Target: personal`)
 - Ticket branch: `codex/android-pairing-security-hardening`
-- Ticket branch commit result: `Not run for final delivery`; only the allowed local safety checkpoint and base-integration merge were created before verification.
-- Ticket branch push result: `Not run pending user verification`
+- Ticket branch commit result: `Completed` at `ec74ea23b66fd3b73fbb48360d53d3faa679ffbc` (`chore(ticket): finalize android pairing security hardening`).
+- Ticket branch push result: `Completed`; `origin/codex/android-pairing-security-hardening` was pushed before target merge.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: N/A — user verification not yet received.
-- Delivery-owned edits protected before re-integration: `Not needed yet`
-- Re-integration before final merge result: `Not needed yet`
-- Target branch update result: `Not run pending user verification`
-- Merge into target result: `Not run pending user verification`
-- Push target branch result: `Not run pending user verification`
-- Repository finalization status: `Pending`
+- Target advanced after user verification: `No`; `origin/personal` remained `2369377c4752a1d742401f7f3d366d7aa24bb03b` before final merge.
+- Delivery-owned edits protected before re-integration: `Not needed`; target did not advance.
+- Re-integration before final merge result: `Not needed`; target did not advance beyond verified integrated state.
+- Target branch update result: `Completed`; local `personal` was current with `origin/personal` before merge.
+- Merge into target result: `Completed`; `personal` fast-forwarded from `2369377c4752a1d742401f7f3d366d7aa24bb03b` to ticket commit `ec74ea23b66fd3b73fbb48360d53d3faa679ffbc`.
+- Push target branch result: `Completed`; `origin/personal` was pushed after ticket merge, then pushed again by the release helper to release commit `680420a8de5dfdbc87e9037457f306dc6d292184`.
+- Repository finalization status: `Completed`
 - Blocker (if applicable): N/A; user verification received and finalization is proceeding.
 
 ## Release / Publication / Deployment
@@ -74,18 +74,18 @@ This ticket is a Phase One Android pairing / mobile-safe Docker node security ha
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `pnpm release 1.3.29 -- --release-notes tickets/done/android-pairing-security-hardening/release-notes.md`
-- Release/publication/deployment result: `Pending`
-- Release notes handoff result: `Prepared`
+- Release/publication/deployment result: `Completed`; release helper pushed `origin/personal` and tag `v1.3.29`.
+- Release notes handoff result: `Used`
 - Blocker (if applicable): N/A; release waits for repository finalization first.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening`
-- Worktree cleanup result: `Not required before user verification`
-- Worktree prune result: `Not required before user verification`
-- Local ticket branch cleanup result: `Not required before user verification`
-- Remote branch cleanup result: `Not required before user verification`
-- Blocker (if applicable): Cleanup waits until the recorded finalization target contains the work.
+- Worktree cleanup result: `Completed`; local unsigned verification build artifacts were copied to `/Users/normy/autobyteus_org/release-artifacts/android-pairing-security-hardening-v1.3.29-local/` first.
+- Worktree prune result: `Completed`.
+- Local ticket branch cleanup result: `Completed`; local `codex/android-pairing-security-hardening` deleted.
+- Remote branch cleanup result: `Completed`; `origin/codex/android-pairing-security-hardening` deleted.
+- Blocker (if applicable): N/A
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -96,12 +96,12 @@ This ticket is a Phase One Android pairing / mobile-safe Docker node security ha
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `No`; release was requested in the verification/finalization message.
-- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/release-notes.md`
+- Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/release-notes.md`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-- None run.
+- Release helper run: `pnpm release 1.3.29 -- --release-notes tickets/done/android-pairing-security-hardening/release-notes.md`. This pushed tag `v1.3.29`, which starts the configured GitHub release workflows for desktop, Android, messaging gateway, and server Docker.
 
 ## Environment Or Migration Notes
 
@@ -125,9 +125,9 @@ This ticket is a Phase One Android pairing / mobile-safe Docker node security ha
 - Final pre-handoff base check:
   - `git fetch --prune origin` — `origin/personal` unchanged at `2369377c4752a1d742401f7f3d366d7aa24bb03b`.
   - `git rev-list --left-right --count HEAD...origin/personal` — `2 0` before uncommitted delivery docs/artifact edits.
-- Integrated check evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/delivery-integrated-checks-20260523.log`.
-- Upstream API/E2E validation: passed; see `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/validation-report.md` and `validation-evidence/`.
-- Code review: round 3 passed; see `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/review-report.md`.
+- Integrated check evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/delivery-integrated-checks-20260523.log`.
+- Upstream API/E2E validation: passed; see `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/validation-report.md` and `validation-evidence/`.
+- Code review: round 3 passed; see `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/review-report.md`.
 
 ## Rollback Criteria
 
@@ -143,4 +143,15 @@ Stop finalization and route back to the appropriate upstream owner if user verif
 
 ## Final Status
 
-User verification received. Ticket artifacts are archived under `tickets/done/android-pairing-security-hardening/`; repository finalization and release `v1.3.29` are proceeding.
+Finalization complete. Ticket artifacts are archived, `personal` was updated and pushed, release `v1.3.29` was created and pushed, validation resources were cleaned up, and the dedicated ticket worktree/branches were removed.
+
+
+## Finalization Completion Addendum — 2026-05-23
+
+- Final ticket branch commit: `ec74ea23b66fd3b73fbb48360d53d3faa679ffbc`.
+- Repository finalization target: `personal` fast-forwarded to the ticket commit, then release helper advanced it to `680420a8de5dfdbc87e9037457f306dc6d292184`.
+- Release version: `1.3.29`.
+- Release tag: `v1.3.29` (annotated tag object `83b61449d322c347fd4fc8429e041c604acd5d5a`, peeled commit `680420a8de5dfdbc87e9037457f306dc6d292184`).
+- Release command log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/release-command-20260523.log`.
+- Cleanup log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/android-pairing-security-hardening/final-cleanup-20260523.log`.
+- Local unsigned verification build archive retained at `/Users/normy/autobyteus_org/release-artifacts/android-pairing-security-hardening-v1.3.29-local/`; official release artifacts are produced by the tag-triggered GitHub workflows.
