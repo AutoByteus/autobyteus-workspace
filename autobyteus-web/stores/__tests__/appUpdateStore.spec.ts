@@ -56,7 +56,8 @@ describe('appUpdateStore', () => {
         downloadTotalBytes: null,
         releaseNotes: 'Release notes',
         message: 'Version 1.2.0 is available.',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         checkedAt: '2026-02-26T00:00:00.000Z',
       }),
       onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
@@ -81,7 +82,8 @@ describe('appUpdateStore', () => {
       downloadTransferredBytes: 100,
       downloadTotalBytes: 100,
       releaseNotes: null,
-      error: null,
+      errorKind: null,
+      errorOperation: null,
       checkedAt: '2026-02-26T00:00:00.000Z',
     });
 
@@ -100,7 +102,8 @@ describe('appUpdateStore', () => {
       downloadTotalBytes: null,
       releaseNotes: null,
       message: 'Version 1.2.0 is available.',
-      error: null,
+      errorKind: null,
+      errorOperation: null,
       checkedAt: '2026-02-26T00:00:00.000Z',
     });
 
@@ -113,7 +116,8 @@ describe('appUpdateStore', () => {
       downloadTotalBytes: 100,
       releaseNotes: null,
       message: 'Downloading update...',
-      error: null,
+      errorKind: null,
+      errorOperation: null,
       checkedAt: '2026-02-26T00:00:00.000Z',
     });
 
@@ -129,7 +133,8 @@ describe('appUpdateStore', () => {
         downloadTotalBytes: null,
         releaseNotes: null,
         message: '',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         checkedAt: null,
       }),
       onAppUpdateState: vi.fn().mockReturnValue(vi.fn()),
@@ -166,7 +171,8 @@ describe('appUpdateStore', () => {
         downloadTotalBytes: 100,
         releaseNotes: null,
         message: 'Update downloaded. Restart to install.',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         checkedAt: '2026-02-26T00:00:00.000Z',
       }),
       onAppUpdateState: vi.fn().mockReturnValue(vi.fn()),
@@ -194,7 +200,8 @@ describe('appUpdateStore', () => {
         downloadTotalBytes: null,
         releaseNotes: null,
         message: 'Version 1.2.0 is available.',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         checkedAt: '2026-02-26T00:00:00.000Z',
       }),
       onAppUpdateState: vi.fn().mockReturnValue(vi.fn()),
@@ -222,7 +229,8 @@ describe('appUpdateStore', () => {
         downloadTotalBytes: null,
         releaseNotes: null,
         message: '',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         checkedAt: null,
       }),
       onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
@@ -263,7 +271,8 @@ describe('appUpdateStore', () => {
         downloadTotalBytes: null,
         releaseNotes: null,
         message: '',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         checkedAt: null,
       }),
       onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
@@ -296,4 +305,96 @@ describe('appUpdateStore', () => {
     expect(store.status).toBe('available');
     expect(store.shouldShow).toBe(true);
   });
+
+  it('keeps startup transient update errors quiet and avoids raw diagnostic toasts', async () => {
+    let listener: ((payload: any) => void) | null = null;
+
+    setElectronApiMock({
+      getAppUpdateState: vi.fn().mockResolvedValue({
+        status: 'idle',
+        currentVersion: '1.1.12',
+        availableVersion: null,
+        downloadPercent: null,
+        downloadTransferredBytes: null,
+        downloadTotalBytes: null,
+        releaseNotes: null,
+        message: '',
+        errorKind: null,
+        errorOperation: null,
+        checkedAt: null,
+      }),
+      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
+        listener = callback;
+        return vi.fn();
+      }),
+    });
+
+    const store = useAppUpdateStore();
+    await store.initialize();
+    addToastMock.mockClear();
+
+    listener?.({
+      status: 'error',
+      currentVersion: '1.1.12',
+      message: 'net::ERR_CONNECTION_CLOSED',
+      errorKind: 'network',
+      errorOperation: 'startup-check',
+      checkedAt: '2026-02-27T00:00:00.000Z',
+    });
+
+    expect(store.status).toBe('error');
+    expect(store.shouldShow).toBe(false);
+    expect(addToastMock).not.toHaveBeenCalled();
+  });
+
+  it('shows manual update errors with safe toast copy and dedupes repeated error events', async () => {
+    let listener: ((payload: any) => void) | null = null;
+
+    setElectronApiMock({
+      getAppUpdateState: vi.fn().mockResolvedValue({
+        status: 'idle',
+        currentVersion: '1.1.12',
+        availableVersion: null,
+        downloadPercent: null,
+        downloadTransferredBytes: null,
+        downloadTotalBytes: null,
+        releaseNotes: null,
+        message: '',
+        errorKind: null,
+        errorOperation: null,
+        checkedAt: null,
+      }),
+      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
+        listener = callback;
+        return vi.fn();
+      }),
+    });
+
+    const store = useAppUpdateStore();
+    await store.initialize();
+    addToastMock.mockClear();
+
+    const payload = {
+      status: 'error',
+      currentVersion: '1.1.12',
+      message: 'Cannot find latest-mac.yml in https://example.invalid/latest-mac.yml',
+      errorKind: 'release-preparing',
+      errorOperation: 'manual-check',
+      checkedAt: '2026-02-27T00:00:00.000Z',
+    };
+
+    listener?.(payload);
+    listener?.({
+      ...payload,
+      errorOperation: 'updater-event',
+      checkedAt: '2026-02-27T00:00:01.000Z',
+    });
+
+    expect(store.shouldShow).toBe(true);
+    expect(addToastMock).toHaveBeenCalledTimes(1);
+    expect(addToastMock.mock.calls[0][0]).toContain('still being prepared');
+    expect(addToastMock.mock.calls[0][0]).not.toContain('latest-mac.yml');
+    expect(addToastMock.mock.calls[0][0]).not.toContain('example.invalid');
+  });
+
 });

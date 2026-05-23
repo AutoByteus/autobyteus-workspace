@@ -1,0 +1,201 @@
+# Static boundary audit for updater raw diagnostics
+Date: 2026-05-23T05:25:18Z
+
+## Raw renderer AppUpdateState.error field references
+autobyteus-web/localization/messages/zh-CN/shell.ts:34:  'shell.components.app.AppUpdateNotice.statusTitle.error': '更新失败',
+autobyteus-web/localization/messages/zh-CN/shell.ts:43:  'shell.components.app.AppUpdateNotice.statusMessage.error': '无法完成应用更新流程。',
+autobyteus-web/localization/messages/zh-CN/shell.ts:44:  'shell.components.app.AppUpdateNotice.statusMessage.error.network': '无法连接更新服务器。AutoByteus 仍可继续使用，请稍后重试。',
+autobyteus-web/localization/messages/zh-CN/shell.ts:45:  'shell.components.app.AppUpdateNotice.statusMessage.error.releasePreparing': 'GitHub 上的最新更新仍在准备中。请几分钟后再试。',
+autobyteus-web/localization/messages/zh-CN/shell.ts:46:  'shell.components.app.AppUpdateNotice.statusMessage.error.metadata': '更新信息暂时不完整。请几分钟后再试。',
+autobyteus-web/localization/messages/zh-CN/shell.ts:47:  'shell.components.app.AppUpdateNotice.statusMessage.error.download': '更新下载被中断。请检查网络后重试。',
+autobyteus-web/localization/messages/zh-CN/shell.ts:48:  'shell.components.app.AppUpdateNotice.statusMessage.error.install': '更新已下载，但 AutoByteus 无法重启安装。请重试。',
+autobyteus-web/localization/messages/zh-CN/shell.ts:49:  'shell.components.app.AppUpdateNotice.statusMessage.error.unavailable': '仅打包后的桌面版本支持应用更新。',
+autobyteus-web/localization/messages/zh-CN/shell.ts:50:  'shell.components.app.AppUpdateNotice.statusMessage.error.unknown': 'AutoByteus 无法完成更新检查。请稍后重试。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:106:  'settings.components.settings.ApplicationsFeatureToggleCard.status.error': '错误',
+autobyteus-web/localization/messages/zh-CN/settings.ts:160:  'settings.components.settings.AboutSettingsManager.status.error': '错误',
+autobyteus-web/localization/messages/zh-CN/settings.ts:170:  'settings.components.settings.AboutSettingsManager.message.error': '无法完成应用更新流程。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:171:  'settings.components.settings.AboutSettingsManager.message.error.network': '无法连接更新服务器。AutoByteus 仍可继续使用，请稍后重试。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:172:  'settings.components.settings.AboutSettingsManager.message.error.releasePreparing': 'GitHub 上的最新更新仍在准备中。请几分钟后再试。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:173:  'settings.components.settings.AboutSettingsManager.message.error.metadata': '更新信息暂时不完整。请几分钟后再试。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:174:  'settings.components.settings.AboutSettingsManager.message.error.download': '更新下载被中断。请检查网络后重试。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:175:  'settings.components.settings.AboutSettingsManager.message.error.install': '更新已下载，但 AutoByteus 无法重启安装。请重试。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:176:  'settings.components.settings.AboutSettingsManager.message.error.unavailable': '仅打包后的桌面版本支持应用更新。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:177:  'settings.components.settings.AboutSettingsManager.message.error.unknown': 'AutoByteus 无法完成更新检查。请稍后重试。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:249:  'settings.components.settings.VoiceInputExtensionCard.outcome.error': '错误',
+autobyteus-web/localization/messages/zh-CN/settings.ts:260:  'settings.components.settings.VoiceInputExtensionCard.message.error': '语音输入需要处理。',
+autobyteus-web/localization/messages/en/settings.ts:106:  'settings.components.settings.ApplicationsFeatureToggleCard.status.error': 'Error',
+autobyteus-web/localization/messages/en/settings.ts:160:  'settings.components.settings.AboutSettingsManager.status.error': 'Error',
+autobyteus-web/localization/messages/en/settings.ts:170:  'settings.components.settings.AboutSettingsManager.message.error': 'Could not complete the app update flow.',
+autobyteus-web/localization/messages/en/settings.ts:171:  'settings.components.settings.AboutSettingsManager.message.error.network': 'Couldn’t reach the update server. AutoByteus is still usable. Try again later.',
+autobyteus-web/localization/messages/en/settings.ts:172:  'settings.components.settings.AboutSettingsManager.message.error.releasePreparing': 'The latest update is still being prepared on GitHub. Try again in a few minutes.',
+autobyteus-web/localization/messages/en/settings.ts:173:  'settings.components.settings.AboutSettingsManager.message.error.metadata': 'Update information is incomplete right now. Try again in a few minutes.',
+autobyteus-web/localization/messages/en/settings.ts:174:  'settings.components.settings.AboutSettingsManager.message.error.download': 'The update download was interrupted. Check your connection and try again.',
+autobyteus-web/localization/messages/en/settings.ts:175:  'settings.components.settings.AboutSettingsManager.message.error.install': 'The update was downloaded, but AutoByteus couldn’t restart to install it. Try again.',
+autobyteus-web/localization/messages/en/settings.ts:176:  'settings.components.settings.AboutSettingsManager.message.error.unavailable': 'Updates are available only in packaged desktop builds.',
+autobyteus-web/localization/messages/en/settings.ts:177:  'settings.components.settings.AboutSettingsManager.message.error.unknown': 'AutoByteus couldn’t complete the update check. Try again later.',
+autobyteus-web/localization/messages/en/settings.ts:249:  'settings.components.settings.VoiceInputExtensionCard.outcome.error': 'Error',
+autobyteus-web/localization/messages/en/settings.ts:260:  'settings.components.settings.VoiceInputExtensionCard.message.error': 'Voice Input needs attention.',
+autobyteus-web/components/settings/AboutSettingsManager.vue:106:      return t('settings.components.settings.AboutSettingsManager.status.error');
+autobyteus-web/localization/messages/en/shell.ts:34:  'shell.components.app.AppUpdateNotice.statusTitle.error': 'Update failed',
+autobyteus-web/localization/messages/en/shell.ts:43:  'shell.components.app.AppUpdateNotice.statusMessage.error': 'Could not complete the app update flow.',
+autobyteus-web/localization/messages/en/shell.ts:44:  'shell.components.app.AppUpdateNotice.statusMessage.error.network': 'Couldn’t reach the update server. AutoByteus is still usable. Try again later.',
+autobyteus-web/localization/messages/en/shell.ts:45:  'shell.components.app.AppUpdateNotice.statusMessage.error.releasePreparing': 'The latest update is still being prepared on GitHub. Try again in a few minutes.',
+autobyteus-web/localization/messages/en/shell.ts:46:  'shell.components.app.AppUpdateNotice.statusMessage.error.metadata': 'Update information is incomplete right now. Try again in a few minutes.',
+autobyteus-web/localization/messages/en/shell.ts:47:  'shell.components.app.AppUpdateNotice.statusMessage.error.download': 'The update download was interrupted. Check your connection and try again.',
+autobyteus-web/localization/messages/en/shell.ts:48:  'shell.components.app.AppUpdateNotice.statusMessage.error.install': 'The update was downloaded, but AutoByteus couldn’t restart to install it. Try again.',
+autobyteus-web/localization/messages/en/shell.ts:49:  'shell.components.app.AppUpdateNotice.statusMessage.error.unavailable': 'Updates are available only in packaged desktop builds.',
+autobyteus-web/localization/messages/en/shell.ts:50:  'shell.components.app.AppUpdateNotice.statusMessage.error.unknown': 'AutoByteus couldn’t complete the update check. Try again later.',
+autobyteus-web/components/app/AppUpdateNotice.vue:134:      return t('shell.components.app.AppUpdateNotice.statusTitle.error');
+autobyteus-web/utils/appUpdateErrorDisplay.ts:6:  network: 'shell.components.app.AppUpdateNotice.statusMessage.error.network',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:7:  'release-preparing': 'shell.components.app.AppUpdateNotice.statusMessage.error.releasePreparing',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:8:  metadata: 'shell.components.app.AppUpdateNotice.statusMessage.error.metadata',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:9:  download: 'shell.components.app.AppUpdateNotice.statusMessage.error.download',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:10:  install: 'shell.components.app.AppUpdateNotice.statusMessage.error.install',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:11:  unavailable: 'shell.components.app.AppUpdateNotice.statusMessage.error.unavailable',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:12:  unknown: 'shell.components.app.AppUpdateNotice.statusMessage.error.unknown',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:16:  network: 'settings.components.settings.AboutSettingsManager.message.error.network',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:17:  'release-preparing': 'settings.components.settings.AboutSettingsManager.message.error.releasePreparing',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:18:  metadata: 'settings.components.settings.AboutSettingsManager.message.error.metadata',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:19:  download: 'settings.components.settings.AboutSettingsManager.message.error.download',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:20:  install: 'settings.components.settings.AboutSettingsManager.message.error.install',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:21:  unavailable: 'settings.components.settings.AboutSettingsManager.message.error.unavailable',
+autobyteus-web/utils/appUpdateErrorDisplay.ts:22:  unknown: 'settings.components.settings.AboutSettingsManager.message.error.unknown',
+
+## Contract file
+export type AppUpdateStatus =
+  | 'idle'
+  | 'checking'
+  | 'available'
+  | 'downloading'
+  | 'downloaded'
+  | 'installing'
+  | 'no-update'
+  | 'error';
+
+export type AppUpdateErrorKind =
+  | 'network'
+  | 'release-preparing'
+  | 'metadata'
+  | 'download'
+  | 'install'
+  | 'unavailable'
+  | 'unknown';
+
+export type AppUpdateOperation =
+  | 'startup-check'
+  | 'manual-check'
+  | 'download'
+  | 'install'
+  | 'updater-event';
+
+export interface AppUpdateState {
+  status: AppUpdateStatus;
+  currentVersion: string;
+  availableVersion: string | null;
+  downloadPercent: number | null;
+  downloadTransferredBytes: number | null;
+  downloadTotalBytes: number | null;
+  releaseNotes: string | null;
+  message: string;
+  errorKind: AppUpdateErrorKind | null;
+  errorOperation: AppUpdateOperation | null;
+  checkedAt: string | null;
+}
+
+## Display helper
+import type { AppUpdateErrorKind, AppUpdateOperation, AppUpdateState } from '~/shared/appUpdateTypes';
+
+const DEFAULT_ERROR_KIND: AppUpdateErrorKind = 'unknown';
+
+const NOTICE_MESSAGE_KEYS: Record<AppUpdateErrorKind, string> = {
+  network: 'shell.components.app.AppUpdateNotice.statusMessage.error.network',
+  'release-preparing': 'shell.components.app.AppUpdateNotice.statusMessage.error.releasePreparing',
+  metadata: 'shell.components.app.AppUpdateNotice.statusMessage.error.metadata',
+  download: 'shell.components.app.AppUpdateNotice.statusMessage.error.download',
+  install: 'shell.components.app.AppUpdateNotice.statusMessage.error.install',
+  unavailable: 'shell.components.app.AppUpdateNotice.statusMessage.error.unavailable',
+  unknown: 'shell.components.app.AppUpdateNotice.statusMessage.error.unknown',
+};
+
+const SETTINGS_MESSAGE_KEYS: Record<AppUpdateErrorKind, string> = {
+  network: 'settings.components.settings.AboutSettingsManager.message.error.network',
+  'release-preparing': 'settings.components.settings.AboutSettingsManager.message.error.releasePreparing',
+  metadata: 'settings.components.settings.AboutSettingsManager.message.error.metadata',
+  download: 'settings.components.settings.AboutSettingsManager.message.error.download',
+  install: 'settings.components.settings.AboutSettingsManager.message.error.install',
+  unavailable: 'settings.components.settings.AboutSettingsManager.message.error.unavailable',
+  unknown: 'settings.components.settings.AboutSettingsManager.message.error.unknown',
+};
+
+const TOAST_MESSAGE_KEYS: Record<AppUpdateErrorKind, string> = {
+  network: 'settings.updates.store.errors.network',
+  'release-preparing': 'settings.updates.store.errors.releasePreparing',
+  metadata: 'settings.updates.store.errors.metadata',
+  download: 'settings.updates.store.errors.download',
+  install: 'settings.updates.store.errors.install',
+  unavailable: 'settings.updates.store.errors.unavailable',
+  unknown: 'settings.updates.store.errors.unknown',
+};
+
+function resolveKind(errorKind: AppUpdateErrorKind | null | undefined): AppUpdateErrorKind {
+  return errorKind ?? DEFAULT_ERROR_KIND;
+}
+
+export function getAppUpdateNoticeErrorMessageKey(errorKind: AppUpdateErrorKind | null | undefined): string {
+  return NOTICE_MESSAGE_KEYS[resolveKind(errorKind)];
+}
+
+export function getSettingsAppUpdateErrorMessageKey(errorKind: AppUpdateErrorKind | null | undefined): string {
+  return SETTINGS_MESSAGE_KEYS[resolveKind(errorKind)];
+}
+
+export function getAppUpdateErrorToastMessageKey(errorKind: AppUpdateErrorKind | null | undefined): string {
+  return TOAST_MESSAGE_KEYS[resolveKind(errorKind)];
+}
+
+export function isQuietStartupAppUpdateError(
+  state: Pick<AppUpdateState, 'status' | 'errorKind' | 'errorOperation'>,
+): boolean {
+  if (state.status !== 'error' || state.errorOperation !== 'startup-check') {
+    return false;
+  }
+
+  return state.errorKind === 'network' || state.errorKind === 'release-preparing';
+}
+
+export function buildAppUpdateErrorToastSignature(
+  errorKind: AppUpdateErrorKind | null | undefined,
+  errorOperation: AppUpdateOperation | null | undefined,
+  message: string,
+): string {
+  return `${resolveKind(errorKind)}:${errorOperation ?? 'unknown'}:${message}`;
+}
+# Precise updater raw-token audit
+Date: 2026-05-23T05:25:30Z
+
+## Raw provider/network tokens in runtime renderer display surfaces
+autobyteus-web/localization/messages/en/settings.ts:343:  'settings.components.settings.PhoneAccessCard.serveHttpsUrlHelp': 'After running Serve/status in the guide, copy the HTTPS MagicDNS hostname, append /mobile, and paste it here. It normally looks like https://<machine>.<tailnet>.ts.net/mobile without :29695.',
+autobyteus-web/localization/messages/en/settings.ts:345:  'settings.components.settings.PhoneAccessCard.httpCandidateDiagnosticNote': 'HTTP interface candidates such as http://100.x.y.z:29695 or LAN addresses are diagnostics only. The :29695 port belongs to local HTTP reachability, not the Tailscale Serve HTTPS QR target.',
+autobyteus-web/localization/messages/en/settings.ts:347:  'settings.components.settings.PhoneAccessCard.httpsRequiredBody': 'Create QR requires a private HTTPS URL. Paste a Tailscale Serve URL such as https://<machine>.<tailnet>.ts.net/mobile.',
+autobyteus-web/localization/messages/en/settings.ts:490:  'settings.components.settings.ProviderAPIKeyManager.base_url_placeholder': 'https://gateway.example.com/v1',
+autobyteus-web/localization/messages/en/settings.ts:518:  'settings.components.settings.ApplicationPackagesManager.importPlaceholder': '/absolute/path/to/package or https://github.com/owner/repo',
+autobyteus-web/localization/messages/zh-CN/settings.ts:343:  'settings.components.settings.PhoneAccessCard.serveHttpsUrlHelp': '运行上方 Serve/status 命令后，复制 HTTPS MagicDNS 主机名，追加 /mobile，并粘贴到这里。通常形如 https://<machine>.<tailnet>.ts.net/mobile，不带 :29695。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:345:  'settings.components.settings.PhoneAccessCard.httpCandidateDiagnosticNote': 'HTTP 接口候选项（例如 http://100.x.y.z:29695 或局域网地址）仅用于诊断。:29695 端口属于本地 HTTP 可达性，不是 Tailscale Serve HTTPS 二维码目标。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:347:  'settings.components.settings.PhoneAccessCard.httpsRequiredBody': '创建二维码需要私有 HTTPS URL。请粘贴 Tailscale Serve URL，例如 https://<machine>.<tailnet>.ts.net/mobile。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:490:  'settings.components.settings.ProviderAPIKeyManager.base_url_placeholder': 'https://gateway.example.com/v1',
+autobyteus-web/localization/messages/zh-CN/settings.ts:518:  'settings.components.settings.ApplicationPackagesManager.importPlaceholder': '/绝对路径/应用包 或 https://github.com/owner/repo',
+
+## Raw diagnostic field name in shared/electron/renderer contracts
+autobyteus-web/types/electron.d.ts:93:      openLogFile: (filePath: string) => Promise<{ success: boolean; error?: string }>;
+autobyteus-web/types/electron.d.ts:94:      openExternalLink: (url: string) => Promise<{ success: boolean; error?: string }>;
+autobyteus-web/types/electron.d.ts:97:      ) => Promise<{ success: boolean; content?: string; filePath?: string; error?: string }>;
+autobyteus-web/types/electron.d.ts:100:      ) => Promise<{ success: boolean; error?: string; content?: string }>;
+autobyteus-web/types/electron.d.ts:106:      resetServerData: () => Promise<{ success: boolean; error?: string }>;
+autobyteus-web/types/electron.d.ts:107:      showFolderDialog: () => Promise<{ canceled: boolean; path: string | null; error?: string }>;
+autobyteus-web/types/electron.d.ts:119:      openExtensionFolder: (extensionId: ExtensionId) => Promise<{ success: boolean; error?: string }>;
+autobyteus-web/electron/types.d.ts:68:    openLogFile: (filePath: string) => Promise<{ success: boolean; error?: string }>;
+autobyteus-web/electron/types.d.ts:69:    openExternalLink: (url: string) => Promise<{ success: boolean; error?: string }>;
+autobyteus-web/electron/types.d.ts:72:    ) => Promise<{ success: boolean; error?: string; content?: string; filePath?: string }>;
+autobyteus-web/electron/types.d.ts:75:    ) => Promise<{ success: boolean; error?: string; content?: string }>;
+autobyteus-web/electron/types.d.ts:81:    resetServerData: () => Promise<{ success: boolean; error?: string }>;
+autobyteus-web/electron/types.d.ts:82:    showFolderDialog: () => Promise<{ canceled: boolean; path: string | null; error?: string }>;

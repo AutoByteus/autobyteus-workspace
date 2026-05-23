@@ -10,6 +10,8 @@ const { appUpdateStoreMock } = vi.hoisted(() => {
     message: '',
     currentVersion: '1.1.11',
     checkedAt: null as string | null,
+    availableVersion: null as string | null,
+    errorKind: null as string | null,
     initialize: vi.fn().mockResolvedValue(undefined),
     checkForUpdates: vi.fn().mockResolvedValue(undefined),
     downloadUpdate: vi.fn().mockResolvedValue(undefined),
@@ -33,6 +35,8 @@ describe('AboutSettingsManager', () => {
     appUpdateStoreMock.message = '';
     appUpdateStoreMock.currentVersion = '1.1.11';
     appUpdateStoreMock.checkedAt = null;
+    appUpdateStoreMock.availableVersion = null;
+    appUpdateStoreMock.errorKind = null;
     appUpdateStoreMock.initialize.mockClear();
     appUpdateStoreMock.checkForUpdates.mockClear();
     appUpdateStoreMock.downloadUpdate.mockClear();
@@ -70,6 +74,20 @@ describe('AboutSettingsManager', () => {
     wrapper = mount(AboutSettingsManager);
     await wrapper.get('[data-testid="settings-updates-install-update"]').trigger('click');
     expect(appUpdateStoreMock.installUpdateAndRestart).toHaveBeenCalledTimes(1);
+  });
+
+
+  it('renders classified updater errors without raw diagnostics', () => {
+    appUpdateStoreMock.status = 'error';
+    appUpdateStoreMock.errorKind = 'release-preparing';
+    appUpdateStoreMock.message = 'Cannot find latest-mac.yml in https://example.invalid/latest-mac.yml';
+
+    const wrapper = mount(AboutSettingsManager);
+    const text = wrapper.get('[data-testid="settings-updates-message"]').text();
+
+    expect(text).toContain('still being prepared');
+    expect(text).not.toContain('latest-mac.yml');
+    expect(text).not.toContain('example.invalid');
   });
 
   it('renders restarting state and disables manual checks while installing', () => {

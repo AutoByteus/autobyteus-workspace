@@ -1,3 +1,4 @@
+import type { AppUpdateState } from '../shared/appUpdateTypes';
 import type {
   NodeRegistryChange,
   NodeRegistrySnapshot,
@@ -23,29 +24,6 @@ import type {
 } from '../electron/extensions/types';
 
 type Cleanup = () => void;
-
-type AppUpdateStatus =
-  | 'idle'
-  | 'checking'
-  | 'available'
-  | 'downloading'
-  | 'downloaded'
-  | 'installing'
-  | 'no-update'
-  | 'error';
-
-type AppUpdateState = {
-  status: AppUpdateStatus;
-  currentVersion: string;
-  availableVersion: string | null;
-  downloadPercent: number | null;
-  downloadTransferredBytes: number | null;
-  downloadTotalBytes: number | null;
-  releaseNotes: string | null;
-  message: string;
-  error: string | null;
-  checkedAt: string | null;
-};
 
 type ServerStatusPayload = {
   status: 'starting' | 'running' | 'error' | 'restarting' | 'shutting-down';

@@ -1,36 +1,15 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import type { ProgressInfo, UpdateInfo } from 'electron-updater';
+import type { AppUpdateOperation, AppUpdateState } from '../../shared/appUpdateTypes';
 import { logger } from '../logger';
+import { classifyAppUpdateError } from './appUpdateErrorClassifier';
 
 export const APP_UPDATE_STATE_CHANNEL = 'app-update-state';
 const IPC_GET_STATE = 'app-update:get-state';
 const IPC_CHECK = 'app-update:check';
 const IPC_DOWNLOAD = 'app-update:download';
 const IPC_INSTALL = 'app-update:install';
-
-export type AppUpdateStatus =
-  | 'idle'
-  | 'checking'
-  | 'available'
-  | 'downloading'
-  | 'downloaded'
-  | 'installing'
-  | 'no-update'
-  | 'error';
-
-export interface AppUpdateState {
-  status: AppUpdateStatus;
-  currentVersion: string;
-  availableVersion: string | null;
-  downloadPercent: number | null;
-  downloadTransferredBytes: number | null;
-  downloadTotalBytes: number | null;
-  releaseNotes: string | null;
-  message: string;
-  error: string | null;
-  checkedAt: string | null;
-}
 
 function toIsoNow(): string {
   return new Date().toISOString();
@@ -52,9 +31,24 @@ function normalizeReleaseNotes(releaseNotes: UpdateInfo['releaseNotes']): string
   return null;
 }
 
+function buildErrorDedupeSignature(
+  kind: string,
+  code: string | null,
+  diagnostic: string,
+): string {
+  const diagnosticHeadline = diagnostic
+    .split(/\r?\n/)
+    .find((line) => line.trim().length > 0)
+    ?.trim() ?? 'none';
+
+  return `${kind}:${code ?? 'none'}:${diagnosticHeadline}`;
+}
+
 export class AppUpdater {
   private state: AppUpdateState;
   private initialized = false;
+  private activeOperation: AppUpdateOperation | null = null;
+  private lastErrorSignature: string | null = null;
 
   constructor(private readonly autoCheckDelayMs: number = 8000) {
     this.state = {
@@ -66,7 +60,8 @@ export class AppUpdater {
       downloadTotalBytes: null,
       releaseNotes: null,
       message: 'Update status is idle.',
-      error: null,
+      errorKind: null,
+      errorOperation: null,
       checkedAt: null,
     };
   }
@@ -100,7 +95,7 @@ export class AppUpdater {
 
     setTimeout(() => {
       this.checkForUpdates('startup').catch((error) => {
-        this.handleError(error, 'Failed to check for updates at startup.');
+        this.handleError(error, 'Failed to check for updates at startup.', 'startup-check');
       });
     }, this.autoCheckDelayMs);
   }
@@ -119,7 +114,8 @@ export class AppUpdater {
         this.applyState({
           status: 'error',
           message: 'Updates are only available in packaged builds.',
-          error: 'updater-not-available-in-dev',
+          errorKind: 'unavailable',
+          errorOperation: 'manual-check',
           checkedAt: toIsoNow(),
         });
       }
@@ -130,10 +126,14 @@ export class AppUpdater {
       return this.getState();
     }
 
+    const operation: AppUpdateOperation = source === 'startup' ? 'startup-check' : 'manual-check';
+    this.activeOperation = operation;
+
     this.applyState({
       status: 'checking',
       message: 'Checking for updates...',
-      error: null,
+      errorKind: null,
+      errorOperation: null,
       checkedAt: toIsoNow(),
       downloadPercent: null,
       downloadTransferredBytes: null,
@@ -143,7 +143,11 @@ export class AppUpdater {
     try {
       await autoUpdater.checkForUpdates();
     } catch (error) {
-      this.handleError(error, 'Failed to check for updates.');
+      this.handleError(error, 'Failed to check for updates.', operation);
+    } finally {
+      if (this.activeOperation === operation) {
+        this.activeOperation = null;
+      }
     }
 
     return this.getState();
@@ -154,7 +158,8 @@ export class AppUpdater {
       this.applyState({
         status: 'error',
         message: 'Updates are only available in packaged builds.',
-        error: 'updater-not-available-in-dev',
+        errorKind: 'unavailable',
+        errorOperation: 'download',
       });
       return this.getState();
     }
@@ -167,15 +172,19 @@ export class AppUpdater {
       this.applyState({
         status: 'error',
         message: 'No update is currently available to download.',
-        error: 'update-not-available',
+        errorKind: 'metadata',
+        errorOperation: 'download',
       });
       return this.getState();
     }
 
+    this.activeOperation = 'download';
+
     this.applyState({
       status: 'downloading',
       message: 'Downloading update...',
-      error: null,
+      errorKind: null,
+      errorOperation: null,
       downloadPercent: 0,
       downloadTransferredBytes: 0,
       downloadTotalBytes: null,
@@ -184,7 +193,11 @@ export class AppUpdater {
     try {
       await autoUpdater.downloadUpdate();
     } catch (error) {
-      this.handleError(error, 'Failed to download update.');
+      this.handleError(error, 'Failed to download update.', 'download');
+    } finally {
+      if (this.activeOperation === 'download') {
+        this.activeOperation = null;
+      }
     }
 
     return this.getState();
@@ -195,17 +208,20 @@ export class AppUpdater {
       return { accepted: false };
     }
 
+    this.activeOperation = 'install';
+
     this.applyState({
       status: 'installing',
       message: 'Installing update and restarting...',
-      error: null,
+      errorKind: null,
+      errorOperation: null,
     });
 
     setTimeout(() => {
       try {
         autoUpdater.quitAndInstall(false, true);
       } catch (error) {
-        this.handleError(error, 'Failed to install update and restart.');
+        this.handleError(error, 'Failed to install update and restart.', 'install');
       }
     }, 100);
 
@@ -217,7 +233,8 @@ export class AppUpdater {
       this.applyState({
         status: 'checking',
         message: 'Checking for updates...',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         checkedAt: toIsoNow(),
       });
     });
@@ -230,7 +247,8 @@ export class AppUpdater {
         message: updateInfo.version
           ? `Version ${updateInfo.version} is available.`
           : 'A new version is available.',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         checkedAt: toIsoNow(),
         downloadPercent: null,
         downloadTransferredBytes: null,
@@ -244,7 +262,8 @@ export class AppUpdater {
         availableVersion: null,
         releaseNotes: null,
         message: 'You already have the latest version.',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         checkedAt: toIsoNow(),
         downloadPercent: null,
         downloadTransferredBytes: null,
@@ -256,7 +275,8 @@ export class AppUpdater {
       this.applyState({
         status: 'downloading',
         message: 'Downloading update...',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         downloadPercent: Math.max(0, Math.min(100, Number(progress.percent.toFixed(2)))),
         downloadTransferredBytes: progress.transferred,
         downloadTotalBytes: progress.total,
@@ -268,14 +288,15 @@ export class AppUpdater {
         status: 'downloaded',
         availableVersion: updateInfo.version || this.state.availableVersion,
         message: 'Update downloaded. Restart to install.',
-        error: null,
+        errorKind: null,
+        errorOperation: null,
         downloadPercent: 100,
         checkedAt: toIsoNow(),
       });
     });
 
     autoUpdater.on('error', (error: Error) => {
-      this.handleError(error, 'Auto-update failed.');
+      this.handleError(error, 'Auto-update failed.', this.activeOperation ?? 'updater-event');
     });
   }
 
@@ -291,24 +312,55 @@ export class AppUpdater {
     ipcMain.handle(IPC_INSTALL, async () => this.installUpdateAndRestart());
   }
 
-  private handleError(error: unknown, fallbackMessage: string): void {
-    const message = error instanceof Error ? error.message : fallbackMessage;
+  private handleError(
+    error: unknown,
+    fallbackMessage: string,
+    operation: AppUpdateOperation = 'updater-event',
+  ): void {
+    const classification = classifyAppUpdateError(error, {
+      operation,
+      fallbackMessage,
+    });
 
-    logger.error(`[updater] ${fallbackMessage}`, error);
+    const signature = buildErrorDedupeSignature(
+      classification.kind,
+      classification.code,
+      classification.diagnostic,
+    );
+    if (this.lastErrorSignature === signature && this.state.status === 'error') {
+      return;
+    }
+    this.lastErrorSignature = signature;
+
+    logger.error(
+      `[updater] ${fallbackMessage} `
+      + `(kind=${classification.kind}, operation=${classification.operation}, code=${classification.code ?? 'none'})\n`
+      + classification.diagnostic,
+      error,
+    );
 
     this.applyState({
       status: 'error',
-      message: fallbackMessage,
-      error: message,
+      message: classification.message,
+      errorKind: classification.kind,
+      errorOperation: classification.operation,
       checkedAt: toIsoNow(),
     });
   }
 
   private applyState(partial: Partial<AppUpdateState>): void {
-    this.state = {
+    const nextState: AppUpdateState = {
       ...this.state,
       ...partial,
     };
+
+    if (partial.status && partial.status !== 'error') {
+      nextState.errorKind = null;
+      nextState.errorOperation = null;
+      this.lastErrorSignature = null;
+    }
+
+    this.state = nextState;
     this.broadcastState();
   }
 
