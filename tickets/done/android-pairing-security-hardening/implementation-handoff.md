@@ -2,12 +2,12 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/design-spec.md`
 - Future Phase Two doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/docs/future-tickets/mobile-backend-authorization-hardening.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/design-review-report.md`
-- Review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/review-report.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/design-review-report.md`
+- Review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/review-report.md`
 
 ## What Changed
 

@@ -1,0 +1,21 @@
+== current status 2026-05-23T10:38:52+0200 ==
+-- docker container --
+NAMES                             IMAGE                                     STATUS         PORTS
+autobyteus-phone-docker-current   autobyteus-server:android-phone-current   Up 4 minutes   127.0.0.1:53246->5900/tcp, 127.0.0.1:53247->6080/tcp, 127.0.0.1:53245->8000/tcp, 127.0.0.1:53248->9223/tcp
+-- docker image --
+autobyteus-server:android-phone-current                           ace22c12b981   2.37GB
+-- mobile web path inside container --
++ ls -la /app/autobyteus-server-ts/mobile-web
+ls: cannot access '/app/autobyteus-server-ts/mobile-web': No such file or directory
++ true
++ + sed -n 1,20p
+find /app/autobyteus-server-ts -maxdepth 3 -type f ( -path */mobile-web/* -o -path */public/mobile/* )
+-- local staged mobile-web --
+-- Android package --
+    versionCode=10032900 minSdk=26 targetSdk=35
+    versionName=1.3.29-phone-test
+    firstInstallTime=2026-05-23 10:36:17
+    lastUpdateTime=2026-05-23 10:36:17
+-- Tailscale Serve --
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:53245

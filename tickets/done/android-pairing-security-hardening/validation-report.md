@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/review-report.md`
 - Current Validation Round: 1
 - Trigger: Code review round 2 pass; API/E2E validation requested for Phase One Android pairing / mobile-safe Docker node security hardening.
 - Prior Round Reviewed: N/A
@@ -42,9 +42,9 @@ The standard Docker profile remains a separate explicit profile. No fallback fro
 
 Evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/validation-evidence/runtime-environment.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/validation-evidence/android-adb-device.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/validation-evidence/live-android-network-before-serve.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/validation-evidence/runtime-environment.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/validation-evidence/android-adb-device.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/validation-evidence/live-android-network-before-serve.log`
 
 Observed targets:
 
@@ -125,7 +125,7 @@ Repository-resident durable validation added/updated during API/E2E:
 
 Evidence directory:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/validation-evidence/`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/validation-evidence/`
 
 Key files:
 
@@ -158,7 +158,7 @@ Raw launcher claim secrets and pairing payload secrets were redacted from persis
 
 ## Temporary Validation Methods / Scaffolding
 
-- A current-branch validation image was built with `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/validation-evidence/Dockerfile.remote-server.validation` because the public image did not contain the branch changes and `docker/Dockerfile.remote-server` did not build the current monorepo as-is without copying `patches` and workspace packages. This Dockerfile is evidence-only validation scaffolding, not production source.
+- A current-branch validation image was built with `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/validation-evidence/Dockerfile.remote-server.validation` because the public image did not contain the branch changes and `docker/Dockerfile.remote-server` did not build the current monorepo as-is without copying `patches` and workspace packages. This Dockerfile is evidence-only validation scaffolding, not production source.
 - Staged `autobyteus-server-ts/mobile-web` from the current `autobyteus-web` mobile build so the validation container served current mobile web code.
 - Temporarily repointed Tailscale Serve from `http://127.0.0.1:29695` to the validation Docker backend `http://127.0.0.1:<validation-port>`, then restored it to `http://127.0.0.1:29695`.
 - Used a temporary Docker container `autobyteus-live-validation-android-pairing` and named volumes for the live current-branch Docker-node validation.

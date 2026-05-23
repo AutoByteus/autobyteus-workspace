@@ -1,0 +1,3 @@
+# Adds the already-built mobile web bundle to the current server image for phone testing.
+FROM autobyteus-server:android-phone-current
+COPY autobyteus-web/dist-mobile/public /app/autobyteus-server-ts/mobile-web

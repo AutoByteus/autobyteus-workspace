@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/design-spec.md`
 - Supporting Future Phase Two Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/docs/future-tickets/mobile-backend-authorization-hardening.md`
 - Current Review Round: 2
 - Trigger: Rework after round 1 design-impact findings for Phase One Android pairing with a mobile-safe Docker node.
@@ -21,7 +21,7 @@
 
 ## Reviewed Design Spec
 
-Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/in-progress/android-pairing-security-hardening/design-spec.md` as the authoritative round 2 Phase One design.
+Reviewed `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/tickets/done/android-pairing-security-hardening/design-spec.md` as the authoritative round 2 Phase One design.
 
 The broad backend mobile authorization/token hardening scope is explicitly deferred and captured in `/Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/docs/future-tickets/mobile-backend-authorization-hardening.md`.
 
