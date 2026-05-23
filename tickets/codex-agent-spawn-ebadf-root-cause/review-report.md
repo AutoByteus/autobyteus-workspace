@@ -2,216 +2,204 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `Post-Validation Durable-Validation Re-Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/requirements.md`
-- Current Review Round: `12`
-- Trigger: Round-12 implementation Local Fix after API/E2E Round 6 failure `E2E-TERMFD-001` found built-backend macOS Terminal close-before-connect descriptor growth.
-- Prior Review Round Reviewed: `11`
-- Latest Authoritative Round: `12`
+- Current Review Round: `14`
+- Trigger: Round-14 repository-resident durable validation update after delivery integration and a user-prompted check of run GraphQL/API-layer + run-service integration coverage.
+- Prior Review Round Reviewed: `12` latest canonical code-review report plus the intervening API/E2E, delivery, and Round-13/14 handoff artifacts.
+- Latest Authoritative Round: `14`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-spec.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`
 - Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`
-- API / E2E Validation Started Yet: `Yes`; API/E2E Round 6 failed on `E2E-TERMFD-001` and this review checks the implementation Local Fix before API/E2E resumes.
-- Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`; API/E2E Round 6 added durable Terminal WebSocket lifecycle E2E and updated mobile context/live-session tests. These files were inspected in this review, but the current routing remains API/E2E because the latest API/E2E result is still a fail pending rerun.
-
-Round 12 is a fresh review of the review-relevant artifact chain and current source, not a delta-only review. I reloaded the code-review workflow, shared design principles, requirements, investigation notes, root-cause report, design-impact rework note, design spec, design review report, implementation handoff, API/E2E validation report, and prior review report before reviewing source.
+- API / E2E Validation Started Yet: `Yes`
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked | New Findings Found | Review Decision | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Initial implementation handoff | N/A | CR-001, CR-002, CR-003 | Fail | No | Bounded implementation local fixes were required before API/E2E. |
-| 2 | Implementation local-fix re-review | CR-001, CR-002, CR-003 | None | Pass | No | Ready for initial API/E2E validation. |
-| 3 | Post-validation local fix for `E2E-FEWS-001` and durable WebSocket E2E re-review | CR-001, CR-002, CR-003, `E2E-FEWS-001` | None | Pass | No | Source and durable WebSocket E2E were acceptable for API/E2E to resume. |
-| 4 | API/E2E round 3 expanded workspace/file-explorer durable E2E updates | CR-001, CR-002, CR-003, `E2E-FEWS-001` | CR-004 | Fail | No | File-operations E2E allowed missing write/delete explicit change events. |
-| 5 | API/E2E round 4 `CR-004` durable-validation Local Fix | CR-004 | None | Pass | No | `CR-004` resolved; delivery was allowed before later design-impact rework. |
-| 6 | Implementation rework after architecture review round 4 | CR-001..CR-004, `E2E-FEWS-001` | CR-005, CR-006, CR-007 | Fail | No | Lazy-history/reference implementation still had bounded implementation defects. |
-| 7 | Round 6 Local Fix for CR-005/CR-006/CR-007 | CR-005, CR-006, CR-007 | CR-008 | Fail | No | Backend team launch duplicated same-root workspace activation per member. |
-| 8 | Round 7 CR-008 Local Fix | CR-008 | None | Pass | No | Team launch deduped per distinct canonical root; API/E2E resumed. |
-| 9 | API/E2E round 5 durable-validation additions | CR-001..CR-008, `E2E-FEWS-001` | None | Pass | No | Durable validation additions accepted; delivery resumed before later rework. |
-| 10 | Fresh implementation rework after architecture review round 7 | CR-001..CR-008, `E2E-FEWS-001` | CR-009, CR-010 | Fail | No | Terminal and mobile Files/Tools still retained old workspace-id/materialized-workspace/tree-bearing boundaries. |
-| 11 | Round-10 Local Fix for CR-009/CR-010 | CR-009, CR-010 | None | Pass | No | Root-path Terminal target and mobile context/file-explorer boundaries passed code review; API/E2E resumed. |
-| 12 | Round-12 Local Fix for API/E2E `E2E-TERMFD-001` | CR-009, CR-010, `E2E-TERMFD-001` | None | Pass | Yes | Terminal startup abort and node-pty resource cleanup fix the descriptor-growth failure in reviewer checks. |
+| 1 | Initial implementation review for file-explorer watcher lifecycle refactor | N/A | `CR-001`, `CR-002`, `CR-003` | Fail | No | Required stream cleanup, open-folder refresh, and Codex diagnostics fixes. |
+| 2 | Implementation local fixes for `CR-001..003` | `CR-001..003` | None | Pass | No | Routed to API/E2E. |
+| 3 | API/E2E local fix for `E2E-FEWS-001` plus durable WebSocket validation | `E2E-FEWS-001` | None | Pass | No | Durable WebSocket lifecycle validation accepted. |
+| 4 | Expanded workspace/file-explorer durable E2E audit | Prior durable validation | `CR-004` | Fail | No | File-operation GraphQL E2E accepted empty `changes`. |
+| 5 | API/E2E local fix for `CR-004` | `CR-004` | None | Pass | No | Durable validation tightened. |
+| 6 | Lazy workspace-reference/history/team-run activation implementation rework | Prior watcher/metadata findings | `CR-005`, `CR-006`, `CR-007` | Fail | No | Routed bounded implementation fixes. |
+| 7 | Round-6 local fixes | `CR-005..007` | `CR-008` | Fail | No | Required same-root team activation dedupe. |
+| 8 | Round-7 local fix | `CR-008` | None | Pass | No | Routed to API/E2E. |
+| 9 | API/E2E round-5 durable validation additions | Prior lazy-workspace durable coverage | None | Pass | No | Routed to delivery. |
+| 10 | WorkspaceMetadata / WorkspaceFileExplorer simplification rework | Prior architecture concerns | `CR-009`, `CR-010` | Fail | No | Terminal and mobile surfaces still depended on initialized workspace/materialized file-explorer paths. |
+| 11 | Round-10 local fixes | `CR-009`, `CR-010` | None | Pass | No | Routed to API/E2E. |
+| 12 | Terminal close-before-connect implementation local fix for `E2E-TERMFD-001` | `E2E-TERMFD-001`, `CR-009`, `CR-010` | None | Pass | No | Routed to API/E2E; downstream later passed and delivery resumed. |
+| 13 | Latest-base delivery integration context | Round-12 residual delivery risks | None | Pass / context | No | Delivery merged latest `origin/personal`, resolved conflicts, and recorded integrated-state evidence. |
+| 14 | User-prompted run GraphQL/API-layer durable integration coverage update | Prior stale-history durable-test risk | `CR-011` | Fail | Yes | New durable integration test still retains obsolete `historyIndexService` / `recordRunCreated` / `recordRunRestored` mock blocks. |
 
 ## Review Scope
 
-Reviewed current source in `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause`, with focus on the Round-12 local-fix path and directly related durable validation:
+Fresh review was performed against the cumulative artifact chain, not as a delta-only check. The current code-review scope is the Round-14 repository-resident durable validation update and its direct relationship to the current run-history catalog lifecycle:
 
-- Backend Terminal WebSocket route cleanup: `/autobyteus-server-ts/src/api/websocket/terminal.ts`.
-- Backend Terminal handler/session manager startup abort behavior: `/autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts`, `/pty-session-manager.ts`, and `/index.ts`.
-- `autobyteus-ts` real `PtySession` node-pty descriptor/resource cleanup: `/autobyteus-ts/src/tools/terminal/pty-session.ts`.
-- Durable/targeted validation for Terminal lifecycle and mobile context/live-session behavior:
-  - `/autobyteus-server-ts/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
-  - `/autobyteus-server-ts/tests/integration/terminal/terminal-websocket.integration.test.ts`
-  - `/autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts`
-  - `/autobyteus-ts/tests/unit/tools/terminal/pty-session.test.ts`
-  - `/autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts`
-- Existing metadata/file-explorer/Terminal/mobile boundaries from Round 11 were rechecked for regression with source inspection and grep.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`
+- related service boundary inspected in `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts`
+- related provisioning boundary inspected in `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts`
+- related catalog boundary inspected in `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts`
+
+Round-14 production source status: no production code was changed in commit `9c80f5edd80aa422cc3cb04585aaa025360ee337`.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | CR-001 | High | Resolved / no regression found | File-explorer stream/session watcher cleanup remains unchanged by the Terminal fix. | Still accepted. |
-| 1 | CR-002 | High | Resolved / no regression found | Visible file-explorer live-session ownership remains centralized and mobile Files remains an explicit visible consumer. | Still accepted. |
-| 1 | CR-003 | Medium | Resolved / no regression found | Codex diagnostics are not affected by Round-12 Terminal lifecycle changes. | Still accepted. |
-| 4 | CR-004 | High | Resolved / no regression found | Durable file-operation E2E remains in package; Round 12 does not affect file-operation change events. | Still accepted. |
-| 6 | CR-005 | High | Resolved / no regression found | Workspace selector display-only behavior is unaffected. | Still accepted. |
-| 6 | CR-006 | High | Resolved / no regression found | Team launch root-path activation/dedupe remains in place. | Still accepted. |
-| 6 | CR-007 | Medium | Resolved / superseded by `WorkspaceMetadata` model | No old `WorkspaceReference` implementation path reintroduced. | Still accepted. |
-| 7 | CR-008 | High | Resolved / no regression found | Same-root team launch dedupe remains in source. | Still accepted. |
-| 10 | CR-009 | High | Resolved / strengthened | Root-path Terminal route remains, and Round 12 adds abort propagation from route to handler to manager plus PTY startup cleanup. | The earlier review residual risk around real PTY churn is now directly addressed. |
-| 10 | CR-010 | High | Resolved / no regression found | Mobile Tools and Mobile Files durable tests remain acceptable; `MobileUxRefinement.spec.ts` now includes empty-store Terminal and Files live-session release/reacquire coverage. | Still accepted. |
-| API/E2E Round 1 | `E2E-FEWS-001` | High | Resolved / no regression found | File-explorer watcher/session lifecycle remains separate from Terminal fix. | Still accepted. |
-| API/E2E Round 6 | `E2E-TERMFD-001` | High | Resolved in code review | Failing probe grew from `38` to `111` FDs after 25 early closes. Round-12 implementation probe passed, and reviewer rerun passed: after normal attached close `38`, after 25 early-close final wait `42`, `0` child processes, below allowed growth. | API/E2E must still rerun downstream sign-off. |
+| 1 | `CR-001` | High | Still resolved | File-explorer WebSocket lifecycle validation remains accepted through API/E2E Round 7. | Not touched by Round 14. |
+| 1 | `CR-002` | Medium | Still resolved | Workspace/file-explorer metadata and visible Files split remains represented in current design/validation artifacts. | Not touched by Round 14. |
+| 1 | `CR-003` | Medium | Still resolved | Codex diagnostics path not touched by Round 14. | Not touched by Round 14. |
+| 4 | `CR-004` | Medium | Still resolved | Prior GraphQL file-operation durable assertions remain outside Round-14 changed file. | Not touched by Round 14. |
+| 6 | `CR-005` | Medium | Still resolved | Workspace selector/reference behavior replaced by `WorkspaceMetadata` / explicit file-explorer capability in later design. | Not touched by Round 14. |
+| 6 | `CR-006` | High | Still resolved | Team launch root-path activation/dedupe retained; team-run integration remains part of Round-14 rerun. | `team-run-service.integration.test.ts` passed in reviewer rerun. |
+| 6 | `CR-007` | Medium | Still resolved | Canonical root-path semantics retained by later WorkspaceMetadata design. | Not touched by Round 14. |
+| 7 | `CR-008` | Medium | Still resolved | Team same-root activation dedupe retained. | `team-run-service.integration.test.ts` passed in reviewer rerun. |
+| 10 | `CR-009` | High | Still resolved | Terminal root-path/cwd path and close-before-connect fix retained through API/E2E Round 7 and delivery integration. | Not touched by Round 14. |
+| 10 | `CR-010` | High | Still resolved | Mobile latest-base integration deleted/reconciled the prior mobile Terminal/Tools surface per current architecture. | Not touched by Round 14. |
+| 12 | `E2E-TERMFD-001` | High | Resolved downstream | API/E2E Round 7 and delivery artifacts record bounded FD behavior after the Round-12 terminal startup abort/PTY cleanup fix. | Not touched by Round 14. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
-Changed Round-12 implementation source files only; tests/generated/docs/ticket artifacts excluded. Reviewer evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-source-size-20260523.log`.
+Changed source implementation files only; unit/integration/API/E2E test files and ticket artifacts are excluded from the source-file hard limit.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/tools/terminal/pty-session.ts` | 253 | Pass | Review-required | Owns concrete node-pty lifecycle, pending read flushing, listener disposal, bounded close/exit wait. Cohesive despite size. | Correct terminal tool runtime placement. | No failure | None; future extraction only if more PTY lifecycle policy is added. |
-| `autobyteus-server-ts/src/api/websocket/terminal.ts` | 178 | Pass | N/A | Owns route auth/cwd validation and close-before-connect abort orchestration. | Correct websocket API placement. | No failure | None. |
-| `autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts` | 162 | Pass | N/A | Owns handler/session setup, startup-abort classification, read-loop cleanup. | Correct service placement. | No failure | None. |
-| `autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts` | 126 | Pass | N/A | Owns in-flight session registration and abort-aware session creation/close. | Correct service placement. | No failure | None. |
-| `autobyteus-server-ts/src/services/terminal-streaming/index.ts` | 7 | Pass | N/A | Export boundary only. | Correct index placement. | No failure | None. |
+| None | N/A | N/A | N/A | N/A | N/A | N/A | Round-14 changed only durable validation and ticket artifacts. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Requirements require Terminal close-before-connect cleanup and descriptor-pressure safety. API/E2E failure proved a local lifecycle defect; Round 12 fixes the existing Terminal lifecycle owner chain without changing design. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Terminal lifecycle spine is now `WebSocket close/error -> route cleanup/AbortController -> TerminalHandler.connect -> PtySessionManager.createSession -> PtySession.start/close -> node-pty resource disposal`. | None. |
-| Ownership boundary preservation and clarity | Pass | Route owns socket/cwd/abort orchestration; handler owns session task classification; manager owns session map/in-flight close; `PtySession` owns node-pty resources. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | `TerminalSessionStartupAbortedError` is a specific classification for expected close-wins-startup behavior; it does not create a parallel flow. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Fix extends Terminal route/handler/manager and `PtySession`; no unrelated subsystem or new manager is introduced. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | Abort/error type is exported from terminal-streaming boundary and reused by route/handler/manager. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Added options are narrowly `signal?: AbortSignal`; no broad lifecycle DTO or mixed model introduced. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Startup abort policy is centralized through route abort signal and manager registration rather than repeated polling at call sites. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | Each touched layer owns concrete cleanup responsibility. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Node-pty destruction/listener disposal stays in `PtySession`; session map race handling stays in manager; socket cleanup stays in route. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Terminal remains root-path/cwd based and does not reintroduce workspace manager/materialization or file-explorer acquisition. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Route depends on handler, handler on manager, manager on session; callers do not bypass manager to close raw `PtySession` except manager-owned internals. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Files are in existing terminal runtime/service/API boundaries. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Small targeted changes avoid over-splitting; `PtySession` remains below 500 lines. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `createSession(..., { signal })` and `connect(..., { signal })` have explicit startup cancellation semantics. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `TerminalSessionStartupAbortedError`, `pendingSessionId`, `abortController`, and `closePromise` name their responsibilities. Minor older `workspaceId` grouping name remains non-blocking. | Rename terminal grouping from `workspaceId` to `terminalTargetId` if touched later. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Cleanup is not duplicated; idempotent close promise and manager close path avoid duplicate close policy. | None. |
-| Patch-on-patch complexity control | Pass | The fix removes the real race by aborting startup and making in-flight sessions closable, rather than adding retry/backoff or fd-limit workarounds. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No old Terminal workspace-id route or workspace materialization path reintroduced; no obsolete startup cleanup branch remains. | None. |
-| Test quality is acceptable for the changed behavior | Pass | Tests cover unit PTY resource disposal, manager in-flight close, real Terminal E2E close-before-connect churn, mobile durable context coverage, and reviewer FD probe. | API/E2E should rerun full validation. |
-| Test maintainability is acceptable for the changed behavior | Pass | Durable Terminal E2E is focused on externally visible behavior; FD probe is artifact-scoped and mirrors the failure. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | Ready for API/E2E to resume; not ready for delivery until API/E2E reruns and any durable validation routing is satisfied. | Route to `api_e2e_engineer`. |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | No old workspace-id Terminal API or compatibility wrapper added. | None. |
-| No legacy code retention for old behavior | Pass | Boundary grep found no blocking removed concepts. Hits in `MobileFiles.vue` are intentional visible Files activation/viewer props, not Terminal legacy paths. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Requirements/design now place run history under explicit metadata/catalog boundaries; Round-14 finds a durable-test cleanup issue, not a product design issue. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Current create/restore/terminate run spine is `GraphQL/service caller -> AgentRunService/ProvisioningService -> AgentRunManager -> AgentRunHistoryCatalogService -> metadata/catalog stores`. | None. |
+| Ownership boundary preservation and clarity | Fail | Positive create/restore/terminate tests use `historyCatalogService`, but negative tests in the same durable file still pass obsolete `historyIndexService` blocks that are not part of `AgentRunService` dependencies. | Remove stale `historyIndexService` setup and make every `AgentRunService` test setup use the current `historyCatalogService` dependency shape or no history dependency only where truly safe and explicit. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Metadata harness correctly couples `metadataService` and `historyCatalogService` for tested create/restore/terminate paths. | None after `CR-011` cleanup. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | `createRunHistoryHarness()` is a focused test harness for the current catalog boundary; no production helper was added. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | The shared harness reduces duplicated metadata/catalog setup in positive lifecycle tests. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Harness shape is narrow: `metadataByRunId`, `metadataService`, and `historyCatalogService`. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Prepared/start/terminate catalog policy remains under `AgentRunHistoryCatalogService`. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | The test harness owns in-memory metadata mutation needed by the integration tests. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Fail | The file mixes current catalog lifecycle assertions with obsolete legacy history-index dependency placeholders in three negative test setups. | Apply `CR-011`. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Fail | Obsolete `historyIndexService` fields are silently ignored by the current constructor at runtime, which means those setups no longer describe the actual dependency boundary. | Apply `CR-011`. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No production caller bypass was introduced; failure is limited to stale test dependency shape, not product boundary bypass. | None beyond test cleanup. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | The changed file remains the correct integration-test location for `AgentRunService`. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | A local harness in the test file is appropriate; no new test module is needed. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Fail | The stale `historyIndexService` / `recordRunCreated` / `recordRunRestored` names describe a removed interface and confuse the current `recordPreparedRun -> recordRunStarted -> recordRunTerminated` contract. | Apply `CR-011`. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Fail | Current names are good in the new harness, but leftover `historyIndexService`, `recordRunCreated`, and `recordRunRestored` are wrong names for the current boundary. | Apply `CR-011`. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Duplication is reduced by the harness; stale blocks are cleanup rather than duplicated current logic. | None beyond test cleanup. |
+| Patch-on-patch complexity control | Pass | The durable validation update is small and conceptually aligned with the current service lifecycle. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Fail | Reviewer grep found obsolete legacy history-index mocks remaining at lines `286-289`, `399-402`, and `433-436` of `agent-run-service.integration.test.ts`. | Apply `CR-011`. |
+| Test quality is acceptable for the changed behavior | Fail | The key positive assertions are useful and pass, but durable validation quality is not clean while the same file retains obsolete dependency names from the failure cause. | Apply `CR-011` then rerun the focused subset. |
+| Test maintainability is acceptable for the changed behavior | Fail | Future maintainers can misread the stale negative-test setup as a still-supported dependency or miss that those fields are ignored. | Apply `CR-011`. |
+| Validation or delivery readiness for the next workflow stage | Fail | Delivery should remain paused until the durable validation file is cleaned and re-reviewed. | Route to implementation for local fix. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | No product compatibility wrapper or dual path was introduced. | None. |
+| No legacy code retention for old behavior | Fail | Legacy test-only names for the old run-history index boundary remain in the changed durable validation file. | Apply `CR-011`. |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `9.3`
-- Overall score (`/100`): `93/100`
-- Score calculation note: simple average across mandatory categories; the score does not override the pass/fail decision.
+- Overall score (`/10`): `8.7`
+- Overall score (`/100`): `87/100`
+- Score calculation note: simple average across the ten mandatory categories; the score does not override the fail decision.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.4 | Startup, abort, close, and resource-disposal spines are explicit across route/handler/manager/session. | The full flow spans two packages and requires careful reading. | Keep future terminal lifecycle docs/tests aligned with this spine. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Each layer owns its proper lifecycle slice and no layer bypasses the manager/session owner. | The legacy `workspaceId` name still appears as terminal grouping metadata. | Rename if later touching this API. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.2 | `{ signal }` cancellation options and `TerminalSessionStartupAbortedError` are clear and narrow. | Route still maps all non-auth setup errors to `Terminal cwd unavailable` after handler failures, though handler already closes 1011 for true setup errors. | If future user-facing terminal errors are expanded, split cwd validation errors from PTY setup errors. |
-| `4` | `Separation of Concerns and File Placement` | 9.4 | Node-pty cleanup remains in `autobyteus-ts`; server route/handler/manager keep orchestration. | None blocking. | None. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Added structures are tight and cancellation-focused. | No issue beyond cross-package lifecycle needing tests. | Preserve narrow option shape. |
-| `6` | `Naming Quality and Local Readability` | 9.1 | New names are strong and explain expected aborts. | Older `workspaceId` terminal grouping field still drags readability. | Rename in future cleanup if low-risk. |
-| `7` | `Validation Readiness` | 9.4 | Reviewer reran unit, integration, E2E, build, frontend mobile durable test, and FD probe. | Full downstream API/E2E has not yet rerun after the local fix. | API/E2E should rerun Round 6 matrix or equivalent. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.3 | Close-before-connect, close-during-startup, partial setup close, idempotent close, listener disposal, and descriptor growth were checked. | Shell self-exit behavior is outside this ticket and still worth future observation. | Consider future terminal-exit UX cleanup outside this blocker. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No old route/materialized-workspace workaround or fd-limit workaround is retained. | None blocking. | Maintain legacy greps. |
-| `10` | `Cleanup Completeness` | 9.3 | In-flight sessions are closable and `PtySession.close()` clears listeners, queues, pending reads, and PTY resources. | Exact node-pty internals are platform-sensitive, so API/E2E should rerun on macOS. | Preserve FD probe as release evidence. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 8.8 | Positive lifecycle tests now assert the current prepared/start/terminate catalog spine. | The same file still contains obsolete legacy history-index names that muddy the boundary story. | Remove stale mocks so the whole test file tells one current lifecycle story. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.6 | The production boundary is clear and unchanged. | Three test setups pass a dependency name that `AgentRunService` no longer owns or accepts. | Use `historyCatalogService` or an explicit no-op/current harness everywhere. |
+| `3` | `API / Interface / Query / Command Clarity` | 8.5 | Current catalog methods are asserted on create/restore/terminate paths. | `recordRunCreated` and `recordRunRestored` still appear in the durable validation file even though the current interface is `recordPreparedRun` / `recordRunStarted`. | Remove obsolete method names from this test file. |
+| `4` | `Separation of Concerns and File Placement` | 8.8 | File placement is correct and the new harness is cohesive. | The file mixes current and obsolete dependency vocabulary. | Align all test setup with the current catalog owner. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.0 | The in-memory catalog/metadata harness is narrow and useful. | It is not yet used consistently in all service setup branches. | Reuse the harness in the negative tests where a history dependency is needed. |
+| `6` | `Naming Quality and Local Readability` | 8.3 | New `createRunHistoryHarness` naming is readable. | Leftover old names are directly misleading in a test that exists to restore current catalog coverage. | Remove or rename all obsolete history-index references. |
+| `7` | `Validation Readiness` | 8.7 | Reviewer and implementation reruns pass 7 files / 36 tests; diff check passes. | Passing tests still include stale ignored dependency setup, so the durable validation is not clean enough to resume delivery. | Clean the test and rerun the same focused subset. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.0 | No production runtime code changed; existing API/E2E Round 7 and delivery evidence remain valid. | Round-14 is validation-only, so runtime edge coverage is inherited rather than newly expanded. | None beyond durable test cleanup. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 8.0 | No product backward-compatibility code was added. | The changed durable validation file still retains old history-index mock names from the removed boundary. | Remove `historyIndexService`, `recordRunCreated`, and `recordRunRestored` from the file. |
+| `10` | `Cleanup Completeness` | 8.6 | Main positive stale-test failure is largely corrected. | Cleanup is incomplete because obsolete setup remains in three negative tests. | Complete the cleanup and rerun. |
 
 ## Findings
 
-No new blocking findings in Round 12.
+### CR-011 — Obsolete history-index mocks remain in the updated durable AgentRunService integration test
 
-### E2E-TERMFD-001 — Resolved in code review; downstream API/E2E rerun required
-
-- Previous classification: `Local Fix` in implementation-owned source.
-- Current status: `Resolved` for code review.
+- Severity: `Medium`
+- Classification: `Local Fix`
+- Owner: `implementation_engineer`
+- File: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts`
 - Evidence:
-  - `registerTerminalWebsocket()` creates an `AbortController`, aborts it in idempotent cleanup, tracks `pendingSessionId`, `connectedSessionId`, and `connectPromise`, and disconnects startup/late sessions.
-  - `TerminalHandler.connect()` forwards the abort signal, classifies `TerminalSessionStartupAbortedError` as expected, and avoids treating close-wins-startup as a 1011 setup failure.
-  - `PtySessionManager.createSession()` registers the session before `start()` resolves, lets `closeSession()` close in-flight startup sessions, and converts close-wins-startup into `TerminalSessionStartupAbortedError`.
-  - `PtySession.close()` is idempotent and destroys node-pty resources, disposes listeners, clears data/pending reads, waits for exit with fallback, and causes startup to reject if close wins.
-  - Reviewer FD probe: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-terminal-fd-probe-20260523.json` passed with final `42` FDs after 25 early-close cycles versus `38` after normal attached close.
-
-### CR-009 / CR-010 — Still resolved
-
-- Terminal remains root-path/cwd based and mobile Terminal/Files remain metadata/file-explorer-boundary aligned.
-- Reviewer boundary grep: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-boundary-grep-20260523.log`.
+  - Reviewer grep log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round14-legacy-run-history-grep-20260523.log`
+  - Remaining obsolete references:
+    - lines `286-289`: `historyIndexService`, `recordRunCreated`, `recordRunRestored`, `recordRunTerminated`
+    - lines `399-402`: `historyIndexService`, `recordRunCreated`, `recordRunRestored`, `recordRunTerminated`
+    - lines `433-436`: `historyIndexService`, `recordRunCreated`, `recordRunRestored`, `recordRunTerminated`
+- Why this matters:
+  - Round 14 specifically exists because this durable integration test was stale against the current run-history catalog lifecycle.
+  - The current `AgentRunService` constructor accepts `historyCatalogService`, not `historyIndexService`; the stale object properties are silently ignored in runtime tests.
+  - Leaving the obsolete names in the same durable validation file makes the test suite ambiguous about whether the old history-index boundary is still supported.
+- Required fix:
+  1. Remove all `historyIndexService`, `recordRunCreated`, and `recordRunRestored` setup from `agent-run-service.integration.test.ts`.
+  2. For negative tests that do not exercise history writes, either omit the history dependency only if that is intentional and harmless, or preferably pass the current `historyCatalogService` from `createRunHistoryHarness()` so every `AgentRunService` setup describes the current dependency shape.
+  3. Keep the positive assertions for `recordPreparedRun`, `recordRunStarted`, and `recordRunTerminated`.
+  4. Rerun:
+     - `git diff --check -- autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`
+     - `pnpm -C autobyteus-server-ts test tests/unit/api/graphql/types/agent-run.test.ts tests/unit/api/graphql/types/agent-team-run.test.ts tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts tests/integration/agent-execution/agent-run-service.integration.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts`
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
-| Validation Readiness | Ready for the next workflow stage (`API / E2E`) | Pass | Code review accepts the local fix and routes to API/E2E for runtime sign-off. |
-| Tests | Test quality is acceptable | Pass | Round-12 tests cover the failure mode at unit, integration, real E2E, and built-backend FD-probe levels. |
-| Tests | Test maintainability is acceptable | Pass | Durable Terminal E2E is behavior-focused and the artifact FD probe directly documents the original failure. |
-| Tests | Review findings are clear enough for the next owner before API / E2E resumes | Pass | No open review findings; residual API/E2E validation needs are listed. |
+| Validation Readiness | Ready for the next workflow stage (`Delivery`) | Fail | Delivery should remain paused until `CR-011` is fixed and re-reviewed. |
+| Tests | Test quality is acceptable | Fail | Passing focused tests are useful, but obsolete dependency setup remains in the changed durable validation file. |
+| Tests | Test maintainability is acceptable | Fail | Stale ignored mocks make future maintenance and boundary interpretation harder. |
+| Tests | Review findings are clear enough for the next owner before delivery resumes | Pass | Required cleanup and rerun commands are explicit. |
 
 Reviewer checks performed:
 
-- `git diff --check` for Round-12 relevant files: Pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-diff-check-20260523.log`
-- Round-12 source-size audit: Pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-source-size-20260523.log`
-- Boundary/startup cleanup grep: Pass after reviewer interpretation. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-boundary-grep-20260523.log`
-- `pnpm -C autobyteus-ts exec vitest --run tests/unit/tools/terminal/pty-session.test.ts`: Pass, 1 file / 12 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-autobyteus-ts-pty-session-unit-20260523.log`
-- `pnpm -C autobyteus-server-ts test tests/unit/services/terminal/pty-session-manager.test.ts tests/unit/services/terminal/terminal-handler.test.ts tests/integration/terminal/terminal-websocket.integration.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`: Pass, 4 files / 26 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-backend-terminal-targeted-20260523.log`
-- `pnpm -C autobyteus-server-ts build:full`: Pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-backend-build-full-20260523.log`
-- `pnpm -C autobyteus-web test:nuxt components/mobile/__tests__/MobileUxRefinement.spec.ts`: Pass, 1 file / 12 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-frontend-mobile-ux-20260523.log`
-- Focused built-backend Terminal FD probe copied from the API/E2E failure harness: Pass. Log/JSON:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-terminal-fd-probe-20260523.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round12-terminal-fd-probe-20260523.json`
+- `git diff --check -- autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`: Pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round14-diff-check-20260523.log`
+- `rg -n "historyIndexService|recordRunCreated|recordRunRestored" autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts`: Found stale references. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round14-legacy-run-history-grep-20260523.log`
+- `pnpm -C autobyteus-server-ts test tests/unit/api/graphql/types/agent-run.test.ts tests/unit/api/graphql/types/agent-team-run.test.ts tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts tests/integration/agent-execution/agent-run-service.integration.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts`: Pass, 7 files / 36 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round14-run-graphql-integration-tests-20260523.log`
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No old workspace-id Terminal route or workspace-materialization fallback was reintroduced. |
-| No legacy old-behavior retention in changed scope | Pass | No removed steady-state concepts found in changed source scope. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No blocking obsolete Terminal cleanup path remains. |
+| No backward-compatibility mechanisms in changed scope | Pass | No production compatibility wrapper or dual-path behavior was introduced. |
+| No legacy old-behavior retention in changed scope | Fail | The changed durable validation file still contains old history-index dependency and method names. |
+| Dead/obsolete code cleanup completeness in changed scope | Fail | `historyIndexService`, `recordRunCreated`, and `recordRunRestored` remain in the updated integration test. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
 | Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| None | N/A | Review found no blocking obsolete item in the Round-12 changed implementation or durable validation scope. | N/A | N/A |
+| `historyIndexService` mock blocks in `autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts` | `ObsoleteAdapter` | Lines `286-289`, `399-402`, `433-436`; grep log `code-review-round14-legacy-run-history-grep-20260523.log`. | `AgentRunService` now depends on `historyCatalogService`; the old field is ignored and misdocuments the current boundary. | Replace with current `historyCatalogService` harness or remove if truly unused. |
+| `recordRunCreated` / `recordRunRestored` mock methods in the same file | `DeadCode` | Same grep log. | Current lifecycle is `recordPreparedRun -> recordRunStarted -> recordRunTerminated`; old method names are obsolete. | Remove all references from the changed durable validation file. |
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`
-- Why: Delivery docs/final handoff should include the Terminal close-before-connect descriptor leak and the FD probe evidence after API/E2E reruns successfully.
-- Files or areas likely affected:
-  - ticket validation report / final handoff summary;
-  - Terminal docs if they mention lifecycle guarantees;
-  - release/deployment report evidence list.
+- Docs impact: `No`
+- Why: Round 14 is a durable validation cleanup issue only. Product docs and release docs do not need changes for `CR-011`.
+- Files or areas likely affected: ticket-local implementation handoff and review report only.
 
 ## Classification
 
-- Classification: N/A because the latest review result is `Pass`.
-- Design-impact note: No design-impact issue was found. `E2E-TERMFD-001` was a bounded runtime cleanup defect under the already-reviewed Terminal lifecycle design and is fixed locally in Terminal route/handler/manager/PTY code.
+- Classification: `Local Fix`
+- Rationale: This is a bounded test-maintainability and obsolete-mock cleanup in repository-resident durable validation. It does not expose a product runtime failure, design-impact issue, or requirement gap.
 
 ## Recommended Recipient
 
-- Recommended Recipient: `api_e2e_engineer`
+- Recommended Recipient: `implementation_engineer`
 
-Routing note: This is an implementation-review pass after an implementation-owned Local Fix. API/E2E should resume. If API/E2E adds or changes repository-resident durable validation after this review, route back through code review before delivery. The Round-6 durable validation files listed in this report were inspected and accepted as part of this Round-12 review context.
+Routing note: The Round-14 durable validation change was delivered by implementation. Please fix `CR-011`, update the implementation handoff/evidence, and route back to `code_reviewer` before delivery resumes.
 
 ## Residual Risks
 
-- API/E2E must rerun the failing built-backend macOS Terminal FD probe or equivalent in the validation environment; code review and implementation probes passed, but downstream runtime sign-off is still required.
-- The Terminal manager still uses the older internal grouping name `workspaceId` for terminal target/cwd grouping. This is non-blocking but should be renamed to `terminalTargetId` if that API is touched again.
-- Shell self-exit handling is outside this specific blocker; future Terminal UX/runtime work could consider closing the websocket or manager session when the underlying PTY exits by itself.
-- `MobileFiles.vue` remains close to the 500-line source guard from earlier rounds; Round 12 did not grow it as implementation source, but future work should split before adding behavior.
+- The focused run GraphQL/API-layer subset passes, but delivery is blocked because the changed durable integration test still contains obsolete ignored dependency setup.
+- No product runtime issue was found in Round 14.
+- Existing delivery/API-E2E evidence remains context only; it does not remove the need to clean the changed durable validation file.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Score Summary: `9.3/10` (`93/100`). Round-12 code fixes the Terminal close-before-connect FD leak cleanly without design regression.
-- Notes: Ready to route to `api_e2e_engineer` for API/E2E validation to resume.
+- Review Decision: `Fail`
+- Score Summary: `8.7/10` (`87/100`). The functional test rerun passes, but the durable validation file is not clean because obsolete history-index mocks remain.
+- Notes: Route to `implementation_engineer` for `CR-011` Local Fix. Delivery must stay paused until the cleaned durable validation returns through code review.

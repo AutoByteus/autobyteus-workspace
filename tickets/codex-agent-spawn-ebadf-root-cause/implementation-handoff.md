@@ -40,6 +40,7 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-12 local fix for `E2E-TERMFD-001`: terminal close-before-connect now aborts pending startup through an `AbortSignal`, exposes in-flight sessions to `PtySessionManager.closeSession()` so cleanup can close them before `start()` resolves, suppresses expected startup-abort error handling, and hardens `autobyteus-ts` `PtySession.close()` to destroy node-pty socket/write-stream resources, dispose listeners, resolve pending reads, and reject startup if close wins.
 - Round-13 delivery local fix: integrated latest `origin/personal@74218467a2f7786c82f3e97b9190058d2cb83bd2`, resolved mobile/terminal/test/docs merge conflicts, preserved the Round-12/7 Terminal FD lifecycle fixes, kept latest-base deletion of `MobileTools.vue`, and reconciled `autobyteus-web/docs/terminal.md` to describe root-path desktop Terminal plus no mobile Phone Access Terminal/VNC page.
 - Round-14 user-prompted run API coverage fix: rechecked GraphQL/run-history/run-service integration coverage, found `agent-run-service.integration.test.ts` still wired the legacy `historyIndexService` mock instead of the current `historyCatalogService` prepared/start/terminate boundary, updated that durable integration test to exercise the current run-history catalog lifecycle, and reran the focused GraphQL/run integration subset successfully.
+- Round-15 CR-011 local fix: removed the remaining stale negative-test `historyIndexService`, `recordRunCreated`, and `recordRunRestored` setup blocks from `agent-run-service.integration.test.ts`; all test setups now use the current `historyCatalogService` harness where a history dependency is supplied.
 
 ## Key Files Or Areas
 
@@ -177,6 +178,18 @@ Round-14 run GraphQL/API-layer and run-service integration checks:
 - `git diff --check -- autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`
   - Result: pass.
   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round14-diff-check-20260523.log`
+
+Round-15 CR-011 local-fix checks:
+
+- `rg -n "historyIndexService|recordRunCreated|recordRunRestored" autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts`
+  - Result: pass; no stale legacy run-history mock references remain.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round15-legacy-run-history-grep-20260523.log`
+- `pnpm -C autobyteus-server-ts test tests/unit/api/graphql/types/agent-run.test.ts tests/unit/api/graphql/types/agent-team-run.test.ts tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts tests/integration/agent-execution/agent-run-service.integration.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts`
+  - Result: pass, 7 files / 36 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round15-run-graphql-integration-tests-20260523.log`
+- `git diff --check -- autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round15-diff-check-20260523.log`
 
 Round-12 local-fix checks for `E2E-TERMFD-001`:
 

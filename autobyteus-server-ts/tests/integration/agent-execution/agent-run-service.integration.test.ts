@@ -272,6 +272,7 @@ describe("AgentRunService integration", () => {
       runId: "run-active",
       runtimeKind: RuntimeKind.AUTOBYTEUS,
     });
+    const { metadataService, historyCatalogService } = createRunHistoryHarness();
     const service = new AgentRunService("/tmp/memory", {
       agentRunManager: {
         createAgentRun: vi.fn(),
@@ -279,15 +280,8 @@ describe("AgentRunService integration", () => {
         restoreAgentRun: vi.fn(),
         hasActiveRun: vi.fn().mockReturnValue(false),
       } as never,
-      metadataService: {
-        writeMetadata: vi.fn(),
-        readMetadata: vi.fn(),
-      } as never,
-      historyIndexService: {
-        recordRunCreated: vi.fn(),
-        recordRunRestored: vi.fn(),
-        recordRunTerminated: vi.fn(),
-      } as never,
+      metadataService: metadataService as never,
+      historyCatalogService: historyCatalogService as never,
       workspaceManager: {
         ensureWorkspaceByRootPath: vi.fn(),
         getWorkspaceById: vi.fn(),
@@ -384,6 +378,7 @@ describe("AgentRunService integration", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       terminateResult: { accepted: false },
     });
+    const { metadataService, historyCatalogService } = createRunHistoryHarness();
     const service = new AgentRunService("/tmp/memory", {
       agentRunManager: {
         createAgentRun: vi.fn(),
@@ -392,15 +387,8 @@ describe("AgentRunService integration", () => {
           .mockImplementation((runId: string) => (runId === "run-denied" ? deniedRun : null)),
         restoreAgentRun: vi.fn(),
       } as never,
-      metadataService: {
-        writeMetadata: vi.fn(),
-        readMetadata: vi.fn(),
-      } as never,
-      historyIndexService: {
-        recordRunCreated: vi.fn(),
-        recordRunRestored: vi.fn(),
-        recordRunTerminated: vi.fn(),
-      } as never,
+      metadataService: metadataService as never,
+      historyCatalogService: historyCatalogService as never,
       workspaceManager: {
         ensureWorkspaceByRootPath: vi.fn(),
         getWorkspaceById: vi.fn(),
@@ -420,21 +408,15 @@ describe("AgentRunService integration", () => {
   });
 
   it("rejects unsupported runtime kinds during create", async () => {
+    const { metadataService, historyCatalogService } = createRunHistoryHarness();
     const service = new AgentRunService("/tmp/memory", {
       agentRunManager: {
         createAgentRun: vi.fn(),
         getActiveRun: vi.fn(),
         restoreAgentRun: vi.fn(),
       } as never,
-      metadataService: {
-        writeMetadata: vi.fn(),
-        readMetadata: vi.fn(),
-      } as never,
-      historyIndexService: {
-        recordRunCreated: vi.fn(),
-        recordRunRestored: vi.fn(),
-        recordRunTerminated: vi.fn(),
-      } as never,
+      metadataService: metadataService as never,
+      historyCatalogService: historyCatalogService as never,
       workspaceManager: {
         ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
           workspaceId: "workspace-123",
