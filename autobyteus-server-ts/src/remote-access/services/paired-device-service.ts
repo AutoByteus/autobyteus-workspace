@@ -29,8 +29,16 @@ const generateCredential = (): string => `${CREDENTIAL_PREFIX}${randomBytes(32).
 export class PairedDeviceService {
   constructor(private readonly store: PairedDeviceStore = getPairedDeviceStore()) {}
 
-  async listDeviceSummaries(): Promise<PairedDeviceSummary[]> {
-    return (await this.store.listRecords()).map(toDeviceSummary);
+  async listActiveDeviceSummaries(): Promise<PairedDeviceSummary[]> {
+    return (await this.store.listRecords())
+      .filter((record) => !record.revokedAt)
+      .map(toDeviceSummary);
+  }
+
+  async listRevokedDeviceSummaries(): Promise<PairedDeviceSummary[]> {
+    return (await this.store.listRecords())
+      .filter((record) => Boolean(record.revokedAt))
+      .map(toDeviceSummary);
   }
 
   async createDevice(input: {
@@ -53,7 +61,7 @@ export class PairedDeviceService {
     return { record, credential };
   }
 
-  async findActiveDeviceByCredential(credential: string): Promise<PairedDeviceRecord | null> {
+  async findDeviceByCredential(credential: string): Promise<PairedDeviceRecord | null> {
     const credentialHash = hashRemoteAccessCredential(credential);
     const records = await this.store.listRecords();
     return records.find((record) => safeEqualHex(record.credentialHash, credentialHash)) ?? null;

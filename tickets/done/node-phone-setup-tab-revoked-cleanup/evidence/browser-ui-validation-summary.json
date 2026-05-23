@@ -1,0 +1,89 @@
+{
+  "target": "http://127.0.0.1:30123/settings?section=nodes",
+  "mockBackend": "http://127.0.0.1:8000/rest",
+  "browserSurface": "functions.open_tab fallback after Browser/iab was unavailable",
+  "observations": [
+    {
+      "scenario": "Phone Setup tab composition",
+      "result": "pass",
+      "evidence": {
+        "tabs": [
+          { "id": "manage", "text": "Manage Nodes", "selectedOnPhoneSetup": false },
+          { "id": "phoneSetup", "text": "Phone Setup", "selectedOnPhoneSetup": true },
+          { "id": "dockerGuide", "text": "Docker Guide", "selectedOnPhoneSetup": false }
+        ],
+        "phoneSetupPanel": true,
+        "guideVisible": true,
+        "phoneAccessVisible": true,
+        "guideContainsServeBackgroundCommand": true,
+        "guideContainsTargetMobileUrlShape": true,
+        "guideContainsBaseMobileContract": true
+      }
+    },
+    {
+      "scenario": "Manage/Docker separation",
+      "result": "pass",
+      "evidence": {
+        "managePanelHasAddNode": true,
+        "managePanelHasPhoneAccessCard": false,
+        "managePanelHasPhoneSetupGuide": false,
+        "dockerPanelHasDockerGuide": true,
+        "dockerPanelHasPhoneAccessCard": false,
+        "dockerPanelHasPhoneSetupGuide": false
+      }
+    },
+    {
+      "scenario": "Active/revoked device UI split with 1 active and 19 revoked records",
+      "result": "pass",
+      "evidence": {
+        "activeTabText": "Active (1)",
+        "revokedTabText": "Revoked / History (19)",
+        "activeRowsVisibleInActiveView": 1,
+        "activeRowHasRevokeAction": true,
+        "revokedRowsVisibleInRevokedView": 19,
+        "revokedViewRevokeButtons": 0,
+        "activeRowVisibleInRevokedView": false
+      }
+    },
+    {
+      "scenario": "HTTPS QR creation normalizes /mobile to canonical base before POST",
+      "result": "pass",
+      "evidence": {
+        "pairingPostCountAfterClick": 1,
+        "lastPairingPost": { "serverBaseUrl": "https://desktop.tailnet.ts.net", "serverName": "AutoByteus Desktop" },
+        "qrTextShape": "https://desktop.tailnet.ts.net/mobile?pairing=...",
+        "payloadServerBase": "https://desktop.tailnet.ts.net",
+        "containsMobileRestBug": false,
+        "qrImageVisible": true,
+        "info": "Pairing QR code created."
+      }
+    },
+    {
+      "scenario": "HTTP URL blocks QR creation before API POST",
+      "result": "pass",
+      "evidence": {
+        "selectedValue": "http://192.168.1.25:29695",
+        "createDisabled": true,
+        "warning": "HTTPS URL required / Create QR requires a private HTTPS URL...",
+        "pairingPostsBefore": 1,
+        "pairingPostsAfter": 1
+      }
+    },
+    {
+      "scenario": "Single revoke refresh removes active row and moves count to history",
+      "result": "pass",
+      "evidence": {
+        "activeTabTextAfterRevoke": "Active (0)",
+        "revokedTabTextAfterRevoke": "Revoked / History (20)",
+        "activeVisibleAfterRevoke": false,
+        "emptyState": "No active phones paired yet.",
+        "revokeAllDisabled": true
+      }
+    }
+  ],
+  "screenshots": [
+    "browser-phone-setup-guide.png",
+    "browser-phone-access-active.png",
+    "browser-phone-access-revoked-qr.png"
+  ]
+}

@@ -38,7 +38,7 @@ Full guide:
 
 ## Phone Access / Remote Access
 
-AutoByteus desktop can pair a phone/PWA to the bundled server over any private network path the user already trusts, including LAN, Tailscale/Headscale, company VPN, NetBird, Netmaker, or WireGuard. The desktop flow lives in **Settings -> Nodes -> Phone Access** and generates a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`.
+AutoByteus desktop can pair a phone/PWA to the bundled server over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a LAN with an HTTPS endpoint. The desktop flow lives in **Settings -> Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes require a stable `https://` URL; Tailscale Serve HTTPS is the recommended setup for Android and travel use.
 
 User and packaging details are in [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md); backend route/auth details are in [`autobyteus-server-ts/docs/features/remote_access.md`](autobyteus-server-ts/docs/features/remote_access.md).
 

@@ -1,0 +1,31 @@
+## host tailscale availability
+tailscale status unavailable or not JSON: Expecting value: line 1 column 1 (char 0)
+## possible macOS Tailscale app CLI
+total 8320
+drwxr-xr-x   3 root  wheel       96 Mar 27 19:50 .
+drwxr-xr-x  10 root  wheel      320 May 19 15:17 ..
+-rwxr-xr-x   1 root  wheel  9223984 Mar 27 19:50 Tailscale
+{
+  "Version": "1.96.5-t4ee448d3a-g74ffbefc2",
+  "TUN": true,
+  "BackendState": "Running",
+  "HaveNodeKey": true,
+  "AuthURL": "",
+  "TailscaleIPs": [
+    "100.127.30.107",
+    "fd7a:115c:a1e0::4336:1e6b"
+  ],
+  "Self": {
+    "ID": "nutyNKC9p921CNTRL",
+    "PublicKey": "nodekey:366c3f547f10889a48dd0303e880de500589ebf1d16d00e6a7c2986e433f1e6a",
+    "HostName": "normy’s MacBook Pro",
+    "DNSName": "normys-macbook-pro.tail0347f8.ts.net.",
+    "OS": "macOS",
+    "UserID": 8831386865727034,
+    "T## macOS Tailscale app status summary
+BackendState: Running
+Self DNSName: normys-macbook-pro.tail0347f8.ts.net.
+Self TailscaleIPs: ['100.127.30.107', 'fd7a:115c:a1e0::4336:1e6b']
+Peer count: 1
+## macOS Tailscale serve status
+No serve config

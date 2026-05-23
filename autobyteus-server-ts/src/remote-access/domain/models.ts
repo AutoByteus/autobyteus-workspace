@@ -95,7 +95,8 @@ export type RemoteAccessAuthFailureCode =
   | "REMOTE_ACCESS_LOCAL_ONLY"
   | "REMOTE_ACCESS_PAIRING_EXPIRED"
   | "REMOTE_ACCESS_PAIRING_INVALID"
-  | "REMOTE_ACCESS_PAIRING_CONSUMED";
+  | "REMOTE_ACCESS_PAIRING_CONSUMED"
+  | "REMOTE_ACCESS_HTTPS_REQUIRED";
 
 export type RemoteAccessRejection = {
   ok: false;

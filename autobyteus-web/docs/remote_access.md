@@ -4,9 +4,10 @@ Phone Access lets a phone browser, PWA, or AutoByteus Android shell connect to t
 
 ## What Phone Access Does
 
-- The desktop app exposes a **Phone Access** card in **Settings -> Nodes** for the embedded desktop node.
-- The card enables or disables phone access, lists reachable server URL candidates, accepts an advanced/manual private-network URL, creates a short-lived pairing QR/link, and lists paired phones.
-- The pairing QR opens `http://<private-node>:<port>/mobile?pairing=<payload>` on the phone. The payload contains a short-lived one-time pairing code and the selected server base URL.
+- The desktop app exposes **Phone Setup** in **Settings -> Nodes** for the embedded desktop/server node.
+- Phone Setup contains a Tailscale Serve guide plus the **Phone Access** card. The card enables or disables phone access, lists reachable server URL candidates, accepts a manual private-network URL, creates a short-lived pairing QR/link, and separates active paired phones from revoked/history records.
+- New desktop-created pairing QR codes require an `https://` URL. The recommended path is Tailscale Serve HTTPS, for example `https://desktop.tailnet-name.ts.net/mobile`.
+- The pairing QR opens `https://<private-node>/mobile?pairing=<payload>` on the phone. The payload contains a short-lived one-time pairing code and the selected canonical server base URL.
 - After pairing, the phone stores a mobile node session locally and uses the same node endpoint model as the desktop web app to derive REST, GraphQL, and WebSocket URLs from the paired base URL.
 - Supported mobile routes run in a phone shell; desktop-only routes redirect back to the mobile shell with an explicit unsupported-feature notice.
 
@@ -54,26 +55,67 @@ AutoByteus does not require or special-case a VPN vendor. Phone Access only requ
 Supported setup profiles include:
 
 - **Same LAN:** use the desktop's LAN address and the AutoByteus server port when the local firewall allows it.
-- **Tailscale:** use the desktop's tailnet IP or MagicDNS hostname.
-- **Tailscale Serve HTTPS:** recommended for Android/travel; expose the desktop node as a stable HTTPS tailnet URL such as `https://desktop.tailnet-name.ts.net/mobile`.
+- **Tailscale:** use the desktop's full MagicDNS hostname/FQDN when possible.
+- **Tailscale Serve HTTPS:** recommended for Android/travel; expose the desktop node as a stable HTTPS tailnet URL such as `https://desktop.tailnet-name.ts.net/mobile`. IPv4 and IPv6 values shown in the Tailscale app are useful diagnostics, but the preferred HTTPS Serve URL uses the MagicDNS hostname that matches the certificate/Serve hostname path.
 - **Headscale:** use the same Tailscale-compatible client flow against a self-hosted control plane.
 - **Company VPN / private DNS:** use the internal hostname or IP that resolves to the desktop/server node.
 - **NetBird, Netmaker, or WireGuard:** use the private overlay address or hostname that reaches the node.
 
 The app-level pairing credential is still required. A private network or VPN is not treated as sufficient authorization by itself.
 
+## Server Base URL vs Mobile URL
+
+Phone Access keeps two URL identities separate:
+
+- **Canonical `serverBaseUrl`:** the internal node API base used for REST, GraphQL, and WebSocket calls. It is the origin plus any deployment base path, without `/mobile`, `/rest`, `/graphql`, `/ws`, query, or hash.
+- **`mobileUrl`:** the user-facing phone shell URL derived by appending `/mobile` to the canonical server base.
+
+You may paste a mobile shell URL into the Phone Access field. AutoByteus normalizes it before creating the pairing payload:
+
+```text
+Input:              https://desktop.tailnet.ts.net/mobile
+Stored serverBase:  https://desktop.tailnet.ts.net
+QR/mobileUrl:       https://desktop.tailnet.ts.net/mobile?pairing=...
+Status/exchange:    https://desktop.tailnet.ts.net/rest/remote-access/...
+```
+
+Deployment base paths are preserved:
+
+```text
+Input:              https://gateway.example.com/autobyteus/mobile
+Stored serverBase:  https://gateway.example.com/autobyteus
+QR/mobileUrl:       https://gateway.example.com/autobyteus/mobile?pairing=...
+```
+
 ## Desktop Pairing Flow
 
 1. Start the desktop Electron app so the bundled server is running.
-2. Open **Settings -> Nodes**.
-3. Enable **Phone Access**.
-4. Pick a **Reachable server URL**. Prefer a non-loopback LAN/VPN URL for a real phone. Use **Manual/private-network URL** when the desired company VPN or overlay hostname is not auto-discovered.
-   - For Android travel, prefer entering the stable Tailscale Serve or MagicDNS URL before creating the QR. Use the same URL that the phone will use while away.
-5. Click **Create QR code**.
-6. Scan or open the QR/link on the phone before the one-time code expires. AutoByteus Android owns its **Scan QR** flow with a bundled scanner and camera permission handling; it does not require a separately installed generic QR scanner app.
-7. The phone exchanges the code for a per-device credential and stores the paired session.
+2. Open **Settings -> Nodes -> Phone Setup**.
+3. Install/sign in to Tailscale.app on the Mac and Tailscale on the phone.
+4. On macOS with **Tailscale.app** installed, sign in through the app UI and confirm the full MagicDNS hostname/FQDN there. AutoByteus only shows copyable commands; it does not run Tailscale or inspect local Tailscale state. Use the bundled app executable directly for Serve:
+
+   ```bash
+   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve 29695
+   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695
+   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve status
+   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve reset
+   ```
+
+5. Copy the private HTTPS MagicDNS URL from `serve status` and use the `/mobile` shell URL shape, for example `https://desktop.tailnet-name.ts.net/mobile`. The Tailscale Serve HTTPS QR target normally does **not** include `:29695`; that port belongs to local HTTP/interface diagnostics.
+6. Prefer the full MagicDNS hostname/FQDN shown by Tailscale. Do not use IPv4/IPv6 or HTTP interface candidates such as `http://100.x.y.z:29695` or `http://192.168.x.x:29695` as the normal QR target.
+7. Enable **Phone Access**.
+8. Paste the HTTPS MagicDNS `/mobile` URL into the **Tailscale Serve HTTPS URL** field. HTTP-only discovered candidates are left as diagnostics and are not auto-selected for new HTTPS-required QR creation.
+9. Click **Create QR code**.
+10. Scan or open the QR/link on the phone before the one-time code expires. AutoByteus Android owns its **Scan QR** flow with a bundled scanner and camera permission handling; it does not require a separately installed generic QR scanner app.
+11. The phone exchanges the code for a per-device credential and stores the paired session.
 
 Pairing codes are short-lived and single-use. The long-lived credential is returned only to the phone after the code exchange.
+
+Official Tailscale references for this setup:
+
+- [Tailscale Serve](https://tailscale.com/docs/features/tailscale-serve)
+- [HTTPS certificates](https://tailscale.com/docs/how-to/set-up-https-certificates)
+- [MagicDNS](https://tailscale.com/docs/features/magicdns)
 
 ## Paired Phone Behavior
 
@@ -98,6 +140,7 @@ The local **Unpair this phone** action deletes only the phone's local session an
 - **Disable Phone Access:** paired-device records remain in server data, but non-loopback mobile credentials are rejected while disabled and new pairing sessions cannot be created.
 - **Revoke one phone:** that device credential stops working for REST, GraphQL, WebSocket, and protected resource access.
 - **Revoke all phones:** every active paired credential is marked revoked and each phone must pair again.
+- **Active vs revoked lists:** `GET /remote-access/devices` returns active paired-device summaries only. Revoked records are retained and exposed to local desktop management through `GET /remote-access/devices/revoked`; they appear only in the non-actionable Revoked/History view.
 - Local desktop loopback access remains available for desktop management endpoints.
 
 ## Mobile Capability Gating
@@ -150,6 +193,7 @@ Installing a new APK does not update the desktop-served `/mobile` bundle. A stal
 ## Troubleshooting
 
 - **Phone cannot reach server:** verify the selected base URL from the phone, OS firewall/private-network ACLs, and VPN/overlay connection.
+- **Create QR is blocked for HTTP:** run Tailscale Serve and use the private HTTPS URL before creating a new desktop pairing QR.
 - **Android over Tailscale cannot reach server:** verify Tailscale is connected on the phone, the desktop is online and awake, the app is not excluded by Tailscale split tunneling, and the saved URL is the same stable URL used during pairing.
 - **Android Scan QR does not open the bundled scanner:** rebuild and reinstall the current AutoByteus Android APK and verify the app has camera permission. Current AutoByteus Android does not depend on an external ZXing scanner app.
 - **Pairing says disabled:** enable Phone Access from the desktop node before creating or using a QR.

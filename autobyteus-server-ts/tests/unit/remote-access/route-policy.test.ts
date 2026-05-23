@@ -23,6 +23,7 @@ describe("RemoteAccessRoutePolicy", () => {
     expect(classifyHttpRoute("GET", "/rest/remote-access/status")).toBe("PUBLIC_HEALTH_STATUS");
     expect(classifyHttpRoute("POST", "/rest/remote-access/pairing-sessions")).toBe("LOCAL_ONLY");
     expect(classifyHttpRoute("POST", "/rest/remote-access/pairing-exchanges")).toBe("PUBLIC_PAIRING_EXCHANGE");
+    expect(classifyHttpRoute("GET", "/rest/remote-access/devices/revoked")).toBe("LOCAL_ONLY");
     expect(classifyHttpRoute("POST", "/graphql")).toBe("LOCAL_OR_MOBILE");
     expect(classifyHttpRoute("GET", "/graphql", { upgrade: "websocket" })).toBe("LOCAL_OR_MOBILE_WS");
     expect(classifyHttpRoute("GET", "/rest/new-unclassified-route")).toBe("DEFAULT_PROTECTED");
@@ -60,6 +61,23 @@ describe("RemoteAccessRoutePolicy", () => {
       url: "/rest/remote-access/devices",
       remoteAddress: "::ffff:127.0.0.1",
     }))).resolves.toMatchObject({ ok: true, context: { mode: "loopback" } });
+  });
+
+  it("keeps revoked device history local-only for loopback and rejects remote callers", async () => {
+    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never);
+
+    await expect(policy.authorizeHttpRequest(request({
+      method: "GET",
+      url: "/rest/remote-access/devices/revoked",
+      remoteAddress: "127.0.0.1",
+    }))).resolves.toMatchObject({ ok: true, context: { mode: "loopback" } });
+
+    await expect(policy.authorizeHttpRequest(request({
+      method: "GET",
+      url: "/rest/remote-access/devices/revoked",
+      remoteAddress: "100.64.1.2",
+      headers: { authorization: "Bearer mobile-token" },
+    }))).resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_LOCAL_ONLY" });
   });
 
   it("does not trust Host or forwarded headers for local-only management routes", async () => {

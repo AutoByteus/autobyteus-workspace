@@ -28,8 +28,21 @@ describe('nodeEndpoints', () => {
     expect(normalizeNodeBaseUrl('http://localhost:29695/')).toBe('http://localhost:29695');
     expect(normalizeNodeBaseUrl('http://localhost:29695/graphql')).toBe('http://localhost:29695');
     expect(normalizeNodeBaseUrl('http://localhost:29695/rest')).toBe('http://localhost:29695');
+    expect(normalizeNodeBaseUrl('http://localhost:29695/rest/remote-access/status')).toBe('http://localhost:29695');
     expect(normalizeNodeBaseUrl('http://localhost:29695/ws/agent')).toBe('http://localhost:29695');
     expect(normalizeNodeBaseUrl('node.example.com/rest/health')).toBe('http://node.example.com');
+  });
+
+  it('normalizes mobile shell URLs to canonical server bases', () => {
+    expect(normalizeNodeBaseUrl('https://desktop.tailnet.ts.net/mobile?pairing=x')).toBe(
+      'https://desktop.tailnet.ts.net',
+    );
+    expect(normalizeNodeBaseUrl('https://gateway.example.com/autobyteus/mobile')).toBe(
+      'https://gateway.example.com/autobyteus',
+    );
+    expect(normalizeNodeBaseUrl('https://gateway.example.com/autobyteus/mobile/workspace#top')).toBe(
+      'https://gateway.example.com/autobyteus',
+    );
   });
 
   it('preserves non-api base path prefixes', () => {
@@ -46,4 +59,3 @@ describe('nodeEndpoints', () => {
     expect(() => normalizeNodeBaseUrl('http://')).toThrow('Invalid node base URL');
   });
 });
-

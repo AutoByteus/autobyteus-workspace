@@ -1,0 +1,41 @@
+{
+  "target": "http://127.0.0.1:30123/settings?section=nodes",
+  "mockBackend": "http://127.0.0.1:8000/rest",
+  "scenario": "macOS/Tailscale guide addendum running UI validation",
+  "result": "pass",
+  "observations": {
+    "phoneSetupTabSelected": true,
+    "guideVisible": true,
+    "containsMacCliInstallerCommand": true,
+    "macCliInstallerCommand": "osascript /Applications/Tailscale.app/Contents/Resources/InstallTailscaleCLI.scpt",
+    "containsMacAdministratorApprovalNote": true,
+    "containsDirectExecutableStatusFallback": true,
+    "directExecutableStatusCommand": "/Applications/Tailscale.app/Contents/MacOS/Tailscale status",
+    "containsDirectExecutableServeBackgroundFallback": true,
+    "directExecutableServeBackgroundCommand": "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695",
+    "containsMagicDnsFqdnGuidance": true,
+    "magicDnsExample": "machine.tailnet.ts.net",
+    "statesIpv4Ipv6AreDiagnostics": true,
+    "newMacosCopyButtonsPresent": [
+      "copy-phone-setup-command-macos-cli-install",
+      "copy-phone-setup-command-macos-direct-status",
+      "copy-phone-setup-command-macos-direct-serve-background"
+    ],
+    "copyButtonResults": {
+      "copied": [
+        "osascript /Applications/Tailscale.app/Contents/Resources/InstallTailscaleCLI.scpt",
+        "/Applications/Tailscale.app/Contents/MacOS/Tailscale status",
+        "/Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695"
+      ],
+      "labelsAfterClick": [
+        { "id": "copy-phone-setup-command-macos-cli-install", "label": "Copied" },
+        { "id": "copy-phone-setup-command-macos-direct-status", "label": "Copied" },
+        { "id": "copy-phone-setup-command-macos-direct-serve-background", "label": "Copied" }
+      ]
+    }
+  },
+  "screenshots": [
+    "addendum-browser-guide-magicdns.png",
+    "addendum-browser-guide-macos-commands.png"
+  ]
+}

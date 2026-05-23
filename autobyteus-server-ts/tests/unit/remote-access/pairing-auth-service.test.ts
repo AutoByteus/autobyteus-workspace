@@ -38,10 +38,12 @@ describe("remote access pairing and auth services", () => {
   it("exchanges a single-use code for a credential and rejects reuse", async () => {
     const { settingsService, pairingService, authService } = buildServices();
     await settingsService.setPhoneAccessEnabled(true);
-    const session = await pairingService.createPairingSession({ serverBaseUrl: "http://100.64.1.2:29695" });
+    const session = await pairingService.createPairingSession({ serverBaseUrl: "https://desktop.tailnet.ts.net/mobile" });
+    expect(session.payload.serverBaseUrl).toBe("https://desktop.tailnet.ts.net");
+    expect(session.mobileUrl).toMatch(/^https:\/\/desktop\.tailnet\.ts\.net\/mobile\?pairing=/);
     const exchange = await pairingService.exchangePairingCode({
       pairingCode: session.payload.pairingCode,
-      serverBaseUrl: session.payload.serverBaseUrl,
+      serverBaseUrl: "https://desktop.tailnet.ts.net/mobile",
       deviceName: "Test Phone",
     });
 
@@ -53,10 +55,36 @@ describe("remote access pairing and auth services", () => {
       .resolves.toMatchObject({ ok: true, context: { mode: "mobile", deviceId: exchange.device.deviceId } });
   });
 
+  it("rejects HTTP pairing sessions before creating payloads", async () => {
+    const { settingsService, pairingService } = buildServices();
+    await settingsService.setPhoneAccessEnabled(true);
+
+    await expect(pairingService.createPairingSession({ serverBaseUrl: "http://100.64.1.2:29695" }))
+      .rejects.toMatchObject({
+        code: "REMOTE_ACCESS_HTTPS_REQUIRED",
+        statusCode: 400,
+      });
+  });
+
+  it("preserves deployment base paths when building mobile pairing URLs", async () => {
+    const { settingsService, pairingService } = buildServices();
+    await settingsService.setPhoneAccessEnabled(true);
+
+    const session = await pairingService.createPairingSession({
+      serverBaseUrl: "https://gateway.example.com/autobyteus/mobile?pairing=old",
+    });
+
+    expect(session.payload.serverBaseUrl).toBe("https://gateway.example.com/autobyteus");
+    expect(session.mobileUrl).toMatch(/^https:\/\/gateway\.example\.com\/autobyteus\/mobile\?pairing=/);
+    expect(pairingService.getSessionForTests(session.payload.pairingCode)).toMatchObject({
+      serverBaseUrl: "https://gateway.example.com/autobyteus",
+    });
+  });
+
   it("rejects disabled, per-device revoked, and revoke-all credentials", async () => {
     const { settingsService, pairingService, deviceService, authService } = buildServices();
     await settingsService.setPhoneAccessEnabled(true);
-    const firstSession = await pairingService.createPairingSession({ serverBaseUrl: "http://100.64.1.2:29695" });
+    const firstSession = await pairingService.createPairingSession({ serverBaseUrl: "https://desktop.tailnet.ts.net" });
     const first = await pairingService.exchangePairingCode({ pairingCode: firstSession.payload.pairingCode });
 
     await settingsService.setPhoneAccessEnabled(false);
@@ -68,10 +96,34 @@ describe("remote access pairing and auth services", () => {
     await expect(authService.authorizeMobileCredential(first.credential))
       .resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_DEVICE_REVOKED" });
 
-    const secondSession = await pairingService.createPairingSession({ serverBaseUrl: "http://100.64.1.2:29695" });
+    const secondSession = await pairingService.createPairingSession({ serverBaseUrl: "https://desktop.tailnet.ts.net" });
     const second = await pairingService.exchangePairingCode({ pairingCode: secondSession.payload.pairingCode });
     expect((await deviceService.revokeAllDevices()).revokedCount).toBe(1);
     await expect(authService.authorizeMobileCredential(second.credential))
       .resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_DEVICE_REVOKED" });
+  });
+
+  it("lists active and revoked device summaries through explicit service boundaries", async () => {
+    const { settingsService, pairingService, deviceService } = buildServices();
+    await settingsService.setPhoneAccessEnabled(true);
+    const firstSession = await pairingService.createPairingSession({ serverBaseUrl: "https://desktop.tailnet.ts.net" });
+    const first = await pairingService.exchangePairingCode({
+      pairingCode: firstSession.payload.pairingCode,
+      deviceName: "Revoked Phone",
+    });
+    const secondSession = await pairingService.createPairingSession({ serverBaseUrl: "https://desktop.tailnet.ts.net" });
+    const second = await pairingService.exchangePairingCode({
+      pairingCode: secondSession.payload.pairingCode,
+      deviceName: "Active Phone",
+    });
+
+    await deviceService.revokeDevice(first.device.deviceId, "2026-05-22T12:00:00.000Z");
+
+    await expect(deviceService.listActiveDeviceSummaries()).resolves.toMatchObject([
+      { deviceId: second.device.deviceId, displayName: "Active Phone", revokedAt: null },
+    ]);
+    await expect(deviceService.listRevokedDeviceSummaries()).resolves.toMatchObject([
+      { deviceId: first.device.deviceId, displayName: "Revoked Phone", revokedAt: "2026-05-22T12:00:00.000Z" },
+    ]);
   });
 });

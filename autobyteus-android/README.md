@@ -22,12 +22,19 @@ The existing desktop Phone Access service still owns pairing sessions and creden
    https://desktop.tailnet-name.ts.net/mobile
    ```
 
-3. In the desktop AutoByteus app, open **Settings -> Nodes -> Phone Access**.
-4. Enable Phone Access.
-5. Use the same stable Tailscale Serve/MagicDNS URL you expect to use while away before creating the QR/link.
-6. Pair from Android by tapping **Scan QR** in AutoByteus Android, sharing/pasting the link into AutoByteus Android, or manually entering the stable URL.
+3. In the desktop AutoByteus app, open **Settings -> Nodes -> Phone Setup**.
+4. On macOS with Tailscale.app installed, use the app-direct Serve commands from the Phone Setup guide. AutoByteus only shows copyable commands; it does not run Tailscale or inspect local Tailscale state:
 
-Credentials are origin-scoped because the web shell stores the MVP credential in WebView localStorage. If you pair with `http://192.168.x.x:29695/mobile` and later open `https://desktop.tailnet-name.ts.net/mobile`, Android may need to pair again.
+   ```bash
+   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695
+   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve status
+   ```
+
+5. Enable Phone Access.
+6. Copy the HTTPS MagicDNS URL from `serve status`, append `/mobile`, and paste it into the Tailscale Serve HTTPS URL field before creating the QR/link. The preferred URL looks like `https://desktop.tailnet-name.ts.net/mobile` without `:29695`; IPv4/IPv6 and HTTP interface candidates are diagnostics only.
+7. Pair from Android by tapping **Scan QR** in AutoByteus Android, sharing/pasting the link into AutoByteus Android, or manually entering the stable URL.
+
+Credentials are origin-scoped because the web shell stores the MVP credential in WebView localStorage. Pair with the final stable HTTPS origin, such as `https://desktop.tailnet-name.ts.net/mobile`; switching from a different origin later can require pairing again.
 
 ## QR scanning
 

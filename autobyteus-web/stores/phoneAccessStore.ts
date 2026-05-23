@@ -17,7 +17,8 @@ const defaultSettings = (): RemoteAccessSettings => ({
 export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   const settings = ref<RemoteAccessSettings>(defaultSettings());
   const candidates = ref<RemoteAccessUrlCandidate[]>([]);
-  const devices = ref<PairedDeviceSummary[]>([]);
+  const activeDevices = ref<PairedDeviceSummary[]>([]);
+  const revokedDevices = ref<PairedDeviceSummary[]>([]);
   const activePairing = ref<RemoteAccessPairingSessionResponse | null>(null);
   const selectedServerBaseUrl = ref('');
   const manualServerBaseUrl = ref('');
@@ -26,28 +27,71 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   const info = ref<string | null>(null);
 
   const phoneAccessEnabled = computed(() => settings.value.phoneAccessEnabled);
-  const activeDevices = computed(() => devices.value.filter((device) => !device.revokedAt));
+  const selectedUrlValidation = computed(() => {
+    const raw = selectedServerBaseUrl.value.trim();
+    if (!raw) {
+      return {
+        normalizedBaseUrl: '',
+        isValid: false,
+        isHttps: false,
+        message: 'Choose or enter a server URL first.',
+      };
+    }
+    try {
+      const normalizedBaseUrl = normalizeNodeBaseUrl(raw);
+      const isHttps = new URL(normalizedBaseUrl).protocol === 'https:';
+      return {
+        normalizedBaseUrl,
+        isValid: true,
+        isHttps,
+        message: isHttps
+          ? null
+          : 'Phone Access pairing requires an HTTPS URL. Paste a Tailscale Serve URL such as https://<machine>.<tailnet>.ts.net/mobile.',
+      };
+    } catch (validationError) {
+      return {
+        normalizedBaseUrl: '',
+        isValid: false,
+        isHttps: false,
+        message: validationError instanceof Error ? validationError.message : String(validationError),
+      };
+    }
+  });
+
+  function normalizeHttpsCandidate(candidate: RemoteAccessUrlCandidate): string | null {
+    try {
+      const normalizedBaseUrl = normalizeNodeBaseUrl(candidate.serverBaseUrl);
+      return new URL(normalizedBaseUrl).protocol === 'https:' ? normalizedBaseUrl : null;
+    } catch {
+      return null;
+    }
+  }
 
   function selectDefaultCandidate(): void {
     if (selectedServerBaseUrl.value) {
       return;
     }
-    const preferred = candidates.value.find((candidate) => candidate.kind !== 'loopback') || candidates.value[0];
-    selectedServerBaseUrl.value = preferred?.serverBaseUrl || '';
+    const httpsCandidates = candidates.value
+      .map((candidate) => ({ candidate, normalizedBaseUrl: normalizeHttpsCandidate(candidate) }))
+      .filter((entry): entry is { candidate: RemoteAccessUrlCandidate; normalizedBaseUrl: string } => Boolean(entry.normalizedBaseUrl));
+    const preferred = httpsCandidates.find((entry) => entry.candidate.kind !== 'loopback') || httpsCandidates[0];
+    selectedServerBaseUrl.value = preferred?.normalizedBaseUrl || '';
   }
 
   async function loadAll(): Promise<void> {
     isLoading.value = true;
     error.value = null;
     try {
-      const [settingsResponse, candidatesResponse, devicesResponse] = await Promise.all([
+      const [settingsResponse, candidatesResponse, activeDevicesResponse, revokedDevicesResponse] = await Promise.all([
         apiService.get<{ settings: RemoteAccessSettings }>('/remote-access/settings'),
         apiService.get<{ candidates: RemoteAccessUrlCandidate[] }>('/remote-access/address-candidates'),
         apiService.get<{ devices: PairedDeviceSummary[] }>('/remote-access/devices'),
+        apiService.get<{ devices: PairedDeviceSummary[] }>('/remote-access/devices/revoked'),
       ]);
       settings.value = settingsResponse.data.settings;
       candidates.value = candidatesResponse.data.candidates;
-      devices.value = devicesResponse.data.devices;
+      activeDevices.value = activeDevicesResponse.data.devices;
+      revokedDevices.value = revokedDevicesResponse.data.devices;
       selectDefaultCandidate();
     } catch (loadError) {
       error.value = loadError instanceof Error ? loadError.message : String(loadError);
@@ -93,8 +137,13 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
       return;
     }
     try {
+      const validation = selectedUrlValidation.value;
+      if (!validation.isValid || !validation.isHttps) {
+        error.value = validation.message;
+        return;
+      }
       const response = await apiService.post<RemoteAccessPairingSessionResponse>('/remote-access/pairing-sessions', {
-        serverBaseUrl: normalizeNodeBaseUrl(selectedServerBaseUrl.value),
+        serverBaseUrl: validation.normalizedBaseUrl,
         serverName: 'AutoByteus Desktop',
       });
       activePairing.value = response.data;
@@ -105,8 +154,12 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   }
 
   async function refreshDevices(): Promise<void> {
-    const response = await apiService.get<{ devices: PairedDeviceSummary[] }>('/remote-access/devices');
-    devices.value = response.data.devices;
+    const [activeResponse, revokedResponse] = await Promise.all([
+      apiService.get<{ devices: PairedDeviceSummary[] }>('/remote-access/devices'),
+      apiService.get<{ devices: PairedDeviceSummary[] }>('/remote-access/devices/revoked'),
+    ]);
+    activeDevices.value = activeResponse.data.devices;
+    revokedDevices.value = revokedResponse.data.devices;
   }
 
   async function revokeDevice(deviceId: string): Promise<void> {
@@ -123,8 +176,8 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   return {
     settings,
     candidates,
-    devices,
     activeDevices,
+    revokedDevices,
     activePairing,
     selectedServerBaseUrl,
     manualServerBaseUrl,
@@ -132,6 +185,7 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
     error,
     info,
     phoneAccessEnabled,
+    selectedUrlValidation,
     loadAll,
     setEnabled,
     refreshCandidates,

@@ -1,14 +1,6 @@
 import type { NodeEndpoints } from '~/types/node';
 
-const KNOWN_PATH_SUFFIXES = [
-  '/graphql',
-  '/rest',
-  '/rest/health',
-  '/ws/agent',
-  '/ws/agent-team',
-  '/ws/terminal',
-  '/ws/file-explorer',
-];
+const RESERVED_SURFACE_SEGMENTS = new Set(['mobile', 'rest', 'graphql', 'ws']);
 
 function ensureHttpProtocol(value: string): string {
   if (/^https?:\/\//i.test(value)) {
@@ -17,15 +9,13 @@ function ensureHttpProtocol(value: string): string {
   return `http://${value}`;
 }
 
-function stripKnownApiSuffix(pathname: string): string {
+function stripKnownSurfacePath(pathname: string): string {
   const withoutTrailingSlash = pathname.replace(/\/+$/, '');
-  const lowered = withoutTrailingSlash.toLowerCase();
-
-  for (const suffix of KNOWN_PATH_SUFFIXES) {
-    if (lowered.endsWith(suffix)) {
-      const candidate = withoutTrailingSlash.slice(0, withoutTrailingSlash.length - suffix.length);
-      return candidate || '';
-    }
+  const segments = withoutTrailingSlash.split('/').filter(Boolean);
+  const reservedIndex = segments.findIndex((segment) => RESERVED_SURFACE_SEGMENTS.has(segment.toLowerCase()));
+  if (reservedIndex >= 0) {
+    const baseSegments = segments.slice(0, reservedIndex);
+    return baseSegments.length > 0 ? `/${baseSegments.join('/')}` : '';
   }
 
   return withoutTrailingSlash;
@@ -67,7 +57,7 @@ export function normalizeNodeBaseUrl(baseUrl: string): string {
     throw new Error(`Node base URL must use http or https: ${baseUrl}`);
   }
 
-  const normalizedPath = stripKnownApiSuffix(parsed.pathname);
+  const normalizedPath = stripKnownSurfacePath(parsed.pathname);
   const base = `${parsed.protocol}//${parsed.host}${normalizedPath}`;
 
   return trimTrailingSlash(base);
