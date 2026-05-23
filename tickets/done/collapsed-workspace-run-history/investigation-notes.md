@@ -26,7 +26,7 @@ Screenshot observation: the left sidebar Workspaces region shows multiple worksp
 
 - Project Type (`Git`/`Non-Git`): Git.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history`.
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/in-progress/collapsed-workspace-run-history`.
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history`.
 - Current Branch: `codex/collapsed-workspace-run-history`.
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history`.
 - Bootstrap Base Branch: `origin/personal`.
@@ -52,7 +52,7 @@ Screenshot observation: the left sidebar Workspaces region shows multiple worksp
 | 2026-05-22 | Code | `autobyteus-web/stores/runHistoryStore.ts`, `autobyteus-web/stores/runHistoryReadModel.ts`, `autobyteus-web/utils/runTreeProjection.ts` | Verify whether data projection/query shape causes UI expansion. | Projection builds workspace/agent/team nodes; expansion is separate view state. Fetch limit defaults to 6 per agent, but data loading is not the root issue. | No |
 | 2026-05-22 | Test | `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts`, `WorkspaceAgentRunsTreePanel.regressions.spec.ts`, `HistoricalTeamLazyHydration.integration.spec.ts` | Identify impacted tests. | Existing tests interact with run/team rows immediately after mount; implementation will need to expand the containing workspace/group first and add dedicated collapsed-default assertions. | Yes |
 | 2026-05-22 | Other | User approval in chat | Confirm final product behavior before design. | User approved progressive disclosure: initial workspace rows only; after opening a workspace, users click the specific agent/team group they want to work with to reveal run histories. | No |
-| 2026-05-22 | Spec | `tickets/in-progress/collapsed-workspace-run-history/design-review-report.md` | Process architecture review result. | Review failed on AR-001: selected ancestry reveal needed a one-shot/manual-collapse-safe contract and explicit team selected-state sources such as `runHistoryStore.selectedTeamRunId`. | Design updated and resubmitted. |
+| 2026-05-22 | Spec | `tickets/done/collapsed-workspace-run-history/design-review-report.md` | Process architecture review result. | Review failed on AR-001: selected ancestry reveal needed a one-shot/manual-collapse-safe contract and explicit team selected-state sources such as `runHistoryStore.selectedTeamRunId`. | Design updated and resubmitted. |
 
 ## Current Behavior / Current Flow
 

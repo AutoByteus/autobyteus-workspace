@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/in-progress/collapsed-workspace-run-history/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/in-progress/collapsed-workspace-run-history/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/in-progress/collapsed-workspace-run-history/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/design-spec.md`
 - Current Review Round: 2
 - Trigger: Re-review after AR-001 rework by `solution_designer`.
 - Prior Review Round Reviewed: Round 1 in this same canonical report path.

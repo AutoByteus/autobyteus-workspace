@@ -2,9 +2,9 @@
 
 ## Delivery Status
 
-- Workflow progression completed through delivery-stage integrated-state refresh, docs sync, and final user-verification handoff preparation.
-- Ticket remains in `tickets/in-progress/collapsed-workspace-run-history/` pending explicit user verification/completion approval.
-- No repository finalization, ticket archival, push, merge, release, publication, or deployment has been performed yet.
+- Workflow progression completed through delivery-stage integrated-state refresh, docs sync, user verification, ticket archival, and release preparation.
+- Ticket has been archived to `tickets/done/collapsed-workspace-run-history/` after explicit user verification/completion approval.
+- Repository finalization and the requested release are in progress.
 
 ## Integrated-State Refresh
 
@@ -77,5 +77,33 @@ Suggested manual spot-check in the Workspaces history sidebar:
 
 ## Remaining Action
 
-- Await explicit user verification/completion approval.
-- After approval, delivery should move the ticket to `tickets/done/collapsed-workspace-run-history/`, perform final commit/push/merge according to the recorded `origin/personal` target flow, and complete finalization/cleanup if still safe after a final remote refresh.
+- User verification/completion approval has been received.
+- Ticket archival is complete at `tickets/done/collapsed-workspace-run-history/`.
+- Delivery should complete the final commit/push/merge according to the recorded `origin/personal` target flow, run the documented release for `v1.3.28`, and record final release outcome.
+
+## Latest Personal Base Rebuild Addendum — 2026-05-22
+
+- Latest `origin/personal` was fetched and had advanced by 3 commits.
+- Created local safety checkpoint commit `f17d9ba0` before integrating.
+- Merged `origin/personal` into `codex/collapsed-workspace-run-history` without conflicts.
+- Integrated HEAD for testing: `6b9dd57fb816dced73100d288e039eaed03fa2cb`; branch is `2 ahead / 0 behind` vs latest tracked `origin/personal`.
+- Read the root/web README and Electron packaging docs before rebuilding.
+- Installed dependencies with `corepack enable && pnpm install` after the first build attempt reported missing `node_modules`.
+- Rebuilt macOS Electron with explicit personal flavor override:
+  - `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm --filter ./autobyteus-web build:electron:mac`
+- Personal Electron build passed and produced the test DMG:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg`
+- Rebuild addendum: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/latest-personal-electron-rebuild-addendum.md`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/evidence/electron-rebuild-mac-personal-20260522-223407-summary.log`
+- SHA-256 sums: `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/evidence/electron-rebuild-mac-personal-20260522-223407-shasums.txt`
+
+
+## User Verification And Finalization Approval — 2026-05-23
+
+- User verification received: `Yes`.
+- User verification reference: “it works. lets finalze and release a new version. now the UI looks cleaner”.
+- Final target refresh after verification: `git fetch origin personal --tags` confirmed `origin/personal` remained at `5e298019731f407d1888eabc7859ae6823e4f8a1` with the ticket branch still `2 ahead / 0 behind` and merge-base equal to `origin/personal`.
+- Renewed verification required: `No`; the finalization target had not advanced beyond the user-tested integrated state.
+- Release requested: `Yes`; next release version selected as `1.3.28` because the current package version/latest tag is `1.3.27` / `v1.3.27`.
+- Release notes prepared: `tickets/done/collapsed-workspace-run-history/release-notes.md`.
+- Next action: archive this ticket to `tickets/done/collapsed-workspace-run-history/`, commit and push the ticket branch, merge into `personal`, then run the documented desktop release flow for `v1.3.28`.

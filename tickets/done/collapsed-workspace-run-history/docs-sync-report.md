@@ -52,10 +52,25 @@
 
 - Result: `Pass`
 - Next owner: `delivery_engineer`
-- Notes: Docs sync is complete on the latest tracked `origin/personal` state. Final repository commit/push/merge and ticket archival remain on hold pending explicit user verification.
+- Notes: Docs sync is complete on the latest tracked `origin/personal` state. User verification has been received; ticket archival is complete and repository finalization/release are underway.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
 - Classification: N/A
 - Recommended recipient: N/A
 - Why docs could not be finalized truthfully: N/A
+
+## Latest Base Refresh Addendum — 2026-05-22
+
+- After the initial docs sync, the user requested rebasing/integrating onto the latest `personal` branch before testing.
+- Latest tracked base integrated: `origin/personal` at `5e298019731f407d1888eabc7859ae6823e4f8a1`.
+- Integration method: merge after safety checkpoint; integrated HEAD `6b9dd57fb816dced73100d288e039eaed03fa2cb`.
+- Long-lived docs impact from the base refresh: No additional docs changes required for the Workspaces run-history progressive-disclosure ticket. The existing docs update in `autobyteus-web/docs/agent_execution_architecture.md` remains accurate after the merge.
+- Post-refresh executable verification: macOS Electron personal rebuild passed; see `/Users/normy/autobyteus_org/autobyteus-worktrees/collapsed-workspace-run-history/tickets/done/collapsed-workspace-run-history/latest-personal-electron-rebuild-addendum.md`.
+
+
+## User Verification Addendum — 2026-05-23
+
+- User verified the latest-`personal` Electron test build and described the UI as cleaner.
+- Final target refresh after verification did not add new base commits, so the existing long-lived docs update remains accurate for the final release candidate.
+- Release notes were prepared separately in the ticket folder for the requested desktop release.
