@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/investigation.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/design.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/investigation.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/design.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review after solution design handoff for `update-check-deployment-error-ux`.
 - Prior Review Round Reviewed: N/A

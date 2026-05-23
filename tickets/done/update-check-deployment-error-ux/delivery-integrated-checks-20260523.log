@@ -1,0 +1,76 @@
+Delivery integrated-state checks for update-check-deployment-error-ux
+Date: 2026-05-23
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux
+Branch: codex/update-check-deployment-error-ux
+HEAD: 6eadddd1b9fb51a6e2d76f06a76ef48dfcd0d226
+origin/personal: 5875b06d87d3c92b80c0dfa3675eea844324cb7c
+Merge-base: 5875b06d87d3c92b80c0dfa3675eea844324cb7c
+Symlinked dependencies from /Users/normy/autobyteus_org/autobyteus-workspace-superrepo for check execution.
+
+===== pnpm -C autobyteus-web test:electron --run electron/updater/__tests__/appUpdater.spec.ts electron/updater/__tests__/appUpdateErrorClassifier.spec.ts =====
+
+> autobyteus@1.3.28 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run electron/updater/__tests__/appUpdater.spec.ts electron/updater/__tests__/appUpdateErrorClassifier.spec.ts
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 6ms
+ ✓ updater/__tests__/appUpdater.spec.ts (8 tests) 19ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  07:55:13
+   Duration  372ms (transform 104ms, setup 0ms, collect 123ms, tests 24ms, environment 0ms, prepare 172ms)
+
+
+===== pnpm -C autobyteus-web test:nuxt --run stores/__tests__/appUpdateStore.spec.ts components/app/__tests__/AppUpdateNotice.spec.ts components/settings/__tests__/AboutSettingsManager.spec.ts =====
+
+> autobyteus@1.3.28 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run stores/__tests__/appUpdateStore.spec.ts components/app/__tests__/AppUpdateNotice.spec.ts components/settings/__tests__/AboutSettingsManager.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+
+stderr | components/app/__tests__/AppUpdateNotice.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/AboutSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/appUpdateStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/appUpdateStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/AboutSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/app/__tests__/AppUpdateNotice.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/appUpdateStore.spec.ts (9 tests) 10ms
+ ✓ components/settings/__tests__/AboutSettingsManager.spec.ts (6 tests) 17ms
+ ✓ components/app/__tests__/AppUpdateNotice.spec.ts (7 tests) 20ms
+
+ Test Files  3 passed (3)
+      Tests  22 passed (22)
+   Start at  07:55:16
+   Duration  5.66s (transform 3.12s, setup 14.64s, collect 245ms, tests 47ms, environment 744ms, prepare 486ms)
+
+
+===== pnpm -C autobyteus-web transpile-electron =====
+
+> autobyteus@1.3.28 transpile-electron /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+
+===== git diff --check =====
+
+All delivery integrated-state checks passed.

@@ -22,7 +22,7 @@ User reports: “sometimes when github deployment is going on, the check for udp
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux`
 - Current Branch: `codex/update-check-deployment-error-ux`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux`
 - Bootstrap Base Branch: `origin/personal`

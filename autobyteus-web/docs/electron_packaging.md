@@ -317,6 +317,38 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
   - `app-update:download`
   - `app-update:install`
 
+### Updater Error Safety
+
+`electron/updater/appUpdater.ts` is the only boundary that should inspect raw
+`electron-updater` failures. It classifies failures before broadcasting renderer
+state and keeps dependency diagnostics in the Electron main log instead of in
+normal UI.
+
+Renderer-visible update state must stay safe for display:
+
+- `shared/appUpdateTypes.ts` carries `errorKind` and `errorOperation`.
+- The renderer contract must not reintroduce a raw `error` / provider-message
+  field for normal UI, Settings, or toast copy.
+- `utils/appUpdateErrorDisplay.ts` maps `errorKind` to localized notice,
+  Settings, and toast messages.
+- `stores/appUpdateStore.ts` suppresses visible card/toast noise for startup
+  `network` and `release-preparing` failures, while manual checks and
+  download/install failures still show concise recovery copy.
+- Raw provider details such as `net::ERR_*`, `ERR_UPDATER_*`, provider URLs,
+  YAML, stack traces, or file lists belong in the Electron main log with
+  classification context, not in user-facing renderer text.
+
+Current safe error categories are:
+
+- `network` — transient connection/server reachability failures.
+- `release-preparing` — the latest GitHub release is visible but required
+  desktop updater metadata/assets are not available yet.
+- `metadata` — update metadata/package information is incomplete or invalid.
+- `download` — an available update could not be downloaded.
+- `install` — a downloaded update could not be applied/restarted.
+- `unavailable` — update actions are unavailable in the current runtime.
+- `unknown` — fallback safe copy for unrecognized updater failures.
+
 ### Provider Configuration
 
 - Build-time publish metadata is generated in `build/scripts/build.ts`.
@@ -337,6 +369,27 @@ For updater compatibility, published release assets must include:
   - `latest-mac.yml`
 
 The desktop release workflow (`.github/workflows/release-desktop.yml`) is aligned to upload these files.
+
+### Release-Preparation Window
+
+The repository uses multiple `v*` tag-triggered release workflows that publish
+different asset families to the same GitHub Release. During a release, the
+GitHub Release can become visible before the Desktop Release workflow has
+uploaded every desktop updater asset and metadata file listed above. A packaged
+app that checks for updates during that window can receive missing
+`latest-mac.yml`, `latest-linux.yml`, `latest.yml`, or asset-not-found provider
+errors even though the final release will become complete after the desktop
+workflow finishes.
+
+App-side behavior for that condition is intentionally `release-preparing`: show
+calm retry guidance such as "The latest update is still being prepared on
+GitHub. Try again in a few minutes," suppress startup/background noise, and
+preserve the raw provider diagnostic in Electron logs for troubleshooting.
+
+Release workflow orchestration that prevents public/latest GitHub Releases from
+appearing before desktop updater assets are ready is a separate release-process
+follow-up. Do not work around the deployment window by exposing raw updater
+diagnostics in renderer state or UI.
 
 ---
 

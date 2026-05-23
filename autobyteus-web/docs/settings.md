@@ -310,6 +310,9 @@ Canonical app metadata and manual update controls.
 - Shows updater status and last-checked timestamp.
 - Provides one manual **Check for Updates** action.
 - Shows contextual actions (`Download Update`, `Install & Restart`) when update state requires it.
+- Shows safe, localized update failure messages from the shared updater
+  `errorKind` contract; raw provider errors, stack traces, `net::ERR_*`, and
+  `ERR_UPDATER_*` diagnostics stay in Electron logs.
 - When result is already-latest (`no-update`), the update notice remains visible for at least 3 seconds before auto-dismiss.
 
 ## Related Documentation

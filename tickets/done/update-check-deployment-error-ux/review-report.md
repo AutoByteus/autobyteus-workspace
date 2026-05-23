@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/requirements.md`
 - Current Review Round: `2`
 - Trigger: Implementation local fix after API/E2E round 1 returned `Local Fix` for duplicate provider error-event handling.
-- Prior Review Round Reviewed: `Round 1` from `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/review-report.md` before this update.
+- Prior Review Round Reviewed: `Round 1` from `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/review-report.md` before this update.
 - Latest Authoritative Round: `2`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/investigation.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/design.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/investigation.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/design.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes` — implementation-owned unit tests were updated for the local fix; API/E2E-authored durable validation was not added.
 

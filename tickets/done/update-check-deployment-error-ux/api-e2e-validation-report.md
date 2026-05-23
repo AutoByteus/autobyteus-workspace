@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/investigation.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/design.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/investigation.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/design.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/review-report.md`
 - Current Validation Round: `2`
 - Trigger: Code-review round 2 pass after implementation local fix for API/E2E round 1 failures `F-001` and `F-002`.
 - Prior Round Reviewed: `Round 1` in this same report path.
@@ -120,7 +120,7 @@ Not fully exercised:
 - Temporary executable probes created and removed in round 2:
   - `autobyteus-web/tmp-api-e2e-r2-app-update-ui.spec.ts` — temporary renderer integration probe; removed after execution.
   - `autobyteus-web/tmp-api-e2e-r2-duplicate-toast-probe.spec.ts` — temporary duplicate-provider-event renderer probe; removed after execution.
-  - `tickets/in-progress/update-check-deployment-error-ux/tmp-r2-electron-updater-provider-harness.cjs` — temporary real Electron packaged-mode simulated-provider harness; removed after execution.
+  - `tickets/done/update-check-deployment-error-ux/tmp-r2-electron-updater-provider-harness.cjs` — temporary real Electron packaged-mode simulated-provider harness; removed after execution.
 
 ## Durable Validation Added To The Codebase
 
@@ -133,13 +133,13 @@ Not fully exercised:
 
 Round 2 evidence:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/api-e2e-r2-electron-provider-harness.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/api-e2e-r2-duplicate-toast-probe.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/api-e2e-r2-renderer-integration-probe.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/api-e2e-r2-electron-targeted-tests.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/api-e2e-r2-nuxt-targeted-tests.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/api-e2e-r2-transpile-guards.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/api-e2e-r2-static-boundary-audit.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/api-e2e-r2-electron-provider-harness.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/api-e2e-r2-duplicate-toast-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/api-e2e-r2-renderer-integration-probe.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/api-e2e-r2-electron-targeted-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/api-e2e-r2-nuxt-targeted-tests.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/api-e2e-r2-transpile-guards.log`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/api-e2e-r2-static-boundary-audit.log`
 
 Round 1 evidence remains available in the same folder for history.
 

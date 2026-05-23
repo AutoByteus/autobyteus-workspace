@@ -2,12 +2,12 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/investigation.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/design.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/design-review-report.md`
-- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/review-report.md`
-- API/E2E validation round 1 report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/in-progress/update-check-deployment-error-ux/api-e2e-validation-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/investigation.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/design.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/design-review-report.md`
+- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/review-report.md`
+- API/E2E validation round 1 report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/api-e2e-validation-report.md`
 
 ## What Changed
 
