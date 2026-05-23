@@ -1,0 +1,18 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-ts
+
+stdout | tests/unit/tools/terminal/pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/pty-session.test.ts (12 tests) 1280ms
+     ✓ starting twice throws  305ms
+     ✓ close is idempotent  303ms
+     ✓ returns queued data on read  311ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  14:19:30
+   Duration  1.50s (transform 66ms, setup 39ms, import 54ms, tests 1.28s, environment 0ms)
+

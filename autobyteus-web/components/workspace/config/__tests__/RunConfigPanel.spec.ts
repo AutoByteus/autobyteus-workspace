@@ -71,8 +71,8 @@ vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => ({
     createWorkspace: vi.fn(),
     workspaces: {},
-    workspaceReferencesById: {},
-    registerWorkspaceInfoReference: vi.fn(),
+    workspaceMetadataById: {},
+    registerWorkspaceInfoMetadata: vi.fn(),
     allWorkspaces: [],
     tempWorkspaceId: null,
     tempWorkspace: null,
@@ -282,7 +282,7 @@ describe('RunConfigPanel', () => {
 
     expect(agentStore.updateAgentConfig).toHaveBeenCalledWith({
       workspaceId: 'ws-draft-new',
-      workspaceReference: null,
+      workspaceMetadata: null,
     })
     expect(agentStore.config?.workspaceId).toBe('ws-draft-new')
   })
@@ -310,7 +310,7 @@ describe('RunConfigPanel', () => {
 
     expect(teamStore.updateConfig).toHaveBeenCalledWith({
       workspaceId: 'ws-draft-new',
-      workspaceReference: null,
+      workspaceMetadata: null,
     })
     expect(teamStore.config?.workspaceId).toBe('ws-draft-new')
   })

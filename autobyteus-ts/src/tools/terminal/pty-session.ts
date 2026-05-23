@@ -14,13 +14,28 @@ type PendingRead = {
   timer?: NodeJS.Timeout;
 };
 
+type PtyDisposable = {
+  dispose: () => void;
+};
+
+type ManagedPty = IPty & {
+  destroy?: () => void;
+  onData: (listener: (data: string) => void) => PtyDisposable | void;
+  onExit: (
+    listener: (event?: { exitCode?: number; signal?: number }) => void
+  ) => PtyDisposable | void;
+};
+
 export class PtySession {
   private sessionIdValue: string;
-  private pty?: IPty;
+  private pty?: ManagedPty;
   private closed = false;
   private alive = false;
   private dataQueue: Buffer[] = [];
   private pendingReads: PendingRead[] = [];
+  private ptyDisposables: PtyDisposable[] = [];
+  private exitWaiters: Array<() => void> = [];
+  private closePromise?: Promise<void>;
   private cwd?: string;
 
   constructor(sessionId: string) {
@@ -51,16 +66,30 @@ export class PtySession {
     };
 
     await ensureNodePtySpawnHelperExecutable();
+    if (this.closed) {
+      this.alive = false;
+      throw new Error('Session closed during startup');
+    }
+
     const { spawn } = await import('node-pty');
-    this.pty = spawn('bash', ['--norc', '--noprofile', '-i'], {
+    if (this.closed) {
+      this.alive = false;
+      throw new Error('Session closed during startup');
+    }
+
+    const pty = spawn('bash', ['--norc', '--noprofile', '-i'], {
       name: 'xterm-256color',
       cwd,
       env,
       cols: DEFAULT_COLS,
       rows: DEFAULT_ROWS
-    });
+    }) as ManagedPty;
+    this.pty = pty;
 
-    this.pty.onData((data) => {
+    this.rememberDisposable(pty.onData((data) => {
+      if (this.closed) {
+        return;
+      }
       const payload = Buffer.from(data, 'utf8');
       if (payload.length === 0) {
         return;
@@ -75,16 +104,17 @@ export class PtySession {
       } else {
         this.dataQueue.push(payload);
       }
-    });
+    }));
 
-    this.pty.onExit(() => {
-      this.alive = false;
-      this.closed = true;
-      this.pty = undefined;
-      this.flushPending(null);
-    });
+    this.rememberDisposable(pty.onExit(() => {
+      this.markExited(pty);
+    }));
 
     await sleep(STARTUP_DELAY_MS);
+    if (this.closed || this.pty !== pty) {
+      await this.close();
+      throw new Error('Session closed during startup');
+    }
   }
 
   async write(data: Buffer | string): Promise<void> {
@@ -141,35 +171,115 @@ export class PtySession {
   }
 
   async close(): Promise<void> {
-    if (this.closed) {
+    if (!this.closePromise) {
+      this.closePromise = this.closeInternal();
+    }
+    await this.closePromise;
+  }
+
+  private async closeInternal(): Promise<void> {
+    if (this.closed && !this.pty) {
+      this.alive = false;
+      this.resolveExitWaiters();
       return;
     }
 
+    const pty = this.pty;
     this.closed = true;
     this.flushPending(null);
+    this.dataQueue = [];
 
-    if (!this.pty) {
+    if (!pty) {
+      this.alive = false;
+      this.resolveExitWaiters();
       return;
     }
 
+    this.destroyPty(pty);
+
     try {
-      this.pty.kill('SIGTERM');
+      pty.kill('SIGTERM');
     } catch (error) {
       // ignore kill failures
     }
 
-    await sleep(STARTUP_DELAY_MS);
+    await this.waitForExit(STARTUP_DELAY_MS);
 
-    if (this.alive) {
+    if (this.alive && this.pty === pty) {
       try {
-        this.pty.kill('SIGKILL');
+        pty.kill('SIGKILL');
       } catch (error) {
         // ignore kill failures
       }
+      await this.waitForExit(STARTUP_DELAY_MS);
     }
 
-    this.pty = undefined;
+    if (this.pty === pty) {
+      this.pty = undefined;
+    }
     this.alive = false;
+    this.disposePtyListeners();
+    this.resolveExitWaiters();
+  }
+
+  private rememberDisposable(disposable: PtyDisposable | void): void {
+    if (disposable) {
+      this.ptyDisposables.push(disposable);
+    }
+  }
+
+  private disposePtyListeners(): void {
+    while (this.ptyDisposables.length > 0) {
+      const disposable = this.ptyDisposables.pop();
+      try {
+        disposable?.dispose();
+      } catch {
+        // ignore listener disposal failures
+      }
+    }
+  }
+
+  private destroyPty(pty: ManagedPty): void {
+    try {
+      pty.destroy?.();
+    } catch {
+      // ignore destroy failures
+    }
+  }
+
+  private markExited(pty: ManagedPty): void {
+    this.alive = false;
+    this.closed = true;
+    if (this.pty === pty) {
+      this.pty = undefined;
+    }
+    this.flushPending(null);
+    this.disposePtyListeners();
+    this.resolveExitWaiters();
+  }
+
+  private waitForExit(timeoutMs: number): Promise<void> {
+    if (!this.alive) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      let timer: NodeJS.Timeout;
+      const done = () => {
+        clearTimeout(timer);
+        this.exitWaiters = this.exitWaiters.filter((waiter) => waiter !== done);
+        resolve();
+      };
+      timer = setTimeout(done, timeoutMs);
+      this.exitWaiters.push(done);
+    });
+  }
+
+  private resolveExitWaiters(): void {
+    const waiters = this.exitWaiters.splice(0);
+    for (const waiter of waiters) {
+      waiter();
+    }
   }
 
   private flushPending(value: Buffer | null): void {

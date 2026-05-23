@@ -91,7 +91,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, Teleport, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { Icon } from '@iconify/vue';
-import type { FileDataType, FileOpenMode } from '~/stores/fileExplorer';
+import type { FileDataType, FileOpenMode } from '~/stores/fileExplorerState';
 import type { ArtifactViewerItem } from './artifactViewerItem';
 import { useLocalization } from '~/composables/useLocalization';
 import { useArtifactContentDisplayModeStore } from '~/stores/artifactContentDisplayMode';

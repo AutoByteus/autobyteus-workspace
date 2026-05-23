@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { getLanguage } from '~/utils/highlighting/languageDetector';
-import type { FileDataType, FileOpenMode } from '~/stores/fileExplorer';
+import type { FileDataType, FileOpenMode } from '~/stores/fileExplorerState';
 
 // Import Viewers
 import MonacoEditor from '~/components/fileExplorer/MonacoEditor.vue';

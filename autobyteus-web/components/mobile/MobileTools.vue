@@ -1,15 +1,24 @@
 <template>
-  <section class="flex h-full flex-col overflow-hidden" data-testid="mobile-tools">
+  <section
+    class="flex h-full flex-col overflow-hidden"
+    data-testid="mobile-tools"
+  >
     <header class="shrink-0 border-b border-slate-200 bg-white px-5 py-4">
       <h2 class="text-xl font-bold text-slate-950">Terminal and VNC</h2>
-      <p v-if="workspaceSubtitle" class="mt-1 truncate text-sm text-slate-500">{{ workspaceSubtitle }}</p>
+      <p v-if="workspaceSubtitle" class="mt-1 truncate text-sm text-slate-500">
+        {{ workspaceSubtitle }}
+      </p>
       <div class="mt-3 grid grid-cols-2 gap-2" data-testid="mobile-tools-tabs">
         <button
           v-for="tool in tools"
           :key="tool.id"
           type="button"
           class="rounded-2xl px-3 py-2 text-sm font-semibold"
-          :class="activeTool === tool.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'"
+          :class="
+            activeTool === tool.id
+              ? 'bg-blue-600 text-white'
+              : 'bg-slate-100 text-slate-600'
+          "
           :data-testid="`mobile-tools-tab-${tool.id}`"
           @click="activeTool = tool.id"
         >
@@ -20,15 +29,22 @@
 
     <div class="min-h-0 flex-1 overflow-y-auto bg-slate-50 p-5">
       <article
-        v-if="activeTool === 'terminal' && !terminalWorkspaceId"
+        v-if="activeTool === 'terminal' && !terminalTarget"
         class="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center"
         data-testid="mobile-tools-no-workspace"
       >
-        <p class="font-semibold text-slate-900">Choose a workspace for Terminal</p>
-        <p class="mt-2 text-sm text-slate-500">
-          Terminal sessions connect to one workspace at a time. Open a run or workspace before connecting.
+        <p class="font-semibold text-slate-900">
+          Choose a workspace for Terminal
         </p>
-        <button type="button" class="mt-4 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white" @click="$emit('chooseWork')">
+        <p class="mt-2 text-sm text-slate-500">
+          Terminal sessions connect to one workspace at a time. Open a run or
+          workspace before connecting.
+        </p>
+        <button
+          type="button"
+          class="mt-4 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white"
+          @click="$emit('chooseWork')"
+        >
           Choose workspace
         </button>
       </article>
@@ -40,9 +56,11 @@
         aria-label="Workspace terminal"
       >
         <div class="shrink-0 border-b border-slate-200 px-4 py-3">
-          <p class="break-all text-xs text-slate-500">{{ terminalWorkspaceLabel }}</p>
+          <p class="break-all text-xs text-slate-500">
+            {{ terminalWorkspaceLabel }}
+          </p>
         </div>
-        <Terminal class="min-h-0 flex-1" :workspace-id="terminalWorkspaceId" />
+        <Terminal class="min-h-0 flex-1" :target="terminalTarget" />
       </article>
 
       <article
@@ -50,7 +68,9 @@
         class="min-h-[24rem] rounded-3xl border border-slate-200 bg-white p-4 shadow-sm"
         data-testid="mobile-vnc-panel"
       >
-        <div class="h-[62vh] min-h-[22rem] overflow-hidden rounded-2xl border border-slate-200">
+        <div
+          class="h-[62vh] min-h-[22rem] overflow-hidden rounded-2xl border border-slate-200"
+        >
           <VncViewer />
         </div>
       </article>
@@ -59,11 +79,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import Terminal from '~/components/workspace/tools/Terminal.vue';
-import VncViewer from '~/components/workspace/tools/VncViewer.vue';
-import { useWorkspaceStore, type WorkspaceInfo } from '~/stores/workspace';
-import type { MobileWorkContext } from '~/types/mobileWork';
+import { computed, ref } from "vue";
+import Terminal from "~/components/workspace/tools/Terminal.vue";
+import VncViewer from "~/components/workspace/tools/VncViewer.vue";
+import type { MobileWorkContext } from "~/types/mobileWork";
+import { createTerminalTarget } from "~/utils/terminalTarget";
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -73,55 +93,56 @@ defineEmits<{
   chooseWork: [];
 }>();
 
-type MobileToolId = 'terminal' | 'vnc';
+type MobileToolId = "terminal" | "vnc";
 
 const tools: Array<{ id: MobileToolId; label: string }> = [
-  { id: 'terminal', label: 'Terminal' },
-  { id: 'vnc', label: 'VNC' },
+  { id: "terminal", label: "Terminal" },
+  { id: "vnc", label: "VNC" },
 ];
 
-const workspaceStore = useWorkspaceStore();
-const activeTool = ref<MobileToolId>('terminal');
+const activeTool = ref<MobileToolId>("terminal");
 
-const normalizeRootPath = (value: string | null | undefined): string => {
-  const normalized = (value || '').trim().replace(/\\/g, '/');
-  if (!normalized || normalized === '/') {
-    return normalized;
-  }
-  return normalized.replace(/\/+$/, '');
-};
-
-const rootPathForWorkspace = (workspace: WorkspaceInfo): string => normalizeRootPath(
-  workspace.absolutePath || workspace.workspaceConfig?.root_path || workspace.workspaceConfig?.rootPath || '',
-);
-
-const workspaceFromContext = computed<WorkspaceInfo | null>(() => {
+const terminalTarget = computed(() => {
   const context = props.context;
   if (!context) {
     return null;
   }
-  if (context.kind === 'workspace') {
-    return workspaceStore.workspaces[context.workspaceId] ?? null;
+  if (context.kind === "workspace") {
+    return createTerminalTarget({
+      rootPath: context.rootPath,
+      workspaceId: context.workspaceId,
+      displayName: context.title,
+    });
   }
-  if (context.kind !== 'agent-run' && context.kind !== 'team-run') {
-    return null;
+  if (context.kind === "agent-run" || context.kind === "team-run") {
+    return createTerminalTarget({
+      rootPath: context.workspaceRootPath,
+      displayName: context.title,
+    });
   }
-  const contextRoot = normalizeRootPath(context.workspaceRootPath);
-  if (!contextRoot) {
-    return null;
-  }
-  return workspaceStore.allWorkspaces.find((workspace) => rootPathForWorkspace(workspace) === contextRoot) ?? null;
+  return null;
 });
 
-const terminalWorkspaceId = computed(() => workspaceFromContext.value?.workspaceId || '');
-const terminalWorkspaceLabel = computed(() => workspaceFromContext.value?.absolutePath || workspaceFromContext.value?.name || 'Selected workspace');
+const terminalWorkspaceLabel = computed(
+  () =>
+    terminalTarget.value?.rootPath ||
+    terminalTarget.value?.displayName ||
+    "Selected workspace",
+);
 const workspaceSubtitle = computed(() => {
-  if (workspaceFromContext.value) {
-    return workspaceFromContext.value.absolutePath || workspaceFromContext.value.name || 'Selected workspace';
+  if (terminalTarget.value) {
+    return (
+      terminalTarget.value.rootPath ||
+      terminalTarget.value.displayName ||
+      "Selected workspace"
+    );
   }
-  if (props.context?.kind === 'agent-definition' || props.context?.kind === 'team-definition') {
-    return 'Choose or launch a workspace-backed run before opening Terminal.';
+  if (
+    props.context?.kind === "agent-definition" ||
+    props.context?.kind === "team-definition"
+  ) {
+    return "Choose or launch a workspace-backed run before opening Terminal.";
   }
-  return '';
+  return "";
 });
 </script>

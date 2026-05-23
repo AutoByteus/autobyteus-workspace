@@ -1,6 +1,6 @@
 import chokidar, { type FSWatcher } from "chokidar";
 import path from "node:path";
-import type { FileExplorer } from "../file-explorer.js";
+import type { WorkspaceFileExplorer } from "../file-explorer.js";
 import { EventBatcher, AsyncQueue } from "./event-batcher.js";
 import { WatchdogHandler } from "./watchdog-handler.js";
 import type { TraversalIgnoreStrategy } from "../traversal-ignore-strategy/traversal-ignore-strategy.js";
@@ -24,7 +24,7 @@ type SuppressedPath = {
 };
 
 export class FileSystemWatcher {
-  private fileExplorer: FileExplorer;
+  private fileExplorer: WorkspaceFileExplorer;
   private handler: WatchdogHandler;
   private ignoreMatcher: WorkspaceIgnoreMatcher;
   private watcher: FSWatcher | null = null;
@@ -36,7 +36,7 @@ export class FileSystemWatcher {
   private suppressionWindowMs = 2000;
   private suppressedPaths: SuppressedPath[] = [];
 
-  constructor(fileExplorer: FileExplorer, ignoreStrategies: TraversalIgnoreStrategy[]) {
+  constructor(fileExplorer: WorkspaceFileExplorer, ignoreStrategies: TraversalIgnoreStrategy[]) {
     this.fileExplorer = fileExplorer;
     this.ignoreMatcher = new WorkspaceIgnoreMatcher(fileExplorer.workspaceRootPath, [
       ...ignoreStrategies,

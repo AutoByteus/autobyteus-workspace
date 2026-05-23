@@ -35,12 +35,15 @@ describe("TempWorkspace", () => {
         const tempWorkspace = new TempWorkspace(rootPath);
         expect(tempWorkspace.config.get("rootPath")).toBe(rootPath);
     });
-    it("initializes and provides a file explorer", async () => {
+    it("initializes metadata only and acquires file explorer explicitly", async () => {
         const rootPath = createTempDir();
         const tempWorkspace = new TempWorkspace(rootPath);
         await tempWorkspace.initialize();
-        const explorer = await tempWorkspace.getFileExplorer();
-        expect(explorer).toBeTruthy();
+        expect(tempWorkspace.hasFileExplorerForDiagnostics()).toBe(false);
+        const lease = await tempWorkspace.acquireFileExplorer("unit-test");
+        expect(lease.fileExplorer).toBeTruthy();
+        expect(tempWorkspace.hasFileExplorerForDiagnostics()).toBe(true);
+        await lease.release();
         await tempWorkspace.close();
     });
 });

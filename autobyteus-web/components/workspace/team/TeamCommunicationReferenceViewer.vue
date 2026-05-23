@@ -75,7 +75,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
-import type { FileDataType, FileOpenMode } from '~/stores/fileExplorer';
+import type { FileDataType, FileOpenMode } from '~/stores/fileExplorerState';
 import type { TeamCommunicationReferenceFile } from '~/stores/teamCommunicationTypes';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';

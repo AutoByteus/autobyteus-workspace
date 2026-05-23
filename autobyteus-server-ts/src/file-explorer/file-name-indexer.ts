@@ -1,5 +1,4 @@
 import path from "node:path";
-import type { BaseFileExplorer } from "./base-file-explorer.js";
 import type { TreeNode } from "./tree-node.js";
 
 const logger = {
@@ -8,12 +7,17 @@ const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
 };
 
+export type FileNameIndexTreeSource = {
+  readonly rootPath: string;
+  getTree(): TreeNode | null;
+};
+
 export class FileNameIndexer {
-  private fileExplorer: BaseFileExplorer;
+  private fileExplorer: FileNameIndexTreeSource;
   private fileNameIndex: Map<string, string> = new Map();
   private idMap: Map<string, string> = new Map();
 
-  constructor(fileExplorer: BaseFileExplorer) {
+  constructor(fileExplorer: FileNameIndexTreeSource) {
     this.fileExplorer = fileExplorer;
   }
 

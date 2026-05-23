@@ -171,7 +171,7 @@ export const buildTeamRowsFromContext = (
         displayName: node.displayName || node.memberName,
         memberRunId: memberContext?.state.runId ?? node.memberRunId ?? null,
         workspaceRootPath:
-          memberContext?.config.workspaceReference?.workspaceRootPath ||
+          memberContext?.config.workspaceMetadata?.workspaceRootPath ||
           resolveWorkspaceRootPath(memberContext?.config.workspaceId ?? null),
         summary,
         currentStatus,

@@ -1,0 +1,1413 @@
+# Command: pnpm -C autobyteus-server-ts test targeted workspace/file-explorer/team-run suite
+# Started: 2026-05-23T10:19:54Z
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+> vitest tests/unit/file-explorer/workspace-file-explorer.test.ts tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts tests/unit/workspaces/temp-workspace.test.ts tests/unit/workspaces/workspace-manager.test.ts tests/unit/agent-team-execution/team-run-service.test.ts tests/integration/file-explorer/file-name-indexer.integration.test.ts tests/integration/file-explorer/file-search.integration.test.ts tests/integration/agent-team-execution/team-run-service.integration.test.ts tests/e2e/workspaces/workspaces-graphql.e2e.test.ts tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+AppConfig instance created.
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Created and registered workspace ID: agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Created WorkspaceFileExplorer for agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992 (e2e-search-snapshot).
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH' completed in 0.0020 seconds.
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+FileNameIndexer refreshed snapshot index with 2 entries
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'alpha'
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+[Search] FuzzysortSearchStrategy completed in 0.53ms, found 1 results (total: 0.55ms)
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+FileExplorerSessionManager initialized
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+FileExplorerSession created: 13e6685d-85fb-4b2d-a726-aebc199c2cf0 for workspace agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992
+Session 13e6685d-85fb-4b2d-a726-aebc199c2cf0: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Created file explorer session 13e6685d-85fb-4b2d-a726-aebc199c2cf0 for workspace agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+File explorer WebSocket connected: 13e6685d-85fb-4b2d-a726-aebc199c2cf0 for workspace agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+File explorer websocket attached for workspace agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH (file-explorer-websocket); active leases: 2
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+FileExplorerSession created: a79a967f-20a2-4de1-bab7-e3ed5ae08390 for workspace agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992
+Session a79a967f-20a2-4de1-bab7-e3ed5ae08390: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Created file explorer session a79a967f-20a2-4de1-bab7-e3ed5ae08390 for workspace agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992. Active sessions: 2
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+File explorer WebSocket connected: a79a967f-20a2-4de1-bab7-e3ed5ae08390 for workspace agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+File explorer websocket attached for workspace agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Watcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH/live-added.txt
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+FileExplorerSession closed: 13e6685d-85fb-4b2d-a726-aebc199c2cf0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Closed file explorer session 13e6685d-85fb-4b2d-a726-aebc199c2cf0. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+File explorer WebSocket disconnected: 13e6685d-85fb-4b2d-a726-aebc199c2cf0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-Rg3uzH
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+FileExplorerSession closed: a79a967f-20a2-4de1-bab7-e3ed5ae08390
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Closed file explorer session a79a967f-20a2-4de1-bab7-e3ed5ae08390. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+File explorer WebSocket disconnected: a79a967f-20a2-4de1-bab7-e3ed5ae08390
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers
+Closing FileSystemWorkspace agent_ws_77dcca6106e31196ff818009cb6299d6d4422cfb06f69c0a5d1ff50d538d9992
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ.
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Created and registered workspace ID: agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Created WorkspaceFileExplorer for agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727 (file-explorer-websocket).
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileExplorerSession created: c41ef9b5-12b1-49f5-aa0d-92e3bd2b6dde for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+Session c41ef9b5-12b1-49f5-aa0d-92e3bd2b6dde: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Created file explorer session c41ef9b5-12b1-49f5-aa0d-92e3bd2b6dde for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer WebSocket connected: c41ef9b5-12b1-49f5-aa0d-92e3bd2b6dde for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileExplorerSession closed: c41ef9b5-12b1-49f5-aa0d-92e3bd2b6dde
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Closed file explorer session c41ef9b5-12b1-49f5-aa0d-92e3bd2b6dde. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer WebSocket disconnected: c41ef9b5-12b1-49f5-aa0d-92e3bd2b6dde
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileExplorerSession created: 1577024a-26f8-4bab-8b93-74e7ee485ff6 for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+Session 1577024a-26f8-4bab-8b93-74e7ee485ff6: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Created file explorer session 1577024a-26f8-4bab-8b93-74e7ee485ff6 for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer WebSocket connected: 1577024a-26f8-4bab-8b93-74e7ee485ff6 for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileExplorerSession closed: 1577024a-26f8-4bab-8b93-74e7ee485ff6
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Closed file explorer session 1577024a-26f8-4bab-8b93-74e7ee485ff6. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer WebSocket disconnected: 1577024a-26f8-4bab-8b93-74e7ee485ff6
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileExplorerSession created: 42334bb9-38fa-4382-a08d-f4fce408996f for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+Session 42334bb9-38fa-4382-a08d-f4fce408996f: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Created file explorer session 42334bb9-38fa-4382-a08d-f4fce408996f for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer WebSocket connected: 42334bb9-38fa-4382-a08d-f4fce408996f for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileExplorerSession closed: 42334bb9-38fa-4382-a08d-f4fce408996f
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Closed file explorer session 42334bb9-38fa-4382-a08d-f4fce408996f. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer WebSocket disconnected: 42334bb9-38fa-4382-a08d-f4fce408996f
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileExplorerSession created: fc0579bb-483f-46f1-8d73-4c94a3bc6a00 for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+Session fc0579bb-483f-46f1-8d73-4c94a3bc6a00: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Created file explorer session fc0579bb-483f-46f1-8d73-4c94a3bc6a00 for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer WebSocket connected: fc0579bb-483f-46f1-8d73-4c94a3bc6a00 for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileExplorerSession closed: fc0579bb-483f-46f1-8d73-4c94a3bc6a00
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Closed file explorer session fc0579bb-483f-46f1-8d73-4c94a3bc6a00. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer WebSocket disconnected: fc0579bb-483f-46f1-8d73-4c94a3bc6a00
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileExplorerSession created: 11028840-d4e6-4ac1-bc60-212578b507c3 for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+Session 11028840-d4e6-4ac1-bc60-212578b507c3: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Created file explorer session 11028840-d4e6-4ac1-bc60-212578b507c3 for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer WebSocket connected: 11028840-d4e6-4ac1-bc60-212578b507c3 for workspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-1FxipZ
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+FileExplorerSession closed: 11028840-d4e6-4ac1-bc60-212578b507c3
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Closed file explorer session 11028840-d4e6-4ac1-bc60-212578b507c3. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+File explorer WebSocket disconnected: 11028840-d4e6-4ac1-bc60-212578b507c3
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > does not leak watcher leases when sockets close before CONNECTED is observed
+Closing FileSystemWorkspace agent_ws_f9620bc2827ffe262d9312051c27f2c92bff845083444d94dd2fe9cbcfc3f727
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo.
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created and registered workspace ID: agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created WorkspaceFileExplorer for agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24 (file-explorer-websocket).
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession created: c59489ff-6fe7-4fd4-832d-2191043d058f for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+Session c59489ff-6fe7-4fd4-832d-2191043d058f: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created file explorer session c59489ff-6fe7-4fd4-832d-2191043d058f for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket connected: c59489ff-6fe7-4fd4-832d-2191043d058f for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer websocket attached for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession closed: c59489ff-6fe7-4fd4-832d-2191043d058f
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Closed file explorer session c59489ff-6fe7-4fd4-832d-2191043d058f. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket disconnected: c59489ff-6fe7-4fd4-832d-2191043d058f
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession created: e6951391-40df-4343-992f-aa4c6b7f8ce5 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+Session e6951391-40df-4343-992f-aa4c6b7f8ce5: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created file explorer session e6951391-40df-4343-992f-aa4c6b7f8ce5 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket connected: e6951391-40df-4343-992f-aa4c6b7f8ce5 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer websocket attached for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession closed: e6951391-40df-4343-992f-aa4c6b7f8ce5
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Closed file explorer session e6951391-40df-4343-992f-aa4c6b7f8ce5. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket disconnected: e6951391-40df-4343-992f-aa4c6b7f8ce5
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession created: db66e2cc-9459-4646-b117-e655ee0ec0e8 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+Session db66e2cc-9459-4646-b117-e655ee0ec0e8: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created file explorer session db66e2cc-9459-4646-b117-e655ee0ec0e8 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket connected: db66e2cc-9459-4646-b117-e655ee0ec0e8 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer websocket attached for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession closed: db66e2cc-9459-4646-b117-e655ee0ec0e8
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Closed file explorer session db66e2cc-9459-4646-b117-e655ee0ec0e8. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket disconnected: db66e2cc-9459-4646-b117-e655ee0ec0e8
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession created: 43062a17-c9ba-4b58-b741-ba00ea416ef8 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+Session 43062a17-c9ba-4b58-b741-ba00ea416ef8: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created file explorer session 43062a17-c9ba-4b58-b741-ba00ea416ef8 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket connected: 43062a17-c9ba-4b58-b741-ba00ea416ef8 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer websocket attached for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession closed: 43062a17-c9ba-4b58-b741-ba00ea416ef8
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Closed file explorer session 43062a17-c9ba-4b58-b741-ba00ea416ef8. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket disconnected: 43062a17-c9ba-4b58-b741-ba00ea416ef8
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession created: 6a273e05-a685-4698-bc19-a46020ef0af5 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+Session 6a273e05-a685-4698-bc19-a46020ef0af5: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created file explorer session 6a273e05-a685-4698-bc19-a46020ef0af5 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket connected: 6a273e05-a685-4698-bc19-a46020ef0af5 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer websocket attached for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession closed: 6a273e05-a685-4698-bc19-a46020ef0af5
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Closed file explorer session 6a273e05-a685-4698-bc19-a46020ef0af5. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket disconnected: 6a273e05-a685-4698-bc19-a46020ef0af5
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession created: c8c9c723-03f6-48c9-bdc3-e45708938523 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+Session c8c9c723-03f6-48c9-bdc3-e45708938523: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created file explorer session c8c9c723-03f6-48c9-bdc3-e45708938523 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket connected: c8c9c723-03f6-48c9-bdc3-e45708938523 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer websocket attached for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession closed: c8c9c723-03f6-48c9-bdc3-e45708938523
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Closed file explorer session c8c9c723-03f6-48c9-bdc3-e45708938523. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket disconnected: c8c9c723-03f6-48c9-bdc3-e45708938523
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession created: dd3813ec-d589-4787-8e43-c3f584ea0253 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+Session dd3813ec-d589-4787-8e43-c3f584ea0253: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created file explorer session dd3813ec-d589-4787-8e43-c3f584ea0253 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket connected: dd3813ec-d589-4787-8e43-c3f584ea0253 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer websocket attached for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession closed: dd3813ec-d589-4787-8e43-c3f584ea0253
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Closed file explorer session dd3813ec-d589-4787-8e43-c3f584ea0253. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket disconnected: dd3813ec-d589-4787-8e43-c3f584ea0253
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession created: c0f2f27f-a81c-4d6f-a526-19e27dfc5254 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+Session c0f2f27f-a81c-4d6f-a526-19e27dfc5254: Started event forwarding task
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Created file explorer session c0f2f27f-a81c-4d6f-a526-19e27dfc5254 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24. Active sessions: 1
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket connected: c0f2f27f-a81c-4d6f-a526-19e27dfc5254 for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer websocket attached for workspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo (file-explorer-websocket); active leases: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-ws-e2e-7B6HBo
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+FileExplorerSession closed: c0f2f27f-a81c-4d6f-a526-19e27dfc5254
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Closed file explorer session c0f2f27f-a81c-4d6f-a526-19e27dfc5254. Active sessions: 0
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+File explorer WebSocket disconnected: c0f2f27f-a81c-4d6f-a526-19e27dfc5254
+
+stdout | tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts > File explorer websocket lifecycle e2e > survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy
+Closing FileSystemWorkspace agent_ws_7472b35f11b5ca2edc07e08af5a8097a9ef87d48713dcd4a606d8b0ce2e3dc24
+
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests) 1071ms
+     ✓ keeps workspace/search snapshot APIs watcher-free, then leases one real watcher across visible websocket consumers  556ms
+     ✓ survives repeated open/close cycles without descriptor growth and keeps child-process spawn healthy  336ms
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:30093) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-ZU3zt7/file_ops_ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-ZU3zt7/file_ops_ws.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Created and registered workspace ID: agent_ws_ef9b26d0175699bc72cbf4dd896fdc648474d2f1b57044126af7eebb873386b2
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Created WorkspaceFileExplorer for agent_ws_ef9b26d0175699bc72cbf4dd896fdc648474d2f1b57044126af7eebb873386b2 (graphql-write-file).
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-ZU3zt7/file_ops_ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-ZU3zt7/file_ops_ws' completed in 0.0010 seconds.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Closing FileSystemWorkspace agent_ws_ef9b26d0175699bc72cbf4dd896fdc648474d2f1b57044126af7eebb873386b2
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-Z3U8Ja/rename_ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-Z3U8Ja/rename_ws.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Created and registered workspace ID: agent_ws_57fb36c7c2570df89c7302051a4064b22303ac15051e7007dec9a4d8754efbd4
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Created WorkspaceFileExplorer for agent_ws_57fb36c7c2570df89c7302051a4064b22303ac15051e7007dec9a4d8754efbd4 (graphql-create-file).
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-Z3U8Ja/rename_ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-Z3U8Ja/rename_ws' completed in 0.0000 seconds.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Closing FileSystemWorkspace agent_ws_57fb36c7c2570df89c7302051a4064b22303ac15051e7007dec9a4d8754efbd4
+
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts (2 tests) 53ms
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:30097) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > returns immediate children for folderChildren
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-4RTpP6
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-4RTpP6.
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > returns immediate children for folderChildren
+Created and registered workspace ID: agent_ws_9e6c8fd76d2ef11457a22da9d7797c3acb1b55268f9f653154fbaa127ac72c93
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > returns immediate children for folderChildren
+Created WorkspaceFileExplorer for agent_ws_9e6c8fd76d2ef11457a22da9d7797c3acb1b55268f9f653154fbaa127ac72c93 (graphql-folder-children).
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > returns immediate children for folderChildren
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-4RTpP6' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > returns immediate children for folderChildren
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-4RTpP6' completed in 0.0030 seconds.
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > returns immediate children for folderChildren
+Closing FileSystemWorkspace agent_ws_9e6c8fd76d2ef11457a22da9d7797c3acb1b55268f9f653154fbaa127ac72c93
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-S1rhq8/graphql_snapshot_ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-S1rhq8/graphql_snapshot_ws.
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Created and registered workspace ID: agent_ws_d6374ae4c0824c9d488b4811fb096b2c045980ac1dbbe8a726422d060f678d43
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Created WorkspaceFileExplorer for agent_ws_d6374ae4c0824c9d488b4811fb096b2c045980ac1dbbe8a726422d060f678d43 (graphql-folder-children).
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-S1rhq8/graphql_snapshot_ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-S1rhq8/graphql_snapshot_ws' completed in 0.0010 seconds.
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-S1rhq8/graphql_snapshot_ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-S1rhq8/graphql_snapshot_ws' completed in 0.0010 seconds.
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'beta-search-target'
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+[Search] FuzzysortSearchStrategy completed in 0.51ms, found 1 results (total: 0.54ms)
+
+stdout | tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts > File explorer GraphQL e2e > keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible
+Closing FileSystemWorkspace agent_ws_d6374ae4c0824c9d488b4811fb096b2c045980ac1dbbe8a726422d060f678d43
+
+ ✓ tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts (3 tests) 56ms
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:30098) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-8cXd9F/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-8cXd9F/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created and registered workspace ID: agent_ws_3d0027b92fc6d1b0d77e8062bec6eca77ce10e5c67f6d68a21416cde121c96df
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace agent_ws_3d0027b92fc6d1b0d77e8062bec6eca77ce10e5c67f6d68a21416cde121c96df
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tVA47G/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tVA47G/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created and registered workspace ID: agent_ws_ad3ce7c9fde664296cdfe78a0b4640a0c034e7a84d4113b002b41e50a5fde626
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Closing FileSystemWorkspace agent_ws_ad3ce7c9fde664296cdfe78a0b4640a0c034e7a84d4113b002b41e50a5fde626
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cEfebw/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-cEfebw/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created and registered workspace ID: agent_ws_73d5bbf19af2429622a2f17463fc0b102992df7cc4143fbc65dc80ecd9145e7e
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Closing FileSystemWorkspace agent_ws_73d5bbf19af2429622a2f17463fc0b102992df7cc4143fbc65dc80ecd9145e7e
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-N7PYgs/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-N7PYgs/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-N7PYgs/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DPP8fP/server-data
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DPP8fP/server-data/.env
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DPP8fP/server-data/isolated-temp-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DPP8fP/server-data/isolated-temp-workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-DPP8fP/server-data/isolated-temp-workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Closing FileSystemWorkspace temp_ws_default
+
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (5 tests) 52ms
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:30100) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/team-run-service.integration.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+
+ ✓ tests/integration/agent-team-execution/team-run-service.integration.test.ts (13 tests) 14ms
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+AppConfig instance created.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-rfqUYz
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-rfqUYz.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Created and registered workspace ID: agent_ws_2fbff0a49ec470752bccf4df36d0edafb48ab743b00a34e8398e33d8aace873e
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Closing FileSystemWorkspace agent_ws_2fbff0a49ec470752bccf4df36d0edafb48ab743b00a34e8398e33d8aace873e
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-cJ6bTB
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-cJ6bTB.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Created and registered workspace ID: agent_ws_c83bebd547bf8ce7c391206dcbc5159d80b1aafc1360574e8c4896a85a7973cd
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-cJ6bTB
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-cJ6bTB.
+Reusing existing workspace ID: agent_ws_c83bebd547bf8ce7c391206dcbc5159d80b1aafc1360574e8c4896a85a7973cd
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Closing FileSystemWorkspace agent_ws_c83bebd547bf8ce7c391206dcbc5159d80b1aafc1360574e8c4896a85a7973cd
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Gez6hR
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Gez6hR.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Created and registered workspace ID: agent_ws_19b2f5c27cbae1705a1350cd2c93a0d5c73f33c14463256dcd48b7f73dac8e42
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Gez6hR/.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Gez6hR.
+Reusing existing workspace ID: agent_ws_19b2f5c27cbae1705a1350cd2c93a0d5c73f33c14463256dcd48b7f73dac8e42
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Closing FileSystemWorkspace agent_ws_19b2f5c27cbae1705a1350cd2c93a0d5c73f33c14463256dcd48b7f73dac8e42
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-YXC13K
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-YXC13K.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Created and registered workspace ID: agent_ws_17195838139eb652dd1964c306799b447f23169a203f44847acdc4e0e4302475
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-15YXNw
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-15YXNw.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Created and registered workspace ID: agent_ws_6e19beb4e5b7a69006deb80d0f843d7349bbc5bfad4351dc86db9d1d371166ad
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Closing FileSystemWorkspace agent_ws_17195838139eb652dd1964c306799b447f23169a203f44847acdc4e0e4302475
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Closing FileSystemWorkspace agent_ws_6e19beb4e5b7a69006deb80d0f843d7349bbc5bfad4351dc86db9d1d371166ad
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-tNrGbv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-tNrGbv.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-tNrGbv with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-d5v9NU
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-d5v9NU.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-d5v9NU with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Returning cached temp workspace
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-YpuEaF
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-YpuEaF.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Created and registered workspace ID: agent_ws_dc6824e523346fd242d2f398ee73cf66f24c7750c8bf89d4ed94d4afe9424476
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Closing FileSystemWorkspace agent_ws_dc6824e523346fd242d2f398ee73cf66f24c7750c8bf89d4ed94d4afe9424476
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-YpuEaF
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-YpuEaF.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Created and registered workspace ID: agent_ws_dc6824e523346fd242d2f398ee73cf66f24c7750c8bf89d4ed94d4afe9424476
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Closing FileSystemWorkspace agent_ws_dc6824e523346fd242d2f398ee73cf66f24c7750c8bf89d4ed94d4afe9424476
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-yuFZdz
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-yuFZdz.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-yuFZdz with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID
+Closing FileSystemWorkspace temp_ws_default
+
+ ✓ tests/unit/workspaces/workspace-manager.test.ts (9 tests) 13ms
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+(node:30102) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/team-run-service.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/team-run-service.test.ts (11 tests) 12ms
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds files by name after background indexing completes
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-search-d49DYv.
+
+stderr | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds files by name after background indexing completes
+FileSystemWorkspace.initialize() is metadata-only for search-test-workspace; file explorer acquisition is explicit.
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds files by name after background indexing completes
+Created WorkspaceFileExplorer for search-test-workspace (integration-search).
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds files by name after background indexing completes
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-search-d49DYv' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds files by name after background indexing completes
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-search-d49DYv' completed in 0.0020 seconds.
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds files by name after background indexing completes
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds files by name after background indexing completes
+FileNameIndexer refreshed snapshot index with 2 entries
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds files by name after background indexing completes
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'readme'
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds files by name after background indexing completes
+[Search] FuzzysortSearchStrategy completed in 0.46ms, found 1 results (total: 0.48ms)
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > finds files by name after background indexing completes
+Closing FileSystemWorkspace search-test-workspace
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns absolute paths for matches
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-search-4nD25m.
+
+stderr | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns absolute paths for matches
+FileSystemWorkspace.initialize() is metadata-only for search-test-workspace; file explorer acquisition is explicit.
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns absolute paths for matches
+Created WorkspaceFileExplorer for search-test-workspace (integration-search).
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns absolute paths for matches
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-search-4nD25m' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns absolute paths for matches
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-search-4nD25m' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns absolute paths for matches
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns absolute paths for matches
+FileNameIndexer refreshed snapshot index with 2 entries
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns absolute paths for matches
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'alpha'
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns absolute paths for matches
+[Search] FuzzysortSearchStrategy completed in 0.05ms, found 1 results (total: 0.05ms)
+
+stdout | tests/integration/file-explorer/file-search.integration.test.ts > FileSystemWorkspace searchFiles integration > returns absolute paths for matches
+Closing FileSystemWorkspace search-test-workspace
+
+ ✓ tests/integration/file-explorer/file-search.integration.test.ts (2 tests) 21ms
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > indexes existing files from the current snapshot
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-index-HLeqxQ' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > indexes existing files from the current snapshot
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-index-HLeqxQ' completed in 0.0020 seconds.
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > indexes existing files from the current snapshot
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > indexes existing files from the current snapshot
+FileNameIndexer refreshed snapshot index with 1 entries
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-index-sHGqjB' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-index-sHGqjB' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+FileNameIndexer refreshed snapshot index with 1 entries
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-index-sHGqjB' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-index-sHGqjB' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/integration/file-explorer/file-name-indexer.integration.test.ts > FileNameIndexer integration > updates only after the snapshot is rebuilt and refreshed
+FileNameIndexer refreshed snapshot index with 2 entries
+
+ ✓ tests/integration/file-explorer/file-name-indexer.integration.test.ts (2 tests) 9ms
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+FileExplorerSession created: 3e2b5c91-2c53-4ba5-8c48-fd7c5281bb61 for workspace ws-123
+Session 3e2b5c91-2c53-4ba5-8c48-fd7c5281bb61: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+Created file explorer session 3e2b5c91-2c53-4ba5-8c48-fd7c5281bb61 for workspace ws-123. Active sessions: 1
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+File explorer WebSocket connected: 3e2b5c91-2c53-4ba5-8c48-fd7c5281bb61 for workspace ws-123
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+FileExplorerSession closed: 3e2b5c91-2c53-4ba5-8c48-fd7c5281bb61
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+Closed file explorer session 3e2b5c91-2c53-4ba5-8c48-fd7c5281bb61. Active sessions: 0
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+File explorer WebSocket disconnected: 3e2b5c91-2c53-4ba5-8c48-fd7c5281bb61
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes with 4004 when workspace is missing
+FileExplorerSessionManager initialized
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes with 4004 when workspace is missing
+File explorer WebSocket connection rejected: workspace missing not found (Error: workspace missing)
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > sends an error when watcher is unavailable
+FileExplorerSessionManager initialized
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > sends an error when watcher is unavailable
+Failed to start file watcher: Error: watcher failed
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+FileExplorerSession created: 63007791-603e-4658-97d5-156bd1001f39 for workspace ws-send-fail
+Session 63007791-603e-4658-97d5-156bd1001f39: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+Created file explorer session 63007791-603e-4658-97d5-156bd1001f39 for workspace ws-send-fail. Active sessions: 1
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+Failed to set up file explorer session: Error: send failed
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+FileExplorerSession closed: 63007791-603e-4658-97d5-156bd1001f39
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+Closed file explorer session 63007791-603e-4658-97d5-156bd1001f39. Active sessions: 0
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+FileExplorerSession created: 079bec18-2ec9-4127-b0ce-82cc89f0dee8 for workspace ws-send-loop-fail
+Session 079bec18-2ec9-4127-b0ce-82cc89f0dee8: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+Created file explorer session 079bec18-2ec9-4127-b0ce-82cc89f0dee8 for workspace ws-send-loop-fail. Active sessions: 1
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+File explorer WebSocket connected: 079bec18-2ec9-4127-b0ce-82cc89f0dee8 for workspace ws-send-loop-fail
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+Error sending file change event: Error: file change send failed
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+FileExplorerSession closed: 079bec18-2ec9-4127-b0ce-82cc89f0dee8
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+Closed file explorer session 079bec18-2ec9-4127-b0ce-82cc89f0dee8. Active sessions: 0
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+File explorer WebSocket stream ended: 079bec18-2ec9-4127-b0ce-82cc89f0dee8
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > responds to PING with PONG
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > returns null for unknown message types
+FileExplorerSessionManager initialized
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > returns null for unknown message types
+Unknown message type from client: UNKNOWN
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > returns null for invalid JSON
+FileExplorerSessionManager initialized
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > returns null for invalid JSON
+Invalid JSON from client: not-json (SyntaxError: Unexpected token 'o', "not-json" is not valid JSON)
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+FileExplorerSession created: 51e54cd7-8a85-4720-87b9-ea2c619cb6d8 for workspace ws-2
+Session 51e54cd7-8a85-4720-87b9-ea2c619cb6d8: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+Created file explorer session 51e54cd7-8a85-4720-87b9-ea2c619cb6d8 for workspace ws-2. Active sessions: 1
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+File explorer WebSocket connected: 51e54cd7-8a85-4720-87b9-ea2c619cb6d8 for workspace ws-2
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+FileExplorerSession closed: 51e54cd7-8a85-4720-87b9-ea2c619cb6d8
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+Closed file explorer session 51e54cd7-8a85-4720-87b9-ea2c619cb6d8. Active sessions: 0
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+File explorer WebSocket disconnected: 51e54cd7-8a85-4720-87b9-ea2c619cb6d8
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > handles disconnecting unknown sessions
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > handles disconnecting unknown sessions
+File explorer WebSocket disconnected: missing
+
+ ✓ tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts (10 tests) 8ms
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > starts watcher when first watcher lease is acquired
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > starts watcher when first watcher lease is acquired
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Acquired file watcher lease for /fake/path (first); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Acquired file watcher lease for /fake/path (second); active leases: 2
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Released file watcher lease for /fake/path (first); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Released file watcher lease for /fake/path (second); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > makes watcher lease release idempotent
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > makes watcher lease release idempotent
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > returns events from the active watcher
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > returns events from the active watcher
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > closes active watcher once and clears future subscriptions
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts (6 tests) 6ms
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > uses the fixed TEMP_WORKSPACE_ID
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-GIzugp.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-GIzugp with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > returns a friendly name
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-Ms2o2U.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-Ms2o2U with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > inherits from FileSystemWorkspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-tuFaAf.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-tuFaAf with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > stores rootPath in config
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-ilxAKB.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-ilxAKB with fixed ID 'temp_ws_default'
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-vyraZY.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-temp-ws-vyraZY with fixed ID 'temp_ws_default'
+
+stderr | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+FileSystemWorkspace.initialize() is metadata-only for temp_ws_default; file explorer acquisition is explicit.
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Created WorkspaceFileExplorer for temp_ws_default (unit-test).
+
+stdout | tests/unit/workspaces/temp-workspace.test.ts > TempWorkspace > initializes metadata only and acquires file explorer explicitly
+Closing FileSystemWorkspace temp_ws_default
+
+ ✓ tests/unit/workspaces/temp-workspace.test.ts (5 tests) 4ms
+
+ Test Files  12 passed (12)
+      Tests  71 passed (71)
+   Start at  12:19:58
+   Duration  10.72s (transform 2.91s, setup 96ms, import 8.01s, tests 1.32s, environment 1ms)
+

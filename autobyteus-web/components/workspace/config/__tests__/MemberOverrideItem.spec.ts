@@ -384,7 +384,7 @@ describe('MemberOverrideItem', () => {
         teamDefinitionName: 'Research Team',
         runtimeKind: 'autobyteus',
         workspaceId: 'ws-1',
-        workspaceReference: null,
+        workspaceMetadata: null,
         llmModelIdentifier: 'gpt-5.4',
         llmConfig: { thinking_level: 5 },
         autoExecuteTools: false,
@@ -407,7 +407,7 @@ describe('MemberOverrideItem', () => {
           teamDefinitionName: 'Research Team',
           runtimeKind: 'autobyteus',
           workspaceId: 'ws-1',
-          workspaceReference: null,
+          workspaceMetadata: null,
           llmModelIdentifier: 'gpt-5.4',
           llmConfig: { thinking_level: 5 },
           autoExecuteTools: false,
@@ -434,17 +434,17 @@ describe('MemberOverrideItem', () => {
         autoExecuteTools: false,
         skillAccessMode: 'PRELOADED_ONLY',
         workspaceId: 'ws-1',
-        workspaceReference: null,
+        workspaceMetadata: null,
         workspaceRootPath: undefined,
       },
     ])
   })
 
-  it('serializes team workspace root path from workspace reference for launch inputs', () => {
-    const workspaceReference = {
-      workspaceId: 'agent_ws_reference',
-      workspaceRootPath: '/tmp/ReferenceTeam',
-      displayName: 'ReferenceTeam',
+  it('serializes team workspace root path from workspace metadata for launch inputs', () => {
+    const workspaceMetadata = {
+      workspaceId: 'agent_ws_metadata',
+      workspaceRootPath: '/tmp/MetadataTeam',
+      displayName: 'MetadataTeam',
       kind: 'filesystem' as const,
     }
 
@@ -453,8 +453,8 @@ describe('MemberOverrideItem', () => {
         teamDefinitionId: 'team-def-1',
         teamDefinitionName: 'Research Team',
         runtimeKind: 'codex_app_server',
-        workspaceId: workspaceReference.workspaceId,
-        workspaceReference,
+        workspaceId: workspaceMetadata.workspaceId,
+        workspaceMetadata,
         llmModelIdentifier: 'gpt-5.4',
         llmConfig: { reasoning_effort: 'high' },
         autoExecuteTools: false,
@@ -472,20 +472,20 @@ describe('MemberOverrideItem', () => {
     })
 
     expect(records[0]).toEqual(expect.objectContaining({
-      workspaceId: workspaceReference.workspaceId,
-      workspaceReference,
-      workspaceRootPath: '/tmp/ReferenceTeam',
+      workspaceId: workspaceMetadata.workspaceId,
+      workspaceMetadata,
+      workspaceRootPath: '/tmp/MetadataTeam',
     }))
   })
 
-  it('blocks reference-backed team launch readiness when the root path is missing', () => {
+  it('blocks filesystem workspace metadata team launch readiness when the root path is missing', () => {
     const readiness = evaluateTeamRunLaunchReadiness(
       {
         teamDefinitionId: 'team-def-1',
         teamDefinitionName: 'Research Team',
         runtimeKind: 'codex_app_server',
-        workspaceId: 'agent_ws_reference_only',
-        workspaceReference: null,
+        workspaceId: 'agent_ws_metadata_only',
+        workspaceMetadata: null,
         llmModelIdentifier: 'gpt-5.4',
         llmConfig: { reasoning_effort: 'high' },
         autoExecuteTools: false,
@@ -501,7 +501,7 @@ describe('MemberOverrideItem', () => {
     expect(readiness.canLaunch).toBe(false)
     expect(readiness.blockingIssues).toContainEqual(expect.objectContaining({
       code: 'WORKSPACE_REQUIRED',
-      message: 'Workspace root path is required to run a reference-backed team.',
+      message: 'Workspace root path is required to run a filesystem workspace metadata team.',
     }))
   })
 

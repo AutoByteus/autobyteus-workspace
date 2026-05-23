@@ -78,7 +78,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const isNewAgent = runId.startsWith('temp-');
       const resumeConfig = !isNewAgent ? runHistoryStore.getResumeConfig(runId) : null;
       const workspaceId = config.workspaceId;
-      const workspaceRootPath = config.workspaceReference?.workspaceRootPath || (workspaceId
+      const workspaceRootPath = config.workspaceMetadata?.workspaceRootPath || (workspaceId
         ? (
             workspaceStore.workspaces[workspaceId]?.absolutePath
             || workspaceStore.workspaces[workspaceId]?.workspaceConfig?.root_path

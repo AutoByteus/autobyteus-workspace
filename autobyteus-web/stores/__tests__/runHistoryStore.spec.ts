@@ -143,10 +143,10 @@ const {
       workspacesFetched: true,
       allWorkspaces: [] as Array<{ workspaceId: string; absolutePath: string; name?: string }>,
       workspaces: {} as Record<string, any>,
-      workspaceReferencesById: {} as Record<string, any>,
+      workspaceMetadataById: {} as Record<string, any>,
       fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
       createWorkspace: vi.fn().mockResolvedValue('ws-created'),
-      resolveWorkspaceReferenceByRootPath: vi.fn(async (rootPath: string) => ({
+      resolveWorkspaceMetadataByRootPath: vi.fn(async (rootPath: string) => ({
         workspaceId: `ref:${rootPath}`,
         workspaceRootPath: rootPath,
         displayName: rootPath.split('/').filter(Boolean).pop() || rootPath,
@@ -349,10 +349,10 @@ describe('runHistoryStore', () => {
     workspaceStoreMock.workspacesFetched = true;
     workspaceStoreMock.allWorkspaces = [];
     workspaceStoreMock.workspaces = {};
-    workspaceStoreMock.workspaceReferencesById = {};
+    workspaceStoreMock.workspaceMetadataById = {};
     workspaceStoreMock.fetchAllWorkspaces.mockResolvedValue(undefined);
     workspaceStoreMock.createWorkspace.mockResolvedValue('ws-created');
-    workspaceStoreMock.resolveWorkspaceReferenceByRootPath.mockImplementation(async (rootPath: string) => ({
+    workspaceStoreMock.resolveWorkspaceMetadataByRootPath.mockImplementation(async (rootPath: string) => ({
       workspaceId: `ref:${rootPath}`,
       workspaceRootPath: rootPath,
       displayName: rootPath.split('/').filter(Boolean).pop() || rootPath,
@@ -587,7 +587,7 @@ describe('runHistoryStore', () => {
     expect(hydrateLiveRunContextMock).toHaveBeenCalledWith({
       runId: 'run-live-1',
       fallbackAgentName: 'SuperAgent',
-      resolveWorkspaceReferenceByRootPath: expect.any(Function),
+      resolveWorkspaceMetadataByRootPath: expect.any(Function),
       ensureWorkspaceByRootPath: expect.any(Function),
       currentStatus: 'running',
     });
@@ -595,7 +595,7 @@ describe('runHistoryStore', () => {
     expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith({
       teamRunId: 'team-live-1',
       memberRouteKey: null,
-      resolveWorkspaceReferenceByRootPath: expect.any(Function),
+      resolveWorkspaceMetadataByRootPath: expect.any(Function),
       ensureWorkspaceByRootPath: expect.any(Function),
       currentStatus: 'running',
       memberStatuses: [{
@@ -1018,13 +1018,13 @@ describe('runHistoryStore', () => {
       }),
     );
     expect(store.isRuntimeLockedForRun('run-2')).toBe(true);
-    expect(workspaceStoreMock.resolveWorkspaceReferenceByRootPath).toHaveBeenCalledWith('/ws/a');
+    expect(workspaceStoreMock.resolveWorkspaceMetadataByRootPath).toHaveBeenCalledWith('/ws/a');
     expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
     expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
       expect.objectContaining({
         config: expect.objectContaining({
           workspaceId: 'ref:/ws/a',
-          workspaceReference: expect.objectContaining({
+          workspaceMetadata: expect.objectContaining({
             workspaceId: 'ref:/ws/a',
             workspaceRootPath: '/ws/a',
           }),
@@ -1253,7 +1253,7 @@ describe('runHistoryStore', () => {
     expect(agentRunConfigStoreMock.updateAgentConfig).toHaveBeenCalledWith(expect.objectContaining({
       workspaceId: 'ws-1',
       llmModelIdentifier: 'model-default',
-      workspaceReference: expect.objectContaining({
+      workspaceMetadata: expect.objectContaining({
         workspaceRootPath: '/ws/a',
       }),
     }));
@@ -2414,15 +2414,15 @@ describe('runHistoryStore', () => {
       super_agent: 'loaded',
       architect_reviewer: 'unloaded',
     });
-    expect(workspaceStoreMock.resolveWorkspaceReferenceByRootPath).toHaveBeenCalledWith('/ws/a');
+    expect(workspaceStoreMock.resolveWorkspaceMetadataByRootPath).toHaveBeenCalledWith('/ws/a');
     expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
-    expect(hydratedTeam.config.workspaceReference).toEqual(
+    expect(hydratedTeam.config.workspaceMetadata).toEqual(
       expect.objectContaining({
         workspaceId: 'ref:/ws/a',
         workspaceRootPath: '/ws/a',
       }),
     );
-    expect(hydratedTeam.historicalHydration?.memberWorkspaceReferencesByRouteKey.super_agent).toEqual(
+    expect(hydratedTeam.historicalHydration?.memberWorkspaceMetadatasByRouteKey.super_agent).toEqual(
       expect.objectContaining({
         workspaceId: 'ref:/ws/a',
         workspaceRootPath: '/ws/a',

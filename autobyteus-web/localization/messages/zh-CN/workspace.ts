@@ -1,68 +1,127 @@
-import type { TranslationCatalog } from '../../runtime/types';
+import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
-  'workspace.components.workspace.config.RunConfigPanel.runTeamButton': '运行团队',
-  'workspace.components.workspace.config.RunConfigPanel.runAgentButton': '运行智能体',
-  'workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration': '智能体配置',
-  'workspace.components.workspace.config.RunConfigPanel.title.newAgentConfiguration': '新建智能体配置',
-  'workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration': '团队配置',
-  'workspace.components.workspace.config.RunConfigPanel.title.newTeamConfiguration': '新建团队配置',
-  'workspace.components.workspace.config.RunConfigPanel.title.configuration': '配置',
-  'workspace.components.workspace.config.MemberOverrideItem.coordinator': '协调者',
-  'workspace.components.workspace.config.MemberOverrideItem.overridden': '已覆盖',
-  'workspace.components.workspace.config.MemberOverrideItem.runtime_override': '运行时覆盖',
-  'workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default': '使用全局运行时默认值',
-  'workspace.components.workspace.config.MemberOverrideItem.search_models': '搜索模型...',
-  'workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model': '选择兼容的成员模型',
-  'workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global': '自动执行：使用全局设置',
-  'workspace.components.workspace.config.MemberOverrideItem.auto_execute_on': '自动执行：开启',
-  'workspace.components.workspace.config.MemberOverrideItem.auto_execute_off': '自动执行：关闭',
-  'workspace.components.workspace.running.RunningRunRow.defaultAgentName': '智能体',
-  'workspace.components.workspace.running.RunningRunRow.newRunLabel': '新建 - {{name}}',
-  'workspace.components.workspace.running.AgentLibraryPanel.agentsHeading': '智能体',
-  'workspace.components.workspace.running.AgentLibraryPanel.teamsHeading': '团队',
-  'workspace.components.workspace.running.AgentLibraryPanel.noDescription': '暂无描述',
-  'workspace.components.workspace.team.TeamOverviewPanel.task_plan': '任务计划',
-  'workspace.components.workspace.team.TeamOverviewPanel.messages': '消息',
-  'workspace.components.workspace.team.TeamOverviewPanel.tasks': '任务',
-  'workspace.components.workspace.team.TeamOverviewPanel.messages_count': '消息',
-  'workspace.components.workspace.team.TeamCommunicationPanel.sent_messages': '已发送',
-  'workspace.components.workspace.team.TeamCommunicationPanel.received_messages': '已接收',
-  'workspace.components.workspace.team.TeamCommunicationPanel.to_counterpart': '发送给',
-  'workspace.components.workspace.team.TeamCommunicationPanel.from_counterpart': '来自',
-  'workspace.components.workspace.team.TeamCommunicationPanel.unknown_teammate': '未知队友',
-  'workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member': '请选择团队成员以查看沟通记录。',
-  'workspace.components.workspace.team.TeamCommunicationPanel.empty_title': '暂无团队消息',
-  'workspace.components.workspace.team.TeamCommunicationPanel.empty_detail': '已接受的智能体间消息及其引用文件会显示在这里。',
-  'workspace.components.workspace.team.TeamCommunicationPanel.select_message': '选择一条消息以查看完整内容。',
-  'workspace.components.workspace.team.TeamCommunicationPanel.loading_reference': '正在加载引用文件...',
-  'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable': '引用文件不可用',
-  'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail': '文件可能已被删除、移动或变为不可读。',
-  'workspace.components.workspace.team.TeamCommunicationPanel.preview': '预览',
-  'workspace.components.workspace.team.TeamCommunicationPanel.raw': '原文',
-  'workspace.components.workspace.team.TeamCommunicationPanel.maximize_view': '最大化查看',
-  'workspace.components.workspace.team.TeamCommunicationPanel.restore_view': '恢复视图',
-  'workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam': '代表',
-  'workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam': '当前聚焦的子团队',
-  'workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members': '子团队成员',
-  'workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder': '向此子团队发送消息',
-  'workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam': '发送给子团队',
-  'workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet': '内容暂不可用',
-  'workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable': '暂不支持预览',
-  'workspace.components.workspace.agent.ArtifactContentViewer.failed_before_final_content_could_be_captured': '该文件变更在服务器捕获最终内容之前已失败。',
-  'workspace.components.workspace.agent.ArtifactContentViewer.file_change_will_become_viewable_after_the_edit_completes': '该文件变更会在编辑完成且服务器捕获最终内容后变为可查看。',
-  'workspace.components.workspace.agent.ArtifactContentViewer.preview_is_currently_available_only_for_text_file_changes': '当前仅支持文本文件变更预览。',
-  'workspace.components.workspace.agent.ArtifactContentViewer.file_change_is_still_pending_server_side_capture': '该文件变更仍在等待服务器端捕获。',
-  'workspace.components.workspace.agent.ArtifactContentViewer.failed_to_fetch_artifact_content': '获取工件内容失败',
-  'workspace.components.workspace.agent.ArtifactList.agent_artifacts': '智能体产物',
-  'workspace.components.workspace.tools.Terminal.retry_workspace_load': '重试加载工作区',
-  'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title': 'LLM 配置',
-  'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help': '可选的运行时、模型和 LLM 设置。',
-  'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.clear': '清除配置',
-  'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.blankRuntime': '启动时再选择',
-  'workspace.components.launchConfig.RuntimeModelConfigFields.runtimeLabel': '运行时',
-  'workspace.components.launchConfig.RuntimeModelConfigFields.modelLabel': '模型',
-  'workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder': '选择模型',
+  "workspace.components.workspace.config.RunConfigPanel.runTeamButton":
+    "运行团队",
+  "workspace.components.workspace.config.RunConfigPanel.runAgentButton":
+    "运行智能体",
+  "workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration":
+    "智能体配置",
+  "workspace.components.workspace.config.RunConfigPanel.title.newAgentConfiguration":
+    "新建智能体配置",
+  "workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration":
+    "团队配置",
+  "workspace.components.workspace.config.RunConfigPanel.title.newTeamConfiguration":
+    "新建团队配置",
+  "workspace.components.workspace.config.RunConfigPanel.title.configuration":
+    "配置",
+  "workspace.components.workspace.config.MemberOverrideItem.coordinator":
+    "协调者",
+  "workspace.components.workspace.config.MemberOverrideItem.overridden":
+    "已覆盖",
+  "workspace.components.workspace.config.MemberOverrideItem.runtime_override":
+    "运行时覆盖",
+  "workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default":
+    "使用全局运行时默认值",
+  "workspace.components.workspace.config.MemberOverrideItem.search_models":
+    "搜索模型...",
+  "workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model":
+    "选择兼容的成员模型",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global":
+    "自动执行：使用全局设置",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_on":
+    "自动执行：开启",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
+    "自动执行：关闭",
+  "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
+    "智能体",
+  "workspace.components.workspace.running.RunningRunRow.newRunLabel":
+    "新建 - {{name}}",
+  "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":
+    "智能体",
+  "workspace.components.workspace.running.AgentLibraryPanel.teamsHeading":
+    "团队",
+  "workspace.components.workspace.running.AgentLibraryPanel.noDescription":
+    "暂无描述",
+  "workspace.components.workspace.team.TeamOverviewPanel.task_plan": "任务计划",
+  "workspace.components.workspace.team.TeamOverviewPanel.messages": "消息",
+  "workspace.components.workspace.team.TeamOverviewPanel.tasks": "任务",
+  "workspace.components.workspace.team.TeamOverviewPanel.messages_count":
+    "消息",
+  "workspace.components.workspace.team.TeamCommunicationPanel.sent_messages":
+    "已发送",
+  "workspace.components.workspace.team.TeamCommunicationPanel.received_messages":
+    "已接收",
+  "workspace.components.workspace.team.TeamCommunicationPanel.to_counterpart":
+    "发送给",
+  "workspace.components.workspace.team.TeamCommunicationPanel.from_counterpart":
+    "来自",
+  "workspace.components.workspace.team.TeamCommunicationPanel.unknown_teammate":
+    "未知队友",
+  "workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member":
+    "请选择团队成员以查看沟通记录。",
+  "workspace.components.workspace.team.TeamCommunicationPanel.empty_title":
+    "暂无团队消息",
+  "workspace.components.workspace.team.TeamCommunicationPanel.empty_detail":
+    "已接受的智能体间消息及其引用文件会显示在这里。",
+  "workspace.components.workspace.team.TeamCommunicationPanel.select_message":
+    "选择一条消息以查看完整内容。",
+  "workspace.components.workspace.team.TeamCommunicationPanel.loading_reference":
+    "正在加载引用文件...",
+  "workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable":
+    "引用文件不可用",
+  "workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail":
+    "文件可能已被删除、移动或变为不可读。",
+  "workspace.components.workspace.team.TeamCommunicationPanel.preview": "预览",
+  "workspace.components.workspace.team.TeamCommunicationPanel.raw": "原文",
+  "workspace.components.workspace.team.TeamCommunicationPanel.maximize_view":
+    "最大化查看",
+  "workspace.components.workspace.team.TeamCommunicationPanel.restore_view":
+    "恢复视图",
+  "workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam":
+    "代表",
+  "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
+    "当前聚焦的子团队",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members":
+    "子团队成员",
+  "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
+    "向此子团队发送消息",
+  "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
+    "发送给子团队",
+  "workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet":
+    "内容暂不可用",
+  "workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable":
+    "暂不支持预览",
+  "workspace.components.workspace.agent.ArtifactContentViewer.failed_before_final_content_could_be_captured":
+    "该文件变更在服务器捕获最终内容之前已失败。",
+  "workspace.components.workspace.agent.ArtifactContentViewer.file_change_will_become_viewable_after_the_edit_completes":
+    "该文件变更会在编辑完成且服务器捕获最终内容后变为可查看。",
+  "workspace.components.workspace.agent.ArtifactContentViewer.preview_is_currently_available_only_for_text_file_changes":
+    "当前仅支持文本文件变更预览。",
+  "workspace.components.workspace.agent.ArtifactContentViewer.file_change_is_still_pending_server_side_capture":
+    "该文件变更仍在等待服务器端捕获。",
+  "workspace.components.workspace.agent.ArtifactContentViewer.failed_to_fetch_artifact_content":
+    "获取工件内容失败",
+  "workspace.components.workspace.agent.ArtifactList.agent_artifacts":
+    "智能体产物",
+  "workspace.components.workspace.tools.Terminal.retry_workspace_load":
+    "重试加载工作区",
+  "workspace.components.workspace.tools.Terminal.no_terminal_root_path":
+    "未为终端选择工作区根路径。",
+  "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title":
+    "LLM 配置",
+  "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help":
+    "可选的运行时、模型和 LLM 设置。",
+  "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.clear":
+    "清除配置",
+  "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.blankRuntime":
+    "启动时再选择",
+  "workspace.components.launchConfig.RuntimeModelConfigFields.runtimeLabel":
+    "运行时",
+  "workspace.components.launchConfig.RuntimeModelConfigFields.modelLabel":
+    "模型",
+  "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
+    "选择模型",
 } satisfies TranslationCatalog;
 
 export default messages;

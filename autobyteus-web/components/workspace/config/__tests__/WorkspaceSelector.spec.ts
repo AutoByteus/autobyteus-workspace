@@ -103,7 +103,7 @@ describe('WorkspaceSelector', () => {
     const wrapper = mount(WorkspaceSelector, {
       props: {
         ...defaultProps,
-        workspaceId: 'agent_ws_reference',
+        workspaceId: 'agent_ws_metadata',
         initialPath: '/tmp/ProjectA',
         disabled: true,
       },

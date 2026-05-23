@@ -121,7 +121,7 @@ const teamRunConfigStore = useTeamRunConfigStore();
 const { activeMobilePanel } = useMobilePanels();
 const { t } = useLocalization();
 
-const hasActiveWorkspace = computed(() => !!workspaceStore.activeWorkspaceReference || !!workspaceStore.activeWorkspace);
+const hasActiveWorkspace = computed(() => !!workspaceStore.activeWorkspaceMetadata || !!workspaceStore.activeWorkspace);
 const isCenterLoading = computed(() => runHistoryStore.openingRun);
 
 // --- Mobile Running Tab Logic ---

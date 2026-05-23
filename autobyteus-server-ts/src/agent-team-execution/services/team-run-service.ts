@@ -231,7 +231,7 @@ export class TeamRunService {
           workspaceRootPath = workspace.workspaceRootPath;
         } else if (workspaceId?.startsWith(FILESYSTEM_WORKSPACE_ID_PREFIX)) {
           throw new Error(
-            "workspaceRootPath is required when launching a team with a filesystem workspace reference.",
+            "workspaceRootPath is required when launching a team with filesystem workspace metadata.",
           );
         }
 

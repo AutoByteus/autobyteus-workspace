@@ -1,68 +1,129 @@
-import type { TranslationCatalog } from '../../runtime/types';
+import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
-  'workspace.components.workspace.config.RunConfigPanel.runTeamButton': 'Run Team',
-  'workspace.components.workspace.config.RunConfigPanel.runAgentButton': 'Run Agent',
-  'workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration': 'Agent Configuration',
-  'workspace.components.workspace.config.RunConfigPanel.title.newAgentConfiguration': 'New Agent Configuration',
-  'workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration': 'Team Configuration',
-  'workspace.components.workspace.config.RunConfigPanel.title.newTeamConfiguration': 'New Team Configuration',
-  'workspace.components.workspace.config.RunConfigPanel.title.configuration': 'Configuration',
-  'workspace.components.workspace.config.MemberOverrideItem.coordinator': 'Coordinator',
-  'workspace.components.workspace.config.MemberOverrideItem.overridden': 'Overridden',
-  'workspace.components.workspace.config.MemberOverrideItem.runtime_override': 'Runtime Override',
-  'workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default': 'Use global runtime default',
-  'workspace.components.workspace.config.MemberOverrideItem.search_models': 'Search models...',
-  'workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model': 'Choose a compatible member model',
-  'workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global': 'Auto-execute: Use global',
-  'workspace.components.workspace.config.MemberOverrideItem.auto_execute_on': 'Auto-execute: ON',
-  'workspace.components.workspace.config.MemberOverrideItem.auto_execute_off': 'Auto-execute: OFF',
-  'workspace.components.workspace.running.RunningRunRow.defaultAgentName': 'Agent',
-  'workspace.components.workspace.running.RunningRunRow.newRunLabel': 'New - {{name}}',
-  'workspace.components.workspace.running.AgentLibraryPanel.agentsHeading': 'Agents',
-  'workspace.components.workspace.running.AgentLibraryPanel.teamsHeading': 'Teams',
-  'workspace.components.workspace.running.AgentLibraryPanel.noDescription': 'No description',
-  'workspace.components.workspace.team.TeamOverviewPanel.task_plan': 'Task Plan',
-  'workspace.components.workspace.team.TeamOverviewPanel.messages': 'Messages',
-  'workspace.components.workspace.team.TeamOverviewPanel.tasks': 'Tasks',
-  'workspace.components.workspace.team.TeamOverviewPanel.messages_count': 'Messages',
-  'workspace.components.workspace.team.TeamCommunicationPanel.sent_messages': 'Sent',
-  'workspace.components.workspace.team.TeamCommunicationPanel.received_messages': 'Received',
-  'workspace.components.workspace.team.TeamCommunicationPanel.to_counterpart': 'to',
-  'workspace.components.workspace.team.TeamCommunicationPanel.from_counterpart': 'from',
-  'workspace.components.workspace.team.TeamCommunicationPanel.unknown_teammate': 'Unknown teammate',
-  'workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member': 'Select a team member to view communication.',
-  'workspace.components.workspace.team.TeamCommunicationPanel.empty_title': 'No team messages yet',
-  'workspace.components.workspace.team.TeamCommunicationPanel.empty_detail': 'Accepted inter-agent messages will appear here with their reference files.',
-  'workspace.components.workspace.team.TeamCommunicationPanel.select_message': 'Select a message to read the full content.',
-  'workspace.components.workspace.team.TeamCommunicationPanel.loading_reference': 'Loading reference file...',
-  'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable': 'Reference file unavailable',
-  'workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail': 'The file may have been deleted, moved, or become unreadable.',
-  'workspace.components.workspace.team.TeamCommunicationPanel.preview': 'Preview',
-  'workspace.components.workspace.team.TeamCommunicationPanel.raw': 'Raw',
-  'workspace.components.workspace.team.TeamCommunicationPanel.maximize_view': 'Maximize view',
-  'workspace.components.workspace.team.TeamCommunicationPanel.restore_view': 'Restore view',
-  'workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam': 'Represents',
-  'workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam': 'Focused subteam',
-  'workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members': 'Subteam members',
-  'workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder': 'Send a message to this subteam',
-  'workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam': 'Send to subteam',
-  'workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet': 'Content not available yet',
-  'workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable': 'Preview unavailable',
-  'workspace.components.workspace.agent.ArtifactContentViewer.failed_before_final_content_could_be_captured': 'This file change failed before the final content could be captured.',
-  'workspace.components.workspace.agent.ArtifactContentViewer.file_change_will_become_viewable_after_the_edit_completes': 'This file change will become viewable after the edit completes and the server captures the final content.',
-  'workspace.components.workspace.agent.ArtifactContentViewer.preview_is_currently_available_only_for_text_file_changes': 'Preview is currently available only for text file changes.',
-  'workspace.components.workspace.agent.ArtifactContentViewer.file_change_is_still_pending_server_side_capture': 'This file change is still pending server-side capture.',
-  'workspace.components.workspace.agent.ArtifactContentViewer.failed_to_fetch_artifact_content': 'Failed to fetch artifact content',
-  'workspace.components.workspace.agent.ArtifactList.agent_artifacts': 'Agent Artifacts',
-  'workspace.components.workspace.tools.Terminal.retry_workspace_load': 'Retry workspace load',
-  'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title': 'LLM config',
-  'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help': 'Optional runtime, model, and LLM settings.',
-  'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.clear': 'Clear config',
-  'workspace.components.launchConfig.DefinitionLaunchPreferencesSection.blankRuntime': 'Choose when launching',
-  'workspace.components.launchConfig.RuntimeModelConfigFields.runtimeLabel': 'Runtime',
-  'workspace.components.launchConfig.RuntimeModelConfigFields.modelLabel': 'Model',
-  'workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder': 'Select a model',
+  "workspace.components.workspace.config.RunConfigPanel.runTeamButton":
+    "Run Team",
+  "workspace.components.workspace.config.RunConfigPanel.runAgentButton":
+    "Run Agent",
+  "workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration":
+    "Agent Configuration",
+  "workspace.components.workspace.config.RunConfigPanel.title.newAgentConfiguration":
+    "New Agent Configuration",
+  "workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration":
+    "Team Configuration",
+  "workspace.components.workspace.config.RunConfigPanel.title.newTeamConfiguration":
+    "New Team Configuration",
+  "workspace.components.workspace.config.RunConfigPanel.title.configuration":
+    "Configuration",
+  "workspace.components.workspace.config.MemberOverrideItem.coordinator":
+    "Coordinator",
+  "workspace.components.workspace.config.MemberOverrideItem.overridden":
+    "Overridden",
+  "workspace.components.workspace.config.MemberOverrideItem.runtime_override":
+    "Runtime Override",
+  "workspace.components.workspace.config.MemberOverrideItem.use_global_runtime_default":
+    "Use global runtime default",
+  "workspace.components.workspace.config.MemberOverrideItem.search_models":
+    "Search models...",
+  "workspace.components.workspace.config.MemberOverrideItem.choose_compatible_member_model":
+    "Choose a compatible member model",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_use_global":
+    "Auto-execute: Use global",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_on":
+    "Auto-execute: ON",
+  "workspace.components.workspace.config.MemberOverrideItem.auto_execute_off":
+    "Auto-execute: OFF",
+  "workspace.components.workspace.running.RunningRunRow.defaultAgentName":
+    "Agent",
+  "workspace.components.workspace.running.RunningRunRow.newRunLabel":
+    "New - {{name}}",
+  "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":
+    "Agents",
+  "workspace.components.workspace.running.AgentLibraryPanel.teamsHeading":
+    "Teams",
+  "workspace.components.workspace.running.AgentLibraryPanel.noDescription":
+    "No description",
+  "workspace.components.workspace.team.TeamOverviewPanel.task_plan":
+    "Task Plan",
+  "workspace.components.workspace.team.TeamOverviewPanel.messages": "Messages",
+  "workspace.components.workspace.team.TeamOverviewPanel.tasks": "Tasks",
+  "workspace.components.workspace.team.TeamOverviewPanel.messages_count":
+    "Messages",
+  "workspace.components.workspace.team.TeamCommunicationPanel.sent_messages":
+    "Sent",
+  "workspace.components.workspace.team.TeamCommunicationPanel.received_messages":
+    "Received",
+  "workspace.components.workspace.team.TeamCommunicationPanel.to_counterpart":
+    "to",
+  "workspace.components.workspace.team.TeamCommunicationPanel.from_counterpart":
+    "from",
+  "workspace.components.workspace.team.TeamCommunicationPanel.unknown_teammate":
+    "Unknown teammate",
+  "workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member":
+    "Select a team member to view communication.",
+  "workspace.components.workspace.team.TeamCommunicationPanel.empty_title":
+    "No team messages yet",
+  "workspace.components.workspace.team.TeamCommunicationPanel.empty_detail":
+    "Accepted inter-agent messages will appear here with their reference files.",
+  "workspace.components.workspace.team.TeamCommunicationPanel.select_message":
+    "Select a message to read the full content.",
+  "workspace.components.workspace.team.TeamCommunicationPanel.loading_reference":
+    "Loading reference file...",
+  "workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable":
+    "Reference file unavailable",
+  "workspace.components.workspace.team.TeamCommunicationPanel.reference_unavailable_detail":
+    "The file may have been deleted, moved, or become unreadable.",
+  "workspace.components.workspace.team.TeamCommunicationPanel.preview":
+    "Preview",
+  "workspace.components.workspace.team.TeamCommunicationPanel.raw": "Raw",
+  "workspace.components.workspace.team.TeamCommunicationPanel.maximize_view":
+    "Maximize view",
+  "workspace.components.workspace.team.TeamCommunicationPanel.restore_view":
+    "Restore view",
+  "workspace.components.workspace.team.TeamCommunicationPanel.represents_subteam":
+    "Represents",
+  "workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam":
+    "Focused subteam",
+  "workspace.components.workspace.team.TeamMemberMonitorTile.subteam_members":
+    "Subteam members",
+  "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
+    "Send a message to this subteam",
+  "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":
+    "Send to subteam",
+  "workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet":
+    "Content not available yet",
+  "workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable":
+    "Preview unavailable",
+  "workspace.components.workspace.agent.ArtifactContentViewer.failed_before_final_content_could_be_captured":
+    "This file change failed before the final content could be captured.",
+  "workspace.components.workspace.agent.ArtifactContentViewer.file_change_will_become_viewable_after_the_edit_completes":
+    "This file change will become viewable after the edit completes and the server captures the final content.",
+  "workspace.components.workspace.agent.ArtifactContentViewer.preview_is_currently_available_only_for_text_file_changes":
+    "Preview is currently available only for text file changes.",
+  "workspace.components.workspace.agent.ArtifactContentViewer.file_change_is_still_pending_server_side_capture":
+    "This file change is still pending server-side capture.",
+  "workspace.components.workspace.agent.ArtifactContentViewer.failed_to_fetch_artifact_content":
+    "Failed to fetch artifact content",
+  "workspace.components.workspace.agent.ArtifactList.agent_artifacts":
+    "Agent Artifacts",
+  "workspace.components.workspace.tools.Terminal.retry_workspace_load":
+    "Retry workspace load",
+  "workspace.components.workspace.tools.Terminal.no_terminal_root_path":
+    "No workspace root path is selected for the terminal.",
+  "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.title":
+    "LLM config",
+  "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.help":
+    "Optional runtime, model, and LLM settings.",
+  "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.clear":
+    "Clear config",
+  "workspace.components.launchConfig.DefinitionLaunchPreferencesSection.blankRuntime":
+    "Choose when launching",
+  "workspace.components.launchConfig.RuntimeModelConfigFields.runtimeLabel":
+    "Runtime",
+  "workspace.components.launchConfig.RuntimeModelConfigFields.modelLabel":
+    "Model",
+  "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
+    "Select a model",
 } satisfies TranslationCatalog;
 
 export default messages;

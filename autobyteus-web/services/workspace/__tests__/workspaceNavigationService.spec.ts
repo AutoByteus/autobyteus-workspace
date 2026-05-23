@@ -5,12 +5,12 @@ const {
   openAgentRunMock,
   openTeamRunMock,
   ensureWorkspaceByRootPathMock,
-  resolveWorkspaceReferenceByRootPathMock,
+  resolveWorkspaceMetadataByRootPathMock,
 } = vi.hoisted(() => ({
   openAgentRunMock: vi.fn(),
   openTeamRunMock: vi.fn(),
   ensureWorkspaceByRootPathMock: vi.fn(),
-  resolveWorkspaceReferenceByRootPathMock: vi.fn(),
+  resolveWorkspaceMetadataByRootPathMock: vi.fn(),
 }))
 
 vi.mock('~/services/runOpen/agentRunOpenCoordinator', () => ({
@@ -23,7 +23,7 @@ vi.mock('~/services/runOpen/teamRunOpenCoordinator', () => ({
 
 vi.mock('~/stores/runHistoryLoadActions', () => ({
   ensureRunHistoryWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
-  resolveRunHistoryWorkspaceReferenceByRootPath: resolveWorkspaceReferenceByRootPathMock,
+  resolveRunHistoryWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
 }))
 
 import {
@@ -91,7 +91,7 @@ describe('workspaceNavigationService', () => {
     expect(openAgentRunMock).toHaveBeenCalledWith({
       runId: 'agent-run-1',
       fallbackAgentName: null,
-      resolveWorkspaceReferenceByRootPath: resolveWorkspaceReferenceByRootPathMock,
+      resolveWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
       ensureWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
     })
     expect(openTeamRunMock).not.toHaveBeenCalled()
@@ -107,7 +107,7 @@ describe('workspaceNavigationService', () => {
     expect(openTeamRunMock).toHaveBeenCalledWith({
       teamRunId: 'team-run-1',
       memberRouteKey: 'writer',
-      resolveWorkspaceReferenceByRootPath: resolveWorkspaceReferenceByRootPathMock,
+      resolveWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
       ensureWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
     })
   })

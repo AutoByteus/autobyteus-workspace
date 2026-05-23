@@ -1,0 +1,133 @@
+{
+  "result": "pass",
+  "samples": [
+    {
+      "label": "baseline",
+      "fdCount": 36,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "label": "after_normal_attached_close",
+      "fdCount": 38,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "label": "after_early_close_1",
+      "fdCount": 37,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "label": "after_early_close_5",
+      "fdCount": 39,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "label": "after_early_close_10",
+      "fdCount": 39,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "label": "after_early_close_15",
+      "fdCount": 42,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "label": "after_early_close_20",
+      "fdCount": 42,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "label": "after_early_close_25",
+      "fdCount": 42,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "label": "after_25_early_close_final_wait",
+      "fdCount": 42,
+      "childCount": 0,
+      "children": []
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-05-23T12:13:55.937Z",
+      "event": "sample",
+      "label": "baseline",
+      "fdCount": 36,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-23T12:13:58.359Z",
+      "event": "sample",
+      "label": "after_normal_attached_close",
+      "fdCount": 38,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-23T12:13:58.729Z",
+      "event": "sample",
+      "label": "after_early_close_1",
+      "fdCount": 37,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-23T12:14:00.341Z",
+      "event": "sample",
+      "label": "after_early_close_5",
+      "fdCount": 39,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-23T12:14:02.057Z",
+      "event": "sample",
+      "label": "after_early_close_10",
+      "fdCount": 39,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-23T12:14:03.757Z",
+      "event": "sample",
+      "label": "after_early_close_15",
+      "fdCount": 42,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-23T12:14:05.441Z",
+      "event": "sample",
+      "label": "after_early_close_20",
+      "fdCount": 42,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-23T12:14:07.148Z",
+      "event": "sample",
+      "label": "after_early_close_25",
+      "fdCount": 42,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-23T12:14:10.408Z",
+      "event": "sample",
+      "label": "after_25_early_close_final_wait",
+      "fdCount": 42,
+      "childCount": 0,
+      "children": []
+    }
+  ]
+}

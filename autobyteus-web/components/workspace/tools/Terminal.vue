@@ -1,29 +1,54 @@
 <template>
   <div class="terminal-container h-full flex flex-col" ref="terminalContainer">
-    <div v-if="isActivatingWorkspace" class="bg-blue-50 border-l-4 border-blue-400 text-blue-700 p-2 mb-2">
-      <p class="text-sm">Loading workspace terminal…</p>
+    <div
+      v-if="terminalTargetError"
+      class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-2"
+    >
+      <p class="text-sm">{{ terminalTargetError }}</p>
+      <button @click="connectTerminal" class="text-xs underline mt-1">
+        {{
+          $t("workspace.components.workspace.tools.Terminal.retry_connection")
+        }}
+      </button>
     </div>
-    <div v-else-if="activationError" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-2">
-      <p class="text-sm">{{ activationError }}</p>
-      <button @click="connectTerminal" class="text-xs underline mt-1">{{ $t('workspace.components.workspace.tools.Terminal.retry_workspace_load') }}</button>
-    </div>
-    <div v-if="session.errorMessage.value" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-2">
+    <div
+      v-if="session.errorMessage.value"
+      class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-2"
+    >
       <p class="text-sm">{{ session.errorMessage.value }}</p>
-      <button @click="connectTerminal" class="text-xs underline mt-1">{{ $t('workspace.components.workspace.tools.Terminal.retry_connection') }}</button>
+      <button @click="connectTerminal" class="text-xs underline mt-1">
+        {{
+          $t("workspace.components.workspace.tools.Terminal.retry_connection")
+        }}
+      </button>
     </div>
-    <div ref="terminalElement" class="flex-1 w-full relative overflow-hidden"></div>
+    <div
+      ref="terminalElement"
+      class="flex-1 w-full relative overflow-hidden"
+    ></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, markRaw, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue';
-import { storeToRefs } from 'pinia';
-import { Terminal } from '@xterm/xterm';
-import { FitAddon } from '@xterm/addon-fit';
-import '@xterm/xterm/css/xterm.css';
-import { useAppFontSizeStore } from '~/stores/appFontSizeStore';
-import { useWorkspaceStore } from '~/stores/workspace';
-import { useTerminalSession } from '~/composables/useTerminalSession';
+import {
+  ref,
+  shallowRef,
+  markRaw,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  nextTick,
+  computed,
+} from "vue";
+import { storeToRefs } from "pinia";
+import { Terminal } from "@xterm/xterm";
+import { FitAddon } from "@xterm/addon-fit";
+import "@xterm/xterm/css/xterm.css";
+import { useAppFontSizeStore } from "~/stores/appFontSizeStore";
+import { useWorkspaceStore } from "~/stores/workspace";
+import { useTerminalSession } from "~/composables/useTerminalSession";
+import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+import { terminalTargetFromWorkspaceMetadata } from "~/utils/terminalTarget";
 
 const terminalContainer = ref<HTMLDivElement | null>(null);
 const terminalElement = ref<HTMLDivElement | null>(null);
@@ -31,36 +56,29 @@ const terminalInstance = shallowRef<Terminal | null>(null);
 const fitAddon = shallowRef<FitAddon | null>(null);
 
 const props = defineProps<{
-  workspaceId?: string;
+  target?: TerminalTarget | null;
 }>();
 
 const appFontSizeStore = useAppFontSizeStore();
 const { resolvedMetrics } = storeToRefs(appFontSizeStore);
 const terminalFontPx = computed(() => resolvedMetrics.value.terminalFontPx);
 const workspaceStore = useWorkspaceStore();
-const activatedWorkspaceId = ref<string | null>(props.workspaceId?.trim() || null);
-const isActivatingWorkspace = ref(false);
-const activationError = ref<string | null>(null);
-const explicitWorkspace = computed(() =>
-  props.workspaceId?.trim() ? workspaceStore.workspaces[props.workspaceId.trim()] || null : null,
+const { t: $t } = useLocalization();
+const terminalTargetError = ref<string | null>(null);
+const effectiveTerminalTarget = computed<TerminalTarget | null>(
+  () =>
+    props.target ||
+    terminalTargetFromWorkspaceMetadata(workspaceStore.activeWorkspaceMetadata),
 );
-const requestedWorkspaceReference = computed(() => {
-  if (props.workspaceId?.trim()) {
-    return workspaceStore.workspaceReferencesById[props.workspaceId.trim()] || null;
-  }
-  return workspaceStore.activeWorkspaceReference;
-});
-const effectiveWorkspaceId = computed(() => activatedWorkspaceId.value || '');
 
 // Initialize the terminal session composable
 const session = useTerminalSession({
-  workspaceId: effectiveWorkspaceId,
+  target: effectiveTerminalTarget,
 });
 
 let resizeObserver: ResizeObserver | null = null;
 let initScheduled = false;
 let pendingConnect = false;
-let activationSequence = 0;
 
 const safeFit = () => {
   if (!fitAddon.value || !terminalElement.value || !terminalInstance.value) {
@@ -73,7 +91,7 @@ const safeFit = () => {
   try {
     fitAddon.value.fit();
   } catch (error) {
-    console.warn('[Terminal] Fit skipped:', error);
+    console.warn("[Terminal] Fit skipped:", error);
   }
 };
 
@@ -115,60 +133,63 @@ const initializeTerminal = () => {
   if (!terminalElement.value) return;
 
   // High-Contrast Light Theme Configuration
-  terminalInstance.value = markRaw(new Terminal({
-    cursorBlink: true,
-    cursorStyle: 'bar', // 'block' | 'underline' | 'bar'
-    // standard monospaced fonts for "normal" look
-    fontFamily: 'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-    fontSize: terminalFontPx.value,
-    lineHeight: 1.4,
-    letterSpacing: 0,
-    fontWeight: 'normal',
-    fontWeightBold: 'bold',
-    theme: {
-      background: '#ffffff', // Pure White
-      foreground: '#000000', // Pitch Black for maximum text contrast
-      cursor: '#000000',     
-      selectionBackground: '#b4d5fe', // More visible selection
-      
-      // ANSI Colors - Ultra High Contrast for Light Mode
-      // All colors significantly darkened to ensure sharp text
-      
-      black: '#000000',
-      red: '#a80000',        // Dark Red
-      green: '#005f00',      // Dark Green
-      yellow: '#7f7f00',     // Dark Yellow
-      blue: '#0000aa',       // Dark Blue (Navy)
-      magenta: '#7f007f',    // Dark Magenta
-      cyan: '#005f5f',       // Dark Cyan (Teal)
-      white: '#333333',      // Dark Grey (replacing white)
-      
-      // Bright variants (also dark for visibility)
-      brightBlack: '#444444',
-      brightRed: '#d70000',
-      brightGreen: '#008700',
-      brightYellow: '#afaf00',
-      brightBlue: '#0000d7',
-      brightMagenta: '#af00af',
-      brightCyan: '#008787',
-      brightWhite: '#000000' // Black
-    },
-    scrollback: 5000,
-    allowProposedApi: true,
-    // CRITICAL FIX: Transparency false enables subpixel anti-aliasing (RGB) for sharper text
-    allowTransparency: false 
-  }));
+  terminalInstance.value = markRaw(
+    new Terminal({
+      cursorBlink: true,
+      cursorStyle: "bar", // 'block' | 'underline' | 'bar'
+      // standard monospaced fonts for "normal" look
+      fontFamily:
+        'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+      fontSize: terminalFontPx.value,
+      lineHeight: 1.4,
+      letterSpacing: 0,
+      fontWeight: "normal",
+      fontWeightBold: "bold",
+      theme: {
+        background: "#ffffff", // Pure White
+        foreground: "#000000", // Pitch Black for maximum text contrast
+        cursor: "#000000",
+        selectionBackground: "#b4d5fe", // More visible selection
+
+        // ANSI Colors - Ultra High Contrast for Light Mode
+        // All colors significantly darkened to ensure sharp text
+
+        black: "#000000",
+        red: "#a80000", // Dark Red
+        green: "#005f00", // Dark Green
+        yellow: "#7f7f00", // Dark Yellow
+        blue: "#0000aa", // Dark Blue (Navy)
+        magenta: "#7f007f", // Dark Magenta
+        cyan: "#005f5f", // Dark Cyan (Teal)
+        white: "#333333", // Dark Grey (replacing white)
+
+        // Bright variants (also dark for visibility)
+        brightBlack: "#444444",
+        brightRed: "#d70000",
+        brightGreen: "#008700",
+        brightYellow: "#afaf00",
+        brightBlue: "#0000d7",
+        brightMagenta: "#af00af",
+        brightCyan: "#008787",
+        brightWhite: "#000000", // Black
+      },
+      scrollback: 5000,
+      allowProposedApi: true,
+      // CRITICAL FIX: Transparency false enables subpixel anti-aliasing (RGB) for sharper text
+      allowTransparency: false,
+    }),
+  );
 
   // Addons
   fitAddon.value = markRaw(new FitAddon());
   terminalInstance.value.loadAddon(fitAddon.value);
-  
+
   // NOTE: WebGL Addon removed as it was causing text blurriness/aliasing issues.
   // Standard Canvas renderer provides sharper text.
 
   // Mount terminal
   terminalInstance.value.open(terminalElement.value);
-  
+
   // Initial fit
   nextTick(() => {
     safeFit();
@@ -192,44 +213,11 @@ const initializeTerminal = () => {
   session.onOutput((data) => {
     terminalInstance.value?.write(data);
   });
-  
+
   // Clear welcome message - Simple Bold Black text
-  terminalInstance.value.writeln('\x1b[1m➜ Connected to Workspace Terminal\x1b[0m');
-};
-
-const ensureWorkspaceForTerminal = async (): Promise<string> => {
-  const sequence = ++activationSequence;
-  activationError.value = null;
-
-  if (explicitWorkspace.value) {
-    activatedWorkspaceId.value = explicitWorkspace.value.workspaceId;
-    return explicitWorkspace.value.workspaceId;
-  }
-
-  const reference = requestedWorkspaceReference.value;
-  if (!reference) {
-    activatedWorkspaceId.value = null;
-    throw new Error('No workspace is selected for the terminal.');
-  }
-
-  isActivatingWorkspace.value = true;
-  try {
-    const workspace = await workspaceStore.ensureWorkspaceInitialized(reference);
-    if (sequence === activationSequence) {
-      activatedWorkspaceId.value = workspace.workspaceId;
-    }
-    return workspace.workspaceId;
-  } catch (error: any) {
-    if (sequence === activationSequence) {
-      activatedWorkspaceId.value = null;
-      activationError.value = error?.message || 'Failed to load workspace terminal.';
-    }
-    throw error;
-  } finally {
-    if (sequence === activationSequence) {
-      isActivatingWorkspace.value = false;
-    }
-  }
+  terminalInstance.value.writeln(
+    "\x1b[1m➜ Connected to Workspace Terminal\x1b[0m",
+  );
 };
 
 const connectTerminal = async () => {
@@ -238,10 +226,14 @@ const connectTerminal = async () => {
     scheduleInitializeTerminal();
     return;
   }
-  const workspaceId = await ensureWorkspaceForTerminal().catch(() => '');
-  if (workspaceId) {
-    session.connect();
+  if (!effectiveTerminalTarget.value?.rootPath) {
+    terminalTargetError.value = $t(
+      "workspace.components.workspace.tools.Terminal.no_terminal_root_path",
+    );
+    return;
   }
+  terminalTargetError.value = null;
+  session.connect();
 };
 
 const handleWindowResize = () => {
@@ -249,7 +241,10 @@ const handleWindowResize = () => {
 };
 
 watch(terminalFontPx, (nextFontPx) => {
-  if (!terminalInstance.value || terminalInstance.value.options.fontSize === nextFontPx) {
+  if (
+    !terminalInstance.value ||
+    terminalInstance.value.options.fontSize === nextFontPx
+  ) {
     return;
   }
 
@@ -265,7 +260,8 @@ onMounted(() => {
 
   // Watch for workspace changes to reconnect
   watch(
-    () => requestedWorkspaceReference.value?.workspaceId || props.workspaceId?.trim() || '',
+    () =>
+      `${effectiveTerminalTarget.value?.rootPath || ""}:${effectiveTerminalTarget.value?.workspaceId || ""}`,
     async () => {
       session.disconnect();
       await connectTerminal();
@@ -280,26 +276,26 @@ onMounted(() => {
     });
     resizeObserver.observe(terminalContainer.value);
   }
-  
+
   // Also listen for window resize
-  window.addEventListener('resize', handleWindowResize);
+  window.addEventListener("resize", handleWindowResize);
 });
 
 onBeforeUnmount(() => {
   session.disconnect();
-  
+
   if (resizeObserver) {
     resizeObserver.disconnect();
     resizeObserver = null;
   }
-  window.removeEventListener('resize', handleWindowResize);
-  
+  window.removeEventListener("resize", handleWindowResize);
+
   try {
     if (terminalInstance.value) {
-        terminalInstance.value.dispose();
+      terminalInstance.value.dispose();
     }
   } catch (e) {
-      console.warn('Error disposing terminal:', e);
+    console.warn("Error disposing terminal:", e);
   }
 
   fitAddon.value = null;
@@ -314,7 +310,9 @@ onBeforeUnmount(() => {
 }
 
 /* Ensure xterm fills the container */
-:deep(.xterm), :deep(.xterm-viewport), :deep(.xterm-screen) {
+:deep(.xterm),
+:deep(.xterm-viewport),
+:deep(.xterm-screen) {
   width: 100% !important;
   height: 100% !important;
 }
@@ -326,11 +324,11 @@ onBeforeUnmount(() => {
 }
 
 .terminal-container ::-webkit-scrollbar-track {
-  background: #ffffff; 
+  background: #ffffff;
 }
 
 .terminal-container ::-webkit-scrollbar-thumb {
-  background: #cccccc; 
+  background: #cccccc;
   border-radius: 4px;
 }
 
@@ -343,6 +341,6 @@ onBeforeUnmount(() => {
 }
 
 .xterm {
-  padding: 16px 0 0 16px; 
+  padding: 16px 0 0 16px;
 }
 </style>

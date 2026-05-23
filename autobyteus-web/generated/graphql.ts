@@ -732,7 +732,7 @@ export type Mutation = {
   createCustomLlmProvider: LlmProviderObject;
   createFileOrFolder: Scalars['String']['output'];
   createSkill: Skill;
-  createWorkspace: WorkspaceInfo;
+  createWorkspace: WorkspaceMetadata;
   deleteAgentDefinition: DeleteAgentDefinitionResult;
   deleteAgentTeamDefinition: DeleteAgentTeamDefinitionResult;
   deleteCustomLlmProvider: Scalars['String']['output'];
@@ -1217,7 +1217,8 @@ export type Query = {
   toolsGroupedByCategory: Array<ToolCategoryGroup>;
   totalCostInPeriod: Scalars['Float']['output'];
   usageStatisticsInPeriod: Array<UsageStatistics>;
-  workspaces: Array<WorkspaceInfo>;
+  workspaceMetadata: WorkspaceMetadata;
+  workspaces: Array<WorkspaceMetadata>;
 };
 
 
@@ -1361,6 +1362,11 @@ export type QueryPreviewMcpServerToolsArgs = {
 export type QuerySearchFilesArgs = {
   query: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+
+export type QueryWorkspaceMetadataArgs = {
+  rootPath: Scalars['String']['input'];
 };
 
 
@@ -1912,14 +1918,16 @@ export type WorkspaceHistoryTeamRunMemberObject = {
   workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
-export type WorkspaceInfo = {
-  __typename?: 'WorkspaceInfo';
+export type WorkspaceMetadata = {
+  __typename?: 'WorkspaceMetadata';
   absolutePath?: Maybe<Scalars['String']['output']>;
   config: Scalars['JSON']['output'];
-  fileExplorer?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
   isTemp: Scalars['Boolean']['output'];
+  kind: Scalars['String']['output'];
   name: Scalars['String']['output'];
   workspaceId: Scalars['String']['output'];
+  workspaceRootPath: Scalars['String']['output'];
 };
 
 export type WorkspaceRunHistoryGroupObject = {
@@ -2353,7 +2361,7 @@ export type CreateWorkspaceMutationVariables = Exact<{
 }>;
 
 
-export type CreateWorkspaceMutation = { __typename?: 'Mutation', createWorkspace: { __typename: 'WorkspaceInfo', workspaceId: string, name: string, fileExplorer?: string | null, absolutePath?: string | null } };
+export type CreateWorkspaceMutation = { __typename?: 'Mutation', createWorkspace: { __typename: 'WorkspaceMetadata', workspaceId: string, name: string, displayName: string, config: any, workspaceRootPath: string, absolutePath?: string | null, kind: string, isTemp: boolean } };
 
 export type GetAgentCustomizationOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2625,7 +2633,14 @@ export type GetToolsGroupedByCategoryQuery = { __typename?: 'Query', toolsGroupe
 export type GetAllWorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllWorkspacesQuery = { __typename?: 'Query', workspaces: Array<{ __typename: 'WorkspaceInfo', workspaceId: string, name: string, config: any, fileExplorer?: string | null, absolutePath?: string | null, isTemp: boolean }> };
+export type GetAllWorkspacesQuery = { __typename?: 'Query', workspaces: Array<{ __typename: 'WorkspaceMetadata', workspaceId: string, name: string, displayName: string, config: any, workspaceRootPath: string, absolutePath?: string | null, kind: string, isTemp: boolean }> };
+
+export type GetWorkspaceMetadataQueryVariables = Exact<{
+  rootPath: Scalars['String']['input'];
+}>;
+
+
+export type GetWorkspaceMetadataQuery = { __typename?: 'Query', workspaceMetadata: { __typename: 'WorkspaceMetadata', workspaceId: string, workspaceRootPath: string, displayName: string, kind: string } };
 
 export type GetSkillSourcesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4646,8 +4661,12 @@ export const CreateWorkspaceDocument = gql`
     __typename
     workspaceId
     name
-    fileExplorer
+    displayName
+    config
+    workspaceRootPath
     absolutePath
+    kind
+    isTemp
   }
 }
     `;
@@ -6316,9 +6335,11 @@ export const GetAllWorkspacesDocument = gql`
     __typename
     workspaceId
     name
+    displayName
     config
-    fileExplorer
+    workspaceRootPath
     absolutePath
+    kind
     isTemp
   }
 }
@@ -6343,6 +6364,39 @@ export function useGetAllWorkspacesLazyQuery(options: VueApolloComposable.UseQue
   return VueApolloComposable.useLazyQuery<GetAllWorkspacesQuery, GetAllWorkspacesQueryVariables>(GetAllWorkspacesDocument, {}, options);
 }
 export type GetAllWorkspacesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAllWorkspacesQuery, GetAllWorkspacesQueryVariables>;
+export const GetWorkspaceMetadataDocument = gql`
+    query GetWorkspaceMetadata($rootPath: String!) {
+  workspaceMetadata(rootPath: $rootPath) {
+    __typename
+    workspaceId
+    workspaceRootPath
+    displayName
+    kind
+  }
+}
+    `;
+
+/**
+ * __useGetWorkspaceMetadataQuery__
+ *
+ * To run a query within a Vue component, call `useGetWorkspaceMetadataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWorkspaceMetadataQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetWorkspaceMetadataQuery({
+ *   rootPath: // value for 'rootPath'
+ * });
+ */
+export function useGetWorkspaceMetadataQuery(variables: GetWorkspaceMetadataQueryVariables | VueCompositionApi.Ref<GetWorkspaceMetadataQueryVariables> | ReactiveFunction<GetWorkspaceMetadataQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetWorkspaceMetadataQuery, GetWorkspaceMetadataQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetWorkspaceMetadataQuery, GetWorkspaceMetadataQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetWorkspaceMetadataQuery, GetWorkspaceMetadataQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetWorkspaceMetadataQuery, GetWorkspaceMetadataQueryVariables>(GetWorkspaceMetadataDocument, variables, options);
+}
+export function useGetWorkspaceMetadataLazyQuery(variables?: GetWorkspaceMetadataQueryVariables | VueCompositionApi.Ref<GetWorkspaceMetadataQueryVariables> | ReactiveFunction<GetWorkspaceMetadataQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetWorkspaceMetadataQuery, GetWorkspaceMetadataQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetWorkspaceMetadataQuery, GetWorkspaceMetadataQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetWorkspaceMetadataQuery, GetWorkspaceMetadataQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetWorkspaceMetadataQuery, GetWorkspaceMetadataQueryVariables>(GetWorkspaceMetadataDocument, variables, options);
+}
+export type GetWorkspaceMetadataQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetWorkspaceMetadataQuery, GetWorkspaceMetadataQueryVariables>;
 export const GetSkillSourcesDocument = gql`
     query GetSkillSources {
   skillSources {

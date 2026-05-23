@@ -1,0 +1,655 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:59217
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:59217
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from existing-env: process.env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/db/production.db"
+
+SQLite database production.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/db/production.db
+
+13 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 46 items.
+AgentRunManager initialized.
+[2026-05-23T12:22:10.764Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+{"level":30,"time":1779538930849,"pid":67193,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:59217"}
+[2026-05-23T12:22:10.850Z] [INFO] [server.runtime] Server listening on 127.0.0.1:59217
+[2026-05-23T12:22:10.851Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:59217
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-B0nIr8/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Pre-loaded 46 agent definitions into cache.
+[2026-05-23T12:22:10.872Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'list_available_tools'
+Successfully registered tool definition: 'list_input_processors'
+Successfully registered tool definition: 'list_llm_response_processors'
+Successfully registered tool definition: 'list_lifecycle_processors'
+Successfully registered tool definition: 'list_tool_result_processors'
+Loaded tool group: Tool Management Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'create_skill_version'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=40
+[2026-05-23T12:22:10.922Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+Pre-loaded 21 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Registered 6 image models from Autobyteus host https://localhost:51740.
+Autobyteus image models from https://localhost:51740: gpt-image-1-rpa@localhost:51740, nano-banana-pro-app-rpa@localhost:51740, imagen-4-rpa@localhost:51740, imagen-4-ultra-rpa@localhost:51740, imagen-4-fast-rpa@localhost:51740, qwen-image-rpa@localhost:51740
+Autobyteus image discovery summary for https://localhost:51740: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=15
+Finished Autobyteus image model discovery. Total models registered: 12
+Discovering Ollama models from host: http://127.0.0.1:11434
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 29
+Discovering Autobyteus models from host: https://localhost:51739
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1.
+Created and registered workspace ID: agent_ws_177256cf4ad692274341d9ce428468ed404a217e2511f91d0e5013519d170ba0
+Created WorkspaceFileExplorer for agent_ws_177256cf4ad692274341d9ce428468ed404a217e2511f91d0e5013519d170ba0 (graphql-search).
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1' with max_depth=null
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1' completed in 0.0060 seconds.
+FileNameIndexer refreshing snapshot index...
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'search-target'
+[Search] FuzzysortSearchStrategy completed in 0.91ms, found 1 results (total: 0.95ms)
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N.
+Created and registered workspace ID: agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created WorkspaceFileExplorer for agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4 (graphql-search).
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with max_depth=null
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' completed in 0.0030 seconds.
+FileNameIndexer refreshing snapshot index...
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'search-target'
+[Search] FuzzysortSearchStrategy completed in 0.20ms, found 1 results (total: 0.22ms)
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD.
+Created and registered workspace ID: agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created WorkspaceFileExplorer for agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953 (graphql-search).
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD' with max_depth=null
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD' completed in 0.0050 seconds.
+FileNameIndexer refreshing snapshot index...
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'search-target'
+[Search] FuzzysortSearchStrategy completed in 0.11ms, found 1 results (total: 0.13ms)
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 772347e3-c1b3-40a3-9a4a-a1ad3262d478 for workspace agent_ws_177256cf4ad692274341d9ce428468ed404a217e2511f91d0e5013519d170ba0
+Created file explorer session 772347e3-c1b3-40a3-9a4a-a1ad3262d478 for workspace agent_ws_177256cf4ad692274341d9ce428468ed404a217e2511f91d0e5013519d170ba0. Active sessions: 1
+File explorer WebSocket connected: 772347e3-c1b3-40a3-9a4a-a1ad3262d478 for workspace agent_ws_177256cf4ad692274341d9ce428468ed404a217e2511f91d0e5013519d170ba0
+File explorer websocket attached for workspace agent_ws_177256cf4ad692274341d9ce428468ed404a217e2511f91d0e5013519d170ba0
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1 (file-explorer-websocket); active leases: 2
+FileExplorerSession created: aeb79f4d-e11f-4f1c-bc9e-6524344e57a0 for workspace agent_ws_177256cf4ad692274341d9ce428468ed404a217e2511f91d0e5013519d170ba0
+Created file explorer session aeb79f4d-e11f-4f1c-bc9e-6524344e57a0 for workspace agent_ws_177256cf4ad692274341d9ce428468ed404a217e2511f91d0e5013519d170ba0. Active sessions: 2
+File explorer WebSocket connected: aeb79f4d-e11f-4f1c-bc9e-6524344e57a0 for workspace agent_ws_177256cf4ad692274341d9ce428468ed404a217e2511f91d0e5013519d170ba0
+File explorer websocket attached for workspace agent_ws_177256cf4ad692274341d9ce428468ed404a217e2511f91d0e5013519d170ba0
+Watcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1/src/live-added-from-harness.txt
+Discovering Autobyteus models from host: https://localhost:51740
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1 (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: 772347e3-c1b3-40a3-9a4a-a1ad3262d478
+Closed file explorer session 772347e3-c1b3-40a3-9a4a-a1ad3262d478. Active sessions: 1
+File explorer WebSocket disconnected: 772347e3-c1b3-40a3-9a4a-a1ad3262d478
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1 (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1
+FileExplorerSession closed: aeb79f4d-e11f-4f1c-bc9e-6524344e57a0
+Closed file explorer session aeb79f4d-e11f-4f1c-bc9e-6524344e57a0. Active sessions: 0
+File explorer WebSocket disconnected: aeb79f4d-e11f-4f1c-bc9e-6524344e57a0
+Finished Autobyteus discovery. Total models registered: 74
+Successfully fetched 124 models from LLMFactory.
+LLM models cache populated with 124 items.
+Pre-loaded 124 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 18 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4, AUTOBYTEUS=12
+Image models by runtime: api=6, autobyteus=12
+Image models cache populated with 18 items.
+Pre-loaded 18 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=16
+Registered 4 audio models from Autobyteus host https://localhost:51740.
+Autobyteus audio models from https://localhost:51740: gemini-2.5-pro-tts-rpa@localhost:51740, gemini-2.5-flash-tts-rpa@localhost:51740, gemini-3.1-flash-tts-rpa@localhost:51740, qwen-tts-rpa@localhost:51740
+Autobyteus audio discovery summary for https://localhost:51740: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=23
+Finished Autobyteus audio model discovery. Total models registered: 8
+Successfully fetched 12 audio models from AudioClientFactory.
+Audio models by provider: AUTOBYTEUS=8, OPENAI=1, GEMINI=3
+Audio models by runtime: autobyteus=8, api=4
+Audio models cache populated with 12 items.
+Pre-loaded 12 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 2c335dc5-d5ef-4ef1-930f-d7117123e20b for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 2c335dc5-d5ef-4ef1-930f-d7117123e20b for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 2c335dc5-d5ef-4ef1-930f-d7117123e20b for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 2c335dc5-d5ef-4ef1-930f-d7117123e20b
+Closed file explorer session 2c335dc5-d5ef-4ef1-930f-d7117123e20b. Active sessions: 0
+File explorer WebSocket disconnected: 2c335dc5-d5ef-4ef1-930f-d7117123e20b
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: f27f06ff-93ee-431e-aef6-ed1bac5d31db for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session f27f06ff-93ee-431e-aef6-ed1bac5d31db for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: f27f06ff-93ee-431e-aef6-ed1bac5d31db for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: f27f06ff-93ee-431e-aef6-ed1bac5d31db
+Closed file explorer session f27f06ff-93ee-431e-aef6-ed1bac5d31db. Active sessions: 0
+File explorer WebSocket disconnected: f27f06ff-93ee-431e-aef6-ed1bac5d31db
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 7dd391a3-b081-4fbf-a0be-8b9c3721394b for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 7dd391a3-b081-4fbf-a0be-8b9c3721394b for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 7dd391a3-b081-4fbf-a0be-8b9c3721394b for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 7dd391a3-b081-4fbf-a0be-8b9c3721394b
+Closed file explorer session 7dd391a3-b081-4fbf-a0be-8b9c3721394b. Active sessions: 0
+File explorer WebSocket disconnected: 7dd391a3-b081-4fbf-a0be-8b9c3721394b
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 5420b0bb-2beb-47d0-a850-fec096575a27 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 5420b0bb-2beb-47d0-a850-fec096575a27 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 5420b0bb-2beb-47d0-a850-fec096575a27 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 5420b0bb-2beb-47d0-a850-fec096575a27
+Closed file explorer session 5420b0bb-2beb-47d0-a850-fec096575a27. Active sessions: 0
+File explorer WebSocket disconnected: 5420b0bb-2beb-47d0-a850-fec096575a27
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: bbd73445-d313-415a-b2fc-ab7b3eea6650 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session bbd73445-d313-415a-b2fc-ab7b3eea6650 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: bbd73445-d313-415a-b2fc-ab7b3eea6650 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: bbd73445-d313-415a-b2fc-ab7b3eea6650
+Closed file explorer session bbd73445-d313-415a-b2fc-ab7b3eea6650. Active sessions: 0
+File explorer WebSocket disconnected: bbd73445-d313-415a-b2fc-ab7b3eea6650
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 595a72bc-5f12-4463-b55e-af403b6bfdd9 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 595a72bc-5f12-4463-b55e-af403b6bfdd9 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 595a72bc-5f12-4463-b55e-af403b6bfdd9 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 595a72bc-5f12-4463-b55e-af403b6bfdd9
+Closed file explorer session 595a72bc-5f12-4463-b55e-af403b6bfdd9. Active sessions: 0
+File explorer WebSocket disconnected: 595a72bc-5f12-4463-b55e-af403b6bfdd9
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: f24abada-d859-44bf-8299-5024482ffd10 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session f24abada-d859-44bf-8299-5024482ffd10 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: f24abada-d859-44bf-8299-5024482ffd10 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: f24abada-d859-44bf-8299-5024482ffd10
+Closed file explorer session f24abada-d859-44bf-8299-5024482ffd10. Active sessions: 0
+File explorer WebSocket disconnected: f24abada-d859-44bf-8299-5024482ffd10
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 3c24b7c0-19c8-47f2-bb88-d765ea105d95 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 3c24b7c0-19c8-47f2-bb88-d765ea105d95 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 3c24b7c0-19c8-47f2-bb88-d765ea105d95 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 3c24b7c0-19c8-47f2-bb88-d765ea105d95
+Closed file explorer session 3c24b7c0-19c8-47f2-bb88-d765ea105d95. Active sessions: 0
+File explorer WebSocket disconnected: 3c24b7c0-19c8-47f2-bb88-d765ea105d95
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 7b27d34e-ef8e-4d90-ac52-f0c0bca3290d for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 7b27d34e-ef8e-4d90-ac52-f0c0bca3290d for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 7b27d34e-ef8e-4d90-ac52-f0c0bca3290d for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 7b27d34e-ef8e-4d90-ac52-f0c0bca3290d
+Closed file explorer session 7b27d34e-ef8e-4d90-ac52-f0c0bca3290d. Active sessions: 0
+File explorer WebSocket disconnected: 7b27d34e-ef8e-4d90-ac52-f0c0bca3290d
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: f9ef9f25-2411-49a8-913c-91e2a3e3472c for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session f9ef9f25-2411-49a8-913c-91e2a3e3472c for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: f9ef9f25-2411-49a8-913c-91e2a3e3472c for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: f9ef9f25-2411-49a8-913c-91e2a3e3472c
+Closed file explorer session f9ef9f25-2411-49a8-913c-91e2a3e3472c. Active sessions: 0
+File explorer WebSocket disconnected: f9ef9f25-2411-49a8-913c-91e2a3e3472c
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: e33d241c-64f4-4bbe-9cfb-f78af98366b4 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session e33d241c-64f4-4bbe-9cfb-f78af98366b4 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: e33d241c-64f4-4bbe-9cfb-f78af98366b4 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: e33d241c-64f4-4bbe-9cfb-f78af98366b4
+Closed file explorer session e33d241c-64f4-4bbe-9cfb-f78af98366b4. Active sessions: 0
+File explorer WebSocket disconnected: e33d241c-64f4-4bbe-9cfb-f78af98366b4
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 07c7b841-2d10-4040-a62a-f19061adbb34 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 07c7b841-2d10-4040-a62a-f19061adbb34 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 07c7b841-2d10-4040-a62a-f19061adbb34 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 07c7b841-2d10-4040-a62a-f19061adbb34
+Closed file explorer session 07c7b841-2d10-4040-a62a-f19061adbb34. Active sessions: 0
+File explorer WebSocket disconnected: 07c7b841-2d10-4040-a62a-f19061adbb34
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 812dc2f4-baa1-43ca-80f7-498d07d20a39 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 812dc2f4-baa1-43ca-80f7-498d07d20a39 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 812dc2f4-baa1-43ca-80f7-498d07d20a39 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 812dc2f4-baa1-43ca-80f7-498d07d20a39
+Closed file explorer session 812dc2f4-baa1-43ca-80f7-498d07d20a39. Active sessions: 0
+File explorer WebSocket disconnected: 812dc2f4-baa1-43ca-80f7-498d07d20a39
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 720f075f-d42f-4248-9ac4-42b2d241fb31 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 720f075f-d42f-4248-9ac4-42b2d241fb31 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 720f075f-d42f-4248-9ac4-42b2d241fb31 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 720f075f-d42f-4248-9ac4-42b2d241fb31
+Closed file explorer session 720f075f-d42f-4248-9ac4-42b2d241fb31. Active sessions: 0
+File explorer WebSocket disconnected: 720f075f-d42f-4248-9ac4-42b2d241fb31
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 4bdfbedc-ee40-4a42-ae00-c56270ba5db1 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 4bdfbedc-ee40-4a42-ae00-c56270ba5db1 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 4bdfbedc-ee40-4a42-ae00-c56270ba5db1 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 4bdfbedc-ee40-4a42-ae00-c56270ba5db1
+Closed file explorer session 4bdfbedc-ee40-4a42-ae00-c56270ba5db1. Active sessions: 0
+File explorer WebSocket disconnected: 4bdfbedc-ee40-4a42-ae00-c56270ba5db1
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 358e761f-80f2-436f-b834-a8407d05b54d for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 358e761f-80f2-436f-b834-a8407d05b54d for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 358e761f-80f2-436f-b834-a8407d05b54d for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 358e761f-80f2-436f-b834-a8407d05b54d
+Closed file explorer session 358e761f-80f2-436f-b834-a8407d05b54d. Active sessions: 0
+File explorer WebSocket disconnected: 358e761f-80f2-436f-b834-a8407d05b54d
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: ee45fe48-c762-4a8b-be19-fb9f0a1d62ba for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session ee45fe48-c762-4a8b-be19-fb9f0a1d62ba for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: ee45fe48-c762-4a8b-be19-fb9f0a1d62ba for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: ee45fe48-c762-4a8b-be19-fb9f0a1d62ba
+Closed file explorer session ee45fe48-c762-4a8b-be19-fb9f0a1d62ba. Active sessions: 0
+File explorer WebSocket disconnected: ee45fe48-c762-4a8b-be19-fb9f0a1d62ba
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: b1ec7147-55cd-4c05-a6fa-b6b42a843755 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session b1ec7147-55cd-4c05-a6fa-b6b42a843755 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: b1ec7147-55cd-4c05-a6fa-b6b42a843755 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: b1ec7147-55cd-4c05-a6fa-b6b42a843755
+Closed file explorer session b1ec7147-55cd-4c05-a6fa-b6b42a843755. Active sessions: 0
+File explorer WebSocket disconnected: b1ec7147-55cd-4c05-a6fa-b6b42a843755
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 39f56f62-655e-42c4-9d41-f19ec61de295 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session 39f56f62-655e-42c4-9d41-f19ec61de295 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: 39f56f62-655e-42c4-9d41-f19ec61de295 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: 39f56f62-655e-42c4-9d41-f19ec61de295
+Closed file explorer session 39f56f62-655e-42c4-9d41-f19ec61de295. Active sessions: 0
+File explorer WebSocket disconnected: 39f56f62-655e-42c4-9d41-f19ec61de295
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 1
+FileExplorerSession created: c4bde230-f921-4f25-9678-44d251a9f3c9 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Created file explorer session c4bde230-f921-4f25-9678-44d251a9f3c9 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4. Active sessions: 1
+File explorer WebSocket connected: c4bde230-f921-4f25-9678-44d251a9f3c9 for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+File explorer websocket attached for workspace agent_ws_658a785f2a79c1ebf2dc134d20281489896ff872eb4c7b76a58a882437f94fd4
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-4vLD3N
+FileExplorerSession closed: c4bde230-f921-4f25-9678-44d251a9f3c9
+Closed file explorer session c4bde230-f921-4f25-9678-44d251a9f3c9. Active sessions: 0
+File explorer WebSocket disconnected: c4bde230-f921-4f25-9678-44d251a9f3c9
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 2
+FileExplorerSession created: e8680101-5efa-4f6b-8142-fa2296b41b91 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created file explorer session e8680101-5efa-4f6b-8142-fa2296b41b91 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953. Active sessions: 1
+File explorer WebSocket connected: e8680101-5efa-4f6b-8142-fa2296b41b91 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+File explorer websocket attached for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: e8680101-5efa-4f6b-8142-fa2296b41b91
+Closed file explorer session e8680101-5efa-4f6b-8142-fa2296b41b91. Active sessions: 0
+File explorer WebSocket disconnected: e8680101-5efa-4f6b-8142-fa2296b41b91
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 2
+FileExplorerSession created: 86d39dc6-a30e-4b38-acf3-999ae1a49486 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created file explorer session 86d39dc6-a30e-4b38-acf3-999ae1a49486 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953. Active sessions: 1
+File explorer WebSocket connected: 86d39dc6-a30e-4b38-acf3-999ae1a49486 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+File explorer websocket attached for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: 86d39dc6-a30e-4b38-acf3-999ae1a49486
+Closed file explorer session 86d39dc6-a30e-4b38-acf3-999ae1a49486. Active sessions: 0
+File explorer WebSocket disconnected: 86d39dc6-a30e-4b38-acf3-999ae1a49486
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 2
+FileExplorerSession created: c53103da-910a-45d5-b558-e4f0b9a0b0ff for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created file explorer session c53103da-910a-45d5-b558-e4f0b9a0b0ff for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953. Active sessions: 1
+File explorer WebSocket connected: c53103da-910a-45d5-b558-e4f0b9a0b0ff for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+File explorer websocket attached for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: c53103da-910a-45d5-b558-e4f0b9a0b0ff
+Closed file explorer session c53103da-910a-45d5-b558-e4f0b9a0b0ff. Active sessions: 0
+File explorer WebSocket disconnected: c53103da-910a-45d5-b558-e4f0b9a0b0ff
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 2
+FileExplorerSession created: 0e1d8898-94dd-4d09-ba5e-ecc68b699b61 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created file explorer session 0e1d8898-94dd-4d09-ba5e-ecc68b699b61 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953. Active sessions: 1
+File explorer WebSocket connected: 0e1d8898-94dd-4d09-ba5e-ecc68b699b61 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+File explorer websocket attached for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 2
+FileExplorerSession created: bf1fab85-0b6f-4c75-9b65-42f701363dbf for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created file explorer session bf1fab85-0b6f-4c75-9b65-42f701363dbf for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953. Active sessions: 2
+File explorer WebSocket connected: bf1fab85-0b6f-4c75-9b65-42f701363dbf for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: bf1fab85-0b6f-4c75-9b65-42f701363dbf
+Closed file explorer session bf1fab85-0b6f-4c75-9b65-42f701363dbf. Active sessions: 1
+File explorer WebSocket disconnected: bf1fab85-0b6f-4c75-9b65-42f701363dbf
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD
+FileExplorerSession closed: 0e1d8898-94dd-4d09-ba5e-ecc68b699b61
+Closed file explorer session 0e1d8898-94dd-4d09-ba5e-ecc68b699b61. Active sessions: 0
+File explorer WebSocket disconnected: 0e1d8898-94dd-4d09-ba5e-ecc68b699b61
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 2
+FileExplorerSession created: 54b8c5c2-38fe-4883-9644-7749a11553f6 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created file explorer session 54b8c5c2-38fe-4883-9644-7749a11553f6 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953. Active sessions: 1
+File explorer WebSocket connected: 54b8c5c2-38fe-4883-9644-7749a11553f6 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+File explorer websocket attached for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: 54b8c5c2-38fe-4883-9644-7749a11553f6
+Closed file explorer session 54b8c5c2-38fe-4883-9644-7749a11553f6. Active sessions: 0
+File explorer WebSocket disconnected: 54b8c5c2-38fe-4883-9644-7749a11553f6
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 2
+FileExplorerSession created: 8f34e0cb-6246-4970-995d-9e55a503d1ec for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created file explorer session 8f34e0cb-6246-4970-995d-9e55a503d1ec for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953. Active sessions: 1
+File explorer WebSocket connected: 8f34e0cb-6246-4970-995d-9e55a503d1ec for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+File explorer websocket attached for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: 8f34e0cb-6246-4970-995d-9e55a503d1ec
+Closed file explorer session 8f34e0cb-6246-4970-995d-9e55a503d1ec. Active sessions: 0
+File explorer WebSocket disconnected: 8f34e0cb-6246-4970-995d-9e55a503d1ec
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 2
+FileExplorerSession created: c5ac3983-ccd8-4a8d-8401-2c62a095122f for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created file explorer session c5ac3983-ccd8-4a8d-8401-2c62a095122f for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953. Active sessions: 1
+File explorer WebSocket connected: c5ac3983-ccd8-4a8d-8401-2c62a095122f for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+File explorer websocket attached for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: c5ac3983-ccd8-4a8d-8401-2c62a095122f
+Closed file explorer session c5ac3983-ccd8-4a8d-8401-2c62a095122f. Active sessions: 0
+File explorer WebSocket disconnected: c5ac3983-ccd8-4a8d-8401-2c62a095122f
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 2
+FileExplorerSession created: 1d5ef025-739b-44aa-b999-19748010597e for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created file explorer session 1d5ef025-739b-44aa-b999-19748010597e for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953. Active sessions: 1
+File explorer WebSocket connected: 1d5ef025-739b-44aa-b999-19748010597e for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+File explorer websocket attached for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 2
+FileExplorerSession created: dd5c5a05-89d8-461b-9307-10f60987b682 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Created file explorer session dd5c5a05-89d8-461b-9307-10f60987b682 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953. Active sessions: 2
+File explorer WebSocket connected: dd5c5a05-89d8-461b-9307-10f60987b682 for workspace agent_ws_7369a3a80fb62f9b003cff50fb4a9691ef28c94cedfa5efd43f1590caacf5953
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: dd5c5a05-89d8-461b-9307-10f60987b682
+Closed file explorer session dd5c5a05-89d8-461b-9307-10f60987b682. Active sessions: 1
+File explorer WebSocket disconnected: dd5c5a05-89d8-461b-9307-10f60987b682
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-ps8ydD
+FileExplorerSession closed: 1d5ef025-739b-44aa-b999-19748010597e
+Closed file explorer session 1d5ef025-739b-44aa-b999-19748010597e. Active sessions: 0
+File explorer WebSocket disconnected: 1d5ef025-739b-44aa-b999-19748010597e
+Created terminal session round6-terminal-cwd using backend PtySession for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1
+Terminal WebSocket connected: round6-terminal-cwd
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1
+Closed PTY session round6-terminal-cwd
+Terminal WebSocket disconnected: round6-terminal-cwd
+Created terminal session round6-terminal-churn-1 using backend PtySession for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1
+Terminal WebSocket connected: round6-terminal-churn-1
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1
+Closed PTY session round6-terminal-churn-1
+Terminal WebSocket disconnected: round6-terminal-churn-1
+Terminal WebSocket disconnected: round6-terminal-churn-2
+Closed PTY session round6-terminal-churn-2
+Terminal session startup aborted: round6-terminal-churn-2
+Terminal WebSocket disconnected: round6-terminal-churn-3
+Closed PTY session round6-terminal-churn-3
+Terminal session startup aborted: round6-terminal-churn-3
+Terminal WebSocket disconnected: round6-terminal-churn-4
+Closed PTY session round6-terminal-churn-4
+Terminal session startup aborted: round6-terminal-churn-4
+Terminal WebSocket disconnected: round6-terminal-churn-5
+Closed PTY session round6-terminal-churn-5
+Terminal session startup aborted: round6-terminal-churn-5
+Terminal WebSocket disconnected: round6-terminal-churn-6
+Closed PTY session round6-terminal-churn-6
+Terminal session startup aborted: round6-terminal-churn-6
+Terminal WebSocket disconnected: round6-terminal-churn-7
+Closed PTY session round6-terminal-churn-7
+Terminal session startup aborted: round6-terminal-churn-7
+Terminal WebSocket disconnected: round6-terminal-churn-8
+Closed PTY session round6-terminal-churn-8
+Terminal session startup aborted: round6-terminal-churn-8
+Terminal WebSocket disconnected: round6-terminal-churn-9
+Closed PTY session round6-terminal-churn-9
+Terminal session startup aborted: round6-terminal-churn-9
+Created terminal session round6-terminal-churn-10 using backend PtySession for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1
+Terminal WebSocket connected: round6-terminal-churn-10
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-dVKAB1
+Closed PTY session round6-terminal-churn-10
+Terminal WebSocket disconnected: round6-terminal-churn-10

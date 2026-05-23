@@ -6,17 +6,19 @@ export const GetAllWorkspaces = gql`
       __typename
       workspaceId
       name
+      displayName
       config
-      fileExplorer
+      workspaceRootPath
       absolutePath
+      kind
       isTemp
     }
   }
 `
 
-export const GetWorkspaceReference = gql`
-  query GetWorkspaceReference($rootPath: String!) {
-    workspaceReference(rootPath: $rootPath) {
+export const GetWorkspaceMetadata = gql`
+  query GetWorkspaceMetadata($rootPath: String!) {
+    workspaceMetadata(rootPath: $rootPath) {
       __typename
       workspaceId
       workspaceRootPath

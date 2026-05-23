@@ -160,16 +160,17 @@ For detailed information on supported file types and the rendering architecture 
 
 ### WorkspaceStore (workspace.ts)
 
-Manages workspace lifecycle and tree synchronization:
+Manages metadata-only workspace lifecycle and visible file-explorer stream ownership:
 
 ```typescript
 interface WorkspaceInfo {
   workspaceId: string;
   name: string;
-  fileExplorer: TreeNode; // Root of directory tree
-  nodeIdToNode: Record<string, TreeNode>; // Fast node lookup
+  displayName?: string;
+  workspaceRootPath?: string | null;
   workspaceConfig: any;
   absolutePath: string | null;
+  kind?: "filesystem" | "skill" | "temp";
   isTemp?: boolean;
 }
 ```
@@ -178,8 +179,8 @@ interface WorkspaceInfo {
 
 | Action | Description |
 | --- | --- |
-| `createWorkspace()` | Creates a workspace and stores the initial shallow file tree. It does **not** start a persistent file watcher. |
-| `fetchAllWorkspaces()` | Loads workspace snapshots on startup or backend-context reset. It does **not** start live streams. |
+| `createWorkspace()` | Creates/resolves metadata only. It does **not** acquire a file-explorer tree or start a persistent file watcher. |
+| `fetchAllWorkspaces()` | Loads workspace metadata on startup or backend-context reset. It does **not** acquire file-explorer trees or start live streams. |
 | `fetchFolderChildren()` | **[Lazy Load]** Fetches children for a folder when expanded or when a visible explorer refreshes open folders. |
 | `acquireFileExplorerLiveSession(workspaceId, consumerId)` | Registers one visible file explorer consumer. The first consumer opens one WebSocket/live watcher stream for the workspace and returns an idempotent release function. |
 | `releaseFileExplorerLiveSession(workspaceId, consumerId)` | Releases a visible consumer. The last release disconnects the WebSocket and lets the backend stop the watcher lease. |
@@ -401,7 +402,7 @@ Search results from the backend are file paths. The frontend converts these to `
 wsState.searchResults = matchedPaths.map((filePath) => {
   // First try to find existing node in the tree (for proper metadata)
   const existingNode = findFileByPath(
-    workspaceStore.workspaces[workspaceId]?.fileExplorer.children || [],
+    fileExplorerStore.getWorkspaceTree(workspaceId)?.children || [],
     filePath
   );
   if (existingNode) return existingNode;
@@ -445,7 +446,7 @@ const displayedFiles = computed(() => {
   if (searchQuery.value) {
     return explorer.searchResults.value || []; // Show search results
   }
-  return currentWorkspace.value?.fileExplorer.children || []; // Show tree
+  return explorer.tree.value?.children || []; // Show tree
 });
 </script>
 ```
@@ -605,7 +606,7 @@ service.disconnect();
 
 ### Backend Watcher Lease Lifecycle
 
-The backend WebSocket route resolves the workspace and asks its file explorer for a watcher lease before subscribing to events. `LocalFileExplorer.acquireWatcherLease("file-explorer-websocket")` starts the underlying `FileSystemWatcher` only for the first active lease and returns an idempotent lease release handle. `subscribe()` is valid only after a lease has started the watcher.
+The backend WebSocket route resolves the workspace and asks its file explorer for a watcher lease before subscribing to events. `WorkspaceFileExplorer.acquireWatcherLease("file-explorer-websocket")` starts the underlying `FileSystemWatcher` only for the first active lease and returns an idempotent lease release handle. `subscribe()` is valid only after a lease has started the watcher.
 
 Each WebSocket session owns one watcher lease through `FileExplorerSession`. Disconnecting the WebSocket, ending the async event iterator, early-closing before the `CONNECTED` message is observed, or closing the workspace releases the session and lease. When the lease count reaches zero, the backend stops the chokidar watcher.
 
@@ -624,7 +625,7 @@ sequenceDiagram
     participant Store as workspace.ts
     participant WebSocket as FileExplorerStreamingService
     participant Backend as FileExplorerStreamHandler
-    participant Explorer as LocalFileExplorer
+    participant Explorer as WorkspaceFileExplorer
     participant Watcher as FileSystemWatcher
     participant FS as File System
 
@@ -661,7 +662,7 @@ Frontend:
 - `components/fileExplorer/FileExplorer.vue` - visible-session acquisition/release.
 - `services/fileExplorerStreaming/FileExplorerStreamingService.ts` - low-level WebSocket client, authenticated remote-access WebSocket URL handling, reconnect policy.
 - `services/fileExplorerStreaming/types.ts` - protocol types.
-- `stores/workspace.ts` - live-consumer tracking, one stream per workspace, snapshot refresh, event application.
+- `stores/workspace.ts` - metadata-only workspace lifecycle and live-consumer tracking, one stream per workspace.
 - `utils/fileExplorer/openFolderRefresh.ts` - root/open-folder refresh helpers for newly visible explorers.
 - `utils/fileExplorer/stateSync.ts` - structural mutation echo filtering and path remapping helpers.
 
@@ -670,7 +671,7 @@ Backend:
 - `autobyteus-server-ts/src/api/websocket/file-explorer.ts` - Fastify WebSocket route and early-close handling.
 - `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts` - watcher lease acquisition, session setup, stream loop, disconnect cleanup.
 - `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts` - session-owned async iterator cancellation and watcher lease release.
-- `autobyteus-server-ts/src/file-explorer/local-file-explorer.ts` - watcher lease counting and start/stop ownership.
+- `autobyteus-server-ts/src/file-explorer/file-explorer.ts` - lazy tree/search/operation/watcher capability boundary and watcher lease counting.
 - `autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts` - chokidar watcher and subscriber fan-out.
 
 ### Change Event Types
@@ -717,14 +718,14 @@ interface ModifyChange {
 
 The frontend handles two classes of self-initiated event echoes:
 
-1. **Structural mutation echoes** (`add`, `delete`, `rename`, `move`): after a successful GraphQL mutation, `fileExplorer.ts` records the returned change event with `recordRecentStructuralChangeEcho()` and immediately applies it with `workspaceStore.handleFileSystemChange(workspaceId, event, "mutation")`. If the live stream later emits the same change, `workspace.ts` calls `consumeRecentStructuralChangeEchoes()` before applying stream changes so the tree is not mutated twice.
+1. **Structural mutation echoes** (`add`, `delete`, `rename`, `move`): after a successful GraphQL mutation, `fileExplorer.ts` records the returned change event with `recordRecentStructuralChangeEcho()` and immediately applies it through the file-explorer tree state. If the live stream later emits the same change, `fileExplorer.ts` calls `consumeRecentStructuralChangeEchoes()` before applying stream changes so the tree is not mutated twice.
 2. **Content save echoes** (`modify`): before saving text content, the store tags the path in `filesToIgnoreNextModify`. When the corresponding stream `modify` event arrives, the tag is consumed so the editor does not immediately invalidate and refetch its own saved content.
 
 ```typescript
 // Structural operation result from GraphQL
 const changeEvent: FileSystemChangeEvent = JSON.parse(data.moveFileOrFolder);
 fileExplorerStore.recordRecentStructuralChangeEcho(workspaceId, changeEvent);
-workspaceStore.handleFileSystemChange(workspaceId, changeEvent, "mutation");
+fileExplorerStore.handleFileSystemChange(workspaceId, changeEvent, "mutation");
 
 // Incoming stream event
 const effectiveEvent = fileExplorerStore.consumeRecentStructuralChangeEchoes(
@@ -732,7 +733,7 @@ const effectiveEvent = fileExplorerStore.consumeRecentStructuralChangeEchoes(
   event,
 );
 if (effectiveEvent.changes.length > 0) {
-  applyTreeChanges(workspace.fileExplorer, workspace.nodeIdToNode, effectiveEvent);
+  applyTreeChanges(wsState.tree, wsState.nodeIdToNode, effectiveEvent);
 }
 ```
 

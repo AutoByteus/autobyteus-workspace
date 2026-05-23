@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import type { BaseFileExplorer, WatcherLease } from "../../../../src/file-explorer/base-file-explorer.js";
+import type { WatcherLease, WorkspaceFileExplorer } from "../../../../src/file-explorer/file-explorer.js";
+import type { WorkspaceFileExplorerLease } from "../../../../src/workspaces/filesystem-workspace.js";
 import type { WorkspaceManager } from "../../../../src/workspaces/workspace-manager.js";
 import { FileExplorerSessionManager } from "../../../../src/services/file-explorer-streaming/file-explorer-session-manager.js";
 import { FileExplorerStreamHandler } from "../../../../src/services/file-explorer-streaming/file-explorer-stream-handler.js";
@@ -14,17 +15,22 @@ const createEventStream = (events: string[]) => {
   };
 };
 
-const createLease = () => ({
+const createWatcherLease = () => ({
   reason: "test",
   release: vi.fn().mockResolvedValue(undefined),
 }) satisfies WatcherLease;
 
+const createFileExplorerLease = (fileExplorer: WorkspaceFileExplorer) => ({
+  fileExplorer,
+  release: vi.fn().mockResolvedValue(undefined),
+}) satisfies WorkspaceFileExplorerLease;
+
 const createFileExplorer = (
   events: string[],
-  options: { acquireThrows?: boolean; lease?: WatcherLease } = {},
-): BaseFileExplorer & { lease: WatcherLease; acquireWatcherLease: ReturnType<typeof vi.fn> } => {
+  options: { acquireThrows?: boolean; watcherLease?: WatcherLease } = {},
+): WorkspaceFileExplorer & { lease: WatcherLease; acquireWatcherLease: ReturnType<typeof vi.fn> } => {
   const eventStreamFactory = createEventStream(events);
-  const lease = options.lease ?? createLease();
+  const lease = options.watcherLease ?? createWatcherLease();
   return {
     lease,
     acquireWatcherLease: vi.fn(async () => {
@@ -34,22 +40,29 @@ const createFileExplorer = (
       return lease;
     }),
     subscribe: () => eventStreamFactory(),
-  } as unknown as BaseFileExplorer & { lease: WatcherLease; acquireWatcherLease: ReturnType<typeof vi.fn> };
+  } as unknown as WorkspaceFileExplorer & { lease: WatcherLease; acquireWatcherLease: ReturnType<typeof vi.fn> };
 };
 
-const createWorkspaceManager = (fileExplorer: BaseFileExplorer, shouldThrow = false): WorkspaceManager => {
+const createWorkspaceManager = (fileExplorer: WorkspaceFileExplorer, shouldThrow = false): {
+  workspaceManager: WorkspaceManager;
+  fileExplorerLease: WorkspaceFileExplorerLease;
+} => {
+  const fileExplorerLease = createFileExplorerLease(fileExplorer);
   const workspace = {
-    getFileExplorer: vi.fn(async () => fileExplorer),
+    acquireFileExplorer: vi.fn(async () => fileExplorerLease),
   };
 
   return {
-    getOrCreateWorkspace: vi.fn(async () => {
-      if (shouldThrow) {
-        throw new Error("workspace missing");
-      }
-      return workspace;
-    }),
-  } as unknown as WorkspaceManager;
+    fileExplorerLease,
+    workspaceManager: {
+      getOrCreateWorkspace: vi.fn(async () => {
+        if (shouldThrow) {
+          throw new Error("workspace missing");
+        }
+        return workspace;
+      }),
+    } as unknown as WorkspaceManager,
+  };
 };
 
 describe("FileExplorerStreamHandler", () => {
@@ -58,7 +71,7 @@ describe("FileExplorerStreamHandler", () => {
     const fileExplorer = createFileExplorer([
       JSON.stringify({ changes: [{ type: "add" }] }),
     ]);
-    const workspaceManager = createWorkspaceManager(fileExplorer);
+    const { workspaceManager, fileExplorerLease } = createWorkspaceManager(fileExplorer);
 
     const handler = new FileExplorerStreamHandler(sessionManager, workspaceManager);
 
@@ -80,12 +93,13 @@ describe("FileExplorerStreamHandler", () => {
 
     await handler.disconnect(sessionId as string);
     expect(fileExplorer.lease.release).toHaveBeenCalledTimes(1);
+    expect(fileExplorerLease.release).toHaveBeenCalledTimes(1);
   });
 
   it("closes with 4004 when workspace is missing", async () => {
     const sessionManager = new FileExplorerSessionManager();
     const fileExplorer = createFileExplorer([]);
-    const workspaceManager = createWorkspaceManager(fileExplorer, true);
+    const { workspaceManager } = createWorkspaceManager(fileExplorer, true);
 
     const handler = new FileExplorerStreamHandler(sessionManager, workspaceManager);
 
@@ -104,7 +118,7 @@ describe("FileExplorerStreamHandler", () => {
   it("sends an error when watcher is unavailable", async () => {
     const sessionManager = new FileExplorerSessionManager();
     const fileExplorer = createFileExplorer([], { acquireThrows: true });
-    const workspaceManager = createWorkspaceManager(fileExplorer);
+    const { workspaceManager, fileExplorerLease } = createWorkspaceManager(fileExplorer);
 
     const handler = new FileExplorerStreamHandler(sessionManager, workspaceManager);
 
@@ -117,16 +131,17 @@ describe("FileExplorerStreamHandler", () => {
 
     expect(sessionId).toBeNull();
     expect(connection.close).toHaveBeenCalledWith(4005);
+    expect(fileExplorerLease.release).toHaveBeenCalledTimes(1);
 
     const payload = JSON.parse(connection.send.mock.calls[0][0]);
     expect(payload.type).toBe(ServerMessageType.ERROR);
     expect(payload.payload.code).toBe("WATCHER_UNAVAILABLE");
   });
 
-  it("releases the watcher lease if CONNECTED send fails after session creation", async () => {
+  it("releases the watcher and file-explorer leases if CONNECTED send fails after session creation", async () => {
     const sessionManager = new FileExplorerSessionManager();
     const fileExplorer = createFileExplorer([]);
-    const workspaceManager = createWorkspaceManager(fileExplorer);
+    const { workspaceManager, fileExplorerLease } = createWorkspaceManager(fileExplorer);
     const handler = new FileExplorerStreamHandler(sessionManager, workspaceManager);
     const connection = {
       send: vi.fn(() => {
@@ -139,16 +154,17 @@ describe("FileExplorerStreamHandler", () => {
 
     expect(sessionId).toBeNull();
     expect(fileExplorer.lease.release).toHaveBeenCalledTimes(1);
+    expect(fileExplorerLease.release).toHaveBeenCalledTimes(1);
     expect(sessionManager.activeSessionCount).toBe(0);
     expect(connection.close).toHaveBeenCalledWith(1011);
   });
 
-  it("closes the session and releases the watcher lease if a connected file change send fails", async () => {
+  it("closes the session and releases leases if a connected file change send fails", async () => {
     const sessionManager = new FileExplorerSessionManager();
     const fileExplorer = createFileExplorer([
       JSON.stringify({ changes: [{ type: "add" }] }),
     ]);
-    const workspaceManager = createWorkspaceManager(fileExplorer);
+    const { workspaceManager, fileExplorerLease } = createWorkspaceManager(fileExplorer);
     const handler = new FileExplorerStreamHandler(sessionManager, workspaceManager);
     const connection = {
       send: vi.fn((payload: string) => {
@@ -167,14 +183,13 @@ describe("FileExplorerStreamHandler", () => {
 
     expect(sessionManager.activeSessionCount).toBe(0);
     expect(fileExplorer.lease.release).toHaveBeenCalledTimes(1);
+    expect(fileExplorerLease.release).toHaveBeenCalledTimes(1);
     expect(connection.close).toHaveBeenCalledWith(1011);
   });
 
   it("responds to PING with PONG", async () => {
-    const handler = new FileExplorerStreamHandler(
-      new FileExplorerSessionManager(),
-      createWorkspaceManager(createFileExplorer([])),
-    );
+    const { workspaceManager } = createWorkspaceManager(createFileExplorer([]));
+    const handler = new FileExplorerStreamHandler(new FileExplorerSessionManager(), workspaceManager);
 
     const response = await handler.handleMessage("session", JSON.stringify({ type: ClientMessageType.PING }));
 
@@ -184,10 +199,8 @@ describe("FileExplorerStreamHandler", () => {
   });
 
   it("returns null for unknown message types", async () => {
-    const handler = new FileExplorerStreamHandler(
-      new FileExplorerSessionManager(),
-      createWorkspaceManager(createFileExplorer([])),
-    );
+    const { workspaceManager } = createWorkspaceManager(createFileExplorer([]));
+    const handler = new FileExplorerStreamHandler(new FileExplorerSessionManager(), workspaceManager);
 
     const response = await handler.handleMessage("session", JSON.stringify({ type: "UNKNOWN" }));
 
@@ -195,10 +208,8 @@ describe("FileExplorerStreamHandler", () => {
   });
 
   it("returns null for invalid JSON", async () => {
-    const handler = new FileExplorerStreamHandler(
-      new FileExplorerSessionManager(),
-      createWorkspaceManager(createFileExplorer([])),
-    );
+    const { workspaceManager } = createWorkspaceManager(createFileExplorer([]));
+    const handler = new FileExplorerStreamHandler(new FileExplorerSessionManager(), workspaceManager);
 
     const response = await handler.handleMessage("session", "not-json");
 
@@ -208,7 +219,7 @@ describe("FileExplorerStreamHandler", () => {
   it("disconnects and removes sessions", async () => {
     const sessionManager = new FileExplorerSessionManager();
     const fileExplorer = createFileExplorer([JSON.stringify({ changes: [] })]);
-    const workspaceManager = createWorkspaceManager(fileExplorer);
+    const { workspaceManager, fileExplorerLease } = createWorkspaceManager(fileExplorer);
 
     const handler = new FileExplorerStreamHandler(sessionManager, workspaceManager);
 
@@ -225,13 +236,12 @@ describe("FileExplorerStreamHandler", () => {
 
     expect(sessionManager.getSession(sessionId as string)).toBeUndefined();
     expect(fileExplorer.lease.release).toHaveBeenCalledTimes(1);
+    expect(fileExplorerLease.release).toHaveBeenCalledTimes(1);
   });
 
   it("handles disconnecting unknown sessions", async () => {
-    const handler = new FileExplorerStreamHandler(
-      new FileExplorerSessionManager(),
-      createWorkspaceManager(createFileExplorer([])),
-    );
+    const { workspaceManager } = createWorkspaceManager(createFileExplorer([]));
+    const handler = new FileExplorerStreamHandler(new FileExplorerSessionManager(), workspaceManager);
 
     await handler.disconnect("missing");
   });

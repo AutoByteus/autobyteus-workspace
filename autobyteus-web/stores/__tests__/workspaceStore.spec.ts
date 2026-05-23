@@ -1,12 +1,10 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { setActivePinia, createPinia } from 'pinia';
+import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import { useWorkspaceStore } from '../workspace';
 import { useFileExplorerStore } from '../fileExplorer';
 import { TreeNode } from '~/utils/fileExplorer/TreeNode';
 
-// Mock dependencies
 const mockMutate = vi.fn();
 const mockQuery = vi.fn();
 const mockWaitForBoundBackendReady = vi.fn().mockResolvedValue(true);
@@ -26,34 +24,36 @@ vi.mock('~/utils/apolloClient', () => ({
   }),
 }));
 
-// Mock GraphQL mutations/queries to avoid import errors in test environment if not transpiled
 vi.mock('~/graphql/mutations/workspace_mutations', () => ({
-    CreateWorkspace: 'mock-mutation'
+  CreateWorkspace: 'mock-mutation',
 }));
 vi.mock('~/graphql/queries/workspace_queries', () => ({
-    GetAllWorkspaces: 'mock-query'
+  GetAllWorkspaces: 'mock-query',
 }));
 vi.mock('~/graphql/queries/file_explorer_queries', () => ({
-    GetFolderChildren: 'mock-query-children'
+  GetFolderChildren: 'mock-query-children',
 }));
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
-    useWindowNodeContextStore: () => mockWindowNodeContextStore,
+  useWindowNodeContextStore: () => mockWindowNodeContextStore,
 }));
 
-// Mock FileExplorerStreamingService
-vi.mock('~/services/fileExplorerStreaming/FileExplorerStreamingService', () => {
-    return {
-        FileExplorerStreamingService: vi.fn(() => {
-            const instance = {
-                connect: vi.fn(),
-                disconnect: vi.fn(),
-            };
-            mockStreamingInstances.push(instance);
-            return instance;
-        }),
-    }
-});
+vi.mock('~/services/fileExplorerStreaming/FileExplorerStreamingService', () => ({
+  FileExplorerStreamingService: vi.fn(() => {
+    const instance = {
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+    };
+    mockStreamingInstances.push(instance);
+    return instance;
+  }),
+}));
+
+const createStore = () => {
+  const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
+  setActivePinia(pinia);
+  return useWorkspaceStore();
+};
 
 describe('workspaceStore', () => {
   beforeEach(() => {
@@ -63,75 +63,74 @@ describe('workspaceStore', () => {
   });
 
   describe('createWorkspace', () => {
-    it('should create a workspace and add it to state', async () => {
-      const pinia = createTestingPinia({
-        createSpy: vi.fn,
-        stubActions: false, // We want to test real actions
-      });
-      setActivePinia(pinia);
-      const store = useWorkspaceStore();
-
-      // Mock Apollo response
+    it('registers workspace metadata without creating file-explorer tree state', async () => {
+      const store = createStore();
+      const fileExplorerStore = useFileExplorerStore();
       mockMutate.mockResolvedValue({
         data: {
           createWorkspace: {
             workspaceId: 'ws-123',
             name: 'Test WS',
-            fileExplorer: JSON.stringify({ name: 'root', path: 'root', is_file: false, id: 'root-id' }),
+            displayName: 'Test WS',
+            workspaceRootPath: '/tmp/test',
             absolutePath: '/tmp/test',
-            config: {}
-          }
-        }
+            kind: 'filesystem',
+            isTemp: false,
+            config: { rootPath: '/tmp/test' },
+          },
+        },
       });
 
       const wsId = await store.createWorkspace({ root_path: '/tmp/test' });
 
       expect(wsId).toBe('ws-123');
-      expect(store.workspaces['ws-123']).toBeDefined();
-      expect(store.workspaces['ws-123'].name).toBe('Test WS');
-      expect(store.workspaces['ws-123'].fileExplorer).toBeInstanceOf(TreeNode);
+      expect(store.workspaces['ws-123']).toMatchObject({
+        workspaceId: 'ws-123',
+        name: 'Test WS',
+        absolutePath: '/tmp/test',
+      });
+      expect(store.workspaceMetadataById['ws-123']).toMatchObject({
+        workspaceId: 'ws-123',
+        workspaceRootPath: '/tmp/test',
+        displayName: 'Test WS',
+      });
+      expect(fileExplorerStore.fileExplorerStateByWorkspace.has('ws-123')).toBe(false);
       expect(mockStreamingInstances).toHaveLength(0);
     });
 
-    it('should throw error if mutation fails', async () => {
-        const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
-        setActivePinia(pinia);
-        const store = useWorkspaceStore();
-  
-        mockMutate.mockResolvedValue({
-          errors: [{ message: 'GraphQL Error' }]
-        });
-  
-        await expect(store.createWorkspace({ root_path: '/bad' })).rejects.toThrow('GraphQL Error');
-        expect(store.error).toBeTruthy();
+    it('throws error if mutation fails', async () => {
+      const store = createStore();
+      mockMutate.mockResolvedValue({ errors: [{ message: 'GraphQL Error' }] });
+
+      await expect(store.createWorkspace({ root_path: '/bad' })).rejects.toThrow('GraphQL Error');
+      expect(store.error).toBeTruthy();
     });
 
-    it('should replace stale workspace entries with the same root path', async () => {
-      const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
-      setActivePinia(pinia);
-      const store = useWorkspaceStore();
-
+    it('replaces stale metadata entries with the same root path and clears file-explorer state', async () => {
+      const store = createStore();
+      const fileExplorerStore = useFileExplorerStore();
       const staleDisconnect = vi.fn();
       store.workspaces['stale-ws'] = {
         workspaceId: 'stale-ws',
         name: 'Stale',
-        fileExplorer: new TreeNode('root', 'root', false, [], 'root-id'),
-        nodeIdToNode: {},
         workspaceConfig: { root_path: '/tmp/test' },
         absolutePath: '/tmp/test',
       };
+      fileExplorerStore._getOrCreateWorkspaceState('stale-ws');
       store.fileSystemConnections.set('stale-ws', {
         connect: vi.fn(),
         disconnect: staleDisconnect,
       } as any);
-
       mockMutate.mockResolvedValue({
         data: {
           createWorkspace: {
             workspaceId: 'fresh-ws',
             name: 'Fresh',
-            fileExplorer: JSON.stringify({ name: 'root', path: 'root', is_file: false, id: 'root-id' }),
+            displayName: 'Fresh',
+            workspaceRootPath: '/tmp/test',
             absolutePath: '/tmp/test',
+            kind: 'filesystem',
+            isTemp: false,
             config: {},
           },
         },
@@ -141,222 +140,115 @@ describe('workspaceStore', () => {
 
       expect(workspaceId).toBe('fresh-ws');
       expect(store.workspaces['stale-ws']).toBeUndefined();
+      expect(fileExplorerStore.fileExplorerStateByWorkspace.has('stale-ws')).toBe(false);
       expect(store.workspaces['fresh-ws']).toBeDefined();
       expect(staleDisconnect).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('fetchAllWorkspaces', () => {
-      it('should populate workspaces from query', async () => {
-        const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
-        setActivePinia(pinia);
-        const store = useWorkspaceStore();
-
-        mockQuery.mockResolvedValue({
-            data: {
-                workspaces: [
-                    {
-                        workspaceId: 'ws-1', 
-                        name: 'WS 1',
-                        fileExplorer: JSON.stringify({ name: 'root1', path: 'root1', is_file: false, id: 'root1' }),
-                        absolutePath: '/path/1',
-                        config: {}
-                    },
-                    {
-                        workspaceId: 'ws-2', 
-                        name: 'WS 2',
-                        fileExplorer: JSON.stringify({ name: 'root2', path: 'root2', is_file: false, id: 'root2' }),
-                        absolutePath: '/path/2',
-                        config: {}
-                    }
-                ]
-            }
-        });
-
-        await store.fetchAllWorkspaces();
-
-        expect(Object.keys(store.workspaces)).toHaveLength(2);
-        expect(store.workspaces['ws-1']).toBeDefined();
-        expect(store.workspaces['ws-2']).toBeDefined();
-        expect(store.workspacesFetched).toBe(true);
-        expect(mockStreamingInstances).toHaveLength(0);
+    it('populates metadata from query without file-explorer tree payloads', async () => {
+      const store = createStore();
+      mockQuery.mockResolvedValue({
+        data: {
+          workspaces: [
+            { workspaceId: 'ws-1', name: 'WS 1', displayName: 'WS 1', workspaceRootPath: '/path/1', absolutePath: '/path/1', kind: 'filesystem', isTemp: false, config: {} },
+            { workspaceId: 'ws-2', name: 'WS 2', displayName: 'WS 2', workspaceRootPath: '/path/2', absolutePath: '/path/2', kind: 'filesystem', isTemp: false, config: {} },
+          ],
+        },
       });
 
-      it('should ignore stale query results when backend binding revision changes mid-flight', async () => {
-        const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
-        setActivePinia(pinia);
-        const store = useWorkspaceStore();
+      await store.fetchAllWorkspaces();
 
-        mockWindowNodeContextStore.bindingRevision = 1;
-        mockQuery.mockImplementation(async () => {
-          mockWindowNodeContextStore.bindingRevision = 2;
-          return {
-            data: {
-              workspaces: [
-                {
-                  workspaceId: 'ws-stale',
-                  name: 'Stale',
-                  fileExplorer: JSON.stringify({ name: 'root', path: 'root', is_file: false, id: 'root-id' }),
-                  absolutePath: '/path/stale',
-                  config: {},
-                },
-              ],
-            },
-          };
-        });
+      expect(Object.keys(store.workspaces)).toHaveLength(2);
+      expect(store.workspaceMetadataById['ws-1'].workspaceRootPath).toBe('/path/1');
+      expect(store.workspacesFetched).toBe(true);
+      expect(mockStreamingInstances).toHaveLength(0);
+    });
 
-        await store.fetchAllWorkspaces(true, 1);
-
-        expect(store.workspacesFetched).toBe(false);
-        expect(Object.keys(store.workspaces)).toHaveLength(0);
-        expect(store.fileSystemConnections.size).toBe(0);
+    it('ignores stale query results when backend binding revision changes mid-flight', async () => {
+      const store = createStore();
+      mockWindowNodeContextStore.bindingRevision = 1;
+      mockQuery.mockImplementation(async () => {
+        mockWindowNodeContextStore.bindingRevision = 2;
+        return {
+          data: {
+            workspaces: [{ workspaceId: 'ws-stale', name: 'Stale', workspaceRootPath: '/path/stale', absolutePath: '/path/stale', config: {} }],
+          },
+        };
       });
+
+      await store.fetchAllWorkspaces(true, 1);
+
+      expect(store.workspacesFetched).toBe(false);
+      expect(Object.keys(store.workspaces)).toHaveLength(0);
+      expect(store.fileSystemConnections.size).toBe(0);
+    });
   });
 
-  describe('handleFileSystemChange', () => {
-    let store: any;
-    let fileExplorerStore: any;
+  describe('file explorer delegation', () => {
+    it('delegates structural changes to fileExplorerStore-owned tree state', () => {
+      const store = createStore();
+      const fileExplorerStore = useFileExplorerStore();
+      store.workspaces['ws-1'] = {
+        workspaceId: 'ws-1',
+        name: 'Test WS',
+        workspaceConfig: {},
+        absolutePath: '/test',
+      };
+      const rootNode = new TreeNode('root', 'root', false, [], 'root-id');
+      const explorerState = fileExplorerStore._getOrCreateWorkspaceState('ws-1');
+      explorerState.tree = rootNode;
+      explorerState.nodeIdToNode = { 'root-id': rootNode };
 
-    beforeEach(async () => {
-        const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
-        setActivePinia(pinia);
-        store = useWorkspaceStore();
-        fileExplorerStore = useFileExplorerStore();
+      store.handleFileSystemChange('ws-1', {
+        changes: [{
+          type: 'add',
+          node: { name: 'new-file.txt', path: 'root/new-file.txt', is_file: true, id: 'file-1', children: [] },
+          parent_id: 'root-id',
+        }],
+      } as any);
 
-        // Setup a mock workspace
-        const rootNode = new TreeNode('root', 'root', false, [], 'root-id');
-        store.workspaces['ws-1'] = {
-            workspaceId: 'ws-1',
-            name: 'Test WS',
-            fileExplorer: rootNode,
-            nodeIdToNode: { 'root-id': rootNode },
-            workspaceConfig: {},
-            absolutePath: '/test'
-        };
+      expect(explorerState.tree.children).toHaveLength(1);
+      expect(explorerState.nodeIdToNode['file-1']).toBeDefined();
     });
 
-    it('should handle ADD change', () => {
-        const changeEvent = {
-            changes: [{
-                type: 'add',
-                node: { name: 'new-file.txt', path: 'root/new-file.txt', is_file: true, id: 'file-1', children: [] },
-                parent_id: 'root-id'
-            }]
-        };
+    it('ignores a streamed structural echo that was already applied by a mutation path', () => {
+      const store = createStore();
+      const fileExplorerStore = useFileExplorerStore();
+      const rootNode = new TreeNode('root', 'root', false, [], 'root-id');
+      const explorerState = fileExplorerStore._getOrCreateWorkspaceState('ws-1');
+      explorerState.tree = rootNode;
+      explorerState.nodeIdToNode = { 'root-id': rootNode };
+      const changeEvent = {
+        changes: [{
+          type: 'add',
+          node: { name: 'new-file.txt', path: 'root/new-file.txt', is_file: true, id: 'file-1', children: [] },
+          parent_id: 'root-id',
+        }],
+      } as any;
 
-        store.handleFileSystemChange('ws-1', changeEvent);
+      fileExplorerStore.recordRecentStructuralChangeEcho('ws-1', changeEvent);
+      store.handleFileSystemChange('ws-1', changeEvent, 'stream');
 
-        const ws = store.workspaces['ws-1'];
-        expect(ws.fileExplorer.children).toHaveLength(1);
-        expect(ws.fileExplorer.children[0].name).toBe('new-file.txt');
-        expect(ws.nodeIdToNode['file-1']).toBeDefined();
-    });
-
-    it('should handle DELETE change', () => {
-        // Setup: Add a file first
-        const ws = store.workspaces['ws-1'];
-        const fileNode = new TreeNode('file.txt', 'root/file.txt', true, [], 'file-1');
-        ws.fileExplorer.addChild(fileNode);
-        ws.nodeIdToNode['file-1'] = fileNode;
-
-        const changeEvent = {
-            changes: [{
-                type: 'delete',
-                node_id: 'file-1',
-                parent_id: 'root-id'
-            }]
-        };
-
-        store.handleFileSystemChange('ws-1', changeEvent);
-
-        expect(ws.fileExplorer.children).toHaveLength(0);
-        expect(ws.nodeIdToNode['file-1']).toBeUndefined();
-    });
-
-    it('should handle MODIFY change by invalidating content', () => {
-        // Setup: Add a file
-        const ws = store.workspaces['ws-1'];
-        const fileNode = new TreeNode('file.txt', 'root/file.txt', true, [], 'file-1');
-        ws.fileExplorer.addChild(fileNode);
-        ws.nodeIdToNode['file-1'] = fileNode;
-
-        const changeEvent = {
-            changes: [{
-                type: 'modify',
-                node_id: 'file-1',
-                parent_id: 'root-id'
-            }]
-        };
-
-        store.handleFileSystemChange('ws-1', changeEvent);
-
-        expect(fileExplorerStore.invalidateFileContent).toHaveBeenCalledWith('root/file.txt', 'ws-1');
-    });
-
-    it('should NOT invalidate content on MODIFY if explicitly ignored', () => {
-         // Setup: Add a file
-         const ws = store.workspaces['ws-1'];
-         const fileNode = new TreeNode('file.txt', 'root/file.txt', true, [], 'file-1');
-         ws.fileExplorer.addChild(fileNode);
-         ws.nodeIdToNode['file-1'] = fileNode;
- 
-         // Mock the ignore list in fileExplorerStore
-         // Since we used stubActions: false, we can manipulate state manually or mock the getter
-         // The store implementation accesses fileExplorerStore._getOrCreateWorkspaceState
-         // We can mock that return value if we spy on it, but accessing private valid might be tricky.
-         // A simpler way is to depend on the fact that fileExplorerStore is a mocked store from pinia-testing
-         
-         const workspaceState = { filesToIgnoreNextModify: new Set(['root/file.txt']) };
-         vi.spyOn(fileExplorerStore, '_getOrCreateWorkspaceState').mockReturnValue(workspaceState);
-
-         const changeEvent = {
-             changes: [{
-                 type: 'modify',
-                 node_id: 'file-1',
-                 parent_id: 'root-id'
-             }]
-         };
- 
-         store.handleFileSystemChange('ws-1', changeEvent);
- 
-         expect(fileExplorerStore.invalidateFileContent).not.toHaveBeenCalled();
-         expect(workspaceState.filesToIgnoreNextModify.has('root/file.txt')).toBe(false); // Should be consumed
-    });
-
-    it('should ignore a streamed structural echo that was already applied by a mutation path', () => {
-        const changeEvent = {
-            changes: [{
-                type: 'add',
-                node: { name: 'new-file.txt', path: 'root/new-file.txt', is_file: true, id: 'file-1', children: [] },
-                parent_id: 'root-id'
-            }]
-        };
-
-        fileExplorerStore.recordRecentStructuralChangeEcho('ws-1', changeEvent);
-        store.handleFileSystemChange('ws-1', changeEvent, 'stream');
-
-        const ws = store.workspaces['ws-1'];
-        expect(ws.fileExplorer.children).toHaveLength(0);
-        expect(ws.nodeIdToNode['file-1']).toBeUndefined();
+      expect(explorerState.tree.children).toHaveLength(0);
+      expect(explorerState.nodeIdToNode['file-1']).toBeUndefined();
     });
   });
 
   describe('resetWorkspaceStateForBackendContextChange', () => {
-    it('disconnects all streams and clears workspace state without reload', async () => {
-      const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
-      setActivePinia(pinia);
-      const store = useWorkspaceStore();
-
+    it('disconnects all streams and clears metadata/file-explorer state without reload', async () => {
+      const store = createStore();
+      const fileExplorerStore = useFileExplorerStore();
       store.workspaces = {
         'ws-1': {
           workspaceId: 'ws-1',
           name: 'One',
-          fileExplorer: new TreeNode('root', 'root', false, [], 'root-id'),
-          nodeIdToNode: {},
           workspaceConfig: {},
           absolutePath: '/tmp/one',
         },
       };
+      fileExplorerStore._getOrCreateWorkspaceState('ws-1');
       store.workspacesFetched = true;
       const disconnect = vi.fn();
       store.fileSystemConnections.set('ws-1', {
@@ -369,23 +261,14 @@ describe('workspaceStore', () => {
       expect(disconnect).toHaveBeenCalledTimes(1);
       expect(store.fileSystemConnections.size).toBe(0);
       expect(Object.keys(store.workspaces)).toHaveLength(0);
+      expect(fileExplorerStore.fileExplorerStateByWorkspace.size).toBe(0);
       expect(store.workspacesFetched).toBe(false);
     });
   });
 
   describe('file explorer live sessions', () => {
     it('opens one stream for multiple visible consumers and disconnects after final release', () => {
-      const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
-      setActivePinia(pinia);
-      const store = useWorkspaceStore();
-      store.workspaces['ws-1'] = {
-        workspaceId: 'ws-1',
-        name: 'One',
-        fileExplorer: new TreeNode('root', '', false, [], 'root-id'),
-        nodeIdToNode: {},
-        workspaceConfig: {},
-        absolutePath: '/tmp/one',
-      };
+      const store = createStore();
       vi.spyOn(store, 'fetchFolderChildren').mockResolvedValue(undefined);
 
       const releaseA = store.acquireFileExplorerLiveSession('ws-1', 'consumer-a');
@@ -403,9 +286,7 @@ describe('workspaceStore', () => {
     });
 
     it('returns an idempotent release function for duplicate consumer acquisition', () => {
-      const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
-      setActivePinia(pinia);
-      const store = useWorkspaceStore();
+      const store = createStore();
       vi.spyOn(store, 'fetchFolderChildren').mockResolvedValue(undefined);
 
       const release = store.acquireFileExplorerLiveSession('ws-1', 'consumer-a');
@@ -418,23 +299,16 @@ describe('workspaceStore', () => {
       expect(mockStreamingInstances[0].disconnect).toHaveBeenCalledTimes(1);
     });
 
-    it('refreshes already-open folders when a visible file explorer is reacquired', async () => {
-      const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
-      setActivePinia(pinia);
-      const store = useWorkspaceStore();
+    it('refreshes already-open folders in fileExplorerStore when a visible file explorer is reacquired', async () => {
+      const store = createStore();
       const fileExplorerStore = useFileExplorerStore();
       const oldFile = new TreeNode('old.txt', 'src/old.txt', true, [], 'old-file');
       const srcFolder = new TreeNode('src', 'src', false, [oldFile], 'src-id', true);
       const root = new TreeNode('root', '', false, [srcFolder], 'root-id', true);
-      store.workspaces['ws-1'] = {
-        workspaceId: 'ws-1',
-        name: 'One',
-        fileExplorer: root,
-        nodeIdToNode: { 'root-id': root, 'src-id': srcFolder, 'old-file': oldFile },
-        workspaceConfig: {},
-        absolutePath: '/tmp/one',
-      };
-      fileExplorerStore._getOrCreateWorkspaceState('ws-1').openFolders.src = true;
+      const explorerState = fileExplorerStore._getOrCreateWorkspaceState('ws-1');
+      explorerState.tree = root;
+      explorerState.nodeIdToNode = { 'root-id': root, 'src-id': srcFolder, 'old-file': oldFile };
+      explorerState.openFolders.src = true;
       mockQuery.mockImplementation(async ({ variables }: any) => {
         const folderPath = variables.folderPath;
         return {
@@ -469,10 +343,10 @@ describe('workspaceStore', () => {
       expect(mockQuery).toHaveBeenNthCalledWith(2, expect.objectContaining({
         variables: { workspaceId: 'ws-1', folderPath: 'src' },
       }));
-      const refreshedSrc = store.workspaces['ws-1'].nodeIdToNode['src-id'];
+      const refreshedSrc = explorerState.nodeIdToNode['src-id'];
       expect(refreshedSrc.children.map((child: TreeNode) => child.path)).toEqual(['src/new.txt']);
-      expect(store.workspaces['ws-1'].nodeIdToNode['old-file']).toBeUndefined();
-      expect(store.workspaces['ws-1'].nodeIdToNode['new-file']).toBeDefined();
+      expect(explorerState.nodeIdToNode['old-file']).toBeUndefined();
+      expect(explorerState.nodeIdToNode['new-file']).toBeDefined();
     });
   });
 });

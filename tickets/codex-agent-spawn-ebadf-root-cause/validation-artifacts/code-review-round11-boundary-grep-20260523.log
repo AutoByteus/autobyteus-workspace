@@ -1,0 +1,65 @@
+## Reviewer boundary grep round11
+### stale steady-state concepts
+### terminal old workspace-id route/materialization signs
+autobyteus-web/components/mobile/MobileFiles.vue:176:      :workspace-id="activeWorkspaceId"
+autobyteus-web/components/mobile/MobileFiles.vue:416:    const workspace = await workspaceStore.ensureWorkspaceMetadata(metadata);
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:665:        workspaceStore.workspaces[metadata.workspaceId] = workspace as any;
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:495:    expect(toolsSource).not.toContain(":workspace-id");
+### positive terminal target signs
+autobyteus-web/utils/terminalTarget.ts:1:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/utils/terminalTarget.ts:8:export const createTerminalTarget = (params: {
+autobyteus-web/utils/terminalTarget.ts:12:}): TerminalTarget | null => {
+autobyteus-web/utils/terminalTarget.ts:27:): TerminalTarget | null => {
+autobyteus-web/utils/terminalTarget.ts:31:  return createTerminalTarget({
+autobyteus-web/composables/useTerminalSession.ts:21:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/composables/useTerminalSession.ts:26:  target: MaybeRef<TerminalTarget | null | undefined>;
+autobyteus-web/composables/useTerminalSession.ts:56:  const getTarget = (): TerminalTarget | null => {
+autobyteus-web/composables/useTerminalSession.ts:61:  const buildTerminalWebSocketUrl = (target: TerminalTarget): string => {
+autobyteus-web/composables/useTerminalSession.ts:68:    endpoint.searchParams.set("cwd", target.rootPath);
+autobyteus-web/components/workspace/tools/Terminal.vue:50:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/components/workspace/tools/Terminal.vue:59:  target?: TerminalTarget | null;
+autobyteus-web/components/workspace/tools/Terminal.vue:68:const effectiveTerminalTarget = computed<TerminalTarget | null>(
+autobyteus-web/components/workspace/tools/Terminal.vue:76:  target: effectiveTerminalTarget,
+autobyteus-web/components/workspace/tools/Terminal.vue:229:  if (!effectiveTerminalTarget.value?.rootPath) {
+autobyteus-web/components/workspace/tools/Terminal.vue:264:      `${effectiveTerminalTarget.value?.rootPath || ""}:${effectiveTerminalTarget.value?.workspaceId || ""}`,
+autobyteus-server-ts/src/api/websocket/terminal.ts:25:  cwd?: string;
+autobyteus-server-ts/src/api/websocket/terminal.ts:43:const resolveTerminalCwd = async (query: TerminalQuery): Promise<string> => {
+autobyteus-server-ts/src/api/websocket/terminal.ts:44:  const rawCwd = query.cwd ?? query.rootPath ?? "";
+autobyteus-server-ts/src/api/websocket/terminal.ts:45:  const cwd = canonicalizeWorkspaceRootPath(rawCwd);
+autobyteus-server-ts/src/api/websocket/terminal.ts:46:  const stats = await fs.stat(cwd);
+autobyteus-server-ts/src/api/websocket/terminal.ts:48:    throw new Error(`Terminal cwd is not a directory: ${cwd}`);
+autobyteus-server-ts/src/api/websocket/terminal.ts:50:  return cwd;
+autobyteus-server-ts/src/api/websocket/terminal.ts:58:    "/ws/terminal/:sessionId",
+autobyteus-server-ts/src/api/websocket/terminal.ts:106:                `Error disconnecting late terminal session ${lateSessionId}: ${String(error)}`,
+autobyteus-server-ts/src/api/websocket/terminal.ts:139:          const cwd = await resolveTerminalCwd(query);
+autobyteus-server-ts/src/api/websocket/terminal.ts:148:            cwd,
+autobyteus-server-ts/src/api/websocket/terminal.ts:150:            cwd,
+autobyteus-server-ts/src/api/websocket/terminal.ts:164:          logger.info(`Terminal websocket attached for cwd ${cwd}`);
+autobyteus-server-ts/src/api/websocket/terminal.ts:171:            socket.close(4004, "Terminal cwd unavailable");
+autobyteus-web/types/terminal/TerminalTarget.ts:1:export interface TerminalTarget {
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:45:    cwd: string,
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:48:      await this.manager.createSession(sessionId, workspaceId, cwd);
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:517:      "acquireFileExplorerLiveSession",
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:676:    vi.spyOn(workspaceStore, "acquireFileExplorerLiveSession").mockReturnValue(
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:695:    expect(workspaceStore.acquireFileExplorerLiveSession).toHaveBeenCalledWith(
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:26:    cwd: string,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:34:      await session.start(cwd);
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:407:    const mobileDir = resolve(process.cwd(), "components/mobile");
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:440:    const mobileDir = resolve(process.cwd(), "components/mobile");
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:493:    expect(toolsSource).toContain("createTerminalTarget");
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:497:    expect(filesSource).toContain("useWorkspaceFileExplorer");
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:498:    expect(filesSource).toContain("acquireFileExplorerLiveSession");
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:511:      resolve(process.cwd(), "stores/agentSelectionStore.ts"),
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:515:      resolve(process.cwd(), "components/mobile/MobileRemoteAccessShell.vue"),
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:519:      resolve(process.cwd(), "utils/mobile/mobileSelectionAdapter.ts"),
+autobyteus-web/components/mobile/MobileFiles.vue:187:import { useWorkspaceFileExplorer } from "~/composables/useWorkspaceFileExplorer";
+autobyteus-web/components/mobile/MobileFiles.vue:230:const workspaceExplorer = useWorkspaceFileExplorer(activeWorkspaceId);
+autobyteus-web/components/mobile/MobileFiles.vue:493:    releaseLiveSession = workspaceStore.acquireFileExplorerLiveSession(
+autobyteus-web/components/mobile/MobileTools.vue:86:import { createTerminalTarget } from "~/utils/terminalTarget";
+autobyteus-web/components/mobile/MobileTools.vue:111:    return createTerminalTarget({
+autobyteus-web/components/mobile/MobileTools.vue:118:    return createTerminalTarget({
+### mobile stale allWorkspaces/fileExplorer signs
+autobyteus-web/components/mobile/MobileRunSetup.vue:303:    ? workspaceStore.workspaces[selectedWorkspaceId.value] || null
+autobyteus-web/components/mobile/MobileRunSetup.vue:307:      || (selectedWorkspace ? workspaceStore.registerWorkspaceInfoMetadata(selectedWorkspace) : null)
+autobyteus-web/components/mobile/MobileFiles.vue:176:      :workspace-id="activeWorkspaceId"
+autobyteus-web/components/mobile/MobileFiles.vue:420:      workspaceStore.registerWorkspaceInfoMetadata(workspace) || metadata;

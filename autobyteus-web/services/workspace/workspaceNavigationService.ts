@@ -3,7 +3,7 @@ import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator'
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator'
 import {
   ensureRunHistoryWorkspaceByRootPath,
-  resolveRunHistoryWorkspaceReferenceByRootPath,
+  resolveRunHistoryWorkspaceMetadataByRootPath,
 } from '~/stores/runHistoryLoadActions'
 import type { WorkspaceExecutionLink } from '~/types/workspace/WorkspaceExecutionLink'
 
@@ -83,7 +83,7 @@ export const openWorkspaceExecutionLink = async (
     await openAgentRun({
       runId: link.runId,
       fallbackAgentName: null,
-      resolveWorkspaceReferenceByRootPath: resolveRunHistoryWorkspaceReferenceByRootPath,
+      resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
       ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
     })
     return
@@ -92,7 +92,7 @@ export const openWorkspaceExecutionLink = async (
   await openTeamRun({
     teamRunId: link.teamRunId,
     memberRouteKey: link.memberRouteKey,
-    resolveWorkspaceReferenceByRootPath: resolveRunHistoryWorkspaceReferenceByRootPath,
+    resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
     ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
   })
 }

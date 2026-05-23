@@ -1,4 +1,4 @@
-import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 
 export const normalizeWorkspaceRootPath = (value: string | null | undefined): string => {
   const source = (value || '').trim();
@@ -12,7 +12,7 @@ export const normalizeWorkspaceRootPath = (value: string | null | undefined): st
   return normalized.replace(/\/+$/, '');
 };
 
-export const workspaceReferenceKeyForRootPath = (value: string | null | undefined): string =>
+export const workspaceMetadataKeyForRootPath = (value: string | null | undefined): string =>
   normalizeWorkspaceRootPath(value);
 
 export const displayNameFromWorkspaceRootPath = (rootPath: string): string => {
@@ -23,38 +23,47 @@ export const displayNameFromWorkspaceRootPath = (rootPath: string): string => {
   return normalized.split('/').filter(Boolean).pop() || normalized;
 };
 
-export const createWorkspaceReference = (params: {
+export const createWorkspaceMetadata = (params: {
   workspaceId: string;
   workspaceRootPath: string;
   displayName?: string | null;
-}): WorkspaceReference => {
+  kind?: WorkspaceMetadata['kind'];
+}): WorkspaceMetadata => {
   const workspaceRootPath = normalizeWorkspaceRootPath(params.workspaceRootPath);
   return {
     workspaceId: params.workspaceId,
     workspaceRootPath,
     displayName: params.displayName?.trim() || displayNameFromWorkspaceRootPath(workspaceRootPath),
-    kind: 'filesystem',
+    kind: params.kind || 'filesystem',
   };
 };
 
-export const workspaceReferenceFromWorkspaceInfo = (workspace: {
+export const workspaceMetadataFromWorkspaceInfo = (workspace: {
   workspaceId: string;
   name?: string | null;
   absolutePath?: string | null;
+  workspaceRootPath?: string | null;
   workspaceConfig?: Record<string, any> | null;
-}): WorkspaceReference | null => {
+  kind?: WorkspaceMetadata['kind'] | string | null;
+}): WorkspaceMetadata | null => {
   const workspaceRootPath = normalizeWorkspaceRootPath(
-    workspace.absolutePath ||
+    workspace.workspaceRootPath ||
+      workspace.absolutePath ||
       workspace.workspaceConfig?.root_path ||
       workspace.workspaceConfig?.rootPath ||
       null,
   );
-  if (!workspaceRootPath || workspace.workspaceId.startsWith('skill_ws_')) {
+  if (!workspaceRootPath) {
     return null;
   }
-  return createWorkspaceReference({
+  return createWorkspaceMetadata({
     workspaceId: workspace.workspaceId,
     workspaceRootPath,
     displayName: workspace.name,
+    kind: workspace.kind === 'skill' || workspace.workspaceId.startsWith('skill_ws_')
+      ? 'skill'
+      : workspace.kind === 'temp'
+        ? 'temp'
+        : 'filesystem',
   });
 };

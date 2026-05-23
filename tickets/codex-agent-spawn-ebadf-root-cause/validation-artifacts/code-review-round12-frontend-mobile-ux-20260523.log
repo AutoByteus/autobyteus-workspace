@@ -1,0 +1,20 @@
+
+> autobyteus@1.3.28 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/mobile/__tests__/MobileUxRefinement.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts (12 tests) 107ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  14:14:44
+   Duration  6.42s (transform 3.61s, setup 5.35s, collect 204ms, tests 107ms, environment 263ms, prepare 210ms)
+

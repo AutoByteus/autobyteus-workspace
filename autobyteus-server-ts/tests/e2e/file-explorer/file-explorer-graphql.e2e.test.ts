@@ -11,19 +11,18 @@ const workspaceManager = getWorkspaceManager();
 
 const createTempRoot = (): string => fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-file-explorer-"));
 
-const getLocalFileExplorerState = async (workspaceId: string) => {
+const getWorkspaceFileExplorerState = async (workspaceId: string) => {
   const workspace = workspaceManager.getWorkspaceById(workspaceId);
   if (!workspace) {
     throw new Error(`Workspace not found in test: ${workspaceId}`);
   }
-  const fileExplorer = await workspace.getFileExplorer();
-  const local = fileExplorer as unknown as {
-    watcherLeaseCount?: number;
-    adaptee?: { fileWatcher?: unknown };
-  };
+  const fileExplorer = (workspace as unknown as {
+    fileExplorer?: { fileWatcher?: unknown; watcherLeaseCount?: number } | null;
+  }).fileExplorer ?? null;
   return {
-    watcher: local.adaptee?.fileWatcher ?? null,
-    leaseCount: local.watcherLeaseCount ?? 0,
+    hasFileExplorer: workspace.hasFileExplorerForDiagnostics(),
+    watcher: fileExplorer?.fileWatcher ?? null,
+    leaseCount: fileExplorer?.watcherLeaseCount ?? 0,
   };
 };
 
@@ -93,8 +92,6 @@ describe("File explorer GraphQL e2e", () => {
     const workspace = await workspaceManager.createWorkspace(
       { rootPath: tempRoot },
     );
-    const fileExplorer = await workspace.getFileExplorer();
-    await fileExplorer.buildWorkspaceDirectoryTree();
 
     const query = `
       query GetFolderChildren($workspaceId: String!, $folderPath: String!) {
@@ -144,7 +141,7 @@ describe("File explorer GraphQL e2e", () => {
     );
     const workspaceId = created.createWorkspace.workspaceId;
 
-    await expect(getLocalFileExplorerState(workspaceId)).resolves.toMatchObject({
+    await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
       watcher: null,
       leaseCount: 0,
     });
@@ -176,7 +173,7 @@ describe("File explorer GraphQL e2e", () => {
     });
     expect(searchData.searchFiles.some((result) => result.endsWith("src/beta-search-target.ts"))).toBe(true);
 
-    await expect(getLocalFileExplorerState(workspaceId)).resolves.toMatchObject({
+    await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
       watcher: null,
       leaseCount: 0,
     });

@@ -1,0 +1,40 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    59258 normy  cwd       DIR               1,16       896           174068519 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+node    59258 normy  txt       REG               1,16 111670672              525716 /Users/normy/.nvm/versions/node/v22.21.1/bin/node
+node    59258 normy  txt       REG               1,16     73840           165453213 /Library/Preferences/Logging/.plist-cache.nZ8hDtHH
+node    59258 normy  txt       REG               1,16     85496           175123373 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node
+node    59258 normy  txt       REG               1,16   2299152 1152921500312563341 /usr/lib/dyld
+node    59258 normy  txt       REG               1,16  17251592            10659627 /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine
+node    59258 normy    0r      CHR                3,2       0t0                 336 /dev/null
+node    59258 normy    1u     unix 0xff7df89862f92ae4       0t0                     ->0x3610be7c81b0bd09
+node    59258 normy    2u     unix 0x985f299c51063fb8       0t0                     ->0xb2947fa5dbdabb2c
+node    59258 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    59258 normy    4      PIPE 0x5a7f5cdf18af75d4     16384                     ->0x57c127afebc5cfed
+node    59258 normy    5      PIPE 0x57c127afebc5cfed     16384                     ->0x5a7f5cdf18af75d4
+node    59258 normy    6r      DIR               1,16       704                   2 /
+node    59258 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    59258 normy    8r      DIR               1,16       704                   2 /
+node    59258 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    59258 normy   10r      DIR               1,16       704                   2 /
+node    59258 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    59258 normy   12u   KQUEUE                                                  count=0, state=0xa
+node    59258 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    59258 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    59258 normy   15u     unix 0x45e9f011f5353777       0t0                     ->0xad9f9cd6e9cacdbe
+node    59258 normy   16u     unix 0xad9f9cd6e9cacdbe       0t0                     ->0x45e9f011f5353777
+node    59258 normy   17u     unix 0x45e9f011f5353777       0t0                     ->0xad9f9cd6e9cacdbe
+node    59258 normy   18w      REG               1,16     13551           179107704 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-fd-probe-data-3Afj8X/logs/server.log
+node    59258 normy   19u      REG               1,16    196608           179107710 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-fd-probe-data-3Afj8X/db/production.db
+node    59258 normy   20      PIPE 0x74a172b77d73f342     16384                     ->0x5503685951fa974a
+node    59258 normy   21      PIPE 0x5503685951fa974a     16384                     ->0x74a172b77d73f342
+node    59258 normy   22u     IPv4 0x915be9c02262dd24       0t0                 TCP 127.0.0.1:59067 (LISTEN)
+node    59258 normy   23u    systm 0x95b4546d2aee72ca       0t0                     [ctl com.apple.netsrc id 7 unit 129]
+node    59258 normy   24u     unix 0x5669dbc6042637c5       0t0                     ->0xd82bd9cbd4d7fa53
+node    59258 normy   25   NPOLICY                                                  
+node    59258 normy   27u      CHR               15,6       0t0                 605 /dev/ptmx
+node    59258 normy   28u     IPv4 0xc56fa45fbf3b4975       0t0                 TCP 127.0.0.1:59067->127.0.0.1:59079 (ESTABLISHED)
+node    59258 normy   30u      CHR               16,7       0t0                4863 /dev/ttys007
+node    59258 normy   31u   KQUEUE                                                  count=0, state=0x8
+node    59258 normy   32u      CHR               15,4       0t0                 605 /dev/ptmx
+node    59258 normy   34                                                            (revoked)
+node    59258 normy   35u   KQUEUE                                                  count=0, state=0x8

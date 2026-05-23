@@ -37,7 +37,7 @@ import {
   ensureRunHistoryWorkspaceByRootPath,
   fetchRunHistoryTree,
   openHistoricalRun,
-  resolveRunHistoryWorkspaceReferenceByRootPath,
+  resolveRunHistoryWorkspaceMetadataByRootPath,
   type RunHistorySelectionMode,
 } from '~/stores/runHistoryLoadActions';
 import {
@@ -128,8 +128,8 @@ export const useRunHistoryStore = defineStore('runHistory', {
       if (!workspaceId) {
         throw new Error(`Workspace '${options.workspaceRootPath}' could not be resolved.`);
       }
-      const workspaceReference = await this.resolveWorkspaceReferenceByRootPath(options.workspaceRootPath);
-      if (!workspaceReference) {
+      const workspaceMetadata = await this.resolveWorkspaceMetadataByRootPath(options.workspaceRootPath);
+      if (!workspaceMetadata) {
         throw new Error(`Workspace '${options.workspaceRootPath}' reference could not be resolved.`);
       }
 
@@ -181,7 +181,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
           agentDefinitionName: definition.name,
           agentAvatarUrl: definition.avatarUrl ?? seed.agentAvatarUrl ?? null,
           workspaceId,
-          workspaceReference,
+          workspaceMetadata,
           llmModelIdentifier: resolvedModelIdentifier,
           llmConfig: preserveSeedLlmConfig ? (seed.llmConfig ?? null) : null,
           isLocked: false,
@@ -190,7 +190,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
         agentRunConfigStore.setTemplate(definition);
         agentRunConfigStore.updateAgentConfig({
           workspaceId,
-          workspaceReference,
+          workspaceMetadata,
           llmModelIdentifier: resolvedModelIdentifier,
         });
       }
@@ -465,8 +465,8 @@ export const useRunHistoryStore = defineStore('runHistory', {
       return await ensureRunHistoryWorkspaceByRootPath(rootPath);
     },
 
-    async resolveWorkspaceReferenceByRootPath(rootPath: string) {
-      return await resolveRunHistoryWorkspaceReferenceByRootPath(rootPath);
+    async resolveWorkspaceMetadataByRootPath(rootPath: string) {
+      return await resolveRunHistoryWorkspaceMetadataByRootPath(rootPath);
     },
 
     findAgentNameByRunId(runId: string): string | null {

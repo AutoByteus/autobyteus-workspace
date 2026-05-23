@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
-import type { BaseFileExplorer, WatcherLease } from "../../file-explorer/base-file-explorer.js";
+import type { WatcherLease, WorkspaceFileExplorer } from "../../file-explorer/file-explorer.js";
+import type { WorkspaceFileExplorerLease } from "../../workspaces/filesystem-workspace.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { FileExplorerSessionManager } from "./file-explorer-session-manager.js";
@@ -48,16 +49,17 @@ export class FileExplorerStreamHandler {
       return null;
     }
 
-    let fileExplorer: BaseFileExplorer;
+    let fileExplorerLease: WorkspaceFileExplorerLease;
     try {
-      fileExplorer = await workspace.getFileExplorer();
+      fileExplorerLease = await workspace.acquireFileExplorer("file-explorer-websocket");
     } catch (error) {
-      logger.error(`Failed to resolve file explorer for workspace ${workspaceId}: ${String(error)}`);
+      logger.error(`Failed to acquire file explorer for workspace ${workspaceId}: ${String(error)}`);
       connection.close(1011);
       return null;
     }
 
-    const lease = await this.acquireWatcherLease(fileExplorer, connection);
+    const fileExplorer = fileExplorerLease.fileExplorer;
+    const lease = await this.acquireWatcherLease(fileExplorer, connection, fileExplorerLease);
     if (!lease) {
       return null;
     }
@@ -65,12 +67,20 @@ export class FileExplorerStreamHandler {
     let sessionId: string | null = null;
     let sessionRegistered = false;
     let pendingLease: WatcherLease | null = lease;
+    let pendingFileExplorerLease: WorkspaceFileExplorerLease | null = fileExplorerLease;
     try {
       const eventStreamFactory = () => fileExplorer.subscribe();
       sessionId = randomUUID();
-      await this.manager.createSession(sessionId, workspaceId, eventStreamFactory, pendingLease);
+      await this.manager.createSession(
+        sessionId,
+        workspaceId,
+        eventStreamFactory,
+        pendingLease,
+        pendingFileExplorerLease,
+      );
       sessionRegistered = true;
       pendingLease = null;
+      pendingFileExplorerLease = null;
 
       const connectedMsg = createConnectedMessage(workspaceId, sessionId);
       connection.send(connectedMsg.toJson());
@@ -86,6 +96,7 @@ export class FileExplorerStreamHandler {
         await this.manager.closeSession(sessionId);
       } else {
         await pendingLease?.release();
+        await pendingFileExplorerLease?.release();
       }
       const errorMsg = createErrorMessage("SESSION_ERROR", String(error));
       try {
@@ -99,8 +110,9 @@ export class FileExplorerStreamHandler {
   }
 
   private async acquireWatcherLease(
-    fileExplorer: BaseFileExplorer,
+    fileExplorer: WorkspaceFileExplorer,
     connection: WebSocketConnection,
+    fileExplorerLease: WorkspaceFileExplorerLease,
   ): Promise<WatcherLease | null> {
     try {
       return await fileExplorer.acquireWatcherLease("file-explorer-websocket");
@@ -116,6 +128,7 @@ export class FileExplorerStreamHandler {
         // ignore
       }
       connection.close(4005);
+      await fileExplorerLease.release();
       return null;
     }
   }

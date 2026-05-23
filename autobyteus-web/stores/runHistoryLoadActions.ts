@@ -35,7 +35,7 @@ import {
 } from '~/services/runHydration/teamRunContextHydrationService';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
-import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import {
   applyMemberOrHistoryStatusSnapshot,
   applyOfflineOrTerminalCleanup,
@@ -60,7 +60,7 @@ interface RunHistoryFetchStoreLike {
   openingRun: boolean;
   findAgentNameByRunId(runId: string): string | null;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
-  resolveWorkspaceReferenceByRootPath(rootPath: string): Promise<WorkspaceReference | null>;
+  resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
 }
 
 export const fetchRunHistoryTree = async (
@@ -202,8 +202,8 @@ const reconcileDiscoveredActiveRuns = async (
       await hydrateLiveRunContext({
         runId,
         fallbackAgentName: findAgentNameByRunId(store.workspaceGroups, runId),
-        resolveWorkspaceReferenceByRootPath: (rootPath: string) =>
-          store.resolveWorkspaceReferenceByRootPath(rootPath),
+        resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
+          store.resolveWorkspaceMetadataByRootPath(rootPath),
         ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
         currentStatus: activeRun?.status ?? AgentStatus.Running,
       });
@@ -260,8 +260,8 @@ const reconcileDiscoveredActiveRuns = async (
       const result = await hydrateLiveTeamRunContext({
         teamRunId,
         memberRouteKey: null,
-        resolveWorkspaceReferenceByRootPath: (rootPath: string) =>
-          store.resolveWorkspaceReferenceByRootPath(rootPath),
+        resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
+          store.resolveWorkspaceMetadataByRootPath(rootPath),
         ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
         currentStatus: activeTeamRun.status,
         memberStatuses,
@@ -290,8 +290,8 @@ export const openHistoricalRun = async (
     const result = await openAgentRun({
       runId,
       fallbackAgentName: store.findAgentNameByRunId(runId),
-      resolveWorkspaceReferenceByRootPath: (rootPath: string) =>
-        store.resolveWorkspaceReferenceByRootPath(rootPath),
+      resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
+        store.resolveWorkspaceMetadataByRootPath(rootPath),
       selectionMode: options.selectionMode,
     });
 
@@ -307,12 +307,12 @@ export const openHistoricalRun = async (
   }
 };
 
-export const resolveRunHistoryWorkspaceReferenceByRootPath = async (
+export const resolveRunHistoryWorkspaceMetadataByRootPath = async (
   rootPath: string,
-): Promise<WorkspaceReference | null> => {
+): Promise<WorkspaceMetadata | null> => {
   const workspaceStore = useWorkspaceStore();
   try {
-    return await workspaceStore.resolveWorkspaceReferenceByRootPath(rootPath);
+    return await workspaceStore.resolveWorkspaceMetadataByRootPath(rootPath);
   } catch {
     return null;
   }

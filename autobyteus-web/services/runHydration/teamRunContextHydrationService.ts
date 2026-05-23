@@ -15,7 +15,7 @@ import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils
 import { fetchAndHydrateTeamCommunicationForTeam } from './teamCommunicationHydrationService';
 import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
 import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
-import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import { applyLiveTeamStatusSnapshot } from './teamRunStatusHydration';
 import type { TeamMemberLiveSnapshot } from './teamRunStatusHydration';
 export {
@@ -30,7 +30,7 @@ export type {
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
   memberRouteKey?: string | null;
-  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+  resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
 }
 
@@ -47,7 +47,7 @@ interface LoadedTeamRunContextHydrationPayload {
   focusedMemberRouteKey: string;
   resumeConfig: TeamRunResumeConfigPayload;
   members: Map<string, any>;
-  primaryWorkspaceReference: WorkspaceReference | null;
+  primaryWorkspaceMetadata: WorkspaceMetadata | null;
   metadata: ReturnType<typeof parseTeamRunMetadata>;
   historicalHydration: HistoricalTeamHydrationState | null;
   projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
@@ -93,27 +93,27 @@ const collectMetadataMemberRouteKeys = (metadata: ReturnType<typeof parseTeamRun
   return keys;
 };
 
-const selectPrimaryWorkspaceReference = (params: {
-  memberWorkspaceReferencesByRouteKey: Record<string, WorkspaceReference>;
+const selectPrimaryWorkspaceMetadata = (params: {
+  memberWorkspaceMetadatasByRouteKey: Record<string, WorkspaceMetadata>;
   focusedMemberRouteKey: string;
   coordinatorMemberRouteKey?: string | null;
-  fallback: WorkspaceReference | null;
-}): WorkspaceReference | null => {
+  fallback: WorkspaceMetadata | null;
+}): WorkspaceMetadata | null => {
   const focusedReference =
-    params.memberWorkspaceReferencesByRouteKey[params.focusedMemberRouteKey] ?? null;
+    params.memberWorkspaceMetadatasByRouteKey[params.focusedMemberRouteKey] ?? null;
   if (focusedReference) {
     return focusedReference;
   }
   const coordinatorKey = params.coordinatorMemberRouteKey?.trim() || '';
   return (coordinatorKey
-    ? params.memberWorkspaceReferencesByRouteKey[coordinatorKey] ?? null
+    ? params.memberWorkspaceMetadatasByRouteKey[coordinatorKey] ?? null
     : null) || params.fallback;
 };
 
 const buildHistoricalHydrationState = (params: {
   metadata: ReturnType<typeof parseTeamRunMetadata>;
   loadedMemberRouteKeys: string[];
-  memberWorkspaceReferencesByRouteKey: Record<string, WorkspaceReference>;
+  memberWorkspaceMetadatasByRouteKey: Record<string, WorkspaceMetadata>;
   erroredMemberRouteKeys?: string[];
 }): HistoricalTeamHydrationState => {
   const memberMetadataByRouteKey: HistoricalTeamHydrationState['memberMetadataByRouteKey'] = {};
@@ -143,7 +143,7 @@ const buildHistoricalHydrationState = (params: {
     updatedAt: params.metadata.createdAt,
     memberMetadataByRouteKey,
     memberProjectionLoadStateByRouteKey,
-    memberWorkspaceReferencesByRouteKey: params.memberWorkspaceReferencesByRouteKey,
+    memberWorkspaceMetadatasByRouteKey: params.memberWorkspaceMetadatasByRouteKey,
   };
 };
 
@@ -176,7 +176,7 @@ const buildHydratedTeamContext = (params: {
   resumeConfig: TeamRunResumeConfigPayload;
   members: Map<string, any>;
   focusedMemberRouteKey: string;
-  primaryWorkspaceReference: WorkspaceReference | null;
+  primaryWorkspaceMetadata: WorkspaceMetadata | null;
   currentStatus: string | null | undefined;
   memberStatuses: TeamMemberLiveSnapshot[];
   historicalHydration: HistoricalTeamHydrationState | null;
@@ -186,7 +186,7 @@ const buildHydratedTeamContext = (params: {
     teamRunId: params.metadata.teamRunId,
     config: reconstructTeamRunConfigFromMetadata({
       metadata: params.metadata,
-      primaryWorkspaceReference: params.primaryWorkspaceReference,
+      primaryWorkspaceMetadata: params.primaryWorkspaceMetadata,
       isLocked: params.resumeConfig.isActive,
     }),
     memberTree,
@@ -214,7 +214,7 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
   metadata: ReturnType<typeof parseTeamRunMetadata>;
   resumeConfig: TeamRunResumeConfigPayload;
   requestedMemberRouteKey?: string | null;
-  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+  resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
   ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
 }): Promise<LoadedTeamRunContextHydrationPayload> => {
   const client = getApolloClient();
@@ -233,8 +233,8 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
 
   const {
     members,
-    primaryWorkspaceReference,
-    memberWorkspaceReferencesByRouteKey,
+    primaryWorkspaceMetadata,
+    memberWorkspaceMetadatasByRouteKey,
   } = await buildLiveTeamMemberContexts({
     teamRunId: input.metadata.teamRunId,
     metadata: input.metadata,
@@ -242,7 +242,7 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
     projectionByMemberRouteKey,
     toTeamMemberKey,
     activateWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
-    resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+    resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
   });
 
   const availableMemberRouteKeys = collectMetadataMemberRouteKeys(input.metadata);
@@ -261,11 +261,11 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
     focusedMemberRouteKey,
     resumeConfig: input.resumeConfig,
     members,
-    primaryWorkspaceReference: selectPrimaryWorkspaceReference({
-      memberWorkspaceReferencesByRouteKey,
+    primaryWorkspaceMetadata: selectPrimaryWorkspaceMetadata({
+      memberWorkspaceMetadatasByRouteKey,
       focusedMemberRouteKey,
       coordinatorMemberRouteKey: input.metadata.coordinatorMemberRouteKey,
-      fallback: primaryWorkspaceReference,
+      fallback: primaryWorkspaceMetadata,
     }),
     metadata: input.metadata,
     historicalHydration: null,
@@ -277,7 +277,7 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
   metadata: ReturnType<typeof parseTeamRunMetadata>;
   resumeConfig: TeamRunResumeConfigPayload;
   requestedMemberRouteKey?: string | null;
-  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+  resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
 }): Promise<LoadedTeamRunContextHydrationPayload> => {
   const availableMemberRouteKeys = collectMetadataMemberRouteKeys(input.metadata);
   const focusedMemberRouteKey = resolveFocusKey({
@@ -314,14 +314,14 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
 
   const {
     members,
-    primaryWorkspaceReference,
-    memberWorkspaceReferencesByRouteKey,
+    primaryWorkspaceMetadata,
+    memberWorkspaceMetadatasByRouteKey,
   } = await buildHistoricalTeamMemberContextShells({
     teamRunId: input.metadata.teamRunId,
     metadata: input.metadata,
     projectionByMemberRouteKey,
     toTeamMemberKey,
-    resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+    resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
   });
 
   if (focusedProjection && focusedMetadata) {
@@ -343,17 +343,17 @@ const loadHistoricalTeamRunContextHydrationPayload = async (input: {
     focusedMemberRouteKey,
     resumeConfig: input.resumeConfig,
     members,
-    primaryWorkspaceReference: selectPrimaryWorkspaceReference({
-      memberWorkspaceReferencesByRouteKey,
+    primaryWorkspaceMetadata: selectPrimaryWorkspaceMetadata({
+      memberWorkspaceMetadatasByRouteKey,
       focusedMemberRouteKey,
       coordinatorMemberRouteKey: input.metadata.coordinatorMemberRouteKey,
-      fallback: primaryWorkspaceReference,
+      fallback: primaryWorkspaceMetadata,
     }),
     metadata: input.metadata,
     historicalHydration: buildHistoricalHydrationState({
       metadata: input.metadata,
       loadedMemberRouteKeys: focusedProjection ? [focusedMemberRouteKey] : [],
-      memberWorkspaceReferencesByRouteKey,
+      memberWorkspaceMetadatasByRouteKey,
       erroredMemberRouteKeys: focusedMetadata && !focusedProjection ? [focusedMemberRouteKey] : [],
     }),
     projectionByMemberRouteKey,
@@ -398,7 +398,7 @@ export const loadTeamRunContextHydrationPayload = async (
       metadata,
       resumeConfig,
       requestedMemberRouteKey: input.memberRouteKey,
-      resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+      resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
       ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
     });
   }
@@ -407,7 +407,7 @@ export const loadTeamRunContextHydrationPayload = async (
     metadata,
     resumeConfig,
     requestedMemberRouteKey: input.memberRouteKey,
-    resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+    resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
   });
 };
 
@@ -423,7 +423,7 @@ export const hydrateLiveTeamRunContext = async (
     resumeConfig: payload.resumeConfig,
     members: payload.members,
     focusedMemberRouteKey: payload.focusedMemberRouteKey,
-    primaryWorkspaceReference: payload.primaryWorkspaceReference,
+    primaryWorkspaceMetadata: payload.primaryWorkspaceMetadata,
     currentStatus: input.currentStatus,
     memberStatuses: input.memberStatuses || [],
     historicalHydration: payload.historicalHydration,

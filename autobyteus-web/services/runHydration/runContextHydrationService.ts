@@ -14,8 +14,8 @@ import { hydrateActivitiesFromProjection, type RunProjectionActivityEntry } from
 import { normalizeAgentRuntimeStatus } from './runtimeStatusNormalization';
 import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { hydrateRunFileChanges } from './runFileChangeHydrationService';
-import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference';
-import { createWorkspaceReference } from '~/utils/workspaceReference';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 
 export interface RunProjectionPayload {
   runId: string;
@@ -40,7 +40,7 @@ interface GetRunFileChangesQueryData {
 export interface LoadRunContextHydrationInput {
   runId: string;
   fallbackAgentName: string | null;
-  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+  resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
 }
 
@@ -99,21 +99,21 @@ export const loadRunContextHydrationPayload = async (
     throw new Error('Run resume config payload is missing.');
   }
 
-  let workspaceReference = await input.resolveWorkspaceReferenceByRootPath(
+  let workspaceMetadata = await input.resolveWorkspaceMetadataByRootPath(
     resumeConfig.metadataConfig.workspaceRootPath,
   );
   if (resumeConfig.isActive && input.ensureWorkspaceByRootPath) {
     const activatedWorkspaceId = await input.ensureWorkspaceByRootPath(
       resumeConfig.metadataConfig.workspaceRootPath,
     );
-    if (activatedWorkspaceId && !workspaceReference) {
-      workspaceReference = createWorkspaceReference({
+    if (activatedWorkspaceId && !workspaceMetadata) {
+      workspaceMetadata = createWorkspaceMetadata({
         workspaceId: activatedWorkspaceId,
         workspaceRootPath: resumeConfig.metadataConfig.workspaceRootPath,
       });
     }
   }
-  if (!workspaceReference) {
+  if (!workspaceMetadata) {
     throw new Error(`Workspace '${resumeConfig.metadataConfig.workspaceRootPath}' could not be resolved.`);
   }
 
@@ -149,8 +149,8 @@ export const loadRunContextHydrationPayload = async (
     agentAvatarUrl: agentDefinition?.avatarUrl || null,
     llmModelIdentifier: resumeConfig.metadataConfig.llmModelIdentifier,
     runtimeKind: resumeConfig.metadataConfig.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
-    workspaceId: workspaceReference.workspaceId,
-    workspaceReference,
+    workspaceId: workspaceMetadata.workspaceId,
+    workspaceMetadata,
     autoExecuteTools: resumeConfig.metadataConfig.autoExecuteTools,
     skillAccessMode:
       (resumeConfig.metadataConfig.skillAccessMode as SkillAccessMode | null) ||

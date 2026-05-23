@@ -738,10 +738,10 @@ describe('agentTeamRunStore', () => {
   });
 
   it('fans out mixed member runtimes when launching a temporary team', async () => {
-    const workspaceReference = {
-      workspaceId: 'agent_ws_reference',
-      workspaceRootPath: '/tmp/ReferenceTeam',
-      displayName: 'ReferenceTeam',
+    const workspaceMetadata = {
+      workspaceId: 'agent_ws_metadata',
+      workspaceRootPath: '/tmp/MetadataTeam',
+      displayName: 'MetadataTeam',
       kind: 'filesystem' as const,
     };
     const focusedMember = {
@@ -761,8 +761,8 @@ describe('agentTeamRunStore', () => {
       config: {
         teamDefinitionId: 'team-def-1',
         runtimeKind: 'codex_app_server',
-        workspaceId: workspaceReference.workspaceId,
-        workspaceReference,
+        workspaceId: workspaceMetadata.workspaceId,
+        workspaceMetadata,
         llmModelIdentifier: 'gpt-5.3-codex',
         llmConfig: { reasoning_effort: 'high' },
         autoExecuteTools: false,
@@ -827,8 +827,8 @@ describe('agentTeamRunStore', () => {
                 memberName: 'professor',
                 agentDefinitionId: 'agent-a',
                 runtimeKind: 'codex_app_server',
-                workspaceId: workspaceReference.workspaceId,
-                workspaceRootPath: workspaceReference.workspaceRootPath,
+                workspaceId: workspaceMetadata.workspaceId,
+                workspaceRootPath: workspaceMetadata.workspaceRootPath,
                 skillAccessMode: 'GLOBAL_DISCOVERY',
                 llmConfig: { reasoning_effort: 'medium' },
               }),
@@ -837,8 +837,8 @@ describe('agentTeamRunStore', () => {
                 agentDefinitionId: 'agent-b',
                 runtimeKind: 'claude_agent_sdk',
                 llmModelIdentifier: 'claude-sonnet',
-                workspaceId: workspaceReference.workspaceId,
-                workspaceRootPath: workspaceReference.workspaceRootPath,
+                workspaceId: workspaceMetadata.workspaceId,
+                workspaceRootPath: workspaceMetadata.workspaceRootPath,
                 skillAccessMode: 'GLOBAL_DISCOVERY',
                 llmConfig: { thinking_enabled: true },
               }),

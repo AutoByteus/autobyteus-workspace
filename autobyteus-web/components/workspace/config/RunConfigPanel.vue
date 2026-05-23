@@ -164,8 +164,8 @@ const configTitle = computed(() => {
   return $t('workspace.components.workspace.config.RunConfigPanel.title.configuration')
 })
 
-const resolveWorkspacePath = (config: Pick<AgentRunConfig | TeamRunConfig, 'workspaceId' | 'workspaceReference'> | null): string => {
-  if (config?.workspaceReference?.workspaceRootPath) return config.workspaceReference.workspaceRootPath
+const resolveWorkspacePath = (config: Pick<AgentRunConfig | TeamRunConfig, 'workspaceId' | 'workspaceMetadata'> | null): string => {
+  if (config?.workspaceMetadata?.workspaceRootPath) return config.workspaceMetadata.workspaceRootPath
   if (!config?.workspaceId) return ''
   const workspace = workspaceStore.workspaces[config.workspaceId]
   return workspace?.absolutePath || workspace?.workspaceConfig?.root_path || workspace?.workspaceConfig?.rootPath || ''
@@ -213,15 +213,15 @@ const handleSelectExisting = (workspaceId: string) => {
     return
   }
   const selectedWorkspace = workspaceStore.workspaces[workspaceId] || null
-  const workspaceReference = workspaceStore.workspaceReferencesById[workspaceId]
-    || (selectedWorkspace ? workspaceStore.registerWorkspaceInfoReference(selectedWorkspace) : null)
+  const workspaceMetadata = workspaceStore.workspaceMetadataById[workspaceId]
+    || (selectedWorkspace ? workspaceStore.registerWorkspaceInfoMetadata(selectedWorkspace) : null)
     || null
 
   if (effectiveTeamConfig.value) {
-    teamRunConfigStore.updateConfig({ workspaceId, workspaceReference })
+    teamRunConfigStore.updateConfig({ workspaceId, workspaceMetadata })
     setActiveTab('files')
   } else if (effectiveAgentConfig.value) {
-    runConfigStore.updateAgentConfig({ workspaceId, workspaceReference })
+    runConfigStore.updateAgentConfig({ workspaceId, workspaceMetadata })
     setActiveTab('files')
   }
 }
@@ -235,8 +235,8 @@ const handleLoadNew = async (path: string) => {
     teamRunConfigStore.setWorkspaceLoading(true)
     try {
       const workspaceId = await workspaceStore.createWorkspace({ root_path: path })
-      const workspaceReference = workspaceStore.workspaceReferencesById[workspaceId] || null
-      teamRunConfigStore.setWorkspaceLoaded(workspaceId, path, workspaceReference)
+      const workspaceMetadata = workspaceStore.workspaceMetadataById[workspaceId] || null
+      teamRunConfigStore.setWorkspaceLoaded(workspaceId, path, workspaceMetadata)
       setActiveTab('files')
     } catch (error: any) {
       teamRunConfigStore.setWorkspaceError(error?.message || 'Failed to load workspace')
@@ -248,8 +248,8 @@ const handleLoadNew = async (path: string) => {
     runConfigStore.setWorkspaceLoading(true)
     try {
       const workspaceId = await workspaceStore.createWorkspace({ root_path: path })
-      const workspaceReference = workspaceStore.workspaceReferencesById[workspaceId] || null
-      runConfigStore.setWorkspaceLoaded(workspaceId, path, workspaceReference)
+      const workspaceMetadata = workspaceStore.workspaceMetadataById[workspaceId] || null
+      runConfigStore.setWorkspaceLoaded(workspaceId, path, workspaceMetadata)
       setActiveTab('files')
     } catch (error: any) {
       runConfigStore.setWorkspaceError(error?.message || 'Failed to load workspace')

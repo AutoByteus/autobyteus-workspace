@@ -124,7 +124,7 @@ describe('openAgentRun', () => {
     await openAgentRun({
       runId: 'run-1',
       fallbackAgentName: 'Agent',
-      resolveWorkspaceReferenceByRootPath: vi.fn(),
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
     });
 
@@ -170,7 +170,7 @@ describe('openAgentRun', () => {
     await openAgentRun({
       runId: 'run-2',
       fallbackAgentName: 'Agent',
-      resolveWorkspaceReferenceByRootPath: vi.fn(),
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
     });
 

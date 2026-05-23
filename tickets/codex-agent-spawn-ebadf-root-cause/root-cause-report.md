@@ -206,7 +206,7 @@ Durable fix direction in the same ticket:
 
 1. Introduce/use a cheap workspace reference boundary based on canonical `workspaceRootPath` and deterministic `workspaceId` without file tree initialization.
 2. Hydrate historical runs with that lazy workspace reference, not by creating/initializing a workspace.
-3. Move actual workspace activation to workspace-dependent actions: Files, Terminal, resume/rerun, context picker, and similar.
+3. Move actual workspace materialization to file-tree-dependent actions: Files, context picker file browsing, and similar. Terminal and resume/rerun use the stored/canonical `workspaceRootPath` directly unless a future runtime path truly needs file-tree state.
 4. Missing local paths should not block viewing stored history; they should error only when the user requests current workspace functionality.
 
 ## Round 3 Design Refinement: Workspace Identity vs Activation Ambiguity
@@ -219,4 +219,138 @@ Architecture review round 3 identified that the same history-open root cause als
 Root-cause refinement:
 
 - The slow history-open symptom is not only a local call-site defect. It is a shared-structure looseness and boundary issue: deterministic workspace identity, initialized workspace payload, and file explorer snapshot were allowed to collapse into `workspaceId`/`WorkspaceInfo` usage.
-- The corrected invariant is: `workspaceId` in run/team configs is a stable reference id only; initialized workspace payload belongs to `WorkspaceStore.workspaces`; workspace activation is explicit at Files/Terminal/context or other workspace-dependent action boundaries.
+- The corrected invariant is: `workspaceId` in run/team configs is a stable reference id only; initialized workspace payload belongs to `WorkspaceStore.workspaces`; workspace materialization is explicit at Files/context file-tree action boundaries. Terminal is a root-path/cwd action, not a materialized-workspace action.
+
+
+## Same-Ticket Release Blocker: Terminal Root-Path Refinement
+
+On 2026-05-23, validation of the latest delivered Electron build exposed the same boundary problem in the Terminal tab. The file explorer and history paths had been separated from eager watcher/materialization behavior, but Terminal still follows the old materialized-workspace path:
+
+```text
+Terminal.vue
+-> ensureWorkspaceForTerminal()
+-> workspaceStore.ensureWorkspaceInitialized(reference)
+-> workspaceStore.createWorkspace({ root_path })
+-> WorkspaceManager.createWorkspace()
+-> FileSystemWorkspace.initialize()
+-> /ws/terminal/:workspaceId/:sessionId
+-> workspaceManager.getWorkspaceById(workspaceId)
+-> TerminalHandler.connect(..., workspace.getBasePath())
+```
+
+Root-cause refinement:
+
+- Terminal is a cwd/root-path feature. It needs an authenticated WebSocket, a validated cwd, a session id, and optional session grouping metadata.
+- Terminal does not need `WorkspaceInfo.fileExplorer`, a shallow tree, search/index structures, live file explorer streams, or watcher leases.
+- The backend route currently requires `workspaceManager.getWorkspaceById(workspaceId)` only to recover cwd, which forces the frontend to materialize an ordinary filesystem workspace before opening Terminal.
+
+Durable same-ticket fix direction:
+
+1. `Terminal.vue` resolves the active/focused `WorkspaceReference` and passes `workspaceReference.workspaceRootPath` to `useTerminalSession`.
+2. `useTerminalSession.ts` accepts a root-path terminal target rather than an initialized workspace-id-only target.
+3. `api/websocket/terminal.ts` validates/canonicalizes the requested cwd directly and calls the terminal handler with cwd.
+4. `TerminalHandler` / `PtySessionManager` start PTY sessions from the validated cwd and do not call workspace materialization or file-explorer APIs.
+5. Missing/inaccessible paths fail at Terminal connection time, without blocking historical conversation display or mutating run context.
+
+## Round 5 Root-Cause Refinement: Mobile Terminal And Pending PTY Cleanup
+
+Architecture review round 5 found that the Terminal root-path fix must cover the full Terminal spine, not only the desktop tab:
+
+1. **Mobile Terminal still had the old initialized-workspace gate.** `MobileTools.vue` receives `MobileWorkContext`, but it converts that context into `workspaceFromContext` by reading `workspaceStore.workspaces` or searching `workspaceStore.allWorkspaces`, then renders `<Terminal :workspace-id="terminalWorkspaceId" />`. This keeps mobile Terminal dependent on materialized `WorkspaceInfo` even though `MobileWorkContext` already carries `workspaceRootPath` / `rootPath`.
+2. **Terminal WebSocket pending connect had the same lifecycle race as file explorer.** `api/websocket/terminal.ts` assigns `connectedSessionId` only after async `handler.connect()` resolves; a close before that point can return without disconnecting a late-created PTY session/read loop.
+
+Refined root cause:
+
+- The same boundary issue appears in two forms: root-path/cwd features were using materialized workspace identity, and async route cleanup depended on a session id that may not exist yet.
+- Watcher/file-descriptor pressure caused the original `spawn EBADF`, but the same durable fix principle applies to PTY sessions: resource lifetime must be owned by the visible/connected consumer boundary, including pending setup and failure windows.
+
+Durable same-ticket fix additions:
+
+1. `MobileTools.vue` derives `TerminalTarget` directly from `MobileWorkContext` and already-hydrated focused member references; it does not look up `WorkspaceInfo` or pass a workspace-id-only Terminal prop.
+2. Backend Terminal route registers close/error cleanup before auth/connect, tracks `closed`, `cleanupStarted`, `connectPromise`, `connectedSessionId`, and pending messages, and disconnects late PTY sessions after early close.
+3. `TerminalHandler.connect()` / `PtySessionManager` close partial PTY sessions on setup failure before route ownership is established.
+
+## Round 6 Root-Cause Refinement: Workspace Metadata vs FileExplorer Capability
+
+The deeper root cause is now stated more precisely:
+
+- The codebase treats “workspace” as if workspace metadata and file-explorer state are one subject.
+- Current backend `FileSystemWorkspace` creates a `LocalFileExplorer` in its constructor, and `WorkspaceManager.createWorkspace()` calls `initialize()`, which builds a shallow tree and creates search/index state.
+- Current frontend `WorkspaceInfo` includes `fileExplorer: TreeNode`, so general workspace state is still tree-bearing.
+- Runtime/cwd features then accidentally depend on file-explorer initialization when they only need root path metadata.
+
+Correct invariant:
+
+```text
+WorkspaceMetadata is the core subject.
+FileExplorer is an optional lazy capability of that metadata.
+```
+
+Additional durable fix direction:
+
+1. Rename the cheap identity/display shape from `WorkspaceReference` to `WorkspaceMetadata`.
+2. Make `createWorkspace()` / `getOrCreateWorkspace()` metadata-only and forbid internal FileExplorer creation there.
+3. Collapse `BaseFileExplorer` and `LocalFileExplorer` into a single concrete `FileExplorer` because no alternate filesystem implementation exists.
+4. Create/acquire/release FileExplorer only from file-explorer consumers: Files, mobile Files, skill explorer, context browser/search/read/write, and live file-explorer WebSocket.
+5. Keep agent runtime, Codex/Claude/AutoByteus cwd resolution, Terminal, history, resume, and rerun on `WorkspaceMetadata.rootPath` only.
+
+
+## Round 7 Root-Cause Refinement: API Names Were Not The Defect
+
+The final root-cause framing is not that `WorkspaceManager` or `createWorkspace()` are bad API concepts. They are the right product-level boundary: the application does manage workspaces, and callers should be able to create or resolve a workspace by root path.
+
+The defect is that workspace creation currently crosses into FileExplorer ownership:
+
+```text
+createWorkspace()
+-> FileSystemWorkspace constructor / initialize()
+-> FileExplorer tree setup
+-> FileNameIndexer/search setup
+-> potential watcher/resource pressure
+```
+
+Corrected invariant:
+
+```text
+Workspace creation is cheap metadata/capability-container creation.
+FileExplorer creation is explicit, lazy, and owned by file-explorer consumers.
+```
+
+This means the durable fix should preserve the top-level workspace boundary while removing eager implementation side effects. Renaming or replacing `WorkspaceManager` with a separate metadata manager would not address the core ownership issue and could create a new mixed-boundary problem. The important removal is not the workspace API; it is the implicit FileExplorer/index/tree initialization hidden behind workspace creation/list/history/terminal/runtime paths.
+
+
+## Round 8 Root-Cause Refinement: Tree/Search/Watcher State Needs A File-Explorer Capability Boundary
+
+The final concept separation is now sharper:
+
+```text
+WorkspaceMetadata is the workspace identity/root-path subject.
+WorkspaceFileExplorer is the lazy capability subject for file browsing/searching/mutation/watching.
+WorkspaceFileExplorerTree is the frontend/API projection of loaded tree state.
+```
+
+The original architecture blurred these subjects in both directions:
+
+- Backend workspace creation constructed or initialized file-explorer internals.
+- Backend search/index state lived under workspace initialization even though it serves file browsing/search.
+- Frontend workspace metadata carried `fileExplorer: TreeNode`, so workspace selection/list/history paths inherited tree payload pressure.
+
+Corrected invariant:
+
+```text
+A Workspace can own a WorkspaceFileExplorer capability, but Workspace creation does not create it.
+WorkspaceFileExplorer owns tree, index/search, file operations, and watchers.
+WorkspaceFileExplorerTree is emitted only by file-explorer APIs and stored only in file-explorer frontend state.
+```
+
+This refinement avoids two bad outcomes at once:
+
+1. It prevents `Workspace` from remaining bloated with file browsing/search/watcher state.
+2. It prevents a new generic `FileExplorer` god-object by allowing internal collaborators under one explicit `WorkspaceFileExplorer` boundary.
+
+
+## AR-007 Root-Cause Documentation Reconciliation
+
+Architecture review round 6 did not reject the Round 8 architecture. It rejected the design spec as an implementation guide because older final-target sections still contradicted the accepted model. The root cause of that review failure was documentation ambiguity: one artifact contained both the superseded `WorkspaceReference` / `BaseFileExplorer` / tree-bearing `WorkspaceStore` target and the accepted `WorkspaceMetadata` / `WorkspaceFileExplorer` / `WorkspaceFileExplorerTree` target.
+
+The design spec has now been reconciled so the only steady-state target is the Round 8 model. Superseded names are allowed only as current-state evidence or temporary migration aliases, not target architecture.

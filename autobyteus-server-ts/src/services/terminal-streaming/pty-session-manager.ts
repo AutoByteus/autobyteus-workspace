@@ -7,6 +7,17 @@ type TerminalSessionRecord = {
   workspaceId: string;
 };
 
+export class TerminalSessionStartupAbortedError extends Error {
+  constructor(sessionId: string) {
+    super(`Terminal session '${sessionId}' was closed during startup`);
+    this.name = "TerminalSessionStartupAbortedError";
+  }
+}
+
+type CreateSessionOptions = {
+  signal?: AbortSignal;
+};
+
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
   error: (...args: unknown[]) => console.error(...args),
@@ -20,17 +31,68 @@ export class PtySessionManager {
     this.sessionFactory = sessionFactory ?? getDefaultSessionFactory();
   }
 
-  async createSession(sessionId: string, workspaceId: string, cwd: string): Promise<TerminalSession> {
+  async createSession(
+    sessionId: string,
+    workspaceId: string,
+    cwd: string,
+    options: CreateSessionOptions = {},
+  ): Promise<TerminalSession> {
     if (this.sessions.has(sessionId)) {
       throw new Error(`Session '${sessionId}' already exists`);
     }
+    if (options.signal?.aborted) {
+      throw new TerminalSessionStartupAbortedError(sessionId);
+    }
 
     const session = new this.sessionFactory(sessionId);
-    await session.start(cwd);
     this.sessions.set(sessionId, { session, workspaceId });
 
-    const backendName = this.sessionFactory.name || 'UnknownSessionBackend';
-    logger.info(`Created terminal session ${sessionId} using backend ${backendName} for workspace ${workspaceId}`);
+    const abortListener = (): void => {
+      void this.closeSession(sessionId).catch((closeError) => {
+        logger.error(
+          `Failed to close aborted PTY session ${sessionId}: ${String(closeError)}`,
+        );
+      });
+    };
+    options.signal?.addEventListener("abort", abortListener, { once: true });
+
+    try {
+      await session.start(cwd);
+      if (
+        options.signal?.aborted ||
+        this.sessions.get(sessionId)?.session !== session
+      ) {
+        await session.close().catch((closeError) => {
+          logger.error(
+            `Failed to close aborted PTY session ${sessionId}: ${String(closeError)}`,
+          );
+        });
+        throw new TerminalSessionStartupAbortedError(sessionId);
+      }
+    } catch (error) {
+      const wasAborted =
+        options.signal?.aborted ||
+        this.sessions.get(sessionId)?.session !== session;
+      if (this.sessions.get(sessionId)?.session === session) {
+        this.sessions.delete(sessionId);
+      }
+      await session.close().catch((closeError) => {
+        logger.error(
+          `Failed to close partial PTY session ${sessionId}: ${String(closeError)}`,
+        );
+      });
+      if (wasAborted) {
+        throw new TerminalSessionStartupAbortedError(sessionId);
+      }
+      throw error;
+    } finally {
+      options.signal?.removeEventListener("abort", abortListener);
+    }
+
+    const backendName = this.sessionFactory.name || "UnknownSessionBackend";
+    logger.info(
+      `Created terminal session ${sessionId} using backend ${backendName} for workspace ${workspaceId}`,
+    );
     return session;
   }
 

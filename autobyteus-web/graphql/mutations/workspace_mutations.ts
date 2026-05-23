@@ -6,8 +6,12 @@ export const CreateWorkspace = gql`
       __typename
       workspaceId
       name
-      fileExplorer
+      displayName
+      config
+      workspaceRootPath
       absolutePath
+      kind
+      isTemp
     }
   }
 `

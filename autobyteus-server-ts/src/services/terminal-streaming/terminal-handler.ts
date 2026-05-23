@@ -1,4 +1,8 @@
-import { PtySessionManager, type TerminalSession } from "./pty-session-manager.js";
+import {
+  PtySessionManager,
+  TerminalSessionStartupAbortedError,
+  type TerminalSession,
+} from "./pty-session-manager.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -12,6 +16,10 @@ type ClientMessage =
 type PendingReadLoop = {
   session: TerminalSession;
   promise: Promise<void>;
+};
+
+type TerminalConnectOptions = {
+  signal?: AbortSignal;
 };
 
 const READ_TIMEOUT_SECONDS = 0.05;
@@ -40,9 +48,17 @@ export class TerminalHandler {
     workspaceId: string,
     sessionId: string,
     cwd: string,
+    options: TerminalConnectOptions = {},
   ): Promise<string> {
     try {
-      await this.manager.createSession(sessionId, workspaceId, cwd);
+      await this.manager.createSession(sessionId, workspaceId, cwd, {
+        signal: options.signal,
+      });
+      if (options.signal?.aborted) {
+        await this.manager.closeSession(sessionId);
+        throw new TerminalSessionStartupAbortedError(sessionId);
+      }
+
       const session = this.manager.getSession(sessionId);
       if (!session) {
         throw new Error(`Session '${sessionId}' was not created`);
@@ -54,8 +70,18 @@ export class TerminalHandler {
       logger.info(`Terminal WebSocket connected: ${sessionId}`);
       return sessionId;
     } catch (error) {
-      logger.error(`Failed to create terminal session: ${String(error)}`);
-      connection.close(1011);
+      this.activeTasks.delete(sessionId);
+      await this.manager.closeSession(sessionId).catch((closeError) => {
+        logger.error(
+          `Failed to close partial terminal session ${sessionId}: ${String(closeError)}`,
+        );
+      });
+      if (error instanceof TerminalSessionStartupAbortedError) {
+        logger.info(`Terminal session startup aborted: ${sessionId}`);
+      } else {
+        logger.error(`Failed to create terminal session: ${String(error)}`);
+        connection.close(1011);
+      }
       throw error;
     }
   }
@@ -115,7 +141,18 @@ export class TerminalHandler {
         await sleep(LOOP_SLEEP_MS);
       }
     } catch (error) {
-      logger.error(`Error in terminal read loop for ${sessionId}: ${String(error)}`);
+      logger.error(
+        `Error in terminal read loop for ${sessionId}: ${String(error)}`,
+      );
+      if (this.activeTasks.get(sessionId)?.session === session) {
+        this.activeTasks.delete(sessionId);
+        await this.manager.closeSession(sessionId).catch((closeError) => {
+          logger.error(
+            `Failed to close terminal session ${sessionId} after read loop failure: ${String(closeError)}`,
+          );
+        });
+        connection.close(1011);
+      }
     }
   }
 

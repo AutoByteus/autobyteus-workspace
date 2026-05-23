@@ -1,5 +1,6 @@
 import { AsyncQueue } from "../../file-explorer/watcher/event-batcher.js";
-import type { WatcherLease } from "../../file-explorer/base-file-explorer.js";
+import type { WatcherLease } from "../../file-explorer/file-explorer.js";
+import type { WorkspaceFileExplorerLease } from "../../workspaces/filesystem-workspace.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -16,6 +17,7 @@ export class FileExplorerSession {
   private forwarder: Promise<void> | null = null;
   private eventGenerator: AsyncGenerator<string, void, void> | null = null;
   private watcherLease: WatcherLease | null;
+  private fileExplorerLease: WorkspaceFileExplorerLease | null;
   private closePromise: Promise<void> | null = null;
 
   constructor(
@@ -23,11 +25,13 @@ export class FileExplorerSession {
     workspaceId: string,
     eventStreamFactory: () => AsyncGenerator<string, void, void>,
     watcherLease: WatcherLease | null = null,
+    fileExplorerLease: WorkspaceFileExplorerLease | null = null,
   ) {
     this.sessionId = sessionId;
     this.workspaceId = workspaceId;
     this.eventStreamFactory = eventStreamFactory;
     this.watcherLease = watcherLease;
+    this.fileExplorerLease = fileExplorerLease;
 
     logger.info(`FileExplorerSession created: ${sessionId} for workspace ${workspaceId}`);
   }
@@ -84,12 +88,20 @@ export class FileExplorerSession {
     this.active = false;
     this.eventQueue.push(null);
 
-    const lease = this.watcherLease;
+    const watcherLease = this.watcherLease;
     this.watcherLease = null;
     try {
-      await lease?.release();
+      await watcherLease?.release();
     } catch (error) {
       logger.error(`Session ${this.sessionId}: Error releasing watcher lease: ${String(error)}`);
+    }
+
+    const fileExplorerLease = this.fileExplorerLease;
+    this.fileExplorerLease = null;
+    try {
+      await fileExplorerLease?.release();
+    } catch (error) {
+      logger.error(`Session ${this.sessionId}: Error releasing file explorer lease: ${String(error)}`);
     }
 
     try {

@@ -117,7 +117,7 @@ export const buildRunHistoryTreeNodes = (params: {
       agentDefinitionId: string;
       agentDefinitionName?: string | null;
       workspaceId?: string | null;
-      workspaceReference?: { workspaceRootPath?: string | null } | null;
+      workspaceMetadata?: { workspaceRootPath?: string | null } | null;
       agentAvatarUrl?: string | null;
     };
     state: {
@@ -191,7 +191,7 @@ export const buildRunHistoryTreeNodes = (params: {
     }
 
     const workspaceRootPath =
-      context.config.workspaceReference?.workspaceRootPath ||
+      context.config.workspaceMetadata?.workspaceRootPath ||
       resolveWorkspaceRootPath(
         params.workspacesById,
         context.config.workspaceId ?? null,

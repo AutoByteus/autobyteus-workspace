@@ -73,7 +73,7 @@ Main terminal component using xterm.js for rich terminal emulation.
 - **Ctrl+C support**: Interrupt current input
 - **Responsive sizing**: Auto-fits container with ResizeObserver
 - **Display preference integration**: Uses the shared app font-size store and refits when terminal font metrics change
-- **Explicit workspace override**: Accepts an optional `workspaceId` prop so mobile wrappers can connect to the workspace represented by the current mobile work context without mutating the desktop active-workspace store
+- **Root-path target**: Accepts a `TerminalTarget` with a workspace root path (and optional display metadata) so desktop and mobile wrappers can connect without materializing workspace/file-explorer state.
 
 **Terminal Configuration (Light Theme):**
 
@@ -123,19 +123,19 @@ Manages the terminal WebSocket session and streaming I/O.
 
 **Key Responsibilities:**
 
-- Connect/disconnect WebSocket sessions per workspace
+- Connect/disconnect WebSocket sessions for an explicit terminal root path
 - Send input and resize events to the backend
 - Receive output streams and forward to xterm.js
 
 **Core API:**
 
-| Function       | Description                          |
-| -------------- | ------------------------------------ |
-| `connect()`    | Opens the WebSocket session          |
-| `disconnect()` | Closes the session                   |
-| `sendInput()`  | Sends user input (base64 encoded)    |
-| `sendResize()` | Sends terminal resize events         |
-| `onOutput()`   | Registers output callback for xterm  |
+| Function       | Description                         |
+| -------------- | ----------------------------------- |
+| `connect()`    | Opens the WebSocket session         |
+| `disconnect()` | Closes the session                  |
+| `sendInput()`  | Sends user input (base64 encoded)   |
+| `sendResize()` | Sends terminal resize events        |
+| `onOutput()`   | Registers output callback for xterm |
 
 ### RightSideTabs.vue
 
@@ -155,14 +155,14 @@ Tab container that hosts the Terminal alongside other workspace tools.
 
 Phone-sized tool shell used by the `/mobile` Phone Access experience. It reuses the same `Terminal.vue` and `VncViewer.vue` tool owners instead of importing the desktop right-panel layout.
 
-- Terminal is shown only when the current mobile work context resolves to a workspace-backed context.
-- The wrapper passes `workspaceId` into `Terminal.vue`, so the WebSocket session connects to the selected mobile workspace even when the desktop active-workspace store is not the source of truth.
+- Terminal is shown only when the current mobile work context exposes a workspace root path.
+- The wrapper passes a root-path `TerminalTarget` into `Terminal.vue`, so the WebSocket session connects to the selected mobile root without requiring initialized workspace/file-explorer store state.
 - If no workspace is selected, the mobile tool surface shows a clear workspace-required state and routes the user back to work selection.
 - VNC uses the configured server host list and requires phone-reachable hostnames or private-network IPs.
 
 ## WebSocket Protocol (Summary)
 
-The terminal session communicates via WebSocket using JSON messages:
+The terminal session connects to `/ws/terminal/{sessionId}?cwd={encodedRootPath}` and communicates via WebSocket using JSON messages:
 
 - **Input**: `{ "type": "input", "data": "<base64>" }`
 - **Resize**: `{ "type": "resize", "rows": number, "cols": number }`
@@ -211,5 +211,5 @@ workspace-name:~$ <your-command>
 
 ## Related Documentation
 
-- **[File Explorer](./file_explorer.md)**: The terminal executes commands within the directory context of the File Explorer.
+- **[File Explorer](./file_explorer.md)**: Terminal and File Explorer are separate workspace capabilities; Terminal uses cwd/root path while File Explorer owns tree/search/watch state.
 - **[Agent Execution Architecture](./agent_execution_architecture.md)**: Agents can sometimes execute terminal commands (via tools), which is a separate but related capability.

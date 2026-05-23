@@ -15,22 +15,28 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-@ObjectType()
-export class WorkspaceInfo {
+@ObjectType("WorkspaceMetadata")
+export class WorkspaceMetadataInfo {
   @Field(() => String)
   workspaceId!: string;
 
   @Field(() => String)
   name!: string;
 
+  @Field(() => String)
+  displayName!: string;
+
   @Field(() => GraphQLJSON)
   config!: Record<string, unknown>;
 
-  @Field(() => String, { nullable: true })
-  fileExplorer?: string | null;
+  @Field(() => String)
+  workspaceRootPath!: string;
 
   @Field(() => String, { nullable: true })
   absolutePath?: string | null;
+
+  @Field(() => String)
+  kind!: "filesystem" | "skill" | "temp";
 
   @Field(() => Boolean)
   isTemp!: boolean;
@@ -42,72 +48,58 @@ export class CreateWorkspaceInput {
   rootPath!: string;
 }
 
-@ObjectType()
-export class WorkspaceReferenceInfo {
-  @Field(() => String)
-  workspaceId!: string;
-
-  @Field(() => String)
-  workspaceRootPath!: string;
-
-  @Field(() => String)
-  displayName!: string;
-
-  @Field(() => String)
-  kind!: "filesystem";
-}
-
 @Resolver()
 export class WorkspaceResolver {
   private get workspaceManager() {
     return getWorkspaceManager();
   }
 
-  @Query(() => [WorkspaceInfo])
-  async workspaces(): Promise<WorkspaceInfo[]> {
+  @Query(() => [WorkspaceMetadataInfo])
+  async workspaces(): Promise<WorkspaceMetadataInfo[]> {
     try {
       await this.workspaceManager.getOrCreateTempWorkspace();
-      const domainWorkspaces = this.workspaceManager.getAllWorkspaces();
-      const graphqlWorkspaces: WorkspaceInfo[] = [];
-      for (const workspace of domainWorkspaces) {
-        const graphqlWorkspace = await WorkspaceConverter.toGraphql(workspace);
-        graphqlWorkspaces.push(graphqlWorkspace);
-      }
-      return graphqlWorkspaces;
+      return this.workspaceManager
+        .getAllWorkspaces()
+        .map((workspace) => WorkspaceConverter.toGraphql(workspace));
     } catch (error) {
       logger.error(`Failed to fetch all workspaces: ${String(error)}`);
       throw new Error("Unable to fetch workspaces at this time.");
     }
   }
 
-  @Query(() => WorkspaceReferenceInfo)
-  async workspaceReference(
+  @Query(() => WorkspaceMetadataInfo)
+  async workspaceMetadata(
     @Arg("rootPath", () => String) rootPath: string,
-  ): Promise<WorkspaceReferenceInfo> {
+  ): Promise<WorkspaceMetadataInfo> {
     try {
       const workspaceRootPath = canonicalizeWorkspaceRootPath(rootPath);
+      const displayName = workspaceDisplayNameFromRootPath(workspaceRootPath);
       return {
         workspaceId: buildFilesystemWorkspaceId(workspaceRootPath),
+        name: displayName,
+        displayName,
+        config: { rootPath: workspaceRootPath },
         workspaceRootPath,
-        displayName: workspaceDisplayNameFromRootPath(workspaceRootPath),
+        absolutePath: workspaceRootPath,
         kind: "filesystem",
+        isTemp: false,
       };
     } catch (error) {
-      logger.error(`Failed to resolve workspace reference: ${String(error)}`);
+      logger.error(`Failed to resolve workspace metadata: ${String(error)}`);
       throw new Error(String(error));
     }
   }
 
-  @Mutation(() => WorkspaceInfo)
+  @Mutation(() => WorkspaceMetadataInfo)
   async createWorkspace(
     @Arg("input", () => CreateWorkspaceInput) input: CreateWorkspaceInput,
-  ): Promise<WorkspaceInfo> {
-    logger.info("GraphQL mutation to create workspace");
+  ): Promise<WorkspaceMetadataInfo> {
+    logger.info("GraphQL mutation to create workspace metadata");
     try {
       const workspace = await this.workspaceManager.createWorkspace({ rootPath: input.rootPath });
       return WorkspaceConverter.toGraphql(workspace);
     } catch (error) {
-      logger.error(`Unexpected error creating workspace: ${String(error)}`);
+      logger.error(`Unexpected error creating workspace metadata: ${String(error)}`);
       throw new Error(String(error));
     }
   }

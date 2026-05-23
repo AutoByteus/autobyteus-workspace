@@ -1,5 +1,6 @@
 import { FileExplorerSession } from "./file-explorer-session.js";
-import type { WatcherLease } from "../../file-explorer/base-file-explorer.js";
+import type { WatcherLease } from "../../file-explorer/file-explorer.js";
+import type { WorkspaceFileExplorerLease } from "../../workspaces/filesystem-workspace.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -11,6 +12,7 @@ type SessionConstructor = new (
   workspaceId: string,
   eventStreamFactory: () => AsyncGenerator<string, void, void>,
   watcherLease?: WatcherLease | null,
+  fileExplorerLease?: WorkspaceFileExplorerLease | null,
 ) => FileExplorerSession;
 
 export class FileExplorerSessionManager {
@@ -27,8 +29,15 @@ export class FileExplorerSessionManager {
     workspaceId: string,
     eventStreamFactory: () => AsyncGenerator<string, void, void>,
     watcherLease: WatcherLease | null = null,
+    fileExplorerLease: WorkspaceFileExplorerLease | null = null,
   ): Promise<FileExplorerSession> {
-    const session = new this.sessionClass(sessionId, workspaceId, eventStreamFactory, watcherLease);
+    const session = new this.sessionClass(
+      sessionId,
+      workspaceId,
+      eventStreamFactory,
+      watcherLease,
+      fileExplorerLease,
+    );
     this.sessions.set(sessionId, session);
     await session.start();
 

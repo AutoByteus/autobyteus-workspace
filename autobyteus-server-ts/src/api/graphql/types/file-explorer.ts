@@ -1,9 +1,9 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
+import type { FileSystemWorkspace } from "../../../workspaces/filesystem-workspace.js";
 import { serializeChangeEvent } from "../../../file-explorer/file-system-changes.js";
 
 const logger = {
-  info: (...args: unknown[]) => console.info(...args),
   error: (...args: unknown[]) => console.error(...args),
 };
 
@@ -22,21 +22,27 @@ export class FileExplorerResolver {
     return getWorkspaceManager();
   }
 
+  private async resolveWorkspace(workspaceId: string): Promise<FileSystemWorkspace | null> {
+    try {
+      return await this.workspaceManager.getOrCreateWorkspace(workspaceId);
+    } catch {
+      return null;
+    }
+  }
+
   @Query(() => String)
   async fileContent(
     @Arg("workspaceId", () => String) workspaceId: string,
     @Arg("filePath", () => String) filePath: string,
   ): Promise<string> {
-    try {
-      let workspace;
-      try {
-        workspace = await this.workspaceManager.getOrCreateWorkspace(workspaceId);
-      } catch {
-        return jsonError("Workspace not found");
-      }
+    const workspace = await this.resolveWorkspace(workspaceId);
+    if (!workspace) {
+      return jsonError("Workspace not found");
+    }
 
-      const fileExplorer = await workspace.getFileExplorer();
-      return await fileExplorer.readFileContent(filePath);
+    const lease = await workspace.acquireFileExplorer("graphql-file-content");
+    try {
+      return await lease.fileExplorer.readFileContent(filePath);
     } catch (error) {
       const message = toMessage(error);
       if (
@@ -49,6 +55,8 @@ export class FileExplorerResolver {
 
       logger.error(`Error reading file content: ${message}`);
       return jsonError("An unexpected error occurred while reading the file");
+    } finally {
+      await lease.release();
     }
   }
 
@@ -57,22 +65,19 @@ export class FileExplorerResolver {
     @Arg("workspaceId", () => String) workspaceId: string,
     @Arg("query", () => String) query: string,
   ): Promise<string[]> {
+    const workspace = await this.resolveWorkspace(workspaceId);
+    if (!workspace) {
+      return [];
+    }
+
+    const lease = await workspace.acquireFileExplorer("graphql-search");
     try {
-      let workspace;
-      try {
-        workspace = await this.workspaceManager.getOrCreateWorkspace(workspaceId);
-      } catch {
-        return [];
-      }
-
-      if (typeof (workspace as { searchFiles?: (value: string) => Promise<string[]> }).searchFiles !== "function") {
-        return [];
-      }
-
-      return await workspace.searchFiles(query);
+      return await lease.fileExplorer.searchFiles(query);
     } catch (error) {
       logger.error(`Error searching files: ${toMessage(error)}`);
       return [];
+    } finally {
+      await lease.release();
     }
   }
 
@@ -81,16 +86,14 @@ export class FileExplorerResolver {
     @Arg("workspaceId", () => String) workspaceId: string,
     @Arg("folderPath", () => String) folderPath: string,
   ): Promise<string> {
+    const workspace = await this.resolveWorkspace(workspaceId);
+    if (!workspace) {
+      return jsonError("Workspace not found");
+    }
+
+    const lease = await workspace.acquireFileExplorer("graphql-folder-children");
     try {
-      let workspace;
-      try {
-        workspace = await this.workspaceManager.getOrCreateWorkspace(workspaceId);
-      } catch {
-        return jsonError("Workspace not found");
-      }
-
-      const fileExplorer = await workspace.getFileExplorer();
-
+      const fileExplorer = lease.fileExplorer;
       const ensureFullTree = async () => {
         await fileExplorer.buildWorkspaceDirectoryTree();
         return fileExplorer.getTree();
@@ -119,6 +122,8 @@ export class FileExplorerResolver {
     } catch (error) {
       logger.error(`Error fetching folder children: ${toMessage(error)}`);
       return jsonError("An unexpected error occurred while fetching folder children");
+    } finally {
+      await lease.release();
     }
   }
 
@@ -128,14 +133,18 @@ export class FileExplorerResolver {
     @Arg("filePath", () => String) filePath: string,
     @Arg("content", () => String) content: string,
   ): Promise<string> {
-    const workspace = this.workspaceManager.getWorkspaceById(workspaceId);
+    const workspace = await this.resolveWorkspace(workspaceId);
     if (!workspace) {
       throw new Error("Workspace not found");
     }
 
-    const fileExplorer = await workspace.getFileExplorer();
-    const changeEvent = await fileExplorer.writeFileContent(filePath, content);
-    return serializeChangeEvent(changeEvent);
+    const lease = await workspace.acquireFileExplorer("graphql-write-file");
+    try {
+      const changeEvent = await lease.fileExplorer.writeFileContent(filePath, content);
+      return serializeChangeEvent(changeEvent);
+    } finally {
+      await lease.release();
+    }
   }
 
   @Mutation(() => String)
@@ -143,14 +152,18 @@ export class FileExplorerResolver {
     @Arg("workspaceId", () => String) workspaceId: string,
     @Arg("path", () => String) targetPath: string,
   ): Promise<string> {
-    const workspace = this.workspaceManager.getWorkspaceById(workspaceId);
+    const workspace = await this.resolveWorkspace(workspaceId);
     if (!workspace) {
       throw new Error("Workspace not found");
     }
 
-    const fileExplorer = await workspace.getFileExplorer();
-    const changeEvent = await fileExplorer.removeFileOrFolder(targetPath);
-    return serializeChangeEvent(changeEvent);
+    const lease = await workspace.acquireFileExplorer("graphql-delete-file");
+    try {
+      const changeEvent = await lease.fileExplorer.removeFileOrFolder(targetPath);
+      return serializeChangeEvent(changeEvent);
+    } finally {
+      await lease.release();
+    }
   }
 
   @Mutation(() => String)
@@ -159,14 +172,18 @@ export class FileExplorerResolver {
     @Arg("sourcePath", () => String) sourcePath: string,
     @Arg("destinationPath", () => String) destinationPath: string,
   ): Promise<string> {
-    const workspace = this.workspaceManager.getWorkspaceById(workspaceId);
+    const workspace = await this.resolveWorkspace(workspaceId);
     if (!workspace) {
       throw new Error("Workspace not found");
     }
 
-    const fileExplorer = await workspace.getFileExplorer();
-    const changeEvent = await fileExplorer.moveFileOrFolder(sourcePath, destinationPath);
-    return serializeChangeEvent(changeEvent);
+    const lease = await workspace.acquireFileExplorer("graphql-move-file");
+    try {
+      const changeEvent = await lease.fileExplorer.moveFileOrFolder(sourcePath, destinationPath);
+      return serializeChangeEvent(changeEvent);
+    } finally {
+      await lease.release();
+    }
   }
 
   @Mutation(() => String)
@@ -175,14 +192,18 @@ export class FileExplorerResolver {
     @Arg("targetPath", () => String) targetPath: string,
     @Arg("newName", () => String) newName: string,
   ): Promise<string> {
-    const workspace = this.workspaceManager.getWorkspaceById(workspaceId);
+    const workspace = await this.resolveWorkspace(workspaceId);
     if (!workspace) {
       throw new Error("Workspace not found");
     }
 
-    const fileExplorer = await workspace.getFileExplorer();
-    const changeEvent = await fileExplorer.renameFileOrFolder(targetPath, newName);
-    return serializeChangeEvent(changeEvent);
+    const lease = await workspace.acquireFileExplorer("graphql-rename-file");
+    try {
+      const changeEvent = await lease.fileExplorer.renameFileOrFolder(targetPath, newName);
+      return serializeChangeEvent(changeEvent);
+    } finally {
+      await lease.release();
+    }
   }
 
   @Mutation(() => String)
@@ -191,13 +212,17 @@ export class FileExplorerResolver {
     @Arg("path", () => String) targetPath: string,
     @Arg("isFile", () => Boolean) isFile: boolean,
   ): Promise<string> {
-    const workspace = this.workspaceManager.getWorkspaceById(workspaceId);
+    const workspace = await this.resolveWorkspace(workspaceId);
     if (!workspace) {
       throw new Error("Workspace not found");
     }
 
-    const fileExplorer = await workspace.getFileExplorer();
-    const changeEvent = await fileExplorer.addFileOrFolder(targetPath, isFile);
-    return serializeChangeEvent(changeEvent);
+    const lease = await workspace.acquireFileExplorer("graphql-create-file");
+    try {
+      const changeEvent = await lease.fileExplorer.addFileOrFolder(targetPath, isFile);
+      return serializeChangeEvent(changeEvent);
+    } finally {
+      await lease.release();
+    }
   }
 }

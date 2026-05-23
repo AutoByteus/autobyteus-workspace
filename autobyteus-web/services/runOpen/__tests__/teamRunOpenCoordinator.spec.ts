@@ -125,7 +125,7 @@ const createPayload = (members: Map<string, any>, projectionByMemberRouteKey: Ma
   },
   metadata,
   members,
-  primaryWorkspaceReference: null,
+  primaryWorkspaceMetadata: null,
   historicalHydration: null,
   projectionByMemberRouteKey,
 });
@@ -199,7 +199,7 @@ describe('openTeamRun', () => {
 
     await openTeamRun({
       teamRunId: 'team-1',
-      resolveWorkspaceReferenceByRootPath: vi.fn(),
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
     });
 
@@ -222,7 +222,7 @@ describe('openTeamRun', () => {
 
     await openTeamRun({
       teamRunId: 'team-1',
-      resolveWorkspaceReferenceByRootPath: vi.fn(),
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
     });
 
@@ -273,7 +273,7 @@ describe('openTeamRun', () => {
 
     await openTeamRun({
       teamRunId: 'team-1',
-      resolveWorkspaceReferenceByRootPath: vi.fn(),
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
     });
 
@@ -322,7 +322,7 @@ describe('openTeamRun', () => {
 
     await openTeamRun({
       teamRunId: 'team-1',
-      resolveWorkspaceReferenceByRootPath: vi.fn(),
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
     });
 

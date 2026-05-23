@@ -104,13 +104,13 @@ describe("FileExplorer", () => {
     workspaceStore.workspaces["ws-1"] = {
       workspaceId: "ws-1",
       name: "Test Workspace",
-      fileExplorer: root,
-      nodeIdToNode: createNodeIdToNodeDictionary(root),
       workspaceConfig: {},
       absolutePath: "/tmp/test-workspace",
     };
 
     const explorerState = fileExplorerStore._getOrCreateWorkspaceState("ws-1");
+    explorerState.tree = root;
+    explorerState.nodeIdToNode = createNodeIdToNodeDictionary(root);
     explorerState.openFolders["tickets"] = true;
     explorerState.openFolders["tickets/in-progress"] = true;
     explorerState.openFolders["tickets/in-progress/ticket-123"] = true;
@@ -189,11 +189,12 @@ describe("FileExplorer", () => {
     workspaceStore.workspaces["ws-live"] = {
       workspaceId: "ws-live",
       name: "Live Workspace",
-      fileExplorer: root,
-      nodeIdToNode: createNodeIdToNodeDictionary(root),
       workspaceConfig: {},
       absolutePath: "/tmp/live-workspace",
     };
+    const explorerState = useFileExplorerStore()._getOrCreateWorkspaceState("ws-live");
+    explorerState.tree = root;
+    explorerState.nodeIdToNode = createNodeIdToNodeDictionary(root);
 
     const wrapper = mount(FileExplorer, {
       props: {

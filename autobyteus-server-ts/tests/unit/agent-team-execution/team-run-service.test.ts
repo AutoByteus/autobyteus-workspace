@@ -132,16 +132,16 @@ describe("TeamRunService", () => {
     );
   });
 
-  it("activates reference-backed team workspace roots even when workspaceId is already present", async () => {
+  it("activates filesystem workspace metadata roots even when workspaceId is already present", async () => {
     const { service, mocks } = createSubject();
-    const workspaceRootPath = "/tmp/ReferenceTeam";
+    const workspaceRootPath = "/tmp/MetadataTeam";
     const workspaceId = buildFilesystemWorkspaceId(workspaceRootPath);
     mocks.workspaceManager.ensureWorkspaceByRootPath.mockResolvedValue({
       workspaceId,
       getBasePath: () => workspaceRootPath,
     });
     mocks.agentTeamRunManager.createTeamRun.mockImplementation(async (config: TeamRunConfig) => ({
-      runId: "team-reference-1",
+      runId: "team-metadata-1",
       config,
       getRuntimeContext: vi.fn().mockReturnValue({ memberContexts: [] }),
     }));
@@ -199,8 +199,8 @@ describe("TeamRunService", () => {
 
   it("activates each distinct team workspace root once per create request", async () => {
     const { service, mocks } = createSubject();
-    const coordinatorRootPath = "/tmp/ReferenceTeamA";
-    const reviewerRootPath = "/tmp/ReferenceTeamB";
+    const coordinatorRootPath = "/tmp/MetadataTeamA";
+    const reviewerRootPath = "/tmp/MetadataTeamB";
     const coordinatorWorkspaceId = buildFilesystemWorkspaceId(coordinatorRootPath);
     const reviewerWorkspaceId = buildFilesystemWorkspaceId(reviewerRootPath);
     mocks.workspaceManager.ensureWorkspaceByRootPath.mockImplementation(async (rootPath: string) => {

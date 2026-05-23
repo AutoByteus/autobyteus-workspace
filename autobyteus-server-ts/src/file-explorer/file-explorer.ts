@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { DirectoryTraversal } from "./directory-traversal.js";
+import { FileNameIndexer } from "./file-name-indexer.js";
 import type { FileSystemChangeEvent } from "./file-system-changes.js";
 import type { FileSystemWatcher } from "./watcher/file-system-watcher.js";
 import { TreeNode } from "./tree-node.js";
@@ -12,12 +13,34 @@ import { MoveFileOperation } from "./operations/move-file-operation.js";
 import { RemoveFileOperation } from "./operations/remove-file-operation.js";
 import { RenameFileOperation } from "./operations/rename-file-operation.js";
 import { WriteFileOperation } from "./operations/write-file-operation.js";
+import {
+  BaseFileSearchStrategy,
+  CompositeSearchStrategy,
+  FuzzysortSearchStrategy,
+  RipgrepSearchStrategy,
+} from "./search-strategy/index.js";
 
-export class FileExplorer {
+const logger = {
+  info: (...args: unknown[]) => console.info(...args),
+  warn: (...args: unknown[]) => console.warn(...args),
+};
+
+export type WatcherLease = {
+  readonly reason: string;
+  release(): Promise<void>;
+};
+
+export class WorkspaceFileExplorer {
   workspaceRootPath: string;
   rootNode: TreeNode | null = null;
   ignoreStrategies: TraversalIgnoreStrategy[];
   fileWatcher: FileSystemWatcher | null = null;
+  private watcherStartPromise: Promise<void> | null = null;
+  private watcherStopPromise: Promise<void> | null = null;
+  private watcherLeaseCount = 0;
+  private searchStrategy: BaseFileSearchStrategy | null = null;
+  private fileNameIndexer: FileNameIndexer | null = null;
+  private searchSnapshotRefreshTask: Promise<void> | null = null;
 
   constructor(workspaceRootPath: string) {
     this.workspaceRootPath = path.normalize(workspaceRootPath);
@@ -27,25 +50,8 @@ export class FileExplorer {
     ];
   }
 
-  async startWatcher(): Promise<void> {
-    if (this.fileWatcher) {
-      return;
-    }
-
-    try {
-      const module = await import("./watcher/file-system-watcher.js");
-      const FileSystemWatcher = module.FileSystemWatcher as new (
-        explorer: FileExplorer,
-        ignoreStrategies: TraversalIgnoreStrategy[],
-      ) => FileSystemWatcher;
-      const watcher = new FileSystemWatcher(this, this.ignoreStrategies);
-      this.fileWatcher = watcher;
-      watcher.start();
-      await watcher.waitUntilReady();
-    } catch (error) {
-      await this.stopWatcher();
-      throw new Error(`FileSystemWatcher not available: ${String(error)}`);
-    }
+  get rootPath(): string {
+    return this.workspaceRootPath;
   }
 
   async buildWorkspaceDirectoryTree(maxDepth: number | null = null): Promise<TreeNode> {
@@ -80,26 +86,31 @@ export class FileExplorer {
   }
 
   async writeFileContent(filePath: string, content: string): Promise<FileSystemChangeEvent> {
+    await this.ensureTreeSnapshotLoaded();
     const operation = new WriteFileOperation(this, filePath, content);
     return operation.execute();
   }
 
   async removeFileOrFolder(fileOrFolderPath: string): Promise<FileSystemChangeEvent> {
+    await this.ensureTreeSnapshotLoaded();
     const operation = new RemoveFileOperation(this, fileOrFolderPath);
     return operation.execute();
   }
 
   async moveFileOrFolder(sourcePath: string, destinationPath: string): Promise<FileSystemChangeEvent> {
+    await this.ensureTreeSnapshotLoaded();
     const operation = new MoveFileOperation(this, sourcePath, destinationPath);
     return operation.execute();
   }
 
   async renameFileOrFolder(targetPath: string, newName: string): Promise<FileSystemChangeEvent> {
+    await this.ensureTreeSnapshotLoaded();
     const operation = new RenameFileOperation(this, targetPath, newName);
     return operation.execute();
   }
 
   async addFileOrFolder(targetPath: string, isFile: boolean): Promise<FileSystemChangeEvent> {
+    await this.ensureTreeSnapshotLoaded();
     const operation = new AddFileOrFolderOperation(this, targetPath, isFile);
     return operation.execute();
   }
@@ -132,24 +143,6 @@ export class FileExplorer {
     }
 
     return fs.readFile(absoluteFilePath, { encoding: "utf-8" });
-  }
-
-  async close(): Promise<void> {
-    await this.stopWatcher();
-  }
-
-  async stopWatcher(): Promise<void> {
-    const watcher = this.fileWatcher;
-    if (!watcher) {
-      return;
-    }
-
-    this.fileWatcher = null;
-    await watcher.stop();
-  }
-
-  suppressWatcherPaths(paths: string[]): void {
-    this.fileWatcher?.suppressPaths(paths);
   }
 
   getTree(): TreeNode | null {
@@ -191,5 +184,196 @@ export class FileExplorer {
     }
 
     return paths;
+  }
+
+  async searchFiles(query: string): Promise<string[]> {
+    if (!this.searchStrategy) {
+      this.searchStrategy = this.createSearchStrategy();
+    }
+
+    await this.refreshSearchSnapshotIndex();
+    return this.searchStrategy.search(this.workspaceRootPath, query);
+  }
+
+  async acquireWatcherLease(reason: string): Promise<WatcherLease> {
+    this.watcherLeaseCount += 1;
+    try {
+      await this.ensureWatcherRunningForLease();
+    } catch (error) {
+      this.watcherLeaseCount = Math.max(0, this.watcherLeaseCount - 1);
+      throw error;
+    }
+
+    let released = false;
+    logger.info(
+      `Acquired file watcher lease for ${this.workspaceRootPath} (${reason}); active leases: ${this.watcherLeaseCount}`,
+    );
+
+    return {
+      reason,
+      release: async () => {
+        if (released) {
+          return;
+        }
+        released = true;
+        await this.releaseWatcherLease(reason);
+      },
+    };
+  }
+
+  subscribe(): AsyncGenerator<string, void, void> {
+    if (!this.fileWatcher) {
+      throw new Error("Watcher is not running. Acquire a watcher lease before subscribing.");
+    }
+    return this.fileWatcher.events();
+  }
+
+  async close(): Promise<void> {
+    this.watcherLeaseCount = 0;
+    if (this.searchSnapshotRefreshTask) {
+      try {
+        await this.searchSnapshotRefreshTask;
+      } catch {
+        // ignore refresh failure during close
+      }
+    }
+    if (this.watcherStartPromise) {
+      try {
+        await this.watcherStartPromise;
+      } catch {
+        // start failure already performs watcher cleanup
+      }
+    }
+    if (this.watcherStopPromise) {
+      await this.watcherStopPromise;
+    }
+    await this.stopWatcher();
+  }
+
+  suppressWatcherPaths(paths: string[]): void {
+    this.fileWatcher?.suppressPaths(paths);
+  }
+
+  private createSearchStrategy(): BaseFileSearchStrategy {
+    if (!this.fileNameIndexer) {
+      this.fileNameIndexer = new FileNameIndexer(this);
+    }
+    const fuzzysortStrategy = new FuzzysortSearchStrategy(this.fileNameIndexer, 10);
+    const ripgrepStrategy = new RipgrepSearchStrategy(50);
+    return new CompositeSearchStrategy([fuzzysortStrategy, ripgrepStrategy]);
+  }
+
+  private async refreshSearchSnapshotIndex(): Promise<void> {
+    if (!this.fileNameIndexer) {
+      this.fileNameIndexer = new FileNameIndexer(this);
+    }
+
+    if (!this.searchSnapshotRefreshTask) {
+      this.searchSnapshotRefreshTask = (async () => {
+        await this.buildWorkspaceDirectoryTree();
+        await this.fileNameIndexer?.refreshSnapshotIndex();
+      })().finally(() => {
+        this.searchSnapshotRefreshTask = null;
+      });
+    }
+
+    await this.searchSnapshotRefreshTask;
+  }
+
+  private async ensureTreeSnapshotLoaded(): Promise<void> {
+    if (!this.rootNode) {
+      await this.buildWorkspaceDirectoryTree();
+    }
+  }
+
+  private async startWatcher(): Promise<void> {
+    if (this.fileWatcher) {
+      return;
+    }
+
+    try {
+      const module = await import("./watcher/file-system-watcher.js");
+      const FileSystemWatcher = module.FileSystemWatcher as new (
+        explorer: WorkspaceFileExplorer,
+        ignoreStrategies: TraversalIgnoreStrategy[],
+      ) => FileSystemWatcher;
+      const watcher = new FileSystemWatcher(this, this.ignoreStrategies);
+      this.fileWatcher = watcher;
+      watcher.start();
+      await watcher.waitUntilReady();
+    } catch (error) {
+      await this.stopWatcher();
+      throw new Error(`FileSystemWatcher not available: ${String(error)}`);
+    }
+  }
+
+  private async stopWatcher(): Promise<void> {
+    const watcher = this.fileWatcher;
+    if (!watcher) {
+      return;
+    }
+
+    this.fileWatcher = null;
+    await watcher.stop();
+  }
+
+  private async ensureWatcherRunningForLease(): Promise<void> {
+    if (this.watcherStopPromise) {
+      await this.watcherStopPromise;
+    }
+
+    if (this.fileWatcher) {
+      return;
+    }
+
+    if (!this.watcherStartPromise) {
+      this.watcherStartPromise = this.startWatcher().finally(() => {
+        this.watcherStartPromise = null;
+      });
+    }
+
+    await this.watcherStartPromise;
+  }
+
+  private async releaseWatcherLease(reason: string): Promise<void> {
+    if (this.watcherLeaseCount <= 0) {
+      logger.warn(`Ignoring extra file watcher lease release for ${this.workspaceRootPath} (${reason})`);
+      this.watcherLeaseCount = 0;
+      return;
+    }
+
+    this.watcherLeaseCount -= 1;
+    logger.info(
+      `Released file watcher lease for ${this.workspaceRootPath} (${reason}); active leases: ${this.watcherLeaseCount}`,
+    );
+
+    if (this.watcherLeaseCount === 0) {
+      await this.stopWatcherIfUnused();
+    }
+  }
+
+  private async stopWatcherIfUnused(): Promise<void> {
+    if (this.watcherLeaseCount > 0) {
+      return;
+    }
+
+    if (this.watcherStartPromise) {
+      try {
+        await this.watcherStartPromise;
+      } catch {
+        return;
+      }
+      if (this.watcherLeaseCount > 0) {
+        return;
+      }
+    }
+
+    if (!this.watcherStopPromise) {
+      this.watcherStopPromise = this.stopWatcher().finally(() => {
+        this.watcherStopPromise = null;
+      });
+    }
+
+    await this.watcherStopPromise;
   }
 }

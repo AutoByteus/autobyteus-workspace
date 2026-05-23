@@ -22,7 +22,7 @@ import {
   applyActiveRuntimePlaceholder,
   applyMemberOrHistoryStatusSnapshot,
 } from '~/services/runStatus/agentRuntimeStatusState';
-import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 
 const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
   if (
@@ -40,7 +40,7 @@ const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
 export interface RecoverActiveRunsFromHistoryInput {
   workspaceGroups: RunHistoryWorkspaceGroup[];
   ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
-  resolveWorkspaceReferenceByRootPath: (rootPath: string) => Promise<WorkspaceReference | null>;
+  resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
   findAgentNameByRunId: (runId: string) => string | null;
   setRunResumeConfig: (resumeConfig: RunResumeConfigPayload) => void;
   setTeamResumeConfig: (resumeConfig: TeamRunResumeConfigPayload) => void;
@@ -117,7 +117,7 @@ export const recoverActiveRunsFromHistory = async (
       const result = await openAgentRun({
         runId,
         fallbackAgentName: input.findAgentNameByRunId(runId),
-        resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+        resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
         ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
         selectRun: false,
       });
@@ -144,7 +144,7 @@ export const recoverActiveRunsFromHistory = async (
       const result = await openTeamRun({
         teamRunId,
         memberRouteKey: null,
-        resolveWorkspaceReferenceByRootPath: input.resolveWorkspaceReferenceByRootPath,
+        resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
         ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
         selectRun: false,
       });

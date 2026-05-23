@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { FileNameIndexer } from "../../../src/file-explorer/file-name-indexer.js";
-import { LocalFileExplorer } from "../../../src/file-explorer/local-file-explorer.js";
+import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
 
 const createTempWorkspace = async () => {
     const base = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-server-ts-index-"));
@@ -19,7 +19,7 @@ describe("FileNameIndexer integration", () => {
 
     beforeEach(async () => {
         workspace = await createTempWorkspace();
-        explorer = new LocalFileExplorer(workspace);
+        explorer = new WorkspaceFileExplorer(workspace);
         await explorer.buildWorkspaceDirectoryTree();
         indexer = new FileNameIndexer(explorer);
         await indexer.refreshSnapshotIndex();

@@ -62,21 +62,21 @@ const explicitWorkspace = computed(() =>
   props.workspaceId ? workspaceStore.workspaces[props.workspaceId] || null : null,
 );
 
-const requestedWorkspaceReference = computed(() => {
+const requestedWorkspaceMetadata = computed(() => {
   if (props.workspaceId) {
-    return workspaceStore.workspaceReferencesById[props.workspaceId] || null;
+    return workspaceStore.workspaceMetadataById[props.workspaceId] || null;
   }
-  return workspaceStore.activeWorkspaceReference;
+  return workspaceStore.activeWorkspaceMetadata;
 });
 
-// Determine the relevant initialized workspace after explicit activation.
+// Determine the relevant workspace metadata after explicit metadata registration.
 const currentWorkspace = computed(() => {
   const workspaceId = activatedWorkspaceId.value || props.workspaceId || '';
   return workspaceId ? workspaceStore.workspaces[workspaceId] || null : null;
 });
 const activeWorkspace = currentWorkspace; // Alias for template compatibility
 const hasWorkspaceTarget = computed(() =>
-  Boolean(requestedWorkspaceReference.value || explicitWorkspace.value || currentWorkspace.value),
+  Boolean(requestedWorkspaceMetadata.value || explicitWorkspace.value || currentWorkspace.value),
 );
 const liveSessionConsumerId = `file-explorer:${++fileExplorerConsumerCounter}`;
 let releaseLiveSession: (() => void) | null = null;
@@ -96,7 +96,7 @@ const activateCurrentWorkspace = async () => {
     return;
   }
 
-  const reference = requestedWorkspaceReference.value;
+  const reference = requestedWorkspaceMetadata.value;
   if (!reference) {
     activatedWorkspaceId.value = null;
     return;
@@ -104,7 +104,7 @@ const activateCurrentWorkspace = async () => {
 
   isActivatingWorkspace.value = true;
   try {
-    const workspace = await workspaceStore.ensureWorkspaceInitialized(reference);
+    const workspace = await workspaceStore.ensureWorkspaceMetadata(reference);
     if (sequence === activationSequence) {
       activatedWorkspaceId.value = workspace.workspaceId;
     }
@@ -121,7 +121,7 @@ const activateCurrentWorkspace = async () => {
 };
 
 watch(
-  () => requestedWorkspaceReference.value?.workspaceId || props.workspaceId || '',
+  () => requestedWorkspaceMetadata.value?.workspaceId || props.workspaceId || '',
   () => {
     activateCurrentWorkspace();
   },
@@ -141,7 +141,7 @@ const displayedFiles = computed(() => {
   } else {
     // If we have a specific workspace context, use its tree
     if (currentWorkspace.value) {
-       return currentWorkspace.value.fileExplorer.children || [];
+       return explorer.tree.value?.children || [];
     }
     return [];
   }

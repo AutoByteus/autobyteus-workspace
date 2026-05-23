@@ -2,8 +2,8 @@ import { defineStore } from 'pinia';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
 import { buildAgentRunTemplate } from '~/composables/useDefinitionLaunchDefaults';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
-import type { WorkspaceReference } from '~/types/workspace/WorkspaceReference';
-import { createWorkspaceReference } from '~/utils/workspaceReference';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 
 /**
  * State for workspace loading (eager loading feature).
@@ -103,8 +103,8 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
     updateAgentConfig(updates: Partial<AgentRunConfig>) {
       if (this.config) {
         Object.assign(this.config, updates);
-        if ('workspaceId' in updates && !('workspaceReference' in updates)) {
-          this.config.workspaceReference = null;
+        if ('workspaceId' in updates && !('workspaceMetadata' in updates)) {
+          this.config.workspaceMetadata = null;
         }
       }
     },
@@ -125,14 +125,14 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
     setWorkspaceLoaded(
       workspaceId: string,
       path: string,
-      workspaceReference: WorkspaceReference | null = null,
+      workspaceMetadata: WorkspaceMetadata | null = null,
     ) {
       this.workspaceLoadingState.isLoading = false;
       this.workspaceLoadingState.loadedPath = path;
       this.workspaceLoadingState.error = null;
       if (this.config) {
         this.config.workspaceId = workspaceId;
-        this.config.workspaceReference = workspaceReference ?? createWorkspaceReference({
+        this.config.workspaceMetadata = workspaceMetadata ?? createWorkspaceMetadata({
           workspaceId,
           workspaceRootPath: path,
         });
@@ -158,7 +158,7 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
       };
       if (this.config) {
         this.config.workspaceId = null;
-        this.config.workspaceReference = null;
+        this.config.workspaceMetadata = null;
       }
     },
 

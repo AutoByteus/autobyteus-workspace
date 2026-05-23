@@ -302,9 +302,9 @@ function syncSelectedConfig(): void {
   const selectedWorkspace = selectedWorkspaceId.value
     ? workspaceStore.workspaces[selectedWorkspaceId.value] || null
     : null;
-  const selectedWorkspaceReference = selectedWorkspaceId.value
-    ? workspaceStore.workspaceReferencesById[selectedWorkspaceId.value]
-      || (selectedWorkspace ? workspaceStore.registerWorkspaceInfoReference(selectedWorkspace) : null)
+  const selectedWorkspaceMetadata = selectedWorkspaceId.value
+    ? workspaceStore.workspaceMetadataById[selectedWorkspaceId.value]
+      || (selectedWorkspace ? workspaceStore.registerWorkspaceInfoMetadata(selectedWorkspace) : null)
       || null
     : null;
   if (mode.value === 'agent') {
@@ -323,7 +323,7 @@ function syncSelectedConfig(): void {
     if (selectedWorkspaceId.value) {
       agentRunConfigStore.updateAgentConfig({
         workspaceId: selectedWorkspaceId.value,
-        workspaceReference: selectedWorkspaceReference,
+        workspaceMetadata: selectedWorkspaceMetadata,
       });
     }
     return;
@@ -344,7 +344,7 @@ function syncSelectedConfig(): void {
   if (selectedWorkspaceId.value) {
     teamRunConfigStore.updateConfig({
       workspaceId: selectedWorkspaceId.value,
-      workspaceReference: selectedWorkspaceReference,
+      workspaceMetadata: selectedWorkspaceMetadata,
     });
   }
 }

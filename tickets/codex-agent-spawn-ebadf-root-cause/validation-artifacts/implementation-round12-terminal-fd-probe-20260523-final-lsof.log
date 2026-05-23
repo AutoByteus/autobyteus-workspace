@@ -1,0 +1,40 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    36146 normy  cwd       DIR               1,16       896           174068519 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+node    36146 normy  txt       REG               1,16 111670672              525716 /Users/normy/.nvm/versions/node/v22.21.1/bin/node
+node    36146 normy  txt       REG               1,16     73840           165453213 /Library/Preferences/Logging/.plist-cache.nZ8hDtHH
+node    36146 normy  txt       REG               1,16     85496           175123373 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node
+node    36146 normy  txt       REG               1,16   2299152 1152921500312563341 /usr/lib/dyld
+node    36146 normy  txt       REG               1,16  17251592            10659627 /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine
+node    36146 normy    0r      CHR                3,2       0t0                 336 /dev/null
+node    36146 normy    1u     unix 0xf4dee5d3f77ba2e4       0t0                     ->0x51f11741b0241ad5
+node    36146 normy    2u     unix 0xe905cb8800e71891       0t0                     ->0xcc781d4e1fa957e6
+node    36146 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    36146 normy    4      PIPE 0x17d1643d315c2389     16384                     ->0x22a7392488eef079
+node    36146 normy    5      PIPE 0x22a7392488eef079     16384                     ->0x17d1643d315c2389
+node    36146 normy    6r      DIR               1,16       704                   2 /
+node    36146 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    36146 normy    8r      DIR               1,16       704                   2 /
+node    36146 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    36146 normy   10r      DIR               1,16       704                   2 /
+node    36146 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    36146 normy   12u   KQUEUE                                                  count=0, state=0xa
+node    36146 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    36146 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    36146 normy   15u     unix 0x12a112697df79a67       0t0                     ->0x63f6a9340cffe741
+node    36146 normy   16u     unix 0x63f6a9340cffe741       0t0                     ->0x12a112697df79a67
+node    36146 normy   17u     unix 0x12a112697df79a67       0t0                     ->0x63f6a9340cffe741
+node    36146 normy   18w      REG               1,16     13551           178993357 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-fd-probe-data-yIC1w5/logs/server.log
+node    36146 normy   19u      REG               1,16    196608           178993360 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-fd-probe-data-yIC1w5/db/production.db
+node    36146 normy   20      PIPE  0x374c05808652406     16384                     ->0x956885f95108184d
+node    36146 normy   21      PIPE 0x956885f95108184d     16384                     ->0x374c05808652406
+node    36146 normy   22u     IPv4 0xd5e892c5c06003d0       0t0                 TCP 127.0.0.1:58090 (LISTEN)
+node    36146 normy   23u    systm 0x77904e0b2b4d3d0f       0t0                     [ctl com.apple.netsrc id 7 unit 131]
+node    36146 normy   24u     unix  0xedee0be2fb079cc       0t0                     ->0xabcd1cdf703b93d0
+node    36146 normy   26   NPOLICY                                                  
+node    36146 normy   27u      CHR               15,6       0t0                 605 /dev/ptmx
+node    36146 normy   28u     IPv4 0x2991bc8409427143       0t0                 TCP 127.0.0.1:58090->127.0.0.1:58100 (ESTABLISHED)
+node    36146 normy   30u      CHR               16,7       0t0                4771 /dev/ttys007
+node    36146 normy   31u   KQUEUE                                                  count=0, state=0x8
+node    36146 normy   34u      CHR               15,4       0t0                 605 /dev/ptmx
+node    36146 normy   36                                                            (revoked)
+node    36146 normy   37u   KQUEUE                                                  count=0, state=0x8

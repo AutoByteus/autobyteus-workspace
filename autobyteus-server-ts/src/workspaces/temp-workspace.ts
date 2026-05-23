@@ -6,6 +6,7 @@ const logger = {
 
 export class TempWorkspace extends FileSystemWorkspace {
   static readonly TEMP_WORKSPACE_ID = 'temp_ws_default';
+  protected readonly workspaceKind = 'temp' as const;
 
   constructor(rootPath: string) {
     const config = {
@@ -20,5 +21,12 @@ export class TempWorkspace extends FileSystemWorkspace {
 
   getName(): string {
     return 'Temp Workspace';
+  }
+
+  get metadata() {
+    return {
+      ...super.metadata,
+      isTemp: true,
+    };
   }
 }

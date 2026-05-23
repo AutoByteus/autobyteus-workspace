@@ -118,21 +118,19 @@ const closeWorkspaceWithTimeout = async (workspace: { close: () => Promise<void>
   ]);
 };
 
-const getLocalFileExplorerState = async (workspaceId: string) => {
+const getWorkspaceFileExplorerState = async (workspaceId: string) => {
   const workspace = workspaceManager.getWorkspaceById(workspaceId);
   if (!workspace) {
     throw new Error(`Workspace not found in test: ${workspaceId}`);
   }
-  const fileExplorer = await workspace.getFileExplorer();
-  const local = fileExplorer as unknown as {
-    watcherLeaseCount?: number;
-    adaptee?: { fileWatcher?: unknown };
-  };
+  const fileExplorer = (workspace as unknown as {
+    fileExplorer?: { fileWatcher?: unknown; watcherLeaseCount?: number } | null;
+  }).fileExplorer ?? null;
   return {
     fileExplorer,
-    local,
-    watcher: local.adaptee?.fileWatcher ?? null,
-    leaseCount: local.watcherLeaseCount ?? 0,
+    hasFileExplorer: workspace.hasFileExplorerForDiagnostics(),
+    watcher: fileExplorer?.fileWatcher ?? null,
+    leaseCount: fileExplorer?.watcherLeaseCount ?? 0,
   };
 };
 
@@ -229,23 +227,28 @@ describe("File explorer websocket lifecycle e2e", () => {
     fs.writeFileSync(path.join(tempRoot, "src", "alpha.ts"), "export const alpha = true;\n", "utf-8");
 
     const workspace = await workspaceManager.createWorkspace({ rootPath: tempRoot });
-    const initial = await getLocalFileExplorerState(workspace.workspaceId);
+    const initial = await getWorkspaceFileExplorerState(workspace.workspaceId);
     expect(initial.watcher).toBeNull();
     expect(initial.leaseCount).toBe(0);
 
-    const searchResults = await workspace.searchFiles("alpha");
-    expect(searchResults.some((result) => result.endsWith("src/alpha.ts"))).toBe(true);
-    const afterSearch = await getLocalFileExplorerState(workspace.workspaceId);
+    const searchLease = await workspace.acquireFileExplorer("e2e-search-snapshot");
+    try {
+      const searchResults = await searchLease.fileExplorer.searchFiles("alpha");
+      expect(searchResults.some((result) => result.endsWith("src/alpha.ts"))).toBe(true);
+    } finally {
+      await searchLease.release();
+    }
+    const afterSearch = await getWorkspaceFileExplorerState(workspace.workspaceId);
     expect(afterSearch.watcher).toBeNull();
     expect(afterSearch.leaseCount).toBe(0);
 
     const first = await openFileExplorerSocket(workspace.workspaceId);
-    const afterFirstOpen = await getLocalFileExplorerState(workspace.workspaceId);
+    const afterFirstOpen = await getWorkspaceFileExplorerState(workspace.workspaceId);
     expect(afterFirstOpen.watcher).toBeTruthy();
     expect(afterFirstOpen.leaseCount).toBe(1);
 
     const second = await openFileExplorerSocket(workspace.workspaceId);
-    const afterSecondOpen = await getLocalFileExplorerState(workspace.workspaceId);
+    const afterSecondOpen = await getWorkspaceFileExplorerState(workspace.workspaceId);
     expect(afterSecondOpen.watcher).toBe(afterFirstOpen.watcher);
     expect(afterSecondOpen.leaseCount).toBe(2);
 
@@ -264,13 +267,13 @@ describe("File explorer websocket lifecycle e2e", () => {
 
     await closeSocket(first.socket);
     await waitForCondition(async () => {
-      const state = await getLocalFileExplorerState(workspace.workspaceId);
+      const state = await getWorkspaceFileExplorerState(workspace.workspaceId);
       return state.leaseCount === 1 && state.watcher === afterFirstOpen.watcher;
     }, "first websocket release keeps shared watcher alive");
 
     await closeSocket(second.socket);
     await waitForCondition(async () => {
-      const state = await getLocalFileExplorerState(workspace.workspaceId);
+      const state = await getWorkspaceFileExplorerState(workspace.workspaceId);
       return state.leaseCount === 0 && state.watcher === null;
     }, "final websocket release stops watcher");
   }, 20_000);
@@ -285,7 +288,7 @@ describe("File explorer websocket lifecycle e2e", () => {
       socket.close();
       await waitForClose(socket);
       await waitForCondition(async () => {
-        const state = await getLocalFileExplorerState(workspace.workspaceId);
+        const state = await getWorkspaceFileExplorerState(workspace.workspaceId);
         return state.leaseCount === 0 && state.watcher === null;
       }, `early-close cycle ${index + 1} watcher cleanup`);
     }
@@ -300,13 +303,13 @@ describe("File explorer websocket lifecycle e2e", () => {
 
     for (let index = 0; index < 8; index += 1) {
       const { socket } = await openFileExplorerSocket(workspace.workspaceId);
-      const connectedState = await getLocalFileExplorerState(workspace.workspaceId);
+      const connectedState = await getWorkspaceFileExplorerState(workspace.workspaceId);
       expect(connectedState.leaseCount).toBe(1);
       expect(connectedState.watcher).toBeTruthy();
 
       await closeSocket(socket);
       await waitForCondition(async () => {
-        const state = await getLocalFileExplorerState(workspace.workspaceId);
+        const state = await getWorkspaceFileExplorerState(workspace.workspaceId);
         return state.leaseCount === 0 && state.watcher === null;
       }, `open/close cycle ${index + 1} watcher cleanup`);
     }

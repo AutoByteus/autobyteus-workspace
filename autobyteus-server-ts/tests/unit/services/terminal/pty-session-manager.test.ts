@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { PtySessionManager, type TerminalSession } from "../../../../src/services/terminal-streaming/index.js";
+import {
+  PtySessionManager,
+  TerminalSessionStartupAbortedError,
+  type TerminalSession,
+} from "../../../../src/services/terminal-streaming/index.js";
 
 class MockPtySession implements TerminalSession {
   sessionId: string;
@@ -36,6 +40,29 @@ class MockPtySession implements TerminalSession {
 
   async close(): Promise<void> {
     this.closed = true;
+  }
+}
+
+class SlowStartSession extends MockPtySession {
+  static lastInstance: SlowStartSession | null = null;
+  private resolveStart!: () => void;
+  readonly startPromise = new Promise<void>((resolve) => {
+    this.resolveStart = resolve;
+  });
+
+  constructor(sessionId: string) {
+    super(sessionId);
+    SlowStartSession.lastInstance = this;
+  }
+
+  async start(cwd: string): Promise<void> {
+    this.cwd = cwd;
+    await this.startPromise;
+    this.started = true;
+  }
+
+  finishStart(): void {
+    this.resolveStart();
   }
 }
 
@@ -87,6 +114,26 @@ describe("PtySessionManager", () => {
     expect(result).toBe(true);
     expect(manager.getSession("s1")).toBeNull();
     expect(session.closed).toBe(true);
+  });
+
+  it("closes a session while startup is still pending", async () => {
+    SlowStartSession.lastInstance = null;
+    const manager = new PtySessionManager(SlowStartSession);
+
+    const createPromise = manager.createSession("s1", "ws1", "/tmp");
+    const session = SlowStartSession.lastInstance;
+    expect(session).not.toBeNull();
+    expect(manager.getSession("s1")).toBe(session);
+
+    const closePromise = manager.closeSession("s1");
+    session?.finishStart();
+
+    await expect(createPromise).rejects.toBeInstanceOf(
+      TerminalSessionStartupAbortedError,
+    );
+    await expect(closePromise).resolves.toBe(true);
+    expect(session?.closed).toBe(true);
+    expect(manager.getSession("s1")).toBeNull();
   });
 
   it("returns false when closing unknown session", async () => {

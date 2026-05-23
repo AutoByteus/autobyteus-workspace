@@ -187,9 +187,9 @@ const workspaceStore = useWorkspaceStore();
 const activeContext = computed(() => activeContextStore.activeAgentContext);
 const workspaceId = computed(
   () =>
-    activeContext.value?.config.workspaceReference?.workspaceId ??
+    activeContext.value?.config.workspaceMetadata?.workspaceId ??
     activeContext.value?.config.workspaceId ??
-    workspaceStore.activeWorkspaceReference?.workspaceId ??
+    workspaceStore.activeWorkspaceMetadata?.workspaceId ??
     workspaceStore.activeWorkspace?.workspaceId ??
     null,
 );
@@ -261,13 +261,13 @@ const {
       return;
     }
     const reference =
-      activeContext.value?.config.workspaceReference ||
-      workspaceStore.workspaceReferencesById[resolvedWorkspaceId] ||
-      workspaceStore.activeWorkspaceReference;
+      activeContext.value?.config.workspaceMetadata ||
+      workspaceStore.workspaceMetadataById[resolvedWorkspaceId] ||
+      workspaceStore.activeWorkspaceMetadata;
     if (!reference) {
       return;
     }
-    workspaceStore.ensureWorkspaceInitialized(reference)
+    workspaceStore.ensureWorkspaceMetadata(reference)
       .then((workspace) => open(workspace.workspaceId))
       .catch((error) => console.warn('Failed to activate workspace for attachment:', error));
   },

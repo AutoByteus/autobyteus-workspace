@@ -1,0 +1,49 @@
+# Reviewer round12 boundary and startup cleanup grep 2026-05-23T12:15:06Z
+## abort/startup cleanup positive signs
+autobyteus-ts/tests/unit/tools/terminal/pty-session.test.ts:153:    await expect(startPromise).rejects.toThrow('Session closed during startup');
+autobyteus-server-ts/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts:218:  it("does not retain PTYs across close-before-connect and repeated open/close churn", async () => {
+autobyteus-ts/src/tools/terminal/pty-session.ts:35:  private pendingReads: PendingRead[] = [];
+autobyteus-ts/src/tools/terminal/pty-session.ts:38:  private closePromise?: Promise<void>;
+autobyteus-ts/src/tools/terminal/pty-session.ts:71:      throw new Error('Session closed during startup');
+autobyteus-ts/src/tools/terminal/pty-session.ts:77:      throw new Error('Session closed during startup');
+autobyteus-ts/src/tools/terminal/pty-session.ts:98:      const pending = this.pendingReads.shift();
+autobyteus-ts/src/tools/terminal/pty-session.ts:116:      throw new Error('Session closed during startup');
+autobyteus-ts/src/tools/terminal/pty-session.ts:151:        this.pendingReads = this.pendingReads.filter((item) => item !== pending);
+autobyteus-ts/src/tools/terminal/pty-session.ts:154:      this.pendingReads.push(pending);
+autobyteus-ts/src/tools/terminal/pty-session.ts:174:    if (!this.closePromise) {
+autobyteus-ts/src/tools/terminal/pty-session.ts:175:      this.closePromise = this.closeInternal();
+autobyteus-ts/src/tools/terminal/pty-session.ts:177:    await this.closePromise;
+autobyteus-ts/src/tools/terminal/pty-session.ts:221:    this.disposePtyListeners();
+autobyteus-ts/src/tools/terminal/pty-session.ts:231:  private disposePtyListeners(): void {
+autobyteus-ts/src/tools/terminal/pty-session.ts:244:      pty.destroy?.();
+autobyteus-ts/src/tools/terminal/pty-session.ts:257:    this.disposePtyListeners();
+autobyteus-ts/src/tools/terminal/pty-session.ts:286:    while (this.pendingReads.length > 0) {
+autobyteus-ts/src/tools/terminal/pty-session.ts:287:      const pending = this.pendingReads.shift();
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:4:  TerminalSessionStartupAbortedError,
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:119:  it("closes a session while startup is still pending", async () => {
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:128:    const closePromise = manager.closeSession("s1");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:132:      TerminalSessionStartupAbortedError,
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:134:    await expect(closePromise).resolves.toBe(true);
+autobyteus-server-ts/src/api/websocket/terminal.ts:5:  TerminalSessionStartupAbortedError,
+autobyteus-server-ts/src/api/websocket/terminal.ts:80:      const abortController = new AbortController();
+autobyteus-server-ts/src/api/websocket/terminal.ts:111:            if (!(error instanceof TerminalSessionStartupAbortedError)) {
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:3:  TerminalSessionStartupAbortedError,
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:22:  signal?: AbortSignal;
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:59:        throw new TerminalSessionStartupAbortedError(sessionId);
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:79:      if (error instanceof TerminalSessionStartupAbortedError) {
+autobyteus-server-ts/src/services/terminal-streaming/index.ts:3:  TerminalSessionStartupAbortedError,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:10:export class TerminalSessionStartupAbortedError extends Error {
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:12:    super(`Terminal session '${sessionId}' was closed during startup`);
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:13:    this.name = "TerminalSessionStartupAbortedError";
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:18:  signal?: AbortSignal;
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:44:      throw new TerminalSessionStartupAbortedError(sessionId);
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:48:    this.sessions.set(sessionId, { session, workspaceId });
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:57:    options.signal?.addEventListener("abort", abortListener, { once: true });
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:60:      await session.start(cwd);
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:70:        throw new TerminalSessionStartupAbortedError(sessionId);
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:85:        throw new TerminalSessionStartupAbortedError(sessionId);
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:89:      options.signal?.removeEventListener("abort", abortListener);
+## old terminal workspace route/materialization signs
+autobyteus-web/components/mobile/MobileFiles.vue:176:      :workspace-id="activeWorkspaceId"
+autobyteus-web/components/mobile/MobileFiles.vue:416:    const workspace = await workspaceStore.ensureWorkspaceMetadata(metadata);
+## removed steady-state concepts in changed scope

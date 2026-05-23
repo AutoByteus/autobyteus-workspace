@@ -14,7 +14,7 @@ const agentMetadataMember = (member: Record<string, unknown>) => ({
   ...member,
 } as any)
 
-const workspaceReference = (workspaceId: string, rootPath = '/tmp/workspace') => ({
+const workspaceMetadata = (workspaceId: string, rootPath = '/tmp/workspace') => ({
   workspaceId,
   workspaceRootPath: rootPath,
   displayName: rootPath.split('/').filter(Boolean).pop() ?? rootPath,
@@ -118,7 +118,7 @@ describe('teamRunConfigUtils', () => {
           }),
         ],
       },
-      primaryWorkspaceReference: workspaceReference('ws-1'),
+      primaryWorkspaceMetadata: workspaceMetadata('ws-1'),
       isLocked: true,
     })
 
@@ -174,7 +174,7 @@ describe('teamRunConfigUtils', () => {
           }),
         ],
       },
-      primaryWorkspaceReference: workspaceReference('ws-2'),
+      primaryWorkspaceMetadata: workspaceMetadata('ws-2'),
       isLocked: false,
     })
 
@@ -239,7 +239,7 @@ describe('teamRunConfigUtils', () => {
           }),
         ],
       },
-      primaryWorkspaceReference: workspaceReference('ws-duplicate-leaf'),
+      primaryWorkspaceMetadata: workspaceMetadata('ws-duplicate-leaf'),
       isLocked: false,
     })
 
@@ -330,7 +330,7 @@ describe('teamRunConfigUtils', () => {
           }),
         ],
       },
-      primaryWorkspaceReference: workspaceReference('ws-3'),
+      primaryWorkspaceMetadata: workspaceMetadata('ws-3'),
       isLocked: false,
     })
 
