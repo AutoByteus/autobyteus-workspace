@@ -1,0 +1,29 @@
+# GitHub Release View — 2026-05-24T04:56:09Z
+
+## gh release view v1.3.30
+tag=v1.3.30
+name=v1.3.30
+draft=false
+prerelease=false
+publishedAt=2026-05-24T04:35:36Z
+url=https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.30
+assetCount=19
+asset=AutoByteus_personal_android-1.3.30-release.apk
+asset=AutoByteus_personal_android-1.3.30-release.apk.sha256
+asset=AutoByteus_personal_linux-1.3.30.AppImage
+asset=AutoByteus_personal_macos-arm64-1.3.30.dmg
+asset=AutoByteus_personal_macos-arm64-1.3.30.dmg.blockmap
+asset=AutoByteus_personal_macos-arm64-1.3.30.zip
+asset=AutoByteus_personal_macos-arm64-1.3.30.zip.blockmap
+asset=AutoByteus_personal_macos-x64-1.3.30.dmg
+asset=AutoByteus_personal_macos-x64-1.3.30.dmg.blockmap
+asset=AutoByteus_personal_macos-x64-1.3.30.zip
+asset=AutoByteus_personal_macos-x64-1.3.30.zip.blockmap
+asset=AutoByteus_personal_windows-1.3.30.exe
+asset=autobyteus-message-gateway-1.3.30-node-generic.tar.gz
+asset=autobyteus-message-gateway-1.3.30-node-generic.tar.gz.json
+asset=autobyteus-message-gateway-1.3.30-node-generic.tar.gz.sha256
+asset=latest-linux.yml
+asset=latest-mac.yml
+asset=latest.yml
+asset=release-manifest.json
