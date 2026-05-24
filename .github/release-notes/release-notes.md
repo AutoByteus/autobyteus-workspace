@@ -1,18 +1,38 @@
-## What's New
+# Release Notes — v1.3.30
 
-- Added a mobile-safe Docker node profile for Android Phone Access, so phones can pair with a controlled Docker node instead of the embedded host desktop node.
-- Added Phone Access setup in opened remote Docker node windows using launcher-generated node-admin claims.
-- Added same-node verification for Docker-node QR creation so Android-facing HTTPS URLs must match the managed Docker node before pairing.
+> Status: Ready for publication after user verification on 2026-05-24.
 
-## Improvements
+## Trusted Private-Network Remote Nodes
 
-- Improved the Docker launcher guide with `new-container --profile mobile-safe` and node-admin claim show/rotate commands.
-- Improved Phone Access setup guidance for Tailscale Serve/private HTTPS URLs and Android travel use.
-- Stored Docker node-admin claims in Electron owner-side storage and exposed only redacted claim state to normal renderer UI.
-- Documented the Phase Two mobile backend authorization, token, session, and secure-storage hardening roadmap.
+- Restores the default desktop/Electron remote-node model for trusted LAN, company VPN, tailnet, or equivalent private-network deployments.
+- Removes the node-admin claim, claim-derived owner-session, and `lmn_...` local-management credential flows from the active default product path.
+- Remote desktop/Electron windows can use owner/protected REST, GraphQL, and WebSocket paths on trusted private-network nodes without claim setup, local launcher state, or same-host owner credential bootstrap.
+- Documentation warns that the full backend is intended for trusted private networks and should not be exposed directly to the public internet.
 
-## Fixes
+## Phone Access / Mobile Pairing
 
-- Removed the standard mobile Tools/Terminal/VNC page and terminal/VNC controls from `/mobile`.
-- Prevented Docker bridge, LAN, or VPN peers from being treated as loopback owner trust for Phone Access management.
-- Redacted node-admin claim and pairing credential names in URL/logging helpers.
+- Keeps Phone Access QR pairing as the phone/mobile-specific flow.
+- Paired phones receive separate `mra_...` mobile credentials.
+- Mobile credentials are rejected on owner-management routes such as settings changes, pairing-session creation, device listing, and revocation.
+- Disabled Phone Access and revoked paired devices correctly reject existing mobile credentials while trusted-network desktop access remains available.
+
+## Docker `/mobile` Packaging
+
+- Public launcher/monorepo, remote-server, and all-in-one Docker image paths package the mobile web shell so fresh containers serve `/mobile` without manual file copies.
+- The `mobile-safe` launcher profile keeps its runtime hardening defaults: no default privileged flags, no automatic shared host bind mounts, and localhost-bound management ports by default.
+
+## Packaged Electron Local Fix
+
+- Rebuilt packaged Electron runtime artifacts after a stale generated artifact showed removed Round 3 local-management UX.
+- Local Fix revalidation scanned the rebuilt app bundle, ZIP, and DMG and found no removed claim/owner-session/`lmn`/local-management UX or code strings.
+- The packaged Electron app bundle includes `server/mobile-web/index.html` with `/mobile/_nuxt/` asset references.
+
+## Validation Highlights
+
+- Round 4 focused backend, frontend, Electron preload, and public launcher contract tests passed.
+- Round 4 Docker runtime probes passed for trusted-network owner/protected REST, GraphQL POST, WebSocket, GraphQL-WS, mobile `mra_...` separation, disabled/revoked behavior, restart recovery, `/mobile`, and leakage checks.
+- Local Fix API/E2E revalidation passed for rebuilt packaged Electron app/ZIP/DMG, runtime probes against `http://localhost:59821`, and token/redaction scans.
+
+## Known Environment-Limited Coverage
+
+- Dynamic PowerShell launcher execution was not run on this macOS validation host because `pwsh`/`powershell` is unavailable. Static/contract parity checks passed and API/E2E records this as environment-limited, not a product failure.
