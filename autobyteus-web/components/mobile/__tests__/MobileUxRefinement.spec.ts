@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { flushPromises, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { createPinia, setActivePinia, type Pinia } from 'pinia';
 import { existsSync } from 'node:fs';
@@ -12,11 +12,14 @@ import MobileRuns from '../MobileRuns.vue';
 import MobileRunSetup from '../MobileRunSetup.vue';
 import { useAgentActivityStore, type ToolActivity } from '~/stores/agentActivityStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
+import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
+import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
@@ -181,6 +184,7 @@ function mountWithPinia(component: any, options: any = {}) {
 
 describe('mobile Round 4 UX refinements', () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     pinia = createPinia();
     setActivePinia(pinia);
     seedCatalogAndWorkspace();
@@ -311,6 +315,112 @@ describe('mobile Round 4 UX refinements', () => {
     expect(wrapper.find('[data-testid="mobile-run-setup"]').exists()).toBe(true);
     expect(wrapper.get('[data-testid="mobile-run-agent-select"]').text()).toContain('Builder Agent');
     expect(mobileWorkStore.runSetupIntent).toBeNull();
+  });
+
+
+  it('binds agent Auto approve tools to the launch config and created context', async () => {
+    const wrapper = mountWithPinia(MobileRunSetup, {
+      props: { context: workspaceContext },
+    });
+    await nextTick();
+
+    await wrapper.get('[data-testid="mobile-run-agent-select-toggle"]').trigger('click');
+    await nextTick();
+    await wrapper.get('[data-testid="mobile-run-agent-select-option"]').trigger('click');
+    await nextTick();
+
+    const switchButton = wrapper.get('[data-testid="mobile-run-auto-approve-tools-switch"]');
+    expect(wrapper.get('[data-testid="mobile-run-auto-approve-tools"]').text()).toContain('Auto approve tools');
+    expect(switchButton.attributes('role')).toBe('switch');
+    expect(switchButton.attributes('aria-checked')).toBe('false');
+    expect(useAgentRunConfigStore().config?.autoExecuteTools).toBe(false);
+
+    await switchButton.trigger('click');
+    await nextTick();
+
+    expect(useAgentRunConfigStore().config?.autoExecuteTools).toBe(true);
+    expect(wrapper.get('[data-testid="mobile-run-auto-approve-tools-switch"]').attributes('aria-checked')).toBe('true');
+
+    await wrapper.get('form').trigger('submit');
+    await flushPromises();
+
+    expect(useAgentContextsStore().activeRun?.config.autoExecuteTools).toBe(true);
+  });
+
+  it('binds team Auto approve tools to the launch config, team context, and member configs', async () => {
+    const wrapper = mountWithPinia(MobileRunSetup, {
+      props: { context: workspaceContext },
+    });
+    await nextTick();
+
+    await wrapper.get('[data-testid="mobile-run-setup-team-mode"]').trigger('click');
+    await nextTick();
+    await wrapper.get('[data-testid="mobile-run-team-select-toggle"]').trigger('click');
+    await nextTick();
+    await wrapper.get('[data-testid="mobile-run-team-select-option"]').trigger('click');
+    await nextTick();
+    useTeamRunConfigStore().setRuntimeModelCatalog(DEFAULT_AGENT_RUNTIME_KIND, ['test-model']);
+    await nextTick();
+
+    const switchButton = wrapper.get('[data-testid="mobile-run-auto-approve-tools-switch"]');
+    expect(switchButton.attributes('aria-checked')).toBe('false');
+    expect(useTeamRunConfigStore().config?.autoExecuteTools).toBe(false);
+
+    await switchButton.trigger('click');
+    await nextTick();
+
+    expect(useTeamRunConfigStore().config?.autoExecuteTools).toBe(true);
+    useTeamRunConfigStore().setRuntimeModelCatalog(DEFAULT_AGENT_RUNTIME_KIND, ['test-model']);
+
+    const teamRunId = useAgentTeamContextsStore().createRunFromTemplate({ selectionMode: 'mobile' });
+    const activeTeam = useAgentTeamContextsStore().getTeamContextById(teamRunId);
+    expect(activeTeam?.config.autoExecuteTools).toBe(true);
+    expect(Array.from(activeTeam?.leafAgentContextsByRouteKey.values() ?? []).map((member) => member.config.autoExecuteTools)).toEqual([true, true]);
+  });
+
+  it('lists launch workspaces from the workspace store and loads an unlisted server path into the active config', async () => {
+    const workspaceStore = useWorkspaceStore();
+    workspaceStore.workspaces['workspace-no-run'] = {
+      workspaceId: 'workspace-no-run',
+      name: 'Dormant Workspace',
+      absolutePath: '/Users/normy/dormant',
+      workspaceConfig: { root_path: '/Users/normy/dormant' },
+      nodeIdToNode: {},
+      fileExplorer: { id: 'root', name: 'dormant', path: '/Users/normy/dormant', is_file: false, children: [] } as any,
+    };
+    const createWorkspaceSpy = vi.spyOn(workspaceStore, 'createWorkspace').mockImplementation(async (config: { root_path: string }) => {
+      workspaceStore.workspaces['workspace-loaded'] = {
+        workspaceId: 'workspace-loaded',
+        name: 'Loaded Workspace',
+        absolutePath: config.root_path,
+        workspaceConfig: { root_path: config.root_path },
+        nodeIdToNode: {},
+        fileExplorer: { id: 'root', name: 'loaded', path: config.root_path, is_file: false, children: [] } as any,
+      };
+      return 'workspace-loaded';
+    });
+
+    const wrapper = mountWithPinia(MobileRunSetup, {
+      props: { context: workspaceContext },
+    });
+    await nextTick();
+
+    await wrapper.get('[data-testid="mobile-run-workspace-select-toggle"]').trigger('click');
+    await nextTick();
+    expect(wrapper.get('[data-testid="mobile-run-workspace-select-sheet"]').text()).toContain('Dormant Workspace');
+
+    await wrapper.get('[data-testid="mobile-run-agent-select-toggle"]').trigger('click');
+    await nextTick();
+    await wrapper.get('[data-testid="mobile-run-agent-select-option"]').trigger('click');
+    await nextTick();
+
+    await wrapper.get('[data-testid="mobile-run-workspace-path-input"]').setValue('/srv/autobyteus/loaded');
+    await wrapper.get('[data-testid="mobile-run-workspace-load"]').trigger('click');
+    await flushPromises();
+
+    expect(createWorkspaceSpy).toHaveBeenCalledWith({ root_path: '/srv/autobyteus/loaded' });
+    expect(useAgentRunConfigStore().config?.workspaceId).toBe('workspace-loaded');
+    expect(wrapper.get('[data-testid="mobile-run-workspace-select"]').text()).toContain('Loaded Workspace');
   });
 
   it('keeps context visibility adjacent to the mobile composer send decision', () => {

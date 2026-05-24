@@ -12,7 +12,7 @@
         class="rounded-2xl px-3 py-2 text-sm font-semibold"
         :class="mode === 'agent' ? 'bg-blue-600 text-white' : 'bg-white text-blue-800'"
         data-testid="mobile-run-setup-agent-mode"
-        @click="mode = 'agent'"
+        @click="setMode('agent')"
       >
         Agent
       </button>
@@ -21,7 +21,7 @@
         class="rounded-2xl px-3 py-2 text-sm font-semibold"
         :class="mode === 'team' ? 'bg-blue-600 text-white' : 'bg-white text-blue-800'"
         data-testid="mobile-run-setup-team-mode"
-        @click="mode = 'team'"
+        @click="setMode('team')"
       >
         Team
       </button>
@@ -44,12 +44,14 @@
       test-id="mobile-run-team-select"
     />
 
-    <MobileLaunchTargetPicker
-      v-model="selectedWorkspaceId"
-      label="Workspace"
-      placeholder="Choose a workspace intentionally"
+    <MobileLaunchWorkspacePicker
+      :model-value="selectedWorkspaceId"
       :items="workspaceChoices"
-      test-id="mobile-run-workspace-select"
+      :is-refreshing="workspaceRefreshing"
+      :is-loading-path="workspacePathLoading"
+      :error-message="workspaceError"
+      @update:model-value="selectWorkspace"
+      @load-path="loadWorkspacePath"
     />
 
     <MobileLaunchRuntimeModelCard
@@ -58,9 +60,9 @@
       :runtime-kind="agentConfigForSelectedTarget.runtimeKind"
       :llm-model-identifier="agentConfigForSelectedTarget.llmModelIdentifier"
       :llm-config="agentConfigForSelectedTarget.llmConfig"
-      @update:runtime-kind="agentRunConfigStore.updateAgentConfig({ runtimeKind: $event })"
-      @update:llm-model-identifier="agentRunConfigStore.updateAgentConfig({ llmModelIdentifier: $event })"
-      @update:llm-config="agentRunConfigStore.updateAgentConfig({ llmConfig: $event })"
+      @update:runtime-kind="updateRuntimeKind"
+      @update:llm-model-identifier="updateLlmModelIdentifier"
+      @update:llm-config="updateLlmConfig"
     />
     <MobileLaunchRuntimeModelCard
       v-else-if="mode === 'team' && teamConfigForSelectedTarget"
@@ -68,9 +70,15 @@
       :runtime-kind="teamConfigForSelectedTarget.runtimeKind"
       :llm-model-identifier="teamConfigForSelectedTarget.llmModelIdentifier"
       :llm-config="teamConfigForSelectedTarget.llmConfig"
-      @update:runtime-kind="teamRunConfigStore.updateConfig({ runtimeKind: $event })"
-      @update:llm-model-identifier="teamRunConfigStore.updateConfig({ llmModelIdentifier: $event })"
-      @update:llm-config="teamRunConfigStore.updateConfig({ llmConfig: $event })"
+      @update:runtime-kind="updateRuntimeKind"
+      @update:llm-model-identifier="updateLlmModelIdentifier"
+      @update:llm-config="updateLlmConfig"
+    />
+
+    <MobileLaunchRunOptionsCard
+      v-if="activeConfig"
+      :auto-execute-tools="autoExecuteTools"
+      @update:auto-execute-tools="setAutoExecuteTools"
     />
 
     <section class="rounded-2xl border border-blue-200 bg-white p-3 text-sm" data-testid="mobile-run-setup-readiness">
@@ -111,275 +119,57 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import MobileLaunchRuntimeModelCard from '~/components/mobile/MobileLaunchRuntimeModelCard.vue';
-import MobileLaunchTargetPicker from '~/components/mobile/MobileLaunchTargetPicker.vue';
-import { useMobileRunLaunchCoordinator } from '~/composables/mobile/useMobileRunLaunchCoordinator';
-import { useMobileWorkCatalog } from '~/composables/mobile/useMobileWorkCatalog';
-import { useTeamRunRuntimeCatalogSync } from '~/composables/useTeamRunRuntimeCatalogSync';
-import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
-import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
-import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
-import { useMobileWorkStore } from '~/stores/mobileWorkStore';
-import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
-import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
-import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
-import type { MobileRunSetupIntent, MobileWorkContext, MobileWorkListItem } from '~/types/mobileWork';
-
-type MobileLaunchPickerItem = {
-  id: string;
-  label: string;
-  detail?: string;
-  group?: string;
-};
+import { toRef } from 'vue'
+import MobileLaunchRunOptionsCard from '~/components/mobile/MobileLaunchRunOptionsCard.vue'
+import MobileLaunchRuntimeModelCard from '~/components/mobile/MobileLaunchRuntimeModelCard.vue'
+import MobileLaunchTargetPicker from '~/components/mobile/MobileLaunchTargetPicker.vue'
+import MobileLaunchWorkspacePicker from '~/components/mobile/MobileLaunchWorkspacePicker.vue'
+import { useMobileRunSetupController } from '~/composables/mobile/useMobileRunSetupController'
+import type { MobileRunSetupIntent, MobileWorkContext } from '~/types/mobileWork'
 
 const props = defineProps<{
-  context: MobileWorkContext | null;
-  setupIntent?: MobileRunSetupIntent | null;
-}>();
+  context: MobileWorkContext | null
+  setupIntent?: MobileRunSetupIntent | null
+}>()
 
 const emit = defineEmits<{
-  cancel: [];
-  launched: [context: MobileWorkContext];
-  setupIntentConsumed: [revision: number];
-}>();
+  cancel: []
+  launched: [context: MobileWorkContext]
+  setupIntentConsumed: [revision: number]
+}>()
 
-const agentDefinitionStore = useAgentDefinitionStore();
-const agentRunConfigStore = useAgentRunConfigStore();
-const teamDefinitionStore = useAgentTeamDefinitionStore();
-const teamRunConfigStore = useTeamRunConfigStore();
-const mobileWorkStore = useMobileWorkStore();
-const { agentItems, teamItems, workspaceItems } = useMobileWorkCatalog();
-const { createMobileRunFromConfig } = useMobileRunLaunchCoordinator();
-const mode = ref<'agent' | 'team'>('agent');
-const selectedAgentId = ref('');
-const selectedTeamId = ref('');
-const selectedWorkspaceId = ref('');
-const creating = ref(false);
-const error = ref<string | null>(null);
-const draftAttachments = computed(() => mobileWorkStore.draftContextAttachments);
-
-const workspaceIdByRootPath = computed(() => new Map(workspaceItems.value.flatMap((item) => item.context.kind === 'workspace'
-  ? [[item.context.rootPath, item.context.workspaceId] as const]
-  : [])));
-const agentChoices = computed<MobileLaunchPickerItem[]>(() => agentItems.value.flatMap((item) => item.context.kind === 'agent-definition'
-  ? [{ id: item.context.agentDefinitionId, label: item.label, detail: item.detail, group: choiceGroupForAgent(item) }]
-  : []));
-const teamChoices = computed<MobileLaunchPickerItem[]>(() => teamItems.value.flatMap((item) => item.context.kind === 'team-definition'
-  ? [{ id: item.context.teamDefinitionId, label: item.label, detail: item.detail, group: choiceGroupForTeam(item) }]
-  : []));
-const workspaceChoices = computed<MobileLaunchPickerItem[]>(() => workspaceItems.value.flatMap((item) => item.context.kind === 'workspace'
-  ? [{ id: item.context.workspaceId, label: item.label, detail: item.detail, group: choiceGroupForWorkspace(item) }]
-  : []));
-const agentConfigForSelectedTarget = computed<AgentRunConfig | null>(() => {
-  const config = agentRunConfigStore.config;
-  return mode.value === 'agent' && config?.agentDefinitionId === selectedAgentId.value ? config : null;
-});
-const teamConfigForSelectedTarget = computed<TeamRunConfig | null>(() => {
-  const config = teamRunConfigStore.config;
-  return mode.value === 'team' && config?.teamDefinitionId === selectedTeamId.value ? config : null;
-});
-const activeTeamConfigForCatalogSync = computed(() => teamConfigForSelectedTarget.value);
-useTeamRunRuntimeCatalogSync(activeTeamConfigForCatalogSync);
-
-const teamReadiness = computed(() => teamRunConfigStore.launchReadiness);
-const blockingIssue = computed(() => {
-  const targetSelected = mode.value === 'agent' ? selectedAgentId.value : selectedTeamId.value;
-  if (!targetSelected) {
-    return mode.value === 'agent' ? 'Choose an agent before creating the run.' : 'Choose a team before creating the run.';
-  }
-  if (!selectedWorkspaceId.value) {
-    return 'Choose a workspace before creating the run.';
-  }
-  if (mode.value === 'agent') {
-    if (!agentConfigForSelectedTarget.value) {
-      return 'Agent launch configuration is still loading.';
-    }
-    if (!agentRunConfigStore.isConfigured) {
-      return 'Choose a model before creating the run.';
-    }
-    return '';
-  }
-  if (!teamConfigForSelectedTarget.value) {
-    return 'Team launch configuration is still loading.';
-  }
-  if (!teamReadiness.value.canLaunch) {
-    return teamReadiness.value.blockingIssues[0]?.message || 'Team configuration is not launch-ready.';
-  }
-  return '';
-});
-const canLaunch = computed(() => !blockingIssue.value);
-
-function choiceGroupForAgent(item: MobileWorkListItem): string {
-  const context = props.context;
-  if ((context?.kind === 'agent-definition' || context?.kind === 'agent-run') && item.context.kind === 'agent-definition' && item.context.agentDefinitionId === context.agentDefinitionId) {
-    return 'Current context';
-  }
-  return 'All agents';
-}
-
-function choiceGroupForTeam(item: MobileWorkListItem): string {
-  const context = props.context;
-  if ((context?.kind === 'team-definition' || context?.kind === 'team-run') && item.context.kind === 'team-definition' && item.context.teamDefinitionId === context.teamDefinitionId) {
-    return 'Current context';
-  }
-  return 'All teams';
-}
-
-function choiceGroupForWorkspace(item: MobileWorkListItem): string {
-  if (item.context.kind !== 'workspace') {
-    return 'All workspaces';
-  }
-  const context = props.context;
-  if (context?.kind === 'workspace' && item.context.workspaceId === context.workspaceId) {
-    return 'Current context';
-  }
-  if ((context?.kind === 'agent-run' || context?.kind === 'team-run') && item.context.rootPath === context.workspaceRootPath) {
-    return 'Current run workspace';
-  }
-  return 'All workspaces';
-}
-
-function applyContextDefaults(): void {
-  if (props.context?.kind === 'agent-definition' && !selectedAgentId.value) {
-    mode.value = 'agent';
-    selectedAgentId.value = props.context.agentDefinitionId;
-  }
-  if (props.context?.kind === 'team-definition' && !selectedTeamId.value) {
-    mode.value = 'team';
-    selectedTeamId.value = props.context.teamDefinitionId;
-  }
-  if (props.context?.kind === 'agent-run') {
-    mode.value = 'agent';
-    if (!selectedAgentId.value) {
-      selectedAgentId.value = props.context.agentDefinitionId;
-    }
-    if (!selectedWorkspaceId.value) {
-      selectedWorkspaceId.value = workspaceIdByRootPath.value.get(props.context.workspaceRootPath) || '';
-    }
-  }
-  if (props.context?.kind === 'team-run') {
-    mode.value = 'team';
-    if (!selectedTeamId.value) {
-      selectedTeamId.value = props.context.teamDefinitionId;
-    }
-    if (!selectedWorkspaceId.value) {
-      selectedWorkspaceId.value = workspaceIdByRootPath.value.get(props.context.workspaceRootPath) || '';
-    }
-  }
-  if (props.context?.kind === 'workspace' && !selectedWorkspaceId.value) {
-    selectedWorkspaceId.value = props.context.workspaceId;
-  }
-}
-
-function applySetupIntentDefaults(intent: MobileRunSetupIntent | null | undefined): void {
-  if (!intent) {
-    return;
-  }
-  if (intent.kind === 'agent') {
-    mode.value = 'agent';
-    selectedAgentId.value = intent.agentDefinitionId;
-    selectedTeamId.value = '';
-  } else {
-    mode.value = 'team';
-    selectedTeamId.value = intent.teamDefinitionId;
-    selectedAgentId.value = '';
-  }
-  if (intent.workspaceId) {
-    selectedWorkspaceId.value = intent.workspaceId;
-  }
-}
-
-function clearInvalidSelections(): void {
-  if (selectedAgentId.value && !agentChoices.value.some((item) => item.id === selectedAgentId.value)) selectedAgentId.value = '';
-  if (selectedTeamId.value && !teamChoices.value.some((item) => item.id === selectedTeamId.value)) selectedTeamId.value = '';
-  if (selectedWorkspaceId.value && !workspaceChoices.value.some((item) => item.id === selectedWorkspaceId.value)) selectedWorkspaceId.value = '';
-}
-
-function syncSelectedConfig(): void {
-  if (mode.value === 'agent') {
-    teamRunConfigStore.clearConfig();
-    if (!selectedAgentId.value) {
-      agentRunConfigStore.clearConfig();
-      return;
-    }
-    const definition = agentDefinitionStore.getAgentDefinitionById(selectedAgentId.value);
-    if (!definition) {
-      return;
-    }
-    if (agentRunConfigStore.config?.agentDefinitionId !== selectedAgentId.value) {
-      agentRunConfigStore.setTemplate(definition);
-    }
-    if (selectedWorkspaceId.value) {
-      agentRunConfigStore.updateAgentConfig({ workspaceId: selectedWorkspaceId.value });
-    }
-    return;
-  }
-
-  agentRunConfigStore.clearConfig();
-  if (!selectedTeamId.value) {
-    teamRunConfigStore.clearConfig();
-    return;
-  }
-  const definition = teamDefinitionStore.getAgentTeamDefinitionById(selectedTeamId.value);
-  if (!definition) {
-    return;
-  }
-  if (teamRunConfigStore.config?.teamDefinitionId !== selectedTeamId.value) {
-    teamRunConfigStore.setTemplate(definition);
-  }
-  if (selectedWorkspaceId.value) {
-    teamRunConfigStore.updateConfig({ workspaceId: selectedWorkspaceId.value });
-  }
-}
-
-async function createRun(): Promise<void> {
-  error.value = null;
-  if (!canLaunch.value) {
-    error.value = blockingIssue.value || 'Choose a target, workspace, and model before creating the run.';
-    return;
-  }
-  creating.value = true;
-  try {
-    const result = await createMobileRunFromConfig(
-      mode.value === 'agent'
-        ? {
-            kind: 'agent',
-            agentDefinitionId: selectedAgentId.value,
-            workspaceId: selectedWorkspaceId.value,
-          }
-        : {
-            kind: 'team',
-            teamDefinitionId: selectedTeamId.value,
-            workspaceId: selectedWorkspaceId.value,
-          },
-    );
-    emit('launched', result.context);
-  } catch (cause) {
-    error.value = cause instanceof Error ? cause.message : 'Failed to create mobile run.';
-  } finally {
-    creating.value = false;
-  }
-}
-
-watch(() => props.context, () => {
-  selectedAgentId.value = '';
-  selectedTeamId.value = '';
-  selectedWorkspaceId.value = '';
-  applyContextDefaults();
-  applySetupIntentDefaults(props.setupIntent);
-}, { immediate: true });
-watch([agentItems, teamItems, workspaceItems], () => {
-  clearInvalidSelections();
-  applyContextDefaults();
-  applySetupIntentDefaults(props.setupIntent);
-});
-watch(() => props.setupIntent?.revision, (revision) => {
-  if (!revision) {
-    return;
-  }
-  applySetupIntentDefaults(props.setupIntent);
-  emit('setupIntentConsumed', revision);
-}, { immediate: true });
-watch([mode, selectedAgentId, selectedTeamId, selectedWorkspaceId, agentChoices, teamChoices], syncSelectedConfig, { immediate: true });
+const {
+  mode,
+  selectedAgentId,
+  selectedTeamId,
+  selectedWorkspaceId,
+  creating,
+  error,
+  draftAttachments,
+  agentChoices,
+  teamChoices,
+  workspaceChoices,
+  workspaceError,
+  workspaceRefreshing,
+  workspacePathLoading,
+  agentConfigForSelectedTarget,
+  teamConfigForSelectedTarget,
+  activeConfig,
+  canLaunch,
+  blockingIssue,
+  autoExecuteTools,
+  setMode,
+  selectWorkspace,
+  setAutoExecuteTools,
+  updateRuntimeKind,
+  updateLlmModelIdentifier,
+  updateLlmConfig,
+  loadWorkspacePath,
+  createRun,
+} = useMobileRunSetupController({
+  context: toRef(props, 'context'),
+  setupIntent: toRef(props, 'setupIntent'),
+  onLaunched: (context) => emit('launched', context),
+  onSetupIntentConsumed: (revision) => emit('setupIntentConsumed', revision),
+})
 </script>
