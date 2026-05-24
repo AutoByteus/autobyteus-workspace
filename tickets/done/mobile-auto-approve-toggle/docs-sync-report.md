@@ -6,7 +6,7 @@
 - Trigger: Delivery-stage docs sync after code review and API/E2E validation passed for mobile `Auto approve tools`, launch workspace selection/loading parity, and mobile run setup refactor boundaries.
 - Bootstrap base reference: `origin/personal@03d7880b45afd2b032de6e842e41429fad0a2cb0` (`docs(delivery): record mobile safe container release`).
 - Integrated base reference used for docs sync: `origin/personal@03d7880b45afd2b032de6e842e41429fad0a2cb0`; delivery fetched `origin personal` on 2026-05-24 and found no newer tracked base commits to merge.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/delivery-post-integration-checks.log`; `git diff --check` passed after delivery docs edits.
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/delivery-post-integration-checks.log`; `git diff --check` passed after delivery docs edits.
 
 ## Why Docs Were Updated
 
@@ -61,7 +61,7 @@
 
 ## Post-Handoff API/E2E Addendum Incorporated
 
-- Addendum source: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/api-e2e-validation-report.md` section `User-requested Electron-started server check`.
+- Addendum source: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/api-e2e-validation-report.md` section `User-requested Electron-started server check`.
 - Delivery impact: The already-running Electron-started server at `http://127.0.0.1:29695` is reachable, but it is from another worktree and serves stale `/mobile` assets/schema for this branch. It is not a valid integrated sign-off target until rebuilt/refreshed from this branch.
 - Docs impact: No additional long-lived docs changes are needed beyond this docs sync, because `autobyteus-web/docs/remote_access.md`, `docs/android_mobile_access.md`, and `autobyteus-android/README.md` now explicitly document the served `/mobile` freshness boundary and Android WebView ownership.
 

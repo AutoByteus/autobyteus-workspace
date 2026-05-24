@@ -3,14 +3,14 @@
 ## Ticket
 
 - Ticket: `mobile-auto-approve-toggle`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle`
-- Branch: `codex/mobile-auto-approve-toggle`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle` (removed after successful finalization cleanup)
+- Branch: `codex/mobile-auto-approve-toggle` (merged to `personal`, then local/remote ticket branches deleted)
 - Finalization target: `personal` / `origin/personal`
-- Handoff round: Finalization/release-authorized delivery handoff after user verification, latest-base refresh, docs sync, local Electron build, and ticket archival.
+- Handoff round: Final archived handoff after user verification, latest-base refresh, docs sync, local Electron build, ticket archival, repository finalization, v1.3.31 release, workflow verification, and cleanup.
 
 ## Delivery State
 
-- Current state: User verified the local Electron build is working and requested finalization plus a new version release on 2026-05-24. Ticket archival is complete; final commit, push, merge to `personal`, release, and cleanup are in progress.
+- Current state: Completed; user verified the local Electron build, the ticket was finalized to `personal`, release `v1.3.31` was published, all tag-triggered release workflows succeeded, and the dedicated ticket worktree/branches were cleaned up.
 - User verification received: `Yes` — user said: `its working now. lets finalize and release a new version`.
 - Base refresh: `git fetch origin personal --prune --no-tags` completed on 2026-05-24.
 - Bootstrap/reviewed base: `origin/personal@03d7880b45afd2b032de6e842e41429fad0a2cb0` (`docs(delivery): record mobile safe container release`).
@@ -18,8 +18,8 @@
 - New base commits integrated: `No`; `git rev-list --left-right --count HEAD...origin/personal` returned `0 0` after fetch.
 - Local checkpoint commit before integration: `Not needed`; latest tracked base did not advance and no merge/rebase was performed.
 - Integration method: `Already current`.
-- Initial base refresh log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/delivery-initial-base-refresh.log`.
-- Post-integration / docs sync check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/delivery-post-integration-checks.log`.
+- Initial base refresh log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/delivery-initial-base-refresh.log`.
+- Post-integration / docs sync check log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/delivery-post-integration-checks.log`.
 - Post-handoff API/E2E addendum reviewed: the already-running Electron-started server on `http://127.0.0.1:29695` is reachable, but it is from `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/...` and serves stale `/mobile` assets/schema for this branch. It must not be used as the final integrated target unless rebuilt/refreshed from this ticket branch.
 
 ## Implementation Summary
@@ -62,17 +62,17 @@
 
 ## Delivery-Owned Docs / Artifacts
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/api-e2e-validation-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/release-deployment-report.md`
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/release-notes.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/handoff-summary.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/api-e2e-validation-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/release-deployment-report.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/release-notes.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/handoff-summary.md`
 
 
 ## User-Requested Electron macOS Build For Testing
@@ -89,9 +89,9 @@
 - ZIP SHA-256: `bc64177d1bd82dbde13909b6ff7ce86900d8443f67fcdd3afcb7f1842888b286`
 - Packaged mobile-web freshness for this local Electron build: `autobyteus-web/dist-mobile/public/index.html`, `autobyteus-web/resources/server/mobile-web/index.html`, and `electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web/index.html` all hash to `5e2bc65c4c3e09fc610b59a4b07e339fabece05db20b1ce11c9cb60dd1f0329f`.
 - Packaged `resources/server/mobile-web` selector grep found `mobile-run-auto-approve-tools-switch`, `mobile-run-workspace-path-input`, `mobile-run-workspace-load`, and `Auto approve tools`.
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/build-logs/electron-mac-build-20260524T082756Z.log`
-- Artifact summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/build-logs/electron-mac-build-artifacts.txt`
-- SHA-256 checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/build-logs/electron-mac-build-artifacts.sha256`
+- Build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/build-logs/electron-mac-build-20260524T082756Z.log`
+- Artifact summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/build-logs/electron-mac-build-artifacts.txt`
+- SHA-256 checksums: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/build-logs/electron-mac-build-artifacts.sha256`
 - Signing/notarization: local testing build only; macOS code signing was skipped because the signing identity is explicitly null and no Apple team ID was supplied.
 - Release/deployment impact: this build is local and ignored by Git; it is not a GitHub release, publication, deployment, or repository finalization step.
 
@@ -113,8 +113,20 @@
 - `git rev-list --left-right --count HEAD...origin/personal` — `0 0`; no latest-base merge/rebase required.
 - `git diff --check` — passed after docs sync.
 - Evidence logs:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/delivery-initial-base-refresh.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle/tickets/done/mobile-auto-approve-toggle/delivery-post-integration-checks.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/delivery-initial-base-refresh.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/delivery-post-integration-checks.log`
+
+
+## Finalization / Release Evidence
+
+- Ticket branch commit: `07ee1c00f0f63306c15cc2d3e0f24c033690991b` (`feat(mobile): add run setup parity`).
+- Merge commit on `personal`: `0bb11b5b235ce3da116c6fb68105cd51c47e9e2e` (`merge: mobile auto approve run setup parity`).
+- Release commit: `57a31f25ac1441bfd088c377ef00b23570a87cab` (`chore(release): bump workspace release version to 1.3.31`).
+- Release tag: `v1.3.31` (`2890dbb63918a9787d8a572c0c98fe7bbed1de51`).
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.31
+- Release workflows: Desktop, Android APK, Messaging Gateway, and Server Docker all completed with `success`.
+- Cleanup: dedicated ticket worktree removed; local and remote `codex/mobile-auto-approve-toggle` branches deleted.
+- Final evidence logs are under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/mobile-auto-approve-toggle/validation-evidence/`.
 
 ## Known Non-Blocking / Out-of-Scope Items
 
@@ -126,7 +138,7 @@
 
 ## Finalization / Release Status
 
-- Repository finalization: `Authorized by user verification; in progress`.
+- Repository finalization: `Completed`; ticket commit `07ee1c00f0f63306c15cc2d3e0f24c033690991b`, merge commit `0bb11b5b235ce3da116c6fb68105cd51c47e9e2e`, release commit `57a31f25ac1441bfd088c377ef00b23570a87cab`, tag `v1.3.31`.
 - Ticket archival to `tickets/done/mobile-auto-approve-toggle`: `Completed`.
-- Release/publication/deployment: `Requested`; release notes are prepared at `tickets/done/mobile-auto-approve-toggle/release-notes.md`.
-- Next action: commit/push the ticket branch, merge to `personal`, run the release helper for the next patch version, verify release workflows/assets, then record final status and cleanup.
+- Release/publication/deployment: `Completed`; release `v1.3.31` published at https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.3.31.
+- Final status: all requested finalization and release work completed; no next delivery action remains.
