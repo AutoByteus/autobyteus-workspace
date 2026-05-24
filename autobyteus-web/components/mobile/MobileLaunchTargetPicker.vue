@@ -63,13 +63,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-
-type MobileLaunchPickerItem = {
-  id: string;
-  label: string;
-  detail?: string;
-  group?: string;
-};
+import type { MobileLaunchPickerItem } from '~/types/mobileLaunch';
 
 const props = withDefaults(defineProps<{
   label: string;
