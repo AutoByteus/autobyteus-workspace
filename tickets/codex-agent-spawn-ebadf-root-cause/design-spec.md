@@ -2,7 +2,7 @@
 
 Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-spec.md`
 Date: 2026-05-22
-Status: Ready for user review after AR-007 full-spec reconciliation to the Round 8 WorkspaceMetadata + WorkspaceFileExplorer target; do not send to architecture review until user approval
+Status: Round 9 Terminal normal-session descriptor lifecycle rework added after E2E-TERMFD-002; ready for architecture review
 
 Related artifacts:
 
@@ -64,6 +64,14 @@ Authoritative naming note after AR-007:
 
 - Round 8 is the only steady-state target.
 - `WorkspaceReference`, `WorkspaceActivationState`, `BaseFileExplorer`, `LocalFileExplorer`, `WorkspaceInfo.fileExplorer`, and `ensureWorkspaceInitialized(reference)` are legacy/current-state or temporary migration names only, not target architecture.
+
+
+Round 9 Terminal descriptor-lifecycle refinement after API/E2E:
+
+- `E2E-TERMFD-002` showed normal attached Terminal command-output sessions can leave `/dev/ptmx` / `(revoked)` descriptors after close even when `PtySessionManager.sessionCount` and child process count return to zero.
+- Terminal close acceptance now covers normal open/run-command/output/close descriptor cleanup, not only close-before-connect and setup-failure cleanup.
+- `TerminalSession.close()` / `PtySessionManager.closeSession()` must represent deep OS-resource cleanup: read loop termination, pending read/timer cleanup, listener disposal, child exit/kill fallback, and PTY descriptor release.
+- Durable validation must measure process FDs and PTY/revoked descriptor lines after repeated real command-output Terminal sessions.
 
 ## Current-State Read
 
@@ -211,6 +219,7 @@ This means:
 - History, team history, Terminal desktop/mobile, runtime cwd resolution, resume/rerun, sidebars, and workspace metadata list/create must not acquire `WorkspaceFileExplorer`.
 - Terminal uses a root-path `TerminalTarget`, validates cwd directly, and never initializes file-explorer state merely to open a PTY.
 - File-explorer and Terminal WebSocket routes both own pending-connect cleanup so early close/setup failure cannot retain watcher or PTY resources.
+- Normal attached Terminal sessions must also be descriptor-clean: after real command output and WebSocket close, Terminal-owned PTY descriptors, revoked descriptors, listeners, timers, read loops, manager records, and child processes must all be released after a bounded close wait.
 
 ## Task Design Health Assessment
 
@@ -255,6 +264,7 @@ This means:
 | DS-010 | File-explorer live updates | Visible live stream connects | Watcher events update FileExplorer state | File-explorer WS route + watcher lease manager | Yes | Watcher exists only while visible consumers need it. |
 | DS-011 | File-explorer pending cleanup | WS close/error/setup failure | No retained watcher/session | File-explorer WS route + stream handler | Yes, cleanup | Closes the original descriptor leak/race class. |
 | DS-012 | Terminal pending cleanup | Terminal WS close/error/setup failure | No retained PTY/read loop | Terminal WS route + session manager | No | Prevents replacing watcher leaks with PTY leaks. |
+| DS-013 | Terminal normal-session descriptor cleanup | Normal Terminal open/run-command/output/close | Manager state, read loop, child process, and PTY descriptors released | `TerminalHandler` + `PtySessionManager` + `TerminalSession` implementation | No | Ensures normal Terminal use cannot recreate descriptor pressure. |
 
 ## Primary Execution Spines
 
@@ -323,6 +333,23 @@ Desktop Terminal tab or Mobile Tools Terminal
 ```
 
 Creates `WorkspaceFileExplorer`: No. Returns tree: No.
+
+### DS-013 Terminal normal-session descriptor cleanup
+
+```text
+Terminal WebSocket open with valid cwd
+-> TerminalHandler.connect
+-> PtySessionManager.createSession
+-> TerminalSession.start opens PTY backend
+-> user command writes marker and produces actual command output
+-> WebSocket close
+-> TerminalHandler.disconnect stops active read loop ownership
+-> PtySessionManager.closeSession removes registry entry and awaits TerminalSession.close
+-> TerminalSession.close flushes pending reads/timers, disposes listeners, exits/kills child, releases PTY descriptors, clears references
+-> descriptor probe returns to post-warmup baseline
+```
+
+Creates `WorkspaceFileExplorer`: No. Terminal descriptor ownership is independent from workspace file-explorer ownership.
 
 ### DS-006/DS-007 Files open/close
 
@@ -405,7 +432,10 @@ Watcher start is forbidden outside this visible-consumer/live-update path.
 | `workspaceStore` frontend | `WorkspaceMetadata` collection, active metadata, display/config helpers only. |
 | `fileExplorerStore` frontend | tree projections, loaded/expanded folders, open/selected file state, search state, loading/error/live stream status by workspace id. |
 | Run/team history hydration | builds run/team contexts from persisted projections and `WorkspaceMetadata`; never file-explorer state. |
-| Terminal session/route | root-path/cwd validation and PTY lifecycle; never workspace file explorer. |
+| Terminal session/route | root-path/cwd validation, WebSocket pending cleanup, and PTY lifecycle; never workspace file explorer. |
+| `TerminalHandler` | Terminal read loop lifecycle, session attach/detach, and handoff to `PtySessionManager`. |
+| `PtySessionManager` | in-process Terminal session registry and `closeSession()` orchestration; manager cleanup is not sufficient without `TerminalSession.close()`. |
+| `TerminalSession` implementation (`autobyteus-ts`) | low-level PTY backend, child process, PTY descriptors, listeners, pending reads/timers, and deep close semantics. |
 | File-explorer WS route | raw WS lifecycle and cleanup before/around `WorkspaceFileExplorer` watcher lease acquisition. |
 
 ## Authoritative Data Model
@@ -525,7 +555,9 @@ Agent/team run configs carry stable metadata/root-path identity. During migratio
 | GraphQL `searchWorkspaceFiles(workspaceId,query)` | file search | workspace id + query | search results | Yes |
 | GraphQL file read/write/move/delete | file operations | workspace id + normalized path(s) | content/status | Yes |
 | File-explorer WS | live file updates | workspace id + session id | events | Yes + watcher lease |
-| Terminal WS | terminal cwd/PTTY | `TerminalTarget` root path + session id | PTY stream | No |
+| Terminal WS | terminal cwd/PTY | `TerminalTarget` root path + session id | PTY stream | No |
+| `PtySessionManager.closeSession(sessionId)` | terminal session registry + close orchestration | session id | close completion boolean | No |
+| `TerminalSession.close()` | low-level PTY OS resources | session instance | deep close completion | No |
 | Run/team history hydration | history projection | run/team ids + persisted root paths | contexts/configs with metadata | No |
 | Runtime cwd resolver | runtime launch | run config metadata | cwd string | No |
 
@@ -552,7 +584,9 @@ Agent/team run configs carry stable metadata/root-path identity. During migratio
 | `autobyteus-server-ts/src/api/graphql/types/file-explorer.ts` | file-explorer schema/resolvers | Acquire `WorkspaceFileExplorer` explicitly and return file-explorer DTOs. |
 | `autobyteus-server-ts/src/api/websocket/file-explorer.ts` | file-explorer WS lifecycle | Register cleanup before async acquisition/connect; release late/partial sessions and watcher leases. |
 | `autobyteus-server-ts/src/api/websocket/terminal.ts` | Terminal root-path WS lifecycle | Validate cwd directly; pending-connect cleanup for PTY sessions; no workspace file-explorer calls. |
-| `autobyteus-server-ts/src/services/terminal-streaming/*` | PTY session management | cwd-based session creation, idempotent disconnect, partial-session cleanup. |
+| `autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts` | Terminal read loop and session attach/detach | Ensure disconnect stops active read-loop ownership and awaits manager close. |
+| `autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts` | server Terminal session registry and close orchestration | Remove manager record and await `TerminalSession.close()`; expose tests that distinguish manager count from OS resources. |
+| `autobyteus-ts/src/tools/terminal/pty-session.ts` or selected `TerminalSession` backend | low-level PTY process/descriptor lifecycle | Make normal close descriptor-clean: flush pending reads/timers, dispose listeners, exit/kill child, release/destroy PTY descriptors, clear references, and resolve only after bounded cleanup. |
 | runtime workspace resolvers | runtime cwd resolution | Use `WorkspaceMetadata.rootPath`/id mapping only. No file-explorer acquisition. |
 
 ### Frontend
@@ -578,6 +612,7 @@ Allowed dependencies:
 - File-explorer UI/API/WS consumers may acquire `WorkspaceFileExplorer` through `Workspace`.
 - `WorkspaceFileExplorer` may depend on internal collaborators for tree/search/operations/watcher lifecycle.
 - Terminal may depend on root-path validation and PTY session services, not file-explorer state.
+- Terminal route/handler/manager may depend on `TerminalSession.close()` as the low-level OS-resource close contract; they must not treat manager map removal alone as cleanup completion.
 - Runtime cwd resolvers may depend on metadata/id mapping/root path, not file-explorer state.
 
 Forbidden dependencies:
@@ -589,6 +624,7 @@ Forbidden dependencies:
 - Non-file-explorer code must not bypass `WorkspaceFileExplorer` and directly use `WorkspaceFileTreeState`, `WorkspaceFileSearchIndex`, `WorkspaceFileOperations`, or `WorkspaceFileWatcherLeaseManager`.
 - No steady-state `BaseFileExplorer`/`LocalFileExplorer` abstraction stack remains.
 - No compatibility dual path may keep `WorkspaceInfo.fileExplorer` as a general workspace payload.
+- Terminal validation must not use `PtySessionManager.sessionCount` or child-process count alone as proof of cleanup; descriptor-level evidence is required for normal command-output sessions.
 
 ## Route / Handler Cleanup Contracts
 
@@ -635,6 +671,17 @@ Contract:
 4. `TerminalHandler.connect()` / `PtySessionManager` must close partial PTY sessions if setup fails after process/session creation but before route ownership is established.
 5. `disconnect()` must be idempotent.
 
+### Normal Terminal Session Deep-Close Contract
+
+Normal attached Terminal sessions have a separate close contract from pending-connect cleanup. The close path is complete only after all four layers are clean:
+
+1. WebSocket layer: socket close/error has run cleanup once and no pending input remains queued.
+2. Handler layer: active read loop ownership is removed, pending read is flushed, and the read-loop task has exited or been awaited.
+3. Manager layer: session registry no longer contains the session id.
+4. Low-level session layer: shell/PTY child has exited or been killed, listeners/disposables are disposed, pending read timers are cleared, PTY object references are cleared, and PTY master/slave descriptors are released or verified absent after a bounded wait.
+
+The low-level `TerminalSession` implementation owns descriptor cleanup. If a specific backend such as `node-pty` leaves `/dev/ptmx` or `(revoked)` descriptors after its close sequence, implementation must adjust the close order/backend/wrapper or choose a descriptor-safe backend for server WebSocket Terminal sessions. The design explicitly rejects fd-limit increases or manager-map cleanup as sufficient fixes.
+
 ## Removal / Decommission Plan
 
 Remove or decommission as steady-state architecture:
@@ -648,6 +695,7 @@ Remove or decommission as steady-state architecture:
 - `BaseFileExplorer` and `LocalFileExplorer` abstraction stack.
 - `FileNameIndexer.start()` behavior that starts watchers by default.
 - Terminal workspace-id-only contract that requires initialized workspace payload to obtain cwd.
+- Terminal close behavior that reports success while retaining PTY/revoked descriptors after normal command-output sessions.
 - Mobile Terminal lookup through `workspaceStore.workspaces` / `allWorkspaces` as a render/connect gate.
 - Historical team helper path that materializes every member workspace for history display.
 
@@ -673,9 +721,11 @@ Temporary migration aliases allowed only inside one implementation change:
 12. Update desktop/mobile Files, skill file explorer, and context browser to acquire/release FileExplorer state explicitly.
 13. Update standalone/team history hydration to use `WorkspaceMetadata` and never acquire file-explorer state.
 14. Update Terminal desktop/mobile to use root-path `TerminalTarget` and backend cwd validation only.
-15. Update runtime cwd resolvers to use metadata/root path only.
-16. Add pending-connect cleanup tests for file-explorer WS and Terminal WS.
-17. Delete temporary migration aliases and any remaining imports of superseded target names.
+15. Strengthen Terminal normal close path so `TerminalSession.close()` / `PtySessionManager.closeSession()` release OS PTY descriptors after normal command-output sessions.
+16. Update runtime cwd resolvers to use metadata/root path only.
+17. Add pending-connect cleanup tests for file-explorer WS and Terminal WS.
+18. Add normal attached command-output Terminal descriptor churn validation.
+19. Delete temporary migration aliases and any remaining imports of superseded target names.
 
 ## Validation Plan
 
@@ -689,6 +739,8 @@ Backend validation:
 - Unit/static check: `WorkspaceFileTreeState`, `WorkspaceFileSearchIndex`, `WorkspaceFileOperations`, and `WorkspaceFileWatcherLeaseManager` are not directly used by history/terminal/runtime/workspace metadata code.
 - Runtime tests: Codex/Claude/AutoByteus cwd resolution does not call `Workspace.acquireFileExplorer()`.
 - Terminal tests: root-path Terminal route does not acquire `WorkspaceFileExplorer`; early close/setup failure leaves `PtySessionManager.sessionCount` at baseline.
+- Terminal descriptor tests: normal attached command-output sessions return manager session count, child process count, process FD count, and PTY/revoked descriptor count to a bounded post-warmup baseline after close.
+- Terminal unit tests: `TerminalSession.close()` disposes listeners, clears timers/pending reads, exits/kills child, clears references, and is idempotent.
 - File-explorer WS tests: close before async connect resolves releases late watcher/session; setup failure after lease acquisition releases lease.
 - Descriptor probe: repeated open/close of file explorer does not monotonically increase descriptors and child process spawn remains successful.
 
@@ -707,6 +759,7 @@ End-to-end/manual validation:
 - Reproduce original Codex tutorial workspace send after heavy workspace use; no `spawn EBADF`.
 - Open large historical runs and team historical runs; conversation/config render without file-tree delay.
 - Open desktop/mobile Terminal from historical/non-materialized workspace; PTY starts from cwd without workspace file-explorer initialization.
+- Run repeated normal Terminal open/actual-command-output/close cycles in built backend; no per-session PTY descriptor growth remains after bounded wait.
 - Open Files after history selection; visible loading occurs, tree appears, watcher starts only while visible.
 - Close/hide Files; watcher/resources release.
 
@@ -716,6 +769,7 @@ End-to-end/manual validation:
 - Do not keep `WorkspaceReference` and `WorkspaceMetadata` as parallel steady-state concepts. `WorkspaceReference` is a temporary alias only if needed during migration.
 - Do not keep `BaseFileExplorer`/`LocalFileExplorer` as speculative future extension points.
 - Do not preserve Terminal workspace-id-only route as the normal path for ordinary filesystem workspaces.
+- Do not preserve Terminal close semantics that only clear manager state while OS PTY descriptors remain retained.
 - Do not preserve history/team history eager materialization as a fallback branch.
 - Do not preserve automatic file-explorer live stream startup from workspace list/create/register paths.
 
@@ -731,3 +785,14 @@ WorkspaceFileExplorerTree = file-explorer API/frontend projection
 ```
 
 Any implementation or review finding that treats `WorkspaceReference`, `WorkspaceActivationState`, `WorkspaceInfo.fileExplorer`, `BaseFileExplorer`, `LocalFileExplorer`, or `ensureWorkspaceInitialized(reference)` as steady-state target architecture should be considered a design violation.
+
+
+## E2E-TERMFD-002 Reconciliation Note
+
+API/E2E Round 9 established that normal Terminal sessions need descriptor-level acceptance. The route/handler pending cleanup design remains necessary but is not sufficient. The terminal lifecycle target now includes a normal-session deep-close invariant:
+
+```text
+Terminal close complete = socket cleanup + read-loop cleanup + manager removal + low-level PTY descriptor release
+```
+
+Any implementation that passes `PtySessionManager.sessionCount === 0` while retaining per-session `/dev/ptmx` or `(revoked)` descriptors after normal command-output close fails the design.

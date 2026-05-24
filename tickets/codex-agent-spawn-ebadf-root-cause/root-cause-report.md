@@ -354,3 +354,34 @@ This refinement avoids two bad outcomes at once:
 Architecture review round 6 did not reject the Round 8 architecture. It rejected the design spec as an implementation guide because older final-target sections still contradicted the accepted model. The root cause of that review failure was documentation ambiguity: one artifact contained both the superseded `WorkspaceReference` / `BaseFileExplorer` / tree-bearing `WorkspaceStore` target and the accepted `WorkspaceMetadata` / `WorkspaceFileExplorer` / `WorkspaceFileExplorerTree` target.
 
 The design spec has now been reconciled so the only steady-state target is the Round 8 model. Superseded names are allowed only as current-state evidence or temporary migration aliases, not target architecture.
+
+
+## Round 9 Root-Cause Refinement: Terminal Manager Cleanup Is Not OS Descriptor Cleanup
+
+`E2E-TERMFD-002` shows a new distinction in the Terminal lifecycle:
+
+```text
+PtySessionManager.sessionCount === 0
+child process count === 0
+```
+
+is not equivalent to:
+
+```text
+all Terminal-owned PTY descriptors and revoked handles are released
+```
+
+The root cause is a lifecycle acceptance gap: previous design rounds made the route/handler robust against early close and setup failure, but did not explicitly assign descriptor-level cleanup for normal attached command-output sessions. The low-level `TerminalSession` implementation owns node-pty resources, listener disposables, pending reads/timers, kill/wait/destroy ordering, and descriptor release. The server route and handler can request close, but they cannot by themselves prove OS resource cleanup unless the session implementation's close contract is strong and validation measures descriptors.
+
+Correct invariant:
+
+```text
+Terminal close is complete only when manager state, read loop state, child process state, and PTY descriptor state are all cleaned up.
+```
+
+Durable fix direction:
+
+1. Strengthen the `TerminalSession.close()` / `PtySessionManager.closeSession()` contract to include deep OS-resource cleanup.
+2. Ensure normal open/run-command/close paths and early-close/setup-failure paths share the same terminal resource owner and idempotent close semantics.
+3. Add descriptor-level built-backend/macOS validation for normal attached command-output churn.
+4. If `node-pty` cannot be made descriptor-clean in this runtime, switch or wrap the terminal backend with a descriptor-safe lifecycle rather than relying on fd-limit increases or session-map cleanup.

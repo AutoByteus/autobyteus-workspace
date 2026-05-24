@@ -1,0 +1,696 @@
+{
+  "result": "pass",
+  "startedAt": "2026-05-24T03:50:27.626Z",
+  "completedAt": "2026-05-24T03:50:46.310Z",
+  "baseUrl": "http://127.0.0.1:53893",
+  "serverPid": 17114,
+  "health": {
+    "attempts": 14,
+    "healthReadyMs": 3392
+  },
+  "baseline": {
+    "label": "baseline_after_health",
+    "fdCount": 37,
+    "childCount": 0,
+    "children": [],
+    "at": "2026-05-24T03:50:32.281Z"
+  },
+  "invalidCwd": {
+    "closeMs": 8,
+    "code": 4004,
+    "reason": "Terminal cwd unavailable"
+  },
+  "normalStats": {
+    "openMs": {
+      "count": 8,
+      "min": 2,
+      "p50": 2,
+      "p95": 4,
+      "max": 7,
+      "avg": 3
+    },
+    "outputMs": {
+      "count": 8,
+      "min": 161,
+      "p50": 314,
+      "p95": 415,
+      "max": 426,
+      "avg": 324
+    },
+    "closeMs": {
+      "count": 8,
+      "min": 1,
+      "p50": 1,
+      "p95": 1,
+      "max": 2,
+      "avg": 1
+    }
+  },
+  "earlyCloseStats": {
+    "openMs": {
+      "count": 25,
+      "min": 1,
+      "p50": 2,
+      "p95": 3,
+      "max": 5,
+      "avg": 2
+    },
+    "closeMs": {
+      "count": 25,
+      "min": 0,
+      "p50": 1,
+      "p95": 1,
+      "max": 1,
+      "avg": 1
+    }
+  },
+  "abortBeforeOpenStats": {
+    "closeMs": {
+      "count": 10,
+      "min": 1,
+      "p50": 1,
+      "p95": 2,
+      "max": 2,
+      "avg": 1
+    }
+  },
+  "normalRuns": [
+    {
+      "id": "normal-1",
+      "openMs": 7,
+      "outputMs": 415,
+      "closeMs": 2,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_1__:"
+    },
+    {
+      "id": "normal-2",
+      "openMs": 4,
+      "outputMs": 352,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_2__"
+    },
+    {
+      "id": "normal-3",
+      "openMs": 2,
+      "outputMs": 426,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_3__"
+    },
+    {
+      "id": "normal-4",
+      "openMs": 2,
+      "outputMs": 314,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_4__"
+    },
+    {
+      "id": "normal-5",
+      "openMs": 2,
+      "outputMs": 294,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_5__"
+    },
+    {
+      "id": "normal-6",
+      "openMs": 2,
+      "outputMs": 161,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_6__"
+    },
+    {
+      "id": "normal-7",
+      "openMs": 3,
+      "outputMs": 318,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_7__:%s\\n\" "
+    },
+    {
+      "id": "normal-8",
+      "openMs": 3,
+      "outputMs": 312,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_8__"
+    }
+  ],
+  "earlyCloseRuns": [
+    {
+      "id": "early-1",
+      "openMs": 5,
+      "closeMs": 0
+    },
+    {
+      "id": "early-2",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "id": "early-3",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-4",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-5",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-6",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-7",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "id": "early-8",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "id": "early-9",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-10",
+      "openMs": 2,
+      "closeMs": 0
+    },
+    {
+      "id": "early-11",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "id": "early-12",
+      "openMs": 3,
+      "closeMs": 1
+    },
+    {
+      "id": "early-13",
+      "openMs": 2,
+      "closeMs": 0
+    },
+    {
+      "id": "early-14",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "id": "early-15",
+      "openMs": 3,
+      "closeMs": 1
+    },
+    {
+      "id": "early-16",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-17",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-18",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "id": "early-19",
+      "openMs": 2,
+      "closeMs": 0
+    },
+    {
+      "id": "early-20",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "id": "early-21",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "id": "early-22",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "id": "early-23",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-24",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "id": "early-25",
+      "openMs": 2,
+      "closeMs": 0
+    }
+  ],
+  "abortBeforeOpenRuns": [
+    {
+      "id": "abort-before-open-1",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-2",
+      "closeMs": 2,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-3",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-4",
+      "closeMs": 2,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-5",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-6",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-7",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-8",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-9",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-10",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    }
+  ],
+  "samples": [
+    {
+      "label": "baseline_after_health",
+      "fdCount": 37,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T03:50:32.281Z"
+    },
+    {
+      "label": "after_invalid_cwd",
+      "fdCount": 37,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T03:50:32.629Z"
+    },
+    {
+      "label": "after_8_normal_runs",
+      "fdCount": 59,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T03:50:36.714Z"
+    },
+    {
+      "label": "after_25_early_close_final_wait",
+      "fdCount": 68,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T03:50:43.540Z"
+    },
+    {
+      "label": "after_10_abort_before_open_final_wait",
+      "fdCount": 68,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T03:50:46.310Z"
+    }
+  ],
+  "thresholds": {
+    "maxNormalOpenMs": 5000,
+    "maxNormalOutputMs": 10000,
+    "maxEarlyOpenMs": 5000,
+    "maxCloseMs": 5000,
+    "maxFdGrowthFromAfterNormalToFinal": 15,
+    "expectedFinalChildCount": 0
+  },
+  "events": [
+    {
+      "at": "2026-05-24T03:50:27.626Z",
+      "event": "starting_server",
+      "serverEntry": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/dist/app.js",
+      "baseUrl": "http://127.0.0.1:53893",
+      "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-data-1Ve6mt",
+      "workspaceRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YBzzMN",
+      "prismaEnginePair": "found"
+    },
+    {
+      "at": "2026-05-24T03:50:32.281Z",
+      "event": "sample",
+      "label": "baseline_after_health",
+      "fdCount": 37,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-24T03:50:32.290Z",
+      "event": "invalid_cwd_close",
+      "closeMs": 8,
+      "code": 4004,
+      "reason": "Terminal cwd unavailable"
+    },
+    {
+      "at": "2026-05-24T03:50:32.629Z",
+      "event": "sample",
+      "label": "after_invalid_cwd",
+      "fdCount": 37,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-24T03:50:33.207Z",
+      "event": "normal_run",
+      "id": "normal-1",
+      "openMs": 7,
+      "outputMs": 415,
+      "closeMs": 2,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_1__:"
+    },
+    {
+      "at": "2026-05-24T03:50:33.715Z",
+      "event": "normal_run",
+      "id": "normal-2",
+      "openMs": 4,
+      "outputMs": 352,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_2__"
+    },
+    {
+      "at": "2026-05-24T03:50:34.295Z",
+      "event": "normal_run",
+      "id": "normal-3",
+      "openMs": 2,
+      "outputMs": 426,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_3__"
+    },
+    {
+      "at": "2026-05-24T03:50:34.763Z",
+      "event": "normal_run",
+      "id": "normal-4",
+      "openMs": 2,
+      "outputMs": 314,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_4__"
+    },
+    {
+      "at": "2026-05-24T03:50:35.212Z",
+      "event": "normal_run",
+      "id": "normal-5",
+      "openMs": 2,
+      "outputMs": 294,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_5__"
+    },
+    {
+      "at": "2026-05-24T03:50:35.527Z",
+      "event": "normal_run",
+      "id": "normal-6",
+      "openMs": 2,
+      "outputMs": 161,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_6__"
+    },
+    {
+      "at": "2026-05-24T03:50:36.000Z",
+      "event": "normal_run",
+      "id": "normal-7",
+      "openMs": 3,
+      "outputMs": 318,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_7__:%s\\n\" "
+    },
+    {
+      "at": "2026-05-24T03:50:36.467Z",
+      "event": "normal_run",
+      "id": "normal-8",
+      "openMs": 3,
+      "outputMs": 312,
+      "closeMs": 1,
+      "outputTail": "\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-YB\rBzzMN $ printf \"__AB_TERMINAL_TIMING_8__"
+    },
+    {
+      "at": "2026-05-24T03:50:36.714Z",
+      "event": "sample",
+      "label": "after_8_normal_runs",
+      "fdCount": 59,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-24T03:50:36.719Z",
+      "event": "early_close_run",
+      "id": "early-1",
+      "openMs": 5,
+      "closeMs": 0
+    },
+    {
+      "at": "2026-05-24T03:50:36.773Z",
+      "event": "early_close_run",
+      "id": "early-2",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T03:50:36.826Z",
+      "event": "early_close_run",
+      "id": "early-3",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T03:50:36.932Z",
+      "event": "early_close_run",
+      "id": "early-5",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T03:50:37.651Z",
+      "event": "early_close_run",
+      "id": "early-10",
+      "openMs": 2,
+      "closeMs": 0
+    },
+    {
+      "at": "2026-05-24T03:50:38.370Z",
+      "event": "early_close_run",
+      "id": "early-15",
+      "openMs": 3,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T03:50:39.087Z",
+      "event": "early_close_run",
+      "id": "early-20",
+      "openMs": 2,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T03:50:39.804Z",
+      "event": "early_close_run",
+      "id": "early-25",
+      "openMs": 2,
+      "closeMs": 0
+    },
+    {
+      "at": "2026-05-24T03:50:43.540Z",
+      "event": "sample",
+      "label": "after_25_early_close_final_wait",
+      "fdCount": 68,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-24T03:50:43.542Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-1",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T03:50:43.542Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-1",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T03:50:43.594Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-2",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T03:50:43.595Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-2",
+      "closeMs": 2,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T03:50:43.647Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-3",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T03:50:43.647Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-3",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T03:50:43.699Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-4",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T03:50:43.700Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-4",
+      "closeMs": 2,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T03:50:43.752Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-5",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T03:50:43.752Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-5",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T03:50:43.804Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-6",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T03:50:43.805Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-6",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T03:50:43.856Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-7",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T03:50:43.856Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-7",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T03:50:43.908Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-8",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T03:50:43.908Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-8",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T03:50:43.959Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-9",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T03:50:43.959Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-9",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T03:50:44.011Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-10",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T03:50:44.011Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-10",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T03:50:46.310Z",
+      "event": "sample",
+      "label": "after_10_abort_before_open_final_wait",
+      "fdCount": 68,
+      "childCount": 0,
+      "children": []
+    }
+  ],
+  "failures": []
+}

@@ -1,7 +1,7 @@
 # Requirements Doc
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
-Refined — Round 8 requirements unchanged; AR-007 design-spec reconciliation ready for user review
+Refined — Round 9 Terminal normal-session descriptor lifecycle requirement added after E2E-TERMFD-002
 
 ## Goal / Problem Statement
 
@@ -410,3 +410,37 @@ Round 8 coverage additions:
 - AC-048 -> verifies API DTO/projection split.
 - AC-049 -> verifies frontend store/state split.
 - AC-050 -> verifies non-file-explorer flows stay metadata/root-path only.
+
+
+## Round 9 Requirement Revision: Normal Terminal Session Descriptor Lifecycle
+
+API/E2E Round 9 found `E2E-TERMFD-002`: normal attached Terminal sessions that open a real PTY, run an actual command to completion, and close can leave `/dev/ptmx` / `(revoked)` descriptors in the backend process even when `PtySessionManager.sessionCount` and child process count return to zero. Existing requirements covered close-before-connect and setup-failure cleanup, but did not explicitly cover descriptor cleanup for the normal command-output close path.
+
+Additional/clarified requirements:
+
+- REQ-049: A normal attached Terminal session lifecycle—open WebSocket with valid cwd, create PTY, run a real shell command until actual command output is observed, close WebSocket, disconnect Terminal session—must release all Terminal-owned OS resources. Passing `PtySessionManager.sessionCount === 0` is necessary but not sufficient.
+- REQ-050: Terminal resource ownership must be explicit across layers: the WebSocket route owns socket/pending-connect cleanup; `TerminalHandler` owns the read loop and handoff to the session manager; `PtySessionManager` owns the in-process session registry; the `TerminalSession` implementation in `autobyteus-ts` owns PTY child process, PTY master/slave descriptors, event listeners, pending reads/timers, and low-level close semantics.
+- REQ-051: `PtySessionManager.closeSession()` / `TerminalSession.close()` must not resolve until the deep close path has completed: the session is removed from the manager, the read loop can terminate, pending reads are flushed, event listeners/disposables are disposed, the shell/PTY child has exited or been killed, and low-level PTY descriptors are closed or proven released after a bounded wait.
+- REQ-052: If the current `node-pty` close sequence cannot provide descriptor-clean normal-session cleanup on macOS packaged/built-backend runtime, the implementation must change the PTY backend/wrapper/close sequence to a descriptor-safe path. Increasing fd limits or only clearing manager maps is not an acceptable fix.
+- REQ-053: Durable validation must include descriptor-level Terminal churn coverage for normal attached command-output sessions, not just close-before-connect/setup-failure/session-count cleanup. The validation must avoid false positives from shell input echo by waiting for output that proves the command executed.
+
+Additional acceptance criteria:
+
+- AC-051: A built-backend or equivalent macOS-realistic Terminal probe runs at least one warmup plus repeated normal attached command-output sessions. After the warmup baseline, repeated open/run-command/close cycles do not show monotonic FD growth and final process FD count returns within a small documented tolerance of the post-warmup baseline.
+- AC-052: The same probe verifies final child process count is zero and final `lsof` has no per-session retained `/dev/ptmx` or `(revoked)` descriptor growth attributable to closed Terminal sessions.
+- AC-053: Terminal close validation waits for actual command output from a marker written/read by the shell, not only echoed input, before closing the session.
+- AC-054: Unit/integration tests assert `TerminalSession.close()` disposes listeners, flushes pending reads/timers, waits for exit/kill fallback, clears references, and is idempotent.
+- AC-055: Server-side Terminal E2E asserts normal open/output/close returns both `PtySessionManager.sessionCount` and Terminal-owned OS resources to baseline; close-before-connect and setup-failure tests remain in place.
+
+Round 9 coverage additions:
+
+- REQ-049 -> Terminal normal attached session lifecycle.
+- REQ-050 -> Terminal resource ownership split.
+- REQ-051 -> Deep close semantics.
+- REQ-052 -> Descriptor-safe backend/close fallback.
+- REQ-053 -> Durable descriptor validation.
+- AC-051 -> verifies no normal-session FD growth.
+- AC-052 -> verifies no retained PTY/revoked descriptor growth.
+- AC-053 -> verifies command-output probe is real.
+- AC-054 -> verifies low-level close behavior.
+- AC-055 -> verifies server Terminal E2E covers normal-session OS resources.

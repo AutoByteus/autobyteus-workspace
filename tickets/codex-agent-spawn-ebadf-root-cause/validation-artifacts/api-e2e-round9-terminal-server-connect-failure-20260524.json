@@ -1,0 +1,153 @@
+{
+  "result": "fail",
+  "failureId": "E2E-TERMFD-002",
+  "classification": "Design Impact / Requirement Gap per user routing instruction",
+  "reason": "Normal attached Terminal command-output sessions leave PTY-related descriptors after close despite zero child processes.",
+  "connectTimingConclusion": "Terminal WebSocket connect itself is fast; descriptor cleanup is the problem.",
+  "normalStats": {
+    "openMs": {
+      "count": 8,
+      "min": 1,
+      "p50": 2,
+      "p95": 3,
+      "max": 4,
+      "avg": 2
+    },
+    "outputMs": {
+      "count": 8,
+      "min": 250,
+      "p50": 290,
+      "p95": 349,
+      "max": 410,
+      "avg": 311
+    },
+    "closeMs": {
+      "count": 8,
+      "min": 0,
+      "p50": 1,
+      "p95": 1,
+      "max": 1,
+      "avg": 1
+    }
+  },
+  "earlyCloseStats": {
+    "openMs": {
+      "count": 25,
+      "min": 1,
+      "p50": 1,
+      "p95": 3,
+      "max": 6,
+      "avg": 2
+    },
+    "closeMs": {
+      "count": 25,
+      "min": 0,
+      "p50": 1,
+      "p95": 2,
+      "max": 3,
+      "avg": 1
+    }
+  },
+  "abortBeforeOpenStats": {
+    "closeMs": {
+      "count": 10,
+      "min": 0,
+      "p50": 1,
+      "p95": 2,
+      "max": 4,
+      "avg": 1
+    }
+  },
+  "fdEvidence": {
+    "baseline_after_health": {
+      "label": "baseline_after_health",
+      "fdCount": 37,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T03:52:05.685Z"
+    },
+    "after_8_normal_runs": {
+      "label": "after_8_normal_runs",
+      "fdCount": 59,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T03:52:16.567Z"
+    },
+    "after_10_abort_before_open_final_wait": {
+      "label": "after_10_abort_before_open_final_wait",
+      "fdCount": 59,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T03:52:26.162Z"
+    },
+    "growth_after_8_normal_runs": 22,
+    "growth_final": 22,
+    "pty_or_revoked_fd_lines_final_count": 16,
+    "pty_or_revoked_fd_lines_final_sample": [
+      "node    17574 normy   28u      CHR               15,9       0t0                 605 /dev/ptmx",
+      "node    17574 normy   30u      CHR               15,8       0t0                 605 /dev/ptmx",
+      "node    17574 normy   32u      CHR              15,10       0t0                 605 /dev/ptmx",
+      "node    17574 normy   33u      CHR               15,6       0t0                 605 /dev/ptmx",
+      "node    17574 normy   34u      CHR               15,7       0t0                 605 /dev/ptmx",
+      "node    17574 normy   35                                                            (revoked)",
+      "node    17574 normy   36                                                            (revoked)",
+      "node    17574 normy   38                                                            (revoked)",
+      "node    17574 normy   39                                                            (revoked)",
+      "node    17574 normy   43u      CHR              15,11       0t0                 605 /dev/ptmx",
+      "node    17574 normy   44                                                            (revoked)",
+      "node    17574 normy   46u      CHR              15,12       0t0                 605 /dev/ptmx",
+      "node    17574 normy   47                                                            (revoked)",
+      "node    17574 normy   49u      CHR              15,13       0t0                 605 /dev/ptmx",
+      "node    17574 normy   50                                                            (revoked)",
+      "node    17574 normy   53                                                            (revoked)"
+    ]
+  },
+  "normalFdAfterClose": [
+    {
+      "id": "normal-1",
+      "fdAfterClose": 41,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-2",
+      "fdAfterClose": 42,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-3",
+      "fdAfterClose": 44,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-4",
+      "fdAfterClose": 47,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-5",
+      "fdAfterClose": 50,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-6",
+      "fdAfterClose": 53,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-7",
+      "fdAfterClose": 56,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-8",
+      "fdAfterClose": 59,
+      "childCountAfterClose": 0
+    }
+  ],
+  "sourceArtifacts": {
+    "timingSummary": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524.json",
+    "finalLsof": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524-final-lsof.log",
+    "serverLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524-server.log",
+    "runLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524.run.log"
+  }
+}

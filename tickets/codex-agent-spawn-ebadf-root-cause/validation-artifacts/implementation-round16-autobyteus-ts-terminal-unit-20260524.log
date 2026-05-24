@@ -1,0 +1,30 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-ts
+
+stdout | tests/unit/tools/terminal/pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/session-factory.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/isolated-pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/session-factory.test.ts (7 tests) 3ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts (6 tests) 1281ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts (12 tests) 1282ms
+     ✓ starting twice throws  305ms
+     ✓ close is idempotent  306ms
+     ✓ returns queued data on read  306ms
+
+ Test Files  3 passed (3)
+      Tests  25 passed (25)
+   Start at  06:38:04
+   Duration  1.49s (transform 203ms, setup 100ms, import 194ms, tests 2.57s, environment 0ms)
+

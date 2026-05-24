@@ -186,8 +186,11 @@ describe("Terminal websocket lifecycle e2e", () => {
     await waitForSession(manager, sessionId);
     expect(manager.listSessions()[sessionId]).toBe(expectedCwd);
 
-    const outputPromise = waitForDecodedOutput(socket, (output) =>
-      output.includes("__AB_TERMINAL_CWD_OK__"),
+    const outputPromise = waitForDecodedOutput(
+      socket,
+      (output) =>
+        output.includes("__AB_TERMINAL_CWD_OK__") &&
+        output.includes("workspace with spaces"),
     );
     sendTerminalInput(
       socket,

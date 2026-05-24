@@ -16,6 +16,8 @@
 - Prior delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round9-electron-build-localization.md`
 - Latest-base merge-conflict delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round13-latest-personal-merge-conflicts.md`
 - API/E2E round-6 Terminal FD failure evidence and durable validation: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
+- API/E2E round-9 Terminal descriptor failure analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/terminal-server-e2e-failure-analysis-20260524.md`
+- API/E2E round-9 Terminal descriptor evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524.json`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524-final-lsof.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-failure-20260524.json`
 
 ## What Changed
 
@@ -41,13 +43,20 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-13 delivery local fix: integrated latest `origin/personal@74218467a2f7786c82f3e97b9190058d2cb83bd2`, resolved mobile/terminal/test/docs merge conflicts, preserved the Round-12/7 Terminal FD lifecycle fixes, kept latest-base deletion of `MobileTools.vue`, and reconciled `autobyteus-web/docs/terminal.md` to describe root-path desktop Terminal plus no mobile Phone Access Terminal/VNC page.
 - Round-14 user-prompted run API coverage fix: rechecked GraphQL/run-history/run-service integration coverage, found `agent-run-service.integration.test.ts` still wired the legacy `historyIndexService` mock instead of the current `historyCatalogService` prepared/start/terminate boundary, updated that durable integration test to exercise the current run-history catalog lifecycle, and reran the focused GraphQL/run integration subset successfully.
 - Round-15 CR-011 local fix: removed the remaining stale negative-test `historyIndexService`, `recordRunCreated`, and `recordRunRestored` setup blocks from `agent-run-service.integration.test.ts`; all test setups now use the current `historyCatalogService` harness where a history dependency is supplied.
+- Round-16 `E2E-TERMFD-002` local fix: added a descriptor-safe Darwin `IsolatedPtySession` backend in `autobyteus-ts` that runs `node-pty` inside a short-lived helper child process and bridges data over pipes/IPC. The server process no longer owns `node-pty` PTY master/slave descriptors for macOS Terminal WebSocket sessions; normal command-output close terminates the helper, shell, read loop, streams, IPC, and pending reads.
+- Round-16 Terminal tests/evidence update: `getDefaultSessionFactory()` selects `IsolatedPtySession` on Darwin, keeps `PtySession` for non-Darwin Unix, and falls back from the isolated backend to `PtySession`/`DirectShellSession` for tool-session startup fallback. The durable Terminal E2E waits for actual cwd output instead of matching the echoed command literal.
 
 ## Key Files Or Areas
 
 Backend:
 
 - `autobyteus-ts/src/tools/terminal/pty-session.ts`
+- `autobyteus-ts/src/tools/terminal/isolated-pty-session.ts`
+- `autobyteus-ts/src/tools/terminal/isolated-pty-bridge-source.ts`
+- `autobyteus-ts/src/tools/terminal/session-factory.ts`
 - `autobyteus-ts/tests/unit/tools/terminal/pty-session.test.ts`
+- `autobyteus-ts/tests/unit/tools/terminal/isolated-pty-session.test.ts`
+- `autobyteus-ts/tests/unit/tools/terminal/session-factory.test.ts`
 - `autobyteus-server-ts/src/workspaces/workspace-metadata.ts`
 - `autobyteus-server-ts/src/workspaces/filesystem-workspace.ts`
 - `autobyteus-server-ts/src/workspaces/workspace-manager.ts`
@@ -110,6 +119,7 @@ Removed obsolete source/test paths:
 - Files, skill file explorer, context file browser/search/read/write, and file-explorer WebSocket are the intended file-explorer acquisition paths.
 - Search can acquire a `WorkspaceFileExplorer` for snapshot indexing but must not acquire or retain a live watcher unless a watcher lease is explicitly requested.
 - Team launch is an explicit workspace-dependent boundary, so it may activate filesystem workspaces from canonical root paths.
+- On Darwin/macOS, Terminal WebSocket sessions use an isolated helper-process PTY backend so the backend server process does not retain `node-pty` `/dev/ptmx` or `(revoked)` descriptors after normal command-output close. The helper still owns real `node-pty` interactive PTY semantics while it is alive.
 - Full API/E2E validation remains downstream-owned after code review.
 
 ## Known Risks
@@ -117,15 +127,16 @@ Removed obsolete source/test paths:
 - Full frontend/backend typechecks were not rerun for this implementation pass because prior validation recorded baseline blockers. The current implementation evidence uses backend `build:full`, targeted backend runtime tests, frontend Nuxt targeted tests, frontend guards, and static greps.
 - The committed `autobyteus-web/generated/graphql.ts` was updated to match the changed workspace operation documents; a full schema-driven codegen pass can be rerun in a validation environment with a live schema endpoint if desired.
 - Historical display and explicit activation behavior has targeted unit/integration coverage; downstream API/E2E should still exercise real UI/API flows across history display, Files activation, Terminal activation, and repeated watcher open/close.
+- The isolated PTY backend intentionally changes macOS Terminal backend placement from in-process `node-pty` to helper-process `node-pty`; code review/API-E2E should verify interactive Terminal semantics alongside descriptor cleanup.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: refactor/behavior change for lazy workspace metadata plus file-explorer capability acquisition, continuing the `spawn EBADF` watcher lifecycle fix.
-- Reviewed root-cause classification: boundary/ownership issue; metadata/history/runtime paths and file-explorer watcher paths were previously too coupled.
+- Reviewed change posture: refactor/behavior change for lazy workspace metadata plus file-explorer capability acquisition, continuing the `spawn EBADF` watcher lifecycle fix and the Round-9 Terminal descriptor lifecycle local fix.
+- Reviewed root-cause classification: boundary/ownership issue for workspace/file-explorer coupling; local low-level Terminal backend descriptor ownership issue for `E2E-TERMFD-002`.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; round-7 design was sufficient for implementation.
-- Evidence / notes: source/tests no longer contain the legacy steady-state concepts listed by architecture review; metadata APIs and file-explorer acquisition paths are split in backend and frontend.
+- Evidence / notes: source/tests no longer contain the legacy steady-state concepts listed by architecture review; metadata APIs and file-explorer acquisition paths are split in backend and frontend. Round-16 built-backend probe returned from baseline `36` FDs to final `32` FDs, with `0` children and no `/dev/ptmx`/`(revoked)` descriptors in final `lsof` after normal command-output churn.
 
 ## Legacy / Compatibility Removal Check
 
@@ -135,7 +146,7 @@ Removed obsolete source/test paths:
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; metadata and file-explorer capability state are separate.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small; final size audit passed with no changed implementation source file over 500 effective non-empty lines.
+- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-16 Terminal backend code splits parent session lifecycle from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines.
 
 ## Environment Or Dependency Notes
 
@@ -146,6 +157,34 @@ Removed obsolete source/test paths:
 ## Local Implementation Checks Run
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
+
+Round-16 `E2E-TERMFD-002` normal Terminal command-output descriptor local-fix checks:
+
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/session-factory.test.ts tests/unit/tools/terminal/isolated-pty-session.test.ts tests/unit/tools/terminal/pty-session.test.ts`
+  - Result: pass, 3 files / 25 tests.
+  - Covers Darwin backend selection, fallback ordering, isolated PTY child-process startup/write/resize/read/close semantics, stream destruction on normal child exit, pending-read flush, idempotent close, and existing in-process `PtySession` cleanup behavior.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-autobyteus-ts-terminal-unit-20260524.log`
+- `pnpm -C autobyteus-server-ts test tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
+  - Result: pass, 1 file / 3 tests.
+  - Covers root-path Terminal cwd, unavailable-cwd rejection before session creation, close-before-connect/repeated churn cleanup, and the durable output assertion now waits for actual cwd output instead of the echoed command literal.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-server-terminal-e2e-20260524.log`
+- `pnpm -C autobyteus-server-ts build:full`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-backend-build-full-20260524.log`
+- Focused built-backend macOS Terminal descriptor/timing probe copied from the Round-9 API/E2E failure harness.
+  - Command: `node tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-terminal-server-connect-timing-v2-20260524.mjs`
+  - Result: pass; baseline after health `36` FDs, after 8 normal real command-output sessions `32` FDs, final after early-close/abort churn `32` FDs, final child count `0`, and final `lsof` contains no `/dev/ptmx` or `(revoked)` descriptors.
+  - Probe script: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-terminal-server-connect-timing-v2-20260524.mjs`
+  - Probe JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-terminal-server-connect-timing-v2-20260524.json`
+  - Probe run log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-terminal-server-connect-timing-v2-20260524.run.log`
+  - Final lsof: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-terminal-server-connect-timing-v2-20260524-final-lsof.log`
+  - Server log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-terminal-server-connect-timing-v2-20260524-server.log`
+- `git diff --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-diff-check-20260524.log`
+- Changed implementation source size audit.
+  - Result: pass; changed round-16 implementation source files are all <= 500 effective non-empty lines (`isolated-pty-session.ts` 313 effective non-empty lines, bridge source 89).
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-source-size-20260524.log`
 
 Round-13 latest-base merge-conflict integration checks:
 
@@ -284,11 +323,11 @@ Prior round-7 implementation checks retained as upstream confidence evidence:
 - Historical standalone run display: verify no backend workspace creation/file-explorer acquisition until an explicit workspace-dependent action is invoked.
 - Historical team run/member display: verify team/member metadata is shown without workspace initialization, including per-member workspace metadata.
 - Files desktop/mobile: verify first visible file-explorer surface acquires file-explorer capability and live watcher, and close/collapse/unmount releases live watcher ownership.
-- Terminal desktop/mobile: verify Terminal uses metadata/root path for runtime cwd and only activates workspace-dependent behavior at the explicit terminal action boundary; rerun the focused built-backend FD probe to confirm close-before-connect churn does not retain PTY descriptors.
+- Terminal desktop/mobile: verify Terminal uses metadata/root path for runtime cwd and only activates workspace-dependent behavior at the explicit terminal action boundary; rerun the focused built-backend FD probe to confirm normal command-output churn and close-before-connect churn do not retain server-owned PTY/revoked descriptors.
 - Context file browser/search/read/write and skill file explorer: verify these remain intended file-explorer acquisition paths.
 - WebSocket lifecycle: repeat real close-before-connected and repeated open/close tests to confirm watcher leases release promptly and child-process spawn remains healthy.
 - Team launch: verify same-root members activate once, distinct roots activate once each, and filesystem metadata IDs without root paths reject.
 
 ## API / E2E / Executable Validation Still Required
 
-Code review should run before API/E2E resumes. After re-review, API/E2E should validate the full integrated behavior for metadata-only history/workspace paths, explicit Files/Terminal/context acquisition, watcher lifecycle stability, and the delivery Electron build path that previously failed at localization audit.
+Code review should run before API/E2E resumes. After re-review, API/E2E should validate the full integrated behavior for metadata-only history/workspace paths, explicit Files/Terminal/context acquisition, watcher lifecycle stability, the macOS built-backend Terminal descriptor probe for `E2E-TERMFD-002`, and the delivery Electron build path that previously failed at localization audit.

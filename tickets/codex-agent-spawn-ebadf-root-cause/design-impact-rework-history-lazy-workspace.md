@@ -3,7 +3,7 @@
 Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-impact-rework-history-lazy-workspace.md`
 Date: 2026-05-22
 Last updated: 2026-05-23
-Status: Ready for user review after AR-007 full-spec reconciliation; architecture resend is intentionally paused until user approval
+Status: Round 9 Terminal descriptor lifecycle rework added after E2E-TERMFD-002; architecture resend required
 
 ## Trigger
 
@@ -165,3 +165,16 @@ Reconciled steady-state target:
 - `WorkspaceFileExplorerTree` and related file-explorer DTOs carry tree/search/file projections to the frontend.
 - Frontend `workspaceStore` is metadata-only; FileExplorer-specific state owns tree/search/open-file/loading/live-stream data by `workspaceId`.
 - `WorkspaceReference`, `WorkspaceActivationState`, `WorkspaceInfo.fileExplorer`, `BaseFileExplorer`, `LocalFileExplorer`, and `ensureWorkspaceInitialized(reference)` are now explicitly legacy/current-state or temporary migration names only.
+
+
+## Round 9 Design-Impact Revision: Normal Terminal PTY Descriptor Cleanup
+
+API/E2E Round 9 found `E2E-TERMFD-002`: normal attached Terminal sessions that run actual shell command output and close can leave PTY-related descriptors in the built backend process. This is not a Terminal connection-latency problem; connection is fast. It is a descriptor lifecycle problem after normal close.
+
+Updated same-ticket target:
+
+- Terminal close ownership now covers normal attached command-output sessions, not only close-before-connect and setup-failure races.
+- `TerminalSession.close()` / `PtySessionManager.closeSession()` must represent deep cleanup: manager removal, read-loop termination, pending read/timer cleanup, listener disposal, child exit/kill fallback, and PTY descriptor release.
+- Descriptor-level acceptance is mandatory for Terminal because this ticket's root issue is descriptor pressure and rare `spawn EBADF`.
+- Durable validation must measure process FDs and PTY/revoked descriptor lines after repeated normal command-output sessions.
+- If the current `node-pty` close sequence cannot satisfy descriptor cleanup, implementation must change the backend/wrapper/close sequence rather than relying on fd limits or session-count cleanup.

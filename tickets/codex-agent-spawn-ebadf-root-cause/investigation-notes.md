@@ -655,3 +655,35 @@ WorkspaceFileExplorerTree = file-explorer API/frontend projection
 ```
 
 Old names are now explicitly documented as current-state evidence or temporary migration aliases only: `WorkspaceReference`, `WorkspaceActivationState`, `WorkspaceInfo.fileExplorer`, `BaseFileExplorer`, `LocalFileExplorer`, and `ensureWorkspaceInitialized(reference)`. The old “Final File Responsibility Mapping” and related ownership/interface/dependency/migration sections were removed/replaced with a single Round 8-aligned mapping.
+
+
+## Round 9 Evidence: Normal Terminal Sessions Retain PTY Descriptors
+
+Date: 2026-05-24
+Failure: `E2E-TERMFD-002`
+Source artifacts:
+
+- Failure analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/terminal-server-e2e-failure-analysis-20260524.md`
+- Timing/descriptor JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524.json`
+- Failure summary JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-failure-20260524.json`
+- Final lsof: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524-final-lsof.log`
+
+Findings:
+
+- Existing durable Terminal E2E passed, including real cwd, invalid cwd, close-before-connect, and repeated open/close churn by `PtySessionManager.sessionCount`.
+- Additional built-backend probe showed Terminal WebSocket open timing is fast: normal open p50 `2ms`, p95 `3ms`, max `4ms`; actual command output p50 `290ms`, p95 `349ms`, max `410ms`; close p50 `1ms`.
+- Descriptor lifecycle is not clean for normal attached command-output sessions: FD count grew from `37` after health to `59` after eight normal sessions and remained `59` after early-close/abort cycles.
+- Child process count was `0`, so process termination alone is not enough to prove descriptor cleanup.
+- Final `lsof` still contained 16 PTY-related or revoked descriptors (`/dev/ptmx` and `(revoked)`) despite server logs reporting PTY sessions closed.
+- The probe avoided shell-echo false positives by writing a `.terminal_probe_marker` and waiting for `cat .terminal_probe_marker` to output `ROUND9_ACTUAL_COMMAND_OUTPUT`.
+
+Relevant current-code ownership read:
+
+- `autobyteus-server-ts/src/api/websocket/terminal.ts` now owns pending-connect cleanup with `closed`, `cleanupStarted`, `connectPromise`, `connectedSessionId`, `pendingSessionId`, and `AbortController`.
+- `autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts` owns the server read loop and waits for the read loop task after `manager.closeSession()`.
+- `autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts` removes the session from the manager and awaits `record.session.close()`.
+- `autobyteus-ts/src/tools/terminal/pty-session.ts` owns the actual `node-pty` object, pending reads, listener disposables, child kill/wait behavior, and low-level descriptor cleanup. This layer is now the likely owner for the descriptor leak or for proving a `node-pty` backend limitation.
+
+Design impact:
+
+The approved design already requires Terminal pending-close/setup-failure cleanup, but normal attached command-output close is a separate lifecycle spine. The target design must explicitly require OS descriptor cleanup for normal Terminal sessions and durable validation that checks process descriptors, not only manager session count.
