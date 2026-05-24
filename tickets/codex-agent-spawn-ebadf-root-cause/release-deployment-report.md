@@ -133,16 +133,19 @@
 - Current macOS Electron build: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round18-current-integrated-20260524073732.log`.
 - DMG verification: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-dmg-verify-round18-current-integrated-20260524074315.log`.
 - Artifact summary/checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-artifacts-round18-current-integrated-20260524074315.txt`.
+- User-requested Electron rebuild after rereading README: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-user-rerun-20260524080651.log`.
+- User-requested rebuild DMG verification: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-user-rerun-dmg-verify-20260524080651.log`.
+- User-requested rebuild artifact summary/checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-user-rerun-artifacts-20260524080651.txt`.
 
 ## Built Artifacts
 
 | Artifact | Size bytes | SHA-256 |
 | --- | ---: | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.30.dmg` | 379641647 | `6cc38883e175f205c0c72d77eba43908594ac3fa051ecfb27e7685e57d6c35cc` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.30.dmg.blockmap` | 396014 | `a8d9b0612a5965833791e843156b394de3bbef1226947693ef072200b793a5d6` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.30.zip` | 377142090 | `7a599a9d7f5871737013a95360e3bfd58dedf998ad8b0cc755a6e3162f08a190` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.30.zip.blockmap` | 386967 | `727d1674922c402cd2ea68b56e9733860265ba262183bb0ca18aecd10c239a99` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `94f61f3e9a4f6bb5d2869d1bd1ba6c1c40727e10a77aa88b122c496caf3af839` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.30.dmg` | 379715154 | `dee9a7be9ffe8775d6c84557cb4e31a10e319cca9102577e2cbe732fe8803201` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.30.dmg.blockmap` | 397424 | `abb7d2f61dff6db87c1dfaa0537c0a833623a274ca6c0394fad50f9a12836c97` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.30.zip` | 377143973 | `72cf5476dfe3cd033f518b8e52b5057c1e1b5a7a915c51cc1be602ae89b6542e` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.30.zip.blockmap` | 387540 | `4613a2307b4c16a186906fb40c2e85f9c68cdc0aba1e52c1b1eaf10b91e4efb1` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `43670c69693e1736bdeb4719664d4297a8c908993a03e07a9754d38108b02a2c` |
 
 ## Rollback Criteria
 
