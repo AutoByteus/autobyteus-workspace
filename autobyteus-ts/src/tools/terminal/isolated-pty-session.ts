@@ -1,6 +1,7 @@
 import { spawn, type ChildProcess } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { ISOLATED_PTY_BRIDGE_SOURCE } from './isolated-pty-bridge-source.js';
+import { ensureNodePtySpawnHelperExecutable } from './node-pty-bootstrap.js';
 
 const DEFAULT_COLS = 80;
 const DEFAULT_ROWS = 24;
@@ -56,6 +57,12 @@ export class IsolatedPtySession {
     }
     if (this.closed) {
       throw new Error('Session is closed');
+    }
+
+    await ensureNodePtySpawnHelperExecutable();
+    if (this.closed) {
+      this.alive = false;
+      throw new Error('Session closed during startup');
     }
 
     const child = spawn(process.execPath, ['--input-type=module', '--eval', ISOLATED_PTY_BRIDGE_SOURCE], {

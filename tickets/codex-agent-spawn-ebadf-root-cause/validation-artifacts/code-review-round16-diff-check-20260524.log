@@ -1,0 +1,14 @@
+tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-20260524-final-lsof.log:35: trailing whitespace.
++node    17114 normy   27   NPOLICY
+tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-20260524-server.log:104: trailing whitespace.
++
+tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524-final-lsof.log:34: trailing whitespace.
++node    17574 normy   26   NPOLICY
+tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524-server.log:104: trailing whitespace.
++
+tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-autobyteus-ts-terminal-unit-20260524.log:30: new blank line at EOF.
+tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-server-terminal-e2e-20260524.log:244: new blank line at EOF.
+tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-terminal-server-connect-timing-v2-20260524-final-lsof.log:32: trailing whitespace.
++node    78949 normy   26   NPOLICY
+tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round16-terminal-server-connect-timing-v2-20260524-server.log:104: trailing whitespace.
++

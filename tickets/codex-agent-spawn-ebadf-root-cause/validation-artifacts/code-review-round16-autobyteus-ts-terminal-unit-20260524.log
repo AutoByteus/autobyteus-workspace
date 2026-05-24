@@ -1,0 +1,29 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-ts
+
+stdout | tests/unit/tools/terminal/session-factory.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/isolated-pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/session-factory.test.ts (7 tests) 3ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts (6 tests) 1276ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts (12 tests) 1285ms
+     ✓ starting twice throws  304ms
+     ✓ close is idempotent  305ms
+     ✓ returns queued data on read  304ms
+
+ Test Files  3 passed (3)
+      Tests  25 passed (25)
+   Start at  06:45:06
+   Duration  1.51s (transform 230ms, setup 109ms, import 212ms, tests 2.56s, environment 0ms)

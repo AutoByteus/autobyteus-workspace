@@ -26,12 +26,17 @@ class MockChildProcess extends EventEmitter {
 }
 
 const mocks = vi.hoisted(() => ({
-  spawn: vi.fn()
+  spawn: vi.fn(),
+  ensureSpawnHelper: vi.fn()
 }));
 let child: MockChildProcess;
 
 vi.mock('node:child_process', () => ({
   spawn: mocks.spawn
+}));
+
+vi.mock('../../../../src/tools/terminal/node-pty-bootstrap.js', () => ({
+  ensureNodePtySpawnHelperExecutable: mocks.ensureSpawnHelper
 }));
 
 import { IsolatedPtySession } from '../../../../src/tools/terminal/isolated-pty-session.js';
@@ -49,6 +54,8 @@ describe('IsolatedPtySession', () => {
   beforeEach(() => {
     child = new MockChildProcess();
     mocks.spawn.mockReset();
+    mocks.ensureSpawnHelper.mockReset();
+    mocks.ensureSpawnHelper.mockResolvedValue(false);
     mocks.spawn.mockReturnValue(child);
   });
 
@@ -57,6 +64,9 @@ describe('IsolatedPtySession', () => {
 
     expect(session.sessionId).toBe('iso-test');
     expect(session.isAlive).toBe(true);
+    expect(mocks.ensureSpawnHelper.mock.invocationCallOrder[0]).toBeLessThan(
+      mocks.spawn.mock.invocationCallOrder[0]
+    );
     expect(mocks.spawn).toHaveBeenCalledWith(
       process.execPath,
       expect.arrayContaining(['--input-type=module', '--eval']),
@@ -64,6 +74,22 @@ describe('IsolatedPtySession', () => {
     );
 
     await session.close();
+  });
+
+  it('does not spawn a bridge if close wins while bootstrap repair is pending', async () => {
+    let finishBootstrap!: () => void;
+    mocks.ensureSpawnHelper.mockReturnValueOnce(new Promise<void>((resolve) => {
+      finishBootstrap = resolve;
+    }));
+    const session = new IsolatedPtySession('iso-startup-close');
+
+    const startPromise = session.start('/tmp');
+    await session.close();
+    finishBootstrap();
+
+    await expect(startPromise).rejects.toThrow('Session closed during startup');
+    expect(mocks.spawn).not.toHaveBeenCalled();
+    expect(session.isAlive).toBe(false);
   });
 
   it('forwards writes and resize messages to the bridge', async () => {

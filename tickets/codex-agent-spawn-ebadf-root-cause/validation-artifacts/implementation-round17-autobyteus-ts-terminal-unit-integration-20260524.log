@@ -1,0 +1,35 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-ts
+
+stdout | tests/unit/tools/terminal/session-factory.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/isolated-pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/tools/terminal/isolated-pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/session-factory.test.ts (7 tests) 3ms
+ ✓ tests/integration/tools/terminal/isolated-pty-session.test.ts (1 test) 66ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts (7 tests) 1276ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts (12 tests) 1288ms
+     ✓ starting twice throws  306ms
+     ✓ close is idempotent  304ms
+     ✓ returns queued data on read  305ms
+
+ Test Files  4 passed (4)
+      Tests  27 passed (27)
+   Start at  06:54:42
+   Duration  1.46s (transform 239ms, setup 110ms, import 233ms, tests 2.63s, environment 0ms)
