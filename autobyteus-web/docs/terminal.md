@@ -200,6 +200,12 @@ The Terminal is automatically available when a workspace is active:
 workspace-name:~$ <your-command>
 ```
 
+## Backend Runtime Notes
+
+The frontend Terminal connects to the backend with an explicit cwd/root path. Backend validation rejects an unavailable path before creating a PTY session. On macOS, the server uses the `autobyteus-ts` isolated PTY backend so a helper child process owns `node-pty`, the PTY descriptors, and the shell; closing the WebSocket releases the helper and avoids lingering PTY descriptors in the long-lived server process.
+
+See `autobyteus-server-ts/docs/modules/terminal.md` and `autobyteus-ts/docs/terminal_tools.md` for backend lifecycle details.
+
 ## Related Documentation
 
 - **[File Explorer](./file_explorer.md)**: Terminal and File Explorer are separate workspace capabilities; Terminal uses cwd/root path while File Explorer owns tree/search/watch state.

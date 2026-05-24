@@ -834,5 +834,5 @@ fileExplorerStore.closeOtherFiles("/src/app.ts", workspaceId); // Keep only app.
 ## Related Documentation
 
 - **[Content Rendering](./content_rendering.md)**: Details how file content (Markdown, Code, Media) is displayed.
-- **[Terminal](./terminal.md)**: The terminal often operates within the context of the active workspace.
+- **[Terminal](./terminal.md)**: Terminal uses an explicit cwd/root path and is intentionally separate from File Explorer tree/search/watch state.
 - **[Skills](./skills.md)**: Skills are file-based and often managed or viewed within the file system context.
