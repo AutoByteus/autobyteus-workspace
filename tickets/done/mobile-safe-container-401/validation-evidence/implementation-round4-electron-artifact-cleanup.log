@@ -1,0 +1,20 @@
+# Cleaning stale generated Electron/runtime artifacts before rebuild
+2026-05-23T20:01:26Z
+# Disk usage before cleanup
+1.8G	autobyteus-web/electron-dist
+582M	autobyteus-web/resources
+9.9M	autobyteus-web/dist-mobile
+ 10M	autobyteus-web/dist
+ 11M	autobyteus-web/.nuxt
+# Removing generated ignored artifacts
+rm: autobyteus-web/electron-dist/mac-arm64: Directory not empty
+rm: autobyteus-web/electron-dist: Directory not empty
+# Existence after cleanup
+STILL_EXISTS autobyteus-web/electron-dist
+REMOVED autobyteus-web/resources
+REMOVED autobyteus-web/dist-mobile
+REMOVED autobyteus-web/dist
+REMOVED autobyteus-web/.nuxt
+REMOVED autobyteus-web/.output
+REMOVED autobyteus-web/.server-packaging-stage
+REMOVED leftover electron-dist .DS_Store tree

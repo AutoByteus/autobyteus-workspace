@@ -112,7 +112,7 @@ Putting all of that into Phase One would delay the primary first milestone: Andr
 - R-P2-AUDIT-001: Owner UI should show paired mobile sessions/devices with node, capabilities, created time, last seen time, expiry, and revoked state.
 - R-P2-AUDIT-002: Owner can revoke one device/session or all mobile sessions for a node.
 - R-P2-AUDIT-003: Security-sensitive events should be recorded: pair, refresh reuse detected, revoke, denied admin operation, denied terminal, denied file mutation.
-- R-P2-AUDIT-004: Logs must redact pairing codes, access tokens, refresh tokens, WebSocket tokens, node-admin claims, and authorization headers.
+- R-P2-AUDIT-004: Logs must redact pairing codes, access tokens, refresh tokens, WebSocket tokens, mobile credentials, and authorization headers.
 
 ## Acceptance Criteria
 
@@ -126,7 +126,7 @@ Putting all of that into Phase One would delay the primary first milestone: Andr
 - AC-P2-008: Reuse of an old refresh token revokes or locks the session/token family.
 - AC-P2-009: Revoked mobile sessions fail REST, GraphQL, and WebSocket authorization.
 - AC-P2-010: Android no longer stores durable raw mobile session credentials in WebView/localStorage for the native wrapper.
-- AC-P2-011: Logs and diagnostics redact all new token/claim names.
+- AC-P2-011: Logs and diagnostics redact all token and credential names.
 
 ## Candidate Implementation Areas
 

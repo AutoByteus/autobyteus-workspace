@@ -1,0 +1,17 @@
+$ /tmp/autobyteus-docker-round3-local-image.sh new-container --profile mobile-safe --image autobyteus-server:mobile-safe-container-401-round3-api-e2e
+[AutoByteus Docker] Checking image autobyteus-server:mobile-safe-container-401-round3-api-e2e
+[AutoByteus Docker] Using local validation image autobyteus-server:mobile-safe-container-401-round3-api-e2e; skipping docker pull.
+[AutoByteus Docker] Started autobyteus-server-2.
+AutoByteus Docker node: autobyteus-server-2
+Profile: mobile-safe
+Container: autobyteus-server-2
+Image: autobyteus-server:mobile-safe-container-401-round3-api-e2e
+Backend: http://localhost:55212
+GraphQL: http://localhost:55212/graphql
+noVNC: http://localhost:55214 (localhost-bound)
+VNC: localhost:55213 (localhost-bound)
+Chrome debug: localhost:55215 (localhost-bound)
+Workspace: private Docker named volume autobyteus-server-2-workspace
+Shared host bind mounts: disabled by default in mobile-safe profile
+Private app data: /home/autobyteus/data -> autobyteus-server-2-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. The desktop app imports the launcher-managed local credential automatically.

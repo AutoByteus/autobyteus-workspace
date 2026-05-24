@@ -1,0 +1,70 @@
+Building current Round 3 overlay runtime image autobyteus-server:mobile-safe-container-401-round3-api-e2e
+2026-05-23T17:17:12Z
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 905B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/autobyteus/autobyteus-server:latest
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [ 1/13] FROM docker.io/autobyteus/autobyteus-server:latest@sha256:921a466580ca01620dd1072300023e3cf9c50e091fefbfda9e8de89e36edf5f9
+#4 resolve docker.io/autobyteus/autobyteus-server:latest@sha256:921a466580ca01620dd1072300023e3cf9c50e091fefbfda9e8de89e36edf5f9 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 16.87MB 0.4s done
+#5 DONE 0.4s
+
+#6 [ 6/13] COPY autobyteus-application-sdk-contracts/package.json ./autobyteus-application-sdk-contracts/package.json
+#6 CACHED
+
+#7 [ 7/13] COPY autobyteus-application-backend-sdk/dist ./autobyteus-application-backend-sdk/dist
+#7 CACHED
+
+#8 [ 5/13] COPY autobyteus-application-sdk-contracts/dist ./autobyteus-application-sdk-contracts/dist
+#8 CACHED
+
+#9 [ 2/13] WORKDIR /app
+#9 CACHED
+
+#10 [ 3/13] COPY autobyteus-ts/dist ./autobyteus-ts/dist
+#10 CACHED
+
+#11 [ 4/13] COPY autobyteus-ts/package.json ./autobyteus-ts/package.json
+#11 CACHED
+
+#12 [ 8/13] COPY autobyteus-application-backend-sdk/package.json ./autobyteus-application-backend-sdk/package.json
+#12 CACHED
+
+#13 [ 9/13] COPY autobyteus-server-ts/dist ./autobyteus-server-ts/dist
+#13 DONE 0.4s
+
+#14 [10/13] COPY autobyteus-server-ts/prisma ./autobyteus-server-ts/prisma
+#14 DONE 0.1s
+
+#15 [11/13] COPY autobyteus-server-ts/package.json ./autobyteus-server-ts/package.json
+#15 DONE 0.1s
+
+#16 [12/13] RUN rm -rf /app/autobyteus-server-ts/mobile-web
+#16 DONE 0.2s
+
+#17 [13/13] COPY autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+#17 DONE 0.1s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 0.7s done
+#18 exporting manifest sha256:ff85dbf9d5ba4dd99ff7b1403c071abeed19336bf79c8a6f57493ea34935c687 done
+#18 exporting config sha256:76c34c95d8ade2134f14a7f1f1e6a241ac02ffc87d07daf2ec92033186149efe done
+#18 exporting attestation manifest sha256:d4387728d19d10fca5dbb2f568bc2d938b84b1ffaee33b829d66b0ce25c2b7fb 0.0s done
+#18 exporting manifest list sha256:60e780647a90eddec7d0782f49ddd3d99c80d7650a08e984105d61dc883dc22e done
+#18 naming to docker.io/library/autobyteus-server:mobile-safe-container-401-round3-api-e2e done
+#18 unpacking to docker.io/library/autobyteus-server:mobile-safe-container-401-round3-api-e2e
+#18 unpacking to docker.io/library/autobyteus-server:mobile-safe-container-401-round3-api-e2e 0.2s done
+#18 DONE 1.1s

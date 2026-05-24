@@ -1,0 +1,11 @@
+$ pnpm -C autobyteus-web exec vitest --config ./electron/vitest.config.ts run electron/__tests__/preload.spec.ts
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron
+
+ ✓ __tests__/preload.spec.ts (1 test) 13ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  20:49:11
+   Duration  224ms (transform 30ms, setup 0ms, collect 16ms, tests 13ms, environment 0ms, prepare 52ms)
+

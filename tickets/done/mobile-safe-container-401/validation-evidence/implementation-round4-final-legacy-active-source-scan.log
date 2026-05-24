@@ -1,0 +1,6 @@
+# Final active source/docs legacy Round 3/Round 4-superseded credential scan
+# UTC: 2026-05-24T03:39:58Z
+# Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401
+# Pattern: nodeAdmin|NodeAdmin|node-admin|remote-node-admin|RemoteNodeAdmin|remoteNodeAdmin|REMOTE_NODE_ADMIN|NODE_ADMIN|claimId|claimSecret|adminClaim|AUTOBYTEUS_NODE_ADMIN_CLAIM|phone-access-management|owner[ -]?session|owner[ -]?credential|local management|local-management|localManagementCredential|Automatic local management credential|launcher-managed local Docker node|local launcher state|Re-add the launcher Backend URL|lmn_|AUTOBYTEUS_LOCAL|rao_|nac_|nas_
+# Excludes generated/build/cache/ticket evidence artifacts.
+# rg exit code: 1 (1 means no matches)

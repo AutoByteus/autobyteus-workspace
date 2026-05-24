@@ -1,0 +1,20 @@
+$ tickets/mobile-safe-container-401/validation-evidence/autobyteus-docker-round4-skip-local-pull.sh new-container --profile mobile-safe --image autobyteus-server:mobile-safe-container-401-round4-api-e2e
+[AutoByteus Docker] Checking image autobyteus-server:mobile-safe-container-401-round4-api-e2e
+[AutoByteus Docker] Using already-present local image autobyteus-server:mobile-safe-container-401-round4-api-e2e; skipped pull for validation.
+[AutoByteus Docker] Started autobyteus-server-2.
+AutoByteus Docker node: autobyteus-server-2
+Profile: mobile-safe
+Container: autobyteus-server-2
+Image: autobyteus-server:mobile-safe-container-401-round4-api-e2e
+Backend: http://localhost:59821
+GraphQL: http://localhost:59821/graphql
+noVNC: http://localhost:59823 (localhost-bound)
+VNC: localhost:59822 (localhost-bound)
+Chrome debug: localhost:59824 (localhost-bound)
+Workspace: private Docker named volume autobyteus-server-2-workspace
+Shared host bind mounts: disabled by default in mobile-safe profile
+Private app data: /home/autobyteus/data -> autobyteus-server-2-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+
+$ docker ps --filter name=^/autobyteus-server-2$
+autobyteus-server-2	autobyteus-server:mobile-safe-container-401-round4-api-e2e	Up Less than a second	127.0.0.1:59822->5900/tcp, 127.0.0.1:59823->6080/tcp, 127.0.0.1:59821->8000/tcp, 127.0.0.1:59824->9223/tcp

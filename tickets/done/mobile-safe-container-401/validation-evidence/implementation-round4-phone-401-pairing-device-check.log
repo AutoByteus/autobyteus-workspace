@@ -1,0 +1,14 @@
+# Pairing/device check for phone 401 investigation
+# UTC: 2026-05-24T03:31:29Z
+## Container requests involving pairing endpoints since start (redacted)
+{"level":40,"time":1779562587763,"pid":41,"hostname":"49314e4abc2c","reqId":"req-r","method":"GET","url":"/rest/remote-access/devices","statusCode":403,"elapsedMs":0.1691250205039978,"msg":"http request completed"}
+{"level":40,"time":1779562587764,"pid":41,"hostname":"49314e4abc2c","reqId":"req-s","method":"POST","url":"/rest/remote-access/pairing-sessions","statusCode":403,"elapsedMs":0.1724579930305481,"msg":"http request completed"}
+{"level":40,"time":1779562587765,"pid":41,"hostname":"49314e4abc2c","reqId":"req-t","method":"DELETE","url":"/rest/remote-access/devices/device_0c60e4453b7857e823026afdb5b36ba8","statusCode":403,"elapsedMs":0.16383302211761475,"msg":"http request completed"}
+{"level":40,"time":1779567444477,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1q","method":"GET","url":"/rest/remote-access/devices","statusCode":403,"elapsedMs":0.17637497186660767,"msg":"http request completed"}
+{"level":40,"time":1779567444478,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1r","method":"POST","url":"/rest/remote-access/pairing-sessions","statusCode":403,"elapsedMs":0.13654202222824097,"msg":"http request completed"}
+{"level":40,"time":1779567444479,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1s","method":"DELETE","url":"/rest/remote-access/devices/device_2f2cc375c10a0f5de7ee9ae8692e5d3c","statusCode":403,"elapsedMs":0.43400001525878906,"msg":"http request completed"}
+## Active devices
+{
+    "devices": []
+}
+## Revoked devices

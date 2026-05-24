@@ -1,0 +1,33 @@
+Final Docker replacement started at 2026-05-24T04:07:50Z
+Target image: autobyteus-server:mobile-safe-container-401-round4-phone401-localfix
+Target image ID: sha256:c929099ee8f5807d6084c48ddc73b9f8a62fa3a761099da83f0395b17938acf0
+Target backend: http://localhost:59821
+Existing container before replacement:
+autobyteus-server-2 autobyteus-server:mobile-safe-container-401-round4-api-e2e 49314e4abc2c Up 8 hours 127.0.0.1:59822->5900/tcp, 127.0.0.1:59823->6080/tcp, 127.0.0.1:59821->8000/tcp, 127.0.0.1:59824->9223/tcp
+
+Removing old autobyteus-server-2 container only; keeping named volumes.
+autobyteus-server-2
+
+Starting autobyteus-server-2 from final image on the existing 59821/59822/59823/59824 ports.
+7a6388237f2340e3ef47635291090e02d4bd3d2674aad1e45c5628dd89eaf977
+
+Waiting for backend health...
+Health response:
+
+Container after replacement:
+autobyteus-server-2 autobyteus-server:mobile-safe-container-401-round4-phone401-localfix 7a6388237f23 Up 3 minutes 127.0.0.1:59822->5900/tcp, 127.0.0.1:59823->6080/tcp, 127.0.0.1:59821->8000/tcp, 127.0.0.1:59824->9223/tcp
+Inspect image ID:
+  image=autobyteus-server:mobile-safe-container-401-round4-phone401-localfix imageId=sha256:c929099ee8f5807d6084c48ddc73b9f8a62fa3a761099da83f0395b17938acf0 labels={"com.autobyteus.configHash":"a4c8e1748b4160ffe795aa301801aec93955abe796b8d4d1c717d4efb75b49ca","com.autobyteus.launcher":"server-docker","com.autobyteus.nodeName":"autobyteus-server-2","com.autobyteus.profile":"mobile-safe","org.opencontainers.image.ref.name":"ubuntu","org.opencontainers.image.version":"22.04"}
+Launcher state (non-secret):
+  NODE_NAME=autobyteus-server-2
+  CONTAINER_NAME=autobyteus-server-2
+  BACKEND_PORT=59821
+  VNC_PORT=59822
+  NOVNC_PORT=59823
+  DEBUG_PORT=59824
+  IMAGE_REF=autobyteus-server:mobile-safe-container-401-round4-phone401-localfix
+  CREATED_AT=2026-05-23T18:52:00Z
+  CONFIG_HASH=a4c8e1748b4160ffe795aa301801aec93955abe796b8d4d1c717d4efb75b49ca
+  PROFILE=mobile-safe
+  UPDATED_AT=2026-05-24T04:07:52Z
+Completed at 2026-05-24T04:10:54Z

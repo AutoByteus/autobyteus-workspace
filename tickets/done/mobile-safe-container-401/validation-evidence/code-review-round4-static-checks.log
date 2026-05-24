@@ -1,0 +1,60 @@
+## git status
+## codex/mobile-safe-container-401...origin/personal
+ M README.md
+ M autobyteus-server-ts/README.md
+ M autobyteus-server-ts/docker/Dockerfile.monorepo
+ M autobyteus-server-ts/docker/README.md
+ M autobyteus-server-ts/docs/features/remote_access.md
+ M autobyteus-server-ts/src/api/security/redact-sensitive-url.ts
+ M autobyteus-server-ts/src/api/security/remote-access-route-policy.ts
+ M autobyteus-server-ts/src/api/websocket/remote-access-websocket-auth.ts
+ M autobyteus-server-ts/src/remote-access/domain/models.ts
+ M autobyteus-server-ts/src/remote-access/services/paired-device-service.ts
+ M autobyteus-server-ts/src/remote-access/services/remote-access-auth-service.ts
+ D autobyteus-server-ts/src/remote-access/services/remote-node-admin-service.ts
+ M autobyteus-server-ts/tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts
+ M autobyteus-server-ts/tests/unit/remote-access/redact-sensitive-url.test.ts
+ D autobyteus-server-ts/tests/unit/remote-access/remote-node-admin-service.test.ts
+ M autobyteus-server-ts/tests/unit/remote-access/route-policy.test.ts
+ M autobyteus-web/components/settings/NodeManager.vue
+ M autobyteus-web/components/settings/PhoneAccessCard.vue
+ M autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+ M autobyteus-web/components/settings/__tests__/NodeManager.spec.ts
+ M autobyteus-web/components/settings/__tests__/PhoneAccessCard.spec.ts
+ M autobyteus-web/docs/remote_access.md
+ M autobyteus-web/docs/settings.md
+ D autobyteus-web/electron/__tests__/nodeAdminClaimStore.spec.ts
+ D autobyteus-web/electron/__tests__/register-node-admin-claim-ipc-handlers.spec.ts
+ M autobyteus-web/electron/main.ts
+ D autobyteus-web/electron/nodeAdminClaimStore.ts
+ M autobyteus-web/electron/preload.ts
+ D autobyteus-web/electron/register-node-admin-claim-ipc-handlers.ts
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M autobyteus-web/services/__tests__/api.nodeRouting.spec.ts
+ M autobyteus-web/stores/__tests__/phoneAccessStore.spec.ts
+ M autobyteus-web/stores/phoneAccessStore.ts
+ M autobyteus-web/types/electron.d.ts
+ D autobyteus-web/types/nodeAdminClaim.ts
+ M autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts
+ M autobyteus-web/utils/dockerNodeLauncherCommands.ts
+ M autobyteus-web/utils/phoneAccessRemoteNode.ts
+ M docker/Dockerfile.allinone
+ M docker/Dockerfile.remote-server
+ M docs/android_mobile_access.md
+ M docs/future-tickets/mobile-backend-authorization-hardening.md
+ M scripts/public/docker/autobyteus-docker.ps1
+ M scripts/public/docker/autobyteus-docker.sh
+ M scripts/tests/test_public_docker_launcher_shared_workspace.py
+?? autobyteus-web/utils/remoteAccess/__tests__/authorizedTransport.spec.ts
+?? tickets/mobile-safe-container-401/
+
+## git diff --check
+
+## bash syntax
+
+## python compile
+
+## PowerShell availability
+
+## active old-term cleanup scan

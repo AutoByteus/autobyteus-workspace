@@ -1,0 +1,22 @@
+# Electron Round 4 artifact publish/copy
+Timestamp: 2026-05-23T19:26:08Z
+Source: autobyteus-web/electron-dist-round4
+Destination: autobyteus-web/electron-dist (packaged artifacts only; running app bundle left untouched)
+Copied AutoByteus_personal_macos-arm64-1.3.29.dmg
+Copied AutoByteus_personal_macos-arm64-1.3.29.dmg.blockmap
+Copied AutoByteus_personal_macos-arm64-1.3.29.zip
+Copied AutoByteus_personal_macos-arm64-1.3.29.zip.blockmap
+Copied latest-mac.yml
+Copied builder-debug.yml
+
+## Destination artifact listing
+-rw-r--r--@ 1 normy  staff   362M May 23 21:26 electron-dist/AutoByteus_personal_macos-arm64-1.3.29.dmg
+-rw-r--r--@ 1 normy  staff   386K May 23 21:26 electron-dist/AutoByteus_personal_macos-arm64-1.3.29.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   360M May 23 21:26 electron-dist/AutoByteus_personal_macos-arm64-1.3.29.zip
+-rw-r--r--@ 1 normy  staff   378K May 23 21:26 electron-dist/AutoByteus_personal_macos-arm64-1.3.29.zip.blockmap
+-rw-r--r--@ 1 normy  staff   820B May 23 21:26 electron-dist/builder-debug.yml
+-rw-r--r--@ 1 normy  staff   555B May 23 21:26 electron-dist/latest-mac.yml
+
+## SHA-256
+6e66052ce49e1db585cf5d67d1019103bd58ee9cc9dc2259a5f7fa034a3e5940  electron-dist/AutoByteus_personal_macos-arm64-1.3.29.dmg
+947e883db6425bec1b79784b086b28b10071490cc39f63f1c78ba1ab95468fab  electron-dist/AutoByteus_personal_macos-arm64-1.3.29.zip

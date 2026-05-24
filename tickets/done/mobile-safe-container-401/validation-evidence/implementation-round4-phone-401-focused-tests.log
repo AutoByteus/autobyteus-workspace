@@ -1,0 +1,35 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web
+
+stderr | stores/__tests__/phoneAccessStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/phoneAccessStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/phoneAccessStore.spec.ts (11 tests) 12ms
+ ✓ utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts (5 tests) 5ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (15 tests) 145ms
+
+ Test Files  3 passed (3)
+      Tests  31 passed (31)
+   Start at  05:36:51
+   Duration  4.83s (transform 2.82s, setup 11.37s, collect 669ms, tests 163ms, environment 538ms, prepare 527ms)
+

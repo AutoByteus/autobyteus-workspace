@@ -6,7 +6,7 @@ LAUNCHER_LABEL_VALUE="server-docker"
 NODE_LABEL_KEY="com.autobyteus.nodeName"
 CONFIG_LABEL_KEY="com.autobyteus.configHash"
 PROFILE_LABEL_KEY="com.autobyteus.profile"
-CONFIG_HASH_VERSION="v3"
+CONFIG_HASH_VERSION="v4"
 NODE_NAME_PREFIX="autobyteus-server"
 DEFAULT_NODE_NAME="${NODE_NAME_PREFIX}-0"
 DEFAULT_IMAGE="autobyteus/autobyteus-server"
@@ -19,8 +19,6 @@ SHARED_CONTAINER_PATH="/home/autobyteus/shared"
 TEMP_WORKSPACE_ENV_VALUE="${WORKSPACE_CONTAINER_PATH}"
 DEFAULT_PROFILE="standard"
 MOBILE_SAFE_PROFILE="mobile-safe"
-NODE_ADMIN_CLAIM_SCOPE="phone-access-management"
-NODE_ADMIN_CLAIM_CREATED=0
 
 usage() {
   cat <<USAGE
@@ -33,8 +31,6 @@ Usage:
 Commands:
   install            Install or replace the local autobyteus-docker CLI
   new-container      Create a new Docker node with automatic indexed name and ports
-  admin-claim show   Show the node-admin claim for a mobile-safe Docker node
-  admin-claim rotate Rotate the node-admin claim and recreate that mobile-safe node
   upgrade --all      Upgrade all managed Docker nodes to the latest image
   destroy --all      Remove all managed Docker nodes, keeping named volumes
   reset              Destroy all managed Docker nodes, then create autobyteus-server-0
@@ -122,7 +118,7 @@ install_launcher() {
   trap - RETURN
 
   log "Installed AutoByteus Docker launcher: ${install_path}"
-  printf 'Next commands:\n  autobyteus-docker new-container --profile mobile-safe\n  autobyteus-docker admin-claim show --name autobyteus-server-0\n  autobyteus-docker workspace paths\n  autobyteus-docker storage\n  autobyteus-docker urls\n'
+  printf 'Next commands:\n  autobyteus-docker new-container --profile mobile-safe\n  autobyteus-docker workspace paths\n  autobyteus-docker storage\n  autobyteus-docker urls\n'
   if path_has_dir "$dir"; then
     log "Install directory is already on PATH."
     return
@@ -144,7 +140,7 @@ state_path_for() { printf '%s/%s.env\n' "$(state_dir)" "$(normalize_node_name "$
 
 load_state() {
   local file="$1"
-  NODE_NAME="" CONTAINER_NAME="" BACKEND_PORT="" VNC_PORT="" NOVNC_PORT="" DEBUG_PORT="" IMAGE_REF="" CREATED_AT="" PROFILE="" NODE_ADMIN_CLAIM_ID="" NODE_ADMIN_CLAIM_SECRET="" NODE_ADMIN_CLAIM_HASH="" NODE_ADMIN_CLAIM_SCOPE_VALUE=""
+  NODE_NAME="" CONTAINER_NAME="" BACKEND_PORT="" VNC_PORT="" NOVNC_PORT="" DEBUG_PORT="" IMAGE_REF="" CREATED_AT="" PROFILE=""
   if [[ -f "$file" ]]; then
     # shellcheck disable=SC1090
     source "$file"
@@ -157,10 +153,6 @@ write_state() {
   {
     printf 'NODE_NAME=%s\nCONTAINER_NAME=%s\nBACKEND_PORT=%s\nVNC_PORT=%s\nNOVNC_PORT=%s\nDEBUG_PORT=%s\nIMAGE_REF=%s\nCREATED_AT=%s\nCONFIG_HASH=%s\nPROFILE=%s\nUPDATED_AT=%s\n' \
       "$node_name" "$container_name" "$backend" "$vnc" "$novnc" "$debug" "$image_ref" "$created_at" "$config_hash" "$profile" "$(now_utc)"
-    if [[ "$profile" == "$MOBILE_SAFE_PROFILE" ]]; then
-      printf 'NODE_ADMIN_CLAIM_ID=%s\nNODE_ADMIN_CLAIM_SECRET=%s\nNODE_ADMIN_CLAIM_HASH=%s\nNODE_ADMIN_CLAIM_SCOPE_VALUE=%s\n' \
-        "${NODE_ADMIN_CLAIM_ID:-}" "${NODE_ADMIN_CLAIM_SECRET:-}" "${NODE_ADMIN_CLAIM_HASH:-}" "${NODE_ADMIN_CLAIM_SCOPE_VALUE:-$NODE_ADMIN_CLAIM_SCOPE}"
-    fi
   } > "$file"
   chmod 600 "$file" 2>/dev/null || true
 }
@@ -187,44 +179,6 @@ hash_text() {
   cksum | awk '{print "cksum-" $1 "-" $2}'
 }
 
-random_base64url() {
-  local bytes="${1:-32}"
-  if command -v python3 >/dev/null 2>&1; then
-    python3 - "$bytes" <<'PY'
-import base64, os, sys
-print(base64.urlsafe_b64encode(os.urandom(int(sys.argv[1]))).decode().rstrip("="))
-PY
-    return
-  fi
-  if command -v openssl >/dev/null 2>&1; then
-    openssl rand -base64 "$bytes" | tr '+/' '-_' | tr -d '=' | tr -d '\n'
-    printf '\n'
-    return
-  fi
-  fail "python3 or openssl is required to generate a mobile-safe node-admin claim."
-}
-
-generate_node_admin_claim() {
-  NODE_ADMIN_CLAIM_ID="nac_$(random_base64url 18)"
-  NODE_ADMIN_CLAIM_SECRET="nas_$(random_base64url 32)"
-  NODE_ADMIN_CLAIM_HASH="$(printf '%s' "$NODE_ADMIN_CLAIM_SECRET" | hash_text)"
-  NODE_ADMIN_CLAIM_SCOPE_VALUE="$NODE_ADMIN_CLAIM_SCOPE"
-  NODE_ADMIN_CLAIM_CREATED=1
-}
-
-ensure_node_admin_claim() {
-  local profile="$1"
-  if [[ "$profile" != "$MOBILE_SAFE_PROFILE" ]]; then
-    NODE_ADMIN_CLAIM_ID="" NODE_ADMIN_CLAIM_SECRET="" NODE_ADMIN_CLAIM_HASH="" NODE_ADMIN_CLAIM_SCOPE_VALUE=""
-    return
-  fi
-  if [[ -n "${NODE_ADMIN_CLAIM_ID:-}" && -n "${NODE_ADMIN_CLAIM_SECRET:-}" && -n "${NODE_ADMIN_CLAIM_HASH:-}" ]]; then
-    NODE_ADMIN_CLAIM_SCOPE_VALUE="${NODE_ADMIN_CLAIM_SCOPE_VALUE:-$NODE_ADMIN_CLAIM_SCOPE}"
-    return
-  fi
-  generate_node_admin_claim
-}
-
 normalize_profile() {
   local raw="${1:-$DEFAULT_PROFILE}"
   case "$raw" in
@@ -235,14 +189,13 @@ normalize_profile() {
 }
 
 desired_config_hash() {
-  local node_name="$1" image_ref="$2" profile="${3:-$DEFAULT_PROFILE}" volume_prefix workspace_root node_workspace_host shared_host claim_hash
+  local node_name="$1" image_ref="$2" profile="${3:-$DEFAULT_PROFILE}" volume_prefix workspace_root node_workspace_host shared_host
   volume_prefix="$(volume_prefix_for "$node_name")"
   workspace_root="$(shared_workspace_root)"
   node_workspace_host="$(node_workspace_host_path "$node_name")"
   shared_host="$(shared_workspace_host_path)"
-  claim_hash="${NODE_ADMIN_CLAIM_HASH:-}"
-  printf 'version=%s\nprofile=%s\nnode=%s\nimage=%s\nbackend=%s\nvnc=%s\nnovnc=%s\ndebug=%s\nworkspace_volume=%s-workspace\ndata_volume=%s-data\nroot_volume=%s-root-home\nshared_workspace_root=%s\nnode_workspace_host=%s\nnode_workspace_target=%s\nshared_workspace_host=%s\nshared_workspace_target=%s\ntemp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=%s\nserver_host=http://localhost:%s\nvnc_hosts=localhost:%s\nclaim_id=%s\nclaim_hash=%s\n' \
-    "$CONFIG_HASH_VERSION" "$profile" "$node_name" "$image_ref" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$workspace_root" "$node_workspace_host" "$WORKSPACE_CONTAINER_PATH" "$shared_host" "$SHARED_CONTAINER_PATH" "$TEMP_WORKSPACE_ENV_VALUE" "$BACKEND_PORT" "$NOVNC_PORT" "${NODE_ADMIN_CLAIM_ID:-}" "$claim_hash" | hash_text
+  printf 'version=%s\nprofile=%s\nnode=%s\nimage=%s\nbackend=%s\nvnc=%s\nnovnc=%s\ndebug=%s\nworkspace_volume=%s-workspace\ndata_volume=%s-data\nroot_volume=%s-root-home\nshared_workspace_root=%s\nnode_workspace_host=%s\nnode_workspace_target=%s\nshared_workspace_host=%s\nshared_workspace_target=%s\ntemp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=%s\nserver_host=http://localhost:%s\nvnc_hosts=localhost:%s\n' \
+    "$CONFIG_HASH_VERSION" "$profile" "$node_name" "$image_ref" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$workspace_root" "$node_workspace_host" "$WORKSPACE_CONTAINER_PATH" "$shared_host" "$SHARED_CONTAINER_PATH" "$TEMP_WORKSPACE_ENV_VALUE" "$BACKEND_PORT" "$NOVNC_PORT" | hash_text
 }
 
 image_id_for() { docker image inspect --format '{{.Id}}' "$1" 2>/dev/null || true; }
@@ -441,9 +394,6 @@ run_container() {
       -p "127.0.0.1:${NOVNC_PORT}:6080"
       -p "127.0.0.1:${DEBUG_PORT}:9223"
       -e AUTOBYTEUS_NODE_PROFILE=mobile-safe
-      -e "AUTOBYTEUS_NODE_ADMIN_CLAIM_ID=${NODE_ADMIN_CLAIM_ID}"
-      -e "AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH=${NODE_ADMIN_CLAIM_HASH}"
-      -e "AUTOBYTEUS_NODE_ADMIN_CLAIM_SCOPE=${NODE_ADMIN_CLAIM_SCOPE_VALUE:-$NODE_ADMIN_CLAIM_SCOPE}"
     )
   else
     ensure_shared_workspace_dirs "$node_name"
@@ -513,20 +463,8 @@ Chrome debug: localhost:${DEBUG_PORT} (localhost-bound)
 Workspace: private Docker named volume $(volume_prefix_for "$node_name")-workspace
 Shared host bind mounts: disabled by default in mobile-safe profile
 Private app data: /home/autobyteus/data -> $(volume_prefix_for "$node_name")-data (Docker named volume)
-Next step: paste Backend into Add Remote Node in AutoByteus, open the node window, then register the node-admin claim.
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
 URLS
-    if [[ "$NODE_ADMIN_CLAIM_CREATED" == "1" ]]; then
-      cat <<CLAIM
-
-Mobile-safe node-admin claim (store this locally; it is not inside the container):
-  Claim ID: ${NODE_ADMIN_CLAIM_ID}
-  Claim secret: ${NODE_ADMIN_CLAIM_SECRET}
-  Scope: ${NODE_ADMIN_CLAIM_SCOPE_VALUE:-$NODE_ADMIN_CLAIM_SCOPE}
-To show it later: autobyteus-docker admin-claim show --name ${node_name}
-CLAIM
-    else
-      printf 'Node-admin claim: run "autobyteus-docker admin-claim show --name %s" when you need to register this node in the desktop app.\n' "$node_name"
-    fi
     return
   fi
   cat <<URLS
@@ -542,7 +480,7 @@ Chrome debug: localhost:${DEBUG_PORT}
 Workspace: ${WORKSPACE_CONTAINER_PATH} -> $(node_workspace_host_path "$node_name")
 Shared folder: ${SHARED_CONTAINER_PATH} -> $(shared_workspace_host_path)
 Private app data: /home/autobyteus/data -> $(volume_prefix_for "$node_name")-data (Docker named volume)
-Next step: paste Backend into Add Remote Node in AutoByteus.
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
 URLS
 }
 
@@ -589,9 +527,6 @@ start_node() {
   [[ "$profile" == "$DEFAULT_PROFILE" || "$profile" == "$MOBILE_SAFE_PROFILE" ]] || profile="$(normalize_profile "$profile")"
   container_name="${CONTAINER_NAME:-$node_name}"
   created_at="${CREATED_AT:-$(now_utc)}"
-  NODE_ADMIN_CLAIM_CREATED=0
-  ensure_node_admin_claim "$profile"
-
   if container_exists "$container_name" && ! managed_container "$container_name"; then
     fail "Container ${container_name} already exists and is not managed by this launcher. Use --name with another friendly name."
   fi
@@ -930,40 +865,6 @@ show_logs() {
   fi
 }
 
-show_admin_claim() {
-  local node_name="$1" file
-  file="$(state_path_for "$node_name")"
-  [[ -f "$file" ]] || fail "No launcher state found for ${node_name}. Run 'autobyteus-docker new-container --profile mobile-safe' first."
-  load_state "$file"
-  [[ "${PROFILE:-$DEFAULT_PROFILE}" == "$MOBILE_SAFE_PROFILE" ]] || fail "${node_name} is not a mobile-safe Docker node."
-  [[ -n "${NODE_ADMIN_CLAIM_ID:-}" && -n "${NODE_ADMIN_CLAIM_SECRET:-}" ]] || fail "No node-admin claim is stored for ${node_name}; recreate it with the mobile-safe profile."
-  cat <<CLAIM
-AutoByteus mobile-safe node-admin claim: ${NODE_NAME:-$node_name}
-Management backend: http://localhost:${BACKEND_PORT}
-Claim ID: ${NODE_ADMIN_CLAIM_ID}
-Claim secret: ${NODE_ADMIN_CLAIM_SECRET}
-Scope: ${NODE_ADMIN_CLAIM_SCOPE_VALUE:-$NODE_ADMIN_CLAIM_SCOPE}
-
-Paste the claim ID and secret into the Docker node window Phone Setup screen.
-CLAIM
-}
-
-rotate_admin_claim() {
-  local node_name="$1" fallback_image_ref="$2" file node_image_ref prefer_defaults=0
-  file="$(state_path_for "$node_name")"
-  [[ -f "$file" ]] || fail "No launcher state found for ${node_name}. Run new-container first."
-  load_state "$file"
-  [[ "${PROFILE:-$DEFAULT_PROFILE}" == "$MOBILE_SAFE_PROFILE" ]] || fail "${node_name} is not a mobile-safe Docker node."
-  node_image_ref="${IMAGE_REF:-$(image_ref_for_node_or_default "$node_name" "$fallback_image_ref")}"
-  [[ "$node_name" == "$DEFAULT_NODE_NAME" ]] && prefer_defaults=1
-  generate_node_admin_claim
-  write_state "$file" "${NODE_NAME:-$node_name}" "${CONTAINER_NAME:-$node_name}" "${BACKEND_PORT}" "${VNC_PORT}" "${NOVNC_PORT}" "${DEBUG_PORT}" "$node_image_ref" "${CREATED_AT:-$(now_utc)}" "${CONFIG_HASH:-}" "$MOBILE_SAFE_PROFILE"
-  if container_exists "${CONTAINER_NAME:-$node_name}"; then
-    docker rm -f "${CONTAINER_NAME:-$node_name}" >/dev/null 2>&1 || true
-  fi
-  start_node "$node_name" "$node_image_ref" "$prefer_defaults" "$MOBILE_SAFE_PROFILE"
-}
-
 main() {
   local cmd="${1:-help}" stop_all=0 name_arg="" tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" profile="$DEFAULT_PROFILE" extra=()
   [[ "$cmd" == "help" || "$cmd" == "--help" || "$cmd" == "-h" ]] && { usage; return; }
@@ -981,7 +882,7 @@ main() {
     esac
   done
 
-  local node_name image_ref workspace_action admin_action
+  local node_name image_ref workspace_action
 
   case "$cmd" in
     install)
@@ -992,7 +893,7 @@ main() {
   esac
 
   case "$cmd" in
-    new-container|upgrade|destroy|reset|workspace|storage|urls|ports|status|ps|stop|logs|admin-claim) ;;
+    new-container|upgrade|destroy|reset|workspace|storage|urls|ports|status|ps|stop|logs) ;;
     *) usage; exit 1 ;;
   esac
 
@@ -1025,16 +926,6 @@ main() {
       [[ "$stop_all" != "1" ]] || fail "reset already applies to all managed nodes and does not accept --all."
       [[ -z "$name_arg" ]] || fail "reset always recreates ${DEFAULT_NODE_NAME}; do not pass --name."
       reset_nodes "$image_ref" "$profile"
-      ;;
-    admin-claim)
-      admin_action="${extra[0]:-show}"
-      [[ "$admin_action" == "show" || "$admin_action" == "rotate" ]] || fail "Unknown admin-claim subcommand: ${admin_action}. Use show or rotate."
-      [[ "${#extra[@]}" -le 1 ]] || fail "Unknown admin-claim option(s): ${extra[*]:1}"
-      if [[ "$admin_action" == "show" ]]; then
-        show_admin_claim "$node_name"
-      else
-        rotate_admin_claim "$node_name" "$image_ref"
-      fi
       ;;
     workspace)
       workspace_action="${extra[0]:-paths}"

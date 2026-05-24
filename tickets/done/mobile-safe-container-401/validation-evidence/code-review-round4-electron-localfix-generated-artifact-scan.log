@@ -1,0 +1,17 @@
+# Code review local-fix rebuilt Electron generated artifact scan
+2026-05-23T20:12:40Z
+# App: autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+# Pattern: Automatic local management credential|launcher-managed local Docker node|local launcher state|Re-add the launcher Backend URL|requiresLocalManagementCredential|localManagementCredential|LocalManagementCredential|local-management-credential|local-management|local management credential|lmn_|AUTOBYTEUS_LOCAL_MANAGEMENT|nodeAdmin|NodeAdmin|node-admin|remote-node-admin|RemoteNodeAdmin|claimId|claimSecret|adminClaim|REMOTE_NODE_ADMIN|NODE_ADMIN|remoteNodeAdmin|AUTOBYTEUS_NODE_ADMIN_CLAIM|phone-access-management|owner session|owner-session|owner credential|remoteOwnerSession|RemoteOwnerSession|rao_
+OK app exists
+OK app.asar exists
+OK packaged server resources exist
+OK app.asar.unpacked exists
+2026-05-23T22:03:11+0200 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+2026-05-23T22:03:11+0200 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+2026-05-23T22:03:17+0200 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+2026-05-23T22:03:17+0200 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web
+OK packaged server/mobile-web/index.html exists
+OK packaged mobile index references /mobile/_nuxt/ assets
+# Running rg -a stale-string scan over app.asar, app.asar.unpacked, and packaged server resources
+# rg exit code: 1 (1 means no matches)
+PASS rebuilt generated Electron artifact stale-string scan clean

@@ -1,0 +1,117 @@
+Building autobyteus-allinone:mobile-safe-container-401-validation from docker/Dockerfile.allinone
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.allinone
+#1 transferring dockerfile: 2.99kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.6s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+#3 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm
+#4 DONE 0.5s
+
+#5 [auth] autobyteus/chrome-vnc:pull token for registry-1.docker.io
+#5 DONE 0.0s
+
+#6 [internal] load metadata for docker.io/autobyteus/chrome-vnc:zh
+#6 DONE 0.8s
+
+#7 [internal] load .dockerignore
+#7 transferring context: 282B done
+#7 DONE 0.0s
+
+#8 [internal] load build context
+#8 DONE 0.0s
+
+#9 [builder  1/17] FROM docker.io/library/node:22-bookworm@sha256:1031993481795705055273f2eef0c24597abdcb277d6e058c82f78cbbdef92a6
+#9 resolve docker.io/library/node:22-bookworm@sha256:1031993481795705055273f2eef0c24597abdcb277d6e058c82f78cbbdef92a6 0.0s done
+#9 DONE 0.0s
+
+#10 [runtime  1/18] FROM docker.io/autobyteus/chrome-vnc:zh@sha256:a66d93597cb1e7d2b62db17fad31988a1672855142a48ef2d1cc1a75947640f4
+#10 resolve docker.io/autobyteus/chrome-vnc:zh@sha256:a66d93597cb1e7d2b62db17fad31988a1672855142a48ef2d1cc1a75947640f4
+#10 resolve docker.io/autobyteus/chrome-vnc:zh@sha256:a66d93597cb1e7d2b62db17fad31988a1672855142a48ef2d1cc1a75947640f4 0.0s done
+#10 DONE 0.0s
+
+#8 [internal] load build context
+#8 transferring context: 1.69MB 0.3s done
+#8 DONE 0.3s
+
+#11 [builder  2/17] WORKDIR /app
+#11 CACHED
+
+#12 [builder  3/17] RUN corepack enable
+#12 CACHED
+
+#13 [builder  4/17] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#13 CACHED
+
+#14 [builder  5/17] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#14 DONE 0.1s
+
+#15 [builder  6/17] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#15 DONE 0.0s
+
+#16 [builder  7/17] COPY autobyteus-message-gateway/package.json autobyteus-message-gateway/tsconfig.json autobyteus-message-gateway/tsconfig.build.json ./autobyteus-message-gateway/
+#16 DONE 0.0s
+
+#17 [builder  8/17] COPY autobyteus-web/package.json ./autobyteus-web/
+#17 DONE 0.0s
+
+#18 [builder  9/17] COPY autobyteus-ts ./autobyteus-ts
+#18 DONE 0.3s
+
+#19 [builder 10/17] COPY autobyteus-server-ts ./autobyteus-server-ts
+#19 DONE 0.4s
+
+#20 [builder 11/17] COPY autobyteus-message-gateway ./autobyteus-message-gateway
+#20 DONE 0.1s
+
+#21 [builder 12/17] COPY autobyteus-web ./autobyteus-web
+#21 DONE 0.5s
+
+#22 [builder 13/17] RUN pnpm install --no-frozen-lockfile   --filter autobyteus-ts...   --filter autobyteus-server-ts...   --filter autobyteus-message-gateway...   --filter autobyteus...
+#22 0.310 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+#22 1.671 Scope: 4 of 5 workspace projects
+#22 1.776  ENOENT  ENOENT: no such file or directory, open '/app/patches/repository_prisma@1.0.6.patch'
+#22 1.776 
+#22 1.776 pnpm: ENOENT: no such file or directory, open '/app/patches/repository_prisma@1.0.6.patch'
+#22 1.776     at async open (node:internal/fs/promises:639:25)
+#22 1.776     at async Object.readFile (node:internal/fs/promises:1249:14)
+#22 1.776     at async readNormalizedFile (/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:55441:23)
+#22 1.776     at async createHexHashFromFile (/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:55438:28)
+#22 1.776     at async /root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:136590:17
+#22 1.776     at async /root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:136567:24
+#22 1.776     at async Promise.all (index 0)
+#22 1.776     at async pMapValue (/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:136566:7)
+#22 1.776     at async _install (/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:159080:134)
+#22 1.776     at async mutateModules (/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:159028:23)
+#22 ERROR: process "/bin/sh -c pnpm install --no-frozen-lockfile   --filter autobyteus-ts...   --filter autobyteus-server-ts...   --filter autobyteus-message-gateway...   --filter autobyteus..." did not complete successfully: exit code: 254
+------
+ > [builder 13/17] RUN pnpm install --no-frozen-lockfile   --filter autobyteus-ts...   --filter autobyteus-server-ts...   --filter autobyteus-message-gateway...   --filter autobyteus...:
+1.776     at async open (node:internal/fs/promises:639:25)
+1.776     at async Object.readFile (node:internal/fs/promises:1249:14)
+1.776     at async readNormalizedFile (/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:55441:23)
+1.776     at async createHexHashFromFile (/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:55438:28)
+1.776     at async /root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:136590:17
+1.776     at async /root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:136567:24
+1.776     at async Promise.all (index 0)
+1.776     at async pMapValue (/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:136566:7)
+1.776     at async _install (/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:159080:134)
+1.776     at async mutateModules (/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/pnpm.cjs:159028:23)
+------
+Dockerfile.allinone:24
+--------------------
+  23 |     
+  24 | >>> RUN pnpm install --no-frozen-lockfile \
+  25 | >>>   --filter autobyteus-ts... \
+  26 | >>>   --filter autobyteus-server-ts... \
+  27 | >>>   --filter autobyteus-message-gateway... \
+  28 | >>>   --filter autobyteus...
+  29 |     RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c pnpm install --no-frozen-lockfile   --filter autobyteus-ts...   --filter autobyteus-server-ts...   --filter autobyteus-message-gateway...   --filter autobyteus..." did not complete successfully: exit code: 254

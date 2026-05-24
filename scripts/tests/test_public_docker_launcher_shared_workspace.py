@@ -42,7 +42,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("IMAGE_REF=autobyteus/test:v1", state_text)
             self.assertRegex(state_text, r"CONFIG_HASH=[0-9a-f]{64}")
 
-    def test_mobile_safe_profile_omits_privileged_mounts_and_injects_claim_hash_only(self) -> None:
+    def test_mobile_safe_profile_omits_privileged_mounts_and_owner_credential_env(self) -> None:
         with fake_docker_environment() as env:
             result = run_launcher(
                 env,
@@ -57,7 +57,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
 
             self.assertIn("Profile: mobile-safe", result.stdout)
             self.assertIn("Shared host bind mounts: disabled by default in mobile-safe profile", result.stdout)
-            self.assertIn("Mobile-safe node-admin claim", result.stdout)
+            self.assertIn("Then open that node over your trusted private network.", result.stdout)
 
             run_args = read_last_run_args(env)
             self.assertNotIn("--cap-add", run_args)
@@ -74,23 +74,10 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertTrue(has_localhost_port_mapping(run_args, "6080"), run_args)
             self.assertTrue(has_localhost_port_mapping(run_args, "9223"), run_args)
             self.assertIn("AUTOBYTEUS_NODE_PROFILE=mobile-safe", run_args)
-            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_SCOPE=phone-access-management", run_args)
 
             state_file = Path(env["AUTOBYTEUS_DOCKER_STATE_DIR"]) / "nodes" / "autobyteus-server-0.env"
             state_text = state_file.read_text(encoding="utf-8")
             self.assertIn("PROFILE=mobile-safe", state_text)
-            self.assertRegex(state_text, r"NODE_ADMIN_CLAIM_ID=nac_[A-Za-z0-9_-]+")
-            self.assertRegex(state_text, r"NODE_ADMIN_CLAIM_SECRET=nas_[A-Za-z0-9_-]+")
-            self.assertRegex(state_text, r"NODE_ADMIN_CLAIM_HASH=[0-9a-f]{64}")
-            self.assertIn("NODE_ADMIN_CLAIM_SCOPE_VALUE=phone-access-management", state_text)
-
-            claim_id = read_state_value(state_text, "NODE_ADMIN_CLAIM_ID")
-            claim_secret = read_state_value(state_text, "NODE_ADMIN_CLAIM_SECRET")
-            claim_hash = read_state_value(state_text, "NODE_ADMIN_CLAIM_HASH")
-            self.assertIn(f"AUTOBYTEUS_NODE_ADMIN_CLAIM_ID={claim_id}", run_args)
-            self.assertIn(f"AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH={claim_hash}", run_args)
-            self.assertNotIn(claim_secret, run_args)
-            self.assertNotIn(f"AUTOBYTEUS_NODE_ADMIN_CLAIM_SECRET={claim_secret}", run_args)
 
     def test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping(self) -> None:
         with fake_docker_environment() as env:
@@ -141,13 +128,8 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
         powershell_text = POWERSHELL_LAUNCHER.read_text(encoding="utf-8")
 
         for text in (bash_text, powershell_text):
-            self.assertIn("v3", text)
+            self.assertIn("v4", text)
             self.assertIn("mobile-safe", text)
-            self.assertIn("phone-access-management", text)
-            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_ID", text)
-            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH", text)
-            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_SCOPE", text)
-            self.assertNotIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_SECRET=", text)
             self.assertIn("127.0.0.1:", text)
             self.assertIn("/home/autobyteus/workspace", text)
             self.assertIn("/home/autobyteus/shared", text)
@@ -157,8 +139,6 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("workspace apply", text)
             self.assertIn("storage", text)
             self.assertIn("type=bind,source=", text)
-            self.assertIn("admin-claim show", text)
-            self.assertIn("admin-claim rotate", text)
 
     def test_mobile_safe_run_arg_contract_is_encoded_in_both_public_launchers(self) -> None:
         bash_block = extract_mobile_safe_run_block(
@@ -177,10 +157,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertNotIn("seccomp=unconfined", block)
             self.assertNotIn("type=bind,source=", block)
             self.assertIn("127.0.0.1:", block)
-            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_ID", block)
-            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH", block)
-            self.assertIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_SCOPE", block)
-            self.assertNotIn("AUTOBYTEUS_NODE_ADMIN_CLAIM_SECRET", block)
+            self.assertIn("AUTOBYTEUS_NODE_PROFILE=mobile-safe", block)
 
     def test_powershell_launcher_parses_when_pwsh_is_available(self) -> None:
         if not shutil.which("pwsh"):
@@ -220,11 +197,11 @@ def has_localhost_port_mapping(args: list[str], container_port: str) -> bool:
 
 
 def extract_mobile_safe_run_block(text: str, branch_marker: str, else_marker: str) -> str:
-    claim_hash_index = text.index("AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH")
-    start = text.rfind(branch_marker, 0, claim_hash_index)
+    mobile_profile_index = text.index("AUTOBYTEUS_NODE_PROFILE=mobile-safe")
+    start = text.rfind(branch_marker, 0, mobile_profile_index)
     if start < 0:
         raise AssertionError(f"mobile-safe run branch not found: {branch_marker}")
-    end = text.find(else_marker, claim_hash_index)
+    end = text.find(else_marker, mobile_profile_index)
     if end < 0:
         raise AssertionError(f"mobile-safe run branch else marker not found: {else_marker}")
     return text[start:end]

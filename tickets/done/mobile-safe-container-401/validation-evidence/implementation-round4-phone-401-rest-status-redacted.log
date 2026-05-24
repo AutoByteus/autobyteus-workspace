@@ -1,0 +1,46 @@
+# REST status/devices/settings redacted for phone 401 investigation
+# UTC: 2026-05-24T03:30:01Z
+## GET /rest/remote-access/status
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 168
+Date: Sun, 24 May 2026 03:30:01 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{
+  "compatibilityVersion": 1,
+  "pairingAvailable": true,
+  "phoneAccessEnabled": true,
+  "serverInstanceId": "srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8",
+  "serverName": "AutoByteus Desktop"
+}
+## GET /rest/remote-access/settings
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 110
+Date: Sun, 24 May 2026 03:30:01 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{
+  "settings": {
+    "phoneAccessEnabled": true,
+    "updatedAt": "2026-05-23T20:17:50.539Z",
+    "updatedBy": "loopback-desktop"
+  }
+}
+## GET /rest/remote-access/devices
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 14
+Date: Sun, 24 May 2026 03:30:01 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{
+  "devices": []
+}

@@ -1,0 +1,163 @@
+# docker logs redacted for phone 401 investigation
+# UTC: 2026-05-24T03:29:50Z
+# container: 49314e4abc2c
+# container /autobyteus-server-2 image=autobyteus-server:mobile-safe-container-401-round4-api-e2e created=2026-05-23T18:52:00.90273355Z started=2026-05-23T20:17:26.584766092Z status=running
+# recent logs matching remote/mobile/auth/graphql/ws/status/pair/device/401/unauthorized/agents/errors
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: bd33813e-c03c-4f65-8c92-5000796c6433 for workspace temp_ws_default
+Created file explorer session bd33813e-c03c-4f65-8c92-5000796c6433 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: bd33813e-c03c-4f65-8c92-5000796c6433 for workspace temp_ws_default
+{"level":40,"time":1779567444454,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1k","method":"GET","url":"/rest/files/no-such-category/no-such-file.txt","statusCode":404,"elapsedMs":3.7482500076293945,"msg":"http request completed"}
+{"level":50,"time":1779567444474,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1o","err":{"type":"TypeError","message":"Cannot read properties of undefined (reading 'protocol')","stack":"TypeError: Cannot read properties of undefined (reading 'protocol')\n    at Object.<anonymous> (/app/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/subscription.js:13:16)\n    at /app/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:185:34\n    at /app/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:129:7\n    at WebSocketServer.completeUpgrade (/app/node_modules/.pnpm/ws@8.19.0/node_modules/ws/lib/websocket-server.js:442:5)\n    at WebSocketServer.handleUpgrade (/app/node_modules/.pnpm/ws@8.19.0/node_modules/ws/lib/websocket-server.js:350:10)\n    at handleUpgrade (/app/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:122:9)\n    at routeOptions.handler (/app/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:181:9)\n    at preHandlerCallback (/app/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/app/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/app/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)"},"msg":"Cannot read properties of undefined (reading 'protocol')"}
+{"level":40,"time":1779567444476,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1p","method":"GET","url":"/rest/remote-access/settings","statusCode":403,"elapsedMs":0.3565409779548645,"msg":"http request completed"}
+{"level":40,"time":1779567444477,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1q","method":"GET","url":"/rest/remote-access/devices","statusCode":403,"elapsedMs":0.17637497186660767,"msg":"http request completed"}
+{"level":40,"time":1779567444478,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1r","method":"POST","url":"/rest/remote-access/pairing-sessions","statusCode":403,"elapsedMs":0.13654202222824097,"msg":"http request completed"}
+{"level":40,"time":1779567444479,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1s","method":"DELETE","url":"/rest/remote-access/devices/device_2f2cc375c10a0f5de7ee9ae8692e5d3c","statusCode":403,"elapsedMs":0.43400001525878906,"msg":"http request completed"}
+{"level":40,"time":1779567444480,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1t","method":"GET","url":"/rest/files/no-such-category/no-such-file.txt","statusCode":404,"elapsedMs":0.3280409574508667,"msg":"http request completed"}
+{"level":40,"time":1779567444482,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1u","method":"GET","url":"/rest/applications/__validation_app__/backend/status","statusCode":404,"elapsedMs":0.7829159498214722,"msg":"http request completed"}
+{"level":40,"time":1779567444986,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1w","method":"GET","url":"/graphql","statusCode":404,"elapsedMs":0.3291659951210022,"msg":"http request completed"}
+{"level":50,"time":1779567445002,"pid":46,"hostname":"49314e4abc2c","reqId":"req-1z","err":{"type":"TypeError","message":"Cannot read properties of undefined (reading 'protocol')","stack":"TypeError: Cannot read properties of undefined (reading 'protocol')\n    at Object.<anonymous> (/app/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/subscription.js:13:16)\n    at /app/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:185:34\n    at /app/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:129:7\n    at WebSocketServer.completeUpgrade (/app/node_modules/.pnpm/ws@8.19.0/node_modules/ws/lib/websocket-server.js:442:5)\n    at WebSocketServer.handleUpgrade (/app/node_modules/.pnpm/ws@8.19.0/node_modules/ws/lib/websocket-server.js:350:10)\n    at handleUpgrade (/app/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:122:9)\n    at routeOptions.handler (/app/node_modules/.pnpm/@fastify+websocket@10.0.1/node_modules/@fastify/websocket/index.js:181:9)\n    at preHandlerCallback (/app/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:139:37)\n    at validationCompleted (/app/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:123:5)\n    at preValidationCallback (/app/node_modules/.pnpm/fastify@4.29.1/node_modules/fastify/lib/handleRequest.js:100:5)"},"msg":"Cannot read properties of undefined (reading 'protocol')"}
+2026-05-23 20:17:26,007 WARN received SIGTERM indicating exit request
+File explorer WebSocket disconnected: bd33813e-c03c-4f65-8c92-5000796c6433
+2026-05-23 20:17:28,250 INFO exited: disable_screensaver (exit status 0; expected)
+dbus-daemon[27]: [session uid=1000 pid=27] Activated service 'org.freedesktop.systemd1' failed: Process org.freedesktop.systemd1 exited with status 1
+Platform detection: Windows=false
+[35:35:0523/201728.463891:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:207] Check failed: . : Operation not permitted (1)
+[0523/201728.468422:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[0523/201728.468525:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+WebSocket server settings:
+2026-05-23 20:17:28,483 INFO reaped unknown pid 89 (exit status 0)
+2026-05-23 20:17:28,483 INFO reaped unknown pid 92 (exit status 0)
+2026-05-23 20:17:28,483 INFO reaped unknown pid 95 (exit status 1)
+[mi] mieq: warning: overriding existing handler (nil) with 0xaaaacea831e0 for event 2
+[mi] mieq: warning: overriding existing handler (nil) with 0xaaaacea831e0 for event 3
+2026-05-23 20:17:28,565 INFO reaped unknown pid 94 (exit status 0)
+2026-05-23 20:17:28,698 INFO reaped unknown pid 129 (exit status 1)
+(xfwm4:140): xfwm4-WARNING **: 20:17:28.870: Unsupported GL renderer (llvmpipe (LLVM 15.0.7, 128 bits)).
+(xfsettingsd:177): libupower-glib-WARNING **: 20:17:28.896: Couldn't connect to proxy: Could not connect: No such file or directory
+ModuleNotFoundError: No module named 'cups'
+(polkit-gnome-authentication-agent-1:196): polkit-gnome-1-WARNING **: 20:17:29.179: Error getting authority: Error initializing authority: Could not connect: No such file or directory
+(process:216): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 20:17:29.214: monitor says it's not supported
+(process:216): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 20:17:29.217: monitor says it's not supported
+(tumblerd:198): GVFS-RemoteVolumeMonitor-WARNING **: 20:17:29.217: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+(process:216): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 20:17:29.228: monitor says it's not supported
+(xfdesktop:189): GVFS-RemoteVolumeMonitor-WARNING **: 20:17:29.228: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+** (xfce4-screensaver:204): WARNING **: 20:17:29.240: screensaver already running in this session
+** (xfdesktop:189): WARNING **: 20:17:29.275: Failed to get system bus: Could not connect: No such file or directory
+(wrapper-2.0:242): GLib-GObject-WARNING **: 20:17:29.614: invalid (NULL) pointer instance
+(wrapper-2.0:242): Gtk-WARNING **: 20:17:29.614: Attempting to add a widget with type GtkToggleButton to a container of type XfcePanelPlugin, but the widget is already inside a container of type XfcePanelPlugin, please remove the widget from its existing container first.
+(wrapper-2.0:255): libactions-WARNING **: 20:17:29.641: Calling CanShutdown failed GDBus.Error:org.xfce.SessionManager.Error.Failed: Could not connect: No such file or directory
+(wrapper-2.0:255): libactions-WARNING **: 20:17:29.642: Calling CanRestart failed GDBus.Error:org.xfce.SessionManager.Error.Failed: Could not connect: No such file or directory
+(xfce4-session:29): xfce4-session-WARNING **: 20:17:29.644: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+(xfce4-session:29): xfce4-session-WARNING **: 20:17:29.647: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+(xfce4-session:29): xfce4-session-WARNING **: 20:17:29.650: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+[263:263:0523/201729.652958:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:207] Check failed: . : Operation not permitted (1)
+[0523/201729.657065:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[0523/201729.657267:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+(wrapper-2.0:240): Gtk-WARNING **: 20:17:29.658: Negative content width -3 (allocation 1, extents 2x2) while allocating gadget (node button, owner PulseaudioButton)
+2026-05-23 20:17:29,659 INFO reaped unknown pid 289 (exit status 1)
+(wrapper-2.0:255): Gtk-WARNING **: 20:17:29.660: Negative content width -1 (allocation 1, extents 1x1) while allocating gadget (node button, owner XfceArrowButton)
+(wrapper-2.0:242): Gtk-WARNING **: 20:17:29.661: Negative content width -3 (allocation 1, extents 2x2) while allocating gadget (node button, owner GtkToggleButton)
+2026-05-23 20:17:29,661 INFO reaped unknown pid 282 (exit status 0)
+2026-05-23 20:17:29,661 INFO reaped unknown pid 285 (exit status 0)
+2026-05-23 20:17:30,212 INFO reaped unknown pid 288 (exit status 0)
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+(node:44) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 1 items.
+AgentRunManager initialized.
+[2026-05-23T20:17:30.831Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+Initialized TempWorkspace at /home/autobyteus/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Agent customization processor registration complete.
+Loading agent tool definitions...
+Background task 'Agent Customizations' completed successfully.
+Pre-loaded 1 agent definitions into cache.
+[2026-05-23T20:17:30.956Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Loaded tool group: Browser Tools
+Background task 'Agent Tools' completed successfully.
+[2026-05-23T20:17:30.969Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Pre-loaded 0 agent team definitions into cache.
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: eebac3b2-1eca-4f52-ac77-6c1d888413fa for workspace temp_ws_default
+Created file explorer session eebac3b2-1eca-4f52-ac77-6c1d888413fa for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: eebac3b2-1eca-4f52-ac77-6c1d888413fa for workspace temp_ws_default
+2026-05-23 20:17:32,020 INFO reaped unknown pid 370 (exit status 0)
+[403:403:0523/201732.054281:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:207] Check failed: . : Operation not permitted (1)
+[0523/201732.057948:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[0523/201732.057991:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+[430:430:0100/000000.070013:ERROR:content/zygote/zygote_linux.cc:673] write: Broken pipe (32)
+2026-05-23 20:17:32,070 INFO reaped unknown pid 425 (exit status 0)
+2026-05-23 20:17:32,070 INFO reaped unknown pid 427 (exit status 0)
+2026-05-23 20:17:32,070 INFO reaped unknown pid 431 (exit status 1)
+{"level":40,"time":1779567452335,"pid":44,"hostname":"49314e4abc2c","reqId":"req-8","method":"POST","url":"/graphql","statusCode":403,"elapsedMs":1.490166962146759,"msg":"http request completed"}
+2026-05-23 20:17:32,335 INFO reaped unknown pid 430 (exit status 0)
+{"level":40,"time":1779567452339,"pid":44,"hostname":"49314e4abc2c","reqId":"req-9","method":"GET","url":"/rest/files/no-such-category/no-such-file.txt","statusCode":403,"elapsedMs":1.4740830063819885,"msg":"http request completed"}
+Remote Access WebSocket rejected /ws/applications/__validation_disabled__/backend/notifications? PHONE_ACCESS_DISABLED
+{"level":40,"time":1779567452679,"pid":44,"hostname":"49314e4abc2c","reqId":"req-g","method":"POST","url":"/graphql","statusCode":403,"elapsedMs":0.7199999690055847,"msg":"http request completed"}
+{"level":40,"time":1779567452681,"pid":44,"hostname":"49314e4abc2c","reqId":"req-h","method":"GET","url":"/rest/files/no-such-category/no-such-file.txt","statusCode":403,"elapsedMs":0.6363750100135803,"msg":"http request completed"}
+Remote Access WebSocket rejected /ws/applications/__validation_revoked__/backend/notifications? REMOTE_ACCESS_DEVICE_REVOKED
+{"level":40,"time":1779567452696,"pid":44,"hostname":"49314e4abc2c","reqId":"req-k","method":"GET","url":"/graphql? request completed"}
+Remote Access WebSocket rejected /ws/applications/__validation_invalid__/backend/notifications? REMOTE_ACCESS_AUTH_INVALID
+[440:440:0523/201735.744055:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:207] Check failed: . : Operation not permitted (1)
+[0523/201735.747223:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[0523/201735.747261:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+[460:460:0100/000000.759266:ERROR:content/zygote/zygote_linux.cc:673] write: Broken pipe (32)
+2026-05-23 20:17:35,759 INFO reaped unknown pid 455 (exit status 0)
+2026-05-23 20:17:35,759 INFO reaped unknown pid 457 (exit status 0)
+2026-05-23 20:17:35,759 INFO reaped unknown pid 461 (exit status 1)
+2026-05-23 20:17:36,762 INFO reaped unknown pid 460 (exit status 0)
+2026-05-23 20:22:30,082 INFO reaped unknown pid 198 (exit status 0)
+File explorer WebSocket disconnected: eebac3b2-1eca-4f52-ac77-6c1d888413fa
+File explorer websocket attached for workspace temp_ws_default
+FileExplorerSession created: 09182ee5-b8bd-4ff3-b127-7aef525ec291 for workspace temp_ws_default
+Created file explorer session 09182ee5-b8bd-4ff3-b127-7aef525ec291 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 09182ee5-b8bd-4ff3-b127-7aef525ec291 for workspace temp_ws_default
+{"level":40,"time":1779593082443,"pid":44,"hostname":"49314e4abc2c","reqId":"req-2n","method":"GET","url":"/favicon.ico","statusCode":404,"elapsedMs":0.5279160141944885,"msg":"http request completed"}
+{"level":40,"time":1779593082919,"pid":44,"hostname":"49314e4abc2c","reqId":"req-2s","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":1.7145830392837524,"msg":"http request completed"}
+{"level":40,"time":1779593082920,"pid":44,"hostname":"49314e4abc2c","reqId":"req-2t","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.9438340067863464,"msg":"http request completed"}
+{"level":40,"time":1779593082937,"pid":44,"hostname":"49314e4abc2c","reqId":"req-2v","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.4961249828338623,"msg":"http request completed"}
+{"level":40,"time":1779593082972,"pid":44,"hostname":"49314e4abc2c","reqId":"req-2w","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5060409903526306,"msg":"http request completed"}
+{"level":40,"time":1779593089277,"pid":44,"hostname":"49314e4abc2c","reqId":"req-2z","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.6944160461425781,"msg":"http request completed"}
+{"level":40,"time":1779593103366,"pid":44,"hostname":"49314e4abc2c","reqId":"req-3s","method":"GET","url":"/favicon.ico","statusCode":404,"elapsedMs":0.4988749623298645,"msg":"http request completed"}
+{"level":40,"time":1779593103814,"pid":44,"hostname":"49314e4abc2c","reqId":"req-3x","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.7773750424385071,"msg":"http request completed"}
+{"level":40,"time":1779593103833,"pid":44,"hostname":"49314e4abc2c","reqId":"req-3z","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5214159488677979,"msg":"http request completed"}
+{"level":40,"time":1779593103839,"pid":44,"hostname":"49314e4abc2c","reqId":"req-40","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.49170899391174316,"msg":"http request completed"}
+{"level":40,"time":1779593103869,"pid":44,"hostname":"49314e4abc2c","reqId":"req-41","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.517166018486023,"msg":"http request completed"}
+{"level":40,"time":1779593106839,"pid":44,"hostname":"49314e4abc2c","reqId":"req-46","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.718874990940094,"msg":"http request completed"}
+Populating agent definition cache for the first time...
+Agent definition cache populated with 1 items.
+{"level":40,"time":1779593208893,"pid":44,"hostname":"49314e4abc2c","reqId":"req-63","method":"GET","url":"/favicon.ico","statusCode":404,"elapsedMs":0.32770800590515137,"msg":"http request completed"}
+{"level":40,"time":1779593209085,"pid":44,"hostname":"49314e4abc2c","reqId":"req-68","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5232080221176147,"msg":"http request completed"}
+{"level":40,"time":1779593209087,"pid":44,"hostname":"49314e4abc2c","reqId":"req-69","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.41950005292892456,"msg":"http request completed"}
+{"level":40,"time":1779593209125,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6a","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.7173750400543213,"msg":"http request completed"}
+{"level":40,"time":1779593209150,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6c","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.8785829544067383,"msg":"http request completed"}
+{"level":40,"time":1779593237977,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6h","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5632920265197754,"msg":"http request completed"}
+{"level":40,"time":1779593238001,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6j","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5076670050621033,"msg":"http request completed"}
+{"level":40,"time":1779593238004,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6l","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5058749914169312,"msg":"http request completed"}
+{"level":40,"time":1779593238030,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6m","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.4854999780654907,"msg":"http request completed"}
+{"level":40,"time":1779593238684,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6q","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5063750147819519,"msg":"http request completed"}
+{"level":40,"time":1779593238701,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6s","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.38454198837280273,"msg":"http request completed"}
+{"level":40,"time":1779593238716,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6u","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5379999876022339,"msg":"http request completed"}
+{"level":40,"time":1779593238733,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6v","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.31816601753234863,"msg":"http request completed"}
+{"level":40,"time":1779593239129,"pid":44,"hostname":"49314e4abc2c","reqId":"req-6z","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.6540420055389404,"msg":"http request completed"}
+{"level":40,"time":1779593239138,"pid":44,"hostname":"49314e4abc2c","reqId":"req-71","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5050829648971558,"msg":"http request completed"}
+{"level":40,"time":1779593239163,"pid":44,"hostname":"49314e4abc2c","reqId":"req-73","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.45445799827575684,"msg":"http request completed"}
+{"level":40,"time":1779593239172,"pid":44,"hostname":"49314e4abc2c","reqId":"req-74","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.48033398389816284,"msg":"http request completed"}
+{"level":40,"time":1779593241757,"pid":44,"hostname":"49314e4abc2c","reqId":"req-78","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5954999923706055,"msg":"http request completed"}
+{"level":40,"time":1779593241778,"pid":44,"hostname":"49314e4abc2c","reqId":"req-7a","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.6279579997062683,"msg":"http request completed"}
+{"level":40,"time":1779593241789,"pid":44,"hostname":"49314e4abc2c","reqId":"req-7c","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.6564579606056213,"msg":"http request completed"}
+{"level":40,"time":1779593241806,"pid":44,"hostname":"49314e4abc2c","reqId":"req-7d","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.48354101181030273,"msg":"http request completed"}
+{"level":40,"time":1779593287520,"pid":44,"hostname":"49314e4abc2c","reqId":"req-84","method":"GET","url":"/favicon.ico","statusCode":404,"elapsedMs":0.30316704511642456,"msg":"http request completed"}
+{"level":40,"time":1779593287754,"pid":44,"hostname":"49314e4abc2c","reqId":"req-88","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5859580039978027,"msg":"http request completed"}
+{"level":40,"time":1779593287764,"pid":44,"hostname":"49314e4abc2c","reqId":"req-8a","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5138329863548279,"msg":"http request completed"}
+{"level":40,"time":1779593287786,"pid":44,"hostname":"49314e4abc2c","reqId":"req-8c","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5309170484542847,"msg":"http request completed"}
+{"level":40,"time":1779593287835,"pid":44,"hostname":"49314e4abc2c","reqId":"req-8d","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5090000033378601,"msg":"http request completed"}

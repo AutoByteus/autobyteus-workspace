@@ -1,4 +1,3 @@
-import type { NodeAdminClaimSummary } from '~/types/nodeAdminClaim'
 import type { RemoteAccessStatus, RemoteAccessUrlCandidate } from '~/types/remoteAccess'
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints'
 
@@ -10,14 +9,6 @@ export type AdvertisedUrlValidation = {
   message: string | null
 }
 
-export const emptyNodeAdminClaimSummary = (nodeId: string, managementBaseUrl: string): NodeAdminClaimSummary => ({
-  status: 'missing',
-  nodeId,
-  managementBaseUrl,
-  claimIdSuffix: null,
-  updatedAt: null,
-})
-
 export const formatPhoneAccessRequestError = (error: unknown): string => {
   if (error && typeof error === 'object' && 'response' in error) {
     const response = (error as { response?: { data?: { message?: string; detail?: string; code?: string }; status?: number } }).response
@@ -27,14 +18,6 @@ export const formatPhoneAccessRequestError = (error: unknown): string => {
   return error instanceof Error ? error.message : String(error)
 }
 
-export const isPhoneAccessClaimAuthError = (error: unknown): boolean => {
-  if (!error || typeof error !== 'object' || !('response' in error)) {
-    return false
-  }
-  const response = (error as { response?: { data?: { code?: string; error?: string }; status?: number } }).response
-  const code = response?.data?.code || response?.data?.error || ''
-  return code.startsWith('REMOTE_ACCESS_ADMIN_CLAIM') || response?.status === 401 || response?.status === 403
-}
 
 const isLoopbackOrContainerLocalHost = (hostname: string): boolean => {
   const normalized = hostname.trim().toLowerCase().replace(/^\[|\]$/g, '')
@@ -58,7 +41,7 @@ export const validatePhoneAccessAdvertisedUrl = (
       isHttps: false,
       isAndroidFacing: false,
       message: requiresAndroidFacing
-        ? 'Enter the Android-facing private HTTPS URL for this Docker node.'
+        ? 'Enter the Android-facing private HTTPS URL for this remote node.'
         : 'Choose or enter a server URL first.',
     }
   }
@@ -75,7 +58,7 @@ export const validatePhoneAccessAdvertisedUrl = (
       message: !isHttps
         ? 'Phone Access pairing requires an HTTPS URL. Paste a private HTTPS URL such as https://<node>.<tailnet>.ts.net/mobile.'
         : !isAndroidFacing
-          ? 'Remote Docker Phone Access requires an Android-facing HTTPS URL, not localhost, 127.0.0.1, host.docker.internal, or a container-local address.'
+          ? 'Remote-node Phone Access requires an Android-facing HTTPS URL, not localhost, 127.0.0.1, host.docker.internal, or a container-local address.'
           : null,
     }
   } catch (validationError) {

@@ -1,0 +1,36 @@
+Container env for autobyteus-server-2 (redacted):
+
+APP_ENV=production
+AUTOBYTEUS_BIND_HOST=0.0.0.0
+AUTOBYTEUS_DATA_DIR=/home/autobyteus/data
+AUTOBYTEUS_LOCAL_MANAGEMENT_CREDENTIAL_HASH=[HASH]
+AUTOBYTEUS_NODE_PROFILE=mobile-safe
+AUTOBYTEUS_SERVER_HOST=http://localhost:55212
+AUTOBYTEUS_SERVER_PORT=8000
+AUTOBYTEUS_SKIP_SYNC=1
+AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace
+AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:55214
+AUTOBYTEUS_WORKSPACE_ROOT=/app
+BROWSER=/usr/local/bin/open-vnc-browser-url.sh
+DB_TYPE=sqlite
+DEBIAN_FRONTEND=noninteractive
+DISPLAY=:99
+GTK_IM_MODULE=fcitx
+HOME=/root
+IMAGE_VARIANT=default
+LANG=en_US.UTF-8
+LANGUAGE=en_US:en
+LC_ALL=en_US.UTF-8
+LOG_LEVEL=INFO
+NODE_ENV=production
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+QT_IM_MODULE=fcitx
+SCREEN_RESOLUTION=1920x1080x24
+SDL_IM_MODULE=fcitx
+USER_GID=1000
+USER_UID=1000
+XDG_RUNTIME_DIR=/run/user/1000
+XMODIFIERS=@im=fcitx
+
+Raw lmn in docker inspect env: 0
+Old claim/owner env names in docker inspect env: 0

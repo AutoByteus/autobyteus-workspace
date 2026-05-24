@@ -1,0 +1,16 @@
+Temporary launcher diff from reviewed script (only skips docker pull for local Round 3 validation image):
+--- scripts/public/docker/autobyteus-docker.sh	2026-05-23 18:26:01
++++ /tmp/autobyteus-docker-round3-local-image.sh	2026-05-23 19:17:33
+@@ -566,7 +566,11 @@
+   fi
+ 
+   log "Checking image ${image_ref}"
+-  docker pull "$image_ref"
++  if [[ "$image_ref" == "autobyteus-server:mobile-safe-container-401-round3-api-e2e" ]]; then
++    log "Using local validation image ${image_ref}; skipping docker pull."
++  else
++    docker pull "$image_ref"
++  fi
+   desired_image_id="$(image_id_for "$image_ref")"
+   [[ -n "$desired_image_id" ]] || fail "Could not inspect image ${image_ref} after pull."
+ 

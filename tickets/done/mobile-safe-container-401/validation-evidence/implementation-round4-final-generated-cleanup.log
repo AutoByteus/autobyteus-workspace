@@ -1,0 +1,19 @@
+# Final cleanup of ignored/generated web/electron artifacts before rebuild
+# UTC: 2026-05-24T03:41:09Z
+# Disk usage before cleanup
+1.9G	autobyteus-web/electron-dist
+582M	autobyteus-web/resources
+9.9M	autobyteus-web/dist-mobile
+ 10M	autobyteus-web/dist
+ 11M	autobyteus-web/.nuxt
+MISSING autobyteus-web/.output
+MISSING autobyteus-web/.server-packaging-stage
+# Removing generated artifacts
+# Existence after cleanup
+REMOVED autobyteus-web/electron-dist
+REMOVED autobyteus-web/resources
+REMOVED autobyteus-web/dist-mobile
+REMOVED autobyteus-web/dist
+REMOVED autobyteus-web/.nuxt
+REMOVED autobyteus-web/.output
+REMOVED autobyteus-web/.server-packaging-stage

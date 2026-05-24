@@ -1,0 +1,35 @@
+User-requested Docker restart started at 2026-05-24T04:13:00Z
+Image tag: autobyteus-server:mobile-safe-container-401-round4-phone401-localfix
+Image ID from tag after rebuild: sha256:59352611b420a86deed55292f00ee1c5e046a2ed46b0e5c55596fe7b70557e5b
+Container before restart:
+autobyteus-server-2 c929099ee8f5 7a6388237f23 Up 5 minutes 127.0.0.1:59822->5900/tcp, 127.0.0.1:59823->6080/tcp, 127.0.0.1:59821->8000/tcp, 127.0.0.1:59824->9223/tcp
+
+autobyteus-server-2
+
+Starting rebuilt image on localhost:59821.
+c95d6c27b907795018d716505eedc74e041630d3fa48ed72584bdcdf976814b8
+
+Waiting for /rest/remote-access/status...
+Status endpoint ok: 1
+Status response redacted/non-secret:
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8","serverName":"AutoByteus Desktop"}
+/mobile status code: 200
+Container after restart:
+autobyteus-server-2 autobyteus-server:mobile-safe-container-401-round4-phone401-localfix c95d6c27b907 Up 6 seconds 127.0.0.1:59822->5900/tcp, 127.0.0.1:59823->6080/tcp, 127.0.0.1:59821->8000/tcp, 127.0.0.1:59824->9223/tcp
+Container inspect:
+  configImage=autobyteus-server:mobile-safe-container-401-round4-phone401-localfix resolvedImage=sha256:59352611b420a86deed55292f00ee1c5e046a2ed46b0e5c55596fe7b70557e5b labels={"com.autobyteus.configHash":"a4c8e1748b4160ffe795aa301801aec93955abe796b8d4d1c717d4efb75b49ca","com.autobyteus.launcher":"server-docker","com.autobyteus.nodeName":"autobyteus-server-2","com.autobyteus.profile":"mobile-safe","org.opencontainers.image.ref.name":"ubuntu","org.opencontainers.image.version":"22.04"}
+Image inspect:
+  id=sha256:59352611b420a86deed55292f00ee1c5e046a2ed46b0e5c55596fe7b70557e5b created=2026-05-24T03:54:08.339605416Z size=1446491678
+Launcher state:
+  NODE_NAME=autobyteus-server-2
+  CONTAINER_NAME=autobyteus-server-2
+  BACKEND_PORT=59821
+  VNC_PORT=59822
+  NOVNC_PORT=59823
+  DEBUG_PORT=59824
+  IMAGE_REF=autobyteus-server:mobile-safe-container-401-round4-phone401-localfix
+  CREATED_AT=2026-05-23T18:52:00Z
+  CONFIG_HASH=a4c8e1748b4160ffe795aa301801aec93955abe796b8d4d1c717d4efb75b49ca
+  PROFILE=mobile-safe
+  UPDATED_AT=2026-05-24T04:13:01Z
+Completed at 2026-05-24T04:13:08Z

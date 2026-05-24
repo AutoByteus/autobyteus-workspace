@@ -5,7 +5,6 @@ import type {
   NodeRegistryChange,
   RemoteBrowserSharingSettings,
 } from './nodeRegistryTypes'
-import type { RegisterNodeAdminClaimInput } from '../types/nodeAdminClaim'
 import type {
   BrowserHostBounds,
   BrowserShellNavigateTabRequest,
@@ -54,14 +53,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onNodeRegistryUpdated: (callback: (snapshot: any) => void) => {
     return registerIpcListener('node-registry-updated', callback)
   },
-  getNodeAdminClaimSummary: (nodeId: string, managementBaseUrl: string) =>
-    ipcRenderer.invoke('node-admin-claim:get-summary', nodeId, managementBaseUrl),
-  registerNodeAdminClaim: (input: RegisterNodeAdminClaimInput) =>
-    ipcRenderer.invoke('node-admin-claim:register', input),
-  getNodeAdminClaimHeaders: (nodeId: string, managementBaseUrl: string) =>
-    ipcRenderer.invoke('node-admin-claim:get-headers', nodeId, managementBaseUrl),
-  clearNodeAdminClaim: (nodeId: string, managementBaseUrl: string) =>
-    ipcRenderer.invoke('node-admin-claim:clear', nodeId, managementBaseUrl),
   getRemoteBrowserSharingSettings: () =>
     ipcRenderer.invoke('browser-pairing:get-settings') as Promise<RemoteBrowserSharingSettings>,
   updateRemoteBrowserSharingSettings: (settings: RemoteBrowserSharingSettings) =>

@@ -1,0 +1,38 @@
+$ docker inspect env/labels for autobyteus-server-2 (redacted)
+AUTOBYTEUS_SKIP_SYNC=1
+AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace
+AUTOBYTEUS_NODE_PROFILE=mobile-safe
+AUTOBYTEUS_WORKSPACE_ROOT=/app
+AUTOBYTEUS_DATA_DIR=/home/autobyteus/data
+AUTOBYTEUS_BIND_HOST=0.0.0.0
+AUTOBYTEUS_SERVER_PORT=8000
+AUTOBYTEUS_SERVER_HOST=http://localhost:59821
+AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:59823
+DB_TYPE=sqlite
+LOG_LEVEL=INFO
+APP_ENV=production
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+USER_UID=1000
+USER_GID=1000
+IMAGE_VARIANT=default
+DEBIAN_FRONTEND=noninteractive
+DISPLAY=:99
+SCREEN_RESOLUTION=1920x1080x24
+XDG_RUNTIME_DIR=/run/user/1000
+GTK_IM_MODULE=fcitx
+QT_IM_MODULE=fcitx
+XMODIFIERS=@im=fcitx
+SDL_IM_MODULE=fcitx
+LANG=en_US.UTF-8
+LANGUAGE=en_US:en
+LC_ALL=en_US.UTF-8
+NODE_ENV=production
+BROWSER=/usr/local/bin/open-vnc-browser-url.sh
+HOME=/root
+
+
+Labels:
+{"com.autobyteus.configHash":"b2c096c7da016eb1c6c8f919a91f127e2baadb4ac6506da65a38d2f3587386e3","com.autobyteus.launcher":"server-docker","com.autobyteus.nodeName":"autobyteus-server-2","com.autobyteus.profile":"mobile-safe","org.opencontainers.image.ref.name":"ubuntu","org.opencontainers.image.version":"22.04"}
+
+Old-token/claim scan in raw env:
+No old owner/local-management token/env fields in container env.

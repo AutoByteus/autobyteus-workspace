@@ -1,0 +1,12 @@
+# tailscale serve status (if available)
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:59821
+
+# curl tailnet remote-access status via HTTPS host (redacted)
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+date: Sun, 24 May 2026 03:31:48 GMT
+vary: Origin
+content-length: 168
+
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8","serverName":"AutoByteus Desktop"}

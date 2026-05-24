@@ -1,0 +1,211 @@
+$ NODE_PATH=autobyteus-server-ts/node_modules AUTOBYTEUS_VALIDATION_STATE_PATH=/Users/normy/.autobyteus/docker-server/nodes/autobyteus-server-2.env AUTOBYTEUS_VALIDATION_CONTAINER=autobyteus-server-2 node tickets/mobile-safe-container-401/validation-evidence/api-e2e-round4-runtime-probe.cjs
+{
+  "meta": {
+    "generatedAt": "2026-05-23T20:17:32.726Z",
+    "containerName": "autobyteus-server-2",
+    "statePath": "/Users/normy/.autobyteus/docker-server/nodes/autobyteus-server-2.env",
+    "baseUrl": "http://127.0.0.1:59821",
+    "imageRef": "autobyteus-server:mobile-safe-container-401-round4-api-e2e",
+    "profile": "mobile-safe",
+    "note": "Credential values are redacted; hashes identify unique runtime-only secrets without exposing them."
+  },
+  "summary": {
+    "passed": 10,
+    "failed": 0
+  },
+  "results": [
+    {
+      "id": "R4-RT-001",
+      "description": "fresh Docker monorepo image serves health and packaged /mobile shell",
+      "status": "pass",
+      "started": "2026-05-23T20:17:24.374Z",
+      "detail": {
+        "healthStatus": 200,
+        "mobileStatus": 200,
+        "contentType": "text/html",
+        "mobileAssetReferenceFound": true
+      }
+    },
+    {
+      "id": "R4-RT-002",
+      "description": "launcher state and container environment have no claim/lmn/owner-token material",
+      "status": "pass",
+      "started": "2026-05-23T20:17:24.398Z",
+      "detail": {
+        "stateKeys": [
+          "BACKEND_PORT",
+          "CONFIG_HASH",
+          "CONTAINER_NAME",
+          "CREATED_AT",
+          "DEBUG_PORT",
+          "IMAGE_REF",
+          "NODE_NAME",
+          "NOVNC_PORT",
+          "PROFILE",
+          "UPDATED_AT",
+          "VNC_PORT"
+        ],
+        "envLineCount": 30,
+        "oldMaterialFound": false
+      }
+    },
+    {
+      "id": "R4-RT-003",
+      "description": "trusted-network owner REST routes work without claim/lmn credentials",
+      "status": "pass",
+      "started": "2026-05-23T20:17:24.419Z",
+      "detail": {
+        "status": {
+          "phoneAccessEnabled": true,
+          "pairingAvailable": true,
+          "compatibilityVersion": 1,
+          "serverInstanceId": "srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8",
+          "serverName": "AutoByteus Desktop"
+        },
+        "settings": {
+          "phoneAccessEnabled": true,
+          "updatedAt": "2026-05-23T20:17:24.426Z",
+          "updatedBy": "loopback-desktop"
+        },
+        "devicesCount": 0,
+        "addressCandidates": 3
+      }
+    },
+    {
+      "id": "R4-RT-004",
+      "description": "mobile mra credential is issued and accepted on mobile-bearing protected REST/GraphQL/WebSocket surfaces",
+      "status": "pass",
+      "started": "2026-05-23T20:17:24.436Z",
+      "detail": {
+        "deviceId": "device_2f2cc375c10a0f5de7ee9ae8692e5d3c",
+        "protectedRestStatus": 404,
+        "graphqlAgentDefinitionCount": 1,
+        "terminalClose": {
+          "code": 4004,
+          "reason": "Workspace not found"
+        },
+        "appNotificationMessage": {
+          "type": "connected",
+          "applicationId": "__validation_app__"
+        },
+        "graphQlWsOpened": true
+      }
+    },
+    {
+      "id": "R4-RT-005",
+      "description": "mobile mra credential is rejected on owner-management REST routes",
+      "status": "pass",
+      "started": "2026-05-23T20:17:24.475Z",
+      "detail": {
+        "checkedRoutes": [
+          "GET settings",
+          "GET devices",
+          "POST pairing-sessions",
+          "DELETE devices/:id"
+        ],
+        "statusCodes": {
+          "settings": 403,
+          "devices": 403,
+          "session": 403,
+          "revoke": 403
+        }
+      }
+    },
+    {
+      "id": "R4-RT-006",
+      "description": "trusted-network no-credential REST/GraphQL/WebSocket and GraphQL-WS work without claim/lmn",
+      "status": "pass",
+      "started": "2026-05-23T20:17:24.480Z",
+      "detail": {
+        "protectedRestStatus": 404,
+        "appBackendStatus": 404,
+        "graphqlStatus": 200,
+        "graphQlGetStatus": 404,
+        "terminalClose": {
+          "code": 4004,
+          "reason": "Workspace not found"
+        },
+        "appNotificationMessage": {
+          "type": "connected",
+          "applicationId": "__validation_app_no_token__"
+        },
+        "graphQlWsOpened": true
+      }
+    },
+    {
+      "id": "R4-RT-007",
+      "description": "container restart preserves trusted-network and mobile credential behavior",
+      "status": "pass",
+      "started": "2026-05-23T20:17:25.003Z",
+      "detail": {
+        "serverInstanceIdStable": true,
+        "noCredentialGraphqlStatus": 200,
+        "mobileGraphqlStatus": 200,
+        "mobileStatus": 200
+      }
+    },
+    {
+      "id": "R4-RT-008",
+      "description": "disabled Phone Access rejects existing mra credentials on HTTP and WS surfaces",
+      "status": "pass",
+      "started": "2026-05-23T20:17:32.328Z",
+      "detail": {
+        "disabled": false,
+        "graphqlStatus": 403,
+        "protectedRestStatus": 403,
+        "wsClose": {
+          "code": 4403,
+          "reason": "PHONE_ACCESS_DISABLED"
+        },
+        "noCredentialGraphqlStatus": 200
+      }
+    },
+    {
+      "id": "R4-RT-009",
+      "description": "revoked mra credentials fail while trusted-network owner access remains available",
+      "status": "pass",
+      "started": "2026-05-23T20:17:32.660Z",
+      "detail": {
+        "revokedDeviceId": "device_6085dea955190092c049ae8ebddef1a3",
+        "graphqlStatus": 403,
+        "protectedRestStatus": 403,
+        "wsClose": {
+          "code": 4403,
+          "reason": "REMOTE_ACCESS_DEVICE_REVOKED"
+        },
+        "activeDeviceCount": 1
+      }
+    },
+    {
+      "id": "R4-RT-010",
+      "description": "invalid mra URL tokens are rejected and raw mra credentials are absent from Docker logs/evidence payload",
+      "status": "pass",
+      "started": "2026-05-23T20:17:32.693Z",
+      "detail": {
+        "invalidGraphqlWs": {
+          "opened": false,
+          "error": "Unexpected server response: 401"
+        },
+        "invalidWsClose": {
+          "code": 4401,
+          "reason": "REMOTE_ACCESS_AUTH_INVALID"
+        },
+        "rawSecretsInLogs": 0,
+        "secretHashes": [
+          {
+            "label": "Round4 Active Phone credential",
+            "sha256": "143dbcd3081d74f8e86f99b2cf72b4dff829dc3c129187995fa83af2e0f8555d"
+          },
+          {
+            "label": "Round4 Revoked Phone credential",
+            "sha256": "960398129cb8af05898bfa8abe55b1a706b92c2f5cf0a76e4523da25c0d940f9"
+          },
+          {
+            "label": "invalid probe credential",
+            "sha256": "61127f93c94938f2e762aad9c84889e64d5c2688c2d15c5bd931951bd1b9b0d2"
+          }
+        ]
+      }
+    }
+  ]
+}

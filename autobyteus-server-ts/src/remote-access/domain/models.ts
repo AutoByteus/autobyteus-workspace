@@ -6,22 +6,19 @@ export type RemoteAccessRouteClassification =
   | "PUBLIC_HEALTH_STATUS"
   | "PUBLIC_PREFLIGHT"
   | "PUBLIC_PAIRING_EXCHANGE"
-  | "PHONE_ACCESS_OWNER"
-  | "LOCAL_ONLY"
+  | "TRUSTED_NETWORK_OWNER"
+  | "TRUSTED_NETWORK_PROTECTED"
+  | "TRUSTED_NETWORK_WEBSOCKET"
   | "LOCAL_DEV_ONLY"
-  | "LOCAL_OR_MOBILE"
-  | "LOCAL_OR_MOBILE_WS"
-  | "EXTERNAL_SIGNATURE"
-  | "DEFAULT_PROTECTED";
+  | "EXTERNAL_SIGNATURE";
 
-export type RemoteAccessAuthMode = "loopback" | "mobile" | "node_admin_claim";
+export type RemoteAccessAuthMode = "trusted_network" | "loopback" | "mobile";
 
 export type RemoteAccessAuthContext = {
   mode: RemoteAccessAuthMode;
   isAuthenticated: boolean;
   deviceId?: string;
   clientFacingBaseUrl?: string;
-  nodeAdminClaimId?: string;
 };
 
 export type RemoteAccessSettings = {
@@ -95,9 +92,6 @@ export type RemoteAccessAuthFailureCode =
   | "PHONE_ACCESS_DISABLED"
   | "REMOTE_ACCESS_ROUTE_UNSUPPORTED"
   | "REMOTE_ACCESS_LOCAL_ONLY"
-  | "REMOTE_ACCESS_ADMIN_CLAIM_REQUIRED"
-  | "REMOTE_ACCESS_ADMIN_CLAIM_INVALID"
-  | "REMOTE_ACCESS_ADMIN_CLAIM_UNCONFIGURED"
   | "REMOTE_ACCESS_PAIRING_EXPIRED"
   | "REMOTE_ACCESS_PAIRING_INVALID"
   | "REMOTE_ACCESS_PAIRING_CONSUMED"
@@ -132,9 +126,7 @@ export type WebSocketAuthPolicy = "WEBSOCKET_AUTH_QUERY_TOKEN";
 
 export const WEBSOCKET_AUTH_POLICY: WebSocketAuthPolicy = "WEBSOCKET_AUTH_QUERY_TOKEN";
 export const WEBSOCKET_ACCESS_TOKEN_QUERY_KEY = "access_token";
-export const NODE_ADMIN_CLAIM_SCOPE = "phone-access-management";
-export const NODE_ADMIN_CLAIM_ID_HEADER = "x-autobyteus-node-admin-claim-id";
-export const NODE_ADMIN_CLAIM_SECRET_HEADER = "x-autobyteus-node-admin-claim";
+export const REMOTE_ACCESS_MOBILE_CREDENTIAL_PREFIX = "mra_";
 
 export const REMOTE_ACCESS_AUTH_CONTEXT_PROPERTY = "remoteAccessAuthContext";
 
