@@ -40,7 +40,6 @@ describe('DockerNodeStartGuideCard', () => {
     expect(wrapper.text()).toContain('bash -s -- install');
     expect(wrapper.text()).not.toContain('bash -s -- start');
     expect(wrapper.text()).toContain('autobyteus-docker new-container --profile mobile-safe');
-    expect(wrapper.text()).toContain('autobyteus-docker admin-claim show --name autobyteus-server-0');
     expect(wrapper.text()).toContain('autobyteus-docker upgrade --all');
     expect(wrapper.text()).toContain('autobyteus-docker destroy --all');
     expect(wrapper.text()).toContain('autobyteus-docker reset');

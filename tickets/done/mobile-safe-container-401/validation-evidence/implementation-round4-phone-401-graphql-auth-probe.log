@@ -1,0 +1,8 @@
+# GraphQL trusted-network vs stale mobile credential probe
+# UTC: 2026-05-24T03:30:55Z
+## No Authorization header
+http_code=200
+{"data":{"__typename":"Query"}}
+## Bogus mra Authorization header (redacted)
+http_code=401
+{"error":"REMOTE_ACCESS_AUTH_INVALID","code":"REMOTE_ACCESS_AUTH_INVALID","message":"Remote Access credential is invalid."}

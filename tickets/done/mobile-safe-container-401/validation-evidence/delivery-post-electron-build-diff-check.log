@@ -1,0 +1,4 @@
+# Delivery post-electron-build diff check
+date=2026-05-23T17:29:54+02:00
+command=git diff --check
+result=PASS

@@ -1,0 +1,13 @@
+# Code review final Docker image runtime legacy scan
+# UTC: 2026-05-24T04:01:45Z
+# Image: autobyteus-server:mobile-safe-container-401-round4-phone401-localfix
+# image=sha256:c929099ee8f5807d6084c48ddc73b9f8a62fa3a761099da83f0395b17938acf0 size=1446491678 created=2026-05-24T03:54:08.339605416Z
+OK mobile-web packaged and index references /mobile/_nuxt/
+/app/autobyteus-server-ts/mobile-web/_nuxt/BbbjZBdj.js
+/app/autobyteus-server-ts/mobile-web/_nuxt/CI425w1D.js
+/app/autobyteus-server-ts/dist/api/websocket/remote-access-websocket-auth.js
+/app/autobyteus-server-ts/dist/api/security/remote-access-route-policy.js
+/app/autobyteus-server-ts/dist/remote-access/services/remote-access-auth-service.js
+# marker command exit code: 0 (0 means command ran; file list may show latest markers)
+# legacy grep -q exit code: 1 (1 means no matches)
+PASS no removed credential strings found in Docker runtime mobile-web/dist

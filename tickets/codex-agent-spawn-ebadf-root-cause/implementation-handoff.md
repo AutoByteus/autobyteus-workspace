@@ -15,6 +15,7 @@
 - Prior handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/handoff-summary.md`
 - Prior delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round9-electron-build-localization.md`
 - Latest-base merge-conflict delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round13-latest-personal-merge-conflicts.md`
+- Round-18 latest-base merge-conflict delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round18-latest-personal-merge-conflict.md`
 - API/E2E round-6 Terminal FD failure evidence and durable validation: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
 - API/E2E round-9 Terminal descriptor failure analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/terminal-server-e2e-failure-analysis-20260524.md`
 - API/E2E round-9 Terminal descriptor evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524.json`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524-final-lsof.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-failure-20260524.json`
@@ -47,6 +48,7 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-16 Terminal tests/evidence update: `getDefaultSessionFactory()` selects `IsolatedPtySession` on Darwin, keeps `PtySession` for non-Darwin Unix, and falls back from the isolated backend to `PtySession`/`DirectShellSession` for tool-session startup fallback. The durable Terminal E2E waits for actual cwd output instead of matching the echoed command literal.
 - Round-17 CR-012 local fix: `IsolatedPtySession.start()` now reuses the existing `ensureNodePtySpawnHelperExecutable()` bootstrap invariant before spawning the isolated bridge child, so the Darwin isolated backend repairs a non-executable `node-pty` `spawn-helper` just like the in-process `PtySession` path. It also rechecks closed state after the awaited bootstrap step to avoid spawning a late bridge if close wins during helper repair.
 - Round-17 CR-012 regression coverage: added a real integration test that temporarily removes execute bits from the installed `node-pty` `spawn-helper`, starts an `IsolatedPtySession`, verifies helper permission repair and real command output, and restores the original mode in `finally`; unit coverage also asserts bootstrap-before-spawn and no bridge spawn after close-during-bootstrap.
+- Round-18 delivery latest-base local fix: integrated latest `origin/personal@03d7880b45afd2b032de6e842e41429fad0a2cb0` after API/E2E Round 10 and code review Round 17 passed. Resolved the `MobileRemoteAccessShell.spec.ts` merge conflict by preserving the ticket-side mobile work-picking/post-pair checks and the latest-base mobile safe-container QR session replacement plus 401 authorized-catalog session-drop coverage. The Round 17 Terminal FD lifecycle implementation files were not changed by the merge resolution.
 
 ## Key Files Or Areas
 
@@ -96,6 +98,7 @@ Frontend:
 - `autobyteus-web/components/fileExplorer/FileExplorer.vue`
 - `autobyteus-web/components/workspace/tools/Terminal.vue`
 - `autobyteus-web/components/mobile/MobileFiles.vue`
+- `autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts`
 - `autobyteus-web/components/workspace/config/*`
 - `autobyteus-web/services/runHydration/*`
 - `autobyteus-web/services/runOpen/*`
@@ -161,6 +164,24 @@ Removed obsolete source/test paths:
 ## Local Implementation Checks Run
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
+
+Round-18 delivery latest-base merge-conflict local-fix checks:
+
+- `pnpm -C autobyteus-web test:nuxt run components/mobile/__tests__/MobileRemoteAccessShell.spec.ts`
+  - Result: pass, 1 file / 15 tests.
+  - Covers the resolved mobile shell test set: ticket-side mobile work selection/post-pair behavior plus latest-base safe-container QR session replacement and 401 authorized-catalog session-drop behavior.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round18-frontend-mobile-remote-access-shell-20260524.log`
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/session-factory.test.ts tests/unit/tools/terminal/isolated-pty-session.test.ts tests/unit/tools/terminal/pty-session.test.ts tests/integration/tools/terminal/isolated-pty-session.test.ts`
+  - Result: pass, 4 files / 27 tests.
+  - Confirms latest-base integration did not disturb the Round 17 isolated PTY spawn-helper and Terminal backend selection coverage.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round18-autobyteus-ts-terminal-unit-integration-20260524.log`
+- `pnpm -C autobyteus-server-ts test tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
+  - Result: pass, 1 file / 3 tests.
+  - Confirms latest-base integration did not disturb root-path Terminal WebSocket lifecycle and close-before-connect cleanup coverage.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round18-server-terminal-e2e-20260524.log`
+- Source/docs scoped diff check for the resolved file, ticket handoff/blocker artifact, and Round-18 evidence logs.
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round18-source-doc-diff-check-20260524.log`
 
 Round-17 CR-012 isolated PTY spawn-helper bootstrap local-fix checks:
 

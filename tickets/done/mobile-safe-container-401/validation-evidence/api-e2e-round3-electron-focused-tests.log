@@ -1,0 +1,16 @@
+$ pnpm exec vitest --config ./electron/vitest.config.ts run electron focused files
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron
+
+ ✓ __tests__/register-managed-docker-credential-ipc-handlers.spec.ts (2 tests) 3ms
+ ✓ __tests__/preload.spec.ts (1 test) 26ms
+stdout | __tests__/managedDockerCredentialStore.spec.ts
+[2026-05-23T17:14:36.093Z] [INFO] [electron] Application started
+
+ ✓ __tests__/managedDockerCredentialStore.spec.ts (2 tests) 9ms
+
+ Test Files  3 passed (3)
+      Tests  5 passed (5)
+   Start at  19:14:35
+   Duration  487ms (transform 126ms, setup 0ms, collect 174ms, tests 38ms, environment 0ms, prepare 264ms)
+

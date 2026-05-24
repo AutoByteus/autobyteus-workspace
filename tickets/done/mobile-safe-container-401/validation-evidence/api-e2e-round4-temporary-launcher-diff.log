@@ -1,0 +1,16 @@
+Temporary validation launcher only; repo script is unchanged.
+--- scripts/public/docker/autobyteus-docker.sh	2026-05-23 20:12:02
++++ tickets/mobile-safe-container-401/validation-evidence/autobyteus-docker-round4-skip-local-pull.sh	2026-05-23 20:51:53
+@@ -532,7 +532,11 @@
+   fi
+ 
+   log "Checking image ${image_ref}"
+-  docker pull "$image_ref"
++  if [[ -n "$(image_id_for "$image_ref")" ]]; then
++    log "Using already-present local image ${image_ref}; skipped pull for validation."
++  else
++    docker pull "$image_ref"
++  fi
+   desired_image_id="$(image_id_for "$image_ref")"
+   [[ -n "$desired_image_id" ]] || fail "Could not inspect image ${image_ref} after pull."
+ 

@@ -5,7 +5,10 @@ import {
   type RemoteAccessAuthFailureCode,
   type RemoteAccessRouteClassification,
 } from "../../remote-access/domain/models.js";
-import { getRemoteAccessAuthService } from "../../remote-access/services/remote-access-auth-service.js";
+import {
+  getRemoteAccessAuthService,
+  isMobileRemoteAccessCredential,
+} from "../../remote-access/services/remote-access-auth-service.js";
 import { isLoopbackPeerAddress } from "../security/remote-access-local-trust.js";
 import { setRemoteAccessAuthContext } from "../security/remote-access-route-policy.js";
 import { redactSensitiveUrl } from "../security/redact-sensitive-url.js";
@@ -22,9 +25,6 @@ const closeCodeByFailure: Record<RemoteAccessAuthFailureCode, number> = {
   PHONE_ACCESS_DISABLED: 4403,
   REMOTE_ACCESS_ROUTE_UNSUPPORTED: 4404,
   REMOTE_ACCESS_LOCAL_ONLY: 4403,
-  REMOTE_ACCESS_ADMIN_CLAIM_REQUIRED: 4401,
-  REMOTE_ACCESS_ADMIN_CLAIM_INVALID: 4403,
-  REMOTE_ACCESS_ADMIN_CLAIM_UNCONFIGURED: 4403,
   REMOTE_ACCESS_PAIRING_EXPIRED: 4401,
   REMOTE_ACCESS_PAIRING_INVALID: 4401,
   REMOTE_ACCESS_PAIRING_CONSUMED: 4401,
@@ -43,31 +43,38 @@ export const extractRemoteAccessWebSocketCredential = (request: FastifyRequest):
   }
 };
 
+const trustedNetworkContext = (peerAddress?: string): RemoteAccessAuthContext => {
+  const isLoopback = isLoopbackPeerAddress(peerAddress);
+  return {
+    mode: isLoopback ? "loopback" : "trusted_network",
+    isAuthenticated: isLoopback,
+  };
+};
+
 export async function authorizeRemoteAccessWebSocket(
   request: FastifyRequest,
-  routeClass: RemoteAccessRouteClassification = "LOCAL_OR_MOBILE_WS",
+  routeClass: RemoteAccessRouteClassification = "TRUSTED_NETWORK_WEBSOCKET",
 ): Promise<RemoteAccessAuthContext> {
-  if (routeClass !== "LOCAL_OR_MOBILE_WS") {
+  if (routeClass !== "TRUSTED_NETWORK_WEBSOCKET") {
     throw { code: 4404, reason: "REMOTE_ACCESS_ROUTE_UNSUPPORTED" } satisfies RemoteAccessWebSocketRejection;
   }
 
-  const peerAddress = request.raw.socket.remoteAddress;
-  if (isLoopbackPeerAddress(peerAddress)) {
-    const context: RemoteAccessAuthContext = { mode: "loopback", isAuthenticated: true };
-    setRemoteAccessAuthContext(request, context);
-    return context;
+  const credential = extractRemoteAccessWebSocketCredential(request);
+  if (isMobileRemoteAccessCredential(credential)) {
+    const result = await getRemoteAccessAuthService().authorizeMobileCredential(credential);
+    if (!result.ok) {
+      throw {
+        code: closeCodeByFailure[result.code] ?? 4401,
+        reason: result.code,
+      } satisfies RemoteAccessWebSocketRejection;
+    }
+    setRemoteAccessAuthContext(request, result.context);
+    return result.context;
   }
 
-  const credential = extractRemoteAccessWebSocketCredential(request);
-  const result = await getRemoteAccessAuthService().authorizeMobileCredential(credential);
-  if (!result.ok) {
-    throw {
-      code: closeCodeByFailure[result.code] ?? 4401,
-      reason: result.code,
-    } satisfies RemoteAccessWebSocketRejection;
-  }
-  setRemoteAccessAuthContext(request, result.context);
-  return result.context;
+  const context = trustedNetworkContext(request.raw.socket.remoteAddress);
+  setRemoteAccessAuthContext(request, context);
+  return context;
 }
 
 export const closeSocketForRemoteAccessRejection = (

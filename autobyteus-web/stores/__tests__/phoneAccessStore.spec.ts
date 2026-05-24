@@ -203,8 +203,9 @@ describe('phoneAccessStore', () => {
     expect(store.activeDevices).toHaveLength(0);
     expect(store.revokedDevices).toHaveLength(1);
   });
+
   it('requires a manual Android-facing HTTPS URL before remote Docker QR creation', async () => {
-    await bindRemoteDockerWindowWithClaim();
+    await bindRemoteNodeWindow();
 
     const store = usePhoneAccessStore();
     store.settings.phoneAccessEnabled = true;
@@ -217,7 +218,7 @@ describe('phoneAccessStore', () => {
   });
 
   it('rejects loopback or container-local advertised URLs for remote Docker before status verification', async () => {
-    await bindRemoteDockerWindowWithClaim();
+    await bindRemoteNodeWindow();
     vi.stubGlobal('fetch', vi.fn());
 
     const store = usePhoneAccessStore();
@@ -233,7 +234,7 @@ describe('phoneAccessStore', () => {
   });
 
   it('fails closed when the remote Docker advertised URL reaches a different server instance', async () => {
-    await bindRemoteDockerWindowWithClaim();
+    await bindRemoteNodeWindow();
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ serverInstanceId: 'srv_advertised_node_12345678901234567890' }),
@@ -253,28 +254,8 @@ describe('phoneAccessStore', () => {
     expect(store.advertisedUrlVerified).toBe(false);
   });
 
-  it('marks remote Docker claims invalid when claim-backed owner requests are rejected', async () => {
-    const claimHeaders = await bindRemoteDockerWindowWithClaim();
-    apiServiceMock.get.mockRejectedValue({
-      response: {
-        status: 403,
-        data: {
-          code: 'REMOTE_ACCESS_ADMIN_CLAIM_INVALID',
-          message: 'Node-admin claim is invalid.',
-        },
-      },
-    });
-
-    const store = usePhoneAccessStore();
-    await store.loadAll();
-
-    expect(apiServiceMock.get).toHaveBeenCalledWith('/remote-access/settings', { headers: claimHeaders });
-    expect(store.nodeAdminClaimState).toBe('invalid');
-    expect(store.error).toBe('Node-admin claim is invalid.');
-  });
-
-  it('verifies remote Docker advertised URL server identity before creating a claim-backed QR', async () => {
-    await bindRemoteDockerWindowWithClaim();
+  it('verifies remote Docker advertised URL server identity before creating a trusted-network QR', async () => {
+    await bindRemoteNodeWindow();
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({ serverInstanceId: 'srv_same_node_id_12345678901234567890' }),
@@ -304,40 +285,13 @@ describe('phoneAccessStore', () => {
     expect(globalThis.fetch).toHaveBeenCalledWith('https://docker.tailnet.ts.net/rest/remote-access/status', { method: 'GET' });
     expect(apiServiceMock.post).toHaveBeenCalledWith('/remote-access/pairing-sessions', {
       serverBaseUrl: 'https://docker.tailnet.ts.net',
-      serverName: 'AutoByteus Docker Node',
-    }, {
-      headers: { 'X-Autobyteus-Node-Admin-Claim-Id': 'nac_1', 'X-Autobyteus-Node-Admin-Claim': 'secret' },
+      serverName: 'AutoByteus Remote Node',
     });
     expect(store.advertisedUrlVerified).toBe(true);
   });
-
 });
 
-async function bindRemoteDockerWindowWithClaim(): Promise<Record<string, string>> {
+async function bindRemoteNodeWindow(): Promise<void> {
   const { useWindowNodeContextStore } = await import('../windowNodeContextStore');
   useWindowNodeContextStore().bindNodeContext('remote-docker-1', 'http://127.0.0.1:8001');
-  const headers = {
-    'X-Autobyteus-Node-Admin-Claim-Id': 'nac_1',
-    'X-Autobyteus-Node-Admin-Claim': 'secret',
-  };
-  const summary = {
-    status: 'configured' as const,
-    nodeId: 'remote-docker-1',
-    managementBaseUrl: 'http://127.0.0.1:8001',
-    claimIdSuffix: 'nac_1',
-    updatedAt: '2026-05-22T00:00:00.000Z',
-  };
-  Object.defineProperty(window, 'electronAPI', {
-    configurable: true,
-    writable: true,
-    value: {
-      getNodeAdminClaimSummary: vi.fn().mockResolvedValue(summary),
-      getNodeAdminClaimHeaders: vi.fn().mockResolvedValue({
-        ok: true,
-        headers,
-        summary,
-      }),
-    },
-  });
-  return headers;
 }

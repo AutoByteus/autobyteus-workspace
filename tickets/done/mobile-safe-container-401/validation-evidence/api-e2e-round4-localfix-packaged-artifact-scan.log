@@ -1,0 +1,54 @@
+# API/E2E Round 4 Local Fix packaged artifact revalidation
+# UTC: 2026-05-23T20:16:31Z
+# Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401
+# Pattern: Automatic local management credential|launcher-managed local Docker node|local launcher state|Re-add the launcher Backend URL|requiresLocalManagementCredential|localManagementCredential|LocalManagementCredential|local-management-credential|local-management|local management credential|\blmn_|AUTOBYTEUS_LOCAL_MANAGEMENT|nodeAdmin|NodeAdmin|node-admin|remote-node-admin|RemoteNodeAdmin|claimId|claimSecret|adminClaim|REMOTE_NODE_ADMIN|NODE_ADMIN|remoteNodeAdmin|AUTOBYTEUS_NODE_ADMIN_CLAIM|phone-access-management|owner session|owner-session|owner credential|remoteOwnerSession|RemoteOwnerSession|\brao_|\bnac_|\bnas_
+
+# Artifact existence and sizes
+drwxr-xr-x@ 3 normy  staff  96 May 23 22:03 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+-rw-r--r--@ 1 normy  staff   362M May 23 22:04 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.29.dmg
+-rw-r--r--@ 1 normy  staff   360M May 23 22:05 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.29.zip
+
+# Active source/docs scan excluding generated/build/cache/ticket evidence
+PASS active source/docs stale-string scan clean.
+
+# Scan target: rebuilt-app-bundle
+# App path: autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+OK app bundle/resource/mobile-web structure exists and mobile index references /mobile/_nuxt/.
+2026-05-23T22:03:11+0200 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+2026-05-23T22:03:11+0200 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+2026-05-23T22:03:17+0200 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+2026-05-23T22:03:17+0200 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web
+# Running stale-string scan over app.asar, app.asar.unpacked, and packaged server resources
+PASS stale-string scan clean for rebuilt-app-bundle
+
+# ZIP artifact validation
+311034466  05-23-2026 22:03   AutoByteus.app/Contents/Resources/app.asar
+        0  05-23-2026 22:03   AutoByteus.app/Contents/Resources/app.asar.unpacked/
+        0  05-23-2026 22:03   AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules/
+        0  05-23-2026 22:03   AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules/@napi-rs/
+        0  05-23-2026 22:03   AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules/@napi-rs/canvas-darwin-arm64/
+      617  05-23-2026 22:03   AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules/@napi-rs/canvas-darwin-arm64/package.json
+ 26266032  05-23-2026 22:03   AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules/@napi-rs/canvas-darwin-arm64/skia.darwin-arm64.node
+     1540  05-23-2026 22:03   AutoByteus.app/Contents/Resources/server/mobile-web/index.html
+# Scan target: zip-extracted-app
+# App path: /tmp/autobyteus-electron-localfix-scan.661HN3/zip/AutoByteus.app
+OK app bundle/resource/mobile-web structure exists and mobile index references /mobile/_nuxt/.
+2026-05-23T22:03:12+0200 /tmp/autobyteus-electron-localfix-scan.661HN3/zip/AutoByteus.app
+2026-05-23T22:03:12+0200 /tmp/autobyteus-electron-localfix-scan.661HN3/zip/AutoByteus.app/Contents/Resources/app.asar
+2026-05-23T22:03:18+0200 /tmp/autobyteus-electron-localfix-scan.661HN3/zip/AutoByteus.app/Contents/Resources/server
+2026-05-23T22:03:18+0200 /tmp/autobyteus-electron-localfix-scan.661HN3/zip/AutoByteus.app/Contents/Resources/server/mobile-web
+# Running stale-string scan over app.asar, app.asar.unpacked, and packaged server resources
+PASS stale-string scan clean for zip-extracted-app
+
+# DMG artifact validation
+# Scan target: dmg-mounted-app
+# App path: /tmp/autobyteus-electron-localfix-scan.661HN3/dmg-mount/AutoByteus.app
+OK app bundle/resource/mobile-web structure exists and mobile index references /mobile/_nuxt/.
+2026-05-23T22:03:11+0200 /tmp/autobyteus-electron-localfix-scan.661HN3/dmg-mount/AutoByteus.app
+2026-05-23T22:03:11+0200 /tmp/autobyteus-electron-localfix-scan.661HN3/dmg-mount/AutoByteus.app/Contents/Resources/app.asar
+2026-05-23T22:03:17+0200 /tmp/autobyteus-electron-localfix-scan.661HN3/dmg-mount/AutoByteus.app/Contents/Resources/server
+2026-05-23T22:03:17+0200 /tmp/autobyteus-electron-localfix-scan.661HN3/dmg-mount/AutoByteus.app/Contents/Resources/server/mobile-web
+# Running stale-string scan over app.asar, app.asar.unpacked, and packaged server resources
+PASS stale-string scan clean for dmg-mounted-app
+
+PASS all rebuilt packaged Electron artifact stale-string/mobile-asset checks clean.

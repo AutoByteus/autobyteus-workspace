@@ -1,0 +1,17 @@
+Timestamp: 2026-05-23T20:17:50Z
+Post-localfix runtime hygiene: revoke validation-paired devices, leave Phone Access enabled and container running.
+{
+    "result": {
+        "revokedCount": 1
+    }
+}
+{
+    "settings": {
+        "phoneAccessEnabled": true,
+        "updatedAt": "2026-05-23T20:17:50.539Z",
+        "updatedBy": "loopback-desktop"
+    }
+}
+{
+    "devices": []
+}

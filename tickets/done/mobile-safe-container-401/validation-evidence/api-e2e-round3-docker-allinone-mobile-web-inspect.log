@@ -1,0 +1,2 @@
+$ docker run --rm --entrypoint sh autobyteus-allinone:mobile-safe-container-401-round3-api-e2e -lc test mobile-web and SDK dirs
+allinone mobile-web index, application SDK dirs, and message gateway present

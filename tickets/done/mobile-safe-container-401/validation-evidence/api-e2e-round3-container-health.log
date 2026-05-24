@@ -1,0 +1,3 @@
+Waiting for autobyteus-server-2 health on port 55212
+health_http_status=200
+{"status":"ok","message":"Server is running"}

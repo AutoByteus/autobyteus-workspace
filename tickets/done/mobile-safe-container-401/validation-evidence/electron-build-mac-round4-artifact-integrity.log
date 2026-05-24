@@ -1,0 +1,36 @@
+# Electron Round 4 artifact integrity check
+Timestamp: 2026-05-23T19:26:24Z
+## hdiutil verify DMG
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $BA0DC448
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $77B0A133
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $48594BEE
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $104E6B82
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $48594BEE
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $923833FA
+Die überprüfte CRC32-Prüfsumme ist $D9776F15
+hdiutil: verify: checksum of "electron-dist/AutoByteus_personal_macos-arm64-1.3.29.dmg" is VALID
+
+## zip test
+No errors detected in compressed data of electron-dist/AutoByteus_personal_macos-arm64-1.3.29.zip.
+
+## key ZIP entries
+    33968  05-23-2026 21:23   AutoByteus.app/Contents/MacOS/AutoByteus
+311034466  05-23-2026 21:23   AutoByteus.app/Contents/Resources/app.asar
+        0  05-23-2026 21:23   AutoByteus.app/Contents/Resources/app.asar.unpacked/
+        0  05-23-2026 21:23   AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules/
+        0  05-23-2026 21:23   AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules/@napi-rs/
+        0  05-23-2026 21:23   AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules/@napi-rs/canvas-darwin-arm64/
+      617  05-23-2026 21:23   AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules/@napi-rs/canvas-darwin-arm64/package.json
+ 26266032  05-23-2026 21:23   AutoByteus.app/Contents/Resources/app.asar.unpacked/node_modules/@napi-rs/canvas-darwin-arm64/skia.darwin-arm64.node
+     2079  05-23-2026 21:23   AutoByteus.app/Contents/Resources/server/dist/app.js
+     1540  05-23-2026 21:23   AutoByteus.app/Contents/Resources/server/mobile-web/index.html

@@ -1,0 +1,15 @@
+State path: /Users/normy/.autobyteus/docker-server/nodes/autobyteus-server-2.env
+NODE_NAME=autobyteus-server-2
+CONTAINER_NAME=autobyteus-server-2
+BACKEND_PORT=59821
+VNC_PORT=59822
+NOVNC_PORT=59823
+DEBUG_PORT=59824
+IMAGE_REF=autobyteus-server:mobile-safe-container-401-round4-api-e2e
+CREATED_AT=2026-05-23T18:52:00Z
+CONFIG_HASH=b2c096c7da016eb1c6c8f919a91f127e2baadb4ac6506da65a38d2f3587386e3
+PROFILE=mobile-safe
+UPDATED_AT=2026-05-23T18:52:01Z
+
+Old-token/claim scan in state:
+No old owner/local-management token fields in launcher state.

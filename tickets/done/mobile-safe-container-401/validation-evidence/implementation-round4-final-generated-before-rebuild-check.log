@@ -1,0 +1,8 @@
+# Generated artifact freshness/legacy check before rebuild
+# UTC: 2026-05-24T03:40:51Z
+# Current ignored/generated artifacts may be stale after phone-401 source fix.
+EXISTS autobyteus-web/electron-dist 1.9G
+EXISTS autobyteus-web/dist-mobile 9.9M
+EXISTS autobyteus-web/resources 582M
+# Check whether generated chunks visibly contain new auth-failure marker names (best-effort).
+# marker rg exit code: 1 (1 likely means generated artifacts predate latest phone-401 fix or code is minified)

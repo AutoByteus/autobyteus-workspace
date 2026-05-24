@@ -1,0 +1,28 @@
+# Implementation Round 4 rebuilt Electron generated-artifact stale-string check
+# UTC: 2026-05-23T20:08:20Z
+# Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401
+# App: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+# Pattern: nodeAdmin|NodeAdmin|node-admin|remote-node-admin|RemoteNodeAdmin|claimId|claimSecret|adminClaim|REMOTE_NODE_ADMIN|NODE_ADMIN|remoteNodeAdmin|local management|lmn_|AUTOBYTEUS_LOCAL|local-management|owner session|owner credential|AUTOBYTEUS_NODE_ADMIN_CLAIM|phone-access-management|rao_|nac_|nas_|Automatic local management credential|launcher-managed local Docker node|local launcher state|Re-add the launcher Backend URL|localManagementCredential
+OK app bundle exists
+OK app.asar exists
+OK packaged server resources exist
+OK app.asar.unpacked exists
+# Generated app bundle timestamps
+2026-05-23T22:03:11+0200 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+2026-05-23T22:03:11+0200 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+2026-05-23T22:03:17+0200 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+2026-05-23T22:03:17+0200 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web
+# Mobile web runtime asset checks
+OK packaged server/mobile-web/index.html exists
+OK packaged mobile index references /mobile/_nuxt/ assets
+NUXT_ASSET /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web/_nuxt/r0tNNU0J.js
+NUXT_ASSET /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web/_nuxt/KaTeX_Size1-Regular.C195tn64.woff
+NUXT_ASSET /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web/_nuxt/Cevnm0NK.js
+NUXT_ASSET /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web/_nuxt/BmmsZq5X.js
+NUXT_ASSET /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web/_nuxt/CR9HTFlb.js
+# Extracting app.asar for string scan
+OK extracted app.asar to /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/tickets/mobile-safe-container-401/validation-evidence/rebuilt-electron-app-asar-extract
+# Running rg stale-string scan over extracted app.asar, app.asar.unpacked, and packaged server resources
+# rg exit code: 1 (1 means no matches)
+PASS no stale Round 3 claim/owner-session/lmn/local-management strings found in rebuilt packaged Electron runtime artifact
+# Temporary extracted app.asar directory removed after scan: tickets/mobile-safe-container-401/validation-evidence/rebuilt-electron-app-asar-extract

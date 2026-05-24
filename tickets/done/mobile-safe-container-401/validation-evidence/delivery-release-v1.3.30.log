@@ -1,0 +1,45 @@
+# Desktop Release v1.3.30 — 2026-05-24T04:33:12Z
+
+## preflight status
+## personal...origin/personal
+
+## version preflight
+autobyteus-web/package.json: 1.3.29
+autobyteus-message-gateway/package.json: 1.3.29
+
+## remote tag preflight
+v1.3.30 absent on origin
+
+## release command
+Updating autobyteus-web/package.json: 1.3.29 -> 1.3.30
+Updating autobyteus-message-gateway/package.json: 1.3.29 -> 1.3.30
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.3.30
+[32mSynced default release manifest: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.3.30[0m
+[32mServer version: 0.1.1[0m
+[personal 770c1773] chore(release): bump workspace release version to 1.3.30
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 40 insertions(+), 20 deletions(-)
+Release complete and pushed: branch 'personal', tag 'v1.3.30'.
+
+## release refs after command
+HEAD=770c17738f4db2f4f765fb22691b76a6487ea118
+tag=cf52dc1dc1b0b42e342bdf711a6417acaff76864
+770c17738f4db2f4f765fb22691b76a6487ea118	refs/heads/personal
+cf52dc1dc1b0b42e342bdf711a6417acaff76864	refs/tags/v1.3.30
+
+## status after release
+## personal...origin/personal

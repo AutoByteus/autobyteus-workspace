@@ -1,0 +1,9 @@
+Removing unused validation-only image tags; keeping autobyteus-server:mobile-safe-container-401-round3-api-e2e because autobyteus-server-2 is running for user manual Electron testing.
+Untagged: autobyteus-remote-server:mobile-safe-container-401-round3-api-e2e
+Deleted: sha256:4cf63afc0906462e4e13fcb50dce7a9441f376aaf2d4ef4d2c37456a9145f035
+Untagged: autobyteus-allinone:mobile-safe-container-401-round3-api-e2e
+Deleted: sha256:6f211f9fae42994ec5dc3a208768341aff19e872b431a93f5377ad2501a37cce
+Untagged: autobyteus-server:mobile-safe-container-401-round3-monorepo
+Deleted: sha256:64183b0bd2a965e159ef88b8bd7ce95e8c9207976adb0a9a018505009ead7959
+Remaining Round 3 user-test image/container:
+container=autobyteus-server-2 image=autobyteus-server:mobile-safe-container-401-round3-api-e2e status=Up 15 minutes ports=127.0.0.1:55213->5900/tcp, 127.0.0.1:55214->6080/tcp, 127.0.0.1:55212->8000/tcp, 127.0.0.1:55215->9223/tcp

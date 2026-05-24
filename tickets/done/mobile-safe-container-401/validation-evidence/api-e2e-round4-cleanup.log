@@ -1,0 +1,9 @@
+Timestamp: 2026-05-23T19:12:03Z
+Cleanup validation-only Docker images not needed for the user-test running server.
+$ docker image rm autobyteus-remote-server:mobile-safe-container-401-round4-api-e2e
+Untagged: autobyteus-remote-server:mobile-safe-container-401-round4-api-e2e
+Deleted: sha256:ca3fcc3168efe18eb10cdd8e2e2e435720bd2e09234190569f87c728ab3587c2
+$ docker image rm autobyteus-allinone:mobile-safe-container-401-round4-api-e2e
+Untagged: autobyteus-allinone:mobile-safe-container-401-round4-api-e2e
+Deleted: sha256:90110fd924050167723f14a71310346f35dbba5636afd04c8ddf0430f5b54430
+Kept autobyteus-server:mobile-safe-container-401-round4-api-e2e because autobyteus-server-2 is intentionally left running for user testing.

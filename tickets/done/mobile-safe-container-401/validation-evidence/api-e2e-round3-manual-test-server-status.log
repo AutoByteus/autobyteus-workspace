@@ -1,0 +1,4 @@
+Current Round 3 test Docker server for manual Electron testing:
+name=autobyteus-server-2 status=Up 36 seconds image=autobyteus-server:mobile-safe-container-401-round3-api-e2e ports=127.0.0.1:55213->5900/tcp, 127.0.0.1:55214->6080/tcp, 127.0.0.1:55212->8000/tcp, 127.0.0.1:55215->9223/tcp
+backend=http://localhost:55212
+{"status":"ok","message":"Server is running"}

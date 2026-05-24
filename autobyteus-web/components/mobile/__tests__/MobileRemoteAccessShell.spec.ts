@@ -46,6 +46,11 @@ const pairedSession = {
   },
 };
 
+const toBase64Url = (value: object): string => btoa(JSON.stringify(value))
+  .replace(/\+/g, '-')
+  .replace(/\//g, '_')
+  .replace(/=+$/g, '');
+
 const initialState = {
   mobileNodeSession: {
     session: pairedSession,
@@ -318,6 +323,36 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
       wrapper.find('[data-testid="mobile-context-segments"]').text(),
     ).toContain("Workspaces");
     expect(wrapper.text()).not.toContain("AppLeftPanel");
+  });
+
+  it("lets a fresh QR replace an existing mobile session instead of keeping a stale credential connected", async () => {
+    const pairingParam = toBase64Url({
+      version: 1,
+      serverBaseUrl: "https://desktop.tailnet.ts.net",
+      pairingCode: "PAIR-REPLACE-123",
+      expiresAt: "2026-05-24T00:05:00.000Z",
+      serverName: "Desktop Node",
+    });
+    routeState.current = { query: { pairing: pairingParam } };
+    window.history.pushState({}, "", `/mobile?pairing=${pairingParam}`);
+
+    const wrapper = mountShell();
+    await nextTick();
+    await nextTick();
+
+    expect(
+      wrapper.find('[data-testid="mobile-pairing-bootstrap"]').exists(),
+    ).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-home"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain("Pairing link detected from desktop.");
+
+    await wrapper.get('[data-testid="mobile-pair-button"]').trigger("click");
+    await flushPromises();
+
+    expect(useMobileNodeSessionStore().pairWithQrText).toHaveBeenCalledWith(
+      pairingParam,
+      "Phone",
+    );
   });
 
   it("defaults no-recent mobile work picking to startable agents and teams", async () => {
@@ -623,6 +658,45 @@ ${activitySource}`).not.toContain(
     expect(statusCardText).toContain("Cannot reach AutoByteus desktop");
     expect(statusCardText).not.toContain("Node reachable");
     expect(statusCardText).not.toContain("Phone Access status unavailable");
+  });
+
+  it("drops a locally paired phone session when authorized mobile catalog calls return 401", async () => {
+    const wrapper = mountShell();
+    await flushPromises();
+
+    const sessionStore = useMobileNodeSessionStore();
+    const runHistoryStore = useRunHistoryStore();
+    const agentDefinitionStore = useAgentDefinitionStore();
+    const teamDefinitionStore = useAgentTeamDefinitionStore();
+    const workspaceStore = useWorkspaceStore();
+
+    vi.mocked(sessionStore.fetchStatus).mockResolvedValue({
+      phoneAccessEnabled: true,
+      pairingAvailable: true,
+      compatibilityVersion: 1,
+      serverName: "Desktop Node",
+    });
+    const unauthorized = new Error("Received status code 401");
+    vi.mocked(runHistoryStore.fetchTree).mockRejectedValue(unauthorized);
+    vi.mocked(
+      agentDefinitionStore.fetchAllAgentDefinitions,
+    ).mockRejectedValue(unauthorized);
+    vi.mocked(
+      teamDefinitionStore.fetchAllAgentTeamDefinitions,
+    ).mockRejectedValue(unauthorized);
+    vi.mocked(workspaceStore.fetchAllWorkspaces).mockRejectedValue(unauthorized);
+    vi.mocked(sessionStore.rejectLocalSessionForAuthFailure).mockClear();
+    vi.mocked(sessionStore.recordAuthorizedApiReachability).mockClear();
+
+    await wrapper.get('[data-testid="mobile-home-refresh"]').trigger("click");
+    await flushPromises();
+
+    expect(
+      sessionStore.rejectLocalSessionForAuthFailure,
+    ).toHaveBeenCalledTimes(1);
+    expect(
+      sessionStore.recordAuthorizedApiReachability,
+    ).not.toHaveBeenLastCalledWith(true);
   });
 
   it("keeps post-pair checking active across the async session flip before stable Home", async () => {

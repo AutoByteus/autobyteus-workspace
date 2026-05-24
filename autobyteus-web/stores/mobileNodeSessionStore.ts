@@ -189,6 +189,14 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     authorizedApiReachable.value = reachable;
   }
 
+  function rejectLocalSessionForAuthFailure(): void {
+    mobileCredentialStorage.clear();
+    session.value = null;
+    lastStatus.value = null;
+    authorizedApiReachable.value = false;
+    lastDiagnostic.value = diagnosticForKind('auth_required');
+  }
+
   function deleteLocalSession(): void {
     mobileCredentialStorage.clear();
     session.value = null;
@@ -214,6 +222,7 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     pairWithQrText,
     pairWithManualUrl,
     recordAuthorizedApiReachability,
+    rejectLocalSessionForAuthFailure,
     deleteLocalSession,
   };
 });

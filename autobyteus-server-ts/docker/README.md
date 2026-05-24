@@ -43,6 +43,22 @@ autobyteus-docker new-container
 
 The first node uses `autobyteus-server-0` as its friendly name and prefers these host ports when available: Backend `8001`, VNC `5908`, noVNC `6080`, and Chrome debug `9228`. If a port is busy, the launcher retries with fresh ports. Repeated `new-container` calls create `autobyteus-server-1`, `autobyteus-server-2`, and so on.
 
+For the recommended Android/Phone Access isolation path, create a mobile-safe
+node instead:
+
+```bash
+autobyteus-docker new-container --profile mobile-safe
+```
+
+Use the printed Backend URL in **Settings -> Nodes -> Add Remote Node**, then
+open that Docker node window over a trusted LAN, VPN, tailnet, or equivalent
+private-network path. Desktop/Electron access to that node follows the trusted
+private-network product model; do not expose the full backend directly to the
+public internet. Phone pairing still issues separate `mra_...` mobile credentials, and
+the server Docker image packages the `/mobile` web shell into
+`autobyteus-server-ts/mobile-web` so the QR target is served by a fresh
+container.
+
 Each launcher-managed container keeps the existing private Docker named volumes
 and also gets host-visible user folders:
 
