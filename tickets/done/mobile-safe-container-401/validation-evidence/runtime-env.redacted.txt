@@ -1,0 +1,12 @@
+container=ab-mobile-safe-401-validation
+image=autobyteus-server:mobile-safe-container-401-validation
+backend_port=64601
+vnc_port=64602
+novnc_port=64603
+debug_port=64604
+claim_id=[REDACTED_TEMP_VALIDATION_CLAIM_ID]
+claim_secret=[REDACTED_TEMP_VALIDATION_CLAIM_SECRET]
+claim_hash=[REDACTED_TEMP_VALIDATION_CLAIM_HASH]
+data_volume=ab-mobile-safe-401-data
+workspace_volume=ab-mobile-safe-401-workspace
+root_volume=ab-mobile-safe-401-root

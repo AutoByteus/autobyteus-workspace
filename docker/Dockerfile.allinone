@@ -11,23 +11,31 @@ ENV ELECTRON_SKIP_BINARY_DOWNLOAD=1 \
     PUPPETEER_SKIP_DOWNLOAD=1
 
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY patches ./patches
 COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
 COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
 COPY autobyteus-message-gateway/package.json autobyteus-message-gateway/tsconfig.json autobyteus-message-gateway/tsconfig.build.json ./autobyteus-message-gateway/
 COPY autobyteus-web/package.json ./autobyteus-web/
 
 COPY autobyteus-ts ./autobyteus-ts
+COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
 COPY autobyteus-server-ts ./autobyteus-server-ts
 COPY autobyteus-message-gateway ./autobyteus-message-gateway
 COPY autobyteus-web ./autobyteus-web
 
 RUN pnpm install --no-frozen-lockfile \
   --filter autobyteus-ts... \
+  --filter @autobyteus/application-sdk-contracts... \
+  --filter @autobyteus/application-backend-sdk... \
   --filter autobyteus-server-ts... \
   --filter autobyteus-message-gateway... \
   --filter autobyteus...
 RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
 RUN pnpm -C autobyteus-server-ts build
+RUN pnpm -C autobyteus-web build:mobile-web
 RUN pnpm -C autobyteus-message-gateway build
 
 FROM autobyteus/chrome-vnc:${CHROME_VNC_TAG} AS runtime
@@ -44,7 +52,10 @@ COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /app/package.json ./package.json
 
 COPY --from=builder /app/autobyteus-ts ./autobyteus-ts
+COPY --from=builder /app/autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+COPY --from=builder /app/autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
 COPY --from=builder /app/autobyteus-server-ts ./autobyteus-server-ts
+COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
 COPY --from=builder /app/autobyteus-message-gateway ./autobyteus-message-gateway
 COPY --from=builder /app/autobyteus-web ./autobyteus-web
 

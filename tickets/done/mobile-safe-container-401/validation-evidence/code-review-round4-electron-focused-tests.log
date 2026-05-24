@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron
+
+ ✓ __tests__/preload.spec.ts (1 test) 14ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  20:40:42
+   Duration  233ms (transform 26ms, setup 0ms, collect 16ms, tests 14ms, environment 0ms, prepare 50ms)
+

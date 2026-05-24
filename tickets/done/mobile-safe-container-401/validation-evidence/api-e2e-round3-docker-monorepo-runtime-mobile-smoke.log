@@ -1,0 +1,9 @@
+Running fresh monorepo public-launcher image smoke for /mobile
+container=autobyteus-server-round3-monorepo-smoke
+port=56094
+c8b2d30d408700f261a49330622d24e34d60db21fae7d7d9eda8ecd031eb3db0
+health_status=200
+{"status":"ok","message":"Server is running"}
+mobile_status=200
+mobile_shell_references=/mobile/_nuxt/ confirmed
+cleanup=container_removed

@@ -1,0 +1,6 @@
+Stopping/removing stale pre-Round-3 manual owner-session test container to avoid accidental Electron testing against obsolete auth.
+autobyteus-server-mobile-safe-401-electron-test
+Current autobyteus containers:
+autobyteus-server-2                       Up 14 seconds   autobyteus-server:mobile-safe-container-401-round3-api-e2e   127.0.0.1:55213->5900/tcp, 127.0.0.1:55214->6080/tcp, 127.0.0.1:55212->8000/tcp, 127.0.0.1:55215->9223/tcp
+autobyteus-server-1                       Up 5 hours      autobyteus/autobyteus-server:latest                          127.0.0.1:58646->5900/tcp, 127.0.0.1:58647->6080/tcp, 127.0.0.1:58645->8000/tcp, 127.0.0.1:58648->9223/tcp
+autobyteus-server-0                       Up 5 hours      autobyteus/autobyteus-server:latest                          0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:60983->6080/tcp, [::]:60983->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp

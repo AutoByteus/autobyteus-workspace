@@ -1,0 +1,28 @@
+# Code review final generated Electron/mobile artifact legacy scan
+# UTC: 2026-05-24T04:01:13Z
+# App: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+# Note: generated node_modules are excluded from legacy scan to avoid dependency locale false positives.
+OK app bundle exists
+OK app.asar exists
+OK asar extractor exists
+OK packaged server exists
+OK packaged server/mobile-web/index.html exists
+OK packaged server mobile-web references /mobile/_nuxt/
+OK extracted app.asar
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.ADHdryiiep/app-asar/dist/renderer/_nuxt/MobileRemoteAccessShell.vue.Ctg4WLCe.js
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.ADHdryiiep/app-asar/dist/renderer/_nuxt/entry.B7btdCSH.js
+autobyteus-web/dist-mobile/public/_nuxt/CI425w1D.js
+autobyteus-web/dist-mobile/public/_nuxt/BbbjZBdj.js
+/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/src/remote-access/services/remote-access-auth-service.ts
+/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/src/remote-access/domain/models.ts
+autobyteus-web/dist/renderer/_nuxt/MobileRemoteAccessShell.vue.Ctg4WLCe.js
+autobyteus-web/dist/renderer/_nuxt/entry.B7btdCSH.js
+/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/src/api/security/remote-access-route-policy.ts
+/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/src/api/websocket/remote-access-websocket-auth.ts
+/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts
+/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web/_nuxt/BbbjZBdj.js
+/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web/_nuxt/CI425w1D.js
+/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/unit/remote-access/route-policy.test.ts
+# marker rg exit code: 0 (0 means latest phone-401 marker visible)
+# legacy rg exit code: 1 (1 means no matches)
+PASS no removed credential strings found in generated Electron/mobile artifacts

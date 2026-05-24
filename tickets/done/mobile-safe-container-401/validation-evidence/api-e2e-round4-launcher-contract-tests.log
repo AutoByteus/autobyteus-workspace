@@ -1,0 +1,6 @@
+$ python3 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace
+....s..
+----------------------------------------------------------------------
+Ran 7 tests in 2.372s
+
+OK (skipped=1)

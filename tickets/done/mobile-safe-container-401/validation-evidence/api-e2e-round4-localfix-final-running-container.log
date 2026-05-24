@@ -1,0 +1,14 @@
+$ docker ps relevant containers after Local Fix revalidation
+autobyteus-server-2	autobyteus-server:mobile-safe-container-401-round4-api-e2e	Up 50 seconds	127.0.0.1:59822->5900/tcp, 127.0.0.1:59823->6080/tcp, 127.0.0.1:59821->8000/tcp, 127.0.0.1:59824->9223/tcp
+autobyteus-server-1	autobyteus/autobyteus-server:latest	Up 8 hours	127.0.0.1:58646->5900/tcp, 127.0.0.1:58647->6080/tcp, 127.0.0.1:58645->8000/tcp, 127.0.0.1:58648->9223/tcp
+autobyteus-server-0	autobyteus/autobyteus-server:latest	Up 8 hours	0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:60983->6080/tcp, [::]:60983->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp
+
+Backend=http://localhost:59821
+{"status":"ok","message":"Server is running"}
+HTTP/1.1 200 OK
+vary: Origin
+content-type: text/html
+Date: Sat, 23 May 2026 20:18:17 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+

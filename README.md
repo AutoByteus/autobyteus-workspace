@@ -40,7 +40,7 @@ Full guide:
 
 AutoByteus desktop can pair a phone/PWA to a reachable AutoByteus node over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a LAN with an HTTPS endpoint. The desktop flow lives in **Settings -> Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes require a stable `https://` URL; Tailscale Serve HTTPS is the recommended setup for Android and travel use.
 
-For the Phase One security-hardened Android path, create a **mobile-safe Docker node**, add it as a remote node, open that node in its own desktop window, and create the Phone Access QR from that Docker node window. The mobile-safe launcher profile avoids default privileged Docker flags and automatic shared host bind mounts, binds management ports to localhost, and uses a launcher-generated node-admin claim for Docker-node Phone Access management. See [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md) and [`docs/android_mobile_access.md`](docs/android_mobile_access.md).
+For the Phase One security-hardened Android path, create a **mobile-safe Docker node**, add it as a remote node, open that node in its own desktop window over your trusted private network, and create the Phone Access QR from that Docker node window. The mobile-safe launcher profile avoids default privileged Docker flags and automatic shared host bind mounts and binds management ports to localhost by default. Desktop/Electron access to the full backend relies on the trusted private-network product model, while Android/mobile clients receive separate paired-phone `mra_...` credentials that do not authorize owner-management routes. Do not expose the full backend directly to the public internet. See [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md) and [`docs/android_mobile_access.md`](docs/android_mobile_access.md).
 
 User and packaging details are in [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md); backend route/auth details are in [`autobyteus-server-ts/docs/features/remote_access.md`](autobyteus-server-ts/docs/features/remote_access.md).
 
@@ -76,14 +76,17 @@ node instead:
 
 ```bash
 autobyteus-docker new-container --profile mobile-safe
-autobyteus-docker admin-claim show --name autobyteus-server-0
 ```
 
-Use the printed Backend URL in **Settings → Nodes → Add Remote Node**, open that
-Docker node window, then paste the node-admin claim in **Phone Setup** before
-creating a QR. The mobile-safe profile avoids `SYS_ADMIN`, avoids
-`seccomp=unconfined`, binds published ports to `127.0.0.1`, and disables
-automatic shared host bind mounts by default.
+Use the printed Backend URL in **Settings → Nodes → Add Remote Node**, then open
+that Docker node window over a trusted LAN, VPN, tailnet, or equivalent private
+network path. Desktop/Electron access to that node follows the trusted private-network product model; do not expose the full backend directly to
+the public internet. Paired phones receive only separate `mra_...` mobile credentials, and
+those credentials do not authorize owner-management routes. The mobile-safe
+profile avoids `SYS_ADMIN`, avoids `seccomp=unconfined`, binds published ports to
+`127.0.0.1`, and disables automatic shared host bind mounts by default. Current
+server Docker images package the `/mobile` web shell so the QR target is served
+by the container itself.
 
 For standard managed containers, the public launcher keeps the existing private Docker named volumes unchanged:
 `<node>-data` stays mounted at `/home/autobyteus/data`, `<node>-root-home`

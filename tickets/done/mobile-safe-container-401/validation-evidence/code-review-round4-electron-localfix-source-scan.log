@@ -1,0 +1,5 @@
+# Code review local-fix active source stale-string scan
+2026-05-23T20:11:48Z
+# Pattern: nodeAdmin|NodeAdmin|node-admin|remote-node-admin|RemoteNodeAdmin|claimId|claimSecret|adminClaim|REMOTE_NODE_ADMIN|NODE_ADMIN|remoteNodeAdmin|local management|lmn_|AUTOBYTEUS_LOCAL|local-management|owner session|owner credential|AUTOBYTEUS_NODE_ADMIN_CLAIM|phone-access-management|rao_|nac_|nas_|Automatic local management credential|launcher-managed local Docker node|local launcher state|Re-add the launcher Backend URL|localManagementCredential|requiresLocalManagementCredential
+# rg exit code: 1 (1 means no matches)
+PASS active source/docs stale-string scan clean

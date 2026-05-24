@@ -43,14 +43,10 @@ const { phoneAccessStoreMock, translateMock, toQrCodeDataUrlMock } = vi.hoisted(
       isLoading: false,
       error: null,
       info: null,
-      nodeAdminClaimState: 'configured',
-      nodeAdminClaimSummary: null,
-      nodeAdminClaimIdInput: '',
-      nodeAdminClaimSecretInput: '',
       advertisedUrlVerified: false,
       advertisedUrlVerificationMessage: null,
       phoneAccessEnabled: true,
-      requiresNodeAdminClaim: false,
+      isRemoteNodeWindow: false,
       managementBaseUrl: 'http://127.0.0.1:29695',
       currentNodeName: 'AutoByteus Desktop',
       canManagePhoneAccess: true,
@@ -62,9 +58,6 @@ const { phoneAccessStoreMock, translateMock, toQrCodeDataUrlMock } = vi.hoisted(
         message: null as string | null,
       },
       loadAll: vi.fn().mockResolvedValue(undefined),
-      loadNodeAdminClaimSummary: vi.fn().mockResolvedValue(undefined),
-      registerNodeAdminClaim: vi.fn().mockResolvedValue(undefined),
-      clearNodeAdminClaim: vi.fn().mockResolvedValue(undefined),
       setEnabled: vi.fn().mockResolvedValue(undefined),
       refreshCandidates: vi.fn().mockResolvedValue(undefined),
       createPairingSession: vi.fn().mockResolvedValue(undefined),
@@ -98,13 +91,9 @@ describe('PhoneAccessCard', () => {
     phoneAccessStoreMock.isLoading = false;
     phoneAccessStoreMock.error = null;
     phoneAccessStoreMock.info = null;
-    phoneAccessStoreMock.nodeAdminClaimState = 'configured';
-    phoneAccessStoreMock.nodeAdminClaimSummary = null;
-    phoneAccessStoreMock.nodeAdminClaimIdInput = '';
-    phoneAccessStoreMock.nodeAdminClaimSecretInput = '';
     phoneAccessStoreMock.advertisedUrlVerified = false;
     phoneAccessStoreMock.advertisedUrlVerificationMessage = null;
-    phoneAccessStoreMock.requiresNodeAdminClaim = false;
+    phoneAccessStoreMock.isRemoteNodeWindow = false;
     phoneAccessStoreMock.canManagePhoneAccess = true;
     phoneAccessStoreMock.selectedServerBaseUrl = 'https://desktop.tailnet.ts.net';
     phoneAccessStoreMock.manualServerBaseUrl = '';

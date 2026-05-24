@@ -1,0 +1,22 @@
+Source File	Effective Non-Empty Lines	Delta
+autobyteus-server-ts/docker/Dockerfile.monorepo	69	+7/-0
+autobyteus-server-ts/src/api/security/redact-sensitive-url.ts	42	+1/-6
+autobyteus-server-ts/src/api/security/remote-access-route-policy.ts	177	+35/-44
+autobyteus-server-ts/src/api/websocket/remote-access-websocket-auth.ts	96	+28/-21
+autobyteus-server-ts/src/remote-access/domain/models.ts	129	+6/-14
+autobyteus-server-ts/src/remote-access/services/paired-device-service.ts	101	+2/-3
+autobyteus-server-ts/src/remote-access/services/remote-access-auth-service.ts	74	+12/-16
+autobyteus-web/components/settings/NodeManager.vue	338	+23/-1
+autobyteus-web/components/settings/PhoneAccessCard.vue	248	+5/-101
+autobyteus-web/electron/main.ts	487	+0/-6
+autobyteus-web/electron/preload.ts	136	+0/-9
+autobyteus-web/localization/messages/en/settings.ts	542	+4/-18
+autobyteus-web/localization/messages/zh-CN/settings.ts	542	+4/-18
+autobyteus-web/stores/phoneAccessStore.ts	225	+33/-159
+autobyteus-web/types/electron.d.ts	114	+0/-12
+autobyteus-web/utils/dockerNodeLauncherCommands.ts	182	+0/-11
+autobyteus-web/utils/phoneAccessRemoteNode.ts	83	+2/-19
+docker/Dockerfile.allinone	68	+11/-0
+docker/Dockerfile.remote-server	46	+14/-0
+scripts/public/docker/autobyteus-docker.ps1	854	+22/-104
+scripts/public/docker/autobyteus-docker.sh	853	+10/-119

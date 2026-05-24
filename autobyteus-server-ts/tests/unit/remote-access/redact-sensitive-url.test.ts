@@ -26,9 +26,9 @@ describe("redactSensitiveUrl", () => {
     );
   });
 
-  it("redacts node-admin claim query variants if they appear in diagnostics", () => {
-    expect(redactSensitiveUrl("/rest/remote-access/settings?node_admin_claim=secret&x-autobyteus-node-admin-claim-id=nac_1")).toBe(
-      "/rest/remote-access/settings?node_admin_claim=%5BREDACTED%5D&x-autobyteus-node-admin-claim-id=%5BREDACTED%5D",
+  it("redacts generic credential query variants if they appear in diagnostics", () => {
+    expect(redactSensitiveUrl("/rest/remote-access/settings?credential=mra_secret&status=check")).toBe(
+      "/rest/remote-access/settings?credential=%5BREDACTED%5D&status=check",
     );
   });
 });

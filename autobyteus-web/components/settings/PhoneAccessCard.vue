@@ -24,86 +24,11 @@
     <p v-if="store.error" class="mt-3 text-sm text-red-600" data-testid="phone-access-error">{{ store.error }}</p>
     <p v-if="store.info" class="mt-3 text-sm text-blue-700" data-testid="phone-access-info">{{ store.info }}</p>
 
-    <div
-      v-if="store.requiresNodeAdminClaim"
-      class="mt-4 rounded-xl border border-indigo-200 bg-indigo-50/80 p-4"
-      data-testid="phone-access-node-admin-claim"
-    >
-      <div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-        <div>
-          <h4 class="text-sm font-semibold text-indigo-950">{{ $t('settings.components.settings.PhoneAccessCard.nodeAdminClaimTitle') }}</h4>
-          <p class="mt-1 text-xs leading-5 text-indigo-900">
-            {{ $t('settings.components.settings.PhoneAccessCard.nodeAdminClaimHelp') }}
-          </p>
-          <p class="mt-1 break-all font-mono text-xs text-indigo-800" data-testid="phone-access-management-url">
-            {{ store.managementBaseUrl }}
-          </p>
-        </div>
-        <span
-          class="w-fit rounded-full px-2.5 py-1 text-xs font-semibold"
-          :class="claimStatusClass"
-          data-testid="phone-access-node-admin-claim-status"
-        >
-          {{ claimStatusLabel }}
-        </span>
-      </div>
-
-      <div class="mt-3 grid gap-2 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
-        <input
-          v-model="store.nodeAdminClaimIdInput"
-          type="text"
-          autocomplete="off"
-          spellcheck="false"
-          class="min-w-0 rounded-lg border border-indigo-200 px-3 py-2 font-mono text-sm shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-          :placeholder="$t('settings.components.settings.PhoneAccessCard.nodeAdminClaimIdPlaceholder')"
-          data-testid="phone-access-node-admin-claim-id"
-        />
-        <input
-          v-model="store.nodeAdminClaimSecretInput"
-          type="password"
-          autocomplete="off"
-          spellcheck="false"
-          class="min-w-0 rounded-lg border border-indigo-200 px-3 py-2 font-mono text-sm shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-          :placeholder="$t('settings.components.settings.PhoneAccessCard.nodeAdminClaimSecretPlaceholder')"
-          data-testid="phone-access-node-admin-claim-secret"
-        />
-        <button
-          type="button"
-          class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700"
-          data-testid="phone-access-node-admin-claim-save"
-          @click="store.registerNodeAdminClaim"
-        >
-          {{ $t('settings.components.settings.PhoneAccessCard.nodeAdminClaimSave') }}
-        </button>
-      </div>
-      <div v-if="store.nodeAdminClaimState === 'configured' || store.nodeAdminClaimState === 'invalid'" class="mt-2 flex flex-wrap items-center gap-2 text-xs text-indigo-900">
-        <span v-if="store.nodeAdminClaimSummary?.claimIdSuffix">
-          {{ $t('settings.components.settings.PhoneAccessCard.nodeAdminClaimConfiguredSuffix', { suffix: store.nodeAdminClaimSummary.claimIdSuffix }) }}
-        </span>
-        <button
-          type="button"
-          class="font-semibold text-indigo-700 hover:text-indigo-900"
-          data-testid="phone-access-node-admin-claim-clear"
-          @click="store.clearNodeAdminClaim"
-        >
-          {{ $t('settings.components.settings.PhoneAccessCard.nodeAdminClaimForget') }}
-        </button>
-      </div>
-    </div>
-
     <div v-if="!store.phoneAccessEnabled" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
       {{ $t('settings.components.settings.PhoneAccessCard.disabledNotice') }}
     </div>
 
-    <div
-      v-if="store.requiresNodeAdminClaim && !store.canManagePhoneAccess"
-      class="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600"
-      data-testid="phone-access-claim-required-notice"
-    >
-      {{ $t('settings.components.settings.PhoneAccessCard.nodeAdminClaimRequiredNotice') }}
-    </div>
-
-    <div v-else class="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <div class="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
       <div class="space-y-4">
         <div class="rounded-xl border border-blue-100 bg-blue-50/70 p-4">
           <label class="text-xs font-semibold uppercase tracking-wide text-blue-800">{{ $t('settings.components.settings.PhoneAccessCard.manualPrivateNetworkUrl') }}</label>
@@ -159,12 +84,12 @@
             </option>
           </select>
           <p class="mt-2 text-xs text-slate-500" data-testid="phone-access-candidate-diagnostic-note">
-            {{ store.requiresNodeAdminClaim ? $t('settings.components.settings.PhoneAccessCard.remoteCandidateDiagnosticNote') : $t('settings.components.settings.PhoneAccessCard.httpCandidateDiagnosticNote') }}
+            {{ store.isRemoteNodeWindow ? $t('settings.components.settings.PhoneAccessCard.remoteCandidateDiagnosticNote') : $t('settings.components.settings.PhoneAccessCard.httpCandidateDiagnosticNote') }}
           </p>
         </div>
 
         <div
-          v-if="store.requiresNodeAdminClaim"
+          v-if="store.isRemoteNodeWindow"
           class="rounded-lg border p-3 text-xs"
           :class="store.advertisedUrlVerified ? 'border-green-200 bg-green-50 text-green-800' : 'border-amber-200 bg-amber-50 text-amber-900'"
           data-testid="phone-access-advertised-url-verification"
@@ -293,33 +218,12 @@ const selectedUrlWarning = computed(() => (
 
 const canCreatePairingSession = computed(() => (
   store.phoneAccessEnabled
-  && store.canManagePhoneAccess
   && Boolean(store.selectedServerBaseUrl.trim())
-  && (!store.requiresNodeAdminClaim || Boolean(store.manualServerBaseUrl.trim()))
+  && (!store.isRemoteNodeWindow || Boolean(store.manualServerBaseUrl.trim()))
   && store.selectedUrlValidation.isValid
   && store.selectedUrlValidation.isHttps
-  && (!store.requiresNodeAdminClaim || store.selectedUrlValidation.isAndroidFacing)
+  && (!store.isRemoteNodeWindow || store.selectedUrlValidation.isAndroidFacing)
 ));
-
-const claimStatusLabel = computed(() => {
-  if (store.nodeAdminClaimState === 'configured') {
-    return $t('settings.components.settings.PhoneAccessCard.nodeAdminClaimStatusConfigured');
-  }
-  if (store.nodeAdminClaimState === 'invalid') {
-    return $t('settings.components.settings.PhoneAccessCard.nodeAdminClaimStatusInvalid');
-  }
-  if (store.nodeAdminClaimState === 'unavailable') {
-    return $t('settings.components.settings.PhoneAccessCard.nodeAdminClaimStatusUnavailable');
-  }
-  return $t('settings.components.settings.PhoneAccessCard.nodeAdminClaimStatusMissing');
-});
-
-const claimStatusClass = computed(() => ({
-  'bg-green-100 text-green-700': store.nodeAdminClaimState === 'configured',
-  'bg-red-100 text-red-700': store.nodeAdminClaimState === 'invalid',
-  'bg-amber-100 text-amber-700': store.nodeAdminClaimState === 'missing' || store.nodeAdminClaimState === 'unknown',
-  'bg-slate-100 text-slate-700': store.nodeAdminClaimState === 'unavailable',
-}));
 
 const visibleDevices = computed(() => (
   deviceListView.value === 'active' ? store.activeDevices : store.revokedDevices

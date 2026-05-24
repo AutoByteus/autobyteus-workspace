@@ -1,0 +1,2 @@
+$ docker run --rm --entrypoint sh autobyteus-server:mobile-safe-container-401-round3-monorepo -lc test mobile-web index
+monorepo public launcher image mobile-web index present

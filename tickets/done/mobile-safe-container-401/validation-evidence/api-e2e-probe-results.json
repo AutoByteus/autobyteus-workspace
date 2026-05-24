@@ -1,0 +1,282 @@
+{
+  "base": "http://127.0.0.1:64601",
+  "serverInstanceId": "srv_0wjwr726VK2ACUIY1MyReayiIRjpcVMz",
+  "generatedAt": "2026-05-23T14:35:01.362Z",
+  "ownerTokenPrefixObserved": "rao_",
+  "mobileCredentialPrefixObserved": "mra_",
+  "results": [
+    {
+      "id": "VAL-001-health",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.171Z",
+      "summary": "status=200",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    {
+      "id": "VAL-002-mobile-shell",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.186Z",
+      "summary": "status=200, content-type=text/html",
+      "status": 200,
+      "contentType": "text/html",
+      "bodyStart": "<!DOCTYPE html><html><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<script type=\"importmap\">{\"imports\":{\"#entry\":\"/mobile/_nuxt/"
+    },
+    {
+      "id": "VAL-003-public-status",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.199Z",
+      "summary": "serverInstanceId=srv_0wjwr726VK2ACUIY1MyReayiIRjpcVMz",
+      "status": 200,
+      "body": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "compatibilityVersion": 1,
+        "serverInstanceId": "srv_0wjwr726VK2ACUIY1MyReayiIRjpcVMz",
+        "serverName": "AutoByteus Desktop"
+      }
+    },
+    {
+      "id": "VAL-004-graphql-requires-auth",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.206Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_REQUIRED",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "message": "Remote Access credential is required."
+      }
+    },
+    {
+      "id": "VAL-005-owner-rest-requires-token",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.212Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_REQUIRED",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "message": "Remote owner session token is required."
+      }
+    },
+    {
+      "id": "VAL-006-missing-claim-rejected",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.216Z",
+      "summary": "status=401, code=REMOTE_ACCESS_ADMIN_CLAIM_REQUIRED",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_ADMIN_CLAIM_REQUIRED",
+        "code": "REMOTE_ACCESS_ADMIN_CLAIM_REQUIRED",
+        "message": "A node-admin claim is required for this Phone Access owner route."
+      }
+    },
+    {
+      "id": "VAL-007-invalid-claim-rejected",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.222Z",
+      "summary": "status=403, code=REMOTE_ACCESS_ADMIN_CLAIM_INVALID",
+      "status": 403,
+      "body": {
+        "error": "REMOTE_ACCESS_ADMIN_CLAIM_INVALID",
+        "code": "REMOTE_ACCESS_ADMIN_CLAIM_INVALID",
+        "message": "Node-admin claim is invalid."
+      }
+    },
+    {
+      "id": "VAL-008-valid-claim-mints-owner-token",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.226Z",
+      "summary": "status=201, tokenPrefix=rao_, sameServer=true",
+      "status": 201,
+      "tokenPrefix": "rao_",
+      "expiresAt": "2026-05-23T14:34:56.224Z",
+      "serverInstanceId": "srv_0wjwr726VK2ACUIY1MyReayiIRjpcVMz"
+    },
+    {
+      "id": "VAL-009-raw-claim-not-owner-rest-auth",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.231Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_REQUIRED",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "message": "Remote owner session token is required."
+      }
+    },
+    {
+      "id": "VAL-010-raw-claim-not-graphql-auth",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.235Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_REQUIRED",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "message": "Remote Access credential is required."
+      }
+    },
+    {
+      "id": "VAL-011-owner-token-authorizes-rest",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.243Z",
+      "summary": "status=200",
+      "status": 200,
+      "body": {
+        "settings": {
+          "phoneAccessEnabled": true,
+          "updatedAt": "2026-05-23T14:33:56.240Z",
+          "updatedBy": "loopback-desktop"
+        }
+      }
+    },
+    {
+      "id": "VAL-012-owner-token-passes-protected-rest-policy",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.252Z",
+      "summary": "noAuth=401, owner=404",
+      "noAuthStatus": 401,
+      "noAuthCode": "REMOTE_ACCESS_AUTH_REQUIRED",
+      "ownerStatus": 404,
+      "ownerBody": {
+        "message": "Route GET:/rest/files/__validation_missing__ not found",
+        "error": "Not Found",
+        "statusCode": 404
+      }
+    },
+    {
+      "id": "VAL-013-owner-token-authorizes-graphql-agent-definitions",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.279Z",
+      "summary": "status=200, count=1",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "id": "VAL-014-owner-creates-mobile-pairing-with-separated-payload",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.289Z",
+      "summary": "status=201, mobileUrlHost=docker-validation.example",
+      "status": 201,
+      "mobileUrl": "https://docker-validation.example/mobile?pairing=[REDACTED_PAIRING_PAYLOAD]",
+      "pairingPayload": {
+        "version": 1,
+        "serverBaseUrl": "https://docker-validation.example",
+        "pairingCode": "[REDACTED_PAIRING_CODE]",
+        "expiresAt": "2026-05-23T14:38:56.282Z",
+        "serverName": "Validation Docker Node"
+      },
+      "noOwnerOrClaimInPairing": true
+    },
+    {
+      "id": "VAL-015-pairing-exchange-returns-mobile-credential",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.298Z",
+      "summary": "status=201, credentialPrefix=mra_",
+      "status": 201,
+      "credentialPrefix": "mra_",
+      "device": {
+        "deviceId": "device_03f20334ba9246a5e36b669a3c12ac51",
+        "displayName": "Validation Android",
+        "clientFacingBaseUrl": "https://docker-validation.example",
+        "createdAt": "2026-05-23T14:33:56.292Z",
+        "lastSeenAt": null,
+        "revokedAt": null
+      }
+    },
+    {
+      "id": "VAL-016-mobile-credential-not-owner-rest-auth",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.301Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_INVALID",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_INVALID",
+        "code": "REMOTE_ACCESS_AUTH_INVALID",
+        "message": "Remote owner session token is invalid."
+      }
+    },
+    {
+      "id": "VAL-017-mobile-credential-remains-mobile-graphql-auth",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.310Z",
+      "summary": "status=200, typename=Query",
+      "status": 200,
+      "body": {
+        "data": {
+          "__typename": "Query"
+        }
+      }
+    },
+    {
+      "id": "VAL-018-ws-missing-token-rejected",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.324Z",
+      "summary": "close=4401/REMOTE_ACCESS_AUTH_REQUIRED",
+      "label": "missing",
+      "opened": true,
+      "closeCode": 4401,
+      "closeReason": "REMOTE_ACCESS_AUTH_REQUIRED",
+      "error": null
+    },
+    {
+      "id": "VAL-019-ws-raw-claim-not-auth",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.333Z",
+      "summary": "close=4401/REMOTE_ACCESS_AUTH_INVALID",
+      "label": "raw-claim-secret-as-token",
+      "opened": true,
+      "closeCode": 4401,
+      "closeReason": "REMOTE_ACCESS_AUTH_INVALID",
+      "error": null
+    },
+    {
+      "id": "VAL-020-owner-token-authorizes-ws-policy",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.340Z",
+      "summary": "opened=true, close=4004/Workspace not found",
+      "label": "owner-token",
+      "opened": true,
+      "closeCode": 4004,
+      "closeReason": "Workspace not found",
+      "error": null
+    },
+    {
+      "id": "VAL-021-mobile-token-remains-ws-auth",
+      "ok": true,
+      "at": "2026-05-23T14:33:56.348Z",
+      "summary": "opened=true, close=4004/Workspace not found",
+      "label": "mobile-token",
+      "opened": true,
+      "closeCode": 4004,
+      "closeReason": "Workspace not found",
+      "error": null
+    },
+    {
+      "id": "VAL-022-owner-token-expiry-rejects-old-token",
+      "ok": true,
+      "at": "2026-05-23T14:35:01.355Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_INVALID",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_INVALID",
+        "code": "REMOTE_ACCESS_AUTH_INVALID",
+        "message": "Remote owner session token is invalid."
+      }
+    },
+    {
+      "id": "VAL-023-owner-session-remint-after-expiry",
+      "ok": true,
+      "at": "2026-05-23T14:35:01.362Z",
+      "summary": "session=201, graphql=200",
+      "sessionStatus": 201,
+      "graphqlStatus": 200,
+      "serverInstanceId": "srv_0wjwr726VK2ACUIY1MyReayiIRjpcVMz"
+    }
+  ]
+}

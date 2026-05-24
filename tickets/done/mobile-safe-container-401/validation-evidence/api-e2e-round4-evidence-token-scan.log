@@ -1,0 +1,31 @@
+Timestamp: 2026-05-23T18:57:16Z
+Scan API/E2E Round 4 evidence outputs for raw mobile credentials and raw removed owner credential identifiers.
+$ grep -nE 'mra_[A-Za-z0-9._:-]{8,}|lmn_[A-Za-z0-9._:-]{8,}|rao_[A-Za-z0-9._:-]{8,}|nac_[A-Za-z0-9._:-]{8,}|nas_[A-Za-z0-9._:-]{8,}|AUTOBYTEUS_NODE_ADMIN_CLAIM|AUTOBYTEUS_LOCAL_MANAGEMENT_CREDENTIAL|NODE_ADMIN_CLAIM|LOCAL_MANAGEMENT_CREDENTIAL|claimSecret|claimId' selected evidence
+No raw mra_ credentials or raw removed owner credential identifiers found in selected evidence.
+
+Runtime probe independently scanned Docker logs for runtime-only raw mra secrets and reported rawSecretsInLogs=0.
+{
+  "invalidGraphqlWs": {
+    "opened": false,
+    "error": "Unexpected server response: 401"
+  },
+  "invalidWsClose": {
+    "code": 4401,
+    "reason": "REMOTE_ACCESS_AUTH_INVALID"
+  },
+  "rawSecretsInLogs": 0,
+  "secretHashes": [
+    {
+      "label": "Round4 Active Phone credential",
+      "sha256": "d78b134f332190ffda39e4e8f2a2a0a3b17207aab9ad1837d1c79b66260b2210"
+    },
+    {
+      "label": "Round4 Revoked Phone credential",
+      "sha256": "60f172d3c6ea9977d9a47a05dd1c6bed75262b8a019ceffbe522ecde966fd530"
+    },
+    {
+      "label": "invalid probe credential",
+      "sha256": "1fe22bebac7d30f4193ce09dbd9e26898aa0fbe6b194406307fa712cd2eda006"
+    }
+  ]
+}

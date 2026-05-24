@@ -5,6 +5,7 @@ import NodeManager from '../NodeManager.vue';
 const {
   nodeStoreMock,
   remoteBrowserSharingStoreMock,
+  routeMock,
   windowNodeContextStoreMock,
   validateServerHostConfigurationMock,
   probeNodeCapabilitiesMock,
@@ -62,6 +63,9 @@ const {
       revokeLocalPairing: vi.fn().mockResolvedValue(undefined),
       busyNodeId: null,
     },
+    routeMock: {
+      query: {},
+    },
     windowNodeContextStoreMock: {
       nodeId: 'embedded-local',
       isEmbeddedWindow: true,
@@ -81,6 +85,10 @@ vi.mock('~/stores/remoteBrowserSharingStore', () => ({
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => windowNodeContextStoreMock,
+}));
+
+vi.mock('vue-router', () => ({
+  useRoute: () => routeMock,
 }));
 
 vi.mock('~/utils/nodeHostValidation', () => ({
@@ -125,6 +133,7 @@ vi.mock('~/components/settings/RemoteNodePairingControls.vue', () => ({
 describe('NodeManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    routeMock.query = {};
     remoteBrowserSharingStoreMock.busyNodeId = null;
     windowNodeContextStoreMock.nodeId = 'embedded-local';
     windowNodeContextStoreMock.isEmbeddedWindow = true;
@@ -227,7 +236,7 @@ describe('NodeManager', () => {
     expect(wrapper.find('[data-testid="add-node-button"]').exists()).toBe(false);
   });
 
-  it('shows Phone Access controls in remote windows so a Docker node claim can be registered', async () => {
+  it('shows Phone Access controls in remote windows so paired-phone access can be configured', async () => {
     windowNodeContextStoreMock.nodeId = 'remote-1';
     windowNodeContextStoreMock.isEmbeddedWindow = false;
     const wrapper = mount(NodeManager);

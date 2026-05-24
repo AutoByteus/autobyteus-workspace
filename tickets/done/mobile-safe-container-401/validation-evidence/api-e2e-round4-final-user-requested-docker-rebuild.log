@@ -1,0 +1,199 @@
+User-requested Docker rebuild started at 2026-05-24T04:12:06Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401
+Dockerfile: autobyteus-server-ts/docker/Dockerfile.monorepo
+Image tag: autobyteus-server:mobile-safe-container-401-round4-phone401-localfix
+Git HEAD: 74218467a2f7786c82f3e97b9190058d2cb83bd2
+Pre-build image inspect:
+  id=sha256:c929099ee8f5807d6084c48ddc73b9f8a62fa3a761099da83f0395b17938acf0 created=2026-05-24T03:54:08.339605416Z size=1446491678
+
+docker build output follows
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 4.02kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 1.0s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89
+#4 resolve docker.io/docker/dockerfile:1@sha256:87999aa3d42bdc6bea60565083ee17e86d1f3339802f543c0d03998580f9cb89 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 ...
+
+#6 [auth] autobyteus/chrome-vnc:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] library/node:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#8 ...
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 DONE 0.7s
+
+#8 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#8 DONE 0.7s
+
+#9 [internal] load .dockerignore
+#9 transferring context: 282B done
+#9 DONE 0.0s
+
+#10 [builder  1/20] FROM docker.io/library/node:22-bookworm@sha256:1031993481795705055273f2eef0c24597abdcb277d6e058c82f78cbbdef92a6
+#10 resolve docker.io/library/node:22-bookworm@sha256:1031993481795705055273f2eef0c24597abdcb277d6e058c82f78cbbdef92a6 0.0s done
+#10 DONE 0.0s
+
+#11 [runtime  1/23] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:d80ef400bc03efa27467d6003dd8d3f7d17148968e5deca6436de48409ffa1f5
+#11 resolve docker.io/autobyteus/chrome-vnc:latest@sha256:d80ef400bc03efa27467d6003dd8d3f7d17148968e5deca6436de48409ffa1f5 0.0s done
+#11 DONE 0.0s
+
+#12 [internal] load build context
+#12 transferring context: 471.99kB 0.4s done
+#12 DONE 0.4s
+
+#13 [builder 14/20] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#13 CACHED
+
+#14 [runtime 21/23] COPY autobyteus-server-ts/docker/xdg-open-root-bridge.sh /usr/local/bin/xdg-open
+#14 CACHED
+
+#15 [runtime 10/23] COPY --from=builder /app/autobyteus-application-sdk-contracts/dist ./autobyteus-application-sdk-contracts/dist
+#15 CACHED
+
+#16 [runtime 18/23] COPY autobyteus-server-ts/docker/bootstrap.sh /usr/local/bin/autobyteus-bootstrap.sh
+#16 CACHED
+
+#17 [runtime 19/23] COPY autobyteus-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+#17 CACHED
+
+#18 [runtime 17/23] COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervisor/conf.d/supervisor-autobyteus-server.conf
+#18 CACHED
+
+#19 [runtime  3/23] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep   && rm -rf /var/lib/apt/lists/*
+#19 CACHED
+
+#20 [builder  7/20] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+#20 CACHED
+
+#21 [runtime 11/23] COPY --from=builder /app/autobyteus-application-sdk-contracts/package.json ./autobyteus-application-sdk-contracts/package.json
+#21 CACHED
+
+#22 [runtime 15/23] COPY --from=builder /app/autobyteus-server-ts/package.json ./autobyteus-server-ts/package.json
+#22 CACHED
+
+#23 [runtime 13/23] COPY --from=builder /app/autobyteus-server-ts/dist ./autobyteus-server-ts/dist
+#23 CACHED
+
+#24 [builder  3/20] RUN corepack enable
+#24 CACHED
+
+#25 [runtime  5/23] RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
+#25 CACHED
+
+#26 [builder 17/20] COPY autobyteus-web ./autobyteus-web
+#26 CACHED
+
+#27 [builder  5/20] COPY patches ./patches
+#27 CACHED
+
+#28 [builder  2/20] WORKDIR /app
+#28 CACHED
+
+#29 [builder  8/20] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#29 CACHED
+
+#30 [runtime  6/23] COPY --from=builder /app/node_modules ./node_modules
+#30 CACHED
+
+#31 [runtime  2/23] WORKDIR /app
+#31 CACHED
+
+#32 [builder 18/20] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#32 CACHED
+
+#33 [runtime  9/23] COPY --from=builder /app/autobyteus-ts/package.json ./autobyteus-ts/package.json
+#33 CACHED
+
+#34 [builder 16/20] COPY autobyteus-server-ts ./autobyteus-server-ts
+#34 CACHED
+
+#35 [runtime  7/23] COPY --from=builder /app/autobyteus-ts/node_modules ./autobyteus-ts/node_modules
+#35 CACHED
+
+#36 [builder  9/20] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#36 CACHED
+
+#37 [runtime 16/23] COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+#37 CACHED
+
+#38 [builder 20/20] RUN pnpm -C autobyteus-web build:mobile-web
+#38 CACHED
+
+#39 [runtime 14/23] COPY --from=builder /app/autobyteus-server-ts/prisma ./autobyteus-server-ts/prisma
+#39 CACHED
+
+#40 [runtime 20/23] COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh
+#40 CACHED
+
+#41 [runtime  8/23] COPY --from=builder /app/autobyteus-ts/dist ./autobyteus-ts/dist
+#41 CACHED
+
+#42 [builder 15/20] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#42 CACHED
+
+#43 [builder  4/20] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#43 CACHED
+
+#44 [builder 19/20] RUN pnpm -C autobyteus-server-ts build
+#44 CACHED
+
+#45 [builder 11/20] COPY autobyteus-web/package.json ./autobyteus-web/
+#45 CACHED
+
+#46 [runtime 12/23] COPY --from=builder /app/autobyteus-server-ts/node_modules ./autobyteus-server-ts/node_modules
+#46 CACHED
+
+#47 [builder 12/20] RUN pnpm install --no-frozen-lockfile
+#47 CACHED
+
+#48 [builder 13/20] COPY autobyteus-ts ./autobyteus-ts
+#48 CACHED
+
+#49 [runtime 22/23] COPY autobyteus-server-ts/docker/exo-open-root-bridge.sh /usr/local/bin/exo-open
+#49 CACHED
+
+#50 [builder  6/20] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#50 CACHED
+
+#51 [runtime  4/23] RUN npm install -g   "@openai/codex@0.112.0"   "@anthropic-ai/claude-code@2.1.72"
+#51 CACHED
+
+#52 [builder 10/20] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#52 CACHED
+
+#53 [runtime 23/23] RUN chmod +x   /usr/local/bin/autobyteus-bootstrap.sh   /usr/local/bin/entrypoint.sh   /usr/local/bin/open-vnc-browser-url.sh   /usr/local/bin/xdg-open   /usr/local/bin/exo-open
+#53 CACHED
+
+#54 exporting to image
+#54 exporting layers done
+#54 exporting manifest sha256:bb8031f205d87e0690381ce303d7b61ca00631cd55523f424a7ee20a82c712fa done
+#54 exporting config sha256:00b996d5ad945faba2c229d415e7bd310d393ab84322ca93780da485fe248d39 done
+#54 exporting attestation manifest sha256:f95318c258fb35756e48cb5038a91c194ac992d3febd15911946522076e32744 done
+#54 exporting manifest list sha256:59352611b420a86deed55292f00ee1c5e046a2ed46b0e5c55596fe7b70557e5b
+#54 exporting manifest list sha256:59352611b420a86deed55292f00ee1c5e046a2ed46b0e5c55596fe7b70557e5b done
+#54 naming to docker.io/library/autobyteus-server:mobile-safe-container-401-round4-phone401-localfix done
+#54 unpacking to docker.io/library/autobyteus-server:mobile-safe-container-401-round4-phone401-localfix 0.0s done
+#54 DONE 0.1s
+
+Post-build image inspect:
+  id=sha256:59352611b420a86deed55292f00ee1c5e046a2ed46b0e5c55596fe7b70557e5b created=2026-05-24T03:54:08.339605416Z size=1446491678 repoDigests=["autobyteus-server@sha256:59352611b420a86deed55292f00ee1c5e046a2ed46b0e5c55596fe7b70557e5b"]
+User-requested Docker rebuild completed at 2026-05-24T04:12:10Z

@@ -64,6 +64,36 @@ const normalizeErrorMessage = (cause: unknown, fallback: string): string => {
 export type MobileWorkCatalogRefreshResult = {
   hadSuccess: boolean;
   hadFailure: boolean;
+  hadAuthFailure: boolean;
+};
+
+type SegmentRefreshResult = {
+  success: boolean;
+  authFailure: boolean;
+};
+
+const isAuthFailureCause = (cause: unknown): boolean => {
+  if (!cause) {
+    return false;
+  }
+  const response = typeof cause === 'object' && cause && 'response' in cause
+    ? (cause as { response?: { status?: number; data?: { code?: string; error?: string } } }).response
+    : null;
+  if (response?.status === 401) {
+    return true;
+  }
+  const code = response?.data?.code || response?.data?.error;
+  if (code === 'REMOTE_ACCESS_AUTH_REQUIRED' || code === 'REMOTE_ACCESS_AUTH_INVALID') {
+    return true;
+  }
+  const message = cause instanceof Error
+    ? cause.message
+    : (typeof cause === 'string'
+        ? cause
+        : (typeof cause === 'object' && cause && 'message' in cause && typeof cause.message === 'string'
+            ? cause.message
+            : ''));
+  return /\b401\b|REMOTE_ACCESS_AUTH_REQUIRED|REMOTE_ACCESS_AUTH_INVALID/i.test(message);
 };
 
 export function useMobileWorkCatalog() {
@@ -266,7 +296,7 @@ export function useMobileWorkCatalog() {
     };
   };
 
-  async function refreshMobileCatalogSegment(segmentId: MobileCatalogSegmentId): Promise<boolean> {
+  async function refreshMobileCatalogSegmentDetailed(segmentId: MobileCatalogSegmentId): Promise<SegmentRefreshResult> {
     markSegmentLoading(segmentId);
     try {
       switch (segmentId) {
@@ -286,28 +316,33 @@ export function useMobileWorkCatalog() {
       }
     } catch (cause) {
       markSegmentError(segmentId, cause);
-      return false;
+      return { success: false, authFailure: isAuthFailureCause(cause) };
     }
 
     const storeError = getStoreErrorForSegment(segmentId);
     if (storeError && getItemsForSegment(segmentId).length === 0) {
       markSegmentError(segmentId, storeError);
-      return false;
+      return { success: false, authFailure: isAuthFailureCause(storeError) };
     }
     markSegmentSuccess(segmentId);
-    return true;
+    return { success: true, authFailure: false };
+  }
+
+  async function refreshMobileCatalogSegment(segmentId: MobileCatalogSegmentId): Promise<boolean> {
+    return (await refreshMobileCatalogSegmentDetailed(segmentId)).success;
   }
 
   async function refreshMobileWorkCatalog(): Promise<MobileWorkCatalogRefreshResult> {
     const results = await Promise.all([
-      refreshMobileCatalogSegment('recent'),
-      refreshMobileCatalogSegment('agents'),
-      refreshMobileCatalogSegment('teams'),
-      refreshMobileCatalogSegment('workspaces'),
+      refreshMobileCatalogSegmentDetailed('recent'),
+      refreshMobileCatalogSegmentDetailed('agents'),
+      refreshMobileCatalogSegmentDetailed('teams'),
+      refreshMobileCatalogSegmentDetailed('workspaces'),
     ]);
     return {
-      hadSuccess: results.some(Boolean),
-      hadFailure: results.some((success) => !success),
+      hadSuccess: results.some((result) => result.success),
+      hadFailure: results.some((result) => !result.success),
+      hadAuthFailure: results.some((result) => result.authFailure),
     };
   }
 

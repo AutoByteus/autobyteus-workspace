@@ -1,0 +1,6 @@
+# Code review final active source/docs legacy scan
+# UTC: 2026-05-24T03:59:17Z
+# Pattern: nodeAdmin|NodeAdmin|node-admin|remote-node-admin|RemoteNodeAdmin|remoteNodeAdmin|REMOTE_NODE_ADMIN|NODE_ADMIN|claimId|claimSecret|adminClaim|AUTOBYTEUS_NODE_ADMIN_CLAIM|phone-access-management|owner[ -]?session|owner[ -]?credential|local management|local-management|localManagementCredential|Automatic local management credential|launcher-managed local Docker node|local launcher state|Re-add the launcher Backend URL|lmn_|AUTOBYTEUS_LOCAL|rao_|nac_|nas_
+# Excludes generated/build/cache/ticket artifacts, including nested historical tickets.
+# rg exit code: 1 (1 means no matches)
+PASS no removed claim/owner-session/lmn/local-management strings found in active source/docs

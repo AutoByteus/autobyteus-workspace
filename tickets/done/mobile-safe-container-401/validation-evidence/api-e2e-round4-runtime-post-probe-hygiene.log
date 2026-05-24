@@ -1,0 +1,20 @@
+Timestamp: 2026-05-23T18:57:34Z
+Post-probe runtime hygiene for user-test container: revoke validation-paired devices, leave Phone Access enabled and container running.
+$ DELETE /rest/remote-access/devices
+{
+    "result": {
+        "revokedCount": 1
+    }
+}
+$ PUT /rest/remote-access/settings {phoneAccessEnabled:true}
+{
+    "settings": {
+        "phoneAccessEnabled": true,
+        "updatedAt": "2026-05-23T18:57:34.916Z",
+        "updatedBy": "loopback-desktop"
+    }
+}
+$ GET /rest/remote-access/devices
+{
+    "devices": []
+}

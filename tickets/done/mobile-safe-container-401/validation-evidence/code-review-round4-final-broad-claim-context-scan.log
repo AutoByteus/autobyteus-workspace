@@ -1,0 +1,150 @@
+# Code review broad active context scan for claim/admin/local-management wording
+# UTC: 2026-05-24T03:59:17Z
+# Excludes generated/build/cache/ticket artifacts; matches are manually reviewed context, not automatic failures.
+README.md:39:## Phone Access / Remote Access
+README.md:41:AutoByteus desktop can pair a phone/PWA to a reachable AutoByteus node over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a LAN with an HTTPS endpoint. The desktop flow lives in **Settings -> Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes require a stable `https://` URL; Tailscale Serve HTTPS is the recommended setup for Android and travel use.
+README.md:43:For the Phase One security-hardened Android path, create a **mobile-safe Docker node**, add it as a remote node, open that node in its own desktop window over your trusted private network, and create the Phone Access QR from that Docker node window. The mobile-safe launcher profile avoids default privileged Docker flags and automatic shared host bind mounts and binds management ports to localhost by default. Desktop/Electron access to the full backend relies on the trusted private-network product model, while Android/mobile clients receive separate paired-phone `mra_...` credentials that do not authorize owner-management routes. Do not expose the full backend directly to the public internet. See [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md) and [`docs/android_mobile_access.md`](docs/android_mobile_access.md).
+README.md:74:For the recommended Android/Phone Access isolation path, create a mobile-safe
+README.md:83:network path. Desktop/Electron access to that node follows the trusted private-network product model; do not expose the full backend directly to
+docs/android_mobile_access.md:11:- **Remote Access backend:** Phone Access status, trusted-network owner routes, pairing sessions, pairing exchange, mobile credentials, revocation.
+docs/android_mobile_access.md:25:That is usually provided by Tailscale Serve HTTPS. New desktop-created Phone Access pairing QR codes require an `https://` URL; direct MagicDNS/tailnet-IP HTTP URLs are not accepted for new desktop pairing-session creation.
+docs/android_mobile_access.md:40:4. In the desktop app, add the Docker Backend URL as a remote node in **Settings -> Nodes**, then click **Open** for that Docker node. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
+docs/android_mobile_access.md:43:7. Enable Phone Access and create the QR in the Docker node window. Android should pair to the Docker node and mobile-started work should run inside the Docker/container runtime.
+docs/android_mobile_access.md:45:Do not solve Docker-node Phone Access setup by exposing raw Docker ports broadly or by treating Docker bridge/LAN addresses as loopback/local trust. The full backend is meant for trusted private networks, not direct public internet exposure.
+docs/android_mobile_access.md:49:- Desktop/Electron remote-node access follows the trusted private-network product model and does not require an extra setup secret in the default flow.
+docs/android_mobile_access.md:70:6. Enable Phone Access.
+docs/android_mobile_access.md:95:   - tap **Scan QR** and scan the Phone Access QR with the bundled AutoByteus scanner;
+docs/android_mobile_access.md:96:   - paste/share the Phone Access link;
+docs/android_mobile_access.md:106:- enable Phone Access on the desktop;
+docs/android_mobile_access.md:119:- Phone Access enabled on the desktop/server node.
+docs/android_mobile_access.md:129:- **Packaged-Electron mode:** a built Electron desktop app serving its packaged server/mobile assets. Run this when final release readiness claims packaged desktop + Android readiness or when a packaged artifact is available from delivery/CI.
+docs/android_mobile_access.md:158:6. First-run setup: scan the Phone Access QR, or enter/paste/share the stable Tailscale URL or pairing link, and verify the WebView opens `/mobile`.
+scripts/public/docker/autobyteus-docker.ps1:372:Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+scripts/public/docker/autobyteus-docker.ps1:389:Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+scripts/public/docker/autobyteus-docker.ps1:416:Launcher state directory: $(Get-StateRoot)
+scripts/public/docker/autobyteus-docker.ps1:807:  if (-not $state) { Fail-Launcher "No launcher state found for $NodeName. Run new-container first." }
+scripts/public/docker/autobyteus-docker.ps1:848:  if (-not $state) { Fail-Launcher "No launcher state found for $NodeName." }
+docs/future-tickets/mobile-backend-authorization-hardening.md:166:- Phone Access owner UI/store
+scripts/public/docker/autobyteus-docker.sh:466:Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+scripts/public/docker/autobyteus-docker.sh:483:Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+scripts/public/docker/autobyteus-docker.sh:512:Launcher state directory: $(state_root)
+scripts/public/docker/autobyteus-docker.sh:809:  [[ -f "$file" ]] || fail "No launcher state found for ${node_name}. Run new-container first."
+scripts/public/docker/autobyteus-docker.sh:857:  [[ -f "$file" ]] || fail "No launcher state found for ${node_name}."
+scripts/tests/test_public_docker_launcher_shared_workspace.py:60:            self.assertIn("Then open that node over your trusted private network.", result.stdout)
+autobyteus-web/localization/messages/en/settings.ts:240:  'settings.components.settings.VoiceInputExtensionCard.audioStatus.permissionDenied': 'Microphone access is denied. Allow microphone access for AutoByteus, then refresh sources.',
+autobyteus-web/localization/messages/en/settings.ts:242:  'settings.components.settings.VoiceInputExtensionCard.audioStatus.permissionPrompt': 'Microphone access has not been granted yet. Start a test to request access or refresh after allowing it.',
+autobyteus-web/localization/messages/en/settings.ts:298:  'settings.voiceInput.store.microphonePermissionDenied': 'Microphone permission is denied. Allow microphone access for AutoByteus and try again.',
+autobyteus-web/localization/messages/en/settings.ts:331:  'settings.components.settings.PhoneAccessCard.title': 'Phone Access',
+autobyteus-web/localization/messages/en/settings.ts:333:  'settings.components.settings.PhoneAccessCard.enable': 'Enable Phone Access',
+autobyteus-web/localization/messages/en/settings.ts:334:  'settings.components.settings.PhoneAccessCard.loading': 'Loading Phone Access…',
+autobyteus-web/localization/messages/en/settings.ts:335:  'settings.components.settings.PhoneAccessCard.disabledNotice': 'Phones cannot connect while Phone Access is disabled. Paired-device records are kept, but mobile credentials are rejected until you enable this again.',
+autobyteus-web/localization/messages/en/settings.ts:363:  'settings.components.settings.PhoneAccessCard.pairingQrAlt': 'Phone Access pairing QR',
+autobyteus-web/localization/messages/en/settings.ts:368:  'settings.components.settings.PhoneSetupGuideCard.title': 'Set up private HTTPS phone access',
+autobyteus-web/localization/messages/en/settings.ts:369:  'settings.components.settings.PhoneSetupGuideCard.description': 'Use Tailscale.app on this Mac to Serve AutoByteus at a stable private HTTPS MagicDNS URL before creating a Phone Access QR code.',
+autobyteus-web/localization/messages/en/settings.ts:376:  'settings.components.settings.PhoneSetupGuideCard.macosCommandsDescription': 'Run the background Serve command, then run Serve status and copy the HTTPS MagicDNS URL. Append /mobile before pasting it into Phone Access below.',
+autobyteus-web/localization/messages/en/settings.ts:391:  'settings.components.settings.PhoneSetupGuideCard.nextStep': 'Copy the HTTPS MagicDNS URL from Serve status, append /mobile, paste it into the Phone Access URL field below, then create the QR code.',
+autobyteus-web/localization/messages/en/settings.ts:392:  'settings.components.settings.PhoneSetupGuideCard.funnelNote': 'Use private tailnet Serve HTTPS for this setup. Public Funnel is not the recommended Phone Access path.',
+autobyteus-web/localization/messages/en/settings.ts:406:  'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.description': 'Pulls the latest image and creates the next indexed mobile-safe container for trusted private-network access.',
+autobyteus-web/localization/messages/en/settings.ts:418:  'settings.components.settings.DockerNodeStartGuideCard.commands.storage.description': 'Shows private named volumes, host bind mounts, and the launcher state directory.',
+autobyteus-web/localization/messages/en/settings.ts:431:  'settings.components.settings.DockerNodeStartGuideCard.nextStep': 'After new-container prints Backend, paste that URL into Add Remote Node, open the Docker node window over your trusted private network, then create the Phone Access QR there with a verified Android-facing HTTPS URL.',
+autobyteus-web/lib/novnc/vendor/pako/LICENSE:18:AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+autobyteus-server-ts/README.md:162:`autobyteus/autobyteus-server:latest`, keeps launcher state outside any source
+autobyteus-server-ts/README.md:188:For the recommended Android/Phone Access isolation path, create a mobile-safe
+autobyteus-server-ts/docs/ARCHITECTURE.md:104:   idempotent receipt creation/claiming, and resolves the bound route target.
+autobyteus-server-ts/docker/README.md:46:For the recommended Android/Phone Access isolation path, create a mobile-safe
+autobyteus-server-ts/docker/README.md:126:Launcher state is stored outside the source tree:
+autobyteus-server-ts/docker/README.md:260:- `autobyteus-docker storage`: Show private named volumes, host bind mounts, and launcher state.
+autobyteus-server-ts/docs/PROJECT_OVERVIEW.md:16:  - Phone Access management and pairing: `/rest/remote-access/*`
+autobyteus-server-ts/docs/PROJECT_OVERVIEW.md:39:- Remote Access / Phone Access pairing, mobile auth, and mobile static app serving
+autobyteus-server-ts/docs/README.md:15:- `features/`: feature-level documents, including Remote Access / Phone Access.
+autobyteus-server-ts/docs/URL_GENERATION_AND_ENV_STRATEGY.md:53:Phone Access must not return loopback-only absolute URLs to a phone on a LAN/VPN/private network. Use `DefaultClientFacingUrlResolver` for REST resource URLs that may be consumed by paired mobile clients.
+autobyteus-server-ts/tests/e2e/messaging/managed-messaging-gateway-e2e-fixtures.ts:122:  response.end(JSON.stringify({ detail: "Missing or invalid admin token." }));
+autobyteus-server-ts/tests/e2e/messaging/managed-messaging-gateway-e2e-fixtures.ts:264:  response.end(JSON.stringify({ detail: "Missing or invalid admin token." }));
+autobyteus-server-ts/docs/features/remote_access.md:1:# Remote Access / Phone Access Backend
+autobyteus-server-ts/docs/features/remote_access.md:5:Phone Access is additive: paired phones receive explicit `mra_...` mobile credentials, while normal desktop/Electron access to a remote node continues to use the trusted private-network model without an extra setup secret in the default flow.
+autobyteus-server-ts/docs/features/remote_access.md:14:| Phone Access settings | `src/remote-access/services/remote-access-settings-service.ts` and `stores/remote-access-settings-store.ts` |
+autobyteus-server-ts/docs/features/remote_access.md:50:  - managed external-channel ingress paths remain governed by their signature contract instead of Phone Access credentials.
+autobyteus-server-ts/docs/features/remote_access.md:56:1. The owner enables Phone Access with `PUT /rest/remote-access/settings` from the current desktop/Electron node window.
+autobyteus-server-ts/docs/features/remote_access.md:75:- Phone Access is currently enabled;
+autobyteus-server-ts/docs/features/remote_access.md:80:Mobile credentials do not authorize owner-management routes. This prevents paired phones from creating pairing sessions, changing Phone Access settings, listing all devices, or revoking devices.
+autobyteus-server-ts/docs/features/remote_access.md:86:`GET /rest/remote-access/status` returns a stable `serverInstanceId` in addition to Phone Access availability metadata. The identity is persisted under the app data directory and is used by the desktop Phone Access UI to prove that a manually entered Android-facing HTTPS URL reaches the same Docker node as the desktop management URL before a QR is created.
+autobyteus-server-ts/docs/features/remote_access.md:129:Disabling Phone Access does not delete paired-device records. Revoking a device marks its `revokedAt` timestamp and retains the record for history and revoked-credential diagnostics. `GET /rest/remote-access/devices` returns active devices only; trusted-network desktop management can read retained revoked rows through `GET /rest/remote-access/devices/revoked`. While disabled, new pairing sessions are rejected and existing mobile credentials fail with `PHONE_ACCESS_DISABLED`.
+autobyteus-server-ts/docs/features/remote_access.md:142:- Phone Access enabled state and credential usability after backend restart against the same app data;
+autobyteus-server-ts/docs/features/remote_access.md:149:Phase One moves the recommended Android path to a mobile-safe Docker node and preserves trusted private-network desktop access to the backend. It does not complete least-privilege mobile backend authorization, mobile token rotation, native secure credential storage, strict owner pairing/admin authorization, or backend hard denial of every high-risk mobile operation. Those items are tracked in `../../../docs/future-tickets/mobile-backend-authorization-hardening.md` from this feature doc.
+autobyteus-server-ts/tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts:41:describe("Phone Access running REST route behavior", () => {
+autobyteus-web/components/mobile/MobileTroubleshooting.vue:24:        Server reachable. Phone Access {{ status.phoneAccessEnabled ? 'enabled' : 'disabled' }}.
+autobyteus-server-ts/src/external-channel/providers/file-channel-message-receipt-provider.ts:144:      throw new Error("Failed to claim ingress dispatch receipt.");
+autobyteus-web/components/mobile/MobilePairingBootstrap.vue:7:        Scan the Phone Access QR from desktop settings. The normal QR journey is one tap.
+autobyteus-web/components/mobile/MobilePairingBootstrap.vue:34:        <p class="font-semibold text-slate-900">Scan the QR code from Desktop &gt; Settings &gt; Nodes &gt; Phone Access.</p>
+autobyteus-web/components/mobile/MobilePairingBootstrap.vue:46:          placeholder="Paste the Phone Access QR payload here"
+autobyteus-web/components/mobile/MobilePairingBootstrap.vue:84:          Server reachable. Phone Access: {{ sessionStore.lastStatus.phoneAccessEnabled ? 'enabled' : 'disabled' }}.
+autobyteus-web/components/mobile/MobileRemoteAccessShell.vue:24:            Refreshing Phone Access status and mobile work choices before Home opens.
+autobyteus-web/components/mobile/MobileRemoteAccessShell.vue:137:  desktopSettings: 'Desktop settings are managed from the desktop app. Phone Access exposes only mobile-safe connection controls.',
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:189:  it('shows mixed-success reachability instead of claiming the desktop is unreachable', () => {
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:208:    expect(wrapper.get('[data-testid="mobile-home-status-card"]').text()).toContain('Phone Access status unavailable');
+autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:488:    expect(statusCardText).not.toContain('Phone Access status unavailable');
+autobyteus-web/ui-prototypes/messaging-setup-assistant/prompts/web/whatsapp-setup/whatsapp-setup-gateway-default.md:12:Render Messaging setup default for WhatsApp provider with Gateway step active, URL and optional admin token fields, Validate Connection primary CTA, status UNKNOWN.
+autobyteus-server-ts/src/remote-access/services/remote-access-pairing-service.ts:45:      "Phone Access pairing requires an HTTPS server URL.",
+autobyteus-server-ts/src/remote-access/services/remote-access-pairing-service.ts:68:        "Phone Access is disabled on this desktop.",
+autobyteus-server-ts/src/remote-access/services/remote-access-pairing-service.ts:109:        "Phone Access is disabled on this desktop.",
+autobyteus-web/components/mobile/MobileUnpairConfirm.vue:5:      <p class="mt-2 text-sm text-slate-600">This removes only the local phone session. Use desktop Phone Access to revoke credentials for all devices.</p>
+autobyteus-web/components/mobile/MobileHome.vue:133:      title: 'Node reachable · Phone Access status unavailable',
+autobyteus-web/components/mobile/MobileHome.vue:144:  return props.status.phoneAccessEnabled ? 'Connected' : 'Phone Access disabled';
+autobyteus-server-ts/src/remote-access/services/remote-access-auth-service.ts:60:      return rejection(403, "PHONE_ACCESS_DISABLED", "Phone Access is disabled on this desktop.");
+autobyteus-web/LICENSE:78:      where such license applies only to those patent claims licensable
+autobyteus-web/LICENSE:83:      cross-claim or counterclaim in a lawsuit) alleging that the Work
+autobyteus-web/LICENSE:173:      incurred by, or claims asserted against, such Contributor by reason
+autobyteus-web/components/settings/__tests__/NodeManager.spec.ts:224:  it('renders the Phone Setup guide and Phone Access controls in the Phone Setup tab for embedded windows', async () => {
+autobyteus-web/components/settings/__tests__/NodeManager.spec.ts:239:  it('shows Phone Access controls in remote windows so paired-phone access can be configured', async () => {
+autobyteus-server-ts/src/agent-team-execution/services/member-run-instruction-composer.ts:45:    runtimeLines.push("Do not claim teammate delivery unless the tool call succeeds.");
+autobyteus-web/components/settings/__tests__/PhoneAccessCard.spec.ts:134:      message: 'Phone Access pairing requires an HTTPS URL.',
+autobyteus-server-ts/tests/integration/external-channel/providers/file-channel-message-receipt-provider.integration.test.ts:92:    const claimed = await provider.claimIngressDispatch({
+autobyteus-server-ts/tests/integration/external-channel/providers/file-channel-message-receipt-provider.integration.test.ts:115:      dispatchLeaseToken: claimed.dispatchLeaseToken ?? "",
+autobyteus-web/README.md:172:#### Phone Access / Remote Access
+autobyteus-web/README.md:174:The desktop app can expose its bundled server to a paired phone/PWA over a LAN, Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or another private network that already reaches the desktop node. Enable **Settings -> Nodes -> Phone Access**, choose the reachable private-network URL, and scan/open the generated `/mobile?pairing=...` QR link from the phone. The phone stores a paired mobile session and then uses authenticated REST, GraphQL, WebSocket, and protected-resource transports.
+autobyteus-web/utils/remoteAccess/mobileConnectionDiagnostics.ts:14:    recoveryAction: 'Generate a new Phone Access QR code from desktop settings and pair again.',
+autobyteus-web/utils/remoteAccess/mobileConnectionDiagnostics.ts:20:    recoveryAction: 'Ask the desktop user to generate a new Phone Access QR code.',
+autobyteus-web/utils/remoteAccess/mobileConnectionDiagnostics.ts:24:    title: 'Phone Access is disabled',
+autobyteus-web/utils/remoteAccess/mobileConnectionDiagnostics.ts:25:    message: 'The desktop is reachable, but Phone Access is currently turned off.',
+autobyteus-web/utils/remoteAccess/mobileConnectionDiagnostics.ts:26:    recoveryAction: 'Enable Phone Access from desktop settings.',
+autobyteus-web/docs/browser_sessions.md:68:  - shell-scoped claim/release
+autobyteus-web/docs/terminal.md:150:### Mobile Phone Access
+autobyteus-web/docs/terminal.md:152:Phase One Android pairing removes the mobile Tools/Terminal/VNC page entirely. The interactive terminal remains a desktop/workspace tool, not a standard `/mobile` Phone Access surface. Historical terminal-command tool output may still appear as read-only agent activity in the mobile Activity digest.
+autobyteus-web/docs/remote_access.md:1:# Phone Access / Remote Access
+autobyteus-web/docs/remote_access.md:3:Phone Access lets a phone browser, PWA, or AutoByteus Android shell connect to the desktop-owned AutoByteus node over a private network path that the user or organization already trusts. The shared client surface is the Nuxt mobile web shell served by the backend under `/mobile`; native wrappers reuse the same pairing and transport protocol rather than bundling a separate AutoByteus runtime.
+autobyteus-web/docs/remote_access.md:5:## What Phone Access Does
+autobyteus-web/docs/remote_access.md:7:- The desktop app exposes **Phone Setup** in **Settings -> Nodes** for the current node window. Embedded and remote-node windows use the trusted private-network product model for desktop/Electron access; paired phones use separate mobile credentials.
+autobyteus-web/docs/remote_access.md:8:- Phone Setup contains a Tailscale Serve guide plus the **Phone Access** card. The card enables or disables phone access, lists reachable server URL candidates, accepts a manual private-network URL, creates a short-lived pairing QR/link, and separates active paired phones from revoked/history records.
+autobyteus-web/docs/remote_access.md:18:Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, and Activity views. Phase One removes the mobile Tools/Terminal/VNC page entirely. Normal desktop routes, including desktop `/workspace` and browser desktop flows, continue to use the regular desktop shell and must not be rewritten to the mobile shell.
+autobyteus-web/docs/remote_access.md:28:Interactive Terminal and VNC are not mobile Phone Access surfaces in Phase One. Historical terminal-command tool output can still appear as read-only Activity content, but mobile users must not see a terminal tab, Tools tab, VNC panel, or command-entry path.
+autobyteus-web/docs/remote_access.md:52:AutoByteus does not require or special-case a VPN vendor. Phone Access only requires that the phone can reach the desktop/server node URL selected during pairing.
+autobyteus-web/docs/remote_access.md:63:For phone/mobile clients, the app-level pairing credential is still required; a private network or VPN is not treated as sufficient mobile authorization by itself. Desktop/Electron remote-node access to the full backend is separate and follows the trusted private-network product model documented below.
+autobyteus-web/docs/remote_access.md:67:Phone Access keeps two URL identities separate:
+autobyteus-web/docs/remote_access.md:72:You may paste a mobile shell URL into the Phone Access field. AutoByteus normalizes it before creating the pairing payload:
+autobyteus-web/docs/remote_access.md:100:4. In the Docker node window, open **Settings -> Nodes -> Phone Setup**. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
+autobyteus-web/docs/remote_access.md:102:6. Paste the HTTPS `/mobile` URL in the Docker node Phone Access card. AutoByteus compares `/rest/remote-access/status` from the management URL and advertised URL and requires matching `serverInstanceId` values.
+autobyteus-web/docs/remote_access.md:103:7. Enable Phone Access, create the QR, and scan it on Android. The pairing exchange and paired-device records belong to the Docker node.
+autobyteus-web/docs/remote_access.md:111:- **Desktop/Electron remote-node access:** the full backend is intended for trusted private networks such as LANs, company VPNs, or tailnets. The default active flow does not add a user-facing setup secret before desktop/Electron can use a registered remote node. Do not expose the full backend directly to the public internet; strict owner pairing would be a separate future opt-in design.
+autobyteus-web/docs/remote_access.md:112:- **Phone/mobile credential:** the Phone Access QR pairing exchange returns a separate `mra_...` mobile credential to the phone. Mobile REST and GraphQL use the mobile credential as a bearer token, and WebSocket uses the same credential in the `access_token` query parameter.
+autobyteus-web/docs/remote_access.md:134:7. Enable **Phone Access**.
+autobyteus-web/docs/remote_access.md:157:- checks `/rest/remote-access/status` for reachability and Phone Access state;
+autobyteus-web/docs/remote_access.md:164:The local **Unpair this phone** action deletes only the phone's local session and returns the UI to the pairing bootstrap without leaving Home or post-pair checking state active. It does not revoke the server-side device record; use the desktop Phone Access card to revoke credentials on the node. Failed or expired pairing exchanges likewise stay on the pairing bootstrap and must not write a local mobile session.
+autobyteus-web/docs/remote_access.md:168:- **Disable Phone Access:** paired-device records remain in server data, but non-loopback mobile credentials are rejected while disabled and new pairing sessions cannot be created.
+autobyteus-web/docs/remote_access.md:187:Phone Access code paths must not call `window.electronAPI` or other Electron preload APIs.
+autobyteus-web/docs/remote_access.md:228:- **Pairing says disabled:** enable Phone Access from the desktop node before creating or using a QR.
+autobyteus-web/docs/remote_access.md:231:- **Credential rejected after pairing:** check whether Phone Access was disabled or the device was revoked; pair again after re-enabling or revocation.
+autobyteus-web/docs/settings.md:92:- **Phone Setup tab:** contains `components/settings/PhoneSetupGuideCard.vue` plus `components/settings/PhoneAccessCard.vue` in both embedded and remote-node windows. Remote Docker windows follow the trusted private-network product model for desktop/Electron access; Phone Access pairing remains separate and issues only mobile `mra_...` credentials to paired phones.
+autobyteus-web/docs/settings.md:93:- **Phone Access controls:** the Phone Access card is the pairing and revocation surface for the current window's node. Operators can enable or disable Phone Access, choose or manually enter a Tailscale/VPN/private-network HTTPS URL, create a short-lived pairing QR/link, inspect active phones, view revoked/history records separately, revoke one active phone, or revoke all active phones. New QR creation blocks HTTP URLs. In remote Docker mode, QR creation requires a manual Android-facing HTTPS URL and verifies its `serverInstanceId` matches the desktop management URL before creating the pairing session. See [Phone Access / Remote Access](./remote_access.md) for the user and packaging guide.
+autobyteus-web/docs/settings.md:96:  - The guide tells users to copy the full MagicDNS hostname/FQDN, for example `machine.tailnet.ts.net`, append `/mobile`, and paste that HTTPS URL into Phone Access. IPv4/IPv6 and `:29695` HTTP interface addresses are diagnostics rather than the preferred HTTPS Serve QR target.
+autobyteus-web/docs/settings.md:97:  - The Phone Access card makes the manual Tailscale Serve HTTPS URL field the primary post-Serve QR path. HTTP-only discovered candidates remain selectable for diagnostics but are not auto-selected under HTTPS-required pairing.
+autobyteus-web/docs/settings.md:104:  - Docker guide copy intentionally distinguishes the mobile-safe profile from standard/compatibility Docker workflows: mobile-safe avoids `SYS_ADMIN`, avoids `seccomp=unconfined`, binds published ports to localhost, does not create automatic shared host bind mounts, and is intended to be reached through a trusted private network rather than the public internet.
+autobyteus-web/utils/phoneAccessRemoteNode.ts:59:        ? 'Phone Access pairing requires an HTTPS URL. Paste a private HTTPS URL such as https://<node>.<tailnet>.ts.net/mobile.'
+autobyteus-web/utils/phoneAccessRemoteNode.ts:61:          ? 'Remote-node Phone Access requires an Android-facing HTTPS URL, not localhost, 127.0.0.1, host.docker.internal, or a container-local address.'
+autobyteus-server-ts/tests/unit/external-channel/services/channel-message-receipt-service.test.ts:76:  it("normalizes claim-ingress-dispatch inputs", async () => {
+autobyteus-server-ts/tests/unit/managed-capabilities/messaging-gateway/managed-messaging-gateway-runtime-env.test.ts:43:      adminToken: "admin-token",
+autobyteus-server-ts/tests/unit/managed-capabilities/messaging-gateway/managed-messaging-gateway-runtime-env.test.ts:63:        adminToken: "admin-token",
+autobyteus-server-ts/tests/unit/remote-access/route-policy.test.ts:45:  it("allows trusted-network Phone Access management routes without additional credentials", async () => {
+autobyteus-web/stores/phoneAccessStore.ts:159:      error.value = 'Enable Phone Access before creating a QR code.';
+autobyteus-server-ts/tests/unit/remote-access/pairing-auth-service.test.ts:32:  it("blocks pairing creation while Phone Access is disabled", async () => {
+# rg exit code: 0
+# line count: 149
