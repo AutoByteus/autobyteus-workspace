@@ -1,0 +1,229 @@
+## cleanup: probe ports should not be listening
+
+## terminal descriptor summary
+{
+  "result": "pass",
+  "normalStats": {
+    "openMs": {
+      "count": 8,
+      "min": 1,
+      "p50": 2,
+      "p95": 2,
+      "max": 3,
+      "avg": 2
+    },
+    "outputMs": {
+      "count": 8,
+      "min": 145,
+      "p50": 152,
+      "p95": 181,
+      "max": 181,
+      "avg": 161
+    },
+    "closeMs": {
+      "count": 8,
+      "min": 0,
+      "p50": 1,
+      "p95": 1,
+      "max": 2,
+      "avg": 1
+    }
+  },
+  "earlyCloseStats": {
+    "openMs": {
+      "count": 25,
+      "min": 1,
+      "p50": 1,
+      "p95": 4,
+      "max": 5,
+      "avg": 1
+    },
+    "closeMs": {
+      "count": 25,
+      "min": 0,
+      "p50": 0,
+      "p95": 1,
+      "max": 1,
+      "avg": 0
+    }
+  },
+  "abortBeforeOpenStats": {
+    "closeMs": {
+      "count": 10,
+      "min": 1,
+      "p50": 1,
+      "p95": 2,
+      "max": 2,
+      "avg": 1
+    }
+  },
+  "samples": [
+    {
+      "label": "baseline_after_health",
+      "fdCount": 36,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T05:15:20.669Z"
+    },
+    {
+      "label": "after_invalid_cwd",
+      "fdCount": 36,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T05:15:20.864Z"
+    },
+    {
+      "label": "after_8_normal_runs",
+      "fdCount": 32,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T05:15:29.882Z"
+    },
+    {
+      "label": "after_25_early_close_final_wait",
+      "fdCount": 32,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T05:15:36.646Z"
+    },
+    {
+      "label": "after_10_abort_before_open_final_wait",
+      "fdCount": 32,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T05:15:39.358Z"
+    }
+  ]
+}
+final pty/revoked descriptor count:
+0
+
+## high churn summary
+{
+  "result": "pass",
+  "fdSamples": [
+    {
+      "label": "after_all_snapshot_queries_no_websocket",
+      "count": 37,
+      "at": "2026-05-24T05:18:14.865Z"
+    },
+    {
+      "label": "after_closing_final_shared_visible_websocket",
+      "count": 33,
+      "at": "2026-05-24T05:18:18.742Z"
+    },
+    {
+      "label": "after_20_open_close_cycles",
+      "count": 33,
+      "at": "2026-05-24T05:18:25.466Z"
+    },
+    {
+      "label": "after_10_close_before_connected_cycles",
+      "count": 33,
+      "at": "2026-05-24T05:18:27.618Z"
+    },
+    {
+      "label": "after_terminal_real_cwd_open",
+      "count": 38,
+      "at": "2026-05-24T05:18:27.931Z"
+    },
+    {
+      "label": "after_terminal_real_cwd_close",
+      "count": 33,
+      "at": "2026-05-24T05:18:29.521Z"
+    },
+    {
+      "label": "terminal_cycle_1_open",
+      "count": 38,
+      "at": "2026-05-24T05:18:29.657Z"
+    },
+    {
+      "label": "terminal_cycle_1_closed",
+      "count": 33,
+      "at": "2026-05-24T05:18:29.843Z"
+    },
+    {
+      "label": "terminal_cycle_10_open",
+      "count": 38,
+      "at": "2026-05-24T05:18:31.153Z"
+    },
+    {
+      "label": "terminal_cycle_10_closed",
+      "count": 33,
+      "at": "2026-05-24T05:18:31.743Z"
+    },
+    {
+      "label": "after_10_terminal_open_close_cycles",
+      "count": 33,
+      "at": "2026-05-24T05:18:33.331Z"
+    },
+    {
+      "label": "after_codex_probe_final",
+      "count": 33,
+      "at": "2026-05-24T05:18:33.667Z"
+    }
+  ],
+  "childProcessSamples": [
+    {
+      "label": "after_terminal_real_cwd_close",
+      "count": 0,
+      "children": [],
+      "at": "2026-05-24T05:18:29.570Z"
+    },
+    {
+      "label": "after_10_terminal_open_close_cycles",
+      "count": 0,
+      "children": [],
+      "at": "2026-05-24T05:18:33.381Z"
+    }
+  ],
+  "codexVersion": "codex-cli 0.133.0",
+  "codexProviderProbe": {
+    "attempted": true,
+    "ok": true,
+    "providerCount": 13,
+    "modelCount": 6,
+    "error": null
+  }
+}
+
+## git diff --check report/failure analysis
+git diff --check report/failure analysis: PASS
+
+## git status --short relevant paths
+ M tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-autobyteus-ts-terminal-unit-integration-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-backend-build-full-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-backend-team-run-service-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-embedded-server-high-churn-v2-20260524-server.stderr.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-embedded-server-high-churn-v2-20260524-server.stdout.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-embedded-server-high-churn-v2-20260524.json
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-embedded-server-high-churn-v2-20260524.mjs
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-embedded-server-high-churn-v2-20260524.run.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-expanded-workspace-file-explorer-e2e-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-frontend-boundary-localization-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-frontend-electron-tests-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-frontend-nuxt-build-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-frontend-terminal-mobile-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-report-diff-cleanup-check-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-server-terminal-e2e-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-spawn-helper-mode-after-tests-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-terminal-server-connect-timing-v2-20260524-final-lsof.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-terminal-server-connect-timing-v2-20260524-server.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-terminal-server-connect-timing-v2-20260524.json
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-terminal-server-connect-timing-v2-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-terminal-server-connect-timing-v2-20260524.mjs
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-terminal-server-connect-timing-v2-20260524.run.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-autobyteus-ts-terminal-unit-integration-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-backend-build-full-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-diff-check-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-isolated-pty-spawn-helper-permission-probe-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-server-terminal-e2e-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-source-size-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-spawn-helper-mode-after-tests-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-terminal-server-connect-timing-v2-20260524-final-lsof.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-terminal-server-connect-timing-v2-20260524-server.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-terminal-server-connect-timing-v2-20260524.json
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-terminal-server-connect-timing-v2-20260524.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-terminal-server-connect-timing-v2-20260524.mjs
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round17-terminal-server-connect-timing-v2-20260524.run.log

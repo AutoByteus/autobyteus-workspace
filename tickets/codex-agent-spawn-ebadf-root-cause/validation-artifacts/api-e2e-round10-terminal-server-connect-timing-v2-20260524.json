@@ -1,0 +1,728 @@
+{
+  "result": "pass",
+  "startedAt": "2026-05-24T05:15:17.437Z",
+  "completedAt": "2026-05-24T05:15:39.358Z",
+  "baseUrl": "http://127.0.0.1:59651",
+  "serverPid": 17802,
+  "health": {
+    "attempts": 9,
+    "healthReadyMs": 2036
+  },
+  "baseline": {
+    "label": "baseline_after_health",
+    "fdCount": 36,
+    "childCount": 0,
+    "children": [],
+    "at": "2026-05-24T05:15:20.669Z"
+  },
+  "invalidCwd": {
+    "closeMs": 6,
+    "code": 4004,
+    "reason": "Terminal cwd unavailable"
+  },
+  "normalStats": {
+    "openMs": {
+      "count": 8,
+      "min": 1,
+      "p50": 2,
+      "p95": 2,
+      "max": 3,
+      "avg": 2
+    },
+    "outputMs": {
+      "count": 8,
+      "min": 145,
+      "p50": 152,
+      "p95": 181,
+      "max": 181,
+      "avg": 161
+    },
+    "closeMs": {
+      "count": 8,
+      "min": 0,
+      "p50": 1,
+      "p95": 1,
+      "max": 2,
+      "avg": 1
+    }
+  },
+  "earlyCloseStats": {
+    "openMs": {
+      "count": 25,
+      "min": 1,
+      "p50": 1,
+      "p95": 4,
+      "max": 5,
+      "avg": 1
+    },
+    "closeMs": {
+      "count": 25,
+      "min": 0,
+      "p50": 0,
+      "p95": 1,
+      "max": 1,
+      "avg": 0
+    }
+  },
+  "abortBeforeOpenStats": {
+    "closeMs": {
+      "count": 10,
+      "min": 1,
+      "p50": 1,
+      "p95": 2,
+      "max": 2,
+      "avg": 1
+    }
+  },
+  "normalRuns": [
+    {
+      "id": "normal-1",
+      "openMs": 2,
+      "outputMs": 181,
+      "closeMs": 1,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 36,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-2",
+      "openMs": 1,
+      "outputMs": 181,
+      "closeMs": 2,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 35,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-3",
+      "openMs": 1,
+      "outputMs": 145,
+      "closeMs": 0,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-4",
+      "openMs": 1,
+      "outputMs": 181,
+      "closeMs": 1,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-5",
+      "openMs": 2,
+      "outputMs": 145,
+      "closeMs": 1,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-6",
+      "openMs": 2,
+      "outputMs": 152,
+      "closeMs": 0,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-7",
+      "openMs": 2,
+      "outputMs": 152,
+      "closeMs": 1,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "id": "normal-8",
+      "openMs": 3,
+      "outputMs": 149,
+      "closeMs": 0,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    }
+  ],
+  "earlyCloseRuns": [
+    {
+      "id": "early-1",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-2",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "id": "early-3",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "id": "early-4",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-5",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-6",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-7",
+      "openMs": 2,
+      "closeMs": 0
+    },
+    {
+      "id": "early-8",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-9",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "id": "early-10",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-11",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-12",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "id": "early-13",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-14",
+      "openMs": 4,
+      "closeMs": 0
+    },
+    {
+      "id": "early-15",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-16",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "id": "early-17",
+      "openMs": 5,
+      "closeMs": 0
+    },
+    {
+      "id": "early-18",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "id": "early-19",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "id": "early-20",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "id": "early-21",
+      "openMs": 4,
+      "closeMs": 1
+    },
+    {
+      "id": "early-22",
+      "openMs": 2,
+      "closeMs": 0
+    },
+    {
+      "id": "early-23",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "id": "early-24",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "id": "early-25",
+      "openMs": 1,
+      "closeMs": 1
+    }
+  ],
+  "abortBeforeOpenRuns": [
+    {
+      "id": "abort-before-open-1",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-2",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-3",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-4",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-5",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-6",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-7",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-8",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-9",
+      "closeMs": 2,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "id": "abort-before-open-10",
+      "closeMs": 2,
+      "code": 1006,
+      "reason": ""
+    }
+  ],
+  "samples": [
+    {
+      "label": "baseline_after_health",
+      "fdCount": 36,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T05:15:20.669Z"
+    },
+    {
+      "label": "after_invalid_cwd",
+      "fdCount": 36,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T05:15:20.864Z"
+    },
+    {
+      "label": "after_8_normal_runs",
+      "fdCount": 32,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T05:15:29.882Z"
+    },
+    {
+      "label": "after_25_early_close_final_wait",
+      "fdCount": 32,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T05:15:36.646Z"
+    },
+    {
+      "label": "after_10_abort_before_open_final_wait",
+      "fdCount": 32,
+      "childCount": 0,
+      "children": [],
+      "at": "2026-05-24T05:15:39.358Z"
+    }
+  ],
+  "thresholds": {
+    "maxNormalOpenMs": 5000,
+    "maxNormalOutputMs": 10000,
+    "maxEarlyOpenMs": 5000,
+    "maxCloseMs": 5000,
+    "maxFdGrowthFromAfterNormalToFinal": 15,
+    "expectedFinalChildCount": 0
+  },
+  "events": [
+    {
+      "at": "2026-05-24T05:15:17.437Z",
+      "event": "starting_server",
+      "serverEntry": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/dist/app.js",
+      "baseUrl": "http://127.0.0.1:59651",
+      "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-data-wOjBKy",
+      "workspaceRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-ws-vg2yn1",
+      "prismaEnginePair": "found"
+    },
+    {
+      "at": "2026-05-24T05:15:20.669Z",
+      "event": "sample",
+      "label": "baseline_after_health",
+      "fdCount": 36,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-24T05:15:20.675Z",
+      "event": "invalid_cwd_close",
+      "closeMs": 6,
+      "code": 4004,
+      "reason": "Terminal cwd unavailable"
+    },
+    {
+      "at": "2026-05-24T05:15:20.864Z",
+      "event": "sample",
+      "label": "after_invalid_cwd",
+      "fdCount": 36,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-24T05:15:21.986Z",
+      "event": "normal_run",
+      "id": "normal-1",
+      "openMs": 2,
+      "outputMs": 181,
+      "closeMs": 1,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 36,
+      "childCountAfterClose": 0
+    },
+    {
+      "at": "2026-05-24T05:15:23.109Z",
+      "event": "normal_run",
+      "id": "normal-2",
+      "openMs": 1,
+      "outputMs": 181,
+      "closeMs": 2,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 35,
+      "childCountAfterClose": 0
+    },
+    {
+      "at": "2026-05-24T05:15:24.195Z",
+      "event": "normal_run",
+      "id": "normal-3",
+      "openMs": 1,
+      "outputMs": 145,
+      "closeMs": 0,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "at": "2026-05-24T05:15:25.314Z",
+      "event": "normal_run",
+      "id": "normal-4",
+      "openMs": 1,
+      "outputMs": 181,
+      "closeMs": 1,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "at": "2026-05-24T05:15:26.403Z",
+      "event": "normal_run",
+      "id": "normal-5",
+      "openMs": 2,
+      "outputMs": 145,
+      "closeMs": 1,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "at": "2026-05-24T05:15:27.511Z",
+      "event": "normal_run",
+      "id": "normal-6",
+      "openMs": 2,
+      "outputMs": 152,
+      "closeMs": 0,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "at": "2026-05-24T05:15:28.605Z",
+      "event": "normal_run",
+      "id": "normal-7",
+      "openMs": 2,
+      "outputMs": 152,
+      "closeMs": 1,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "at": "2026-05-24T05:15:29.696Z",
+      "event": "normal_run",
+      "id": "normal-8",
+      "openMs": 3,
+      "outputMs": 149,
+      "closeMs": 0,
+      "outputTail": "cat .terminal_probe_marker\r\n\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, please run `chsh -s /bin/zsh`.\r\nFor more details, please visit https://support.apple.com/kb/HT208050.\r\n\u001b[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timi\ring-ws-vg2yn1 $ cat .terminal_probe_marker\r\nROUND9_ACTUAL_COMMAND_OUTPUT\r\n",
+      "fdAfterClose": 32,
+      "childCountAfterClose": 0
+    },
+    {
+      "at": "2026-05-24T05:15:29.882Z",
+      "event": "sample",
+      "label": "after_8_normal_runs",
+      "fdCount": 32,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-24T05:15:29.885Z",
+      "event": "early_close_run",
+      "id": "early-1",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T05:15:29.938Z",
+      "event": "early_close_run",
+      "id": "early-2",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "at": "2026-05-24T05:15:29.990Z",
+      "event": "early_close_run",
+      "id": "early-3",
+      "openMs": 1,
+      "closeMs": 0
+    },
+    {
+      "at": "2026-05-24T05:15:30.095Z",
+      "event": "early_close_run",
+      "id": "early-5",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T05:15:30.809Z",
+      "event": "early_close_run",
+      "id": "early-10",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T05:15:31.525Z",
+      "event": "early_close_run",
+      "id": "early-15",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T05:15:32.241Z",
+      "event": "early_close_run",
+      "id": "early-20",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T05:15:32.959Z",
+      "event": "early_close_run",
+      "id": "early-25",
+      "openMs": 1,
+      "closeMs": 1
+    },
+    {
+      "at": "2026-05-24T05:15:36.646Z",
+      "event": "sample",
+      "label": "after_25_early_close_final_wait",
+      "fdCount": 32,
+      "childCount": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-24T05:15:36.647Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-1",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T05:15:36.647Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-1",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T05:15:36.699Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-2",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T05:15:36.699Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-2",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T05:15:36.751Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-3",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T05:15:36.751Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-3",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T05:15:36.802Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-4",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T05:15:36.802Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-4",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T05:15:36.853Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-5",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T05:15:36.853Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-5",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T05:15:36.906Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-6",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T05:15:36.906Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-6",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T05:15:36.960Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-7",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T05:15:36.960Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-7",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T05:15:37.011Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-8",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T05:15:37.011Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-8",
+      "closeMs": 1,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T05:15:37.064Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-9",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T05:15:37.064Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-9",
+      "closeMs": 2,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T05:15:37.118Z",
+      "event": "aborted_before_open_error",
+      "id": "abort-before-open-10",
+      "message": "WebSocket was closed before the connection was established"
+    },
+    {
+      "at": "2026-05-24T05:15:37.119Z",
+      "event": "abort_before_open_run",
+      "id": "abort-before-open-10",
+      "closeMs": 2,
+      "code": 1006,
+      "reason": ""
+    },
+    {
+      "at": "2026-05-24T05:15:39.358Z",
+      "event": "sample",
+      "label": "after_10_abort_before_open_final_wait",
+      "fdCount": 32,
+      "childCount": 0,
+      "children": []
+    }
+  ],
+  "failures": []
+}

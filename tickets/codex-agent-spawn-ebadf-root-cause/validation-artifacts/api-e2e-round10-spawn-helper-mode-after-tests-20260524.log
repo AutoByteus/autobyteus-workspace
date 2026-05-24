@@ -1,0 +1,3 @@
+## node-pty spawn-helper execute mode check after API/E2E tests
+644 node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-x64/spawn-helper
+755 node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper

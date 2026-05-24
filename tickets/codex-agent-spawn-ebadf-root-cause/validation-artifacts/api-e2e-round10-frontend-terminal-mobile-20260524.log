@@ -1,0 +1,160 @@
+## command
+pnpm -C autobyteus-web test:nuxt components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts stores/__tests__/workspaceMetadataActions.spec.ts stores/__tests__/fileExplorerStore.spec.ts --run --reporter verbose
+## started at 2026-05-24T05:19:09Z
+
+> autobyteus@1.3.29 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts stores/__tests__/workspaceMetadataActions.spec.ts stores/__tests__/fileExplorerStore.spec.ts --run --reporter verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/tools/__tests__/Terminal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/fileExplorerStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/workspaceMetadataActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useTerminalSession.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/tools/__tests__/Terminal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/fileExplorerStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useTerminalSession.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/workspaceMetadataActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/workspaceMetadataActions.spec.ts > workspace metadata cache identity > preserves case-distinct root paths as distinct cache identities 2ms
+ ✓ stores/__tests__/workspaceMetadataActions.spec.ts > workspace metadata cache identity > preserves metadata kind while caching by root path 0ms
+ ✓ stores/__tests__/fileExplorerStore.spec.ts > fileExplorerStore > deleteFileOrFolder removes file state and applies the file-explorer tree update 3ms
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > connects to the cwd-based WebSocket URL
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/7a3c96f1-63cb-455e-a50c-6c3b0b6fbf67?cwd=%2Ftmp%2Fproject
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > updates status to connected on open
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/30ab91d6-c7b3-4c79-9001-af1fd4544b03?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends encoded input when connected
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/b7157b6b-fd2f-41cb-8fb6-8519218755cf?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends resize events
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/ba464276-659c-4a1c-bfbe-780e8338dba5?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles output messages
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/05138fdc-840c-438f-a0ef-6a9ceafcc564?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles disconnection
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/e24db766-78eb-4c10-acd4-3780ba519cb1?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/1eaaeffb-eb55-4a20-982e-1dd70320f30c?cwd=%2Ftmp%2Fws-1
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON
+[useTerminalSession] Error parsing message: SyntaxError: Unexpected token 'i', "invalid json" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at MockWebSocket.ws.onmessage (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/composables/useTerminalSession.ts:109:32)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:149:14
+    at Proxy.assertThrows (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:2767:5)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1686:25)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1088:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1735:33)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1420:16)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1029:14)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1686:25)
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not connect without a root path
+[useTerminalSession] No terminal root path
+
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > connects to the cwd-based WebSocket URL 6ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > updates status to connected on open 1ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends encoded input when connected 1ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends resize events 1ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles output messages 0ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles disconnection 1ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON 5ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not connect without a root path 0ms
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts > Terminal.vue > initializes xterm with the default app font size and connects from active workspace metadata 147ms
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts > Terminal.vue > uses an explicit root-path terminal target without workspace activation 3ms
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts > Terminal.vue > updates the xterm font size and refits the layout when the preset changes 5ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > does not show an existing run monitor after switching mobile Chat to a non-run context 15ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > routes non-run file attachments to mobile draft state instead of the stale selected run 3ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > shows composer attachments from the current mobile context only 5ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > reconciles mobile current agent-run context when a temporary run is promoted after first send 1ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > reconciles mobile current team-run context and pending state when a temporary team is promoted after first send 2ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > keeps pending team run attachments visible across focus changes and flushes them to the focused leaf before send 4ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > blocks pending team run attachment flush for non-leaf focus without consuming pending files 2ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > uses draft attachment count for run setup and launches with the next-run draft 15ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > updates both team focus and the mobile work context when changing an existing team-run target 5ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > hides existing-run target selector on Runs while keeping compact target controls on focused work tabs 5ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > keeps non-chat tabs in a bounded block task surface so h-full roots fill the viewport 4ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > prefers remembered valid team focus when mapping Recent team runs and falls back safely when stale 1ms
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > does not leak stale run or tool activity into non-run mobile activity contexts 3ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > shows mixed-success reachability instead of claiming the desktop is unreachable 10ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > uses concise configure-only mobile setup without first-message entry or launch summary 18ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > removes team launch first-message target from setup while keeping searchable team selection 9ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps mobile launch disabled instead of silently choosing a model for unconfigured agents 6ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > consumes a single-use setup intent so selected agents open visible setup preselected 4ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps context visibility adjacent to the mobile composer send decision 10ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps mobile Files browse-first while preserving secondary filters and deliberate deep search 8ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > renders Activity as a compact digest without secondary issue filters or redundant headers 5ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > opens mobile Files from run root-path metadata with an empty workspace store 8ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > releases the mobile Files live session when the visible context changes 5ms
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps interactive Terminal and VNC out of mobile refinement surfaces 1ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > lands paired phones on compact Home with current node data, recent work, and no desktop workspace link 24ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > explains stale desktop workspace redirects inside the paired mobile home 6ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > opens a recent run row into one mobile work shell with Chat/Runs/Files/Activity bottom navigation 11ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > keeps New run as a focused mobile setup surface instead of mixing recent history 16ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > shows a focused context switcher with Recent, Agents, Teams, and Workspaces instead of the desktop tree 8ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > defaults no-recent mobile work picking to startable agents and teams 8ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > shows a retriable catalog error instead of a false empty agent segment 11ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > keeps mobile components free from desktop shell imports and stale workspace routing 2ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > implements Round 4 mobile parity surfaces instead of placeholders 2ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > isolates mobile run selection from desktop workspace shell navigation 1ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > clears stale run selection through the pure mobile path when switching to a workspace 9ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > does not reuse stale authorized API reachability after a later true network failure 10ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell phone-first navigation > keeps post-pair checking active across the async session flip before stable Home 15ms
+
+ Test Files  7 passed (7)
+      Tests  51 passed (51)
+   Start at  07:19:12
+   Duration  6.46s (transform 3.32s, setup 35.03s, collect 1.56s, tests 456ms, environment 2.86s, prepare 1.59s)
+
+## exit_code=0 elapsed_seconds=10
+## completed at 2026-05-24T05:19:19Z
