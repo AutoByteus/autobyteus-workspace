@@ -35,6 +35,7 @@ describe('authorized resource URLs', () => {
   it('classifies protected REST resource URL families', () => {
     expect(isProtectedRemoteAccessResourceUrl('/rest/files/media.png')).toBe(true);
     expect(isProtectedRemoteAccessResourceUrl('http://node/rest/workspaces/ws/content?path=a.png')).toBe(true);
+    expect(isProtectedRemoteAccessResourceUrl('/rest/team-runs/team-1/team-communication/messages/msg-1/references/ref-1/content')).toBe(true);
     expect(isProtectedRemoteAccessResourceUrl('/rest/context-files/file-1')).toBe(true);
     expect(isProtectedRemoteAccessResourceUrl('/rest/health')).toBe(false);
     expect(isProtectedRemoteAccessResourceUrl('blob:http://node/blob-id')).toBe(false);

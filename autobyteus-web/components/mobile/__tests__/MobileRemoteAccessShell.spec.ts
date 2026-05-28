@@ -355,6 +355,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
       'MobileTeamMemberFocusBar.vue',
       'MobileActivityDigest.vue',
       'MobileTeamMessages.vue',
+      'MobileTeamReferenceViewer.vue',
       'MobileToolActivityList.vue',
     ];
 
@@ -364,6 +365,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(combined).not.toContain('RightSideTabs');
     expect(combined).not.toContain('ArtifactsTab');
     expect(combined).not.toContain('BrowserPanel');
+    expect(combined).not.toContain('TeamCommunicationPanel');
     expect(combined).not.toContain('window.electronAPI');
     expect(combined).not.toContain('to="/workspace"');
   });
@@ -376,6 +378,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     const fileViewerSource = readFileSync(resolve(mobileDir, 'MobileFileViewer.vue'), 'utf-8');
     const activitySource = readFileSync(resolve(mobileDir, 'MobileActivity.vue'), 'utf-8');
     const activityDigestSource = readFileSync(resolve(mobileDir, 'MobileActivityDigest.vue'), 'utf-8');
+    const teamMessagesSource = readFileSync(resolve(mobileDir, 'MobileTeamMessages.vue'), 'utf-8');
     const artifactsSource = readFileSync(resolve(mobileDir, 'MobileArtifacts.vue'), 'utf-8');
     const chatSource = readFileSync(resolve(mobileDir, 'MobileChat.vue'), 'utf-8');
 
@@ -395,6 +398,8 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(chatSource).toContain('MobileComposerContextTray');
     expect(activitySource).toContain('MobileActivityDigest');
     expect(activityDigestSource).toContain('MobileTeamMessages');
+    expect(teamMessagesSource).toContain('MobileTeamReferenceViewer');
+    expect(teamMessagesSource).toContain('mobile-team-reference-row');
     expect(activityDigestSource).toContain('MobileToolActivityList');
     expect(artifactsSource).toContain('ArtifactContentViewer');
     expect(artifactsSource).toContain('useRunFileChangesStore');

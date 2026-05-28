@@ -1,0 +1,9 @@
+# Electron Build SHA256 — mobile-file-reference-controls
+
+- Date: 2026-05-28
+- Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_ID= APPLE_APP_SPECIFIC_PASSWORD= APPLE_SIGNING_IDENTITY= AUTOBYTEUS_BUILD_FLAVOR=personal corepack pnpm build:electron:mac`
+
+5f3796cf8b943df7f6a34ee7b3153f0e4869ca4f4506026a7bf7e40ddf1d4cdd  electron-dist/AutoByteus_personal_macos-arm64-1.3.31.dmg
+8b083c07afa583ce96555aa99510d6a6d6eaeed35c510555d123ecfe94fce9cc  electron-dist/AutoByteus_personal_macos-arm64-1.3.31.zip
+12ccec11d4e68368498ceb4d316768f430f22553edf341144636d6a40cd44000  electron-dist/AutoByteus_personal_macos-arm64-1.3.31.dmg.blockmap
+88f00d53ea748e3a54700c6dc3dc26b776b64d8ccd7ef3a4b3bbe400c2fac4dc  electron-dist/AutoByteus_personal_macos-arm64-1.3.31.zip.blockmap

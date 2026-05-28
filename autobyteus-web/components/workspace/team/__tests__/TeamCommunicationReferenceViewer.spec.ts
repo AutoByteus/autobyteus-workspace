@@ -1,9 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
 import TeamCommunicationReferenceViewer from '../TeamCommunicationReferenceViewer.vue';
+import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
+import type { TeamCommunicationReferenceFileType } from '~/stores/teamCommunicationTypes';
+import type { FileDataType } from '~/stores/fileExplorer';
+import { mobileCredentialStorage } from '~/utils/remoteAccess/mobileCredentialStorage';
+import type { MobileNodeSession } from '~/types/remoteAccess';
 
 const windowNodeContextStoreMock = {
   getBoundEndpoints: vi.fn(() => ({ rest: 'http://127.0.0.1:4100/rest/' })),
+  bindNodeContext: vi.fn(),
 };
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
@@ -32,18 +39,35 @@ const baseReference = {
   updatedAt: '2026-04-12T10:00:00.000Z',
 };
 
-const mountSubject = () => mount(TeamCommunicationReferenceViewer, {
+const storedSession = (): MobileNodeSession => ({
+  version: 1,
+  nodeId: 'mobile-paired-node',
+  serverBaseUrl: 'http://127.0.0.1:4100',
+  credential: 'mra_secret',
+  pairedAt: '2026-05-16T00:00:00.000Z',
+  device: {
+    deviceId: 'device-1',
+    displayName: 'Phone',
+    clientFacingBaseUrl: 'http://127.0.0.1:4100',
+    createdAt: '2026-05-16T00:00:00.000Z',
+    lastSeenAt: null,
+    revokedAt: null,
+  },
+});
+
+const mountSubject = (props: Record<string, unknown> = {}) => mount(TeamCommunicationReferenceViewer, {
   props: {
     teamRunId: 'team run/1',
     messageId: 'message/1',
     reference: baseReference,
+    ...props,
   },
   global: {
     stubs: {
       Icon: true,
       FileViewer: {
         props: ['file', 'error', 'mode'],
-        template: '<div data-test="file-viewer"><span data-test="content">{{ file.content }}</span><span data-test="mode">{{ mode }}</span><span data-test="error">{{ error }}</span></div>',
+        template: '<div data-test="file-viewer"><span data-test="type">{{ file.type }}</span><span data-test="content">{{ file.content }}</span><span data-test="url">{{ file.url }}</span><span data-test="mode">{{ mode }}</span><span data-test="error">{{ error }}</span></div>',
       },
     },
     mocks: {
@@ -54,6 +78,8 @@ const mountSubject = () => mount(TeamCommunicationReferenceViewer, {
 
 describe('TeamCommunicationReferenceViewer.vue', () => {
   beforeEach(() => {
+    setActivePinia(createPinia());
+    window.localStorage.clear();
     vi.clearAllMocks();
   });
 
@@ -63,6 +89,8 @@ describe('TeamCommunicationReferenceViewer.vue', () => {
   });
 
   it('fetches text reference bytes from the team-communication message-owned content route', async () => {
+    mobileCredentialStorage.save(storedSession());
+    useMobileNodeSessionStore().initializeFromStorage();
     vi.stubGlobal('fetch', vi.fn(async () => ({
       status: 200,
       ok: true,
@@ -74,10 +102,68 @@ describe('TeamCommunicationReferenceViewer.vue', () => {
 
     expect(fetch).toHaveBeenCalledWith(
       'http://127.0.0.1:4100/rest/team-runs/team%20run%2F1/team-communication/messages/message%2F1/references/ref%3Awith%2Fslash/content',
-      { cache: 'no-store' },
+      expect.objectContaining({
+        cache: 'no-store',
+        headers: expect.any(Headers),
+      }),
     );
+    const [, init] = vi.mocked(fetch).mock.calls[0];
+    expect((init?.headers as Headers).get('Authorization')).toBe('Bearer mra_secret');
     expect(wrapper.get('[data-test="content"]').text()).toBe('# Handoff');
   });
+
+  it.each([
+    ['image', 'Image', '/tmp/screenshot.png'],
+    ['audio', 'Audio', '/tmp/clip.mp3'],
+    ['video', 'Video', '/tmp/demo.mp4'],
+    ['pdf', 'PDF', '/tmp/spec.pdf'],
+    ['csv', 'Excel', '/tmp/data.csv'],
+    ['excel', 'Excel', '/tmp/report.xlsx'],
+  ] satisfies Array<[TeamCommunicationReferenceFileType, FileDataType, string]>)(
+    'fetches %s reference bytes through the authorized route and passes a blob URL to FileViewer',
+    async (referenceType, expectedFileType, path) => {
+      mobileCredentialStorage.save(storedSession());
+      useMobileNodeSessionStore().initializeFromStorage();
+      const blob = new Blob(['binary'], { type: 'application/octet-stream' });
+      const createObjectURL = vi.fn(() => `blob:${referenceType}-reference`);
+      vi.stubGlobal('fetch', vi.fn(async () => ({
+        status: 200,
+        ok: true,
+        blob: async () => blob,
+      })));
+      Object.defineProperty(URL, 'createObjectURL', {
+        configurable: true,
+        value: createObjectURL,
+      });
+      Object.defineProperty(URL, 'revokeObjectURL', {
+        configurable: true,
+        value: vi.fn(),
+      });
+
+      const wrapper = mountSubject({
+        reference: {
+          ...baseReference,
+          referenceId: `${referenceType}-ref`,
+          path,
+          type: referenceType,
+        },
+      });
+      await flushPromises();
+
+      expect(fetch).toHaveBeenCalledWith(
+        `http://127.0.0.1:4100/rest/team-runs/team%20run%2F1/team-communication/messages/message%2F1/references/${referenceType}-ref/content`,
+        expect.objectContaining({
+          cache: 'no-store',
+          headers: expect.any(Headers),
+        }),
+      );
+      const [, init] = vi.mocked(fetch).mock.calls[0];
+      expect((init?.headers as Headers).get('Authorization')).toBe('Bearer mra_secret');
+      expect(createObjectURL).toHaveBeenCalledWith(blob);
+      expect(wrapper.get('[data-test="type"]').text()).toBe(expectedFileType);
+      expect(wrapper.get('[data-test="url"]').text()).toBe(`blob:${referenceType}-reference`);
+    },
+  );
 
   it('shows the unavailable state when the content route returns 404', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({
@@ -159,5 +245,27 @@ describe('TeamCommunicationReferenceViewer.vue', () => {
     previewButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await flushPromises();
     expect(document.body.querySelector('[data-test="mode"]')?.textContent).toBe('preview');
+  });
+
+  it('can disable rich HTML preview for mobile while keeping raw authorized content', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      status: 200,
+      ok: true,
+      text: async () => '<h1>Safe raw view</h1>',
+    })));
+
+    const wrapper = mountSubject({
+      disableRichTextPreview: true,
+      reference: {
+        ...baseReference,
+        referenceId: 'html-ref',
+        path: '/tmp/page.html',
+      },
+    });
+    await flushPromises();
+
+    expect(wrapper.get('[data-test="mode"]').text()).toBe('edit');
+    expect(wrapper.find('button[title="Preview"]').exists()).toBe(false);
+    expect(wrapper.get('[data-test="content"]').text()).toContain('Safe raw view');
   });
 });

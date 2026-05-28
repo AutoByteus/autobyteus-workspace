@@ -19,23 +19,32 @@
       </button>
     </header>
 
-    <div class="min-h-0 flex-1 overflow-y-auto p-5">
-      <div v-if="support.support === 'unsupported'" class="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-900" data-testid="mobile-file-preview-unsupported">
-        <p class="font-bold">Unsupported on mobile</p>
-        <p class="mt-2 text-sm">{{ support.message }}</p>
+    <div class="min-h-0 flex-1 overflow-hidden bg-slate-50 p-3">
+      <div v-if="viewerError" class="h-full overflow-y-auto rounded-3xl border border-red-200 bg-red-50 p-5 text-red-800" data-testid="mobile-file-preview-error">
+        <p class="font-bold">Could not load preview</p>
+        <p class="mt-2 text-sm">{{ viewerError }}</p>
       </div>
-      <div v-else-if="previewState?.isLoading || !previewState" class="rounded-3xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-600" data-testid="mobile-file-preview-loading">
+      <div v-else-if="isLoading" class="h-full rounded-3xl border border-slate-200 bg-white p-5 text-sm text-slate-600" data-testid="mobile-file-preview-loading">
         Loading file content through the authorized workspace file API…
       </div>
-      <div v-else-if="previewState.error" class="rounded-3xl border border-red-200 bg-red-50 p-5 text-red-800" data-testid="mobile-file-preview-error">
-        <p class="font-bold">Could not load preview</p>
-        <p class="mt-2 text-sm">{{ previewState.error }}</p>
+      <div v-else-if="isUnsupported" class="h-full overflow-y-auto rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-900" data-testid="mobile-file-preview-unsupported">
+        <p class="font-bold">Unsupported on mobile</p>
+        <p class="mt-2 text-sm">This file type is not available in the mobile read-only viewer.</p>
       </div>
-      <div v-else-if="isTooLarge" class="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-900" data-testid="mobile-file-preview-large">
+      <div v-else-if="isTooLarge" class="h-full overflow-y-auto rounded-3xl border border-amber-200 bg-amber-50 p-5 text-amber-900" data-testid="mobile-file-preview-large">
         <p class="font-bold">Preview too large for mobile</p>
-        <p class="mt-2 text-sm">This file has {{ previewLength }} characters. Mobile preview is limited to {{ maxCharsLabel }} characters.</p>
+        <p class="mt-2 text-sm">This file has {{ previewLengthLabel }} characters. Mobile preview is limited to {{ maxCharsLabel }} characters.</p>
       </div>
-      <pre v-else class="overflow-x-auto whitespace-pre-wrap break-words rounded-3xl border border-slate-200 bg-slate-950 p-4 text-xs leading-5 text-slate-50" data-testid="mobile-file-preview-content">{{ previewContent }}</pre>
+      <div v-else class="h-full min-h-0 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm" data-testid="mobile-file-preview-content">
+        <FileViewer
+          :file="viewerFile"
+          :mode="viewerMode"
+          :read-only="true"
+          :loading="fileState?.isLoading ?? false"
+          :error="fileState?.error ?? null"
+          class="h-full w-full"
+        />
+      </div>
     </div>
 
     <p v-if="attachNotice" class="shrink-0 border-t border-blue-100 bg-blue-50 px-5 py-3 text-sm font-semibold text-blue-800" data-testid="mobile-file-attach-notice">
@@ -45,9 +54,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
-import { MOBILE_FILE_PREVIEW_MAX_CHARS, useMobileFileContextCoordinator } from '~/composables/mobile/useMobileFileContextCoordinator';
+import { computed, ref } from 'vue';
+import FileViewer from '~/components/fileExplorer/FileViewer.vue';
+import { useMobileFileContextCoordinator } from '~/composables/mobile/useMobileFileContextCoordinator';
+import type { FileDataType, FileOpenMode, OpenFileState } from '~/stores/fileExplorer';
 import type { MobileWorkContext } from '~/types/mobileWork';
+
+const MOBILE_FILE_VIEW_MAX_CHARS = 120_000;
 
 type MobileFileNode = {
   name: string;
@@ -59,6 +72,8 @@ const props = defineProps<{
   node: MobileFileNode;
   workspaceId: string;
   context: MobileWorkContext | null;
+  fileState: OpenFileState | null;
+  openError?: string | null;
 }>();
 
 defineEmits<{
@@ -67,18 +82,28 @@ defineEmits<{
 
 const coordinator = useMobileFileContextCoordinator();
 const attachNotice = ref<string | null>(null);
-const maxCharsLabel = MOBILE_FILE_PREVIEW_MAX_CHARS.toLocaleString();
-const support = computed(() => coordinator.getPreviewSupport(props.node.path));
-const previewState = computed(() => coordinator.getPreviewState(props.node.path, props.workspaceId));
-const previewContent = computed(() => previewState.value?.content ?? '');
-const previewLength = computed(() => previewContent.value.length.toLocaleString());
-const isTooLarge = computed(() => previewContent.value.length > MOBILE_FILE_PREVIEW_MAX_CHARS);
-const canAttach = computed(() => props.node.is_file && support.value.support === 'supported');
-
-async function loadPreview(): Promise<void> {
-  attachNotice.value = null;
-  await coordinator.openPreview(props.node.path, props.workspaceId);
-}
+const maxCharsLabel = MOBILE_FILE_VIEW_MAX_CHARS.toLocaleString();
+const viewerError = computed(() => props.openError || props.fileState?.error || null);
+const isLoading = computed(() => !props.fileState || Boolean(props.fileState.isLoading));
+const fileType = computed<FileDataType>(() => props.fileState?.type ?? 'Text');
+const isUnsupported = computed(() => fileType.value === 'Unsupported');
+const previewContent = computed(() => props.fileState?.content ?? '');
+const previewLengthLabel = computed(() => previewContent.value.length.toLocaleString());
+const isTooLarge = computed(() => fileType.value === 'Text' && previewContent.value.length > MOBILE_FILE_VIEW_MAX_CHARS);
+const canAttach = computed(() => props.node.is_file);
+const viewerMode = computed<FileOpenMode>(() => {
+  const lowerPath = props.node.path.toLowerCase();
+  if (fileType.value === 'Text' && (lowerPath.endsWith('.md') || lowerPath.endsWith('.markdown'))) {
+    return 'preview';
+  }
+  return 'edit';
+});
+const viewerFile = computed(() => ({
+  path: props.node.path,
+  type: fileType.value,
+  content: props.fileState?.content ?? null,
+  url: props.fileState?.url ?? null,
+}));
 
 function attachFile(): void {
   const result = coordinator.attachWorkspaceFile(props.node.path, props.context);
@@ -88,12 +113,11 @@ function attachFile(): void {
   }
   const targetLabel = result.target === 'active-run'
     ? 'current run Chat context'
-    : 'the next mobile run launch';
+    : result.target === 'pending-team-run'
+      ? 'pending team run context'
+      : 'the next mobile run launch';
   attachNotice.value = result.attached
     ? `${result.attachment.displayName} added to ${targetLabel}.`
     : `${result.attachment.displayName} is already attached to ${targetLabel}.`;
 }
-
-onMounted(loadPreview);
-watch(() => [props.node.path, props.workspaceId], loadPreview);
 </script>

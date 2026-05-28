@@ -87,6 +87,7 @@ const props = defineProps<{
   messageId: string;
   reference: TeamCommunicationReferenceFile;
   refreshSignal?: number;
+  disableRichTextPreview?: boolean;
 }>();
 
 const windowNodeContextStore = useWindowNodeContextStore();
@@ -107,7 +108,13 @@ const isLoading = computed(() => isDeterminingType.value || isFetchingContent.va
 const supportsPreview = computed(() => {
   if (fileType.value !== 'Text') return false;
   const lower = props.reference.path.toLowerCase();
-  return lower.endsWith('.md') || lower.endsWith('.markdown') || lower.endsWith('.html') || lower.endsWith('.htm');
+  if (lower.endsWith('.md') || lower.endsWith('.markdown')) {
+    return true;
+  }
+  if (props.disableRichTextPreview) {
+    return false;
+  }
+  return lower.endsWith('.html') || lower.endsWith('.htm');
 });
 const contentUrl = computed(() => {
   const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest.replace(/\/$/, '');
