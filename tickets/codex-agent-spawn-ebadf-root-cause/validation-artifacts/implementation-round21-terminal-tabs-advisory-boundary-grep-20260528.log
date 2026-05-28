@@ -1,0 +1,5 @@
+## Terminal manager naming grep
+Pass: terminal streaming source has no legacy workspaceId/closeAllForWorkspace naming.
+
+## RightSideTabs file-explorer dependency grep
+Pass: RightSideTabs.vue no longer imports or calls file-explorer/workspace stores for open-file auto-switching.

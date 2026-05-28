@@ -102,22 +102,22 @@ class DelayedTerminalHandler extends TerminalHandler {
 
   async connect(
     connection: WebSocketConnection,
-    terminalTargetId: string,
+    targetKey: string,
     sessionId: string,
     cwd: string,
   ): Promise<string> {
     await new Promise((resolve) => setTimeout(resolve, this.delayMs));
-    return super.connect(connection, terminalTargetId, sessionId, cwd);
+    return super.connect(connection, targetKey, sessionId, cwd);
   }
 }
 
 class FailingAfterCreateManager extends PtySessionManager {
   async createSession(
     sessionId: string,
-    terminalTargetId: string,
+    targetKey: string,
     cwd: string,
   ): Promise<TerminalSession> {
-    const session = await super.createSession(sessionId, terminalTargetId, cwd);
+    const session = await super.createSession(sessionId, targetKey, cwd);
     throw new Error(`setup failed after creating ${session.sessionId}`);
   }
 }

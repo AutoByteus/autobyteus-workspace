@@ -4,7 +4,7 @@ export type { TerminalSession, TerminalSessionFactory };
 
 type TerminalSessionRecord = {
   session: TerminalSession;
-  workspaceId: string;
+  targetKey: string;
 };
 
 export class TerminalSessionStartupAbortedError extends Error {
@@ -33,7 +33,7 @@ export class PtySessionManager {
 
   async createSession(
     sessionId: string,
-    workspaceId: string,
+    targetKey: string,
     cwd: string,
     options: CreateSessionOptions = {},
   ): Promise<TerminalSession> {
@@ -45,7 +45,7 @@ export class PtySessionManager {
     }
 
     const session = new this.sessionFactory(sessionId);
-    this.sessions.set(sessionId, { session, workspaceId });
+    this.sessions.set(sessionId, { session, targetKey });
 
     const abortListener = (): void => {
       void this.closeSession(sessionId).catch((closeError) => {
@@ -91,7 +91,7 @@ export class PtySessionManager {
 
     const backendName = this.sessionFactory.name || "UnknownSessionBackend";
     logger.info(
-      `Created terminal session ${sessionId} using backend ${backendName} for workspace ${workspaceId}`,
+      `Created terminal session ${sessionId} using backend ${backendName} for target ${targetKey}`,
     );
     return session;
   }
@@ -112,9 +112,9 @@ export class PtySessionManager {
     return true;
   }
 
-  async closeAllForWorkspace(workspaceId: string): Promise<number> {
+  async closeAllForTargetKey(targetKey: string): Promise<number> {
     const sessionsToClose = Array.from(this.sessions.entries())
-      .filter(([, record]) => record.workspaceId === workspaceId)
+      .filter(([, record]) => record.targetKey === targetKey)
       .map(([id]) => id);
 
     for (const sessionId of sessionsToClose) {
@@ -136,7 +136,7 @@ export class PtySessionManager {
   listSessions(): Record<string, string> {
     const entries: Record<string, string> = {};
     for (const [sessionId, record] of this.sessions.entries()) {
-      entries[sessionId] = record.workspaceId;
+      entries[sessionId] = record.targetKey;
     }
     return entries;
   }

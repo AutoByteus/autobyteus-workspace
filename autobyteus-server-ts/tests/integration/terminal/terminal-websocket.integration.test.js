@@ -77,14 +77,14 @@ class DelayedTerminalHandler extends TerminalHandler {
         super(sessionManager);
         this.delayMs = delayMs;
     }
-    async connect(connection, terminalTargetId, sessionId, cwd) {
+    async connect(connection, targetKey, sessionId, cwd) {
         await new Promise((resolve) => setTimeout(resolve, this.delayMs));
-        return super.connect(connection, terminalTargetId, sessionId, cwd);
+        return super.connect(connection, targetKey, sessionId, cwd);
     }
 }
 class FailingAfterCreateManager extends PtySessionManager {
-    async createSession(sessionId, terminalTargetId, cwd) {
-        const session = await super.createSession(sessionId, terminalTargetId, cwd);
+    async createSession(sessionId, targetKey, cwd) {
+        const session = await super.createSession(sessionId, targetKey, cwd);
         throw new Error(`setup failed after creating ${session.sessionId}`);
     }
 }

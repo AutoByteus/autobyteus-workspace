@@ -1,0 +1,5 @@
+Changed implementation source file effective non-empty line counts:
+  126 autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts
+  162 autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts
+  125 autobyteus-web/components/layout/RightSideTabs.vue
+   40 autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts

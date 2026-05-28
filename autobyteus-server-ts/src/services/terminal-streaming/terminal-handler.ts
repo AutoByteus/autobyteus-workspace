@@ -45,13 +45,13 @@ export class TerminalHandler {
 
   async connect(
     connection: WebSocketConnection,
-    workspaceId: string,
+    targetKey: string,
     sessionId: string,
     cwd: string,
     options: TerminalConnectOptions = {},
   ): Promise<string> {
     try {
-      await this.manager.createSession(sessionId, workspaceId, cwd, {
+      await this.manager.createSession(sessionId, targetKey, cwd, {
         signal: options.signal,
       });
       if (options.signal?.aborted) {

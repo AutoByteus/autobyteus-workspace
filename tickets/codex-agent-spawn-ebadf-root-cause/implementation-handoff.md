@@ -53,6 +53,7 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-18 delivery latest-base local fix: integrated latest `origin/personal@03d7880b45afd2b032de6e842e41429fad0a2cb0` after API/E2E Round 10 and code review Round 17 passed. Resolved the `MobileRemoteAccessShell.spec.ts` merge conflict by preserving the ticket-side mobile work-picking/post-pair checks and the latest-base mobile safe-container QR session replacement plus 401 authorized-catalog session-drop coverage. The Round 17 Terminal FD lifecycle implementation files were not changed by the merge resolution.
 - Round-19 delivery latest-base local fix: integrated latest `origin/personal@56c6d4bfa27ced68678e4d21dccd4acbcb31aa76` (`v1.3.31`) for the user's 2026-05-28 Electron rebuild request. Resolved conflicts in `MobileRunSetup.vue`, `MobileContextSelectionRegression.spec.ts`, `MobileRemoteAccessShell.spec.ts`, and `MobileUxRefinement.spec.ts` by preserving ticket-side metadata/root-path Files and Terminal lifecycle expectations while adopting latest-base mobile artifacts tab, run setup parity, launch workspace picker, and auto-approve run options behavior.
 - Round-20 delivery latest-base local fix: integrated latest `origin/personal@832b6f7cdbf77166576ff69c36803fd4125ff090` (`v1.3.32`) for the user's 2026-05-28 latest-base Electron rebuild request. Resolved conflicts in `MobileFiles.vue`, `MobileRemoteAccessShell.spec.ts`, and `useMobileFileContextCoordinator.ts` by preserving the ticket-side metadata/root-path file-explorer activation and visible live-session ownership while adopting latest-base mobile file/reference controls (`MobileFileViewer`, `MobileTeamReferenceViewer`, protected read-only file previews, mobile attachment rows, and v1.3.32 version artifacts). `useMobileWorkspaceFileExplorer.ts` was reconciled to the ticket architecture: it delegates through `useWorkspaceFileExplorer`, resolves/ensures workspace metadata by root path at visible Files activation, owns mobile folder/search/open-file state, and does not depend on legacy `WorkspaceInfo.fileExplorer` or `workspaceStore.allWorkspaces`. Round 17 Terminal FD lifecycle files were not modified by this merge resolution; focused terminal backend tests still pass.
+- Round-21 user-requested advisory cleanup: implemented the non-blocking Round-18 code-review recommendations that were safe local cleanups. `PtySessionManager` and `TerminalHandler` now use internal `targetKey` terminology and `closeAllForTargetKey()` instead of implying Terminal groups sessions by initialized workspace IDs. `RightSideTabs.vue` no longer imports workspace/file-explorer stores for open-file auto-switching; that coordination moved to `useRightPanelOpenFileAutoSwitch()`, keeping the tab shell presentation-oriented while preserving desktop auto-switch behavior and keeping mobile-tools Files disabled. ADV-TERM-001 remains a performance-investigation note: no Terminal backend architecture change was made without profiling, and macOS `IsolatedPtySession` remains intact to preserve descriptor-level cleanup guarantees.
 
 ## Key Files Or Areas
 
@@ -101,6 +102,9 @@ Frontend:
 - `autobyteus-web/composables/useTerminalSession.ts`
 - `autobyteus-web/components/fileExplorer/FileExplorer.vue`
 - `autobyteus-web/components/workspace/tools/Terminal.vue`
+- `autobyteus-web/components/layout/RightSideTabs.vue`
+- `autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts`
+- `autobyteus-web/components/layout/__tests__/RightSideTabs.spec.ts`
 - `autobyteus-web/components/mobile/MobileFiles.vue`
 - `autobyteus-web/components/mobile/MobileFileViewer.vue`
 - `autobyteus-web/components/mobile/MobileTeamReferenceViewer.vue`
@@ -141,6 +145,7 @@ Removed obsolete source/test paths:
 - Team launch is an explicit workspace-dependent boundary, so it may activate filesystem workspaces from canonical root paths.
 - On Darwin/macOS, Terminal WebSocket sessions use an isolated helper-process PTY backend so the backend server process does not retain `node-pty` `/dev/ptmx` or `(revoked)` descriptors after normal command-output close. The helper still owns real `node-pty` interactive PTY semantics while it is alive.
 - The isolated Darwin PTY path must continue to reuse the shared `node-pty` bootstrap owner for `spawn-helper` executable-bit repair before any bridge/helper spawn.
+- Terminal backend architecture should not be changed for perceived startup latency unless profiling isolates the bottleneck and the replacement still passes descriptor-level FD probes.
 - Full API/E2E validation remains downstream-owned after code review.
 
 ## Known Risks
@@ -178,6 +183,29 @@ Removed obsolete source/test paths:
 ## Local Implementation Checks Run
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
+
+Round-21 user-requested code-review advisory cleanup checks:
+
+- `pnpm -C autobyteus-web test:nuxt run components/layout/__tests__/RightSideTabs.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts`
+  - Result: pass, 3 files / 17 tests.
+  - Covers extracted right-panel open-file auto-switch behavior, mobile-tools Files suppression, Terminal root-path frontend behavior, and Terminal UI activation.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round21-terminal-tabs-advisory-frontend-tests-20260528.log`
+- `pnpm -C autobyteus-server-ts test tests/integration/terminal/terminal-websocket.integration.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
+  - Result: pass, 2 files / 7 tests.
+  - Covers Terminal WebSocket root-path/cwd flow, close-before-connect cleanup, partial-session cleanup, and real PTY lifecycle after internal naming cleanup.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round21-terminal-tabs-advisory-backend-tests-20260528.log`
+- Terminal manager naming and `RightSideTabs.vue` dependency grep.
+  - Result: pass; Terminal streaming source has no legacy `workspaceId`/`closeAllForWorkspace` naming, and `RightSideTabs.vue` no longer imports/calls file-explorer or workspace stores for open-file auto-switching.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round21-terminal-tabs-advisory-boundary-grep-20260528.log`
+- `pnpm -C autobyteus-web guard:web-boundary`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round21-terminal-tabs-advisory-web-boundary-20260528.log`
+- `git diff --check` and `git diff --cached --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round21-terminal-tabs-advisory-diff-check-20260528.log`
+- Changed-source size audit for touched implementation files.
+  - Result: pass; no changed source implementation file exceeds 500 effective non-empty lines.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round21-terminal-tabs-advisory-source-size-20260528.log`
 
 Round-20 delivery latest-base merge-conflict local-fix checks:
 

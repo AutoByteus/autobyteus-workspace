@@ -148,15 +148,29 @@ describe('RightSideTabs', () => {
     expect(wrapper.find('.file-layout-stub').exists()).toBe(false);
   });
 
+  it('auto-switches to Files when an open file appears in desktop mode', async () => {
+    activeTab.value = 'progress';
+    activeWorkspaceForTabs.value = { workspaceId: 'ws-1' };
+    const wrapper = mountSubject();
+    setActiveTab.mockClear();
+
+    openFilesForActiveWorkspace.value = ['src/example.ts'];
+    await nextTick();
+
+    expect(setActiveTab).toHaveBeenCalledWith('files');
+    wrapper.unmount();
+  });
+
   it('does not auto-switch to Files when open files change in mobile tools mode', async () => {
     activeTab.value = 'progress';
     activeWorkspaceForTabs.value = { workspaceId: 'ws-1' };
-    mountSubject({ mode: 'mobile-tools' });
+    const wrapper = mountSubject({ mode: 'mobile-tools' });
     setActiveTab.mockClear();
 
     openFilesForActiveWorkspace.value = ['src/example.ts'];
     await nextTick();
 
     expect(setActiveTab).not.toHaveBeenCalledWith('files');
+    wrapper.unmount();
   });
 });

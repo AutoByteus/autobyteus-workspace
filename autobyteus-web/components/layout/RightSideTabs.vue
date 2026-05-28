@@ -51,8 +51,8 @@
 import { computed, watch } from 'vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentTodoStore } from '~/stores/agentTodoStore';
-import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useRightPanel } from '~/composables/useRightPanel';
+import { useRightPanelOpenFileAutoSwitch } from '~/composables/useRightPanelOpenFileAutoSwitch';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import TabList from '~/components/tabs/TabList.vue';
@@ -63,7 +63,6 @@ import FileExplorerLayout from '~/components/fileExplorer/FileExplorerLayout.vue
 import ArtifactsTab from '~/components/workspace/agent/ArtifactsTab.vue';
 import ProgressPanel from '~/components/progress/ProgressPanel.vue';
 import BrowserPanel from '~/components/workspace/tools/BrowserPanel.vue';
-import { useWorkspaceStore } from '~/stores/workspace';
 
 const props = withDefaults(defineProps<{
   mode?: 'desktop' | 'mobile-tools'
@@ -73,9 +72,7 @@ const props = withDefaults(defineProps<{
 
 const selectionStore = useAgentSelectionStore();
 const activeContextStore = useActiveContextStore();
-const fileExplorerStore = useFileExplorerStore();
 const todoStore = useAgentTodoStore();
-const workspaceStore = useWorkspaceStore();
 
 const { activeTab, visibleTabs: baseVisibleTabs, setActiveTab } = useRightSideTabs();
 const { toggleRightPanel } = useRightPanel();
@@ -119,29 +116,13 @@ watch(visibleTabs, (newVisibleTabs) => {
 });
 
 // Watch the ToDo list for the active agent. If it becomes populated, switch to the To-Do tab.
-// Watch the ToDo list for the active agent. If it becomes populated, switch to the To-Do tab.
 watch(() => currentAgentRunId.value ? todoStore.getTodos(currentAgentRunId.value) : [], (newTodoList) => {
   if (selectionStore.selectedType === 'agent' && newTodoList.length > 0 && activeTab.value !== 'progress') {
     setActiveTab('progress');
   }
 });
 
-// Auto-switch to Files tab when a file is opened
-watch(() => {
-    const wsId =
-      activeContextStore.activeConfig?.workspaceMetadata?.workspaceId ||
-      activeContextStore.activeConfig?.workspaceId ||
-      (selectionStore.selectedType === 'team'
-        ? workspaceStore.activeWorkspaceMetadata?.workspaceId || workspaceStore.activeWorkspace?.workspaceId
-        : null);
-    const targetId = wsId || workspaceStore.activeWorkspaceMetadata?.workspaceId || workspaceStore.activeWorkspace?.workspaceId || '';
-    if (!targetId) return [];
-    return fileExplorerStore.getOpenFiles(targetId);
-}, (openFiles) => {
-  if (filesTabEnabled.value && openFiles.length > 0 && activeTab.value !== 'files') {
-    setActiveTab('files');
-  }
-}, { deep: true });
+useRightPanelOpenFileAutoSwitch({ filesTabEnabled });
 
 </script>
 
