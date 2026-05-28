@@ -4,7 +4,7 @@
 
 - Ticket: `mobile-artifacts-tab`
 - Date: `2026-05-28`
-- Current Status: `User verified; finalization proceeding; no release requested`
+- Current Status: `Finalized to personal; no release requested`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab`
 - Ticket branch: `codex/mobile-artifacts-tab`
 - Finalization target: `origin/personal` / `personal`
@@ -107,8 +107,8 @@
 - Release requested: `No`; release/tag/version work intentionally skipped.
 - Ticket archived to: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab`
 - Finalization target refresh: `git fetch origin personal` on 2026-05-28 confirmed `origin/personal` remained `7b2657086fad79921c216613522cd635db89f496` and is an ancestor of the ticket branch.
-- Repository finalization path: commit archived ticket/local-fix state on `codex/mobile-artifacts-tab`, push the ticket branch, fast-forward/merge into `personal`, and push `personal`.
-- Worktree cleanup: deferred to preserve the local Electron verification artifacts under `autobyteus-web/electron-dist` unless the user later asks for cleanup.
+- Repository finalization result: `personal` fast-forwarded to `5bbeee59079dd8c1e3b1183ec2db7cb2807cd72e` and was pushed to `origin/personal`.
+- Cleanup: remote ticket branch `codex/mobile-artifacts-tab` was deleted after merge; local ticket worktree cleanup was deferred to preserve the local Electron verification artifacts under `autobyteus-web/electron-dist` unless the user later asks for cleanup.
 - Android note: no native Android APK source changed; for physical Android proof, use a refreshed desktop/server `/mobile` bundle. The connected Android device observed by API/E2E was stale and not proof against the current source/build.
 
 ## Residual Risks / Caveats
