@@ -1,0 +1,33 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    57201 normy  cwd       DIR               1,16       928           174068519 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+node    57201 normy  txt       REG               1,16 111670672              525716 /Users/normy/.nvm/versions/node/v22.21.1/bin/node
+node    57201 normy  txt       REG               1,16     73840           165453213 /Library/Preferences/Logging/.plist-cache.nZ8hDtHH
+node    57201 normy  txt       REG               1,16   2299152 1152921500312563341 /usr/lib/dyld
+node    57201 normy  txt       REG               1,16  17251592            10659627 /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine
+node    57201 normy    0r      CHR                3,2       0t0                 336 /dev/null
+node    57201 normy    1u     unix 0x470d96faf7115d73       0t0                     ->0xd1a7846eabaad934
+node    57201 normy    2u     unix 0xab351f7ed8077516       0t0                     ->0xf3c59e99e126c3a1
+node    57201 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    57201 normy    4      PIPE 0xdd7b5e4fce97b7f2     16384                     ->0x688b563d8a3469cf
+node    57201 normy    5      PIPE 0x688b563d8a3469cf     16384                     ->0xdd7b5e4fce97b7f2
+node    57201 normy    6r      DIR               1,16       704                   2 /
+node    57201 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    57201 normy    8r      DIR               1,16       704                   2 /
+node    57201 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    57201 normy   10r      DIR               1,16       704                   2 /
+node    57201 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    57201 normy   12u   KQUEUE                                                  count=0, state=0xa
+node    57201 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    57201 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    57201 normy   15u     unix 0x97c564cba0b104d5       0t0                     ->0xe3a7f8964ce9436b
+node    57201 normy   16u     unix 0xe3a7f8964ce9436b       0t0                     ->0x97c564cba0b104d5
+node    57201 normy   17u     unix 0x97c564cba0b104d5       0t0                     ->0xe3a7f8964ce9436b
+node    57201 normy   18w      REG               1,16     16536           187052890 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-data-McAFWm/logs/server.log
+node    57201 normy   19u      REG               1,16    196608           187052896 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-data-McAFWm/db/production.db
+node    57201 normy   20      PIPE   0xd687979a5b03f2     16384                     ->0x91036fa969cc9f46
+node    57201 normy   21      PIPE 0x91036fa969cc9f46     16384                     ->0xd687979a5b03f2
+node    57201 normy   22u     IPv4 0x29baa6a0ee77d546       0t0                 TCP 127.0.0.1:63055 (LISTEN)
+node    57201 normy   23u    systm  0xdaefe2e0a4bfae8       0t0                     [ctl com.apple.netsrc id 7 unit 123]
+node    57201 normy   24u     unix 0x6ac1938a6768c5a7       0t0                     ->0x77647146615a0b50
+node    57201 normy   25u     IPv4 0x4d6daaff2b9e2625       0t0                 TCP 127.0.0.1:63055->127.0.0.1:63069 (ESTABLISHED)
+node    57201 normy   26   NPOLICY

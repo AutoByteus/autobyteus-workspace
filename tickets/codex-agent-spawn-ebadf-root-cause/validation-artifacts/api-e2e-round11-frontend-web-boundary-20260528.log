@@ -1,0 +1,8 @@
+# API/E2E Round 11 frontend web-boundary guard
+# Date: 2026-05-28T20:02:35+0200
+# Command: pnpm -C autobyteus-web guard:web-boundary
+
+> autobyteus@1.3.32 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.

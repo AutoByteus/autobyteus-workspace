@@ -1,8 +1,8 @@
 # Handoff Summary — codex-agent-spawn-ebadf-root-cause
 
-## Current Status — 2026-05-28 Round 20 Final Latest-Personal Rebuild
+## Current Status — 2026-05-28 Round 21 Post API/E2E Rebuild
 
-`Ready for user verification; latest origin/personal@d1f92730 integrated; current macOS Electron v1.3.32 build completed and DMG verified; repository finalization/release/deployment not run.`
+`Ready for user verification; API/E2E Round 11 passed; latest origin/personal@d1f92730 integrated; current macOS Electron v1.3.32 build completed and DMG verified; repository finalization/release/deployment not run.`
 
 Delivery resumed after implementation Round 18 resolved the latest-base merge conflict and committed `c86684e43c8abdf49f992451ce6fdb3711c52b57` (`merge: integrate latest personal for round 18`). Delivery fetched `origin/personal`, confirmed the branch is based on `origin/personal@03d7880b45afd2b032de6e842e41429fad0a2cb0`, read the Electron README instructions, refreshed docs against the integrated state, and built the current Electron package.
 
@@ -13,8 +13,8 @@ Delivery resumed after implementation Round 18 resolved the latest-base merge co
 - Inferred base/finalization target: `origin/personal`
 - Latest remote base fetched for Round 20 delivery: `origin/personal@d1f92730caea25e8b9c39cf4384dc665491e768a`
 - Merge base at Round 20 delivery refresh: `d1f92730caea25e8b9c39cf4384dc665491e768a`
-- Integrated source HEAD before delivery evidence edits: `2a4667a27149c7a3dbaa53e7b4b5c5350ca25663`
-- Branch relation at Round 20 delivery refresh: behind `0`, ahead `27` relative to `origin/personal`
+- Integrated source HEAD before delivery evidence edits: `7aa47c3ca99e814c82f0231450437640d42999c7`
+- Branch relation at Round 21 delivery refresh: behind `0`, ahead `31` relative to `origin/personal`
 - Version built from `autobyteus-web/package.json`: `1.3.32`
 - Repository finalization/push/merge/release/deployment: not run; waiting for explicit user verification.
 
@@ -83,15 +83,28 @@ Build log notes: `notarize: false`, `dmg.sign: false`, macOS signing skipped wit
 - DMG verification result: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round20-latest-personal-dmg-verify-20260528181849.log`.
 - Artifact summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round20-latest-personal-artifacts-20260528181849.txt`.
 
+## Round 21 Post API/E2E Electron Rebuild — 2026-05-28 20:07 Europe/Berlin
+
+- Latest `origin/personal` was fetched and remains `d1f92730caea25e8b9c39cf4384dc665491e768a`.
+- Branch is based on latest `origin/personal`: merge base equals latest base; behind `0`, ahead `31` before delivery evidence commit.
+- Validated source HEAD: `7aa47c3ca99e814c82f0231450437640d42999c7` (`test: update terminal handler target-key fixtures`).
+- API/E2E Round 11 passed after code review Round 21. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`.
+- Delivery docs check found no stale long-lived Terminal target-key names and no old File Explorer stream API names. Integrated-state check: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round21-integrated-state-check-20260528200708.log`.
+- README Electron build instructions were reread before rebuilding.
+- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm -C autobyteus-web build:electron:mac`.
+- Build result: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round21-post-api-e2e-20260528200742.log`.
+- DMG verification result: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round21-post-api-e2e-dmg-verify-20260528200742.log`.
+- Artifact summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round21-post-api-e2e-artifacts-20260528200742.txt`.
+
 ## Built Electron Artifacts — Version 1.3.32
 
 | Artifact | Size bytes | SHA-256 |
 | --- | ---: | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg` | 379774651 | `31f5f76e5b90ebd4b09daf1e5b036340cc523448128e98fc7c93bf6c715e1e49` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg.blockmap` | 396997 | `dc8463392ceef9e9ab11f786e82aa134108ce369913a040e2d7066792c37475d` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip` | 377153762 | `a1a4b0e50debb9d70c2ded83e9073830270f44fa33ea2682775fce1b657db8e8` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap` | 387520 | `d74f15b40ffe861c7e9bf3536880fd191cbf9511ebea0b12cc8963fed9380a38` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `4e39c66ab39a7ef05d685450eebeb22b49e791b39f768f5673620cc2df5728a6` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg` | 379821862 | `c9e03c7e1d5ca9a0736ec9e657c6bbf7e39d33bbb0ebd89da090ae2342906a7d` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg.blockmap` | 395476 | `9f85b77c3bb19ab14ddb68ac579ccdc5f953e21d5e8c3a69f4f8a495e2c21d07` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip` | 377154044 | `7ca0fde48a887f5f464fc9c411a877df90f9e6ba6de7a05c3889c440d29863fb` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap` | 387172 | `1b1cd0ad36ee646138bb70768ee0c2dad95da25a8eb6bc326da3ccfce72abde3` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `58cec66498a420c85ad3f725ca1d21efee821d653c5a09c6c8ff1ac1a95a16c7` |
 
 ## Docs Sync
 

@@ -1,0 +1,45 @@
+# API/E2E Round 11 report/diff/cleanup check
+# Date: 2026-05-28T20:04:46+0200
+
+## terminal descriptor summary
+result pass
+normal_open {'count': 8, 'min': 1, 'p50': 2, 'p95': 2, 'max': 3, 'avg': 2}
+normal_output {'count': 8, 'min': 108, 'p50': 140, 'p95': 150, 'max': 159, 'avg': 137}
+normal_close {'count': 8, 'min': 0, 'p50': 0, 'p95': 1, 'max': 1, 'avg': 0}
+early_open {'count': 25, 'min': 1, 'p50': 1, 'p95': 2, 'max': 6, 'avg': 1}
+early_close {'count': 25, 'min': 0, 'p50': 1, 'p95': 1, 'max': 5, 'avg': 1}
+sample baseline_after_health fd=36 children=0
+sample after_invalid_cwd fd=36 children=0
+sample after_8_normal_runs fd=32 children=0
+sample after_25_early_close_final_wait fd=32 children=0
+sample after_10_abort_before_open_final_wait fd=32 children=0
+failures []
+baseUrl http://127.0.0.1:63055
+
+## final lsof PTY/revoked count
+       0
+
+## listener cleanup check
+port 63055:
+no listener
+
+## report diff check
+git diff --check passed for report artifacts
+
+## current git status
+ M tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/review-report.md
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-backend-build-full-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-frontend-terminal-tabs-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-frontend-web-boundary-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-report-diff-cleanup-check-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528-final-lsof.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528-server.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.json
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.mjs
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.run.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-target-key-grep-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-targeted-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round21-cr014-terminal-naming-grep-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round21-cr014-terminal-tests-20260528.log

@@ -1,0 +1,76 @@
+delivery round21 integrated-state/docs check
+timestamp=2026-05-28T18:07:08Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+branch=codex/codex-agent-spawn-ebadf-root-cause
+head=7aa47c3ca99e814c82f0231450437640d42999c7
+origin_personal=d1f92730caea25e8b9c39cf4384dc665491e768a
+merge_base=d1f92730caea25e8b9c39cf4384dc665491e768a
+origin_personal_to_head=0	31
+version=1.3.32
+status_short_begin
+ M tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/review-report.md
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-backend-build-full-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-frontend-terminal-tabs-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-frontend-web-boundary-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-report-diff-cleanup-check-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528-final-lsof.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528-server.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.json
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.mjs
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.run.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-target-key-grep-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-targeted-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round21-cr014-terminal-naming-grep-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round21-cr014-terminal-tests-20260528.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round21-integrated-state-check-20260528200708.log
+status_short_end
+readme_electron_mac_build_refs_begin
+235-pnpm build:electron:windows
+236-# For macOS
+237:pnpm build:electron:mac
+238-```
+239-
+240:The built applications will be available in the `electron-dist` directory. Use these commands when you want to create a standalone desktop application for distribution.
+241-
+242-#### macOS Build With Logs (No Notarization)
+243-
+244-For local macOS builds with verbose electron-builder logs and without notarization/timestamping:
+245-
+246-```bash
+247:NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+248-```
+249-
+250-### Desktop Application with Integrated Backend
+251-
+252-The Electron application includes the AutoByteus backend server, which is automatically started when the application launches.
+253-
+--
+277-pnpm build:electron:windows
+278-# For macOS with integrated server
+279:pnpm build:electron:mac
+280-```
+281-
+282-#### Embedded Runtime Contract
+283-
+284-When the Electron application starts, it:
+285-
+--
+379-- `pnpm build:electron:linux`: Build desktop application for Linux
+380-- `pnpm build:electron:windows`: Build desktop application for Windows
+381:- `pnpm build:electron:mac`: Build desktop application for macOS
+382-- `pnpm codegen`: Generate GraphQL types
+383-
+384-## Project Structure
+385-
+386-- `components/`: Vue components
+387-- `pages/`: Application pages and routing
+readme_electron_mac_build_refs_end
+long_lived_terminal_docs_stale_name_grep_begin
+stale_terminal_doc_matches=none
+long_lived_terminal_docs_stale_name_grep_end
+file_explorer_old_stream_api_grep_begin
+old_file_explorer_doc_matches=none
+file_explorer_old_stream_api_grep_end
+result=pass

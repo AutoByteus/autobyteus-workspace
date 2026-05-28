@@ -1,0 +1,8 @@
+delivery round21 post-api-e2e rebuild evidence diff check
+timestamp=2026-05-28T18:14:33Z
+head=7aa47c3ca99e814c82f0231450437640d42999c7
+origin_personal=d1f92730caea25e8b9c39cf4384dc665491e768a
+merge_base=d1f92730caea25e8b9c39cf4384dc665491e768a
+origin_personal_to_head=0	31
+command=git diff --cached --check
+result=pass

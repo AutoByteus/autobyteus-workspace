@@ -10,9 +10,9 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/review-report.md`
-- Current Validation Round: `10`
-- Trigger: Code review round 17 pass after the implementation fix for `E2E-TERMFD-002` / `CR-012`.
-- Latest Authoritative Round: `10`
+- Current Validation Round: `11`
+- Trigger: Code review round 21 pass after the `CR-014` local fix and adjacent Terminal target-key cleanup.
+- Latest Authoritative Round: `11`
 - Overall Result: `Pass`
 - Recommended Recipient: `delivery_engineer`
 
@@ -29,11 +29,12 @@
 | 7 | Code review round 12 pass after implementation local fix for `E2E-TERMFD-001` | `E2E-TERMFD-001`, Round 6 matrix | None | Pass | No | Focused terminal FD probe now remains bounded: `38` FDs after normal attached close, `39` FDs after 25 early-close cycles/final wait, 0 child processes. Broader backend, frontend, Electron, high-churn, boundary, and build validation passed. |
 | 8 | User requested real browser-level frontend/backend validation after broad refactor | Round 7 pass plus workspace/file-explorer browser concern | None | Pass | No | Started backend and Nuxt frontend from README/development configuration, drove the UI with headless Chrome/Playwright, opened workspace Files, read a file, searched, collapsed/reopened Files, navigated away, and verified file-explorer WebSocket/FD lifecycle stayed bounded. |
 | 9 | User requested server-side Terminal E2E/timing validation | Round 7 Terminal pass and Round 8 browser pass | `E2E-TERMFD-002` | Fail | No | Existing server-side Terminal E2E still passed and connect was fast, but a built-backend timing/descriptor probe found normal attached command-output Terminal sessions left PTY-related FDs after close: `37 -> 59` FDs after 8 normal sessions, final child processes `0`, final `lsof` still had `/dev/ptmx`/`(revoked)` entries. |
-| 10 | Code review round 17 pass after `E2E-TERMFD-002` / `CR-012` fix | `E2E-TERMFD-002`, broad Round 7/8/9 matrix | None | Pass | Yes | Isolated PTY descriptor cleanup now passes in API/E2E: built-backend probe baseline `36`, after 8 normal command-output sessions `32`, after early-close `32`, final `32`, child count `0`, final `lsof` has no `/dev/ptmx`, `/dev/ttys`, or `(revoked)` lines. Broader backend, frontend, Electron, build, watcher high-churn, and Codex activation probes passed. |
+| 10 | Code review round 17 pass after `E2E-TERMFD-002` / `CR-012` fix | `E2E-TERMFD-002`, broad Round 7/8/9 matrix | None | Pass | No | Isolated PTY descriptor cleanup passed in API/E2E: built-backend probe baseline `36`, after 8 normal command-output sessions `32`, after early-close `32`, final `32`, child count `0`, final `lsof` had no `/dev/ptmx`, `/dev/ttys`, or `(revoked)` lines. Broader backend, frontend, Electron, build, watcher high-churn, and Codex activation probes passed. |
+| 11 | Code review round 21 pass after `CR-014` and Terminal target-key cleanup | `CR-013`, `CR-014`, `ADV-TERM-002`, `ADV-TABS-001`, `E2E-TERMFD-002` | None | Pass | Yes | Fresh Terminal manager/handler/integration/E2E suite, target-key stale-name grep, backend `build:full`, built-backend Terminal descriptor/timing probe, frontend Terminal/right-tabs suite, and web-boundary guard passed. Built-backend probe baseline `36`, after normal command-output sessions `32`, after early-close `32`, final `32`, child count `0`, final lsof PTY/revoked count `0`. |
 
 ## Validation Basis
 
-Round 10 validation is the latest authoritative pass after code review round 17 accepted the implementation fixes for `E2E-TERMFD-002` and `CR-012`. It was derived from the full upstream artifact package, the implementation handoff `Legacy / Compatibility Removal Check`, the Round 17 code-review pass, the prior Round 7/8/9 direct runtime validation, and fresh API/E2E execution in the current worktree.
+Round 11 validation is the latest authoritative pass after code review round 21 accepted the `CR-014` local fix and adjacent Terminal target-key cleanup from `CR-013` / `ADV-TERM-002`. It was derived from the full upstream artifact package, the implementation handoff `Legacy / Compatibility Removal Check`, the Round 21 code-review pass, the prior Round 7/8/9/10 direct runtime validation, and fresh API/E2E execution in the current worktree.
 
 Round 8 remains the most recent browser-level frontend/backend validation. The in-app Browser plugin runtime was not available in that session (`agent.browsers.list()` returned no browser), so headless Google Chrome driven by Playwright was used, with WebSocket interception, screenshots, browser-console lifecycle signals, backend lifecycle logs, and backend FD samples.
 
@@ -65,9 +66,9 @@ Repository-resident durable validation added/updated in Round 6:
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts`
 
-Round 12 code review explicitly inspected and accepted these API/E2E durable validation additions. Later implementation changes for `E2E-TERMFD-002` / `CR-012` were reviewed and passed in code review round 17. API/E2E Round 10 did not edit repository-resident durable validation after that review. Therefore this pass can proceed to delivery rather than returning to code review.
+Round 12 code review explicitly inspected and accepted these API/E2E durable validation additions. Later implementation changes for `E2E-TERMFD-002` / `CR-012` were reviewed and passed in code review round 17. The implementation-owned Terminal unit-test durable validation fixture cleanup for `CR-013` / `CR-014` was reviewed and passed in code review round 21. API/E2E Round 11 did not edit repository-resident durable validation after that review. Therefore this pass can proceed to delivery rather than returning to code review.
 
-Rounds 7 through 10 added/updated only this report and temporary validation artifacts under `tickets/.../validation-artifacts` from the API/E2E side.
+Rounds 7 through 11 added/updated only this report and temporary validation artifacts under `tickets/.../validation-artifacts` from the API/E2E side.
 
 ## Coverage Matrix
 
@@ -88,7 +89,8 @@ Rounds 7 through 10 added/updated only this report and temporary validation arti
 | `SCN-013` | Frontend boundary/localization guard including prior delivery localization blocker | Guard/localization audit | Pass | `api-e2e-round7-frontend-boundary-localization-20260523.log`: web guard, localization-boundary guard, and literal audit passed. |
 | `SCN-014` | No stale legacy workspace/file-explorer/terminal paths remain in checked scope | Source grep audit | Pass | `api-e2e-round7-boundary-grep-20260523.log`. |
 | `SCN-015` | Real browser-level desktop workspace/file-explorer behavior: no hidden file-explorer WebSocket before workspace UI, exactly one live file-explorer stream while Files is visible, search/read work through UI, collapse/reopen/navigate-away release/reacquire correctly | Backend `dist/app.js` + Nuxt dev frontend + headless Chrome/Playwright browser flow with WebSocket tracking, screenshots, backend FD samples, and backend lifecycle log audit | Pass | `api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.json`: FD samples `33 -> 36 -> 37 -> 41 -> 41 -> 36 -> 41 -> 36`; temp stream opened only when Files became visible and closed on custom workspace load; custom stream closed on collapse, reopened once, and closed on navigate-away. Screenshots `api-e2e-round8-browser-01` through `06` capture agents list, run config, file tree, README open, search result, and collapsed state. |
-| `SCN-016` | Server-side Terminal E2E/timing and descriptor lifecycle for normal attached command-output sessions | Existing durable Terminal E2E plus built-backend Terminal WebSocket timing/FD probe | Pass | `api-e2e-round10-terminal-server-connect-timing-v2-20260524.json`: normal open p50 `2ms`, p95 `2ms`, max `3ms`; command output p50 `152ms`, p95 `181ms`, max `181ms`; baseline `36` FDs, after 8 normal command-output sessions `32`, after 25 early-close sessions `32`, final after 10 abort-before-open attempts `32`, child processes `0`; final lsof grep found `0` `/dev/ptmx`, `/dev/ttys`, or `(revoked)` lines. Durable server Terminal E2E also passed 1 file / 3 tests in `api-e2e-round10-server-terminal-e2e-20260524.log`. |
+| `SCN-016` | Server-side Terminal E2E/timing and descriptor lifecycle for normal attached command-output sessions | Existing durable Terminal E2E plus built-backend Terminal WebSocket timing/FD probe | Pass | `api-e2e-round11-terminal-server-connect-timing-v2-20260528.json`: normal open p50 `2ms`, p95 `2ms`, max `3ms`; command output p50 `140ms`, p95 `150ms`, max `159ms`; baseline `36` FDs, after 8 normal command-output sessions `32`, after 25 early-close sessions `32`, final after 10 abort-before-open attempts `32`, child processes `0`; final lsof grep found `0` `/dev/ptmx`, `/dev/ttys`, or `(revoked)` lines. Durable server Terminal E2E also passed as part of `api-e2e-round11-terminal-targeted-20260528.log`: 4 files / 26 tests with unit, integration, and E2E coverage. |
+| `SCN-017` | Terminal target-key cleanup remains free of stale workspace-shaped grouping names and right-panel auto-switch extraction remains intact | Focused Terminal target-key grep plus frontend Terminal/right-tabs targeted Nuxt suite and web-boundary guard | Pass | `api-e2e-round11-terminal-target-key-grep-20260528.log`: no `closeAllForWorkspace`, `terminalTargetId`, `sessions by workspace`, `ws1`, or `ws2` matches in Terminal streaming source/direct unit tests; `api-e2e-round11-frontend-terminal-tabs-20260528.log`: 3 files / 17 tests passed; `api-e2e-round11-frontend-web-boundary-20260528.log`: guard passed. |
 
 ## Prior Failure Resolution Check
 
@@ -98,7 +100,7 @@ Rounds 7 through 10 added/updated only this report and temporary validation arti
 | `CR-004` insufficient file-operation explicit-event durable assertions | 4 | API/E2E durable validation Local Fix | Still resolved | `api-e2e-round7-expanded-workspace-file-explorer-e2e-20260523.log`. |
 | `CR-008` duplicate same-root team activation | 8 | Local Fix | Still resolved | `api-e2e-round7-backend-team-run-service-20260523.log`. |
 | `E2E-TERMFD-001` terminal close-before-connect descriptor growth | 6 | Local Fix | Resolved | `api-e2e-round7-terminal-fd-probe-20260523.json`: `38 -> 39` FD count after 25 early-close cycles/final wait, child processes `0`. |
-| `E2E-TERMFD-002` normal attached Terminal command-output sessions retain PTY descriptors after close | 9 | Design Impact / Requirement Gap per user routing instruction | Resolved | `api-e2e-round10-terminal-server-connect-timing-v2-20260524.json`: `36 -> 32 -> 32 -> 32` FD samples, child processes `0`, final PTY/revoked descriptor grep count `0`; `api-e2e-round10-embedded-server-high-churn-v2-20260524.json`: terminal real-cwd close and 10 terminal open/close cycles both returned to `33` FDs and `0` children. Historical failure analysis remains in `terminal-server-e2e-failure-analysis-20260524.md`. |
+| `E2E-TERMFD-002` normal attached Terminal command-output sessions retain PTY descriptors after close | 9 | Design Impact / Requirement Gap per user routing instruction | Resolved | Reconfirmed in Round 11 with `api-e2e-round11-terminal-server-connect-timing-v2-20260528.json`: `36 -> 32 -> 32 -> 32` FD samples, child processes `0`, final PTY/revoked descriptor grep count `0`. Round 10 high-churn evidence also remains valid: `api-e2e-round10-embedded-server-high-churn-v2-20260524.json` returned terminal real-cwd close and 10 terminal open/close cycles to `33` FDs and `0` children. Historical failure analysis remains in `terminal-server-e2e-failure-analysis-20260524.md`. |
 
 ## Commands / Evidence Summary
 
@@ -242,6 +244,30 @@ Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-a
   - Pass for active macOS arm64 helper: mode `755`.
   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round10-spawn-helper-mode-after-tests-20260524.log`
 
+- `pnpm -C autobyteus-server-ts test tests/unit/services/terminal/pty-session-manager.test.ts tests/unit/services/terminal/terminal-handler.test.ts tests/integration/terminal/terminal-websocket.integration.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts --run --reporter verbose`
+  - Pass: 4 files / 26 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-targeted-20260528.log`
+- Terminal target-key stale-name grep over Terminal streaming source and direct Terminal unit tests.
+  - Pass: no stale `closeAllForWorkspace`, `terminalTargetId`, `sessions by workspace`, `ws1`, or `ws2` matches; positive target-key evidence found.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-target-key-grep-20260528.log`
+- `pnpm -C autobyteus-server-ts build:full`
+  - Pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-backend-build-full-20260528.log`
+- `node tickets/.../api-e2e-round11-terminal-server-connect-timing-v2-20260528.mjs`
+  - Pass: built-backend macOS Terminal timing/descriptor lifecycle remains bounded after the target-key cleanup sequence.
+  - JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.json`
+  - Script: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.mjs`
+  - Run log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.run.log`
+  - Event log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528.log`
+  - Server log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528-server.log`
+  - Final lsof: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-terminal-server-connect-timing-v2-20260528-final-lsof.log`
+- `pnpm -C autobyteus-web test:nuxt components/layout/__tests__/RightSideTabs.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts --run --reporter verbose`
+  - Pass: 3 files / 17 tests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-frontend-terminal-tabs-20260528.log`
+- `pnpm -C autobyteus-web guard:web-boundary`
+  - Pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round11-frontend-web-boundary-20260528.log`
+
 ## Platform / Runtime Targets
 
 - Host: macOS/Darwin arm64.
@@ -250,14 +276,14 @@ Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-a
 - Frontend test runtime: Nuxt/Vitest in `autobyteus-web`.
 - Native desktop support-code runtime: Electron Vitest suite.
 - Descriptor-pressure runtime: built backend entrypoint `autobyteus-server-ts/dist/app.js` launched as a separate Node process on macOS with isolated app data.
-- Round 10 Terminal runtime: built backend entrypoint with isolated app data, real Terminal WebSockets, isolated PTY backend, `lsof`, and child-process sampling.
+- Round 10 / 11 Terminal runtime: built backend entrypoint with isolated app data, real Terminal WebSockets, isolated PTY backend, `lsof`, and child-process sampling.
 - Browser-level Round 8 runtime: backend `dist/app.js` on `127.0.0.1:8000`, Nuxt dev frontend on `127.0.0.1:3000`, and headless Google Chrome via Playwright.
 
 ## Not Tested / Out Of Scope
 
 - Live model-provider prompt execution with Codex/GPT-5.5 was not submitted. The browser flow verified the run-configuration/runtime/model UI surfaces and workspace/file-explorer behavior, but avoided a paid/side-effectful LLM run because the validation target was watcher/WebSocket/descriptor lifecycle.
 - Current-code packaged `.app` launch was not executed by API/E2E. The built backend entrypoint used by the Electron package was executed directly in the macOS descriptor probes; Electron support-code tests also passed.
-- Full frontend/backend typechecks remain baseline-blocked per implementation handoff; this round used focused tests, production build, Electron suite, source grep, runtime probes, and the Round 8 browser-level frontend/backend flow.
+- Full frontend/backend typechecks remain baseline-blocked per implementation handoff; the cumulative API/E2E validation used focused tests, production builds, the Electron suite, source grep, runtime probes, and the Round 8 browser-level frontend/backend flow. Round 11 specifically reran the targeted Terminal/right-tabs tests, backend build, target-key grep, and built-backend Terminal descriptor probe relevant to the latest reviewed changes.
 
 ## Cleanup Performed
 
@@ -266,6 +292,7 @@ Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-a
 - Round 8 browser-level backend and frontend dev processes were stopped after evidence capture.
 - Round 9 built-backend Terminal timing probe stopped its temporary server and removed temporary app data/workspace roots after evidence capture.
 - Round 10 built-backend Terminal timing probe and high-churn harness stopped their temporary servers and removed temporary app data/workspace roots after evidence capture.
+- Round 11 built-backend Terminal timing probe stopped its temporary server and removed temporary app data/workspace roots after evidence capture; listener check found no remaining listener on the probe port.
 - The permission-mutating isolated PTY integration test restored the active macOS arm64 `spawn-helper` executable mode; final mode check recorded `755`.
 - No dependency symlinks were created.
 
@@ -277,6 +304,7 @@ Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-a
 - Product Failure `E2E-TERMFD-002`: `Resolved`
 - Browser-level frontend/backend workspace/file-explorer validation: `Pass`
 - Server-side Terminal normal attached command-output descriptor lifecycle: `Pass`
-- Repository-resident durable validation edited after Round 17 code review by API/E2E: `No`
+- Repository-resident durable validation edited after Round 21 code review by API/E2E: `No`
+- Terminal target-key / right-tabs advisory cleanup validation: `Pass`
 - Delivery Status: `Ready for delivery phase`
 - Recommended Recipient: `delivery_engineer`
