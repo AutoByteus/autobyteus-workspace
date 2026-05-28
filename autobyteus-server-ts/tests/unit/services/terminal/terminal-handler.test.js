@@ -69,14 +69,14 @@ describe("TerminalHandler messaging", () => {
         ({ manager, handler } = createHandler());
     });
     it("writes input to session", async () => {
-        const session = (await manager.createSession("s1", "ws1", "/tmp"));
+        const session = (await manager.createSession("s1", "target-1", "/tmp"));
         const payload = Buffer.from("ls -la", "utf8").toString("base64");
         const message = JSON.stringify({ type: "input", data: payload });
         await handler.handleMessage("s1", message);
         expect(session.writtenData[0]?.toString("utf8")).toBe("ls -la");
     });
     it("resizes session", async () => {
-        const session = (await manager.createSession("s1", "ws1", "/tmp"));
+        const session = (await manager.createSession("s1", "target-1", "/tmp"));
         const message = JSON.stringify({ type: "resize", rows: 50, cols: 120 });
         await handler.handleMessage("s1", message);
         expect(session.resizeCalls).toEqual([[50, 120]]);
@@ -90,7 +90,7 @@ describe("TerminalHandler messaging", () => {
             send: () => undefined,
             close: () => undefined,
         };
-        const sessionId = await handler.connect(connection, "ws1", "s1", "/tmp");
+        const sessionId = await handler.connect(connection, "target-1", "s1", "/tmp");
         expect(sessionId).toBe("s1");
         expect(manager.getSession("s1")).not.toBeNull();
         await handler.disconnect("s1");

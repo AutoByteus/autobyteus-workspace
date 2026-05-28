@@ -97,7 +97,7 @@ describe("TerminalHandler messaging", () => {
   });
 
   it("writes input to session", async () => {
-    const session = (await manager.createSession("s1", "ws1", "/tmp")) as MockPtySession;
+    const session = (await manager.createSession("s1", "target-1", "/tmp")) as MockPtySession;
     const payload = Buffer.from("ls -la", "utf8").toString("base64");
     const message = JSON.stringify({ type: "input", data: payload });
 
@@ -107,7 +107,7 @@ describe("TerminalHandler messaging", () => {
   });
 
   it("resizes session", async () => {
-    const session = (await manager.createSession("s1", "ws1", "/tmp")) as MockPtySession;
+    const session = (await manager.createSession("s1", "target-1", "/tmp")) as MockPtySession;
     const message = JSON.stringify({ type: "resize", rows: 50, cols: 120 });
 
     await handler.handleMessage("s1", message);
@@ -126,7 +126,7 @@ describe("TerminalHandler messaging", () => {
       close: () => undefined,
     };
 
-    const sessionId = await handler.connect(connection, "ws1", "s1", "/tmp");
+    const sessionId = await handler.connect(connection, "target-1", "s1", "/tmp");
     expect(sessionId).toBe("s1");
     expect(manager.getSession("s1")).not.toBeNull();
 
