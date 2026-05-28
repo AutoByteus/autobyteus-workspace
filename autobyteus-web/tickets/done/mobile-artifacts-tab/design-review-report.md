@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/mobile-artifacts-tab/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/mobile-artifacts-tab/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/mobile-artifacts-tab/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab/design-spec.md`
 - Current Review Round: 1
 - Trigger: Initial architecture review requested by `solution_designer` for the mobile Artifacts tab change.
 - Prior Review Round Reviewed: N/A
@@ -19,7 +19,7 @@
 
 ## Reviewed Design Spec
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/mobile-artifacts-tab/design-spec.md`
+`/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab/design-spec.md`
 
 ## Task Design Health Assessment Verdict
 

@@ -1,0 +1,20 @@
+ADB local-fix device probe, 2026-05-28 Europe/Berlin
+
+Device:
+- adb serial: dfd6c5c0
+- model: 2109119DG
+- package: org.autobyteus.mobile
+- installed versionName: 1.3.30
+- versionCode: 10033099
+- firstInstallTime / lastUpdateTime: 2026-05-24 07:17:55
+
+Probe steps:
+1. Confirmed AutoByteus Android MainActivity was running.
+2. Captured UI state and tapped bottom-nav Artifacts at approximate center x=756 y=2152.
+3. Result: WebView remained on the Chat surface instead of showing the Artifacts empty state.
+4. Force-stopped and relaunched org.autobyteus.mobile, waited for the saved node WebView to reload, tapped Artifacts again.
+5. Result after restart: WebView again remained on the Chat surface.
+
+Classification:
+- This connected device/runtime is not yet refreshed to the reviewed local fix. The installed Android shell reports versionName 1.3.30 from 2026-05-24, and the WebView-served mobile bundle still exhibits the pre-fix active-tab normalization behavior.
+- Redacted screenshots are stored alongside this text file. Private run/chat body text was masked.

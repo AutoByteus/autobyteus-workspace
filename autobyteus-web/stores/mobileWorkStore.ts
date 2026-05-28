@@ -5,7 +5,7 @@ import type { MobileRunSetupIntent, MobileRunSetupIntentRequest, MobileTaskTab, 
 import { preferredTabForMobileContext } from '~/types/mobileWork';
 
 const normalizeMobileTaskTab = (tab: MobileTaskTab | string | null | undefined): MobileTaskTab => (
-  tab === 'chat' || tab === 'runs' || tab === 'files' || tab === 'activity'
+  tab === 'chat' || tab === 'runs' || tab === 'files' || tab === 'artifacts' || tab === 'activity'
     ? tab
     : 'chat'
 );

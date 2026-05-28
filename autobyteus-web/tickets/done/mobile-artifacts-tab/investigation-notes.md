@@ -22,7 +22,7 @@ User observed that desktop right-side tabs include Artifacts while mobile lacks 
 
 - Project Type (`Git`/`Non-Git`): Git
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/mobile-artifacts-tab`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab`
 - Current Branch: `codex/mobile-artifacts-tab`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab`
 - Bootstrap Base Branch: `origin/personal`

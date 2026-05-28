@@ -2,9 +2,9 @@
 
 ## Overview
 
-The Artifacts tab is intentionally run-file-change only. It lists files that the
-focused agent run produced or touched through explicit mutation/generated-output
-runtime events.
+The desktop and mobile Artifacts surfaces are intentionally run-file-change only.
+They list files that the focused agent run produced or touched through explicit
+mutation/generated-output runtime events.
 
 Inter-agent `send_message_to.reference_files` are no longer owned by the
 Artifacts tab. They are child rows of Team Communication messages in the Team
@@ -110,7 +110,8 @@ flowchart LR
   D --> E[RunFileChangeService]
   E --> F[<run-memory-dir>/file_changes.json]
   D --> G[runFileChangesStore]
-  G --> H[ArtifactsTab: Agent Artifacts]
+  G --> H[Desktop ArtifactsTab: Agent Artifacts]
+  G --> U[MobileArtifacts: focused run/member Agent Artifacts]
 
   I[Accepted INTER_AGENT_MESSAGE] --> J[TeamCommunicationMessageProcessor]
   J --> K[TEAM_COMMUNICATION_MESSAGE]
@@ -131,7 +132,9 @@ flowchart LR
 | Agent Artifact store | `autobyteus-web/stores/runFileChangesStore.ts` | Owns hydrated/live rows for touched files and generated outputs. |
 | Agent Artifact stream ingestion | `autobyteus-web/services/agentStreaming/handlers/fileChangeHandler.ts` | Applies `FILE_CHANGE` payloads into the Agent Artifact store. |
 | Agent Artifact hydration | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | Loads `getRunFileChanges(runId)`. |
-| Artifacts tab | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Displays only run-scoped Agent Artifacts. |
+| Desktop Artifacts tab | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Displays only run-scoped Agent Artifacts in the desktop right-side panel. |
+| Mobile Artifacts view | `autobyteus-web/components/mobile/MobileArtifacts.vue` | Displays only run-scoped Agent Artifacts for the mobile-selected agent run or focused team member run, using the same run artifact store and `ArtifactContentViewer` rather than the desktop right-panel layout. |
+| Mobile focused-run identity | `autobyteus-web/composables/mobile/useMobileFocusedRunIdentity.ts` | Centralizes the mobile agent/team focused run-id guard shared by Activity and Artifacts so stale mobile selections do not leak artifacts or activity from another run. |
 | Team Communication store | `autobyteus-web/stores/teamCommunicationStore.ts` | Owns hydrated/live inter-agent messages and focused sent/received message perspectives. |
 | Team Communication hydration | `autobyteus-web/services/runHydration/teamCommunicationHydrationService.ts` | Loads `getTeamCommunicationMessages(teamRunId)`. |
 | Team Communication panel | `autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue` | Renders compact sent/received message rows, sibling reference-file controls, and Markdown message detail. |
@@ -139,7 +142,10 @@ flowchart LR
 
 ## Viewer Resolution
 
-`ArtifactContentViewer` resolves only Agent Artifact rows:
+`ArtifactContentViewer` resolves only Agent Artifact rows. Desktop and mobile
+Artifacts surfaces both delegate preview/content loading to this viewer; mobile
+remote access therefore keeps using the authorized run content route instead of
+opening workspace files directly.
 
 1. Live `write_file` row with `streaming` or `pending` status -> buffered inline
    `content`.

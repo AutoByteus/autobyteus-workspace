@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/mobile-artifacts-tab/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/mobile-artifacts-tab/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/mobile-artifacts-tab/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/mobile-artifacts-tab/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab/design-review-report.md`
 
 ## What Changed
 
@@ -20,8 +20,8 @@
 - Added `composables/mobile/useMobileFocusedRunIdentity.ts` and replaced duplicate run-id policy in:
   - `MobileActivityDigest.vue`
   - `MobileToolActivityList.vue`
-- Updated `MobileWorkShell.vue` and `types/mobileWork.ts` for the sixth `artifacts` tab and compact six-column bottom nav.
-- Kept team focus available on Artifacts by leaving it out of the `runs`/`tools` hidden-focus list.
+- Updated `MobileWorkShell.vue` and `types/mobileWork.ts` for the dedicated `artifacts` tab in the mobile bottom nav.
+- Kept team focus available on Artifacts by not treating it as a focus-hidden tab.
 - Updated mobile capability gates/docs to mark run Artifacts as mobile-supported and Browser as unsupported/Electron-only.
 - Updated mobile source guard/component/composable tests for the new tab, store/viewer reuse, focus scoping, Browser exclusion, and no stale artifact leakage.
 
@@ -52,7 +52,7 @@
 
 ## Known Risks
 
-- Six-tab bottom nav is compacted to `grid-cols-6`, `text-[10px]`, and reduced padding, but final phone-width visual validation is still needed downstream.
+- Mobile bottom-nav compactness still needs final phone-width validation after integrated tab-set changes.
 - `ArtifactContentViewer` is contained by a `min-h-0`/`overflow-hidden` mobile wrapper and a capped artifact-list region; downstream browser/E2E should still verify real phone viewport scrolling and media/PDF cases.
 - Full project typecheck currently fails on existing unrelated repository-wide type issues; no typecheck errors matching the changed mobile artifacts/focused-run files were present in the captured output.
 
@@ -92,11 +92,32 @@
 
 ## Downstream Validation Hints / Suggested Scenarios
 
-- Phone-width `/mobile` work shell renders six nav items without horizontal overflow or body/document scroll.
+- Phone-width `/mobile` work shell renders the Artifacts nav item without horizontal overflow or body/document scroll.
 - Agent-run Artifacts shows seeded/hydrated/live run artifacts newest first and previews text/image/media/PDF/etc. through `ArtifactContentViewer`.
 - Team-run Artifacts changes rows when the focused team member changes; stale selected/focused contexts show empty state instead of leaking a previous run's artifacts.
 - Re-selecting the same artifact refreshes the viewer signal.
 - Browser does not appear in mobile bottom navigation and no mobile code imports desktop Browser/right-side tab components.
+
+
+## Local Fix Update — 2026-05-28
+
+- Trigger: API/E2E/device validation reported that tapping **Artifacts** on Android stayed on or returned to Chat.
+- Regression report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-artifacts-tab/autobyteus-web/tickets/done/mobile-artifacts-tab/adb-mobile-artifacts-tab-click-regression.md`
+- Root cause: `stores/mobileWorkStore.ts` normalizes incoming tab ids before storing them, but its allowlist omitted `'artifacts'`; `setActiveTab('artifacts')` was coerced to `'chat'`.
+- Fix: added `'artifacts'` to `normalizeMobileTaskTab`.
+- Regression coverage: added `stores/__tests__/mobileWorkStore.spec.ts` covering `setActiveTab('artifacts')`, `selectContext(..., 'artifacts')`, and unknown-tab fallback to Chat.
+- Classification: Local Implementation Defect in the mobile work store tab normalization branch; no design impact found.
+
+### Local Fix Checks Run — 2026-05-28
+
+- `corepack pnpm exec vitest run stores/__tests__/mobileWorkStore.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/__tests__/MobileArtifacts.spec.ts`
+  - Result: Passed — 3 files, 22 tests.
+- `corepack pnpm exec vitest run stores/__tests__/mobileWorkStore.spec.ts composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts components/mobile/__tests__/MobileArtifacts.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts utils/__tests__/mobileFeatureGates.spec.ts`
+  - Result: Passed — 7 files, 54 tests.
+- `corepack pnpm guard:web-boundary`
+  - Result: Passed.
+- `corepack pnpm exec nuxi typecheck`
+  - Result: Attempted; current environment auto-installed `vue-tsc@3.3.2` and then failed with JavaScript heap out-of-memory before useful TypeScript diagnostics. No relevant changed-file diagnostics were emitted before the OOM.
 
 ## API / E2E / Executable Validation Still Required
 
