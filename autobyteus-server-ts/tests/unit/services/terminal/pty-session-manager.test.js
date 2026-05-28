@@ -33,14 +33,14 @@ class MockPtySession {
 describe("PtySessionManager", () => {
     it("creates session and stores it", async () => {
         const manager = new PtySessionManager(MockPtySession);
-        const session = await manager.createSession("s1", "ws1", "/tmp");
+        const session = await manager.createSession("s1", "target-1", "/tmp");
         expect(manager.getSession("s1")).toBe(session);
         expect(session.isAlive).toBe(true);
     });
     it("rejects duplicate session IDs", async () => {
         const manager = new PtySessionManager(MockPtySession);
-        await manager.createSession("s1", "ws1", "/tmp");
-        await expect(manager.createSession("s1", "ws1", "/tmp")).rejects.toThrow("already exists");
+        await manager.createSession("s1", "target-1", "/tmp");
+        await expect(manager.createSession("s1", "target-1", "/tmp")).rejects.toThrow("already exists");
     });
     it("returns null for missing sessions", () => {
         const manager = new PtySessionManager(MockPtySession);
@@ -49,15 +49,15 @@ describe("PtySessionManager", () => {
     it("tracks session count", async () => {
         const manager = new PtySessionManager(MockPtySession);
         expect(manager.sessionCount).toBe(0);
-        await manager.createSession("s1", "ws1", "/tmp");
-        await manager.createSession("s2", "ws1", "/tmp");
+        await manager.createSession("s1", "target-1", "/tmp");
+        await manager.createSession("s2", "target-1", "/tmp");
         expect(manager.sessionCount).toBe(2);
         await manager.closeSession("s1");
         expect(manager.sessionCount).toBe(1);
     });
     it("closes sessions", async () => {
         const manager = new PtySessionManager(MockPtySession);
-        const session = (await manager.createSession("s1", "ws1", "/tmp"));
+        const session = (await manager.createSession("s1", "target-1", "/tmp"));
         const result = await manager.closeSession("s1");
         expect(result).toBe(true);
         expect(manager.getSession("s1")).toBeNull();
@@ -68,12 +68,12 @@ describe("PtySessionManager", () => {
         const result = await manager.closeSession("missing");
         expect(result).toBe(false);
     });
-    it("closes sessions by workspace", async () => {
+    it("closes sessions by target key", async () => {
         const manager = new PtySessionManager(MockPtySession);
-        await manager.createSession("s1", "ws1", "/tmp");
-        await manager.createSession("s2", "ws1", "/tmp");
-        await manager.createSession("s3", "ws2", "/tmp");
-        const closed = await manager.closeAllForWorkspace("ws1");
+        await manager.createSession("s1", "target-1", "/tmp");
+        await manager.createSession("s2", "target-1", "/tmp");
+        await manager.createSession("s3", "target-2", "/tmp");
+        const closed = await manager.closeAllForTargetKey("target-1");
         expect(closed).toBe(2);
         expect(manager.getSession("s1")).toBeNull();
         expect(manager.getSession("s2")).toBeNull();
@@ -81,16 +81,16 @@ describe("PtySessionManager", () => {
     });
     it("closes all sessions", async () => {
         const manager = new PtySessionManager(MockPtySession);
-        await manager.createSession("s1", "ws1", "/tmp");
-        await manager.createSession("s2", "ws2", "/tmp");
+        await manager.createSession("s1", "target-1", "/tmp");
+        await manager.createSession("s2", "target-2", "/tmp");
         const closed = await manager.closeAll();
         expect(closed).toBe(2);
         expect(manager.sessionCount).toBe(0);
     });
     it("lists sessions", async () => {
         const manager = new PtySessionManager(MockPtySession);
-        await manager.createSession("s1", "ws1", "/tmp");
-        await manager.createSession("s2", "ws2", "/tmp");
-        expect(manager.listSessions()).toEqual({ s1: "ws1", s2: "ws2" });
+        await manager.createSession("s1", "target-1", "/tmp");
+        await manager.createSession("s2", "target-2", "/tmp");
+        expect(manager.listSessions()).toEqual({ s1: "target-1", s2: "target-2" });
     });
 });

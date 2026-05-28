@@ -54,6 +54,7 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-19 delivery latest-base local fix: integrated latest `origin/personal@56c6d4bfa27ced68678e4d21dccd4acbcb31aa76` (`v1.3.31`) for the user's 2026-05-28 Electron rebuild request. Resolved conflicts in `MobileRunSetup.vue`, `MobileContextSelectionRegression.spec.ts`, `MobileRemoteAccessShell.spec.ts`, and `MobileUxRefinement.spec.ts` by preserving ticket-side metadata/root-path Files and Terminal lifecycle expectations while adopting latest-base mobile artifacts tab, run setup parity, launch workspace picker, and auto-approve run options behavior.
 - Round-20 delivery latest-base local fix: integrated latest `origin/personal@832b6f7cdbf77166576ff69c36803fd4125ff090` (`v1.3.32`) for the user's 2026-05-28 latest-base Electron rebuild request. Resolved conflicts in `MobileFiles.vue`, `MobileRemoteAccessShell.spec.ts`, and `useMobileFileContextCoordinator.ts` by preserving the ticket-side metadata/root-path file-explorer activation and visible live-session ownership while adopting latest-base mobile file/reference controls (`MobileFileViewer`, `MobileTeamReferenceViewer`, protected read-only file previews, mobile attachment rows, and v1.3.32 version artifacts). `useMobileWorkspaceFileExplorer.ts` was reconciled to the ticket architecture: it delegates through `useWorkspaceFileExplorer`, resolves/ensures workspace metadata by root path at visible Files activation, owns mobile folder/search/open-file state, and does not depend on legacy `WorkspaceInfo.fileExplorer` or `workspaceStore.allWorkspaces`. Round 17 Terminal FD lifecycle files were not modified by this merge resolution; focused terminal backend tests still pass.
 - Round-21 user-requested advisory cleanup: implemented the non-blocking Round-18 code-review recommendations that were safe local cleanups. `PtySessionManager` and `TerminalHandler` now use internal `targetKey` terminology and `closeAllForTargetKey()` instead of implying Terminal groups sessions by initialized workspace IDs. `RightSideTabs.vue` no longer imports workspace/file-explorer stores for open-file auto-switching; that coordination moved to `useRightPanelOpenFileAutoSwitch()`, keeping the tab shell presentation-oriented while preserving desktop auto-switch behavior and keeping mobile-tools Files disabled. ADV-TERM-001 remains a performance-investigation note: no Terminal backend architecture change was made without profiling, and macOS `IsolatedPtySession` remains intact to preserve descriptor-level cleanup guarantees.
+- Round-22 CR-013 local fix: updated the Terminal PTY session manager unit tests and kept repository-resident JS counterpart to match the production `targetKey` rename. Stale `closeAllForWorkspace()` calls, `ws1`/`ws2` fixtures, and workspace-worded test names are replaced with `closeAllForTargetKey()`, `target-1`/`target-2`, and target-key wording.
 
 ## Key Files Or Areas
 
@@ -83,6 +84,8 @@ Backend:
 - `autobyteus-server-ts/src/api/websocket/terminal.ts`
 - `autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts`
 - `autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts`
+- `autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts`
+- `autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js`
 
 Frontend:
 
@@ -183,6 +186,19 @@ Removed obsolete source/test paths:
 ## Local Implementation Checks Run
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
+
+Round-22 CR-013 local-fix checks:
+
+- `pnpm -C autobyteus-server-ts test tests/unit/services/terminal/pty-session-manager.test.ts tests/integration/terminal/terminal-websocket.integration.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
+  - Result: pass, 3 files / 17 tests.
+  - Covers the corrected `PtySessionManager` target-key unit coverage plus Terminal WebSocket integration and lifecycle paths requested by code review.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round22-cr013-terminal-manager-tests-20260528.log`
+- Focused CR-013 grep for stale Terminal manager workspace naming (`closeAllForWorkspace`, `ws1`, `ws2`, and `sessions by workspace`) across `PtySessionManager`, `TerminalHandler`, and the TS/JS unit test counterparts.
+  - Result: pass; stale symbols/fixtures are gone and expected `closeAllForTargetKey`/`targetKey` references remain.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round22-cr013-terminal-manager-grep-20260528.log`
+- `git diff --check` and `git diff --cached --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round22-cr013-diff-check-20260528.log`
 
 Round-21 user-requested code-review advisory cleanup checks:
 

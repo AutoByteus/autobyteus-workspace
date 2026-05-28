@@ -1,0 +1,80 @@
+# Code review round 19 frontend advisory tests
+Thu May 28 19:37:47 CEST 2026
+
+> autobyteus@1.3.32 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/layout/__tests__/RightSideTabs.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+
+stderr | components/workspace/tools/__tests__/Terminal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useTerminalSession.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useTerminalSession.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/tools/__tests__/Terminal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > connects to the cwd-based WebSocket URL
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/01b53bbd-a1ef-49e7-a39a-db2a7c1a9fef?cwd=%2Ftmp%2Fproject
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > updates status to connected on open
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/8edb3e00-0a2d-4f06-94b7-e636ef300251?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends encoded input when connected
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/53210c38-25c7-43cd-ade0-649ae71d7370?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends resize events
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/04f1127e-b73e-49b0-954e-dd90b33dcdf9?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles output messages
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/5e5e3f86-cc42-4156-99a9-f7d92e2d2cac?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles disconnection
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/73072135-c407-4761-8108-a0cee5fe1144?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/20ab7dd5-9902-45eb-bdc4-b542b2b7d6e1?cwd=%2Ftmp%2Fws-1
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON
+[useTerminalSession] Error parsing message: SyntaxError: Unexpected token 'i', "invalid json" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at MockWebSocket.ws.onmessage (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/composables/useTerminalSession.ts:109:32)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:149:14
+    at Proxy.assertThrows (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:2767:5)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1686:25)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1088:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1735:33)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1420:16)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1029:14)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1686:25)
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not connect without a root path
+[useTerminalSession] No terminal root path
+
+ ✓ composables/__tests__/useTerminalSession.spec.ts (8 tests) 12ms
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts (3 tests) 125ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts (6 tests) 28ms
+
+ Test Files  3 passed (3)
+      Tests  17 passed (17)
+   Start at  19:37:49
+   Duration  6.62s (transform 3.57s, setup 14.47s, collect 1.12s, tests 166ms, environment 669ms, prepare 605ms)

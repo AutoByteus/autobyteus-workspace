@@ -70,7 +70,7 @@ describe("PtySessionManager", () => {
   it("creates session and stores it", async () => {
     const manager = new PtySessionManager(MockPtySession);
 
-    const session = await manager.createSession("s1", "ws1", "/tmp");
+    const session = await manager.createSession("s1", "target-1", "/tmp");
 
     expect(manager.getSession("s1")).toBe(session);
     expect((session as MockPtySession).isAlive).toBe(true);
@@ -78,9 +78,9 @@ describe("PtySessionManager", () => {
 
   it("rejects duplicate session IDs", async () => {
     const manager = new PtySessionManager(MockPtySession);
-    await manager.createSession("s1", "ws1", "/tmp");
+    await manager.createSession("s1", "target-1", "/tmp");
 
-    await expect(manager.createSession("s1", "ws1", "/tmp")).rejects.toThrow(
+    await expect(manager.createSession("s1", "target-1", "/tmp")).rejects.toThrow(
       "already exists",
     );
   });
@@ -96,8 +96,8 @@ describe("PtySessionManager", () => {
 
     expect(manager.sessionCount).toBe(0);
 
-    await manager.createSession("s1", "ws1", "/tmp");
-    await manager.createSession("s2", "ws1", "/tmp");
+    await manager.createSession("s1", "target-1", "/tmp");
+    await manager.createSession("s2", "target-1", "/tmp");
 
     expect(manager.sessionCount).toBe(2);
 
@@ -107,7 +107,7 @@ describe("PtySessionManager", () => {
 
   it("closes sessions", async () => {
     const manager = new PtySessionManager(MockPtySession);
-    const session = (await manager.createSession("s1", "ws1", "/tmp")) as MockPtySession;
+    const session = (await manager.createSession("s1", "target-1", "/tmp")) as MockPtySession;
 
     const result = await manager.closeSession("s1");
 
@@ -120,7 +120,7 @@ describe("PtySessionManager", () => {
     SlowStartSession.lastInstance = null;
     const manager = new PtySessionManager(SlowStartSession);
 
-    const createPromise = manager.createSession("s1", "ws1", "/tmp");
+    const createPromise = manager.createSession("s1", "target-1", "/tmp");
     const session = SlowStartSession.lastInstance;
     expect(session).not.toBeNull();
     expect(manager.getSession("s1")).toBe(session);
@@ -144,14 +144,14 @@ describe("PtySessionManager", () => {
     expect(result).toBe(false);
   });
 
-  it("closes sessions by workspace", async () => {
+  it("closes sessions by target key", async () => {
     const manager = new PtySessionManager(MockPtySession);
 
-    await manager.createSession("s1", "ws1", "/tmp");
-    await manager.createSession("s2", "ws1", "/tmp");
-    await manager.createSession("s3", "ws2", "/tmp");
+    await manager.createSession("s1", "target-1", "/tmp");
+    await manager.createSession("s2", "target-1", "/tmp");
+    await manager.createSession("s3", "target-2", "/tmp");
 
-    const closed = await manager.closeAllForWorkspace("ws1");
+    const closed = await manager.closeAllForTargetKey("target-1");
 
     expect(closed).toBe(2);
     expect(manager.getSession("s1")).toBeNull();
@@ -162,8 +162,8 @@ describe("PtySessionManager", () => {
   it("closes all sessions", async () => {
     const manager = new PtySessionManager(MockPtySession);
 
-    await manager.createSession("s1", "ws1", "/tmp");
-    await manager.createSession("s2", "ws2", "/tmp");
+    await manager.createSession("s1", "target-1", "/tmp");
+    await manager.createSession("s2", "target-2", "/tmp");
 
     const closed = await manager.closeAll();
 
@@ -174,9 +174,9 @@ describe("PtySessionManager", () => {
   it("lists sessions", async () => {
     const manager = new PtySessionManager(MockPtySession);
 
-    await manager.createSession("s1", "ws1", "/tmp");
-    await manager.createSession("s2", "ws2", "/tmp");
+    await manager.createSession("s1", "target-1", "/tmp");
+    await manager.createSession("s2", "target-2", "/tmp");
 
-    expect(manager.listSessions()).toEqual({ s1: "ws1", s2: "ws2" });
+    expect(manager.listSessions()).toEqual({ s1: "target-1", s2: "target-2" });
   });
 });
