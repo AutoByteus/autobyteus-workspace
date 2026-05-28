@@ -218,7 +218,7 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
     expect(wrapper.text()).toContain("phone-first mobile work shell");
   });
 
-  it("opens a recent run row into one mobile work shell with Chat/Runs/Files/Activity bottom navigation", async () => {
+  it("opens a recent run row into one mobile work shell with Chat/Runs/Files/Artifacts/Activity bottom navigation", async () => {
     const wrapper = mountShell();
     await nextTick();
     await wrapper
@@ -247,6 +247,7 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
     expect(wrapper.text()).toContain("Chat");
     expect(wrapper.text()).toContain("Runs");
     expect(wrapper.text()).toContain("Files");
+    expect(wrapper.text()).toContain("Artifacts");
     expect(wrapper.text()).toContain("Activity");
     expect(wrapper.find('[data-testid="mobile-tab-tools"]').exists()).toBe(
       false,
@@ -452,12 +453,15 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
       "MobileRuns.vue",
       "MobileFiles.vue",
       "MobileActivity.vue",
+      "MobileArtifacts.vue",
       "MobileReadableWorkRow.vue",
       "MobileRunSetup.vue",
       "MobileFileViewer.vue",
       "MobileComposerContextTray.vue",
       "MobileLaunchTargetPicker.vue",
       "MobileLaunchRuntimeModelCard.vue",
+      "MobileLaunchRunOptionsCard.vue",
+      "MobileLaunchWorkspacePicker.vue",
       "MobileTeamMemberFocusBar.vue",
       "MobileActivityDigest.vue",
       "MobileTeamMessages.vue",
@@ -470,6 +474,9 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
     expect(combined).not.toContain("AppLeftPanel");
     expect(combined).not.toContain("WorkspaceMobileLayout");
     expect(combined).not.toContain("RightSideTabs");
+    expect(combined).not.toContain("ArtifactsTab");
+    expect(combined).not.toContain("BrowserPanel");
+    expect(combined).not.toContain("window.electronAPI");
     expect(combined).not.toContain('to="/workspace"');
   });
 
@@ -503,6 +510,10 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
       resolve(mobileDir, "MobileChat.vue"),
       "utf-8",
     );
+    const artifactsSource = readFileSync(
+      resolve(mobileDir, "MobileArtifacts.vue"),
+      "utf-8",
+    );
     const workShellSource = readFileSync(
       resolve(mobileDir, "MobileWorkShell.vue"),
       "utf-8",
@@ -511,7 +522,7 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
     expect(runsSource).toContain("MobileRunSetup");
     expect(runSetupSource).toContain("mobile-run-agent-select");
     expect(runSetupSource).toContain("mobile-run-team-select");
-    expect(runSetupSource).toContain("mobile-run-workspace-select");
+    expect(runSetupSource).toContain("MobileLaunchWorkspacePicker");
     expect(runSetupSource).toContain("mobile-run-launch");
     expect(runSetupSource).toContain("MobileLaunchRuntimeModelCard");
     expect(runSetupSource).toContain("mobile-run-setup-readiness");
@@ -525,6 +536,11 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
     expect(activitySource).toContain("MobileActivityDigest");
     expect(activityDigestSource).toContain("MobileTeamMessages");
     expect(activityDigestSource).toContain("MobileToolActivityList");
+    expect(artifactsSource).toContain("ArtifactContentViewer");
+    expect(artifactsSource).toContain("useRunFileChangesStore");
+    expect(artifactsSource).toContain("toAgentArtifactViewerItem");
+    expect(artifactsSource).not.toContain("ArtifactsTab");
+    expect(artifactsSource).not.toContain("BrowserPanel");
     expect(workShellSource).not.toContain("MobileTools");
     expect(filesSource).toContain("useWorkspaceFileExplorer");
     expect(filesSource).toContain("acquireFileExplorerLiveSession");

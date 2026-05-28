@@ -98,6 +98,17 @@ The embedded desktop setup remains useful for development and compatibility, but
 
 The Android app owns QR scanning. A separate ZXing-compatible scanner app is not required. If camera permission is denied or the scan is cancelled, the app returns to the connection screen with retry plus paste/manual-entry guidance.
 
+## Mobile run setup inside Android WebView
+
+Android loads the server-served `/mobile` shell for run setup; it does not implement agent/team setup natively. In **Start new**, mobile users can:
+
+- choose Agent or Team mode, a launch target, a workspace, and runtime/model settings;
+- enable **Auto approve tools** for that run when they intentionally want tool calls to execute without per-call approval; the switch is off by default and uses the same launch-config field as desktop;
+- select workspaces from the paired node's workspace store, including workspaces that are not tied to a live run;
+- load an unlisted workspace by entering an absolute **server-side** path on the paired AutoByteus node/container, not a path on the Android filesystem.
+
+When validating an Android-visible mobile-web change, refresh and verify the served `/mobile` bundle as described below. Installing a new APK alone cannot update this run setup UI.
+
 ## Troubleshooting hints shown by the app
 
 - connect Tailscale on Android;
@@ -157,8 +168,9 @@ Record the mode used in validation evidence:
 5. Scanner recovery: cancel the scanner and confirm the app returns to the connection screen with the recoverable QR retry/paste/manual-entry guidance. When practical, also exercise Android camera-permission denial.
 6. First-run setup: scan the Phone Access QR, or enter/paste/share the stable Tailscale URL or pairing link, and verify the WebView opens `/mobile`.
 7. Pairing: complete the existing `/mobile?pairing=` flow and confirm Home/Chat is usable.
-8. Attachment upload: open Chat, tap an attachment/file upload control, choose a small local file through the Android picker, and confirm the selected file appears in the existing mobile composer/upload path.
-9. Restore: force-stop and reopen:
+8. Mobile new-run setup: when the change touches run setup, open **Start new**, confirm **Auto approve tools** is visible and off by default for Agent and Team launch configs, toggle it intentionally, select an existing workspace, and exercise **Load workspace by server path** with a path on the paired node/container before creating the run.
+9. Attachment upload: open Chat, tap an attachment/file upload control, choose a small local file through the Android picker, and confirm the selected file appears in the existing mobile composer/upload path.
+10. Restore: force-stop and reopen:
 
    ```bash
    adb shell am force-stop org.autobyteus.mobile
@@ -167,8 +179,8 @@ Record the mode used in validation evidence:
 
    Confirm the saved node opens without another QR scan.
 
-10. Mobile Home/catalog freshness: confirm the saved-node relaunch renders Mobile Home/recent work and does not show `Error 500` or `Cannot read properties of undefined (reading 'localeCompare')`. If that error appears after a source fix, first suspect a stale desktop-served `/mobile` bundle.
-11. Travel/reachability simulation: keep Android on Tailscale and avoid relying on the LAN-only URL. If practical, test with Wi-Fi disabled or from another network.
-12. Failure diagnostic: disconnect Tailscale or temporarily save an unreachable URL and confirm the native recovery copy appears instead of a raw WebView error page.
-13. Launcher icon safe-area check: when launcher resources change, inspect or preview the packaged adaptive icon foreground against common launcher masks. The AutoByteus logo should stay fully visible inside the adaptive safe zone; the current vector foreground is expected to use a centered `scaleX=0.66` / `scaleY=0.66` group around pivot `(54,54)` before packaging. Record the preview/device evidence used.
-14. Evidence capture: include screenshots, logcat, APK path/hash, served mobile bundle path/hash, desktop-node mode, stable URL shape or ADB reverse mapping, device id/model/Android version, post-cleanup display size/density when ADB display controls were touched, attachment-upload result, backend/mobile status observations, and launcher icon preview/device evidence when icon resources changed.
+11. Mobile Home/catalog freshness: confirm the saved-node relaunch renders Mobile Home/recent work and does not show `Error 500` or `Cannot read properties of undefined (reading 'localeCompare')`. If that error appears after a source fix, first suspect a stale desktop-served `/mobile` bundle.
+12. Travel/reachability simulation: keep Android on Tailscale and avoid relying on the LAN-only URL. If practical, test with Wi-Fi disabled or from another network.
+13. Failure diagnostic: disconnect Tailscale or temporarily save an unreachable URL and confirm the native recovery copy appears instead of a raw WebView error page.
+14. Launcher icon safe-area check: when launcher resources change, inspect or preview the packaged adaptive icon foreground against common launcher masks. The AutoByteus logo should stay fully visible inside the adaptive safe zone; the current vector foreground is expected to use a centered `scaleX=0.66` / `scaleY=0.66` group around pivot `(54,54)` before packaging. Record the preview/device evidence used.
+15. Evidence capture: include screenshots, logcat, APK path/hash, served mobile bundle path/hash, desktop-node mode, stable URL shape or ADB reverse mapping, device id/model/Android version, post-cleanup display size/density when ADB display controls were touched, attachment-upload result, mobile run setup toggle/workspace-path-load evidence when applicable, backend/mobile status observations, and launcher icon preview/device evidence when icon resources changed.

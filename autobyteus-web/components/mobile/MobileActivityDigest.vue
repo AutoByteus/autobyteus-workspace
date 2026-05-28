@@ -73,10 +73,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import MobileTeamMessages from '~/components/mobile/MobileTeamMessages.vue';
 import MobileToolActivityList from '~/components/mobile/MobileToolActivityList.vue';
-import { useActiveContextStore } from '~/stores/activeContextStore';
+import { useMobileFocusedRunIdentity } from '~/composables/mobile/useMobileFocusedRunIdentity';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
@@ -93,13 +93,14 @@ defineEmits<{
 
 type ActivityFilter = 'tasks' | 'messages' | 'tools';
 
-const activeContextStore = useActiveContextStore();
 const activityStore = useAgentActivityStore();
 const selectionStore = useAgentSelectionStore();
 const teamContextsStore = useAgentTeamContextsStore();
 const teamCommunicationStore = useTeamCommunicationStore();
 const activeFilter = ref<ActivityFilter>('tasks');
 const showTeamMessages = ref(false);
+
+const { focusedRunId } = useMobileFocusedRunIdentity(toRef(props, 'context'));
 
 const activeTeamContext = computed(() => {
   if (props.context?.kind !== 'team-run') return null;
@@ -126,20 +127,7 @@ const teamMessages = computed(() => {
     memberKind: teamContextsStore.focusedMemberNode?.memberKind || null,
   }).messages;
 });
-const runId = computed(() => {
-  if (props.context?.kind === 'agent-run') {
-    if (selectionStore.selectedType !== 'agent' || selectionStore.selectedRunId !== props.context.runId) return '';
-    return activeContextStore.activeAgentContext?.state.runId === props.context.runId ? props.context.runId : '';
-  }
-  if (props.context?.kind === 'team-run') {
-    if (selectionStore.selectedType !== 'team' || selectionStore.selectedRunId !== props.context.teamRunId) return '';
-    const team = teamContextsStore.getTeamContextById(props.context.teamRunId);
-    if (!team || team.focusedMemberRouteKey !== props.context.focusedMemberRouteKey) return '';
-    return activeContextStore.activeAgentContext?.state.runId || '';
-  }
-  return '';
-});
-const toolActivities = computed(() => runId.value ? activityStore.getActivities(runId.value) : []);
+const toolActivities = computed(() => focusedRunId.value ? activityStore.getActivities(focusedRunId.value) : []);
 const filters = computed(() => [
   { id: 'tasks' as const, label: 'Tasks', count: taskCards.value.length },
   { id: 'messages' as const, label: 'Messages', count: teamMessages.value.length },
@@ -161,7 +149,7 @@ const messageSummary = computed(() => {
   return `${teamMessages.value.length} message${teamMessages.value.length === 1 ? '' : 's'}; open details for full text.`;
 });
 const toolSummary = computed(() => {
-  if (!runId.value) return 'Select a run to see run and tool history.';
+  if (!focusedRunId.value) return 'Select a run to see run and tool history.';
   if (!toolActivities.value.length) return 'No tool activity has been recorded for this run yet.';
   return `${toolActivities.value.length} activity item${toolActivities.value.length === 1 ? '' : 's'}; rows are compact by default.`;
 });

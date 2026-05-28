@@ -1,0 +1,90 @@
+# Finalization Merge
+Date: 2026-05-24T08:51:31Z
+Main checkout: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+
+$ git status --short --branch
+## personal...origin/personal
+
+$ git fetch origin personal codex/mobile-auto-approve-toggle --prune --no-tags
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+ * branch              codex/mobile-auto-approve-toggle -> FETCH_HEAD
+
+origin/personal: 03d7880b45afd2b032de6e842e41429fad0a2cb0 (docs(delivery): record mobile safe container release)
+origin/codex/mobile-auto-approve-toggle: 07ee1c00f0f63306c15cc2d3e0f24c033690991b (feat(mobile): add run setup parity)
+$ git rev-list --left-right --count personal...origin/personal
+0	0
+
+$ git merge --no-ff origin/codex/mobile-auto-approve-toggle -m "merge: mobile auto approve run setup parity"
+Merge made by the 'ort' strategy.
+ autobyteus-android/README.md                       |    4 +-
+ .../mobile/MobileLaunchRunOptionsCard.vue          |   42 +
+ .../components/mobile/MobileLaunchTargetPicker.vue |    8 +-
+ .../mobile/MobileLaunchWorkspacePicker.vue         |   88 ++
+ .../components/mobile/MobileRunSetup.vue           |  350 +----
+ .../mobile/__tests__/MobileUxRefinement.spec.ts    |  114 +-
+ .../__tests__/useMobileLaunchWorkspaces.spec.ts    |   66 +
+ .../mobile/useMobileLaunchWorkspaces.ts            |  126 ++
+ .../mobile/useMobileRunSetupController.ts          |  385 ++++++
+ autobyteus-web/docs/remote_access.md               |    6 +-
+ autobyteus-web/types/mobileLaunch.ts               |    8 +
+ docs/android_mobile_access.md                      |   26 +-
+ .../api-e2e-validation-report.md                   |  357 +++++
+ .../electron-mac-build-20260524T082756Z.log        | 1404 ++++++++++++++++++++
+ .../build-logs/electron-mac-build-artifacts.sha256 |    2 +
+ .../build-logs/electron-mac-build-artifacts.txt    |   25 +
+ .../build-logs/latest-electron-build-log.path      |    1 +
+ .../delivery-initial-base-refresh.log              |   31 +
+ .../delivery-post-integration-checks.log           |   31 +
+ .../design-review-report.md                        |  230 ++++
+ .../done/mobile-auto-approve-toggle/design-spec.md |  466 +++++++
+ .../mobile-auto-approve-toggle/docs-sync-report.md |   78 ++
+ .../electron-build-precheck.log                    |   18 +
+ .../finalization-pre-archive-refresh.log           |   29 +
+ .../mobile-auto-approve-toggle/handoff-summary.md  |  132 ++
+ .../implementation-handoff.md                      |   99 ++
+ .../investigation-notes.md                         |  155 +++
+ .../release-deployment-report.md                   |  179 +++
+ .../mobile-auto-approve-toggle/release-notes.md    |   19 +
+ .../mobile-auto-approve-toggle/requirements.md     |  168 +++
+ .../mobile-auto-approve-toggle/review-report.md    |  169 +++
+ .../delivery-final-archive-diff-check.log          |   23 +
+ 32 files changed, 4541 insertions(+), 298 deletions(-)
+ create mode 100644 autobyteus-web/components/mobile/MobileLaunchRunOptionsCard.vue
+ create mode 100644 autobyteus-web/components/mobile/MobileLaunchWorkspacePicker.vue
+ create mode 100644 autobyteus-web/composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts
+ create mode 100644 autobyteus-web/composables/mobile/useMobileLaunchWorkspaces.ts
+ create mode 100644 autobyteus-web/composables/mobile/useMobileRunSetupController.ts
+ create mode 100644 autobyteus-web/types/mobileLaunch.ts
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/api-e2e-validation-report.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/build-logs/electron-mac-build-20260524T082756Z.log
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/build-logs/electron-mac-build-artifacts.sha256
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/build-logs/electron-mac-build-artifacts.txt
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/build-logs/latest-electron-build-log.path
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/delivery-initial-base-refresh.log
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/delivery-post-integration-checks.log
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/design-review-report.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/design-spec.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/docs-sync-report.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/electron-build-precheck.log
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/finalization-pre-archive-refresh.log
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/handoff-summary.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/implementation-handoff.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/investigation-notes.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/release-deployment-report.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/release-notes.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/requirements.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/review-report.md
+ create mode 100644 tickets/done/mobile-auto-approve-toggle/validation-evidence/delivery-final-archive-diff-check.log
+
+$ git status --short --branch
+## personal...origin/personal [ahead 2]
+Merge commit: 0bb11b5b235ce3da116c6fb68105cd51c47e9e2e (merge: mobile auto approve run setup parity)
+
+$ git push origin personal
+remote: 
+remote: GitHub found 416 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (5 critical, 175 high, 205 moderate, 31 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   03d7880b..0bb11b5b  personal -> personal

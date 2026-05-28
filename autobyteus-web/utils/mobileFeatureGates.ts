@@ -7,11 +7,15 @@ export type MobileFeatureId =
   | 'agentTeamRuns'
   | 'runHistory'
   | 'workspaceFiles'
+  | 'runArtifacts'
+  | 'terminal'
+  | 'vnc'
   | 'desktopWorkspace'
   | 'desktopSettings'
   | 'desktopUpdates'
   | 'localFolderPicker'
-  | 'applicationIframe';
+  | 'applicationIframe'
+  | 'browser';
 
 const supportedMobileFeatures = new Set<MobileFeatureId>([
   'pairing',
@@ -20,6 +24,7 @@ const supportedMobileFeatures = new Set<MobileFeatureId>([
   'agentTeamRuns',
   'runHistory',
   'workspaceFiles',
+  'runArtifacts',
 ]);
 
 export function isMobileFeatureSupported(featureId: MobileFeatureId): boolean {

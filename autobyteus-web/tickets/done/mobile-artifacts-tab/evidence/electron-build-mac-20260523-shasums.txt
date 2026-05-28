@@ -1,0 +1,4 @@
+cd08b2b1079d3a2f322b686da55b7eb072d6f85f30f4e506a33b8a3243010d42  electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg
+990c30c814e46597e1cb76efcb9de970baf259ee0c488052d08bb132f13487df  electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip
+c73aa5f30a3dfb41fc63be88b1cda410546351aa79357d419d2c5084c7c4a504  electron-dist/AutoByteus_personal_macos-arm64-1.3.27.dmg.blockmap
+0e7df90107fa691941acd3e73ffe66780c335951897d5677f02951c66dbd6898  electron-dist/AutoByteus_personal_macos-arm64-1.3.27.zip.blockmap

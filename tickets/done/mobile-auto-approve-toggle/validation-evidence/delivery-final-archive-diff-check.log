@@ -1,0 +1,23 @@
+# Delivery Final Archive Diff Check
+Date: 2026-05-24T08:50:59Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle
+Branch: codex/mobile-auto-approve-toggle
+
+$ git diff --check
+git diff --check passed.
+
+$ git status --short --branch
+## codex/mobile-auto-approve-toggle...origin/personal
+ M autobyteus-android/README.md
+ M autobyteus-web/components/mobile/MobileLaunchTargetPicker.vue
+ M autobyteus-web/components/mobile/MobileRunSetup.vue
+ M autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts
+ M autobyteus-web/docs/remote_access.md
+ M docs/android_mobile_access.md
+?? autobyteus-web/components/mobile/MobileLaunchRunOptionsCard.vue
+?? autobyteus-web/components/mobile/MobileLaunchWorkspacePicker.vue
+?? autobyteus-web/composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts
+?? autobyteus-web/composables/mobile/useMobileLaunchWorkspaces.ts
+?? autobyteus-web/composables/mobile/useMobileRunSetupController.ts
+?? autobyteus-web/types/mobileLaunch.ts
+?? tickets/done/mobile-auto-approve-toggle/
