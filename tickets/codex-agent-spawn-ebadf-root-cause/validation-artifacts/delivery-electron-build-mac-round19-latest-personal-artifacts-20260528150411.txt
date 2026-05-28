@@ -1,0 +1,26 @@
+Electron macOS artifact summary (Round 19 latest personal rebuild)
+timestamp=2026-05-28T13:08:44Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+head=49deb55080027afcb7c1d3841caa84091e914ca3
+origin_personal=56c6d4bfa27ced68678e4d21dccd4acbcb31aa76
+merge_base=56c6d4bfa27ced68678e4d21dccd4acbcb31aa76
+origin_personal_to_head=0	24
+version=1.3.31
+build_log=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-20260528150411.log
+dmg_verify_log=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-dmg-verify-20260528150411.log
+
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.31.dmg
+  size_bytes=379753443
+  sha256=4e9887dd0a847cd5041d3a88191d0cb0b6e754ac247bbecc2c387e56bca1a592
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.31.dmg.blockmap
+  size_bytes=396568
+  sha256=5fe33d3c109c250a2e046e9000707b54e2c9b047335996fd43986b4ab95f47f5
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.31.zip
+  size_bytes=377150911
+  sha256=25cc8948a246979bc5528b9b82cd99ae187debb3f5dd09d601d6b8c281847d63
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.31.zip.blockmap
+  size_bytes=387149
+  sha256=7f169e41ef3876141bb844692cb020f32e282fdafa993144fa95499ba01a7799
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml
+  size_bytes=561
+  sha256=003d98d8a143acaab472fb242e967b79bc78f80650bcbd0a2b86a3be5ea2b015

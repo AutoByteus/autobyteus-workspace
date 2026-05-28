@@ -56,6 +56,15 @@
 | Terminal/File Explorer coupling through workspace materialization assumptions. | Terminal uses cwd/root path; File Explorer owns tree/search/watch state and visible watcher leases. | `autobyteus-web/docs/terminal.md`, `autobyteus-web/docs/file_explorer.md` |
 | Mobile Phone Access Terminal/VNC page (`MobileTools.vue`). | No mobile Phone Access Terminal/VNC page in the latest integrated base. | `autobyteus-web/docs/terminal.md` |
 
+
+## Round 19 Latest-Base Docs Decision — 2026-05-28
+
+- Latest integrated base for this delivery pass: `origin/personal@56c6d4bfa27ced68678e4d21dccd4acbcb31aa76`.
+- Integrated source HEAD before delivery evidence updates: `49deb55080027afcb7c1d3841caa84091e914ca3`.
+- Delivery reviewed the README Electron build instructions and rebuilt Electron v1.3.31.
+- Additional long-lived docs edits by delivery: none. The latest base already brought mobile artifacts/run setup documentation, and the ticket's Terminal/File Explorer docs remain accurate for the rebuilt integrated state.
+- Delivery evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round19-integrated-state-check-20260528150411.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-20260528150411.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-dmg-verify-20260528150411.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-artifacts-20260528150411.txt`.
+
 ## Delivery Continuation
 
 - Result: `Pass`
