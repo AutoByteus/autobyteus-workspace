@@ -2,12 +2,12 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/review-report.md`
 - Current Validation Round: `1`
 - Trigger: Code-review pass from `code_reviewer` for `codex/mobile-file-reference-controls`
 - Prior Round Reviewed: `N/A`
@@ -84,7 +84,7 @@ Focused test scope covered implementation-owned and boundary-adjacent code, not 
 - Dependencies were already present in the task worktree.
 - `pnpm run build:mobile-web` regenerated ignored assets under `dist/` and `dist-mobile/`.
 - A temporary symlinked static root was created under `/tmp/mobile-file-reference-serve.*` so `dist-mobile/public` could be served at `/mobile/`, matching the generated base URL. It was removed after the browser smoke.
-- Browser smoke artifact copied to: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/mobile-bundle-pairing-shell.png`.
+- Browser smoke artifact copied to: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/mobile-bundle-pairing-shell.png`.
 
 ## Tests Implemented Or Updated
 
@@ -116,8 +116,8 @@ API/E2E validation added or updated narrow durable validation in:
 
 ## Other Validation Artifacts
 
-- Browser smoke screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/mobile-bundle-pairing-shell.png`
-- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/api-e2e-validation-report.md`
+- Browser smoke screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/mobile-bundle-pairing-shell.png`
+- Canonical validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/api-e2e-validation-report.md`
 
 ## Temporary Validation Methods / Scaffolding
 

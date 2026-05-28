@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/design-review-report.md`
 
 ## What Changed
 

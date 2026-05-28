@@ -3,16 +3,16 @@
 ## Review Round Meta
 
 - Review Entry Point: `Post-Validation Durable-Validation Re-Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/requirements.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/requirements.md`
 - Current Review Round: `2`
 - Trigger: API/E2E validation passed and added/updated repository-resident durable validation; package returned by `api_e2e_engineer` before delivery.
 - Prior Review Round Reviewed: `1`
 - Latest Authoritative Round: `2`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/design-spec.md`
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/design-review-report.md`
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/implementation-handoff.md`
-- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/api-e2e-validation-report.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/design-spec.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/design-review-report.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/implementation-handoff.md`
+- Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/api-e2e-validation-report.md`
 - API / E2E Validation Started Yet: `Yes`
 - Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes`
 
@@ -148,7 +148,7 @@ Round 2 checks executed by code reviewer:
 API/E2E evidence accepted from validation report rather than rerun in Round 2:
 
 - `pnpm run build:mobile-web`: Pass with existing warnings.
-- Served `/mobile/` static bundle smoke: Pass; screenshot artifact recorded at `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-file-reference-controls/autobyteus-web/tickets/done/mobile-file-reference-controls/mobile-bundle-pairing-shell.png`.
+- Served `/mobile/` static bundle smoke: Pass; screenshot artifact recorded at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tickets/done/mobile-file-reference-controls/mobile-bundle-pairing-shell.png`.
 - Built-asset freshness probe: Pass.
 
 ## Legacy / Backward-Compatibility Verdict
