@@ -65,6 +65,15 @@
 - Additional long-lived docs edits by delivery: none. The latest base already brought mobile artifacts/run setup documentation, and the ticket's Terminal/File Explorer docs remain accurate for the rebuilt integrated state.
 - Delivery evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round19-integrated-state-check-20260528150411.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-20260528150411.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-dmg-verify-20260528150411.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-artifacts-20260528150411.txt`.
 
+
+## Round 20 Latest-Base Docs Decision — 2026-05-28
+
+- Latest integrated base for this delivery pass: `origin/personal@d1f92730caea25e8b9c39cf4384dc665491e768a`.
+- Integrated source HEAD before delivery evidence updates: `2a4667a27149c7a3dbaa53e7b4b5c5350ca25663`.
+- Delivery reviewed the README Electron build instructions and rebuilt Electron v1.3.32.
+- Additional long-lived docs edits by delivery: none. The latest base brought mobile file/reference controls documentation/finalization updates, and the ticket's Terminal/File Explorer docs remain accurate for the rebuilt integrated state.
+- Delivery evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round20-integrated-state-check-20260528181849.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round20-latest-personal-20260528181849.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round20-latest-personal-dmg-verify-20260528181849.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round20-latest-personal-artifacts-20260528181849.txt`.
+
 ## Delivery Continuation
 
 - Result: `Pass`

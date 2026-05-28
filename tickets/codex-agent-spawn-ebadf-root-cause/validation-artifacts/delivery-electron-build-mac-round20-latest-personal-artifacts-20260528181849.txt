@@ -1,0 +1,26 @@
+Electron macOS artifact summary (Round 20 final latest personal rebuild)
+timestamp=2026-05-28T16:22:57Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+head=2a4667a27149c7a3dbaa53e7b4b5c5350ca25663
+origin_personal=d1f92730caea25e8b9c39cf4384dc665491e768a
+merge_base=d1f92730caea25e8b9c39cf4384dc665491e768a
+origin_personal_to_head=0	27
+version=1.3.32
+build_log=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round20-latest-personal-20260528181849.log
+dmg_verify_log=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round20-latest-personal-dmg-verify-20260528181849.log
+
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg
+  size_bytes=379774651
+  sha256=31f5f76e5b90ebd4b09daf1e5b036340cc523448128e98fc7c93bf6c715e1e49
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg.blockmap
+  size_bytes=396997
+  sha256=dc8463392ceef9e9ab11f786e82aa134108ce369913a040e2d7066792c37475d
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip
+  size_bytes=377153762
+  sha256=a1a4b0e50debb9d70c2ded83e9073830270f44fa33ea2682775fce1b657db8e8
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap
+  size_bytes=387520
+  sha256=d74f15b40ffe861c7e9bf3536880fd191cbf9511ebea0b12cc8963fed9380a38
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml
+  size_bytes=561
+  sha256=4e39c66ab39a7ef05d685450eebeb22b49e791b39f768f5673620cc2df5728a6
