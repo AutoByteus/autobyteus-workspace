@@ -38,7 +38,9 @@ Full guide:
 
 ## Phone Access / Remote Access
 
-AutoByteus desktop can pair a phone/PWA to the bundled server over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a LAN with an HTTPS endpoint. The desktop flow lives in **Settings -> Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes require a stable `https://` URL; Tailscale Serve HTTPS is the recommended setup for Android and travel use.
+AutoByteus desktop can pair a phone/PWA to a reachable AutoByteus node over a private network path the user already trusts, such as Tailscale/Headscale, company VPN, NetBird, Netmaker, WireGuard, or a LAN with an HTTPS endpoint. The desktop flow lives in **Settings -> Nodes -> Phone Setup**, where the Tailscale Serve guide and Phone Access controls generate a short-lived `/mobile?pairing=...` QR/link served by the backend at `/mobile`. New desktop-created pairing QR codes require a stable `https://` URL; Tailscale Serve HTTPS is the recommended setup for Android and travel use.
+
+For the Phase One security-hardened Android path, create a **mobile-safe Docker node**, add it as a remote node, open that node in its own desktop window over your trusted private network, and create the Phone Access QR from that Docker node window. The mobile-safe launcher profile avoids default privileged Docker flags and automatic shared host bind mounts and binds management ports to localhost by default. Desktop/Electron access to the full backend relies on the trusted private-network product model, while Android/mobile clients receive separate paired-phone `mra_...` credentials that do not authorize owner-management routes. Do not expose the full backend directly to the public internet. See [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md) and [`docs/android_mobile_access.md`](docs/android_mobile_access.md).
 
 User and packaging details are in [`autobyteus-web/docs/remote_access.md`](autobyteus-web/docs/remote_access.md); backend route/auth details are in [`autobyteus-server-ts/docs/features/remote_access.md`](autobyteus-server-ts/docs/features/remote_access.md).
 
@@ -69,7 +71,24 @@ autobyteus-docker new-container
 Repeated `new-container` calls create `autobyteus-server-0`, then
 `autobyteus-server-1`, then `autobyteus-server-2`, and so on.
 
-The public launcher keeps the existing private Docker named volumes unchanged:
+For the recommended Android/Phone Access isolation path, create a mobile-safe
+node instead:
+
+```bash
+autobyteus-docker new-container --profile mobile-safe
+```
+
+Use the printed Backend URL in **Settings → Nodes → Add Remote Node**, then open
+that Docker node window over a trusted LAN, VPN, tailnet, or equivalent private
+network path. Desktop/Electron access to that node follows the trusted private-network product model; do not expose the full backend directly to
+the public internet. Paired phones receive only separate `mra_...` mobile credentials, and
+those credentials do not authorize owner-management routes. The mobile-safe
+profile avoids `SYS_ADMIN`, avoids `seccomp=unconfined`, binds published ports to
+`127.0.0.1`, and disables automatic shared host bind mounts by default. Current
+server Docker images package the `/mobile` web shell so the QR target is served
+by the container itself.
+
+For standard managed containers, the public launcher keeps the existing private Docker named volumes unchanged:
 `<node>-data` stays mounted at `/home/autobyteus/data`, `<node>-root-home`
 stays mounted at `/root`, and `<node>-workspace` stays mounted at
 `/app/autobyteus-server-ts/workspace`. It also creates a host-visible shared
@@ -85,6 +104,11 @@ Inside each managed container, user files land in simple stable paths:
 managed Docker node. The launcher sets
 `AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace`, so default
 terminal/agent work appears in the host-visible node workspace.
+
+Mobile-safe containers deliberately skip those automatic shared host bind mounts.
+If a mobile-safe deployment needs host files, add explicit mounts as a deliberate
+container-creation/deployment decision rather than relying on the default
+launcher workspace sharing path.
 
 Inspect the path mapping:
 

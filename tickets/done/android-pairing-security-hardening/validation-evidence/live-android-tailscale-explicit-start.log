@@ -1,0 +1,25 @@
+== explicit Tailscale activity start ==
+Starting: Intent { cmp=com.tailscale.ipn/.MainActivity }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+LaunchState: HOT
+Activity: com.tailscale.ipn/.MainActivity
+TotalTime: 51
+WaitTime: 60
+Complete
+{'text': '', 'desc': '', 'res': 'android:id/content', 'class': 'android.widget.FrameLayout', 'bounds': '[0,104][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'ryan.zheng.work@gmail.com', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[231,148][820,203]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'Connected', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[231,203][414,258]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'EXIT NODE', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[88,357][264,401]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'None', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[88,407][195,462]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'search', 'res': '', 'class': 'android.view.View', 'bounds': '[77,643][143,709]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'Search', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[187,643][331,709]', 'checked': 'false', 'clickable': 'false'}
+{'text': '2109119dg', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[94,945][352,1017]', 'checked': 'false', 'clickable': 'false'}
+{'text': '100.75.247.102', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[44,1017][364,1089]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'normys-macbook-pro', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[94,1146][581,1218]', 'checked': 'false', 'clickable': 'false'}
+{'text': '100.127.30.107', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[44,1218][364,1290]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'ryan zheng', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[44,819][341,896]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/statusBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][1080,104]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/navigationBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][0,0]', 'checked': 'false', 'clickable': 'false'}
+100.127.30.107  normys-macbook-pro  ryan.zheng.work@  macOS    -  
+100.75.247.102  2109119dg           ryan.zheng.work@  android  -  

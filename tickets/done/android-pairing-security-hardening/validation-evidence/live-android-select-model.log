@@ -1,0 +1,94 @@
+== tap Select a model ==
+{'text': '', 'desc': '', 'res': 'android:id/content', 'class': 'android.widget.FrameLayout', 'bounds': '[0,104][1080,1569]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': '__nuxt', 'class': 'android.view.View', 'bounds': '[0,104][1080,1569]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'app', 'class': 'android.view.View', 'bounds': '[0,104][1080,1569]', 'clickable': 'false'}
+{'text': 'Home', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[44,139][220,244]', 'clickable': 'true'}
+{'text': 'Memory Compactor Agent profile', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[247,137][819,247]', 'clickable': 'true'}
+{'text': 'Switch', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[847,139][1036,244]', 'clickable': 'true'}
+{'text': 'New run', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[55,337][261,417]', 'clickable': 'false'}
+{'text': 'Close setup', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[728,324][1025,431]', 'clickable': 'true'}
+{'text': 'Hide', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[838,574][979,659]', 'clickable': 'true'}
+{'text': 'Agent', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[99,700][530,802]', 'clickable': 'true'}
+{'text': 'Team', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[550,700][979,802]', 'clickable': 'true'}
+{'text': 'Agent', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[134,876][478,934]', 'clickable': 'false'}
+{'text': 'Memory Compactor', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[134,942][478,1000]', 'clickable': 'false'}
+{'text': 'Change agent', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[739,887][946,992]', 'clickable': 'true'}
+{'text': 'Workspace', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[134,1113][434,1171]', 'clickable': 'false'}
+{'text': 'Temp Workspace', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[134,1179][434,1237]', 'clickable': 'false'}
+{'text': 'Change workspace', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[739,1121][946,1226]', 'clickable': 'true'}
+{'text': 'Runtime and model', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[145,1358][935,1415]', 'clickable': 'false'}
+{'text': 'Runtime', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[145,1446][935,1503]', 'clickable': 'false'}
+{'text': 'AutoByteus', 'desc': '', 'res': 'mobile-agent-run-runtime-kind', 'class': 'android.view.View', 'bounds': '[145,1512][935,1569]', 'clickable': 'true'}
+{'text': 'Model', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[145,1569][935,1569]', 'clickable': 'false'}
+{'text': 'Select a model', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[145,1569][935,1569]', 'clickable': 'true'}
+{'text': 'Choose a model before creating the run.', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[134,1569][946,1569]', 'clickable': 'false'}
+{'text': 'Create run', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[99,1569][979,1569]', 'clickable': 'true'}
+{'text': '', 'desc': 'Chat', 'res': '', 'class': 'android.widget.Button', 'bounds': '[0,1424][272,1569]', 'clickable': 'true'}
+{'text': '', 'desc': 'Runs', 'res': '', 'class': 'android.widget.Button', 'bounds': '[269,1424][541,1569]', 'clickable': 'true'}
+{'text': '', 'desc': 'Files', 'res': '', 'class': 'android.widget.Button', 'bounds': '[539,1424][811,1569]', 'clickable': 'true'}
+{'text': '', 'desc': 'Activity', 'res': '', 'class': 'android.widget.Button', 'bounds': '[808,1424][1080,1569]', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'teleports', 'class': 'android.widget.TextView', 'bounds': '[0,1567][1080,1567]', 'clickable': 'false'}
+{'text': 'ANTHROPIC', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,538][932,618]', 'clickable': 'false'}
+{'text': 'claude-haiku-4.5', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,615][932,717]', 'clickable': 'false'}
+{'text': 'claude-opus-4.6', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,714][932,816]', 'clickable': 'false'}
+{'text': 'claude-opus-4.7', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,813][932,915]', 'clickable': 'false'}
+{'text': 'claude-sonnet-4.6', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,912][932,1014]', 'clickable': 'false'}
+{'text': 'AUTOBYTEUS', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1033][932,1113]', 'clickable': 'false'}
+{'text': 'DEEPSEEK', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1132][932,1212]', 'clickable': 'false'}
+{'text': 'deepseek-v4-flash', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1209][932,1311]', 'clickable': 'false'}
+{'text': 'deepseek-v4-pro', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1308][932,1410]', 'clickable': 'false'}
+{'text': 'GEMINI', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1429][932,1509]', 'clickable': 'false'}
+{'text': 'gemini-3-flash-preview', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1506][932,1569]', 'clickable': 'false'}
+{'text': 'gemini-3.1-pro-preview', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'gemini-3.5-flash', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'GLM', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'glm-5.1', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'GROK', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'grok-4-1-fast-reasoning', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'grok-code-fast-1', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'KIMI', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'kimi-k2-thinking', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'kimi-k2.6', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'LM STUDIO', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'bu-30b-a3b-preview:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'deepseek-ocr:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'gemma-4-31b-it:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'google/gemma-4-26b-a4b:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'kimi-linear-48b-a3b-instruct@4bit:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'kimi-linear-48b-a3b-instruct@6bit:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'lmstudio-community/qwen3-next-80b-a3b-thinking:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'mistralai/devstral-small-2-2512:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'mlx-qwen3.5-35b-a3b-claude-4.6-opus-reasoning-distilled:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'nemotron-3-nano-omni-30b-a3b-reasoning:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'nvidia/nemotron-3-nano:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'openai/gpt-oss-20b:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen/qwen3-30b-a3b-2507:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen/qwen3-coder-next:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen/qwen3-next-80b:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen/qwen3-vl-30b:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen/qwen3.5-35b-a3b:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen3.5-27b:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen3.5-27b-claude-4.6-opus-distilled-mlx:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen3.6-27b:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen3.6-27b-ud-mlx:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen3.6-35b-a3b:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen3.6-35b-a3b-nvfp4:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwenlong-l1.5-30b-a3b-i1:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'text-embedding-nomic-embed-text-v1.5:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'unsloth/qwen3-next-80b-a3b-thinking:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'zai-org/glm-4.6v-flash:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'zai-org/glm-4.7-flash:lmstudio@host.docker.internal:1234', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'MINIMAX', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'minimax-m2.7', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'MISTRAL', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'devstral-2', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'mistral-large-3', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'OLLAMA', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'OPENAI', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'gpt-5.4', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'gpt-5.4-mini', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'gpt-5.5', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'QWEN', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': 'qwen3-max', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[148,1569][932,1569]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/statusBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][1080,104]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/navigationBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][0,0]', 'clickable': 'false'}

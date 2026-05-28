@@ -1,13 +1,23 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import apiService from '~/services/api';
+import { useNodeStore } from '~/stores/nodeStore';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type {
   PairedDeviceSummary,
   RemoteAccessPairingSessionResponse,
   RemoteAccessSettings,
+  RemoteAccessStatus,
   RemoteAccessUrlCandidate,
 } from '~/types/remoteAccess';
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints';
+import {
+  fetchRemoteAccessStatusFromBaseUrl,
+  formatPhoneAccessRequestError,
+  normalizeHttpsPhoneAccessCandidate,
+  validatePhoneAccessAdvertisedUrl,
+  type AdvertisedUrlValidation,
+} from '~/utils/phoneAccessRemoteNode';
 
 const defaultSettings = (): RemoteAccessSettings => ({
   phoneAccessEnabled: false,
@@ -15,6 +25,9 @@ const defaultSettings = (): RemoteAccessSettings => ({
 });
 
 export const usePhoneAccessStore = defineStore('phoneAccess', () => {
+  const windowNodeContextStore = useWindowNodeContextStore();
+  const nodeStore = useNodeStore();
+
   const settings = ref<RemoteAccessSettings>(defaultSettings());
   const candidates = ref<RemoteAccessUrlCandidate[]>([]);
   const activeDevices = ref<PairedDeviceSummary[]>([]);
@@ -25,57 +38,41 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
   const info = ref<string | null>(null);
+  const advertisedUrlVerified = ref(false);
+  const advertisedUrlVerificationMessage = ref<string | null>(null);
 
   const phoneAccessEnabled = computed(() => settings.value.phoneAccessEnabled);
-  const selectedUrlValidation = computed(() => {
-    const raw = selectedServerBaseUrl.value.trim();
-    if (!raw) {
-      return {
-        normalizedBaseUrl: '',
-        isValid: false,
-        isHttps: false,
-        message: 'Choose or enter a server URL first.',
-      };
-    }
-    try {
-      const normalizedBaseUrl = normalizeNodeBaseUrl(raw);
-      const isHttps = new URL(normalizedBaseUrl).protocol === 'https:';
-      return {
-        normalizedBaseUrl,
-        isValid: true,
-        isHttps,
-        message: isHttps
-          ? null
-          : 'Phone Access pairing requires an HTTPS URL. Paste a Tailscale Serve URL such as https://<machine>.<tailnet>.ts.net/mobile.',
-      };
-    } catch (validationError) {
-      return {
-        normalizedBaseUrl: '',
-        isValid: false,
-        isHttps: false,
-        message: validationError instanceof Error ? validationError.message : String(validationError),
-      };
-    }
-  });
+  const isRemoteNodeWindow = computed(() => !windowNodeContextStore.isEmbeddedWindow);
+  const managementBaseUrl = computed(() => normalizeNodeBaseUrl(windowNodeContextStore.nodeBaseUrl));
+  const currentNode = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId));
+  const currentNodeName = computed(() => (
+    isRemoteNodeWindow.value
+      ? currentNode.value?.name || 'AutoByteus Remote Node'
+      : 'AutoByteus Desktop'
+  ));
+  const canManagePhoneAccess = computed(() => true);
 
-  function normalizeHttpsCandidate(candidate: RemoteAccessUrlCandidate): string | null {
-    try {
-      const normalizedBaseUrl = normalizeNodeBaseUrl(candidate.serverBaseUrl);
-      return new URL(normalizedBaseUrl).protocol === 'https:' ? normalizedBaseUrl : null;
-    } catch {
-      return null;
-    }
+  const selectedUrlValidation = computed<AdvertisedUrlValidation>(() =>
+    validatePhoneAccessAdvertisedUrl(selectedServerBaseUrl.value, isRemoteNodeWindow.value));
+
+  function resetAdvertisedVerification(): void {
+    advertisedUrlVerified.value = false;
+    advertisedUrlVerificationMessage.value = null;
   }
 
   function selectDefaultCandidate(): void {
-    if (selectedServerBaseUrl.value) {
+    if (isRemoteNodeWindow.value || selectedServerBaseUrl.value) {
       return;
     }
     const httpsCandidates = candidates.value
-      .map((candidate) => ({ candidate, normalizedBaseUrl: normalizeHttpsCandidate(candidate) }))
+      .map((candidate) => ({ candidate, normalizedBaseUrl: normalizeHttpsPhoneAccessCandidate(candidate) }))
       .filter((entry): entry is { candidate: RemoteAccessUrlCandidate; normalizedBaseUrl: string } => Boolean(entry.normalizedBaseUrl));
     const preferred = httpsCandidates.find((entry) => entry.candidate.kind !== 'loopback') || httpsCandidates[0];
     selectedServerBaseUrl.value = preferred?.normalizedBaseUrl || '';
+  }
+
+  function handleRequestError(loadError: unknown): void {
+    error.value = formatPhoneAccessRequestError(loadError);
   }
 
   async function loadAll(): Promise<void> {
@@ -94,7 +91,7 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
       revokedDevices.value = revokedDevicesResponse.data.devices;
       selectDefaultCandidate();
     } catch (loadError) {
-      error.value = loadError instanceof Error ? loadError.message : String(loadError);
+      handleRequestError(loadError);
     } finally {
       isLoading.value = false;
     }
@@ -112,16 +109,46 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   }
 
   async function refreshCandidates(): Promise<void> {
+    error.value = null;
     const params: Record<string, string> = {};
     if (manualServerBaseUrl.value.trim()) {
       params.manualServerBaseUrl = manualServerBaseUrl.value.trim();
-    }
-    const response = await apiService.get<{ candidates: RemoteAccessUrlCandidate[] }>('/remote-access/address-candidates', { params });
-    candidates.value = response.data.candidates;
-    if (manualServerBaseUrl.value.trim()) {
       selectedServerBaseUrl.value = normalizeNodeBaseUrl(manualServerBaseUrl.value);
-    } else {
+      resetAdvertisedVerification();
+    }
+    const response = await apiService.get<{ candidates: RemoteAccessUrlCandidate[] }>('/remote-access/address-candidates', {
+      params,
+    });
+    candidates.value = response.data.candidates;
+    if (!manualServerBaseUrl.value.trim()) {
       selectDefaultCandidate();
+    }
+  }
+
+  async function verifyAdvertisedUrlForRemoteQr(): Promise<string | null> {
+    resetAdvertisedVerification();
+    const validation = selectedUrlValidation.value;
+    if (!validation.isValid || !validation.isHttps || !validation.isAndroidFacing) {
+      return validation.message || 'Enter a private Android-facing HTTPS URL for this remote node.';
+    }
+    try {
+      const [managementResponse, advertisedStatus] = await Promise.all([
+        apiService.get<RemoteAccessStatus>('/remote-access/status'),
+        fetchRemoteAccessStatusFromBaseUrl(validation.normalizedBaseUrl),
+      ]);
+      const managementId = managementResponse.data.serverInstanceId;
+      const advertisedId = advertisedStatus.serverInstanceId;
+      if (!managementId || !advertisedId) {
+        return 'Could not verify this URL because one status response does not include a server instance ID.';
+      }
+      if (managementId !== advertisedId) {
+        return 'The Android-facing URL reaches a different AutoByteUs node. Map the HTTPS URL to this node, then retry.';
+      }
+      advertisedUrlVerified.value = true;
+      advertisedUrlVerificationMessage.value = 'Android-facing URL verified for this node.';
+      return null;
+    } catch (verifyError) {
+      return `${formatPhoneAccessRequestError(verifyError)} Use a private HTTPS URL mapped to this node, such as Tailscale Serve.`;
     }
   }
 
@@ -132,24 +159,35 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
       error.value = 'Enable Phone Access before creating a QR code.';
       return;
     }
-    if (!selectedServerBaseUrl.value.trim()) {
-      error.value = 'Choose or enter a server URL first.';
+    if (!selectedServerBaseUrl.value.trim() || (isRemoteNodeWindow.value && !manualServerBaseUrl.value.trim())) {
+      error.value = isRemoteNodeWindow.value
+        ? 'Enter the Android-facing HTTPS URL for this remote node first.'
+        : 'Choose or enter a server URL first.';
       return;
     }
     try {
       const validation = selectedUrlValidation.value;
-      if (!validation.isValid || !validation.isHttps) {
+      if (!validation.isValid || !validation.isHttps || (isRemoteNodeWindow.value && !validation.isAndroidFacing)) {
         error.value = validation.message;
         return;
       }
+      if (isRemoteNodeWindow.value) {
+        const verifyError = await verifyAdvertisedUrlForRemoteQr();
+        if (verifyError) {
+          error.value = verifyError;
+          return;
+        }
+      }
       const response = await apiService.post<RemoteAccessPairingSessionResponse>('/remote-access/pairing-sessions', {
         serverBaseUrl: validation.normalizedBaseUrl,
-        serverName: 'AutoByteus Desktop',
+        serverName: currentNodeName.value,
       });
       activePairing.value = response.data;
-      info.value = 'Pairing QR code created.';
+      info.value = isRemoteNodeWindow.value
+        ? 'Pairing QR code created for the verified remote node URL.'
+        : 'Pairing QR code created.';
     } catch (createError) {
-      error.value = createError instanceof Error ? createError.message : String(createError);
+      handleRequestError(createError);
     }
   }
 
@@ -184,11 +222,18 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
     isLoading,
     error,
     info,
+    advertisedUrlVerified,
+    advertisedUrlVerificationMessage,
     phoneAccessEnabled,
+    isRemoteNodeWindow,
+    managementBaseUrl,
+    currentNodeName,
+    canManagePhoneAccess,
     selectedUrlValidation,
     loadAll,
     setEnabled,
     refreshCandidates,
+    verifyAdvertisedUrlForRemoteQr,
     createPairingSession,
     refreshDevices,
     revokeDevice,

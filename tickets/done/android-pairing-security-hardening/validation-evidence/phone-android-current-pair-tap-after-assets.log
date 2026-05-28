@@ -1,0 +1,6 @@
+== Tap Pair this phone ==
+== Registered devices API ==
+curl: (22) The requested URL returned error: 401
+
+== Status API ==
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_yMmLpSR_ZYBAaGUJQzgZ1mOJfuUQkUwg","serverName":"AutoByteus Desktop"}

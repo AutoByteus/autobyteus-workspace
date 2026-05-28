@@ -1,7 +1,7 @@
 <template>
   <main :class="shellClass" data-testid="mobile-remote-access-shell">
     <MobilePairingBootstrap
-      v-if="!sessionStore.isPaired"
+      v-if="!sessionStore.isPaired || hasRoutePairingParam"
       @paired="onPaired"
       @pairing-failed="cancelPostPairRefresh"
       @pairing-started="beginPostPairRefresh"
@@ -130,9 +130,10 @@ const showUnpairConfirm = ref(false);
 const isPostPairChecking = ref(false);
 const pendingPostPairRefresh = ref(false);
 const postPairRefreshPromise = ref<Promise<void> | null>(null);
+const routePairingConsumed = ref(false);
 
 const unsupportedFeatureMessages: Partial<Record<MobileFeatureId, string>> = {
-  desktopWorkspace: 'The desktop workspace route is replaced by the phone-first mobile work shell. Use Home, Switch work, and Chat/Runs/Files/Artifacts/Tools/Activity instead.',
+  desktopWorkspace: 'The desktop workspace route is replaced by the phone-first mobile work shell. Use Home, Switch work, and Chat/Runs/Files/Artifacts/Activity instead.',
   desktopSettings: 'Desktop settings are managed from the desktop app. Phone Access exposes only mobile-safe connection controls.',
   desktopUpdates: 'Desktop update controls are not available from the phone client.',
   localFolderPicker: 'Local folder picking is not available from the phone client.',
@@ -144,6 +145,13 @@ const unsupportedMessage = computed(() => {
   const feature = String(route.query.unsupported ?? '') as MobileFeatureId;
   return unsupportedFeatureMessages[feature] ?? null;
 });
+const routePairingParam = computed(() => {
+  if (Array.isArray(route.query.pairing)) {
+    return String(route.query.pairing[0] ?? '').trim();
+  }
+  return String(route.query.pairing ?? '').trim();
+});
+const hasRoutePairingParam = computed(() => Boolean(routePairingParam.value) && !routePairingConsumed.value);
 const shellClass = computed(() => [
   'bg-slate-100 text-slate-900',
   screen.value === 'work'
@@ -158,7 +166,12 @@ async function checkStatus(): Promise<void> {
   ]);
   const statusReachable = statusResult.status === 'fulfilled' && Boolean(statusResult.value);
   const catalogReachable = catalogResult.status === 'fulfilled' && catalogResult.value.hadSuccess;
-  sessionStore.recordAuthorizedApiReachability(statusReachable || catalogReachable);
+  const catalogAuthFailed = catalogResult.status === 'fulfilled' && catalogResult.value.hadAuthFailure && !catalogReachable;
+  if (catalogAuthFailed) {
+    sessionStore.rejectLocalSessionForAuthFailure();
+    return;
+  }
+  sessionStore.recordAuthorizedApiReachability(catalogReachable || statusReachable);
 }
 
 async function openRunContext(context: MobileWorkContext): Promise<void> {
@@ -231,9 +244,6 @@ function beginPostPairRefresh(): void {
 }
 
 function cancelPostPairRefresh(): void {
-  if (sessionStore.isPaired) {
-    return;
-  }
   pendingPostPairRefresh.value = false;
   isPostPairChecking.value = false;
   postPairRefreshPromise.value = null;
@@ -262,7 +272,18 @@ async function completePostPairRefresh(): Promise<void> {
 }
 
 async function onPaired(): Promise<void> {
+  clearRoutePairingParam();
   await completePostPairRefresh();
+}
+
+function clearRoutePairingParam(): void {
+  if (!hasRoutePairingParam.value || typeof window === 'undefined') {
+    return;
+  }
+  routePairingConsumed.value = true;
+  const nextUrl = new URL(window.location.href);
+  nextUrl.searchParams.delete('pairing');
+  window.history.replaceState(window.history.state, '', nextUrl.toString());
 }
 
 watch(() => sessionStore.isPaired, (isPaired, wasPaired) => {

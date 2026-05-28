@@ -46,6 +46,11 @@ const pairedSession = {
   },
 };
 
+const toBase64Url = (value: object): string => btoa(JSON.stringify(value))
+  .replace(/\+/g, '-')
+  .replace(/\//g, '_')
+  .replace(/=+$/g, '');
+
 const initialState = {
   mobileNodeSession: {
     session: pairedSession,
@@ -175,7 +180,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(wrapper.text()).toContain('phone-first mobile work shell');
   });
 
-  it('opens a recent run row into one mobile work shell with Chat/Runs/Files/Artifacts/Tools/Activity bottom navigation', async () => {
+  it('opens a recent run row into one mobile work shell with Chat/Runs/Files/Artifacts/Activity bottom navigation', async () => {
     const wrapper = mountShell();
     await nextTick();
     await wrapper.get('[data-testid="mobile-readable-work-row"]').trigger('click');
@@ -194,8 +199,10 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(wrapper.text()).toContain('Chat');
     expect(wrapper.text()).toContain('Runs');
     expect(wrapper.text()).toContain('Files');
-    expect(wrapper.text()).toContain('Tools');
+    expect(wrapper.text()).toContain('Artifacts');
     expect(wrapper.text()).toContain('Activity');
+    expect(wrapper.find('[data-testid="mobile-tab-tools"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Terminal and VNC');
     expect(wrapper.get('[data-testid="mobile-work-header"]').text()).not.toContain('Agent run');
     expect(wrapper.get('[data-testid="mobile-work-header"]').text()).not.toContain('Team run');
     expect(wrapper.text()).not.toContain('Running List');
@@ -237,6 +244,31 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(wrapper.find('[data-testid="mobile-context-segments"]').text()).toContain('Teams');
     expect(wrapper.find('[data-testid="mobile-context-segments"]').text()).toContain('Workspaces');
     expect(wrapper.text()).not.toContain('AppLeftPanel');
+  });
+
+  it('lets a fresh QR replace an existing mobile session instead of keeping a stale credential connected', async () => {
+    const pairingParam = toBase64Url({
+      version: 1,
+      serverBaseUrl: 'https://desktop.tailnet.ts.net',
+      pairingCode: 'PAIR-REPLACE-123',
+      expiresAt: '2026-05-24T00:05:00.000Z',
+      serverName: 'Desktop Node',
+    });
+    routeState.current = { query: { pairing: pairingParam } };
+    window.history.pushState({}, '', `/mobile?pairing=${pairingParam}`);
+
+    const wrapper = mountShell();
+    await nextTick();
+    await nextTick();
+
+    expect(wrapper.find('[data-testid="mobile-pairing-bootstrap"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-home"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('Pairing link detected from desktop.');
+
+    await wrapper.get('[data-testid="mobile-pair-button"]').trigger('click');
+    await flushPromises();
+
+    expect(useMobileNodeSessionStore().pairWithQrText).toHaveBeenCalledWith(pairingParam, 'Phone');
   });
 
   it('defaults no-recent mobile work picking to startable agents and teams', async () => {
@@ -312,7 +344,6 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
       'MobileChat.vue',
       'MobileRuns.vue',
       'MobileFiles.vue',
-      'MobileTools.vue',
       'MobileActivity.vue',
       'MobileArtifacts.vue',
       'MobileReadableWorkRow.vue',
@@ -347,12 +378,11 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     const activityDigestSource = readFileSync(resolve(mobileDir, 'MobileActivityDigest.vue'), 'utf-8');
     const artifactsSource = readFileSync(resolve(mobileDir, 'MobileArtifacts.vue'), 'utf-8');
     const chatSource = readFileSync(resolve(mobileDir, 'MobileChat.vue'), 'utf-8');
-    const toolsSource = readFileSync(resolve(mobileDir, 'MobileTools.vue'), 'utf-8');
 
     expect(runsSource).toContain('MobileRunSetup');
     expect(runSetupSource).toContain('mobile-run-agent-select');
     expect(runSetupSource).toContain('mobile-run-team-select');
-    expect(runSetupSource).toContain('mobile-run-workspace-select');
+    expect(runSetupSource).toContain('MobileLaunchWorkspacePicker');
     expect(runSetupSource).toContain('mobile-run-launch');
     expect(runSetupSource).toContain('MobileLaunchRuntimeModelCard');
     expect(runSetupSource).toContain('mobile-run-setup-readiness');
@@ -371,9 +401,7 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(artifactsSource).toContain('toAgentArtifactViewerItem');
     expect(artifactsSource).not.toContain('ArtifactsTab');
     expect(artifactsSource).not.toContain('BrowserPanel');
-    expect(toolsSource).toContain('Terminal');
-    expect(toolsSource).toContain('VncViewer');
-    expect(toolsSource).not.toContain('RightSideTabs');
+    expect(readFileSync(resolve(mobileDir, 'MobileWorkShell.vue'), 'utf-8')).not.toContain('MobileTools');
     expect(`${runsSource}\n${filesSource}\n${activitySource}`).not.toContain('Full content loads through authorized file APIs when this file is opened from the mobile MVP.');
     expect(`${runsSource}\n${filesSource}\n${activitySource}`).not.toContain('Configuration is shown only after this explicit start action.');
   });
@@ -469,6 +497,37 @@ describe('MobileRemoteAccessShell phone-first navigation', () => {
     expect(statusCardText).toContain('Cannot reach AutoByteus desktop');
     expect(statusCardText).not.toContain('Node reachable');
     expect(statusCardText).not.toContain('Phone Access status unavailable');
+  });
+
+  it('drops a locally paired phone session when authorized mobile catalog calls return 401', async () => {
+    const wrapper = mountShell();
+    await flushPromises();
+
+    const sessionStore = useMobileNodeSessionStore();
+    const runHistoryStore = useRunHistoryStore();
+    const agentDefinitionStore = useAgentDefinitionStore();
+    const teamDefinitionStore = useAgentTeamDefinitionStore();
+    const workspaceStore = useWorkspaceStore();
+
+    vi.mocked(sessionStore.fetchStatus).mockResolvedValue({
+      phoneAccessEnabled: true,
+      pairingAvailable: true,
+      compatibilityVersion: 1,
+      serverName: 'Desktop Node',
+    });
+    const unauthorized = new Error('Received status code 401');
+    vi.mocked(runHistoryStore.fetchTree).mockRejectedValue(unauthorized);
+    vi.mocked(agentDefinitionStore.fetchAllAgentDefinitions).mockRejectedValue(unauthorized);
+    vi.mocked(teamDefinitionStore.fetchAllAgentTeamDefinitions).mockRejectedValue(unauthorized);
+    vi.mocked(workspaceStore.fetchAllWorkspaces).mockRejectedValue(unauthorized);
+    vi.mocked(sessionStore.rejectLocalSessionForAuthFailure).mockClear();
+    vi.mocked(sessionStore.recordAuthorizedApiReachability).mockClear();
+
+    await wrapper.get('[data-testid="mobile-home-refresh"]').trigger('click');
+    await flushPromises();
+
+    expect(sessionStore.rejectLocalSessionForAuthFailure).toHaveBeenCalledTimes(1);
+    expect(sessionStore.recordAuthorizedApiReachability).not.toHaveBeenLastCalledWith(true);
   });
 
   it('keeps post-pair checking active across the async session flip before stable Home', async () => {

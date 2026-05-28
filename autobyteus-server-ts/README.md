@@ -185,6 +185,22 @@ autobyteus-docker new-container
 
 Repeated `new-container` calls create `autobyteus-server-0`, then `autobyteus-server-1`, then `autobyteus-server-2`, and so on.
 
+For the recommended Android/Phone Access isolation path, create a mobile-safe
+node instead:
+
+```bash
+autobyteus-docker new-container --profile mobile-safe
+```
+
+Use the printed Backend URL in **Settings -> Nodes -> Add Remote Node**, then
+open that Docker node window over a trusted LAN, VPN, tailnet, or equivalent
+private-network path. The default product model does not add a separate owner
+credential for desktop/Electron access to that node; do not expose the full
+backend directly to the public internet. Paired phones receive only separate
+`mra_...` mobile credentials, and those credentials do not authorize
+owner-management routes. Current server Docker images package the `/mobile` web
+shell into the runtime image for QR/mobile startup.
+
 The launcher keeps private server state in existing Docker named volumes:
 `/home/autobyteus/data` is private app/server data, `/root` stores in-container
 root home/auth settings, and `/app/autobyteus-server-ts/workspace` keeps the

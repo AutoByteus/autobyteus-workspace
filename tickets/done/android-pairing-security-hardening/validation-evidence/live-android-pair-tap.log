@@ -1,0 +1,24 @@
+== tap Pair this phone on Android WebView ==
+== paired devices after tapping Pair ==
+{"devices":[{"deviceId":"device_e3020efa09dc2cdfcc5d33760ba698de","displayName":"Phone","clientFacingBaseUrl":"https://normys-macbook-pro.tail0347f8.ts.net","createdAt":"2026-05-23T07:58:13.888Z","lastSeenAt":"2026-05-23T07:58:14.109Z","revokedAt":null}]}
+== UI after Pair tap ==
+{'text': '', 'desc': '', 'res': 'android:id/content', 'class': 'android.widget.FrameLayout', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': '__nuxt', 'class': 'android.view.View', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'app', 'class': 'android.view.View', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': 'AUTOBYTEUS REMOTE ACCESS', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[55,170][693,214]', 'clickable': 'false'}
+{'text': 'AutoByteus', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[55,236][693,335]', 'clickable': 'false'}
+{'text': 'Refresh', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[819,170][1025,274]', 'clickable': 'true'}
+{'text': 'Current node', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[55,390][1025,670]', 'clickable': 'false'}
+{'text': 'AutoByteus Desktop', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[110,445][712,513]', 'clickable': 'false'}
+{'text': 'https://normys-macbook-pro.tail0347f8.ts.net', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[110,522][712,612]', 'clickable': 'false'}
+{'text': 'Connected', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[772,458][935,500]', 'clickable': 'false'}
+{'text': 'Recent work', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[110,791][360,860]', 'clickable': 'false'}
+{'text': 'Switch work', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[756,797][968,854]', 'clickable': 'true'}
+{'text': 'No recent runs yet. Choose an agent, team, or workspace to start.', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[110,890][968,1094]', 'clickable': 'false'}
+{'text': 'Choose work Recent, Agents, Teams, Workspaces', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[55,1193][525,1473]', 'clickable': 'true'}
+{'text': 'Files Browse current workspace', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[555,1193][1025,1473]', 'clickable': 'true'}
+{'text': 'Troubleshoot Connection diagnostics', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[55,1503][525,1787]', 'clickable': 'true'}
+{'text': 'Unpair Remove this phone', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[555,1503][1025,1787]', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'teleports', 'class': 'android.widget.TextView', 'bounds': '[0,0][0,0]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/statusBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][1080,104]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/navigationBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][0,0]', 'clickable': 'false'}

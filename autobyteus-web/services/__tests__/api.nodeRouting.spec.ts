@@ -80,5 +80,54 @@ describe('apiService node routing', () => {
     );
     expect(mockAxiosCreate).not.toHaveBeenCalled();
   });
-});
 
+  it('does not retry remote-node auth failures through removed credential bootstrap', async () => {
+    let responseRejected: ((error: unknown) => Promise<unknown>) | null = null;
+    const mockClient = {
+      get: vi.fn().mockResolvedValue({ data: { ok: true } }),
+      post: vi.fn().mockResolvedValue({ data: { ok: true } }),
+      put: vi.fn().mockResolvedValue({ data: { ok: true } }),
+      delete: vi.fn().mockResolvedValue({ data: { ok: true } }),
+      request: vi.fn().mockResolvedValue({ data: { retried: true } }),
+      interceptors: {
+        request: { use: vi.fn() },
+        response: {
+          use: vi.fn((_fulfilled, rejected) => {
+            responseRejected = rejected;
+          }),
+        },
+      },
+    };
+    mockAxiosCreate.mockReturnValue(mockClient);
+    setElectronApiMock({});
+
+    const windowNodeContextStore = useWindowNodeContextStore();
+    windowNodeContextStore.initializeFromWindowContext(
+      {
+        windowId: 3,
+        nodeId: 'remote-node-1',
+      },
+      'http://127.0.0.1:8000',
+    );
+
+    const { default: apiService } = await import('../api');
+    await apiService.get('/workspaces');
+    expect(responseRejected).toBeTruthy();
+    const rejectHandler = responseRejected as unknown as (error: unknown) => Promise<unknown>;
+
+    const remoteAuthError = {
+      response: {
+        status: 401,
+        data: { code: 'REMOTE_ACCESS_AUTH_INVALID' },
+      },
+      config: {
+        url: '/workspaces',
+        method: 'get',
+        headers: {},
+      },
+    };
+
+    await expect(rejectHandler(remoteAuthError)).rejects.toBe(remoteAuthError);
+    expect(mockClient.request).not.toHaveBeenCalled();
+  });
+});

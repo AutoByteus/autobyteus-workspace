@@ -38,11 +38,6 @@
         :context="context"
         @choose-work="$emit('switchContext')"
       />
-      <MobileTools
-        v-else-if="activeTab === 'tools'"
-        :context="context"
-        @choose-work="$emit('switchContext')"
-      />
       <MobileActivity
         v-else
         :context="context"
@@ -50,7 +45,7 @@
       />
     </main>
 
-    <nav class="grid shrink-0 grid-cols-6 border-t border-slate-200 bg-white/95" aria-label="Mobile work tasks" data-testid="mobile-bottom-nav">
+    <nav class="grid shrink-0 grid-cols-5 border-t border-slate-200 bg-white/95" aria-label="Mobile work tasks" data-testid="mobile-bottom-nav">
       <button
         v-for="tab in tabs"
         :key="tab.id"
@@ -83,7 +78,6 @@ import MobileChat from '~/components/mobile/MobileChat.vue';
 import MobileFiles from '~/components/mobile/MobileFiles.vue';
 import MobileRuns from '~/components/mobile/MobileRuns.vue';
 import MobileTeamMemberFocusBar from '~/components/mobile/MobileTeamMemberFocusBar.vue';
-import MobileTools from '~/components/mobile/MobileTools.vue';
 import type { MobileTaskTab, MobileWorkContext } from '~/types/mobileWork';
 import { mobileWorkContextSubtitle, mobileWorkContextTitle } from '~/types/mobileWork';
 
@@ -99,14 +93,13 @@ defineEmits<{
   selectContext: [context: MobileWorkContext];
 }>();
 
-const showTeamFocusBar = computed(() => props.context?.kind === 'team-run' && !['runs', 'tools'].includes(props.activeTab));
+const showTeamFocusBar = computed(() => props.context?.kind === 'team-run' && props.activeTab !== 'runs');
 
 const tabs: Array<{ id: MobileTaskTab; label: string; icon: string }> = [
   { id: 'chat', label: 'Chat', icon: '💬' },
   { id: 'runs', label: 'Runs', icon: '▶' },
   { id: 'files', label: 'Files', icon: '📁' },
   { id: 'artifacts', label: 'Artifacts', icon: '▣' },
-  { id: 'tools', label: 'Tools', icon: '⌘' },
   { id: 'activity', label: 'Activity', icon: '●' },
 ];
 

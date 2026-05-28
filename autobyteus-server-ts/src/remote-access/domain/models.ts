@@ -6,14 +6,13 @@ export type RemoteAccessRouteClassification =
   | "PUBLIC_HEALTH_STATUS"
   | "PUBLIC_PREFLIGHT"
   | "PUBLIC_PAIRING_EXCHANGE"
-  | "LOCAL_ONLY"
+  | "TRUSTED_NETWORK_OWNER"
+  | "TRUSTED_NETWORK_PROTECTED"
+  | "TRUSTED_NETWORK_WEBSOCKET"
   | "LOCAL_DEV_ONLY"
-  | "LOCAL_OR_MOBILE"
-  | "LOCAL_OR_MOBILE_WS"
-  | "EXTERNAL_SIGNATURE"
-  | "DEFAULT_PROTECTED";
+  | "EXTERNAL_SIGNATURE";
 
-export type RemoteAccessAuthMode = "loopback" | "mobile";
+export type RemoteAccessAuthMode = "trusted_network" | "loopback" | "mobile";
 
 export type RemoteAccessAuthContext = {
   mode: RemoteAccessAuthMode;
@@ -127,6 +126,7 @@ export type WebSocketAuthPolicy = "WEBSOCKET_AUTH_QUERY_TOKEN";
 
 export const WEBSOCKET_AUTH_POLICY: WebSocketAuthPolicy = "WEBSOCKET_AUTH_QUERY_TOKEN";
 export const WEBSOCKET_ACCESS_TOKEN_QUERY_KEY = "access_token";
+export const REMOTE_ACCESS_MOBILE_CREDENTIAL_PREFIX = "mra_";
 
 export const REMOTE_ACCESS_AUTH_CONTEXT_PROPERTY = "remoteAccessAuthContext";
 

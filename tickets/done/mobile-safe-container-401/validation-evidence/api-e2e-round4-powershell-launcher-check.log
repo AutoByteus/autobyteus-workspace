@@ -1,0 +1,4 @@
+Timestamp: 2026-05-23T19:11:43Z
+$ command -v pwsh || command -v powershell
+PowerShell runtime unavailable locally; dynamic PowerShell launcher execution not performed.
+Python launcher contract test still covered PowerShell script text contract and skipped one runtime/syntax case due unavailable pwsh.

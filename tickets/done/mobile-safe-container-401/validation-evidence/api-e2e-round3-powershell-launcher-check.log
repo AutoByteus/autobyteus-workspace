@@ -1,0 +1,23 @@
+PowerShell availability check:
+pwsh/powershell not installed in this macOS validation environment; dynamic PowerShell launcher execution not run.
+Static parity markers:
+23:$Script:MobileSafeProfile = 'mobile-safe'
+54:  --profile <name>   Docker profile for new/reset nodes: standard or mobile-safe (default: standard)
+131:  Write-Host "Next commands:`n  autobyteus-docker new-container --profile mobile-safe`n  autobyteus-docker workspace paths`n  autobyteus-docker storage`n  autobyteus-docker urls"
+169:    localManagementCredential = $State.localManagementCredential
+170:    localManagementCredentialHash = $State.localManagementCredentialHash
+198:function New-LocalManagementCredential {
+210:    { $_ -in @('mobile-safe', 'mobile_safe', 'mobile') } { return $Script:MobileSafeProfile }
+211:    default { Fail-Launcher "Unknown Docker profile: $Profile. Use standard or mobile-safe." }
+378:Profile: mobile-safe
+387:Shared host bind mounts: disabled by default in mobile-safe profile
+468:    "local_management_credential_hash=$($State.localManagementCredentialHash)"
+476:  if ($State.localManagementCredential -and $State.localManagementCredentialHash) { return }
+477:  $localManagementCredential = New-LocalManagementCredential
+478:  Set-StateProperty $State 'localManagementCredential' $localManagementCredential.credential
+479:  Set-StateProperty $State 'localManagementCredentialHash' $localManagementCredential.hash
+535:  & docker pull $ImageRef
+536:  if ($LASTEXITCODE -ne 0) { Fail-Launcher "docker pull failed for $ImageRef" }
+628:        '-e', "AUTOBYTEUS_LOCAL_MANAGEMENT_CREDENTIAL_HASH=$($state.localManagementCredentialHash)",
+639:          '-e', 'AUTOBYTEUS_NODE_PROFILE=mobile-safe'
+817:    Write-LauncherInfo "$NodeName uses the mobile-safe profile; automatic shared host bind mounts stay disabled."

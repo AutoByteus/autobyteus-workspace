@@ -1,0 +1,314 @@
+[
+    {
+        "Id": "be572999f8145f261e54176c860f97c058723c6ec2d2fd7f887277882e89ba6a",
+        "Created": "2026-05-23T08:34:33.154760548Z",
+        "Path": "/usr/local/bin/remote-server-entrypoint.sh",
+        "Args": [],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 61753,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-05-23T08:34:33.496578465Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:ace22c12b9819f3ec6226f7751eb2d1a9434e4bcb38509156a6cf11bd1919488",
+        "ResolvConfPath": "/var/lib/docker/containers/be572999f8145f261e54176c860f97c058723c6ec2d2fd7f887277882e89ba6a/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/be572999f8145f261e54176c860f97c058723c6ec2d2fd7f887277882e89ba6a/hostname",
+        "HostsPath": "/var/lib/docker/containers/be572999f8145f261e54176c860f97c058723c6ec2d2fd7f887277882e89ba6a/hosts",
+        "LogPath": "/var/lib/docker/containers/be572999f8145f261e54176c860f97c058723c6ec2d2fd7f887277882e89ba6a/be572999f8145f261e54176c860f97c058723c6ec2d2fd7f887277882e89ba6a-json.log",
+        "Name": "/autobyteus-phone-docker-current",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": [
+                "autobyteus-phone-docker-current-workspace:/app/autobyteus-server-ts/workspace",
+                "autobyteus-phone-docker-current-data:/home/autobyteus/data",
+                "autobyteus-phone-docker-current-root-home:/root"
+            ],
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {
+                "5900/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "53246"
+                    }
+                ],
+                "6080/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "53247"
+                    }
+                ],
+                "8000/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "53245"
+                    }
+                ],
+                "9223/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "53248"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "unless-stopped",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": null,
+            "Name": ""
+        },
+        "Mounts": [
+            {
+                "Type": "volume",
+                "Name": "autobyteus-phone-docker-current-workspace",
+                "Source": "/var/lib/docker/volumes/autobyteus-phone-docker-current-workspace/_data",
+                "Destination": "/app/autobyteus-server-ts/workspace",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "autobyteus-phone-docker-current-data",
+                "Source": "/var/lib/docker/volumes/autobyteus-phone-docker-current-data/_data",
+                "Destination": "/home/autobyteus/data",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "autobyteus-phone-docker-current-root-home",
+                "Source": "/var/lib/docker/volumes/autobyteus-phone-docker-current-root-home/_data",
+                "Destination": "/root",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+        "Config": {
+            "Hostname": "be572999f814",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "5900/tcp": {},
+                "6080/tcp": {},
+                "8000/tcp": {},
+                "9223/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+                "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+                "LOG_LEVEL=INFO",
+                "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+                "AUTOBYTEUS_SERVER_HOST=http://localhost:53245",
+                "DB_TYPE=sqlite",
+                "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+                "AUTOBYTEUS_NODE_ADMIN_CLAIM_SCOPE=phone-access-management",
+                "AUTOBYTEUS_SERVER_PORT=8000",
+                "AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:53247",
+                "APP_ENV=production",
+                "AUTOBYTEUS_SKIP_SYNC=1",
+                "AUTOBYTEUS_NODE_PROFILE=mobile-safe",
+                "AUTOBYTEUS_NODE_ADMIN_CLAIM_ID=nac_HufCW0Rd4jRpUcGuYYIuPxfV",
+                "AUTOBYTEUS_NODE_ADMIN_CLAIM_HASH=70ef8a11b65fbfaf6e56aaa48d78d1cfd854808d45f69d175564ec93f3ec2fb2",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NODE_VERSION=22.22.3",
+                "YARN_VERSION=1.22.22",
+                "NODE_ENV=production",
+                "AUTOBYTEUS_HTTP_ACCESS_LOG_MODE=errors",
+                "AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY=false"
+            ],
+            "Cmd": null,
+            "Image": "autobyteus-server:android-phone-current",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": [
+                "/usr/local/bin/remote-server-entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": {},
+            "StopTimeout": 1
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "9ce77ae308b47537cd18361057027cbb91ea96055ad1c3b20d93ecb96ef6ffb2",
+            "SandboxKey": "/var/run/docker/netns/9ce77ae308b4",
+            "Ports": {
+                "5900/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "53246"
+                    }
+                ],
+                "6080/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "53247"
+                    }
+                ],
+                "8000/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "53245"
+                    }
+                ],
+                "9223/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "53248"
+                    }
+                ]
+            },
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "7e:72:aa:97:70:9b",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "0604b50b3612afadd9b10f1964a5791bebbbdafb538a08b99f03419a36794ff6",
+                    "EndpointID": "b1a3b1dd61b65764639018bbfbb8f2fc8274b1086304f8187ee7a0b687eed438",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.6",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:16da8e0fb3178577e0e23a8c164555c10de6808df21913cc2cb66b5e28ddb488",
+            "size": 3719,
+            "platform": {
+                "architecture": "arm64",
+                "os": "linux"
+            }
+        }
+    }
+]

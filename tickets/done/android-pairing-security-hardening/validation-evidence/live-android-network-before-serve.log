@@ -1,0 +1,32 @@
+== host network identity ==
+MacBookPro
+192.168.2.158
+tailscale=/usr/local/bin/tailscale
+1.98.2
+  tailscale commit: aaf7caef13becf6989e9e81f66412f3edc564c38
+  long version: 1.98.2-taaf7caef1-gc4a37aed9
+  other commit: c4a37aed97b8b6dcc3fb32d87281c069fd2359d7
+  go version: go1.26.3 (tailscale/go e877d97384)
+-- tailscale ip --
+100.127.30.107
+-- tailscale status self --
+100.127.30.107  normys-macbook-pro  ryan.zheng.work@  macOS    -                          
+100.75.247.102  2109119dg           ryan.zheng.work@  android  offline, last seen 4h ago  
+-- tailscale serve status before --
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:29695
+
+== android packages/network ==
+List of devices attached
+dfd6c5c0               device usb:2-1 product:lisa_eea model:2109119DG device:lisa transport_id:11
+
+2109119DG
+12
+package:com.tailscale.ipn
+-- Android curl localhost/private status probes before changing serve --
+lan_probe=http://192.168.2.158:51428/rest/remote-access/status
+curl: (7) Failed to connect to 192.168.2.158 port 51428: Connection refused
+
+tailscale_ip_probe=http://100.127.30.107:51428/rest/remote-access/status
+curl: (7) Failed to connect to 100.127.30.107 port 51428: Network is unreachable
+

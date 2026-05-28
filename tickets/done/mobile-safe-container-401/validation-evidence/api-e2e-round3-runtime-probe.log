@@ -1,0 +1,4 @@
+$ NODE_PATH=autobyteus-server-ts/node_modules node tickets/mobile-safe-container-401/validation-evidence/api-e2e-round3-runtime-probe.cjs [state] [output]
+Unlinking stale socket /var/run/supervisor.sock
+probe_exit=0
+result=pass scenarios=23 failed=0

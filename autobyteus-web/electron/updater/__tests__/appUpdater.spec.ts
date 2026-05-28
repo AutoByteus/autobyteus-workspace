@@ -191,6 +191,69 @@ describe('AppUpdater', () => {
     expect(state.downloadPercent).toBe(100);
   });
 
+
+  it('classifies manual network check failures and keeps raw diagnostics out of state', async () => {
+    const updater = new AppUpdater();
+    updater.initialize();
+
+    autoUpdaterMock.checkForUpdates.mockRejectedValueOnce(new Error('net::ERR_CONNECTION_CLOSED'));
+
+    const check = getIpcHandler('app-update:check');
+    const state = await check();
+
+    expect(state.status).toBe('error');
+    expect(state.errorKind).toBe('network');
+    expect(state.errorOperation).toBe('manual-check');
+    expect(state.message).toContain('Could not reach the update server');
+    expect(state.error).toBeUndefined();
+    expect(loggerMock.error.mock.calls.at(-1)?.[0]).toContain('net::ERR_CONNECTION_CLOSED');
+  });
+
+  it('ignores duplicate provider error events without overwriting the original operation', async () => {
+    const updater = new AppUpdater();
+    updater.initialize();
+
+    const providerError = new Error('net::ERR_CONNECTION_CLOSED');
+    autoUpdaterMock.checkForUpdates.mockRejectedValueOnce(providerError);
+
+    const check = getIpcHandler('app-update:check');
+    const state = await check();
+
+    expect(state.status).toBe('error');
+    expect(state.errorKind).toBe('network');
+    expect(state.errorOperation).toBe('manual-check');
+    expect(loggerMock.error).toHaveBeenCalledTimes(1);
+
+    sendMock.mockClear();
+    autoUpdaterMock.emit('error', providerError);
+
+    const finalState = await getIpcHandler('app-update:get-state')();
+    expect(finalState.status).toBe('error');
+    expect(finalState.errorKind).toBe('network');
+    expect(finalState.errorOperation).toBe('manual-check');
+    expect(loggerMock.error).toHaveBeenCalledTimes(1);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it('classifies missing latest metadata as a release-preparing safe error', async () => {
+    const updater = new AppUpdater();
+    updater.initialize();
+
+    autoUpdaterMock.checkForUpdates.mockRejectedValueOnce(
+      new Error('Cannot find latest-mac.yml in the latest GitHub release assets'),
+    );
+
+    const check = getIpcHandler('app-update:check');
+    const state = await check();
+
+    expect(state.status).toBe('error');
+    expect(state.errorKind).toBe('release-preparing');
+    expect(state.message).toContain('still being prepared');
+    expect(state.message).not.toContain('latest-mac.yml');
+    expect(state.error).toBeUndefined();
+    expect(loggerMock.error.mock.calls.at(-1)?.[0]).toContain('latest-mac.yml');
+  });
+
   it('accepts install only after update-downloaded and triggers quitAndInstall', async () => {
     vi.useFakeTimers();
     const updater = new AppUpdater();
@@ -237,7 +300,10 @@ describe('AppUpdater', () => {
 
     const state = await getIpcHandler('app-update:get-state')();
     expect(state.status).toBe('error');
-    expect(state.message).toBe('Failed to install update and restart.');
-    expect(state.error).toBe('install boom');
+    expect(state.errorKind).toBe('install');
+    expect(state.errorOperation).toBe('install');
+    expect(state.message).toContain('could not restart to install');
+    expect(state.error).toBeUndefined();
+    expect(loggerMock.error.mock.calls.at(-1)?.[0]).toContain('install boom');
   });
 });

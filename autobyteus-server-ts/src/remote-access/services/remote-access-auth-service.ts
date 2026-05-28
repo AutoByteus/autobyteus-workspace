@@ -1,5 +1,8 @@
-import type { RemoteAccessAuthContext, RemoteAccessAuthorizationResult } from "../domain/models.js";
-import { isLoopbackPeerAddress } from "../../api/security/remote-access-local-trust.js";
+import {
+  REMOTE_ACCESS_MOBILE_CREDENTIAL_PREFIX,
+  type RemoteAccessAuthContext,
+  type RemoteAccessAuthorizationResult,
+} from "../domain/models.js";
 import {
   getPairedDeviceService,
   type PairedDeviceService,
@@ -17,7 +20,7 @@ const rejection = (
   message: string,
 ): RemoteAccessAuthorizationResult => ({ ok: false, statusCode, code, message });
 
-const readBearerCredential = (authorizationHeader: string | string[] | undefined): string | null => {
+export const readBearerCredential = (authorizationHeader: string | string[] | undefined): string | null => {
   const header = Array.isArray(authorizationHeader) ? authorizationHeader[0] : authorizationHeader;
   if (!header) {
     return null;
@@ -26,29 +29,22 @@ const readBearerCredential = (authorizationHeader: string | string[] | undefined
   return match?.[1]?.trim() || null;
 };
 
+export const isMobileRemoteAccessCredential = (credential: string | null | undefined): boolean =>
+  String(credential ?? "").trim().startsWith(REMOTE_ACCESS_MOBILE_CREDENTIAL_PREFIX);
+
 export class RemoteAccessAuthService {
   constructor(
     private readonly settingsService: RemoteAccessSettingsService = getRemoteAccessSettingsService(),
     private readonly deviceService: PairedDeviceService = getPairedDeviceService(),
   ) {}
 
-  authorizeLoopbackOrBearer(input: {
-    peerAddress?: string;
-    authorizationHeader?: string | string[];
-  }): Promise<RemoteAccessAuthorizationResult> {
-    if (isLoopbackPeerAddress(input.peerAddress)) {
-      return Promise.resolve({
-        ok: true,
-        context: { mode: "loopback", isAuthenticated: true },
-      });
-    }
-    return this.authorizeMobileCredential(readBearerCredential(input.authorizationHeader));
-  }
-
   async authorizeMobileCredential(credential: string | null | undefined): Promise<RemoteAccessAuthorizationResult> {
     const normalizedCredential = String(credential ?? "").trim();
     if (!normalizedCredential) {
       return rejection(401, "REMOTE_ACCESS_AUTH_REQUIRED", "Remote Access credential is required.");
+    }
+    if (!normalizedCredential.startsWith(REMOTE_ACCESS_MOBILE_CREDENTIAL_PREFIX)) {
+      return rejection(401, "REMOTE_ACCESS_AUTH_INVALID", "Remote Access credential is invalid.");
     }
 
     const device = await this.deviceService.findDeviceByCredential(normalizedCredential);

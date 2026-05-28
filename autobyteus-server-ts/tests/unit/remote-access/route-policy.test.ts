@@ -18,24 +18,60 @@ const request = (input: {
 } as unknown as FastifyRequest);
 
 describe("RemoteAccessRoutePolicy", () => {
-  it("classifies core route families", () => {
+  it("classifies core route families under the trusted-network model", () => {
     expect(classifyHttpRoute("GET", "/rest/health")).toBe("PUBLIC_HEALTH");
     expect(classifyHttpRoute("GET", "/rest/remote-access/status")).toBe("PUBLIC_HEALTH_STATUS");
-    expect(classifyHttpRoute("POST", "/rest/remote-access/pairing-sessions")).toBe("LOCAL_ONLY");
+    expect(classifyHttpRoute("POST", "/rest/remote-access/pairing-sessions")).toBe("TRUSTED_NETWORK_OWNER");
     expect(classifyHttpRoute("POST", "/rest/remote-access/pairing-exchanges")).toBe("PUBLIC_PAIRING_EXCHANGE");
-    expect(classifyHttpRoute("GET", "/rest/remote-access/devices/revoked")).toBe("LOCAL_ONLY");
-    expect(classifyHttpRoute("POST", "/graphql")).toBe("LOCAL_OR_MOBILE");
-    expect(classifyHttpRoute("GET", "/graphql", { upgrade: "websocket" })).toBe("LOCAL_OR_MOBILE_WS");
-    expect(classifyHttpRoute("GET", "/rest/new-unclassified-route")).toBe("DEFAULT_PROTECTED");
+    expect(classifyHttpRoute("GET", "/rest/remote-access/devices/revoked")).toBe("TRUSTED_NETWORK_OWNER");
+    expect(classifyHttpRoute("POST", "/graphql")).toBe("TRUSTED_NETWORK_PROTECTED");
+    expect(classifyHttpRoute("GET", "/graphql", { upgrade: "websocket" })).toBe("TRUSTED_NETWORK_WEBSOCKET");
+    expect(classifyHttpRoute("GET", "/rest/new-unclassified-route")).toBe("TRUSTED_NETWORK_PROTECTED");
   });
 
-  it("rejects non-loopback protected HTTP without bearer token", async () => {
+  it("allows trusted-network protected HTTP without bearer credentials", async () => {
+    const authService = { authorizeMobileCredential: vi.fn() };
+    const policy = new RemoteAccessRoutePolicy(authService as never);
+    const result = await policy.authorizeHttpRequest(request({
+      method: "GET",
+      url: "/rest/files/images/a.png",
+      remoteAddress: "100.64.1.2",
+    }));
+
+    expect(result).toMatchObject({ ok: true, context: { mode: "trusted_network", isAuthenticated: false } });
+    expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
+  });
+
+  it("allows trusted-network Phone Access management routes without additional credentials", async () => {
+    const authService = { authorizeMobileCredential: vi.fn() };
+    const policy = new RemoteAccessRoutePolicy(authService as never);
+
+    await expect(policy.authorizeHttpRequest(request({
+      method: "GET",
+      url: "/rest/remote-access/devices/revoked",
+      remoteAddress: "100.64.1.2",
+    }))).resolves.toMatchObject({ ok: true, context: { mode: "trusted_network" } });
+    expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
+  });
+
+  it("does not treat mobile credentials as owner-management authority", async () => {
+    const authService = { authorizeMobileCredential: vi.fn() };
+    const policy = new RemoteAccessRoutePolicy(authService as never);
+
+    await expect(policy.authorizeHttpRequest(request({
+      method: "GET",
+      url: "/rest/remote-access/devices/revoked",
+      remoteAddress: "100.64.1.2",
+      headers: { authorization: "Bearer mra_mobile_token" },
+    }))).resolves.toMatchObject({ ok: false, statusCode: 403, code: "REMOTE_ACCESS_AUTH_INVALID" });
+    expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
+  });
+
+  it("keeps mobile credential validation scoped to mobile-bearing protected requests", async () => {
     const authService = {
-      authorizeLoopbackOrBearer: vi.fn(async () => ({
-        ok: false as const,
-        statusCode: 401,
-        code: "REMOTE_ACCESS_AUTH_REQUIRED" as const,
-        message: "missing",
+      authorizeMobileCredential: vi.fn(async () => ({
+        ok: true as const,
+        context: { mode: "mobile" as const, isAuthenticated: true, deviceId: "device-1" },
       })),
     };
     const policy = new RemoteAccessRoutePolicy(authService as never);
@@ -43,51 +79,26 @@ describe("RemoteAccessRoutePolicy", () => {
       method: "GET",
       url: "/rest/files/images/a.png",
       remoteAddress: "100.64.1.2",
-      headers: { host: "127.0.0.1:29695", "x-forwarded-for": "127.0.0.1" },
+      headers: { authorization: "Bearer mra_mobile_token" },
     }));
 
-    expect(result.ok).toBe(false);
-    expect(result).toMatchObject({ code: "REMOTE_ACCESS_AUTH_REQUIRED" });
-    expect(authService.authorizeLoopbackOrBearer).toHaveBeenCalledWith({
-      peerAddress: "100.64.1.2",
-      authorizationHeader: undefined,
-    });
+    expect(result).toMatchObject({ ok: true, context: { mode: "mobile", deviceId: "device-1" } });
+    expect(authService.authorizeMobileCredential).toHaveBeenCalledWith("mra_mobile_token");
   });
 
-  it("allows loopback local-only management routes using peer socket address", async () => {
-    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never);
+  it("keeps GraphQL GET dev surface loopback-only", async () => {
+    const policy = new RemoteAccessRoutePolicy({ authorizeMobileCredential: vi.fn() } as never);
     await expect(policy.authorizeHttpRequest(request({
       method: "GET",
-      url: "/rest/remote-access/devices",
-      remoteAddress: "::ffff:127.0.0.1",
-    }))).resolves.toMatchObject({ ok: true, context: { mode: "loopback" } });
-  });
-
-  it("keeps revoked device history local-only for loopback and rejects remote callers", async () => {
-    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never);
+      url: "/graphql",
+      remoteAddress: "100.64.1.2",
+    }))).resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_ROUTE_UNSUPPORTED" });
 
     await expect(policy.authorizeHttpRequest(request({
       method: "GET",
-      url: "/rest/remote-access/devices/revoked",
+      url: "/graphql",
       remoteAddress: "127.0.0.1",
-    }))).resolves.toMatchObject({ ok: true, context: { mode: "loopback" } });
-
-    await expect(policy.authorizeHttpRequest(request({
-      method: "GET",
-      url: "/rest/remote-access/devices/revoked",
-      remoteAddress: "100.64.1.2",
-      headers: { authorization: "Bearer mobile-token" },
-    }))).resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_LOCAL_ONLY" });
-  });
-
-  it("does not trust Host or forwarded headers for local-only management routes", async () => {
-    const policy = new RemoteAccessRoutePolicy({ authorizeLoopbackOrBearer: vi.fn() } as never);
-    await expect(policy.authorizeHttpRequest(request({
-      method: "GET",
-      url: "/rest/remote-access/address-candidates",
-      remoteAddress: "100.64.1.2",
-      headers: { host: "127.0.0.1:29695", origin: "http://127.0.0.1:29695", "x-forwarded-for": "127.0.0.1" },
-    }))).resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_LOCAL_ONLY" });
+    }))).resolves.toMatchObject({ ok: true, context: { mode: "loopback", isAuthenticated: true } });
   });
 
   it("keeps channel ingress outside mobile credential auth", () => {
@@ -95,24 +106,36 @@ describe("RemoteAccessRoutePolicy", () => {
     expect(classifyHttpRoute("POST", "/rest/api/channel-ingress/v1/delivery-events")).toBe("EXTERNAL_SIGNATURE");
   });
 
-  it("uses the access_token query credential for GraphQL WebSocket upgrades", async () => {
+  it("validates mra access_token query credential for GraphQL WebSocket upgrades", async () => {
     const authService = {
       authorizeMobileCredential: vi.fn(async () => ({
         ok: true as const,
-        context: { mode: "mobile" as const, isAuthenticated: true, deviceId: "device_1" },
+        context: { mode: "mobile" as const, isAuthenticated: true },
       })),
-      authorizeLoopbackOrBearer: vi.fn(),
     };
     const policy = new RemoteAccessRoutePolicy(authService as never);
     const result = await policy.authorizeHttpRequest(request({
       method: "GET",
-      url: "/graphql?access_token=secret",
+      url: "/graphql?access_token=mra_secret",
       remoteAddress: "100.64.1.2",
       headers: { upgrade: "websocket" },
     }));
 
     expect(result.ok).toBe(true);
-    expect(authService.authorizeMobileCredential).toHaveBeenCalledWith("secret");
-    expect(authService.authorizeLoopbackOrBearer).not.toHaveBeenCalled();
+    expect(authService.authorizeMobileCredential).toHaveBeenCalledWith("mra_secret");
+  });
+
+  it("allows trusted-network WebSocket upgrades without access_token", async () => {
+    const authService = { authorizeMobileCredential: vi.fn() };
+    const policy = new RemoteAccessRoutePolicy(authService as never);
+    const result = await policy.authorizeHttpRequest(request({
+      method: "GET",
+      url: "/graphql",
+      remoteAddress: "100.64.1.2",
+      headers: { upgrade: "websocket" },
+    }));
+
+    expect(result).toMatchObject({ ok: true, context: { mode: "trusted_network" } });
+    expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
   });
 });

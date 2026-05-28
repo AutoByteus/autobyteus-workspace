@@ -1,0 +1,12 @@
+# Final Archive Hygiene — 2026-05-24T04:31:58Z
+
+Removed unreferenced generated manual-test-docker overlay context from archived ticket artifacts before commit; authoritative API/E2E and delivery evidence remains under validation-evidence/.
+
+## remaining ticket artifact size
+2.4M	tickets/done/mobile-safe-container-401
+
+## untracked file count
+     193
+
+## git diff --check
+PASS: git diff --check

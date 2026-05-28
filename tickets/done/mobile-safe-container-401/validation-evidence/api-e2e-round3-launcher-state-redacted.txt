@@ -1,0 +1,16 @@
+state_path=/Users/normy/.autobyteus/docker-server/nodes/autobyteus-server-2.env
+NODE_NAME=autobyteus-server-2
+CONTAINER_NAME=autobyteus-server-2
+BACKEND_PORT=55212
+VNC_PORT=55213
+NOVNC_PORT=55214
+DEBUG_PORT=55215
+IMAGE_REF=autobyteus-server:mobile-safe-container-401-round3-api-e2e
+CREATED_AT=2026-05-23T17:17:42Z
+CONFIG_HASH=219cc8d2826c9bba39e67b5e6c2f24dfcd408d82e93063cd18615dfb95295b8f
+PROFILE=mobile-safe
+UPDATED_AT=2026-05-23T17:17:43Z
+LOCAL_MANAGEMENT_CREDENTIAL=[REDACTED]
+LOCAL_MANAGEMENT_CREDENTIAL_HASH=[HASH]
+
+claim_owner_field_scan_state=0

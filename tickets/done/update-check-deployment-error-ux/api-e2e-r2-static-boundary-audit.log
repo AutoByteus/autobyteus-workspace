@@ -1,0 +1,17 @@
+# API/E2E round 2 precise updater raw-token audit
+Date: 2026-05-23T05:48:22Z
+
+## Raw provider/network tokens in runtime renderer display surfaces
+autobyteus-web/localization/messages/en/settings.ts:343:  'settings.components.settings.PhoneAccessCard.serveHttpsUrlHelp': 'After running Serve/status in the guide, copy the HTTPS MagicDNS hostname, append /mobile, and paste it here. It normally looks like https://<machine>.<tailnet>.ts.net/mobile without :29695.',
+autobyteus-web/localization/messages/en/settings.ts:345:  'settings.components.settings.PhoneAccessCard.httpCandidateDiagnosticNote': 'HTTP interface candidates such as http://100.x.y.z:29695 or LAN addresses are diagnostics only. The :29695 port belongs to local HTTP reachability, not the Tailscale Serve HTTPS QR target.',
+autobyteus-web/localization/messages/en/settings.ts:347:  'settings.components.settings.PhoneAccessCard.httpsRequiredBody': 'Create QR requires a private HTTPS URL. Paste a Tailscale Serve URL such as https://<machine>.<tailnet>.ts.net/mobile.',
+autobyteus-web/localization/messages/en/settings.ts:490:  'settings.components.settings.ProviderAPIKeyManager.base_url_placeholder': 'https://gateway.example.com/v1',
+autobyteus-web/localization/messages/en/settings.ts:518:  'settings.components.settings.ApplicationPackagesManager.importPlaceholder': '/absolute/path/to/package or https://github.com/owner/repo',
+autobyteus-web/localization/messages/zh-CN/settings.ts:343:  'settings.components.settings.PhoneAccessCard.serveHttpsUrlHelp': '运行上方 Serve/status 命令后，复制 HTTPS MagicDNS 主机名，追加 /mobile，并粘贴到这里。通常形如 https://<machine>.<tailnet>.ts.net/mobile，不带 :29695。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:345:  'settings.components.settings.PhoneAccessCard.httpCandidateDiagnosticNote': 'HTTP 接口候选项（例如 http://100.x.y.z:29695 或局域网地址）仅用于诊断。:29695 端口属于本地 HTTP 可达性，不是 Tailscale Serve HTTPS 二维码目标。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:347:  'settings.components.settings.PhoneAccessCard.httpsRequiredBody': '创建二维码需要私有 HTTPS URL。请粘贴 Tailscale Serve URL，例如 https://<machine>.<tailnet>.ts.net/mobile。',
+autobyteus-web/localization/messages/zh-CN/settings.ts:490:  'settings.components.settings.ProviderAPIKeyManager.base_url_placeholder': 'https://gateway.example.com/v1',
+autobyteus-web/localization/messages/zh-CN/settings.ts:518:  'settings.components.settings.ApplicationPackagesManager.importPlaceholder': '/绝对路径/应用包 或 https://github.com/owner/repo',
+
+## Raw diagnostic field name in shared/electron/renderer app-update contracts
+No raw app-update error/detail display contract found.

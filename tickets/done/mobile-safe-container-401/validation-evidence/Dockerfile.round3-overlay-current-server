@@ -1,0 +1,13 @@
+FROM autobyteus/autobyteus-server:latest
+WORKDIR /app
+COPY autobyteus-ts/dist ./autobyteus-ts/dist
+COPY autobyteus-ts/package.json ./autobyteus-ts/package.json
+COPY autobyteus-application-sdk-contracts/dist ./autobyteus-application-sdk-contracts/dist
+COPY autobyteus-application-sdk-contracts/package.json ./autobyteus-application-sdk-contracts/package.json
+COPY autobyteus-application-backend-sdk/dist ./autobyteus-application-backend-sdk/dist
+COPY autobyteus-application-backend-sdk/package.json ./autobyteus-application-backend-sdk/package.json
+COPY autobyteus-server-ts/dist ./autobyteus-server-ts/dist
+COPY autobyteus-server-ts/prisma ./autobyteus-server-ts/prisma
+COPY autobyteus-server-ts/package.json ./autobyteus-server-ts/package.json
+RUN rm -rf /app/autobyteus-server-ts/mobile-web
+COPY autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web

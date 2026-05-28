@@ -1,0 +1,10 @@
+== final private HTTPS status from host and Android after successful WebView pairing ==
+-- host via Tailscale Serve --
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_vjovB7NEtfkUF22ziCmQAd1Yrb4FrxTj","serverName":"AutoByteus Desktop"}
+-- Android shell curl via Tailscale/MagicDNS --
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_vjovB7NEtfkUF22ziCmQAd1Yrb4FrxTj","serverName":"AutoByteus Desktop"}
+-- local Docker status --
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_vjovB7NEtfkUF22ziCmQAd1Yrb4FrxTj","serverName":"AutoByteus Desktop"}
+-- compare serverInstanceId host vs local --
+['srv_vjovB7NEtfkUF22ziCmQAd1Yrb4FrxTj', 'srv_vjovB7NEtfkUF22ziCmQAd1Yrb4FrxTj']
+SERVER_INSTANCE_ID_MATCH_OK

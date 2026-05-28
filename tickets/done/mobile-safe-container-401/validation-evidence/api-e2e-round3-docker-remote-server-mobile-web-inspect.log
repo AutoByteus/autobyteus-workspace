@@ -1,0 +1,2 @@
+$ docker run --rm --entrypoint sh autobyteus-remote-server:mobile-safe-container-401-round3-api-e2e -lc test mobile-web and SDK dirs
+remote-server mobile-web index and application SDK dirs present

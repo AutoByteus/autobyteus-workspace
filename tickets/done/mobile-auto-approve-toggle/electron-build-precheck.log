@@ -1,0 +1,18 @@
+# User-Requested Electron Build Precheck
+Date: 2026-05-24T08:27:42Z
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-auto-approve-toggle
+Branch: codex/mobile-auto-approve-toggle
+
+## README guidance read
+- Root README Build examples: pnpm --filter autobyteus-web build / server / gateway build.
+- autobyteus-web README Desktop Application Build: pnpm build:electron:mac.
+- autobyteus-web README macOS local no-notarization command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac.
+
+## Fetch latest base before build
+$ git fetch origin personal --prune --no-tags
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+HEAD: 03d7880b45afd2b032de6e842e41429fad0a2cb0 (docs(delivery): record mobile safe container release)
+origin/personal: 03d7880b45afd2b032de6e842e41429fad0a2cb0 (docs(delivery): record mobile safe container release)
+$ git rev-list --left-right --count HEAD...origin/personal
+0	0

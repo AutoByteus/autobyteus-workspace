@@ -1,0 +1,35 @@
+== scroll to Create run after DeepSeek selection ==
+{'text': '', 'desc': '', 'res': 'android:id/content', 'class': 'android.widget.FrameLayout', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': '__nuxt', 'class': 'android.view.View', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'app', 'class': 'android.view.View', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': 'Home', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[44,139][220,244]', 'clickable': 'true'}
+{'text': 'Memory Compactor Agent profile', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[247,137][819,247]', 'clickable': 'true'}
+{'text': 'Switch', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[847,139][1036,244]', 'clickable': 'true'}
+{'text': 'New run', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[55,337][261,417]', 'clickable': 'false'}
+{'text': 'Close setup', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[728,324][1025,431]', 'clickable': 'true'}
+{'text': 'Hide', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[838,128][979,214]', 'clickable': 'true'}
+{'text': 'Agent', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[99,255][530,357]', 'clickable': 'true'}
+{'text': 'Team', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[550,255][979,357]', 'clickable': 'true'}
+{'text': 'Agent', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[134,434][478,489]', 'clickable': 'false'}
+{'text': 'Memory Compactor', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[134,500][478,555]', 'clickable': 'false'}
+{'text': 'Change agent', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[739,442][946,546]', 'clickable': 'true'}
+{'text': 'Workspace', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[134,667][434,725]', 'clickable': 'false'}
+{'text': 'Temp Workspace', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[134,733][434,791]', 'clickable': 'false'}
+{'text': 'Change workspace', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[739,676][946,783]', 'clickable': 'true'}
+{'text': 'Runtime and model', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[145,912][935,970]', 'clickable': 'false'}
+{'text': 'Runtime', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[145,1000][935,1058]', 'clickable': 'false'}
+{'text': 'AutoByteus', 'desc': '', 'res': 'mobile-agent-run-runtime-kind', 'class': 'android.view.View', 'bounds': '[145,1066][935,1168]', 'clickable': 'true'}
+{'text': 'Model', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[145,1209][935,1267]', 'clickable': 'false'}
+{'text': 'DeepSeek / deepseek-v4-flash', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[145,1275][935,1380]', 'clickable': 'true'}
+{'text': 'Thinking', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[145,1443][316,1512]', 'clickable': 'false'}
+{'text': 'Use setting', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[811,1443][935,1512]', 'clickable': 'true'}
+{'text': 'Advanced', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[145,1583][374,1641]', 'clickable': 'true'}
+{'text': 'Ready to create the run. Chat opens next.', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[134,1767][946,1825]', 'clickable': 'false'}
+{'text': 'Create run', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[99,1899][979,2023]', 'clickable': 'true'}
+{'text': '', 'desc': 'Chat', 'res': '', 'class': 'android.widget.Button', 'bounds': '[0,2122][272,2166]', 'clickable': 'true'}
+{'text': '', 'desc': 'Runs', 'res': '', 'class': 'android.widget.Button', 'bounds': '[269,2122][541,2166]', 'clickable': 'true'}
+{'text': '', 'desc': 'Files', 'res': '', 'class': 'android.widget.Button', 'bounds': '[539,2122][811,2166]', 'clickable': 'true'}
+{'text': '', 'desc': 'Activity', 'res': '', 'class': 'android.widget.Button', 'bounds': '[808,2122][1080,2166]', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'teleports', 'class': 'android.widget.TextView', 'bounds': '[0,0][0,0]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/statusBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][1080,104]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/navigationBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][0,0]', 'clickable': 'false'}

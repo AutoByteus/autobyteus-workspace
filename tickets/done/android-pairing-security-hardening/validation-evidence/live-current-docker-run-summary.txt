@@ -1,0 +1,8 @@
+container=autobyteus-live-validation-android-pairing
+backend_port=51428
+vnc_port=51429
+novnc_port=51430
+debug_port=51431
+claim_id=nac_EI2iy4Sg4NLV3Ic77YDCFsqB
+claim_secret=REDACTED
+claim_hash=efa032a1e7ddc535d74fac696bc623287dd142dd94f6cb83ed0c4267b4a6e306

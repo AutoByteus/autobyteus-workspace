@@ -1,0 +1,172 @@
+## Host private HTTPS/tunnel availability probe
+tailscale=/usr/local/bin/tailscale
+1.98.2
+  tailscale commit: aaf7caef13becf6989e9e81f66412f3edc564c38
+  long version: 1.98.2-taaf7caef1-gc4a37aed9
+cloudflared=not found
+ngrok=not found
+caddy=not found
+mkcert=not found
+## host IP candidates
+lo0: 127.0.0.1
+en0: 192.168.2.158
+utun4: 100.127.30.107
+## phone Wi-Fi IP/routes
+24: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 3000
+    link/ether 7e:b9:55:ce:b1:a4 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.2.30/24 brd 192.168.2.255 scope global dynamic wlan0
+       valid_lft 1808165sec preferred_lft 1808165sec
+    inet6 2003:ca:5731:f03a:a88a:6510:bb5e:d053/64 scope global temporary dynamic 
+       valid_lft 172773sec preferred_lft 80845sec
+    inet6 2003:ca:5731:f03a:7cb9:55ff:fece:b1a4/64 scope global dynamic mngtmpaddr 
+       valid_lft 172773sec preferred_lft 86373sec
+    inet6 2003:ca:5731:f0c7:a88a:6510:bb5e:d053/64 scope global temporary dynamic 
+       valid_lft 167422sec preferred_lft 79973sec
+    inet6 2003:ca:5731:f0c7:7cb9:55ff:fece:b1a4/64 scope global dynamic mngtmpaddr 
+       valid_lft 167422sec preferred_lft 81022sec
+    inet6 fe80::7cb9:55ff:fece:b1a4/64 scope link 
+       valid_lft forever preferred_lft forever
+10.145.246.152/29 dev rmnet_data2 proto kernel scope link src 10.145.246.156 
+192.168.2.0/24 dev wlan0 proto kernel scope link src 192.168.2.30 
+## tailscale status self
+{
+  "Version": "1.98.2-taaf7caef1-gc4a37aed9",
+  "TUN": true,
+  "BackendState": "Running",
+  "HaveNodeKey": true,
+  "AuthURL": "",
+  "TailscaleIPs": [
+    "100.127.30.107",
+    "fd7a:115c:a1e0::4336:1e6b"
+  ],
+  "Self": {
+    "ID": "nutyNKC9p921CNTRL",
+    "PublicKey": "nodekey:366c3f547f10889a48dd0303e880de500589ebf1d16d00e6a7c2986e433f1e6a",
+    "HostName": "normy’s MacBook Pro",
+    "DNSName": "normys-macbook-pro.tail0347f8.ts.net.",
+    "OS": "macOS",
+    "UserID": 8831386865727034,
+    "TailscaleIPs": [
+      "100.127.30.107",
+      "fd7a:115c:a1e0::4336:1e6b"
+    ],
+    "AllowedIPs": [
+      "100.127.30.107/32",
+      "fd7a:115c:a1e0::4336:1e6b/128"
+    ],
+    "Addrs": [
+      "91.5.236.137:41641",
+      "[2003:ca:5731:f03a:a091:a573:3561:fda2]:41641",
+      "192.168.2.158:41641",
+      "[2003:ca:5731:f03a:183c:724:11c4:71fc]:41641",
+      "[2003:ca:5731:f0c7:18df:445f:7404:e06a]:41641",
+      "[2003:ca:5731:f0c7:f48d:fee8:cc6b:44b7]:41641"
+    ],
+    "CurAddr": "",
+    "Relay": "nue",
+    "PeerRelay": "",
+    "RxBytes": 0,
+    "TxBytes": 0,
+    "Created": "2026-05-19T13:17:54.646184557Z",
+    "LastWrite": "0001-01-01T00:00:00Z",
+    "LastSeen": "0001-01-01T00:00:00Z",
+    "LastHandshake": "0001-01-01T00:00:00Z",
+    "Online": true,
+    "ExitNode": false,
+    "ExitNodeOption": false,
+    "Active": false,
+    "PeerAPIURL": [
+      "http://100.127.30.107:61808",
+      "http://[fd7a:115c:a1e0::4336:1e6b]:51007"
+    ],
+    "TaildropTarget": 0,
+    "NoFileSharingReason": "",
+    "Capabilities": [
+      "HTTPS://TAILSCALE.COM/s/DEPRECATED-NODE-CAPS#see-https://github.com/tailscale/tailscale/issues/11508",
+      "default-auto-update",
+      "funnel",
+      "https",
+      "https://tailscale.com/cap/file-sharing",
+      "https://tailscale.com/cap/funnel-ports?ports=443,8443,10000",
+      "https://tailscale.com/cap/is-admin",
+      "https://tailscale.com/cap/is-owner",
+      "https://tailscale.com/cap/ssh",
+      "https://tailscale.com/cap/tailnet-lock",
+      "probe-ud
+## tailscale serve status
+https://normys-macbook-pro.tail0347f8.ts.net (tailnet only)
+|-- / proxy http://127.0.0.1:29695
+
+## tailscale cert domains?
+Get TLS certs
+
+USAGE
+  tailscale cert [flags] <domain>
+
+FLAGS
+  --cert-file value
+    	output cert file or "-" for stdout; defaults to DOMAIN.crt if --cert-file and --key-file are both unset
+  --key-file value
+    	output key file or "-" for stdout; defaults to DOMAIN.key if --cert-file and --key-file are both unset
+  --min-validity value
+    	ensure the certificate is valid for at least this duration; the output certificate is never expired if this flag is unset or 0, but the lifetime may vary; the maximum allowed min-validity depends on the CA (default 0s)
+  --serve-demo, --serve-demo=false
+    	if true, serve on port :443 using the cert as a demo, instead of writing out the files to disk (default false)
+## phone tailscale/network probe
+    inet6 fe80::c0ab:aaff:fe05:28f8/64 scope link 
+       valid_lft forever preferred_lft forever
+3: tunl0@NONE: <NOARP> mtu 1480 qdisc noop state DOWN group default qlen 1000
+    link/ipip 0.0.0.0 brd 0.0.0.0
+4: gre0@NONE: <NOARP> mtu 1476 qdisc noop state DOWN group default qlen 1000
+    link/gre 0.0.0.0 brd 0.0.0.0
+--
+    link/ipip 0.0.0.0 brd 0.0.0.0
+8: ip6_vti0@NONE: <NOARP> mtu 1364 qdisc noop state DOWN group default qlen 1000
+    link/tunnel6 :: brd ::
+9: sit0@NONE: <NOARP> mtu 1480 qdisc noop state DOWN group default qlen 1000
+    link/sit 0.0.0.0 brd 0.0.0.0
+10: ip6tnl0@NONE: <NOARP> mtu 1452 qdisc noop state DOWN group default qlen 1000
+    link/tunnel6 :: brd ::
+11: ip6gre0@NONE: <NOARP> mtu 1448 qdisc noop state DOWN group default qlen 1000
+    link/gre6 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00 brd 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00
+13: rmnet_ipa0: <UP,LOWER_UP> mtu 9216 qdisc pfifo_fast state UNKNOWN group default qlen 1000
+package:com.tailscale.ipn
+/system/bin/curl
+fsync
+nc
+runcon
+sync
+truncate
+tunctl
+uuencode
+## phone curl current tailscale serve status
+
+## host curl current tailscale serve status
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+date: Sat, 23 May 2026 07:38:35 GMT
+vary: Origin
+content-length: 110
+
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverName":"AutoByteus Desktop"}
+## phone curl tailnet IP http peerapi?
+curl: (7) Failed to connect to 100.127.30.107 port 61808: Network is unreachable
+
+## phone ping tailnet IP
+PING 100.127.30.107 (100.127.30.107) 56(84) bytes of data.
+From 62.155.240.20: icmp_seq=1 Destination Net Unreachable
+
+--- 100.127.30.107 ping statistics ---
+1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms
+
+
+## phone curl LAN host
+HTTP/1.1 200 OK
+vary: Origin
+content-type: application/json; charset=utf-8
+content-length: 110
+Date: Sat, 23 May 2026 07:38:43 GMT
+Connection: keep-alive
+Keep-Alive: timeout=72
+
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverName":"AutoByteus Desktop"}

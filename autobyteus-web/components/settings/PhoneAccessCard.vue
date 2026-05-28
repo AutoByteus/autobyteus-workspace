@@ -12,7 +12,7 @@
           type="checkbox"
           class="rounded border-slate-300 text-blue-600 focus:ring-blue-200"
           :checked="store.phoneAccessEnabled"
-          :disabled="store.isLoading"
+          :disabled="store.isLoading || !store.canManagePhoneAccess"
           data-testid="phone-access-toggle"
           @change="onToggle(($event.target as HTMLInputElement).checked)"
         />
@@ -42,7 +42,7 @@
               placeholder="https://desktop.tailnet-name.ts.net/mobile"
               class="min-w-0 flex-1 rounded-lg border border-blue-200 px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
               data-testid="phone-access-manual-url"
-              @input="store.selectedServerBaseUrl = ($event.target as HTMLInputElement).value"
+              @input="onAdvertisedUrlInput(($event.target as HTMLInputElement).value)"
             />
             <button
               type="button"
@@ -84,8 +84,17 @@
             </option>
           </select>
           <p class="mt-2 text-xs text-slate-500" data-testid="phone-access-candidate-diagnostic-note">
-            {{ $t('settings.components.settings.PhoneAccessCard.httpCandidateDiagnosticNote') }}
+            {{ store.isRemoteNodeWindow ? $t('settings.components.settings.PhoneAccessCard.remoteCandidateDiagnosticNote') : $t('settings.components.settings.PhoneAccessCard.httpCandidateDiagnosticNote') }}
           </p>
+        </div>
+
+        <div
+          v-if="store.isRemoteNodeWindow"
+          class="rounded-lg border p-3 text-xs"
+          :class="store.advertisedUrlVerified ? 'border-green-200 bg-green-50 text-green-800' : 'border-amber-200 bg-amber-50 text-amber-900'"
+          data-testid="phone-access-advertised-url-verification"
+        >
+          {{ store.advertisedUrlVerificationMessage || $t('settings.components.settings.PhoneAccessCard.remoteAdvertisedUrlVerificationHelp') }}
         </div>
 
         <div class="flex flex-wrap gap-2">
@@ -210,8 +219,10 @@ const selectedUrlWarning = computed(() => (
 const canCreatePairingSession = computed(() => (
   store.phoneAccessEnabled
   && Boolean(store.selectedServerBaseUrl.trim())
+  && (!store.isRemoteNodeWindow || Boolean(store.manualServerBaseUrl.trim()))
   && store.selectedUrlValidation.isValid
   && store.selectedUrlValidation.isHttps
+  && (!store.isRemoteNodeWindow || store.selectedUrlValidation.isAndroidFacing)
 ));
 
 const visibleDevices = computed(() => (
@@ -228,6 +239,12 @@ async function renderQr(): Promise<void> {
 
 async function onToggle(enabled: boolean): Promise<void> {
   await store.setEnabled(enabled);
+}
+
+function onAdvertisedUrlInput(value: string): void {
+  store.selectedServerBaseUrl = value;
+  store.advertisedUrlVerified = false;
+  store.advertisedUrlVerificationMessage = null;
 }
 
 async function onCreateQr(): Promise<void> {

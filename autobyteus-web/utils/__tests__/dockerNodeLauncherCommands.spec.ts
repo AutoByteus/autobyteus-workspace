@@ -41,7 +41,7 @@ describe('dockerNodeLauncherCommands', () => {
       `powershell -NoProfile -ExecutionPolicy Bypass -Command "irm ${dockerNodeLauncherScriptUrls.powershell} | iex; autobyteus-docker install"`,
     );
     expect(commands.filter((command) => command.phase === 'direct').map((command) => command.command)).toEqual([
-      'autobyteus-docker new-container',
+      'autobyteus-docker new-container --profile mobile-safe',
       'autobyteus-docker upgrade --all',
       'autobyteus-docker destroy --all',
       'autobyteus-docker reset',

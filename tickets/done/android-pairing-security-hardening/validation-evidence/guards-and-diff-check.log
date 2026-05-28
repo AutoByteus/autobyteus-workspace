@@ -1,0 +1,12 @@
+## Localization guard
+
+> autobyteus@1.3.28 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/android-pairing-security-hardening/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+## stale phoneSetupUnavailable search
+no phoneSetupUnavailable matches
+## mobile terminal/tools source search
+no mobile Tools/terminal/VNC source matches
+## git diff whitespace check
+git diff --check passed

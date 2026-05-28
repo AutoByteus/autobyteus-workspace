@@ -1,0 +1,16 @@
+{
+  "base": "http://127.0.0.1:64601",
+  "container": "ab-mobile-safe-401-validation",
+  "serverInstanceIdBefore": "srv_0wjwr726VK2ACUIY1MyReayiIRjpcVMz",
+  "serverInstanceIdAfter": "srv_0wjwr726VK2ACUIY1MyReayiIRjpcVMz",
+  "serverInstanceIdPersisted": true,
+  "ownerTokenPrefixBeforeRestart": "rao_",
+  "graphqlBeforeRestartStatus": 200,
+  "oldOwnerTokenAfterRestartStatus": 401,
+  "oldOwnerTokenAfterRestartBody": {"error":"REMOTE_ACCESS_AUTH_INVALID","code":"REMOTE_ACCESS_AUTH_INVALID","message":"Remote owner session token is invalid."},
+  "newOwnerSessionStatus": 201,
+  "newOwnerTokenPrefixAfterRestart": "rao_",
+  "newOwnerGraphqlAfterRestartStatus": 200,
+  "mobileAfterRestartStatus": 200,
+  "result": "pass"
+}

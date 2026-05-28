@@ -25,8 +25,6 @@ const supportedMobileFeatures = new Set<MobileFeatureId>([
   'runHistory',
   'workspaceFiles',
   'runArtifacts',
-  'terminal',
-  'vnc',
 ]);
 
 export function isMobileFeatureSupported(featureId: MobileFeatureId): boolean {

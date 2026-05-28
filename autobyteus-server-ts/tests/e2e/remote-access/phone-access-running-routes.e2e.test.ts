@@ -20,6 +20,7 @@ import { resetRemoteAccessAuthServiceForTests } from "../../../src/remote-access
 import { resetPairedDeviceServiceForTests } from "../../../src/remote-access/services/paired-device-service.js";
 import { resetRemoteAccessPairingServiceForTests } from "../../../src/remote-access/services/remote-access-pairing-service.js";
 import { resetRemoteAccessSettingsServiceForTests } from "../../../src/remote-access/services/remote-access-settings-service.js";
+import { resetServerInstanceIdentityServiceForTests } from "../../../src/remote-access/services/server-instance-identity-service.js";
 import { resetPairedDeviceStoreForTests } from "../../../src/remote-access/stores/paired-device-store.js";
 import { resetRemoteAccessSettingsStoreForTests } from "../../../src/remote-access/stores/remote-access-settings-store.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -28,6 +29,13 @@ type DevicesResponse = { devices: PairedDeviceSummary[] };
 type ProtectedProbeResponse = {
   ok: true;
   authContext: RemoteAccessAuthContext | null;
+};
+type RemoteAccessStatusResponse = {
+  phoneAccessEnabled: boolean;
+  pairingAvailable: boolean;
+  compatibilityVersion: number;
+  serverInstanceId: string;
+  serverName: string;
 };
 
 describe("Phone Access running REST route behavior", () => {
@@ -63,7 +71,7 @@ describe("Phone Access running REST route behavior", () => {
     const httpResponse = await inject({
       method: "POST",
       url: "/rest/remote-access/pairing-sessions",
-      remoteAddress: "127.0.0.1",
+      remoteAddress: "100.64.1.2",
       payload: { serverBaseUrl: "http://192.168.1.25:29695/mobile" },
     });
     expect(httpResponse.statusCode).toBe(400);
@@ -94,7 +102,7 @@ describe("Phone Access running REST route behavior", () => {
     const activeResponse = await inject({
       method: "GET",
       url: "/rest/remote-access/devices",
-      remoteAddress: "127.0.0.1",
+      remoteAddress: "100.64.1.2",
     });
     expect(activeResponse.statusCode).toBe(200);
     expect((activeResponse.json() as DevicesResponse).devices).toMatchObject([
@@ -109,21 +117,21 @@ describe("Phone Access running REST route behavior", () => {
     const revokedResponse = await inject({
       method: "GET",
       url: "/rest/remote-access/devices/revoked",
-      remoteAddress: "127.0.0.1",
+      remoteAddress: "100.64.1.2",
     });
     expect(revokedResponse.statusCode).toBe(200);
     const revokedDevices = (revokedResponse.json() as DevicesResponse).devices;
     expect(revokedDevices).toHaveLength(19);
     expect(revokedDevices.every((device) => typeof device.revokedAt === "string")).toBe(true);
 
-    const nonLoopbackRevokedResponse = await inject({
+    const mobileOnManagementRouteResponse = await inject({
       method: "GET",
       url: "/rest/remote-access/devices/revoked",
       remoteAddress: "100.64.1.2",
       headers: { authorization: `Bearer ${activeExchange.credential}` },
     });
-    expect(nonLoopbackRevokedResponse.statusCode).toBe(403);
-    expect(nonLoopbackRevokedResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_LOCAL_ONLY" });
+    expect(mobileOnManagementRouteResponse.statusCode).toBe(403);
+    expect(mobileOnManagementRouteResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_AUTH_INVALID" });
 
     const mobileProtectedResponse = await inject({
       method: "GET",
@@ -147,7 +155,7 @@ describe("Phone Access running REST route behavior", () => {
     const activeAfterRevokeResponse = await inject({
       method: "GET",
       url: "/rest/remote-access/devices",
-      remoteAddress: "127.0.0.1",
+      remoteAddress: "100.64.1.2",
     });
     expect(activeAfterRevokeResponse.statusCode).toBe(200);
     expect((activeAfterRevokeResponse.json() as DevicesResponse).devices).toEqual([]);
@@ -155,7 +163,7 @@ describe("Phone Access running REST route behavior", () => {
     const revokedAfterRevokeResponse = await inject({
       method: "GET",
       url: "/rest/remote-access/devices/revoked",
-      remoteAddress: "127.0.0.1",
+      remoteAddress: "100.64.1.2",
     });
     expect(revokedAfterRevokeResponse.statusCode).toBe(200);
     expect((revokedAfterRevokeResponse.json() as DevicesResponse).devices).toHaveLength(20);
@@ -170,11 +178,103 @@ describe("Phone Access running REST route behavior", () => {
     expect(revokedCredentialResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_DEVICE_REVOKED" });
   });
 
+  it("restores trusted-network remote-node management and protected routes without additional credentials", async () => {
+    const firstStatusResponse = await inject({
+      method: "GET",
+      url: "/rest/remote-access/status",
+      remoteAddress: "100.64.1.2",
+    });
+    expect(firstStatusResponse.statusCode).toBe(200);
+    const firstStatus = firstStatusResponse.json() as RemoteAccessStatusResponse;
+    expect(firstStatus.serverInstanceId).toMatch(/^srv_[A-Za-z0-9_-]{32,}$/);
+
+    resetServerInstanceIdentityServiceForTests();
+    const secondStatusResponse = await inject({
+      method: "GET",
+      url: "/rest/remote-access/status",
+      remoteAddress: "100.64.1.2",
+    });
+    expect(secondStatusResponse.statusCode).toBe(200);
+    expect((secondStatusResponse.json() as RemoteAccessStatusResponse).serverInstanceId)
+      .toBe(firstStatus.serverInstanceId);
+
+    const enableResponse = await inject({
+      method: "PUT",
+      url: "/rest/remote-access/settings",
+      remoteAddress: "100.64.1.2",
+      payload: { phoneAccessEnabled: true },
+    });
+    expect(enableResponse.statusCode).toBe(200);
+    expect(enableResponse.json()).toMatchObject({ settings: { phoneAccessEnabled: true } });
+
+    const pairingResponse = await inject({
+      method: "POST",
+      url: "/rest/remote-access/pairing-sessions",
+      remoteAddress: "100.64.1.2",
+      payload: {
+        serverBaseUrl: "https://docker.tailnet.ts.net/mobile?pairing=old",
+        serverName: "AutoByteus Docker Node",
+      },
+    });
+    expect(pairingResponse.statusCode).toBe(201);
+    const pairingSession = pairingResponse.json() as CreatePairingSessionResult;
+    expect(pairingSession.payload).toMatchObject({
+      serverBaseUrl: "https://docker.tailnet.ts.net",
+      serverName: "AutoByteus Docker Node",
+    });
+    expect(decodePairingParam(pairingSession.mobileUrl)).toMatchObject({
+      serverBaseUrl: "https://docker.tailnet.ts.net",
+      pairingCode: pairingSession.payload.pairingCode,
+    });
+
+    const exchange = await exchangePairingSession(pairingSession, "Docker Android");
+    expect(exchange.credential).toMatch(/^mra_/);
+    expect(exchange.serverBaseUrl).toBe("https://docker.tailnet.ts.net");
+    expect(exchange.device.clientFacingBaseUrl).toBe("https://docker.tailnet.ts.net");
+
+    const devicesResponse = await inject({
+      method: "GET",
+      url: "/rest/remote-access/devices",
+      remoteAddress: "100.64.1.2",
+    });
+    expect(devicesResponse.statusCode).toBe(200);
+    expect((devicesResponse.json() as DevicesResponse).devices).toMatchObject([
+      {
+        deviceId: exchange.device.deviceId,
+        displayName: "Docker Android",
+        clientFacingBaseUrl: "https://docker.tailnet.ts.net",
+        revokedAt: null,
+      },
+    ]);
+
+    const protectedNoCredentialResponse = await inject({
+      method: "GET",
+      url: "/rest/protected-probe",
+      remoteAddress: "100.64.1.2",
+    });
+    expect(protectedNoCredentialResponse.statusCode).toBe(200);
+    expect(protectedNoCredentialResponse.json() as ProtectedProbeResponse).toMatchObject({
+      ok: true,
+      authContext: {
+        mode: "trusted_network",
+        isAuthenticated: false,
+      },
+    });
+
+    const graphqlNoCredentialResponse = await inject({
+      method: "POST",
+      url: "/graphql",
+      remoteAddress: "100.64.1.2",
+      payload: { query: "{ __typename }" },
+    });
+    expect(graphqlNoCredentialResponse.statusCode).not.toBe(401);
+  });
+
   async function enablePhoneAccess(): Promise<void> {
     const response = await inject({
       method: "PUT",
       url: "/rest/remote-access/settings",
-      remoteAddress: "127.0.0.1",
+      remoteAddress: "100.64.1.2",
       payload: { phoneAccessEnabled: true },
     });
     expect(response.statusCode).toBe(200);
@@ -184,7 +284,7 @@ describe("Phone Access running REST route behavior", () => {
     const response = await inject({
       method: "POST",
       url: "/rest/remote-access/pairing-sessions",
-      remoteAddress: "127.0.0.1",
+      remoteAddress: "100.64.1.2",
       payload: { serverBaseUrl, serverName: "AutoByteus Desktop" },
     });
     expect(response.statusCode).toBe(201);
@@ -213,7 +313,7 @@ describe("Phone Access running REST route behavior", () => {
     const response = await inject({
       method: "DELETE",
       url: `/rest/remote-access/devices/${encodeURIComponent(deviceId)}`,
-      remoteAddress: "127.0.0.1",
+      remoteAddress: "100.64.1.2",
     });
     expect(response.statusCode).toBe(200);
   }
@@ -242,6 +342,7 @@ function resetRemoteAccessSingletons(): void {
   resetRemoteAccessAuthServiceForTests();
   resetRemoteAccessPairingServiceForTests();
   resetRemoteAccessSettingsServiceForTests();
+  resetServerInstanceIdentityServiceForTests();
   resetPairedDeviceServiceForTests();
   resetRemoteAccessSettingsStoreForTests();
   resetPairedDeviceStoreForTests();

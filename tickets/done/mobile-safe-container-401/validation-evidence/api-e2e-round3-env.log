@@ -1,0 +1,18 @@
+Round 3 API/E2E environment snapshot
+2026-05-23T17:13:36Z
+cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-safe-container-401
+git_head=74218467a2f7786c82f3e97b9190058d2cb83bd2
+branch=codex/mobile-safe-container-401
+uname=Darwin MacBookPro 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:09:40 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T6000 arm64
+docker_version=Docker version 29.0.1, build eedd969
+node_version=v22.21.1
+pnpm_version=10.28.2
+powershell=
+{
+  "ServerVersion": "29.0.1",
+  "OperatingSystem": "Docker Desktop",
+  "Architecture": "aarch64",
+  "OSType": "linux",
+  "Containers": 12,
+  "Images": 86
+}

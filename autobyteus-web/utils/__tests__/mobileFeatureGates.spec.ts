@@ -10,9 +10,9 @@ import {
 describe('mobile feature gates', () => {
   it('allows mobile parity features and rejects Electron-only features', () => {
     expect(isMobileFeatureSupported('agentRuns')).toBe(true);
-    expect(isMobileFeatureSupported('terminal')).toBe(true);
-    expect(isMobileFeatureSupported('vnc')).toBe(true);
     expect(isMobileFeatureSupported('runArtifacts')).toBe(true);
+    expect(isMobileFeatureSupported('terminal')).toBe(false);
+    expect(isMobileFeatureSupported('vnc')).toBe(false);
     expect(isMobileFeatureSupported('browser')).toBe(false);
     expect(isMobileFeatureSupported('desktopUpdates')).toBe(false);
     expect(() => assertMobileFeatureSupported('localFolderPicker')).toThrow(/not available/);

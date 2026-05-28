@@ -8,6 +8,8 @@ import {
 } from "../../remote-access/domain/models.js";
 import {
   getRemoteAccessAuthService,
+  isMobileRemoteAccessCredential,
+  readBearerCredential,
   type RemoteAccessAuthService,
 } from "../../remote-access/services/remote-access-auth-service.js";
 import { isLoopbackPeerAddress } from "./remote-access-local-trust.js";
@@ -76,16 +78,16 @@ export const classifyHttpRoute = (
     || /^\/rest\/remote-access\/devices\/[^/]+$/.test(path)
     || path === "/rest/remote-access/settings"
   ) {
-    return "LOCAL_ONLY";
+    return "TRUSTED_NETWORK_OWNER";
   }
   if (path === "/graphql") {
     if (isGraphqlWebSocketUpgrade(normalizedMethod, path, headers)) {
-      return "LOCAL_OR_MOBILE_WS";
+      return "TRUSTED_NETWORK_WEBSOCKET";
     }
-    return normalizedMethod === "POST" ? "LOCAL_OR_MOBILE" : "LOCAL_DEV_ONLY";
+    return normalizedMethod === "POST" ? "TRUSTED_NETWORK_PROTECTED" : "LOCAL_DEV_ONLY";
   }
   if (path.startsWith("/ws/")) {
-    return "LOCAL_OR_MOBILE_WS";
+    return "TRUSTED_NETWORK_WEBSOCKET";
   }
   if (
     path === "/rest/api/channel-ingress/v1/messages"
@@ -94,12 +96,9 @@ export const classifyHttpRoute = (
     return "EXTERNAL_SIGNATURE";
   }
   if (isApplicationBackendPath(path) || isApplicationBundleAssetPath(path) || isProtectedRestFamily(path)) {
-    return "LOCAL_OR_MOBILE";
+    return "TRUSTED_NETWORK_PROTECTED";
   }
-  if (path.startsWith("/rest/") || path === "/rest") {
-    return "DEFAULT_PROTECTED";
-  }
-  return "DEFAULT_PROTECTED";
+  return "TRUSTED_NETWORK_PROTECTED";
 };
 
 const allowedWithoutAuth = new Set<RemoteAccessRouteClassification>([
@@ -119,6 +118,14 @@ const reject = (
   message: string,
 ): RemoteAccessAuthorizationResult => ({ ok: false, statusCode, code, message });
 
+const trustedNetworkContext = (peerAddress?: string): RemoteAccessAuthContext => {
+  const isLoopback = isLoopbackPeerAddress(peerAddress);
+  return {
+    mode: isLoopback ? "loopback" : "trusted_network",
+    isAuthenticated: isLoopback,
+  };
+};
+
 const readWebSocketQueryCredential = (request: FastifyRequest): string | null => {
   try {
     return new URL(request.url, "http://autobyteus.local")
@@ -131,7 +138,9 @@ const readWebSocketQueryCredential = (request: FastifyRequest): string | null =>
 };
 
 export class RemoteAccessRoutePolicy {
-  constructor(private readonly authService: RemoteAccessAuthService = getRemoteAccessAuthService()) {}
+  constructor(
+    private readonly authService: RemoteAccessAuthService = getRemoteAccessAuthService(),
+  ) {}
 
   classifyRequest(request: FastifyRequest): RemoteAccessRouteClassification {
     return classifyHttpRoute(request.method, request.url, request.headers as Record<string, unknown>);
@@ -142,31 +151,34 @@ export class RemoteAccessRoutePolicy {
     const peerAddress = request.raw.socket.remoteAddress;
 
     if (allowedWithoutAuth.has(routeClass)) {
-      return { ok: true, context: { mode: "loopback", isAuthenticated: false } };
-    }
-    if (routeClass === "LOCAL_ONLY") {
-      return isLoopbackPeerAddress(peerAddress)
-        ? { ok: true, context: { mode: "loopback", isAuthenticated: true } }
-        : reject(403, "REMOTE_ACCESS_LOCAL_ONLY", "This endpoint is only available from the local desktop.");
+      return { ok: true, context: trustedNetworkContext(peerAddress) };
     }
     if (routeClass === "LOCAL_DEV_ONLY") {
       return isLoopbackPeerAddress(peerAddress)
         ? { ok: true, context: { mode: "loopback", isAuthenticated: true } }
         : reject(404, "REMOTE_ACCESS_ROUTE_UNSUPPORTED", "This route is not available to remote clients.");
     }
-    if (routeClass === "LOCAL_OR_MOBILE_WS") {
-      if (isLoopbackPeerAddress(peerAddress)) {
-        return { ok: true, context: { mode: "loopback", isAuthenticated: true } };
+
+    const bearerCredential = readBearerCredential(request.headers.authorization);
+    if (routeClass === "TRUSTED_NETWORK_OWNER") {
+      if (isMobileRemoteAccessCredential(bearerCredential)) {
+        return reject(403, "REMOTE_ACCESS_AUTH_INVALID", "Mobile credentials do not authorize owner-management routes.");
       }
-      return this.authService.authorizeMobileCredential(readWebSocketQueryCredential(request));
+      return { ok: true, context: trustedNetworkContext(peerAddress) };
     }
-    if (routeClass === "LOCAL_OR_MOBILE" || routeClass === "DEFAULT_PROTECTED") {
-      return this.authService.authorizeLoopbackOrBearer({
-        peerAddress,
-        authorizationHeader: request.headers.authorization,
-      });
+
+    if (routeClass === "TRUSTED_NETWORK_WEBSOCKET") {
+      const credential = readWebSocketQueryCredential(request);
+      if (isMobileRemoteAccessCredential(credential)) {
+        return this.authService.authorizeMobileCredential(credential);
+      }
+      return { ok: true, context: trustedNetworkContext(peerAddress) };
     }
-    return reject(404, "REMOTE_ACCESS_ROUTE_UNSUPPORTED", "Remote Access route is unsupported.");
+
+    if (isMobileRemoteAccessCredential(bearerCredential)) {
+      return this.authService.authorizeMobileCredential(bearerCredential);
+    }
+    return { ok: true, context: trustedNetworkContext(peerAddress) };
   }
 }
 

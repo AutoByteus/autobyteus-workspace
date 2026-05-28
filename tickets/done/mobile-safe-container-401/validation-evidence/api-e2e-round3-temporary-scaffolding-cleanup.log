@@ -1,0 +1,4 @@
+Cleaning temporary validation files outside repository.
+removed=/tmp/autobyteus-docker-round3-local-image.sh
+removed=/tmp/autobyteus-round3-overlay-context
+kept_running_for_user=autobyteus-server-2

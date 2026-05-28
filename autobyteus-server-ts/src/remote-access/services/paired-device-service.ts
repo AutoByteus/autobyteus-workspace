@@ -1,12 +1,11 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { getPairedDeviceStore, type PairedDeviceStore } from "../stores/paired-device-store.js";
 import {
+  REMOTE_ACCESS_MOBILE_CREDENTIAL_PREFIX,
   type PairedDeviceRecord,
   type PairedDeviceSummary,
   toDeviceSummary,
 } from "../domain/models.js";
-
-const CREDENTIAL_PREFIX = "mra_";
 
 export const hashRemoteAccessCredential = (credential: string): string =>
   createHash("sha256").update(credential, "utf8").digest("hex");
@@ -24,7 +23,7 @@ const normalizeDisplayName = (value: string | null | undefined): string => {
 
 const generateId = (prefix: string): string => `${prefix}_${randomBytes(16).toString("hex")}`;
 
-const generateCredential = (): string => `${CREDENTIAL_PREFIX}${randomBytes(32).toString("base64url")}`;
+const generateCredential = (): string => `${REMOTE_ACCESS_MOBILE_CREDENTIAL_PREFIX}${randomBytes(32).toString("base64url")}`;
 
 export class PairedDeviceService {
   constructor(private readonly store: PairedDeviceStore = getPairedDeviceStore()) {}

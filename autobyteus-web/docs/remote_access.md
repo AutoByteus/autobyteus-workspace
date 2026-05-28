@@ -4,9 +4,10 @@ Phone Access lets a phone browser, PWA, or AutoByteus Android shell connect to t
 
 ## What Phone Access Does
 
-- The desktop app exposes **Phone Setup** in **Settings -> Nodes** for the embedded desktop/server node.
+- The desktop app exposes **Phone Setup** in **Settings -> Nodes** for the current node window. Embedded and remote-node windows use the trusted private-network product model for desktop/Electron access; paired phones use separate mobile credentials.
 - Phone Setup contains a Tailscale Serve guide plus the **Phone Access** card. The card enables or disables phone access, lists reachable server URL candidates, accepts a manual private-network URL, creates a short-lived pairing QR/link, and separates active paired phones from revoked/history records.
 - New desktop-created pairing QR codes require an `https://` URL. The recommended path is Tailscale Serve HTTPS, for example `https://desktop.tailnet-name.ts.net/mobile`.
+- For the recommended Phase One Android flow, create the QR from the opened mobile-safe Docker node window. Remote Docker QR creation requires a manual Android-facing HTTPS URL and verifies that URL reaches the same `serverInstanceId` as the desktop management URL.
 - The pairing QR opens `https://<private-node>/mobile?pairing=<payload>` on the phone. The payload contains a short-lived one-time pairing code and the selected canonical server base URL.
 - After pairing, the phone stores a mobile node session locally and uses the same node endpoint model as the desktop web app to derive REST, GraphQL, and WebSocket URLs from the paired base URL.
 - Supported mobile routes run in a phone shell; desktop-only routes redirect back to the mobile shell with an explicit unsupported-feature notice.
@@ -14,11 +15,15 @@ Phone Access lets a phone browser, PWA, or AutoByteus Android shell connect to t
 
 ## Mobile Shell and Desktop Boundary
 
-Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, Artifacts, Tools, and Activity views. Normal desktop routes, including desktop `/workspace` and browser desktop flows, continue to use the regular desktop shell and must not be rewritten to the mobile shell.
+Phone Access is additive to the existing desktop/web product. The phone-first shell is mounted under `/mobile` and owns the mobile Home, Chat, Runs, Files, Artifacts, and Activity views. Phase One removes the mobile Tools/Terminal/VNC page entirely. Normal desktop routes, including desktop `/workspace` and browser desktop flows, continue to use the regular desktop shell and must not be rewritten to the mobile shell.
 
 Stale or unsupported phone links such as `/mobile/workspace` stay inside the mobile experience and show an explicit unsupported-feature notice. Desktop-only workflows remain available from desktop/Electron and should not be forked or degraded by mobile journey refinements.
 
-The mobile shell can start new agent and team runs without falling back to hidden desktop defaults. The **Start new** surface uses the same launch configuration stores and runtime/model semantics as desktop: the user selects the run target, workspace, and runtime/model, then creates the run. It does not collect or send the first chat message. After creation, mobile opens the new run on Chat and the user sends from the normal composer.
+The mobile shell can start new agent and team runs without falling back to hidden desktop defaults. The **Start new** surface uses the same launch configuration stores and runtime/model semantics as desktop: the user selects the run target, workspace, runtime/model, and launch options, then creates the run. It does not collect or send the first chat message. After creation, mobile opens the new run on Chat and the user sends from the normal composer.
+
+Mobile **Start new** workspace selection is a launch-workspace flow, not the Recent-work/context switcher. It lists workspaces currently known to the workspace store, including workspaces that are not attached to a live run, and includes **Load workspace by server path** for unlisted workspaces. The path entered there is an absolute path on the paired AutoByteus node or container, not on the phone. Loading a path uses the existing workspace create/load boundary and selects the returned workspace for the active agent or team launch config.
+
+Mobile **Auto approve tools** is available when the selected agent or team has an active launch config. The switch remains off by default and writes the existing `autoExecuteTools` launch-config field; it must not create a mobile-only approval flag or change backend approval semantics. For team launches, the global team setting is preserved in the team config and inherited by generated member configs unless an existing member override explicitly supersedes it.
 
 For team runs, mobile exposes a **Message target** selector only on the work tabs where that focus affects the current run, such as Chat, Files, Artifacts, and Activity. The selector is intentionally hidden on the Runs tab and while **Start new** is open because team-message focus belongs to Chat, not run configuration. The current mobile client remembers the last valid focused member per team run for Recent-work reopen; that memory is client-local and is not a cross-device/backend persistence contract.
 
@@ -26,7 +31,7 @@ Draft context files attached before mobile run creation remain available for the
 
 The mobile **Artifacts** view exposes run-scoped generated and touched files through the existing run artifact store and authorized artifact content viewer. It is separate from Files: Files browses a workspace, while Artifacts follows the selected agent run or focused team member run.
 
-The mobile **Tools** view exposes Terminal and VNC through phone-sized wrappers around the existing browser-compatible tool owners. Terminal uses the paired node's authenticated WebSocket endpoint for the selected workspace. VNC uses the configured server host list and noVNC viewer. VNC hosts must be reachable from the phone; desktop-only loopback hostnames should be replaced with LAN, VPN, or overlay addresses that the phone can open.
+Interactive Terminal and VNC are not mobile Phone Access surfaces in Phase One. Historical terminal-command tool output can still appear as read-only Activity content, but mobile users must not see a terminal tab, Tools tab, VNC panel, or command-entry path.
 
 ## Mobile UX Contract
 
@@ -38,11 +43,11 @@ Mobile work headers show the selected work name plus compact status, path, or pr
 
 Mobile Chat owns a fixed viewport-height work frame. The transcript/feed is the scroll owner (`overscroll-contain`), while the composer and bottom tab navigation stay anchored inside the viewport. Work-screen wrappers must keep `min-h-0`, `overflow-hidden`, and safe-area-aware containment across each flex boundary so long conversations cannot create document/body scroll or blank space below the controls.
 
-For team runs, Chat/Files/Activity can expose a compact target picker with the focused member name and a symbolic chevron/dropdown affordance instead of a visible `Change` action. Preserve accessible naming for the target control, but do not reintroduce visible duplicate copy such as `Message target`, `Current: ...`, or explanatory alignment text once a target is selected.
+For team runs, Chat/Files/Artifacts/Activity can expose a compact target picker with the focused member name and a symbolic chevron/dropdown affordance instead of a visible `Change` action. Preserve accessible naming for the target control, but do not reintroduce visible duplicate copy such as `Message target`, `Current: ...`, or explanatory alignment text once a target is selected.
 
 Mobile Activity exposes concrete category filters: Tasks, Messages, and Tools. The previous aggregate `All` filter/view is intentionally absent so each tab has a distinct purpose. Do not add separate mobile-only issue filters such as Errors or Approvals; error and approval state should remain visible on the relevant tool/activity rows instead of through extra filter controls.
 
-Mobile Tools keeps routine copy short: show Terminal/VNC controls and the selected workspace/path, reserve explanatory guidance for actionable empty, setup, or error states, and keep persistent reachability guidance in docs/troubleshooting rather than the default tool panel.
+Do not reintroduce mobile Tools/Terminal/VNC copy or controls in Phase One. Any future mobile tool surface must go through a separate security and UX design.
 
 ## Browser/PWA App Shell Metadata
 
@@ -61,7 +66,7 @@ Supported setup profiles include:
 - **Company VPN / private DNS:** use the internal hostname or IP that resolves to the desktop/server node.
 - **NetBird, Netmaker, or WireGuard:** use the private overlay address or hostname that reaches the node.
 
-The app-level pairing credential is still required. A private network or VPN is not treated as sufficient authorization by itself.
+For phone/mobile clients, the app-level pairing credential is still required; a private network or VPN is not treated as sufficient mobile authorization by itself. Desktop/Electron remote-node access to the full backend is separate and follows the trusted private-network product model documented below.
 
 ## Server Base URL vs Mobile URL
 
@@ -87,7 +92,36 @@ Stored serverBase:  https://gateway.example.com/autobyteus
 QR/mobileUrl:       https://gateway.example.com/autobyteus/mobile?pairing=...
 ```
 
-## Desktop Pairing Flow
+## Recommended Mobile-Safe Docker Pairing Flow
+
+1. Install the Docker launcher from **Settings -> Nodes -> Docker Guide**.
+2. Create a mobile-safe node:
+
+   ```bash
+   autobyteus-docker new-container --profile mobile-safe
+   ```
+
+   This profile avoids default `SYS_ADMIN`, avoids `seccomp=unconfined`, does not create automatic shared host bind mounts, and binds published ports to localhost.
+3. Add the printed Backend URL as a remote node in **Settings -> Nodes -> Manage Nodes**, then click **Open** on that Docker node.
+4. In the Docker node window, open **Settings -> Nodes -> Phone Setup**. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
+5. Configure a private Android-facing HTTPS URL that maps to the Docker node, for example Tailscale Serve or company-controlled HTTPS ingress.
+6. Paste the HTTPS `/mobile` URL in the Docker node Phone Access card. AutoByteus compares `/rest/remote-access/status` from the management URL and advertised URL and requires matching `serverInstanceId` values.
+7. Enable Phone Access, create the QR, and scan it on Android. The pairing exchange and paired-device records belong to the Docker node.
+
+The embedded host desktop node should not mint Docker-node QR codes, and Docker bridge/LAN addresses must not be treated as loopback owner trust.
+
+## Trusted Remote Node Access vs Phone Credentials
+
+Remote Docker node windows have two separate authority boundaries:
+
+- **Desktop/Electron remote-node access:** the full backend is intended for trusted private networks such as LANs, company VPNs, or tailnets. The default active flow does not add a user-facing setup secret before desktop/Electron can use a registered remote node. Do not expose the full backend directly to the public internet; strict owner pairing would be a separate future opt-in design.
+- **Phone/mobile credential:** the Phone Access QR pairing exchange returns a separate `mra_...` mobile credential to the phone. Mobile REST and GraphQL use the mobile credential as a bearer token, and WebSocket uses the same credential in the `access_token` query parameter.
+
+Mobile credentials must not authorize owner-management routes such as settings changes, pairing-session creation, device listing, or revocation. Pairing payloads contain a short-lived one-time code and server base URL, not desktop owner authority. Credential-bearing URLs, pairing payloads, mobile credentials, and authorization headers must be redacted from logs and diagnostics.
+
+## Embedded Desktop Pairing Flow
+
+Use this for development or compatibility. For the recommended Phase One security posture, prefer the Docker flow above.
 
 1. Start the desktop Electron app so the bundled server is running.
 2. Open **Settings -> Nodes -> Phone Setup**.
@@ -145,7 +179,9 @@ The local **Unpair this phone** action deletes only the phone's local session an
 
 ## Mobile Capability Gating
 
-The mobile shell gates truly desktop-only or Electron-only features instead of exposing broken controls. Unsupported feature redirects use `/mobile/?unsupported=<feature>` and render a visible notice in both unpaired and paired states. Terminal, VNC, and run Artifacts are mobile-supported when their normal workspace/session, host, or run context is available. Browser remains unsupported in the current mobile shell because the existing Browser surface is Electron-owned through preload IPC and native WebContentsView projection.
+The mobile shell gates truly desktop-only or Electron-only features instead of exposing broken controls. Unsupported feature redirects use `/mobile/?unsupported=<feature>` and render a visible notice in both unpaired and paired states. Run Artifacts are mobile-supported when their normal run context is available. Browser remains unsupported in the current mobile shell because the existing Browser surface is Electron-owned through preload IPC and native WebContentsView projection.
+
+Phase One explicitly removes mobile Terminal and VNC from supported mobile features. Backend operation-level hard denial and broader mobile authorization/token/session hardening are tracked for Phase Two; Docker-node pairing is not a substitute for that future work.
 
 Examples of mobile-unsupported surfaces include:
 
@@ -171,7 +207,7 @@ This runs Nuxt generation with:
 - `NUXT_APP_BASE_URL=/mobile/`
 - no build-time backend URL
 
-The generated mobile output is copied to `autobyteus-web/dist-mobile/public`. The Electron/server preparation scripts run this build and copy the output into the packaged server bundle as `mobile-web/`, which the backend serves under `/mobile`.
+The generated mobile output is copied to `autobyteus-web/dist-mobile/public`. The Electron/server preparation scripts and server Docker image builds run this build and copy the output into the packaged server bundle as `mobile-web/`, which the backend serves under `/mobile`.
 
 The native Android shell is built separately from `autobyteus-android/`:
 
@@ -200,6 +236,8 @@ Installing a new APK does not update the desktop-served `/mobile` bundle. A stal
 - **Pairing code invalid or expired:** create a new QR. Codes are short-lived and single-use.
 - **Mobile Home shows `Error 500` or `localeCompare` after a mobile-web fix:** verify the desktop/server node is serving the freshly rebuilt `/mobile` bundle, not an older packaged `mobile-web/` copy.
 - **Credential rejected after pairing:** check whether Phone Access was disabled or the device was revoked; pair again after re-enabling or revocation.
+- **Docker node desktop window cannot reach backend:** confirm the Backend URL printed by `autobyteus-docker` is reachable from the desktop over a trusted LAN, VPN, tailnet, or equivalent private-network path. Do not expose the full backend directly to the public internet.
 - **WebSocket blocked:** confirm the private network/proxy permits WebSocket traffic to the server port.
-- **VNC host unreachable from phone:** configure VNC hosts with LAN, VPN, or overlay hostnames/IPs that the phone can reach; desktop-only loopback names such as `localhost` usually work only on the desktop host.
+- **Docker QR creation says URL mismatch:** the Android-facing HTTPS URL is not reaching the same Docker node as the desktop management URL. Recheck the Tailscale Serve/private ingress mapping to the Docker node Backend.
+- **Fresh Docker `/mobile` returns missing assets:** upgrade/recreate from a current server Docker image. Current public launcher, remote-server, and all-in-one image paths package `autobyteus-server-ts/mobile-web` during the image build.
 - **Desktop-only screen on phone:** use the mobile shell link or supported mobile route; unsupported desktop features should render an explanatory mobile notice rather than a desktop shell.

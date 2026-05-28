@@ -1,0 +1,17 @@
+== confirm Unpair local WebView session ==
+{'text': '', 'desc': '', 'res': 'android:id/content', 'class': 'android.widget.FrameLayout', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': '__nuxt', 'class': 'android.view.View', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'app', 'class': 'android.view.View', 'bounds': '[0,104][1080,2166]', 'clickable': 'false'}
+{'text': 'AUTOBYTEUS REMOTE ACCESS', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[121,549][957,596]', 'clickable': 'false'}
+{'text': 'Connect this phone', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[121,626][957,717]', 'clickable': 'false'}
+{'text': 'Scan the Phone Access QR from desktop settings. The normal QR journey is one tap.', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[121,736][957,849]', 'clickable': 'false'}
+{'text': 'Pairing link detected from desktop.', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[167,948][913,1017]', 'clickable': 'false'}
+{'text': 'Pair this phone with the selected AutoByteus node.', 'desc': '', 'res': '', 'class': 'android.widget.TextView', 'bounds': '[167,1025][913,1138]', 'clickable': 'false'}
+{'text': 'Show pairing payload', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[167,1168][486,1215]', 'clickable': 'true'}
+{'text': 'THIS DEVICE NAME', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[121,1308][957,1355]', 'clickable': 'false'}
+{'text': 'Phone', 'desc': '', 'res': '', 'class': 'android.widget.EditText', 'bounds': '[121,1374][957,1479]', 'clickable': 'true'}
+{'text': 'Pair this phone', 'desc': '', 'res': '', 'class': 'android.widget.Button', 'bounds': '[121,1534][957,1655]', 'clickable': 'true'}
+{'text': 'Troubleshoot connection', 'desc': '', 'res': '', 'class': 'android.view.View', 'bounds': '[121,1765][957,1822]', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'teleports', 'class': 'android.widget.TextView', 'bounds': '[0,0][0,0]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/statusBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][1080,104]', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'android:id/navigationBarBackground', 'class': 'android.view.View', 'bounds': '[0,0][0,0]', 'clickable': 'false'}

@@ -138,11 +138,7 @@
       >
         <PhoneSetupGuideCard />
 
-        <PhoneAccessCard v-if="windowNodeContextStore.isEmbeddedWindow" />
-        <section v-else class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900" data-testid="phone-setup-remote-unavailable">
-          <h3 class="font-semibold text-amber-950">{{ $t('settings.components.settings.NodeManager.phoneSetupUnavailableTitle') }}</h3>
-          <p class="mt-1">{{ $t('settings.components.settings.NodeManager.phoneSetupUnavailableDescription') }}</p>
-        </section>
+        <PhoneAccessCard />
       </div>
       <div
         v-else-if="activeTab === 'dockerGuide'"
@@ -160,6 +156,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import CurrentWindowNodeCard from '~/components/settings/CurrentWindowNodeCard.vue';
 import DockerNodeStartGuideCard from '~/components/settings/DockerNodeStartGuideCard.vue';
 import NodeManagerTabs from '~/components/settings/NodeManagerTabs.vue';
@@ -181,6 +178,7 @@ type NodeManagerTabId = 'manage' | 'phoneSetup' | 'dockerGuide';
 const nodeStore = useNodeStore();
 const remoteBrowserSharingStore = useRemoteBrowserSharingStore();
 const windowNodeContextStore = useWindowNodeContextStore();
+const route = useRoute();
 
 const addForm = reactive({
   name: '',
@@ -193,7 +191,12 @@ const busyNodeId = ref<string | null>(null);
 const addError = ref<string | null>(null);
 const addInfo = ref<string | null>(null);
 const addWarnings = ref<string[]>([]);
-const activeTab = ref<NodeManagerTabId>('manage');
+const validTabs = new Set<NodeManagerTabId>(['manage', 'phoneSetup', 'dockerGuide']);
+const initialActiveTab = (): NodeManagerTabId => {
+  const queryTab = typeof route.query.nodeTab === 'string' ? route.query.nodeTab : '';
+  return validTabs.has(queryTab as NodeManagerTabId) ? queryTab as NodeManagerTabId : 'manage';
+};
+const activeTab = ref<NodeManagerTabId>(initialActiveTab());
 
 const currentNode = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId));
 const nodeTypeLabel = (nodeType: string | undefined) =>
@@ -201,6 +204,13 @@ const nodeTypeLabel = (nodeType: string | undefined) =>
 const capabilityStateLabel = (state: string | undefined) =>
   t(`settings.components.settings.NodeManager.capability.${state ?? 'unknown'}` as const);
 const currentNodeTypeLabel = computed(() => nodeTypeLabel(currentNode.value?.nodeType));
+
+function syncActiveTabFromRouteQuery(): void {
+  const queryTab = typeof route.query.nodeTab === 'string' ? route.query.nodeTab : '';
+  if (validTabs.has(queryTab as NodeManagerTabId)) {
+    activeTab.value = queryTab as NodeManagerTabId;
+  }
+}
 
 function syncRenameDrafts(): void {
   const currentIds = new Set(nodeStore.nodes.map((node) => node.id));
@@ -351,7 +361,15 @@ watch(
   { deep: true },
 );
 
+watch(
+  () => route.query.nodeTab,
+  () => {
+    syncActiveTabFromRouteQuery();
+  },
+);
+
 onMounted(async () => {
+  syncActiveTabFromRouteQuery();
   await nodeStore.initializeRegistry();
   await remoteBrowserSharingStore.initialize();
   syncRenameDrafts();

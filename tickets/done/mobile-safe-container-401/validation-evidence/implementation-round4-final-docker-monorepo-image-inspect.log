@@ -1,0 +1,6 @@
+# Final Docker monorepo image inspect and legacy scan
+# UTC: 2026-05-24T03:54:24Z
+# image=sha256:c929099ee8f5807d6084c48ddc73b9f8a62fa3a761099da83f0395b17938acf0 size=1446491678 created=2026-05-24T03:54:08.339605416Z
+OK mobile-web packaged
+legacy_rg_exit=1
+PASS no legacy strings in runtime mobile-web/dist

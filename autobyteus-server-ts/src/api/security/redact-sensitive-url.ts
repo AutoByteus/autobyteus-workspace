@@ -7,6 +7,7 @@ const SENSITIVE_QUERY_KEYS = new Set([
   "pairing",
   "pairing_code",
   "pairingcode",
+  "credential",
 ]);
 
 const REDACTED_VALUE = "[REDACTED]";

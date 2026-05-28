@@ -1,0 +1,306 @@
+# API/E2E Electron packaged-mode simulated provider harness
+Date: 2026-05-23T05:31:21Z
+Electron binary: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/electron@38.8.2/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron
+Electron: v38.8.2
+\n## Scenario: manual-network-double
+[2026-05-23T05:31:22.282Z] [INFO] [electron] Application started
+[2026-05-23T05:31:22.546Z] [ERROR] [electron] [updater] Failed to check for updates. (kind=network, operation=manual-check, code=none)
+net::ERR_CONNECTION_CLOSED while requesting https://api.github.invalid/repos/autobyteus/releases/latest
+Error: net::ERR_CONNECTION_CLOSED while requesting https://api.github.invalid/repos/autobyteus/releases/latest
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:263:69
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:107303)
+    at Session.emit (node:events:519:28) Error: net::ERR_CONNECTION_CLOSED while requesting https://api.github.invalid/repos/autobyteus/releases/latest
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:263:69
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:107303)
+    at Session.emit (node:events:519:28)
+[2026-05-23T05:31:22.547Z] [ERROR] [electron] [updater] Auto-update failed. (kind=network, operation=updater-event, code=none)
+net::ERR_CONNECTION_CLOSED while requesting https://api.github.invalid/repos/autobyteus/releases/latest
+Error: net::ERR_CONNECTION_CLOSED while requesting https://api.github.invalid/repos/autobyteus/releases/latest
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:263:69
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:107303)
+    at Session.emit (node:events:519:28) Error: net::ERR_CONNECTION_CLOSED while requesting https://api.github.invalid/repos/autobyteus/releases/latest
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:263:69
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:107303)
+    at Session.emit (node:events:519:28)
+Harness log path: /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-home-manual-network-double/.autobyteus/logs/app.log
+Error: final operation updater-event
+    at assert (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:75:50)
+    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:128:3)
+\n## Scenario: manual-release-preparing
+[2026-05-23T05:31:23.344Z] [INFO] [electron] Application started
+[2026-05-23T05:31:23.596Z] [ERROR] [electron] [updater] Failed to check for updates. (kind=release-preparing, operation=manual-check, code=ERR_UPDATER_CHANNEL_FILE_NOT_FOUND)
+ERR_UPDATER_CHANNEL_FILE_NOT_FOUND: Cannot find latest-mac.yml at https://github.invalid/latest-mac.yml
+Error: ERR_UPDATER_CHANNEL_FILE_NOT_FOUND: Cannot find latest-mac.yml at https://github.invalid/latest-mac.yml
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:263:69
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:107303)
+    at Session.emit (node:events:519:28) Error: ERR_UPDATER_CHANNEL_FILE_NOT_FOUND: Cannot find latest-mac.yml at https://github.invalid/latest-mac.yml
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:263:69
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:107303)
+    at Session.emit (node:events:519:28) {
+  code: 'ERR_UPDATER_CHANNEL_FILE_NOT_FOUND'
+}
+{
+  "scenario": "manual-release-preparing",
+  "result": "pass",
+  "mode": "manual-check",
+  "rendererEventCount": 2,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "release-preparing",
+    "errorOperation": "manual-check",
+    "message": "The latest update is still being prepared on GitHub. Try again in a few minutes.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": {
+    "status": "error",
+    "errorKind": "release-preparing",
+    "errorOperation": "manual-check",
+    "message": "The latest update is still being prepared on GitHub. Try again in a few minutes.",
+    "hasLegacyErrorField": false
+  },
+  "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-home-manual-release-preparing/.autobyteus/logs/app.log",
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "providerCalls": {
+    "checkForUpdates": 1,
+    "downloadUpdate": 0,
+    "quitAndInstall": 0
+  }
+}
+\n## Scenario: manual-metadata-long
+[2026-05-23T05:31:24.422Z] [INFO] [electron] Application started
+[2026-05-23T05:31:24.650Z] [ERROR] [electron] [updater] Failed to check for updates. (kind=metadata, operation=manual-check, code=ERR_UPDATER_ZIP_FILE_NOT_FOUND)
+ERR_UPDATER_ZIP_FILE_NOT_FOUND: ZIP file not provided. rawData={"files":["AutoByteus_personal_macos-arm64-1.4.0.dmg","AutoByteus_personal_macos-arm64-1.4.0.zip"]}
+Error: ERR_UPDATER_ZIP_FILE_NOT_FOUND: ZIP file not provided. rawData={"files":["AutoByteus_personal_macos-arm64-1.4.0.dmg","AutoByteus_personal_macos-arm64-1.4.0.zip"]}
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:263:69
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:107303)
+    at Session.emit (node:events:519:28) Error: ERR_UPDATER_ZIP_FILE_NOT_FOUND: ZIP file not provided. rawData={"files":["AutoByteus_personal_macos-arm64-1.4.0.dmg","AutoByteus_personal_macos-arm64-1.4.0.zip"]}
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:263:69
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:107303)
+    at Session.emit (node:events:519:28) {
+  code: 'ERR_UPDATER_ZIP_FILE_NOT_FOUND'
+}
+{
+  "scenario": "manual-metadata-long",
+  "result": "pass",
+  "mode": "manual-check",
+  "rendererEventCount": 2,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "metadata",
+    "errorOperation": "manual-check",
+    "message": "Update information is incomplete right now. Try again in a few minutes.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": {
+    "status": "error",
+    "errorKind": "metadata",
+    "errorOperation": "manual-check",
+    "message": "Update information is incomplete right now. Try again in a few minutes.",
+    "hasLegacyErrorField": false
+  },
+  "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-home-manual-metadata-long/.autobyteus/logs/app.log",
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "providerCalls": {
+    "checkForUpdates": 1,
+    "downloadUpdate": 0,
+    "quitAndInstall": 0
+  }
+}
+\n## Scenario: startup-network
+[2026-05-23T05:31:25.157Z] [INFO] [electron] Application started
+[2026-05-23T05:31:25.413Z] [ERROR] [electron] [updater] Failed to check for updates. (kind=network, operation=startup-check, code=none)
+net::ERR_CONNECTION_CLOSED while polling GitHub releases in background
+Error: net::ERR_CONNECTION_CLOSED while polling GitHub releases in background
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at Timeout._onTimeout (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:73:18)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7) Error: net::ERR_CONNECTION_CLOSED while polling GitHub releases in background
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at Timeout._onTimeout (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:73:18)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7)
+{
+  "scenario": "startup-network",
+  "result": "pass",
+  "mode": "startup-check",
+  "rendererEventCount": 2,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "network",
+    "errorOperation": "startup-check",
+    "message": "Could not reach the update server. AutoByteus is still usable; try again later.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": null,
+  "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-home-startup-network/.autobyteus/logs/app.log",
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "providerCalls": {
+    "checkForUpdates": 1,
+    "downloadUpdate": 0,
+    "quitAndInstall": 0
+  }
+}
+\n## Scenario: startup-release-preparing
+[2026-05-23T05:31:26.096Z] [INFO] [electron] Application started
+[2026-05-23T05:31:26.356Z] [ERROR] [electron] [updater] Failed to check for updates. (kind=release-preparing, operation=startup-check, code=none)
+Cannot find latest-mac.yml in the latest GitHub release assets while release is still uploading
+Error: Cannot find latest-mac.yml in the latest GitHub release assets while release is still uploading
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at Timeout._onTimeout (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:73:18)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7) Error: Cannot find latest-mac.yml in the latest GitHub release assets while release is still uploading
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:47:19)
+    at AppUpdater.checkForUpdates (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:113:50)
+    at Timeout._onTimeout (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:73:18)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7)
+{
+  "scenario": "startup-release-preparing",
+  "result": "pass",
+  "mode": "startup-check",
+  "rendererEventCount": 2,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "release-preparing",
+    "errorOperation": "startup-check",
+    "message": "The latest update is still being prepared on GitHub. Try again in a few minutes.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": null,
+  "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-home-startup-release-preparing/.autobyteus/logs/app.log",
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "providerCalls": {
+    "checkForUpdates": 1,
+    "downloadUpdate": 0,
+    "quitAndInstall": 0
+  }
+}
+\n## Scenario: download-failure
+[2026-05-23T05:31:26.826Z] [INFO] [electron] Application started
+[2026-05-23T05:31:27.126Z] [ERROR] [electron] [updater] Failed to download update. (kind=download, operation=download, code=none)
+provider package stream failed after writing /tmp/AutoByteus_personal_macos-arm64-1.4.0.zip
+Error: provider package stream failed after writing /tmp/AutoByteus_personal_macos-arm64-1.4.0.zip
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.downloadUpdate (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:53:11)
+    at AppUpdater.downloadUpdate (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:158:50)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:264:72
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:107303)
+    at Session.emit (node:events:519:28) Error: provider package stream failed after writing /tmp/AutoByteus_personal_macos-arm64-1.4.0.zip
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.downloadUpdate (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:53:11)
+    at AppUpdater.downloadUpdate (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:158:50)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:264:72
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:107303)
+    at Session.emit (node:events:519:28)
+{
+  "scenario": "download-failure",
+  "result": "pass",
+  "mode": "download",
+  "rendererEventCount": 3,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "download",
+    "errorOperation": "download",
+    "message": "The update download was interrupted. Check your connection and try again.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": {
+    "status": "error",
+    "errorKind": "download",
+    "errorOperation": "download",
+    "message": "The update download was interrupted. Check your connection and try again.",
+    "hasLegacyErrorField": false
+  },
+  "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-home-download-failure/.autobyteus/logs/app.log",
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "providerCalls": {
+    "checkForUpdates": 0,
+    "downloadUpdate": 1,
+    "quitAndInstall": 0
+  }
+}
+\n## Scenario: install-failure
+[2026-05-23T05:31:27.580Z] [INFO] [electron] Application started
+[2026-05-23T05:31:27.974Z] [ERROR] [electron] [updater] Failed to install update and restart. (kind=install, operation=install, code=none)
+quitAndInstall failed for /Applications/AutoByteus.app with stack frame ProviderInstaller.js:44
+Error: quitAndInstall failed for /Applications/AutoByteus.app with stack frame ProviderInstaller.js:44
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.quitAndInstall (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:57:11)
+    at Timeout._onTimeout (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:183:48)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7) Error: quitAndInstall failed for /Applications/AutoByteus.app with stack frame ProviderInstaller.js:44
+    at makeError (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:29:17)
+    at FakeAutoUpdater.quitAndInstall (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-updater-provider-harness.cjs:57:11)
+    at Timeout._onTimeout (/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/autobyteus-web/dist/electron/updater/appUpdater.js:183:48)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7)
+{
+  "scenario": "install-failure",
+  "result": "pass",
+  "mode": "install",
+  "rendererEventCount": 3,
+  "rendererErrorEventCount": 1,
+  "finalState": {
+    "status": "error",
+    "errorKind": "install",
+    "errorOperation": "install",
+    "message": "The update was downloaded, but AutoByteus could not restart to install it. Try again.",
+    "hasLegacyErrorField": false
+  },
+  "returnedState": {
+    "status": "error",
+    "errorKind": "install",
+    "errorOperation": "install",
+    "message": "The update was downloaded, but AutoByteus could not restart to install it. Try again.",
+    "hasLegacyErrorField": false
+  },
+  "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-check-deployment-error-ux/tickets/done/update-check-deployment-error-ux/tmp-electron-home-install-failure/.autobyteus/logs/app.log",
+  "logHasRawDiagnostic": true,
+  "logHasKindAndOperation": true,
+  "providerCalls": {
+    "checkForUpdates": 0,
+    "downloadUpdate": 0,
+    "quitAndInstall": 1
+  }
+}

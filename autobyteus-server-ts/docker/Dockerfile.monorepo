@@ -8,6 +8,9 @@ FROM node:22-bookworm AS builder
 WORKDIR /app
 
 RUN corepack enable
+ENV ELECTRON_SKIP_BINARY_DOWNLOAD=1 \
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
+    PUPPETEER_SKIP_DOWNLOAD=1
 
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY patches ./patches
@@ -16,6 +19,7 @@ COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
 COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
 COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
 COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+COPY autobyteus-web/package.json ./autobyteus-web/
 
 RUN pnpm install --no-frozen-lockfile
 
@@ -23,9 +27,11 @@ COPY autobyteus-ts ./autobyteus-ts
 COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
 COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
 COPY autobyteus-server-ts ./autobyteus-server-ts
+COPY autobyteus-web ./autobyteus-web
 
 RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
 RUN pnpm -C autobyteus-server-ts build
+RUN pnpm -C autobyteus-web build:mobile-web
 
 FROM autobyteus/chrome-vnc:${BASE_IMAGE_TAG} AS runtime
 WORKDIR /app
@@ -53,6 +59,7 @@ COPY --from=builder /app/autobyteus-server-ts/node_modules ./autobyteus-server-t
 COPY --from=builder /app/autobyteus-server-ts/dist ./autobyteus-server-ts/dist
 COPY --from=builder /app/autobyteus-server-ts/prisma ./autobyteus-server-ts/prisma
 COPY --from=builder /app/autobyteus-server-ts/package.json ./autobyteus-server-ts/package.json
+COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
 COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervisor/conf.d/supervisor-autobyteus-server.conf
 COPY autobyteus-server-ts/docker/bootstrap.sh /usr/local/bin/autobyteus-bootstrap.sh
 COPY autobyteus-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh

@@ -66,10 +66,6 @@
         <WorkspaceCenterLoadingOverlay v-if="isCenterLoading" />
       </div>
 
-      <!-- Right Side Tools (Terminal, VNC etc) -->
-      <div v-show="activeMobilePanel === 'tools'" class="h-full p-0 overflow-auto">
-        <RightSideTabs />
-      </div>
     </div>
 
     <!-- Floating action buttons -->
@@ -101,7 +97,6 @@ import RunConfigPanel from '~/components/workspace/config/RunConfigPanel.vue';
 import AgentWorkspaceView from '~/components/workspace/agent/AgentWorkspaceView.vue';
 import TeamWorkspaceView from '~/components/workspace/team/TeamWorkspaceView.vue'; // Import Team View
 import WorkspaceCenterLoadingOverlay from '~/components/layout/WorkspaceCenterLoadingOverlay.vue';
-import RightSideTabs from './RightSideTabs.vue';
 import { useMobilePanels } from '~/composables/useMobilePanels';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
@@ -154,8 +149,7 @@ const availableTabs = computed(() => {
   const tabs = [
     { id: 'running', label: t('shell.mobile.running') },
     ...(hasActiveWorkspace.value ? [{ id: 'explorer', label: t('shell.mobile.files') }] : []),
-    { id: 'main', label: mainTabLabel },
-    { id: 'tools', label: t('shell.mobile.tools') }
+    { id: 'main', label: mainTabLabel }
   ];
 
   if (props.showFileContent && hasActiveWorkspace.value) {

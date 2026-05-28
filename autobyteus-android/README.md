@@ -11,7 +11,9 @@ This project builds the Android WebView shell for the existing AutoByteus `/mobi
 - WebView containment for the saved AutoByteus origin;
 - Tailscale-oriented diagnostics and recovery actions.
 
-The existing desktop Phone Access service still owns pairing sessions and credentials. The existing `/mobile` web shell still owns mobile Home, Chat, Runs, Files, Tools, Activity, and credential storage in WebView-local `localStorage` for this MVP.
+The existing desktop Phone Access service still owns pairing sessions and credentials. The existing `/mobile` web shell still owns mobile Home, Chat, Runs, Files, Activity, new agent/team run setup, and credential storage in WebView-local `localStorage` for this MVP.
+
+Agent/team run setup is not native Android code. The WebView-served **Start new** flow owns the `Auto approve tools` switch, workspace selection, and **Load workspace by server path** behavior. Workspace paths entered there are absolute paths on the paired AutoByteus node or container, not paths on the Android filesystem.
 
 ## Recommended Tailscale setup
 

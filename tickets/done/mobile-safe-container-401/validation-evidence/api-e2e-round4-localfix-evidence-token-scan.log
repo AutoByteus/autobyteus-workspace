@@ -1,0 +1,37 @@
+Timestamp: 2026-05-23T20:18:09Z
+Scan Local Fix runtime probe evidence outputs for raw mobile credentials and raw removed owner credential identifiers.
+Note: packaged-artifact scan log is not included here because it records the stale-string pattern by design; its own pass line proves no artifact matches.
+No raw mra_ credentials or raw removed owner credential identifiers found in selected Local Fix runtime evidence.
+
+Packaged artifact stale-string scan result:
+PASS active source/docs stale-string scan clean.
+PASS stale-string scan clean for rebuilt-app-bundle
+PASS stale-string scan clean for zip-extracted-app
+PASS stale-string scan clean for dmg-mounted-app
+PASS all rebuilt packaged Electron artifact stale-string/mobile-asset checks clean.
+
+{
+  "invalidGraphqlWs": {
+    "opened": false,
+    "error": "Unexpected server response: 401"
+  },
+  "invalidWsClose": {
+    "code": 4401,
+    "reason": "REMOTE_ACCESS_AUTH_INVALID"
+  },
+  "rawSecretsInLogs": 0,
+  "secretHashes": [
+    {
+      "label": "Round4 Active Phone credential",
+      "sha256": "143dbcd3081d74f8e86f99b2cf72b4dff829dc3c129187995fa83af2e0f8555d"
+    },
+    {
+      "label": "Round4 Revoked Phone credential",
+      "sha256": "960398129cb8af05898bfa8abe55b1a706b92c2f5cf0a76e4523da25c0d940f9"
+    },
+    {
+      "label": "invalid probe credential",
+      "sha256": "61127f93c94938f2e762aad9c84889e64d5c2688c2d15c5bd931951bd1b9b0d2"
+    }
+  ]
+}

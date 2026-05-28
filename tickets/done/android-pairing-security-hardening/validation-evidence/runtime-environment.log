@@ -1,0 +1,10 @@
+## Runtime versions
+Node: v22.21.1
+pnpm: 10.28.2
+Docker: 29.0.1 / 29.0.1
+Java: openjdk version "21.0.10" 2026-01-20
+macOS: 26.2
+arch: arm64
+## adb devices
+List of devices attached
+

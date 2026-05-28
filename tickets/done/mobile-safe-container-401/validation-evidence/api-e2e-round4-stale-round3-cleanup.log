@@ -1,0 +1,12 @@
+Timestamp: 2026-05-23T18:49:34Z
+Removing stale Round 3 validation container/state only. Existing user containers autobyteus-server-0/1 are left untouched.
+
+$ docker ps -a --filter name=^/autobyteus-server-2$
+autobyteus-server-2	autobyteus-server:mobile-safe-container-401-round3-api-e2e	Up About an hour	127.0.0.1:55213->5900/tcp, 127.0.0.1:55214->6080/tcp, 127.0.0.1:55212->8000/tcp, 127.0.0.1:55215->9223/tcp
+$ docker rm -f autobyteus-server-2
+autobyteus-server-2
+$ rm ~/.autobyteus/docker-server/nodes/autobyteus-server-2.env
+
+Remaining autobyteus containers:
+autobyteus-server-1	autobyteus/autobyteus-server:latest	127.0.0.1:58646->5900/tcp, 127.0.0.1:58647->6080/tcp, 127.0.0.1:58645->8000/tcp, 127.0.0.1:58648->9223/tcp
+autobyteus-server-0	autobyteus/autobyteus-server:latest	0.0.0.0:5908->5900/tcp, [::]:5908->5900/tcp, 0.0.0.0:60983->6080/tcp, [::]:60983->6080/tcp, 0.0.0.0:8001->8000/tcp, [::]:8001->8000/tcp, 0.0.0.0:9228->9223/tcp, [::]:9228->9223/tcp

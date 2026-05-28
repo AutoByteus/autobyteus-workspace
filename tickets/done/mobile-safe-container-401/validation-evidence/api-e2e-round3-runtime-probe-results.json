@@ -1,0 +1,363 @@
+{
+  "generatedAt": "2026-05-23T17:23:03.822Z",
+  "startedAt": "2026-05-23T17:22:56.749Z",
+  "base": "http://127.0.0.1:55212",
+  "container": "autobyteus-server-2",
+  "statePath": "/Users/normy/.autobyteus/docker-server/nodes/autobyteus-server-2.env",
+  "credentialPrefixesObserved": {
+    "localManagement": "lmn_",
+    "mobile": "mra_"
+  },
+  "serverInstanceIds": {
+    "beforeRestart": "srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8",
+    "afterRestart": "srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8"
+  },
+  "result": "pass",
+  "results": [
+    {
+      "id": "VAL-001-health",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.790Z",
+      "summary": "status=200",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    {
+      "id": "VAL-002-mobile-shell",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.806Z",
+      "summary": "status=200, content-type=text/html",
+      "status": 200,
+      "contentType": "text/html",
+      "bodyStart": "<!DOCTYPE html><html><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<script type=\"importmap\">{\"imports\":{\"#entry\":\"/mobile/_nuxt/"
+    },
+    {
+      "id": "VAL-003-public-status",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.818Z",
+      "summary": "status=200, serverInstanceId=srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8",
+      "status": 200,
+      "body": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "compatibilityVersion": 1,
+        "serverInstanceId": "srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8",
+        "serverName": "AutoByteus Desktop"
+      }
+    },
+    {
+      "id": "VAL-004-graphql-requires-auth",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.822Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_REQUIRED",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "message": "Remote Access credential is required."
+      }
+    },
+    {
+      "id": "VAL-005-owner-rest-requires-lmn",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.824Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_REQUIRED",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "message": "Local management credential is required."
+      }
+    },
+    {
+      "id": "VAL-006-invalid-lmn-rejected",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.832Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_INVALID",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_INVALID",
+        "code": "REMOTE_ACCESS_AUTH_INVALID",
+        "message": "Local management credential is invalid."
+      }
+    },
+    {
+      "id": "VAL-007-old-owner-token-prefix-rejected",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.834Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_INVALID",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_INVALID",
+        "code": "REMOTE_ACCESS_AUTH_INVALID",
+        "message": "Remote Access credential is invalid."
+      }
+    },
+    {
+      "id": "VAL-008-spoofed-local-and-claim-headers-rejected",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.837Z",
+      "summary": "status=401, code=REMOTE_ACCESS_AUTH_REQUIRED",
+      "status": 401,
+      "body": {
+        "error": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "code": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "message": "Local management credential is required."
+      }
+    },
+    {
+      "id": "VAL-009-lmn-authorizes-owner-rest",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.843Z",
+      "summary": "status=200, enabled=true",
+      "status": 200,
+      "body": {
+        "settings": {
+          "phoneAccessEnabled": true,
+          "updatedAt": "2026-05-23T17:22:56.840Z",
+          "updatedBy": "loopback-desktop"
+        }
+      }
+    },
+    {
+      "id": "VAL-010-lmn-passes-protected-rest-policy",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.847Z",
+      "summary": "noAuth=401, lmn=404",
+      "noAuthStatus": 401,
+      "noAuthCode": "REMOTE_ACCESS_AUTH_REQUIRED",
+      "lmnStatus": 404,
+      "lmnBody": {
+        "message": "Route GET:/rest/files/__validation_missing__ not found",
+        "error": "Not Found",
+        "statusCode": 404
+      }
+    },
+    {
+      "id": "VAL-011-lmn-authorizes-graphql",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.856Z",
+      "summary": "status=200, count=1",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "id": "VAL-012-lmn-creates-mobile-pairing-with-separated-payload",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.860Z",
+      "summary": "status=201, noManagementLeak=true",
+      "status": 201,
+      "mobileUrl": "https://docker-validation.example/mobile?pairing=[REDACTED_PAIRING_PAYLOAD]",
+      "pairingPayload": {
+        "version": 1,
+        "serverBaseUrl": "https://docker-validation.example",
+        "pairingCode": "[REDACTED_PAIRING_CODE]",
+        "expiresAt": "2026-05-23T17:27:56.857Z",
+        "serverName": "Validation Docker Node"
+      }
+    },
+    {
+      "id": "VAL-013-pairing-exchange-returns-mobile-credential",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.864Z",
+      "summary": "status=201, credentialPrefix=mra_",
+      "status": 201,
+      "credentialPrefix": "mra_[REDACTED]",
+      "device": {
+        "deviceId": "device_cd4a312fead95804202d6878c59fdfe3",
+        "displayName": "Validation Android",
+        "clientFacingBaseUrl": "https://docker-validation.example",
+        "createdAt": "2026-05-23T17:22:56.861Z",
+        "lastSeenAt": null,
+        "revokedAt": null
+      }
+    },
+    {
+      "id": "VAL-014-mobile-credential-not-owner-management-auth",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.866Z",
+      "summary": "GET devices=401, POST pairing=401",
+      "getStatus": 401,
+      "getCode": "REMOTE_ACCESS_AUTH_INVALID",
+      "postStatus": 401,
+      "postCode": "REMOTE_ACCESS_AUTH_INVALID"
+    },
+    {
+      "id": "VAL-015-mobile-credential-authorizes-graphql",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.870Z",
+      "summary": "status=200, count=1",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "id": "VAL-016-protected-application-backend-rest-auth-policy",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.876Z",
+      "summary": "noAuth=401, lmn=404, mra=404",
+      "noAuthStatus": 401,
+      "lmnStatus": 404,
+      "lmnBody": {
+        "detail": "Application '__validation_missing__' was not found."
+      },
+      "mraStatus": 404,
+      "mraBody": {
+        "detail": "Application '__validation_missing__' was not found."
+      }
+    },
+    {
+      "id": "VAL-017-websocket-terminal-auth-matrix",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.893Z",
+      "summary": "noAuth=4401, bad=4401, lmn=4004, mra=4004",
+      "noAuth": {
+        "opened": true,
+        "messages": [],
+        "closeCode": 4401,
+        "closeReason": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "error": ""
+      },
+      "invalidLmn": {
+        "opened": true,
+        "messages": [],
+        "closeCode": 4401,
+        "closeReason": "REMOTE_ACCESS_AUTH_INVALID",
+        "error": ""
+      },
+      "lmn": {
+        "opened": true,
+        "messages": [],
+        "closeCode": 4004,
+        "closeReason": "Workspace not found",
+        "error": ""
+      },
+      "mra": {
+        "opened": true,
+        "messages": [],
+        "closeCode": 4004,
+        "closeReason": "Workspace not found",
+        "error": ""
+      }
+    },
+    {
+      "id": "VAL-018-protected-application-backend-notification-ws-auth-policy",
+      "ok": true,
+      "at": "2026-05-23T17:22:56.904Z",
+      "summary": "noAuth=4401, lmnConnected=true, mraConnected=true",
+      "noAuth": {
+        "opened": true,
+        "messages": [],
+        "closeCode": 4401,
+        "closeReason": "REMOTE_ACCESS_AUTH_REQUIRED",
+        "error": ""
+      },
+      "lmn": {
+        "opened": true,
+        "messages": [
+          {
+            "type": "connected",
+            "applicationId": "__validation_missing__"
+          }
+        ],
+        "closeCode": 1000,
+        "closeReason": "validation complete",
+        "error": ""
+      },
+      "mra": {
+        "opened": true,
+        "messages": [
+          {
+            "type": "connected",
+            "applicationId": "__validation_missing__"
+          }
+        ],
+        "closeCode": 1000,
+        "closeReason": "validation complete",
+        "error": ""
+      }
+    },
+    {
+      "id": "VAL-019-container-restart-preserves-lmn-mra-and-mobile-shell",
+      "ok": true,
+      "at": "2026-05-23T17:23:03.712Z",
+      "summary": "serverInstanceSame=true, mobile=200, lmnGraphql=200, mraGraphql=200",
+      "beforeRestartServerInstanceId": "srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8",
+      "afterRestartServerInstanceId": "srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8",
+      "mobileStatus": 200,
+      "lmnGraphqlStatus": 200,
+      "mraGraphqlStatus": 200
+    },
+    {
+      "id": "VAL-020-disabled-phone-access-rejects-mobile-credential",
+      "ok": true,
+      "at": "2026-05-23T17:23:03.731Z",
+      "summary": "disable=200, gql=403/PHONE_ACCESS_DISABLED, ws=4403",
+      "disableStatus": 200,
+      "gqlStatus": 403,
+      "gqlBody": {
+        "error": "PHONE_ACCESS_DISABLED",
+        "code": "PHONE_ACCESS_DISABLED",
+        "message": "Phone Access is disabled on this desktop."
+      },
+      "ws": {
+        "opened": true,
+        "messages": [],
+        "closeCode": 4403,
+        "closeReason": "PHONE_ACCESS_DISABLED",
+        "error": ""
+      }
+    },
+    {
+      "id": "VAL-021-revoked-mobile-credential-rejected",
+      "ok": true,
+      "at": "2026-05-23T17:23:03.746Z",
+      "summary": "revoke=200, gql=403/REMOTE_ACCESS_DEVICE_REVOKED, ws=4403",
+      "revokeStatus": 200,
+      "revokedDeviceId": "device_cd4a312fead95804202d6878c59fdfe3",
+      "gqlStatus": 403,
+      "gqlBody": {
+        "error": "REMOTE_ACCESS_DEVICE_REVOKED",
+        "code": "REMOTE_ACCESS_DEVICE_REVOKED",
+        "message": "This paired device has been revoked."
+      },
+      "ws": {
+        "opened": true,
+        "messages": [],
+        "closeCode": 4403,
+        "closeReason": "REMOTE_ACCESS_DEVICE_REVOKED",
+        "error": ""
+      }
+    },
+    {
+      "id": "VAL-022-restored-phone-access-enabled-for-manual-testing",
+      "ok": true,
+      "at": "2026-05-23T17:23:03.749Z",
+      "summary": "status=200, enabled=true",
+      "status": 200,
+      "body": {
+        "settings": {
+          "phoneAccessEnabled": true,
+          "updatedAt": "2026-05-23T17:23:03.746Z",
+          "updatedBy": "loopback-desktop"
+        }
+      }
+    },
+    {
+      "id": "VAL-023-no-raw-local-management-or-mobile-secret-leakage-observed",
+      "ok": true,
+      "at": "2026-05-23T17:23:03.822Z",
+      "summary": "leakCounts={\"rawLmnInInspectEnv\":0,\"rawLmnInInspectJson\":0,\"rawLmnInDockerLogs\":0,\"rawMraInDockerLogs\":0,\"rawLmnInLauncherStdout\":0,\"oldClaimOwnerInNewState\":0}",
+      "leakCounts": {
+        "rawLmnInInspectEnv": 0,
+        "rawLmnInInspectJson": 0,
+        "rawLmnInDockerLogs": 0,
+        "rawMraInDockerLogs": 0,
+        "rawLmnInLauncherStdout": 0,
+        "oldClaimOwnerInNewState": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+== docker inspect mobile-safe assertions ==
+CapAdd= None
+SecurityOpt= None
+Binds(named volumes acceptable)= ['autobyteus-live-validation-android-pairing-data:/home/autobyteus/data', 'autobyteus-live-validation-android-pairing-root-home:/root', 'autobyteus-live-validation-android-pairing-workspace:/app/autobyteus-server-ts/workspace']
+MountTypes= ['volume']
+Mount= {'Type': 'volume', 'Name': 'autobyteus-live-validation-android-pairing-workspace', 'Destination': '/app/autobyteus-server-ts/workspace'}
+Mount= {'Type': 'volume', 'Name': 'autobyteus-live-validation-android-pairing-data', 'Destination': '/home/autobyteus/data'}
+Mount= {'Type': 'volume', 'Name': 'autobyteus-live-validation-android-pairing-root-home', 'Destination': '/root'}
+5900/tcp [{'HostIp': '127.0.0.1', 'HostPort': '51429'}]
+6080/tcp [{'HostIp': '127.0.0.1', 'HostPort': '51430'}]
+8000/tcp [{'HostIp': '127.0.0.1', 'HostPort': '51428'}]
+9223/tcp [{'HostIp': '127.0.0.1', 'HostPort': '51431'}]
+env_has_claim_id= True
+env_has_claim_hash= True
+env_has_claim_secret= False
+MOBILE_SAFE_INSPECT_OK
+== public status before enabling ==
+{"phoneAccessEnabled":false,"pairingAvailable":false,"compatibilityVersion":1,"serverInstanceId":"srv_vjovB7NEtfkUF22ziCmQAd1Yrb4FrxTj","serverName":"AutoByteus Desktop"}
+== owner/settings route rejects wrong claim over mapped Docker port ==
+http_code=403
+{"error":"REMOTE_ACCESS_ADMIN_CLAIM_INVALID","code":"REMOTE_ACCESS_ADMIN_CLAIM_INVALID","message":"Node-admin claim is invalid."}
+== enable phone access with node-admin claim over mapped Docker port ==
+{"settings":{"phoneAccessEnabled":true,"updatedAt":"2026-05-23T07:50:17.520Z","updatedBy":"loopback-desktop"}}
+== status after enable ==
+{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":1,"serverInstanceId":"srv_vjovB7NEtfkUF22ziCmQAd1Yrb4FrxTj","serverName":"AutoByteus Desktop"}
+== devices owner route with node-admin claim ==
+{"devices":[]}

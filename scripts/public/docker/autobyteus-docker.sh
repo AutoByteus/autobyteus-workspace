@@ -5,7 +5,8 @@ LAUNCHER_LABEL_KEY="com.autobyteus.launcher"
 LAUNCHER_LABEL_VALUE="server-docker"
 NODE_LABEL_KEY="com.autobyteus.nodeName"
 CONFIG_LABEL_KEY="com.autobyteus.configHash"
-CONFIG_HASH_VERSION="v2"
+PROFILE_LABEL_KEY="com.autobyteus.profile"
+CONFIG_HASH_VERSION="v4"
 NODE_NAME_PREFIX="autobyteus-server"
 DEFAULT_NODE_NAME="${NODE_NAME_PREFIX}-0"
 DEFAULT_IMAGE="autobyteus/autobyteus-server"
@@ -16,6 +17,8 @@ PUBLIC_BASH_SCRIPT_URL="https://raw.githubusercontent.com/AutoByteus/autobyteus-
 WORKSPACE_CONTAINER_PATH="/home/autobyteus/workspace"
 SHARED_CONTAINER_PATH="/home/autobyteus/shared"
 TEMP_WORKSPACE_ENV_VALUE="${WORKSPACE_CONTAINER_PATH}"
+DEFAULT_PROFILE="standard"
+MOBILE_SAFE_PROFILE="mobile-safe"
 
 usage() {
   cat <<USAGE
@@ -46,6 +49,7 @@ Options:
   --name <name>      Friendly node name for status/logs/urls/stop (default: ${DEFAULT_NODE_NAME})
   --tag <tag>        Docker image tag (default: ${DEFAULT_TAG})
   --image <image>    Docker image repository or full image ref (default: ${DEFAULT_IMAGE})
+  --profile <name>   Docker profile for new/reset nodes: standard or mobile-safe (default: standard)
   --all              Required for upgrade/destroy; also applies stop/status/workspace/storage to all managed nodes
   -h, --help         Show this help
 
@@ -114,7 +118,7 @@ install_launcher() {
   trap - RETURN
 
   log "Installed AutoByteus Docker launcher: ${install_path}"
-  printf 'Next commands:\n  autobyteus-docker new-container\n  autobyteus-docker workspace paths\n  autobyteus-docker storage\n  autobyteus-docker urls\n'
+  printf 'Next commands:\n  autobyteus-docker new-container --profile mobile-safe\n  autobyteus-docker workspace paths\n  autobyteus-docker storage\n  autobyteus-docker urls\n'
   if path_has_dir "$dir"; then
     log "Install directory is already on PATH."
     return
@@ -136,17 +140,21 @@ state_path_for() { printf '%s/%s.env\n' "$(state_dir)" "$(normalize_node_name "$
 
 load_state() {
   local file="$1"
-  NODE_NAME="" CONTAINER_NAME="" BACKEND_PORT="" VNC_PORT="" NOVNC_PORT="" DEBUG_PORT="" IMAGE_REF="" CREATED_AT=""
+  NODE_NAME="" CONTAINER_NAME="" BACKEND_PORT="" VNC_PORT="" NOVNC_PORT="" DEBUG_PORT="" IMAGE_REF="" CREATED_AT="" PROFILE=""
   if [[ -f "$file" ]]; then
     # shellcheck disable=SC1090
     source "$file"
   fi
+  PROFILE="${PROFILE:-$DEFAULT_PROFILE}"
 }
 
 write_state() {
-  local file="$1" node_name="$2" container_name="$3" backend="$4" vnc="$5" novnc="$6" debug="$7" image_ref="$8" created_at="$9" config_hash="${10}"
-  printf 'NODE_NAME=%s\nCONTAINER_NAME=%s\nBACKEND_PORT=%s\nVNC_PORT=%s\nNOVNC_PORT=%s\nDEBUG_PORT=%s\nIMAGE_REF=%s\nCREATED_AT=%s\nCONFIG_HASH=%s\nUPDATED_AT=%s\n' \
-    "$node_name" "$container_name" "$backend" "$vnc" "$novnc" "$debug" "$image_ref" "$created_at" "$config_hash" "$(now_utc)" > "$file"
+  local file="$1" node_name="$2" container_name="$3" backend="$4" vnc="$5" novnc="$6" debug="$7" image_ref="$8" created_at="$9" config_hash="${10}" profile="${11:-$DEFAULT_PROFILE}"
+  {
+    printf 'NODE_NAME=%s\nCONTAINER_NAME=%s\nBACKEND_PORT=%s\nVNC_PORT=%s\nNOVNC_PORT=%s\nDEBUG_PORT=%s\nIMAGE_REF=%s\nCREATED_AT=%s\nCONFIG_HASH=%s\nPROFILE=%s\nUPDATED_AT=%s\n' \
+      "$node_name" "$container_name" "$backend" "$vnc" "$novnc" "$debug" "$image_ref" "$created_at" "$config_hash" "$profile" "$(now_utc)"
+  } > "$file"
+  chmod 600 "$file" 2>/dev/null || true
 }
 
 assert_docker() {
@@ -171,14 +179,23 @@ hash_text() {
   cksum | awk '{print "cksum-" $1 "-" $2}'
 }
 
+normalize_profile() {
+  local raw="${1:-$DEFAULT_PROFILE}"
+  case "$raw" in
+    standard|compat|default) printf '%s\n' "$DEFAULT_PROFILE" ;;
+    mobile-safe|mobile_safe|mobile) printf '%s\n' "$MOBILE_SAFE_PROFILE" ;;
+    *) fail "Unknown Docker profile: ${raw}. Use standard or mobile-safe." ;;
+  esac
+}
+
 desired_config_hash() {
-  local node_name="$1" image_ref="$2" volume_prefix workspace_root node_workspace_host shared_host
+  local node_name="$1" image_ref="$2" profile="${3:-$DEFAULT_PROFILE}" volume_prefix workspace_root node_workspace_host shared_host
   volume_prefix="$(volume_prefix_for "$node_name")"
   workspace_root="$(shared_workspace_root)"
   node_workspace_host="$(node_workspace_host_path "$node_name")"
   shared_host="$(shared_workspace_host_path)"
-  printf 'version=%s\nnode=%s\nimage=%s\nbackend=%s\nvnc=%s\nnovnc=%s\ndebug=%s\nworkspace_volume=%s-workspace\ndata_volume=%s-data\nroot_volume=%s-root-home\nshared_workspace_root=%s\nnode_workspace_host=%s\nnode_workspace_target=%s\nshared_workspace_host=%s\nshared_workspace_target=%s\ntemp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=%s\nserver_host=http://localhost:%s\nvnc_hosts=localhost:%s\n' \
-    "$CONFIG_HASH_VERSION" "$node_name" "$image_ref" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$workspace_root" "$node_workspace_host" "$WORKSPACE_CONTAINER_PATH" "$shared_host" "$SHARED_CONTAINER_PATH" "$TEMP_WORKSPACE_ENV_VALUE" "$BACKEND_PORT" "$NOVNC_PORT" | hash_text
+  printf 'version=%s\nprofile=%s\nnode=%s\nimage=%s\nbackend=%s\nvnc=%s\nnovnc=%s\ndebug=%s\nworkspace_volume=%s-workspace\ndata_volume=%s-data\nroot_volume=%s-root-home\nshared_workspace_root=%s\nnode_workspace_host=%s\nnode_workspace_target=%s\nshared_workspace_host=%s\nshared_workspace_target=%s\ntemp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=%s\nserver_host=http://localhost:%s\nvnc_hosts=localhost:%s\n' \
+    "$CONFIG_HASH_VERSION" "$profile" "$node_name" "$image_ref" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$workspace_root" "$node_workspace_host" "$WORKSPACE_CONTAINER_PATH" "$shared_host" "$SHARED_CONTAINER_PATH" "$TEMP_WORKSPACE_ENV_VALUE" "$BACKEND_PORT" "$NOVNC_PORT" | hash_text
 }
 
 image_id_for() { docker image inspect --format '{{.Id}}' "$1" 2>/dev/null || true; }
@@ -345,23 +362,15 @@ next_node_name() {
 volume_prefix_for() { printf '%s\n' "$(normalize_node_name "$1")"; }
 
 run_container() {
-  local node_name="$1" container_name="$2" image_ref="$3" config_hash="$4" output volume_prefix node_workspace_host shared_host
+  local node_name="$1" container_name="$2" image_ref="$3" config_hash="$4" profile="${5:-$DEFAULT_PROFILE}" output volume_prefix node_workspace_host shared_host
   volume_prefix="$(volume_prefix_for "$node_name")"
-  ensure_shared_workspace_dirs "$node_name"
-  node_workspace_host="$(node_workspace_host_path "$node_name")"
-  shared_host="$(shared_workspace_host_path)"
-  output="$(docker run -d \
+  local run_args=(
     --name "$container_name" \
     --restart unless-stopped \
-    --cap-add SYS_ADMIN \
-    --security-opt seccomp=unconfined \
     --label "${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" \
     --label "${NODE_LABEL_KEY}=${node_name}" \
     --label "${CONFIG_LABEL_KEY}=${config_hash}" \
-    -p "${BACKEND_PORT}:8000" \
-    -p "${VNC_PORT}:5900" \
-    -p "${NOVNC_PORT}:6080" \
-    -p "${DEBUG_PORT}:9223" \
+    --label "${PROFILE_LABEL_KEY}=${profile}" \
     -e AUTOBYTEUS_WORKSPACE_ROOT=/app \
     -e AUTOBYTEUS_DATA_DIR=/home/autobyteus/data \
     -e AUTOBYTEUS_BIND_HOST=0.0.0.0 \
@@ -375,10 +384,35 @@ run_container() {
     -e "AUTOBYTEUS_TEMP_WORKSPACE_DIR=${TEMP_WORKSPACE_ENV_VALUE}" \
     -v "${volume_prefix}-workspace:/app/autobyteus-server-ts/workspace" \
     -v "${volume_prefix}-data:/home/autobyteus/data" \
-    -v "${volume_prefix}-root-home:/root" \
-    --mount "type=bind,source=${node_workspace_host},target=${WORKSPACE_CONTAINER_PATH}" \
-    --mount "type=bind,source=${shared_host},target=${SHARED_CONTAINER_PATH}" \
-    "$image_ref" 2>&1)"
+    -v "${volume_prefix}-root-home:/root"
+  )
+
+  if [[ "$profile" == "$MOBILE_SAFE_PROFILE" ]]; then
+    run_args+=(
+      -p "127.0.0.1:${BACKEND_PORT}:8000"
+      -p "127.0.0.1:${VNC_PORT}:5900"
+      -p "127.0.0.1:${NOVNC_PORT}:6080"
+      -p "127.0.0.1:${DEBUG_PORT}:9223"
+      -e AUTOBYTEUS_NODE_PROFILE=mobile-safe
+    )
+  else
+    ensure_shared_workspace_dirs "$node_name"
+    node_workspace_host="$(node_workspace_host_path "$node_name")"
+    shared_host="$(shared_workspace_host_path)"
+    run_args+=(
+      --cap-add SYS_ADMIN
+      --security-opt seccomp=unconfined
+      -p "${BACKEND_PORT}:8000"
+      -p "${VNC_PORT}:5900"
+      -p "${NOVNC_PORT}:6080"
+      -p "${DEBUG_PORT}:9223"
+      -e AUTOBYTEUS_NODE_PROFILE=standard
+      --mount "type=bind,source=${node_workspace_host},target=${WORKSPACE_CONTAINER_PATH}"
+      --mount "type=bind,source=${shared_host},target=${SHARED_CONTAINER_PATH}"
+    )
+  fi
+
+  output="$(docker run -d "${run_args[@]}" "$image_ref" 2>&1)"
   printf '%s\n' "$output"
 }
 
@@ -414,9 +448,28 @@ verify_container_started() {
 }
 
 print_urls() {
-  local node_name="$1" container_name="$2" image_ref="$3"
+  local node_name="$1" container_name="$2" image_ref="$3" profile="${4:-$DEFAULT_PROFILE}"
+  if [[ "$profile" == "$MOBILE_SAFE_PROFILE" ]]; then
+    cat <<URLS
+AutoByteus Docker node: ${node_name}
+Profile: mobile-safe
+Container: ${container_name}
+Image: ${image_ref}
+Backend: http://localhost:${BACKEND_PORT}
+GraphQL: http://localhost:${BACKEND_PORT}/graphql
+noVNC: http://localhost:${NOVNC_PORT} (localhost-bound)
+VNC: localhost:${VNC_PORT} (localhost-bound)
+Chrome debug: localhost:${DEBUG_PORT} (localhost-bound)
+Workspace: private Docker named volume $(volume_prefix_for "$node_name")-workspace
+Shared host bind mounts: disabled by default in mobile-safe profile
+Private app data: /home/autobyteus/data -> $(volume_prefix_for "$node_name")-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+URLS
+    return
+  fi
   cat <<URLS
 AutoByteus Docker node: ${node_name}
+Profile: standard
 Container: ${container_name}
 Image: ${image_ref}
 Backend: http://localhost:${BACKEND_PORT}
@@ -427,7 +480,7 @@ Chrome debug: localhost:${DEBUG_PORT}
 Workspace: ${WORKSPACE_CONTAINER_PATH} -> $(node_workspace_host_path "$node_name")
 Shared folder: ${SHARED_CONTAINER_PATH} -> $(shared_workspace_host_path)
 Private app data: /home/autobyteus/data -> $(volume_prefix_for "$node_name")-data (Docker named volume)
-Next step: paste Backend into Add Remote Node in AutoByteus.
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
 URLS
 }
 
@@ -463,13 +516,17 @@ STORAGE
 }
 
 start_node() {
-  local node_name="$1" image_ref="$2" prefer_defaults="$3" state_file container_name created_at attempt output start_check_output
+  local node_name="$1" image_ref="$2" prefer_defaults="$3" requested_profile="${4:-$DEFAULT_PROFILE}" state_file container_name created_at attempt output start_check_output profile
   local desired_image_id current_image_id current_config_hash config_hash start_output
   state_file="$(state_path_for "$node_name")"
   load_state "$state_file"
+  profile="$requested_profile"
+  if [[ -f "$state_file" && -n "${PROFILE:-}" ]]; then
+    profile="$PROFILE"
+  fi
+  [[ "$profile" == "$DEFAULT_PROFILE" || "$profile" == "$MOBILE_SAFE_PROFILE" ]] || profile="$(normalize_profile "$profile")"
   container_name="${CONTAINER_NAME:-$node_name}"
   created_at="${CREATED_AT:-$(now_utc)}"
-
   if container_exists "$container_name" && ! managed_container "$container_name"; then
     fail "Container ${container_name} already exists and is not managed by this launcher. Use --name with another friendly name."
   fi
@@ -481,23 +538,23 @@ start_node() {
 
   if container_exists "$container_name" \
     && [[ -n "${BACKEND_PORT:-}" && -n "${VNC_PORT:-}" && -n "${NOVNC_PORT:-}" && -n "${DEBUG_PORT:-}" ]]; then
-    config_hash="$(desired_config_hash "$node_name" "$image_ref")"
+    config_hash="$(desired_config_hash "$node_name" "$image_ref" "$profile")"
     current_image_id="$(container_image_id "$container_name")"
     current_config_hash="$(container_config_hash "$container_name")"
 
     if [[ "$current_image_id" == "$desired_image_id" && "$current_config_hash" == "$config_hash" ]]; then
       if container_running "$container_name"; then
-        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$image_ref" "$created_at" "$config_hash"
+        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$image_ref" "$created_at" "$config_hash" "$profile"
         log "${node_name} is already running with the current image and launcher config."
-        print_urls "$node_name" "$container_name" "$image_ref"
+        print_urls "$node_name" "$container_name" "$image_ref" "$profile"
         return
       fi
 
       if start_output="$(docker start "$container_name" 2>&1)"; then
         if start_check_output="$(verify_container_started "$container_name" 2>&1)"; then
-          write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$image_ref" "$created_at" "$config_hash"
+          write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$image_ref" "$created_at" "$config_hash" "$profile"
           log "Started ${node_name}."
-          print_urls "$node_name" "$container_name" "$image_ref"
+          print_urls "$node_name" "$container_name" "$image_ref" "$profile"
           return
         fi
         start_output="${start_output}"$'\n'"${start_check_output}"
@@ -524,17 +581,17 @@ start_node() {
       choose_ports "$prefer_defaults"
       prefer_defaults=0
     fi
-    config_hash="$(desired_config_hash "$node_name" "$image_ref")"
+    config_hash="$(desired_config_hash "$node_name" "$image_ref" "$profile")"
 
     if container_exists "$container_name"; then
       docker rm -f "$container_name" >/dev/null 2>&1 || true
     fi
 
-    if output="$(run_container "$node_name" "$container_name" "$image_ref" "$config_hash")"; then
+    if output="$(run_container "$node_name" "$container_name" "$image_ref" "$config_hash" "$profile")"; then
       if start_check_output="$(verify_container_started "$container_name" 2>&1)"; then
-        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$image_ref" "$created_at" "$config_hash"
+        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$image_ref" "$created_at" "$config_hash" "$profile"
         log "Started ${node_name}."
-        print_urls "$node_name" "$container_name" "$image_ref"
+        print_urls "$node_name" "$container_name" "$image_ref" "$profile"
         return
       fi
       output="${output}"$'\n'"${start_check_output}"
@@ -621,7 +678,7 @@ destroy_all_nodes() {
 }
 
 upgrade_all_nodes() {
-  local image_ref="$1" node image_id image_ids=() any=0 prefer_defaults
+  local image_ref="$1" node image_id image_ids=() any=0 prefer_defaults profile state_file
   while IFS= read -r image_id; do
     [[ -n "$image_id" ]] && image_ids+=("$image_id")
   done < <(managed_container_image_ids)
@@ -630,7 +687,10 @@ upgrade_all_nodes() {
     [[ -n "$node" ]] || continue
     prefer_defaults=0
     [[ "$node" == "$DEFAULT_NODE_NAME" ]] && prefer_defaults=1
-    start_node "$node" "$image_ref" "$prefer_defaults"
+    state_file="$(state_path_for "$node")"
+    load_state "$state_file"
+    profile="${PROFILE:-$DEFAULT_PROFILE}"
+    start_node "$node" "$image_ref" "$prefer_defaults" "$profile"
     any=1
   done < <(managed_node_names)
 
@@ -642,16 +702,16 @@ upgrade_all_nodes() {
 }
 
 create_new_container() {
-  local image_ref="$1" node_name prefer_defaults=0
+  local image_ref="$1" profile="${2:-$DEFAULT_PROFILE}" node_name prefer_defaults=0
   node_name="$(next_node_name)"
   [[ "$node_name" == "$DEFAULT_NODE_NAME" ]] && prefer_defaults=1
-  start_node "$node_name" "$image_ref" "$prefer_defaults"
+  start_node "$node_name" "$image_ref" "$prefer_defaults" "$profile"
 }
 
 reset_nodes() {
-  local image_ref="$1"
+  local image_ref="$1" profile="${2:-$DEFAULT_PROFILE}"
   destroy_all_nodes
-  start_node "$DEFAULT_NODE_NAME" "$image_ref" "1"
+  start_node "$DEFAULT_NODE_NAME" "$image_ref" "1" "$profile"
 }
 
 image_ref_for_node_or_default() {
@@ -708,12 +768,19 @@ show_storage() {
 }
 
 apply_workspace_to_node() {
-  local node_name="$1" fallback_image_ref="$2" node_image_ref prefer_defaults=0
+  local node_name="$1" fallback_image_ref="$2" node_image_ref prefer_defaults=0 profile state_file
   node_known_for_apply "$node_name" || fail "No managed Docker node found for ${node_name}. Run new-container first, or use workspace apply --all for existing managed nodes."
   node_image_ref="$(image_ref_for_node_or_default "$node_name" "$fallback_image_ref")"
+  state_file="$(state_path_for "$node_name")"
+  load_state "$state_file"
+  profile="${PROFILE:-$DEFAULT_PROFILE}"
   [[ "$node_name" == "$DEFAULT_NODE_NAME" ]] && prefer_defaults=1
-  log "Applying shared workspace bind mounts to ${node_name}. Named volumes will be kept."
-  start_node "$node_name" "$node_image_ref" "$prefer_defaults"
+  if [[ "$profile" == "$MOBILE_SAFE_PROFILE" ]]; then
+    log "${node_name} uses the mobile-safe profile; automatic shared host bind mounts stay disabled."
+  else
+    log "Applying shared workspace bind mounts to ${node_name}. Named volumes will be kept."
+  fi
+  start_node "$node_name" "$node_image_ref" "$prefer_defaults" "$profile"
 }
 
 apply_workspace() {
@@ -741,7 +808,7 @@ show_urls() {
   file="$(state_path_for "$node_name")"
   [[ -f "$file" ]] || fail "No launcher state found for ${node_name}. Run new-container first."
   load_state "$file"
-  print_urls "${NODE_NAME:-$node_name}" "${CONTAINER_NAME:-$node_name}" "${IMAGE_REF:-unknown}"
+  print_urls "${NODE_NAME:-$node_name}" "${CONTAINER_NAME:-$node_name}" "${IMAGE_REF:-unknown}" "${PROFILE:-$DEFAULT_PROFILE}"
 }
 
 show_status() {
@@ -758,7 +825,7 @@ show_status() {
     if container_exists "$container"; then
       status="$(docker inspect --format '{{.State.Status}}' "$container" 2>/dev/null || printf 'unknown')"
     fi
-    printf '%-24s %-24s %-14s http://localhost:%s (%s)\n' "$name" "$container" "$status" "${BACKEND_PORT:-?}" "$image"
+    printf '%-24s %-24s %-14s http://localhost:%s (%s, %s)\n' "$name" "$container" "$status" "${BACKEND_PORT:-?}" "$image" "${PROFILE:-$DEFAULT_PROFILE}"
     any=1
   done
   shopt -u nullglob
@@ -799,7 +866,7 @@ show_logs() {
 }
 
 main() {
-  local cmd="${1:-help}" stop_all=0 name_arg="" tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" extra=()
+  local cmd="${1:-help}" stop_all=0 name_arg="" tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" profile="$DEFAULT_PROFILE" extra=()
   [[ "$cmd" == "help" || "$cmd" == "--help" || "$cmd" == "-h" ]] && { usage; return; }
   shift || true
   while [[ $# -gt 0 ]]; do
@@ -808,6 +875,7 @@ main() {
       --name) [[ $# -gt 1 ]] || fail "--name requires a value"; name_arg="$2"; shift 2 ;;
       --tag) [[ $# -gt 1 ]] || fail "--tag requires a value"; tag="$2"; shift 2 ;;
       --image) [[ $# -gt 1 ]] || fail "--image requires a value"; image="$2"; shift 2 ;;
+      --profile) [[ $# -gt 1 ]] || fail "--profile requires a value"; profile="$(normalize_profile "$2")"; shift 2 ;;
       -h|--help) usage; return ;;
       --) shift; extra+=("$@"); break ;;
       *) if [[ -z "$name_arg" && "$cmd" =~ ^(urls|ports|status|ps|stop|logs)$ ]]; then name_arg="$1"; else extra+=("$1"); fi; shift ;;
@@ -839,7 +907,7 @@ main() {
       [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown new-container option(s): ${extra[*]}"
       [[ "$stop_all" != "1" ]] || fail "new-container creates one node and does not accept --all."
       [[ -z "$name_arg" ]] || fail "new-container always chooses the next indexed name; do not pass --name."
-      create_new_container "$image_ref"
+      create_new_container "$image_ref" "$profile"
       ;;
     upgrade)
       [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown upgrade option(s): ${extra[*]}"
@@ -857,7 +925,7 @@ main() {
       [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown reset option(s): ${extra[*]}"
       [[ "$stop_all" != "1" ]] || fail "reset already applies to all managed nodes and does not accept --all."
       [[ -z "$name_arg" ]] || fail "reset always recreates ${DEFAULT_NODE_NAME}; do not pass --name."
-      reset_nodes "$image_ref"
+      reset_nodes "$image_ref" "$profile"
       ;;
     workspace)
       workspace_action="${extra[0]:-paths}"

@@ -1,0 +1,64 @@
+{
+  "active": {
+    "devices": []
+  },
+  "revoked": {
+    "devices": [
+      {
+        "clientFacingBaseUrl": "https://docker-validation.example",
+        "createdAt": "2026-05-23T17:22:56.861Z",
+        "deviceId": "device_cd4a312fead95804202d6878c59fdfe3",
+        "displayName": "Validation Android",
+        "lastSeenAt": "2026-05-23T17:23:03.705Z",
+        "revokedAt": "2026-05-23T17:23:03.735Z"
+      },
+      {
+        "clientFacingBaseUrl": "https://docker-validation.example",
+        "createdAt": "2026-05-23T18:53:09.377Z",
+        "deviceId": "device_f8c7ad09f119d0c06dbd9a378c003ede",
+        "displayName": "Validation Phone",
+        "lastSeenAt": null,
+        "revokedAt": "2026-05-23T18:56:27.726Z"
+      },
+      {
+        "clientFacingBaseUrl": "https://docker-validation.example",
+        "createdAt": "2026-05-23T18:56:27.732Z",
+        "deviceId": "device_0c60e4453b7857e823026afdb5b36ba8",
+        "displayName": "Round4 Active Phone",
+        "lastSeenAt": "2026-05-23T18:56:34.518Z",
+        "revokedAt": "2026-05-23T18:57:34.872Z"
+      },
+      {
+        "clientFacingBaseUrl": "https://docker-validation.example",
+        "createdAt": "2026-05-23T18:56:34.812Z",
+        "deviceId": "device_01d0e34dac6959bf89844f45a94b74a4",
+        "displayName": "Round4 Revoked Phone",
+        "lastSeenAt": null,
+        "revokedAt": "2026-05-23T18:56:34.817Z"
+      },
+      {
+        "clientFacingBaseUrl": "https://docker-validation.example",
+        "createdAt": "2026-05-23T20:17:24.446Z",
+        "deviceId": "device_2f2cc375c10a0f5de7ee9ae8692e5d3c",
+        "displayName": "Round4 Active Phone",
+        "lastSeenAt": "2026-05-23T20:17:32.317Z",
+        "revokedAt": "2026-05-23T20:17:50.486Z"
+      },
+      {
+        "clientFacingBaseUrl": "https://docker-validation.example",
+        "createdAt": "2026-05-23T20:17:32.669Z",
+        "deviceId": "device_6085dea955190092c049ae8ebddef1a3",
+        "displayName": "Round4 Revoked Phone",
+        "lastSeenAt": null,
+        "revokedAt": "2026-05-23T20:17:32.674Z"
+      }
+    ]
+  },
+  "status": {
+    "compatibilityVersion": 1,
+    "pairingAvailable": true,
+    "phoneAccessEnabled": true,
+    "serverInstanceId": "srv_zmy6f5v7kOvMkgBGQmWh_WGIya241Sf8",
+    "serverName": "AutoByteus Desktop"
+  }
+}

@@ -25,4 +25,10 @@ describe("redactSensitiveUrl", () => {
       "/mobile?pairing_code=%5BREDACTED%5D&pairingCode=%5BREDACTED%5D&status=check",
     );
   });
+
+  it("redacts generic credential query variants if they appear in diagnostics", () => {
+    expect(redactSensitiveUrl("/rest/remote-access/settings?credential=mra_secret&status=check")).toBe(
+      "/rest/remote-access/settings?credential=%5BREDACTED%5D&status=check",
+    );
+  });
 });

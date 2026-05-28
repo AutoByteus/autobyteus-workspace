@@ -1,0 +1,76 @@
+== launch Tailscale UI for connectivity diagnosis ==
+  bash arg: -p
+  bash arg: com.tailscale.ipn
+  bash arg: 1
+args: [-p, com.tailscale.ipn, 1]
+ arg: "-p"
+ arg: "com.tailscale.ipn"
+ arg: "1"
+data="com.tailscale.ipn"
+Events injected: 1
+## Network stats: elapsed time=42ms (0ms mobile, 0ms wifi, 42ms not connected)
+{'text': '', 'desc': '', 'res': 'android:id/content', 'class': 'android.widget.FrameLayout', 'bounds': '[0,0][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/shortcut_menu_layer', 'class': 'android.widget.FrameLayout', 'bounds': '[0,0][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/drag_layer_background', 'class': 'android.view.View', 'bounds': '[0,0][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/drag_layer', 'class': 'android.widget.FrameLayout', 'bounds': '[0,0][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/drag_view_container', 'class': 'android.widget.FrameLayout', 'bounds': '[0,0][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/screen', 'class': 'android.widget.FrameLayout', 'bounds': '[0,0][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/scrim_view', 'class': 'android.view.View', 'bounds': '[0,0][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/screen_content', 'class': 'android.widget.FrameLayout', 'bounds': '[0,0][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/workspace', 'class': 'com.miui.home.launcher.ScreenView', 'bounds': '[0,0][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '1Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[299,1995][336,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '2Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[336,1995][373,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '3Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[373,1995][410,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '4Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[410,1995][447,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '5Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[447,1995][484,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '6Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[484,1995][521,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '7Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[521,1995][558,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '8Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[558,1995][595,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '9Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[595,1995][632,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '10Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[632,1995][669,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '11Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[669,1995][706,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '12Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[706,1995][743,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '13Bildschirm', 'res': '', 'class': 'android.widget.ImageView', 'bounds': '[743,1995][780,2032]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': 'Kamera', 'res': '', 'class': 'android.widget.RelativeLayout', 'bounds': '[33,164][287,463]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_container', 'class': 'android.widget.FrameLayout', 'bounds': '[63,164][257,352]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'Kamera', 'res': 'com.miui.home:id/icon_icon', 'class': 'android.widget.ImageView', 'bounds': '[74,180][246,352]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_title_container', 'class': 'android.widget.FrameLayout', 'bounds': '[33,352][287,463]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'Kamera', 'desc': '', 'res': 'com.miui.home:id/icon_title', 'class': 'android.widget.TextView', 'bounds': '[33,357][287,463]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'PAYBACK', 'res': '', 'class': 'android.widget.RelativeLayout', 'bounds': '[287,164][541,463]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_container', 'class': 'android.widget.FrameLayout', 'bounds': '[317,164][511,352]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'PAYBACK', 'res': 'com.miui.home:id/icon_icon', 'class': 'android.widget.ImageView', 'bounds': '[328,180][500,352]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_title_container', 'class': 'android.widget.FrameLayout', 'bounds': '[287,352][541,463]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'PAYBACK', 'desc': '', 'res': 'com.miui.home:id/icon_title', 'class': 'android.widget.TextView', 'bounds': '[287,357][541,463]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '1 ungelesen von PayPal', 'res': '', 'class': 'android.widget.RelativeLayout', 'bounds': '[541,164][795,463]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_container', 'class': 'android.widget.FrameLayout', 'bounds': '[571,164][765,352]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'PayPal', 'res': 'com.miui.home:id/icon_icon', 'class': 'android.widget.ImageView', 'bounds': '[582,180][754,352]', 'checked': 'false', 'clickable': 'false'}
+{'text': '1', 'desc': '', 'res': 'com.miui.home:id/icon_msg', 'class': 'android.widget.TextView', 'bounds': '[715,164][765,214]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_title_container', 'class': 'android.widget.FrameLayout', 'bounds': '[541,352][795,463]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'PayPal', 'desc': '', 'res': 'com.miui.home:id/icon_title', 'class': 'android.widget.TextView', 'bounds': '[541,357][795,463]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'photoTAN', 'res': '', 'class': 'android.widget.RelativeLayout', 'bounds': '[795,164][1049,463]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_container', 'class': 'android.widget.FrameLayout', 'bounds': '[825,164][1019,352]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'photoTAN', 'res': 'com.miui.home:id/icon_icon', 'class': 'android.widget.ImageView', 'bounds': '[836,180][1008,352]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_title_container', 'class': 'android.widget.FrameLayout', 'bounds': '[795,352][1049,463]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'photoTAN', 'desc': '', 'res': 'com.miui.home:id/icon_title', 'class': 'android.widget.TextView', 'bounds': '[795,357][1049,463]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'Banking', 'res': '', 'class': 'android.widget.RelativeLayout', 'bounds': '[33,469][287,768]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_container', 'class': 'android.widget.FrameLayout', 'bounds': '[63,469][257,657]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'Banking', 'res': 'com.miui.home:id/icon_icon', 'class': 'android.widget.ImageView', 'bounds': '[74,485][246,657]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_title_container', 'class': 'android.widget.FrameLayout', 'bounds': '[33,657][287,768]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'Banking', 'desc': '', 'res': 'com.miui.home:id/icon_title', 'class': 'android.widget.TextView', 'bounds': '[33,662][287,768]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'Medium', 'res': '', 'class': 'android.widget.RelativeLayout', 'bounds': '[287,469][541,768]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_container', 'class': 'android.widget.FrameLayout', 'bounds': '[317,469][511,657]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'Medium', 'res': 'com.miui.home:id/icon_icon', 'class': 'android.widget.ImageView', 'bounds': '[328,485][500,657]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_title_container', 'class': 'android.widget.FrameLayout', 'bounds': '[287,657][541,768]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'Medium', 'desc': '', 'res': 'com.miui.home:id/icon_title', 'class': 'android.widget.TextView', 'bounds': '[287,662][541,768]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '1 ungelesen von Bibel', 'res': '', 'class': 'android.widget.RelativeLayout', 'bounds': '[287,774][541,1073]', 'checked': 'false', 'clickable': 'true'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_container', 'class': 'android.widget.FrameLayout', 'bounds': '[317,774][511,962]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': 'Bibel', 'res': 'com.miui.home:id/icon_icon', 'class': 'android.widget.ImageView', 'bounds': '[328,790][500,962]', 'checked': 'false', 'clickable': 'false'}
+{'text': '1', 'desc': '', 'res': 'com.miui.home:id/icon_msg', 'class': 'android.widget.TextView', 'bounds': '[461,774][511,824]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/icon_title_container', 'class': 'android.widget.FrameLayout', 'bounds': '[287,962][541,1073]', 'checked': 'false', 'clickable': 'false'}
+{'text': 'Bibel', 'desc': '', 'res': 'com.miui.home:id/icon_title', 'class': 'android.widget.TextView', 'bounds': '[287,967][541,1073]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/hotseat', 'class': 'com.miui.home.launcher.ScreenView', 'bounds': '[0,2078][1080,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/default_position', 'class': 'android.widget.FrameLayout', 'bounds': '[0,80][1,2166]', 'checked': 'false', 'clickable': 'false'}
+{'text': '', 'desc': '', 'res': 'com.miui.home:id/drop_target_bar', 'class': 'android.widget.FrameLayout', 'bounds': '[0,0][1080,685]', 'checked': 'false', 'clickable': 'false'}
+== host tailscale status self after UI inspection ==
+100.127.30.107  normys-macbook-pro  ryan.zheng.work@  macOS    -  
+100.75.247.102  2109119dg           ryan.zheng.work@  android  -  
