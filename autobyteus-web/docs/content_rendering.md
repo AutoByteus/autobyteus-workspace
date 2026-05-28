@@ -19,6 +19,7 @@ flowchart TD
         ImageViewer[ImageViewer.vue]
         VideoPlayer[VideoPlayer.vue]
         AudioPlayer[AudioPlayer.vue]
+        PdfViewer[PdfViewer.vue]
         ExcelViewer[ExcelViewer.vue]
         MarkdownPreviewer[MarkdownPreviewer.vue]
         HtmlPreviewer[HtmlPreviewer.vue]
@@ -33,6 +34,7 @@ flowchart TD
     FileContentViewer -->|Images| ImageViewer
     FileContentViewer -->|Video| VideoPlayer
     FileContentViewer -->|Audio| AudioPlayer
+    FileContentViewer -->|PDF| PdfViewer
     FileContentViewer -->|Excel| ExcelViewer
     FileContentViewer -->|Markdown| MarkdownPreviewer
     FileContentViewer -->|HTML| HtmlPreviewer
@@ -49,9 +51,32 @@ flowchart TD
 | Image     | `.jpg`, `.png`, `.gif`, `.webp` | ImageViewer       |
 | Video     | `.mp4`, `.mov`, `.webm`         | VideoPlayer       |
 | Audio     | `.mp3`, `.wav`, `.m4a`          | AudioPlayer       |
+| PDF       | `.pdf`                          | PdfViewer         |
 | Markdown  | `.md`, `.markdown`              | MarkdownPreviewer |
 | HTML      | `.html`, `.htm`                 | HtmlPreviewer     |
 | Excel     | `.xlsx`, `.xls`, `.csv`         | ExcelViewer       |
+
+## Shared Read-Only Viewer Surfaces
+
+`FileViewer.vue` is also reused outside the desktop file-explorer tabs for
+read-only surfaces:
+
+- `components/mobile/MobileFileViewer.vue` opens workspace files from the
+  `/mobile` Files tab in a full-screen phone viewer. It passes the
+  `fileExplorerStore.openFilePreview(...)` state to `FileViewer` with
+  `read-only=true`; text/Markdown/code, image, audio, video, PDF, CSV, and Excel
+  families use the same protected workspace content routes as desktop. Mobile
+  workspace HTML is shown as raw/read-only text rather than rich iframe preview.
+- `components/workspace/team/TeamCommunicationReferenceViewer.vue` opens
+  Team Communication `referenceFiles` through the message-owned team reference
+  route. The mobile wrapper `MobileTeamReferenceViewer.vue` uses that same
+  viewer in a phone full-screen shell and disables rich HTML preview while
+  preserving raw/Markdown and protected binary/object-URL preview paths.
+
+For Phone Access, protected REST resources must be loaded through the authorized
+transport/object-URL helpers so the paired mobile bearer credential is attached.
+Do not introduce unauthenticated static/iframe preview paths for protected
+workspace or team-reference content without a separate security design.
 
 ## App-Wide Readability / Display Settings
 

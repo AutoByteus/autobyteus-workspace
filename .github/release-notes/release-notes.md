@@ -1,19 +1,21 @@
-# Release Notes: Mobile Run Setup Parity
+# Release Notes: Mobile File and Reference Controls
 
 ## What's New
 
-- Mobile **Start new** for agent and team runs now exposes the existing **Auto approve tools** launch option.
-- Mobile run setup can select from the paired node's workspace store, including workspaces that are not attached to a live run.
-- Mobile run setup can load an unlisted workspace by absolute server-side path and select the returned workspace for the new run.
+- Mobile **Files** now browses the selected workspace, agent-run workspace, or team-run workspace with phone-first navigation.
+- Mobile Files can lazy-load folders, filter the current folder, and search the full workspace through the existing file-explorer search boundary.
+- Tapping a mobile workspace file opens a read-only full-screen viewer for text/Markdown/code, image, audio, video, PDF, CSV, and Excel content.
+- Mobile Team Communication messages now show tappable structured `reference_files` rows instead of only an inert reference count.
 
 ## Improvements
 
-- The mobile setup shell now delegates run options, launch-workspace selection/loading, and setup state orchestration to explicit mobile launch owners instead of growing `MobileRunSetup.vue`.
-- Android continues to use the server-served `/mobile` WebView shell for this behavior, so a refreshed mobile-web bundle delivers the new setup UI without native run-setup code.
+- Mobile file viewing reuses the shared file viewer and protected-resource authorization path instead of maintaining a mobile-only text preview policy.
+- Mobile Files no longer falls back to an unrelated active/first workspace when a selected run's workspace root cannot be resolved.
+- Team Communication reference display names and icons are shared between desktop and mobile, keeping reference presentation consistent.
+- Long-lived Phone Access, File Explorer, Content Rendering, and Agent Artifact/Team Communication docs now describe the mobile Files/reference boundaries.
 
 ## Notes
 
-- **Auto approve tools** remains off by default and uses the existing `autoExecuteTools` run-config field.
-- Workspace paths entered from mobile are paths on the paired AutoByteus node/container, not on the phone.
-- Physical Android device/APK smoke was not run for this ticket; validation covered the served `/mobile` route, mobile bundle freshness, backend workspace GraphQL boundary, and source-confirmed Android WebView ownership.
-- Do not use a stale already-running Electron/server instance from another worktree as branch sign-off for this feature; rebuild or refresh the package/server that serves `/mobile` from this branch.
+- Mobile Files remains read-only: editing, rename/delete/move/create, and desktop context menus remain out of scope.
+- Android/WebView receives this through the desktop/server-served `/mobile` bundle; refresh the packaged or served `mobile-web/` output before validating on a phone.
+- The verified local macOS test build was unsigned/not notarized and used for pre-release user acceptance only; official release artifacts are produced by the tag-triggered GitHub Actions workflows.

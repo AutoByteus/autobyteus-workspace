@@ -17,6 +17,7 @@
 - Latest-base merge-conflict delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round13-latest-personal-merge-conflicts.md`
 - Round-18 latest-base merge-conflict delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round18-latest-personal-merge-conflict.md`
 - Round-19 latest-base merge-conflict delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round19-latest-personal-merge-conflicts.md`
+- Round-20 latest-base merge-conflict delivery blocker artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round20-latest-personal-merge-conflicts.md`
 - API/E2E round-6 Terminal FD failure evidence and durable validation: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
 - API/E2E round-9 Terminal descriptor failure analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/terminal-server-e2e-failure-analysis-20260524.md`
 - API/E2E round-9 Terminal descriptor evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524.json`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524-final-lsof.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-failure-20260524.json`
@@ -51,6 +52,7 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-17 CR-012 regression coverage: added a real integration test that temporarily removes execute bits from the installed `node-pty` `spawn-helper`, starts an `IsolatedPtySession`, verifies helper permission repair and real command output, and restores the original mode in `finally`; unit coverage also asserts bootstrap-before-spawn and no bridge spawn after close-during-bootstrap.
 - Round-18 delivery latest-base local fix: integrated latest `origin/personal@03d7880b45afd2b032de6e842e41429fad0a2cb0` after API/E2E Round 10 and code review Round 17 passed. Resolved the `MobileRemoteAccessShell.spec.ts` merge conflict by preserving the ticket-side mobile work-picking/post-pair checks and the latest-base mobile safe-container QR session replacement plus 401 authorized-catalog session-drop coverage. The Round 17 Terminal FD lifecycle implementation files were not changed by the merge resolution.
 - Round-19 delivery latest-base local fix: integrated latest `origin/personal@56c6d4bfa27ced68678e4d21dccd4acbcb31aa76` (`v1.3.31`) for the user's 2026-05-28 Electron rebuild request. Resolved conflicts in `MobileRunSetup.vue`, `MobileContextSelectionRegression.spec.ts`, `MobileRemoteAccessShell.spec.ts`, and `MobileUxRefinement.spec.ts` by preserving ticket-side metadata/root-path Files and Terminal lifecycle expectations while adopting latest-base mobile artifacts tab, run setup parity, launch workspace picker, and auto-approve run options behavior.
+- Round-20 delivery latest-base local fix: integrated latest `origin/personal@832b6f7cdbf77166576ff69c36803fd4125ff090` (`v1.3.32`) for the user's 2026-05-28 latest-base Electron rebuild request. Resolved conflicts in `MobileFiles.vue`, `MobileRemoteAccessShell.spec.ts`, and `useMobileFileContextCoordinator.ts` by preserving the ticket-side metadata/root-path file-explorer activation and visible live-session ownership while adopting latest-base mobile file/reference controls (`MobileFileViewer`, `MobileTeamReferenceViewer`, protected read-only file previews, mobile attachment rows, and v1.3.32 version artifacts). `useMobileWorkspaceFileExplorer.ts` was reconciled to the ticket architecture: it delegates through `useWorkspaceFileExplorer`, resolves/ensures workspace metadata by root path at visible Files activation, owns mobile folder/search/open-file state, and does not depend on legacy `WorkspaceInfo.fileExplorer` or `workspaceStore.allWorkspaces`. Round 17 Terminal FD lifecycle files were not modified by this merge resolution; focused terminal backend tests still pass.
 
 ## Key Files Or Areas
 
@@ -100,6 +102,13 @@ Frontend:
 - `autobyteus-web/components/fileExplorer/FileExplorer.vue`
 - `autobyteus-web/components/workspace/tools/Terminal.vue`
 - `autobyteus-web/components/mobile/MobileFiles.vue`
+- `autobyteus-web/components/mobile/MobileFileViewer.vue`
+- `autobyteus-web/components/mobile/MobileTeamReferenceViewer.vue`
+- `autobyteus-web/composables/mobile/useMobileWorkspaceFileExplorer.ts`
+- `autobyteus-web/composables/mobile/useMobileFileContextCoordinator.ts`
+- `autobyteus-web/components/mobile/__tests__/MobileFiles.spec.ts`
+- `autobyteus-web/components/mobile/__tests__/MobileFileViewer.spec.ts`
+- `autobyteus-web/components/mobile/__tests__/MobileTeamMessages.spec.ts`
 - `autobyteus-web/components/mobile/MobileRunSetup.vue`
 - `autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts`
 - `autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts`
@@ -162,13 +171,39 @@ Removed obsolete source/test paths:
 
 ## Environment Or Dependency Notes
 
-- No dependency/package changes were made.
+- No implementation-owned dependency changes were made. The latest-base merge carries upstream v1.3.32 version/package/release-manifest updates that delivery requested for the Electron rebuild.
 - Validation logs for this implementation pass are under `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/`.
 - The localization audit still emits the existing Node `MODULE_TYPELESS_PACKAGE_JSON` warning for `localization/audit/migrationScopes.ts`; the audit result is pass with zero unresolved findings.
 
 ## Local Implementation Checks Run
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
+
+Round-20 delivery latest-base merge-conflict local-fix checks:
+
+- `pnpm -C autobyteus-web test:nuxt run components/mobile/__tests__/MobileFiles.spec.ts components/mobile/__tests__/MobileFileViewer.spec.ts components/mobile/__tests__/MobileRemoteAccessShell.spec.ts components/mobile/__tests__/MobileUxRefinement.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileArtifacts.spec.ts components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts components/mobile/__tests__/MobileTeamMessages.spec.ts composables/mobile/__tests__/useMobileFileContextCoordinator.spec.ts composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts composables/mobile/__tests__/useMobileLaunchWorkspaces.spec.ts stores/__tests__/mobileWorkStore.spec.ts`
+  - Result: pass, 12 files / 71 tests.
+  - Covers the Round-20 conflicted mobile Files/file-reference shell plus prior mobile UX/context regression surfaces and latest-base team-reference rows.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round20-frontend-mobile-file-reference-tests-20260528.log`
+- `pnpm -C autobyteus-web guard:web-boundary`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round20-frontend-web-boundary-20260528.log`
+- `pnpm -C autobyteus-web guard:localization-boundary`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round20-frontend-localization-boundary-20260528.log`
+- `pnpm -C autobyteus-web audit:localization-literals`
+  - Result: pass, zero unresolved findings.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round20-frontend-localization-audit-20260528.log`
+- `pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/session-factory.test.ts tests/unit/tools/terminal/isolated-pty-session.test.ts tests/unit/tools/terminal/node-pty-bootstrap.test.ts tests/integration/tools/terminal/isolated-pty-session.test.ts`
+  - Result: pass, 4 files / 18 tests.
+  - Confirms the latest-base integration did not disturb isolated PTY spawn-helper repair, Darwin backend selection, or isolated-session command-output coverage.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round20-autobyteus-ts-terminal-focused-20260528.log`
+- `git diff --check` and `git diff --cached --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round20-diff-check-20260528.log`
+- Changed-source size audit for touched frontend implementation files.
+  - Result: pass; no changed source implementation file exceeds 500 effective non-empty lines (`MobileFiles.vue` 318, `useMobileWorkspaceFileExplorer.ts` 295).
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round20-source-size-20260528.log`
 
 Round-19 delivery latest-base merge-conflict local-fix checks:
 

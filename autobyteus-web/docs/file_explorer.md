@@ -12,6 +12,7 @@ The File Explorer module enables users to:
 - Search files within workspaces
 - Receive real-time updates when files change on the backend
 - **Lazy Load** large directories for performance
+- Browse/search/open workspace files from the `/mobile` Phone Access shell using a phone-first, read-only Files surface over the same workspace and file-explorer stores
 
 ## Module Structure
 
@@ -32,6 +33,11 @@ autobyteus-web/
 │       ├── ImageViewer.vue
 │       ├── MarkdownPreviewer.vue
 │       └── VideoPlayer.vue
+├── components/mobile/
+│   ├── MobileFiles.vue               # Phone-first workspace browser
+│   └── MobileFileViewer.vue          # Read-only mobile file viewer/attach sheet
+├── composables/mobile/
+│   └── useMobileWorkspaceFileExplorer.ts # Mobile workspace resolution, lazy load, search, and open state coordinator
 ├── services/
 │   └── fileExplorerStreaming/        # WebSocket streaming service
 │       ├── FileExplorerStreamingService.ts  # WebSocket client
@@ -266,6 +272,40 @@ explorer.openFile(props.file.path); // Uses the correct workspace context
 ```
 
 This pattern is critical for **Skill workspaces**, which are NOT the "active" workspace but need their own isolated file explorer context.
+
+### Mobile Files and `useMobileWorkspaceFileExplorer`
+
+The `/mobile` Phone Access Files tab uses `MobileFiles.vue` and
+`useMobileWorkspaceFileExplorer.ts` instead of the desktop split-pane explorer
+layout. The mobile surface is read-only and delegates to the same authoritative
+workspace/file-explorer owners:
+
+- workspace resolution comes from the current `MobileWorkContext`:
+  workspace contexts use their workspace id, and agent/team run contexts resolve
+  by workspace root path;
+- if a selected run/team-run workspace root cannot be resolved, mobile shows an
+  explicit unavailable/retry state instead of falling back to another active or
+  first workspace;
+- folder taps call `workspaceStore.fetchFolderChildren(workspaceId, path)` for
+  unloaded folders before navigating;
+- full-workspace search calls `fileExplorerStore.searchFiles(query,
+  workspaceId)`, so matches do not depend only on already-loaded tree nodes;
+- file taps call `fileExplorerStore.openFilePreview(path, workspaceId)` and
+  pass the resulting open-file state into `MobileFileViewer.vue`;
+- `MobileFileViewer.vue` reuses the shared `FileViewer` in read-only mode for
+  supported text/Markdown/code, image, audio, video, PDF, CSV, and Excel
+  previews through protected workspace content URLs and authorized resource
+  loading;
+- the mobile **Attach** action is owned by
+  `useMobileFileContextCoordinator.ts` and adds workspace paths to the active
+  run, pending team-run, or next-run draft context without turning Files into an
+  editor.
+
+Mobile Files must not import desktop shell/split-pane owners such as
+`FileExplorerLayout`, `FileExplorerTabs`, `TeamCommunicationPanel`,
+`RightSideTabs`, or Electron APIs. Create/rename/delete/move/edit operations
+remain desktop file-explorer responsibilities unless a separate mobile editing
+design is approved.
 
 ## TreeNode Data Structure
 
