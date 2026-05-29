@@ -4,11 +4,87 @@ import { LLMModel } from './models.js';
 import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
 import { AutobyteusLLM } from './api/autobyteus-llm.js';
+import { ParameterDefinition, ParameterSchema, ParameterType } from '../utils/parameter-schema.js';
 
 type ModelInfoPayload = Record<string, unknown>;
 type ServerResponse = { models?: unknown };
 const isPositiveInteger = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+const asStringArray = (value: unknown): string[] =>
+  Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+
+const mapJsonSchemaType = (schema: Record<string, unknown>, enumValues: string[]): ParameterType | null => {
+  if (enumValues.length > 0) return ParameterType.ENUM;
+
+  const rawType = Array.isArray(schema.type)
+    ? schema.type.find((item): item is string => typeof item === 'string')
+    : schema.type;
+
+  switch (rawType) {
+    case 'string':
+      return ParameterType.STRING;
+    case 'integer':
+      return ParameterType.INTEGER;
+    case 'number':
+      return ParameterType.FLOAT;
+    case 'boolean':
+      return ParameterType.BOOLEAN;
+    case 'object':
+      return ParameterType.OBJECT;
+    case 'array':
+      return ParameterType.ARRAY;
+    default:
+      return null;
+  }
+};
+
+const jsonSchemaToParameterSchema = (schemaData: Record<string, unknown>): ParameterSchema | null => {
+  const properties = schemaData.properties;
+  if (!isRecord(properties)) return null;
+
+  const requiredNames = new Set(asStringArray(schemaData.required));
+  const parameters: ParameterDefinition[] = [];
+
+  for (const [name, propertySchema] of Object.entries(properties)) {
+    if (!isRecord(propertySchema)) continue;
+
+    const enumValues = asStringArray(propertySchema.enum);
+    const parameterType = mapJsonSchemaType(propertySchema, enumValues);
+    if (!parameterType) continue;
+
+    const description =
+      typeof propertySchema.description === 'string' && propertySchema.description.trim()
+        ? propertySchema.description
+        : name;
+
+    const nestedObjectSchema =
+      parameterType === ParameterType.OBJECT ? jsonSchemaToParameterSchema(propertySchema) ?? undefined : undefined;
+
+    const rawItems = propertySchema.items;
+    const arrayItemSchema =
+      parameterType === ParameterType.ARRAY && isRecord(rawItems)
+        ? jsonSchemaToParameterSchema(rawItems) ?? rawItems
+        : undefined;
+
+    parameters.push(new ParameterDefinition({
+      name,
+      type: parameterType,
+      description,
+      required: requiredNames.has(name),
+      defaultValue: propertySchema.default,
+      enumValues: enumValues.length > 0 ? enumValues : undefined,
+      minValue: typeof propertySchema.minimum === 'number' ? propertySchema.minimum : undefined,
+      maxValue: typeof propertySchema.maximum === 'number' ? propertySchema.maximum : undefined,
+      pattern: typeof propertySchema.pattern === 'string' ? propertySchema.pattern : undefined,
+      objectSchema: nestedObjectSchema,
+      arrayItemSchema
+    }));
+  }
+
+  return parameters.length > 0 ? new ParameterSchema(parameters) : null;
+};
 
 export class AutobyteusModelProvider {
   static readonly DEFAULT_SERVER_URL = 'https://localhost:8000';
@@ -89,6 +165,7 @@ export class AutobyteusModelProvider {
               runtime: LLMRuntime.AUTOBYTEUS,
               hostUrl: hostUrl,
               defaultConfig: llmConfig,
+              configSchema: AutobyteusModelProvider.parseConfigSchema(modelInfo.config_schema),
               maxContextTokens: isPositiveInteger(modelInfo.max_context_tokens)
                 ? modelInfo.max_context_tokens
                 : llmConfig.tokenLimit ?? null,
@@ -211,6 +288,22 @@ export class AutobyteusModelProvider {
     } catch (error: unknown) {
       console.error(`Config parsing failed: ${error instanceof Error ? error.message : String(error)}`);
       return null;
+    }
+  }
+
+  private static parseConfigSchema(schemaData: unknown): ParameterSchema | undefined {
+    if (!isRecord(schemaData)) return undefined;
+
+    try {
+      if (Array.isArray(schemaData.parameters)) {
+        const schema = ParameterSchema.fromConfig(schemaData);
+        return schema.parameters.length > 0 ? schema : undefined;
+      }
+
+      return jsonSchemaToParameterSchema(schemaData) ?? undefined;
+    } catch (error: unknown) {
+      console.warn(`Config schema parsing failed: ${error instanceof Error ? error.message : String(error)}`);
+      return undefined;
     }
   }
 

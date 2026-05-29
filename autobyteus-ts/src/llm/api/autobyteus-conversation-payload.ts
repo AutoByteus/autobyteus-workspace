@@ -17,6 +17,7 @@ export interface AutobyteusSendMessageRequest {
   conversationId: string;
   modelName: string;
   payload: AutobyteusConversationPayload;
+  generationConfig?: Record<string, unknown> | null;
 }
 
 export function assertValidAutobyteusConversationPayload(payload: AutobyteusConversationPayload): void {
