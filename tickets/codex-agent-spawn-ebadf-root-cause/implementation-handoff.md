@@ -56,6 +56,7 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-21 user-requested advisory cleanup: implemented the non-blocking Round-18 code-review recommendations that were safe local cleanups. `PtySessionManager` and `TerminalHandler` now use internal `targetKey` terminology and `closeAllForTargetKey()` instead of implying Terminal groups sessions by initialized workspace IDs. `RightSideTabs.vue` no longer imports workspace/file-explorer stores for open-file auto-switching; that coordination moved to `useRightPanelOpenFileAutoSwitch()`, keeping the tab shell presentation-oriented while preserving desktop auto-switch behavior and keeping mobile-tools Files disabled. ADV-TERM-001 remains a performance-investigation note: no Terminal backend architecture change was made without profiling, and macOS `IsolatedPtySession` remains intact to preserve descriptor-level cleanup guarantees.
 - Round-22 CR-013 local fix: updated the Terminal PTY session manager unit tests and kept repository-resident JS counterpart to match the production `targetKey` rename. Stale `closeAllForWorkspace()` calls, `ws1`/`ws2` fixtures, and workspace-worded test names are replaced with `closeAllForTargetKey()`, `target-1`/`target-2`, and target-key wording.
 - Round-23 CR-014 local fix: completed the adjacent Terminal handler test cleanup by replacing workspace-shaped `ws1` target-key fixtures with `target-1` in both `terminal-handler.test.ts` and the kept `.js` counterpart. Focused greps now show no `closeAllForWorkspace`, `terminalTargetId`, `sessions by workspace`, `ws1`, or `ws2` references across Terminal streaming source and unit tests.
+- Round-24 DS-014 implementation: updated the desktop right-side tab lifecycle so Files remains lazy before first selection, then stays mounted/cached but inactive after first use when switching to Terminal. `RightSideTabs.vue` now hides cached Files with `v-show` and passes an explicit `active` prop while Terminal remains visible-only and disconnected when hidden. `FileExplorer`, `FileExplorerTabs`, and `FileItem` now gate live sessions, refresh/search work, and global keyboard/drag/context listeners on active state; inactive cached Files releases live session consumers, aborts search, removes panel listeners, and keeps the cached tree available for immediate re-display on return.
 
 ## Key Files Or Areas
 
@@ -107,6 +108,12 @@ Frontend:
 - `autobyteus-web/utils/terminalTarget.ts`
 - `autobyteus-web/composables/useTerminalSession.ts`
 - `autobyteus-web/components/fileExplorer/FileExplorer.vue`
+- `autobyteus-web/components/fileExplorer/FileExplorerLayout.vue`
+- `autobyteus-web/components/fileExplorer/FileExplorerTabs.vue`
+- `autobyteus-web/components/fileExplorer/FileItem.vue`
+- `autobyteus-web/components/fileExplorer/__tests__/FileExplorer.spec.ts`
+- `autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.spec.ts`
+- `autobyteus-web/components/fileExplorer/__tests__/FileItem.spec.ts`
 - `autobyteus-web/components/workspace/tools/Terminal.vue`
 - `autobyteus-web/components/layout/RightSideTabs.vue`
 - `autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts`
@@ -152,6 +159,7 @@ Removed obsolete source/test paths:
 - On Darwin/macOS, Terminal WebSocket sessions use an isolated helper-process PTY backend so the backend server process does not retain `node-pty` `/dev/ptmx` or `(revoked)` descriptors after normal command-output close. The helper still owns real `node-pty` interactive PTY semantics while it is alive.
 - The isolated Darwin PTY path must continue to reuse the shared `node-pty` bootstrap owner for `spawn-helper` executable-bit repair before any bridge/helper spawn.
 - Terminal backend architecture should not be changed for perceived startup latency unless profiling isolates the bottleneck and the replacement still passes descriptor-level FD probes.
+- DS-014 preserves Terminal descriptor discipline: Files may be cached while inactive, but hidden Terminal must not be cached with a live PTY/WebSocket just to speed tab switches.
 - Full API/E2E validation remains downstream-owned after code review.
 
 ## Known Risks
@@ -178,7 +186,7 @@ Removed obsolete source/test paths:
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; metadata and file-explorer capability state are separate.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-17 Terminal backend code keeps parent session lifecycle split from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines (`isolated-pty-session.ts` 319 effective non-empty lines, bridge source 89).
+- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-17 Terminal backend code keeps parent session lifecycle split from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines (`isolated-pty-session.ts` 319 effective non-empty lines, bridge source 89). Round-24 DS-014 touched large file-explorer UI files and kept them under the guardrail (`FileItem.vue` 490 effective non-empty lines, `FileExplorerTabs.vue` 375, `FileExplorer.vue` 265).
 
 ## Environment Or Dependency Notes
 
@@ -189,6 +197,29 @@ Removed obsolete source/test paths:
 ## Local Implementation Checks Run
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
+
+Round-24 DS-014 Files-to-Terminal lifecycle checks:
+
+- `pnpm -C autobyteus-web test:nuxt run components/layout/__tests__/RightSideTabs.spec.ts components/fileExplorer/__tests__/FileExplorer.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts components/fileExplorer/__tests__/FileItem.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts`
+  - Result: pass, 6 files / 29 tests.
+  - Covers Files lazy-before-first-use, cached hidden Files when switching to Terminal, inactive live-session/search/listener release, no per-node global FileItem listeners, FileExplorerTabs active listener gating, and existing Terminal root-path frontend behavior.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round24-files-terminal-lifecycle-frontend-tests-20260529.log`
+- `pnpm -C autobyteus-server-ts test tests/unit/services/terminal/pty-session-manager.test.ts tests/unit/services/terminal/terminal-handler.test.ts tests/integration/terminal/terminal-websocket.integration.test.ts tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
+  - Result: pass, 4 files / 26 tests.
+  - Confirms DS-014 did not require backend Terminal lifecycle changes and the root-path/descriptor-safe Terminal backend subset still passes.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round24-files-terminal-backend-terminal-tests-20260529.log`
+- `pnpm -C autobyteus-web guard:web-boundary`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round24-files-terminal-web-boundary-20260529.log`
+- Focused Files/Terminal lifecycle grep.
+  - Result: pass; Terminal path has no file-explorer acquisition/import references; Files panel uses lazy/cached `v-show` with explicit active prop; `FileItem` no longer registers per-node global close/drag listeners; active FileExplorer owner owns consolidated listener and inactive suspension hooks.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round24-files-terminal-lifecycle-grep-20260529.log`
+- Changed-source size audit for touched DS-014 implementation files.
+  - Result: pass; no changed implementation source file exceeds 500 effective non-empty lines.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round24-files-terminal-source-size-20260529.log`
+- `git diff --check` and `git diff --cached --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round24-files-terminal-diff-check-20260529.log`
 
 Round-23 CR-014 local-fix checks:
 

@@ -1,6 +1,6 @@
 <template>
   <!-- Zen: teleport to body so it sits above the sidebar stacking context -->
-  <Teleport v-if="isZenMode" to="body">
+  <Teleport v-if="isActiveZenMode" to="body">
     <div
       id="contentViewer"
       class="bg-white rounded-lg shadow-md flex flex-col h-full fixed inset-0 z-[120] min-h-screen"
@@ -202,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch, onMounted, ref, onBeforeUnmount } from 'vue'
+import { computed, watch, ref, onBeforeUnmount } from 'vue'
 import { Teleport } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useFileExplorerStore } from '~/stores/fileExplorer'
@@ -219,9 +219,12 @@ const workspaceStore = useWorkspaceStore()
 const fileContentDisplayModeStore = useFileContentDisplayModeStore()
 const { isZenMode } = storeToRefs(fileContentDisplayModeStore)
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   workspaceId?: string
-}>()
+  active?: boolean
+}>(), {
+  active: true,
+})
 
 const contentRef = ref<HTMLElement | null>(null)
 // File Content Viewer is currently Global / Desktop level, so it binds to the Active Workspace.
@@ -254,6 +257,7 @@ const closeAllFiles = () => currentWorkspaceId.value && fileExplorerStore.closeA
 const closeOtherFiles = (filePath: string) => currentWorkspaceId.value && fileExplorerStore.closeOtherFiles(filePath, currentWorkspaceId.value)
 const getFileLanguage = (filePath: string) => getLanguage(filePath)
 const setMode = (mode: 'edit' | 'preview') => {
+  if (!props.active) return
   if (!activeFile.value || !currentWorkspaceId.value) return
   fileExplorerStore.setFileMode(activeFile.value, mode, currentWorkspaceId.value)
 }
@@ -264,6 +268,7 @@ const isPreviewableText = computed(() => {
 })
 
 const activeFileMode = computed(() => activeFileData.value?.mode ?? 'edit')
+const isActiveZenMode = computed(() => props.active && isZenMode.value)
 const toggleZenMode = () => fileContentDisplayModeStore.toggleZenMode()
 
 // Context menu state
@@ -275,6 +280,8 @@ const contextMenu = ref({
 })
 
 const showContextMenu = (event: MouseEvent, file: string) => {
+  if (!props.active) return
+
   contextMenu.value = {
     visible: true,
     x: event.clientX,
@@ -326,20 +333,46 @@ watch(activeFileData, (newVal) => {
   }
 }, { immediate: true, deep: true });
 
-onMounted(() => {
+const attachGlobalListeners = () => {
   window.addEventListener('keydown', handleKeydown)
   document.addEventListener('click', hideContextMenu)
-})
+}
 
-onBeforeUnmount(() => {
+const detachGlobalListeners = () => {
   window.removeEventListener('keydown', handleKeydown)
   document.removeEventListener('click', hideContextMenu)
+}
+
+let globalListenersAttached = false
+const syncGlobalListeners = (isActive: boolean) => {
+  if (isActive && !globalListenersAttached) {
+    attachGlobalListeners()
+    globalListenersAttached = true
+    return
+  }
+
+  if (!isActive && globalListenersAttached) {
+    detachGlobalListeners()
+    globalListenersAttached = false
+  }
+}
+
+watch(() => props.active, (isActive) => {
+  syncGlobalListeners(isActive)
+  if (!isActive) {
+    hideContextMenu()
+  }
+}, { immediate: true })
+
+onBeforeUnmount(() => {
+  syncGlobalListeners(false)
   if (saveSuccessTimeout) {
     clearTimeout(saveSuccessTimeout)
   }
 })
 
 const handleSave = async () => {
+  if (!props.active) return
   if (!activeFile.value || fileContent.value === null || isSavingContent.value) return;
 
   try {
@@ -361,6 +394,8 @@ const handleSave = async () => {
 }
 
 const handleKeydown = async (event: KeyboardEvent) => {
+  if (!props.active) return
+
   // Exit Zen mode on Escape
   if (event.key === 'Escape' && isZenMode.value) {
     fileContentDisplayModeStore.exitZenMode()
@@ -380,4 +415,3 @@ const handleKeydown = async (event: KeyboardEvent) => {
   }
 }
 </script>
-

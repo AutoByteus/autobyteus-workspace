@@ -1,0 +1,40 @@
+## Round 24 Files/Terminal lifecycle grep
+# Terminal remains independent from file-explorer/workspace file tree internals
+Pass: Terminal path has no file-explorer acquisition/import references in checked scope.
+
+# Files panel is cached after first use and receives explicit active state
+26:        v-if="shouldMountFilesPanel"
+27:        v-show="isFilesTabActive"
+31:        <FileExplorerLayout :active="isFilesTabActive" />
+98:const hasOpenedFilesTab = ref(false);
+100:const shouldMountFilesPanel = computed(() => filesTabEnabled.value && hasOpenedFilesTab.value);
+128:    hasOpenedFilesTab.value = true;
+autobyteus-web/components/fileExplorer/FileExplorer.vue:44:const props = withDefaults(defineProps<{
+autobyteus-web/components/fileExplorer/FileExplorer.vue:46:  active?: boolean
+autobyteus-web/components/fileExplorer/FileExplorerLayout.vue:8:      <FileExplorer :active="props.active" />
+autobyteus-web/components/fileExplorer/FileExplorerLayout.vue:22:      <FileExplorerTabs :active="props.active" />
+autobyteus-web/components/fileExplorer/FileExplorerLayout.vue:32:const props = withDefaults(defineProps<{
+autobyteus-web/components/fileExplorer/FileExplorerLayout.vue:33:  active?: boolean
+autobyteus-web/components/fileExplorer/FileExplorerTabs.vue:222:const props = withDefaults(defineProps<{
+autobyteus-web/components/fileExplorer/FileExplorerTabs.vue:224:  active?: boolean
+
+# FileItem no longer registers per-node global document listeners on mount
+Pass: FileItem has no per-node global close/drag listener registration.
+
+# Active FileExplorer owner now owns consolidated global listeners and inactive suspension
+autobyteus-web/components/fileExplorer/FileExplorer.vue:111:const suspendInactiveWork = () => {
+autobyteus-web/components/fileExplorer/FileExplorer.vue:117:    fileExplorerStore.abortSearch(activatedWorkspaceId.value);
+autobyteus-web/components/fileExplorer/FileExplorer.vue:123:    suspendInactiveWork();
+autobyteus-web/components/fileExplorer/FileExplorer.vue:165:      suspendInactiveWork();
+autobyteus-web/components/fileExplorer/FileExplorer.vue:174:    releaseLiveSession = workspaceStore.acquireFileExplorerLiveSession(workspaceId, liveSessionConsumerId);
+autobyteus-web/components/fileExplorer/FileExplorer.vue:194:    explorer.abortSearch();
+autobyteus-web/components/fileExplorer/FileExplorer.vue:219:  detachGlobalFileExplorerListeners();
+autobyteus-web/components/fileExplorer/FileExplorer.vue:252:const attachGlobalFileExplorerListeners = () => {
+autobyteus-web/components/fileExplorer/FileExplorer.vue:260:const detachGlobalFileExplorerListeners = () => {
+autobyteus-web/components/fileExplorer/FileExplorer.vue:270:    attachGlobalFileExplorerListeners();
+autobyteus-web/components/fileExplorer/FileExplorer.vue:274:  detachGlobalFileExplorerListeners();
+autobyteus-web/components/fileExplorer/FileExplorer.vue:275:  suspendInactiveWork();
+autobyteus-web/stores/fileExplorerSearchActions.ts:13:  abortSearch(this: any, workspaceId: string) {
+autobyteus-web/composables/useWorkspaceFileExplorer.ts:145:    const abortSearch = () => {
+autobyteus-web/composables/useWorkspaceFileExplorer.ts:147:        if (id) store.abortSearch(id);
+autobyteus-web/composables/useWorkspaceFileExplorer.ts:217:        abortSearch,

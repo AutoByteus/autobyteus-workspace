@@ -178,3 +178,18 @@ Updated same-ticket target:
 - Descriptor-level acceptance is mandatory for Terminal because this ticket's root issue is descriptor pressure and rare `spawn EBADF`.
 - Durable validation must measure process FDs and PTY/revoked descriptor lines after repeated normal command-output sessions.
 - If the current `node-pty` close sequence cannot satisfy descriptor cleanup, implementation must change the backend/wrapper/close sequence rather than relying on fd limits or session-count cleanup.
+
+## Round 10 Design-Impact Revision: Files-to-Terminal Shell-Readiness Decoupling
+
+User testing of the current Electron build initially looked like Terminal tab rendering was slow after Files, but the user clarified the important symptom: the Terminal tab and local `Connected to Workspace Terminal` line appear quickly; the real shell output/prompt is delayed after Files has been opened. Code inspection confirms the local line is written by `Terminal.vue`, before backend PTY readiness is known.
+
+Updated same-ticket target:
+
+- Do not mount the desktop Files panel before the user first selects Files.
+- After the first Files selection, keep/cache the Files panel UI/tree across tab switches if needed to avoid synchronous large-tree unmount during Files -> Terminal.
+- Add an explicit `active/visible` lifecycle input for the Files panel. Active Files may acquire `WorkspaceFileExplorer`, live stream, watcher lease, snapshot refresh/search, keyboard/drag/context listeners, and editor/viewer behavior. Inactive cached Files must release/suspend those resources and listeners.
+- FileExplorer inactive cleanup must cancel/suppress late refresh/search work and must not starve Terminal PTY startup/first shell output.
+- Terminal UI must distinguish local xterm initialization, WebSocket open, backend PTY ready, and first shell output. Do not show a local `Connected` line as proof of shell readiness.
+- Terminal remains visible-only or otherwise explicitly disconnected while inactive; do not keep hidden PTY/WebSocket sessions open as a performance shortcut.
+- When Files is reactivated, it may show cached tree state immediately but must re-acquire live session and refresh root/open folders with visible loading/error state.
+- Validation must cover the exact sequence Terminal -> Files -> loaded tree/live watcher -> Terminal and assert fast backend Terminal ready / first shell output plus inactive FileExplorer resource release.

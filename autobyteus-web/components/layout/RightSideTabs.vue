@@ -22,8 +22,13 @@
 
     <!-- Tab Content -->
     <div data-test="right-side-tab-content-shell" class="flex-1 min-h-0 overflow-hidden relative">
-      <div v-if="filesTabEnabled && effectiveActiveTab === 'files'" class="h-full min-h-0">
-        <FileExplorerLayout />
+      <div
+        v-if="shouldMountFilesPanel"
+        v-show="isFilesTabActive"
+        class="h-full min-h-0"
+        data-test="right-side-files-panel"
+      >
+        <FileExplorerLayout :active="isFilesTabActive" />
       </div>
       <div v-if="effectiveActiveTab === 'teamMembers'" class="h-full min-h-0">
         <TeamOverviewPanel />
@@ -48,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentTodoStore } from '~/stores/agentTodoStore';
 import { useRightPanel } from '~/composables/useRightPanel';
@@ -90,6 +95,9 @@ const effectiveActiveTab = computed(() => {
   }
   return visibleTabs.value[0]?.name ?? 'terminal';
 });
+const hasOpenedFilesTab = ref(false);
+const isFilesTabActive = computed(() => filesTabEnabled.value && effectiveActiveTab.value === 'files');
+const shouldMountFilesPanel = computed(() => filesTabEnabled.value && hasOpenedFilesTab.value);
 
 const handleTabSelect = (tabName: string) => {
   if (!filesTabEnabled.value && tabName === 'files') {
@@ -114,6 +122,12 @@ watch(visibleTabs, (newVisibleTabs) => {
     setActiveTab(newVisibleTabs[0].name);
   }
 });
+
+watch(isFilesTabActive, (isActive) => {
+  if (isActive) {
+    hasOpenedFilesTab.value = true;
+  }
+}, { immediate: true });
 
 // Watch the ToDo list for the active agent. If it becomes populated, switch to the To-Do tab.
 watch(() => currentAgentRunId.value ? todoStore.getTodos(currentAgentRunId.value) : [], (newTodoList) => {

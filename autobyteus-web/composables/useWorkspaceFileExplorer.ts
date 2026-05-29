@@ -142,6 +142,10 @@ export function useWorkspaceFileExplorer(workspaceIdRef?: MaybeRef<string | unde
         const id = getWorkspaceId();
         if (id) store.searchFiles(query, id);
     };
+    const abortSearch = () => {
+        const id = getWorkspaceId();
+        if (id) store.abortSearch(id);
+    };
 
     // File Content & Loading
     const getFileContent = (path: string) => {
@@ -210,6 +214,7 @@ export function useWorkspaceFileExplorer(workspaceIdRef?: MaybeRef<string | unde
         moveFileOrFolder,
         createFileOrFolder,
         searchFiles,
+        abortSearch,
         
         // Content
         getFileContent,

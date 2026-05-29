@@ -687,3 +687,80 @@ Relevant current-code ownership read:
 Design impact:
 
 The approved design already requires Terminal pending-close/setup-failure cleanup, but normal attached command-output close is a separate lifecycle spine. The target design must explicitly require OS descriptor cleanup for normal Terminal sessions and durable validation that checks process descriptors, not only manager session count.
+
+
+
+## Round 10 Current-State Read: Files-to-Terminal Shell-Readiness Latency
+
+### User-observed symptom
+
+On 2026-05-29 the user reported and clarified the current Electron build from this ticket worktree behaves as follows:
+
+1. Open a historical software-engineering team/member run.
+2. Click Terminal first: Terminal tab appears quickly and shell output/prompt arrives quickly.
+3. Click Activity/Artifacts and then Terminal: Terminal remains quick.
+4. Click Files and wait for the file tree to load, which is expected to take a short time.
+5. Click Terminal after Files: the Terminal tab and local `Connected to Workspace Terminal` line appear almost immediately, but the real shell output/default prompt appears slowly.
+6. After that, later switches back to Terminal are quick again.
+
+The important refinement is that the slow part is not the tab appearing and not the local welcome line. The slow part is backend Terminal readiness / first shell output after Files has been active.
+
+### Code evidence inspected
+
+| Date | Evidence type | Source | Observation | Design implication |
+| --- | --- | --- | --- | --- |
+| 2026-05-29 | Code | `autobyteus-web/components/layout/RightSideTabs.vue` | Each tab body is controlled by `v-if`, including Files and Terminal. | Loaded Files teardown can still add UI work, but the clarified screenshots show Terminal UI itself appears quickly. |
+| 2026-05-29 | Code | `autobyteus-web/components/workspace/tools/Terminal.vue` | `initializeTerminal()` writes `➜ Connected to Workspace Terminal` locally before backend PTY output is required. `connectTerminal()` then calls `session.connect()`. | The current local line is not proof that WebSocket/PTY/shell is ready; UI wording/status is misleading for this diagnosis. |
+| 2026-05-29 | Code | `autobyteus-web/composables/useTerminalSession.ts` | `connectionStatus` becomes `connected` on browser WebSocket `onopen`; no backend `ready` status is parsed. First actual shell text arrives only via `message.type === "output"`. | The frontend cannot currently distinguish socket-open from PTY-ready or first shell output. |
+| 2026-05-29 | Code | `autobyteus-server-ts/src/api/websocket/terminal.ts` | The WebSocket route starts auth/cwd validation, then `handler.connect(...)`; it does not send a structured Terminal-ready message after PTY creation. | A backend readiness event or equivalent first-output instrumentation is needed to measure the actual delayed segment. |
+| 2026-05-29 | Code | `autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts` | `connect()` awaits `PtySessionManager.createSession()`, starts the read loop, and returns. Output is emitted only from the read loop after `session.read(...)`. | The delayed segment may be in PTY creation/startup or read-loop/first output delivery. |
+| 2026-05-29 | Code | `autobyteus-ts/src/tools/terminal/pty-session.ts` | `start()` imports `node-pty`, spawns `bash --norc --noprofile -i`, registers listeners, then waits `STARTUP_DELAY_MS = 100`. | There is a fixed minimum startup delay, but the user-observed Files-specific delay implies additional contention or queued work after FileExplorer activity. |
+| 2026-05-29 | Code | `autobyteus-web/components/fileExplorer/FileExplorer.vue` and `workspaceFileExplorerLiveActions.ts` | Opening Files acquires a live file-explorer WebSocket/watcher and triggers snapshot refresh. Hiding Files releases the client live session, but release is not an acknowledged backend-quiescence point. | Terminal can begin PTY startup while backend file-explorer watcher cleanup or snapshot/search work is still active. |
+| 2026-05-29 | Code | `autobyteus-server-ts/src/api/websocket/file-explorer.ts` and `services/file-explorer-streaming/*` | Client close triggers async server cleanup: stream handler disconnects session, session releases watcher lease/file-explorer lease, and watcher stop awaits `chokidar.close()`. | FileExplorer cleanup may overlap with Terminal PTY spawn/readiness after a Files -> Terminal switch. |
+| 2026-05-29 | Code | `autobyteus-server-ts/src/api/graphql/types/file-explorer.ts` | `folderChildren()` currently ensures a full workspace tree by calling `buildWorkspaceDirectoryTree()` when root/tree is missing or folder children are not loaded. | FileExplorer refresh/folder queries can be heavy filesystem work; inactive/cancelled late work should not compete with Terminal startup. |
+
+### Current-state diagnosis
+
+The initial Round 10 hypothesis focused too much on Terminal first paint. The user-provided screenshots refine it:
+
+```text
+Terminal component/xterm first paint = fast
+Local welcome line = fast, because Terminal.vue writes it locally
+Backend PTY ready / first shell output = slow after Files was active
+```
+
+The likely coupling is therefore between FileExplorer activity/cleanup and Terminal backend readiness, not only between FileExplorer DOM teardown and Terminal rendering:
+
+```text
+Files tab active
+-> file tree fetch/refresh and live watcher are active
+-> user switches to Terminal
+-> FileExplorer client disconnect/release starts, but server watcher/session cleanup may still be running
+-> Terminal WS opens and local xterm message appears
+-> PTY spawn/start/read-loop/first shell output competes with or waits behind FileExplorer filesystem/watcher cleanup/in-flight work
+-> prompt arrives late
+```
+
+This still supports the earlier architecture separation: Terminal must not acquire FileExplorer. The refined requirement is stronger: Terminal shell readiness must stay fast after FileExplorer was active, and the UI must not hide backend delay behind a local `Connected` string.
+
+### Round 10 design implication
+
+The right-side Files tab should be:
+
+```text
+not mounted before first Files selection
+mounted/cached after first use if needed to avoid UI churn
+active only while the Files tab is selected
+live/watch/search/listener work allowed only while active
+inactive cleanup cancelable/observable and not allowed to starve Terminal PTY startup
+```
+
+Terminal should be:
+
+```text
+mounted/visible quickly when Terminal is selected
+root-path based
+status-aware: local xterm initialized != socket open != PTY ready != first shell output
+not kept hidden with an open PTY/WebSocket
+validated by time-to-ready and time-to-first-shell-output after Files was active
+```

@@ -95,7 +95,11 @@ describe('RightSideTabs', () => {
         TeamOverviewPanel: { template: '<div class="team-overview-stub" />' },
         Terminal: { template: '<div class="terminal-stub" />' },
         VncViewer: { template: '<div class="vnc-stub" />' },
-        FileExplorerLayout: { template: '<div class="file-layout-stub" />' },
+        FileExplorerLayout: {
+          name: 'FileExplorerLayout',
+          props: ['active'],
+          template: '<div class="file-layout-stub" />',
+        },
         ArtifactsTab: { template: '<div class="artifacts-stub" />' },
         BrowserPanel: { template: '<div class="browser-panel-stub" />' },
         ProgressPanel: { template: '<div class="progress-stub" />' },
@@ -146,6 +150,41 @@ describe('RightSideTabs', () => {
       { name: 'artifacts', label: 'Artifacts' },
     ]);
     expect(wrapper.find('.file-layout-stub').exists()).toBe(false);
+  });
+
+  it('keeps Files lazy before first selection even when Terminal is selected first', () => {
+    activeTab.value = 'terminal';
+    visibleTabs.value = [
+      { name: 'files', label: 'Files' },
+      { name: 'terminal', label: 'Terminal' },
+      { name: 'progress', label: 'Activity' },
+    ];
+
+    const wrapper = mountSubject();
+
+    expect(wrapper.find('.terminal-stub').exists()).toBe(true);
+    expect(wrapper.find('.file-layout-stub').exists()).toBe(false);
+  });
+
+  it('caches Files after first use and marks it inactive when switching to Terminal', async () => {
+    activeTab.value = 'files';
+    visibleTabs.value = [
+      { name: 'files', label: 'Files' },
+      { name: 'terminal', label: 'Terminal' },
+      { name: 'progress', label: 'Activity' },
+    ];
+    const wrapper = mountSubject();
+
+    let fileLayout = wrapper.getComponent({ name: 'FileExplorerLayout' });
+    expect(fileLayout.props('active')).toBe(true);
+
+    activeTab.value = 'terminal';
+    await nextTick();
+
+    expect(wrapper.find('.terminal-stub').exists()).toBe(true);
+    fileLayout = wrapper.getComponent({ name: 'FileExplorerLayout' });
+    expect(fileLayout.props('active')).toBe(false);
+    expect(wrapper.find('.file-layout-stub').exists()).toBe(true);
   });
 
   it('auto-switches to Files when an open file appears in desktop mode', async () => {

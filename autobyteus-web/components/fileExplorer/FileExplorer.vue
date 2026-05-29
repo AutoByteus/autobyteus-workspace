@@ -37,21 +37,34 @@ import { ref, watch, computed, onMounted, onUnmounted, nextTick, provide } from 
 import FileItem from "~/components/fileExplorer/FileItem.vue";
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useWorkspaceFileExplorer } from '~/composables/useWorkspaceFileExplorer';
+import { useFileExplorerStore } from '~/stores/fileExplorer';
 
 let fileExplorerConsumerCounter = 0;
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   workspaceId?: string
-}>();
+  active?: boolean
+}>(), {
+  active: true,
+});
 
 const workspaceStore = useWorkspaceStore();
+const fileExplorerStore = useFileExplorerStore();
 const activatedWorkspaceId = ref<string | null>(props.workspaceId || null);
 const isActivatingWorkspace = ref(false);
 const activationError = ref<string | null>(null);
 const explorer = useWorkspaceFileExplorer(activatedWorkspaceId);
+const panelActive = computed(() => props.active);
+const closeContextMenusSignal = ref(0);
+const outsideDragSignal = ref(0);
+const globalDragResetSignal = ref(0);
 
 // Provide the explorer instance to all children (FileItem)
 provide('workspaceFileExplorer', explorer);
+provide('fileExplorerPanelActive', panelActive);
+provide('fileExplorerCloseContextMenusSignal', closeContextMenusSignal);
+provide('fileExplorerOutsideDragSignal', outsideDragSignal);
+provide('fileExplorerGlobalDragResetSignal', globalDragResetSignal);
 
 const searchQuery = ref('');
 const searchInputRef = ref<HTMLInputElement | null>(null);
@@ -80,14 +93,37 @@ const hasWorkspaceTarget = computed(() =>
 );
 const liveSessionConsumerId = `file-explorer:${++fileExplorerConsumerCounter}`;
 let releaseLiveSession: (() => void) | null = null;
+let activationSequence = 0;
+let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 
 const releaseCurrentLiveSession = () => {
   releaseLiveSession?.();
   releaseLiveSession = null;
 };
 
-let activationSequence = 0;
+const clearPendingSearch = () => {
+  if (searchDebounceTimer) {
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = null;
+  }
+};
+
+const suspendInactiveWork = () => {
+  ++activationSequence;
+  isActivatingWorkspace.value = false;
+  releaseCurrentLiveSession();
+  clearPendingSearch();
+  if (activatedWorkspaceId.value) {
+    fileExplorerStore.abortSearch(activatedWorkspaceId.value);
+  }
+};
+
 const activateCurrentWorkspace = async () => {
+  if (!panelActive.value) {
+    suspendInactiveWork();
+    return;
+  }
+
   const sequence = ++activationSequence;
   activationError.value = null;
 
@@ -121,16 +157,20 @@ const activateCurrentWorkspace = async () => {
 };
 
 watch(
-  () => requestedWorkspaceMetadata.value?.workspaceId || props.workspaceId || '',
+  () => [requestedWorkspaceMetadata.value?.workspaceId || props.workspaceId || '', panelActive.value] as const,
   () => {
-    activateCurrentWorkspace();
+    if (panelActive.value) {
+      activateCurrentWorkspace();
+    } else {
+      suspendInactiveWork();
+    }
   },
   { immediate: true },
 );
 
-watch(() => currentWorkspace.value?.workspaceId ?? '', (workspaceId) => {
+watch(() => [currentWorkspace.value?.workspaceId ?? '', panelActive.value] as const, ([workspaceId, isActive]) => {
   releaseCurrentLiveSession();
-  if (workspaceId) {
+  if (workspaceId && isActive) {
     releaseLiveSession = workspaceStore.acquireFileExplorerLiveSession(workspaceId, liveSessionConsumerId);
   }
 }, { immediate: true });
@@ -147,18 +187,19 @@ const displayedFiles = computed(() => {
   }
 });
 
-// Debounce timer for search
-let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+watch([searchQuery, panelActive], ([newQuery, isActive]) => {
+  clearPendingSearch();
 
-watch(searchQuery, (newQuery) => {
-  // Clear previous timer
-  if (searchDebounceTimer) {
-    clearTimeout(searchDebounceTimer);
+  if (!isActive) {
+    explorer.abortSearch();
+    return;
   }
-  
+
   // Debounce 500ms before triggering search (industry best practice for detecting typing completion)
   searchDebounceTimer = setTimeout(() => {
-    explorer.searchFiles(newQuery);
+    if (panelActive.value) {
+      explorer.searchFiles(newQuery);
+    }
   }, 500);
 });
 
@@ -173,10 +214,9 @@ watch(displayedFiles, () => {
 
 // Cleanup timer on unmount
 onUnmounted(() => {
-  if (searchDebounceTimer) {
-    clearTimeout(searchDebounceTimer);
-  }
+  clearPendingSearch();
   releaseCurrentLiveSession();
+  detachGlobalFileExplorerListeners();
 });
 
 watch(currentWorkspace, (newWorkspace) => {
@@ -187,10 +227,53 @@ watch(currentWorkspace, (newWorkspace) => {
 
 onMounted(() => {
   // If we have a query (e.g. restored state) and a workspace, trigger search
-  if (searchQuery.value && currentWorkspace.value) {
+  if (panelActive.value && searchQuery.value && currentWorkspace.value) {
     explorer.searchFiles(searchQuery.value);
   }
 });
+
+const onCloseAllContextMenusEvent = () => {
+  closeContextMenusSignal.value += 1;
+};
+
+const onGlobalDragOver = (event: DragEvent) => {
+  const isOverFileExplorer = event.target instanceof Element &&
+    (event.target.closest('.file-item') !== null || event.target.closest('.file-explorer') !== null);
+  if (!isOverFileExplorer) {
+    outsideDragSignal.value += 1;
+  }
+};
+
+const onGlobalDragEnd = () => {
+  globalDragResetSignal.value += 1;
+};
+
+let globalListenersAttached = false;
+const attachGlobalFileExplorerListeners = () => {
+  if (globalListenersAttached) return;
+  document.addEventListener('closeAllFileContextMenus', onCloseAllContextMenusEvent);
+  document.addEventListener('dragover', onGlobalDragOver);
+  document.addEventListener('dragend', onGlobalDragEnd);
+  globalListenersAttached = true;
+};
+
+const detachGlobalFileExplorerListeners = () => {
+  if (!globalListenersAttached) return;
+  document.removeEventListener('closeAllFileContextMenus', onCloseAllContextMenusEvent);
+  document.removeEventListener('dragover', onGlobalDragOver);
+  document.removeEventListener('dragend', onGlobalDragEnd);
+  globalListenersAttached = false;
+};
+
+watch(panelActive, (isActive) => {
+  if (isActive) {
+    attachGlobalFileExplorerListeners();
+    return;
+  }
+
+  detachGlobalFileExplorerListeners();
+  suspendInactiveWork();
+}, { immediate: true });
 </script>
 
 <style scoped>

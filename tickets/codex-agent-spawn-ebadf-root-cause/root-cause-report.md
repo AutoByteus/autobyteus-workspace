@@ -385,3 +385,33 @@ Durable fix direction:
 2. Ensure normal open/run-command/close paths and early-close/setup-failure paths share the same terminal resource owner and idempotent close semantics.
 3. Add descriptor-level built-backend/macOS validation for normal attached command-output churn.
 4. If `node-pty` cannot be made descriptor-clean in this runtime, switch or wrap the terminal backend with a descriptor-safe lifecycle rather than relying on fd-limit increases or session-map cleanup.
+
+
+
+## Round 10 Root-Cause Refinement: FileExplorer Activity Can Delay Terminal Shell Readiness
+
+The latest user clarification shows Terminal UI first paint is mostly fine: the tab opens and `Connected to Workspace Terminal` appears immediately. The delayed part is the real backend shell output/prompt. Code inspection confirms that the current `Connected to Workspace Terminal` line is written locally by `Terminal.vue` before backend PTY readiness is known.
+
+So the refined root cause is not only large FileExplorer DOM teardown. The stronger issue is lifecycle/resource coordination after Files has been active:
+
+```text
+Files active -> file tree/folder refresh + watcher/live session active
+Switch to Terminal -> local xterm paints immediately
+FileExplorer cleanup/in-flight filesystem work may still be running
+Terminal PTY spawn/read loop/first shell output becomes slow
+```
+
+Correct invariant:
+
+```text
+Terminal shell readiness must be independent from FileExplorer activity, and Terminal UI must distinguish local initialization from backend PTY readiness.
+```
+
+Durable fix direction:
+
+1. Keep the desktop Files panel lazy before first use so history/Terminal-first flows still do not mount FileExplorer or acquire watchers.
+2. After first Files use, preserve/cache the FileExplorer UI/tree if needed for UI responsiveness, but drive live resources from explicit active/visible state.
+3. On Files inactive, release watcher/live session, cancel or suppress late snapshot/search work, and suspend global listeners without allowing cleanup to starve Terminal PTY startup.
+4. Add Terminal readiness status: local xterm initialization, WebSocket open, backend PTY ready, and first shell output are separate states. Do not display a local `Connected` line as proof of shell readiness.
+5. Keep Terminal mounted/connected only while Terminal is selected so the performance fix does not reintroduce hidden PTY descriptor pressure.
+6. Validate the exact symptom by measuring time to backend Terminal ready and first shell output for `Terminal -> Files -> loaded tree/live watcher -> Terminal`, not only time to tab paint.

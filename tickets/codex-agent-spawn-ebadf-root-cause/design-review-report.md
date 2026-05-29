@@ -7,11 +7,11 @@
 - Upstream Root-Cause Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/root-cause-report.md`
 - Upstream Same-Ticket Design-Impact Rework Artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-impact-rework-history-lazy-workspace.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-spec.md`
-- Current Review Round: 8
-- Trigger: Architecture review after API/E2E Round 9 rerouted `E2E-TERMFD-002` for normal attached Terminal command-output sessions retaining `/dev/ptmx` / `(revoked)` descriptors after close.
-- Prior Review Round Reviewed: 7
-- Latest Authoritative Round: 8
-- Current-State Evidence Basis: Reloaded the `architecture-reviewer` skill and design principles; reread the current requirements, investigation notes, design spec, root-cause report, design-impact rework artifact, previous review report, API/E2E Round 9 report, Terminal failure analysis, descriptor/timing JSON, final `lsof`, and current code paths. Independently inspected Terminal route/handler/manager/session ownership in `autobyteus-server-ts/src/api/websocket/terminal.ts`, `autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts`, `autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts`, `autobyteus-ts/src/tools/terminal/pty-session.ts`, `autobyteus-ts/src/tools/terminal/session-factory.ts`, and existing Terminal unit/E2E tests.
+- Current Review Round: 9
+- Trigger: Fresh architecture review of the Round 10 design-impact revision for Files-to-Terminal first-paint responsiveness after the user observed that Terminal is fast before Files opens, slow on the first switch from a loaded Files panel back to Terminal, then fast again after the Files subtree has already been torn down.
+- Prior Review Round Reviewed: 8
+- Latest Authoritative Round: 9
+- Current-State Evidence Basis: Reloaded the `architecture-reviewer` skill and design principles; reread the current requirements, investigation notes, design spec, root-cause report, design-impact rework artifact, prior design-review report, and downstream validation/release artifacts referenced in the handoff. Independently inspected current frontend code paths in `autobyteus-web/components/layout/RightSideTabs.vue`, `WorkspaceDesktopLayout.vue`, `FileExplorerLayout.vue`, `FileExplorer.vue`, `FileExplorerTabs.vue`, `FileItem.vue`, `workspaceFileExplorerLiveActions.ts`, and `useRightPanel.ts`, plus the existing Terminal/root-path lifecycle context from prior rounds.
 
 ## Round History
 
@@ -24,11 +24,12 @@
 | 5 | Superseding Terminal root-path/cwd design-impact revision | AR-001..AR-004 | 2 | Fail | No | Desktop Terminal direction was sound, but mobile Terminal and Terminal pending-connect cleanup were omitted. |
 | 6 | Fresh full review of user-approved Round 8 WorkspaceMetadata / WorkspaceFileExplorer concept separation | AR-001..AR-006 | 1 | Fail | No | Round 8 concept was sound, but the design spec still contained contradictory pre-Round-8 authoritative sections. |
 | 7 | AR-007 reconciliation review | AR-007 plus AR-001..AR-006 | 0 | Pass | No | The spec was internally consistent and implementation-ready for the Round 8 workspace/file-explorer split. |
-| 8 | API/E2E Round 9 `E2E-TERMFD-002` Terminal descriptor lifecycle design-impact rework | AR-001..AR-007 | 0 | Pass | Yes | Round 9 adds the missing normal-session Terminal descriptor-clean close invariant, owner split, rejection of fd-limit/session-count-only fixes, and descriptor-level validation. |
+| 8 | API/E2E Round 9 `E2E-TERMFD-002` Terminal descriptor lifecycle design-impact rework | AR-001..AR-007 | 0 | Pass | No | Round 9 added the missing normal-session Terminal descriptor-clean close invariant, owner split, rejection of fd-limit/session-count-only fixes, and descriptor-level validation. |
+| 9 | Round 10 Files-to-Terminal first-paint design-impact revision | AR-001..AR-007 plus `E2E-TERMFD-002` | 0 | Pass | Yes | Round 10 is consistent with the established workspace/file-explorer and Terminal lifecycle design and adds a concrete active/cached Files panel lifecycle target. |
 
 ## Reviewed Design Spec
 
-The revised design is architecture-ready.
+The revised Round 10 design is architecture-ready.
 
 The previously passed steady-state target remains authoritative:
 
@@ -39,45 +40,52 @@ WorkspaceFileExplorer = internal tree/search/operation/watcher capability bounda
 WorkspaceFileExplorerTree = file-explorer API/frontend projection
 ```
 
-Round 9 adds a separate Terminal normal-session lifecycle invariant without weakening that target:
+Round 9's Terminal descriptor invariant also remains authoritative:
 
 ```text
 Terminal close complete = socket cleanup + read-loop cleanup + manager removal + low-level PTY descriptor release
 ```
 
-The addition is coherent because the new failure is not a workspace/file-explorer data-model problem and not a Terminal connect-latency problem. API/E2E evidence shows Terminal opens quickly but normal command-output close leaves Terminal-owned PTY descriptors after child processes and manager sessions are gone. The design therefore correctly extends Terminal lifecycle ownership instead of reopening workspace materialization or file-explorer watcher ownership.
+Round 10 adds a frontend lifecycle invariant without changing either boundary:
+
+```text
+Files panel component existence/cache != FileExplorer live/resource activity
+Terminal first paint != FileExplorer tree teardown
+```
+
+The design correctly interprets the user-observed Electron symptom as a frontend tab/component lifecycle coupling. Current `RightSideTabs.vue` uses `v-if` for Files and Terminal, so switching from a loaded Files tree to Terminal can synchronously destroy `FileExplorerLayout`, `FileExplorer`, `FileExplorerTabs`, and recursive `FileItem` instances before Terminal can mount and paint. The design therefore preserves Files laziness before first selection, permits cached hidden Files after first use to avoid large synchronous teardown, and makes file-explorer resources/listeners explicitly active-state-driven.
 
 Key readiness points:
 
-- `WorkspaceManager` / `Workspace` remain metadata-oriented and file-explorer-lazy; history/runtime/Terminal paths still do not acquire `WorkspaceFileExplorer`.
-- Desktop/mobile Terminal stay root-path/cwd features, not materialized-workspace or file-tree features.
-- The Terminal route owns socket/pending-connect cleanup; `TerminalHandler` owns read-loop attach/detach; `PtySessionManager` owns registry close orchestration; `TerminalSession` in `autobyteus-ts` owns the PTY backend, child process, descriptors, disposables, pending reads/timers, and deep close semantics.
-- The design distinguishes manager-map cleanup and child-process cleanup from descriptor cleanup, which is the precise gap exposed by `E2E-TERMFD-002`.
-- The low-level file responsibility is mapped to `autobyteus-ts/src/tools/terminal/pty-session.ts` or a selected descriptor-safe `TerminalSession` backend. Because `autobyteus-server-ts` depends on `autobyteus-ts` as `workspace:*`, this is implementable in the current worktree/package boundary.
-- The design explicitly rejects fd-limit increases, `PtySessionManager.sessionCount === 0`, and child-count-only checks as sufficient fixes.
-- Validation now requires built-backend/macOS-realistic descriptor checks for normal attached command-output churn and avoids shell-echo false positives by requiring actual command output.
+- Terminal stays root-path based and independent from `WorkspaceFileExplorer`; the design does not regress to workspace materialization or file-tree acquisition.
+- Hidden Terminal PTY/WebSocket sessions are explicitly rejected as a tab-switch optimization, preserving the Round 9 descriptor discipline.
+- The Files panel remains lazy before first selection, so history and Terminal-first flows still do not mount FileExplorer UI, fetch tree data, open a file-explorer WebSocket, or acquire watcher resources.
+- After first Files use, cached inactive Files may retain UI/tree state, but active/live resources are forbidden while hidden: live stream, watcher consumer, refresh/search work, keyboard listeners, drag listeners, context listeners, and active editor/viewer behavior must suspend or release.
+- The design maps concrete frontend files: `RightSideTabs.vue`, `FileExplorerLayout.vue`, `FileExplorer.vue`, `FileExplorerTabs.vue`, `FileItem.vue`, `file-explorer live actions`, and Terminal frontend paths.
+- Validation covers the exact symptom sequence: Terminal -> Files -> wait for loaded tree -> Terminal, with Terminal first-paint timing plus inactive FileExplorer resource-release assertions.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Requirements/design classify the ticket as bug fix + performance remediation + refactor; Round 9 explicitly adds normal Terminal descriptor lifecycle after API/E2E found `E2E-TERMFD-002`. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Root-cause report states manager/session cleanup and child count cleanup are not equivalent to OS descriptor cleanup; investigation cites FD growth `37 -> 59` and final PTY/revoked descriptors after 8 normal sessions. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | The design keeps the previous workspace/file-explorer refactor and adds Terminal deep-close contract now because descriptor retention is release-blocking in the same ticket. | None. |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | DS-013, ownership tables, interface mapping, file responsibility mapping, cleanup contracts, migration sequence, decommission plan, and validation plan all align to the Round 9 lifecycle invariant. | None. |
+| Assessment is present for the current task posture | Pass | The design states bug fix + performance remediation + architecture refactor, and Round 10 adds the Files-to-Terminal responsiveness refinement to the same current release-blocking ticket. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Investigation notes cite the user symptom and current `RightSideTabs.vue` `v-if` tab body behavior, plus FileExplorer tree/tabs/item listener ownership; root-cause report classifies it as frontend tab lifecycle coupling, not backend Terminal dependency. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Refactor remains required now; Round 10 adds explicit active/visible lifecycle ownership because mount/unmount as the resource boundary blocks Terminal first paint after Files has loaded. | None. |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | DS-014, terminology, ownership nodes, frontend data model, interface mapping, file responsibility mapping, dependency rules, removal/decommission plan, migration steps, and validation plan all reflect the cached/active Files lifecycle target. | None. |
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | AR-001 | High | Resolved and preserved | Design keeps dedicated mobile explorer as the only mobile file-explorer live surface and keeps mobile tools from rendering hidden Files. | No reopened issue. |
+| 1 | AR-001 | High | Resolved and preserved | Design keeps the dedicated mobile explorer as the only mobile file-explorer live surface and forbids mobile tools from rendering hidden Files. | No reopened issue. |
 | 1 | AR-002 | Medium | Resolved and preserved | Design retains file-explorer route cleanup before async connect and handler/session lease cleanup. | No reopened issue. |
-| 3 | AR-003 | High | Resolved and superseded by Round 8 | The cheap identity/display concept is now `WorkspaceMetadata`; old `WorkspaceReference` is migration/current-state only. | No reopened issue. |
+| 3 | AR-003 | High | Resolved and superseded by Round 8 | The cheap identity/display concept is `WorkspaceMetadata`; old `WorkspaceReference` is migration/current-state only. | No reopened issue. |
 | 3 | AR-004 | High | Resolved and preserved | Historical team hydration uses metadata/member shells and does not eagerly materialize every member workspace. | No reopened issue. |
-| 5 | AR-005 | High | Resolved and preserved | `MobileTools.vue` / `MobileWorkContext` Terminal target derivation is explicitly root-path based and not initialized-workspace-gated. | No reopened issue. |
-| 5 | AR-006 | High | Resolved and preserved | Terminal WebSocket pending cleanup, late PTY disconnect, pending message clearing, and partial setup failure cleanup are explicit. | No reopened issue. |
-| 6 | AR-007 | High | Resolved and preserved | The design spec still states Round 8 is the only authoritative target and old names are legacy/current-state or migration aliases only. | No reopened contradiction. |
-| API/E2E 9 | E2E-TERMFD-002 | Release-blocking validation failure | Incorporated into design | Requirements REQ-049..REQ-053 and AC-051..AC-055 plus DS-013 now cover normal attached Terminal command-output descriptor cleanup. | Not an unresolved architecture finding after this review; implementation must now fix and validate it. |
+| 5 | AR-005 | High | Resolved and preserved | `MobileTools.vue` / `MobileWorkContext` Terminal target derivation remains root-path based and not initialized-workspace-gated. | No reopened issue. |
+| 5 | AR-006 | High | Resolved and preserved | Terminal WebSocket pending cleanup, late PTY disconnect, pending message clearing, and partial setup failure cleanup remain explicit. | No reopened issue. |
+| 6 | AR-007 | High | Resolved and preserved | The design spec states Round 8 workspace/file-explorer model is the only authoritative workspace target; old names are legacy/current-state or migration aliases only. | No reopened contradiction. |
+| API/E2E 9 | E2E-TERMFD-002 | Release-blocking validation failure | Still incorporated into design | Requirements REQ-049..REQ-053 and AC-051..AC-055 plus DS-013 remain present. | Implementation must still fix and validate it; no new design gap. |
+| 10 design revision | Files-to-Terminal latency | Release-blocking design-impact revision | Incorporated into design | Requirements REQ-054..REQ-059 and AC-056..AC-061 plus DS-014 now cover active/cached Files lifecycle and Terminal first paint. | No blocking architecture finding. |
 
 ## Spine Inventory Verdict
 
@@ -95,18 +103,21 @@ Key readiness points:
 | DS-011 | File-explorer pending cleanup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-012 | Terminal pending cleanup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-013 | Terminal normal-session descriptor cleanup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-014 | Desktop Files -> Terminal tab switch | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `WorkspaceManager` / `Workspace` metadata boundary | Pass | Pass | Pass | Pass | Preserves the good existing domain API while changing semantics to metadata-only creation/listing. |
-| Backend `WorkspaceFileExplorer` capability | Pass | Pass | Pass | Pass | Explicit workspace-scoped file capability; unaffected by Round 9 Terminal descriptor issue. |
+| `WorkspaceManager` / `Workspace` metadata boundary | Pass | Pass | Pass | Pass | Preserves the existing domain API while changing semantics to metadata-only creation/listing. |
+| Backend `WorkspaceFileExplorer` capability | Pass | Pass | Pass | Pass | Explicit workspace-scoped file capability; Round 10 does not broaden it into Terminal. |
 | Internal file-explorer collaborators | Pass | Pass | Pass | Pass | Internal split avoids a bloated capability without exposing new bypasses. |
 | Frontend `workspaceStore` | Pass | Pass | Pass | Pass | Metadata-only state remains clear. |
-| Frontend `fileExplorerStore` | Pass | Pass | Pass | Pass | Correct owner for tree/search/open-file/live state. |
-| History/team hydration | Pass | Pass | Pass | Pass | Metadata-only history paths are clear. |
-| Terminal route/handler/manager/session | Pass | Pass | Pass | Pass | Round 9 correctly adds the low-level `TerminalSession` descriptor owner instead of overloading the route or manager. |
+| Frontend `fileExplorerStore` | Pass | Pass | Pass | Pass | Correct owner for tree/search/open-file/live state and optional cached panel/UI state. |
+| Right-side tab lifecycle | Pass | Pass | Pass | Pass | Correct owner for lazy-before-first-use and cached-after-first-use tab body behavior. |
+| FileExplorer visible lifecycle | Pass | Pass | Pass | Pass | Correct owner for active-state live sessions, refresh/search, and global listener gating. |
+| History/team hydration | Pass | Pass | Pass | Pass | Metadata-only history paths are preserved. |
+| Terminal route/handler/manager/session | Pass | Pass | Pass | Pass | Terminal stays root-path/visible-only and descriptor-clean. |
 | File-explorer WebSocket/session/watcher | Pass | Pass | Pass | Pass | Visible-consumer live update ownership remains clear. |
 
 ## Reusable Owned Structures Verdict
@@ -120,7 +131,8 @@ Key readiness points:
 | `WorkspaceFileOperations` | Pass | Pass | Pass | Pass | Internal owner for validated file mutations/read. |
 | `WorkspaceFileWatcherLeaseManager` | Pass | Pass | Pass | Pass | Internal watcher lifecycle owner. |
 | `TerminalTarget` | Pass | Pass | Pass | Pass | Root-path terminal input shared across desktop/mobile/session. |
-| Terminal close state/contract | Pass | N/A | Pass | Pass | The design keeps route state, handler read-loop ownership, manager registry ownership, and low-level session cleanup separate rather than introducing a generic cleanup layer. |
+| Right-side Files cache/active flags | Pass | N/A | Pass | Pass | The design names `filesPanelHasMounted` and `filesPanelActive` semantics rather than introducing a generic cache manager. |
+| FileExplorer active lifecycle input | Pass | N/A | Pass | Pass | Explicitly separates component existence from live/resource activity. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
@@ -131,6 +143,7 @@ Key readiness points:
 | `WorkspaceFileExplorer` | Pass | Pass | Pass | Pass | Pass | One coherent file capability subject. |
 | `WorkspaceFileExplorerTree` | Pass | Pass | Pass | Pass | Pass | Projection-only tree payload. |
 | `TerminalTarget` | Pass | Pass | Pass | N/A | Pass | Root path/cwd target is distinct from initialized workspace proof. |
+| Files active/cache state | Pass | Pass | Pass | N/A | Pass | `hasMounted` and `active` have distinct meanings: cache existence vs visible/resource activity. |
 | `WorkspaceReference` migration alias | Pass | Pass | Pass | N/A | Pass | Explicitly temporary/current-state only. |
 | `WorkspaceInfo` migration alias | Pass | Pass | Pass | N/A | Pass | Allowed only if metadata-only. |
 
@@ -148,6 +161,9 @@ Key readiness points:
 | Mobile Terminal initialized workspace lookup gate | Pass | Pass | Pass | Pass | Replaced by context/focused metadata root-path target. |
 | Historical team eager member materialization | Pass | Pass | Pass | Pass | Replaced by metadata shells/projections. |
 | Terminal session-count-only / child-count-only close acceptance | Pass | Pass | Pass | Pass | Replaced by deep close completion plus descriptor-level validation. |
+| Desktop tab-body synchronous FileExplorer teardown before Terminal paint | Pass | Pass | Pass | Pass | Replaced by lazy-before-first-use, cached-inactive-after-first-use Files lifecycle. |
+| Mount-only FileExplorer live/listener lifecycle | Pass | Pass | Pass | Pass | Replaced by active/visible state. |
+| Hidden Terminal PTY/WebSocket caching for performance | Pass | Pass | Pass | Pass | Explicitly rejected. |
 
 ## File Responsibility Mapping Verdict
 
@@ -169,8 +185,14 @@ Key readiness points:
 | `autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts` | Pass | Pass | N/A | Pass | Registry owner and close orchestration; must await low-level deep close. |
 | `autobyteus-ts/src/tools/terminal/pty-session.ts` or selected `TerminalSession` backend | Pass | Pass | N/A | Pass | Low-level PTY descriptor/child/listener/read/timer cleanup owner. |
 | `autobyteus-web/stores/workspace.ts` | Pass | Pass | Pass | Pass | Metadata-only store. |
-| `autobyteus-web/stores/fileExplorer.ts` | Pass | Pass | Pass | Pass | Tree/search/open-file/loading/live state owner. |
-| `Terminal.vue` / `MobileTools.vue` / `useTerminalSession.ts` | Pass | Pass | Pass | Pass | Root-path `TerminalTarget` path is clear. |
+| `autobyteus-web/stores/fileExplorer.ts` | Pass | Pass | Pass | Pass | Tree/search/open-file/loading/live/cache state owner. |
+| `autobyteus-web/stores/workspaceFileExplorerLiveActions.ts` | Pass | Pass | N/A | Pass | Live session acquire/release and late refresh/search suppression owner. |
+| `autobyteus-web/components/layout/RightSideTabs.vue` | Pass | Pass | N/A | Pass | Owns tab body lifecycle: Files lazy before first selection, cached inactive after first use, active prop to Files, visible-only Terminal. |
+| `autobyteus-web/components/fileExplorer/FileExplorerLayout.vue` | Pass | Pass | N/A | Pass | Files panel lifecycle boundary passing active state to tree/tabs. |
+| `autobyteus-web/components/fileExplorer/FileExplorer.vue` | Pass | Pass | Pass | Pass | File tree UI; acquire/release live resources and refresh/search only while active. |
+| `autobyteus-web/components/fileExplorer/FileExplorerTabs.vue` | Pass | Pass | N/A | Pass | Active-state-gated global key/document listener and editor/viewer behavior. |
+| `autobyteus-web/components/fileExplorer/FileItem.vue` | Pass | Pass | N/A | Pass | Recursive tree node rendering; per-node global listeners must be suspended or consolidated while inactive. |
+| `Terminal.vue` / `MobileTools.vue` / `useTerminalSession.ts` | Pass | Pass | Pass | Pass | Root-path `TerminalTarget` path is clear; hidden Terminal must not hold live PTY. |
 | History/team hydration files | Pass | Pass | Pass | Pass | Metadata-only contexts/shells. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
@@ -178,8 +200,10 @@ Key readiness points:
 | Owner / Boundary | Allowed Dependencies Are Clear? (`Pass`/`Fail`) | Forbidden Shortcuts Are Explicit? (`Pass`/`Fail`) | Direction Is Coherent With Ownership? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Workspace metadata consumers | Pass | Pass | Pass | Pass | May depend on `WorkspaceManager`, `Workspace`, `WorkspaceMetadata`; no file-explorer state. |
-| File-explorer consumers | Pass | Pass | Pass | Pass | Acquire through `Workspace.acquireFileExplorer(reason)`. |
+| File-explorer consumers | Pass | Pass | Pass | Pass | Acquire through `Workspace.acquireFileExplorer(reason)` and active visible consumers. |
 | `WorkspaceFileExplorer` internals | Pass | Pass | Pass | Pass | Internal collaborators are not public bypass targets. |
+| Right-side tab lifecycle | Pass | Pass | Pass | Pass | May cache Files UI after first use, but cannot make cache existence imply live resources. |
+| FileExplorer visible lifecycle | Pass | Pass | Pass | Pass | Active state, not mount alone, governs live sessions/listeners/background work. |
 | Terminal/runtime/history paths | Pass | Pass | Pass | Pass | Metadata/root path only; no file-explorer acquisition. |
 | Terminal route/handler/manager/session | Pass | Pass | Pass | Pass | Higher layers rely on `TerminalSession.close()` as the low-level resource contract and must not substitute manager-map removal for cleanup. |
 | General workspace API responses | Pass | Pass | Pass | Pass | Tree/search/watcher/loading fields forbidden. |
@@ -194,6 +218,8 @@ Key readiness points:
 | `WorkspaceFileExplorer` | Pass | Pass | Pass | Pass | Internal collaborators stay internal. |
 | `workspaceStore` | Pass | Pass | Pass | Pass | Metadata-only frontend boundary. |
 | `fileExplorerStore` | Pass | Pass | Pass | Pass | File-explorer state owner. |
+| Right-side tab lifecycle | Pass | Pass | Pass | Pass | Tab cache policy stays in UI lifecycle owner, not Terminal or backend. |
+| FileExplorer visible lifecycle | Pass | Pass | Pass | Pass | Active-state resource ownership stays with FileExplorer UI/live actions. |
 | File-explorer WebSocket route/handler | Pass | Pass | Pass | Pass | Route pending cleanup and session/lease cleanup are separated. |
 | Terminal route | Pass | Pass | Pass | Pass | Socket/pending-connect cleanup stays at route boundary. |
 | `TerminalHandler` | Pass | Pass | Pass | Pass | Read-loop ownership does not bypass manager/session cleanup. |
@@ -211,6 +237,8 @@ Key readiness points:
 | `Workspace.acquireFileExplorer(reason)` | Pass | Pass | Pass | Low | Pass |
 | File-explorer GraphQL folder/tree/search/file operations | Pass | Pass | Pass | Low | Pass |
 | File-explorer WebSocket | Pass | Pass | Pass | Low | Pass |
+| FileExplorer active prop/lifecycle input | Pass | Pass | Pass | Low | Pass |
+| RightSideTabs Files cache/active state | Pass | Pass | Pass | Low | Pass |
 | Terminal WebSocket | Pass | Pass | Pass | Low | Pass |
 | `TerminalHandler.connect/disconnect` | Pass | Pass | Pass | Low | Pass |
 | `PtySessionManager.closeSession(sessionId)` | Pass | Pass | Pass | Low | Pass |
@@ -229,6 +257,8 @@ Key readiness points:
 | `autobyteus-server-ts/src/api/websocket/terminal.ts` | Pass | Pass | Low | Pass | Route-level WebSocket owner. |
 | `autobyteus-server-ts/src/services/terminal-streaming` | Pass | Pass | Low | Pass | Handler/manager terminal streaming owner. |
 | `autobyteus-ts/src/tools/terminal` | Pass | Pass | Low | Pass | Correct existing package/folder for low-level `TerminalSession` backends. |
+| `autobyteus-web/components/layout/RightSideTabs.vue` | Pass | Pass | Low | Pass | Correct owner for right-tab cache/active policy. |
+| `autobyteus-web/components/fileExplorer` | Pass | Pass | Low | Pass | Correct owner for active FileExplorer UI and listener/resource lifecycle. |
 | `autobyteus-web/stores/workspace.ts` | Pass | Pass | Low | Pass | Metadata store only. |
 | `autobyteus-web/stores/fileExplorer.ts` | Pass | Pass | Low | Pass | File-explorer UI state. |
 | Terminal frontend/backend paths | Pass | Pass | Low | Pass | Existing subsystem reuse is appropriate. |
@@ -241,8 +271,10 @@ Key readiness points:
 | Workspace file browsing/search/mutation/watch | Pass | Pass | Pass | Pass | Recasts existing file-explorer area as `WorkspaceFileExplorer`. |
 | Internal file-explorer collaborators | Pass | Pass | Pass | Pass | Justified to keep capability cohesive but not bloated. |
 | Frontend metadata/file-explorer state split | Pass | Pass | N/A | Pass | Reuses `workspaceStore` and `fileExplorerStore` with clarified responsibilities. |
+| Right-side tab lifecycle | Pass | Pass | N/A | Pass | Extends existing `RightSideTabs.vue`; no new generic tab-cache subsystem is needed. |
+| FileExplorer active lifecycle | Pass | Pass | N/A | Pass | Extends existing FileExplorer components and live actions instead of creating a parallel resource owner. |
 | Terminal/mobile tools | Pass | Pass | N/A | Pass | Existing surfaces are extended, not replaced. |
-| Terminal low-level session backend | Pass | Pass | N/A | Pass | Reuses `autobyteus-ts` `TerminalSession` abstraction and allows backend/close-sequence change only if needed to satisfy the descriptor contract. |
+| Terminal low-level session backend | Pass | Pass | N/A | Pass | Reuses `autobyteus-ts` `TerminalSession` abstraction and allows backend/close-sequence change only if needed to satisfy descriptor contract. |
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -256,6 +288,9 @@ Key readiness points:
 | History/team eager materialization | No steady-state retention | Pass | Pass | Metadata-only history replaces it. |
 | Auto file-explorer live stream startup | No steady-state retention | Pass | Pass | Visible file-explorer consumers replace it. |
 | Terminal close success with retained PTY descriptors | No steady-state retention | Pass | Pass | Explicitly rejected by Round 9 design. |
+| Files tab synchronous loaded-tree teardown before Terminal paint | No steady-state retention | Pass | Pass | Explicitly rejected by Round 10 design. |
+| Mount-only hidden FileExplorer live/listener lifecycle | No steady-state retention | Pass | Pass | Explicitly rejected by Round 10 design. |
+| Hidden live Terminal sessions for fast tab switching | No steady-state retention | Pass | Pass | Explicitly rejected by Round 10 design. |
 
 ## Migration / Refactor Safety Verdict
 
@@ -267,6 +302,8 @@ Key readiness points:
 | API/DTO split | Pass | Pass | Pass | Pass |
 | Frontend store split | Pass | Pass | Pass | Pass |
 | Files/skill/context acquisition paths | Pass | Pass | Pass | Pass |
+| Right-side Files cache/active lifecycle | Pass | Pass | Pass | Pass |
+| FileExplorer listener/refresh/search active gating | Pass | Pass | Pass | Pass |
 | History/team/Terminal/runtime metadata-only paths | Pass | Pass | Pass | Pass |
 | WebSocket pending cleanup validation | Pass | Pass | Pass | Pass |
 | Terminal normal-session deep close | Pass | Pass | Pass | Pass |
@@ -281,13 +318,14 @@ Key readiness points:
 | Files/skill/context acquisition | Yes | Pass | Pass | Pass | DS-006..DS-010 distinguish file-explorer acquisition spans. |
 | WebSocket early cleanup | Yes | Pass | Pass | Pass | File-explorer and Terminal cleanup contracts are concrete. |
 | Terminal normal-session deep close | Yes | Pass | Pass | Pass | DS-013 plus cleanup contract distinguishes socket, read-loop, manager, child, and descriptor cleanup. |
+| Files-to-Terminal first-paint decoupling | Yes | Pass | Pass | Pass | DS-014 shows initial lazy path, first Files selection, switch to Terminal, and return to Files. |
 | Legacy naming boundary | Yes | Pass | Pass | Pass | AR-007 note and terminology table are clear. |
 
 ## Missing Use Cases / Open Unknowns
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| None blocking | The design now covers original watcher descriptor pressure, workspace metadata/file-explorer separation, lazy history/team hydration, desktop/mobile Terminal root-path open, file-explorer visible consumers, skill/context file explorer, WebSocket pending cleanup, and normal Terminal descriptor-clean close. | N/A | Closed |
+| None blocking | The design now covers original watcher descriptor pressure, workspace metadata/file-explorer separation, lazy history/team hydration, desktop/mobile Terminal root-path open, file-explorer visible consumers, skill/context file explorer, WebSocket pending cleanup, normal Terminal descriptor-clean close, and Files-to-Terminal first-paint responsiveness. | N/A | Closed |
 
 ## Review Decision
 
@@ -299,7 +337,7 @@ None.
 
 ## Classification
 
-- Overall classification: N/A — no blocking design-review findings in round 8.
+- Overall classification: N/A — no blocking design-review findings in round 9.
 
 ## Recommended Recipient
 
@@ -307,12 +345,12 @@ None.
 
 ## Residual Risks
 
-- API/E2E Round 9 remains a real validation failure until implementation fixes and revalidates `E2E-TERMFD-002`; this review only confirms the revised requirements/design are sufficient to proceed.
-- `TerminalSession.close()` may require changing `node-pty` close ordering, wrapper behavior, or backend selection. If implementation switches backend behavior rather than tightening `PtySession`, code review and API/E2E must verify interactive Terminal semantics and descriptor cleanup together.
-- Descriptor validation must remain macOS-realistic/built-backend and command-output-based; manager `sessionCount`, child process count, or shell-input echo are insufficient proof.
-- Implementation must still preserve the Round 8 workspace/file-explorer split while addressing Terminal descriptors; do not regress to workspace materialization or file-explorer acquisition for Terminal.
+- Round 10 relies on implementation avoiding per-node/global-listener churn that still blocks first paint. The design permits either listener suspension or consolidation; code review and UI/E2E validation should verify the chosen implementation does not simply replace large unmount work with equally large active-state listener work.
+- The requirements status header still names the Round 9 descriptor revision, while the Round 10 section is present and authoritative for new behavior. This is not an architecture blocker, but downstream readers should follow REQ-054..REQ-059, AC-056..AC-061, and DS-014 for Round 10 scope.
+- API/E2E Round 9 descriptor validation remains a real requirement until implementation fixes and revalidates `E2E-TERMFD-002`.
+- Built-backend/macOS-realistic descriptor validation and browser/Electron-like first-paint validation remain essential; unit tests alone are not enough proof for either Terminal descriptor cleanup or Files-to-Terminal responsiveness.
 
 ## Latest Authoritative Result
 
 - Review Decision: Pass
-- Notes: Round 9 `E2E-TERMFD-002` design additions are architecturally sufficient. The design is coherent, actionable, and ready for implementation rework focused on Terminal normal-session descriptor cleanup while preserving the passed workspace/file-explorer architecture.
+- Notes: The Round 10 Files-to-Terminal responsiveness design is consistent with the established `WorkspaceMetadata` / lazy `WorkspaceFileExplorer` / root-path Terminal / Terminal descriptor lifecycle architecture. It is concrete enough for implementation and validation.

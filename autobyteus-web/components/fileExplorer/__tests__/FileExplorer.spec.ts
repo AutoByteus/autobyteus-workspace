@@ -216,4 +216,61 @@ describe("FileExplorer", () => {
 
     expect(release).toHaveBeenCalledTimes(1);
   });
+
+  it("releases live resources and global listeners while cached inactive", async () => {
+    const workspaceStore = useWorkspaceStore();
+    const fileExplorerStore = useFileExplorerStore();
+    const release = vi.fn();
+    const acquire = vi.spyOn(workspaceStore, "acquireFileExplorerLiveSession").mockReturnValue(release);
+    const abortSearch = vi.spyOn(fileExplorerStore, "abortSearch");
+    const addDocumentListener = vi.spyOn(document, "addEventListener");
+    const removeDocumentListener = vi.spyOn(document, "removeEventListener");
+    const root = createWorkspaceTree();
+
+    workspaceStore.workspaces["ws-cached"] = {
+      workspaceId: "ws-cached",
+      name: "Cached Workspace",
+      workspaceConfig: {},
+      absolutePath: "/tmp/cached-workspace",
+    };
+    const explorerState = fileExplorerStore._getOrCreateWorkspaceState("ws-cached");
+    explorerState.tree = root;
+    explorerState.nodeIdToNode = createNodeIdToNodeDictionary(root);
+
+    const wrapper = mount(FileExplorer, {
+      props: {
+        workspaceId: "ws-cached",
+        active: true,
+      },
+      global: {
+        plugins: [pinia],
+        stubs: {
+          FileContextMenu: true,
+          ConfirmDeleteDialog: true,
+          AddFileOrFolderDialog: true,
+        },
+      },
+    });
+
+    await flushUi();
+
+    expect(acquire).toHaveBeenCalledTimes(1);
+    expect(addDocumentListener).toHaveBeenCalledWith("dragover", expect.any(Function));
+    expect(addDocumentListener).toHaveBeenCalledWith("dragend", expect.any(Function));
+    expect(addDocumentListener).toHaveBeenCalledWith("closeAllFileContextMenus", expect.any(Function));
+
+    await wrapper.setProps({ active: false });
+    await flushUi();
+
+    expect(release).toHaveBeenCalledTimes(1);
+    expect(abortSearch).toHaveBeenCalledWith("ws-cached");
+    expect(removeDocumentListener).toHaveBeenCalledWith("dragover", expect.any(Function));
+    expect(removeDocumentListener).toHaveBeenCalledWith("dragend", expect.any(Function));
+    expect(removeDocumentListener).toHaveBeenCalledWith("closeAllFileContextMenus", expect.any(Function));
+
+    await wrapper.setProps({ active: true });
+    await flushUi();
+
+    expect(acquire).toHaveBeenCalledTimes(2);
+  });
 });

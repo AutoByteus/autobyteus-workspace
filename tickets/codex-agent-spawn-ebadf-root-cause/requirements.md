@@ -444,3 +444,50 @@ Round 9 coverage additions:
 - AC-053 -> verifies command-output probe is real.
 - AC-054 -> verifies low-level close behavior.
 - AC-055 -> verifies server Terminal E2E covers normal-session OS resources.
+
+
+
+## Round 10 Requirement Revision: Files-to-Terminal Terminal Shell Readiness
+
+User clarification on 2026-05-29 narrowed the observed Electron symptom: the Terminal tab and the local `Connected to Workspace Terminal` line appear almost immediately after switching from Files to Terminal, but the real shell output/prompt appears slowly. Switching Terminal <-> Activity/Artifacts remains fast. Current code confirms the local line is written by `Terminal.vue` before the backend PTY has necessarily produced output, so the problem is not only tab first paint. It is time-to-backend-Terminal-readiness / first shell output after the Files panel has been active.
+
+Additional/clarified requirements:
+
+- REQ-054: Switching from an already-loaded Files tab to Terminal must not let FileExplorer teardown, watcher/session cleanup, snapshot refresh, or file-explorer GraphQL/search work delay Terminal PTY startup, backend `ready` status, or first shell output beyond a documented fast threshold.
+- REQ-055: The desktop right-side Files panel must remain lazy before first use: initial history selection and Terminal-first usage must not mount FileExplorer UI, fetch tree data, open a file-explorer WebSocket, or acquire watcher resources.
+- REQ-056: After the Files panel has been opened once, hiding it may preserve/cache FileExplorer UI/tree state to avoid repeated heavy mount/unmount churn, but the hidden/inactive Files panel must release live file-explorer sessions/watchers and must not keep active background refresh/search or per-node global listeners.
+- REQ-057: FileExplorer visibility must become an explicit lifecycle input separate from component existence. FileExplorer live-session acquisition, snapshot refresh, search, context-menu/global keyboard/drag listeners, and active editor/viewer behaviors must be driven by `visible/active === true`, not by mount alone.
+- REQ-058: Returning from Terminal/Activity/etc. back to Files may show the cached tree immediately while re-acquiring the live session and refreshing root/open folders in the background; stale cached tree display is acceptable only if refresh/loading/error state remains explicit.
+- REQ-059: Terminal must remain independent and descriptor-safe while inactive: the fix must not keep hidden Terminal PTY/WebSocket sessions alive merely to make tab switches fast.
+- REQ-060: Terminal UI must distinguish local xterm initialization, WebSocket open, backend PTY ready, and first shell output. The UI must not present a local pre-connect line as proof that the workspace shell is ready.
+- REQ-061: FileExplorer inactive cleanup and Terminal startup must be instrumentable as separate timings so validation can identify whether delay comes from frontend rendering, FileExplorer deactivation, backend watcher release, PTY spawn/startup, or first shell output.
+
+Additional acceptance criteria:
+
+- AC-056: Frontend component tests prove `FileExplorerLayout` is not mounted before the Files tab is first selected, even when a historical run is opened and Terminal is selected.
+- AC-057: Frontend component tests prove that after Files has been opened once, switching to Terminal makes Terminal UI visible promptly while the Files panel is hidden/inactive rather than synchronously destroying the loaded Files tree before Terminal can initialize.
+- AC-058: Frontend store/component tests prove inactive Files releases the file-explorer live session/WS/watcher consumer and does not reacquire it until Files becomes active again.
+- AC-059: Frontend tests prove inactive/cached FileExplorer does not retain active global keyboard/drag/context listeners from `FileExplorerTabs` or per-node `FileItem` instances.
+- AC-060: Browser/E2E or focused performance validation runs the sequence Terminal -> Files -> wait for tree/live watcher -> Terminal and records time to backend Terminal ready and first shell output/prompt. The validation must fail if the local welcome text appears quickly but backend shell readiness is delayed by FileExplorer activity.
+- AC-061: Terminal inactivity validation proves switching away from Terminal still disconnects/disposes the Terminal PTY/WebSocket path unless an explicit future product requirement changes that lifecycle.
+- AC-062: Terminal UI tests prove the local status text does not say or imply `Connected` until backend Terminal readiness has been acknowledged or real shell output has arrived.
+- AC-063: Backend/client diagnostics or test hooks expose enough timing/resource evidence to separate FileExplorer watcher close/release duration from Terminal PTY creation and first output duration.
+
+Round 10 coverage additions:
+
+- REQ-054 -> desktop right-side Files/Terminal shell-readiness performance.
+- REQ-055 -> no regression of lazy FileExplorer creation.
+- REQ-056 -> cached hidden Files without hidden watcher/background work.
+- REQ-057 -> explicit visible lifecycle input.
+- REQ-058 -> Files reactivation UX.
+- REQ-059 -> Terminal descriptor/resource discipline.
+- REQ-060 -> accurate Terminal connection/readiness UI.
+- REQ-061 -> timing observability.
+- AC-056 -> verifies initial laziness.
+- AC-057 -> verifies Files -> Terminal UI initialization decoupling.
+- AC-058 -> verifies watcher/live-session release on inactive.
+- AC-059 -> verifies listener/background suspension.
+- AC-060 -> verifies observed shell-readiness symptom path.
+- AC-061 -> verifies Terminal resources are not kept hidden.
+- AC-062 -> verifies Terminal status wording is not misleading.
+- AC-063 -> verifies diagnostic attribution.

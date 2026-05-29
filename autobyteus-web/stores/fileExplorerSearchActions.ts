@@ -10,6 +10,15 @@ const nodeForSearchPath = (filePath: string): TreeNode => {
 }
 
 export const fileExplorerSearchActions = {
+  abortSearch(this: any, workspaceId: string) {
+    const wsState = this._getWorkspaceState(workspaceId)
+    if (!wsState) return
+
+    wsState.searchAbortController?.abort()
+    wsState.searchAbortController = null
+    wsState.searchLoading = false
+  },
+
   async searchFiles(this: any, query: string, workspaceId: string) {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
     wsState.searchAbortController?.abort()
