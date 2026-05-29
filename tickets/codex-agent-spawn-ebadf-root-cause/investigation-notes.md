@@ -764,3 +764,46 @@ status-aware: local xterm initialized != socket open != PTY ready != first shell
 not kept hidden with an open PTY/WebSocket
 validated by time-to-ready and time-to-first-shell-output after Files was active
 ```
+
+## Round 11 Current-State Evidence: FileExplorer Inactive Close / Quiescence Gap
+
+Date: 2026-05-29
+
+User clarification: FileExplorer and Terminal are distinct product capabilities. Terminal should only use workspace metadata/root path. If Files was opened and then hidden, the FileExplorer feature should stop or suppress its own relevant work; Terminal should not need to know about FileExplorer cleanup.
+
+### Current-code evidence inspected
+
+| Date | Evidence type | Source | Observation | Design implication |
+| --- | --- | --- | --- | --- |
+| 2026-05-29 | Code | `autobyteus-web/components/layout/RightSideTabs.vue` | Current implementation keeps Files lazy before first use with `v-if="shouldMountFilesPanel"` and then hides it with `v-show="isFilesTabActive"`; Terminal still mounts only while `effectiveActiveTab === 'terminal'`. | The UI direction is correct: Files can be cached/inactive and Terminal is visible-only. The remaining issue is active/inactive resource work, not a direct Terminal/FileExplorer dependency. |
+| 2026-05-29 | Code | `autobyteus-web/components/fileExplorer/FileExplorer.vue` | `suspendInactiveWork()` increments `activationSequence`, releases the live session, clears search debounce, and calls `fileExplorerStore.abortSearch(...)`. It does not own/cancel the root/open-folder snapshot refresh triggered by the live-session acquisition path. | FileExplorer inactive is not yet a complete quiescence boundary. It handles live stream and search, but folder snapshot refresh can continue or complete late. |
+| 2026-05-29 | Code | `autobyteus-web/stores/workspaceFileExplorerLiveActions.ts` | `acquireFileExplorerLiveSessionForStore()` calls `connectFileExplorerLiveStreamForStore(...)` and `refreshFileExplorerSnapshotForStore(...)`. `refreshFileExplorerSnapshotForStore()` awaits `fetchFolderChildren(workspaceId, '')` and then open folders. `releaseFileExplorerLiveSessionForStore()` disconnects the stream when the last consumer releases, but does not cancel `fileExplorerSnapshotRefreshes`. | Opening Files can start folder refresh work; switching away releases live WS but not the refresh task. This is concrete evidence for remaining Files -> Terminal resource overlap. |
+| 2026-05-29 | Code | `autobyteus-web/stores/fileExplorerTreeActions.ts` | `fetchFolderChildren()` uses Apollo `client.query(..., fetchPolicy: 'network-only')` with no `AbortController`/generation input. Late successful responses call `replaceFolderChildren(...)` and mutate store state. | Snapshot/folderChildren refresh needs abort or generation suppression so inactive Files cannot mutate state or continue work after the user leaves Files. |
+| 2026-05-29 | Code | `autobyteus-server-ts/src/api/graphql/types/file-explorer.ts` | `folderChildren()` acquires `WorkspaceFileExplorer` and defines `ensureFullTree()` that calls `fileExplorer.buildWorkspaceDirectoryTree()`. If the tree is missing or a folder is missing/unloaded, it rebuilds the full tree before returning `toShallowDict(1)`. | A one-folder projection can still trigger heavy full-tree traversal. That work belongs to FileExplorer but must be bounded/lazy/cancellable, especially when the visible consumer has gone inactive. |
+| 2026-05-29 | Code | `autobyteus-server-ts/src/file-explorer/directory-traversal.ts` | `DirectoryTraversal.buildTree()` breadth-first scans the workspace with `fs.opendir`, sorts entries, applies ignore strategies, and yields only periodically. | Full-tree refresh can compete with PTY startup/first output in the same server process if it overlaps with Files -> Terminal switching. |
+| 2026-05-29 | Code | `autobyteus-server-ts/src/api/websocket/file-explorer.ts` and `services/file-explorer-streaming/*` | Client close triggers asynchronous server cleanup. The stream handler closes the session, the session releases watcher/file-explorer leases, and watcher stop ultimately awaits `chokidar.close()`. | Watcher cleanup is correctly owned by FileExplorer, but it is not currently exposed as a quiescence timing boundary to distinguish cleanup delay from Terminal startup delay. |
+| 2026-05-29 | Code | `autobyteus-web/components/workspace/tools/Terminal.vue` and `composables/useTerminalSession.ts` | Terminal writes the local `Connected to Workspace Terminal` line during xterm initialization. `connectionStatus` becomes connected on browser WebSocket `onopen`; first actual shell output arrives only through backend `output` messages. | The user-observed fast `Connected` line is not backend readiness. Validation must measure PTY-ready/first-output separately. |
+
+### Data-flow conclusion
+
+There is no direct business/API spine from Terminal into FileExplorer in the current target architecture. The coupling is shared-process resource overlap:
+
+```text
+Files active
+-> FileExplorer live WS/watcher + folder snapshot refresh start
+-> user switches Files -> Terminal
+-> FileExplorer inactive releases live session/search but does not cancel/suppress every folder refresh path
+-> backend watcher cleanup and/or folder traversal can still be active
+-> Terminal WS opens and local xterm text appears
+-> backend PTY ready / first shell output can be delayed by overlapping FileExplorer work
+```
+
+Therefore the design should not add Terminal-to-FileExplorer coordination. The clean design is:
+
+```text
+Terminal spine: WorkspaceMetadata.rootPath -> TerminalTarget -> Terminal WS -> PTY
+FileExplorer spine: visible Files/skill/context surface -> WorkspaceFileExplorer -> tree/search/ops/watcher
+FileExplorer close spine: active=false/final consumer release -> abort/generation-suppress refresh/search -> release live WS/watcher -> quiesced inert cache
+```
+
+The missing invariant is FileExplorer inactive quiescence: after Files is hidden, no live watcher, active folder refresh/search, or stale late mutation should remain active in a way that can starve root-path-only features.

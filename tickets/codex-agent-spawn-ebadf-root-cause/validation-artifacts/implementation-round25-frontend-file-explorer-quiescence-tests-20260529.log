@@ -1,0 +1,77 @@
+
+> autobyteus@1.3.32 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/workspaceStore.spec.ts components/fileExplorer/__tests__/FileExplorer.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts components/fileExplorer/__tests__/FileItem.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+
+stderr | components/fileExplorer/__tests__/FileItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/workspaceStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileExplorer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/workspaceStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/workspaceStore.spec.ts > workspaceStore > createWorkspace > throws error if mutation fails
+Error creating workspace metadata: Error: GraphQL Error
+    at Proxy.createWorkspace (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/stores/workspace.ts:174:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > createWorkspace > replaces stale metadata entries with the same root path and clears file-explorer state
+[Workspace] Disconnected from file system watcher for workspace: stale-ws
+
+stderr | stores/__tests__/workspaceStore.spec.ts > workspaceStore > fetchAllWorkspaces > ignores stale query results when backend binding revision changes mid-flight
+[Workspace] Ignoring workspace query result for stale revision 1; current revision is 2
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > resetWorkspaceStateForBackendContextChange > disconnects all streams and clears metadata/file-explorer state without reload
+[Workspace] Resetting workspace state due to backend_context_changed
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > opens one stream for multiple visible consumers and disconnects after final release
+[Workspace] Connecting to file system changes for workspace: ws-1
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > returns an idempotent release function for duplicate consumer acquisition
+[Workspace] Connecting to file system changes for workspace: ws-1
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > refreshes already-open folders in fileExplorerStore when a visible file explorer is reacquired
+[Workspace] Connecting to file system changes for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > aborts snapshot refresh generation and ignores late folder responses after final release
+[Workspace] Connecting to file system changes for workspace: ws-1
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+ ✓ stores/__tests__/workspaceStore.spec.ts (12 tests) 25ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.spec.ts (1 test) 14ms
+ ✓ components/fileExplorer/__tests__/FileItem.spec.ts (6 tests) 45ms
+ ✓ components/fileExplorer/__tests__/FileExplorer.spec.ts (3 tests) 42ms
+
+ Test Files  4 passed (4)
+      Tests  22 passed (22)
+   Start at  08:55:06
+   Duration  4.50s (transform 2.51s, setup 15.11s, collect 541ms, tests 127ms, environment 760ms, prepare 605ms)
+

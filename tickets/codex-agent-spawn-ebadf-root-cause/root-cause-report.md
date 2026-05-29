@@ -415,3 +415,35 @@ Durable fix direction:
 4. Add Terminal readiness status: local xterm initialization, WebSocket open, backend PTY ready, and first shell output are separate states. Do not display a local `Connected` line as proof of shell readiness.
 5. Keep Terminal mounted/connected only while Terminal is selected so the performance fix does not reintroduce hidden PTY descriptor pressure.
 6. Validate the exact symptom by measuring time to backend Terminal ready and first shell output for `Terminal -> Files -> loaded tree/live watcher -> Terminal`, not only time to tab paint.
+
+
+## Round 11 Root-Cause Refinement: FileExplorer Close Must Mean Quiescence
+
+The latest design refinement distinguishes two different statements:
+
+```text
+Terminal does not depend on FileExplorer.          # architectural dependency
+FileExplorer cannot affect Terminal startup.      # runtime/resource consequence
+```
+
+The first is already the target architecture: Terminal uses `WorkspaceMetadata.rootPath -> TerminalTarget -> PTY` and must not call tree/search/watcher APIs. The second was not guaranteed strongly enough because FileExplorer inactive/close was still partly mount/session oriented instead of quiescence oriented.
+
+Current evidence shows the remaining gap:
+
+- Files activation starts live stream/watcher work and snapshot `folderChildren` refresh.
+- Inactive handling releases live stream/search debounce, but not every snapshot/folderChildren refresh path.
+- Late folderChildren responses can still mutate file-explorer state because they are not abort/generation-scoped.
+- Backend `folderChildren()` can still call full `buildWorkspaceDirectoryTree()` as a fallback for a one-folder projection.
+
+Correct invariant:
+
+```text
+FileExplorer inactive/final consumer release = no live watcher/WS + no active folder refresh/search + no active global listeners + no stale late mutations.
+```
+
+Durable fix direction:
+
+1. Make FileExplorer active/visible state the owner of generation/abort lifecycle for folder snapshot refresh, search, live stream, and global listeners.
+2. Make `folderChildren` a bounded/lazy FileExplorer-owned folder projection rather than a hidden full-tree rebuild in the ordinary path.
+3. Keep cached Files UI state inert while inactive; cached data is allowed, live resources are not.
+4. Do not add Terminal-to-FileExplorer coordination. Terminal remains root-path-only; FileExplorer owns its own quiescence so shared backend resources do not delay Terminal backend readiness.

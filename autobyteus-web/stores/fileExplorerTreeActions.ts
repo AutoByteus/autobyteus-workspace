@@ -8,7 +8,42 @@ import {
 } from '~/utils/fileExplorer/stateSync'
 import { replaceFolderChildren } from '~/utils/fileExplorer/openFolderRefresh'
 
+export interface FetchFolderChildrenOptions {
+  generation?: number
+  signal?: AbortSignal
+}
+
+const isAbortError = (error: unknown): boolean =>
+  error instanceof Error && error.name === 'AbortError'
+
 export const fileExplorerTreeActions = {
+  beginFolderChildrenGeneration(this: any, workspaceId: string): number {
+    const wsState = this._getOrCreateWorkspaceState(workspaceId)
+    wsState.folderChildrenAbortController?.abort()
+    wsState.folderChildrenGeneration += 1
+    wsState.folderChildrenAbortController = new AbortController()
+    return wsState.folderChildrenGeneration
+  },
+
+  invalidateFolderChildrenGeneration(this: any, workspaceId: string): number {
+    const wsState = this._getWorkspaceState(workspaceId)
+    if (!wsState) return 0
+
+    wsState.folderChildrenGeneration += 1
+    wsState.folderChildrenAbortController?.abort()
+    wsState.folderChildrenAbortController = null
+    return wsState.folderChildrenGeneration
+  },
+
+  isFolderChildrenGenerationCurrent(
+    this: any,
+    workspaceId: string,
+    generation: number,
+  ): boolean {
+    const wsState = this._getWorkspaceState(workspaceId)
+    return Boolean(wsState && wsState.folderChildrenGeneration === generation)
+  },
+
   recordRecentStructuralChangeEcho(this: any, workspaceId: string, event: FileSystemChangeEvent) {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
     wsState.recentStructuralChangeEchoes = recordRecentStructuralChangeEchoes(
@@ -53,15 +88,31 @@ export const fileExplorerTreeActions = {
     })
   },
 
-  async fetchFolderChildren(this: any, workspaceId: string, folderPath: string): Promise<void> {
+  async fetchFolderChildren(
+    this: any,
+    workspaceId: string,
+    folderPath: string,
+    options: FetchFolderChildrenOptions = {},
+  ): Promise<void> {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
+    const generation = options.generation ?? wsState.folderChildrenGeneration
+    let controller = wsState.folderChildrenAbortController
+    if (!options.signal && (!controller || controller.signal.aborted)) {
+      controller = new AbortController()
+      wsState.folderChildrenAbortController = controller
+    }
+    const signal = options.signal ?? controller?.signal
+    const isStale = () =>
+      Boolean(signal?.aborted || wsState.folderChildrenGeneration !== generation)
     const client = getApolloClient()
     try {
       const { data, errors } = await client.query({
         query: GetFolderChildren,
         variables: { workspaceId, folderPath },
         fetchPolicy: 'network-only',
+        context: signal ? { fetchOptions: { signal } } : undefined,
       })
+      if (isStale()) return
       if (errors?.length) {
         console.error('Error fetching folder children:', errors)
         return
@@ -69,6 +120,7 @@ export const fileExplorerTreeActions = {
       if (!data?.folderChildren) return
 
       const folderData = JSON.parse(data.folderChildren)
+      if (isStale()) return
       if (folderData.error) {
         console.error('Server error:', folderData.error)
         return
@@ -91,8 +143,12 @@ export const fileExplorerTreeActions = {
         console.error(`Folder node not found for path: ${folderPath}`)
         return
       }
+      if (isStale()) return
       replaceFolderChildren(folderNode, folderData.children, wsState.nodeIdToNode)
     } catch (error) {
+      if (isAbortError(error) || signal?.aborted || wsState.folderChildrenGeneration !== generation) {
+        return
+      }
       console.error('Error fetching folder children:', error)
     }
   },

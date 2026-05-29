@@ -3,6 +3,7 @@ import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { getOpenFolderPathsForRefresh } from '~/utils/fileExplorer/openFolderRefresh';
 import type { FileSystemChangeEvent } from '~/types/fileSystemChangeTypes';
+import type { FetchFolderChildrenOptions } from '~/stores/fileExplorerTreeActions';
 
 interface WorkspaceLiveHost {
   fileSystemConnections: Map<string, FileExplorerStreamingService>;
@@ -13,7 +14,11 @@ interface WorkspaceLiveHost {
     event: FileSystemChangeEvent,
     source?: 'mutation' | 'stream',
   ): void;
-  fetchFolderChildren(workspaceId: string, folderPath: string): Promise<void>;
+  fetchFolderChildren(
+    workspaceId: string,
+    folderPath: string,
+    options?: FetchFolderChildrenOptions,
+  ): Promise<void>;
 }
 
 export const acquireFileExplorerLiveSessionForStore = (
@@ -35,8 +40,8 @@ export const acquireFileExplorerLiveSessionForStore = (
   consumers.add(consumerId);
   if (!alreadyRegistered && consumers.size === 1) {
     connectFileExplorerLiveStreamForStore(store, workspaceId);
+    refreshFileExplorerSnapshotForStore(store, workspaceId);
   }
-  refreshFileExplorerSnapshotForStore(store, workspaceId);
 
   return () => releaseFileExplorerLiveSessionForStore(store, workspaceId, consumerId);
 };
@@ -53,7 +58,11 @@ export const releaseFileExplorerLiveSessionForStore = (
 
   consumers.delete(consumerId);
   if (consumers.size === 0) {
+    const fileExplorerStore = useFileExplorerStore();
     store.fileExplorerLiveConsumers.delete(workspaceId);
+    fileExplorerStore.abortSearch(workspaceId);
+    fileExplorerStore.invalidateFolderChildrenGeneration(workspaceId);
+    store.fileExplorerSnapshotRefreshes.delete(workspaceId);
     disconnectFileExplorerLiveStreamForStore(store, workspaceId);
   }
 };
@@ -106,8 +115,16 @@ export const disconnectFileExplorerLiveStreamForStore = (
 export const disconnectAllFileExplorerLiveStreamsForStore = (
   store: WorkspaceLiveHost,
 ): void => {
-  for (const workspaceId of Array.from(store.fileSystemConnections.keys())) {
+  const fileExplorerStore = useFileExplorerStore();
+  const workspaceIds = new Set([
+    ...store.fileSystemConnections.keys(),
+    ...store.fileExplorerLiveConsumers.keys(),
+    ...store.fileExplorerSnapshotRefreshes.keys(),
+  ]);
+  for (const workspaceId of workspaceIds) {
     disconnectFileExplorerLiveStreamForStore(store, workspaceId);
+    fileExplorerStore.abortSearch(workspaceId);
+    fileExplorerStore.invalidateFolderChildrenGeneration(workspaceId);
   }
   store.fileExplorerLiveConsumers.clear();
   store.fileExplorerSnapshotRefreshes.clear();
@@ -117,7 +134,10 @@ export const clearFileExplorerLiveSessionForWorkspaceForStore = (
   store: WorkspaceLiveHost,
   workspaceId: string,
 ): void => {
+  const fileExplorerStore = useFileExplorerStore();
   store.fileExplorerLiveConsumers.delete(workspaceId);
+  fileExplorerStore.abortSearch(workspaceId);
+  fileExplorerStore.invalidateFolderChildrenGeneration(workspaceId);
   store.fileExplorerSnapshotRefreshes.delete(workspaceId);
   disconnectFileExplorerLiveStreamForStore(store, workspaceId);
 };
@@ -132,20 +152,29 @@ export const refreshFileExplorerSnapshotForStore = (
   }
 
   const fileExplorerStore = useFileExplorerStore();
+  const generation = fileExplorerStore.beginFolderChildrenGeneration(workspaceId);
   const openFolderPaths = getOpenFolderPathsForRefresh(
     fileExplorerStore._getWorkspaceState(workspaceId)?.openFolders || {},
   );
   const refreshTask = (async () => {
-    await store.fetchFolderChildren(workspaceId, '');
+    await store.fetchFolderChildren(workspaceId, '', { generation });
+    if (!fileExplorerStore.isFolderChildrenGenerationCurrent(workspaceId, generation)) {
+      return;
+    }
     for (const folderPath of openFolderPaths) {
-      await store.fetchFolderChildren(workspaceId, folderPath);
+      if (!fileExplorerStore.isFolderChildrenGenerationCurrent(workspaceId, generation)) {
+        return;
+      }
+      await store.fetchFolderChildren(workspaceId, folderPath, { generation });
     }
   })()
     .catch((error) => {
       console.warn(`[Workspace] Failed to refresh file explorer snapshot for ${workspaceId}:`, error);
     })
     .finally(() => {
-      store.fileExplorerSnapshotRefreshes.delete(workspaceId);
+      if (store.fileExplorerSnapshotRefreshes.get(workspaceId) === refreshTask) {
+        store.fileExplorerSnapshotRefreshes.delete(workspaceId);
+      }
     });
   store.fileExplorerSnapshotRefreshes.set(workspaceId, refreshTask);
   return refreshTask;

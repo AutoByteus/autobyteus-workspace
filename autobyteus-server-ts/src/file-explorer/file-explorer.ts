@@ -1,13 +1,17 @@
 import fs from "node:fs/promises";
+import type { Dirent } from "node:fs";
 import path from "node:path";
 import { DirectoryTraversal } from "./directory-traversal.js";
 import { FileNameIndexer } from "./file-name-indexer.js";
 import type { FileSystemChangeEvent } from "./file-system-changes.js";
 import type { FileSystemWatcher } from "./watcher/file-system-watcher.js";
 import { TreeNode } from "./tree-node.js";
+import { DefaultSortStrategy } from "./sort-strategy/default-sort-strategy.js";
+import type { DirectoryEntry } from "./sort-strategy/sort-strategy.js";
 import { GitIgnoreStrategy } from "./traversal-ignore-strategy/git-ignore-strategy.js";
 import { SpecificFolderIgnoreStrategy } from "./traversal-ignore-strategy/specific-folder-ignore-strategy.js";
 import type { TraversalIgnoreStrategy } from "./traversal-ignore-strategy/traversal-ignore-strategy.js";
+import { WorkspaceIgnoreMatcher } from "./traversal-ignore-strategy/workspace-ignore-matcher.js";
 import { AddFileOrFolderOperation } from "./operations/add-file-or-folder-operation.js";
 import { MoveFileOperation } from "./operations/move-file-operation.js";
 import { RemoveFileOperation } from "./operations/remove-file-operation.js";
@@ -23,6 +27,10 @@ import {
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
   warn: (...args: unknown[]) => console.warn(...args),
+};
+
+type FolderProjectionOptions = {
+  signal?: AbortSignal;
 };
 
 export type WatcherLease = {
@@ -160,6 +168,34 @@ export class WorkspaceFileExplorer {
     return JSON.stringify(this.rootNode.toShallowDict(depth));
   }
 
+  async loadFolderChildren(
+    folderPath: string,
+    options: FolderProjectionOptions = {},
+  ): Promise<TreeNode> {
+    this.throwIfAborted(options.signal);
+    const relativeFolderPath = this.normalizeRelativeFolderPath(folderPath);
+    const absoluteFolderPath = this.getPath(relativeFolderPath);
+    const stats = await fs.stat(absoluteFolderPath).catch(() => null);
+    if (!stats) {
+      throw new Error(`Folder not found: ${folderPath}`);
+    }
+    if (stats.isFile()) {
+      throw new Error(`Path is a file, not a folder: ${folderPath}`);
+    }
+    if (!stats.isDirectory()) {
+      throw new Error(`Path is not a folder: ${folderPath}`);
+    }
+
+    const folderNode = this.ensureFolderNode(relativeFolderPath);
+    const entries = await this.readImmediateDirectoryEntries(absoluteFolderPath, options.signal);
+    folderNode.children = entries.map((entry) => {
+      const isFileChild = entry.isFile();
+      return new TreeNode(entry.name, isFileChild, folderNode, isFileChild);
+    });
+    folderNode.childrenLoaded = true;
+    return folderNode;
+  }
+
   async getAllFilePaths(): Promise<string[]> {
     if (!this.rootNode) {
       await this.buildWorkspaceDirectoryTree();
@@ -284,6 +320,97 @@ export class WorkspaceFileExplorer {
     if (!this.rootNode) {
       await this.buildWorkspaceDirectoryTree();
     }
+  }
+
+  private normalizeRelativeFolderPath(folderPath: string): string {
+    const normalizedPath = path.normalize(folderPath || "");
+    if (normalizedPath === "." || normalizedPath === path.sep) {
+      return "";
+    }
+    return normalizedPath.replace(/^[\\/]+/, "");
+  }
+
+  private ensureFolderNode(relativeFolderPath: string): TreeNode {
+    if (!this.rootNode) {
+      const rootName = path.basename(this.workspaceRootPath) || this.workspaceRootPath;
+      this.rootNode = new TreeNode(rootName, false, null, false);
+    }
+    if (!relativeFolderPath) {
+      return this.rootNode;
+    }
+
+    const parts = relativeFolderPath.split(path.sep).filter(Boolean);
+    let currentNode = this.rootNode;
+    for (const part of parts) {
+      let nextNode = currentNode.children.find((child) => child.name === part) ?? null;
+      if (nextNode?.isFile) {
+        throw new Error(`Path is a file, not a folder: ${relativeFolderPath}`);
+      }
+      if (!nextNode) {
+        nextNode = new TreeNode(part, false, currentNode, false);
+        currentNode.addChild(nextNode);
+      }
+      currentNode = nextNode;
+    }
+    return currentNode;
+  }
+
+  private async readImmediateDirectoryEntries(
+    folderPath: string,
+    signal?: AbortSignal,
+  ): Promise<DirectoryEntry[]> {
+    this.throwIfAborted(signal);
+    const ignoreMatcher = new WorkspaceIgnoreMatcher(this.workspaceRootPath, this.ignoreStrategies);
+    const sortStrategy = new DefaultSortStrategy();
+    const entries: DirectoryEntry[] = [];
+    const dir = await fs.opendir(folderPath);
+    try {
+      for await (const dirent of dir) {
+        this.throwIfAborted(signal);
+        const entryPath = path.join(folderPath, dirent.name);
+        const { isFile, isDirectory } = await this.resolveFolderProjectionEntryType(dirent, entryPath);
+        if (!isFile && !isDirectory) {
+          continue;
+        }
+        if (ignoreMatcher.shouldIgnore(entryPath, isDirectory)) {
+          continue;
+        }
+        entries.push({
+          name: dirent.name,
+          path: entryPath,
+          isFile: () => isFile,
+          isDirectory: () => isDirectory,
+        });
+      }
+    } finally {
+      await dir.close().catch(() => undefined);
+    }
+    this.throwIfAborted(signal);
+    return sortStrategy.sort(entries);
+  }
+
+  private async resolveFolderProjectionEntryType(
+    dirent: Dirent,
+    entryPath: string,
+  ): Promise<{ isFile: boolean; isDirectory: boolean }> {
+    if (dirent.isSymbolicLink()) {
+      try {
+        const stats = await fs.stat(entryPath);
+        return { isFile: stats.isFile(), isDirectory: stats.isDirectory() };
+      } catch {
+        return { isFile: false, isDirectory: false };
+      }
+    }
+    return { isFile: dirent.isFile(), isDirectory: dirent.isDirectory() };
+  }
+
+  private throwIfAborted(signal?: AbortSignal): void {
+    if (!signal?.aborted) {
+      return;
+    }
+    const error = new Error("Folder children projection aborted");
+    error.name = "AbortError";
+    throw error;
   }
 
   private async startWatcher(): Promise<void> {

@@ -2,7 +2,7 @@
 
 Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-spec.md`
 Date: 2026-05-22
-Status: Round 9 Terminal normal-session descriptor lifecycle rework added after E2E-TERMFD-002; ready for architecture review
+Status: Round 11 FileExplorer close/quiescence and Files-to-Terminal shell-readiness lifecycle refinement; ready for architecture review
 
 Related artifacts:
 
@@ -72,6 +72,13 @@ Round 9 Terminal descriptor-lifecycle refinement after API/E2E:
 - Terminal close acceptance now covers normal open/run-command/output/close descriptor cleanup, not only close-before-connect and setup-failure cleanup.
 - `TerminalSession.close()` / `PtySessionManager.closeSession()` must represent deep OS-resource cleanup: read loop termination, pending read/timer cleanup, listener disposal, child exit/kill fallback, and PTY descriptor release.
 - Durable validation must measure process FDs and PTY/revoked descriptor lines after repeated real command-output Terminal sessions.
+
+Round 11 FileExplorer close/quiescence refinement:
+
+- The Files and Terminal features remain separate business capabilities. Terminal still depends only on `TerminalTarget.rootPath`; it must not call FileExplorer, tree, search, watcher, or folder APIs.
+- The observed Files -> Terminal delay comes from lifecycle/resource overlap, not from a direct Terminal-to-FileExplorer dependency: current Files activation starts a FileExplorer live stream and snapshot refresh, while current inactive handling releases the live stream/search but does not explicitly cancel/suppress all folder snapshot work or expose backend watcher-close quiescence.
+- FileExplorer close/inactive state is therefore a first-class lifecycle boundary. When Files becomes inactive or the last visible file-explorer consumer releases, the FileExplorer owner must cancel or generation-suppress snapshot/folderChildren refreshes, abort searches, detach global listeners, disconnect live WS, release watcher leases, and expose cleanup timing.
+- Backend `folderChildren` must behave as a FileExplorer-owned, bounded/cancellable folder projection, not as an unbounded full-tree rebuild that can continue after the user left Files and contend with Terminal PTY startup.
 
 ## Current-State Read
 
@@ -185,7 +192,7 @@ The file watcher currently behaves as a property of a loaded workspace/index, bu
 
 ## Intended Change
 
-The authoritative target for this ticket is the reconciled Round 8 workspace/file-explorer architecture plus the Round 9 Terminal descriptor lifecycle and Round 10 Files-to-Terminal responsiveness refinements. Earlier target names such as `WorkspaceReference`, `WorkspaceActivationState`, `BaseFileExplorer`, `LocalFileExplorer`, `WorkspaceInfo.fileExplorer`, and `ensureWorkspaceInitialized(reference)` are either current-state evidence or temporary migration aliases only. They are not steady-state architecture.
+The authoritative target for this ticket is the reconciled Round 8 workspace/file-explorer architecture plus the Round 9 Terminal descriptor lifecycle, Round 10 Files-to-Terminal responsiveness refinement, and Round 11 FileExplorer close/quiescence refinement. Earlier target names such as `WorkspaceReference`, `WorkspaceActivationState`, `BaseFileExplorer`, `LocalFileExplorer`, `WorkspaceInfo.fileExplorer`, and `ensureWorkspaceInitialized(reference)` are either current-state evidence or temporary migration aliases only. They are not steady-state architecture.
 
 Make workspace handling cheap and metadata-first, and make file browsing/search/watching an explicit lazy capability:
 
@@ -221,6 +228,7 @@ This means:
 - File-explorer and Terminal WebSocket routes both own pending-connect cleanup so early close/setup failure cannot retain watcher or PTY resources.
 - Normal attached Terminal sessions must also be descriptor-clean: after real command output and WebSocket close, Terminal-owned PTY descriptors, revoked descriptors, listeners, timers, read loops, manager records, and child processes must all be released after a bounded close wait.
 - Desktop right-side tab switching must not make Terminal shell readiness or first backend output wait behind FileExplorer tree teardown, watcher/session cleanup, snapshot refresh, or search work. The Files panel stays lazy before first use, may be cached after first use, and uses explicit active/visible state to release live watchers/listeners/background work while hidden.
+- FileExplorer inactive/close is a quiescence contract, not just a UI hide event: after final visible consumer release, no unbounded folder refresh, search, watcher stream, or global listener may remain active, and stale late folder/search responses must be ignored.
 
 ## Task Design Health Assessment
 
@@ -228,7 +236,7 @@ This means:
 - Root-cause classification: Boundary/ownership issue, missing lifecycle invariant, shared data-model looseness, and file responsibility drift.
 - Refactor required now: Yes.
 - Why: The original `spawn EBADF` was caused by watcher/file-descriptor pressure from workspace/file-explorer lifecycle coupling. Subsequent validation showed the same boundary problem in history and Terminal: read-only/cwd-only features were forced through workspace materialization/file-tree initialization. A local retry, fd-limit increase, or watcher-only patch would leave the architecture slow and fragile.
-- Design response: Preserve the good top-level workspace boundary, make workspace creation metadata-only, move all file-tree/search/operation/watcher concerns into explicit lazy `WorkspaceFileExplorer`, split frontend metadata state from file-explorer tree/live state, and decouple Files panel visibility/resource ownership from Terminal startup so the Terminal UI can appear quickly and backend shell readiness/first output is not delayed after Files has loaded.
+- Design response: Preserve the good top-level workspace boundary, make workspace creation metadata-only, move all file-tree/search/operation/watcher concerns into explicit lazy `WorkspaceFileExplorer`, split frontend metadata state from file-explorer tree/live state, and make FileExplorer active/inactive lifecycle ownership strong enough that Files close quiesces or suppresses file work while Terminal startup remains root-path-only and independently fast.
 
 ## Terminology
 
@@ -247,6 +255,7 @@ This means:
 | Terminal backend ready | Backend state after cwd validation, PTY creation/startup, and read-loop attachment; distinct from browser WebSocket `onopen` and local xterm initialization. |
 | Terminal first shell output | First output message from the PTY/read loop, used as the user-visible shell-readiness metric. |
 | FileExplorer panel active/visible state | Frontend lifecycle input that permits FileExplorer live session, watcher lease, snapshot refresh, search, global listeners, and editor/viewer behavior only while the Files surface is visible. Component existence/cache is not sufficient. |
+| FileExplorer quiesced/inactive state | State after final visible FileExplorer consumer releases: no live WS/watcher lease, no active snapshot/folderChildren/search work, no active global FileExplorer listeners, and any late async responses are aborted or generation-suppressed. Cached tree data may remain as inert UI state. |
 | Cached inactive Files panel | A FileExplorer UI/tree instance preserved after first Files use to avoid repeated heavy mount/unmount; it must hold no live watcher/WS lease, no active refresh/search task, and no active global keyboard/drag/context listeners while inactive. |
 | Legacy/current-state `WorkspaceReference` | Temporary migration alias for `WorkspaceMetadata` only. Not a steady-state type name. |
 | Legacy/current-state `WorkspaceInfo.fileExplorer` | Superseded tree-bearing workspace payload. Must be removed/split into metadata response plus file-explorer projection response. |
@@ -271,6 +280,7 @@ This means:
 | DS-012 | Terminal pending cleanup | Terminal WS close/error/setup failure | No retained PTY/read loop | Terminal WS route + session manager | No | Prevents replacing watcher leaks with PTY leaks. |
 | DS-013 | Terminal normal-session descriptor cleanup | Normal Terminal open/run-command/output/close | Manager state, read loop, child process, and PTY descriptors released | `TerminalHandler` + `PtySessionManager` + `TerminalSession` implementation | No | Ensures normal Terminal use cannot recreate descriptor pressure. |
 | DS-014 | Desktop Files -> Terminal shell readiness | Loaded Files panel hidden, Terminal selected | Terminal UI appears quickly and backend PTY ready / first shell output is not delayed by FileExplorer teardown, watcher cleanup, or in-flight file work | Right-side tab lifecycle + FileExplorer visibility owner + Terminal readiness owner | No new file-explorer acquisition; releases existing FileExplorer live resources | Covers the observed Electron shell-prompt delay after opening Files. |
+| DS-015 | FileExplorer inactive quiescence | Files hidden/inactive or final visible consumer released | No live watcher/WS, no active folder refresh/search/listeners, late responses ignored | FileExplorer visible lifecycle owner + `WorkspaceFileExplorer` cleanup owners | Cleanup only; no new acquisition | Makes close semantics explicit so FileExplorer cannot keep background work that interferes with Terminal or other cwd-only features. |
 
 ## Primary Execution Spines
 
@@ -386,29 +396,58 @@ Creates `WorkspaceFileExplorer`: No new acquisition on Terminal switch; it relea
 
 ### DS-006/DS-007 Files open/close
 
+Start path:
+
 ```text
-Visible Files surface
--> frontend reads WorkspaceMetadata from workspaceStore/context
--> fileExplorerStore opens consumer for workspaceId
--> file-explorer GraphQL/WS request
+Visible Files surface selected
+-> RightSideTabs / mobile explorer passes active=true
+-> FileExplorer reads WorkspaceMetadata from workspaceStore/context
+-> FileExplorer visible lifecycle owner creates a new active generation for workspaceId
+-> fileExplorerStore opens a visible consumer for workspaceId
+-> root/open-folder snapshot refresh starts with abort/generation ownership
+-> file-explorer GraphQL folder request or live WS request reaches backend
 -> WorkspaceManager.getOrCreateWorkspace(workspaceId) returns metadata-only Workspace
 -> workspace.acquireFileExplorer(reason)
 -> WorkspaceFileExplorer creates internal collaborators if absent
--> WorkspaceFileTreeState loads root/folder data
--> WorkspaceFileExplorerTree/folder result returned
--> fileExplorerStore stores projection by workspaceId
+-> WorkspaceFileTreeState loads the requested folder projection, not unrelated workspace metadata
+-> WorkspaceFileExplorerTree / WorkspaceFolderChildrenResult returned
+-> fileExplorerStore stores projection only if the active generation still matches
+-> live stream acquires a watcher lease only for the visible live consumer
 ```
 
-Close path:
+Close/quiescence path:
 
 ```text
-Files hidden/collapsed/unmounted or context browser closes
--> frontend releases file-explorer consumer/live session
--> backend releases watcher lease/session if one exists
--> final release stops watcher and optionally closes idle WorkspaceFileExplorer
+Files hidden/collapsed/unmounted or final visible consumer releases
+-> FileExplorer active generation is invalidated
+-> pending search debounce and active search AbortController are aborted
+-> snapshot/root/open-folder refresh AbortControllers are aborted
+-> late folder/search/file-refresh responses are ignored by generation check
+-> global keyboard/drag/context/menu listeners are detached
+-> frontend releases file-explorer live consumer and closes FileExplorer WS
+-> file-explorer WS route/stream handler disconnects session idempotently
+-> FileExplorerSession releases watcher lease and file-explorer lease
+-> WorkspaceFileWatcherLeaseManager stops/closes watcher after final lease
+-> cleanup timing/status is emitted for diagnostics
+-> cached tree/open-file UI state may remain inert, with no live watcher, active refresh/search, or global listeners
 ```
 
-Creates `WorkspaceFileExplorer`: Yes. Returns tree: Yes.
+Creates `WorkspaceFileExplorer`: Yes on start when absent. Returns tree: Yes on file-explorer requests. Close creates nothing; it releases or suppresses all active FileExplorer work.
+
+### DS-015 FileExplorer inactive quiescence
+
+```text
+FileExplorer active=false or consumer count becomes zero
+-> FileExplorer lifecycle owner marks workspace generation inactive
+-> visible-refresh/search controllers abort
+-> frontend live stream disconnect requested
+-> backend stream cleanup releases watcher/file-explorer leases
+-> watcher close promise settles or is measured as still closing
+-> fileExplorerStore accepts no late folder/search mutation for the inactive generation
+-> Terminal/history/runtime remain free to use WorkspaceMetadata/rootPath without waiting on FileExplorer APIs
+```
+
+This spine is separate from Terminal. Terminal must not call into FileExplorer to ask whether it is clean. Instead, FileExplorer owns its own cleanup and must make hidden/inactive work bounded, cancelable, or generation-suppressed so it cannot starve root-path-only features.
 
 ### DS-008 Skill file explorer
 
@@ -471,7 +510,7 @@ Watcher start is forbidden outside this visible-consumer/live-update path.
 | `TerminalSession` implementation (`autobyteus-ts`) | low-level PTY backend, child process, PTY descriptors, listeners, pending reads/timers, and deep close semantics. |
 | File-explorer WS route | raw WS lifecycle and cleanup before/around `WorkspaceFileExplorer` watcher lease acquisition. |
 | Right-side tab lifecycle owner | desktop tab body mounting/caching policy; ensures Files stays lazy before first use and inactive/cached after first use without blocking Terminal UI initialization or backend shell readiness. |
-| FileExplorer visible lifecycle owner | frontend active/visible gate for live session acquisition, refresh/search work, keyboard/drag/context listeners, cached tree reactivation, and cancellation/suppression of inactive late work. |
+| FileExplorer visible lifecycle owner | frontend active/visible gate for live session acquisition, refresh/search/folderChildren work, keyboard/drag/context listeners, cached tree reactivation, active-generation ownership, and cancellation/suppression of inactive late work. |
 
 ## Authoritative Data Model
 
@@ -570,12 +609,15 @@ fileExplorerStore
   - selected/open file state by workspaceId
   - search query/results/loading/error by workspaceId
   - live stream connection/consumer state by workspaceId
+  - active generation / abort controller state for visible folder snapshot refreshes and searches
+  - quiescence/cleanup timing state for diagnostics
   - optional cached panel/UI state keyed by workspaceId or active context, if needed for Files-to-Terminal responsiveness
 
 RightSideTabs / FileExplorer panel lifecycle
   - filesPanelHasMounted: false until first Files selection
   - filesPanelActive: true only while effective active tab is Files
-  - inactive cached Files releases live session, cancels/suppresses refresh/search work, and suspends global listeners
+  - inactive cached Files releases live session, aborts/suppresses folder refresh/search work, and suspends global listeners
+  - stale async folder/search responses cannot mutate inactive FileExplorer state
   - Terminal remains mounted/connected only while Terminal is selected
 ```
 
@@ -592,7 +634,7 @@ Agent/team run configs carry stable metadata/root-path identity. During migratio
 | GraphQL `workspaces` | workspace metadata list | none/filter | `WorkspaceMetadata[]` | No |
 | GraphQL `workspaceMetadata(rootPath)` or retained cheap alias | workspace metadata | root path | `WorkspaceMetadata` | No |
 | `Workspace.acquireFileExplorer(reason)` | workspace file explorer | file-explorer consumer reason | `WorkspaceFileExplorerLease` | Yes |
-| GraphQL `folderChildren(workspaceId,path)` | file tree/folder projection | workspace id + folder path | `WorkspaceFolderChildrenResult` | Yes |
+| GraphQL `folderChildren(workspaceId,path)` | file tree/folder projection | workspace id + folder path | `WorkspaceFolderChildrenResult`; bounded one-folder/lazy projection, not a hidden unbounded workspace rebuild | Yes |
 | GraphQL `workspaceFileExplorerTree(workspaceId)` | file tree projection | workspace id | `WorkspaceFileExplorerTree` | Yes |
 | GraphQL `searchWorkspaceFiles(workspaceId,query)` | file search | workspace id + query | search results | Yes |
 | GraphQL file read/write/move/delete | file operations | workspace id + normalized path(s) | content/status | Yes |
@@ -605,7 +647,8 @@ Agent/team run configs carry stable metadata/root-path identity. During migratio
 | Run/team history hydration | history projection | run/team ids + persisted root paths | contexts/configs with metadata | No |
 | Runtime cwd resolver | runtime launch | run config metadata | cwd string | No |
 | RightSideTabs Files panel lifecycle | frontend tab performance/visibility | active tab + has-opened-Files flag | visible/cached tab bodies + active prop | No direct backend acquisition |
-| FileExplorer visible lifecycle | file-explorer UI resources | workspace metadata + active flag | tree UI, live-session lease while active, cancelled/suppressed late work and suspended cache while inactive | Yes only when active |
+| FileExplorer visible lifecycle | file-explorer UI resources | workspace metadata + active flag + generation/abort ownership | tree UI, live-session lease while active, cancelled/suppressed folder/search work and suspended inert cache while inactive | Yes only when active |
+| FileExplorer quiesce/release visible consumer | file-explorer inactive cleanup | workspace id + consumer id/generation | live session released, watcher cleanup started/settled, refresh/search aborted, late responses ignored, cleanup timing | Cleanup only |
 
 ## File Responsibility Mapping
 
@@ -627,7 +670,7 @@ Agent/team run configs carry stable metadata/root-path identity. During migratio
 | new/renamed `workspace-file-watcher-lease-manager.ts` | internal watcher lifecycle | Lease count, watcher start/stop/close, event fanout. |
 | `autobyteus-server-ts/src/api/graphql/types/workspace.ts` | metadata-only workspace schema/resolvers | Remove tree from workspace responses. Cheap metadata/root-path resolver only. |
 | `autobyteus-server-ts/src/api/graphql/converters/workspace-converter.ts` | metadata converter | Stop calling `getFileExplorer()`/tree serialization. |
-| `autobyteus-server-ts/src/api/graphql/types/file-explorer.ts` | file-explorer schema/resolvers | Acquire `WorkspaceFileExplorer` explicitly and return file-explorer DTOs. |
+| `autobyteus-server-ts/src/api/graphql/types/file-explorer.ts` | file-explorer schema/resolvers | Acquire `WorkspaceFileExplorer` explicitly and return file-explorer DTOs. `folderChildren` must delegate to bounded/cancellable folder projection rather than unconditional full-tree rebuild for ordinary folder loads. |
 | `autobyteus-server-ts/src/api/websocket/file-explorer.ts` | file-explorer WS lifecycle | Register cleanup before async acquisition/connect; release late/partial sessions and watcher leases. |
 | `autobyteus-server-ts/src/api/websocket/terminal.ts` | Terminal root-path WS lifecycle | Validate cwd directly; pending-connect cleanup for PTY sessions; no workspace file-explorer calls. |
 | `autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts` | Terminal read loop and session attach/detach | Ensure disconnect stops active read-loop ownership and awaits manager close. |
@@ -643,10 +686,10 @@ Agent/team run configs carry stable metadata/root-path identity. During migratio
 | `autobyteus-web/stores/fileExplorer.ts` | file-explorer UI state by workspace id | Own `WorkspaceFileExplorerTree`, loaded/expanded folders, open files, search state, loading/errors/live stream status. |
 | `autobyteus-web/services/fileExplorerStreaming/*` | live stream transport | Used only by visible file-explorer consumers; no auto-connect from metadata list/create. |
 | workspace metadata action files | metadata resolution | Rename/recast legacy reference actions to metadata actions. No file-tree activation semantics. |
-| file-explorer live actions | visible file-explorer consumer lifecycle | Acquire/release live stream/consumer state only while UI is visible; cancel/suppress late snapshot refresh/search work after the last visible consumer releases; expose cleanup timing for Files -> Terminal diagnostics. |
+| file-explorer live actions | visible file-explorer consumer lifecycle | Acquire/release live stream/consumer state only while UI is visible; own generation/AbortController state for root/open-folder snapshot refreshes and search; cancel/suppress late folder/search work after the last visible consumer releases; expose cleanup timing for Files -> Terminal diagnostics. |
 | `components/layout/RightSideTabs.vue` | right-side tab body lifecycle | Do not mount Files before first selection; after first Files use, hide/cache Files instead of synchronously destroying a loaded tree during Files -> Terminal; pass explicit active state to Files; expose/defer cleanup so it does not starve Terminal backend readiness. Keep Terminal visible-only/disconnected when inactive. |
 | `components/fileExplorer/FileExplorerLayout.vue` | Files panel lifecycle boundary | Accept/pass `active` into tree and tabs regions; cached inactive layout must not imply live resources. |
-| `components/fileExplorer/FileExplorer.vue` | visible file tree UI | Read metadata, open fileExplorerStore, render loading/tree, acquire live session/refresh only while active, release/suspend on inactive and unmount. |
+| `components/fileExplorer/FileExplorer.vue` | visible file tree UI | Read metadata, open fileExplorerStore, render loading/tree, acquire live session/refresh only while active, invalidate active generation and release/suspend/quiesce on inactive and unmount. |
 | `components/fileExplorer/FileExplorerTabs.vue` | file content viewer lifecycle | Gate keyboard/document listeners and active viewer/editor work by active state; hidden cached tabs must not handle global input. |
 | `components/fileExplorer/FileItem.vue` | recursive tree node rendering | Avoid per-node active global listeners while cached/hidden; either suspend listeners from injected active state or consolidate global drag/context listeners at a panel owner. |
 | `components/skills/SkillWorkspaceLoader.vue` | skill metadata + visible file explorer host | Register skill metadata only; request tree only from visible file explorer. |
@@ -660,7 +703,8 @@ Allowed dependencies:
 
 - Workspace metadata consumers may depend on `WorkspaceManager`, `Workspace`, and `WorkspaceMetadata`.
 - File-explorer UI/API/WS consumers may acquire `WorkspaceFileExplorer` through `Workspace`.
-- Right-side tab UI may cache the Files panel after first use, but only the explicit active/visible state may acquire live sessions, watchers, refresh/search work, or global input listeners; inactive cleanup must be observable and must not starve Terminal PTY startup.
+- Right-side tab UI may cache the Files panel after first use, but only the explicit active/visible state may acquire live sessions, watchers, folder refresh/search work, or global input listeners; inactive cleanup must be observable and must not starve Terminal PTY startup.
+- FileExplorer visible lifecycle owner may keep inert cached tree/open-file UI state while inactive, but it owns generation/abort cancellation so late folder/search responses cannot mutate inactive state.
 - `WorkspaceFileExplorer` may depend on internal collaborators for tree/search/operations/watcher lifecycle.
 - Terminal may depend on root-path validation and PTY session services, not file-explorer state.
 - Terminal route/handler/manager may depend on `TerminalSession.close()` as the low-level OS-resource close contract; they must not treat manager map removal alone as cleanup completion.
@@ -677,11 +721,23 @@ Forbidden dependencies:
 - No steady-state `BaseFileExplorer`/`LocalFileExplorer` abstraction stack remains.
 - No compatibility dual path may keep `WorkspaceInfo.fileExplorer` as a general workspace payload.
 - Terminal validation must not use `PtySessionManager.sessionCount` or child-process count alone as proof of cleanup; descriptor-level evidence is required for normal command-output sessions.
-- Switching from Files to Terminal must not let loaded FileExplorer teardown, watcher cleanup, snapshot refresh, or search work delay backend Terminal ready / first shell output.
-- Cached inactive FileExplorer UI must not keep a file-explorer WebSocket, watcher lease, active refresh/search task, or global keyboard/drag/context listener alive.
+- Switching from Files to Terminal must not let loaded FileExplorer teardown, watcher cleanup, snapshot/folderChildren refresh, or search work delay backend Terminal ready / first shell output.
+- Cached inactive FileExplorer UI must not keep a file-explorer WebSocket, watcher lease, active refresh/search/folderChildren task, or global keyboard/drag/context listener alive.
+- Inactive FileExplorer state must not accept stale folder/search responses from a previous visible generation.
 - Do not solve the Files -> Terminal latency by keeping hidden Terminal PTY/WebSocket sessions open.
 
 ## Route / Handler Cleanup Contracts
+
+### FileExplorer visible lifecycle / quiescence
+
+The frontend FileExplorer visible lifecycle owner governs active work before transport-specific cleanup begins. This is the logical close contract for the file-explorer feature:
+
+1. `active=true` is the only state that may start snapshot refresh, search, live stream acquisition, watcher lease acquisition, global FileExplorer listeners, or editor/viewer active behavior.
+2. `active=false`, unmount, workspace switch, or final visible-consumer release increments/invalidate an active generation and aborts all refresh/search controllers for that generation.
+3. Folder refresh and search responses must check the active generation or abort signal before mutating `fileExplorerStore`.
+4. The live stream release starts backend watcher/session cleanup, but the UI must not synchronously block Terminal rendering on FileExplorer DOM destruction. Cleanup timing must be observable.
+5. Backend folder projection work must be bounded/cancellable enough that hidden FileExplorer work cannot monopolize filesystem/event-loop resources while Terminal starts.
+6. Cached inactive FileExplorer state is allowed only as inert UI data; it is not a live resource lease.
 
 ### File-explorer WebSocket
 
@@ -753,8 +809,10 @@ Remove or decommission as steady-state architecture:
 - Terminal close behavior that reports success while retaining PTY/revoked descriptors after normal command-output sessions.
 - Mobile Terminal lookup through `workspaceStore.workspaces` / `allWorkspaces` as a render/connect gate.
 - Historical team helper path that materializes every member workspace for history display.
-- Desktop tab/resource behavior that allows a loaded FileExplorer tree, watcher cleanup, or in-flight file work to delay Terminal backend readiness.
-- FileExplorer mount-only lifecycle where live sessions/listeners are controlled by component existence instead of active/visible state.
+- Desktop tab/resource behavior that allows a loaded FileExplorer tree, watcher cleanup, unabortable folder snapshot refresh, or in-flight file work to delay Terminal backend readiness.
+- FileExplorer mount-only lifecycle where live sessions/listeners/refresh/search work are controlled by component existence instead of active/visible state.
+- Unabortable/generationless file-explorer snapshot refreshes whose late responses can mutate hidden FileExplorer state.
+- Backend folderChildren implementation that uses an unbounded full-tree rebuild as the ordinary one-folder projection path.
 
 Temporary migration aliases allowed only inside one implementation change:
 
@@ -777,15 +835,16 @@ Temporary migration aliases allowed only inside one implementation change:
 11. Split frontend state: `workspaceStore` metadata-only; `fileExplorerStore` owns tree/search/open-file/live state.
 12. Update desktop/mobile Files, skill file explorer, and context browser to acquire/release FileExplorer state explicitly.
 13. Update desktop right-side tab lifecycle so Files is not mounted before first selection, loaded Files can be cached while inactive, and active state controls all FileExplorer live resources/listeners.
-14. Update FileExplorer tree/tabs/items to suspend live sessions, cancel/suppress refresh/search, expose cleanup timing, and suspend global listeners on inactive state as well as on unmount.
-15. Update standalone/team history hydration to use `WorkspaceMetadata` and never acquire file-explorer state.
-16. Update Terminal desktop/mobile to use root-path `TerminalTarget` and backend cwd validation only; add explicit readiness states/messages; keep hidden/inactive Terminal disconnected unless a future explicit feature changes that lifecycle.
-17. Strengthen Terminal normal close path so `TerminalSession.close()` / `PtySessionManager.closeSession()` release OS PTY descriptors after normal command-output sessions.
-18. Update runtime cwd resolvers to use metadata/root path only.
-19. Add pending-connect cleanup tests for file-explorer WS and Terminal WS.
-20. Add normal attached command-output Terminal descriptor churn validation.
-21. Add Files -> Terminal backend-ready / first-shell-output validation after a loaded tree and active watcher.
-22. Delete temporary migration aliases and any remaining imports of superseded target names.
+14. Update FileExplorer tree/tabs/items to suspend live sessions, abort/generation-suppress folder snapshot refresh and search, expose cleanup timing, and suspend global listeners on inactive state as well as on unmount.
+15. Rework file-explorer folder projection so `folderChildren` is a bounded/lazy FileExplorer-owned operation, or explicitly cancellable if a broader snapshot rebuild is unavoidable.
+16. Update standalone/team history hydration to use `WorkspaceMetadata` and never acquire file-explorer state.
+17. Update Terminal desktop/mobile to use root-path `TerminalTarget` and backend cwd validation only; add explicit readiness states/messages; keep hidden/inactive Terminal disconnected unless a future explicit feature changes that lifecycle.
+18. Strengthen Terminal normal close path so `TerminalSession.close()` / `PtySessionManager.closeSession()` release OS PTY descriptors after normal command-output sessions.
+19. Update runtime cwd resolvers to use metadata/root path only.
+20. Add pending-connect cleanup tests for file-explorer WS and Terminal WS.
+21. Add normal attached command-output Terminal descriptor churn validation.
+22. Add Files -> Terminal backend-ready / first-shell-output validation after a loaded tree and active watcher.
+23. Delete temporary migration aliases and any remaining imports of superseded target names.
 
 ## Validation Plan
 
@@ -795,6 +854,7 @@ Backend validation:
 - Unit test: `getOrCreateWorkspace()` from id/root mapping remains metadata-only.
 - Unit test: `FileSystemWorkspace`/`SkillWorkspace`/`TempWorkspace` constructors are metadata-only.
 - Unit test: file-explorer GraphQL folder/search/read/write resolvers are the first backend paths to acquire `WorkspaceFileExplorer`.
+- Unit test: `folderChildren` returns bounded folder projections and does not call unbounded full-tree rebuild for ordinary visible folder loads; if a broader rebuild path remains, it is cancellable/serialized under `WorkspaceFileExplorer` and observable.
 - Unit/static check: no `BaseFileExplorer` / `LocalFileExplorer` steady-state imports remain.
 - Unit/static check: `WorkspaceFileTreeState`, `WorkspaceFileSearchIndex`, `WorkspaceFileOperations`, and `WorkspaceFileWatcherLeaseManager` are not directly used by history/terminal/runtime/workspace metadata code.
 - Runtime tests: Codex/Claude/AutoByteus cwd resolution does not call `Workspace.acquireFileExplorer()`.
@@ -813,7 +873,8 @@ Frontend validation:
 - UI tests: desktop Files/mobile Files/skill file explorer/context browser acquire file-explorer state only while visible and release on hide/unmount/close.
 - UI tests: desktop `RightSideTabs` does not mount `FileExplorerLayout` before the first Files selection.
 - UI tests: after Files has been opened once, selecting Terminal hides/inactivates cached Files, renders Terminal UI promptly, and does not let FileExplorer cleanup/in-flight work delay backend Terminal ready / first shell output.
-- UI tests: inactive cached Files releases file-explorer live consumers and cancels/suppresses snapshot refresh/search and global keyboard/drag/context listeners until Files becomes active again.
+- UI tests: inactive cached Files releases file-explorer live consumers and aborts/generation-suppresses snapshot refresh/search/folderChildren work and global keyboard/drag/context listeners until Files becomes active again.
+- UI tests: late folder/search responses from a previously active Files generation do not mutate `fileExplorerStore` after Files becomes inactive.
 - UI tests: switching away from Terminal still disconnects/disposes Terminal session resources; Terminal is not kept hidden with a live PTY; local Terminal text does not claim backend readiness before ready/first output.
 - Mobile tests: mobile tools `RightSideTabs` cannot render hidden Files path; dedicated mobile explorer is the only mobile file-explorer live surface.
 - Team history tests: opening team history with multiple member workspaces builds metadata/shells without materializing every workspace.
@@ -825,7 +886,7 @@ End-to-end/manual validation:
 - Open desktop/mobile Terminal from historical/non-materialized workspace; PTY starts from cwd without workspace file-explorer initialization.
 - Run repeated normal Terminal open/actual-command-output/close cycles in built backend; no per-session PTY descriptor growth remains after bounded wait.
 - Open Files after history selection; visible loading occurs, tree appears, watcher starts only while visible.
-- Run Terminal -> Files -> wait for tree/live watcher -> Terminal in the Electron/frontend environment; Terminal UI appears quickly and backend PTY ready / first shell output remains within the documented fast threshold.
+- Run Terminal -> Files -> wait for tree/live watcher -> Terminal in the Electron/frontend environment; Terminal UI appears quickly, FileExplorer inactive/quiescence timings are recorded, and backend PTY ready / first shell output remains within the documented fast threshold.
 - Close/hide Files; watcher/resources release while cached UI/listeners remain inactive and cleanup timing is attributable separately from Terminal startup timing.
 
 ## Backward-Compatibility Rejection Log
@@ -843,7 +904,7 @@ End-to-end/manual validation:
 
 ## AR-007 Reconciliation Note
 
-This sectioned design spec has been reconciled so the Round 8 workspace/file-explorer model is the only authoritative steady-state workspace target. Round 9 and Round 10 add lifecycle/performance invariants without reintroducing superseded workspace concepts. Earlier terms from previous rounds are intentionally retained only in the `Current-State Read`, revision history, or explicit legacy/migration-alias rows. The target architecture is:
+This sectioned design spec has been reconciled so the Round 8 workspace/file-explorer model is the only authoritative steady-state workspace target. Round 9, Round 10, and Round 11 add lifecycle/performance invariants without reintroducing superseded workspace concepts. Earlier terms from previous rounds are intentionally retained only in the `Current-State Read`, revision history, or explicit legacy/migration-alias rows. The target architecture is:
 
 ```text
 WorkspaceMetadata
@@ -876,4 +937,15 @@ Local xterm welcome != backend PTY ready / first shell output
 Terminal backend readiness != FileExplorer cleanup/in-flight file work
 ```
 
-The target is: Files is lazy before first selection, cached/inactive after first use if needed for responsiveness, and active-only for live watchers/refresh/search/global listeners. Terminal remains visible-only/root-path based, reports backend readiness separately from local UI initialization, and must not be kept hidden with an open PTY as a shortcut.
+The target is: Files is lazy before first selection, cached/inactive after first use if needed for responsiveness, and active-only for live watchers/refresh/search/folderChildren/global listeners. Terminal remains visible-only/root-path based, reports backend readiness separately from local UI initialization, and must not be kept hidden with an open PTY as a shortcut.
+
+## Round 11 FileExplorer Close/Quiescence Reconciliation Note
+
+The clean architecture does not introduce a Terminal dependency on FileExplorer. The two primary spines remain separate:
+
+```text
+Terminal = WorkspaceMetadata.rootPath -> TerminalTarget -> PTY session
+FileExplorer = active visible Files/skill/context surface -> WorkspaceFileExplorer -> tree/search/ops/watcher
+```
+
+The shared risk is resource-time overlap in one backend process. Therefore FileExplorer owns its close/quiescence contract: inactive means no live watcher/WS, no active folder refresh/search, no active global listeners, and no stale mutation from prior async work. Terminal should not coordinate with FileExplorer directly; it stays root-path-only while FileExplorer makes its own hidden work bounded, cancellable, or generation-suppressed.

@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
 
@@ -100,5 +103,30 @@ describe("WorkspaceFileExplorer", () => {
     expect(() => explorer.subscribe()).toThrowError(
       "Watcher is not running. Acquire a watcher lease before subscribing.",
     );
+  });
+
+  it("loads folder children as a bounded projection without full tree rebuild", async () => {
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-folder-projection-"));
+    try {
+      fs.mkdirSync(path.join(tempRoot, "src", "deeper"), { recursive: true });
+      fs.writeFileSync(path.join(tempRoot, "src", "main.ts"), "console.log('ok');");
+      fs.writeFileSync(path.join(tempRoot, "src", "deeper", "nested.ts"), "nested");
+      fs.writeFileSync(path.join(tempRoot, "root.txt"), "root");
+      const explorer = new WorkspaceFileExplorer(tempRoot);
+      const rebuildSpy = vi.spyOn(explorer, "buildWorkspaceDirectoryTree");
+
+      const folderNode = await explorer.loadFolderChildren("src");
+
+      expect(rebuildSpy).not.toHaveBeenCalled();
+      expect(folderNode.getPath()).toBe("src");
+      expect(folderNode.children.map((child) => child.name)).toEqual(["deeper", "main.ts"]);
+      const deeper = folderNode.children.find((child) => child.name === "deeper");
+      expect(deeper?.childrenLoaded).toBe(false);
+      expect(deeper?.children).toHaveLength(0);
+      expect(explorer.getTree()?.findNodeByPath("src")).toBe(folderNode);
+      expect(explorer.getTree()?.findNodeByPath("root.txt")).toBeNull();
+    } finally {
+      fs.rmSync(tempRoot, { recursive: true, force: true });
+    }
   });
 });

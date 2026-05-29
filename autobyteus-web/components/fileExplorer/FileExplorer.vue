@@ -214,8 +214,7 @@ watch(displayedFiles, () => {
 
 // Cleanup timer on unmount
 onUnmounted(() => {
-  clearPendingSearch();
-  releaseCurrentLiveSession();
+  suspendInactiveWork();
   detachGlobalFileExplorerListeners();
 });
 

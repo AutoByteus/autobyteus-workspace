@@ -93,34 +93,20 @@ export class FileExplorerResolver {
 
     const lease = await workspace.acquireFileExplorer("graphql-folder-children");
     try {
-      const fileExplorer = lease.fileExplorer;
-      const ensureFullTree = async () => {
-        await fileExplorer.buildWorkspaceDirectoryTree();
-        return fileExplorer.getTree();
-      };
-
-      let tree = fileExplorer.getTree();
-      if (!tree) {
-        tree = await ensureFullTree();
-      }
-
-      let folderNode = tree?.findNodeByPath(folderPath) ?? null;
-      if (!folderNode || (folderNode.childrenLoaded === false && folderNode.children.length === 0)) {
-        tree = await ensureFullTree();
-        folderNode = tree?.findNodeByPath(folderPath) ?? null;
-      }
-
-      if (!folderNode) {
-        return jsonError(`Folder not found: ${folderPath}`);
-      }
-
-      if (folderNode.isFile) {
-        return jsonError(`Path is a file, not a folder: ${folderPath}`);
-      }
-
+      const folderNode = await lease.fileExplorer.loadFolderChildren(folderPath);
       return JSON.stringify(folderNode.toShallowDict(1));
     } catch (error) {
-      logger.error(`Error fetching folder children: ${toMessage(error)}`);
+      const message = toMessage(error);
+      if (
+        message.includes("Folder not found") ||
+        message.includes("Path is a file") ||
+        message.includes("Path is not a folder") ||
+        message.includes("Access denied")
+      ) {
+        return jsonError(message);
+      }
+
+      logger.error(`Error fetching folder children: ${message}`);
       return jsonError("An unexpected error occurred while fetching folder children");
     } finally {
       await lease.release();

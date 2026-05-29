@@ -40,6 +40,7 @@ import {
   refreshFileExplorerSnapshotForStore,
   releaseFileExplorerLiveSessionForStore,
 } from '~/stores/workspaceFileExplorerLiveActions'
+import type { FetchFolderChildrenOptions } from '~/stores/fileExplorerTreeActions'
 import type { FileExplorerStreamingService } from '~/services/fileExplorerStreaming/FileExplorerStreamingService'
 
 export interface WorkspaceInfo {
@@ -331,8 +332,12 @@ export const useWorkspaceStore = defineStore('workspace', {
       return refreshFileExplorerSnapshotForStore(this as any, workspaceId);
     },
 
-    async fetchFolderChildren(workspaceId: string, folderPath: string): Promise<void> {
-      await useFileExplorerStore().fetchFolderChildren(workspaceId, folderPath);
+    async fetchFolderChildren(
+      workspaceId: string,
+      folderPath: string,
+      options?: FetchFolderChildrenOptions,
+    ): Promise<void> {
+      await useFileExplorerStore().fetchFolderChildren(workspaceId, folderPath, options);
     },
 
     registerSkillWorkspace(skillId: string): string {

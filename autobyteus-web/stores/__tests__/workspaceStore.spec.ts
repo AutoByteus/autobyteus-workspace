@@ -269,6 +269,9 @@ describe('workspaceStore', () => {
   describe('file explorer live sessions', () => {
     it('opens one stream for multiple visible consumers and disconnects after final release', () => {
       const store = createStore();
+      const fileExplorerStore = useFileExplorerStore();
+      const abortSearch = vi.spyOn(fileExplorerStore, 'abortSearch');
+      const invalidateGeneration = vi.spyOn(fileExplorerStore, 'invalidateFolderChildrenGeneration');
       vi.spyOn(store, 'fetchFolderChildren').mockResolvedValue(undefined);
 
       const releaseA = store.acquireFileExplorerLiveSession('ws-1', 'consumer-a');
@@ -283,6 +286,8 @@ describe('workspaceStore', () => {
       releaseB();
       expect(mockStreamingInstances[0].disconnect).toHaveBeenCalledTimes(1);
       expect(store.fileSystemConnections.size).toBe(0);
+      expect(abortSearch).toHaveBeenCalledWith('ws-1');
+      expect(invalidateGeneration).toHaveBeenCalledWith('ws-1');
     });
 
     it('returns an idempotent release function for duplicate consumer acquisition', () => {
@@ -347,6 +352,45 @@ describe('workspaceStore', () => {
       expect(refreshedSrc.children.map((child: TreeNode) => child.path)).toEqual(['src/new.txt']);
       expect(explorerState.nodeIdToNode['old-file']).toBeUndefined();
       expect(explorerState.nodeIdToNode['new-file']).toBeDefined();
+    });
+
+    it('aborts snapshot refresh generation and ignores late folder responses after final release', async () => {
+      const store = createStore();
+      const fileExplorerStore = useFileExplorerStore();
+      const explorerState = fileExplorerStore._getOrCreateWorkspaceState('ws-1');
+      let capturedSignal: AbortSignal | undefined;
+      let resolveQuery: ((value: any) => void) | null = null;
+      mockQuery.mockImplementation(({ context }: any) => {
+        capturedSignal = context?.fetchOptions?.signal;
+        return new Promise((resolve) => {
+          resolveQuery = resolve;
+        });
+      });
+
+      const release = store.acquireFileExplorerLiveSession('ws-1', 'consumer-a');
+      const refreshTask = store.fileExplorerSnapshotRefreshes.get('ws-1');
+      expect(refreshTask).toBeDefined();
+      expect(capturedSignal?.aborted).toBe(false);
+
+      release();
+      expect(capturedSignal?.aborted).toBe(true);
+      expect(store.fileExplorerSnapshotRefreshes.has('ws-1')).toBe(false);
+      resolveQuery?.({
+        data: {
+          folderChildren: JSON.stringify({
+            id: 'root',
+            name: 'root',
+            path: '',
+            is_file: false,
+            children: [{ id: 'late-file', name: 'late.txt', path: 'late.txt', is_file: true, children: [] }],
+          }),
+        },
+      });
+      await refreshTask;
+
+      expect(explorerState.tree.children).toHaveLength(0);
+      expect(explorerState.nodeIdToNode['late-file']).toBeUndefined();
+      expect(mockStreamingInstances[0].disconnect).toHaveBeenCalledTimes(1);
     });
   });
 });

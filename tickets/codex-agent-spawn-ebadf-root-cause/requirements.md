@@ -1,11 +1,11 @@
 # Requirements Doc
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
-Refined — Round 9 Terminal normal-session descriptor lifecycle requirement added after E2E-TERMFD-002
+Refined — Round 11 FileExplorer inactive quiescence and Files-to-Terminal shell-readiness lifecycle requirements added
 
 ## Goal / Problem Statement
 
-Prevent rare `spawn EBADF` failures that block prepared agent runs from activating after the AutoByteus Electron backend accumulates too many workspace watcher/file descriptors. Refactor file-explorer live monitoring so recursive filesystem watchers exist only while a user-facing file explorer is actively visible/connected, not for every loaded workspace. The current-ticket release is also blocked by late-discovered performance regressions where read-only or cwd-only actions eagerly materialize workspaces: opening a historical run can create/initialize the run workspace and scan a shallow file tree before the user opens Files, and opening Terminal currently follows the same materialized-workspace path even though Terminal only needs a cwd/root path. These must be fixed in the same ticket because the current build is not releasable if history or Terminal opening is too slow.
+Prevent rare `spawn EBADF` failures that block prepared agent runs from activating after the AutoByteus Electron backend accumulates too many workspace watcher/file descriptors. Refactor file-explorer live monitoring so recursive filesystem watchers exist only while a user-facing file explorer is actively visible/connected, not for every loaded workspace. The current-ticket release is also blocked by late-discovered performance regressions where read-only or cwd-only actions eagerly materialize workspaces: opening a historical run can create/initialize the run workspace and scan a shallow file tree before the user opens Files, and opening Terminal currently follows the same materialized-workspace path even though Terminal only needs a cwd/root path. These must be fixed in the same ticket because the current build is not releasable if history or Terminal opening is too slow. The latest Files-to-Terminal symptom also requires FileExplorer close/inactive state to be a true quiescence boundary: hidden Files must not leave unbounded folder refresh/search/watcher work that can delay Terminal backend readiness or first shell output.
 
 ## Investigation Findings
 
@@ -55,6 +55,7 @@ Make live filesystem monitoring demand-driven:
 4. On mobile, make the dedicated `explorer` panel the only mobile file-explorer live surface; suppress the `files` tab / `FileExplorerLayout` inside mobile `RightSideTabs`.
 5. Refresh a snapshot when the explorer opens; showing a loading state is acceptable.
 6. Release the frontend connection and backend watcher lease when the explorer closes, hides, switches workspace, or unmounts.
+6a. Treat FileExplorer inactive/final consumer release as a quiescence boundary: abort or generation-suppress in-flight folder snapshot refreshes/searches, detach global listeners, and ignore stale late results.
 7. Keep file search and click-to-open on-demand and independent from persistent watchers.
 8. Treat canonical `workspaceRootPath` as the historical run workspace identity for viewing and as the cwd input for Terminal/resume/rerun on both desktop and mobile. Materialize/initialize a workspace lazily only when the user opens Files, file-tree browsing, context picker file browsing, or another feature that truly needs `WorkspaceInfo`/file-explorer state.
 
@@ -110,17 +111,17 @@ Medium
 - REQ-014: Historical run open must not call frontend `workspaceStore.createWorkspace()` solely to display conversation/activity/config.
 - REQ-015: Historical run open must not require backend `FileSystemWorkspace.initialize()` or `buildWorkspaceDirectoryTree(...)` solely to display historical data.
 - REQ-016: Historical run hydration must preserve canonical `workspaceRootPath` as displayable metadata even when no live/current workspace is initialized.
-- REQ-017: The system must provide a cheap filesystem workspace reference model plus centrally-owned materialization state: the reference carries deterministic `workspaceId`, canonical `workspaceRootPath`, and display name without file-tree scanning; materialization/initialization status lives in `WorkspaceStore`. A non-null `workspaceId` in run config means stable workspace identity/reference, not proof that `WorkspaceInfo` has been initialized.
-- REQ-018: Workspace-dependent actions must explicitly obtain the feature-specific handle they need before use: Files and context picker file browsing require materialized workspace/file-tree state; Terminal and resume/rerun require only the canonical `workspaceRootPath` as cwd/launch root and must not initialize file trees solely to recover or use that path.
-- REQ-019: Lazy workspace reference resolution must preserve one-to-one identity for a canonical filesystem root path.
+- REQ-017: The system must provide a cheap `WorkspaceMetadata` model: deterministic `workspaceId`, canonical `rootPath`/`workspaceRootPath`, display name, and kind/source metadata without file-tree scanning. A non-null `workspaceId` in run config means stable workspace identity, not proof that a file tree, `WorkspaceFileExplorer`, watcher, or initialized tree payload exists.
+- REQ-018: Workspace-dependent actions must explicitly obtain the feature-specific handle they need before use: Files and context picker file browsing require explicit `WorkspaceFileExplorer` acquisition/file-tree state; Terminal and resume/rerun require only the canonical `workspaceRootPath` as cwd/launch root and must not initialize file trees solely to recover or use that path.
+- REQ-019: Lazy workspace metadata resolution must preserve one-to-one identity for a canonical filesystem root path.
 - REQ-020: If a historical workspace path is missing/inaccessible, history viewing must still work; errors should surface only when a workspace-dependent action is attempted.
 - REQ-021: Team history hydration must not eagerly initialize every member workspace merely to show team history.
-- REQ-022: `AgentRunConfig`, `TeamRunConfig`, `AgentContext`, and team member contexts must carry workspace identity/reference with one clear meaning: `workspaceId` is stable deterministic identity; `workspaceReference` carries root path/display metadata; initialized workspace payload lives in `WorkspaceStore.workspaces`.
-- REQ-023: Historical team hydration must build focused-member and sibling member shells with per-member workspace references without calling eager workspace materialization for every member.
+- REQ-022: `AgentRunConfig`, `TeamRunConfig`, `AgentContext`, and team member contexts must carry workspace identity with one clear meaning: `workspaceId` is stable deterministic identity; `workspaceMetadata` carries root path/display/kind metadata; file tree/live/open-file state lives only in FileExplorer-specific state.
+- REQ-023: Historical team hydration must build focused-member and sibling member shells with per-member `WorkspaceMetadata` without calling eager workspace materialization or FileExplorer acquisition for every member.
 - REQ-024: Terminal must support a root-path/cwd-based connection path that does not require `WorkspaceStore.workspaces[workspaceId]`, frontend `workspaceStore.createWorkspace()`, backend `WorkspaceManager.createWorkspace()`, or `FileSystemWorkspace.initialize()` for ordinary filesystem workspaces.
 - REQ-025: Backend Terminal must validate/canonicalize the requested cwd/root path and start the PTY from that cwd without building a file explorer tree or acquiring file-explorer watcher resources.
-- REQ-026: Mobile Terminal must derive a `TerminalTarget` from `MobileWorkContext` root-path data and/or the focused team member `WorkspaceReference`; it must not gate Terminal rendering on `WorkspaceStore.workspaces`, `WorkspaceStore.allWorkspaces`, or an initialized `WorkspaceInfo`.
-- REQ-027: `Terminal.vue` must accept an explicit root-path `TerminalTarget`/`WorkspaceReference` from mobile and must not expose an initialized-workspace-id-only contract as the required Terminal entrypoint.
+- REQ-026: Mobile Terminal must derive a `TerminalTarget` from `MobileWorkContext` root-path data and/or the focused team member `WorkspaceMetadata`; it must not gate Terminal rendering on `WorkspaceStore.workspaces`, `WorkspaceStore.allWorkspaces`, or an initialized `WorkspaceInfo`.
+- REQ-027: `Terminal.vue` must accept an explicit root-path `TerminalTarget`/`WorkspaceMetadata` from mobile and must not expose an initialized-workspace-id-only contract as the required Terminal entrypoint.
 - REQ-028: Backend Terminal WebSocket route must register close/error cleanup before auth/connect, track `closed`, `cleanupStarted`, `connectPromise`, and `connectedSessionId`, disconnect late sessions when close wins the race, and clear pending messages after early close.
 - REQ-029: `TerminalHandler.connect()` / `PtySessionManager` setup must close any partially created PTY session if setup fails after session creation but before route ownership is established.
 
@@ -146,15 +147,15 @@ Medium
 - AC-017: Backend history projection/resume queries and frontend history hydration do not call `WorkspaceManager.createWorkspace()` or `FileSystemWorkspace.initialize()`.
 - AC-018: Historical run UI can display workspace path/name even before workspace materialization.
 - AC-019: Opening Files after historical run selection lazily resolves/materializes the workspace and loads the file explorer with a visible loading state.
-- AC-020: Resuming/rerunning a historical run uses `workspaceReference.workspaceRootPath` without initializing file trees solely to recover the path; if that runtime path needs materialized workspace state, materialization happens at resume/rerun time and errors are reported there.
+- AC-020: Resuming/rerunning a historical run uses `workspaceMetadata.rootPath` / `workspaceRootPath` without initializing file trees solely to recover the path; if that runtime path needs materialized workspace state, materialization happens at resume/rerun time and errors are reported there.
 - AC-021: Inaccessible/missing workspace path does not block historical conversation display.
 - AC-022: Opening a historical team run with multiple member workspace paths does not initialize each member workspace.
 - AC-023: Equivalent canonical workspace root paths map to one deterministic workspace identity.
-- AC-024: Historical agent run context has `config.workspaceReference` and deterministic `config.workspaceId`, but `WorkspaceStore.workspaces[workspaceId]` may remain absent until materialization.
-- AC-025: Historical team run context has team-level primary workspace reference and per-member workspace references; `WorkspaceStore.workspaces` remains uninitialized for those references until a file-tree-dependent materialization action.
+- AC-024: Historical agent run context has `config.workspaceMetadata` and deterministic `config.workspaceId`, but FileExplorer tree/live state may remain absent until a file-explorer consumer opens it.
+- AC-025: Historical team run context has team-level primary `WorkspaceMetadata` and per-member `WorkspaceMetadata`; FileExplorer tree/live state remains absent for those workspaces until a file-tree-dependent action opens it.
 - AC-026: Focusing a sibling member in historical team history may hydrate that member projection but does not materialize the member workspace.
 - AC-027: Opening Terminal from a historical/non-materialized filesystem workspace does not call `workspaceStore.createWorkspace()`, backend `WorkspaceManager.createWorkspace()`, or `FileSystemWorkspace.initialize()`.
-- AC-028: Backend Terminal starts the PTY with cwd equal to the canonical `workspaceRootPath` from the selected workspace reference and logs/returns errors at Terminal connection time for missing/inaccessible paths.
+- AC-028: Backend Terminal starts the PTY with cwd equal to the canonical `workspaceRootPath` from the selected `WorkspaceMetadata`/`TerminalTarget` and logs/returns errors at Terminal connection time for missing/inaccessible paths.
 - AC-029: Opening Mobile Tools -> Terminal from agent-run/team-run/workspace contexts does not call `workspaceStore.createWorkspace()`, does not require `workspaceStore.workspaces[workspaceId]`, and passes a root-path Terminal target into `Terminal.vue` / `useTerminalSession`.
 - AC-030: A Terminal WebSocket close/error before `handler.connect()` resolves disconnects any late-created PTY session and leaves `PtySessionManager.sessionCount` unchanged after cleanup settles.
 - AC-031: A Terminal setup failure after PTY/session creation closes the partial session and leaves no retained read loop/session record.
@@ -197,9 +198,9 @@ Medium
 - Need ensure WebSocket route cleanup handles close-before-session-id and setup-failure-after-lease paths.
 - Need ensure session close terminates event generator subscriptions immediately, not only on the next watcher event.
 - Need decide whether search should rebuild snapshot index every query, use a TTL, or use ripgrep as primary fallback.
-- Need split historical workspace reference from initialized workspace state without breaking active/live run and resume/rerun flows.
-- Need validate the historical team hydration split so team row/member selection builds member workspace references without materializing every member workspace.
-- Need decide whether folder-scoped lazy file explorer loading belongs in this same remediation or remains a follow-up once history open is decoupled.
+- Need split historical `WorkspaceMetadata` from FileExplorer/tree/live state without breaking active/live run and resume/rerun flows.
+- Need validate the historical team hydration split so team row/member selection builds member `WorkspaceMetadata` without materializing every member workspace.
+- Need validate folder-scoped lazy/bounded FileExplorer loading in this same remediation because Files -> Terminal shell-readiness depends on preventing hidden full-tree rebuilds.
 - Need validate mobile Terminal target derivation for agent-run, team-run focused member, and workspace contexts without `WorkspaceInfo` lookup.
 - Need validate Terminal route early-close/setup-failure cleanup does not retain PTY sessions or read loops.
 
@@ -275,7 +276,7 @@ Medium
 
 ## Approval Status
 
-User approved the watcher refactoring direction on 2026-05-22. During release validation, user identified slow historical run opening as a same-ticket release blocker and approved folding lazy history workspace materialization into the current ticket rather than creating a follow-up. On 2026-05-23, user identified that Terminal follows the old materialized-workspace path and confirmed Terminal should use root path/cwd only, like history/resume, rather than materializing the file-explorer workspace. Architecture review round 5 identified mobile Terminal and Terminal WebSocket pending-cleanup gaps; artifacts were revised in-place. User then requested the cleaner WorkspaceMetadata + lazy WorkspaceFileExplorer design; artifacts are paused for user review before another architecture-review round.
+User approved the watcher refactoring direction on 2026-05-22. During release validation, user identified slow historical run opening as a same-ticket release blocker and approved folding lazy history workspace materialization into the current ticket rather than creating a follow-up. On 2026-05-23, user identified that Terminal follows the old materialized-workspace path and confirmed Terminal should use root path/cwd only, like history/resume, rather than materializing the file-explorer workspace. Architecture review round 5 identified mobile Terminal and Terminal WebSocket pending-cleanup gaps; artifacts were revised in-place. User then requested the cleaner WorkspaceMetadata + lazy WorkspaceFileExplorer design. On 2026-05-29, user clarified future user review is not needed before architecture review and requested automatic handoff to architecture reviewer after design updates.
 
 ## Round 6 Requirement Revision: WorkspaceMetadata + Lazy Single FileExplorer
 
@@ -491,3 +492,36 @@ Round 10 coverage additions:
 - AC-061 -> verifies Terminal resources are not kept hidden.
 - AC-062 -> verifies Terminal status wording is not misleading.
 - AC-063 -> verifies diagnostic attribution.
+
+## Round 11 Requirement Revision: FileExplorer Inactive Quiescence / Logical Close
+
+User clarification on 2026-05-29 confirmed the desired mental model: FileExplorer and Terminal are distinct features. Terminal must stay root-path-only and must not coordinate through FileExplorer. Therefore the reasonable close behavior belongs to FileExplorer itself: when the user leaves Files, FileExplorer should stop or suppress its own relevant backend/frontend work so it cannot interfere with Terminal shell readiness. Current code evidence shows Files activation opens a live stream and starts snapshot refresh; inactive handling releases the live stream/search debounce but does not explicitly abort/generation-suppress all folderChildren snapshot refresh work, and backend `folderChildren()` can still perform a full tree build when tree/folder state is missing.
+
+Additional/clarified requirements:
+
+- REQ-062: FileExplorer inactive/final visible-consumer release must be a quiescence boundary. Hidden/inactive FileExplorer may keep inert cached tree/open-file UI data, but it must not keep a live WebSocket, watcher lease, active folder snapshot refresh, active search, active file-explorer global listener, or active editor/viewer behavior.
+- REQ-063: FileExplorer root/open-folder snapshot refresh and folderChildren requests must be abortable or generation-scoped. When Files becomes inactive, pending refresh/search work must be aborted where possible, and all late responses from prior generations must be ignored before mutating `fileExplorerStore`.
+- REQ-064: Backend file-explorer folder projection must be bounded under `WorkspaceFileExplorer` ownership. Ordinary `folderChildren(workspaceId, folderPath)` must not use an unbounded full-workspace tree rebuild as the normal one-folder projection path; if broader rebuild remains necessary for a fallback path, it must be cancellable/serialized/observable and must not run as hidden FileExplorer work after the visible consumer releases.
+- REQ-065: FileExplorer live WebSocket disconnect and watcher lease release may complete asynchronously, but cleanup timing must be observable and backend cleanup must be bounded enough that it does not starve Terminal PTY startup/readiness in the same server process.
+- REQ-066: The fix must not introduce a Terminal-to-FileExplorer dependency or a generic cross-feature coordinator. Terminal remains `WorkspaceMetadata.rootPath -> TerminalTarget -> PTY`; FileExplorer owns its own active/inactive lifecycle and quiescence.
+
+Additional acceptance criteria:
+
+- AC-064: Frontend tests prove that switching Files -> Terminal invalidates the active FileExplorer generation, releases the live consumer, aborts/suppresses folder snapshot refresh/search work, detaches FileExplorer global listeners, and prevents late folder/search responses from mutating inactive FileExplorer state.
+- AC-065: Backend tests or targeted instrumentation prove ordinary `folderChildren` returns a bounded folder projection without performing an unbounded full-tree rebuild for normal visible folder loads, or that any fallback rebuild is cancellable/serialized/observable under `WorkspaceFileExplorer`.
+- AC-066: Files -> Terminal E2E/performance validation records separate timings for FileExplorer inactive start, snapshot/search cancellation, watcher/session close, Terminal route open, PTY ready, and first shell output; failure attribution must distinguish local xterm text from backend shell readiness.
+- AC-067: The Files -> Terminal validation fails if `Connected to Workspace Terminal` appears quickly but backend PTY ready / first shell output is delayed by FileExplorer cleanup or in-flight folder/search work beyond the documented threshold.
+- AC-068: Code review verifies Terminal code has no dependency on `fileExplorerStore`, `WorkspaceFileExplorer`, folder tree APIs, watcher cleanup status, or FileExplorer quiescence state.
+
+Round 11 coverage additions:
+
+- REQ-062 -> FileExplorer logical close / inactive lifecycle.
+- REQ-063 -> abort/generation suppression for folder/search work.
+- REQ-064 -> bounded backend folder projection.
+- REQ-065 -> observable/bounded watcher/session cleanup.
+- REQ-066 -> preserves Terminal/FileExplorer separation.
+- AC-064 -> verifies frontend quiescence.
+- AC-065 -> verifies backend folder projection ownership.
+- AC-066 -> verifies timing attribution.
+- AC-067 -> verifies the user-observed symptom.
+- AC-068 -> verifies no Terminal/FileExplorer dependency is introduced.

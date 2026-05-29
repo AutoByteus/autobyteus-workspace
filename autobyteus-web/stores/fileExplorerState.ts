@@ -26,6 +26,8 @@ export interface WorkspaceFileExplorerState {
   searchLoading: boolean
   searchError: string | null
   searchAbortController: AbortController | null
+  folderChildrenGeneration: number
+  folderChildrenAbortController: AbortController | null
   saveContentError: Record<string, string | null>
   saveContentLoading: Record<string, boolean>
   deleteError: Record<string, string | null>
@@ -58,6 +60,8 @@ export const createDefaultWorkspaceFileExplorerState = (
     searchLoading: false,
     searchError: null,
     searchAbortController: null,
+    folderChildrenGeneration: 0,
+    folderChildrenAbortController: null,
     saveContentError: {},
     saveContentLoading: {},
     deleteError: {},

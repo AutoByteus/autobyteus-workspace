@@ -57,6 +57,8 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-22 CR-013 local fix: updated the Terminal PTY session manager unit tests and kept repository-resident JS counterpart to match the production `targetKey` rename. Stale `closeAllForWorkspace()` calls, `ws1`/`ws2` fixtures, and workspace-worded test names are replaced with `closeAllForTargetKey()`, `target-1`/`target-2`, and target-key wording.
 - Round-23 CR-014 local fix: completed the adjacent Terminal handler test cleanup by replacing workspace-shaped `ws1` target-key fixtures with `target-1` in both `terminal-handler.test.ts` and the kept `.js` counterpart. Focused greps now show no `closeAllForWorkspace`, `terminalTargetId`, `sessions by workspace`, `ws1`, or `ws2` references across Terminal streaming source and unit tests.
 - Round-24 DS-014 implementation: updated the desktop right-side tab lifecycle so Files remains lazy before first selection, then stays mounted/cached but inactive after first use when switching to Terminal. `RightSideTabs.vue` now hides cached Files with `v-show` and passes an explicit `active` prop while Terminal remains visible-only and disconnected when hidden. `FileExplorer`, `FileExplorerTabs`, and `FileItem` now gate live sessions, refresh/search work, and global keyboard/drag/context listeners on active state; inactive cached Files releases live session consumers, aborts search, removes panel listeners, and keeps the cached tree available for immediate re-display on return.
+- Round-25 DS-015 implementation: completed FileExplorer inactive quiescence. `fileExplorerStore` now owns folder-children generations and AbortControllers; live-session release/final consumer cleanup aborts search, invalidates folder refresh generations, clears active snapshot refresh bookkeeping, disconnects the live stream, and suppresses late stale folder mutations. Snapshot refresh now refreshes root/open folders under one active generation and only starts on first visible live consumer acquisition, avoiding extra same-workspace consumer refresh churn.
+- Round-25 backend bounded folder projection: `folderChildren` now delegates to `WorkspaceFileExplorer.loadFolderChildren()` for a one-folder projection instead of using `buildWorkspaceDirectoryTree()` as the ordinary fallback. The new projection validates the requested folder, reads only immediate children, applies workspace ignore/sort policy, updates the cached tree node lazily, and leaves deeper descendants unloaded until explicitly requested.
 
 ## Key Files Or Areas
 
@@ -97,6 +99,7 @@ Frontend:
 - `autobyteus-web/utils/workspaceMetadata.ts`
 - `autobyteus-web/stores/workspace.ts`
 - `autobyteus-web/stores/workspaceMetadataActions.ts`
+- `autobyteus-web/stores/workspaceFileExplorerLiveActions.ts`
 - `autobyteus-web/stores/fileExplorer.ts`
 - `autobyteus-web/stores/fileExplorerState.ts`
 - `autobyteus-web/stores/fileExplorerContentActions.ts`
@@ -114,6 +117,7 @@ Frontend:
 - `autobyteus-web/components/fileExplorer/__tests__/FileExplorer.spec.ts`
 - `autobyteus-web/components/fileExplorer/__tests__/FileExplorerTabs.spec.ts`
 - `autobyteus-web/components/fileExplorer/__tests__/FileItem.spec.ts`
+- `autobyteus-web/stores/__tests__/workspaceStore.spec.ts`
 - `autobyteus-web/components/workspace/tools/Terminal.vue`
 - `autobyteus-web/components/layout/RightSideTabs.vue`
 - `autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts`
@@ -160,14 +164,16 @@ Removed obsolete source/test paths:
 - The isolated Darwin PTY path must continue to reuse the shared `node-pty` bootstrap owner for `spawn-helper` executable-bit repair before any bridge/helper spawn.
 - Terminal backend architecture should not be changed for perceived startup latency unless profiling isolates the bottleneck and the replacement still passes descriptor-level FD probes.
 - DS-014 preserves Terminal descriptor discipline: Files may be cached while inactive, but hidden Terminal must not be cached with a live PTY/WebSocket just to speed tab switches.
+- DS-015 preserves Terminal/FileExplorer separation: Terminal must not ask FileExplorer whether it is quiesced; FileExplorer owns abort/generation suppression, live watcher release, bounded folder projection, and inactive listener/resource cleanup.
 - Full API/E2E validation remains downstream-owned after code review.
 
 ## Known Risks
 
-- Full frontend/backend typechecks were not rerun for this implementation pass because prior validation recorded baseline blockers. The current implementation evidence uses backend `build:full`, targeted backend runtime tests, frontend Nuxt targeted tests, frontend guards, and static greps.
+- Backend `typecheck` remains baseline-blocked by the existing `TS6059` rootDir/include mismatch for repository tests outside `src`, so it is not used as passing evidence. The current implementation evidence uses backend `build:full`, frontend Nuxt build, and targeted backend/frontend tests around the changed FileExplorer paths.
 - The committed `autobyteus-web/generated/graphql.ts` was updated to match the changed workspace operation documents; a full schema-driven codegen pass can be rerun in a validation environment with a live schema endpoint if desired.
 - Historical display and explicit activation behavior has targeted unit/integration coverage; downstream API/E2E should still exercise real UI/API flows across history display, Files activation, Terminal activation, and repeated watcher open/close.
 - The isolated PTY backend intentionally changes macOS Terminal backend placement from in-process `node-pty` to helper-process `node-pty`; code review/API-E2E should verify interactive Terminal semantics alongside descriptor cleanup.
+- Round-25 local checks prove bounded unit/store behavior and production builds, but downstream browser/Electron-like validation should still measure FileExplorer quiescence timing separately from Terminal PTY ready / first shell output timing per AC-066/AC-067.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -176,7 +182,7 @@ Removed obsolete source/test paths:
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; round-7 design was sufficient for implementation.
-- Evidence / notes: source/tests no longer contain the legacy steady-state concepts listed by architecture review; metadata APIs and file-explorer acquisition paths are split in backend and frontend. Round-17 built-backend probe returned from baseline `36` FDs to final `32` FDs, with `0` children and no `/dev/ptmx`/`(revoked)` descriptors in final `lsof` after normal command-output churn; the new integration test forced `spawn-helper` non-executable and restored it after successful isolated PTY startup/output.
+- Evidence / notes: source/tests no longer contain the legacy steady-state concepts listed by architecture review; metadata APIs and file-explorer acquisition paths are split in backend and frontend. Round-17 built-backend probe returned from baseline `36` FDs to final `32` FDs, with `0` children and no `/dev/ptmx`/`(revoked)` descriptors in final `lsof` after normal command-output churn; the new integration test forced `spawn-helper` non-executable and restored it after successful isolated PTY startup/output. Round-25 implements DS-015 without Terminal/FileExplorer coupling: FileExplorer owns active generation invalidation, abort/suppression, live-session release, and bounded backend folder projection.
 
 ## Legacy / Compatibility Removal Check
 
@@ -186,7 +192,7 @@ Removed obsolete source/test paths:
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; metadata and file-explorer capability state are separate.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-17 Terminal backend code keeps parent session lifecycle split from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines (`isolated-pty-session.ts` 319 effective non-empty lines, bridge source 89). Round-24 DS-014 touched large file-explorer UI files and kept them under the guardrail (`FileItem.vue` 490 effective non-empty lines, `FileExplorerTabs.vue` 375, `FileExplorer.vue` 265).
+- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-17 Terminal backend code keeps parent session lifecycle split from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines (`isolated-pty-session.ts` 319 effective non-empty lines, bridge source 89). Round-24 DS-014 touched large file-explorer UI files and kept them under the guardrail (`FileItem.vue` 490 effective non-empty lines, `FileExplorerTabs.vue` 375, `FileExplorer.vue` 265). Round-25 changed-source size audit also passed (`WorkspaceFileExplorer` 438, `workspace.ts` 401, all other changed implementation source files below 265 effective non-empty lines).
 
 ## Environment Or Dependency Notes
 
@@ -197,6 +203,31 @@ Removed obsolete source/test paths:
 ## Local Implementation Checks Run
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
+
+Round-25 DS-015 FileExplorer quiescence checks:
+
+- `pnpm -C autobyteus-server-ts test tests/unit/file-explorer/workspace-file-explorer.test.ts`
+  - Result: pass, 1 file / 7 tests.
+  - Covers watcher lease lifecycle plus new bounded `WorkspaceFileExplorer.loadFolderChildren()` projection that does not call `buildWorkspaceDirectoryTree()` and does not load grandchildren for ordinary folder loads.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round25-backend-file-explorer-unit-20260529.log`
+- `pnpm -C autobyteus-web test:nuxt stores/__tests__/workspaceStore.spec.ts components/fileExplorer/__tests__/FileExplorer.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts components/fileExplorer/__tests__/FileItem.spec.ts --run`
+  - Result: pass, 4 files / 22 tests.
+  - Covers final visible consumer release, live stream disconnect, search abort, folder-generation invalidation, AbortSignal propagation, late folder response suppression, active/inactive FileExplorer listener gating, and no per-node global FileItem listeners.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round25-frontend-file-explorer-quiescence-tests-20260529.log`
+- `pnpm -C autobyteus-server-ts build:full`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round25-backend-build-full-20260529.log`
+- `pnpm -C autobyteus-web build`
+  - Result: pass; emitted existing large-chunk warnings only.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round25-frontend-nuxt-build-20260529.log`
+- `git diff --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round25-diff-check-20260529.log`
+- Changed-source size audit for touched Round-25 implementation files.
+  - Result: pass; no changed implementation source file exceeds 500 effective non-empty lines.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round25-source-size-20260529.log`
+- `pnpm -C autobyteus-server-ts typecheck`
+  - Result: not used as passing evidence; command remains baseline-blocked by existing `TS6059` rootDir/include mismatch for repository test files outside `src`. Backend `build:full` passed for source compilation.
 
 Round-24 DS-014 Files-to-Terminal lifecycle checks:
 
@@ -524,6 +555,13 @@ Prior round-7 implementation checks retained as upstream confidence evidence:
   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-frontend-localization-audit-20260523.log`
 
 ## Downstream Validation Hints / Suggested Scenarios
+
+Round-25 DS-015 downstream focus:
+
+- Browser/Electron-like sequence: Terminal -> Files -> load/open folder tree -> Terminal; record FileExplorer inactive/quiescence timing separately from Terminal backend PTY ready and first real shell output.
+- Confirm inactive cached Files has no live file-explorer WebSocket/watcher lease, no active snapshot/folderChildren/search task, no global FileExplorer listeners, and no stale late folder/search mutations.
+- Confirm GraphQL `folderChildren` returns immediate folder projection without an ordinary full workspace rebuild; deeper folders load only when explicitly requested.
+
 
 - Historical standalone run display: verify no backend workspace creation/file-explorer acquisition until an explicit workspace-dependent action is invoked.
 - Historical team run/member display: verify team/member metadata is shown without workspace initialization, including per-member workspace metadata.
