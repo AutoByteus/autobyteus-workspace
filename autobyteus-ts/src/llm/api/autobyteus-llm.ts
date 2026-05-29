@@ -62,7 +62,8 @@ export class AutobyteusLLM extends BaseLLM {
     const response = await this.client.sendMessage({
       conversationId,
       modelName: this.model.name,
-      payload
+      payload,
+      generationConfig: this.getGenerationConfig()
     }, {
       signal: options.signal ?? null
     });
@@ -93,7 +94,8 @@ export class AutobyteusLLM extends BaseLLM {
     for await (const chunk of this.client.streamMessage({
       conversationId,
       modelName: this.model.name,
-      payload
+      payload,
+      generationConfig: this.getGenerationConfig()
     }, {
       signal: options.signal ?? null
     })) {
@@ -125,6 +127,10 @@ export class AutobyteusLLM extends BaseLLM {
 
   private async renderPayload(messages: Message[]): Promise<AutobyteusConversationPayload> {
     return this._renderer.render(messages);
+  }
+
+  private getGenerationConfig(): Record<string, unknown> {
+    return { ...(this.config.extraParams ?? {}) };
   }
 
   async cleanup(): Promise<void> {
