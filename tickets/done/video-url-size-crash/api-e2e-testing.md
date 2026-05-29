@@ -14,6 +14,15 @@ Status: Pass
   - Result: Passed.
 - `pnpm --filter autobyteus-ts exec tsc -p tsconfig.json --noEmit`
   - Result: Failed on pre-existing unrelated test typing errors across other test suites; not used as ticket gate.
+- Final live validation after local RPA Docker update:
+  - `set -a; source .env.test; set +a; pnpm exec vitest --run tests/integration/llm/api/autobyteus-llm.test.ts --reporter verbose`
+    - Result: Passed, 5 tests against `https://localhost:51739`.
+    - Covered real Autobyteus basic completion, streaming, and `thinking_level` config using `gemini-3.5-flash-app-rpa:autobyteus@localhost:51739`.
+  - Executed a compiled `dist` probe that sent an empty-content `LLMUserMessage` with only `video_urls` containing `/home/ryan-ai/SSD/autobyteus_org_workspace/media-test-assets/synthetic_1h_640x360_180k.mp4`.
+    - Input video: 3,600 seconds, 77,175,122 bytes.
+    - Runtime: local Docker `llm-server-0` on `autobyteus/llm-server:v1.0.12`.
+    - Result: Passed; completed in 84.22 seconds and Gemini described the video content.
+    - Server evidence: staged file found in container media storage at 77,175,122 bytes, proving the large video was staged and referenced through `media://...` instead of sent as base64.
 
 ## Acceptance Coverage
 
@@ -25,3 +34,4 @@ Status: Pass
 - Existing `media://...` values pass through unchanged.
 - Remote media with unknown size is staged instead of falling back to the old arraybuffer/base64 path.
 - Abort signals are still forwarded to final send and stream requests; staging receives the same signal.
+- Real local RPA validation confirms an empty-content, video-only, 1-hour message works end to end through the Autobyteus LLM client and Gemini App RPA.
