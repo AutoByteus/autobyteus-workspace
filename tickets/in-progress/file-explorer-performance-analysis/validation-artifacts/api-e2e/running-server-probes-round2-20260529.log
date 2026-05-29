@@ -1,0 +1,96 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-api-e2e-server-xpnMC8
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-api-e2e-server-xpnMC8/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-api-e2e-server-xpnMC8/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-api-e2e-server-xpnMC8/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-api-e2e-server-xpnMC8
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-api-e2e-server-xpnMC8/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-api-e2e-server-xpnMC8/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-api-e2e-server-xpnMC8/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-api-e2e-server-xpnMC8/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+(node:65509) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+[2026-05-29T15:51:35.882Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+{"level":30,"time":1780069895954,"pid":65509,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57293"}
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+Created and registered workspace ID: agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+Created WorkspaceFileExplorer for agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c (file-explorer-websocket).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[TIMING][FileSystemWatcher] start.begin {"at":1780069895976,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","watcherId":"205f2975-cf2d-446c-acf2-65d4a4285829","generation":1}
+[TIMING][WatcherRuntimeClient] start.spawn.begin {"at":1780069895976,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","entrypointPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js","watcherId":"205f2975-cf2d-446c-acf2-65d4a4285829","generation":1}
+[TIMING][WatcherRuntimeClient] message.ready {"at":1780069898417,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","stats":{"watchedDirectoryCount":1672,"watchedEntryCount":9861},"startDurationMs":2399.8,"watcherId":"205f2975-cf2d-446c-acf2-65d4a4285829","generation":1}
+[TIMING][WatcherRuntimeClient] start.ready {"at":1780069898417,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","durationMs":2441,"watcherId":"205f2975-cf2d-446c-acf2-65d4a4285829","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1780069898417,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","watcherId":"205f2975-cf2d-446c-acf2-65d4a4285829","generation":1,"durationMs":2441}
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-workspace-superrepo (file-explorer-websocket); active leases: 1
+FileExplorerSession created: c8bb1e7b-2414-43ac-9472-d1c5705e7c26 for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+Created file explorer session c8bb1e7b-2414-43ac-9472-d1c5705e7c26 for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c. Active sessions: 1
+File explorer WebSocket connected: c8bb1e7b-2414-43ac-9472-d1c5705e7c26 for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+File explorer websocket attached for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-workspace-superrepo (file-explorer-websocket); active leases: 0
+[TIMING][FileSystemWatcher] stop.begin {"at":1780069898422,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","subscriberCount":1,"pendingUnlinkTimerCount":0,"watcherId":"205f2975-cf2d-446c-acf2-65d4a4285829","generation":1,"reason":"logical-stop"}
+[TIMING][WatcherRuntimeClient] stop.request {"at":1780069898422,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","reason":"logical-stop","watcherId":"205f2975-cf2d-446c-acf2-65d4a4285829","generation":1}
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[TIMING][FileSystemWatcher] stop.end {"at":1780069898422,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","durationMs":0,"watcherId":"205f2975-cf2d-446c-acf2-65d4a4285829","generation":1,"reason":"logical-stop"}
+FileExplorerSession closed: c8bb1e7b-2414-43ac-9472-d1c5705e7c26
+Closed file explorer session c8bb1e7b-2414-43ac-9472-d1c5705e7c26. Active sessions: 0
+File explorer WebSocket disconnected: c8bb1e7b-2414-43ac-9472-d1c5705e7c26
+Created terminal session api-e2e-449aa92f-3408-4d70-9a5c-895748fe846c using backend IsolatedPtySession for target /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Terminal WebSocket connected: api-e2e-449aa92f-3408-4d70-9a5c-895748fe846c
+Terminal websocket attached for cwd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Closed PTY session api-e2e-449aa92f-3408-4d70-9a5c-895748fe846c
+Terminal WebSocket disconnected: api-e2e-449aa92f-3408-4d70-9a5c-895748fe846c
+Watcher runtime for /Users/normy/autobyteus_org/autobyteus-workspace-superrepo did not stop within 5000ms; killing child
+[TIMING][WatcherRuntimeClient] kill {"at":1780069903422,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","reason":"stop-timeout:logical-stop","watcherId":"205f2975-cf2d-446c-acf2-65d4a4285829","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1780069903434,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","code":null,"signal":"SIGKILL","stopRequested":true,"watcherId":"205f2975-cf2d-446c-acf2-65d4a4285829","generation":1}
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-gql-abort-ws-2VyEzf
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-gql-abort-ws-2VyEzf.
+Created and registered workspace ID: agent_ws_0dcedf8e892598471041b0bd5a9aaf752ebb854ebb7a6fe647b55b2127666491
+Created WorkspaceFileExplorer for agent_ws_0dcedf8e892598471041b0bd5a9aaf752ebb854ebb7a6fe647b55b2127666491 (graphql-search).
+Error searching files: validation abort observed in WorkspaceFileExplorer.searchFiles
+Wrote /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/validation-artifacts/api-e2e/running-server-probes-20260529.json

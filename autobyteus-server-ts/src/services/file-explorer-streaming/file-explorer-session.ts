@@ -13,7 +13,7 @@ export class FileExplorerSession {
   readonly workspaceId: string;
   private eventStreamFactory: () => AsyncGenerator<string, void, void>;
   private active = true;
-  private eventQueue = new AsyncQueue<string | null>();
+  private eventQueue = new AsyncQueue<string | null | Error>();
   private forwarder: Promise<void> | null = null;
   private eventGenerator: AsyncGenerator<string, void, void> | null = null;
   private watcherLease: WatcherLease | null;
@@ -56,7 +56,9 @@ export class FileExplorerSession {
         this.eventQueue.push(event);
       }
     } catch (error) {
-      logger.error(`Session ${this.sessionId}: Error forwarding events: ${String(error)}`);
+      const streamError = error instanceof Error ? error : new Error(String(error));
+      logger.error(`Session ${this.sessionId}: Error forwarding events: ${streamError.message}`);
+      this.eventQueue.push(streamError);
     } finally {
       if (this.eventGenerator === generator) {
         this.eventGenerator = null;
@@ -68,6 +70,9 @@ export class FileExplorerSession {
   async *events(): AsyncGenerator<string, void, void> {
     while (true) {
       const event = await this.eventQueue.pop();
+      if (event instanceof Error) {
+        throw event;
+      }
       if (event === null || !this.active) {
         break;
       }

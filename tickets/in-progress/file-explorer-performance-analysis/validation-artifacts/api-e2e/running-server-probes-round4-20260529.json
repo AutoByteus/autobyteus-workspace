@@ -1,0 +1,90 @@
+{
+  "startedAt": "2026-05-29T16:52:57.277Z",
+  "server": {
+    "port": 59572,
+    "baseUrl": "http://127.0.0.1:59572"
+  },
+  "scenarios": [
+    {
+      "id": "VAL-FE-001",
+      "workspace": {
+        "workspaceId": "agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo"
+      },
+      "fileOpenElapsedMs": 10,
+      "fileConnectedElapsedMs": 2936.3,
+      "terminalOpenElapsedMs": 2.5,
+      "terminalMarkerElapsedMs": 53.3,
+      "maxParentEventLoopIntervalGapMs": 51.1,
+      "stopBeginLog": "[TIMING][FileSystemWatcher] stop.begin {\"at\":1780073581862,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"subscriberCount\":1,\"pendingUnlinkTimerCount\":0,\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1,\"reason\":\"logical-stop\"}",
+      "stopEndLog": "[TIMING][FileSystemWatcher] stop.end {\"at\":1780073581862,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"durationMs\":0,\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1,\"reason\":\"logical-stop\"}",
+      "runtimeStopRequest": null,
+      "runtimeExit": null,
+      "watcherProcessesAfterCleanup": [],
+      "pass": true
+    },
+    {
+      "id": "VAL-FE-004",
+      "workspaceId": "agent_ws_5f21ebdc75bd5cbb9ba62b1a965cce5831afd1f8a79a5266bd5797322ffde3fe",
+      "signalProvided": true,
+      "signalInitiallyAborted": false,
+      "abortPropagationMs": 2,
+      "clientAbortResultName": "AbortError",
+      "pass": true
+    }
+  ],
+  "timingLogExcerpt": [
+    {
+      "at": 1780073578928,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] start.begin {\"at\":1780073578928,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1}"
+    },
+    {
+      "at": 1780073578928,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] start.spawn.begin {\"at\":1780073578928,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"entrypointPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js\",\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1}"
+    },
+    {
+      "at": 1780073581856,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] message.ready {\"at\":1780073581856,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"stats\":{\"watchedDirectoryCount\":1672,\"watchedEntryCount\":9861},\"startDurationMs\":2880.3,\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1}"
+    },
+    {
+      "at": 1780073581856,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] start.ready {\"at\":1780073581856,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"durationMs\":2928,\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1}"
+    },
+    {
+      "at": 1780073581856,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] start.ready {\"at\":1780073581856,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1,\"durationMs\":2928}"
+    },
+    {
+      "at": 1780073581862,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] stop.begin {\"at\":1780073581862,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"subscriberCount\":1,\"pendingUnlinkTimerCount\":0,\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1,\"reason\":\"logical-stop\"}"
+    },
+    {
+      "at": 1780073581862,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] stop.request {\"at\":1780073581862,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"reason\":\"logical-stop\",\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1}"
+    },
+    {
+      "at": 1780073581862,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] stop.end {\"at\":1780073581862,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"durationMs\":0,\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1,\"reason\":\"logical-stop\"}"
+    },
+    {
+      "at": 1780073586863,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] kill {\"at\":1780073586863,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"reason\":\"stop-timeout:logical-stop\",\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1}"
+    },
+    {
+      "at": 1780073586875,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] exit {\"at\":1780073586875,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"code\":null,\"signal\":\"SIGKILL\",\"stopRequested\":true,\"watcherId\":\"e52b233c-e95b-4ce4-b33f-813b9f6c3263\",\"generation\":1}"
+    }
+  ],
+  "finalWatcherProcesses": [],
+  "finishedAt": "2026-05-29T16:53:12.900Z"
+}

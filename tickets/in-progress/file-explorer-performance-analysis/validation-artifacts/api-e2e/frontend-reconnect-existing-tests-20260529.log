@@ -1,0 +1,142 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-web
+
+stderr | stores/__tests__/workspaceStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/workspaceStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > constructor > uses provided wsEndpoint
+[FileExplorerStreaming] Connecting to ws://custom:9000/ws/file-explorer/workspace-1...
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > constructor > URL-encodes deterministic workspace ids when opening the websocket
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/root%3A%2Ftmp%2Fmy%2Fworkspace...
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > connect > creates WebSocket connection with correct URL
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-123...
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > connect > sets state to connecting
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > connect > does not reconnect if already connected to same workspace
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: sess-1
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > message handling > calls onConnect with session ID on CONNECTED message
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: sess-123
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > message handling > calls onFileSystemChange on FILE_SYSTEM_CHANGE message
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: sess-1
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > message handling > calls onError on ERROR message
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+
+stderr | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > message handling > calls onError on ERROR message
+[FileExplorerStreaming] Server error: { code: 'WORKSPACE_NOT_FOUND', message: 'Not found' }
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > disconnect > closes WebSocket connection
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] WebSocket disconnected: 1000 Normal closure
+[FileExplorerStreaming] Disconnected
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > disconnect > resets state to disconnected
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: sess-1
+[FileExplorerStreaming] WebSocket disconnected: 1000 Normal closure
+[FileExplorerStreaming] Disconnected
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > disconnect > calls onDisconnect callback when connection closes
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/workspace-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: sess-1
+[FileExplorerStreaming] WebSocket disconnected: 1000 Normal closure
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > state property > returns connecting after connect called
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > state property > returns connected after CONNECTED message
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] Session established: s1
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > retry policy > does not retry when closed with non-retryable close code
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] WebSocket disconnected: 4004 Workspace not found
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > retry policy > does not retry when server sends non-retryable error code before close
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] WebSocket disconnected: 1011 Rejected
+
+stderr | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > retry policy > does not retry when server sends non-retryable error code before close
+[FileExplorerStreaming] Server error: { code: 'WORKSPACE_NOT_FOUND', message: 'Workspace ws-1 not found' }
+
+stdout | services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts > FileExplorerStreamingService > retry policy > keeps backoff progression when transport opens but protocol never connects
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] WebSocket disconnected: 1011 Transient
+[FileExplorerStreaming] Scheduling reconnection in 1000ms (attempt 1)
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+[FileExplorerStreaming] WebSocket connected
+[FileExplorerStreaming] WebSocket disconnected: 1011 Transient again
+[FileExplorerStreaming] Scheduling reconnection in 2000ms (attempt 2)
+[FileExplorerStreaming] Connecting to ws://localhost:8000/ws/file-explorer/ws-1...
+
+ ✓ services/fileExplorerStreaming/__tests__/FileExplorerStreamingService.spec.ts (18 tests) 10ms
+stderr | stores/__tests__/workspaceStore.spec.ts > workspaceStore > createWorkspace > throws error if mutation fails
+Error creating workspace metadata: Error: GraphQL Error
+    at Proxy.createWorkspace (/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-web/stores/workspace.ts:174:17)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > createWorkspace > replaces stale metadata entries with the same root path and clears file-explorer state
+[Workspace] Disconnected from file system watcher for workspace: stale-ws
+
+stderr | stores/__tests__/workspaceStore.spec.ts > workspaceStore > fetchAllWorkspaces > ignores stale query results when backend binding revision changes mid-flight
+[Workspace] Ignoring workspace query result for stale revision 1; current revision is 2
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > resetWorkspaceStateForBackendContextChange > disconnects all streams and clears metadata/file-explorer state without reload
+[Workspace] Resetting workspace state due to backend_context_changed
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > opens one stream for multiple visible consumers and disconnects after final release
+[Workspace] Connecting to file system changes for workspace: ws-1
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > returns an idempotent release function for duplicate consumer acquisition
+[Workspace] Connecting to file system changes for workspace: ws-1
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > refreshes already-open folders in fileExplorerStore when a visible file explorer is reacquired
+[Workspace] Connecting to file system changes for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explorer live sessions > aborts snapshot refresh generation and ignores late folder responses after final release
+[Workspace] Connecting to file system changes for workspace: ws-1
+[Workspace] Disconnected from file system watcher for workspace: ws-1
+
+ ✓ stores/__tests__/workspaceStore.spec.ts (12 tests) 26ms
+
+ Test Files  2 passed (2)
+      Tests  30 passed (30)
+   Start at  17:32:54
+   Duration  5.34s (transform 2.30s, setup 9.43s, collect 71ms, tests 35ms, environment 439ms, prepare 289ms)
+

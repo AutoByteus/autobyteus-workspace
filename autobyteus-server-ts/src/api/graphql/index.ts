@@ -2,6 +2,7 @@ import "reflect-metadata";
 import type { FastifyInstance } from "fastify";
 import mercurius from "mercurius";
 import { buildGraphqlSchema } from "./schema.js";
+import { createGraphqlRequestContext } from "./graphql-request-context.js";
 
 export async function registerGraphql(app: FastifyInstance): Promise<void> {
   const schema = await buildGraphqlSchema();
@@ -10,5 +11,6 @@ export async function registerGraphql(app: FastifyInstance): Promise<void> {
     path: "/graphql",
     graphiql: true,
     subscription: true,
+    context: createGraphqlRequestContext,
   });
 }
