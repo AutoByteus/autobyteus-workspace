@@ -9,6 +9,7 @@ type MemberRunInstructionComposerInput = {
   agentInstruction: string | null;
   memberTeamContext: MemberTeamContext | null;
   sendMessageToEnabled: boolean;
+  taskDelegationEnabled?: boolean;
 };
 
 export type MemberRunInstructionComposition = {
@@ -23,6 +24,7 @@ export const composeMemberRunInstructions = (
   const memberTeamContext = input.memberTeamContext;
   const communicationRecipients = memberTeamContext?.communicationRecipients ?? [];
   const sendMessageToAvailable = input.sendMessageToEnabled && communicationRecipients.length > 0;
+  const taskDelegationAvailable = input.taskDelegationEnabled === true && Boolean(memberTeamContext);
 
   const runtimeLines: string[] = [];
   if (memberTeamContext?.memberName) {
@@ -54,6 +56,18 @@ export const composeMemberRunInstructions = (
     runtimeLines.push(
       "Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.",
     );
+  }
+
+  if (taskDelegationAvailable) {
+    if (runtimeLines.length > 0) {
+      runtimeLines.push("");
+    }
+    runtimeLines.push("Task delegation protocol");
+    runtimeLines.push("- Use `delegate_tasks` to assign bounded work to team members; use a one-item `tasks` list for a single task.");
+    runtimeLines.push("- Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`; they are not part of this delegation workflow.");
+    runtimeLines.push("- Activated assignees receive task details directly in a work packet, including the exact `task_id` to use.");
+    runtimeLines.push("- Use `update_task_status` with the exact `task_id` to report `in_progress`, `completed`, or `failed`; include a summary and deliverables for terminal status.");
+    runtimeLines.push("- After terminal status is accepted, the framework notifies the delegator and may settle the assignee if no delegated work remains.");
   }
 
   return {

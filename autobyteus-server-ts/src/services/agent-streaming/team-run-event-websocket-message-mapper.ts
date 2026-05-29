@@ -5,6 +5,7 @@ import {
   type TeamRunCommunicationEventPayload,
   type TeamRunMemberInputEventPayload,
   type TeamRunStatusUpdateData,
+  type TeamRunTaskDelegationEventPayload,
   type TeamRunTaskPlanEventPayload,
   getTeamRunEventSourceRouteKey,
 } from "../../agent-team-execution/domain/team-run-event.js";
@@ -63,6 +64,15 @@ export const convertTeamRunEventToServerMessage = (
     return new ServerMessage(ServerMessageType.TASK_PLAN_EVENT, {
       event_type: eventType,
       ...payload,
+      ...sourcePayload,
+    });
+  }
+
+  if (event.eventSourceType === TeamRunEventSourceType.TASK_DELEGATION) {
+    const payload = event.data as TeamRunTaskDelegationEventPayload;
+    return new ServerMessage(ServerMessageType.TASK_PLAN_EVENT, {
+      event_type: payload.eventType,
+      ...serializePayload(payload.payload),
       ...sourcePayload,
     });
   }

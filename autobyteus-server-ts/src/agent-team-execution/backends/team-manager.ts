@@ -27,6 +27,12 @@ export interface TeamManager {
     targetMemberRouteKey: string,
     targetMemberRunId?: string | null,
   ): Promise<AgentOperationResult>;
+  settleMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId?: string | null,
+    reason?: string | null,
+  ): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;
+  publishEvent(event: import("../domain/team-run-event.js").TeamRunEvent): void;
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe;
 }

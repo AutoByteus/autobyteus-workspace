@@ -70,6 +70,7 @@ const createTeamRunConfig = (teamBackendKind: TeamBackendKind) =>
 const createFakeAgentRun = () => ({
   isActive: vi.fn(() => true),
   interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+  terminate: vi.fn().mockResolvedValue({ accepted: true }),
   getStatusSnapshot: vi.fn(() => ({ status: "running", can_interrupt: true })),
   subscribeToEvents: vi.fn(() => () => undefined),
 });
@@ -103,7 +104,7 @@ const attachMemberRuns = (manager: unknown) => {
     deliverInterMemberMessage: vi.fn(),
     approveToolInvocation: vi.fn(),
     interrupt: vi.fn(async () => run.interrupt()),
-    terminate: vi.fn(),
+    terminate: vi.fn(async () => run.terminate()),
     dispose: vi.fn(),
   });
 
@@ -241,5 +242,42 @@ describe.each([
 
     expect(codeReviewerRun.interrupt).not.toHaveBeenCalled();
     expect(solutionDesignerRun.interrupt).not.toHaveBeenCalled();
+  });
+});
+
+describe.each([
+  ["CodexTeamManager", createCodexManager],
+  ["ClaudeTeamManager", createClaudeManager],
+  ["MixedTeamManager", createMixedManager],
+])("%s focused member settlement routing", (_managerName, createManager) => {
+  it("settles only the requested member route key", async () => {
+    const manager = createManager();
+    const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
+
+    await expect(
+      manager.settleMember("code_reviewer", "team-1::code_reviewer"),
+    ).resolves.toMatchObject({
+      accepted: true,
+      memberRunId: "team-1::code_reviewer",
+      memberName: "Code Reviewer",
+    });
+
+    expect(codeReviewerRun.terminate).toHaveBeenCalledTimes(1);
+    expect(solutionDesignerRun.terminate).not.toHaveBeenCalled();
+  });
+
+  it("rejects settlement run-id guard mismatches without retargeting by run id", async () => {
+    const manager = createManager();
+    const { solutionDesignerRun, codeReviewerRun } = attachMemberRuns(manager);
+
+    await expect(
+      manager.settleMember("code_reviewer", "team-1::solution_designer"),
+    ).resolves.toMatchObject({
+      accepted: false,
+      code: "TARGET_MEMBER_RUN_MISMATCH",
+    });
+
+    expect(codeReviewerRun.terminate).not.toHaveBeenCalled();
+    expect(solutionDesignerRun.terminate).not.toHaveBeenCalled();
   });
 });

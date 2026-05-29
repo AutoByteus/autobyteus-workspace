@@ -1,5 +1,6 @@
 import { BROWSER_TOOL_NAMES } from "../../agent-tools/browser/browser-tool-contract.js";
 import { MEDIA_TOOL_NAMES } from "../../agent-tools/media/media-tool-contract.js";
+import { TASK_DELEGATION_TOOL_NAMES } from "../../agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../services/published-artifacts/published-artifact-tool-contract.js";
 
 const SEND_MESSAGE_TO_TOOL_NAME = "send_message_to";
@@ -11,6 +12,7 @@ export type ConfiguredAgentToolExposure = {
   configuredToolNames: string[];
   enabledBrowserToolNames: string[];
   enabledMediaToolNames: string[];
+  enabledTaskDelegationToolNames: string[];
   sendMessageToConfigured: boolean;
   publishArtifactsConfigured: boolean;
 };
@@ -35,6 +37,9 @@ export const buildConfiguredAgentToolExposure = (
     ),
     enabledMediaToolNames: configuredToolNames.filter((toolName) =>
       MEDIA_TOOL_NAMES.has(toolName),
+    ),
+    enabledTaskDelegationToolNames: configuredToolNames.filter((toolName) =>
+      TASK_DELEGATION_TOOL_NAMES.has(toolName),
     ),
     sendMessageToConfigured: configuredToolNameSet.has(SEND_MESSAGE_TO_TOOL_NAME),
     publishArtifactsConfigured: configuredToolNameSet.has(PUBLISH_ARTIFACTS_TOOL_NAME),

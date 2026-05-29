@@ -83,4 +83,36 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
       }),
     );
   });
+
+  it("adds task delegation dynamic tools only when the agent configuration enables them", () => {
+    const strategy = new TeamMemberCodexThreadBootstrapStrategy();
+    const memberTeamContext = createMemberTeamContext();
+    const runContext = new AgentRunContext({
+      runId: "run-professor",
+      config: new AgentRunConfig({
+        agentDefinitionId: "agent-1",
+        llmModelIdentifier: "gpt-test",
+        autoExecuteTools: false,
+        skillAccessMode: SkillAccessMode.NONE,
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        memberTeamContext,
+      }),
+      runtimeContext: null,
+    });
+
+    const preparation = strategy.prepare({
+      runContext,
+      agentInstruction: "Solve the task.",
+      configuredToolExposure: buildConfiguredAgentToolExposure([
+        "delegate_tasks",
+        "update_task_status",
+        "create_task",
+      ]),
+    });
+
+    expect(preparation.developerInstructions).toContain("Task delegation protocol");
+    expect(preparation.developerInstructions).toContain("Do not use `create_task`");
+    expect(preparation.dynamicToolRegistrations?.map((registration) => registration.spec.name))
+      .toEqual(["delegate_tasks", "update_task_status"]);
+  });
 });

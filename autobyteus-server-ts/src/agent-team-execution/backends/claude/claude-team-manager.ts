@@ -49,6 +49,10 @@ import {
   selectorToDisplayString,
   type TeamMemberSelector,
 } from "../../domain/team-run-member-identity.js";
+import {
+  interruptServerManagedTeamMember,
+  settleServerManagedTeamMember,
+} from "../common/team-member-lifecycle-commands.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -60,23 +64,6 @@ const buildTargetMemberNotFoundResult = (targetMemberName: string): AgentOperati
   accepted: false,
   code: "TARGET_MEMBER_NOT_FOUND",
   message: `Team member '${targetMemberName}' was not found.`,
-});
-
-const buildTargetMemberRunMismatchResult = (
-  targetMemberRouteKey: string,
-  targetMemberRunId: string,
-): AgentOperationResult => ({
-  accepted: false,
-  code: "TARGET_MEMBER_RUN_MISMATCH",
-  message: `Team member route key '${targetMemberRouteKey}' does not match member run '${targetMemberRunId}'.`,
-});
-
-const buildTargetMemberRunInactiveResult = (
-  targetMemberRouteKey: string,
-): AgentOperationResult => ({
-  accepted: false,
-  code: "RUN_NOT_FOUND",
-  message: `Team member route key '${targetMemberRouteKey}' is not active.`,
 });
 
 const buildPlaceholderSessionConfig = (memberContext: ClaudeTeamMemberContext) =>
@@ -243,35 +230,30 @@ export class ClaudeTeamManager implements TeamManager {
     targetMemberRouteKey: string,
     targetMemberRunId: string | null = null,
   ): Promise<AgentOperationResult> {
-    if (!this.teamContext) {
-      return buildRunNotFoundResult("unknown");
-    }
-    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
-    const memberContext = this.findMemberContextByRouteKey(normalizedTargetMemberRouteKey);
-    if (!memberContext) {
-      return buildTargetMemberNotFoundResult(normalizedTargetMemberRouteKey);
-    }
-    const normalizedTargetMemberRunId = targetMemberRunId?.trim();
-    if (
-      normalizedTargetMemberRunId &&
-      normalizedTargetMemberRunId !== memberContext.memberRunId
-    ) {
-      return buildTargetMemberRunMismatchResult(
-        normalizedTargetMemberRouteKey,
-        normalizedTargetMemberRunId,
-      );
-    }
+    return interruptServerManagedTeamMember({
+      teamContextActive: Boolean(this.teamContext),
+      targetMemberRouteKey,
+      targetMemberRunId,
+      findMemberContextByRouteKey: (routeKey) => this.findMemberContextByRouteKey(routeKey),
+      getMemberRun: (routeKey) => this.memberRuns.get(routeKey) ?? null,
+      publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    });
+  }
 
-    const memberRun = this.memberRuns.get(memberContext.memberRouteKey) ?? null;
-    if (!memberRun?.isActive()) {
-      return buildTargetMemberRunInactiveResult(normalizedTargetMemberRouteKey);
-    }
-
-    const result = await memberRun.interrupt();
-    if (result.accepted) {
-      this.publishTeamStatusIfChanged();
-    }
-    return result;
+  async settleMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+    _reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    return settleServerManagedTeamMember({
+      teamContextActive: Boolean(this.teamContext),
+      targetMemberRouteKey,
+      targetMemberRunId,
+      findMemberContextByRouteKey: (routeKey) => this.findMemberContextByRouteKey(routeKey),
+      getMemberRun: (routeKey) => this.memberRuns.get(routeKey) ?? null,
+      clearMemberRun: (routeKey) => this.clearSettledMemberRun(routeKey),
+      publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    });
   }
 
   async terminate(): Promise<AgentOperationResult> {
@@ -523,6 +505,14 @@ export class ClaudeTeamManager implements TeamManager {
       unsubscribe();
     }
     this.memberRunUnsubscribers.clear();
+  }
+
+  publishEvent(event: TeamRunEvent): void { this.publish(event); }
+
+  private clearSettledMemberRun(memberRouteKey: string): void {
+    this.memberRuns.delete(memberRouteKey);
+    this.memberRunUnsubscribers.get(memberRouteKey)?.();
+    this.memberRunUnsubscribers.delete(memberRouteKey);
   }
 
   private publish(event: TeamRunEvent): void {

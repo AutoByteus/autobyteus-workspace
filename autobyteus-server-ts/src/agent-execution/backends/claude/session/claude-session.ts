@@ -411,9 +411,12 @@ export class ClaudeSession {
       runContext: this.runContext,
       content: options.content,
       sendMessageToEnabled: toolingOptions.sendMessageToToolingEnabled,
+      taskDelegationEnabled: toolingOptions.taskDelegationToolingEnabled,
     });
     const mcpServers = await buildClaudeSessionMcpServerConfig({
       sendMessageToToolingEnabled: toolingOptions.sendMessageToToolingEnabled,
+      taskDelegationToolingEnabled: toolingOptions.taskDelegationToolingEnabled,
+      enabledTaskDelegationToolNames: toolingOptions.enabledTaskDelegationToolNames,
       enabledBrowserToolNames: toolingOptions.enabledBrowserToolNames,
       enabledMediaToolNames: toolingOptions.enabledMediaToolNames,
       publishArtifactsToolingEnabled: toolingOptions.publishArtifactsToolingEnabled,

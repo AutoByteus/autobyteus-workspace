@@ -5,9 +5,6 @@ import { AgentConfig } from '../../../src/agent/context/agent-config.js';
 import { AgentTeamBuilder } from '../../../src/agent-team/agent-team-builder.js';
 import { runAgentTeamCli } from '../../../src/cli/index.js';
 import { SendMessageTo } from '../../../src/agent/message/send-message-to.js';
-import { CreateTasks } from '../../../src/task-management/tools/task-tools/create-tasks.js';
-import { GetTaskPlanStatus } from '../../../src/task-management/tools/task-tools/get-task-plan-status.js';
-import { UpdateTaskStatus } from '../../../src/task-management/tools/task-tools/update-task-status.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
 import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
 import { registerRunBashTool } from '../../../src/tools/terminal/tools/run-bash.js';
@@ -71,7 +68,7 @@ async function main(): Promise<void> {
     'Manages the development process by planning and assigning tasks.',
     coordinatorLlm,
     await loadPrompt('coordinator.prompt'),
-    [new CreateTasks(), new GetTaskPlanStatus(), new SendMessageTo()]
+    [new SendMessageTo()]
   );
 
   const engineerConfig = new AgentConfig(
@@ -80,7 +77,7 @@ async function main(): Promise<void> {
     'Writes code and corresponding tests based on instructions.',
     engineerLlm,
     await loadPrompt('software_engineer.prompt'),
-    [registerWriteFileTool(), new UpdateTaskStatus(), new GetTaskPlanStatus(), new SendMessageTo()],
+    [registerWriteFileTool(), new SendMessageTo()],
     true,
     null,
     null,
@@ -96,13 +93,7 @@ async function main(): Promise<void> {
     'Reviews code and tests for quality and correctness.',
     reviewerLlm,
     await loadPrompt('code_reviewer.prompt'),
-    [
-      registerReadFileTool(),
-      registerWriteFileTool(),
-      new UpdateTaskStatus(),
-      new GetTaskPlanStatus(),
-      new SendMessageTo()
-    ],
+    [registerReadFileTool(), registerWriteFileTool(), new SendMessageTo()],
     true,
     null,
     null,
@@ -118,7 +109,7 @@ async function main(): Promise<void> {
     'Executes tests and reports results.',
     testerLlm,
     await loadPrompt('tester.prompt'),
-    [registerRunBashTool(), new UpdateTaskStatus(), new GetTaskPlanStatus(), new SendMessageTo()],
+    [registerRunBashTool(), new SendMessageTo()],
     true,
     null,
     null,

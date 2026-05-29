@@ -82,6 +82,34 @@ describe("buildClaudeSessionMcpServers", () => {
     });
   });
 
+  it("builds the team MCP server when task delegation tooling is enabled without send_message_to", async () => {
+    buildClaudeTeamMcpServersMock.mockResolvedValue({
+      autobyteus_team: { name: "team" },
+    });
+    buildClaudeBrowserMcpServersMock.mockResolvedValue(null);
+
+    const result = await buildClaudeSessionMcpServers({
+      sendMessageToToolingEnabled: false,
+      taskDelegationToolingEnabled: true,
+      enabledTaskDelegationToolNames: ["delegate_tasks", "update_task_status"],
+      publishArtifactsToolingEnabled: false,
+      runContext: { runId: "run-1" } as any,
+      sdkClient: { sdk: true } as any,
+      requestToolApproval: null,
+      emitEvent: vi.fn(),
+    });
+
+    expect(buildClaudeTeamMcpServersMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sendMessageToToolingEnabled: false,
+        enabledTaskDelegationToolNames: ["delegate_tasks", "update_task_status"],
+      }),
+    );
+    expect(result).toEqual({
+      autobyteus_team: { name: "team" },
+    });
+  });
+
   it("throws when team MCP configuration is required but unavailable", async () => {
     buildClaudeTeamMcpServersMock.mockResolvedValue(null);
     buildClaudeBrowserMcpServersMock.mockResolvedValue({

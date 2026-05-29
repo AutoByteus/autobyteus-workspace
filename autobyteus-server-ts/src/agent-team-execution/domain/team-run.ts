@@ -128,6 +128,30 @@ export class TeamRun {
     );
   }
 
+  async settleMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
+    if (!normalizedTargetMemberRouteKey) {
+      return {
+        accepted: false,
+        code: "TARGET_MEMBER_REQUIRED",
+        message: "targetMemberRouteKey is required.",
+      };
+    }
+    return this.backend.settleMember(
+      normalizedTargetMemberRouteKey,
+      targetMemberRunId,
+      reason,
+    );
+  }
+
+  publishEvent(event: TeamRunEvent): void {
+    this.backend.publishEvent(event);
+  }
+
   async terminate(): Promise<AgentOperationResult> {
     return this.backend.terminate();
   }

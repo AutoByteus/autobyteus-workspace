@@ -30,6 +30,17 @@ export class MixedTeamMemberRegistry {
     return Array.from(this.handles.values());
   }
 
+  remove(memberRouteKey: string): boolean {
+    const normalized = memberRouteKey.trim();
+    const handle = this.handles.get(normalized) ?? null;
+    if (!handle) {
+      return false;
+    }
+    handle.dispose();
+    this.handles.delete(normalized);
+    return true;
+  }
+
   resolveContext(selector: TeamMemberSelector): MixedTeamMemberContext | AgentOperationResult {
     const resolution = resolveTeamMemberSelector(selector, this.options.teamContext.runtimeContext.memberContexts);
     if (resolution.ok) {

@@ -157,6 +157,29 @@ export class ClaudeTeamRunBackend implements TeamRunBackend {
     }
   }
 
+  async settleMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.runId);
+    }
+    if (typeof targetMemberRouteKey !== "string" || targetMemberRouteKey.trim().length === 0) {
+      return buildTargetMemberRequiredResult();
+    }
+
+    try {
+      return await this.options.claudeTeamManager.settleMember(
+        targetMemberRouteKey.trim(),
+        targetMemberRunId,
+        reason,
+      );
+    } catch (error) {
+      return buildCommandFailure("settle team member", error);
+    }
+  }
+
   async terminate(): Promise<AgentOperationResult> {
     if (!this.isActive()) {
       return buildRunNotFoundResult(this.runId);
@@ -166,5 +189,9 @@ export class ClaudeTeamRunBackend implements TeamRunBackend {
     } catch (error) {
       return buildCommandFailure("terminate team run", error);
     }
+  }
+
+  publishEvent(event: import("../../domain/team-run-event.js").TeamRunEvent): void {
+    this.options.claudeTeamManager.publishEvent(event);
   }
 }

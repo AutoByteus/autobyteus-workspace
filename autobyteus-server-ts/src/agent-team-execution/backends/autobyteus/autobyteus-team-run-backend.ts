@@ -254,6 +254,18 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     }
   }
 
+  async settleMember(
+    _targetMemberRouteKey: string,
+    _targetMemberRunId: string | null = null,
+    _reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    return {
+      accepted: false,
+      code: "UNSUPPORTED_RUNTIME_COMMAND",
+      message: "Native Autobyteus team does not expose per-member settlement.",
+    };
+  }
+
   async terminate(): Promise<AgentOperationResult> {
     try {
       const removed = await this.options.removeTeamRun(this.runId);
@@ -265,6 +277,10 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     } catch (error) {
       return buildCommandFailure("terminate team run", error);
     }
+  }
+
+  publishEvent(event: TeamRunEvent): void {
+    this.publishEvents([event]);
   }
 
   private ensureNativeEventBridge(): void {

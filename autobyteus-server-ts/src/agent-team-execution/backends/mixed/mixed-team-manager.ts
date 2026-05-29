@@ -37,6 +37,7 @@ import {
   buildTeamMemberInputDedupeKey,
   buildTeamMemberInputMessageId,
 } from "../../services/team-member-input-event-builder.js";
+import { settleRegistryTeamMember } from "../common/team-member-lifecycle-commands.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -262,6 +263,24 @@ export class MixedTeamManager implements TeamManager {
     return result;
   }
 
+  async settleMember(
+    targetMemberRouteKey: string,
+    targetMemberRunId: string | null = null,
+    _reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    return settleRegistryTeamMember({
+      teamContextActive: Boolean(this.teamContext),
+      targetMemberRouteKey,
+      targetMemberRunId,
+      resolveContext: (selector) => this.memberRegistry.resolveContext(selector),
+      getMemberRun: (routeKey) =>
+        this.memberRegistry.listHandles()
+          .find((handle) => handle.context.memberRouteKey === routeKey) ?? null,
+      removeMember: (routeKey) => { this.memberRegistry.remove(routeKey); },
+      publishTeamStatusIfChanged: () => this.publishTeamStatusIfChanged(),
+    });
+  }
+
   async terminate(): Promise<AgentOperationResult> {
     if (!this.teamContext) {
       return buildRunNotFoundResult("unknown");
@@ -278,6 +297,8 @@ export class MixedTeamManager implements TeamManager {
     this.lastTeamStatus = null;
     return { accepted: true };
   }
+
+  publishEvent(event: TeamRunEvent): void { this.publish(event); }
 
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {
     this.eventListeners.add(listener);

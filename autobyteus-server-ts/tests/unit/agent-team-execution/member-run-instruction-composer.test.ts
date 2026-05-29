@@ -246,4 +246,29 @@ describe("member-run-instruction-composer", () => {
       "Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.",
     );
   });
+
+  it("adds task delegation protocol instructions only when task delegation tooling is enabled", () => {
+    const enabled = composeMemberRunInstructions({
+      teamInstruction: null,
+      agentInstruction: null,
+      memberTeamContext: buildReviewLeadContext(),
+      sendMessageToEnabled: false,
+      taskDelegationEnabled: true,
+    });
+    const disabled = composeMemberRunInstructions({
+      teamInstruction: null,
+      agentInstruction: null,
+      memberTeamContext: buildReviewLeadContext(),
+      sendMessageToEnabled: false,
+      taskDelegationEnabled: false,
+    });
+
+    expect(enabled.runtimeInstruction).toContain("Task delegation protocol");
+    expect(enabled.runtimeInstruction).toContain("Use `delegate_tasks`");
+    expect(enabled.runtimeInstruction).toContain(
+      "Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`",
+    );
+    expect(enabled.runtimeInstruction).toContain("Use `update_task_status` with the exact `task_id`");
+    expect(disabled.runtimeInstruction).not.toContain("Task delegation protocol");
+  });
 });

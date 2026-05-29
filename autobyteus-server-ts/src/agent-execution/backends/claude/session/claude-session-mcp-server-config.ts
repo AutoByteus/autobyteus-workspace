@@ -6,6 +6,8 @@ import type { ClaudeSdkClient } from "../../../../runtime-management/claude/clie
 
 export const buildClaudeSessionMcpServerConfig = (input: {
   sendMessageToToolingEnabled: boolean;
+  taskDelegationToolingEnabled: boolean;
+  enabledTaskDelegationToolNames: string[];
   enabledBrowserToolNames: string[];
   enabledMediaToolNames: string[];
   publishArtifactsToolingEnabled: boolean;
@@ -16,6 +18,8 @@ export const buildClaudeSessionMcpServerConfig = (input: {
 }): Promise<Record<string, unknown> | null> =>
   buildClaudeSessionMcpServers({
     sendMessageToToolingEnabled: input.sendMessageToToolingEnabled,
+    taskDelegationToolingEnabled: input.taskDelegationToolingEnabled,
+    enabledTaskDelegationToolNames: input.enabledTaskDelegationToolNames,
     enabledBrowserToolNames: input.enabledBrowserToolNames,
     enabledMediaToolNames: input.enabledMediaToolNames,
     publishArtifactsToolingEnabled: input.publishArtifactsToolingEnabled,

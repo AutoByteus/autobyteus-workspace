@@ -3,9 +3,6 @@ import { AgentConfig } from '../../../src/agent/context/agent-config.js';
 import { AgentTeamBuilder } from '../../../src/agent-team/agent-team-builder.js';
 import { runAgentTeamCli } from '../../../src/cli/index.js';
 import { SendMessageTo } from '../../../src/agent/message/send-message-to.js';
-import { CreateTasks } from '../../../src/task-management/tools/task-tools/create-tasks.js';
-import { GetTaskPlanStatus } from '../../../src/task-management/tools/task-tools/get-task-plan-status.js';
-import { UpdateTaskStatus } from '../../../src/task-management/tools/task-tools/update-task-status.js';
 import { loadEnv } from '../../shared/example-paths.js';
 import { createLlmOrThrow, printAvailableModels } from '../../shared/llm-helpers.js';
 import { setConsoleLogLevel } from '../../shared/logging.js';
@@ -41,11 +38,10 @@ async function main(): Promise<void> {
       '### Your Team\nHere is your team member:\n\n\n' +
       '### Mission Workflow\n' +
       '1. Analyze and plan a single task for your FactChecker.\n' +
-      '2. Publish the plan with `create_tasks`.\n' +
-      '3. Notify FactChecker using `send_message_to`.\n' +
-      '4. Wait for completion, then report results.\n\n' +
+      '2. Send the task request to FactChecker using `send_message_to`.\n' +
+      '3. Wait for completion, then report results.\n\n' +
       '### Rules\n- Use the agent\'s exact name (`FactChecker`).',
-    [new CreateTasks(), new GetTaskPlanStatus(), new SendMessageTo()]
+    [new SendMessageTo()]
   );
 
   const factCheckerConfig = new AgentConfig(
@@ -54,13 +50,12 @@ async function main(): Promise<void> {
     'Answers factual questions from a limited internal knowledge base.',
     llm,
     'You are an AI agent. Your name is \"FactChecker\". You are a fact-checking specialist.\n' +
-      'When you receive a message, use `get_task_plan_status` to find your task.\n\n' +
+      'When you receive a message, answer the requested fact-check task directly.\n\n' +
       '### Knowledge Base\n- The capital of France is Paris.\n- The tallest mountain on Earth is Mount Everest.\n\n' +
       '### Rules\n' +
       '- If asked something you don\'t know, respond with: \"I do not have information on that topic.\"\n' +
-      '- After answering, mark the task completed with `update_task_status`.\n' +
       '- Notify ProjectManager using `send_message_to`.',
-    [new UpdateTaskStatus(), new GetTaskPlanStatus(), new SendMessageTo()]
+    [new SendMessageTo()]
   );
 
   const team = new AgentTeamBuilder('TuiDemoTeam', 'Two-agent team for the TUI demo.')
