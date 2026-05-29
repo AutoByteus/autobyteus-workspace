@@ -1,0 +1,3 @@
+Command: git diff --check
+Command: git diff --cached --check
+Diff check passed before staging new delivery artifacts.

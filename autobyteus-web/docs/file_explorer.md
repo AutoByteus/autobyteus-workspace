@@ -555,6 +555,25 @@ mutation MoveFileOrFolder($workspaceId: String!, $sourcePath: String!, $destinat
 mutation RenameFileOrFolder($workspaceId: String!, $targetPath: String!, $newName: String!)
 ```
 
+### Backend Path Boundary Contract
+
+The server treats all File Explorer paths as workspace-relative and validates
+them against the workspace root before reading, writing, or mutating tree
+state. Frontend callers should pass relative paths returned by the tree/search
+APIs and surface backend errors without trying to normalize escaped paths into
+valid operations.
+
+Backend-enforced rules include:
+
+- ignored folders such as `.git`, `node_modules`, and `.gitignore`-matched
+  paths are rejected by `folderChildren` instead of being projected into the
+  tree;
+- `folderChildren`, `fileContent`, and `writeFileContent` reject traversal or
+  same-prefix sibling escapes that resolve outside the workspace root;
+- `renameFileOrFolder.newName` must be a leaf name, not a path; path-like names
+  are rejected before filesystem mutation;
+- rejected snapshot/boundary operations do not acquire live watcher sessions.
+
 ### Subscriptions (Removed)
 
 > [!NOTE]

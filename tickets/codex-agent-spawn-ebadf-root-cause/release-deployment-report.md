@@ -2,41 +2,41 @@
 
 ## Current Status
 
-`Ready for user verification; API/E2E Round 11 passed; latest origin/personal@d1f92730 integrated; current macOS Electron v1.3.32 build completed and DMG verified; repository finalization, release publication, and deployment not run.`
+`Ready for user verification; code review Round 26 passed; latest origin/personal@a01e15f2db534ed13663572bc7a3a948f1e8eb45 integrated; current macOS Electron v1.3.32 build completed and DMG verified; repository finalization, release publication, and deployment not run.`
 
 ## Release / Publication / Deployment Scope
 
 - User request in scope: read the README, ensure the branch is based on latest remote `origin/personal`, and build Electron.
-- Delivery scope performed after Round 21 API/E2E pass: latest-base confirmation, README reread, docs/no-impact check, current Electron build, DMG verification, artifact checksum recording, and ticket-local handoff/report updates.
+- Delivery scope performed after Round 26 code-review pass: latest-base fetch/merge, README reread, docs sync for File Explorer path-boundary behavior, current Electron build, DMG verification, artifact checksum recording, and ticket-local handoff/report updates.
 - Out of scope before explicit user verification: ticket archival, pushing the ticket branch, merging into `personal`, GitHub release publication, notarized/signed distribution release, deployment, and cleanup.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Notes: includes Round 18 latest base, source HEAD, README command used, validation/build evidence, DMG verification, artifact paths, sizes, and SHA-256 checksums.
+- Notes: includes Round 26 latest base, source HEAD, README command used, docs sync, validation/build evidence, DMG verification, artifact paths, sizes, and SHA-256 checksums.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: not explicitly recorded; inferred from branch upstream and user request as `origin/personal`.
-- Latest tracked remote base reference checked: `origin/personal@d1f92730caea25e8b9c39cf4384dc665491e768a`.
-- Base advanced since previous delivery refresh: `Yes`; previous delivery state was based on older `origin/personal` revisions, and implementation Round 18 integrated the latest base.
-- New base commits integrated into the ticket branch: `No` for Round 21 delivery; latest base was already integrated. Current validated source HEAD is `7aa47c3ca99e814c82f0231450437640d42999c7`.
-- Local checkpoint commit result: `Completed` before latest-base integration where needed; delivery had preserved prior Round 10 validation evidence in checkpoint `6cece0d463eb9faa3efd12bae8423548d08721a1` before the conflict-routing loop.
+- Latest tracked remote base reference checked: `origin/personal@a01e15f2db534ed13663572bc7a3a948f1e8eb45`.
+- Base advanced since previous delivery refresh: `Yes`; code review Round 26 reported the branch behind latest `origin/personal`, and delivery integrated the latest base before docs/build work.
+- New base commits integrated into the ticket branch: `Yes`; delivery merged `origin/personal@a01e15f2db534ed13663572bc7a3a948f1e8eb45` into the ticket branch. Integrated source HEAD before delivery docs/build edits: `54b8fbada1dabc769c90becca10dd4be078baa67`.
+- Local checkpoint commit result: `Completed`; delivery preserved Round 12 API/E2E and Round 26 code-review evidence in checkpoint `904058149ad2953018b7a129a48b72f7e66028e5` before merging latest base.
 - Integration method: `Merge`.
 - Integration result: `Completed`; delivery confirmed merge base equals latest `origin/personal` and branch behind count is `0`.
 - Post-integration executable checks rerun: `Yes`.
 - Post-integration verification result: `Passed`.
 - No-rerun rationale: not applicable; latest base had advanced and checks/build were rerun.
 - Delivery edits started only after integrated state was current: `Yes`.
-- Handoff state current with latest tracked remote base: `Yes` as of the Round 18 delivery refresh.
+- Handoff state current with latest tracked remote base: `Yes` as of the Round 26 final fetch check.
 - Blocker: none open for local build/handoff; user verification remains required before finalization.
 
 ## User Verification
 
 - Initial explicit user completion/verification received: `No`
 - Initial verification reference: pending user review of the generated Electron artifact and this handoff.
-- Renewed verification required after later re-integration: `Yes`; latest-base integration changed the build version to `1.3.30` and delivery rebuilt current artifacts.
+- Renewed verification required after later re-integration: `Yes`; latest-base integration and Round 26 validation/docs updates changed the handoff state, and delivery rebuilt current artifacts.
 - Renewed verification received: `No`
 - Renewed verification reference: pending.
 
@@ -45,11 +45,12 @@
 - Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/docs/modules/terminal.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-ts/docs/terminal_tools.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/docs/terminal.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/docs/file_explorer.md`
-- No-impact rationale: not applicable; Round 18 docs sync made long-lived docs updates.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/docs/modules/terminal.md` (earlier delivery pass)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-ts/docs/terminal_tools.md` (earlier delivery pass)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/docs/terminal.md` (earlier delivery pass)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/docs/modules/file_explorer.md` (Round 26 path-boundary update)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/docs/file_explorer.md` (Round 26 path-boundary update)
+- No-impact rationale: not applicable; Round 26 docs sync made long-lived File Explorer docs updates.
 
 ## Ticket State Transition
 
@@ -154,15 +155,25 @@
 - DMG verification for v1.3.32 post Round 11: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round21-post-api-e2e-dmg-verify-20260528200742.log`.
 - Artifact summary/checksums for v1.3.32 post Round 11: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round21-post-api-e2e-artifacts-20260528200742.txt`.
 
+
+- Code review Round 26: pass. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/review-report.md`.
+- API/E2E Round 12: pass. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`.
+- Round 26 latest-base fetch/merge: pass. Logs: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-fetch-origin-personal-20260529104131.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-merge-origin-personal-20260529104146.log`.
+- Round 26 final `origin/personal` check after rebuild: pass; `origin/personal@a01e15f2db534ed13663572bc7a3a948f1e8eb45`, merge base `a01e15f2db534ed13663572bc7a3a948f1e8eb45`, behind `0`, ahead `39` before delivery evidence commit. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-final-origin-personal-check-20260529104842.log`.
+- Round 26 docs/stale-name checks: pass. Logs: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-integrated-docs-grep-20260529104218.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-docs-sync-grep-after-edits-20260529104321.log`.
+- Current macOS Electron v1.3.32 build after Round 26 code review/latest-base integration: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round26-post-review-20260529104342.log`.
+- DMG verification for Round 26 v1.3.32: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round26-dmg-verify-20260529104755.log`.
+- Artifact summary/checksums for Round 26 v1.3.32: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round26-artifacts-20260529104755.txt`.
+
 ## Built Artifacts
 
 | Artifact | Size bytes | SHA-256 |
 | --- | ---: | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg` | 379821862 | `c9e03c7e1d5ca9a0736ec9e657c6bbf7e39d33bbb0ebd89da090ae2342906a7d` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg.blockmap` | 395476 | `9f85b77c3bb19ab14ddb68ac579ccdc5f953e21d5e8c3a69f4f8a495e2c21d07` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip` | 377154044 | `7ca0fde48a887f5f464fc9c411a877df90f9e6ba6de7a05c3889c440d29863fb` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap` | 387172 | `1b1cd0ad36ee646138bb70768ee0c2dad95da25a8eb6bc326da3ccfce72abde3` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `58cec66498a420c85ad3f725ca1d21efee821d653c5a09c6c8ff1ac1a95a16c7` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg` | 379640351 | `d96bcbe0a6ffa0555dcf2e35b11dfdea4f16e07ca78ca7e30c1911bab93d6ca0` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg.blockmap` | 397412 | `f1558f59fedafea7dcd52f499e06e9f493763bd18b153c38be5703fb155e0cd8` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip` | 377163085 | `06e4d6668e30f1d2a7bd34c2b0c4406fe4cb58c8dc4d375f7e4a7dba13a0ce23` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap` | 386983 | `7ae0482f710c08f3096727976c6c19ec9eebe4a59a821fd10aff55cb509bb869` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `c702e8c45d9b0a10a638917ec5520a62a71c6cbc58f54a08f0a7186ad9478f43` |
 
 ## Rollback Criteria
 
@@ -171,4 +182,4 @@
 
 ## Final Status
 
-`Ready for user verification; API/E2E Round 11 passed; latest origin/personal@d1f92730 integrated; current local Electron v1.3.32 build complete and verified; repository finalization/release/deployment not run.`
+`Ready for user verification; code review Round 26 passed; latest origin/personal@a01e15f2db534ed13663572bc7a3a948f1e8eb45 integrated; current local Electron v1.3.32 build complete and verified; repository finalization/release/deployment not run.`

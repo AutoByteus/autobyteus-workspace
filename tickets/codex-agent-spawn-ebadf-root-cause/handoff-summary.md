@@ -1,20 +1,20 @@
 # Handoff Summary — codex-agent-spawn-ebadf-root-cause
 
-## Current Status — 2026-05-28 Round 21 Post API/E2E Rebuild
+## Current Status — 2026-05-29 Round 26 Post API/E2E Rebuild
 
-`Ready for user verification; API/E2E Round 11 passed; latest origin/personal@d1f92730 integrated; current macOS Electron v1.3.32 build completed and DMG verified; repository finalization/release/deployment not run.`
+`Ready for user verification; code review Round 26 passed; API/E2E Round 12 evidence is incorporated; latest origin/personal@a01e15f2db534ed13663572bc7a3a948f1e8eb45 integrated; current macOS Electron v1.3.32 build completed and DMG verified; repository finalization/release/deployment not run.`
 
-Delivery resumed after implementation Round 18 resolved the latest-base merge conflict and committed `c86684e43c8abdf49f992451ce6fdb3711c52b57` (`merge: integrate latest personal for round 18`). Delivery fetched `origin/personal`, confirmed the branch is based on `origin/personal@03d7880b45afd2b032de6e842e41429fad0a2cb0`, read the Electron README instructions, refreshed docs against the integrated state, and built the current Electron package.
+Delivery resumed after code review Round 26 accepted the API/E2E Round 12 durable File Explorer path-boundary E2E. I preserved the reviewed validation state in local checkpoint `904058149ad2953018b7a129a48b72f7e66028e5`, fetched `origin/personal`, merged latest `origin/personal@a01e15f2db534ed13663572bc7a3a948f1e8eb45` into the ticket branch, reread the Electron README instructions, updated long-lived File Explorer docs for the new path-boundary contract, rebuilt Electron, verified the DMG, and recorded artifact checksums.
 
 ## Branch / Integration State
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause`
 - Ticket branch: `codex/codex-agent-spawn-ebadf-root-cause`
 - Inferred base/finalization target: `origin/personal`
-- Latest remote base fetched for Round 20 delivery: `origin/personal@d1f92730caea25e8b9c39cf4384dc665491e768a`
-- Merge base at Round 20 delivery refresh: `d1f92730caea25e8b9c39cf4384dc665491e768a`
-- Integrated source HEAD before delivery evidence edits: `7aa47c3ca99e814c82f0231450437640d42999c7`
-- Branch relation at Round 21 delivery refresh: behind `0`, ahead `31` relative to `origin/personal`
+- Latest remote base fetched for Round 26 delivery: `origin/personal@a01e15f2db534ed13663572bc7a3a948f1e8eb45`
+- Merge base at Round 26 final fetch check: `a01e15f2db534ed13663572bc7a3a948f1e8eb45`
+- Integrated source HEAD before Round 26 delivery docs/evidence edits: `54b8fbada1dabc769c90becca10dd4be078baa67`
+- Branch relation at Round 26 final fetch check: behind `0`, ahead `39` relative to `origin/personal` before the delivery evidence commit
 - Version built from `autobyteus-web/package.json`: `1.3.32`
 - Repository finalization/push/merge/release/deployment: not run; waiting for explicit user verification.
 
@@ -105,6 +105,30 @@ Build log notes: `notarize: false`, `dmg.sign: false`, macOS signing skipped wit
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip` | 377154044 | `7ca0fde48a887f5f464fc9c411a877df90f9e6ba6de7a05c3889c440d29863fb` |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap` | 387172 | `1b1cd0ad36ee646138bb70768ee0c2dad95da25a8eb6bc326da3ccfce72abde3` |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `58cec66498a420c85ad3f725ca1d21efee821d653c5a09c6c8ff1ac1a95a16c7` |
+
+
+## User-Requested / Post-Review Electron Rebuild — 2026-05-29 Round 26
+
+- README was reread before this rebuild: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/README.md`.
+- Latest `origin/personal` was fetched and integrated: `origin/personal@a01e15f2db534ed13663572bc7a3a948f1e8eb45`.
+- Integration method: merge into ticket branch. Merge commit before delivery docs/build edits: `54b8fbada1dabc769c90becca10dd4be078baa67`.
+- Final fetch after rebuild confirmed the branch remained based on latest `origin/personal`: behind `0`, ahead `39` before the delivery evidence commit. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-final-origin-personal-check-20260529104842.log`.
+- Docs updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/docs/modules/file_explorer.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/docs/file_explorer.md` now document File Explorer path-boundary/ignored-folder invariants from API/E2E Round 12.
+- Docs/stale-name checks passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-docs-sync-grep-after-edits-20260529104321.log`.
+- Rebuild command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm -C autobyteus-web build:electron:mac`.
+- Build result: pass. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round26-post-review-20260529104342.log`.
+- DMG verification result: pass (`hdiutil verify` checksum valid). Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round26-dmg-verify-20260529104755.log`.
+- Artifact summary/checksums: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round26-artifacts-20260529104755.txt`.
+
+### Round 26 Built Artifacts
+
+| Artifact | Size bytes | SHA-256 |
+| --- | ---: | --- |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg` | 379640351 | `d96bcbe0a6ffa0555dcf2e35b11dfdea4f16e07ca78ca7e30c1911bab93d6ca0` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg.blockmap` | 397412 | `f1558f59fedafea7dcd52f499e06e9f493763bd18b153c38be5703fb155e0cd8` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip` | 377163085 | `06e4d6668e30f1d2a7bd34c2b0c4406fe4cb58c8dc4d375f7e4a7dba13a0ce23` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap` | 386983 | `7ae0482f710c08f3096727976c6c19ec9eebe4a59a821fd10aff55cb509bb869` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml` | 561 | `c702e8c45d9b0a10a638917ec5520a62a71c6cbc58f54a08f0a7186ad9478f43` |
 
 ## Docs Sync
 

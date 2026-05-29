@@ -26,6 +26,24 @@ File mutations return concrete `FileSystemChangeEvent` payloads so the frontend 
 
 Search refreshes its file-name index from snapshot traversal (`getAllFilePaths`) and backend search strategies such as `FuzzysortSearchStrategy` and `RipgrepSearchStrategy`; search must not depend on an always-on watcher.
 
+## Path And Ignored-Folder Boundaries
+
+All snapshot and mutation APIs resolve caller-supplied paths against the
+workspace root before touching the filesystem or mutating cached tree state.
+Requests that resolve outside the workspace are rejected even when the escaped
+path is a same-prefix sibling of the workspace directory.
+
+Boundary expectations:
+
+- `folderChildren` rejects ignored folders such as `.git`, `node_modules`, and
+  `.gitignore`-matched folders without projecting them into the cached tree.
+- `folderChildren`, `fileContent`, and `writeFileContent` reject `..` traversal
+  or same-prefix sibling escapes before returning or writing external content.
+- `renameFileOrFolder` accepts only a leaf `newName`; path-like names are
+  rejected before any filesystem rename is attempted.
+- Rejected boundary operations remain snapshot-only and must not start a live
+  watcher lease.
+
 ## Live WebSocket Watcher Lifecycle
 
 Live filesystem changes are served by `/ws/file-explorer/{workspaceId}`. The route resolves the workspace, obtains the workspace file explorer, and delegates to `FileExplorerStreamHandler`.
@@ -55,5 +73,11 @@ Multiple WebSocket sessions for the same workspace share one underlying watcher 
 The durable E2E regression for this lifecycle is:
 
 - `tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts`
+- `tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts`
 
 It exercises real Fastify WebSockets, real workspace/file-explorer objects, real chokidar filesystem events, snapshot operations that stay watcher-free, shared watcher leases across concurrent visible sessions, repeated open/close cycles, early close handling, descriptor sampling, and child-process spawn health.
+
+The path-boundary E2E covers ignored-folder projection rejection, same-prefix
+sibling escape rejection for folder/read/write APIs, path-like rename
+rejection, and the invariant that those rejected snapshot operations do not
+start watcher leases or mutate cached tree state.
