@@ -62,8 +62,73 @@ describe('AutobyteusLLM', () => {
             expect.objectContaining({ role: 'assistant', content: 'answer' }),
             expect.objectContaining({ role: 'user', content: 'next' })
           ]
-        }
+        },
+        generationConfig: {}
       },
+      { signal: null }
+    );
+  });
+
+  it('passes extraParams as send-message generationConfig', async () => {
+    const llm = new AutobyteusLLM(buildModel(), new LLMConfig({
+      extraParams: {
+        thinking_level: 'medium',
+        include_thoughts: true
+      }
+    }));
+    const sendMessage = vi.fn().mockResolvedValue({ response: 'ok' });
+    (llm as any).client = {
+      sendMessage,
+      cleanup: vi.fn()
+    };
+
+    await llm.sendMessages(
+      [new Message(MessageRole.USER, 'hello')],
+      null,
+      { logicalConversationId: 'run-config' }
+    );
+
+    expect(sendMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        generationConfig: {
+          thinking_level: 'medium',
+          include_thoughts: true
+        }
+      }),
+      { signal: null }
+    );
+  });
+
+  it('passes extraParams as stream-message generationConfig', async () => {
+    const llm = new AutobyteusLLM(buildModel(), new LLMConfig({
+      extraParams: {
+        thinking_level: 'high',
+        include_thoughts: false
+      }
+    }));
+    const streamMessage = vi.fn(async function* () {
+      yield { content: 'ok', is_complete: true };
+    });
+    (llm as any).client = {
+      streamMessage,
+      cleanup: vi.fn()
+    };
+
+    for await (const _chunk of llm.streamMessages(
+      [new Message(MessageRole.USER, 'hello')],
+      null,
+      { logicalConversationId: 'run-stream-config' }
+    )) {
+      // Drain the mocked stream.
+    }
+
+    expect(streamMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        generationConfig: {
+          thinking_level: 'high',
+          include_thoughts: false
+        }
+      }),
       { signal: null }
     );
   });

@@ -99,6 +99,10 @@ describe('AutobyteusClient', () => {
     await client.sendMessage({
       conversationId: 'conversation-1',
       modelName: 'model-1',
+      generationConfig: {
+        thinking_level: 'medium',
+        include_thoughts: true
+      },
       payload: {
         current_message_index: 1,
         messages: [
@@ -124,7 +128,11 @@ describe('AutobyteusClient', () => {
     expect(payload).toMatchObject({
       conversation_id: 'conversation-1',
       model_name: 'model-1',
-      current_message_index: 1
+      current_message_index: 1,
+      generation_config: {
+        thinking_level: 'medium',
+        include_thoughts: true
+      }
     });
     expect(payload.messages[0].image_urls).toEqual([]);
     expect(payload.messages[0].content).toContain('<tool name="search">');
@@ -188,7 +196,43 @@ describe('AutobyteusClient', () => {
 
     const payload = postMock.mock.calls[0][1];
     expect(payload.messages[0].image_urls).toEqual(['data:mock/type;base64,/tmp/image.png']);
+    expect(payload.generation_config).toEqual({});
     expect(payload).not.toHaveProperty('user_message');
+  });
+
+  it('serializes generation_config for streamMessage', async () => {
+    const client = new AutobyteusClient();
+    const stream = Readable.from(['data: {"content":"ok","is_complete":true}\n']);
+    const postMock = vi.fn().mockResolvedValue({ data: stream });
+    (client.asyncClient.post as any) = postMock;
+
+    const iterator = client.streamMessage({
+      conversationId: 'conversation-stream-config',
+      modelName: 'model-1',
+      generationConfig: {
+        thinking_level: 'low',
+        include_thoughts: false
+      },
+      payload: {
+        current_message_index: 0,
+        messages: [
+          {
+            role: 'user',
+            content: 'hello',
+            image_urls: [],
+            audio_urls: [],
+            video_urls: []
+          }
+        ]
+      }
+    });
+    await iterator.next();
+
+    const payload = postMock.mock.calls[0][1];
+    expect(payload.generation_config).toEqual({
+      thinking_level: 'low',
+      include_thoughts: false
+    });
   });
 
   it('forwards AbortSignal to streamMessage Axios request', async () => {

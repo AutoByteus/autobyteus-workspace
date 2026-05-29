@@ -86,4 +86,57 @@ describe('AutobyteusModelProvider', () => {
     expect(models[0]?.maxInputTokens).toBe(180000);
     expect(models[0]?.maxOutputTokens).toBe(16000);
   });
+
+  it('parses server config_schema into discovered model metadata', async () => {
+    mockGetAvailableLlmModelsSync.mockResolvedValue({
+      models: [
+        {
+          name: 'gemini-ui-rpa',
+          value: 'gemini-ui-rpa',
+          canonical_name: 'gemini-ui-rpa',
+          provider: 'GEMINI',
+          config_schema: {
+            type: 'object',
+            properties: {
+              thinking_level: {
+                type: 'string',
+                description: 'How deeply the model should reason before responding',
+                default: 'minimal',
+                enum: ['minimal', 'low', 'medium', 'high']
+              },
+              include_thoughts: {
+                type: 'boolean',
+                description: 'Include model thought summaries in responses',
+                default: false
+              }
+            },
+            required: []
+          },
+          config: {
+            pricing_config: {
+              input_token_pricing: 0,
+              output_token_pricing: 0,
+            },
+          },
+        },
+      ],
+    });
+
+    const models = await AutobyteusModelProvider.getModels();
+    const modelInfo = models[0]?.toModelInfo();
+
+    expect(models).toHaveLength(1);
+    expect(modelInfo?.config_schema).toMatchObject({
+      properties: {
+        thinking_level: expect.objectContaining({
+          enum: ['minimal', 'low', 'medium', 'high'],
+          default: 'minimal'
+        }),
+        include_thoughts: expect.objectContaining({
+          type: 'boolean',
+          default: false
+        })
+      }
+    });
+  });
 });

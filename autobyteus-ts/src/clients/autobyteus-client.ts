@@ -206,7 +206,8 @@ export class AutobyteusClient {
         conversation_id: request.conversationId,
         model_name: request.modelName,
         messages: normalizedPayload.messages,
-        current_message_index: normalizedPayload.current_message_index
+        current_message_index: normalizedPayload.current_message_index,
+        generation_config: request.generationConfig ?? {}
       };
       const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/send-message'), payload, {
         signal: options.signal ?? undefined
@@ -226,7 +227,8 @@ export class AutobyteusClient {
       conversation_id: request.conversationId,
       model_name: request.modelName,
       messages: normalizedPayload.messages,
-      current_message_index: normalizedPayload.current_message_index
+      current_message_index: normalizedPayload.current_message_index,
+      generation_config: request.generationConfig ?? {}
     };
 
     try {
