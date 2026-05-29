@@ -1,0 +1,99 @@
+{
+  "result": "passed",
+  "frontendUrl": "http://127.0.0.1:3071",
+  "finalUrl": "http://127.0.0.1:3071/workspace",
+  "hasHandleKeydownFailure": false,
+  "hasNuxt500": false,
+  "pageErrors": [],
+  "bodyText": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\nTemp Workspace\nSettings\nAgent Definition\nDaily Assistant\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime backend used for this run.\n\nLLM Model\nSelect a model\n\nSelect a model...\n\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\nAuto approve tools\nSkill Access\nConfigured skills only (Recommended)\nAll installed skills\nNo skills\n\nControls which skills this agent is allowed to use.\n\nRun Agent\nFiles\nTerminal\nActivity\nArtifacts\nVNC Viewer\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+  "screenshots": {
+    "agentsList": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-agents-list-before-run-20260529.png",
+    "workspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-tab-workspace-20260529.png"
+  },
+  "consoleEntries": [
+    {
+      "at": "2026-05-29T09:29:08.368Z",
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "at": "2026-05-29T09:29:08.373Z",
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "at": "2026-05-29T09:29:09.226Z",
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "at": "2026-05-29T09:29:09.226Z",
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "at": "2026-05-29T09:29:09.265Z",
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "at": "2026-05-29T09:29:09.395Z",
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "at": "2026-05-29T09:29:11.356Z",
+      "type": "log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "at": "2026-05-29T09:29:11.356Z",
+      "type": "log",
+      "text": "[Workspace] Connecting to file system changes for workspace: temp_ws_default"
+    },
+    {
+      "at": "2026-05-29T09:29:11.356Z",
+      "type": "log",
+      "text": "[FileExplorerStreaming] Connecting to ws://127.0.0.1:8071/ws/file-explorer/temp_ws_default..."
+    },
+    {
+      "at": "2026-05-29T09:29:11.396Z",
+      "type": "log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "at": "2026-05-29T09:29:11.784Z",
+      "type": "log",
+      "text": "[FileExplorerStreaming] WebSocket connected"
+    },
+    {
+      "at": "2026-05-29T09:29:11.785Z",
+      "type": "log",
+      "text": "[FileExplorerStreaming] Session established: c7ce24e3-f41c-4312-89ab-0068bee34158"
+    },
+    {
+      "at": "2026-05-29T09:29:11.785Z",
+      "type": "log",
+      "text": "[Workspace] Connected to file system changes: c7ce24e3-f41c-4312-89ab-0068bee34158"
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-05-29T09:29:09.975Z",
+      "event": "screenshot",
+      "name": "agentsList",
+      "filePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-agents-list-before-run-20260529.png"
+    },
+    {
+      "at": "2026-05-29T09:29:10.002Z",
+      "event": "click",
+      "label": "Daily Assistant Run"
+    },
+    {
+      "at": "2026-05-29T09:29:12.883Z",
+      "event": "screenshot",
+      "name": "workspace",
+      "filePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-tab-workspace-20260529.png"
+    }
+  ]
+}

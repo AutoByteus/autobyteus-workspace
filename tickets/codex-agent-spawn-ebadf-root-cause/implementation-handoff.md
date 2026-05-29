@@ -21,6 +21,7 @@
 - API/E2E round-6 Terminal FD failure evidence and durable validation: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts`
 - API/E2E round-9 Terminal descriptor failure analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/terminal-server-e2e-failure-analysis-20260524.md`
 - API/E2E round-9 Terminal descriptor evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524.json`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-timing-v2-20260524-final-lsof.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round9-terminal-server-connect-failure-20260524.json`
+- API/E2E round-13 browser Files tab failure analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/browser-files-tab-failure-analysis-20260529.md`
 
 ## What Changed
 
@@ -62,6 +63,7 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-26 CR-015 local fix: `WorkspaceFileExplorer.loadFolderChildren()` now applies `WorkspaceIgnoreMatcher` to the requested non-root folder itself before reading entries or updating the tree, so direct requests to ignored folders such as `.git`, `node_modules`, or `.gitignore`-ignored folders return a controlled access-denied error instead of exposing hidden children. Regression coverage verifies ignored direct requests do not call full tree rebuild and leave the cached tree unmodified.
 - Round-27 CR-016 local fix: `WorkspaceFileExplorer.getPath()` now resolves the workspace root and candidate path and uses separator-aware `path.relative()` containment instead of raw string-prefix matching, closing same-prefix sibling escapes such as `../ws-sibling`. File read and file operation paths now reuse this single FileExplorer boundary through `getPath()`/`resolveWorkspacePath()`, preserving operation-specific user-facing errors while removing duplicated unsafe prefix guards. Regression coverage verifies `loadFolderChildren('../ws-sibling')` rejects before any tree rebuild or cached-tree mutation.
 - Round-28 CR-017 local fix: `RenameFileOperation` now enforces leaf-name rename semantics before filesystem mutation, rejecting empty names, `.` / `..`, absolute names, and names containing `/` or `\`. The computed destination stays workspace-relative and is resolved through the shared `WorkspaceFileExplorer.getPath()` boundary before `fs.rename()`, so rename cannot be used as a cross-folder move or same-prefix sibling escape. Regression coverage verifies a traversal-like `newName` rejects before mutation, does not create the sibling leak file, and leaves the original file/tree entry intact; valid leaf-name rename coverage remains passing.
+- Round-29 `E2E-BROWSER-FILES-001` local fix: `FileExplorerTabs.vue` now initializes `handleKeydown` before any active-state watcher can attach global listeners. Immediate active FileExplorer mounting no longer trips the JavaScript temporal-dead-zone error (`Cannot access 'handleKeydown' before initialization`) that caused the browser/Electron Nuxt 500 Files tab crash; regression coverage mounts the component with `active=true` at setup time and verifies listener attachment succeeds.
 
 ## Key Files Or Areas
 
@@ -183,6 +185,7 @@ Removed obsolete source/test paths:
 - Historical display and explicit activation behavior has targeted unit/integration coverage; downstream API/E2E should still exercise real UI/API flows across history display, Files activation, Terminal activation, and repeated watcher open/close.
 - The isolated PTY backend intentionally changes macOS Terminal backend placement from in-process `node-pty` to helper-process `node-pty`; code review/API-E2E should verify interactive Terminal semantics alongside descriptor cleanup.
 - Round-25 local checks prove bounded unit/store behavior and production builds, but downstream browser/Electron-like validation should still measure FileExplorer quiescence timing separately from Terminal PTY ready / first shell output timing per AC-066/AC-067.
+- Round-29 browser-level reproduction passed against a self-started backend/frontend and specifically clears the `handleKeydown` TDZ / Nuxt 500 Files crash. Full downstream API/E2E remains required to rerun the broader Round-13 browser/Electron validation matrix.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -191,7 +194,7 @@ Removed obsolete source/test paths:
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; round-7 design was sufficient for implementation.
-- Evidence / notes: source/tests no longer contain the legacy steady-state concepts listed by architecture review; metadata APIs and file-explorer acquisition paths are split in backend and frontend. Round-17 built-backend probe returned from baseline `36` FDs to final `32` FDs, with `0` children and no `/dev/ptmx`/`(revoked)` descriptors in final `lsof` after normal command-output churn; the new integration test forced `spawn-helper` non-executable and restored it after successful isolated PTY startup/output. Round-25 implements DS-015 without Terminal/FileExplorer coupling: FileExplorer owns active generation invalidation, abort/suppression, live-session release, and bounded backend folder projection. Round-27 keeps FileExplorer as the authoritative path-containment boundary by centralizing same-prefix sibling escape prevention in `WorkspaceFileExplorer.getPath()` and routing file operations through that boundary. Round-28 completes the rename edge case by keeping rename as a same-directory leaf-name operation and validating the computed destination through that same boundary before mutation.
+- Evidence / notes: source/tests no longer contain the legacy steady-state concepts listed by architecture review; metadata APIs and file-explorer acquisition paths are split in backend and frontend. Round-17 built-backend probe returned from baseline `36` FDs to final `32` FDs, with `0` children and no `/dev/ptmx`/`(revoked)` descriptors in final `lsof` after normal command-output churn; the new integration test forced `spawn-helper` non-executable and restored it after successful isolated PTY startup/output. Round-25 implements DS-015 without Terminal/FileExplorer coupling: FileExplorer owns active generation invalidation, abort/suppression, live-session release, and bounded backend folder projection. Round-27 keeps FileExplorer as the authoritative path-containment boundary by centralizing same-prefix sibling escape prevention in `WorkspaceFileExplorer.getPath()` and routing file operations through that boundary. Round-28 completes the rename edge case by keeping rename as a same-directory leaf-name operation and validating the computed destination through that same boundary before mutation. Round-29 is a local implementation-order defect in the FileExplorerTabs setup path; the existing component/lifecycle boundary remains correct, and the fix only moves the referenced handler before the immediate active watcher can attach it.
 
 ## Legacy / Compatibility Removal Check
 
@@ -201,7 +204,7 @@ Removed obsolete source/test paths:
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; metadata and file-explorer capability state are separate.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-17 Terminal backend code keeps parent session lifecycle split from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines (`isolated-pty-session.ts` 319 effective non-empty lines, bridge source 89). Round-24 DS-014 touched large file-explorer UI files and kept them under the guardrail (`FileItem.vue` 490 effective non-empty lines, `FileExplorerTabs.vue` 375, `FileExplorer.vue` 265). Round-25 changed-source size audit also passed (`WorkspaceFileExplorer` 438, `workspace.ts` 401, all other changed implementation source files below 265 effective non-empty lines). Round-26 CR-015 source-size audit passed with `WorkspaceFileExplorer` at 446 effective non-empty lines. Round-27 CR-016 source-size audit passed with `WorkspaceFileExplorer` at 461 effective non-empty lines and all touched operation files under 101. Round-28 CR-017 source-size audit passed with `RenameFileOperation` at 73 effective non-empty lines.
+- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-17 Terminal backend code keeps parent session lifecycle split from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines (`isolated-pty-session.ts` 319 effective non-empty lines, bridge source 89). Round-24 DS-014 touched large file-explorer UI files and kept them under the guardrail (`FileItem.vue` 490 effective non-empty lines, `FileExplorerTabs.vue` 375, `FileExplorer.vue` 265). Round-25 changed-source size audit also passed (`WorkspaceFileExplorer` 438, `workspace.ts` 401, all other changed implementation source files below 265 effective non-empty lines). Round-26 CR-015 source-size audit passed with `WorkspaceFileExplorer` at 446 effective non-empty lines. Round-27 CR-016 source-size audit passed with `WorkspaceFileExplorer` at 461 effective non-empty lines and all touched operation files under 101. Round-28 CR-017 source-size audit passed with `RenameFileOperation` at 73 effective non-empty lines. Round-29 source-size audit passed with `FileExplorerTabs.vue` at 375 effective non-empty lines.
 
 ## Environment Or Dependency Notes
 
@@ -212,6 +215,38 @@ Removed obsolete source/test paths:
 ## Local Implementation Checks Run
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
+
+Round-29 `E2E-BROWSER-FILES-001` browser Files tab TDZ local-fix checks:
+
+- `pnpm -C autobyteus-web test:nuxt components/fileExplorer/__tests__/FileExplorerTabs.spec.ts --run`
+  - Result: pass, 1 file / 2 tests.
+  - Covers inactive-to-active listener attach/detach and immediate active mount without listener initialization errors.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-tabs-unit-20260529.log`
+- `pnpm -C autobyteus-web test:nuxt components/fileExplorer/__tests__/FileExplorer.spec.ts components/fileExplorer/__tests__/FileExplorerTabs.spec.ts components/fileExplorer/__tests__/FileItem.spec.ts --run`
+  - Result: pass, 3 files / 11 tests.
+  - Covers the focused FileExplorer active/quiescence component area after the listener-order fix.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-targeted-frontend-20260529.log`
+- Self-started browser-level reproduction against fresh backend/frontend (`autobyteus-server-ts` built backend on `127.0.0.1:8071`, Nuxt dev frontend on `127.0.0.1:3071`).
+  - Command: `node tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-tab-reproduction-20260529.mjs` with `FRONTEND_URL=http://127.0.0.1:3071`.
+  - Result: pass; navigated from `/agents?view=list`, clicked `Daily Assistant` `Run`, reached `/workspace`, and found no Nuxt Error 500, no `Cannot access 'handleKeydown' before initialization`, and no page errors.
+  - Probe script: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-tab-reproduction-20260529.mjs`
+  - Probe JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-tab-reproduction-20260529.json`
+  - Probe run log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-tab-reproduction-20260529.run.log`
+  - Backend log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-backend-20260529.log`
+  - Frontend log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-frontend-20260529.log`
+  - Screenshots: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-agents-list-before-run-20260529.png`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-tab-workspace-20260529.png`
+- `pnpm -C autobyteus-web build`
+  - Result: pass; existing large-chunk warnings only.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-frontend-nuxt-build-20260529.log`
+- `git diff --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-diff-check-20260529.log`
+- Changed implementation source size audit.
+  - Result: pass; `FileExplorerTabs.vue` is 375 effective non-empty lines.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-source-size-20260529.log`
+- Focused listener-order grep.
+  - Result: pass; `handleKeydown` declaration precedes `attachGlobalListeners()` and the immediate active watcher.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round29-browser-files-listener-order-grep-20260529.log`
 
 Round-28 CR-017 rename destination path-boundary local-fix checks:
 
@@ -621,6 +656,12 @@ Prior round-7 implementation checks retained as upstream confidence evidence:
   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-frontend-localization-audit-20260523.log`
 
 ## Downstream Validation Hints / Suggested Scenarios
+
+Round-29 `E2E-BROWSER-FILES-001` downstream focus:
+
+- Re-run the Round-13 browser-level Files tab flow against a fresh backend/frontend and confirm `/workspace` does not render Nuxt Error 500 and no `Cannot access 'handleKeydown' before initialization` / minified TDZ error appears in browser console or page errors.
+- Re-check the packaged/Electron-like flow that originally showed the minified `Cannot access 'ee' before initialization` symptom.
+- Keep broader DS-015 checks for inactive FileExplorer resource quiescence and Terminal first-paint behavior in the API/E2E scope.
 
 Round-28 CR-017 downstream focus:
 

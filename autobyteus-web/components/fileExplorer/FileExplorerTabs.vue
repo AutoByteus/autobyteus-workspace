@@ -75,22 +75,22 @@
     <div class="flex items-center border-b border-gray-200 bg-white overflow-x-auto sticky top-0 z-10 px-0 h-[46px]">
       <div class="flex flex-1 px-2 gap-4 items-center min-w-0">
          <div class="flex gap-4 overflow-x-auto no-scrollbar mask-fade-right">
-            <button 
-            v-for="file in openFiles" 
+            <button
+            v-for="file in openFiles"
             :key="file"
             @click="setActiveFile(file)"
             @contextmenu.prevent="showContextMenu($event, file)"
             tabindex="0"
             @keyup.enter="setActiveFile(file)"
             class="group relative flex items-center gap-2 px-1 py-2.5 text-sm font-medium border-b-2 transition-all duration-150 focus:outline-none whitespace-nowrap"
-            :class="file === activeFile 
-                ? 'border-blue-600 text-blue-600' 
+            :class="file === activeFile
+                ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
             >
             <span class="truncate max-w-[150px]">{{ getFileName(file) }}</span>
-            <span 
+            <span
                 v-if="file === activeFile"
-                @click.stop="closeFile(file)" 
+                @click.stop="closeFile(file)"
                 class="flex items-center justify-center w-4 h-4 rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 transition-all ml-1"
                 aria-label="Close file"
             >
@@ -101,15 +101,15 @@
             </button>
         </div>
       </div>
-      
+
       <!-- Right Side Controls -->
       <div class="flex items-center gap-1 pr-2 shrink-0">
         <!-- Edit/Preview Group -->
         <div v-if="activeFileData?.type === 'Text' && isPreviewableText" class="flex items-center gap-1 border-r border-gray-200 pr-1 mr-1">
            <button
             class="p-1.5 rounded-md transition-all duration-200 focus:outline-none"
-            :class="activeFileMode === 'edit' 
-              ? 'bg-blue-50 text-blue-600' 
+            :class="activeFileMode === 'edit'
+              ? 'bg-blue-50 text-blue-600'
               : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
             @click.stop="setMode('edit')"
              title="Edit Mode"
@@ -118,8 +118,8 @@
           </button>
           <button
             class="p-1.5 rounded-md transition-all duration-200 focus:outline-none"
-            :class="activeFileMode === 'preview' 
-              ? 'bg-blue-50 text-blue-600' 
+            :class="activeFileMode === 'preview'
+              ? 'bg-blue-50 text-blue-600'
               : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
             @click.stop="setMode('preview')"
              title="Preview Mode"
@@ -139,7 +139,7 @@
         </button>
 
         <!-- Close All button -->
-        <button 
+        <button
             v-if="openFiles.length > 1"
             @click="closeAllFiles"
             class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-all ml-1"
@@ -319,7 +319,7 @@ const isEditorFocused = () => {
   const activeEl = document.activeElement
   if (!activeEl) return false
   // Monaco editor uses textarea or elements with monaco-editor class
-  return activeEl.tagName === 'TEXTAREA' || 
+  return activeEl.tagName === 'TEXTAREA' ||
          activeEl.closest('.monaco-editor') !== null
 }
 
@@ -332,6 +332,28 @@ watch(activeFileData, (newVal) => {
     fileContent.value = null;
   }
 }, { immediate: true, deep: true });
+
+const handleKeydown = async (event: KeyboardEvent) => {
+  if (!props.active) return
+
+  // Exit Zen mode on Escape
+  if (event.key === 'Escape' && isZenMode.value) {
+    fileContentDisplayModeStore.exitZenMode()
+    return
+  }
+
+  // Arrow key navigation - only when editor is NOT focused
+  if (!isEditorFocused() && openFiles.value.length > 1) {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      if (currentWorkspaceId.value) fileExplorerStore.navigateToPreviousTab(currentWorkspaceId.value)
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      if (currentWorkspaceId.value) fileExplorerStore.navigateToNextTab(currentWorkspaceId.value)
+    }
+  }
+}
 
 const attachGlobalListeners = () => {
   window.addEventListener('keydown', handleKeydown)
@@ -380,38 +402,16 @@ const handleSave = async () => {
     if (!workspaceId) throw new Error('No workspace selected, cannot save file.')
 
     await fileExplorerStore.saveFileContentFromEditor(
-      workspaceId, 
-      activeFile.value, 
+      workspaceId,
+      activeFile.value,
       fileContent.value
     )
-    
+
     showSaveSuccess.value = true
     if (saveSuccessTimeout) clearTimeout(saveSuccessTimeout)
     saveSuccessTimeout = setTimeout(() => { showSaveSuccess.value = false }, 2000)
   } catch (error) {
     console.error("Save operation failed:", error)
-  }
-}
-
-const handleKeydown = async (event: KeyboardEvent) => {
-  if (!props.active) return
-
-  // Exit Zen mode on Escape
-  if (event.key === 'Escape' && isZenMode.value) {
-    fileContentDisplayModeStore.exitZenMode()
-    return
-  }
-  
-  // Arrow key navigation - only when editor is NOT focused
-  if (!isEditorFocused() && openFiles.value.length > 1) {
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault()
-      if (currentWorkspaceId.value) fileExplorerStore.navigateToPreviousTab(currentWorkspaceId.value)
-    }
-    if (event.key === 'ArrowRight') {
-      event.preventDefault()
-      if (currentWorkspaceId.value) fileExplorerStore.navigateToNextTab(currentWorkspaceId.value)
-    }
   }
 }
 </script>

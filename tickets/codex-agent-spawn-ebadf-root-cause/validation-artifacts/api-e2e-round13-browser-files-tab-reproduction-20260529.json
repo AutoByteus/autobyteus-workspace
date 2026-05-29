@@ -1,0 +1,107 @@
+{
+  "result": "reproduced_failure",
+  "frontendUrl": "http://127.0.0.1:3000",
+  "finalUrl": "http://127.0.0.1:3000/workspace",
+  "bodyText": "Error 500\n\nCannot access 'handleKeydown' before initialization\n\nReferenceError: Cannot access 'handleKeydown' before initialization\n    at attachGlobalListeners (http://127.0.0.1:3000/_nuxt/components/fileExplorer/FileExplorerTabs.vue:108:42)\n    at syncGlobalListeners (http://127.0.0.1:3000/_nuxt/components/fileExplorer/FileExplorerTabs.vue:118:9)\n    at watch.immediate (http://127.0.0.1:3000/_nuxt/components/fileExplorer/FileExplorerTabs.vue:128:7)\n    at callWithErrorHandling (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ee1cd0e4:197:19)\n    at callWithAsyncErrorHandling (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ee1cd0e4:204:17)\n    at baseWatchOptions.call (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ee1cd0e4:883:47)\n    at job (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=ee1cd0e4:1820:18)\n    at watch (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=ee1cd0e4:1855:7)\n    at doWatch (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ee1cd0e4:911:23)\n    at watch (http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ee1cd0e4:844:10)\nGo back home",
+  "screenshots": {
+    "agentsList": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round13-script-agents-list-before-run-20260529.png",
+    "workspaceError": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round13-script-files-tab-error-20260529.png"
+  },
+  "consoleEntries": [
+    {
+      "at": "2026-05-29T09:14:45.842Z",
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "at": "2026-05-29T09:14:45.860Z",
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "at": "2026-05-29T09:14:46.255Z",
+      "type": "log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "at": "2026-05-29T09:14:46.255Z",
+      "type": "log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "at": "2026-05-29T09:14:46.293Z",
+      "type": "info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "at": "2026-05-29T09:14:46.332Z",
+      "type": "log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "at": "2026-05-29T09:14:47.002Z",
+      "type": "log",
+      "text": "Workspace.vue: Mounted. Fetching server settings and loading profiles..."
+    },
+    {
+      "at": "2026-05-29T09:14:47.002Z",
+      "type": "log",
+      "text": "[Workspace] Connecting to file system changes for workspace: temp_ws_default"
+    },
+    {
+      "at": "2026-05-29T09:14:47.002Z",
+      "type": "log",
+      "text": "[FileExplorerStreaming] Connecting to ws://127.0.0.1:8000/ws/file-explorer/temp_ws_default..."
+    },
+    {
+      "at": "2026-05-29T09:14:47.004Z",
+      "type": "warning",
+      "text": "WebSocket connection to 'ws://127.0.0.1:8000/ws/file-explorer/temp_ws_default' failed: WebSocket is closed before the connection is established."
+    },
+    {
+      "at": "2026-05-29T09:14:47.004Z",
+      "type": "log",
+      "text": "[FileExplorerStreaming] Disconnected"
+    },
+    {
+      "at": "2026-05-29T09:14:47.004Z",
+      "type": "log",
+      "text": "[Workspace] Disconnected from file system watcher for workspace: temp_ws_default"
+    },
+    {
+      "at": "2026-05-29T09:14:47.004Z",
+      "type": "error",
+      "text": "[FileExplorerStreaming] WebSocket error: Event"
+    },
+    {
+      "at": "2026-05-29T09:14:47.005Z",
+      "type": "log",
+      "text": "[FileExplorerStreaming] WebSocket disconnected: 1006 "
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-05-29T09:14:46.557Z",
+      "event": "screenshot",
+      "name": "agentsList",
+      "filePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round13-script-agents-list-before-run-20260529.png"
+    },
+    {
+      "at": "2026-05-29T09:14:46.580Z",
+      "event": "click",
+      "label": "Daily Assistant Run"
+    },
+    {
+      "at": "2026-05-29T09:14:47.004Z",
+      "event": "browser_console",
+      "type": "error",
+      "text": "[FileExplorerStreaming] WebSocket error: Event"
+    },
+    {
+      "at": "2026-05-29T09:14:48.035Z",
+      "event": "screenshot",
+      "name": "workspaceError",
+      "filePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round13-script-files-tab-error-20260529.png"
+    }
+  ]
+}

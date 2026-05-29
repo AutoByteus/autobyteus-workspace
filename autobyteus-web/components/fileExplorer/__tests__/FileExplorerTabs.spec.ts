@@ -47,4 +47,13 @@ describe('FileExplorerTabs active lifecycle', () => {
     expect(removeWindowListener).toHaveBeenCalledWith('keydown', expect.any(Function))
     expect(removeDocumentListener).toHaveBeenCalledWith('click', expect.any(Function))
   })
+
+  it('mounts active immediately without listener initialization errors', () => {
+    const addWindowListener = vi.spyOn(window, 'addEventListener')
+    const addDocumentListener = vi.spyOn(document, 'addEventListener')
+
+    expect(() => mountSubject(true)).not.toThrow()
+    expect(addWindowListener).toHaveBeenCalledWith('keydown', expect.any(Function))
+    expect(addDocumentListener).toHaveBeenCalledWith('click', expect.any(Function))
+  })
 })

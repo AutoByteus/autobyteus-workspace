@@ -1,0 +1,4 @@
+Source size audit - 2026-05-29
+Changed implementation source files:
+375 autobyteus-web/components/fileExplorer/FileExplorerTabs.vue
+PASS: changed implementation source files are <= 500 non-empty lines
