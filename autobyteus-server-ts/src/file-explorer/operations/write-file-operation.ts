@@ -21,10 +21,10 @@ export class WriteFileOperation extends BaseFileOperation {
       throw new Error("The path must be relative to the workspace root.");
     }
 
-    const absoluteFilePath = path.join(this.fileExplorer.workspaceRootPath, normalizedPath);
-    if (!absoluteFilePath.startsWith(this.fileExplorer.workspaceRootPath)) {
-      throw new Error("Access denied: File is outside the workspace.");
-    }
+    const absoluteFilePath = this.resolveWorkspacePath(
+      normalizedPath,
+      "Access denied: File is outside the workspace.",
+    );
 
     const fileExisted = await this.pathExists(absoluteFilePath);
 

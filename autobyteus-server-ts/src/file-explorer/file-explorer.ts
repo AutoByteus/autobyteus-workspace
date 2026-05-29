@@ -51,7 +51,7 @@ export class WorkspaceFileExplorer {
   private searchSnapshotRefreshTask: Promise<void> | null = null;
 
   constructor(workspaceRootPath: string) {
-    this.workspaceRootPath = path.normalize(workspaceRootPath);
+    this.workspaceRootPath = path.resolve(workspaceRootPath);
     this.ignoreStrategies = [
       new SpecificFolderIgnoreStrategy([".git"]),
       new GitIgnoreStrategy(this.workspaceRootPath),
@@ -77,8 +77,15 @@ export class WorkspaceFileExplorer {
       throw new Error("Workspace root path is not set");
     }
 
-    const absolutePath = path.normalize(path.join(this.workspaceRootPath, relativePath));
-    if (!absolutePath.startsWith(this.workspaceRootPath)) {
+    const rootPath = path.resolve(this.workspaceRootPath);
+    const absolutePath = path.resolve(rootPath, relativePath || ".");
+    const relativeToRoot = path.relative(rootPath, absolutePath);
+    if (
+      relativeToRoot &&
+      (relativeToRoot === ".." ||
+        relativeToRoot.startsWith(`..${path.sep}`) ||
+        path.isAbsolute(relativeToRoot))
+    ) {
       throw new Error("Access denied: Path resolves outside the workspace.");
     }
 
@@ -128,9 +135,17 @@ export class WorkspaceFileExplorer {
       throw new Error("Workspace root path is not set");
     }
 
-    const absoluteFilePath = path.normalize(path.join(this.workspaceRootPath, filePath));
-    if (!absoluteFilePath.startsWith(this.workspaceRootPath)) {
-      throw new Error("Access denied: File is outside the workspace.");
+    let absoluteFilePath: string;
+    try {
+      absoluteFilePath = this.getPath(filePath);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "Access denied: Path resolves outside the workspace."
+      ) {
+        throw new Error("Access denied: File is outside the workspace.");
+      }
+      throw error;
     }
 
     let stats: Awaited<ReturnType<typeof fs.stat>>;

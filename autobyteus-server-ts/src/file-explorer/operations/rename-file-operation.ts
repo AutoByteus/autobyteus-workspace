@@ -20,10 +20,10 @@ export class RenameFileOperation extends BaseFileOperation {
       throw new Error("The path must be relative to the workspace root.");
     }
 
-    const absoluteTarget = path.join(this.fileExplorer.workspaceRootPath, normalizedTarget);
-    if (!absoluteTarget.startsWith(this.fileExplorer.workspaceRootPath)) {
-      throw new Error("Access denied: Target is outside the workspace.");
-    }
+    const absoluteTarget = this.resolveWorkspacePath(
+      normalizedTarget,
+      "Access denied: Target is outside the workspace.",
+    );
 
     if (!(await this.pathExists(absoluteTarget))) {
       throw new Error(`Target path not found: ${this.targetPath}`);

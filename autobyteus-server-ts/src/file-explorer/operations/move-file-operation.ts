@@ -20,10 +20,10 @@ export class MoveFileOperation extends BaseFileOperation {
       throw new Error("The source path must be relative to the workspace root.");
     }
 
-    const absoluteSource = path.join(this.fileExplorer.workspaceRootPath, normalizedSource);
-    if (!absoluteSource.startsWith(this.fileExplorer.workspaceRootPath)) {
-      throw new Error("Access denied: Source is outside the workspace.");
-    }
+    const absoluteSource = this.resolveWorkspacePath(
+      normalizedSource,
+      "Access denied: Source is outside the workspace.",
+    );
 
     let sourceStats: Awaited<ReturnType<typeof fs.stat>>;
     try {
@@ -37,10 +37,10 @@ export class MoveFileOperation extends BaseFileOperation {
       throw new Error("The destination path must be relative to the workspace root.");
     }
 
-    const absoluteDestination = path.join(this.fileExplorer.workspaceRootPath, normalizedDestination);
-    if (!absoluteDestination.startsWith(this.fileExplorer.workspaceRootPath)) {
-      throw new Error("Access denied: Destination is outside the workspace.");
-    }
+    const absoluteDestination = this.resolveWorkspacePath(
+      normalizedDestination,
+      "Access denied: Destination is outside the workspace.",
+    );
 
     let finalDestinationPath = absoluteDestination;
     const destinationStats = await this.tryStat(absoluteDestination);

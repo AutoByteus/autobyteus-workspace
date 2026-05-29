@@ -60,6 +60,7 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-25 DS-015 implementation: completed FileExplorer inactive quiescence. `fileExplorerStore` now owns folder-children generations and AbortControllers; live-session release/final consumer cleanup aborts search, invalidates folder refresh generations, clears active snapshot refresh bookkeeping, disconnects the live stream, and suppresses late stale folder mutations. Snapshot refresh now refreshes root/open folders under one active generation and only starts on first visible live consumer acquisition, avoiding extra same-workspace consumer refresh churn.
 - Round-25 backend bounded folder projection: `folderChildren` now delegates to `WorkspaceFileExplorer.loadFolderChildren()` for a one-folder projection instead of using `buildWorkspaceDirectoryTree()` as the ordinary fallback. The new projection validates the requested folder, reads only immediate children, applies workspace ignore/sort policy, updates the cached tree node lazily, and leaves deeper descendants unloaded until explicitly requested.
 - Round-26 CR-015 local fix: `WorkspaceFileExplorer.loadFolderChildren()` now applies `WorkspaceIgnoreMatcher` to the requested non-root folder itself before reading entries or updating the tree, so direct requests to ignored folders such as `.git`, `node_modules`, or `.gitignore`-ignored folders return a controlled access-denied error instead of exposing hidden children. Regression coverage verifies ignored direct requests do not call full tree rebuild and leave the cached tree unmodified.
+- Round-27 CR-016 local fix: `WorkspaceFileExplorer.getPath()` now resolves the workspace root and candidate path and uses separator-aware `path.relative()` containment instead of raw string-prefix matching, closing same-prefix sibling escapes such as `../ws-sibling`. File read and file operation paths now reuse this single FileExplorer boundary through `getPath()`/`resolveWorkspacePath()`, preserving operation-specific user-facing errors while removing duplicated unsafe prefix guards. Regression coverage verifies `loadFolderChildren('../ws-sibling')` rejects before any tree rebuild or cached-tree mutation.
 
 ## Key Files Or Areas
 
@@ -77,6 +78,12 @@ Backend:
 - `autobyteus-server-ts/src/workspaces/filesystem-workspace.ts`
 - `autobyteus-server-ts/src/workspaces/workspace-manager.ts`
 - `autobyteus-server-ts/src/file-explorer/file-explorer.ts`
+- `autobyteus-server-ts/src/file-explorer/operations/base-file-operation.ts`
+- `autobyteus-server-ts/src/file-explorer/operations/add-file-or-folder-operation.ts`
+- `autobyteus-server-ts/src/file-explorer/operations/move-file-operation.ts`
+- `autobyteus-server-ts/src/file-explorer/operations/remove-file-operation.ts`
+- `autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts`
+- `autobyteus-server-ts/src/file-explorer/operations/write-file-operation.ts`
 - `autobyteus-server-ts/src/file-explorer/file-name-indexer.ts`
 - `autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts`
 - `autobyteus-server-ts/src/api/graphql/types/workspace.ts`
@@ -183,7 +190,7 @@ Removed obsolete source/test paths:
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`.
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`.
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`; round-7 design was sufficient for implementation.
-- Evidence / notes: source/tests no longer contain the legacy steady-state concepts listed by architecture review; metadata APIs and file-explorer acquisition paths are split in backend and frontend. Round-17 built-backend probe returned from baseline `36` FDs to final `32` FDs, with `0` children and no `/dev/ptmx`/`(revoked)` descriptors in final `lsof` after normal command-output churn; the new integration test forced `spawn-helper` non-executable and restored it after successful isolated PTY startup/output. Round-25 implements DS-015 without Terminal/FileExplorer coupling: FileExplorer owns active generation invalidation, abort/suppression, live-session release, and bounded backend folder projection.
+- Evidence / notes: source/tests no longer contain the legacy steady-state concepts listed by architecture review; metadata APIs and file-explorer acquisition paths are split in backend and frontend. Round-17 built-backend probe returned from baseline `36` FDs to final `32` FDs, with `0` children and no `/dev/ptmx`/`(revoked)` descriptors in final `lsof` after normal command-output churn; the new integration test forced `spawn-helper` non-executable and restored it after successful isolated PTY startup/output. Round-25 implements DS-015 without Terminal/FileExplorer coupling: FileExplorer owns active generation invalidation, abort/suppression, live-session release, and bounded backend folder projection. Round-27 keeps FileExplorer as the authoritative path-containment boundary by centralizing same-prefix sibling escape prevention in `WorkspaceFileExplorer.getPath()` and routing file operations through that boundary.
 
 ## Legacy / Compatibility Removal Check
 
@@ -193,7 +200,7 @@ Removed obsolete source/test paths:
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; metadata and file-explorer capability state are separate.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-17 Terminal backend code keeps parent session lifecycle split from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines (`isolated-pty-session.ts` 319 effective non-empty lines, bridge source 89). Round-24 DS-014 touched large file-explorer UI files and kept them under the guardrail (`FileItem.vue` 490 effective non-empty lines, `FileExplorerTabs.vue` 375, `FileExplorer.vue` 265). Round-25 changed-source size audit also passed (`WorkspaceFileExplorer` 438, `workspace.ts` 401, all other changed implementation source files below 265 effective non-empty lines). Round-26 CR-015 source-size audit passed with `WorkspaceFileExplorer` at 446 effective non-empty lines.
+- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-17 Terminal backend code keeps parent session lifecycle split from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines (`isolated-pty-session.ts` 319 effective non-empty lines, bridge source 89). Round-24 DS-014 touched large file-explorer UI files and kept them under the guardrail (`FileItem.vue` 490 effective non-empty lines, `FileExplorerTabs.vue` 375, `FileExplorer.vue` 265). Round-25 changed-source size audit also passed (`WorkspaceFileExplorer` 438, `workspace.ts` 401, all other changed implementation source files below 265 effective non-empty lines). Round-26 CR-015 source-size audit passed with `WorkspaceFileExplorer` at 446 effective non-empty lines. Round-27 CR-016 source-size audit passed with `WorkspaceFileExplorer` at 461 effective non-empty lines and all touched operation files under 101.
 
 ## Environment Or Dependency Notes
 
@@ -204,6 +211,25 @@ Removed obsolete source/test paths:
 ## Local Implementation Checks Run
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
+
+Round-27 CR-016 file-explorer path-boundary local-fix checks:
+
+- `pnpm -C autobyteus-server-ts test tests/unit/file-explorer/workspace-file-explorer.test.ts`
+  - Result: pass, 1 file / 9 tests.
+  - Covers existing watcher/bounded projection/ignored-folder behavior plus same-prefix sibling escape rejection for `loadFolderChildren('../ws-sibling')`; the regression asserts no full-tree rebuild is called and the cached tree remains unmodified after the rejected request.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round27-cr016-backend-file-explorer-unit-20260529.log`
+- `pnpm -C autobyteus-server-ts build:full`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round27-cr016-backend-build-full-20260529.log`
+- `git diff --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round27-cr016-diff-check-20260529.log`
+- Changed-source size audit for the touched backend FileExplorer implementation files.
+  - Result: pass; `WorkspaceFileExplorer` is 461 effective non-empty lines, and touched operation files are all under 101 effective non-empty lines.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round27-cr016-source-size-20260529.log`
+- Focused grep for stale unsafe FileExplorer workspace-root string-prefix guards.
+  - Result: pass; no stale `workspaceRootPath` string-prefix guard/path-join guard patterns remain in `autobyteus-server-ts/src/file-explorer`.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round27-cr016-path-boundary-grep-20260529.log`
 
 Round-26 CR-015 ignored-folder policy local-fix checks:
 
@@ -572,6 +598,11 @@ Prior round-7 implementation checks retained as upstream confidence evidence:
   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-frontend-localization-audit-20260523.log`
 
 ## Downstream Validation Hints / Suggested Scenarios
+
+Round-27 CR-016 downstream focus:
+
+- Re-run reviewer path-boundary probe or equivalent GraphQL/API path-boundary check to confirm same-prefix sibling requests such as `../ws-sibling` reject and do not mutate FileExplorer cached tree state.
+- Confirm file read/write/move/rename/remove/add operations still reject outside-workspace paths through the shared `WorkspaceFileExplorer.getPath()` boundary while preserving their operation-specific errors.
 
 Round-25 DS-015 downstream focus:
 

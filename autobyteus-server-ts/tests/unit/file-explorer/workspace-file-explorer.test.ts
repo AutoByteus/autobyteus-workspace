@@ -153,4 +153,26 @@ describe("WorkspaceFileExplorer", () => {
       fs.rmSync(tempRoot, { recursive: true, force: true });
     }
   });
+
+  it("rejects same-prefix sibling folder escapes without updating the tree", async () => {
+    const tempParent = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-path-boundary-"));
+    try {
+      const workspaceRoot = path.join(tempParent, "ws");
+      const siblingRoot = path.join(tempParent, "ws-sibling");
+      fs.mkdirSync(workspaceRoot, { recursive: true });
+      fs.mkdirSync(siblingRoot, { recursive: true });
+      fs.writeFileSync(path.join(siblingRoot, "leak.txt"), "leak");
+      const explorer = new WorkspaceFileExplorer(workspaceRoot);
+      const rebuildSpy = vi.spyOn(explorer, "buildWorkspaceDirectoryTree");
+
+      await expect(explorer.loadFolderChildren("../ws-sibling")).rejects.toThrow(
+        "Access denied: Path resolves outside the workspace.",
+      );
+
+      expect(rebuildSpy).not.toHaveBeenCalled();
+      expect(explorer.getTree()).toBeNull();
+    } finally {
+      fs.rmSync(tempParent, { recursive: true, force: true });
+    }
+  });
 });
