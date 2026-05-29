@@ -1,0 +1,42 @@
+# API/E2E Round 12 FileExplorer path-boundary source/test grep
+# Date: 2026-05-29T10:15:01+0200
+
+## Positive boundary evidence
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:75:  getPath(relativePath: string): string {
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:89:      throw new Error("Access denied: Path resolves outside the workspace.");
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:140:      absoluteFilePath = this.getPath(filePath);
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:144:        error.message === "Access denied: Path resolves outside the workspace."
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:192:    const absoluteFolderPath = this.getPath(relativeFolderPath);
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:237:        paths.push(node.getPath());
+autobyteus-server-ts/src/file-explorer/operations/base-file-operation.ts:22:  protected resolveWorkspacePath(relativePath: string, accessDeniedMessage: string): string {
+autobyteus-server-ts/src/file-explorer/operations/base-file-operation.ts:24:      return this.fileExplorer.getPath(relativePath);
+autobyteus-server-ts/src/file-explorer/operations/base-file-operation.ts:28:        error.message === "Access denied: Path resolves outside the workspace."
+autobyteus-server-ts/src/file-explorer/operations/move-file-operation.ts:23:    const absoluteSource = this.resolveWorkspacePath(
+autobyteus-server-ts/src/file-explorer/operations/move-file-operation.ts:40:    const absoluteDestination = this.resolveWorkspacePath(
+autobyteus-server-ts/src/file-explorer/operations/add-file-or-folder-operation.ts:23:    const absolutePath = this.resolveWorkspacePath(
+autobyteus-server-ts/src/file-explorer/operations/remove-file-operation.ts:21:    const absolutePath = this.resolveWorkspacePath(
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:11:    "Invalid new name: The new name must be a file or folder name, not a path.";
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:20:    const leafName = this.validateLeafName();
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:26:    const absoluteTarget = this.resolveWorkspacePath(
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:37:    const absoluteDestination = this.resolveWorkspacePath(
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:62:  private validateLeafName(): string {
+autobyteus-server-ts/src/file-explorer/operations/write-file-operation.ts:24:    const absoluteFilePath = this.resolveWorkspacePath(
+autobyteus-server-ts/src/file-explorer/file-system-changes.ts:107:      path: node.getPath(),
+autobyteus-server-ts/src/file-explorer/file-name-indexer.ts:47:      const nodePath = node.pathValue ?? node.getPath();
+autobyteus-server-ts/src/file-explorer/tree-node.ts:45:  getPath(): string {
+autobyteus-server-ts/src/file-explorer/tree-node.ts:85:      path: this.getPath(),
+autobyteus-server-ts/src/file-explorer/tree-node.ts:99:          path: child.getPath(),
+autobyteus-server-ts/src/file-explorer/tree-node.ts:118:      path: this.getPath(),
+autobyteus-server-ts/src/file-explorer/tree-node.ts:139:            path: child.getPath(),
+autobyteus-server-ts/tests/unit/file-explorer/workspace-file-explorer.test.ts:122:      expect(folderNode.getPath()).toBe("src");
+autobyteus-server-ts/tests/unit/file-explorer/workspace-file-explorer.test.ts:170:        "Access denied: Path resolves outside the workspace.",
+autobyteus-server-ts/tests/unit/file-explorer/workspace-file-explorer.test.ts:210:      ).rejects.toThrow("Invalid new name");
+autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts:114:  it("rejects ignored folder projections before cached tree mutation", async () => {
+autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts:162:  it("rejects same-prefix sibling escapes through folder, read, write, and rename APIs", async () => {
+autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts:182:    expect(folderPayload.error).toContain("Access denied: Path resolves outside the workspace");
+autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts:226:      "Invalid new name",
+
+## Stale unsafe-prefix checks
+no stale startsWith path-boundary checks found in FileExplorer scope
+
+RESULT: PASS

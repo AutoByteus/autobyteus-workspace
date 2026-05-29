@@ -1,39 +1,35 @@
 # Code Review Report — `codex-agent-spawn-ebadf-root-cause`
 
 - Reviewer: `code_reviewer`
-- Current Review Round: 24
-- Review entry point: Implementation local-fix re-review for `CR-016`
-- Latest implementation commit reviewed: `5eb5213e5a60e27cf018fc9453c400bdd776d029` (`fix: harden file explorer path boundary`)
+- Current Review Round: 26
+- Review entry point: API/E2E durable-validation re-review after Round 12
+- Latest implementation commit reviewed: `d76893940f94f903615c4a9a9f9d3c8884827343` (`fix: validate file explorer rename destination`)
+- API/E2E validation report reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`
+- Repository-resident durable validation reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts`
 - Review date: 2026-05-29
-- Decision: **Fail**
-- Failure classification: **Local Fix**
-- Recommended recipient: `implementation_engineer`
+- Decision: **Pass**
+- Failure classification: N/A
+- Recommended recipient: `delivery_engineer`
 
 ## Latest Authoritative Result
 
-- Review Decision: **Fail**
-- Score Summary: **8.3 / 10** (`83 / 100`)
-- Blocking findings: `CR-017`
-- Routing: return to `implementation_engineer`; API/E2E must not resume until the local fix returns through code review.
+- Review Decision: **Pass**
+- Score Summary: **9.3 / 10** (`93 / 100`)
+- Blocking findings: None
+- Routing: Delivery may resume. This pass is from the API/E2E validation-code re-review entry point, so the cumulative delivery package is routed to `delivery_engineer`.
 
 ## Review Scope
 
-Fresh review was performed against the cumulative artifact chain and current source, not as a delta-only check. The Round-24 scope focused on the CR-016 path-boundary local fix and directly related FileExplorer operation boundaries:
+Fresh review was performed against the cumulative artifact chain, the authoritative API/E2E report, and the new repository-resident durable E2E validation. The scope was centered on the API/E2E-owned durable validation addition and the evidence required to judge it:
 
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/requirements.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/investigation-notes.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-spec.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-review-report.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/file-explorer/file-explorer.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/file-explorer/operations/base-file-operation.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/file-explorer/operations/add-file-or-folder-operation.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/file-explorer/operations/move-file-operation.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/file-explorer/operations/remove-file-operation.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/file-explorer/operations/write-file-operation.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/unit/file-explorer/workspace-file-explorer.test.ts`
-- Terminal/FileExplorer independence was rechecked because DS-015 requires Terminal to remain root-path-only and independent of FileExplorer quiescence.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts`
+- Related implementation boundaries in `WorkspaceFileExplorer`, `BaseFileOperation`, and `RenameFileOperation` were used only as context for judging whether the durable validation covers the accepted code-review findings.
 
 ## Review History Summary
 
@@ -41,148 +37,123 @@ Fresh review was performed against the cumulative artifact chain and current sou
 | --- | --- | --- | --- | --- | --- | --- |
 | 22 | Round-25 / DS-015 FileExplorer inactive quiescence implementation | Prior Terminal/FileExplorer boundary findings | `CR-015` | Fail | Yes | `loadFolderChildren()` bypassed ignore policy for the requested folder itself. |
 | 23 | CR-015 local fix | `CR-015` | `CR-016` | Fail | Yes | Ignored-folder policy fixed; same-prefix path traversal found in `getPath()` / `loadFolderChildren()`. |
-| 24 | CR-016 local fix | `CR-016`, `CR-015` | `CR-017` | Fail | Yes | CR-016 is fixed, but `renameFileOrFolder()` can still move a target outside the workspace through unchecked `newName`. |
+| 24 | CR-016 local fix | `CR-016`, `CR-015` | `CR-017` | Fail | Yes | CR-016 fixed; rename destination could still escape through unchecked `newName`. |
+| 25 | CR-017 local fix | `CR-017`, `CR-016`, `CR-015` | None | Pass | Yes | Implementation accepted and routed to API/E2E. |
+| 26 | API/E2E Round 12 durable validation addition | `CR-015`, `CR-016`, `CR-017`, DS-015 Terminal/FileExplorer boundary | None | Pass | Yes | New GraphQL E2E directly covers ignored folder projection, same-prefix sibling folder/read/write escapes, and path-like rename rejection before mutation. |
 
 ## Prior Findings Resolution Check
 
 | Prior Finding | Previous Severity | Current Resolution | Evidence | Remaining Action |
 | --- | --- | --- | --- | --- |
-| `CR-015` | Medium | Resolved and preserved | Direct ignored-folder requests remain covered by prior implementation and probe evidence; no change in this round reopens ignored-folder projection. | None. |
-| `CR-016` | High | Resolved for `getPath()`, `loadFolderChildren()`, `readFileContent()`, and direct write path coverage | `WorkspaceFileExplorer.getPath()` now uses `path.resolve()` and `path.relative()` containment. Reviewer probe confirms `loadFolderChildren('../ws-sibling')`, `readFileContent('../ws-sibling/leak.txt')`, and `writeFileContent('../ws-sibling/write-leak.txt')` are rejected without reading/writing outside the workspace. Unit test coverage now includes same-prefix sibling rejection for `loadFolderChildren()`. | New `CR-017` remains for rename destination validation. |
-| `CR-009` / `CR-010` | High | Resolved and preserved | Terminal/FileExplorer boundary grep still found no Terminal dependency on FileExplorer/tree/search/watch APIs. | None. |
-| `CR-013` / `CR-014` | Medium / Low | Resolved and preserved | Terminal target-key naming cleanup was not affected. | None. |
+| `CR-015` | Medium | Resolved and now covered by durable API/E2E | New GraphQL E2E checks `.git`, `node_modules`, and `.gitignore`-ignored folder projections return controlled access-denied payloads, keep watcher lease count `0`, and leave cached tree JSON `null` until a valid root projection. | None. |
+| `CR-016` | High | Resolved and now covered by durable API/E2E | New GraphQL E2E checks same-prefix sibling escapes through `folderChildren`, `fileContent`, and `writeFileContent`; outside content is not returned and outside write target is not created. | None. |
+| `CR-017` | High | Resolved and now covered by durable API/E2E | New GraphQL E2E checks `renameFileOrFolder` rejects path-like `newName` with `Invalid new name`, does not create the sibling leak file, and leaves original source in place. | None. |
+| DS-015 Terminal/FileExplorer separation | Release-blocking design requirement | Preserved | API/E2E and reviewer greps found no Terminal dependency on FileExplorer/tree/search/watch APIs; high-churn probe exercised FileExplorer and Terminal together with bounded FD return. | None. |
 
 ## Source File Size And Structure Audit
 
-| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | SoC / Ownership Check | Placement Check | Required Action |
-| --- | ---: | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/file-explorer/file-explorer.ts` | 461 | Pass | Pass | Pass | Avoid further growth where possible. |
-| `autobyteus-server-ts/src/file-explorer/operations/base-file-operation.ts` | 32 | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/file-explorer/operations/add-file-or-folder-operation.ts` | 50 | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/file-explorer/operations/move-file-operation.ts` | 101 | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/file-explorer/operations/remove-file-operation.ts` | 41 | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts` | 53 | Pass | Fail | Pass | Fix `CR-017`; rename destination is not fully validated before filesystem mutation. |
-| `autobyteus-server-ts/src/file-explorer/operations/write-file-operation.ts` | 47 | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/api/graphql/types/file-explorer.ts` | 191 | Pass | Pass | Pass | None. |
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts` | 212 | Pass | Pass | Pass — one durable GraphQL boundary-validation concern | Pass — correct E2E file-explorer test location | None. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present and preserved | Fail | DS-015 requires validated bounded FileExplorer operations. CR-016 hardened the shared path helper, but rename still allows outside-workspace filesystem mutation through `newName`. | Fix `CR-017`. |
-| Data-flow spine inventory clarity and preservation | Pass | Terminal and FileExplorer spines remain separate; Terminal remains root-path/PTY-only. | None. |
-| Ownership boundary preservation and clarity | Fail | `WorkspaceFileExplorer` is the correct boundary owner, but `RenameFileOperation` bypasses full destination containment for `newName`. | Validate rename destination before `fs.rename()`. |
-| Off-spine concern clarity | Pass | Path validation remains inside FileExplorer operation ownership. | None. |
-| Existing capability/subsystem reuse check | Pass | `BaseFileOperation.resolveWorkspacePath()` is the right local reuse point. | Reuse it for rename destination/new-name validation. |
-| Reusable owned structures check | Pass | No unnecessary new helper subsystem was introduced. | None. |
-| Repeated coordination ownership check | Fail | Most file operations now use the shared path boundary, but rename destination validation still has custom unchecked `path.join(parentDirectory, newName)`. | Route rename destination through a safe boundary or forbid path separators in `newName`. |
-| Empty indirection check | Pass | `resolveWorkspacePath()` owns useful translation of generic path-boundary errors to operation-specific messages. | None. |
-| Scope-appropriate separation of concerns and file responsibility | Pass | The fix is still localized to FileExplorer source/tests. | None. |
-| Ownership-driven dependency check | Fail | Rename destination is derived from unchecked user input and can cross the workspace boundary. | Fix `CR-017`. |
-| Authoritative Boundary Rule check | Fail | Rename uses the FileExplorer boundary for the target, but bypasses it for destination construction. | Use one authoritative path boundary for both target and destination. |
-| Interface/API/query/command/service-method clarity | Fail | `renameFileOrFolder(targetPath,newName)` semantically suggests `newName` is a leaf name, but backend accepts path traversal segments and mutates outside workspace. | Enforce leaf-name semantics or validate computed destination through FileExplorer boundary before filesystem mutation. |
-| Naming quality and local readability | Pass | Names are clear; issue is validation, not naming. | None. |
-| Patch-on-patch complexity control | Pass | The next fix should be small and local. | Keep it bounded. |
-| Dead/obsolete code cleanup completeness | Pass | No legacy fallback or full-tree rebuild returned. | None. |
-| Test quality for changed behavior | Fail | Added tests cover `loadFolderChildren()` containment but not rename destination traversal. | Add durable rename/newName traversal regression. |
-| Validation or delivery readiness | Fail | `CR-017` is blocking before API/E2E resumes. | Return to implementation. |
-| No backward-compatibility mechanisms / no legacy retention | Pass | No compatibility wrapper or dual-path behavior added. | None. |
+| Task design health assessment is present and preserved | Pass | API/E2E report maps Round 12 to CR-015/016/017 and DS-015; validation targets GraphQL/API boundary behavior and runtime resource stability. | None. |
+| Data-flow spine inventory clarity and preservation | Pass | Durable E2E covers the API spine: GraphQL request -> FileExplorer resolver -> WorkspaceFileExplorer capability -> bounded path/ignore/operation behavior -> controlled result/error. Terminal remains a separate root-path/PTY spine. | None. |
+| Ownership boundary preservation and clarity | Pass | Test validates FileExplorer at its GraphQL boundary without moving path policy into the test itself; it asserts public API behavior and uses internal diagnostics only for watcher/tree mutation/resource invariants already present in adjacent E2E tests. | None. |
+| Off-spine concern clarity | Pass | Diagnostics for watcher lease/tree cache are supporting assertions for FileExplorer quiescence; they do not become production behavior. | None. |
+| Existing capability/subsystem reuse check | Pass | Test uses existing GraphQL schema, workspace manager, and established E2E cleanup patterns. | None. |
+| Reusable owned structures check | Pass | No new shared DTO/model/test helper abstraction was introduced unnecessarily. | None. |
+| Shared-structure/data-model tightness check | Pass | Test data is concrete and purpose-specific; no broad kitchen-sink fixture type. | None. |
+| Repeated coordination ownership check | Pass | Validation does not duplicate production routing/fallback policy; it drives public GraphQL operations. | None. |
+| Empty indirection check | Pass | Local helpers (`runGraphql`, `execGraphql`, `expectGraphqlError`, diagnostics) own concrete test setup/assertion roles. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | One E2E file owns FileExplorer path-boundary API behavior; broader lifecycle coverage remains in existing E2E files. | None. |
+| Ownership-driven dependency check | Pass | New durable validation does not introduce product dependencies; test-only internal diagnostics match established adjacent E2E practice. | None. |
+| Authoritative Boundary Rule check | Pass | Test calls the GraphQL boundary rather than directly calling lower-level operations for the core behavior; lower-level inspection is limited to resource/cache side-effect verification. | None. |
+| File placement check | Pass | `tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts` is the correct file-explorer E2E location. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Test explicitly covers `folderChildren`, `fileContent`, `writeFileContent`, and `renameFileOrFolder` boundary behavior. | None. |
+| Naming quality and local readability check | Pass | Test and helper names clearly state path-boundary and ignored-folder intent. | None. |
+| No unjustified duplication / repeated structures | Pass | Some setup mirrors existing E2E patterns, but stays bounded and avoids cross-file helper churn. | None. |
+| Patch-on-patch complexity control | Pass | New durable validation is narrow, 212 non-empty lines, and does not alter product code. | None. |
+| Dead/obsolete code cleanup completeness | Pass | No obsolete test path or stale CR-specific workaround remains in the new file. | None. |
+| Test quality acceptable for changed behavior | Pass | Coverage is specific to the exact CR-015/016/017 failure modes at the GraphQL/API boundary and includes mutation-before-error assertions. | None. |
+| Validation/delivery readiness | Pass | Reviewer reran new durable E2E and expanded workspace/FileExplorer E2E; both passed. Delivery can resume. | None. |
+| No backward-compatibility mechanisms / no legacy retention | Pass | New validation enforces the clean-cut path-boundary behavior rather than preserving legacy permissive traversal or hidden full-tree fallback behavior. | None. |
 
 ## Review Scorecard
 
-- Overall score (`/10`): `8.3`
-- Overall score (`/100`): `83`
-- Score calculation note: simple average across the ten mandatory categories; decision is fail because `CR-017` is a blocking correctness/security boundary defect.
+- Overall score (`/10`): `9.3`
+- Overall score (`/100`): `93`
+- Score calculation note: simple average across the ten mandatory categories.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.0 | Terminal/FileExplorer spines remain clear and separate. | Rename operation bug is local to FileExplorer. | Preserve separation while fixing rename. |
-| 2 | Ownership Clarity and Boundary Encapsulation | 7.8 | `getPath()` is now the right owner boundary for most paths. | Rename destination still bypasses the boundary. | Use the boundary for rename destination or reject path-like `newName`. |
-| 3 | API / Interface / Query / Command Clarity | 7.6 | FileExplorer APIs remain subject-specific. | `newName` accepts path traversal despite rename semantics. | Enforce leaf filename input or safe destination resolution. |
-| 4 | Separation of Concerns and File Placement | 8.8 | Changes stay in FileExplorer-owned files. | `file-explorer.ts` remains moderately large. | Keep next fix small. |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 8.4 | `resolveWorkspacePath()` improves reuse. | Reuse is incomplete in rename destination. | Complete boundary reuse. |
-| 6 | Naming Quality and Local Readability | 9.0 | Code is readable. | No naming blocker. | None. |
-| 7 | Validation Readiness | 7.5 | Unit/build checks pass and reviewer probes verify CR-016. | Missing rename traversal coverage. | Add focused rename regression and rerun. |
-| 8 | Runtime Correctness Under Edge Cases | 6.8 | Main path checks are fixed. | Rename can move a file outside workspace and then fail after filesystem mutation. | Validate before mutation. |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.0 | No old compatibility paths. | None. | None. |
-| 10 | Cleanup Completeness | 8.0 | Unsafe direct prefix guards are gone by grep. | Operation-boundary cleanup missed rename destination. | Finish operation cleanup. |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.4 | GraphQL -> FileExplorer boundary spine is explicit and Terminal spine remains separate. | None blocking. | None. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.3 | Test exercises public GraphQL boundary and uses diagnostics only for side-effect/resource invariants. | Internal diagnostics are test-only and acceptable, but couple to current E2E pattern. | Keep future diagnostics similarly bounded. |
+| 3 | API / Interface / Query / Command Clarity | 9.4 | All relevant GraphQL operations are named and covered. | None. | None. |
+| 4 | Separation of Concerns and File Placement | 9.3 | One narrow E2E file in the correct file-explorer folder. | No shared helper extraction; acceptable at 212 lines. | Consider helper extraction only if repeated further. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.1 | Purpose-specific fixtures and payload parsing. | Some local helper duplication with adjacent E2E tests. | Avoid adding more duplication later. |
+| 6 | Naming Quality and Local Readability | 9.3 | Test names and helper names clearly express behavior. | None. | None. |
+| 7 | Validation Readiness | 9.5 | New E2E, expanded E2E, unit suite, build, greps, diff/size, and high-churn probe all passed. | Full delivery integration refresh still pending and delivery-owned. | Delivery refresh latest base. |
+| 8 | Runtime Correctness Under Edge Cases | 9.4 | Covers ignored direct folders, same-prefix sibling folder/read/write, and rename mutation-before-error path. | Does not exhaust every operation path, but targeted risk is covered. | Existing unit coverage covers lower-level details. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Test rejects legacy permissive traversal and hidden ignored-folder exposure. | None. | None. |
+| 10 | Cleanup Completeness | 9.2 | New validation closes durable coverage gap from CR-015/016/017. | Branch still behind `origin/personal` by 2 commits; delivery-owned. | Delivery integration. |
 
 ## Findings
 
-### CR-016 — Resolved
+No open code-review findings remain.
 
-- Previous severity: High
-- Current status: Resolved
-- Evidence:
-  - `WorkspaceFileExplorer.getPath()` now resolves both the workspace root and candidate and rejects candidates where `path.relative(root,candidate)` escapes the root.
-  - Reviewer probe confirms `loadFolderChildren('../ws-sibling')` rejects with `Access denied: Path resolves outside the workspace.`
-  - The same probe confirms rejection occurs before full tree rebuild and before cached tree mutation.
-  - Reviewer probe also confirms `readFileContent('../ws-sibling/leak.txt')` and `writeFileContent('../ws-sibling/write-leak.txt')` do not read/write outside the workspace.
-  - Backend unit tests pass, 1 file / 9 tests.
+### CR-015 — Resolved and durably covered
 
-### CR-017 — `renameFileOrFolder()` can still move a file outside the workspace through unchecked `newName`
+The new E2E verifies ignored requested folders are rejected and do not mutate cached FileExplorer tree state.
 
-- Severity: High
-- Classification: Local Fix
-- Owner: `implementation_engineer`
-- Files:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/unit/file-explorer/workspace-file-explorer.test.ts` or an operation-specific unit test file if preferred
-- Evidence:
-  - `RenameFileOperation` validates only the existing target path via `resolveWorkspacePath()`.
-  - It then computes `const absoluteDestination = path.join(parentDirectory, this.newName);` and calls `fs.rename(absoluteTarget, absoluteDestination)` without validating that the computed destination remains under the workspace.
-  - Reviewer probe called `renameFileOrFolder('sub/rename-me.txt', '../../ws-sibling/renamed-leak.txt')` with workspace root `.../ws` and same-prefix sibling `.../ws-sibling`.
-  - The operation moved the file into the sibling (`renamed-leak.txt` existed outside the workspace and the original file no longer existed), then failed later with `Destination parent directory not found in tree: ../ws-sibling` during tree synchronization.
-  - Probe log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round24-file-explorer-path-boundary-probes-20260529.log`
-- Why this matters:
-  - This is the same workspace containment invariant as CR-016, but on the rename destination side.
-  - It is worse than a display/cache issue because the filesystem mutation happens before the error is raised.
-  - It contradicts the implementation note that file operations now route through the shared FileExplorer path boundary.
-- Required fix:
-  1. Validate `newName` before filesystem mutation. Prefer leaf-name semantics for rename: reject `newName` values that are empty, absolute, contain `/` or `\\`, normalize to `.`/`..`, or otherwise include traversal/path separators. Use `moveFileOrFolder()` for cross-folder moves.
-  2. Also compute the final destination as a workspace-relative path and pass it through the shared FileExplorer boundary (`resolveWorkspacePath()` / `getPath()`) before `fs.rename()`.
-  3. Add durable regression coverage proving `renameFileOrFolder('sub/rename-me.txt', '../../ws-sibling/renamed-leak.txt')` rejects before mutation: sibling file is not created and original remains.
-  4. Include normal rename coverage to prove valid leaf names still work.
-  5. Rerun backend FileExplorer unit tests, backend build, focused path-boundary grep, diff check, and source-size audit.
+### CR-016 — Resolved and durably covered
+
+The new E2E verifies same-prefix sibling escapes are rejected through `folderChildren`, `fileContent`, and `writeFileContent` at the GraphQL/API boundary.
+
+### CR-017 — Resolved and durably covered
+
+The new E2E verifies path-like `renameFileOrFolder.newName` rejects before filesystem mutation.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result | Notes |
 | --- | --- | --- | --- |
-| Validation Readiness | Ready for API/E2E | Fail | `CR-017` must be fixed and re-reviewed first. |
-| Tests | Test quality acceptable for CR-016 | Pass | Same-prefix `loadFolderChildren()` regression exists and passes. |
-| Tests | Test quality acceptable for all operation boundary paths | Fail | Rename destination traversal is not covered. |
-| Tests | Findings are actionable for next owner | Pass | CR-017 has a concrete reproduction and required fix. |
+| Validation Readiness | Ready for delivery workflow | Pass | Code-review recheck of API/E2E durable validation passed. |
+| Tests | Test quality acceptable for API/E2E-owned durable validation | Pass | Test targets the exact CR-015/016/017 GraphQL boundary cases and side effects. |
+| Tests | Test maintainability acceptable | Pass | 212 non-empty lines, cohesive scope, clear helper structure. |
+| Tests | Durable validation does not overreach into unrelated behavior | Pass | High-churn/runtime breadth remains in separate API/E2E artifacts; this file stays boundary-local. |
+| Tests | Review findings clear for downstream owner | Pass | No open findings; delivery can resume. |
 
 ## Reviewer Checks Performed
 
-- Backend FileExplorer unit tests: Pass, 1 file / 9 tests.
-  - Command: `pnpm -C autobyteus-server-ts test tests/unit/file-explorer/workspace-file-explorer.test.ts --run`
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round24-cr016-backend-unit-20260529.log`
-- Backend build: Pass.
-  - Command: `pnpm -C autobyteus-server-ts build:full`
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round24-cr016-backend-build-full-20260529.log`
-- Reviewer path-boundary probes: Fail due `CR-017`.
-  - CR-016 cases passed: `loadFolderChildren`, `readFileContent`, and `writeFileContent` same-prefix sibling escapes are rejected.
-  - Rename destination traversal failed: outside sibling file was created and original was removed.
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round24-file-explorer-path-boundary-probes-20260529.log`
-  - Probe script: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round24-file-explorer-path-boundary-probes-20260529.mjs`
-- Focused stale unsafe FileExplorer workspace-root prefix/path-join grep: Pass.
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round24-path-boundary-grep-20260529.log`
-- Terminal/FileExplorer boundary grep: Pass.
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round24-terminal-boundary-grep-20260529.log`
-- Source-size audit: Pass.
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round24-source-size-20260529.log`
-- Diff whitespace check: Pass.
-  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round24-diff-check-20260529.log`
+- New durable path-boundary E2E: Pass, 1 file / 2 tests.
+  - Command: `pnpm -C autobyteus-server-ts test tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts --run --reporter verbose`
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round26-file-explorer-path-boundary-e2e-20260529.log`
+- Expanded workspace/FileExplorer E2E including new durable file: Pass, 5 files / 15 tests.
+  - Command: `pnpm -C autobyteus-server-ts test tests/e2e/workspaces/workspaces-graphql.e2e.test.ts tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts --run --reporter verbose`
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round26-expanded-workspace-file-explorer-e2e-20260529.log`
+- Validation-code grep and legacy/test-skip marker check: Pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round26-validation-code-grep-20260529.log`
+- Diff whitespace and source-size check: Pass; new durable E2E is 212 non-empty lines.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round26-diff-size-check-20260529.log`
+- API/E2E evidence reviewed: Pass.
+  - New durable E2E log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-file-explorer-path-boundary-e2e-20260529.log`
+  - Expanded E2E log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-expanded-workspace-file-explorer-e2e-20260529.log`
+  - High-churn JSON: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-embedded-server-high-churn-20260529.json`
+  - Terminal/FileExplorer boundary grep: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-terminal-file-explorer-boundary-grep-20260529.log`
+  - FileExplorer path-boundary grep: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-path-boundary-grep-20260529.log`
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No dual behavior or compatibility wrapper was introduced. |
-| No legacy old-behavior retention in changed scope | Pass | No hidden full-tree fallback returned. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete code requiring removal was found. |
+| No backward-compatibility mechanisms in changed scope | Pass | New durable E2E asserts the new strict boundary behavior rather than preserving permissive traversal. |
+| No legacy old-behavior retention in changed scope | Pass | No test accepts old ignored-folder exposure, same-prefix escape, or path-like rename behavior. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No skipped/only tests, TODO compatibility notes, or legacy marker found in the new durable E2E. |
+| Hidden fallback / dual-path behavior check | Pass | Validation reinforces bounded GraphQL/FileExplorer behavior and watcher-free snapshot APIs. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
@@ -190,21 +161,22 @@ None.
 
 ## Docs-Impact Verdict
 
-- Docs impact: No product docs impact.
-- Why: This is a backend FileExplorer path-boundary local fix. Ticket-local handoff/review artifacts should be updated after the next fix.
+- Docs impact: No product documentation change required by code review.
+- Why: This review covered a repository-resident durable E2E validation addition and validation report update. The authoritative ticket artifacts have been updated. Delivery still owns integrated-state docs sync/no-impact assessment.
 
 ## Classification
 
-- `Local Fix`
-- Rationale: The design requirement is clear and healthy: FileExplorer is the authoritative owner for workspace path containment and bounded file operations. The remaining defect is a local implementation miss in `RenameFileOperation`, not a requirement gap or architecture/design impact.
+- Pass.
+- No failure classification applies.
 
 ## Recommended Recipient
 
-- `implementation_engineer`
+- `delivery_engineer`
 
-Routing note: after the local fix, the updated implementation should return through `code_reviewer` before API/E2E resumes.
+Routing note: this is a pass from the API/E2E validation-code re-review entry point. Delivery should resume, first refreshing the ticket branch against the latest tracked base per delivery workflow.
 
-## Residual Risks
+## Residual Risks / Delivery Notes
 
-- Branch is behind `origin/personal` by 2 commits; delivery must refresh/integrate before finalization per workflow.
-- `WorkspaceFileExplorer` is still below the hard size limit but remains a high-responsibility file; avoid further unrelated growth.
+- Branch remains behind `origin/personal` by 2 commits according to upstream reports; delivery must refresh/integrate before finalization.
+- API/E2E Round 12 added repository-resident durable validation after code review Round 25; this Round 26 re-review accepts that addition.
+- Full project-wide typechecks remain baseline-blocked per implementation/API-E2E notes; focused builds/tests/runtime probes passed for the reviewed scope.
