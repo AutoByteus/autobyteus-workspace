@@ -1,9 +1,11 @@
 import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
 import https from 'node:https';
-import { URL } from 'node:url';
+import path from 'node:path';
+import { Readable } from 'node:stream';
+import { fileURLToPath, URL } from 'node:url';
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { mediaSourceToDataUri } from '../llm/utils/media-payload-formatter.js';
+import { getMimeType, isBase64, mediaSourceToDataUri } from '../llm/utils/media-payload-formatter.js';
 import {
   assertValidAutobyteusConversationPayload,
   AutobyteusConversationMessage,
@@ -14,9 +16,28 @@ import {
 export class CertificateError extends Error {}
 
 type JsonRecord = Record<string, unknown>;
+type MediaKind = 'image' | 'audio' | 'video';
+
+type StageMediaBody = {
+  body: Buffer | NodeJS.ReadableStream;
+  filename: string;
+  mimeType: string;
+};
 
 export type AutobyteusRequestOptions = {
   signal?: AbortSignal | null;
+};
+
+const DEFAULT_INLINE_MEDIA_MAX_BYTES: Record<MediaKind, number> = {
+  image: 10 * 1024 * 1024,
+  audio: 50 * 1024 * 1024,
+  video: 25 * 1024 * 1024
+};
+
+const INLINE_MEDIA_MAX_BYTES_ENV: Record<MediaKind, string> = {
+  image: 'AUTOBYTEUS_INLINE_IMAGE_MAX_BYTES',
+  audio: 'AUTOBYTEUS_INLINE_AUDIO_MAX_BYTES',
+  video: 'AUTOBYTEUS_INLINE_VIDEO_MAX_BYTES'
 };
 
 function joinUrl(baseUrl: string, path: string): string {
@@ -61,6 +82,80 @@ function formatHttpError(error: AxiosError): Error {
   const wrapped = new Error(message);
   Object.assign(wrapped, { cause: error });
   return wrapped;
+}
+
+function getInlineMaxBytes(kind: MediaKind): number {
+  const envName = INLINE_MEDIA_MAX_BYTES_ENV[kind];
+  const configuredValue = process.env[envName];
+  if (!configuredValue) {
+    return DEFAULT_INLINE_MEDIA_MAX_BYTES[kind];
+  }
+
+  const parsed = Number(configuredValue);
+  return Number.isFinite(parsed) && parsed >= 0
+    ? parsed
+    : DEFAULT_INLINE_MEDIA_MAX_BYTES[kind];
+}
+
+function isHttpUrl(source: string): boolean {
+  return source.startsWith('http://') || source.startsWith('https://');
+}
+
+function isDataUri(source: string): boolean {
+  return source.startsWith('data:');
+}
+
+function isMediaUri(source: string): boolean {
+  return source.startsWith('media://');
+}
+
+function estimateBase64DecodedBytes(base64Data: string): number {
+  const normalized = base64Data.replace(/\s/g, '');
+  const padding = normalized.endsWith('==') ? 2 : normalized.endsWith('=') ? 1 : 0;
+  return Math.max(0, Math.floor((normalized.length * 3) / 4) - padding);
+}
+
+function parseDataUri(mediaSource: string): { mimeType: string; payload: string; isBase64Payload: boolean } {
+  const commaIndex = mediaSource.indexOf(',');
+  if (commaIndex < 0) {
+    throw new Error('Invalid data URI media source: missing payload separator.');
+  }
+
+  const header = mediaSource.slice(0, commaIndex);
+  const payload = mediaSource.slice(commaIndex + 1);
+  const mimeType = header.slice(5).split(';', 1)[0] || 'application/octet-stream';
+
+  return {
+    mimeType,
+    payload,
+    isBase64Payload: header.toLowerCase().includes(';base64')
+  };
+}
+
+function getFilenameFromUrl(mediaUrl: string, fallback: string): string {
+  try {
+    const parsed = new URL(mediaUrl);
+    const basename = path.basename(parsed.pathname);
+    return basename || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function getLocalFilePathFromSource(source: string): string | null {
+  if (source.startsWith('file://')) {
+    try {
+      return fileURLToPath(source);
+    } catch {
+      return null;
+    }
+  }
+
+  if (isHttpUrl(source) || isDataUri(source) || isMediaUri(source)) {
+    return null;
+  }
+
+  return source;
 }
 
 export class AutobyteusClient {
@@ -201,7 +296,7 @@ export class AutobyteusClient {
     options: AutobyteusRequestOptions = {},
   ): Promise<JsonRecord> {
     try {
-      const normalizedPayload = await this.normalizeConversationPayload(request.payload);
+      const normalizedPayload = await this.normalizeConversationPayload(request.payload, options.signal ?? null);
       const payload = {
         conversation_id: request.conversationId,
         model_name: request.modelName,
@@ -222,7 +317,7 @@ export class AutobyteusClient {
     request: AutobyteusSendMessageRequest,
     options: AutobyteusRequestOptions = {},
   ): AsyncGenerator<JsonRecord, void, void> {
-    const normalizedPayload = await this.normalizeConversationPayload(request.payload);
+    const normalizedPayload = await this.normalizeConversationPayload(request.payload, options.signal ?? null);
     const payload = {
       conversation_id: request.conversationId,
       model_name: request.modelName,
@@ -272,8 +367,8 @@ export class AutobyteusClient {
     sessionId?: string | null
   ): Promise<JsonRecord> {
     try {
-      const normalizedInputImageUrls = await this.normalizeMediaSources(inputImageUrls);
-      const normalizedMaskUrl = await this.normalizeSingleMediaSource(maskUrl);
+      const normalizedInputImageUrls = await this.normalizeMediaSources(inputImageUrls, 'image', null);
+      const normalizedMaskUrl = await this.normalizeSingleMediaSource(maskUrl, 'image', null);
       const payload = {
         model_name: modelName,
         prompt,
@@ -365,7 +460,11 @@ export class AutobyteusClient {
     return new Error(`${logPrefix}: ${String(error)}`);
   }
 
-  private async normalizeMediaSources(mediaSources?: string[] | null): Promise<string[]> {
+  private async normalizeMediaSources(
+    mediaSources: string[] | null | undefined,
+    kind: MediaKind,
+    signal: AbortSignal | null
+  ): Promise<string[]> {
     if (!Array.isArray(mediaSources) || mediaSources.length === 0) {
       return [];
     }
@@ -379,13 +478,14 @@ export class AutobyteusClient {
       if (!trimmed) {
         continue;
       }
-      normalized.push(await mediaSourceToDataUri(trimmed));
+      normalized.push(await this.normalizeMediaSource(trimmed, kind, signal));
     }
     return normalized;
   }
 
   private async normalizeConversationPayload(
-    payload: AutobyteusConversationPayload
+    payload: AutobyteusConversationPayload,
+    signal: AbortSignal | null
   ): Promise<AutobyteusConversationPayload> {
     assertValidAutobyteusConversationPayload(payload);
 
@@ -397,9 +497,9 @@ export class AutobyteusClient {
       messages.push({
         role: message.role,
         content: message.content ?? '',
-        image_urls: isCurrentMessage ? await this.normalizeMediaSources(message.image_urls) : [],
-        audio_urls: isCurrentMessage ? await this.normalizeMediaSources(message.audio_urls) : [],
-        video_urls: isCurrentMessage ? await this.normalizeMediaSources(message.video_urls) : []
+        image_urls: isCurrentMessage ? await this.normalizeMediaSources(message.image_urls, 'image', signal) : [],
+        audio_urls: isCurrentMessage ? await this.normalizeMediaSources(message.audio_urls, 'audio', signal) : [],
+        video_urls: isCurrentMessage ? await this.normalizeMediaSources(message.video_urls, 'video', signal) : []
       });
     }
 
@@ -409,7 +509,11 @@ export class AutobyteusClient {
     };
   }
 
-  private async normalizeSingleMediaSource(mediaSource?: string | null): Promise<string | null> {
+  private async normalizeSingleMediaSource(
+    mediaSource: string | null | undefined,
+    kind: MediaKind,
+    signal: AbortSignal | null
+  ): Promise<string | null> {
     if (typeof mediaSource !== 'string') {
       return null;
     }
@@ -417,6 +521,140 @@ export class AutobyteusClient {
     if (!trimmed) {
       return null;
     }
-    return mediaSourceToDataUri(trimmed);
+    return this.normalizeMediaSource(trimmed, kind, signal);
+  }
+
+  private async normalizeMediaSource(source: string, kind: MediaKind, signal: AbortSignal | null): Promise<string> {
+    if (isMediaUri(source)) {
+      return source;
+    }
+
+    const sourceSizeBytes = await this.getMediaSourceSizeBytes(source, signal);
+    const inlineMaxBytes = getInlineMaxBytes(kind);
+    if (sourceSizeBytes !== null && sourceSizeBytes > inlineMaxBytes) {
+      return this.stageMediaSource(source, kind, signal);
+    }
+    if (sourceSizeBytes === null && isHttpUrl(source)) {
+      return this.stageMediaSource(source, kind, signal);
+    }
+
+    return mediaSourceToDataUri(getLocalFilePathFromSource(source) ?? source);
+  }
+
+  private async getMediaSourceSizeBytes(source: string, signal: AbortSignal | null): Promise<number | null> {
+    if (isDataUri(source)) {
+      const parsed = parseDataUri(source);
+      return parsed.isBase64Payload
+        ? estimateBase64DecodedBytes(parsed.payload)
+        : Buffer.byteLength(decodeURIComponent(parsed.payload), 'utf8');
+    }
+
+    if (isBase64(source)) {
+      return estimateBase64DecodedBytes(source);
+    }
+
+    if (isHttpUrl(source)) {
+      try {
+        const response = await axios.head(source, { signal: signal ?? undefined });
+        const contentLength = response.headers?.['content-length'];
+        if (typeof contentLength === 'string') {
+          const parsed = Number(contentLength);
+          return Number.isFinite(parsed) ? parsed : null;
+        }
+      } catch {
+        return null;
+      }
+      return null;
+    }
+
+    const localPath = getLocalFilePathFromSource(source);
+    if (!localPath) {
+      return null;
+    }
+
+    try {
+      const stat = await fsPromises.stat(localPath);
+      return stat.isFile() ? stat.size : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private async stageMediaSource(source: string, kind: MediaKind, signal: AbortSignal | null): Promise<string> {
+    const mediaBody = await this.createStageMediaBody(source, kind, signal);
+    const response = await this.asyncClient.post(joinUrl(this.serverUrl, '/media/stage'), mediaBody.body, {
+      headers: {
+        'Content-Type': mediaBody.mimeType,
+        'X-Autobyteus-Media-Filename': mediaBody.filename,
+        'X-Autobyteus-Media-Type': kind
+      },
+      maxBodyLength: Infinity,
+      maxContentLength: Infinity,
+      signal: signal ?? undefined
+    });
+
+    const mediaUri = response.data?.media_uri;
+    if (typeof mediaUri !== 'string' || !isMediaUri(mediaUri)) {
+      throw new Error('Invalid media staging response: missing media_uri.');
+    }
+
+    return mediaUri;
+  }
+
+  private async createStageMediaBody(
+    source: string,
+    kind: MediaKind,
+    signal: AbortSignal | null
+  ): Promise<StageMediaBody> {
+    if (isDataUri(source)) {
+      const parsed = parseDataUri(source);
+      const body = parsed.isBase64Payload
+        ? Buffer.from(parsed.payload, 'base64')
+        : Buffer.from(decodeURIComponent(parsed.payload), 'utf8');
+      return {
+        body,
+        filename: `${kind}.bin`,
+        mimeType: parsed.mimeType
+      };
+    }
+
+    if (isBase64(source)) {
+      return {
+        body: Buffer.from(source, 'base64'),
+        filename: `${kind}.bin`,
+        mimeType: 'application/octet-stream'
+      };
+    }
+
+    if (isHttpUrl(source)) {
+      const response = await axios.get<NodeJS.ReadableStream>(source, {
+        responseType: 'stream',
+        signal: signal ?? undefined
+      });
+      const headerContentType = response.headers?.['content-type'];
+      const mimeType = typeof headerContentType === 'string'
+        ? headerContentType.split(';', 1)[0].trim() || 'application/octet-stream'
+        : 'application/octet-stream';
+      return {
+        body: response.data,
+        filename: getFilenameFromUrl(source, `${kind}.bin`),
+        mimeType
+      };
+    }
+
+    const localPath = getLocalFilePathFromSource(source);
+    if (localPath) {
+      return {
+        body: fs.createReadStream(localPath),
+        filename: path.basename(localPath) || `${kind}.bin`,
+        mimeType: getMimeType(localPath)
+      };
+    }
+
+    return {
+      body: Readable.from(Buffer.from(source)),
+      filename: `${kind}.bin`,
+      mimeType: 'application/octet-stream'
+    };
   }
 }

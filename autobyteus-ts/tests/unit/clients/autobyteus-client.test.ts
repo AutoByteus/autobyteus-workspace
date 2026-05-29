@@ -7,12 +7,16 @@ import axios from 'axios';
 import { AutobyteusClient } from '../../../src/clients/autobyteus-client.js';
 
 const createMock = vi.fn();
+const getMock = vi.fn();
+const headMock = vi.fn();
 const mediaSourceToDataUriMock = vi.fn();
 
 vi.mock('axios', async () => {
   return {
     default: {
       create: (...args: any[]) => createMock(...args),
+      get: (...args: any[]) => getMock(...args),
+      head: (...args: any[]) => headMock(...args),
       isAxiosError: (error: any) => Boolean(error?.isAxiosError)
     }
   };
@@ -32,6 +36,9 @@ describe('AutobyteusClient', () => {
   beforeEach(() => {
     process.env = { ...originalEnv, AUTOBYTEUS_API_KEY: 'test-key' };
     createMock.mockImplementation((config: any) => ({ config, get: vi.fn(), post: vi.fn() }));
+    getMock.mockReset();
+    headMock.mockReset();
+    headMock.mockRejectedValue(new Error('HEAD unavailable'));
     mediaSourceToDataUriMock.mockReset();
     mediaSourceToDataUriMock.mockImplementation(async (value: string) => `data:mock/type;base64,${value}`);
     vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -95,6 +102,7 @@ describe('AutobyteusClient', () => {
     const client = new AutobyteusClient();
     const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });
     (client.asyncClient.post as any) = postMock;
+    headMock.mockResolvedValue({ headers: { 'content-length': '1024' } });
 
     await client.sendMessage({
       conversationId: 'conversation-1',
@@ -140,6 +148,131 @@ describe('AutobyteusClient', () => {
     expect(payload.messages[1].image_urls).toEqual(['data:mock/type;base64,/tmp/image.png']);
     expect(payload.messages[1].audio_urls).toEqual(['data:mock/type;base64,https://example.com/audio.mp3']);
     expect(payload.messages[1].video_urls).toEqual(['data:mock/type;base64,data:image/png;base64,abc']);
+  });
+
+  it('stages media above the inline threshold before sendMessage', async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-video-'));
+    const videoPath = path.join(tempDir, 'input.mp4');
+    await fs.writeFile(videoPath, Buffer.from('video-bytes'));
+    process.env.AUTOBYTEUS_INLINE_VIDEO_MAX_BYTES = '4';
+
+    try {
+      const client = new AutobyteusClient();
+      const postMock = vi.fn().mockImplementation(async (url: string) => {
+        if (url.endsWith('/media/stage')) {
+          return { data: { media_uri: 'media://videos/staged.mp4' } };
+        }
+        return { data: { ok: true } };
+      });
+      (client.asyncClient.post as any) = postMock;
+
+      await client.sendMessage({
+        conversationId: 'conversation-large-video',
+        modelName: 'model-1',
+        payload: {
+          current_message_index: 0,
+          messages: [
+            {
+              role: 'user',
+              content: '',
+              image_urls: [],
+              audio_urls: [],
+              video_urls: [videoPath]
+            }
+          ]
+        }
+      });
+
+      expect(postMock).toHaveBeenCalledTimes(2);
+      expect(postMock.mock.calls[0][0]).toBe('https://api.autobyteus.com/media/stage');
+      expect(postMock.mock.calls[0][2]).toEqual(expect.objectContaining({
+        headers: expect.objectContaining({
+          'Content-Type': 'video/mp4',
+          'X-Autobyteus-Media-Filename': 'input.mp4',
+          'X-Autobyteus-Media-Type': 'video'
+        }),
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity
+      }));
+
+      const payload = postMock.mock.calls[1][1];
+      expect(payload.messages[0].content).toBe('');
+      expect(payload.messages[0].video_urls).toEqual(['media://videos/staged.mp4']);
+      expect(mediaSourceToDataUriMock).not.toHaveBeenCalledWith(videoPath);
+    } finally {
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('passes existing media URIs through without staging or data URI conversion', async () => {
+    const client = new AutobyteusClient();
+    const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });
+    (client.asyncClient.post as any) = postMock;
+
+    await client.sendMessage({
+      conversationId: 'conversation-staged-media',
+      modelName: 'model-1',
+      payload: {
+        current_message_index: 0,
+        messages: [
+          {
+            role: 'user',
+            content: '',
+            image_urls: [],
+            audio_urls: ['media://audio/already.mp3'],
+            video_urls: ['media://videos/already.mp4']
+          }
+        ]
+      }
+    });
+
+    expect(postMock).toHaveBeenCalledTimes(1);
+    const payload = postMock.mock.calls[0][1];
+    expect(payload.messages[0].audio_urls).toEqual(['media://audio/already.mp3']);
+    expect(payload.messages[0].video_urls).toEqual(['media://videos/already.mp4']);
+    expect(mediaSourceToDataUriMock).not.toHaveBeenCalled();
+  });
+
+  it('stages remote media when size cannot be proven below threshold', async () => {
+    const client = new AutobyteusClient();
+    getMock.mockResolvedValue({
+      data: Readable.from(['audio-bytes']),
+      headers: { 'content-type': 'audio/mpeg' }
+    });
+    const postMock = vi.fn().mockImplementation(async (url: string) => {
+      if (url.endsWith('/media/stage')) {
+        return { data: { media_uri: 'media://audio/staged.mp3' } };
+      }
+      return { data: { ok: true } };
+    });
+    (client.asyncClient.post as any) = postMock;
+
+    await client.sendMessage({
+      conversationId: 'conversation-remote-unknown',
+      modelName: 'model-1',
+      payload: {
+        current_message_index: 0,
+        messages: [
+          {
+            role: 'user',
+            content: '',
+            image_urls: [],
+            audio_urls: ['https://example.com/audio.mp3'],
+            video_urls: []
+          }
+        ]
+      }
+    });
+
+    expect(headMock).toHaveBeenCalledWith('https://example.com/audio.mp3', { signal: undefined });
+    expect(getMock).toHaveBeenCalledWith('https://example.com/audio.mp3', {
+      responseType: 'stream',
+      signal: undefined
+    });
+    expect(postMock).toHaveBeenCalledTimes(2);
+    const payload = postMock.mock.calls[1][1];
+    expect(payload.messages[0].audio_urls).toEqual(['media://audio/staged.mp3']);
+    expect(mediaSourceToDataUriMock).not.toHaveBeenCalled();
   });
 
   it('forwards AbortSignal to sendMessage Axios request', async () => {
