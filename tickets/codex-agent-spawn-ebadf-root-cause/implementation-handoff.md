@@ -59,6 +59,7 @@ Implemented the architecture-review-round-7 steady-state target:
 - Round-24 DS-014 implementation: updated the desktop right-side tab lifecycle so Files remains lazy before first selection, then stays mounted/cached but inactive after first use when switching to Terminal. `RightSideTabs.vue` now hides cached Files with `v-show` and passes an explicit `active` prop while Terminal remains visible-only and disconnected when hidden. `FileExplorer`, `FileExplorerTabs`, and `FileItem` now gate live sessions, refresh/search work, and global keyboard/drag/context listeners on active state; inactive cached Files releases live session consumers, aborts search, removes panel listeners, and keeps the cached tree available for immediate re-display on return.
 - Round-25 DS-015 implementation: completed FileExplorer inactive quiescence. `fileExplorerStore` now owns folder-children generations and AbortControllers; live-session release/final consumer cleanup aborts search, invalidates folder refresh generations, clears active snapshot refresh bookkeeping, disconnects the live stream, and suppresses late stale folder mutations. Snapshot refresh now refreshes root/open folders under one active generation and only starts on first visible live consumer acquisition, avoiding extra same-workspace consumer refresh churn.
 - Round-25 backend bounded folder projection: `folderChildren` now delegates to `WorkspaceFileExplorer.loadFolderChildren()` for a one-folder projection instead of using `buildWorkspaceDirectoryTree()` as the ordinary fallback. The new projection validates the requested folder, reads only immediate children, applies workspace ignore/sort policy, updates the cached tree node lazily, and leaves deeper descendants unloaded until explicitly requested.
+- Round-26 CR-015 local fix: `WorkspaceFileExplorer.loadFolderChildren()` now applies `WorkspaceIgnoreMatcher` to the requested non-root folder itself before reading entries or updating the tree, so direct requests to ignored folders such as `.git`, `node_modules`, or `.gitignore`-ignored folders return a controlled access-denied error instead of exposing hidden children. Regression coverage verifies ignored direct requests do not call full tree rebuild and leave the cached tree unmodified.
 
 ## Key Files Or Areas
 
@@ -192,7 +193,7 @@ Removed obsolete source/test paths:
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`; metadata and file-explorer capability state are separate.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
-- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-17 Terminal backend code keeps parent session lifecycle split from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines (`isolated-pty-session.ts` 319 effective non-empty lines, bridge source 89). Round-24 DS-014 touched large file-explorer UI files and kept them under the guardrail (`FileItem.vue` 490 effective non-empty lines, `FileExplorerTabs.vue` 375, `FileExplorer.vue` 265). Round-25 changed-source size audit also passed (`WorkspaceFileExplorer` 438, `workspace.ts` 401, all other changed implementation source files below 265 effective non-empty lines).
+- Notes: frontend file-explorer store was split into concern-owned action/state modules to keep the store shell small. Round-17 Terminal backend code keeps parent session lifecycle split from bridge source; final size audit passed with no changed implementation source file over 500 effective non-empty lines (`isolated-pty-session.ts` 319 effective non-empty lines, bridge source 89). Round-24 DS-014 touched large file-explorer UI files and kept them under the guardrail (`FileItem.vue` 490 effective non-empty lines, `FileExplorerTabs.vue` 375, `FileExplorer.vue` 265). Round-25 changed-source size audit also passed (`WorkspaceFileExplorer` 438, `workspace.ts` 401, all other changed implementation source files below 265 effective non-empty lines). Round-26 CR-015 source-size audit passed with `WorkspaceFileExplorer` at 446 effective non-empty lines.
 
 ## Environment Or Dependency Notes
 
@@ -203,6 +204,22 @@ Removed obsolete source/test paths:
 ## Local Implementation Checks Run
 
 Implementation-scoped checks only; this is not downstream API/E2E sign-off.
+
+Round-26 CR-015 ignored-folder policy local-fix checks:
+
+- `pnpm -C autobyteus-server-ts test tests/unit/file-explorer/workspace-file-explorer.test.ts`
+  - Result: pass, 1 file / 8 tests.
+  - Covers existing watcher/bounded projection behavior plus direct requested-folder ignore enforcement for `.git`, `node_modules`, and a `.gitignore`-ignored folder. The regression asserts no full-tree rebuild is called and the tree remains unmodified after ignored direct requests.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round26-cr015-backend-file-explorer-unit-20260529.log`
+- `pnpm -C autobyteus-server-ts build:full`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round26-cr015-backend-build-full-20260529.log`
+- `git diff --check`
+  - Result: pass.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round26-cr015-diff-check-20260529.log`
+- Changed-source size audit for the touched backend FileExplorer implementation file.
+  - Result: pass; `WorkspaceFileExplorer` is 446 effective non-empty lines.
+  - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round26-cr015-source-size-20260529.log`
 
 Round-25 DS-015 FileExplorer quiescence checks:
 

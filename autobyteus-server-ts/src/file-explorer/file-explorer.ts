@@ -175,6 +175,7 @@ export class WorkspaceFileExplorer {
     this.throwIfAborted(options.signal);
     const relativeFolderPath = this.normalizeRelativeFolderPath(folderPath);
     const absoluteFolderPath = this.getPath(relativeFolderPath);
+    const ignoreMatcher = new WorkspaceIgnoreMatcher(this.workspaceRootPath, this.ignoreStrategies);
     const stats = await fs.stat(absoluteFolderPath).catch(() => null);
     if (!stats) {
       throw new Error(`Folder not found: ${folderPath}`);
@@ -185,9 +186,16 @@ export class WorkspaceFileExplorer {
     if (!stats.isDirectory()) {
       throw new Error(`Path is not a folder: ${folderPath}`);
     }
+    if (relativeFolderPath && ignoreMatcher.shouldIgnore(absoluteFolderPath, true)) {
+      throw new Error(`Access denied: Folder is ignored: ${folderPath}`);
+    }
 
     const folderNode = this.ensureFolderNode(relativeFolderPath);
-    const entries = await this.readImmediateDirectoryEntries(absoluteFolderPath, options.signal);
+    const entries = await this.readImmediateDirectoryEntries(
+      absoluteFolderPath,
+      ignoreMatcher,
+      options.signal,
+    );
     folderNode.children = entries.map((entry) => {
       const isFileChild = entry.isFile();
       return new TreeNode(entry.name, isFileChild, folderNode, isFileChild);
@@ -357,10 +365,10 @@ export class WorkspaceFileExplorer {
 
   private async readImmediateDirectoryEntries(
     folderPath: string,
+    ignoreMatcher: WorkspaceIgnoreMatcher,
     signal?: AbortSignal,
   ): Promise<DirectoryEntry[]> {
     this.throwIfAborted(signal);
-    const ignoreMatcher = new WorkspaceIgnoreMatcher(this.workspaceRootPath, this.ignoreStrategies);
     const sortStrategy = new DefaultSortStrategy();
     const entries: DirectoryEntry[] = [];
     const dir = await fs.opendir(folderPath);

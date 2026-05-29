@@ -129,4 +129,28 @@ describe("WorkspaceFileExplorer", () => {
       fs.rmSync(tempRoot, { recursive: true, force: true });
     }
   });
+
+  it("rejects direct requests for ignored folders without updating the tree", async () => {
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-folder-ignore-"));
+    try {
+      fs.mkdirSync(path.join(tempRoot, ".git", "objects"), { recursive: true });
+      fs.mkdirSync(path.join(tempRoot, "node_modules", "pkg"), { recursive: true });
+      fs.mkdirSync(path.join(tempRoot, "ignored-by-gitignore"), { recursive: true });
+      fs.writeFileSync(path.join(tempRoot, ".gitignore"), "ignored-by-gitignore/\n");
+      fs.writeFileSync(path.join(tempRoot, "visible.txt"), "visible");
+      const explorer = new WorkspaceFileExplorer(tempRoot);
+      const rebuildSpy = vi.spyOn(explorer, "buildWorkspaceDirectoryTree");
+
+      for (const ignoredFolder of [".git", "node_modules", "ignored-by-gitignore"]) {
+        await expect(explorer.loadFolderChildren(ignoredFolder)).rejects.toThrow(
+          "Access denied: Folder is ignored",
+        );
+      }
+
+      expect(rebuildSpy).not.toHaveBeenCalled();
+      expect(explorer.getTree()).toBeNull();
+    } finally {
+      fs.rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
 });

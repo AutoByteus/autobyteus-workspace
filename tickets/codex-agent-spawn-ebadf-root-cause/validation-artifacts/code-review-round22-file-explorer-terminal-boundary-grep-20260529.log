@@ -1,0 +1,23 @@
+# Code review round 22 FileExplorer/Terminal boundary grep
+Fri May 29 09:20:31 CEST 2026
+
+## Terminal must not call/import FileExplorer tree/search/watch APIs
+RESULT: PASS - no Terminal/FileExplorer coupling found in reviewed paths
+
+## Ordinary folderChildren resolver delegates to loadFolderChildren
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:27:      return await this.workspaceManager.getOrCreateWorkspace(workspaceId);
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:43:    const lease = await workspace.acquireFileExplorer("graphql-file-content");
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:73:    const lease = await workspace.acquireFileExplorer("graphql-search");
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:85:  async folderChildren(
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:94:    const lease = await workspace.acquireFileExplorer("graphql-folder-children");
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:96:      const folderNode = await lease.fileExplorer.loadFolderChildren(folderPath);
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:127:    const lease = await workspace.acquireFileExplorer("graphql-write-file");
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:146:    const lease = await workspace.acquireFileExplorer("graphql-delete-file");
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:166:    const lease = await workspace.acquireFileExplorer("graphql-move-file");
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:186:    const lease = await workspace.acquireFileExplorer("graphql-rename-file");
+autobyteus-server-ts/src/api/graphql/types/file-explorer.ts:206:    const lease = await workspace.acquireFileExplorer("graphql-create-file");
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:65:  async buildWorkspaceDirectoryTree(maxDepth: number | null = null): Promise<TreeNode> {
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:171:  async loadFolderChildren(
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:201:      await this.buildWorkspaceDirectoryTree();
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:309:        await this.buildWorkspaceDirectoryTree();
+autobyteus-server-ts/src/file-explorer/file-explorer.ts:321:      await this.buildWorkspaceDirectoryTree();
