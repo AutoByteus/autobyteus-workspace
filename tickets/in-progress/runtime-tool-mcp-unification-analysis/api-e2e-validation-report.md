@@ -9,16 +9,17 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/review-report.md`
-- Current Validation Round: 1
-- Trigger: Code-review pass handoff from `code_reviewer` for runtime tool MCP unification / task delegation ticket.
-- Prior Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Validation Round: 2
+- Trigger: User requested a live mixed-runtime E2E proving an AutoByteus/LMStudio Qwen coordinator can delegate to a Codex gpt-5.5 worker.
+- Prior Round Reviewed: Round 1 validation pass with deterministic durable coverage.
+- Latest Authoritative Round: 2
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Failures Rechecked | New Failures Found | Result | Latest Authoritative | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Code-review pass handoff for API/E2E validation | N/A | No | Pass, with durable validation updates requiring code-review recheck | Yes | Added and ran deterministic server-managed task-delegation lifecycle validation. |
+| 1 | Code-review pass handoff for API/E2E validation | N/A | No | Pass, with durable validation updates requiring code-review recheck | No | Added and ran deterministic server-managed task-delegation lifecycle validation. |
+| 2 | User requested live mixed AutoByteus + Codex task-delegation E2E | No unresolved Round 1 failures; revalidated the live boundary missing from Round 1 scope | No | Pass, with additional durable live E2E requiring code-review recheck | Yes | Added and ran gated live GraphQL/websocket E2E with AutoByteus LMStudio Qwen coordinator and Codex gpt-5.5 worker. |
 
 ## Validation Basis
 
@@ -51,6 +52,7 @@ Legacy-removal evidence:
 ## Validation Surfaces / Modes
 
 - Repository-resident deterministic integration test using `AgentTeamRunManager`, a CODEX_APP_SERVER `TeamRunBackend`, `TaskDelegationToolService`, model-facing manifest parsing/execution, `TaskDelegationRunRegistry`, task-delegation events, and websocket message mapping.
+- Repository-resident gated live mixed-runtime E2E using GraphQL team creation, websocket delivery, an AutoByteus runtime coordinator backed by LMStudio Qwen, and a Codex runtime worker using `gpt-5.5`.
 - Repository-resident manager routing tests for server-managed Codex, Claude, and Mixed member settlement run-id guards.
 - Existing unit/integration-adjacent focused test suites for runtime tool exposure, Claude MCP composition, Codex bootstrap registrations, task-delegation service invariants, member runtime instructions, mixed AutoByteus filtering, and team-run lifecycle boundary.
 - Build and legacy import sweep.
@@ -60,7 +62,8 @@ Legacy-removal evidence:
 - Host: macOS / Darwin via local shell, Node.js `v22.21.1`, pnpm `10.28.2`.
 - Server package: `autobyteus-server-ts`.
 - Shared runtime package: `autobyteus-ts` through server build `prepare:shared`.
-- Deterministic server-managed team path exercised as `CODEX_APP_SERVER` under `AgentTeamRunManager`; no live LLM transport was required for these validation assertions.
+- Deterministic server-managed team path exercised as `CODEX_APP_SERVER` under `AgentTeamRunManager` for non-live service/lifecycle assertions.
+- Live mixed-runtime task-delegation path exercised with `RUN_LMSTUDIO_E2E=1`, `RUN_CODEX_E2E=1`, `LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b`, and `CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5`; LMStudio advertised the Qwen target including `qwen/qwen3.5-35b-a3b`.
 - Server-managed member settlement guard also exercised for Codex, Claude, and Mixed managers through durable tests.
 
 ## Lifecycle / Upgrade / Restart / Migration Checks
@@ -86,7 +89,8 @@ Legacy-removal evidence:
 | VE-009 | Stale run-id guard for settlement | New integration + updated manager tests | Pass | Integration stale route reuse rejects `TARGET_MEMBER_RUN_MISMATCH`; Codex/Claude/Mixed manager tests cover settlement guard mismatch |
 | VE-010 | Old model-facing task-plan tools absent | New integration + existing `autobyteus-ts` legacy removal test + import sweep | Pass | Manifest assertion; `legacy-task-tools-removed.test.ts`; deleted module-path sweep has no matches |
 | VE-011 | Runtime projection/tool gating/instructions remain coherent | Existing focused tests | Pass | 11-file focused server Vitest suite passed, 55 tests |
-| VE-012 | Build/source integrity | Build | Pass | `pnpm -C autobyteus-server-ts build` passed |
+| VE-012 | Live mixed-runtime AutoByteus coordinator -> Codex worker task-delegation flow | New gated live E2E | Pass | `mixed-task-delegation.e2e.test.ts` with LMStudio Qwen coordinator and Codex `gpt-5.5` worker passed |
+| VE-013 | Build/source integrity | Build/typecheck | Pass | `pnpm -C autobyteus-server-ts build` and Round 2 `tsc --noEmit` passed |
 
 ## Test Scope
 
@@ -100,14 +104,14 @@ Legacy-removal evidence:
 
 - General first-party HTTP/stdio/streamable MCP hosting.
 - Durable ledger persistence or restart/recovery of task delegation ledger.
-- Live Codex/Claude LLM prompt-following E2E. The validation used deterministic server-managed runtime harnesses to avoid model nondeterminism while exercising the actual service/tool/event/lifecycle boundaries.
+- Ungated always-on live LLM prompt-following E2E in default CI. The live mixed AutoByteus/Codex E2E is durable but gated behind explicit live-run environment variables to avoid making local LMStudio/Codex access a default test prerequisite.
 - Native AutoByteus pure-team member settlement success, because native per-member settlement is explicitly unsupported for this ticket.
 
 ## Validation Setup / Environment
 
 - Working directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis`
 - Branch: `codex/runtime-tool-mcp-unification-analysis`
-- Date/time: 2026-05-29 14:30 CEST
+- Date/time: 2026-05-29 15:10 CEST
 - Dependencies were already installed in the worktree; server build regenerated Prisma client as part of `pnpm -C autobyteus-server-ts build`.
 
 ## Tests Implemented Or Updated
@@ -119,6 +123,10 @@ Legacy-removal evidence:
 - Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts`
   - Added settlement routing/guard tests for `CodexTeamManager`, `ClaudeTeamManager`, and `MixedTeamManager`.
   - Verifies settlement only targets the requested member and rejects member-run-id mismatches without retargeting by run id.
+- Added `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`
+  - Creates a real GraphQL-managed two-member team: `coordinator` uses `RuntimeKind.AUTOBYTEUS` with an LMStudio Qwen model and `worker` uses `RuntimeKind.CODEX_APP_SERVER` with `gpt-5.5`.
+  - Sends a websocket message to the coordinator that triggers `delegate_tasks`; verifies the worker receives the activation work packet, calls `update_task_status`, and the coordinator receives the framework terminal completion notification.
+  - Gates live execution behind `RUN_LMSTUDIO_E2E=1` and `RUN_CODEX_E2E=1`; without those flags the file is a skipped durable live test.
 
 ## Durable Validation Added To The Codebase
 
@@ -126,6 +134,7 @@ Legacy-removal evidence:
 - Paths added or updated:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/tests/unit/agent-team-execution/team-manager-member-interrupt.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`
 - If `Yes`, returned through `code_reviewer` before delivery: `Yes` (this report is being routed to `code_reviewer`)
 - Post-validation code review artifact: Pending code-review recheck of durable validation changes.
 
@@ -137,21 +146,23 @@ Legacy-removal evidence:
 
 - No standalone temporary files or scripts were left in the repository.
 - The deterministic managed backend is repository-resident test scaffolding inside the new integration test and is intentionally durable validation code.
+- No temporary live E2E helper scripts were left behind; the mixed-runtime live proof is captured as a gated durable test file.
 
 ## Dependencies Mocked Or Emulated
 
-- LLM runtime behavior was emulated with a deterministic server-managed `TeamRunBackend` so validation could directly assert tool calls, work-packet delivery, events, and settlement without prompt nondeterminism.
+- LLM runtime behavior was emulated with a deterministic server-managed `TeamRunBackend` for service/lifecycle coverage so validation could directly assert tool calls, work-packet delivery, events, and settlement without prompt nondeterminism.
+- Round 2 also used live LMStudio and Codex runtimes for the mixed-runtime proof requested by the user. The AutoByteus/LMStudio coordinator uses JSON tool-call parsing in the test process because the selected Qwen model emitted text JSON rather than native OpenAI-compatible `tool_calls`; this mirrors a supported AutoByteus parser mode and keeps the test deterministic enough for a live probe.
 - Prisma test database reset was performed by Vitest setup for server test runs.
 
 ## Prior Failure Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| N/A | N/A | N/A | N/A | N/A | First validation round. |
+| Round 1 | Missing live mixed AutoByteus/Codex task-delegation proof | Coverage gap identified by user, not a failing implemented scenario | Resolved | New `mixed-task-delegation.e2e.test.ts`; live command below passed | The deterministic Round 1 coverage remains valid; Round 2 adds the requested live runtime proof. |
 
 ## Scenarios Checked
 
-- VE-001 through VE-012 in the coverage matrix.
+- VE-001 through VE-013 in the coverage matrix.
 
 ## Passed
 
@@ -165,10 +176,16 @@ Commands run and passed:
    - Result: Pass, 2 files / 4 tests.
 4. `if rg "task-management/tools/task-tools/(create-tasks|create-task|assign-task-to|get-my-tasks|get-task-plan-status|update-task-status|types)" autobyteus-ts autobyteus-server-ts --glob '!dist/**' --glob '!node_modules/**'; then echo 'legacy module path sweep found matches'; exit 1; else echo 'legacy module path sweep: no matches'; fi`
    - Result: Pass, no matches.
-5. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+5. `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts -t "AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status" --no-file-parallelism`
+   - Result: Pass, 1 file / 1 live test.
+6. `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`
+   - Result: Pass, 1 file / 1 skipped test when live flags are absent.
+7. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
    - Result: Pass.
-6. `pnpm -C autobyteus-server-ts build`
+8. `pnpm -C autobyteus-server-ts build`
    - Result: Pass, including shared package builds, Prisma client generation, server build, managed messaging asset copy, and built-in agents bootstrap smoke check.
+9. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` (Round 2 after adding live E2E)
+   - Result: Pass.
 
 ## Failed
 
@@ -176,7 +193,7 @@ None.
 
 ## Not Tested / Out Of Scope
 
-- Live LLM-driven Codex/Claude team prompt-following E2E was not run; deterministic server-managed validation covered the service/tool/event/lifecycle contract without model nondeterminism.
+- Live Codex/Claude-only prompt-following E2E was not run in Round 2; the user-requested live proof was the mixed AutoByteus coordinator + Codex worker task-delegation path.
 - General external MCP transport hosting was not tested because it is explicitly out of scope for this first ticket.
 - Native AutoByteus pure-team per-member settlement success was not tested because the implementation intentionally returns `UNSUPPORTED_RUNTIME_COMMAND` for native per-member settlement.
 - Persistent task-ledger recovery across process restart was not tested because durable ledger persistence is out of scope.
@@ -188,6 +205,7 @@ None.
 ## Cleanup Performed
 
 - No temporary validation files required cleanup.
+- Live E2E attempts created temporary app-data/workspace directories under the OS temp folder; successful test cleanup removed its created directories and definitions.
 - Test commands used repository test database reset/setup managed by existing Vitest configuration.
 
 ## Classification
@@ -203,6 +221,7 @@ Because repository-resident durable validation was added/updated after the prior
 ## Evidence / Notes
 
 - New integration validation directly exercises a coordinator-context `delegate_tasks` call, worker-context `update_task_status` calls, work packet capture, dependency behavior, rejected activation behavior, task-delegation websocket projection, terminal coordinator notification, idle-triggered settlement, stale run-id settlement rejection, and manifest-level old surface absence.
+- New live E2E validation proves the requested real two-member flow: AutoByteus/LMStudio Qwen coordinator invokes `delegate_tasks`; Codex `gpt-5.5` worker receives the work packet and invokes `update_task_status`; the coordinator receives the framework terminal notification.
 - Updated manager tests verify Codex/Claude/Mixed settlement command routing and guard behavior across intended server-managed paths.
 - No invalid compatibility wrapper, dual old/new task surface, or legacy model-facing task-plan polling behavior was observed during validation.
 
@@ -210,4 +229,4 @@ Because repository-resident durable validation was added/updated after the prior
 
 - Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Notes: API/E2E/executable validation passed. Durable validation code was added/updated, so this package must return to `code_reviewer` before delivery.
+- Notes: API/E2E/executable validation passed, including the Round 2 live mixed AutoByteus/Codex task-delegation proof. Durable validation code was added/updated, so this package must return to `code_reviewer` before delivery.

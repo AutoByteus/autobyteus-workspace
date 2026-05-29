@@ -26,7 +26,7 @@ Team runs:
 1. Team services create a team run with deterministic `memberRunId` values and resolve the governing `TeamBackendKind`.
 2. Single-runtime Codex teams use `codex-team-run-backend-factory.ts` + `codex-team-manager.ts` to create/restore one standalone Codex `AgentRun` per team member.
 3. Mixed-runtime teams still run Codex members as standalone Codex `AgentRun`s, but the governing team owner is `MixedTeamManager`, not `codex-team-manager.ts`.
-4. Codex member bootstrap now consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, and `send_message_to` delivery wiring.
+4. Codex member bootstrap now consumes a runtime-neutral `MemberTeamContext` for teammate instructions, allowed recipients, `send_message_to` delivery wiring, and task-delegation identity/tool context.
 5. Team websocket streaming preserves the member domain identity while forwarding member runtime events regardless of whether the governing team backend is single-runtime Codex or mixed.
 
 Codex team communication uses the same dynamic-tool lifecycle normalization as
@@ -35,6 +35,18 @@ successful delivery is no longer represented only by `SEGMENT_START` /
 `SEGMENT_END`; the sender stream must also contain matching
 `TOOL_EXECUTION_STARTED` and terminal `TOOL_EXECUTION_SUCCEEDED` events keyed by
 the dynamic tool invocation id.
+
+Codex team task delegation is projected as dynamic tools generated from the
+server-owned task-delegation manifest. When an agent definition enables
+`delegate_tasks` and/or `update_task_status`, Codex receives those tools with
+JSON schemas derived from `src/agent-tools/task-delegation`; handlers call
+`TaskDelegationToolService` with the current `MemberTeamContext`. The Codex
+runtime does not mutate task state directly and must not expose the removed
+legacy task-plan names (`create_task`, `create_tasks`, `assign_task_to`,
+`get_my_tasks`, or `get_task_plan_status`). Activation details are pushed to
+assignees as work packets, and completion/failure is observed through
+framework task-delegation events and coordinator notifications rather than a
+model polling tool.
 
 Codex MCP tool calls exposed by the native runtime follow the same split
 surface contract. A raw `mcpToolCall` start emits a display
@@ -148,6 +160,7 @@ Team runtime:
 - `src/agent-team-execution/backends/codex/codex-team-manager.ts`
 - `src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.ts`
 - `src/agent-execution/backends/codex/team-communication/codex-send-message-dynamic-tool-registration.ts`
+- `src/agent-execution/backends/codex/task-delegation/build-task-delegation-dynamic-tool-registrations.ts`
 - `src/agent-team-execution/backends/mixed/mixed-team-manager.ts`
 
 ## Skills
@@ -226,7 +239,7 @@ Codex `thread/read` replay still maps active Codex tool item families for
 diagnostics and protocol investigation:
 
 - `dynamicToolCall` -> canonical `tool_call` rows, including team
-  `send_message_to`.
+  `send_message_to`, `delegate_tasks`, and `update_task_status`.
 - `mcpToolCall` -> canonical `tool_call` rows with server-qualified tool names
   when available, for example `functions.exec_command`.
 - `webSearch` -> `search_web`.

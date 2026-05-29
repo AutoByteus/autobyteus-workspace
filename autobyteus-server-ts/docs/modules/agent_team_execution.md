@@ -25,9 +25,9 @@ Manages running team runs, selecting the authoritative team backend, restoring p
 
 | Path | Authoritative owner | Member execution primitive | Notes |
 | --- | --- | --- | --- |
-| Single-runtime AutoByteus team | Native AutoByteus team backend | Native team runtime | Preserves existing task-plan-aware team behavior. Native member events are converted/enriched/pipelined once per backend-owned stream bridge before fanout to all server subscribers. |
-| Single-runtime Codex team | `CodexTeamManager` | One standalone Codex `AgentRun` per member | Uses runtime-neutral member bootstrap for teammate instructions and `send_message_to`. |
-| Single-runtime Claude team | `ClaudeTeamManager` | One standalone Claude `AgentRun` per member | Uses the same runtime-neutral member bootstrap contract as Codex. |
+| Single-runtime AutoByteus team | Native AutoByteus team backend | Native team runtime | Preserves native task-plan-aware team behavior while server-owned task-delegation wrappers share the canonical `delegate_tasks` / `update_task_status` command boundary. Native member events are converted/enriched/pipelined once per backend-owned stream bridge before fanout to all server subscribers. |
+| Single-runtime Codex team | `CodexTeamManager` | One standalone Codex `AgentRun` per member | Uses runtime-neutral member bootstrap for teammate instructions, `send_message_to`, and configured task-delegation dynamic tools. |
+| Single-runtime Claude team | `ClaudeTeamManager` | One standalone Claude `AgentRun` per member | Uses the same runtime-neutral member bootstrap contract as Codex, with task-delegation tools projected as first-party team MCP tools when configured. |
 | Mixed or nested-topology team | `MixedTeamManager` | Top-level member handles; agent handles own `AgentRun`s and subteam handles own child `TeamRun`s | Server-owned path for mixed-runtime and nested definitions. A top-level subteam is a first-class member, not a flattened leaf alias. |
 
 ## Nested Member Identity And Commands
@@ -114,15 +114,74 @@ Runtime/native status events, command rejection, thrown failures, termination,
 or disposal must replace or clear those overlays so clients cannot remain
 indefinitely in `initializing`.
 
+## Server-Owned Task Delegation Lifecycle
+
+Team task delegation is owned by `TaskDelegationService`, not by runtime-specific
+handlers, legacy model-facing task-plan tools, or future MCP transport code. The
+only model-facing task-delegation tools are:
+
+- `delegate_tasks`: a coordinator/delegator submits one or more bounded tasks in
+  a `tasks` array. One item is the single-task form.
+- `update_task_status`: an assignee reports `in_progress`, `completed`, or
+  `failed` for the exact `task_id` from its activation work packet.
+
+Legacy task-plan tool names (`create_task`, `create_tasks`, `assign_task_to`,
+`get_my_tasks`, `get_task_plan_status`, and the old local task-plan
+`update_task_status`) must not be exposed as a parallel model workflow. Task
+state is still held internally in a team-run-scoped delegation ledger for
+correlation, dependency readiness, deliverables, notifications, and settlement
+safety.
+
+The happy path is push-based:
+
+1. The runtime projection builds a `TaskDelegationToolContext` from the current
+   `MemberTeamContext` / native team context and calls `TaskDelegationToolService`.
+2. The service resolves the active `TeamRun`, creates ledger records, validates
+   assignees/dependencies, and groups runnable `not_started` records by assignee.
+3. `TaskDelegationActivationCoordinator` marks runnable records `queued` and
+   posts a system work packet to each assignee through `TeamRun.postMessage(...)`.
+   The packet includes task id/name/description, dependency ids, expected
+   deliverables, completion criteria, and instructions not to call `get_my_tasks`.
+4. Accepted activations emit `TASK_DELEGATION_ACTIVATED`; rejected activations
+   roll the affected records back to `not_started` and are returned to the tool
+   caller in `activationResults`.
+5. Accepted status updates emit `TASK_DELEGATION_STATUS_UPDATED` before any
+   terminal follow-up handling.
+6. Terminal `completed` / `failed` updates record summary and deliverables,
+   re-run dependency activation, emit `TASK_DELEGATION_TERMINAL_STATUS`, and
+   post a framework-generated completion notification to the delegator plus the
+   coordinator when different.
+7. Terminal updates request member settlement only after the tool call can
+   finish. `TaskDelegationSettlementCoordinator` waits for an idle/offline
+   member event, verifies the assignee still has no queued/in-progress/runnable
+   work, protects the coordinator by default, and calls
+   `TeamRun.settleMember(routeKey, memberRunId, reason)`. The member run id is a
+   stale-route guard so a later replacement member is not accidentally settled.
+
+`TASK_DELEGATION_*` events use `TeamRunEventSourceType.TASK_DELEGATION` in the
+domain stream and are flattened to WebSocket `TASK_PLAN_EVENT` messages with
+`event_type` set to `TASK_DELEGATION_ACTIVATED`,
+`TASK_DELEGATION_STATUS_UPDATED`, or `TASK_DELEGATION_TERMINAL_STATUS`. Event
+payloads carry `teamRunId`, task identity, assignee/delegator member identity,
+status, deliverables where applicable, and canonical `source_path` /
+`source_route_key` metadata from the assignee.
+
+Current settlement support is backend-specific. Codex, Claude, and Mixed team
+managers implement per-member settlement. The native AutoByteus team backend
+still reports `UNSUPPORTED_RUNTIME_COMMAND` for per-member settlement, so native
+runs keep whole-team lifecycle ownership until a native member-settlement
+boundary exists.
+
 ## Mixed-Team Communication Contract
 
-- `MemberTeamContextBuilder` creates the runtime-neutral per-member communication/bootstrap contract:
+- `MemberTeamContextBuilder` creates the runtime-neutral per-member communication/bootstrap and task-delegation contract:
   - current member identity
   - current member path/route identity
   - teammate list and allowed recipients, including subteam members when they
     are addressable at the current team boundary
   - optional team instruction
   - `send_message_to` delivery handler with optional explicit `reference_files` path references
+  - task-delegation identity inputs used by `delegate_tasks` / `update_task_status` projections
 - `InterAgentMessageRouter` / mixed delivery normalize sender and recipient
   selectors, then deliver through the receiving member handle. Agent recipients
   use the shared `AgentRun.postUserMessage(...)` boundary; subteam recipients
@@ -159,7 +218,7 @@ indefinitely in `initializing`.
   `mcp__autobyteus_team__send_message_to` are duplicate noise and must be
   suppressed before they create extra Activity rows.
 - AutoByteus standalone members participating in mixed teams receive a compatible `teamContext.communicationContext` payload through `initialCustomData`, so the shared `send_message_to` tool can work without native `AgentTeam` ownership.
-- Mixed AutoByteus standalone members explicitly strip `ToolCategory.TASK_MANAGEMENT` tools before exposure; mixed-team v1 is communication-only.
+- Mixed AutoByteus standalone members explicitly strip legacy `ToolCategory.TASK_MANAGEMENT` names before exposure, while preserving configured server-owned task-delegation tools (`delegate_tasks`, `update_task_status`).
 
 ## AutoByteus Team Event Bridge
 
@@ -214,8 +273,13 @@ indefinitely in `initializing`.
 - `src/agent-team-execution/services/agent-team-run-manager.ts` (`AgentTeamRunManager`)
 - `src/agent-team-execution/services/team-definition-topology-planner.ts`
 - `src/agent-team-execution/services/member-team-context-builder.ts`
+- `src/agent-team-execution/services/member-run-instruction-composer.ts`
 - `src/agent-team-execution/services/inter-agent-message-router.ts`
 - `src/agent-team-execution/services/team-command-status-overlay-store.ts`
+- `src/agent-team-execution/task-delegation/*`
+- `src/agent-tools/task-delegation/*`
+- `src/agent-execution/backends/codex/task-delegation/*`
+- `src/agent-execution/backends/claude/task-delegation/*`
 - `src/agent-team-execution/services/team-member-command-start-status-events.ts`
 - `src/agent-team-execution/domain/team-run-member-identity.ts`
 - `src/agent-team-execution/backends/autobyteus/autobyteus-team-member-status-projector.ts`

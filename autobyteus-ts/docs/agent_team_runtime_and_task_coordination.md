@@ -1,105 +1,136 @@
-# AutoByteus Architecture Design Document
+# Agent Team Runtime And Task Coordination
 
-## 1. System Overview
-AutoByteus is an event-driven, hierarchical multi-agent framework designed for asynchronous collaboration. It allows agents to operate concurrently, communicate via message passing, and manage complex projects through a shared Task Plan.
+## 1. Scope
 
-The core design philosophy separates **Execution** (Agents running in serialized async loops) from **Coordination** (Event-driven message routing).
+This document distinguishes the native `autobyteus-ts` team runtime from the
+server-owned bounded task-delegation workflow implemented in
+`autobyteus-server-ts`.
 
----
+The native TypeScript runtime still owns team concurrency, message routing,
+team event streaming, and an internal `TaskPlan` / `TaskNotificationMode`
+subsystem. However, the old model-facing task-plan tools are no longer the
+canonical task workflow. The removed tool names are:
 
-## 2. Runtime Architecture (Concurrency)
+- `assign_task_to`
+- `create_task`
+- `create_tasks`
+- `get_my_tasks`
+- `get_task_plan_status`
+- the old local task-plan `update_task_status`
 
-### 2.1 The Concurrency Model
-Unlike many sequential agent frameworks, AutoByteus agents run **in parallel**.
-
-*   **One Agent = One Mailbox Loop:** Every `Agent` instance (and the `TeamManager`) runs its own serialized async loop with a mailbox.
-*   **Shared Node.js Event Loop:** Agent loops run on the shared Node.js event loop; `worker_threads` are optional for CPU-heavy work.
-*   **Non-Blocking:** An agent waiting for an LLM response or executing a tool does **not** block other agents. Agent A can be generating code while Agent B is reviewing a file.
-
-### 2.2 The Event Pipeline
-Communication handles are asynchronous and queue-based:
-1.  **Agent Event Inbox:** Every agent has an `AgentEventInbox` with
-    `runtime_lifecycle`, `active_turn`, and `turn_start` lanes. The inbox
-    stores canonical typed events rather than separate message-wrapper shapes.
-2.  **Agent Scheduler:** The agent’s serialized async loop asks
-    `AgentEventScheduler` for the next dispatchable event entry. Turn-start
-    events wait while an active turn is running; active-turn tool
-    approval/result events can wake that turn.
-3.  **Turn Execution:** User and inter-agent events start one `AgentTurn` and run through `AgentTurnRunner`; lifecycle/control events are applied by the runtime loop.
-
-For the single-agent turn-loop and interrupt boundary, see
-[`agent_runtime_loop_and_interrupt.md`](agent_runtime_loop_and_interrupt.md).
+For server-managed team runs, bounded work delegation is now represented by the
+server-owned tools `delegate_tasks` and `update_task_status`.
 
 ---
 
-## 3. Team Architecture
+## 2. Native Runtime Coordination
 
-### 3.1 The Team Manager
-The `TeamManager` is the central router for a group of agents.
-*   It maintains a registry of all active nodes (Agents and Sub-Teams).
-*   It handles **On-Demand Startup**: If a message is sent to an agent that is currently sleeping or uninitialized, the Team Manager automatically starts that agent's loop before delivering the message.
+AutoByteus agents run concurrently:
 
-### 3.2 Routing
-Messages are not direct function calls between objects. They are events dispatched to the Team Manager, which then routes them to the recipient's input queue. This decoupling ensures stability even if the recipient is busy or restarting.
+- each `Agent` and `TeamManager` has a serialized mailbox loop;
+- messages are queued as events rather than direct object calls;
+- the `TeamManager` lazily starts or wakes a target member before delivering a
+  message;
+- agent, team, sub-team, and native task-plan events are multiplexed into the
+  team stream.
 
----
-
-## 4. Task Management & Notification Modes
-
-This is a critical architectural distinction that defines how work is distributed. The system supports two distinct workflows for task execution.
-
-### 4.1 The Two Workflows
-
-| Workflow | **Direct (Conversation-Driven)** | **Asynchronous (System-Driven)** |
-| :--- | :--- | :--- |
-| **Concept** | "I am telling you to do this." | "I am putting this on the board." |
-| **Primary Tool** | `assign_task_to` | `create_tasks` |
-| **Trigger** | The **Sender Agent** explicitly sends a notification message. | The **System** (TaskNotifier) detects a new runnable task. |
-| **Dependency** | None. Works out of the box. | Requires `TaskNotificationMode.SYSTEM_EVENT_DRIVEN`. |
-
-### 4.2 Task Notification Mode
-The `TaskNotificationMode` attribute in `AgentTeamConfig` acts as a "Style Selector" for the team.
-You can also set the default globally via `AUTOBYTEUS_TASK_NOTIFICATION_MODE` (`agent_manual_notification` or `system_event_driven`).
-
-*   **`AGENT_MANUAL_NOTIFICATION` (Default)**
-    *   **Behavior:** The system is passive. It maintains the Task Plan but never interrupts agents.
-    *   **Use Case:** Teams that prefer high-context chat. The Manager assigns a task and adds specific verbal instructions ("Do this, but be careful of X").
-    *   **Risk:** If a Manager creates a task but forgets to tell the worker, the worker stays idle.
-
-*   **`SYSTEM_EVENT_DRIVEN`**
-    *   **Behavior:** The system is active. A background component (`SystemEventDrivenAgentTaskNotifier`) watches the Task Plan.
-    *   **Mechanism:** When `TASKS_CREATED` is emitted, the Notifier wakes up the assigned agent and sends a generic "You have work" message.
-    *   **Use Case:** Bulk processing, automated pipelines, or "fire-and-forget" task creation using `create_tasks`.
+For conversational collaboration in native examples, coordinators should use
+`send_message_to`. That tool delivers a concrete message to a teammate and may
+include structured `reference_files`; it is not a task ledger or polling API.
 
 ---
 
-## 5. Tooling Implementation Details
+## 3. Native Internal TaskPlan
 
-### 5.1 `assign_task_to` (Direct)
-This tool performs two atomic actions sequentially:
-1.  **Write:** Adds the task to the `TaskPlan`.
-2.  **Notify:** Constructs and dispatches an `InterAgentMessageRequestEvent` to the assignee.
-*   **Result:** The assignee is guaranteed to be notified immediately by the sender.
+`autobyteus-ts` still contains internal task-plan classes and optional
+notification modes:
 
-### 5.2 `create_tasks` (Async)
-This tool performs only one action:
-1.  **Write:** Adds the tasks to the `TaskPlan`.
-*   **Result:** The tool finishes. No message is sent.
-*   **Reaction:** If System Mode is ON, the Notifier detects the change and acts as the messenger. If System Mode is OFF, the tasks sit quietly until someone manually claims them.
+- `TaskNotificationMode.AGENT_MANUAL_NOTIFICATION`
+- `TaskNotificationMode.SYSTEM_EVENT_DRIVEN`
+- `TeamContextInitializationStep` initializes a native `TaskPlan` and bridges
+  native task-plan events to the team notifier;
+- `SystemEventDrivenAgentTaskNotifier` can observe native task-plan events,
+  mark runnable tasks queued, and wake a member with a generic notification.
 
-### 5.3 `send_message_to`
-This is the generic communication primitive. It resolves the injected `TeamCommunicationContext` and asks that context to dispatch the inter-agent message. The tool also accepts optional `reference_files` absolute local paths so senders can explicitly declare files the recipient may need to inspect while keeping message `content` natural.
-
-*   **Native teams:** the communication context delegates to `TeamManager`, so the recipient is still started or awakened on demand.
-*   **Communication-only adapters:** server-owned mixed-team bridges can provide the same communication contract without exposing the full native team runtime or task-plan surfaces.
-
-Unlike `assign_task_to`, this seam is intentionally limited to communication. Task-plan creation/notification still depends on the native team runtime owners.
+This subsystem is retained for native runtime compatibility and internal event
+streams. It should not be exposed to models as a parallel task-plan tool
+workflow. If application code directly mutates the native `TaskPlan`, it is
+owning that native behavior explicitly; models should not be instructed to call
+removed task-plan tools.
 
 ---
 
-## 6. Summary for Developers
+## 4. Server-Owned Task Delegation
 
-*   **Concurrency:** You don't need to manage loops or workers. Just create Agents; the runtime handles the parallelism.
-*   **Task Assignment:**
-    *   Use `assign_task_to` if you want your agents to "talk" about the work.
-    *   Use `create_tasks` + `SYSTEM_EVENT_DRIVEN` if you want a "Project Manager" system to handle distribution automatically.
+The cross-runtime task workflow lives in `autobyteus-server-ts` and is owned by
+`TaskDelegationService` plus the server tool manifest under
+`src/agent-tools/task-delegation`.
+
+### `delegate_tasks`
+
+A coordinator/delegator creates one or more bounded tasks with a `tasks` array.
+Each task includes:
+
+- `task_name`
+- `assignee_name` (member name or member route key)
+- `description`
+- optional `dependencies` by task name or task id
+- optional `completion_criteria`
+- optional `expected_deliverables`
+
+The service creates internal ledger records, assigns stable ids such as
+`task_0001`, activates only runnable assignees, and returns created task ids plus
+activation results. A one-item `tasks` array is the single-task form; do not use
+`create_task` or `assign_task_to`.
+
+### Work packets instead of polling
+
+Activated members receive a system work packet that contains the exact task
+identity, details, dependency ids, expected deliverables, completion criteria,
+and lifecycle instructions. The packet explicitly tells the member not to call
+`get_my_tasks`; all necessary task details are pushed with the activation.
+
+### `update_task_status`
+
+The assignee reports status using the exact `task_id` from the work packet.
+Allowed model-facing statuses are:
+
+- `in_progress`
+- `completed`
+- `failed`
+
+Terminal updates should include a summary and any deliverables. The service
+validates assignee ownership, records deliverables, emits task-delegation events,
+activates newly unblocked dependent tasks, and sends a framework-generated
+completion notification to the delegator/coordinator.
+
+---
+
+## 5. Event And Settlement Semantics
+
+Server-owned task delegation is event-driven rather than model-polled:
+
+- accepted work-packet activations emit `TASK_DELEGATION_ACTIVATED`;
+- accepted status mutations emit `TASK_DELEGATION_STATUS_UPDATED`;
+- terminal completion/failure emits `TASK_DELEGATION_TERMINAL_STATUS` and posts
+  a system notification to the delegator plus the coordinator when different.
+
+After terminal status, the framework requests assignee settlement only after the
+current tool call can finish. The settlement coordinator waits for the assignee
+to become idle/offline, rechecks that no queued/in-progress/runnable delegated
+work remains for that assignee, protects the coordinator by default, and calls
+the team-run member-settlement boundary with the member route key and member run
+id as a stale-route guard.
+
+---
+
+## 6. Developer Guidance
+
+- Use `send_message_to` for free-form conversation and handoff messages.
+- Use `delegate_tasks` / `update_task_status` for bounded server-managed work
+  with ledger state, dependencies, deliverables, events, notifications, and safe
+  settlement.
+- Do not reintroduce `create_task`, `create_tasks`, `assign_task_to`,
+  `get_my_tasks`, or `get_task_plan_status` as model-facing tools.
+- If a future MCP transport is added, it should call the existing server-owned
+  task-delegation service rather than duplicating task state or behavior.

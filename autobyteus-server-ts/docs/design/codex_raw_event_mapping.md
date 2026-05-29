@@ -70,8 +70,9 @@ Normalized result:
 
 ## Dynamic Tool Lifecycle Spine
 
-For Codex dynamic tools, including team `send_message_to`, the raw
-`dynamicToolCall` item lifecycle is the authoritative execution lifecycle.
+For Codex dynamic tools, including team `send_message_to`, `delegate_tasks`,
+and `update_task_status`, the raw `dynamicToolCall` item lifecycle is the
+authoritative execution lifecycle.
 Display/conversation segments and tool execution lifecycle remain separate
 normalized surfaces.
 

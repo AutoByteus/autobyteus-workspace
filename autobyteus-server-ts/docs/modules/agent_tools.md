@@ -20,6 +20,40 @@ Browser-tool support is runtime-gated:
 - remote nodes can resolve the same Browser bridge through an in-memory runtime registration when a desktop client explicitly pairs that node with its local browser
 - browser tool exposure still stays subject to the active runtime/tool projection and the configured agent tool names
 
+## Server-Owned Task Delegation Tools
+
+The server owns the first-party bounded task-delegation surface for team runs:
+
+- `delegate_tasks`
+- `update_task_status`
+
+Canonical contracts, schemas, parsing, result serialization, team-run binding,
+and service lookup live under `src/agent-tools/task-delegation`. The model-facing
+surface is intentionally smaller than the legacy native task-plan tools:
+`create_task`, `create_tasks`, `assign_task_to`, `get_my_tasks`,
+`get_task_plan_status`, and the old local task-plan `update_task_status` are not
+part of the new delegation workflow.
+
+Runtime projection is explicit and uses the same manifest/service boundary:
+
+- AutoByteus receives thin server-owned local wrappers for the two canonical
+  tools. Mixed AutoByteus standalone members strip legacy task-management tool
+  names while preserving these canonical delegation names when configured.
+- Codex receives dynamic tool registrations built from the task-delegation
+  manifest.
+- Claude receives first-party MCP tools on the team MCP server, built from the
+  same manifest and service.
+
+All task-delegation tool calls must be bound to an active team run and current
+member identity. `delegate_tasks` creates one or more internal delegation ledger
+records, activates only runnable assignees with work packets, and returns the
+created task ids plus activation results. `update_task_status` requires the exact
+`task_id` from the work packet and accepts only `in_progress`, `completed`, or
+`failed` from models. Terminal updates can record deliverables, publish
+framework task-delegation events, notify the delegator/coordinator, activate
+newly unblocked dependent work, and request safe member settlement after the
+assignee becomes idle.
+
 ## Server-Owned Media Tools
 
 The server owns the first-party media agent-tool boundary for:
