@@ -15,25 +15,27 @@ export class TaskDelegationEventPublisher {
   publishActivated(input: {
     teamRun: TeamRun;
     teamRunId: string;
-    assignee: TaskDelegationActivationPayload["assignee"];
-    records: readonly TaskDelegationRecord[];
+    record: TaskDelegationRecord;
   }): void {
+    if (!input.record.taskAgentInstance) {
+      throw new Error(`Task '${input.record.taskId}' is missing task-agent instance identity.`);
+    }
     const payload: TaskDelegationActivationPayload = {
       teamRunId: input.teamRunId,
-      assignee: input.assignee,
-      taskIds: input.records.map((record) => record.taskId),
-      tasks: input.records.map((record) => ({
+      member: input.record.member,
+      taskAgentInstance: input.record.taskAgentInstance,
+      taskIds: [input.record.taskId],
+      tasks: [input.record].map((record) => ({
         taskId: record.taskId,
-        taskName: record.taskName,
+        taskLabel: record.taskLabel,
         status: record.status,
-        dependencyTaskIds: [...record.dependencyTaskIds],
       })),
       activatedAt: new Date().toISOString(),
     };
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: input.assignee.memberPath,
+      sourcePath: input.record.member.memberPath,
       eventType: "TASK_DELEGATION_ACTIVATED",
       payload,
     });
@@ -48,20 +50,21 @@ export class TaskDelegationEventPublisher {
     const payload: TaskDelegationStatusUpdatePayload = {
       teamRunId: input.teamRunId,
       taskId: input.record.taskId,
-      taskName: input.record.taskName,
-      assignee: input.record.assignee,
+      taskLabel: input.record.taskLabel,
+      member: input.record.member,
       delegator: input.record.delegator,
+      taskAgentInstance: input.record.taskAgentInstance,
       previousStatus: input.previousStatus,
       status: input.record.status,
-      summary: input.record.terminalSummary,
-      deliverables: input.record.deliverables,
+      message: input.record.statusMessage,
+      referenceFiles: input.record.statusReferenceFiles,
       updatedAt: input.record.updatedAt,
       terminal: isTaskDelegationTerminalStatus(input.record.status),
     };
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: input.record.assignee.memberPath,
+      sourcePath: input.record.member.memberPath,
       eventType: "TASK_DELEGATION_STATUS_UPDATED",
       payload,
     });

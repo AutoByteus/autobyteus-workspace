@@ -10,6 +10,7 @@ import {
   type DelegateTasksInput,
   type DelegateTasksResult,
   type TaskDelegationContext,
+  type TaskDelegationRecord,
   type UpdateTaskStatusInput,
   type UpdateTaskStatusResult,
 } from "./task-delegation-record.js";
@@ -59,11 +60,8 @@ export class TaskDelegationService {
     );
     return {
       createdTasks: currentRecords.map((record) => ({
-        task_id: record.taskId,
-        task_name: record.taskName,
-        assignee_name: record.assignee.memberName,
+        member_name: record.member.memberName,
         status: record.status,
-        dependency_task_ids: [...record.dependencyTaskIds],
       })),
       activationResults,
     };
@@ -74,28 +72,16 @@ export class TaskDelegationService {
     input: UpdateTaskStatusInput,
   ): Promise<UpdateTaskStatusResult> {
     this.inputResolver.assertContext(context);
-    const taskId = this.inputResolver.normalizeTaskId(input.task_id);
-    const existing = this.ledger.getRecord(taskId);
-    if (!existing) {
-      throw new TaskDelegationError("TASK_NOT_FOUND", `Delegated task '${taskId}' was not found.`);
-    }
-    if (existing.assignee.memberRouteKey !== context.caller.memberRouteKey) {
-      throw new TaskDelegationError(
-        "ASSIGNEE_MISMATCH",
-        `Only assignee '${existing.assignee.memberName}' may update delegated task '${taskId}'.`,
-      );
-    }
+    const existing = this.resolveCallerBoundRecord(context);
 
-    const deliverables = this.inputResolver.normalizeDeliverables(
-      context.caller,
-      input.deliverables,
-    );
+    const message = this.inputResolver.normalizeStatusMessage(input.message ?? null);
+    const referenceFiles = this.inputResolver.normalizeReferenceFiles(input.reference_files);
     const previousStatus = existing.status;
     const updated = this.ledger.updateStatus({
-      taskId,
+      taskId: existing.taskId,
       status: input.status,
-      summary: input.summary ?? null,
-      deliverables,
+      message,
+      referenceFiles,
     });
     this.eventPublisher.publishStatusUpdated({
       teamRun: this.teamRun,
@@ -104,40 +90,90 @@ export class TaskDelegationService {
       record: updated,
     });
 
-    let activatedTaskIds: string[] = [];
     let settlementRequested = false;
     if (isTaskDelegationTerminalStatus(updated.status)) {
-      const activationResults = await this.activationCoordinator.activateRunnableTasks(this.teamRun);
-      activatedTaskIds = activationResults
-        .filter((result) => result.accepted)
-        .flatMap((result) => result.taskIds);
       await this.completionNotifier.notifyTerminalStatus({
         teamRun: this.teamRun,
         payload: {
           teamRunId: context.teamRunId,
           taskId: updated.taskId,
-          taskName: updated.taskName,
-          assignee: updated.assignee,
+          taskLabel: updated.taskLabel,
+          member: updated.member,
           delegator: updated.delegator,
+          taskAgentInstance: updated.taskAgentInstance,
           status: updated.status,
-          summary: updated.terminalSummary,
-          deliverables: updated.deliverables,
+          message: updated.statusMessage,
+          referenceFiles: updated.statusReferenceFiles,
           completedAt: updated.terminalAt ?? updated.updatedAt,
-          activatedTaskIds,
         },
         coordinatorMemberRouteKey: context.coordinatorMemberRouteKey ?? null,
       });
-      settlementRequested = this.settlementCoordinator.requestSettlement(updated.assignee);
+      settlementRequested = this.settlementCoordinator.requestSettlement(updated.taskAgentInstance);
     }
 
     return {
-      task_id: updated.taskId,
-      task_name: updated.taskName,
       status: updated.status,
       terminal: isTaskDelegationTerminalStatus(updated.status),
-      deliverables_count: updated.deliverables.length,
-      activated_task_ids: activatedTaskIds,
+      message: updated.statusMessage,
+      reference_files_count: updated.statusReferenceFiles.length,
       settlement_requested: settlementRequested,
     };
+  }
+
+  private resolveCallerBoundRecord(context: TaskDelegationContext): TaskDelegationRecord {
+    const callerTaskAgentRunId = context.caller.taskAgentRunId?.trim() || context.caller.memberRunId.trim();
+    if (!callerTaskAgentRunId) {
+      throw new TaskDelegationError(
+        "TASK_AGENT_CONTEXT_REQUIRED",
+        "update_task_status requires a task-agent instance context.",
+      );
+    }
+    const records = this.ledger.listRecordsForTaskAgentRun(callerTaskAgentRunId);
+    if (records.length === 0) {
+      throw new TaskDelegationError(
+        "TASK_AGENT_NOT_BOUND",
+        `Task-agent run '${callerTaskAgentRunId}' is not bound to an active delegated task.`,
+      );
+    }
+    if (records.length > 1) {
+      throw new TaskDelegationError(
+        "TASK_AGENT_AMBIGUOUS",
+        `Task-agent run '${callerTaskAgentRunId}' is bound to ${records.length} delegated tasks; update_task_status requires exactly one bound task.`,
+      );
+    }
+    const record = records[0]!;
+    const callerLogicalRouteKey =
+      context.caller.logicalMemberRouteKey?.trim() || context.caller.memberRouteKey;
+    if (record.member.memberRouteKey !== callerLogicalRouteKey) {
+      throw new TaskDelegationError(
+        "MEMBER_MISMATCH",
+        `Only member '${record.member.memberName}' may update the bound delegated task.`,
+      );
+    }
+    const taskAgentInstance = record.taskAgentInstance;
+    if (!taskAgentInstance) {
+      throw new TaskDelegationError(
+        "TASK_NOT_ACTIVATED",
+        `Delegated task '${record.taskId}' is not bound to a task-agent instance.`,
+      );
+    }
+    const callerTaskAgentInstanceId = context.caller.taskAgentInstanceId?.trim();
+    if (
+      callerTaskAgentInstanceId &&
+      callerTaskAgentInstanceId !== taskAgentInstance.taskAgentInstanceId
+    ) {
+      throw new TaskDelegationError(
+        "TASK_AGENT_MISMATCH",
+        `Delegated task '${record.taskId}' belongs to task-agent instance '${taskAgentInstance.taskAgentInstanceId}'.`,
+      );
+    }
+    const callerTaskId = context.caller.taskId?.trim();
+    if (callerTaskId && callerTaskId !== record.taskId) {
+      throw new TaskDelegationError(
+        "TASK_AGENT_MISMATCH",
+        `Caller task-agent context is bound to task '${callerTaskId}', not '${record.taskId}'.`,
+      );
+    }
+    return record;
   }
 }

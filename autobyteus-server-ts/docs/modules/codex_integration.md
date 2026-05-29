@@ -44,7 +44,7 @@ JSON schemas derived from `src/agent-tools/task-delegation`; handlers call
 runtime does not mutate task state directly and must not expose the removed
 legacy task-plan names (`create_task`, `create_tasks`, `assign_task_to`,
 `get_my_tasks`, or `get_task_plan_status`). Activation details are pushed to
-assignees as work packets, and completion/failure is observed through
+task-agent instances as work packets, and completion/failure is observed through
 framework task-delegation events and coordinator notifications rather than a
 model polling tool.
 
@@ -286,7 +286,14 @@ conversation is being applied.
 - Durable long-turn attribution probes live under `tests/integration/runtime-execution/codex-app-server/thread/`.
 - `codex-raw-vs-backend-cadence.probe.test.ts` compares native raw `item/agentMessage/delta` cadence with backend `SEGMENT_CONTENT` cadence in the same run.
 - `codex-long-turn-cadence.probe.test.ts` records backend long-turn event cadence over time.
-- These live probes are intentionally opt-in and require both a working `codex` binary and `RUN_CODEX_E2E=1`.
+- `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` is the gated live
+  mixed-runtime task-delegation proof. The default command
+  `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`
+  should skip when live flags are absent. To exercise the live path, run with a
+  working LMStudio Qwen model and Codex `gpt-5.5`, for example:
+  `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts -t "AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status" --no-file-parallelism`.
+- These live probes are intentionally opt-in and require the matching local
+  runtime prerequisites; they must not become default CI prerequisites.
 
 ## MCP Mode
 

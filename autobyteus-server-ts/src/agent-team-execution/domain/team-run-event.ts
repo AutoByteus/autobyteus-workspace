@@ -1,6 +1,7 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { TaskAgentInstanceIdentity } from "./task-agent-instance.js";
 import type { TeamMemberAddress, TeamRepresentedSubTeam } from "./inter-agent-message-delivery.js";
 import { buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
 
@@ -25,6 +26,7 @@ export type TeamRunAgentEventPayload = {
   memberPath: string[];
   memberRouteKey: string;
   agentEvent: AgentRunEvent;
+  taskAgentInstance?: TaskAgentInstanceIdentity | null;
 };
 
 export type TeamRunTaskPlanEventPayload = Record<string, unknown>;

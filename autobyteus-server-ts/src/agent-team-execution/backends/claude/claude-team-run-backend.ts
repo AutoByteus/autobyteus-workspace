@@ -7,6 +7,7 @@ import type { TeamRunBackend } from "../team-run-backend.js";
 import type { TeamManager } from "../team-manager.js";
 import type { ClaudeTeamRunContextEnvelope } from "./claude-team-run-context.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
+import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
 
 export type ClaudeTeamRunBackendOptions = {
   claudeTeamManager: TeamManager;
@@ -177,6 +178,38 @@ export class ClaudeTeamRunBackend implements TeamRunBackend {
       );
     } catch (error) {
       return buildCommandFailure("settle team member", error);
+    }
+  }
+
+  async startTaskAgentInstance(
+    request: StartTaskAgentInstanceRequest,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.runId);
+    }
+    try {
+      return await this.options.claudeTeamManager.startTaskAgentInstance(request);
+    } catch (error) {
+      return buildCommandFailure("start task-agent instance", error);
+    }
+  }
+
+  async settleTaskAgentInstance(
+    logicalMemberRouteKey: string,
+    taskAgentRunId: string,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.runId);
+    }
+    try {
+      return await this.options.claudeTeamManager.settleTaskAgentInstance(
+        logicalMemberRouteKey,
+        taskAgentRunId,
+        reason,
+      );
+    } catch (error) {
+      return buildCommandFailure("settle task-agent instance", error);
     }
   }
 

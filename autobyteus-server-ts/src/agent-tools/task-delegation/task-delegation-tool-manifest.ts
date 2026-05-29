@@ -37,7 +37,7 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
   {
     name: DELEGATE_TASKS_TOOL_NAME,
     description:
-      "Delegate one or more bounded tasks to team members. The framework records the tasks, activates runnable assignees with work packets, and reports terminal results back to the delegator.",
+      "Delegate one or more rich task work-packet envelopes to exact logical team members. Every task item requires member_name and a non-empty description with enough work detail for task-agent activation.",
     parameterSchema: buildTaskDelegationToolParameterSchema(DELEGATE_TASKS_TOOL_NAME),
     parseInput: parseDelegateTasksInput,
     execute: (service, context, input) =>
@@ -46,7 +46,7 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
   {
     name: UPDATE_TASK_STATUS_TOOL_NAME,
     description:
-      "Report progress or terminal completion/failure for a delegated task by exact task_id from the work packet. Include summary and deliverables on terminal updates.",
+      "Report progress or terminal completion/failure for the delegated task bound to this task-agent instance. Do not pass task selectors; include optional message and reference_files when useful.",
     parameterSchema: buildTaskDelegationToolParameterSchema(UPDATE_TASK_STATUS_TOOL_NAME),
     parseInput: parseUpdateTaskStatusInput,
     execute: (service, context, input) =>

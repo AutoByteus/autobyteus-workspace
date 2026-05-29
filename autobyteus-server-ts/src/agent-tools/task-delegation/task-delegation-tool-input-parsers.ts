@@ -9,29 +9,20 @@ const nonEmptyString = (fieldName: string) =>
   z.string().trim().min(1, `${fieldName} is required`);
 
 const TaskInputSchema = z.object({
-  task_name: nonEmptyString("task_name"),
-  assignee_name: nonEmptyString("assignee_name"),
+  member_name: nonEmptyString("member_name"),
   description: nonEmptyString("description"),
-  dependencies: z.array(nonEmptyString("dependency")).default([]),
-  completion_criteria: z.string().trim().optional().nullable(),
-  expected_deliverables: z.array(nonEmptyString("expected_deliverables item")).default([]),
-});
+  reference_files: z.array(nonEmptyString("reference_files item")).default([]),
+}).strict();
 
 const DelegateTasksInputSchema = z.object({
   tasks: z.array(TaskInputSchema).min(1, "delegate_tasks requires at least one task"),
-});
-
-const DeliverableInputSchema = z.object({
-  file_path: nonEmptyString("deliverables.file_path"),
-  summary: nonEmptyString("deliverables.summary"),
-});
+}).strict();
 
 const UpdateTaskStatusInputSchema = z.object({
-  task_id: nonEmptyString("task_id"),
   status: z.enum(TASK_DELEGATION_MODEL_TOOL_STATUSES),
-  summary: z.string().trim().optional().nullable(),
-  deliverables: z.array(DeliverableInputSchema).default([]),
-});
+  message: z.string().trim().optional().nullable(),
+  reference_files: z.array(nonEmptyString("reference_files item")).default([]),
+}).strict();
 
 const parseZodIssues = (error: z.ZodError): string =>
   error.issues.map((issue) => issue.message).join("; ");

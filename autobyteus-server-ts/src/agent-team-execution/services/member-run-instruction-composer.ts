@@ -63,11 +63,12 @@ export const composeMemberRunInstructions = (
       runtimeLines.push("");
     }
     runtimeLines.push("Task delegation protocol");
-    runtimeLines.push("- Use `delegate_tasks` to assign bounded work to team members; use a one-item `tasks` list for a single task.");
+    runtimeLines.push("- Use `delegate_tasks` to assign bounded work to exact logical team members; use a one-item `tasks` list for a single task.");
     runtimeLines.push("- Do not use `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or `assign_task_to`; they are not part of this delegation workflow.");
-    runtimeLines.push("- Activated assignees receive task details directly in a work packet, including the exact `task_id` to use.");
-    runtimeLines.push("- Use `update_task_status` with the exact `task_id` to report `in_progress`, `completed`, or `failed`; include a summary and deliverables for terminal status.");
-    runtimeLines.push("- After terminal status is accepted, the framework notifies the delegator and may settle the assignee if no delegated work remains.");
+    runtimeLines.push("- Each `delegate_tasks` task item must include `member_name` and rich `description`; do not pass task_name, assignee_name, dependencies, completion_criteria, or expected_deliverables.");
+    runtimeLines.push("- Activated task-agent instances receive task details directly in a work packet. `update_task_status` is bound to that task-agent instance and does not take task_id or task_name.");
+    runtimeLines.push("- Use `update_task_status` with only `status` to report `in_progress`, `completed`, or `failed`; include optional `message` and `reference_files` for status context.");
+    runtimeLines.push("- After terminal status is accepted, the framework notifies the delegator and must settle or exit the final task-agent instance after that instance becomes idle and no delegated work remains for that instance.");
   }
 
   return {

@@ -16,7 +16,7 @@ import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { selectorToRouteKey, type TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import { TeamRunContext, type RuntimeTeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import { TeamRunEventSourceType, type TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { TeamRunEventSourceType, type TeamRunEvent, type TeamRunEventListener } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { registerChannelIngressRoutes } from "../../../src/api/rest/channel-ingress.js";
@@ -272,7 +272,11 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
 
   async approveToolInvocation(): Promise<AgentOperationResult> { return { accepted: true }; }
   async interruptMember(): Promise<AgentOperationResult> { return { accepted: true }; }
+  async settleMember(): Promise<AgentOperationResult> { return { accepted: true }; }
+  async startTaskAgentInstance(): Promise<AgentOperationResult> { return { accepted: true }; }
+  async settleTaskAgentInstance(): Promise<AgentOperationResult> { return { accepted: true }; }
   async terminate(): Promise<AgentOperationResult> { this.active = false; return { accepted: true }; }
+  publishEvent(event: TeamRunEvent): void { for (const listener of this.listeners) listener(event); }
 
   private emitTextTurn(memberName: string, memberRunId: string, turnId: string, text: string): void {
     this.emitFinalPrecedenceTurn(memberName, memberRunId, turnId, [text], text);

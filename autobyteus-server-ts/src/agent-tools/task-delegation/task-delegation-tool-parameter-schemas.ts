@@ -11,57 +11,23 @@ import {
 
 const buildTaskItemSchema = (): ParameterSchema => new ParameterSchema([
   new ParameterDefinition({
-    name: "task_name",
+    name: "member_name",
     type: ParameterType.STRING,
-    description: "A unique, descriptive task name within this delegation ledger.",
-    required: true,
-  }),
-  new ParameterDefinition({
-    name: "assignee_name",
-    type: ParameterType.STRING,
-    description: "The exact team member name or member route key to receive this task.",
+    description: "Exact logical team member/template name from the current team roster to receive this delegated task.",
     required: true,
   }),
   new ParameterDefinition({
     name: "description",
     type: ParameterType.STRING,
-    description: "The full work packet description and context for the assignee.",
+    description: "Required rich work-packet body with objective, context, scope, constraints, done conditions, and expected output guidance. Put all task instructions here.",
     required: true,
   }),
   new ParameterDefinition({
-    name: "dependencies",
+    name: "reference_files",
     type: ParameterType.ARRAY,
-    description: "Optional task IDs or task names that must complete before this task runs.",
+    description: "Optional file/artifact paths or references the task-agent should inspect.",
     required: false,
     arrayItemSchema: { type: "string" },
-  }),
-  new ParameterDefinition({
-    name: "completion_criteria",
-    type: ParameterType.STRING,
-    description: "Optional concrete criteria the assignee should satisfy before reporting completion.",
-    required: false,
-  }),
-  new ParameterDefinition({
-    name: "expected_deliverables",
-    type: ParameterType.ARRAY,
-    description: "Optional expected deliverable names or descriptions.",
-    required: false,
-    arrayItemSchema: { type: "string" },
-  }),
-]);
-
-const buildDeliverableSchema = (): ParameterSchema => new ParameterSchema([
-  new ParameterDefinition({
-    name: "file_path",
-    type: ParameterType.STRING,
-    description: "Path to a file or artifact produced for this task.",
-    required: true,
-  }),
-  new ParameterDefinition({
-    name: "summary",
-    type: ParameterType.STRING,
-    description: "Short summary of the deliverable content or change.",
-    required: true,
   }),
 ]);
 
@@ -70,7 +36,7 @@ export const buildDelegateTasksParameterSchema = (): ParameterSchema =>
     new ParameterDefinition({
       name: "tasks",
       type: ParameterType.ARRAY,
-      description: "One or more tasks to delegate. Use a one-item list for a single task.",
+      description: "One or more rich task envelopes to delegate. Each item must include member_name and non-empty description.",
       required: true,
       arrayItemSchema: buildTaskItemSchema(),
     }),
@@ -79,12 +45,6 @@ export const buildDelegateTasksParameterSchema = (): ParameterSchema =>
 export const buildUpdateTaskStatusParameterSchema = (): ParameterSchema =>
   new ParameterSchema([
     new ParameterDefinition({
-      name: "task_id",
-      type: ParameterType.STRING,
-      description: "Exact task_id from the activation work packet.",
-      required: true,
-    }),
-    new ParameterDefinition({
       name: "status",
       type: ParameterType.ENUM,
       description: "New task status. Use completed or failed for terminal reporting.",
@@ -92,17 +52,17 @@ export const buildUpdateTaskStatusParameterSchema = (): ParameterSchema =>
       enumValues: ["in_progress", "completed", "failed"],
     }),
     new ParameterDefinition({
-      name: "summary",
+      name: "message",
       type: ParameterType.STRING,
-      description: "Optional progress/completion/failure summary.",
+      description: "Optional progress, completion, or failure message for the delegated task bound to this task-agent instance.",
       required: false,
     }),
     new ParameterDefinition({
-      name: "deliverables",
+      name: "reference_files",
       type: ParameterType.ARRAY,
-      description: "Optional file or artifact deliverables submitted with this update.",
+      description: "Optional file or artifact paths relevant to this status update.",
       required: false,
-      arrayItemSchema: buildDeliverableSchema(),
+      arrayItemSchema: { type: "string" },
     }),
   ]);
 

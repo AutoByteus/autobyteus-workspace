@@ -1,4 +1,5 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { TaskAgentInstanceIdentity } from "./task-agent-instance.js";
 import type {
   InterAgentMessageDeliveryHandler,
   InterAgentMessageParticipant,
@@ -90,6 +91,7 @@ export class MemberTeamContext {
   readonly allowedRecipientNames: string[];
   readonly sendMessageToEnabled: boolean;
   readonly deliverInterAgentMessage: InterAgentMessageDeliveryHandler | null;
+  readonly taskAgentInstance: TaskAgentInstanceIdentity | null;
 
   constructor(input: {
     teamRunId: string;
@@ -108,6 +110,7 @@ export class MemberTeamContext {
     allowedRecipientNames?: string[] | null;
     sendMessageToEnabled?: boolean;
     deliverInterAgentMessage?: InterAgentMessageDeliveryHandler | null;
+    taskAgentInstance?: TaskAgentInstanceIdentity | null;
   }) {
     this.teamRunId = input.teamRunId;
     this.teamDefinitionId = input.teamDefinitionId;
@@ -125,5 +128,6 @@ export class MemberTeamContext {
     this.allowedRecipientNames = [...(input.allowedRecipientNames ?? this.communicationRecipients.map((recipient) => recipient.recipientName))];
     this.sendMessageToEnabled = Boolean(input.sendMessageToEnabled);
     this.deliverInterAgentMessage = input.deliverInterAgentMessage ?? null;
+    this.taskAgentInstance = input.taskAgentInstance ?? null;
   }
 }

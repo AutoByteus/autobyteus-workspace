@@ -7,6 +7,7 @@ import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/te
 import type { TeamBackendKind } from "../domain/team-backend-kind.js";
 import type { AgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
 import type { TeamStatusPayload } from "../domain/team-status-payload.js";
+import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instance.js";
 
 export interface TeamRunBackend {
   readonly runId: string;
@@ -37,6 +38,14 @@ export interface TeamRunBackend {
   settleMember(
     targetMemberRouteKey: string,
     targetMemberRunId?: string | null,
+    reason?: string | null,
+  ): Promise<AgentOperationResult>;
+  startTaskAgentInstance(
+    request: StartTaskAgentInstanceRequest,
+  ): Promise<AgentOperationResult>;
+  settleTaskAgentInstance(
+    logicalMemberRouteKey: string,
+    taskAgentRunId: string,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;

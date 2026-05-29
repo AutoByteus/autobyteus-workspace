@@ -4,6 +4,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import type { AgentStatusPayload } from "../../../agent-execution/domain/agent-status-payload.js";
 import { deriveTeamApiStatus } from "../../domain/team-status-aggregation.js";
 import type { RuntimeTeamRunContext } from "../../domain/team-run-context.js";
+import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
 import type { AutoByteusTeamMemberContext } from "./autobyteus-team-run-context.js";
 import type { InterAgentMessageDeliveryRequest } from "../../domain/inter-agent-message-delivery.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
@@ -263,6 +264,28 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
       accepted: false,
       code: "UNSUPPORTED_RUNTIME_COMMAND",
       message: "Native Autobyteus team does not expose per-member settlement.",
+    };
+  }
+
+  async startTaskAgentInstance(
+    _request: StartTaskAgentInstanceRequest,
+  ): Promise<AgentOperationResult> {
+    return {
+      accepted: false,
+      code: "UNSUPPORTED_RUNTIME_COMMAND",
+      message: "Native Autobyteus team does not expose task-agent instance start.",
+    };
+  }
+
+  async settleTaskAgentInstance(
+    _logicalMemberRouteKey: string,
+    _taskAgentRunId: string,
+    _reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    return {
+      accepted: false,
+      code: "UNSUPPORTED_RUNTIME_COMMAND",
+      message: "Native Autobyteus team does not expose task-agent instance settlement.",
     };
   }
 

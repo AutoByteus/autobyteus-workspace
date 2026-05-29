@@ -46,13 +46,13 @@ Runtime projection is explicit and uses the same manifest/service boundary:
 
 All task-delegation tool calls must be bound to an active team run and current
 member identity. `delegate_tasks` creates one or more internal delegation ledger
-records, activates only runnable assignees with work packets, and returns the
-created task ids plus activation results. `update_task_status` requires the exact
-`task_id` from the work packet and accepts only `in_progress`, `completed`, or
-`failed` from models. Terminal updates can record deliverables, publish
-framework task-delegation events, notify the delegator/coordinator, activate
-newly unblocked dependent work, and request safe member settlement after the
-assignee becomes idle.
+records from `member_name`/`description` work-packet inputs and starts runnable
+task-agent instances with direct work packets. `update_task_status` is bound to
+the calling task-agent instance and accepts only `status`, optional `message`,
+and optional `reference_files` from models. Terminal updates can record result
+context, publish framework task-delegation events, notify the
+delegator/coordinator, and request safe task-agent settlement after the bound
+instance becomes idle.
 
 ## Server-Owned Media Tools
 

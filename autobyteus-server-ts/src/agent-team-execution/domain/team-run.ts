@@ -21,6 +21,7 @@ import {
   type TeamRunStatusUpdateData,
 } from "./team-run-event.js";
 import type { TeamStatusPayload } from "./team-status-payload.js";
+import type { StartTaskAgentInstanceRequest } from "./task-agent-instance.js";
 
 type TeamRunOptions = {
   context?: TeamRunContext<RuntimeTeamRunContext>;
@@ -144,6 +145,33 @@ export class TeamRun {
     return this.backend.settleMember(
       normalizedTargetMemberRouteKey,
       targetMemberRunId,
+      reason,
+    );
+  }
+
+  async startTaskAgentInstance(
+    request: StartTaskAgentInstanceRequest,
+  ): Promise<AgentOperationResult> {
+    return this.backend.startTaskAgentInstance(request);
+  }
+
+  async settleTaskAgentInstance(
+    logicalMemberRouteKey: string,
+    taskAgentRunId: string,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    const normalizedLogicalMemberRouteKey = logicalMemberRouteKey.trim();
+    const normalizedTaskAgentRunId = taskAgentRunId.trim();
+    if (!normalizedLogicalMemberRouteKey || !normalizedTaskAgentRunId) {
+      return {
+        accepted: false,
+        code: "TASK_AGENT_TARGET_REQUIRED",
+        message: "logicalMemberRouteKey and taskAgentRunId are required.",
+      };
+    }
+    return this.backend.settleTaskAgentInstance(
+      normalizedLogicalMemberRouteKey,
+      normalizedTaskAgentRunId,
       reason,
     );
   }

@@ -1,27 +1,13 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type { TeamRun } from "../domain/team-run.js";
-import { selectorFromMemberRouteKey } from "../domain/team-run-member-identity.js";
 import type { TaskDelegationLedger } from "./task-delegation-ledger.js";
 import type {
   TaskDelegationActivationResult,
-  TaskDelegationRecord,
 } from "./task-delegation-record.js";
+import { buildTaskAgentInstanceIdentity } from "./task-agent-instance-identity.js";
 import { TaskDelegationEventPublisher } from "./task-delegation-event-publisher.js";
 import { TaskDelegationWorkPacketRenderer } from "./task-delegation-work-packet-renderer.js";
-
-const groupByAssigneeRouteKey = (
-  records: readonly TaskDelegationRecord[],
-): Map<string, TaskDelegationRecord[]> => {
-  const grouped = new Map<string, TaskDelegationRecord[]>();
-  for (const record of records) {
-    const key = record.assignee.memberRouteKey;
-    const existing = grouped.get(key) ?? [];
-    existing.push(record);
-    grouped.set(key, existing);
-  }
-  return grouped;
-};
 
 export class TaskDelegationActivationCoordinator {
   constructor(
@@ -35,40 +21,52 @@ export class TaskDelegationActivationCoordinator {
     if (runnable.length === 0) {
       return [];
     }
-    const queued = this.ledger.markQueued(runnable.map((record) => record.taskId));
-    const grouped = groupByAssigneeRouteKey(queued);
     const results: TaskDelegationActivationResult[] = [];
 
-    for (const records of grouped.values()) {
-      const assignee = records[0].assignee;
+    for (const runnableRecord of runnable) {
+      const taskAgentInstance = buildTaskAgentInstanceIdentity({
+        teamRunId: this.ledger.teamRunId,
+        taskId: runnableRecord.taskId,
+        logicalMember: runnableRecord.member,
+      });
+      const queued = this.ledger.markQueued(
+        [runnableRecord.taskId],
+        new Map([[runnableRecord.taskId, taskAgentInstance]]),
+      );
+      if (queued.length === 0) {
+        continue;
+      }
+      const record = queued[0];
       const message = new AgentInputUserMessage(
-        this.renderer.render(records),
+        this.renderer.render([record]),
         SenderType.SYSTEM,
         null,
         {
           sender_id: "system.task_delegation",
           team_run_id: this.ledger.teamRunId,
-          task_ids: records.map((record) => record.taskId),
+          task_id: record.taskId,
+          task_ids: [record.taskId],
+          task_agent_instance_id: taskAgentInstance.taskAgentInstanceId,
+          task_agent_run_id: taskAgentInstance.taskAgentRunId,
           message_type: "task_delegation_work_packet",
         },
       );
-      const result = await teamRun.postMessage(
+      const result = await teamRun.startTaskAgentInstance({
+        identity: taskAgentInstance,
         message,
-        selectorFromMemberRouteKey(assignee.memberRouteKey),
-      );
+      });
       if (!result.accepted) {
-        this.ledger.markNotStarted(records.map((record) => record.taskId));
+        this.ledger.markNotStarted([record.taskId]);
       } else {
         this.eventPublisher.publishActivated({
           teamRun,
           teamRunId: this.ledger.teamRunId,
-          assignee,
-          records,
+          record,
         });
       }
       results.push({
-        assignee,
-        taskIds: records.map((record) => record.taskId),
+        memberName: record.member.memberName,
+        taskCount: 1,
         accepted: result.accepted,
         message: result.message ?? null,
       });

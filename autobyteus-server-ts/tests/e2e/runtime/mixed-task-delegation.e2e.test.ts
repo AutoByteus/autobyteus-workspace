@@ -12,6 +12,8 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { loadAllAgentTools } from "../../../src/startup/agent-tool-loader.js";
@@ -103,6 +105,58 @@ const flattenMemberMetadata = (metadata: Record<string, unknown>): TeamMemberMet
   };
   visit(Array.isArray(metadata.memberTree) ? metadata.memberTree : []);
   return flattened;
+};
+
+const waitForSettledTaskAgentSnapshot = async (input: {
+  teamRunId: string;
+  memberRouteKey: string;
+  taskAgentRunId: string;
+  timeoutMs?: number;
+}): Promise<void> => {
+  const teamRunManager = AgentTeamRunManager.getInstance();
+  const agentRunManager = AgentRunManager.getInstance();
+  const deadline = Date.now() + (input.timeoutMs ?? 120_000);
+  let lastLogicalSnapshot: unknown = null;
+  let lastTaskAgentSnapshot: unknown = null;
+  let lastActiveRun = true;
+  while (Date.now() < deadline) {
+    const teamRun = teamRunManager.getTeamRun(input.teamRunId);
+    const snapshots = teamRun?.getMemberStatusSnapshots() ?? [];
+    const logicalSnapshot = snapshots.find(
+      (candidate) =>
+        candidate.member_route_key === input.memberRouteKey &&
+        !candidate.task_agent_run_id,
+    ) ?? null;
+    const taskAgentSnapshot = snapshots.find(
+      (candidate) => candidate.task_agent_run_id === input.taskAgentRunId,
+    ) ?? null;
+    lastLogicalSnapshot = logicalSnapshot;
+    lastTaskAgentSnapshot = taskAgentSnapshot;
+    const activeRun = agentRunManager.getActiveRun(input.taskAgentRunId);
+    lastActiveRun = Boolean(activeRun);
+    if (logicalSnapshot?.status === "offline" && !taskAgentSnapshot && !activeRun) {
+      return;
+    }
+    await wait(500);
+  }
+  throw new Error(
+    `Timed out waiting for task-agent '${input.taskAgentRunId}' for member '${input.memberRouteKey}' to settle. lastLogicalSnapshot=${JSON.stringify(lastLogicalSnapshot)} lastTaskAgentSnapshot=${JSON.stringify(lastTaskAgentSnapshot)} activeRun=${lastActiveRun}`,
+  );
+};
+
+const extractTaskAgentRunIdFromActivation = (message: WsMessage): string => {
+  const taskAgentInstance = message.payload.taskAgentInstance;
+  if (taskAgentInstance && typeof taskAgentInstance === "object" && !Array.isArray(taskAgentInstance)) {
+    const taskAgentRunId = (taskAgentInstance as Record<string, unknown>).taskAgentRunId;
+    if (typeof taskAgentRunId === "string" && taskAgentRunId.trim()) {
+      return taskAgentRunId;
+    }
+  }
+  const taskAgentRunId = message.payload.task_agent_run_id;
+  if (typeof taskAgentRunId === "string" && taskAgentRunId.trim()) {
+    return taskAgentRunId;
+  }
+  throw new Error(`Activation payload did not include a task-agent run id: ${JSON.stringify(message.payload)}`);
 };
 
 describeLive("Live mixed-runtime task delegation e2e", () => {
@@ -228,7 +282,7 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
       name: `mixed-task-worker-${unique}`,
       description: "Codex worker for live task delegation E2E.",
       toolNames: ["update_task_status"],
-      instructions: `When you receive a delegated task work packet, immediately call update_task_status exactly once using the exact task_id from the packet, status="completed", summary="${completionToken}", and deliverables=[]. Do not run shell commands or create files.`,
+      instructions: `When you receive a delegated task work packet, immediately call update_task_status exactly once with status="completed", message="${completionToken}", and reference_files=[]. Do not pass task_id or task_name. Do not run shell commands or create files.`,
     });
 
     const teamDefinition = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
@@ -275,10 +329,17 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
     );
     const members = flattenMemberMetadata(resume.getTeamRunResumeConfig.metadata);
     expect(members.find((member) => member.memberName === "coordinator")).toMatchObject({ runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: autoByteusModel });
-    expect(members.find((member) => member.memberName === "worker")).toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: codexModel });
+    const workerMember = members.find((member) => member.memberName === "worker");
+    expect(workerMember).toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: codexModel });
 
-    const taskName = `live-mixed-task-${unique}`;
-    const delegateArgs = { tasks: [{ task_name: taskName, assignee_name: "worker", description: `Complete by reporting summary ${completionToken}.`, dependencies: [], completion_criteria: completionToken, expected_deliverables: [] }] };
+    const delegateArgs = {
+      tasks: [
+        {
+          member_name: "worker",
+          description: `Complete this delegated validation task by reporting message ${completionToken}. Done condition: call update_task_status once with status="completed", message="${completionToken}", and reference_files=[].`,
+        },
+      ],
+    };
     const connection = await openTeamSocket(teamRunId);
     try {
       const startIndex = connection.messages.length;
@@ -296,18 +357,31 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
         "task delegation activation event", 120_000,
       );
       const taskId = (activation.payload.taskIds as string[])[0];
+      const taskAgentRunId = extractTaskAgentRunIdFromActivation(activation);
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
         message.type === "TOOL_EXECUTION_SUCCEEDED" && message.payload.agent_name === "worker" && message.payload.tool_name === "update_task_status",
         "worker update_task_status success", 240_000,
       );
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
-        message.type === "TASK_PLAN_EVENT" && message.payload.event_type === "TASK_DELEGATION_TERMINAL_STATUS" && message.payload.taskId === taskId && message.payload.taskName === taskName && message.payload.status === "completed" && JSON.stringify(message.payload).includes(completionToken),
+        message.type === "TASK_PLAN_EVENT" && message.payload.event_type === "TASK_DELEGATION_TERMINAL_STATUS" && message.payload.taskId === taskId && message.payload.status === "completed" && JSON.stringify(message.payload).includes(completionToken),
         "task delegation terminal event", 120_000,
       );
       await waitForMessageAfter(connection.messages, startIndex, (message) =>
         message.type === "EXTERNAL_USER_MESSAGE" && message.payload.agent_name === "coordinator" && typeof message.payload.content === "string" && message.payload.content.includes("Delegated task completed.") && message.payload.content.includes(taskId) && message.payload.content.includes(completionToken),
         "coordinator task completion notification", 120_000,
       );
+      await waitForMessageAfter(connection.messages, startIndex, (message) =>
+        message.type === "AGENT_STATUS" &&
+          message.payload.agent_name === "worker" &&
+          message.payload.status === "offline" &&
+          message.payload.task_agent_run_id === taskAgentRunId,
+        "worker offline after final delegated task", 120_000,
+      );
+      await waitForSettledTaskAgentSnapshot({
+        teamRunId,
+        memberRouteKey: "worker",
+        taskAgentRunId,
+      });
     } finally {
       connection.socket.close();
       await connection.streamApp.close();

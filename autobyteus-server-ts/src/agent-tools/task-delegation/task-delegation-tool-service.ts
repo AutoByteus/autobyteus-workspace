@@ -7,6 +7,7 @@ import {
 import type {
   DelegateTasksInput,
   DelegateTasksResult,
+  TaskDelegationCallerIdentity,
   TaskDelegationMemberIdentity,
   UpdateTaskStatusInput,
   UpdateTaskStatusResult,
@@ -23,17 +24,30 @@ const toIdentity = (member: {
   memberPath: string[];
   memberRouteKey: string;
   memberRunId: string;
+  runtimeKind?: TaskDelegationMemberIdentity["runtimeKind"];
 }): TaskDelegationMemberIdentity => ({
   memberName: member.memberName,
   memberPath: [...member.memberPath],
   memberRouteKey: member.memberRouteKey,
   memberRunId: member.memberRunId,
+  runtimeKind: member.runtimeKind ?? null,
 });
 
 export const buildTaskDelegationToolContextFromMemberTeamContext = (
   memberTeamContext: MemberTeamContext,
 ): TaskDelegationToolContext => {
-  const caller = toIdentity(memberTeamContext);
+  const caller: TaskDelegationCallerIdentity = {
+    ...toIdentity(memberTeamContext),
+    ...(memberTeamContext.taskAgentInstance
+      ? {
+          taskAgentInstanceId: memberTeamContext.taskAgentInstance.taskAgentInstanceId,
+          taskAgentRunId: memberTeamContext.taskAgentInstance.taskAgentRunId,
+          taskId: memberTeamContext.taskAgentInstance.taskId,
+          logicalMemberRouteKey:
+            memberTeamContext.taskAgentInstance.logicalMember.memberRouteKey,
+        }
+      : {}),
+  };
   const members = memberTeamContext.members.map(toIdentity);
   if (!members.some((member) => member.memberRouteKey === caller.memberRouteKey)) {
     members.unshift(caller);

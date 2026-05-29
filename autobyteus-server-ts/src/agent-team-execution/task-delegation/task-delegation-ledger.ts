@@ -1,19 +1,21 @@
 import {
   isTaskDelegationTerminalStatus,
   TaskDelegationError,
-  type TaskDelegationDeliverable,
   type TaskDelegationMemberIdentity,
   type TaskDelegationRecord,
   type TaskDelegationStatus,
   type TaskDelegationTaskInput,
 } from "./task-delegation-record.js";
+import {
+  cloneTaskAgentIdentity,
+} from "./task-agent-instance-identity.js";
+import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 
 export type CreateTaskDelegationRecordInput = {
   taskId: string;
   task: TaskDelegationTaskInput;
-  assignee: TaskDelegationMemberIdentity;
+  member: TaskDelegationMemberIdentity;
   delegator: TaskDelegationMemberIdentity;
-  dependencyTaskIds: string[];
 };
 
 const cloneIdentity = (
@@ -23,16 +25,30 @@ const cloneIdentity = (
   memberPath: [...identity.memberPath],
   memberRouteKey: identity.memberRouteKey,
   memberRunId: identity.memberRunId,
+  runtimeKind: identity.runtimeKind ?? null,
 });
 
 const cloneRecord = (record: TaskDelegationRecord): TaskDelegationRecord => ({
   ...record,
-  assignee: cloneIdentity(record.assignee),
+  member: cloneIdentity(record.member),
   delegator: cloneIdentity(record.delegator),
-  dependencyTaskIds: [...record.dependencyTaskIds],
-  expectedDeliverables: [...record.expectedDeliverables],
-  deliverables: record.deliverables.map((deliverable) => ({ ...deliverable })),
+  referenceFiles: [...record.referenceFiles],
+  statusReferenceFiles: [...record.statusReferenceFiles],
+  taskAgentInstance: record.taskAgentInstance
+    ? cloneTaskAgentIdentity(record.taskAgentInstance)
+    : null,
 });
+
+const deriveTaskLabel = (description: string, fallbackTaskId: string): string => {
+  const firstLine = description
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find(Boolean);
+  if (!firstLine) {
+    return fallbackTaskId;
+  }
+  return firstLine.length > 80 ? `${firstLine.slice(0, 77)}...` : firstLine;
+};
 
 export class TaskDelegationLedger {
   private readonly recordsById = new Map<string, TaskDelegationRecord>();
@@ -54,16 +70,15 @@ export class TaskDelegationLedger {
       }
       const record: TaskDelegationRecord = {
         taskId,
-        taskName: item.task.task_name,
+        taskLabel: deriveTaskLabel(item.task.description, taskId),
         description: item.task.description,
         status: "not_started",
-        assignee: cloneIdentity(item.assignee),
+        member: cloneIdentity(item.member),
         delegator: cloneIdentity(item.delegator),
-        dependencyTaskIds: [...item.dependencyTaskIds],
-        completionCriteria: item.task.completion_criteria ?? null,
-        expectedDeliverables: [...item.task.expected_deliverables],
-        deliverables: [],
-        terminalSummary: null,
+        referenceFiles: [...(item.task.reference_files ?? [])],
+        taskAgentInstance: null,
+        statusMessage: null,
+        statusReferenceFiles: [],
         createdAt: now,
         updatedAt: now,
         queuedAt: null,
@@ -75,35 +90,33 @@ export class TaskDelegationLedger {
     return created;
   }
 
-  hasTaskName(taskName: string): boolean {
-    return this.listRecords().some((record) => record.taskName === taskName);
-  }
-
   getRecord(taskId: string): TaskDelegationRecord | null {
     const record = this.recordsById.get(taskId) ?? null;
     return record ? cloneRecord(record) : null;
-  }
-
-  findRecordByTaskName(taskName: string): TaskDelegationRecord[] {
-    return this.listRecords().filter((record) => record.taskName === taskName);
   }
 
   listRecords(): TaskDelegationRecord[] {
     return [...this.recordsById.values()].map(cloneRecord);
   }
 
-  listRunnableNotStarted(): TaskDelegationRecord[] {
-    return this.listRecords().filter(
-      (record) =>
-        record.status === "not_started" &&
-        record.dependencyTaskIds.every(
-          (dependencyTaskId) =>
-            this.recordsById.get(dependencyTaskId)?.status === "completed",
-        ),
-    );
+  listRecordsForTaskAgentRun(taskAgentRunId: string): TaskDelegationRecord[] {
+    const normalizedRunId = taskAgentRunId.trim();
+    if (!normalizedRunId) {
+      return [];
+    }
+    return [...this.recordsById.values()]
+      .filter((record) => record.taskAgentInstance?.taskAgentRunId === normalizedRunId)
+      .map(cloneRecord);
   }
 
-  markQueued(taskIds: string[]): TaskDelegationRecord[] {
+  listRunnableNotStarted(): TaskDelegationRecord[] {
+    return this.listRecords().filter((record) => record.status === "not_started");
+  }
+
+  markQueued(
+    taskIds: string[],
+    taskAgentInstancesByTaskId: ReadonlyMap<string, TaskAgentInstanceIdentity> = new Map(),
+  ): TaskDelegationRecord[] {
     const now = new Date().toISOString();
     const queued: TaskDelegationRecord[] = [];
     for (const taskId of taskIds) {
@@ -112,6 +125,9 @@ export class TaskDelegationLedger {
         continue;
       }
       record.status = "queued";
+      record.taskAgentInstance = taskAgentInstancesByTaskId.get(taskId)
+        ? cloneTaskAgentIdentity(taskAgentInstancesByTaskId.get(taskId)!)
+        : record.taskAgentInstance;
       record.queuedAt = now;
       record.updatedAt = now;
       queued.push(cloneRecord(record));
@@ -128,6 +144,7 @@ export class TaskDelegationLedger {
         continue;
       }
       record.status = "not_started";
+      record.taskAgentInstance = null;
       record.queuedAt = null;
       record.updatedAt = now;
       records.push(cloneRecord(record));
@@ -138,8 +155,8 @@ export class TaskDelegationLedger {
   updateStatus(input: {
     taskId: string;
     status: Exclude<TaskDelegationStatus, "not_started" | "queued">;
-    summary?: string | null;
-    deliverables?: TaskDelegationDeliverable[];
+    message?: string | null;
+    referenceFiles?: string[];
   }): TaskDelegationRecord {
     const record = this.recordsById.get(input.taskId);
     if (!record) {
@@ -158,11 +175,11 @@ export class TaskDelegationLedger {
     const now = new Date().toISOString();
     record.status = input.status;
     record.updatedAt = now;
-    if (input.deliverables?.length) {
-      record.deliverables.push(...input.deliverables.map((deliverable) => ({ ...deliverable })));
+    if (input.referenceFiles?.length) {
+      record.statusReferenceFiles.push(...input.referenceFiles);
     }
-    if (input.summary !== undefined) {
-      record.terminalSummary = input.summary?.trim() || null;
+    if (input.message !== undefined) {
+      record.statusMessage = input.message?.trim() || null;
     }
     if (isTaskDelegationTerminalStatus(input.status)) {
       record.terminalAt = now;
@@ -176,18 +193,23 @@ export class TaskDelegationLedger {
       return false;
     }
     const records = [...this.recordsById.values()].filter(
-      (record) => record.assignee.memberRouteKey === normalizedRouteKey,
+      (record) => record.member.memberRouteKey === normalizedRouteKey,
     );
     if (records.some((record) => record.status === "queued" || record.status === "in_progress")) {
       return true;
     }
-    return records.some(
+    return records.some((record) => record.status === "not_started");
+  }
+
+  hasCurrentWorkForTaskAgentInstance(taskAgentRunId: string): boolean {
+    const normalizedRunId = taskAgentRunId.trim();
+    if (!normalizedRunId) {
+      return false;
+    }
+    return [...this.recordsById.values()].some(
       (record) =>
-        record.status === "not_started" &&
-        record.dependencyTaskIds.every(
-          (dependencyTaskId) =>
-            this.recordsById.get(dependencyTaskId)?.status === "completed",
-        ),
+        record.taskAgentInstance?.taskAgentRunId === normalizedRunId &&
+        (record.status === "queued" || record.status === "in_progress"),
     );
   }
 

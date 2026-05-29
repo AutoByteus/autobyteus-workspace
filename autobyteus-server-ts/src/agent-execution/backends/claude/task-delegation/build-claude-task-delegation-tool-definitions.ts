@@ -44,7 +44,7 @@ const buildArrayItemSchema = (
   itemSchema: ParameterDefinition["arrayItemSchema"],
 ): z.ZodTypeAny => {
   if (itemSchema instanceof ParameterSchema) {
-    return z.object(buildClaudeSchemaFromParameterSchema(itemSchema));
+    return z.object(buildClaudeSchemaFromParameterSchema(itemSchema)).strict();
   }
   if (typeof itemSchema === "string") {
     return buildPrimitiveZodType(itemSchema as ParameterType);
@@ -95,7 +95,7 @@ const buildClaudeParameterSchema = (
       break;
     case ParameterType.OBJECT:
       schema = parameter.objectSchema
-        ? z.object(buildClaudeSchemaFromParameterSchema(parameter.objectSchema))
+        ? z.object(buildClaudeSchemaFromParameterSchema(parameter.objectSchema)).strict()
         : z.record(z.string(), z.unknown());
       break;
     case ParameterType.ARRAY:

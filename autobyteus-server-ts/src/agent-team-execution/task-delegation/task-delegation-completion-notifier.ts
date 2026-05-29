@@ -8,15 +8,13 @@ import {
 import { selectorFromMemberRouteKey } from "../domain/team-run-member-identity.js";
 import type { TaskDelegationCompletionPayload } from "./task-delegation-record.js";
 
-const renderDeliverables = (
-  deliverables: TaskDelegationCompletionPayload["deliverables"],
+const renderReferenceFiles = (
+  referenceFiles: TaskDelegationCompletionPayload["referenceFiles"],
 ): string => {
-  if (deliverables.length === 0) {
+  if (referenceFiles.length === 0) {
     return "- None submitted";
   }
-  return deliverables
-    .map((deliverable) => `- ${deliverable.file_path}: ${deliverable.summary}`)
-    .join("\n");
+  return referenceFiles.map((referenceFile) => `- ${referenceFile}`).join("\n");
 };
 
 export class TaskDelegationCompletionNotifier {
@@ -32,7 +30,7 @@ export class TaskDelegationCompletionNotifier {
     input.teamRun.publishEvent({
       eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
       teamRunId: input.payload.teamRunId,
-      sourcePath: input.payload.assignee.memberPath,
+      sourcePath: input.payload.member.memberPath,
       data: eventPayload,
     });
 
@@ -55,14 +53,12 @@ export class TaskDelegationCompletionNotifier {
     const content = [
       `Delegated task ${payload.status}.`,
       "",
-      `Task: ${payload.taskName} (${payload.taskId})`,
-      `Assignee: ${payload.assignee.memberName}`,
+      `Task: ${payload.taskLabel} (${payload.taskId})`,
+      `Member: ${payload.member.memberName}`,
       `Status: ${payload.status}`,
-      `Summary: ${payload.summary ?? "None provided"}`,
-      "Deliverables:",
-      renderDeliverables(payload.deliverables),
-      "",
-      `Downstream activation: ${payload.activatedTaskIds.length > 0 ? payload.activatedTaskIds.join(", ") : "none"}`,
+      `Message: ${payload.message ?? "None provided"}`,
+      "Reference files:",
+      renderReferenceFiles(payload.referenceFiles),
     ].join("\n");
     const message = new AgentInputUserMessage(
       content,

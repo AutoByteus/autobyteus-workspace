@@ -12,11 +12,29 @@ import {
 } from "../domain/team-run-event.js";
 import { buildMemberRouteKeyFromPath } from "../domain/team-run-member-identity.js";
 import type { TaskDelegationLedger } from "./task-delegation-ledger.js";
-import type { TaskDelegationMemberIdentity } from "./task-delegation-record.js";
+import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
+import { cloneTaskAgentIdentity } from "./task-agent-instance-identity.js";
 
 type PendingSettlement = {
-  member: TaskDelegationMemberIdentity;
+  taskAgentInstance: TaskAgentInstanceIdentity;
   requestedAt: string;
+};
+
+const eventTaskAgentRunId = (event: TeamRunEvent): string | null => {
+  if (event.eventSourceType !== TeamRunEventSourceType.AGENT) {
+    return null;
+  }
+  const payload = event.data as TeamRunAgentEventPayload;
+  const taskAgentRunId = payload.taskAgentInstance?.taskAgentRunId?.trim();
+  if (taskAgentRunId) {
+    return taskAgentRunId;
+  }
+  const memberRunId = payload.memberRunId?.trim();
+  if (memberRunId) {
+    return memberRunId;
+  }
+  const eventRunId = payload.agentEvent.runId?.trim();
+  return eventRunId || null;
 };
 
 const eventMemberRouteKey = (event: TeamRunEvent): string | null => {
@@ -24,6 +42,10 @@ const eventMemberRouteKey = (event: TeamRunEvent): string | null => {
     return null;
   }
   const payload = event.data as TeamRunAgentEventPayload;
+  const taskAgentRoute = payload.taskAgentInstance?.logicalMember.memberRouteKey?.trim();
+  if (taskAgentRoute) {
+    return taskAgentRoute;
+  }
   const fromPayload = payload.memberRouteKey?.trim();
   if (fromPayload) {
     return fromPayload;
@@ -42,7 +64,7 @@ const isIdleAgentEvent = (event: AgentRunEvent): boolean => {
 };
 
 export class TaskDelegationSettlementCoordinator {
-  private readonly pendingByRouteKey = new Map<string, PendingSettlement>();
+  private readonly pendingByTaskAgentRunId = new Map<string, PendingSettlement>();
   private unsubscribe: TeamRunEventUnsubscribe | null = null;
 
   constructor(
@@ -66,49 +88,54 @@ export class TaskDelegationSettlementCoordinator {
   detach(): void {
     this.unsubscribe?.();
     this.unsubscribe = null;
-    this.pendingByRouteKey.clear();
+    this.pendingByTaskAgentRunId.clear();
   }
 
-  requestSettlement(member: TaskDelegationMemberIdentity): boolean {
-    const routeKey = member.memberRouteKey.trim();
+  requestSettlement(taskAgentInstance: TaskAgentInstanceIdentity | null): boolean {
+    if (!taskAgentInstance) {
+      return false;
+    }
+    const routeKey = taskAgentInstance.logicalMember.memberRouteKey.trim();
+    const taskAgentRunId = taskAgentInstance.taskAgentRunId.trim();
     if (!routeKey || this.isProtectedMember(routeKey)) {
       return false;
     }
-    if (this.ledger.hasCurrentWorkForAssignee(routeKey)) {
-      this.pendingByRouteKey.delete(routeKey);
+    if (!taskAgentRunId || this.ledger.hasCurrentWorkForTaskAgentInstance(taskAgentRunId)) {
+      this.pendingByTaskAgentRunId.delete(taskAgentRunId);
       return false;
     }
-    this.pendingByRouteKey.set(routeKey, {
-      member: {
-        ...member,
-        memberPath: [...member.memberPath],
-      },
+    this.pendingByTaskAgentRunId.set(taskAgentRunId, {
+      taskAgentInstance: cloneTaskAgentIdentity(taskAgentInstance),
       requestedAt: new Date().toISOString(),
     });
     return true;
   }
 
   private async handleTeamRunEvent(event: TeamRunEvent): Promise<void> {
-    const routeKey = eventMemberRouteKey(event);
-    if (!routeKey) {
+    const taskAgentRunId = eventTaskAgentRunId(event);
+    if (!taskAgentRunId) {
       return;
     }
-    const pending = this.pendingByRouteKey.get(routeKey);
+    const pending = this.pendingByTaskAgentRunId.get(taskAgentRunId);
     if (!pending) {
+      return;
+    }
+    const routeKey = eventMemberRouteKey(event);
+    if (routeKey !== pending.taskAgentInstance.logicalMember.memberRouteKey) {
       return;
     }
     const payload = event.data as TeamRunAgentEventPayload;
     if (!isIdleAgentEvent(payload.agentEvent)) {
       return;
     }
-    if (this.ledger.hasCurrentWorkForAssignee(routeKey)) {
-      this.pendingByRouteKey.delete(routeKey);
+    if (this.ledger.hasCurrentWorkForTaskAgentInstance(taskAgentRunId)) {
+      this.pendingByTaskAgentRunId.delete(taskAgentRunId);
       return;
     }
-    this.pendingByRouteKey.delete(routeKey);
-    const result = await this.teamRun.settleMember(
-      pending.member.memberRouteKey,
-      pending.member.memberRunId,
+    this.pendingByTaskAgentRunId.delete(taskAgentRunId);
+    const result = await this.teamRun.settleTaskAgentInstance(
+      pending.taskAgentInstance.logicalMember.memberRouteKey,
+      pending.taskAgentInstance.taskAgentRunId,
       `task_delegation_idle_after_${pending.requestedAt}`,
     );
     if (!result.accepted) {

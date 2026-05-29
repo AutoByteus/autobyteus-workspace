@@ -13,6 +13,10 @@ type NativeTaskDelegationTeamContext = {
   memberRouteKey?: string;
   currentMemberRunId?: string;
   memberRunId?: string;
+  taskAgentInstanceId?: string | null;
+  taskAgentRunId?: string | null;
+  taskId?: string | null;
+  logicalMemberRouteKey?: string | null;
   coordinatorMemberRouteKey?: string | null;
   members?: Array<{
     memberName: string;
@@ -70,6 +74,10 @@ export const buildTaskDelegationToolContextFromNativeContext = (
       teamContext.currentMemberRunId ?? teamContext.memberRunId,
       "currentMemberRunId",
     ),
+    taskAgentInstanceId: teamContext.taskAgentInstanceId ?? null,
+    taskAgentRunId: teamContext.taskAgentRunId ?? null,
+    taskId: teamContext.taskId ?? null,
+    logicalMemberRouteKey: teamContext.logicalMemberRouteKey ?? null,
   };
   const members = (teamContext.members ?? []).map((member) => ({
     memberName: member.memberName,

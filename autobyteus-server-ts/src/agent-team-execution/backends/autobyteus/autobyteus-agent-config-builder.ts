@@ -16,6 +16,7 @@ import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import type { TeamProcessorRegistries } from "./team-processor-registries.js";
 import { APPLICATION_EXECUTION_CONTEXT_KEY } from "../../../application-orchestration/domain/models.js";
+import { isTaskDelegationToolName } from "../../../agent-tools/task-delegation/task-delegation-tool-contract.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -183,6 +184,12 @@ export class AutoByteusAgentConfigBuilder {
     }
 
     for (const name of agentDef.toolNames) {
+      if (isTaskDelegationToolName(name)) {
+        logger.warn(
+          `Task delegation tool '${name}' is not supported for native AutoByteus pure-team runs because native per-member settlement is not available. Skipping.`,
+        );
+        continue;
+      }
       if (!defaultToolRegistry.getToolDefinition(name)) {
         logger.warn(
           `Tool '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,

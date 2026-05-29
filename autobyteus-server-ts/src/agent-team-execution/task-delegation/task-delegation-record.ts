@@ -1,3 +1,6 @@
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
+
 export const TASK_DELEGATION_MODEL_TOOL_STATUSES = [
   "in_progress",
   "completed",
@@ -26,59 +29,52 @@ export type TaskDelegationMemberIdentity = {
   memberPath: string[];
   memberRouteKey: string;
   memberRunId: string;
+  runtimeKind?: RuntimeKind | null;
+};
+
+export type TaskDelegationCallerIdentity = TaskDelegationMemberIdentity & {
+  taskAgentInstanceId?: string | null;
+  taskAgentRunId?: string | null;
+  taskId?: string | null;
+  logicalMemberRouteKey?: string | null;
 };
 
 export type TaskDelegationContext = {
   teamRunId: string;
   teamDefinitionId?: string | null;
   teamName?: string | null;
-  caller: TaskDelegationMemberIdentity;
+  caller: TaskDelegationCallerIdentity;
   coordinatorMemberRouteKey?: string | null;
   members: TaskDelegationMemberIdentity[];
 };
 
 export type TaskDelegationTaskInput = {
-  task_name: string;
-  assignee_name: string;
+  member_name: string;
   description: string;
-  dependencies: string[];
-  completion_criteria?: string | null;
-  expected_deliverables: string[];
+  reference_files?: string[];
 };
 
 export type DelegateTasksInput = {
   tasks: TaskDelegationTaskInput[];
 };
 
-export type TaskDelegationDeliverable = {
-  file_path: string;
-  summary: string;
-  author_agent_name: string;
-  timestamp: string;
-};
-
 export type UpdateTaskStatusInput = {
-  task_id: string;
   status: TaskDelegationModelToolStatus;
-  summary?: string | null;
-  deliverables: Array<{
-    file_path: string;
-    summary: string;
-  }>;
+  message?: string | null;
+  reference_files?: string[];
 };
 
 export type TaskDelegationRecord = {
   taskId: string;
-  taskName: string;
+  taskLabel: string;
   description: string;
   status: TaskDelegationStatus;
-  assignee: TaskDelegationMemberIdentity;
+  member: TaskDelegationMemberIdentity;
   delegator: TaskDelegationMemberIdentity;
-  dependencyTaskIds: string[];
-  completionCriteria: string | null;
-  expectedDeliverables: string[];
-  deliverables: TaskDelegationDeliverable[];
-  terminalSummary: string | null;
+  referenceFiles: string[];
+  taskAgentInstance: TaskAgentInstanceIdentity | null;
+  statusMessage: string | null;
+  statusReferenceFiles: string[];
   createdAt: string;
   updatedAt: string;
   queuedAt: string | null;
@@ -86,21 +82,21 @@ export type TaskDelegationRecord = {
 };
 
 export type TaskDelegationActivationResult = {
-  assignee: TaskDelegationMemberIdentity;
-  taskIds: string[];
+  memberName: string;
+  taskCount: number;
   accepted: boolean;
   message?: string | null;
 };
 
 export type TaskDelegationActivationPayload = {
   teamRunId: string;
-  assignee: TaskDelegationMemberIdentity;
+  member: TaskDelegationMemberIdentity;
+  taskAgentInstance: TaskAgentInstanceIdentity;
   taskIds: string[];
   tasks: Array<{
     taskId: string;
-    taskName: string;
+    taskLabel: string;
     status: TaskDelegationStatus;
-    dependencyTaskIds: string[];
   }>;
   activatedAt: string;
 };
@@ -108,13 +104,14 @@ export type TaskDelegationActivationPayload = {
 export type TaskDelegationStatusUpdatePayload = {
   teamRunId: string;
   taskId: string;
-  taskName: string;
-  assignee: TaskDelegationMemberIdentity;
+  taskLabel: string;
+  member: TaskDelegationMemberIdentity;
   delegator: TaskDelegationMemberIdentity;
+  taskAgentInstance: TaskAgentInstanceIdentity | null;
   previousStatus: TaskDelegationStatus;
   status: TaskDelegationStatus;
-  summary: string | null;
-  deliverables: TaskDelegationDeliverable[];
+  message: string | null;
+  referenceFiles: string[];
   updatedAt: string;
   terminal: boolean;
 };
@@ -122,34 +119,29 @@ export type TaskDelegationStatusUpdatePayload = {
 export type TaskDelegationCompletionPayload = {
   teamRunId: string;
   taskId: string;
-  taskName: string;
-  assignee: TaskDelegationMemberIdentity;
+  taskLabel: string;
+  member: TaskDelegationMemberIdentity;
   delegator: TaskDelegationMemberIdentity;
+  taskAgentInstance: TaskAgentInstanceIdentity | null;
   status: TaskDelegationTerminalStatus;
-  summary: string | null;
-  deliverables: TaskDelegationDeliverable[];
+  message: string | null;
+  referenceFiles: string[];
   completedAt: string;
-  activatedTaskIds: string[];
 };
 
 export type DelegateTasksResult = {
   createdTasks: Array<{
-    task_id: string;
-    task_name: string;
-    assignee_name: string;
+    member_name: string;
     status: TaskDelegationStatus;
-    dependency_task_ids: string[];
   }>;
   activationResults: TaskDelegationActivationResult[];
 };
 
 export type UpdateTaskStatusResult = {
-  task_id: string;
-  task_name: string;
   status: TaskDelegationStatus;
   terminal: boolean;
-  deliverables_count: number;
-  activated_task_ids: string[];
+  message: string | null;
+  reference_files_count: number;
   settlement_requested: boolean;
 };
 

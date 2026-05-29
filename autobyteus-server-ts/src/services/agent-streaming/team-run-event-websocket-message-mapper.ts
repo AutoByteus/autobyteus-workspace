@@ -43,6 +43,13 @@ export const convertTeamRunEventToServerMessage = (
       agent_id: payload.memberRunId,
       member_route_key: payload.memberRouteKey,
       member_path: payload.memberPath,
+      ...(payload.taskAgentInstance
+        ? {
+            task_agent_instance_id: payload.taskAgentInstance.taskAgentInstanceId,
+            task_agent_run_id: payload.taskAgentInstance.taskAgentRunId,
+            task_id: payload.taskAgentInstance.taskId,
+          }
+        : {}),
       ...sourcePayload,
     });
   }

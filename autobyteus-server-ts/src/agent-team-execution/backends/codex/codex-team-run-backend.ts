@@ -7,6 +7,7 @@ import type { TeamRunBackend } from "../team-run-backend.js";
 import type { TeamManager } from "../team-manager.js";
 import type { CodexTeamRunContextEnvelope } from "./codex-team-run-context.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
+import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
   accepted: false,
@@ -177,6 +178,38 @@ export class CodexTeamRunBackend implements TeamRunBackend {
       );
     } catch (error) {
       return buildCommandFailure("settle team member", error);
+    }
+  }
+
+  async startTaskAgentInstance(
+    request: StartTaskAgentInstanceRequest,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.runId);
+    }
+    try {
+      return await this.teamManager.startTaskAgentInstance(request);
+    } catch (error) {
+      return buildCommandFailure("start task-agent instance", error);
+    }
+  }
+
+  async settleTaskAgentInstance(
+    logicalMemberRouteKey: string,
+    taskAgentRunId: string,
+    reason: string | null = null,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.runId);
+    }
+    try {
+      return await this.teamManager.settleTaskAgentInstance(
+        logicalMemberRouteKey,
+        taskAgentRunId,
+        reason,
+      );
+    } catch (error) {
+      return buildCommandFailure("settle task-agent instance", error);
     }
   }
 

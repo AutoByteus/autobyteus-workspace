@@ -5,6 +5,7 @@ import type { TeamMemberSelector } from "../domain/team-run-member-identity.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
 import type { AgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
 import type { TeamStatusPayload } from "../domain/team-status-payload.js";
+import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instance.js";
 
 export interface TeamManager {
   hasActiveMembers(): boolean;
@@ -30,6 +31,14 @@ export interface TeamManager {
   settleMember(
     targetMemberRouteKey: string,
     targetMemberRunId?: string | null,
+    reason?: string | null,
+  ): Promise<AgentOperationResult>;
+  startTaskAgentInstance(
+    request: StartTaskAgentInstanceRequest,
+  ): Promise<AgentOperationResult>;
+  settleTaskAgentInstance(
+    logicalMemberRouteKey: string,
+    taskAgentRunId: string,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;

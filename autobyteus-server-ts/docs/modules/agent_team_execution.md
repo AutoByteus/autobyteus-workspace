@@ -121,15 +121,17 @@ handlers, legacy model-facing task-plan tools, or future MCP transport code. The
 only model-facing task-delegation tools are:
 
 - `delegate_tasks`: a coordinator/delegator submits one or more bounded tasks in
-  a `tasks` array. One item is the single-task form.
-- `update_task_status`: an assignee reports `in_progress`, `completed`, or
-  `failed` for the exact `task_id` from its activation work packet.
+  a `tasks` array. Each item contains `member_name`, rich `description`, and
+  optional `reference_files`.
+- `update_task_status`: a task-agent instance reports `in_progress`,
+  `completed`, or `failed` for its bound task using only `status`, optional
+  `message`, and optional `reference_files`. The tool takes no task selector.
 
 Legacy task-plan tool names (`create_task`, `create_tasks`, `assign_task_to`,
 `get_my_tasks`, `get_task_plan_status`, and the old local task-plan
 `update_task_status`) must not be exposed as a parallel model workflow. Task
 state is still held internally in a team-run-scoped delegation ledger for
-correlation, dependency readiness, deliverables, notifications, and settlement
+correlation, status messages, reference files, notifications, and settlement
 safety.
 
 The happy path is push-based:
@@ -137,40 +139,65 @@ The happy path is push-based:
 1. The runtime projection builds a `TaskDelegationToolContext` from the current
    `MemberTeamContext` / native team context and calls `TaskDelegationToolService`.
 2. The service resolves the active `TeamRun`, creates ledger records, validates
-   assignees/dependencies, and groups runnable `not_started` records by assignee.
+   exact `member_name` targets against the team roster, and treats the submitted
+   tasks as independent runnable work.
 3. `TaskDelegationActivationCoordinator` marks runnable records `queued` and
-   posts a system work packet to each assignee through `TeamRun.postMessage(...)`.
-   The packet includes task id/name/description, dependency ids, expected
-   deliverables, completion criteria, and instructions not to call `get_my_tasks`.
+   starts one concrete task-agent instance per task through
+   `TeamRun.startTaskAgentInstance(...)`. The packet includes a derived task
+   label, rich `description`, optional reference files, task-agent instance/run
+   identity, and instructions not to call `get_my_tasks` or pass task selectors
+   to `update_task_status`.
 4. Accepted activations emit `TASK_DELEGATION_ACTIVATED`; rejected activations
    roll the affected records back to `not_started` and are returned to the tool
    caller in `activationResults`.
 5. Accepted status updates emit `TASK_DELEGATION_STATUS_UPDATED` before any
    terminal follow-up handling.
-6. Terminal `completed` / `failed` updates record summary and deliverables,
-   re-run dependency activation, emit `TASK_DELEGATION_TERMINAL_STATUS`, and
-   post a framework-generated completion notification to the delegator plus the
-   coordinator when different.
-7. Terminal updates request member settlement only after the tool call can
+6. Terminal `completed` / `failed` updates record message/reference files, emits
+   `TASK_DELEGATION_TERMINAL_STATUS`, and posts a framework-generated completion
+   notification to the delegator plus the coordinator when different.
+7. Terminal updates request task-agent settlement only after the tool call can
    finish. `TaskDelegationSettlementCoordinator` waits for an idle/offline
-   member event, verifies the assignee still has no queued/in-progress/runnable
-   work, protects the coordinator by default, and calls
-   `TeamRun.settleMember(routeKey, memberRunId, reason)`. The member run id is a
-   stale-route guard so a later replacement member is not accidentally settled.
+   event from the bound task-agent run, verifies the task-agent instance still
+   has no queued/in-progress delegated work, protects the coordinator by
+   default, and calls `TeamRun.settleTaskAgentInstance(routeKey, taskAgentRunId,
+   reason)`. The task-agent run id is a stale-route guard so a later replacement
+   instance is not accidentally settled.
 
 `TASK_DELEGATION_*` events use `TeamRunEventSourceType.TASK_DELEGATION` in the
 domain stream and are flattened to WebSocket `TASK_PLAN_EVENT` messages with
 `event_type` set to `TASK_DELEGATION_ACTIVATED`,
 `TASK_DELEGATION_STATUS_UPDATED`, or `TASK_DELEGATION_TERMINAL_STATUS`. Event
-payloads carry `teamRunId`, task identity, assignee/delegator member identity,
-status, deliverables where applicable, and canonical `source_path` /
-`source_route_key` metadata from the assignee.
+payloads carry `teamRunId`, internal task identity, member/delegator identity,
+task-agent instance identity, status, optional message/reference files, and
+canonical `source_path` / `source_route_key` metadata from the logical member.
 
 Current settlement support is backend-specific. Codex, Claude, and Mixed team
 managers implement per-member settlement. The native AutoByteus team backend
 still reports `UNSUPPORTED_RUNTIME_COMMAND` for per-member settlement, so native
 runs keep whole-team lifecycle ownership until a native member-settlement
 boundary exists.
+
+
+### Task Delegation Validation Notes
+
+Durable deterministic coverage lives in the task-delegation integration/unit
+suites under `tests/integration/agent-team-execution/` and
+`tests/unit/agent-team-execution/`. A gated live mixed-runtime E2E lives at
+`tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`; it creates a real
+GraphQL/websocket team with an AutoByteus/LMStudio Qwen coordinator and a Codex
+`gpt-5.5` worker. The live path is intentionally skipped unless explicit live
+flags are set, so local/default validation can run the file and expect a skipped
+test while live validation can opt in with:
+
+```bash
+RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
+  LMSTUDIO_TARGET_TEXT_MODEL=qwen3.5-35b-a3b \
+  CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 \
+  pnpm -C autobyteus-server-ts exec vitest run \
+    tests/e2e/runtime/mixed-task-delegation.e2e.test.ts \
+    -t "AutoByteus coordinator delegates work and Codex gpt-5.5 worker reports terminal status" \
+    --no-file-parallelism
+```
 
 ## Mixed-Team Communication Contract
 

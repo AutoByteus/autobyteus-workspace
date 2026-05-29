@@ -14,6 +14,10 @@ export type AutoByteusStandaloneTeamContext = {
   currentMemberPath: string[];
   currentMemberRouteKey: string;
   currentMemberRunId: string;
+  taskAgentInstanceId?: string | null;
+  taskAgentRunId?: string | null;
+  taskId?: string | null;
+  logicalMemberRouteKey?: string | null;
   coordinatorMemberRouteKey: string | null;
   members: Array<{
     memberName: string;
@@ -78,6 +82,11 @@ export const buildAutoByteusStandaloneTeamContext = (
     currentMemberPath: [...memberTeamContext.memberPath],
     currentMemberRouteKey: memberTeamContext.memberRouteKey,
     currentMemberRunId: memberTeamContext.memberRunId,
+    taskAgentInstanceId: memberTeamContext.taskAgentInstance?.taskAgentInstanceId ?? null,
+    taskAgentRunId: memberTeamContext.taskAgentInstance?.taskAgentRunId ?? null,
+    taskId: memberTeamContext.taskAgentInstance?.taskId ?? null,
+    logicalMemberRouteKey:
+      memberTeamContext.taskAgentInstance?.logicalMember.memberRouteKey ?? null,
     coordinatorMemberRouteKey: memberTeamContext.coordinatorMemberRouteKey,
     members: memberTeamContext.members.map((member) => ({
       memberName: member.memberName,
