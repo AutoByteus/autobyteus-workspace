@@ -1,0 +1,5 @@
+# Code review round 18 terminal forbidden-boundary grep
+Thu May 28 18:53:26 CEST 2026
+Pattern: workspaceStore\.(createWorkspace|ensureWorkspace|ensureWorkspaceMetadata|fetchAllWorkspaces)|useFileExplorerStore|useWorkspaceFileExplorer|FileExplorerStreamingService|/ws/file-explorer|fileExplorerStore|acquireFileExplorer|WorkspaceFileExplorer|WorkspaceManager|getWorkspaceManager|FileSystemWorkspace|initialize\(
+
+RESULT: PASS - no workspace/file-explorer activation terms found in terminal spine files

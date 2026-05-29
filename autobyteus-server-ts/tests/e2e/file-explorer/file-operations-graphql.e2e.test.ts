@@ -9,6 +9,21 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 const workspaceManager = getWorkspaceManager();
 
+const getWorkspaceFileExplorerState = async (workspaceId: string) => {
+  const workspace = workspaceManager.getWorkspaceById(workspaceId);
+  if (!workspace) {
+    throw new Error(`Workspace not found in test: ${workspaceId}`);
+  }
+  const fileExplorer = (workspace as unknown as {
+    fileExplorer?: { fileWatcher?: unknown; watcherLeaseCount?: number } | null;
+  }).fileExplorer ?? null;
+  return {
+    hasFileExplorer: workspace.hasFileExplorerForDiagnostics(),
+    watcher: fileExplorer?.fileWatcher ?? null,
+    leaseCount: fileExplorer?.watcherLeaseCount ?? 0,
+  };
+};
+
 const closeWithTimeout = async (workspace: { close: () => Promise<void> }) => {
   await Promise.race([
     workspace.close(),
@@ -78,6 +93,10 @@ describe("File operations GraphQL e2e", () => {
 
     const workspaceId = created.createWorkspace.workspaceId;
     expect(workspaceId).toBeTruthy();
+    await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
+      watcher: null,
+      leaseCount: 0,
+    });
 
     const writeMutation = `
       mutation WriteFileContent($workspaceId: String!, $filePath: String!, $content: String!) {
@@ -95,9 +114,12 @@ describe("File operations GraphQL e2e", () => {
     });
 
     const writeEvent = JSON.parse(writeResult.writeFileContent) as { changes: Array<{ type: string }> };
-    if (writeEvent.changes.length > 0) {
-      expect(["add", "modify"]).toContain(writeEvent.changes[0]?.type);
-    }
+    expect(writeEvent.changes.length).toBeGreaterThan(0);
+    expect(writeEvent.changes.some((change) => ["add", "modify"].includes(change.type))).toBe(true);
+    await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
+      watcher: null,
+      leaseCount: 0,
+    });
 
     const readQuery = `
       query GetFileContent($workspaceId: String!, $filePath: String!) {
@@ -126,11 +148,11 @@ describe("File operations GraphQL e2e", () => {
     const deleteEvent = JSON.parse(deleteResult.deleteFileOrFolder) as {
       changes: Array<{ type: string; node_id?: string; parent_id?: string }>;
     };
-    if (deleteEvent.changes.length > 0) {
-      expect(deleteEvent.changes[0]?.type).toBe("delete");
-      expect(deleteEvent.changes[0]?.node_id).toBeTruthy();
-      expect(deleteEvent.changes[0]?.parent_id).toBeTruthy();
-    }
+    expect(deleteEvent.changes.length).toBeGreaterThan(0);
+    const deleteChange = deleteEvent.changes.find((change) => change.type === "delete");
+    expect(deleteChange).toBeTruthy();
+    expect(deleteChange?.node_id).toBeTruthy();
+    expect(deleteChange?.parent_id).toBeTruthy();
 
     const readMissing = await execGraphql<{ fileContent: string }>(readQuery, {
       workspaceId,
@@ -139,6 +161,10 @@ describe("File operations GraphQL e2e", () => {
     expect(readMissing.fileContent).toContain("error");
 
     expect(fs.existsSync(path.join(rootPath, filePath))).toBe(false);
+    await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
+      watcher: null,
+      leaseCount: 0,
+    });
   });
 
   it("creates and renames a file", async () => {
@@ -159,6 +185,10 @@ describe("File operations GraphQL e2e", () => {
     );
 
     const workspaceId = created.createWorkspace.workspaceId;
+    await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
+      watcher: null,
+      leaseCount: 0,
+    });
 
     const createMutation = `
       mutation CreateFileOrFolder($workspaceId: String!, $path: String!, $isFile: Boolean!) {
@@ -174,6 +204,10 @@ describe("File operations GraphQL e2e", () => {
 
     const createEvent = JSON.parse(createResult.createFileOrFolder) as { changes: Array<{ type: string }> };
     expect(createEvent.changes[0]?.type).toBe("add");
+    await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
+      watcher: null,
+      leaseCount: 0,
+    });
 
     const renameMutation = `
       mutation RenameFileOrFolder($workspaceId: String!, $targetPath: String!, $newName: String!) {
@@ -190,5 +224,9 @@ describe("File operations GraphQL e2e", () => {
     const renameEvent = JSON.parse(renameResult.renameFileOrFolder) as { changes: Array<{ type: string }> };
     expect(renameEvent.changes[0]?.type).toBe("rename");
     expect(fs.existsSync(path.join(rootPath, "renamed.txt"))).toBe(true);
+    await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
+      watcher: null,
+      leaseCount: 0,
+    });
   });
 });

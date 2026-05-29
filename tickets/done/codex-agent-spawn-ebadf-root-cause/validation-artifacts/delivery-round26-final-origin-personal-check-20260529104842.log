@@ -1,0 +1,20 @@
+Command: git fetch origin personal && integrated-state check
+Before fetch origin/personal: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+After fetch origin/personal: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+HEAD: 54b8fbada1dabc769c90becca10dd4be078baa67
+Merge base: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+Relation origin/personal...HEAD: 0	39
+Package version: 1.3.32
+Status:
+ M autobyteus-server-ts/docs/modules/file_explorer.md
+ M autobyteus-web/docs/file_explorer.md
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round26-artifacts-20260529104755.txt
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round26-dmg-verify-20260529104755.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round26-post-review-20260529104342.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-docs-sync-grep-after-edits-20260529104321.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-fetch-origin-personal-20260529104131.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-final-origin-personal-check-20260529104842.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-integrated-docs-grep-20260529104218.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round26-merge-origin-personal-20260529104146.log

@@ -1,0 +1,9 @@
+Changed source size audit for CR-017 scope
+PASS 461 autobyteus-server-ts/src/file-explorer/file-explorer.ts
+PASS 32 autobyteus-server-ts/src/file-explorer/operations/base-file-operation.ts
+PASS 50 autobyteus-server-ts/src/file-explorer/operations/add-file-or-folder-operation.ts
+PASS 101 autobyteus-server-ts/src/file-explorer/operations/move-file-operation.ts
+PASS 41 autobyteus-server-ts/src/file-explorer/operations/remove-file-operation.ts
+PASS 73 autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts
+PASS 47 autobyteus-server-ts/src/file-explorer/operations/write-file-operation.ts
+PASS 191 autobyteus-server-ts/src/api/graphql/types/file-explorer.ts

@@ -1,0 +1,98 @@
+Integrated delivery docs/source check after API/E2E Round 14
+HEAD: f6870d43e4c859cd8b9978cf987267ba51028b13
+origin/personal: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+Merge base: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+Relation origin/personal...HEAD: 0	42
+Package version: 1.3.32
+
+README Electron build excerpt:
+235-pnpm build:electron:windows
+236-# For macOS
+237:pnpm build:electron:mac
+238-```
+239-
+240:The built applications will be available in the `electron-dist` directory. Use these commands when you want to create a standalone desktop application for distribution.
+241-
+242:#### macOS Build With Logs (No Notarization)
+243-
+244-For local macOS builds with verbose electron-builder logs and without notarization/timestamping:
+245-
+246-```bash
+247:NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+248-```
+249-
+250-### Desktop Application with Integrated Backend
+--
+277-pnpm build:electron:windows
+278-# For macOS with integrated server
+279:pnpm build:electron:mac
+280-```
+281-
+282-#### Embedded Runtime Contract
+--
+379-- `pnpm build:electron:linux`: Build desktop application for Linux
+380-- `pnpm build:electron:windows`: Build desktop application for Windows
+381:- `pnpm build:electron:mac`: Build desktop application for macOS
+382-- `pnpm codegen`: Generate GraphQL types
+383-
+384-## Project Structure
+
+Removed/old File Explorer stream method docs grep (expect no matches):
+No old File Explorer stream method docs matches.
+
+Stale terminal target naming docs/source grep (expect no matches in docs):
+No stale terminal docs matches.
+
+Files-tab TDZ/local fix source check:
+26b60dd8 fix: initialize file explorer tab listeners safely
+ .../components/fileExplorer/FileExplorerTabs.vue   |  76 ++---
+ .../__tests__/FileExplorerTabs.spec.ts             |   9 +
+ .../api-e2e-validation-report.md                   |  53 +++-
+ .../browser-files-tab-failure-analysis-20260529.md | 111 +++++++
+ .../implementation-handoff.md                      |  45 ++-
+ ...api-e2e-round13-backend-build-full-20260529.log |  40 +++
+ ...d13-browser-agents-list-before-run-20260529.png | Bin 0 -> 155234 bytes
+ .../api-e2e-round13-browser-backend-20260529.log   | 253 ++++++++++++++++
+ ...2e-round13-browser-files-tab-error-20260529.png | Bin 0 -> 369322 bytes
+ ...13-browser-files-tab-reproduction-20260529.json | 107 +++++++
+ ...d13-browser-files-tab-reproduction-20260529.log |   5 +
+ ...d13-browser-files-tab-reproduction-20260529.mjs |  90 ++++++
+ ...browser-files-tab-reproduction-20260529.run.log |   5 +
+ .../api-e2e-round13-browser-frontend-20260529.log  |  78 +++++
+ ...e-round13-browser-runtime-log-tail-20260529.log | 320 +++++++++++++++++++++
+ ...2e-round13-listeners-after-cleanup-20260529.log |   2 +
+ ...e-round13-listeners-before-cleanup-20260529.log |   5 +
+ ...nd13-script-agents-list-before-run-20260529.png | Bin 0 -> 155853 bytes
+ ...e2e-round13-script-files-tab-error-20260529.png | Bin 0 -> 144445 bytes
+ ...d29-browser-agents-list-before-run-20260529.png | Bin 0 -> 155853 bytes
+ ...ementation-round29-browser-backend-20260529.log | 254 ++++++++++++++++
+ ...n-round29-browser-files-diff-check-20260529.log |   2 +
+ ...-browser-files-listener-order-grep-20260529.log |  10 +
+ ...-round29-browser-files-source-size-20260529.log |   4 +
+ ...29-browser-files-tab-reproduction-20260529.json |  99 +++++++
+ ...d29-browser-files-tab-reproduction-20260529.log |   4 +
+ ...d29-browser-files-tab-reproduction-20260529.mjs |  96 +++++++
+ ...browser-files-tab-reproduction-20260529.run.log |   4 +
+ ...ound29-browser-files-tab-workspace-20260529.png | Bin 0 -> 75802 bytes
+ ...on-round29-browser-files-tabs-unit-20260529.log |  22 ++
+ ...29-browser-files-targeted-frontend-20260529.log |  38 +++
+ ...mentation-round29-browser-frontend-20260529.log |  12 +
+ ...tation-round29-frontend-nuxt-build-20260529.log | 215 ++++++++++++++
+ 33 files changed, 1907 insertions(+), 52 deletions(-)
+autobyteus-web/components/fileExplorer/FileExplorerTabs.vue:336:const handleKeydown = async (event: KeyboardEvent) => {
+autobyteus-web/components/fileExplorer/FileExplorerTabs.vue:359:  window.addEventListener('keydown', handleKeydown)
+autobyteus-web/components/fileExplorer/FileExplorerTabs.vue:364:  window.removeEventListener('keydown', handleKeydown)
+
+Docs path-boundary refs:
+autobyteus-web/docs/file_explorer.md:558:### Backend Path Boundary Contract
+autobyteus-web/docs/file_explorer.md:568:- ignored folders such as `.git`, `node_modules`, and `.gitignore`-matched
+autobyteus-web/docs/file_explorer.md:572:  same-prefix sibling escapes that resolve outside the workspace root;
+autobyteus-web/docs/file_explorer.md:573:- `renameFileOrFolder.newName` must be a leaf name, not a path; path-like names
+autobyteus-server-ts/docs/modules/file_explorer.md:34:path is a same-prefix sibling of the workspace directory.
+autobyteus-server-ts/docs/modules/file_explorer.md:38:- `folderChildren` rejects ignored folders such as `.git`, `node_modules`, and
+autobyteus-server-ts/docs/modules/file_explorer.md:41:  or same-prefix sibling escapes before returning or writing external content.
+autobyteus-server-ts/docs/modules/file_explorer.md:66:- Snapshot GraphQL operations remain watcher-free.
+autobyteus-server-ts/docs/modules/file_explorer.md:78:It exercises real Fastify WebSockets, real workspace/file-explorer objects, real chokidar filesystem events, snapshot operations that stay watcher-free, shared watcher leases across concurrent visible sessions, repeated open/close cycles, early close handling, descriptor sampling, and child-process spawn health.
+autobyteus-server-ts/docs/modules/file_explorer.md:80:The path-boundary E2E covers ignored-folder projection rejection, same-prefix
+
+git diff --check:

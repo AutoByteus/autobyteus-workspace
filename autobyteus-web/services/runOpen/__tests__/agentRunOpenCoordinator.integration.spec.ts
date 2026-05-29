@@ -125,6 +125,7 @@ describe('openAgentRun integration with real agent context store', () => {
     await openAgentRun({
       runId,
       fallbackAgentName: 'SuperAgent',
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
       ensureWorkspaceByRootPath: vi.fn(),
       selectRun: false,
     });

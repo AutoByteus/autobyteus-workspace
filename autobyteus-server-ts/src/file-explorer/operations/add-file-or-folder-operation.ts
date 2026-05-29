@@ -20,10 +20,10 @@ export class AddFileOrFolderOperation extends BaseFileOperation {
       throw new Error("The path must be relative to the workspace root.");
     }
 
-    const absolutePath = path.join(this.fileExplorer.workspaceRootPath, normalizedPath);
-    if (!absolutePath.startsWith(this.fileExplorer.workspaceRootPath)) {
-      throw new Error("Access denied: Target is outside the workspace.");
-    }
+    const absolutePath = this.resolveWorkspacePath(
+      normalizedPath,
+      "Access denied: Target is outside the workspace.",
+    );
 
     if (await this.pathExists(absolutePath)) {
       throw new Error(`File or folder already exists at path: ${this.targetPath}`);

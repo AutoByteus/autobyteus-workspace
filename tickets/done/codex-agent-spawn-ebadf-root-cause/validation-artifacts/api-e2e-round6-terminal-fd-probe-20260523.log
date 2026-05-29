@@ -1,0 +1,12 @@
+{"at":"2026-05-23T11:42:08.164Z","event":"sample","label":"baseline","fdCount":36,"childCount":0,"children":[]}
+{"at":"2026-05-23T11:42:10.775Z","event":"sample","label":"after_normal_attached_close","fdCount":38,"childCount":0,"children":[]}
+{"at":"2026-05-23T11:42:11.154Z","event":"sample","label":"after_early_close_1","fdCount":40,"childCount":0,"children":[]}
+{"at":"2026-05-23T11:42:12.743Z","event":"sample","label":"after_early_close_5","fdCount":51,"childCount":0,"children":[]}
+{"at":"2026-05-23T11:42:14.433Z","event":"sample","label":"after_early_close_10","fdCount":66,"childCount":0,"children":[]}
+{"at":"2026-05-23T11:42:16.118Z","event":"sample","label":"after_early_close_15","fdCount":81,"childCount":0,"children":[]}
+{"at":"2026-05-23T11:42:17.802Z","event":"sample","label":"after_early_close_20","fdCount":96,"childCount":0,"children":[]}
+{"at":"2026-05-23T11:42:19.488Z","event":"sample","label":"after_early_close_25","fdCount":111,"childCount":0,"children":[]}
+{"at":"2026-05-23T11:42:22.765Z","event":"sample","label":"after_25_early_close_final_wait","fdCount":111,"childCount":0,"children":[]}
+Error: terminal close-before-connect FD growth exceeded bound: after_normal_attached_close=38, after_25_early_close_final_wait=111, allowed_growth=15
+    at main (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round6-terminal-fd-probe-20260523.mjs:124:11)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round6-terminal-fd-probe-20260523.mjs:135:7

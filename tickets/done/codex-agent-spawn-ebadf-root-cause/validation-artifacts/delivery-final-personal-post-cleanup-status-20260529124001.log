@@ -1,0 +1,19 @@
+Final personal post-cleanup status
+timestamp: 2026-05-29T10:40:01Z
+repo: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+branch: personal
+head: 890f894f622f72f5bfd8adebbec64e6fb364ddba
+origin_personal_before_fetch: 890f894f622f72f5bfd8adebbec64e6fb364ddba
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+origin_personal_after_fetch: 890f894f622f72f5bfd8adebbec64e6fb364ddba
+merge_base: 890f894f622f72f5bfd8adebbec64e6fb364ddba
+relation_origin_personal...HEAD: 0	0
+ticket_worktree_exists: no
+local_ticket_branch_exists: no
+origin_ticket_branch_exists: no
+status_short:
+?? tickets/done/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-final-personal-electron-artifacts-20260529123828.txt
+?? tickets/done/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-final-personal-electron-build-mac-20260529123402.log
+?? tickets/done/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-final-personal-electron-dmg-verify-20260529123828.log
+?? tickets/done/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-final-personal-post-cleanup-status-20260529124001.log

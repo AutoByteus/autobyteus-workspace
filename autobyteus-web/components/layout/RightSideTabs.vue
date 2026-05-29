@@ -5,7 +5,7 @@
       <TabList
         class="flex-1 min-w-0"
         :tabs="visibleTabs"
-        :selected-tab="activeTab"
+        :selected-tab="effectiveActiveTab"
         @select="handleTabSelect"
       />
       <button 
@@ -22,25 +22,30 @@
 
     <!-- Tab Content -->
     <div data-test="right-side-tab-content-shell" class="flex-1 min-h-0 overflow-hidden relative">
-      <div v-if="activeTab === 'files'" class="h-full min-h-0">
-        <FileExplorerLayout />
+      <div
+        v-if="shouldMountFilesPanel"
+        v-show="isFilesTabActive"
+        class="h-full min-h-0"
+        data-test="right-side-files-panel"
+      >
+        <FileExplorerLayout :active="isFilesTabActive" />
       </div>
-      <div v-if="activeTab === 'teamMembers'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'teamMembers'" class="h-full min-h-0">
         <TeamOverviewPanel />
       </div>
-      <div v-if="activeTab === 'terminal'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'terminal'" class="h-full min-h-0">
         <Terminal />
       </div>
-      <div v-if="activeTab === 'vnc'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'vnc'" class="h-full min-h-0">
         <VncViewer />
       </div>
-      <div v-if="activeTab === 'artifacts'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'artifacts'" class="h-full min-h-0">
         <ArtifactsTab />
       </div>
-      <div v-if="activeTab === 'browser'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'browser'" class="h-full min-h-0">
         <BrowserPanel />
       </div>
-      <div v-if="activeTab === 'progress'" class="h-full min-h-0">
+      <div v-if="effectiveActiveTab === 'progress'" class="h-full min-h-0">
         <ProgressPanel />
       </div>
     </div>
@@ -48,11 +53,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentTodoStore } from '~/stores/agentTodoStore';
-import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useRightPanel } from '~/composables/useRightPanel';
+import { useRightPanelOpenFileAutoSwitch } from '~/composables/useRightPanelOpenFileAutoSwitch';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import TabList from '~/components/tabs/TabList.vue';
@@ -63,20 +68,41 @@ import FileExplorerLayout from '~/components/fileExplorer/FileExplorerLayout.vue
 import ArtifactsTab from '~/components/workspace/agent/ArtifactsTab.vue';
 import ProgressPanel from '~/components/progress/ProgressPanel.vue';
 import BrowserPanel from '~/components/workspace/tools/BrowserPanel.vue';
-import { useWorkspaceStore } from '~/stores/workspace';
+
+const props = withDefaults(defineProps<{
+  mode?: 'desktop' | 'mobile-tools'
+}>(), {
+  mode: 'desktop',
+});
 
 const selectionStore = useAgentSelectionStore();
 const activeContextStore = useActiveContextStore();
-const fileExplorerStore = useFileExplorerStore();
 const todoStore = useAgentTodoStore();
-const workspaceStore = useWorkspaceStore();
 
-const { activeTab, visibleTabs, setActiveTab } = useRightSideTabs();
+const { activeTab, visibleTabs: baseVisibleTabs, setActiveTab } = useRightSideTabs();
 const { toggleRightPanel } = useRightPanel();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
+const filesTabEnabled = computed(() => props.mode !== 'mobile-tools');
+const visibleTabs = computed(() =>
+  filesTabEnabled.value
+    ? baseVisibleTabs.value
+    : baseVisibleTabs.value.filter((tab) => tab.name !== 'files'),
+);
+const effectiveActiveTab = computed(() => {
+  if (filesTabEnabled.value || activeTab.value !== 'files') {
+    return activeTab.value;
+  }
+  return visibleTabs.value[0]?.name ?? 'terminal';
+});
+const hasOpenedFilesTab = ref(false);
+const isFilesTabActive = computed(() => filesTabEnabled.value && effectiveActiveTab.value === 'files');
+const shouldMountFilesPanel = computed(() => filesTabEnabled.value && hasOpenedFilesTab.value);
 
 const handleTabSelect = (tabName: string) => {
+  if (!filesTabEnabled.value && tabName === 'files') {
+    return;
+  }
   setActiveTab(tabName as any);
 };
 
@@ -97,7 +123,12 @@ watch(visibleTabs, (newVisibleTabs) => {
   }
 });
 
-// Watch the ToDo list for the active agent. If it becomes populated, switch to the To-Do tab.
+watch(isFilesTabActive, (isActive) => {
+  if (isActive) {
+    hasOpenedFilesTab.value = true;
+  }
+}, { immediate: true });
+
 // Watch the ToDo list for the active agent. If it becomes populated, switch to the To-Do tab.
 watch(() => currentAgentRunId.value ? todoStore.getTodos(currentAgentRunId.value) : [], (newTodoList) => {
   if (selectionStore.selectedType === 'agent' && newTodoList.length > 0 && activeTab.value !== 'progress') {
@@ -105,17 +136,7 @@ watch(() => currentAgentRunId.value ? todoStore.getTodos(currentAgentRunId.value
   }
 });
 
-// Auto-switch to Files tab when a file is opened
-watch(() => {
-    const wsId = activeContextStore.activeConfig?.workspaceId || (selectionStore.selectedType === 'team' ? workspaceStore.activeWorkspace?.workspaceId : null);
-    const targetId = wsId || workspaceStore.activeWorkspace?.workspaceId || '';
-    if (!targetId) return [];
-    return fileExplorerStore.getOpenFiles(targetId);
-}, (openFiles) => {
-  if (openFiles.length > 0 && activeTab.value !== 'files') {
-    setActiveTab('files');
-  }
-}, { deep: true });
+useRightPanelOpenFileAutoSwitch({ filesTabEnabled });
 
 </script>
 

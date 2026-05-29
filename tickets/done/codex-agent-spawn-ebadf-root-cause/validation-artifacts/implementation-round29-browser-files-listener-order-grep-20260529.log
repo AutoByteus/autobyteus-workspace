@@ -1,0 +1,10 @@
+FileExplorerTabs listener initialization order grep - 2026-05-29
+336:const handleKeydown = async (event: KeyboardEvent) => {
+358:const attachGlobalListeners = () => {
+359:  window.addEventListener('keydown', handleKeydown)
+364:  window.removeEventListener('keydown', handleKeydown)
+369:const syncGlobalListeners = (isActive: boolean) => {
+371:    attachGlobalListeners()
+382:watch(() => props.active, (isActive) => {
+383:  syncGlobalListeners(isActive)
+390:  syncGlobalListeners(false)

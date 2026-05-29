@@ -1,0 +1,112 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    20573 normy  cwd       DIR               1,16       896           174068519 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+node    20573 normy  txt       REG               1,16 111670672              525716 /Users/normy/.nvm/versions/node/v22.21.1/bin/node
+node    20573 normy  txt       REG               1,16     73840           165453213 /Library/Preferences/Logging/.plist-cache.nZ8hDtHH
+node    20573 normy  txt       REG               1,16     85496           175123373 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node
+node    20573 normy  txt       REG               1,16   2299152 1152921500312563341 /usr/lib/dyld
+node    20573 normy  txt       REG               1,16  17251592            10659627 /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine
+node    20573 normy    0r      CHR                3,2       0t0                 336 /dev/null
+node    20573 normy    1u     unix 0xca44bc32f47699e6       0t0                     ->0x600b43a8df45b767
+node    20573 normy    2u     unix 0x68a04defd69c6391       0t0                     ->0x8e1aa91acc04b009
+node    20573 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy    4      PIPE 0xc649595202e3f6f0     16384                     ->0xa4f1795825661fb
+node    20573 normy    5      PIPE  0xa4f1795825661fb     16384                     ->0xc649595202e3f6f0
+node    20573 normy    6r      DIR               1,16       704                   2 /
+node    20573 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    20573 normy    8r      DIR               1,16       704                   2 /
+node    20573 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    20573 normy   10r      DIR               1,16       704                   2 /
+node    20573 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    20573 normy   12u   KQUEUE                                                  count=0, state=0xa
+node    20573 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    20573 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    20573 normy   15u     unix 0xc0fd800b46884917       0t0                     ->0x822121416bfa92d9
+node    20573 normy   16u     unix 0x822121416bfa92d9       0t0                     ->0xc0fd800b46884917
+node    20573 normy   17u     unix 0xc0fd800b46884917       0t0                     ->0x822121416bfa92d9
+node    20573 normy   18w      REG               1,16     18508           178969871 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-fd-probe-data-mb25YK/logs/server.log
+node    20573 normy   19u      REG               1,16    196608           178969875 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-fd-probe-data-mb25YK/db/production.db
+node    20573 normy   20      PIPE 0x954c118fb123ef81     16384                     ->0x725a93b8b13532e4
+node    20573 normy   21      PIPE 0x725a93b8b13532e4     16384                     ->0x954c118fb123ef81
+node    20573 normy   22u     IPv4 0xf911d844ed53ecf2       0t0                 TCP 127.0.0.1:57501 (LISTEN)
+node    20573 normy   23u    systm 0xcdbf8b6db8ebce3a       0t0                     [ctl com.apple.netsrc id 7 unit 131]
+node    20573 normy   24u     unix 0x1017b3554130b467       0t0                     ->0x9153792c869b10c8
+node    20573 normy   25u      CHR               15,7       0t0                 605 /dev/ptmx
+node    20573 normy   26   NPOLICY                                                  
+node    20573 normy   27u      CHR               15,8       0t0                 605 /dev/ptmx
+node    20573 normy   28u     IPv4 0x57ba43cb80936e7a       0t0                 TCP 127.0.0.1:57501->127.0.0.1:57511 (ESTABLISHED)
+node    20573 normy   29u      CHR               15,6       0t0                 605 /dev/ptmx
+node    20573 normy   30                                                            (revoked)
+node    20573 normy   31                                                            (revoked)
+node    20573 normy   32u      CHR               15,4       0t0                 605 /dev/ptmx
+node    20573 normy   33u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   34                                                            (revoked)
+node    20573 normy   35u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   36u      CHR               15,9       0t0                 605 /dev/ptmx
+node    20573 normy   37u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   38u      CHR              15,10       0t0                 605 /dev/ptmx
+node    20573 normy   39                                                            (revoked)
+node    20573 normy   40u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   41u      CHR              15,11       0t0                 605 /dev/ptmx
+node    20573 normy   42                                                            (revoked)
+node    20573 normy   43u      CHR              15,14       0t0                 605 /dev/ptmx
+node    20573 normy   44u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   45                                                            (revoked)
+node    20573 normy   46u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   47                                                            (revoked)
+node    20573 normy   48u      CHR              15,13       0t0                 605 /dev/ptmx
+node    20573 normy   49u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   50u      CHR              15,16       0t0                 605 /dev/ptmx
+node    20573 normy   51                                                            (revoked)
+node    20573 normy   52u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   53u      CHR              15,12       0t0                 605 /dev/ptmx
+node    20573 normy   54u      CHR              15,15       0t0                 605 /dev/ptmx
+node    20573 normy   55                                                            (revoked)
+node    20573 normy   56                                                            (revoked)
+node    20573 normy   57u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   58u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   59u      CHR              15,17       0t0                 605 /dev/ptmx
+node    20573 normy   60                                                            (revoked)
+node    20573 normy   61                                                            (revoked)
+node    20573 normy   62u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   63u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   64u      CHR              15,18       0t0                 605 /dev/ptmx
+node    20573 normy   65u      CHR              15,19       0t0                 605 /dev/ptmx
+node    20573 normy   66                                                            (revoked)
+node    20573 normy   67u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   68u      CHR              15,20       0t0                 605 /dev/ptmx
+node    20573 normy   69                                                            (revoked)
+node    20573 normy   70u      CHR              15,21       0t0                 605 /dev/ptmx
+node    20573 normy   71u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   72                                                            (revoked)
+node    20573 normy   73u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   74u      CHR              15,22       0t0                 605 /dev/ptmx
+node    20573 normy   75                                                            (revoked)
+node    20573 normy   76u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   77                                                            (revoked)
+node    20573 normy   78u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   79u      CHR              15,23       0t0                 605 /dev/ptmx
+node    20573 normy   80u      CHR              15,24       0t0                 605 /dev/ptmx
+node    20573 normy   81                                                            (revoked)
+node    20573 normy   82u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   83u      CHR              15,25       0t0                 605 /dev/ptmx
+node    20573 normy   84                                                            (revoked)
+node    20573 normy   85u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   86u      CHR              15,26       0t0                 605 /dev/ptmx
+node    20573 normy   87                                                            (revoked)
+node    20573 normy   88u      CHR              15,27       0t0                 605 /dev/ptmx
+node    20573 normy   89u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   90                                                            (revoked)
+node    20573 normy   91u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   92                                                            (revoked)
+node    20573 normy   93u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   94u      CHR              15,28       0t0                 605 /dev/ptmx
+node    20573 normy   95u      CHR              15,29       0t0                 605 /dev/ptmx
+node    20573 normy   96                                                            (revoked)
+node    20573 normy   97u      CHR              15,30       0t0                 605 /dev/ptmx
+node    20573 normy   98u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy   99                                                            (revoked)
+node    20573 normy  100u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy  102                                                            (revoked)
+node    20573 normy  103u   KQUEUE                                                  count=0, state=0x8
+node    20573 normy  105                                                            (revoked)
+node    20573 normy  106u   KQUEUE                                                  count=0, state=0x8

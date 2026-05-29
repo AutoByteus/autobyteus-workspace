@@ -1,0 +1,7 @@
+# Code review round 22 ignored folderChildren probe
+Fri May 29 09:20:20 CEST 2026
+
+root children: visible.txt
+direct .git children: 
+direct node_modules children: 
+RESULT: FAIL - loadFolderChildren directly exposes ignored requested folders

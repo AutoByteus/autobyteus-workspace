@@ -1,0 +1,17 @@
+# Code review round 19 terminal advisory greps
+Thu May 28 19:37:35 CEST 2026
+
+## Remaining closeAllForWorkspace / terminalTargetId / workspaceId terminal manager naming
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:76:        const closed = await manager.closeAllForWorkspace("ws1");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:154:    const closed = await manager.closeAllForWorkspace("ws1");
+
+## RightSideTabs direct file/workspace store imports
+autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts:3:import { useFileExplorerStore } from '~/stores/fileExplorer';
+autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts:4:import { useWorkspaceStore } from '~/stores/workspace';
+autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts:15:  const fileExplorerStore = useFileExplorerStore();
+autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts:16:  const workspaceStore = useWorkspaceStore();
+autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts:26:    return workspaceStore.activeWorkspaceMetadata?.workspaceId ||
+autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts:27:      workspaceStore.activeWorkspace?.workspaceId ||
+autobyteus-web/composables/useRightPanelOpenFileAutoSwitch.ts:34:    return fileExplorerStore.getOpenFiles(workspaceId);
+
+## Old workspace-id Terminal route/prop shape

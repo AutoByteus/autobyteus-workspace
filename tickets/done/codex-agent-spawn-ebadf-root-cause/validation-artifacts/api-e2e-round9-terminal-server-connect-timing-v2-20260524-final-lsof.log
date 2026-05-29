@@ -1,0 +1,60 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    17574 normy  cwd       DIR               1,16       928           174068519 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+node    17574 normy  txt       REG               1,16 111670672              525716 /Users/normy/.nvm/versions/node/v22.21.1/bin/node
+node    17574 normy  txt       REG               1,16     73840           165453213 /Library/Preferences/Logging/.plist-cache.nZ8hDtHH
+node    17574 normy  txt       REG               1,16     85496           175123373 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/pty.node
+node    17574 normy  txt       REG               1,16   2299152 1152921500312563341 /usr/lib/dyld
+node    17574 normy  txt       REG               1,16  17251592            10659627 /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine
+node    17574 normy    0r      CHR                3,2       0t0                 336 /dev/null
+node    17574 normy    1u     unix 0xb6432e800f9bd1df       0t0                     ->0xd7e9a6a607ab507b
+node    17574 normy    2u     unix 0x4eb0eabb34ae57d2       0t0                     ->0x2e90e09c146d50ee
+node    17574 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    17574 normy    4      PIPE 0xa8e96f37d6b85bfa     16384                     ->0xbdc4fe490e581a0a
+node    17574 normy    5      PIPE 0xbdc4fe490e581a0a     16384                     ->0xa8e96f37d6b85bfa
+node    17574 normy    6r      DIR               1,16       704                   2 /
+node    17574 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    17574 normy    8r      DIR               1,16       704                   2 /
+node    17574 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    17574 normy   10r      DIR               1,16       704                   2 /
+node    17574 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    17574 normy   12u   KQUEUE                                                  count=0, state=0xa
+node    17574 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    17574 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    17574 normy   15u     unix 0x2c26edd5ebc2aea4       0t0                     ->0x2e755610adacfec6
+node    17574 normy   16u     unix 0x2e755610adacfec6       0t0                     ->0x2c26edd5ebc2aea4
+node    17574 normy   17u     unix 0x2c26edd5ebc2aea4       0t0                     ->0x2e755610adacfec6
+node    17574 normy   18w      REG               1,16     13135           180861603 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-data-kmEW6H/logs/server.log
+node    17574 normy   19u      REG               1,16    196608           180861608 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-data-kmEW6H/db/production.db
+node    17574 normy   20      PIPE 0xb1e383f74d351b3a     16384                     ->0x48927df72691df9b
+node    17574 normy   21      PIPE 0x48927df72691df9b     16384                     ->0xb1e383f74d351b3a
+node    17574 normy   22u     IPv4 0xba8e0b92b648a9f5       0t0                 TCP 127.0.0.1:54141 (LISTEN)
+node    17574 normy   23u    systm  0x8e86a86c8a1ae97       0t0                     [ctl com.apple.netsrc id 7 unit 67]
+node    17574 normy   24u     unix 0x45e9f011f5353777       0t0                     ->0xd1db37736bb06c46
+node    17574 normy   25u     IPv6 0xb5ebf281f69c3808       0t0                 TCP [::1]:54159->[::1]:51739 (ESTABLISHED)
+node    17574 normy   26   NPOLICY                                                  
+node    17574 normy   28u      CHR               15,9       0t0                 605 /dev/ptmx
+node    17574 normy   29u     IPv4 0x37adc65b62ccaac2       0t0                 TCP 127.0.0.1:54141->127.0.0.1:54162 (ESTABLISHED)
+node    17574 normy   30u      CHR               15,8       0t0                 605 /dev/ptmx
+node    17574 normy   31u     IPv6 0x2e6b291062daa036       0t0                 TCP [::1]:54167->[::1]:51739 (ESTABLISHED)
+node    17574 normy   32u      CHR              15,10       0t0                 605 /dev/ptmx
+node    17574 normy   33u      CHR               15,6       0t0                 605 /dev/ptmx
+node    17574 normy   34u      CHR               15,7       0t0                 605 /dev/ptmx
+node    17574 normy   35                                                            (revoked)
+node    17574 normy   36                                                            (revoked)
+node    17574 normy   37u   KQUEUE                                                  count=0, state=0x8
+node    17574 normy   38                                                            (revoked)
+node    17574 normy   39                                                            (revoked)
+node    17574 normy   40u   KQUEUE                                                  count=0, state=0x8
+node    17574 normy   41u   KQUEUE                                                  count=0, state=0x8
+node    17574 normy   42u   KQUEUE                                                  count=0, state=0x8
+node    17574 normy   43u      CHR              15,11       0t0                 605 /dev/ptmx
+node    17574 normy   44                                                            (revoked)
+node    17574 normy   45u   KQUEUE                                                  count=0, state=0x8
+node    17574 normy   46u      CHR              15,12       0t0                 605 /dev/ptmx
+node    17574 normy   47                                                            (revoked)
+node    17574 normy   48u   KQUEUE                                                  count=0, state=0x8
+node    17574 normy   49u      CHR              15,13       0t0                 605 /dev/ptmx
+node    17574 normy   50                                                            (revoked)
+node    17574 normy   52u   KQUEUE                                                  count=0, state=0x8
+node    17574 normy   53                                                            (revoked)
+node    17574 normy   54u   KQUEUE                                                  count=0, state=0x8

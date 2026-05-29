@@ -99,6 +99,11 @@ Rules:
 - Selecting a message shows its content in the detail pane through the shared
   Markdown renderer while keeping raw absolute paths as plain text. Selecting a
   reference switches that same pane to the message-owned reference viewer.
+- Mobile Team Communication renders the same structured `referenceFiles` as
+  tappable phone rows instead of collapsing them to an inert count. Mobile uses
+  the same message-owned identity (`teamRunId`, `messageId`, `referenceId`) in a
+  full-screen wrapper and returns to the same message list/focused-member
+  context on close. Mobile does not scan message prose for paths.
 
 ## Data Flow
 
@@ -123,6 +128,9 @@ flowchart LR
   P --> R[Team tab: Team Communication]
   R --> S[TeamCommunicationReferenceViewer]
   S --> T[REST: message reference content route]
+  P --> V[MobileTeamMessages]
+  V --> W[MobileTeamReferenceViewer]
+  W --> S
 ```
 
 ## Frontend Owners
@@ -139,6 +147,9 @@ flowchart LR
 | Team Communication hydration | `autobyteus-web/services/runHydration/teamCommunicationHydrationService.ts` | Loads `getTeamCommunicationMessages(teamRunId)`. |
 | Team Communication panel | `autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue` | Renders compact sent/received message rows, sibling reference-file controls, and Markdown message detail. |
 | Team reference viewer | `autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue` | Opens a reference through the message-owned content route and owns local inline/maximized preview state. |
+| Mobile Team messages | `autobyteus-web/components/mobile/MobileTeamMessages.vue` | Renders the focused member's Team Communication messages in the mobile shell and exposes each structured reference file as a tappable phone row. |
+| Mobile Team reference wrapper | `autobyteus-web/components/mobile/MobileTeamReferenceViewer.vue` | Wraps `TeamCommunicationReferenceViewer` in a full-screen mobile surface, passes message-owned identity through, and disables rich HTML preview for mobile. |
+| Team reference presentation helper | `autobyteus-web/utils/teamCommunication/referenceFilePresentation.ts` | Centralizes reference display-name and icon selection so desktop and mobile Team Communication rows do not duplicate file-type presentation policy. |
 
 ## Viewer Resolution
 
@@ -158,4 +169,7 @@ never use the run-file-change route. The Team reference viewer owns its local
 maximize/restore state independently of Agent Artifact display-mode controls:
 users can open the preview inline, maximize it to a viewport shell, restore with
 the control or `Escape`, and keep switching between Raw and Preview while
-maximized.
+maximized. The mobile wrapper uses the same viewer/content route in a
+phone-sized full-screen surface, but disables rich HTML preview so mobile
+reference files stay on authorized raw/Markdown/media/PDF/CSV/Excel loading
+paths rather than an unauthenticated static HTML preview path.

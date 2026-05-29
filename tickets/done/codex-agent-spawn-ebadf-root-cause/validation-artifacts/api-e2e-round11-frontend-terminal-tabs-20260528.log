@@ -1,0 +1,95 @@
+# API/E2E Round 11 frontend Terminal/right-tabs targeted suite
+# Date: 2026-05-28T20:02:17+0200
+# Command: pnpm -C autobyteus-web test:nuxt components/layout/__tests__/RightSideTabs.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts --run --reporter verbose
+
+> autobyteus@1.3.32 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/layout/__tests__/RightSideTabs.spec.ts components/workspace/tools/__tests__/Terminal.spec.ts composables/__tests__/useTerminalSession.spec.ts --run --reporter verbose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+
+stderr | components/workspace/tools/__tests__/Terminal.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useTerminalSession.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/RightSideTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useTerminalSession.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/tools/__tests__/Terminal.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/RightSideTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > connects to the cwd-based WebSocket URL
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/9859f8be-7fb1-4486-967a-d15fe02ffcf0?cwd=%2Ftmp%2Fproject
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > updates status to connected on open
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/6cdcc89f-02f6-4e1a-9c5d-18412a6b59a3?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends encoded input when connected
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/8c037083-7f72-463d-82d5-2f6666f5584e?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends resize events
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/0008687b-15ca-4296-b8ba-a842b7f6bdb1?cwd=%2Ftmp%2Fws-1
+[useTerminalSession] Connected
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles output messages
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/1ac5d3ac-d7b3-4334-a522-3fa6fb08f753?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles disconnection
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/beb309fb-7ffc-4524-b56f-6a7eb82c56be?cwd=%2Ftmp%2Fws-1
+
+stdout | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON
+[useTerminalSession] Connecting to: ws://test-host:8000/ws/terminal/db6b2795-5fd4-47d7-9cb8-edd2885c130c?cwd=%2Ftmp%2Fws-1
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON
+[useTerminalSession] Error parsing message: SyntaxError: Unexpected token 'i', "invalid json" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at MockWebSocket.ws.onmessage (/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/composables/useTerminalSession.ts:109:32)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:149:14
+    at Proxy.assertThrows (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:2767:5)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1686:25)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1088:12)
+    at Proxy.overwritingMethodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1735:33)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1420:16)
+    at Proxy.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@vitest+expect@3.2.4/node_modules/@vitest/expect/dist/index.js:1029:14)
+    at Proxy.methodWrapper (file:///Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/chai@5.3.3/node_modules/chai/index.js:1686:25)
+
+stderr | composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not connect without a root path
+[useTerminalSession] No terminal root path
+
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > connects to the cwd-based WebSocket URL 3ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > updates status to connected on open 1ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends encoded input when connected 1ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > sends resize events 1ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles output messages 0ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > handles disconnection 0ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not crash on garbage JSON 3ms
+ ✓ composables/__tests__/useTerminalSession.spec.ts > useTerminalSession > does not connect without a root path 0ms
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts > Terminal.vue > initializes xterm with the default app font size and connects from active workspace metadata 112ms
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts > Terminal.vue > uses an explicit root-path terminal target without workspace activation 5ms
+ ✓ components/workspace/tools/__tests__/Terminal.spec.ts > Terminal.vue > updates the xterm font size and refits the layout when the preset changes 3ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts > RightSideTabs > keeps the shared tab shell clipped instead of scrollable 12ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts > RightSideTabs > does not switch to Artifacts when a touched file becomes newly visible 3ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts > RightSideTabs > does not let repeated artifact signals steal focus from the current tab 4ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts > RightSideTabs > filters the Files tab and blocks FileExplorerLayout in mobile tools mode 3ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts > RightSideTabs > auto-switches to Files when an open file appears in desktop mode 2ms
+ ✓ components/layout/__tests__/RightSideTabs.spec.ts > RightSideTabs > does not auto-switch to Files when open files change in mobile tools mode 4ms
+
+ Test Files  3 passed (3)
+      Tests  17 passed (17)
+   Start at  20:02:20
+   Duration  6.91s (transform 3.66s, setup 15.38s, collect 1.03s, tests 161ms, environment 839ms, prepare 567ms)

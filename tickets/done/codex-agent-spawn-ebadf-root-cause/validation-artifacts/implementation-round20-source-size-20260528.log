@@ -1,0 +1,10 @@
+Changed frontend source implementation file effective non-empty line counts:
+  114 autobyteus-web/components/mobile/MobileFileViewer.vue
+  318 autobyteus-web/components/mobile/MobileFiles.vue
+  127 autobyteus-web/components/mobile/MobileTeamMessages.vue
+   48 autobyteus-web/components/mobile/MobileTeamReferenceViewer.vue
+  319 autobyteus-web/components/workspace/team/TeamCommunicationPanel.vue
+  215 autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue
+  138 autobyteus-web/composables/mobile/useMobileFileContextCoordinator.ts
+  295 autobyteus-web/composables/mobile/useMobileWorkspaceFileExplorer.ts
+   31 autobyteus-web/utils/teamCommunication/referenceFilePresentation.ts

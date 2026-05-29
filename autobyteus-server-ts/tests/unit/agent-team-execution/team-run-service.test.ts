@@ -4,6 +4,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
+import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
 
 describe("TeamRunService", () => {
   const createSubject = (activeRun: unknown = null) => {
@@ -129,6 +130,174 @@ describe("TeamRunService", () => {
         teamBackendKind: TeamBackendKind.MIXED,
       }),
     );
+  });
+
+  it("activates filesystem workspace metadata roots even when workspaceId is already present", async () => {
+    const { service, mocks } = createSubject();
+    const workspaceRootPath = "/tmp/MetadataTeam";
+    const workspaceId = buildFilesystemWorkspaceId(workspaceRootPath);
+    mocks.workspaceManager.ensureWorkspaceByRootPath.mockResolvedValue({
+      workspaceId,
+      getBasePath: () => workspaceRootPath,
+    });
+    mocks.agentTeamRunManager.createTeamRun.mockImplementation(async (config: TeamRunConfig) => ({
+      runId: "team-metadata-1",
+      config,
+      getRuntimeContext: vi.fn().mockReturnValue({ memberContexts: [] }),
+    }));
+
+    await service.createTeamRun({
+      teamDefinitionId: "team-def-1",
+      memberConfigs: [
+        {
+          memberName: "Coordinator",
+          memberRouteKey: "coordinator",
+          agentDefinitionId: "agent-def-1",
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          skillAccessMode: "PRELOADED_ONLY" as any,
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          workspaceId,
+          workspaceRootPath: `${workspaceRootPath}/`,
+          llmConfig: null,
+        },
+        {
+          memberName: "Reviewer",
+          memberRouteKey: "reviewer",
+          agentDefinitionId: "agent-def-2",
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          skillAccessMode: "PRELOADED_ONLY" as any,
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          workspaceId,
+          workspaceRootPath,
+          llmConfig: null,
+        },
+      ],
+    });
+
+    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledTimes(1);
+    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledWith(workspaceRootPath);
+    expect(mocks.agentTeamRunManager.createTeamRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        memberConfigs: expect.arrayContaining([
+          expect.objectContaining({
+            memberName: "Coordinator",
+            workspaceId,
+            workspaceRootPath,
+          }),
+          expect.objectContaining({
+            memberName: "Reviewer",
+            workspaceId,
+            workspaceRootPath,
+          }),
+        ]),
+      }),
+    );
+    expect(mocks.workspaceManager.getWorkspaceById).not.toHaveBeenCalled();
+  });
+
+  it("activates each distinct team workspace root once per create request", async () => {
+    const { service, mocks } = createSubject();
+    const coordinatorRootPath = "/tmp/MetadataTeamA";
+    const reviewerRootPath = "/tmp/MetadataTeamB";
+    const coordinatorWorkspaceId = buildFilesystemWorkspaceId(coordinatorRootPath);
+    const reviewerWorkspaceId = buildFilesystemWorkspaceId(reviewerRootPath);
+    mocks.workspaceManager.ensureWorkspaceByRootPath.mockImplementation(async (rootPath: string) => {
+      if (rootPath === coordinatorRootPath) {
+        return {
+          workspaceId: coordinatorWorkspaceId,
+          getBasePath: () => coordinatorRootPath,
+        };
+      }
+      if (rootPath === reviewerRootPath) {
+        return {
+          workspaceId: reviewerWorkspaceId,
+          getBasePath: () => reviewerRootPath,
+        };
+      }
+      throw new Error(`Unexpected workspace root ${rootPath}`);
+    });
+    mocks.agentTeamRunManager.createTeamRun.mockImplementation(async (config: TeamRunConfig) => ({
+      runId: "team-distinct-reference-1",
+      config,
+      getRuntimeContext: vi.fn().mockReturnValue({ memberContexts: [] }),
+    }));
+
+    await service.createTeamRun({
+      teamDefinitionId: "team-def-1",
+      memberConfigs: [
+        {
+          memberName: "Coordinator",
+          memberRouteKey: "coordinator",
+          agentDefinitionId: "agent-def-1",
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          skillAccessMode: "PRELOADED_ONLY" as any,
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          workspaceId: coordinatorWorkspaceId,
+          workspaceRootPath: `${coordinatorRootPath}/`,
+          llmConfig: null,
+        },
+        {
+          memberName: "Reviewer",
+          memberRouteKey: "reviewer",
+          agentDefinitionId: "agent-def-2",
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          skillAccessMode: "PRELOADED_ONLY" as any,
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          workspaceId: reviewerWorkspaceId,
+          workspaceRootPath: reviewerRootPath,
+          llmConfig: null,
+        },
+      ],
+    });
+
+    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledTimes(2);
+    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledWith(coordinatorRootPath);
+    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledWith(reviewerRootPath);
+    expect(mocks.agentTeamRunManager.createTeamRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        memberConfigs: expect.arrayContaining([
+          expect.objectContaining({
+            memberName: "Coordinator",
+            workspaceId: coordinatorWorkspaceId,
+            workspaceRootPath: coordinatorRootPath,
+          }),
+          expect.objectContaining({
+            memberName: "Reviewer",
+            workspaceId: reviewerWorkspaceId,
+            workspaceRootPath: reviewerRootPath,
+          }),
+        ]),
+      }),
+    );
+  });
+
+  it("rejects filesystem reference team launches when the root path is missing", async () => {
+    const { service, mocks } = createSubject();
+    const workspaceId = buildFilesystemWorkspaceId("/tmp/MissingRoot");
+
+    await expect(service.createTeamRun({
+      teamDefinitionId: "team-def-1",
+      memberConfigs: [
+        {
+          memberName: "Coordinator",
+          memberRouteKey: "coordinator",
+          agentDefinitionId: "agent-def-1",
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          skillAccessMode: "PRELOADED_ONLY" as any,
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          workspaceId,
+          llmConfig: null,
+        },
+      ],
+    })).rejects.toThrow("workspaceRootPath is required");
+
+    expect(mocks.workspaceManager.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
+    expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
   });
 
   it("restores mixed team runs using persisted member runtime metadata", async () => {

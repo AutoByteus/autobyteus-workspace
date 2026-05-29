@@ -1,0 +1,37 @@
+{"at":"2026-05-23T11:37:04.850Z","event":"start_server","serverEntry":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/dist/app.js","serverCwd":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts","port":57260,"dataDir":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-Bu9rLm","envFile":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-Bu9rLm/.env","dbUrl":"file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-Bu9rLm/db/production.db","prismaEnginePair":{"target":"darwin-arm64","sourcePath":"/Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64","query":"/Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine","schema":"/Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/schema-engine","mtimeMs":1779524957678.999},"node":"v22.21.1","platform":"darwin/arm64"}
+{"at":"2026-05-23T11:37:06.384Z","event":"health_ok","health":{"status":"ok","message":"Server is running"}}
+{"at":"2026-05-23T11:37:07.484Z","event":"fd_sample","label":"after_server_health","count":36}
+{"at":"2026-05-23T11:37:07.511Z","event":"workspace_created","workspaceIndex":0,"workspaceId":"agent_ws_cfd4c0e6d4aa4b09b3eec014f953331a38ab75a404fbc74474c590ab4e1eab82","root":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-O8NCLI","workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-O8NCLI","kind":"filesystem"}
+{"at":"2026-05-23T11:37:07.618Z","event":"fd_sample","label":"after_workspace_1_create_search_folder_snapshot_no_ws","count":37}
+{"at":"2026-05-23T11:37:07.639Z","event":"workspace_created","workspaceIndex":1,"workspaceId":"agent_ws_3d65f34482509f8b436e63b3dfa4e51d6ef86446891a0cc94c37b01a898ab986","root":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-llEX7K","workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-llEX7K","kind":"filesystem"}
+{"at":"2026-05-23T11:37:07.734Z","event":"fd_sample","label":"after_workspace_2_create_search_folder_snapshot_no_ws","count":37}
+{"at":"2026-05-23T11:37:07.755Z","event":"workspace_created","workspaceIndex":2,"workspaceId":"agent_ws_4df15d60c69392c304d93abb7b5300ca6e929ca9dff064dd536a62eb581f5066","root":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-zlp7m1","workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-zlp7m1","kind":"filesystem"}
+{"at":"2026-05-23T11:37:07.849Z","event":"fd_sample","label":"after_workspace_3_create_search_folder_snapshot_no_ws","count":37}
+{"at":"2026-05-23T11:37:07.934Z","event":"fd_sample","label":"after_all_snapshot_queries_no_websocket","count":37}
+{"at":"2026-05-23T11:37:08.061Z","event":"fd_sample","label":"after_first_visible_websocket_open","count":160}
+{"at":"2026-05-23T11:37:08.150Z","event":"fd_sample","label":"after_second_visible_websocket_open_same_workspace","count":161}
+{"at":"2026-05-23T11:37:08.625Z","event":"live_change_received","type":"FILE_SYSTEM_CHANGE","changeCount":1}
+{"at":"2026-05-23T11:37:09.720Z","event":"fd_sample","label":"after_closing_first_of_two_visible_websockets","count":160}
+{"at":"2026-05-23T11:37:11.819Z","event":"fd_sample","label":"after_closing_final_shared_visible_websocket","count":33}
+{"at":"2026-05-23T11:37:11.933Z","event":"fd_sample","label":"cycle_1_open","count":156}
+{"at":"2026-05-23T11:37:12.125Z","event":"fd_sample","label":"cycle_1_closed","count":33}
+{"at":"2026-05-23T11:37:13.663Z","event":"fd_sample","label":"cycle_10_open","count":156}
+{"at":"2026-05-23T11:37:14.261Z","event":"fd_sample","label":"cycle_10_closed","count":33}
+{"at":"2026-05-23T11:37:15.926Z","event":"fd_sample","label":"cycle_20_open","count":156}
+{"at":"2026-05-23T11:37:16.526Z","event":"fd_sample","label":"cycle_20_closed","count":33}
+{"at":"2026-05-23T11:37:18.627Z","event":"fd_sample","label":"after_20_open_close_cycles","count":33}
+{"at":"2026-05-23T11:37:20.776Z","event":"fd_sample","label":"after_10_close_before_connected_cycles","count":33}
+{"at":"2026-05-23T11:37:21.678Z","event":"fd_sample","label":"after_terminal_real_cwd_open","count":39}
+{"at":"2026-05-23T11:37:23.274Z","event":"fd_sample","label":"after_terminal_real_cwd_close","count":37}
+{"at":"2026-05-23T11:37:23.344Z","event":"child_process_sample","label":"after_terminal_real_cwd_close","count":0,"children":[]}
+{"at":"2026-05-23T11:37:23.431Z","event":"fd_sample","label":"terminal_cycle_1_open","count":42}
+{"at":"2026-05-23T11:37:23.623Z","event":"fd_sample","label":"terminal_cycle_1_closed","count":40}
+{"at":"2026-05-23T11:37:24.942Z","event":"fd_sample","label":"terminal_cycle_10_open","count":70}
+{"at":"2026-05-23T11:37:25.542Z","event":"fd_sample","label":"terminal_cycle_10_closed","count":67}
+{"at":"2026-05-23T11:37:27.141Z","event":"fd_sample","label":"after_10_terminal_open_close_cycles","count":67}
+{"at":"2026-05-23T11:37:27.207Z","event":"child_process_sample","label":"after_10_terminal_open_close_cycles","count":0,"children":[]}
+{"at":"2026-05-23T11:37:27.254Z","event":"codex_cli_version_probe_ok","codexVersion":"codex-cli 0.133.0"}
+{"at":"2026-05-23T11:37:27.332Z","event":"codex_app_server_model_catalog_probe_ok","attempted":true,"ok":true,"providerCount":13,"modelCount":6,"error":null}
+{"at":"2026-05-23T11:37:27.420Z","event":"fd_sample","label":"after_codex_probe_final","count":67}
+{"at":"2026-05-23T11:37:27.420Z","event":"summary_written","summaryPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round6-embedded-server-high-churn-20260523.json","result":"pass"}
+{"at":"2026-05-23T11:37:27.437Z","event":"server_exit_observed","code":0,"signal":null}

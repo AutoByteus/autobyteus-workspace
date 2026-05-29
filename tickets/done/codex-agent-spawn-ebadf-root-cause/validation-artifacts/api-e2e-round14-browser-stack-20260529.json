@@ -1,0 +1,15 @@
+{
+  "backendPort": 8000,
+  "frontendPort": 3000,
+  "backendBaseUrl": "http://127.0.0.1:8000",
+  "frontendUrl": "http://127.0.0.1:3000",
+  "backendPid": 95193,
+  "frontendPid": 95218,
+  "dataDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529",
+  "workspaceRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529",
+  "backendLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-backend-20260529.log",
+  "frontendLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-frontend-20260529.log",
+  "startedAt": "2026-05-29T09:41:31Z",
+  "prismaQueryEngineLibrary": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-darwin-arm64.dylib.node",
+  "prismaSchemaEngineBinary": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-darwin-arm64"
+}

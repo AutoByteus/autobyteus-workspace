@@ -1,0 +1,55 @@
+{"at":"2026-05-23T14:21:32.766Z","event":"environment","frontendUrl":"http://127.0.0.1:3000","backendBaseUrl":"http://127.0.0.1:8000","workspaceRoot":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-workspace-20260523","serverPid":96404,"executablePath":"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"}
+{"at":"2026-05-23T14:21:32.856Z","event":"fd_sample","label":"before_browser_launch","fdCount":33}
+{"at":"2026-05-23T14:21:33.957Z","event":"websocket_open","url":"ws://127.0.0.1:3000/_nuxt/?token=9EJUV5LaRBs4"}
+{"at":"2026-05-23T14:21:34.631Z","event":"screenshot","name":"agents","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-01-agents-list-20260523.png"}
+{"at":"2026-05-23T14:21:34.717Z","event":"fd_sample","label":"after_agents_list_before_workspace","fdCount":36}
+{"at":"2026-05-23T14:21:34.757Z","event":"click","label":"Daily Assistant Run"}
+{"at":"2026-05-23T14:21:35.175Z","event":"browser_console_signal","type":"log","text":"[Workspace] Connecting to file system changes for workspace: temp_ws_default"}
+{"at":"2026-05-23T14:21:35.176Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] Connecting to ws://127.0.0.1:8000/ws/file-explorer/temp_ws_default..."}
+{"at":"2026-05-23T14:21:35.177Z","event":"websocket_open","url":"ws://127.0.0.1:8000/ws/file-explorer/temp_ws_default"}
+{"at":"2026-05-23T14:21:35.197Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] WebSocket connected"}
+{"at":"2026-05-23T14:21:35.199Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] Session established: 20a9c3ec-8ef8-4e0b-bb86-25a2c7afc3e8"}
+{"at":"2026-05-23T14:21:35.199Z","event":"browser_console_signal","type":"log","text":"[Workspace] Connected to file system changes: 20a9c3ec-8ef8-4e0b-bb86-25a2c7afc3e8"}
+{"at":"2026-05-23T14:21:35.234Z","event":"screenshot","name":"configNoFiles","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-02-run-config-no-files-20260523.png"}
+{"at":"2026-05-23T14:21:35.237Z","event":"observed_auto_temp_files_tab","reason":"WorkspaceSelector auto-selected the temp workspace and the UI made Files visible.","fileExplorerSockets":[{"at":"2026-05-23T14:21:35.177Z","url":"ws://127.0.0.1:8000/ws/file-explorer/temp_ws_default","closedAt":"2026-05-23T14:21:35.385Z"}]}
+{"at":"2026-05-23T14:21:35.326Z","event":"fd_sample","label":"after_run_config_before_custom_workspace_load","fdCount":37}
+{"at":"2026-05-23T14:21:35.351Z","event":"click","label":"WorkspaceSelector New tab"}
+{"at":"2026-05-23T14:21:35.357Z","event":"fill","label":"Workspace path","value":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-workspace-20260523"}
+{"at":"2026-05-23T14:21:35.378Z","event":"click","label":"Load workspace"}
+{"at":"2026-05-23T14:21:35.383Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] Disconnected"}
+{"at":"2026-05-23T14:21:35.383Z","event":"browser_console_signal","type":"log","text":"[Workspace] Disconnected from file system watcher for workspace: temp_ws_default"}
+{"at":"2026-05-23T14:21:35.383Z","event":"browser_console_signal","type":"log","text":"[Workspace] Connecting to file system changes for workspace: agent_ws_890a16c427fc191827f5186ebfe6555baec78ce46e86a55e66d1b692b50f9334"}
+{"at":"2026-05-23T14:21:35.383Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] Connecting to ws://127.0.0.1:8000/ws/file-explorer/agent_ws_890a16c427fc191827f5186ebfe6555baec78ce46e86a55e66d1b692b50f9334..."}
+{"at":"2026-05-23T14:21:35.385Z","event":"websocket_close","url":"ws://127.0.0.1:8000/ws/file-explorer/temp_ws_default"}
+{"at":"2026-05-23T14:21:35.385Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] WebSocket disconnected: 1000 Client disconnect"}
+{"at":"2026-05-23T14:21:35.386Z","event":"websocket_open","url":"ws://127.0.0.1:8000/ws/file-explorer/agent_ws_890a16c427fc191827f5186ebfe6555baec78ce46e86a55e66d1b692b50f9334"}
+{"at":"2026-05-23T14:21:35.386Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] WebSocket connected"}
+{"at":"2026-05-23T14:21:35.391Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] Session established: 441d1008-183f-4b84-918e-7ba45b2a8f86"}
+{"at":"2026-05-23T14:21:35.392Z","event":"browser_console_signal","type":"log","text":"[Workspace] Connected to file system changes: 441d1008-183f-4b84-918e-7ba45b2a8f86"}
+{"at":"2026-05-23T14:21:35.448Z","event":"screenshot","name":"filesTree","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-03-files-visible-tree-20260523.png"}
+{"at":"2026-05-23T14:21:35.536Z","event":"fd_sample","label":"after_files_visible_one_live_stream","fdCount":41}
+{"at":"2026-05-23T14:21:35.573Z","event":"click","label":"README.md"}
+{"at":"2026-05-23T14:21:35.608Z","event":"screenshot","name":"readmeOpen","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-04-readme-open-20260523.png"}
+{"at":"2026-05-23T14:21:35.616Z","event":"fill","label":"File explorer search","value":"search-target"}
+{"at":"2026-05-23T14:21:36.432Z","event":"screenshot","name":"searchResults","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-05-search-results-20260523.png"}
+{"at":"2026-05-23T14:21:36.518Z","event":"fd_sample","label":"after_search_results_one_live_stream","fdCount":41}
+{"at":"2026-05-23T14:21:36.543Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] Disconnected"}
+{"at":"2026-05-23T14:21:36.543Z","event":"browser_console_signal","type":"log","text":"[Workspace] Disconnected from file system watcher for workspace: agent_ws_890a16c427fc191827f5186ebfe6555baec78ce46e86a55e66d1b692b50f9334"}
+{"at":"2026-05-23T14:21:36.549Z","event":"websocket_close","url":"ws://127.0.0.1:8000/ws/file-explorer/agent_ws_890a16c427fc191827f5186ebfe6555baec78ce46e86a55e66d1b692b50f9334"}
+{"at":"2026-05-23T14:21:36.549Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] WebSocket disconnected: 1000 Client disconnect"}
+{"at":"2026-05-23T14:21:36.552Z","event":"click","label":"Collapse right panel"}
+{"at":"2026-05-23T14:21:36.585Z","event":"screenshot","name":"collapsed","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-06-right-panel-collapsed-20260523.png"}
+{"at":"2026-05-23T14:21:36.675Z","event":"fd_sample","label":"after_right_panel_collapsed_stream_released","fdCount":36}
+{"at":"2026-05-23T14:21:36.696Z","event":"browser_console_signal","type":"log","text":"[Workspace] Connecting to file system changes for workspace: agent_ws_890a16c427fc191827f5186ebfe6555baec78ce46e86a55e66d1b692b50f9334"}
+{"at":"2026-05-23T14:21:36.696Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] Connecting to ws://127.0.0.1:8000/ws/file-explorer/agent_ws_890a16c427fc191827f5186ebfe6555baec78ce46e86a55e66d1b692b50f9334..."}
+{"at":"2026-05-23T14:21:36.700Z","event":"websocket_open","url":"ws://127.0.0.1:8000/ws/file-explorer/agent_ws_890a16c427fc191827f5186ebfe6555baec78ce46e86a55e66d1b692b50f9334"}
+{"at":"2026-05-23T14:21:36.700Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] WebSocket connected"}
+{"at":"2026-05-23T14:21:36.701Z","event":"click","label":"Reopen Files from right sidebar strip"}
+{"at":"2026-05-23T14:21:36.703Z","event":"browser_console_signal","type":"log","text":"[FileExplorerStreaming] Session established: 8ef8489e-7af6-44f2-8841-c2953859fcbc"}
+{"at":"2026-05-23T14:21:36.703Z","event":"browser_console_signal","type":"log","text":"[Workspace] Connected to file system changes: 8ef8489e-7af6-44f2-8841-c2953859fcbc"}
+{"at":"2026-05-23T14:21:36.793Z","event":"fd_sample","label":"after_files_reopened_one_live_stream","fdCount":41}
+{"at":"2026-05-23T14:21:36.879Z","event":"websocket_close","url":"ws://127.0.0.1:3000/_nuxt/?token=9EJUV5LaRBs4"}
+{"at":"2026-05-23T14:21:36.879Z","event":"websocket_close","url":"ws://127.0.0.1:8000/ws/file-explorer/agent_ws_890a16c427fc191827f5186ebfe6555baec78ce46e86a55e66d1b692b50f9334"}
+{"at":"2026-05-23T14:21:36.897Z","event":"websocket_open","url":"ws://127.0.0.1:3000/_nuxt/?token=9EJUV5LaRBs4"}
+{"at":"2026-05-23T14:21:37.098Z","event":"fd_sample","label":"after_navigate_away_stream_released","fdCount":36}
+{"at":"2026-05-23T14:21:37.100Z","event":"result","result":"pass","summaryPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.json"}

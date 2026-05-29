@@ -38,7 +38,7 @@ const agentSelectionStoreMock = reactive({
 });
 
 const agentTeamContextsStoreMock = reactive({
-  activeTeamContext: null as null,
+  activeTeamContext: null as any,
 });
 
 const contextFileUploadStoreMock = reactive({
@@ -188,7 +188,7 @@ describe('ContextFilePathInputArea', () => {
     selectContext(apiE2eContext);
     await nextTick();
 
-    resolveUpload?.(
+    (resolveUpload as unknown as (attachment: ContextAttachment) => void)(
       createUploadedContextAttachment({
         storedFilename: 'ctx_uploadtoken__diagram.png',
         locator: '/rest/drafts/agent-runs/temp-architecture/context-files/ctx_uploadtoken__diagram.png',
@@ -252,7 +252,12 @@ describe('ContextFilePathInputArea', () => {
     agentContextsStoreMock.activeRun = null;
     agentTeamContextsStoreMock.activeTeamContext = {
       teamRunId: 'team-1',
+      focusedMemberRouteKey: 'solution_designer',
       focusedMemberName: 'solution_designer',
+      leafAgentContextsByRouteKey: new Map([
+        ['solution_designer', solutionContext],
+        ['implementation_engineer', implementationContext],
+      ]),
       members: new Map([
         ['solution_designer', solutionContext],
         ['implementation_engineer', implementationContext],
@@ -300,7 +305,7 @@ describe('ContextFilePathInputArea', () => {
     await nextTick();
     await flushPromises();
 
-    expect(fetchMock).toHaveBeenCalledWith(
+    expect(fetchMock.mock.calls[0]?.[0]).toEqual(
       expect.stringContaining(
         '/rest/drafts/team-runs/team-1/members/implementation_engineer/context-files/ctx_implcopy__image.png',
       ),

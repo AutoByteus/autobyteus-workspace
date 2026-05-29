@@ -1,5 +1,6 @@
 import { normalizeModelIdentifier, normalizeRuntimeKind } from '~/composables/useDefinitionLaunchDefaults'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import {
   resolveEffectiveMemberLlmConfig,
   resolveEffectiveMemberRuntimeKind,
@@ -21,6 +22,7 @@ export interface TeamRunMemberConfigRecord {
   autoExecuteTools: boolean
   skillAccessMode: TeamRunConfig['skillAccessMode']
   workspaceId?: string | null
+  workspaceMetadata?: WorkspaceMetadata | null
   workspaceRootPath?: string | null
 }
 
@@ -41,6 +43,9 @@ export const buildTeamRunMemberConfigRecords = (params: {
       )
     }
 
+    const workspaceRootPath =
+      params.workspaceRootPath || params.config.workspaceMetadata?.workspaceRootPath || undefined
+
     return {
       memberName: member.memberName,
       memberRouteKey: member.memberRouteKey,
@@ -53,6 +58,7 @@ export const buildTeamRunMemberConfigRecords = (params: {
       autoExecuteTools: override?.autoExecuteTools ?? params.config.autoExecuteTools,
       skillAccessMode: params.config.skillAccessMode,
       workspaceId: params.config.workspaceId || undefined,
-      workspaceRootPath: params.workspaceRootPath || undefined,
+      workspaceMetadata: params.config.workspaceMetadata ?? null,
+      workspaceRootPath,
     }
   })

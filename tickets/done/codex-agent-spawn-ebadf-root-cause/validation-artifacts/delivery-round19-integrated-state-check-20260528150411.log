@@ -1,0 +1,57 @@
+delivery round19 integrated-state check
+timestamp=2026-05-28T13:11:32Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+branch=codex/codex-agent-spawn-ebadf-root-cause
+head=49deb55080027afcb7c1d3841caa84091e914ca3
+origin_personal=56c6d4bfa27ced68678e4d21dccd4acbcb31aa76
+merge_base=56c6d4bfa27ced68678e4d21dccd4acbcb31aa76
+origin_personal_to_head=0	24
+version=1.3.31
+status_short_begin
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-20260528150411.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-artifacts-20260528150411.txt
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round19-latest-personal-dmg-verify-20260528150411.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round19-integrated-state-check-20260528150411.log
+status_short_end
+readme_electron_mac_build_refs_begin
+235-pnpm build:electron:windows
+236-# For macOS
+237:pnpm build:electron:mac
+238-```
+239-
+240:The built applications will be available in the `electron-dist` directory. Use these commands when you want to create a standalone desktop application for distribution.
+241-
+242-#### macOS Build With Logs (No Notarization)
+243-
+244-For local macOS builds with verbose electron-builder logs and without notarization/timestamping:
+245-
+246-```bash
+247:NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+248-```
+249-
+250-### Desktop Application with Integrated Backend
+251-
+252-The Electron application includes the AutoByteus backend server, which is automatically started when the application launches.
+253-
+--
+277-pnpm build:electron:windows
+278-# For macOS with integrated server
+279:pnpm build:electron:mac
+280-```
+281-
+282-#### Embedded Runtime Contract
+283-
+284-When the Electron application starts, it:
+285-
+--
+379-- `pnpm build:electron:linux`: Build desktop application for Linux
+380-- `pnpm build:electron:windows`: Build desktop application for Windows
+381:- `pnpm build:electron:mac`: Build desktop application for macOS
+382-- `pnpm codegen`: Generate GraphQL types
+383-
+384-## Project Structure
+385-
+386-- `components/`: Vue components
+387-- `pages/`: Application pages and routing
+readme_electron_mac_build_refs_end
+result=pass

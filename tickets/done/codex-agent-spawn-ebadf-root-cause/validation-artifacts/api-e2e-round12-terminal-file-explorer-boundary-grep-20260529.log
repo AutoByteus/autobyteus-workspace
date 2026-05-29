@@ -1,0 +1,59 @@
+# API/E2E Round 12 Terminal/FileExplorer boundary grep
+# Date: 2026-05-29T10:14:49+0200
+
+## Forbidden Terminal -> FileExplorer dependency patterns
+### pattern: file-explorer
+no matches
+### pattern: FileExplorer
+no matches
+### pattern: folderChildren
+no matches
+### pattern: searchFiles
+no matches
+### pattern: acquireFileExplorer
+no matches
+### pattern: getFileExplorer
+no matches
+### pattern: watcher
+no matches
+
+## Positive Terminal root-path/cwd evidence
+autobyteus-server-ts/src/api/websocket/terminal.ts:26:  cwd?: string;
+autobyteus-server-ts/src/api/websocket/terminal.ts:27:  rootPath?: string;
+autobyteus-server-ts/src/api/websocket/terminal.ts:45:  const rawCwd = query.cwd ?? query.rootPath ?? "";
+autobyteus-server-ts/src/api/websocket/terminal.ts:46:  const cwd = canonicalizeWorkspaceRootPath(rawCwd);
+autobyteus-server-ts/src/api/websocket/terminal.ts:47:  const stats = await fs.stat(cwd);
+autobyteus-server-ts/src/api/websocket/terminal.ts:49:    throw new Error(`Terminal cwd is not a directory: ${cwd}`);
+autobyteus-server-ts/src/api/websocket/terminal.ts:51:  return cwd;
+autobyteus-server-ts/src/api/websocket/terminal.ts:59:    "/ws/terminal/:sessionId",
+autobyteus-server-ts/src/api/websocket/terminal.ts:155:          const cwd = await resolveTerminalCwd(query);
+autobyteus-server-ts/src/api/websocket/terminal.ts:164:            cwd,
+autobyteus-server-ts/src/api/websocket/terminal.ts:166:            cwd,
+autobyteus-server-ts/src/api/websocket/terminal.ts:182:          logger.info(`Terminal websocket attached for cwd ${cwd}`);
+autobyteus-server-ts/src/api/websocket/terminal.ts:189:            socket.close(4004, "Terminal cwd unavailable");
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:7:  targetKey: string;
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:36:    targetKey: string,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:37:    cwd: string,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:48:    this.sessions.set(sessionId, { session, targetKey });
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:60:      await session.start(cwd);
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:94:      `Created terminal session ${sessionId} using backend ${backendName} for target ${targetKey}`,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:115:  async closeAllForTargetKey(targetKey: string): Promise<number> {
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:117:      .filter(([, record]) => record.targetKey === targetKey)
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:139:      entries[sessionId] = record.targetKey;
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:48:    targetKey: string,
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:50:    cwd: string,
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:54:      await this.manager.createSession(sessionId, targetKey, cwd, {
+autobyteus-web/components/workspace/tools/Terminal.vue:50:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/components/workspace/tools/Terminal.vue:59:  target?: TerminalTarget | null;
+autobyteus-web/components/workspace/tools/Terminal.vue:68:const effectiveTerminalTarget = computed<TerminalTarget | null>(
+autobyteus-web/components/workspace/tools/Terminal.vue:76:  target: effectiveTerminalTarget,
+autobyteus-web/components/workspace/tools/Terminal.vue:229:  if (!effectiveTerminalTarget.value?.rootPath) {
+autobyteus-web/components/workspace/tools/Terminal.vue:264:      `${effectiveTerminalTarget.value?.rootPath || ""}:${effectiveTerminalTarget.value?.workspaceId || ""}`,
+autobyteus-web/composables/useTerminalSession.ts:21:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/composables/useTerminalSession.ts:26:  target: MaybeRef<TerminalTarget | null | undefined>;
+autobyteus-web/composables/useTerminalSession.ts:56:  const getTarget = (): TerminalTarget | null => {
+autobyteus-web/composables/useTerminalSession.ts:58:    return target?.rootPath ? target : null;
+autobyteus-web/composables/useTerminalSession.ts:61:  const buildTerminalWebSocketUrl = (target: TerminalTarget): string => {
+autobyteus-web/composables/useTerminalSession.ts:68:    endpoint.searchParams.set("cwd", target.rootPath);
+
+RESULT: PASS

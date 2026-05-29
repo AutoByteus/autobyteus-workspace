@@ -14,6 +14,13 @@ const agentMetadataMember = (member: Record<string, unknown>) => ({
   ...member,
 } as any)
 
+const workspaceMetadata = (workspaceId: string, rootPath = '/tmp/workspace') => ({
+  workspaceId,
+  workspaceRootPath: rootPath,
+  displayName: rootPath.split('/').filter(Boolean).pop() ?? rootPath,
+  kind: 'filesystem' as const,
+})
+
 describe('teamRunConfigUtils', () => {
   it('treats only property presence as an explicit member llmConfig override', () => {
     expect(hasExplicitMemberLlmConfigOverride(undefined)).toBe(false)
@@ -68,7 +75,6 @@ describe('teamRunConfigUtils', () => {
         teamDefinitionName: 'Test Team',
         coordinatorMemberRouteKey: 'professor',
         createdAt: '2026-03-30T00:00:00.000Z',
-        updatedAt: '2026-03-30T00:00:00.000Z',
         archivedAt: null,
         memberTree: [
           agentMetadataMember({
@@ -112,7 +118,7 @@ describe('teamRunConfigUtils', () => {
           }),
         ],
       },
-      firstWorkspaceId: 'ws-1',
+      primaryWorkspaceMetadata: workspaceMetadata('ws-1'),
       isLocked: true,
     })
 
@@ -138,7 +144,6 @@ describe('teamRunConfigUtils', () => {
         teamDefinitionName: 'Mixed Team',
         coordinatorMemberRouteKey: 'writer',
         createdAt: '2026-03-30T00:00:00.000Z',
-        updatedAt: '2026-03-30T00:00:00.000Z',
         archivedAt: null,
         memberTree: [
           agentMetadataMember({
@@ -169,7 +174,7 @@ describe('teamRunConfigUtils', () => {
           }),
         ],
       },
-      firstWorkspaceId: 'ws-2',
+      primaryWorkspaceMetadata: workspaceMetadata('ws-2'),
       isLocked: false,
     })
 
@@ -191,7 +196,6 @@ describe('teamRunConfigUtils', () => {
         teamDefinitionName: 'Duplicate Leaf Team',
         coordinatorMemberRouteKey: 'program_manager',
         createdAt: '2026-05-17T00:00:00.000Z',
-        updatedAt: '2026-05-17T00:00:00.000Z',
         archivedAt: null,
         memberTree: [
           agentMetadataMember({
@@ -235,7 +239,7 @@ describe('teamRunConfigUtils', () => {
           }),
         ],
       },
-      firstWorkspaceId: 'ws-duplicate-leaf',
+      primaryWorkspaceMetadata: workspaceMetadata('ws-duplicate-leaf'),
       isLocked: false,
     })
 
@@ -257,7 +261,6 @@ describe('teamRunConfigUtils', () => {
         teamDefinitionName: 'Mixed Restore Team',
         coordinatorMemberRouteKey: 'writer',
         createdAt: '2026-04-23T00:00:00.000Z',
-        updatedAt: '2026-04-23T00:00:00.000Z',
         archivedAt: null,
         memberTree: [
           agentMetadataMember({
@@ -327,7 +330,7 @@ describe('teamRunConfigUtils', () => {
           }),
         ],
       },
-      firstWorkspaceId: 'ws-3',
+      primaryWorkspaceMetadata: workspaceMetadata('ws-3'),
       isLocked: false,
     })
 

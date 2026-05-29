@@ -1,0 +1,52 @@
+Integrated docs grep check
+HEAD: 54b8fbada1dabc769c90becca10dd4be078baa67
+origin/personal: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+Relation origin/personal...HEAD: 0	39
+
+README electron build command excerpt:
+235-pnpm build:electron:windows
+236-# For macOS
+237:pnpm build:electron:mac
+238-```
+239-
+240:The built applications will be available in the `electron-dist` directory. Use these commands when you want to create a standalone desktop application for distribution.
+241-
+242:#### macOS Build With Logs (No Notarization)
+243-
+244-For local macOS builds with verbose electron-builder logs and without notarization/timestamping:
+245-
+246-```bash
+247:NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+248-```
+249-
+250-### Desktop Application with Integrated Backend
+--
+277-pnpm build:electron:windows
+278-# For macOS with integrated server
+279:pnpm build:electron:mac
+280-```
+281-
+282-#### Embedded Runtime Contract
+--
+379-- `pnpm build:electron:linux`: Build desktop application for Linux
+380-- `pnpm build:electron:windows`: Build desktop application for Windows
+381:- `pnpm build:electron:mac`: Build desktop application for macOS
+382-- `pnpm codegen`: Generate GraphQL types
+383-
+384-## Project Structure
+
+Stale terminal source docs grep (expect no matches):
+No stale terminal docs matches.
+
+Old file explorer stream API source docs grep (expect no matches):
+No old file explorer stream API docs matches.
+
+Current file explorer boundary/path refs:
+autobyteus-web/docs/file_explorer.md:194:| `refreshFileExplorerSnapshot()` | Refreshes the root and currently open folders when a file explorer becomes visible so missed changes are reconciled before live events arrive. |
+autobyteus-web/docs/file_explorer.md:285:  by workspace root path;
+autobyteus-web/docs/file_explorer.md:286:- if a selected run/team-run workspace root cannot be resolved, mobile shows an
+autobyteus-web/docs/file_explorer.md:555:mutation RenameFileOrFolder($workspaceId: String!, $targetPath: String!, $newName: String!)
+autobyteus-web/docs/file_explorer.md:614:- Every acquisition refreshes the root and currently open folders through GraphQL so an explorer that was hidden catches up without needing a background watcher.
+autobyteus-web/docs/file_explorer.md:706:- `utils/fileExplorer/openFolderRefresh.ts` - root/open-folder refresh helpers for newly visible explorers.
+autobyteus-web/docs/file_explorer.md:852:await fileExplorerStore.renameFileOrFolder("/src/old-name.ts", "new-name.ts", workspaceId);
+autobyteus-web/docs/file_explorer.md:877:- **[Terminal](./terminal.md)**: Terminal uses an explicit cwd/root path and is intentionally separate from File Explorer tree/search/watch state.

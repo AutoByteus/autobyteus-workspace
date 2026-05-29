@@ -1,0 +1,10 @@
+$ rg -n "historyIndexService|recordRunCreated|recordRunRestored" autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts
+286:      historyIndexService: {
+287:        recordRunCreated: vi.fn(),
+288:        recordRunRestored: vi.fn(),
+399:      historyIndexService: {
+400:        recordRunCreated: vi.fn(),
+401:        recordRunRestored: vi.fn(),
+433:      historyIndexService: {
+434:        recordRunCreated: vi.fn(),
+435:        recordRunRestored: vi.fn(),

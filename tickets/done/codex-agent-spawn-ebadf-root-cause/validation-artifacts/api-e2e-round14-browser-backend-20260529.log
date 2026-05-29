@@ -1,0 +1,500 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/.env
+[dotenv@17.3.1] injecting env (0) from ../tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+(node:97427) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Running Prisma migrations...
+Using Prisma engine overrides from existing-env: process.env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/db/production.db"
+
+13 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 46 items.
+AgentRunManager initialized.
+[2026-05-29T09:42:08.829Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+{"level":30,"time":1780047728896,"pid":97427,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:8000"}
+[2026-05-29T09:42:08.896Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8000
+[2026-05-29T09:42:08.897Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8000
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Pre-loaded 46 agent definitions into cache.
+[2026-05-29T09:42:08.915Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'list_available_tools'
+Successfully registered tool definition: 'list_input_processors'
+Successfully registered tool definition: 'list_llm_response_processors'
+Successfully registered tool definition: 'list_lifecycle_processors'
+Successfully registered tool definition: 'list_tool_result_processors'
+Loaded tool group: Tool Management Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'create_skill_version'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=31
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+[2026-05-29T09:42:08.958Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+Pre-loaded 21 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Registered 6 image models from Autobyteus host https://localhost:51740.
+Autobyteus image models from https://localhost:51740: gpt-image-1-rpa@localhost:51740, nano-banana-pro-app-rpa@localhost:51740, imagen-4-rpa@localhost:51740, imagen-4-ultra-rpa@localhost:51740, imagen-4-fast-rpa@localhost:51740, qwen-image-rpa@localhost:51740
+Autobyteus image discovery summary for https://localhost:51740: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=14
+Finished Autobyteus image model discovery. Total models registered: 12
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 29
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Finished Autobyteus discovery. Total models registered: 74
+Successfully fetched 124 models from LLMFactory.
+LLM models cache populated with 124 items.
+Pre-loaded 124 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 18 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4, AUTOBYTEUS=12
+Image models by runtime: api=6, autobyteus=12
+Image models cache populated with 18 items.
+Pre-loaded 18 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=12
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 4 audio models from Autobyteus host https://localhost:51740.
+Autobyteus audio models from https://localhost:51740: gemini-2.5-pro-tts-rpa@localhost:51740, gemini-2.5-flash-tts-rpa@localhost:51740, gemini-3.1-flash-tts-rpa@localhost:51740, qwen-tts-rpa@localhost:51740
+Autobyteus audio discovery summary for https://localhost:51740: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=10
+Finished Autobyteus audio model discovery. Total models registered: 8
+Successfully fetched 12 audio models from AudioClientFactory.
+Audio models by provider: AUTOBYTEUS=8, OPENAI=1, GEMINI=3
+Audio models by runtime: autobyteus=8, api=4
+Audio models cache populated with 12 items.
+Pre-loaded 12 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: bcbf8679-27f8-4384-a5f4-1142130f1a62 for workspace temp_ws_default
+Created file explorer session bcbf8679-27f8-4384-a5f4-1142130f1a62 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: bcbf8679-27f8-4384-a5f4-1142130f1a62 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529.
+Created and registered workspace ID: agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created WorkspaceFileExplorer for agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0 (graphql-folder-children).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+FileExplorerSession closed: bcbf8679-27f8-4384-a5f4-1142130f1a62
+Closed file explorer session bcbf8679-27f8-4384-a5f4-1142130f1a62. Active sessions: 0
+File explorer WebSocket disconnected: bcbf8679-27f8-4384-a5f4-1142130f1a62
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: fca7b818-5a29-4a57-8563-41fc777f4f59 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session fca7b818-5a29-4a57-8563-41fc777f4f59 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 1
+File explorer WebSocket connected: fca7b818-5a29-4a57-8563-41fc777f4f59 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+FileExplorerSession closed: fca7b818-5a29-4a57-8563-41fc777f4f59
+Closed file explorer session fca7b818-5a29-4a57-8563-41fc777f4f59. Active sessions: 0
+File explorer WebSocket disconnected: fca7b818-5a29-4a57-8563-41fc777f4f59
+Created terminal session 728cbd63-4d7d-4763-a968-0c546a1b302a using backend IsolatedPtySession for target /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Terminal WebSocket connected: 728cbd63-4d7d-4763-a968-0c546a1b302a
+Terminal websocket attached for cwd /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 2f021c9a-39b6-487f-93af-9c5ac481c360 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session 2f021c9a-39b6-487f-93af-9c5ac481c360 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 1
+File explorer WebSocket connected: 2f021c9a-39b6-487f-93af-9c5ac481c360 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Closed PTY session 728cbd63-4d7d-4763-a968-0c546a1b302a
+Terminal WebSocket disconnected: 728cbd63-4d7d-4763-a968-0c546a1b302a
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+FileExplorerSession closed: 2f021c9a-39b6-487f-93af-9c5ac481c360
+Closed file explorer session 2f021c9a-39b6-487f-93af-9c5ac481c360. Active sessions: 0
+File explorer WebSocket disconnected: 2f021c9a-39b6-487f-93af-9c5ac481c360
+Created terminal session 725eff2c-6755-4020-a5e6-4c33fae62110 using backend IsolatedPtySession for target /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Terminal WebSocket connected: 725eff2c-6755-4020-a5e6-4c33fae62110
+Terminal websocket attached for cwd /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: fc8d3ce1-224c-4985-878b-8dc17e2500e1 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session fc8d3ce1-224c-4985-878b-8dc17e2500e1 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 1
+File explorer WebSocket connected: fc8d3ce1-224c-4985-878b-8dc17e2500e1 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Closed PTY session 725eff2c-6755-4020-a5e6-4c33fae62110
+Terminal WebSocket disconnected: 725eff2c-6755-4020-a5e6-4c33fae62110
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+FileExplorerSession closed: fc8d3ce1-224c-4985-878b-8dc17e2500e1
+Closed file explorer session fc8d3ce1-224c-4985-878b-8dc17e2500e1. Active sessions: 0
+File explorer WebSocket disconnected: fc8d3ce1-224c-4985-878b-8dc17e2500e1
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 0a9e6390-0856-495a-9548-5fc947e71a5b for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session 0a9e6390-0856-495a-9548-5fc947e71a5b for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 1
+File explorer WebSocket connected: 0a9e6390-0856-495a-9548-5fc947e71a5b for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+FileExplorerSession closed: 0a9e6390-0856-495a-9548-5fc947e71a5b
+Closed file explorer session 0a9e6390-0856-495a-9548-5fc947e71a5b. Active sessions: 0
+File explorer WebSocket disconnected: 0a9e6390-0856-495a-9548-5fc947e71a5b
+Created terminal session f8f454df-0cd5-4f6b-b9a0-1cb9709c703d using backend IsolatedPtySession for target /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Terminal WebSocket connected: f8f454df-0cd5-4f6b-b9a0-1cb9709c703d
+Terminal websocket attached for cwd /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 451a5c61-76fc-4669-b6cc-342666bef0a9 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session 451a5c61-76fc-4669-b6cc-342666bef0a9 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 1
+File explorer WebSocket connected: 451a5c61-76fc-4669-b6cc-342666bef0a9 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Closed PTY session f8f454df-0cd5-4f6b-b9a0-1cb9709c703d
+Terminal WebSocket disconnected: f8f454df-0cd5-4f6b-b9a0-1cb9709c703d
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/nested/deep-note.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/main.ts
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/README.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/docs/search-target.md
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: b69c2d54-7a56-4c02-a3b0-fa72dbdaf274 for workspace temp_ws_default
+Created file explorer session b69c2d54-7a56-4c02-a3b0-fa72dbdaf274 for workspace temp_ws_default. Active sessions: 2
+File explorer WebSocket connected: b69c2d54-7a56-4c02-a3b0-fa72dbdaf274 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+FileExplorerSession closed: b69c2d54-7a56-4c02-a3b0-fa72dbdaf274
+Closed file explorer session b69c2d54-7a56-4c02-a3b0-fa72dbdaf274. Active sessions: 1
+File explorer WebSocket disconnected: b69c2d54-7a56-4c02-a3b0-fa72dbdaf274
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/README.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/main.ts
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/nested/deep-note.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/docs/search-target.md
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: f1a8af6f-1c07-4a17-999c-dd0226007d01 for workspace temp_ws_default
+Created file explorer session f1a8af6f-1c07-4a17-999c-dd0226007d01 for workspace temp_ws_default. Active sessions: 2
+File explorer WebSocket connected: f1a8af6f-1c07-4a17-999c-dd0226007d01 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace.
+Created and registered workspace ID: agent_ws_d590870e1376047557a8b216981e964cbffd2b9f5b229502ad9a8e1bf3dcf083
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+FileExplorerSession closed: f1a8af6f-1c07-4a17-999c-dd0226007d01
+Closed file explorer session f1a8af6f-1c07-4a17-999c-dd0226007d01. Active sessions: 1
+File explorer WebSocket disconnected: f1a8af6f-1c07-4a17-999c-dd0226007d01
+Created WorkspaceFileExplorer for agent_ws_d590870e1376047557a8b216981e964cbffd2b9f5b229502ad9a8e1bf3dcf083 (graphql-folder-children).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: ebc1f40f-54ed-4168-afa5-cf053be6d4b7 for workspace agent_ws_d590870e1376047557a8b216981e964cbffd2b9f5b229502ad9a8e1bf3dcf083
+Created file explorer session ebc1f40f-54ed-4168-afa5-cf053be6d4b7 for workspace agent_ws_d590870e1376047557a8b216981e964cbffd2b9f5b229502ad9a8e1bf3dcf083. Active sessions: 2
+File explorer WebSocket connected: ebc1f40f-54ed-4168-afa5-cf053be6d4b7 for workspace agent_ws_d590870e1376047557a8b216981e964cbffd2b9f5b229502ad9a8e1bf3dcf083
+File explorer websocket attached for workspace agent_ws_d590870e1376047557a8b216981e964cbffd2b9f5b229502ad9a8e1bf3dcf083
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+FileExplorerSession closed: ebc1f40f-54ed-4168-afa5-cf053be6d4b7
+Closed file explorer session ebc1f40f-54ed-4168-afa5-cf053be6d4b7. Active sessions: 1
+File explorer WebSocket disconnected: ebc1f40f-54ed-4168-afa5-cf053be6d4b7
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/README.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/nested/deep-note.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/docs/search-target.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/main.ts
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: a1967536-a2fb-4027-837c-498631229707 for workspace temp_ws_default
+Created file explorer session a1967536-a2fb-4027-837c-498631229707 for workspace temp_ws_default. Active sessions: 2
+File explorer WebSocket connected: a1967536-a2fb-4027-837c-498631229707 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529.
+Reusing existing workspace ID: agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+FileExplorerSession closed: a1967536-a2fb-4027-837c-498631229707
+Closed file explorer session a1967536-a2fb-4027-837c-498631229707. Active sessions: 1
+File explorer WebSocket disconnected: a1967536-a2fb-4027-837c-498631229707
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 2
+FileExplorerSession created: 60a9be6f-b7ef-4f69-a90f-71b2a82cf593 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session 60a9be6f-b7ef-4f69-a90f-71b2a82cf593 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 2
+File explorer WebSocket connected: 60a9be6f-b7ef-4f69-a90f-71b2a82cf593 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: 60a9be6f-b7ef-4f69-a90f-71b2a82cf593
+Closed file explorer session 60a9be6f-b7ef-4f69-a90f-71b2a82cf593. Active sessions: 1
+File explorer WebSocket disconnected: 60a9be6f-b7ef-4f69-a90f-71b2a82cf593
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/main.ts
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/README.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/docs/search-target.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/nested/deep-note.md
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: ac4564dc-291f-4206-969c-5db7729e9b7f for workspace temp_ws_default
+Created file explorer session ac4564dc-291f-4206-969c-5db7729e9b7f for workspace temp_ws_default. Active sessions: 2
+File explorer WebSocket connected: ac4564dc-291f-4206-969c-5db7729e9b7f for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529.
+Reusing existing workspace ID: agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+FileExplorerSession closed: ac4564dc-291f-4206-969c-5db7729e9b7f
+Closed file explorer session ac4564dc-291f-4206-969c-5db7729e9b7f. Active sessions: 1
+File explorer WebSocket disconnected: ac4564dc-291f-4206-969c-5db7729e9b7f
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 2
+FileExplorerSession created: 4a547745-c0c5-4872-82a6-67742fa7a816 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session 4a547745-c0c5-4872-82a6-67742fa7a816 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 2
+File explorer WebSocket connected: 4a547745-c0c5-4872-82a6-67742fa7a816 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: 4a547745-c0c5-4872-82a6-67742fa7a816
+Closed file explorer session 4a547745-c0c5-4872-82a6-67742fa7a816. Active sessions: 1
+File explorer WebSocket disconnected: 4a547745-c0c5-4872-82a6-67742fa7a816
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/README.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/main.ts
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/nested/deep-note.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/docs/search-target.md
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 51957872-dbb7-48e8-9b84-7d4956030732 for workspace temp_ws_default
+Created file explorer session 51957872-dbb7-48e8-9b84-7d4956030732 for workspace temp_ws_default. Active sessions: 2
+File explorer WebSocket connected: 51957872-dbb7-48e8-9b84-7d4956030732 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529.
+Reusing existing workspace ID: agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+FileExplorerSession closed: 51957872-dbb7-48e8-9b84-7d4956030732
+Closed file explorer session 51957872-dbb7-48e8-9b84-7d4956030732. Active sessions: 1
+File explorer WebSocket disconnected: 51957872-dbb7-48e8-9b84-7d4956030732
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 2
+FileExplorerSession created: d251db1b-ae5b-49af-a68e-9d9d19259626 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session d251db1b-ae5b-49af-a68e-9d9d19259626 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 2
+File explorer WebSocket connected: d251db1b-ae5b-49af-a68e-9d9d19259626 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: d251db1b-ae5b-49af-a68e-9d9d19259626
+Closed file explorer session d251db1b-ae5b-49af-a68e-9d9d19259626. Active sessions: 1
+File explorer WebSocket disconnected: d251db1b-ae5b-49af-a68e-9d9d19259626
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/README.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/docs/search-target.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/nested/deep-note.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/main.ts
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 7f67f085-5079-4c0d-af55-078783250ad7 for workspace temp_ws_default
+Created file explorer session 7f67f085-5079-4c0d-af55-078783250ad7 for workspace temp_ws_default. Active sessions: 2
+File explorer WebSocket connected: 7f67f085-5079-4c0d-af55-078783250ad7 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529.
+Reusing existing workspace ID: agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+FileExplorerSession closed: 7f67f085-5079-4c0d-af55-078783250ad7
+Closed file explorer session 7f67f085-5079-4c0d-af55-078783250ad7. Active sessions: 1
+File explorer WebSocket disconnected: 7f67f085-5079-4c0d-af55-078783250ad7
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 2
+FileExplorerSession created: 9922eab1-bad2-4b23-b747-0f0e0fb0aa9f for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session 9922eab1-bad2-4b23-b747-0f0e0fb0aa9f for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 2
+File explorer WebSocket connected: 9922eab1-bad2-4b23-b747-0f0e0fb0aa9f for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: 9922eab1-bad2-4b23-b747-0f0e0fb0aa9f
+Closed file explorer session 9922eab1-bad2-4b23-b747-0f0e0fb0aa9f. Active sessions: 1
+File explorer WebSocket disconnected: 9922eab1-bad2-4b23-b747-0f0e0fb0aa9f
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/docs/search-target.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/README.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/nested/deep-note.md
+Watcher detected modification: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529/src/main.ts
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: aa51855b-954d-4729-8180-0700ae75525c for workspace temp_ws_default
+Created file explorer session aa51855b-954d-4729-8180-0700ae75525c for workspace temp_ws_default. Active sessions: 2
+File explorer WebSocket connected: aa51855b-954d-4729-8180-0700ae75525c for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529.
+Reusing existing workspace ID: agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace
+FileExplorerSession closed: aa51855b-954d-4729-8180-0700ae75525c
+Closed file explorer session aa51855b-954d-4729-8180-0700ae75525c. Active sessions: 1
+File explorer WebSocket disconnected: aa51855b-954d-4729-8180-0700ae75525c
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 2
+FileExplorerSession created: ecc98868-38be-4a89-ac46-5b7faf1c8fe9 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session ecc98868-38be-4a89-ac46-5b7faf1c8fe9 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 2
+File explorer WebSocket connected: ecc98868-38be-4a89-ac46-5b7faf1c8fe9 for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession closed: 451a5c61-76fc-4669-b6cc-342666bef0a9
+Closed file explorer session 451a5c61-76fc-4669-b6cc-342666bef0a9. Active sessions: 1
+File explorer WebSocket disconnected: 451a5c61-76fc-4669-b6cc-342666bef0a9
+Created terminal session b4b8ec81-dde9-4eed-9fcf-c51c965e6bd7 using backend IsolatedPtySession for target /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Terminal WebSocket connected: b4b8ec81-dde9-4eed-9fcf-c51c965e6bd7
+Terminal websocket attached for cwd /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+FileExplorerSession closed: ecc98868-38be-4a89-ac46-5b7faf1c8fe9
+Closed file explorer session ecc98868-38be-4a89-ac46-5b7faf1c8fe9. Active sessions: 0
+File explorer WebSocket disconnected: ecc98868-38be-4a89-ac46-5b7faf1c8fe9
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 06c2134b-87ba-4fda-afd4-e8439437354a for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Created file explorer session 06c2134b-87ba-4fda-afd4-e8439437354a for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0. Active sessions: 1
+File explorer WebSocket connected: 06c2134b-87ba-4fda-afd4-e8439437354a for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+File explorer websocket attached for workspace agent_ws_c22293ef017635dc3303d6ced067a43d91fc1bce5658437dd5150191642dbce0
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529 (file-explorer-websocket); active leases: 0
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529
+FileExplorerSession closed: 06c2134b-87ba-4fda-afd4-e8439437354a
+Closed file explorer session 06c2134b-87ba-4fda-afd4-e8439437354a. Active sessions: 0
+File explorer WebSocket disconnected: 06c2134b-87ba-4fda-afd4-e8439437354a
+Closed PTY session b4b8ec81-dde9-4eed-9fcf-c51c965e6bd7
+Terminal WebSocket disconnected: b4b8ec81-dde9-4eed-9fcf-c51c965e6bd7
+[2026-05-29T09:56:35.670Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-05-29T09:56:35.685Z] [INFO] [server.runtime] Server closed cleanly.

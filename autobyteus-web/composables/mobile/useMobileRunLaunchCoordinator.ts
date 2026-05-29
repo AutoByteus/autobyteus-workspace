@@ -33,6 +33,16 @@ const workspaceRootPath = (workspaceStore: ReturnType<typeof useWorkspaceStore>,
     || workspaceId;
 };
 
+const workspaceMetadataForId = (
+  workspaceStore: ReturnType<typeof useWorkspaceStore>,
+  workspaceId: string,
+) => {
+  const workspace = workspaceStore.workspaces[workspaceId] || null;
+  return workspaceStore.workspaceMetadataById[workspaceId]
+    || (workspace ? workspaceStore.registerWorkspaceInfoMetadata(workspace) : null)
+    || null;
+};
+
 export function useMobileRunLaunchCoordinator() {
   const agentContextsStore = useAgentContextsStore();
   const agentDefinitionStore = useAgentDefinitionStore();
@@ -96,7 +106,10 @@ export function useMobileRunLaunchCoordinator() {
         throw new Error('Choose an agent before creating the run.');
       }
       agentRunConfigStore.setTemplate(definition);
-      agentRunConfigStore.updateAgentConfig({ workspaceId: draft.workspaceId });
+      agentRunConfigStore.updateAgentConfig({
+        workspaceId: draft.workspaceId,
+        workspaceMetadata: workspaceMetadataForId(workspaceStore, draft.workspaceId),
+      });
     }
     assertAgentConfigMatchesDraft(draft);
   }
@@ -108,7 +121,10 @@ export function useMobileRunLaunchCoordinator() {
     }
     if (!teamRunConfigStore.config) {
       teamRunConfigStore.setTemplate(definition);
-      teamRunConfigStore.updateConfig({ workspaceId: draft.workspaceId });
+      teamRunConfigStore.updateConfig({
+        workspaceId: draft.workspaceId,
+        workspaceMetadata: workspaceMetadataForId(workspaceStore, draft.workspaceId),
+      });
     }
     assertTeamConfigMatchesDraft(draft);
     return definition;

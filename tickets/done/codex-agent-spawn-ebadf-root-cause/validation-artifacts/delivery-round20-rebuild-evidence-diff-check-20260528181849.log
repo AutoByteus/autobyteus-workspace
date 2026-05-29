@@ -1,0 +1,8 @@
+delivery round20 final latest-personal rebuild evidence diff check
+timestamp=2026-05-28T16:24:47Z
+head=2a4667a27149c7a3dbaa53e7b4b5c5350ca25663
+origin_personal=d1f92730caea25e8b9c39cf4384dc665491e768a
+merge_base=d1f92730caea25e8b9c39cf4384dc665491e768a
+origin_personal_to_head=0	27
+command=git diff --cached --check
+result=pass

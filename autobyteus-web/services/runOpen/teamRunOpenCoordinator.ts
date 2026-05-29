@@ -17,6 +17,7 @@ import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils
 import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRuntimeStatusState';
 import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
 import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 
 const preserveCanonicalMemberStatus = (status: unknown): AgentStatus => {
   if (
@@ -36,7 +37,8 @@ export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
 export interface OpenTeamRunWithCoordinatorInput {
   teamRunId: string;
   memberRouteKey?: string | null;
-  ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
+  resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
+  ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
   selectRun?: boolean;
   selectionMode?: TeamRunOpenSelectionMode;
 }
@@ -95,7 +97,7 @@ export const openTeamRun = async (
     resumeConfig,
     metadata,
     members,
-    firstWorkspaceId,
+    primaryWorkspaceMetadata,
     focusedMemberRouteKey,
     historicalHydration,
     projectionByMemberRouteKey,
@@ -109,7 +111,7 @@ export const openTeamRun = async (
     teamRunId: metadata.teamRunId,
     config: reconstructTeamRunConfigFromMetadata({
       metadata,
-      firstWorkspaceId,
+      primaryWorkspaceMetadata,
       isLocked: shouldTreatAsLive,
     }),
     memberTree,

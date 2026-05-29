@@ -1,0 +1,409 @@
+{
+  "result": "pass",
+  "scenario": "embedded server macOS high-churn file-explorer websocket, terminal cwd, and codex activation lifecycle",
+  "platform": "darwin/arm64",
+  "node": "v22.21.1",
+  "serverPid": 18642,
+  "port": 59894,
+  "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-vOsNO2",
+  "workspaceCount": 3,
+  "fileCountPerWorkspace": 123,
+  "websocketCycles": {
+    "sharedConsumers": 2,
+    "repeatedOpenClose": 20,
+    "closeBeforeConnected": 10
+  },
+  "terminalCycles": {
+    "realCwdSessions": 1,
+    "repeatedOpenClose": 10
+  },
+  "fdSamples": [
+    {
+      "label": "after_server_health",
+      "count": 36,
+      "at": "2026-05-24T05:18:14.400Z"
+    },
+    {
+      "label": "after_workspace_1_create_search_folder_snapshot_no_ws",
+      "count": 37,
+      "at": "2026-05-24T05:18:14.527Z"
+    },
+    {
+      "label": "after_workspace_2_create_search_folder_snapshot_no_ws",
+      "count": 37,
+      "at": "2026-05-24T05:18:14.663Z"
+    },
+    {
+      "label": "after_workspace_3_create_search_folder_snapshot_no_ws",
+      "count": 37,
+      "at": "2026-05-24T05:18:14.778Z"
+    },
+    {
+      "label": "after_all_snapshot_queries_no_websocket",
+      "count": 37,
+      "at": "2026-05-24T05:18:14.865Z"
+    },
+    {
+      "label": "after_first_visible_websocket_open",
+      "count": 161,
+      "at": "2026-05-24T05:18:14.994Z"
+    },
+    {
+      "label": "after_second_visible_websocket_open_same_workspace",
+      "count": 162,
+      "at": "2026-05-24T05:18:15.084Z"
+    },
+    {
+      "label": "after_closing_first_of_two_visible_websockets",
+      "count": 161,
+      "at": "2026-05-24T05:18:16.651Z"
+    },
+    {
+      "label": "after_closing_final_shared_visible_websocket",
+      "count": 33,
+      "at": "2026-05-24T05:18:18.742Z"
+    },
+    {
+      "label": "cycle_1_open",
+      "count": 157,
+      "at": "2026-05-24T05:18:18.859Z"
+    },
+    {
+      "label": "cycle_1_closed",
+      "count": 33,
+      "at": "2026-05-24T05:18:19.047Z"
+    },
+    {
+      "label": "cycle_10_open",
+      "count": 157,
+      "at": "2026-05-24T05:18:20.565Z"
+    },
+    {
+      "label": "cycle_10_closed",
+      "count": 33,
+      "at": "2026-05-24T05:18:21.155Z"
+    },
+    {
+      "label": "cycle_20_open",
+      "count": 157,
+      "at": "2026-05-24T05:18:22.791Z"
+    },
+    {
+      "label": "cycle_20_closed",
+      "count": 33,
+      "at": "2026-05-24T05:18:23.378Z"
+    },
+    {
+      "label": "after_20_open_close_cycles",
+      "count": 33,
+      "at": "2026-05-24T05:18:25.466Z"
+    },
+    {
+      "label": "after_10_close_before_connected_cycles",
+      "count": 33,
+      "at": "2026-05-24T05:18:27.618Z"
+    },
+    {
+      "label": "after_terminal_real_cwd_open",
+      "count": 38,
+      "at": "2026-05-24T05:18:27.931Z"
+    },
+    {
+      "label": "after_terminal_real_cwd_close",
+      "count": 33,
+      "at": "2026-05-24T05:18:29.521Z"
+    },
+    {
+      "label": "terminal_cycle_1_open",
+      "count": 38,
+      "at": "2026-05-24T05:18:29.657Z"
+    },
+    {
+      "label": "terminal_cycle_1_closed",
+      "count": 33,
+      "at": "2026-05-24T05:18:29.843Z"
+    },
+    {
+      "label": "terminal_cycle_10_open",
+      "count": 38,
+      "at": "2026-05-24T05:18:31.153Z"
+    },
+    {
+      "label": "terminal_cycle_10_closed",
+      "count": 33,
+      "at": "2026-05-24T05:18:31.743Z"
+    },
+    {
+      "label": "after_10_terminal_open_close_cycles",
+      "count": 33,
+      "at": "2026-05-24T05:18:33.331Z"
+    },
+    {
+      "label": "after_codex_probe_final",
+      "count": 33,
+      "at": "2026-05-24T05:18:33.667Z"
+    }
+  ],
+  "childProcessSamples": [
+    {
+      "label": "after_terminal_real_cwd_close",
+      "count": 0,
+      "children": [],
+      "at": "2026-05-24T05:18:29.570Z"
+    },
+    {
+      "label": "after_10_terminal_open_close_cycles",
+      "count": 0,
+      "children": [],
+      "at": "2026-05-24T05:18:33.381Z"
+    }
+  ],
+  "codexVersion": "codex-cli 0.133.0",
+  "codexProviderProbe": {
+    "attempted": true,
+    "ok": true,
+    "providerCount": 13,
+    "modelCount": 6,
+    "error": null
+  },
+  "events": [
+    {
+      "at": "2026-05-24T05:18:11.249Z",
+      "event": "start_server",
+      "serverEntry": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/dist/app.js",
+      "serverCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts",
+      "port": 59894,
+      "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-vOsNO2",
+      "envFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-vOsNO2/.env",
+      "dbUrl": "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-vOsNO2/db/production.db",
+      "prismaEnginePair": {
+        "target": "darwin-arm64",
+        "sourcePath": "/Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64",
+        "query": "/Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine",
+        "schema": "/Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/schema-engine",
+        "mtimeMs": 1779594138065.999
+      },
+      "node": "v22.21.1",
+      "platform": "darwin/arm64"
+    },
+    {
+      "at": "2026-05-24T05:18:13.313Z",
+      "event": "health_ok",
+      "health": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    {
+      "at": "2026-05-24T05:18:14.400Z",
+      "event": "fd_sample",
+      "label": "after_server_health",
+      "count": 36
+    },
+    {
+      "at": "2026-05-24T05:18:14.427Z",
+      "event": "workspace_created",
+      "workspaceIndex": 0,
+      "workspaceId": "agent_ws_433a916320d22a95a06c09c9ff07517b53a6af5ddf13ec40ad693e5ca7630808",
+      "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-P3g0EH",
+      "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-P3g0EH",
+      "kind": "filesystem"
+    },
+    {
+      "at": "2026-05-24T05:18:14.527Z",
+      "event": "fd_sample",
+      "label": "after_workspace_1_create_search_folder_snapshot_no_ws",
+      "count": 37
+    },
+    {
+      "at": "2026-05-24T05:18:14.563Z",
+      "event": "workspace_created",
+      "workspaceIndex": 1,
+      "workspaceId": "agent_ws_1cf6aa121c8bf0e22b4e47f4f0c44e58a869dd428a9e29d60ec51050f6709abf",
+      "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-sI9omc",
+      "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-sI9omc",
+      "kind": "filesystem"
+    },
+    {
+      "at": "2026-05-24T05:18:14.663Z",
+      "event": "fd_sample",
+      "label": "after_workspace_2_create_search_folder_snapshot_no_ws",
+      "count": 37
+    },
+    {
+      "at": "2026-05-24T05:18:14.685Z",
+      "event": "workspace_created",
+      "workspaceIndex": 2,
+      "workspaceId": "agent_ws_89f251d05857d2e026fd247e0aea613df338e1f3afb30b4bf1ad93c0ab8e77e1",
+      "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-5Gighk",
+      "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-5Gighk",
+      "kind": "filesystem"
+    },
+    {
+      "at": "2026-05-24T05:18:14.778Z",
+      "event": "fd_sample",
+      "label": "after_workspace_3_create_search_folder_snapshot_no_ws",
+      "count": 37
+    },
+    {
+      "at": "2026-05-24T05:18:14.865Z",
+      "event": "fd_sample",
+      "label": "after_all_snapshot_queries_no_websocket",
+      "count": 37
+    },
+    {
+      "at": "2026-05-24T05:18:14.994Z",
+      "event": "fd_sample",
+      "label": "after_first_visible_websocket_open",
+      "count": 161
+    },
+    {
+      "at": "2026-05-24T05:18:15.084Z",
+      "event": "fd_sample",
+      "label": "after_second_visible_websocket_open_same_workspace",
+      "count": 162
+    },
+    {
+      "at": "2026-05-24T05:18:15.559Z",
+      "event": "live_change_received",
+      "type": "FILE_SYSTEM_CHANGE",
+      "changeCount": 1
+    },
+    {
+      "at": "2026-05-24T05:18:16.651Z",
+      "event": "fd_sample",
+      "label": "after_closing_first_of_two_visible_websockets",
+      "count": 161
+    },
+    {
+      "at": "2026-05-24T05:18:18.742Z",
+      "event": "fd_sample",
+      "label": "after_closing_final_shared_visible_websocket",
+      "count": 33
+    },
+    {
+      "at": "2026-05-24T05:18:18.859Z",
+      "event": "fd_sample",
+      "label": "cycle_1_open",
+      "count": 157
+    },
+    {
+      "at": "2026-05-24T05:18:19.047Z",
+      "event": "fd_sample",
+      "label": "cycle_1_closed",
+      "count": 33
+    },
+    {
+      "at": "2026-05-24T05:18:20.565Z",
+      "event": "fd_sample",
+      "label": "cycle_10_open",
+      "count": 157
+    },
+    {
+      "at": "2026-05-24T05:18:21.155Z",
+      "event": "fd_sample",
+      "label": "cycle_10_closed",
+      "count": 33
+    },
+    {
+      "at": "2026-05-24T05:18:22.791Z",
+      "event": "fd_sample",
+      "label": "cycle_20_open",
+      "count": 157
+    },
+    {
+      "at": "2026-05-24T05:18:23.378Z",
+      "event": "fd_sample",
+      "label": "cycle_20_closed",
+      "count": 33
+    },
+    {
+      "at": "2026-05-24T05:18:25.466Z",
+      "event": "fd_sample",
+      "label": "after_20_open_close_cycles",
+      "count": 33
+    },
+    {
+      "at": "2026-05-24T05:18:27.618Z",
+      "event": "fd_sample",
+      "label": "after_10_close_before_connected_cycles",
+      "count": 33
+    },
+    {
+      "at": "2026-05-24T05:18:27.931Z",
+      "event": "fd_sample",
+      "label": "after_terminal_real_cwd_open",
+      "count": 38
+    },
+    {
+      "at": "2026-05-24T05:18:29.521Z",
+      "event": "fd_sample",
+      "label": "after_terminal_real_cwd_close",
+      "count": 33
+    },
+    {
+      "at": "2026-05-24T05:18:29.570Z",
+      "event": "child_process_sample",
+      "label": "after_terminal_real_cwd_close",
+      "count": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-24T05:18:29.657Z",
+      "event": "fd_sample",
+      "label": "terminal_cycle_1_open",
+      "count": 38
+    },
+    {
+      "at": "2026-05-24T05:18:29.843Z",
+      "event": "fd_sample",
+      "label": "terminal_cycle_1_closed",
+      "count": 33
+    },
+    {
+      "at": "2026-05-24T05:18:31.153Z",
+      "event": "fd_sample",
+      "label": "terminal_cycle_10_open",
+      "count": 38
+    },
+    {
+      "at": "2026-05-24T05:18:31.743Z",
+      "event": "fd_sample",
+      "label": "terminal_cycle_10_closed",
+      "count": 33
+    },
+    {
+      "at": "2026-05-24T05:18:33.331Z",
+      "event": "fd_sample",
+      "label": "after_10_terminal_open_close_cycles",
+      "count": 33
+    },
+    {
+      "at": "2026-05-24T05:18:33.381Z",
+      "event": "child_process_sample",
+      "label": "after_10_terminal_open_close_cycles",
+      "count": 0,
+      "children": []
+    },
+    {
+      "at": "2026-05-24T05:18:33.432Z",
+      "event": "codex_cli_version_probe_ok",
+      "codexVersion": "codex-cli 0.133.0"
+    },
+    {
+      "at": "2026-05-24T05:18:33.543Z",
+      "event": "codex_app_server_model_catalog_probe_ok",
+      "attempted": true,
+      "ok": true,
+      "providerCount": 13,
+      "modelCount": 6,
+      "error": null
+    },
+    {
+      "at": "2026-05-24T05:18:33.667Z",
+      "event": "fd_sample",
+      "label": "after_codex_probe_final",
+      "count": 33
+    }
+  ]
+}

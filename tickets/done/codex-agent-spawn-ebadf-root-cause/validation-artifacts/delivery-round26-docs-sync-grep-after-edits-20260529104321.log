@@ -1,0 +1,39 @@
+Docs sync grep after delivery edits
+HEAD: 54b8fbada1dabc769c90becca10dd4be078baa67
+origin/personal: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+Relation origin/personal...HEAD: 0	39
+
+Path-boundary doc refs:
+autobyteus-web/docs/file_explorer.md:192:| `releaseFileExplorerLiveSession(workspaceId, consumerId)` | Releases a visible consumer. The last release disconnects the WebSocket and lets the backend stop the watcher lease. |
+autobyteus-web/docs/file_explorer.md:558:### Backend Path Boundary Contract
+autobyteus-web/docs/file_explorer.md:568:- ignored folders such as `.git`, `node_modules`, and `.gitignore`-matched
+autobyteus-web/docs/file_explorer.md:572:  same-prefix sibling escapes that resolve outside the workspace root;
+autobyteus-web/docs/file_explorer.md:573:- `renameFileOrFolder.newName` must be a leaf name, not a path; path-like names
+autobyteus-web/docs/file_explorer.md:668:The backend WebSocket route resolves the workspace and asks its file explorer for a watcher lease before subscribing to events. `WorkspaceFileExplorer.acquireWatcherLease("file-explorer-websocket")` starts the underlying `FileSystemWatcher` only for the first active lease and returns an idempotent lease release handle. `subscribe()` is valid only after a lease has started the watcher.
+autobyteus-web/docs/file_explorer.md:670:Each WebSocket session owns one watcher lease through `FileExplorerSession`. Disconnecting the WebSocket, ending the async event iterator, early-closing before the `CONNECTED` message is observed, or closing the workspace releases the session and lease. When the lease count reaches zero, the backend stops the chokidar watcher.
+autobyteus-web/docs/file_explorer.md:674:- `createWorkspace`, `fetchAllWorkspaces`, `folderChildren`, `fileContent`, and `searchFiles` return snapshots without acquiring watcher leases.
+autobyteus-web/docs/file_explorer.md:713:    Backend->>Explorer: release watcher lease
+autobyteus-web/docs/file_explorer.md:731:- `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts` - watcher lease acquisition, session setup, stream loop, disconnect cleanup.
+autobyteus-web/docs/file_explorer.md:732:- `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts` - session-owned async iterator cancellation and watcher lease release.
+autobyteus-web/docs/file_explorer.md:733:- `autobyteus-server-ts/src/file-explorer/file-explorer.ts` - lazy tree/search/operation/watcher capability boundary and watcher lease counting.
+autobyteus-server-ts/docs/modules/file_explorer.md:34:path is a same-prefix sibling of the workspace directory.
+autobyteus-server-ts/docs/modules/file_explorer.md:38:- `folderChildren` rejects ignored folders such as `.git`, `node_modules`, and
+autobyteus-server-ts/docs/modules/file_explorer.md:41:  or same-prefix sibling escapes before returning or writing external content.
+autobyteus-server-ts/docs/modules/file_explorer.md:45:  watcher lease.
+autobyteus-server-ts/docs/modules/file_explorer.md:51:The handler must acquire a watcher lease before subscribing:
+autobyteus-server-ts/docs/modules/file_explorer.md:54:2. `LocalFileExplorer` increments its watcher lease count and starts the underlying `FileSystemWatcher` only when the first lease needs it.
+autobyteus-server-ts/docs/modules/file_explorer.md:55:3. A `FileExplorerSession` owns the async event iterator and the watcher lease.
+autobyteus-server-ts/docs/modules/file_explorer.md:61:`LocalFileExplorer.subscribe()` is valid only while a watcher lease has started the watcher. Callers that need live events must acquire a lease first; snapshot callers must not subscribe.
+autobyteus-server-ts/docs/modules/file_explorer.md:67:- Session close and async iterator cancellation release the watcher lease exactly once.
+autobyteus-server-ts/docs/modules/file_explorer.md:68:- Repeated open/close and early-close WebSocket cycles must not leak watcher leases or file descriptors.
+autobyteus-server-ts/docs/modules/file_explorer.md:78:It exercises real Fastify WebSockets, real workspace/file-explorer objects, real chokidar filesystem events, snapshot operations that stay watcher-free, shared watcher leases across concurrent visible sessions, repeated open/close cycles, early close handling, descriptor sampling, and child-process spawn health.
+autobyteus-server-ts/docs/modules/file_explorer.md:80:The path-boundary E2E covers ignored-folder projection rejection, same-prefix
+autobyteus-server-ts/docs/modules/file_explorer.md:83:start watcher leases or mutate cached tree state.
+
+Old stream API source docs grep (expect no matches):
+No old stream API docs matches.
+
+Stale terminal source docs grep (expect no matches):
+No stale terminal docs matches.
+
+Diff check for docs:

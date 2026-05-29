@@ -1,28 +1,29 @@
 // composables/useTerminalSession.ts
 /**
  * Terminal WebSocket session composable.
- * 
+ *
  * Manages WebSocket connection to the PTY backend, handling:
  * - Connection lifecycle
  * - Input/output streaming
  * - Terminal resize events
- * 
+ *
  * Follows the pattern established by useVncSession.ts
  */
 
-import { ref, computed, type Ref } from 'vue';
-import { v4 as uuidv4 } from 'uuid';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
-import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
+import { ref, computed, unref, type MaybeRef, type Ref } from "vue";
+import { v4 as uuidv4 } from "uuid";
+import { useWindowNodeContextStore } from "~/stores/windowNodeContextStore";
+import { getActiveRemoteAccessCredential } from "~/utils/remoteAccess/authorizedTransport";
 import {
   buildAuthenticatedWebSocketUrl,
   redactRemoteAccessWebSocketUrl,
-} from '~/utils/remoteAccess/websocketAuth';
+} from "~/utils/remoteAccess/websocketAuth";
+import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
 
-export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected';
+export type ConnectionStatus = "disconnected" | "connecting" | "connected";
 
 export interface TerminalSessionOptions {
-  workspaceId: string | Ref<string>;
+  target: MaybeRef<TerminalTarget | null | undefined>;
   sessionId?: string;
 }
 
@@ -39,93 +40,115 @@ export interface TerminalSession {
   onOutput: (callback: (data: string) => void) => void;
 }
 
-export function useTerminalSession(options: TerminalSessionOptions): TerminalSession {
-  const connectionStatus = ref<ConnectionStatus>('disconnected');
-  const errorMessage = ref('');
+export function useTerminalSession(
+  options: TerminalSessionOptions,
+): TerminalSession {
+  const connectionStatus = ref<ConnectionStatus>("disconnected");
+  const errorMessage = ref("");
   const sessionId = ref(options.sessionId || uuidv4());
-  
+
   let ws: WebSocket | null = null;
   let outputCallback: ((data: string) => void) | null = null;
 
-  const isConnected = computed(() => connectionStatus.value === 'connected');
-  const isConnecting = computed(() => connectionStatus.value === 'connecting');
+  const isConnected = computed(() => connectionStatus.value === "connected");
+  const isConnecting = computed(() => connectionStatus.value === "connecting");
 
-  const getWorkspaceId = (): string => {
-    const wsId = options.workspaceId;
-    return typeof wsId === 'string' ? wsId : wsId.value;
+  const getTarget = (): TerminalTarget | null => {
+    const target = unref(options.target);
+    return target?.rootPath ? target : null;
+  };
+
+  const buildTerminalWebSocketUrl = (target: TerminalTarget): string => {
+    const windowNodeContextStore = useWindowNodeContextStore();
+    const wsBaseUrl = windowNodeContextStore.getBoundEndpoints().terminalWs;
+    const endpoint = new URL(
+      `${wsBaseUrl.replace(/\/+$/, "")}/${encodeURIComponent(sessionId.value)}`,
+      typeof window !== "undefined" ? window.location.href : "http://localhost",
+    );
+    endpoint.searchParams.set("cwd", target.rootPath);
+    return endpoint.toString();
   };
 
   const connect = () => {
-    if (connectionStatus.value !== 'disconnected') {
-      console.warn('[useTerminalSession] Already connected or connecting');
+    if (connectionStatus.value !== "disconnected") {
+      console.warn("[useTerminalSession] Already connected or connecting");
       return;
     }
 
-    const workspaceId = getWorkspaceId();
-    if (!workspaceId) {
-      errorMessage.value = 'No workspace ID provided';
-      console.error('[useTerminalSession] No workspace ID');
+    const target = getTarget();
+    if (!target) {
+      errorMessage.value = "No terminal root path provided";
+      console.error("[useTerminalSession] No terminal root path");
       return;
     }
 
-    const windowNodeContextStore = useWindowNodeContextStore();
-    const wsBaseUrl = windowNodeContextStore.getBoundEndpoints().terminalWs;
-    const baseWsUrl = `${wsBaseUrl}/${workspaceId}/${sessionId.value}`;
+    const baseWsUrl = buildTerminalWebSocketUrl(target);
     const credential = getActiveRemoteAccessCredential();
-    const wsUrl = credential ? buildAuthenticatedWebSocketUrl(baseWsUrl, credential) : baseWsUrl;
+    const wsUrl = credential
+      ? buildAuthenticatedWebSocketUrl(baseWsUrl, credential)
+      : baseWsUrl;
 
-    console.log('[useTerminalSession] Connecting to:', redactRemoteAccessWebSocketUrl(wsUrl));
-    connectionStatus.value = 'connecting';
-    errorMessage.value = '';
+    console.log(
+      "[useTerminalSession] Connecting to:",
+      redactRemoteAccessWebSocketUrl(wsUrl),
+    );
+    connectionStatus.value = "connecting";
+    errorMessage.value = "";
 
     try {
       ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
-        console.log('[useTerminalSession] Connected');
-        connectionStatus.value = 'connected';
-        errorMessage.value = '';
+        console.log("[useTerminalSession] Connected");
+        connectionStatus.value = "connected";
+        errorMessage.value = "";
       };
 
       ws.onmessage = (event) => {
         try {
           const message = JSON.parse(event.data);
-          
-          if (message.type === 'output' && message.data) {
+
+          if (message.type === "output" && message.data) {
             // Decode base64 output
             const decoded = atob(message.data);
             if (outputCallback) {
               outputCallback(decoded);
             }
-          } else if (message.type === 'error') {
-            console.error('[useTerminalSession] Server error:', message.message);
+          } else if (message.type === "error") {
+            console.error(
+              "[useTerminalSession] Server error:",
+              message.message,
+            );
             errorMessage.value = message.message;
-          } else if (message.type === 'closed') {
-            console.log('[useTerminalSession] Server closed session');
+          } else if (message.type === "closed") {
+            console.log("[useTerminalSession] Server closed session");
             disconnect();
           }
         } catch (err) {
-          console.error('[useTerminalSession] Error parsing message:', err);
+          console.error("[useTerminalSession] Error parsing message:", err);
         }
       };
 
       ws.onclose = (event) => {
-        console.log('[useTerminalSession] Disconnected:', event.code, event.reason);
-        connectionStatus.value = 'disconnected';
+        console.log(
+          "[useTerminalSession] Disconnected:",
+          event.code,
+          event.reason,
+        );
+        connectionStatus.value = "disconnected";
         if (!event.wasClean) {
-          errorMessage.value = event.reason || 'Connection lost';
+          errorMessage.value = event.reason || "Connection lost";
         }
         ws = null;
       };
 
       ws.onerror = (event) => {
-        console.error('[useTerminalSession] WebSocket error:', event);
-        errorMessage.value = 'WebSocket connection error';
+        console.error("[useTerminalSession] WebSocket error:", event);
+        errorMessage.value = "WebSocket connection error";
       };
-
     } catch (err) {
-      console.error('[useTerminalSession] Failed to connect:', err);
-      connectionStatus.value = 'disconnected';
+      console.error("[useTerminalSession] Failed to connect:", err);
+      connectionStatus.value = "disconnected";
       errorMessage.value = `Connection failed: ${err}`;
     }
   };
@@ -135,21 +158,23 @@ export function useTerminalSession(options: TerminalSessionOptions): TerminalSes
       ws.close();
       ws = null;
     }
-    connectionStatus.value = 'disconnected';
+    connectionStatus.value = "disconnected";
   };
 
   const sendInput = (data: string) => {
     if (!ws || ws.readyState !== WebSocket.OPEN) {
-      console.warn('[useTerminalSession] Cannot send: not connected');
+      console.warn("[useTerminalSession] Cannot send: not connected");
       return;
     }
 
     // Encode input as base64
     const encoded = btoa(data);
-    ws.send(JSON.stringify({
-      type: 'input',
-      data: encoded
-    }));
+    ws.send(
+      JSON.stringify({
+        type: "input",
+        data: encoded,
+      }),
+    );
   };
 
   const sendResize = (rows: number, cols: number) => {
@@ -157,11 +182,13 @@ export function useTerminalSession(options: TerminalSessionOptions): TerminalSes
       return;
     }
 
-    ws.send(JSON.stringify({
-      type: 'resize',
-      rows,
-      cols
-    }));
+    ws.send(
+      JSON.stringify({
+        type: "resize",
+        rows,
+        cols,
+      }),
+    );
   };
 
   const onOutput = (callback: (data: string) => void) => {
@@ -178,6 +205,6 @@ export function useTerminalSession(options: TerminalSessionOptions): TerminalSes
     disconnect,
     sendInput,
     sendResize,
-    onOutput
+    onOutput,
   };
 }

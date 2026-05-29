@@ -69,7 +69,7 @@ Main terminal component using xterm.js for rich terminal emulation.
 - **Ctrl+C support**: Interrupt current input
 - **Responsive sizing**: Auto-fits container with ResizeObserver
 - **Display preference integration**: Uses the shared app font-size store and refits when terminal font metrics change
-- **Explicit workspace override**: Accepts an optional `workspaceId` prop for non-default wrappers without mutating the desktop active-workspace store.
+- **Root-path target**: Accepts a `TerminalTarget` with a workspace root path (and optional display metadata) so desktop wrappers can connect without materializing workspace/file-explorer state.
 
 **Terminal Configuration (Light Theme):**
 
@@ -119,19 +119,19 @@ Manages the terminal WebSocket session and streaming I/O.
 
 **Key Responsibilities:**
 
-- Connect/disconnect WebSocket sessions per workspace
+- Connect/disconnect WebSocket sessions for an explicit terminal root path
 - Send input and resize events to the backend
 - Receive output streams and forward to xterm.js
 
 **Core API:**
 
-| Function       | Description                          |
-| -------------- | ------------------------------------ |
-| `connect()`    | Opens the WebSocket session          |
-| `disconnect()` | Closes the session                   |
-| `sendInput()`  | Sends user input (base64 encoded)    |
-| `sendResize()` | Sends terminal resize events         |
-| `onOutput()`   | Registers output callback for xterm  |
+| Function       | Description                         |
+| -------------- | ----------------------------------- |
+| `connect()`    | Opens the WebSocket session         |
+| `disconnect()` | Closes the session                  |
+| `sendInput()`  | Sends user input (base64 encoded)   |
+| `sendResize()` | Sends terminal resize events        |
+| `onOutput()`   | Registers output callback for xterm |
 
 ### RightSideTabs.vue
 
@@ -153,7 +153,7 @@ Phase One Android pairing removes the mobile Tools/Terminal/VNC page entirely. T
 
 ## WebSocket Protocol (Summary)
 
-The terminal session communicates via WebSocket using JSON messages:
+The terminal session connects to `/ws/terminal/{sessionId}?cwd={encodedRootPath}` and communicates via WebSocket using JSON messages:
 
 - **Input**: `{ "type": "input", "data": "<base64>" }`
 - **Resize**: `{ "type": "resize", "rows": number, "cols": number }`
@@ -200,7 +200,13 @@ The Terminal is automatically available when a workspace is active:
 workspace-name:~$ <your-command>
 ```
 
+## Backend Runtime Notes
+
+The frontend Terminal connects to the backend with an explicit cwd/root path. Backend validation rejects an unavailable path before creating a PTY session. On macOS, the server uses the `autobyteus-ts` isolated PTY backend so a helper child process owns `node-pty`, the PTY descriptors, and the shell; closing the WebSocket releases the helper and avoids lingering PTY descriptors in the long-lived server process.
+
+See `autobyteus-server-ts/docs/modules/terminal.md` and `autobyteus-ts/docs/terminal_tools.md` for backend lifecycle details.
+
 ## Related Documentation
 
-- **[File Explorer](./file_explorer.md)**: The terminal executes commands within the directory context of the File Explorer.
+- **[File Explorer](./file_explorer.md)**: Terminal and File Explorer are separate workspace capabilities; Terminal uses cwd/root path while File Explorer owns tree/search/watch state.
 - **[Agent Execution Architecture](./agent_execution_architecture.md)**: Agents can sometimes execute terminal commands (via tools), which is a separate but related capability.

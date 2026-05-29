@@ -1,6 +1,6 @@
 <template>
   <!-- Zen: teleport to body so it sits above the sidebar stacking context -->
-  <Teleport v-if="isZenMode" to="body">
+  <Teleport v-if="isActiveZenMode" to="body">
     <div
       id="contentViewer"
       class="bg-white rounded-lg shadow-md flex flex-col h-full fixed inset-0 z-[120] min-h-screen"
@@ -75,22 +75,22 @@
     <div class="flex items-center border-b border-gray-200 bg-white overflow-x-auto sticky top-0 z-10 px-0 h-[46px]">
       <div class="flex flex-1 px-2 gap-4 items-center min-w-0">
          <div class="flex gap-4 overflow-x-auto no-scrollbar mask-fade-right">
-            <button 
-            v-for="file in openFiles" 
+            <button
+            v-for="file in openFiles"
             :key="file"
             @click="setActiveFile(file)"
             @contextmenu.prevent="showContextMenu($event, file)"
             tabindex="0"
             @keyup.enter="setActiveFile(file)"
             class="group relative flex items-center gap-2 px-1 py-2.5 text-sm font-medium border-b-2 transition-all duration-150 focus:outline-none whitespace-nowrap"
-            :class="file === activeFile 
-                ? 'border-blue-600 text-blue-600' 
+            :class="file === activeFile
+                ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
             >
             <span class="truncate max-w-[150px]">{{ getFileName(file) }}</span>
-            <span 
+            <span
                 v-if="file === activeFile"
-                @click.stop="closeFile(file)" 
+                @click.stop="closeFile(file)"
                 class="flex items-center justify-center w-4 h-4 rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-100 hover:text-red-600 transition-all ml-1"
                 aria-label="Close file"
             >
@@ -101,15 +101,15 @@
             </button>
         </div>
       </div>
-      
+
       <!-- Right Side Controls -->
       <div class="flex items-center gap-1 pr-2 shrink-0">
         <!-- Edit/Preview Group -->
         <div v-if="activeFileData?.type === 'Text' && isPreviewableText" class="flex items-center gap-1 border-r border-gray-200 pr-1 mr-1">
            <button
             class="p-1.5 rounded-md transition-all duration-200 focus:outline-none"
-            :class="activeFileMode === 'edit' 
-              ? 'bg-blue-50 text-blue-600' 
+            :class="activeFileMode === 'edit'
+              ? 'bg-blue-50 text-blue-600'
               : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
             @click.stop="setMode('edit')"
              title="Edit Mode"
@@ -118,8 +118,8 @@
           </button>
           <button
             class="p-1.5 rounded-md transition-all duration-200 focus:outline-none"
-            :class="activeFileMode === 'preview' 
-              ? 'bg-blue-50 text-blue-600' 
+            :class="activeFileMode === 'preview'
+              ? 'bg-blue-50 text-blue-600'
               : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
             @click.stop="setMode('preview')"
              title="Preview Mode"
@@ -139,7 +139,7 @@
         </button>
 
         <!-- Close All button -->
-        <button 
+        <button
             v-if="openFiles.length > 1"
             @click="closeAllFiles"
             class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-all ml-1"
@@ -202,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch, onMounted, ref, onBeforeUnmount } from 'vue'
+import { computed, watch, ref, onBeforeUnmount } from 'vue'
 import { Teleport } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useFileExplorerStore } from '~/stores/fileExplorer'
@@ -219,9 +219,12 @@ const workspaceStore = useWorkspaceStore()
 const fileContentDisplayModeStore = useFileContentDisplayModeStore()
 const { isZenMode } = storeToRefs(fileContentDisplayModeStore)
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   workspaceId?: string
-}>()
+  active?: boolean
+}>(), {
+  active: true,
+})
 
 const contentRef = ref<HTMLElement | null>(null)
 // File Content Viewer is currently Global / Desktop level, so it binds to the Active Workspace.
@@ -254,6 +257,7 @@ const closeAllFiles = () => currentWorkspaceId.value && fileExplorerStore.closeA
 const closeOtherFiles = (filePath: string) => currentWorkspaceId.value && fileExplorerStore.closeOtherFiles(filePath, currentWorkspaceId.value)
 const getFileLanguage = (filePath: string) => getLanguage(filePath)
 const setMode = (mode: 'edit' | 'preview') => {
+  if (!props.active) return
   if (!activeFile.value || !currentWorkspaceId.value) return
   fileExplorerStore.setFileMode(activeFile.value, mode, currentWorkspaceId.value)
 }
@@ -264,6 +268,7 @@ const isPreviewableText = computed(() => {
 })
 
 const activeFileMode = computed(() => activeFileData.value?.mode ?? 'edit')
+const isActiveZenMode = computed(() => props.active && isZenMode.value)
 const toggleZenMode = () => fileContentDisplayModeStore.toggleZenMode()
 
 // Context menu state
@@ -275,6 +280,8 @@ const contextMenu = ref({
 })
 
 const showContextMenu = (event: MouseEvent, file: string) => {
+  if (!props.active) return
+
   contextMenu.value = {
     visible: true,
     x: event.clientX,
@@ -312,7 +319,7 @@ const isEditorFocused = () => {
   const activeEl = document.activeElement
   if (!activeEl) return false
   // Monaco editor uses textarea or elements with monaco-editor class
-  return activeEl.tagName === 'TEXTAREA' || 
+  return activeEl.tagName === 'TEXTAREA' ||
          activeEl.closest('.monaco-editor') !== null
 }
 
@@ -326,47 +333,15 @@ watch(activeFileData, (newVal) => {
   }
 }, { immediate: true, deep: true });
 
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown)
-  document.addEventListener('click', hideContextMenu)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeydown)
-  document.removeEventListener('click', hideContextMenu)
-  if (saveSuccessTimeout) {
-    clearTimeout(saveSuccessTimeout)
-  }
-})
-
-const handleSave = async () => {
-  if (!activeFile.value || fileContent.value === null || isSavingContent.value) return;
-
-  try {
-    const workspaceId = currentWorkspaceId.value
-    if (!workspaceId) throw new Error('No workspace selected, cannot save file.')
-
-    await fileExplorerStore.saveFileContentFromEditor(
-      workspaceId, 
-      activeFile.value, 
-      fileContent.value
-    )
-    
-    showSaveSuccess.value = true
-    if (saveSuccessTimeout) clearTimeout(saveSuccessTimeout)
-    saveSuccessTimeout = setTimeout(() => { showSaveSuccess.value = false }, 2000)
-  } catch (error) {
-    console.error("Save operation failed:", error)
-  }
-}
-
 const handleKeydown = async (event: KeyboardEvent) => {
+  if (!props.active) return
+
   // Exit Zen mode on Escape
   if (event.key === 'Escape' && isZenMode.value) {
     fileContentDisplayModeStore.exitZenMode()
     return
   }
-  
+
   // Arrow key navigation - only when editor is NOT focused
   if (!isEditorFocused() && openFiles.value.length > 1) {
     if (event.key === 'ArrowLeft') {
@@ -379,5 +354,64 @@ const handleKeydown = async (event: KeyboardEvent) => {
     }
   }
 }
-</script>
 
+const attachGlobalListeners = () => {
+  window.addEventListener('keydown', handleKeydown)
+  document.addEventListener('click', hideContextMenu)
+}
+
+const detachGlobalListeners = () => {
+  window.removeEventListener('keydown', handleKeydown)
+  document.removeEventListener('click', hideContextMenu)
+}
+
+let globalListenersAttached = false
+const syncGlobalListeners = (isActive: boolean) => {
+  if (isActive && !globalListenersAttached) {
+    attachGlobalListeners()
+    globalListenersAttached = true
+    return
+  }
+
+  if (!isActive && globalListenersAttached) {
+    detachGlobalListeners()
+    globalListenersAttached = false
+  }
+}
+
+watch(() => props.active, (isActive) => {
+  syncGlobalListeners(isActive)
+  if (!isActive) {
+    hideContextMenu()
+  }
+}, { immediate: true })
+
+onBeforeUnmount(() => {
+  syncGlobalListeners(false)
+  if (saveSuccessTimeout) {
+    clearTimeout(saveSuccessTimeout)
+  }
+})
+
+const handleSave = async () => {
+  if (!props.active) return
+  if (!activeFile.value || fileContent.value === null || isSavingContent.value) return;
+
+  try {
+    const workspaceId = currentWorkspaceId.value
+    if (!workspaceId) throw new Error('No workspace selected, cannot save file.')
+
+    await fileExplorerStore.saveFileContentFromEditor(
+      workspaceId,
+      activeFile.value,
+      fileContent.value
+    )
+
+    showSaveSuccess.value = true
+    if (saveSuccessTimeout) clearTimeout(saveSuccessTimeout)
+    saveSuccessTimeout = setTimeout(() => { showSaveSuccess.value = false }, 2000)
+  } catch (error) {
+    console.error("Save operation failed:", error)
+  }
+}
+</script>

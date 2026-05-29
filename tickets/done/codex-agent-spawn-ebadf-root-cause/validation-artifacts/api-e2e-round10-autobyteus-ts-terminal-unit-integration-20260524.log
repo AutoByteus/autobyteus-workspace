@@ -1,0 +1,69 @@
+## command
+pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/session-factory.test.ts tests/unit/tools/terminal/isolated-pty-session.test.ts tests/unit/tools/terminal/node-pty-bootstrap.test.ts tests/unit/tools/terminal/pty-session.test.ts tests/integration/tools/terminal/isolated-pty-session.test.ts --reporter verbose
+## started at 2026-05-24T05:14:34Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-ts
+
+stdout | tests/unit/tools/terminal/pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/session-factory.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/isolated-pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🛡️ auth for agents: https://vestauth.com
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/integration/tools/terminal/isolated-pty-session.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  enable debug logging with { debug: true }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+stdout | tests/unit/tools/terminal/node-pty-bootstrap.test.ts
+[dotenv@17.3.1] injecting env (0) from ../.env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[Test Setup] Loaded environment variables. OPENAI_API_KEY present: true
+
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts > node-pty bootstrap > adds execute bits when a helper file is not executable 6ms
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts > node-pty bootstrap > returns false when the file is already executable 5ms
+ ✓ tests/unit/tools/terminal/node-pty-bootstrap.test.ts > node-pty bootstrap > returns false when the file does not exist 2ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > returns DirectShellSession on Android 2ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > returns WslTmuxSession on Windows 0ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > returns IsolatedPtySession on Darwin 0ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > returns PtySession on non-Windows non-Darwin Unix 0ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > returns DirectShellSession as fallback for PtySession 1ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > falls back from IsolatedPtySession to local PTY and direct shell backends 0ms
+ ✓ tests/unit/tools/terminal/session-factory.test.ts > session_factory > detects current platform 0ms
+ ✓ tests/integration/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession integration > repairs non-executable node-pty spawn-helper before starting the bridge 80ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > exposes sessionId 2ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > is not alive before start 0ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > write before start throws 1ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > read before start throws 0ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > resize before start throws 0ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > starts an isolated bridge child process 256ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > starting twice throws 306ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > does not spawn a bridge if close wins while bootstrap repair is pending 1ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > forwards writes and resize messages to the bridge 252ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > close is idempotent 304ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > read after close returns null 0ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > write after close throws 1ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > returns queued bridge stdout from read 251ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > returns queued data on read 303ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > flushes pending reads and stops the child on close 257ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > marks session closed on exit 105ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > is idempotent on repeated close 254ms
+ ✓ tests/unit/tools/terminal/pty-session.test.ts > PtySession > destroys PTY resources when startup is closed before attach completes 257ms
+ ✓ tests/unit/tools/terminal/isolated-pty-session.test.ts > IsolatedPtySession > destroys bridge streams when the child exits by itself 3ms
+
+ Test Files  5 passed (5)
+      Tests  30 passed (30)
+   Start at  07:14:34
+   Duration  1.56s (transform 508ms, setup 244ms, import 545ms, tests 2.66s, environment 0ms)
+
+## exit_code=0 elapsed_seconds=2
+## completed at 2026-05-24T05:14:36Z

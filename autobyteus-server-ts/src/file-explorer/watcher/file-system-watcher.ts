@@ -1,6 +1,6 @@
 import chokidar, { type FSWatcher } from "chokidar";
 import path from "node:path";
-import type { FileExplorer } from "../file-explorer.js";
+import type { WorkspaceFileExplorer } from "../file-explorer.js";
 import { EventBatcher, AsyncQueue } from "./event-batcher.js";
 import { WatchdogHandler } from "./watchdog-handler.js";
 import type { TraversalIgnoreStrategy } from "../traversal-ignore-strategy/traversal-ignore-strategy.js";
@@ -24,7 +24,7 @@ type SuppressedPath = {
 };
 
 export class FileSystemWatcher {
-  private fileExplorer: FileExplorer;
+  private fileExplorer: WorkspaceFileExplorer;
   private handler: WatchdogHandler;
   private ignoreMatcher: WorkspaceIgnoreMatcher;
   private watcher: FSWatcher | null = null;
@@ -36,7 +36,7 @@ export class FileSystemWatcher {
   private suppressionWindowMs = 2000;
   private suppressedPaths: SuppressedPath[] = [];
 
-  constructor(fileExplorer: FileExplorer, ignoreStrategies: TraversalIgnoreStrategy[]) {
+  constructor(fileExplorer: WorkspaceFileExplorer, ignoreStrategies: TraversalIgnoreStrategy[]) {
     this.fileExplorer = fileExplorer;
     this.ignoreMatcher = new WorkspaceIgnoreMatcher(fileExplorer.workspaceRootPath, [
       ...ignoreStrategies,
@@ -89,16 +89,7 @@ export class FileSystemWatcher {
     logger.info(`Started filesystem watcher for workspace ${this.fileExplorer.workspaceRootPath}`);
   }
 
-  stop(): void {
-    if (this.watcher) {
-      void this.watcher.close();
-      this.watcher = null;
-      logger.info(`Stopped filesystem watcher for workspace ${this.fileExplorer.workspaceRootPath}`);
-    }
-
-    this.readyResolve = null;
-    this.readyPromise = null;
-
+  async stop(): Promise<void> {
     for (const queue of this.subscribers) {
       queue.push(null);
     }
@@ -108,6 +99,17 @@ export class FileSystemWatcher {
       clearTimeout(pending.timer);
     }
     this.pendingUnlinks = [];
+
+    const watcher = this.watcher;
+    this.watcher = null;
+    this.readyResolve?.();
+    this.readyResolve = null;
+    this.readyPromise = null;
+
+    if (watcher) {
+      await watcher.close();
+      logger.info(`Stopped filesystem watcher for workspace ${this.fileExplorer.workspaceRootPath}`);
+    }
   }
 
   async waitUntilReady(): Promise<void> {
@@ -127,31 +129,64 @@ export class FileSystemWatcher {
     queue.push(null);
   }
 
-  private async *queueEvents(queue: AsyncQueue<string | null>): AsyncGenerator<string, void, void> {
-    while (true) {
-      const event = await queue.pop();
-      if (event === null) {
-        return;
-      }
-      yield event;
-    }
-  }
-
   events(): AsyncGenerator<string, void, void> {
     // Subscribe immediately on stream creation so callers do not miss
     // early events before the first `next()` call.
     const queue = this.subscribe();
-    const self = this;
-    return (async function* () {
-      try {
-        const batcher = new EventBatcher(self.queueEvents(queue), 0.25);
-        for await (const batchedEvent of batcher.getBatchedEvents()) {
-          yield batchedEvent;
-        }
-      } finally {
-        self.unsubscribe(queue);
+    const batcher = new EventBatcher(this.createSubscriptionStream(queue), 0.25);
+    return batcher.getBatchedEvents();
+  }
+
+  private createSubscriptionStream(
+    queue: AsyncQueue<string | null>,
+  ): AsyncGenerator<string, void, void> {
+    let closed = false;
+
+    const doneResult = (): IteratorResult<string, void> => ({
+      done: true,
+      value: undefined,
+    });
+
+    const close = (): void => {
+      if (closed) {
+        return;
       }
-    })();
+      closed = true;
+      this.unsubscribe(queue);
+    };
+
+    const iterator: AsyncGenerator<string, void, void> = {
+      next: async () => {
+        if (closed) {
+          return doneResult();
+        }
+
+        const event = await queue.pop();
+        if (event === null || closed) {
+          close();
+          return doneResult();
+        }
+
+        return {
+          done: false,
+          value: event,
+        };
+      },
+      return: async () => {
+        close();
+        return doneResult();
+      },
+      throw: async (error?: unknown) => {
+        close();
+        throw error;
+      },
+      [Symbol.asyncDispose]: async () => {
+        close();
+      },
+      [Symbol.asyncIterator]: () => iterator,
+    };
+
+    return iterator;
   }
 
   suppressPaths(paths: string[], ttlMs = this.suppressionWindowMs): void {

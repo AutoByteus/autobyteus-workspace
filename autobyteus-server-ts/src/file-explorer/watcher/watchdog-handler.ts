@@ -1,5 +1,5 @@
 import path from "node:path";
-import type { FileExplorer } from "../file-explorer.js";
+import type { WorkspaceFileExplorer } from "../file-explorer.js";
 import { FileSystemChangeEvent } from "../file-system-changes.js";
 import { WorkspaceIgnoreMatcher } from "../traversal-ignore-strategy/workspace-ignore-matcher.js";
 import { AddNodeSynchronizer } from "../tree-state-synchronizers/add-node-synchronizer.js";
@@ -15,12 +15,12 @@ const logger = {
 };
 
 export class WatchdogHandler {
-  private fileExplorer: FileExplorer;
+  private fileExplorer: WorkspaceFileExplorer;
   private callback: (event: FileSystemChangeEvent) => void;
   private ignoreMatcher: WorkspaceIgnoreMatcher;
 
   constructor(
-    fileExplorer: FileExplorer,
+    fileExplorer: WorkspaceFileExplorer,
     callback: (event: FileSystemChangeEvent) => void,
     ignoreMatcher: WorkspaceIgnoreMatcher,
   ) {

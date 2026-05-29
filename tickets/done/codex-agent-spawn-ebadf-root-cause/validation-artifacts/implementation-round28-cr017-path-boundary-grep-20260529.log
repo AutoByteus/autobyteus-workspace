@@ -1,0 +1,8 @@
+Checking for unsafe file-explorer workspaceRootPath prefix guards...
+PASS: no stale unsafe file-explorer workspaceRootPath prefix/path.join guard patterns found
+Checking RenameFileOperation leaf-name guard...
+11:    "Invalid new name: The new name must be a file or folder name, not a path.";
+20:    const leafName = this.validateLeafName();
+26:    const absoluteTarget = this.resolveWorkspacePath(
+37:    const absoluteDestination = this.resolveWorkspacePath(
+62:  private validateLeafName(): string {

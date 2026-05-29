@@ -1,0 +1,49 @@
+Delivery Round 8 post-browser integrated-state check
+timestamp=2026-05-23T14:30:19Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+branch=codex/codex-agent-spawn-ebadf-root-cause
+head=dd3dcaadee2471b2757348428dc4781c067668a1
+origin_personal=74218467a2f7786c82f3e97b9190058d2cb83bd2
+merge_base=74218467a2f7786c82f3e97b9190058d2cb83bd2
+ahead_behind=16	0
+status_before_cleanup=
+ M tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-01-agents-list-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-02-run-config-no-files-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-03-files-visible-tree-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-04-readme-open-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-05-search-results-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-06-right-panel-collapsed-20260523.png
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-backend-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.json
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.mjs
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-server-data-20260523/
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-stack-20260523.json
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-start-stack-20260523.sh
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-workspace-20260523/
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-report-diff-check-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round8-post-browser-integrated-state-20260523163019.log
+
+non_ticket_changes_since_round15_build_source_044a0caf=
+
+current_non_ticket_dirty_files=
+
+api_e2e_round8_report_check=
+34:Round 8 validation is an additive browser-level pass on top of the Round 7 API/E2E pass. It was derived from the full upstream artifact package, the implementation handoff `Legacy / Compatibility Removal Check`, the Round 12 code-review pass, the existing Round 7 direct runtime validation, and a fresh running backend + frontend browser session in the current worktree.
+154:- Browser-level Round 8 stack startup from README/development configuration:
+174:- Round 8 report diff/cleanup check
+186:- Browser-level Round 8 runtime: backend `dist/app.js` on `127.0.0.1:8000`, Nuxt dev frontend on `127.0.0.1:3000`, and headless Google Chrome via Playwright.
+192:- Full frontend/backend typechecks remain baseline-blocked per implementation handoff; this round used focused tests, production build, Electron suite, source grep, runtime probes, and the Round 8 browser-level frontend/backend flow.
+198:- Round 8 browser-level backend and frontend dev processes were stopped after evidence capture.
+175:  - Pass: no listeners remained on ports 3000/8000 after cleanup; report `git diff --check` passed.
+
+git_diff_check_api_e2e_report=
+pass
+
+port_listener_check_3000_8000=
+pass: no listeners on 3000/8000
+
+electron_rebuild_decision=
+No rebuild after Round 8: API/E2E Round 8 changed only ticket-local validation report/artifacts; non-ticket source tree unchanged since reviewed Round 15 build-source 044a0caf; existing Round 15 Electron artifacts remain current for source state.

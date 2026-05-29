@@ -25,7 +25,7 @@ useWorkspaceRouteSelection();
 // RESTORED: This is the original, correct implementation for this computed property.
 // RESTORED: This is the original, correct implementation for this computed property.
 const showFileContent = computed(() => {
-    const wsId = workspaceStore.activeWorkspace?.workspaceId;
+    const wsId = workspaceStore.activeWorkspace?.workspaceId || workspaceStore.activeWorkspaceMetadata?.workspaceId;
     return wsId ? fileExplorerStore.getOpenFiles(wsId).length > 0 : false;
 });
 

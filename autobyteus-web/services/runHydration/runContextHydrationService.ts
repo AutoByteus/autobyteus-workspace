@@ -14,6 +14,8 @@ import { hydrateActivitiesFromProjection, type RunProjectionActivityEntry } from
 import { normalizeAgentRuntimeStatus } from './runtimeStatusNormalization';
 import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { hydrateRunFileChanges } from './runFileChangeHydrationService';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 
 export interface RunProjectionPayload {
   runId: string;
@@ -38,7 +40,8 @@ interface GetRunFileChangesQueryData {
 export interface LoadRunContextHydrationInput {
   runId: string;
   fallbackAgentName: string | null;
-  ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
+  resolveWorkspaceMetadataByRootPath: (rootPath: string) => Promise<WorkspaceMetadata | null>;
+  ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
 }
 
 export interface RunContextHydrationPayload {
@@ -96,10 +99,21 @@ export const loadRunContextHydrationPayload = async (
     throw new Error('Run resume config payload is missing.');
   }
 
-  const workspaceId = await input.ensureWorkspaceByRootPath(
+  let workspaceMetadata = await input.resolveWorkspaceMetadataByRootPath(
     resumeConfig.metadataConfig.workspaceRootPath,
   );
-  if (!workspaceId) {
+  if (resumeConfig.isActive && input.ensureWorkspaceByRootPath) {
+    const activatedWorkspaceId = await input.ensureWorkspaceByRootPath(
+      resumeConfig.metadataConfig.workspaceRootPath,
+    );
+    if (activatedWorkspaceId && !workspaceMetadata) {
+      workspaceMetadata = createWorkspaceMetadata({
+        workspaceId: activatedWorkspaceId,
+        workspaceRootPath: resumeConfig.metadataConfig.workspaceRootPath,
+      });
+    }
+  }
+  if (!workspaceMetadata) {
     throw new Error(`Workspace '${resumeConfig.metadataConfig.workspaceRootPath}' could not be resolved.`);
   }
 
@@ -135,7 +149,8 @@ export const loadRunContextHydrationPayload = async (
     agentAvatarUrl: agentDefinition?.avatarUrl || null,
     llmModelIdentifier: resumeConfig.metadataConfig.llmModelIdentifier,
     runtimeKind: resumeConfig.metadataConfig.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
-    workspaceId,
+    workspaceId: workspaceMetadata.workspaceId,
+    workspaceMetadata,
     autoExecuteTools: resumeConfig.metadataConfig.autoExecuteTools,
     skillAccessMode:
       (resumeConfig.metadataConfig.skillAccessMode as SkillAccessMode | null) ||

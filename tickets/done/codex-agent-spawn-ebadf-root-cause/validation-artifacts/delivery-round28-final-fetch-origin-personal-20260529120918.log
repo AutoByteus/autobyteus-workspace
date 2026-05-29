@@ -1,0 +1,17 @@
+Round 28 final origin/personal refresh
+timestamp: 2026-05-29T10:09:18Z
+before_origin_personal: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+before_head: f6870d43e4c859cd8b9978cf987267ba51028b13
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+after_origin_personal: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+after_head: f6870d43e4c859cd8b9978cf987267ba51028b13
+merge_base: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+relation_origin_personal...HEAD: 0	42
+status_short:
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round28-artifacts-20260529120854.txt
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round28-dmg-verify-20260529120854.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round28-post-browser-files-20260529120253.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round28-fetch-origin-personal-20260529120139.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round28-final-fetch-origin-personal-20260529120918.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round28-integrated-docs-check-20260529120237.log

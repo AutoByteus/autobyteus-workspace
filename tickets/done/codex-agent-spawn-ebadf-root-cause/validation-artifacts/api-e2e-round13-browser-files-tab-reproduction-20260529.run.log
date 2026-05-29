@@ -1,0 +1,5 @@
+{"at":"2026-05-29T09:14:46.557Z","event":"screenshot","name":"agentsList","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round13-script-agents-list-before-run-20260529.png"}
+{"at":"2026-05-29T09:14:46.580Z","event":"click","label":"Daily Assistant Run"}
+{"at":"2026-05-29T09:14:47.004Z","event":"browser_console","type":"error","text":"[FileExplorerStreaming] WebSocket error: Event"}
+{"at":"2026-05-29T09:14:48.035Z","event":"screenshot","name":"workspaceError","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round13-script-files-tab-error-20260529.png"}
+{"at":"2026-05-29T09:14:48.038Z","event":"result","result":"reproduced_failure","summaryPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round13-browser-files-tab-reproduction-20260529.json"}

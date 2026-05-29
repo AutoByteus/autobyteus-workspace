@@ -1,0 +1,5 @@
+autobyteus-ts/src/tools/terminal/pty-session.ts: 253 effective non-empty lines
+autobyteus-server-ts/src/api/websocket/terminal.ts: 178 effective non-empty lines
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts: 126 effective non-empty lines
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts: 162 effective non-empty lines
+autobyteus-server-ts/src/services/terminal-streaming/index.ts: 7 effective non-empty lines

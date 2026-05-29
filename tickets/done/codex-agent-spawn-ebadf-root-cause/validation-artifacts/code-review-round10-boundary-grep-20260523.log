@@ -1,0 +1,28 @@
+## Legacy steady-state names grep in changed implementation source/test scope (excluding generated/dist/node_modules/ticket docs)
+legacy_grep_status=1
+
+## Frontend legacy WorkspaceInfo/fileExplorer and allWorkspaces mobile gate grep
+autobyteus-web/components/workspace/tools/Terminal.vue:45:  props.workspaceId?.trim() ? workspaceStore.workspaces[props.workspaceId.trim()] || null : null,
+autobyteus-web/components/mobile/MobileFiles.vue:152:  return workspaceStore.allWorkspaces.find((workspace) => {
+autobyteus-web/components/mobile/MobileFiles.vue:159:    return workspaceStore.workspaces[props.context.workspaceId] ?? workspaceByContextRoot.value;
+autobyteus-web/components/mobile/MobileFiles.vue:161:  return workspaceByContextRoot.value ?? workspaceStore.activeWorkspace ?? workspaceStore.allWorkspaces[0] ?? null;
+autobyteus-web/components/mobile/MobileFiles.vue:165:const currentFolder = computed(() => folderStack.value.at(-1) ?? activeWorkspace.value?.fileExplorer ?? null);
+autobyteus-web/components/mobile/MobileFiles.vue:168:  const root = activeWorkspace.value?.fileExplorer;
+autobyteus-web/components/mobile/MobileFiles.vue:171:const allWorkspaceFiles = computed(() => activeWorkspace.value?.fileExplorer ? flattenFiles(activeWorkspace.value.fileExplorer) : []);
+autobyteus-web/components/mobile/MobileRunSetup.vue:303:    ? workspaceStore.workspaces[selectedWorkspaceId.value] || null
+autobyteus-web/components/mobile/MobileTools.vue:104:    return workspaceStore.workspaces[context.workspaceId] ?? null;
+autobyteus-web/components/mobile/MobileTools.vue:113:  return workspaceStore.allWorkspaces.find((workspace) => rootPathForWorkspace(workspace) === contextRoot) ?? null;
+mobile_terminal_grep_status=0
+
+## Terminal workspace-id-only route/session grep
+autobyteus-web/components/workspace/tools/Terminal.vue:217:    const workspace = await workspaceStore.ensureWorkspaceMetadata(reference);
+autobyteus-web/composables/useTerminalSession.ts:25:  workspaceId: string | Ref<string>;
+autobyteus-server-ts/src/api/websocket/terminal.ts:20:  workspaceId: string;
+autobyteus-server-ts/src/api/websocket/terminal.ts:30:    "/ws/terminal/:workspaceId/:sessionId",
+autobyteus-server-ts/src/api/websocket/terminal.ts:43:            const workspace = workspaceManagerInstance.getWorkspaceById(workspaceId);
+autobyteus-server-ts/src/api/websocket/terminal.ts:83:              .connect(connectionAdapter, workspaceId, sessionId, workspace.getBasePath())
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:40:    workspaceId: string,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:7:  workspaceId: string;
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:23:  async createSession(sessionId: string, workspaceId: string, cwd: string): Promise<TerminalSession> {
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:53:  async closeAllForWorkspace(workspaceId: string): Promise<number> {
+terminal_grep_status=0

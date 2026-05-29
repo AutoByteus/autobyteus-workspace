@@ -1,0 +1,5 @@
+# Code review round 23 folderChildren path boundary probe
+Fri May 29 09:29:33 CEST 2026
+
+outside request returned: ../ws-sibling leak.txt
+RESULT: FAIL - loadFolderChildren allowed path outside workspace with same-prefix sibling

@@ -25,7 +25,7 @@ class MockSession {
     this.started = true;
   }
 
-  close(): void {
+  async close(): Promise<void> {
     this.closed = true;
   }
 }

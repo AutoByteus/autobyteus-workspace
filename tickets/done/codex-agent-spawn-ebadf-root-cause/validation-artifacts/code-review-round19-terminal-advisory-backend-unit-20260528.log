@@ -1,0 +1,190 @@
+# Code review round 19 backend terminal unit test
+Thu May 28 19:37:13 CEST 2026
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-ts build$ tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+> vitest tests/unit/services/terminal/pty-session-manager.test.ts
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts
+AgentTeamFactory (Singleton) initialized.
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > creates session and stores it
+Created terminal session s1 using backend MockPtySession for target ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > rejects duplicate session IDs
+Created terminal session s1 using backend MockPtySession for target ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > tracks session count
+Created terminal session s1 using backend MockPtySession for target ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > tracks session count
+Created terminal session s2 using backend MockPtySession for target ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > tracks session count
+Closed PTY session s1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions
+Created terminal session s1 using backend MockPtySession for target ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions
+Closed PTY session s1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes a session while startup is still pending
+Closed PTY session s1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions by workspace
+Created terminal session s1 using backend MockPtySession for target ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions by workspace
+Created terminal session s2 using backend MockPtySession for target ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions by workspace
+Created terminal session s3 using backend MockPtySession for target ws2
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes all sessions
+Created terminal session s1 using backend MockPtySession for target ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes all sessions
+Created terminal session s2 using backend MockPtySession for target ws2
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes all sessions
+Closed PTY session s1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes all sessions
+Closed PTY session s2
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > lists sessions
+Created terminal session s1 using backend MockPtySession for target ws1
+
+stdout | tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > lists sessions
+Created terminal session s2 using backend MockPtySession for target ws2
+
+ ❯ tests/unit/services/terminal/pty-session-manager.test.ts (10 tests | 1 failed) 8ms
+     ✓ creates session and stores it 1ms
+     ✓ rejects duplicate session IDs 1ms
+     ✓ returns null for missing sessions 0ms
+     ✓ tracks session count 1ms
+     ✓ closes sessions 0ms
+     ✓ closes a session while startup is still pending 1ms
+     ✓ returns false when closing unknown session 0ms
+     × closes sessions by workspace 3ms
+     ✓ closes all sessions 1ms
+     ✓ lists sessions 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/services/terminal/pty-session-manager.test.ts > PtySessionManager > closes sessions by workspace
+TypeError: manager.closeAllForWorkspace is not a function
+ ❯ tests/unit/services/terminal/pty-session-manager.test.ts:154:34
+    152|     await manager.createSession("s3", "ws2", "/tmp");
+    153|
+    154|     const closed = await manager.closeAllForWorkspace("ws1");
+       |                                  ^
+    155|
+    156|     expect(closed).toBe(2);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  19:37:19
+   Duration  3.73s (transform 1.92s, setup 20ms, import 3.20s, tests 8ms, environment 0ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

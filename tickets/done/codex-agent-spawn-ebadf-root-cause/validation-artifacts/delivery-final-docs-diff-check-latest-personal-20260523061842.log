@@ -1,0 +1,8 @@
+# Final delivery docs/artifacts diff check after latest origin/personal Electron build
+UTC 2026-05-23T04:18:42Z
+repo=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+HEAD=03f093c73e25070f560f11dbf486cf5bd0ee1d8a
+origin/personal=5875b06d87d3c92b80c0dfa3675eea844324cb7c
+ahead_behind=8	0
+command=git diff --check
+result=pass

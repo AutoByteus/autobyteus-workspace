@@ -1,0 +1,253 @@
+## git status --short
+ M autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+ M autobyteus-server-ts/src/api/graphql/converters/workspace-converter.ts
+ M autobyteus-server-ts/src/api/graphql/types/file-explorer.ts
+ M autobyteus-server-ts/src/api/graphql/types/workspace.ts
+ D autobyteus-server-ts/src/file-explorer/base-file-explorer.ts
+ M autobyteus-server-ts/src/file-explorer/file-explorer.ts
+ M autobyteus-server-ts/src/file-explorer/file-name-indexer.ts
+ D autobyteus-server-ts/src/file-explorer/local-file-explorer.ts
+ M autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts
+ M autobyteus-server-ts/src/file-explorer/watcher/watchdog-handler.ts
+ M autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session-manager.ts
+ M autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts
+ M autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts
+ M autobyteus-server-ts/src/workspaces/filesystem-workspace.ts
+ M autobyteus-server-ts/src/workspaces/skill-workspace.ts
+ M autobyteus-server-ts/src/workspaces/temp-workspace.ts
+ M autobyteus-server-ts/src/workspaces/workspace-manager.ts
+ M autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/file-explorer/file-name-indexer.integration.test.js
+ M autobyteus-server-ts/tests/integration/file-explorer/file-name-indexer.integration.test.ts
+ M autobyteus-server-ts/tests/integration/file-explorer/file-search.integration.test.js
+ M autobyteus-server-ts/tests/integration/file-explorer/file-search.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts
+ D autobyteus-server-ts/tests/unit/file-explorer/local-file-explorer.test.js
+RM autobyteus-server-ts/tests/unit/file-explorer/local-file-explorer.test.ts -> autobyteus-server-ts/tests/unit/file-explorer/workspace-file-explorer.test.ts
+ M autobyteus-server-ts/tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts
+ M autobyteus-server-ts/tests/unit/workspaces/temp-workspace.test.js
+ M autobyteus-server-ts/tests/unit/workspaces/temp-workspace.test.ts
+ M autobyteus-web/components/agentInput/ContextFilePathInputArea.vue
+ M autobyteus-web/components/fileExplorer/FileExplorer.vue
+ M autobyteus-web/components/fileExplorer/FileViewer.vue
+ M autobyteus-web/components/fileExplorer/__tests__/FileExplorer.spec.ts
+ M autobyteus-web/components/layout/RightSideTabs.vue
+ M autobyteus-web/components/layout/WorkspaceMobileLayout.vue
+ M autobyteus-web/components/mobile/MobileRunSetup.vue
+ M autobyteus-web/components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+ M autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts
+ M autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue
+ M autobyteus-web/components/workspace/config/RunConfigPanel.vue
+ M autobyteus-web/components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+ M autobyteus-web/components/workspace/config/__tests__/RunConfigPanel.spec.ts
+ M autobyteus-web/components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+ M autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue
+ M autobyteus-web/components/workspace/tools/Terminal.vue
+ M autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts
+ M autobyteus-web/composables/__tests__/useDefinitionLaunchDefaults.spec.ts
+ M autobyteus-web/composables/mobile/useMobileFileContextCoordinator.ts
+ M autobyteus-web/composables/mobile/useMobileRunLaunchCoordinator.ts
+ M autobyteus-web/composables/useDefinitionLaunchDefaults.ts
+ M autobyteus-web/composables/useWorkspaceFileExplorer.ts
+ M autobyteus-web/docs/file_explorer.md
+ M autobyteus-web/generated/graphql.ts
+ M autobyteus-web/graphql/mutations/workspace_mutations.ts
+ M autobyteus-web/graphql/queries/workspace_queries.ts
+ M autobyteus-web/pages/workspace.vue
+ M autobyteus-web/services/runHydration/runContextHydrationService.ts
+ M autobyteus-web/services/runHydration/teamRunContextHydrationService.ts
+ M autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts
+ M autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts
+ M autobyteus-web/services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+ M autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts
+ M autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts
+ M autobyteus-web/services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+ M autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts
+ M autobyteus-web/services/workspace/__tests__/workspaceNavigationService.spec.ts
+ M autobyteus-web/services/workspace/workspaceNavigationService.ts
+ M autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+ M autobyteus-web/stores/__tests__/fileExplorerStore.spec.ts
+ M autobyteus-web/stores/__tests__/runHistoryStore.spec.ts
+ D autobyteus-web/stores/__tests__/workspaceReferenceActions.spec.ts
+ M autobyteus-web/stores/__tests__/workspaceStore.spec.ts
+ M autobyteus-web/stores/activeContextStore.ts
+ M autobyteus-web/stores/agentRunConfigStore.ts
+ M autobyteus-web/stores/agentRunStore.ts
+ M autobyteus-web/stores/agentTeamContextsStore.ts
+ M autobyteus-web/stores/agentTeamRunStore.ts
+ M autobyteus-web/stores/fileExplorer.ts
+ M autobyteus-web/stores/runHistoryLoadActions.ts
+ M autobyteus-web/stores/runHistoryReadModel.ts
+ M autobyteus-web/stores/runHistorySelectionActions.ts
+ M autobyteus-web/stores/runHistoryStore.ts
+ M autobyteus-web/stores/runHistoryTeamHelpers.ts
+ M autobyteus-web/stores/runHistoryTeamRows.ts
+ M autobyteus-web/stores/teamRunConfigStore.ts
+ M autobyteus-web/stores/workspace.ts
+ D autobyteus-web/stores/workspaceReferenceActions.ts
+ M autobyteus-web/types/agent/AgentRunConfig.ts
+ M autobyteus-web/types/agent/AgentTeamContext.ts
+ M autobyteus-web/types/agent/TeamRunConfig.ts
+ M autobyteus-web/types/agent/__tests__/AgentContext.spec.ts
+ M autobyteus-web/types/agent/__tests__/AgentRunConfig.spec.ts
+ D autobyteus-web/types/workspace/WorkspaceReference.ts
+ M autobyteus-web/utils/__tests__/teamRunConfigUtils.spec.ts
+ M autobyteus-web/utils/teamRunConfigUtils.ts
+ M autobyteus-web/utils/teamRunLaunchReadiness.ts
+ M autobyteus-web/utils/teamRunMemberConfigBuilder.ts
+ D autobyteus-web/utils/workspaceReference.ts
+ M tickets/codex-agent-spawn-ebadf-root-cause/design-impact-rework-history-lazy-workspace.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/design-review-report.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/design-spec.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/investigation-notes.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/requirements.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/root-cause-report.md
+?? autobyteus-server-ts/src/workspaces/workspace-metadata.ts
+?? autobyteus-web/stores/__tests__/workspaceMetadataActions.spec.ts
+?? autobyteus-web/stores/fileExplorerContentActions.ts
+?? autobyteus-web/stores/fileExplorerMutationActions.ts
+?? autobyteus-web/stores/fileExplorerSearchActions.ts
+?? autobyteus-web/stores/fileExplorerState.ts
+?? autobyteus-web/stores/fileExplorerTreeActions.ts
+?? autobyteus-web/stores/workspaceMetadataActions.ts
+?? autobyteus-web/types/workspace/WorkspaceMetadata.ts
+?? autobyteus-web/utils/workspaceMetadata.ts
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round10-status-diffstat-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-backend-build-full-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-backend-targeted-tests-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-diff-check-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-frontend-boundary-guards-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-frontend-localization-audit-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-frontend-targeted-tests-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-legacy-name-grep-20260523.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/implementation-round7-source-size-audit-20260523.log
+
+## git diff --stat origin/personal...HEAD
+ autobyteus-server-ts/docs/modules/file_explorer.md |  49 +-
+ .../services/team-run-service.ts                   |  37 +-
+ .../src/api/graphql/types/workspace.ts             |  40 +
+ .../src/api/websocket/file-explorer.ts             | 141 ++-
+ .../src/file-explorer/base-file-explorer.ts        |   7 +-
+ .../src/file-explorer/file-explorer.ts             |  20 +-
+ .../src/file-explorer/file-name-indexer.ts         | 125 +--
+ .../src/file-explorer/local-file-explorer.ts       |  96 ++-
+ .../src/file-explorer/watcher/event-batcher.ts     |  98 ++-
+ .../file-explorer/watcher/file-system-watcher.ts   |  95 ++-
+ .../codex/client/codex-app-server-client.ts        |  80 +-
+ .../file-explorer-session-manager.ts               |   7 +-
+ .../file-explorer-session.ts                       |  47 +-
+ .../file-explorer-stream-handler.ts                |  77 +-
+ .../src/workspaces/filesystem-workspace.ts         |  46 +-
+ .../file-explorer-graphql.e2e.test.ts              |  74 ++
+ .../file-explorer-websocket-lifecycle.e2e.test.ts  | 320 +++++++
+ .../file-operations-graphql.e2e.test.ts            |  55 +-
+ .../e2e/workspaces/workspaces-graphql.e2e.test.ts  |  87 ++
+ .../team-run-service.integration.test.ts           | 175 ++--
+ .../file-name-indexer.integration.test.js          |  49 +-
+ .../file-name-indexer.integration.test.ts          |  47 +-
+ .../file-system-watcher.integration.test.js        |  22 +
+ .../file-system-watcher.integration.test.ts        |  37 +
+ .../agent-team-execution/team-run-service.test.ts  | 169 ++++
+ .../tests/unit/api/websocket/file-explorer.test.ts |  99 +++
+ .../unit/file-explorer/file-name-indexer.test.js   | 105 +--
+ .../unit/file-explorer/file-name-indexer.test.ts   | 109 +--
+ .../unit/file-explorer/local-file-explorer.test.js |  53 +-
+ .../unit/file-explorer/local-file-explorer.test.ts |  63 +-
+ .../file-explorer/watcher/event-batcher.test.js    |  25 +
+ .../file-explorer/watcher/event-batcher.test.ts    |  31 +
+ .../codex/client/codex-app-server-client.test.ts   |  40 +
+ .../file-explorer-session-manager.test.ts          |   2 +-
+ .../file-explorer-session.test.ts                  |  22 +-
+ .../file-explorer-stream-handler.test.js           |  58 +-
+ .../file-explorer-stream-handler.test.ts           |  74 +-
+ .../agentInput/ContextFilePathInputArea.vue        |  23 +-
+ .../__tests__/ContextFilePathInputArea.spec.ts     |  11 +-
+ .../components/fileExplorer/FileExplorer.vue       |  95 ++-
+ .../fileExplorer/__tests__/FileExplorer.spec.ts    |  40 +-
+ autobyteus-web/components/layout/RightSideTabs.vue |  50 +-
+ .../components/layout/WorkspaceDesktopLayout.vue   |   4 +-
+ .../components/layout/WorkspaceMobileLayout.vue    |   6 +-
+ .../layout/__tests__/RightSideTabs.spec.ts         |  47 +-
+ .../__tests__/WorkspaceDesktopLayout.spec.ts       |  26 +-
+ .../components/mobile/MobileRunSetup.vue           |  20 +-
+ .../MobileContextSelectionRegression.spec.ts       |   2 +
+ .../mobile/__tests__/MobileUxRefinement.spec.ts    |   1 +
+ .../workspace/config/AgentRunConfigForm.vue        |   1 +
+ .../components/workspace/config/RunConfigPanel.vue |  36 +-
+ .../workspace/config/TeamRunConfigForm.vue         |   1 +
+ .../workspace/config/WorkspaceSelector.vue         |  56 +-
+ .../config/__tests__/MemberOverrideItem.spec.ts    |  89 +-
+ .../config/__tests__/RunConfigPanel.spec.ts        |  38 +-
+ .../config/__tests__/WorkspaceSelector.spec.ts     |  52 ++
+ .../components/workspace/tools/Terminal.vue        |  84 +-
+ .../workspace/tools/__tests__/Terminal.spec.ts     |  29 +-
+ .../__tests__/useDefinitionLaunchDefaults.spec.ts  |   2 +
+ .../mobile/useMobileRunLaunchCoordinator.ts        |  20 +-
+ .../composables/useDefinitionLaunchDefaults.ts     |   2 +
+ autobyteus-web/docs/file_explorer.md               | 303 ++++---
+ .../graphql/queries/workspace_queries.ts           |  12 +-
+ .../localization/messages/en/workspace.ts          |   1 +
+ .../localization/messages/zh-CN/workspace.ts       |   1 +
+ autobyteus-web/pages/workspace.vue                 |   2 +-
+ .../runHydration/runContextHydrationService.ts     |  23 +-
+ .../runHydration/teamRunContextHydrationService.ts | 163 ++--
+ .../runHydration/teamRunStatusHydration.ts         |  84 ++
+ .../agentRunOpenCoordinator.integration.spec.ts    |   1 +
+ .../__tests__/agentRunOpenCoordinator.spec.ts      |   2 +
+ .../__tests__/teamRunOpenCoordinator.spec.ts       |   6 +-
+ .../services/runOpen/agentRunOpenCoordinator.ts    |   4 +-
+ .../services/runOpen/teamRunOpenCoordinator.ts     |   8 +-
+ .../__tests__/activeRunRecoveryCoordinator.spec.ts |   2 +
+ .../runRecovery/activeRunRecoveryCoordinator.ts    |  10 +-
+ .../__tests__/workspaceNavigationService.spec.ts   |  15 +-
+ .../workspace/workspaceNavigationService.ts        |   7 +-
+ .../stores/__tests__/agentTeamRunStore.spec.ts     |  21 +-
+ .../stores/__tests__/runHistoryStore.spec.ts       |  99 ++-
+ .../__tests__/workspaceReferenceActions.spec.ts    |  32 +
+ .../stores/__tests__/workspaceStore.spec.ts        | 105 +++
+ autobyteus-web/stores/activeContextStore.ts        |   3 +
+ autobyteus-web/stores/agentRunConfigStore.ts       |  16 +-
+ autobyteus-web/stores/agentRunStore.ts             |   4 +-
+ autobyteus-web/stores/agentTeamContextsStore.ts    |   1 +
+ autobyteus-web/stores/agentTeamRunStore.ts         |   2 +-
+ autobyteus-web/stores/runHistoryLoadActions.ts     |  20 +-
+ autobyteus-web/stores/runHistoryReadModel.ts       |  11 +-
+ .../stores/runHistorySelectionActions.ts           |   4 +
+ autobyteus-web/stores/runHistoryStore.ts           |  11 +
+ autobyteus-web/stores/runHistoryTeamHelpers.ts     | 112 ++-
+ autobyteus-web/stores/runHistoryTeamRows.ts        |   4 +-
+ autobyteus-web/stores/teamRunConfigStore.ts        |  16 +-
+ autobyteus-web/stores/workspace.ts                 | 232 +++--
+ .../stores/workspaceFileExplorerLiveActions.ts     | 152 ++++
+ autobyteus-web/stores/workspaceReferenceActions.ts | 177 ++++
+ autobyteus-web/types/agent/AgentRunConfig.ts       |   7 +-
+ autobyteus-web/types/agent/AgentTeamContext.ts     |   2 +
+ autobyteus-web/types/agent/TeamRunConfig.ts        |   2 +
+ .../types/agent/__tests__/AgentContext.spec.ts     |   2 +
+ .../types/agent/__tests__/AgentRunConfig.spec.ts   |   3 +
+ autobyteus-web/types/graphql-tag.d.ts              |  12 +
+ .../types/workspace/WorkspaceReference.ts          |  19 +
+ .../utils/__tests__/teamRunConfigUtils.spec.ts     |  19 +-
+ .../utils/fileExplorer/openFolderRefresh.ts        |  43 +
+ autobyteus-web/utils/teamRunConfigUtils.ts         |   9 +-
+ autobyteus-web/utils/teamRunLaunchReadiness.ts     |  11 +-
+ autobyteus-web/utils/teamRunMemberConfigBuilder.ts |   8 +-
+ autobyteus-web/utils/workspaceReference.ts         |  60 ++
+ .../api-e2e-validation-report.md                   | 251 ++++++
+ ...y-blocker-round9-electron-build-localization.md |  76 ++
+ .../design-impact-rework-history-lazy-workspace.md |  57 ++
+ .../design-review-report.md                        | 290 +++++++
+ .../design-spec.md                                 | 949 +++++++++++++++++++++
+ .../docs-sync-report.md                            |  82 ++
+ .../handoff-summary.md                             | 138 +++
+ .../implementation-handoff.md                      | 253 ++++++
+ .../investigation-notes.md                         | 438 ++++++++++
+ .../release-deployment-report.md                   | 195 +++++
+ .../requirements.md                                | 242 ++++++
+ .../review-report.md                               | 879 +++++++++++++++++++
+ .../root-cause-report.md                           | 222 +++++
+ 123 files changed, 8264 insertions(+), 1087 deletions(-)

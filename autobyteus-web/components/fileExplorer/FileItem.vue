@@ -1,13 +1,13 @@
 <template>
-  <div 
+  <div
     ref="fileItemRef"
     :class="[
       'file-item cursor-pointer',
-      { 
-        'folder': !file.is_file, 
+      {
+        'folder': !file.is_file,
         'open': isFolderOpen,
         'dragging': isDragging,
-        'relative': true 
+        'relative': true
       }
     ]"
     draggable="true"
@@ -34,12 +34,9 @@
       </div>
     </div>
 
-    <!-- The drop indicator for folders has been removed to prevent a full blue border on child folders -->
-    <!-- File/Folder Display -->
-    <!-- File/Folder Display -->
-    <div 
+    <div
       class="file-header flex items-center space-x-1.5 rounded-r px-2 py-0.5 border-l-2 ml-[8px]"
-      :class="{ 
+      :class="{
         'hover:bg-gray-200': !isDragging && !isActive,
         'bg-blue-50 text-blue-700': isActive && !isDragging,
         'border-blue-500': isActive && !isDragging,
@@ -53,7 +50,7 @@
         <svg v-if="!file.is_file" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" :class="isFolderOpen ? 'text-blue-500' : 'text-blue-400'" class="w-full h-full transform transition-transform duration-150" :style="{ transform: isFolderOpen ? 'rotate(90deg)' : 'rotate(0deg)' }">
              <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
         </svg>
-        
+
         <!-- File Icons (refined) -->
         <i v-else-if="file.name.endsWith('.js') || file.name.endsWith('.ts')" class="fab fa-js text-yellow-500 text-xs"></i>
         <i v-else-if="file.name.endsWith('.vue')" class="fab fa-vuejs text-green-500 text-xs"></i>
@@ -70,10 +67,10 @@
         <span class="text-[0.9375rem] text-gray-700 truncate select-none" :class="{ 'text-blue-700 font-medium': isActive }">{{ file.name }}</span>
       </template>
       <template v-else>
-        <input 
+        <input
           class="border text-[0.9375rem] text-gray-700 px-1 py-0 rounded focus:ring-1 focus:ring-blue-500 outline-none w-full"
-          type="text"  
-          v-model="renameInput" 
+          type="text"
+          v-model="renameInput"
           @keyup.enter="confirmRename"
           @blur="cancelRename"
           ref="renameInputRef"
@@ -99,7 +96,7 @@
     />
 
     <!-- Delete confirmation -->
-    <ConfirmDeleteDialog 
+    <ConfirmDeleteDialog
       :show="showDeleteConfirm"
       :targetName="file.name"
       @confirm="onDeleteConfirmed"
@@ -118,9 +115,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, onMounted, onBeforeUnmount, nextTick, inject } from 'vue'
+import { computed, ref, watch, onBeforeUnmount, nextTick, inject } from 'vue'
+import type { ComputedRef, Ref } from 'vue'
 import { TreeNode } from '~/utils/fileExplorer/TreeNode'
-// import { useFileExplorerStore } from '~/stores/fileExplorer'  <-- REMOVED
 import { useWorkspaceStore } from '~/stores/workspace'
 import FileContextMenu from './FileContextMenu.vue'
 import ConfirmDeleteDialog from './ConfirmDeleteDialog.vue'
@@ -128,9 +125,12 @@ import AddFileOrFolderDialog from './AddFileOrFolderDialog.vue'
 import type { useWorkspaceFileExplorer } from '~/composables/useWorkspaceFileExplorer'
 
 const props = defineProps<{ file: TreeNode }>()
-// Inject the scoped controller provided by FileExplorer.vue
 const explorer = inject<ReturnType<typeof useWorkspaceFileExplorer>>('workspaceFileExplorer')!
 if (!explorer) throw new Error("FileItem must be used within a component providing 'workspaceFileExplorer'")
+const panelActive = inject<ComputedRef<boolean>>('fileExplorerPanelActive', computed(() => true))
+const closeContextMenusSignal = inject<Ref<number>>('fileExplorerCloseContextMenusSignal', ref(0))
+const outsideDragSignal = inject<Ref<number>>('fileExplorerOutsideDragSignal', ref(0))
+const globalDragResetSignal = inject<Ref<number>>('fileExplorerGlobalDragResetSignal', ref(0))
 
 const workspaceStore = useWorkspaceStore()
 const isLoadingChildren = ref(false)
@@ -144,8 +144,6 @@ const renameInputRef = ref<HTMLInputElement | null>(null)
 const showContextMenu = ref(false)
 const contextMenuPosition = ref({ top: 0, left: 0 })
 const showDeleteConfirm = ref(false)
-const isDragOver = ref(false)
-const isGlobalDragging = ref(false)
 
 const isActive = computed(() => {
   return props.file.is_file && explorer.activeFile.value === props.file.path
@@ -161,17 +159,9 @@ const showAddDialog = ref(false)
 const addFileMode = ref(true)
 let originalName = ''
 
-onMounted(() => {
-  document.addEventListener('closeAllFileContextMenus', onCloseAllContextMenus)
-  document.addEventListener('dragover', onGlobalDragOver)
-  document.addEventListener('dragend', onGlobalDragEnd)
-})
-
 onBeforeUnmount(() => {
-  document.removeEventListener('closeAllFileContextMenus', onCloseAllContextMenus)
-  document.removeEventListener('dragover', onGlobalDragOver)
-  document.removeEventListener('dragend', onGlobalDragEnd)
-  isDragOver.value = false
+  document.removeEventListener('click', onGlobalClick)
+  document.removeEventListener('keydown', handleEscapeKey)
 })
 
 const isFolderOpen = computed(() => {
@@ -190,23 +180,13 @@ function onCloseAllContextMenus() {
   }
 }
 
-const onGlobalDragOver = (event: DragEvent) => {
-  const isOverFileExplorer = event.target instanceof Element && 
-    (event.target.closest('.file-item') !== null || event.target.closest('.file-explorer') !== null)
-  
-  if (!isOverFileExplorer) {
-    isDragOver.value = false
-  }
-}
-
 const onGlobalDragEnd = () => {
-  // Clear all drag-related states
-  isDragOver.value = false
-  isGlobalDragging.value = false
   isDragging.value = false
 }
 
 const handleClick = async () => {
+  if (!panelActive.value) return
+
   if (props.file.is_file) {
     if (isPreviewable.value) {
       explorer.openFilePreview(props.file.path)
@@ -214,14 +194,10 @@ const handleClick = async () => {
       explorer.openFile(props.file.path)
     }
   } else {
-    // Toggle folder open/close
     explorer.toggleFolder(props.file.path)
-    
-    // Lazy load children if folder is being opened and children not yet loaded
+
     const willBeOpen = !!explorer.openFolders.value[props.file.path]
     if (willBeOpen && !props.file.childrenLoaded && !isLoadingChildren.value) {
-      // Use the injected workspaceId from the explorer context, NOT the global activeWorkspace.
-      // This is critical for skill workspaces which are NOT the active workspace.
       const wsId = explorer.workspaceId.value
       if (wsId) {
         isLoadingChildren.value = true
@@ -241,15 +217,16 @@ const handleClick = async () => {
 const handleContextMenu = (event: MouseEvent) => {
   event.preventDefault()
   event.stopPropagation()
-  
+  if (!panelActive.value) return
+
   document.dispatchEvent(new Event('closeAllFileContextMenus'))
 
   showContextMenu.value = true
-  contextMenuPosition.value = { 
+  contextMenuPosition.value = {
     top: event.clientY,
     left: event.clientX
   }
-  
+
   document.addEventListener('click', onGlobalClick)
   document.addEventListener('keydown', handleEscapeKey)
 }
@@ -334,7 +311,6 @@ const promptAddFolder = () => {
 async function onAddConfirmed(newName: string) {
   showAddDialog.value = false
   try {
-    // Build the new file/folder path based on whether the current node is a file or folder
     let finalPath: string
     if (props.file.is_file) {
       const segments = props.file.path.split('/')
@@ -356,10 +332,10 @@ function onAddCanceled() {
 
 const onDragStart = (event: DragEvent) => {
   event.stopPropagation()
+  if (!panelActive.value) return
+
   if (event.target === fileItemRef.value && event.dataTransfer) {
     isDragging.value = true
-    isDragOver.value = false
-    isGlobalDragging.value = true
 
     event.dataTransfer.setData('application/json', JSON.stringify(props.file))
     event.dataTransfer.effectAllowed = 'move'
@@ -368,13 +344,13 @@ const onDragStart = (event: DragEvent) => {
       const preview = dragPreviewRef.value.cloneNode(true) as HTMLElement
       preview.style.display = 'block'
       document.body.appendChild(preview)
-      
+
       preview.style.position = 'fixed'
       preview.style.top = '0'
       preview.style.left = '0'
       preview.style.zIndex = '-1'
       preview.style.opacity = '1'
-      
+
       const rect = preview.getBoundingClientRect()
       event.dataTransfer.setDragImage(preview, -10, rect.height / 2)
       setTimeout(() => preview.remove(), 0)
@@ -385,15 +361,16 @@ const onDragStart = (event: DragEvent) => {
 const onDragEnter = (event: DragEvent) => {
   event.preventDefault()
   event.stopPropagation()
-  
+  if (!panelActive.value) return
+
   if (!isValidDropTarget.value) return
-  
-  isDragOver.value = true
+
 }
 
 const onDragOver = (event: DragEvent) => {
   event.preventDefault()
   event.stopPropagation()
+  if (!panelActive.value) return
 
   if (!isValidDropTarget.value) {
     if (event.dataTransfer) {
@@ -405,43 +382,40 @@ const onDragOver = (event: DragEvent) => {
   if (event.dataTransfer) {
     event.dataTransfer.dropEffect = 'move'
   }
-  isDragOver.value = true
 }
 
 const onDragLeave = (event: DragEvent) => {
   event.preventDefault()
   event.stopPropagation()
+  if (!panelActive.value) return
 
   if (!isValidDropTarget.value) return
 
   const relatedTarget = event.relatedTarget as HTMLElement
   if (!fileItemRef.value?.contains(relatedTarget)) {
-    isDragOver.value = false
-  }
+    }
 }
 
 const onDragEnd = (event: DragEvent) => {
   event.preventDefault()
   event.stopPropagation()
   isDragging.value = false
-  isDragOver.value = false
-  isGlobalDragging.value = false
 }
 
 const onDrop = async (event: DragEvent) => {
   event.preventDefault()
   event.stopPropagation()
-  
+  if (!panelActive.value) return
+
   if (!isValidDropTarget.value) return
-  
-  isDragOver.value = false
+
   try {
     const data = event.dataTransfer?.getData('application/json')
     if (!data) return
-    
+
     const parsedData: TreeNode = JSON.parse(data)
     const sourcePath = parsedData.path
-    
+
     if (sourcePath) {
       const sourceBasename = sourcePath.split('/').pop() || ''
       const destinationPath = props.file.path + '/' + sourceBasename
@@ -451,6 +425,25 @@ const onDrop = async (event: DragEvent) => {
     console.error('Drop operation failed:', error)
   }
 }
+
+watch(closeContextMenusSignal, () => {
+  onCloseAllContextMenus()
+})
+
+watch(outsideDragSignal, () => {
+})
+
+watch(globalDragResetSignal, () => {
+  onGlobalDragEnd()
+})
+
+watch(panelActive, (isActive) => {
+  if (isActive) return
+  showContextMenu.value = false
+  document.removeEventListener('click', onGlobalClick)
+  document.removeEventListener('keydown', handleEscapeKey)
+  onGlobalDragEnd()
+})
 </script>
 
 <style scoped>

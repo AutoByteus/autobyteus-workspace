@@ -1,0 +1,8 @@
+# Code review round 23 CR-015 ignored folderChildren probe
+Fri May 29 09:30:08 CEST 2026
+
+root children: .gitignore,visible.txt
+direct .git rejected: Access denied: Folder is ignored: .git
+direct node_modules rejected: Access denied: Folder is ignored: node_modules
+direct ignored-by-gitignore rejected: Access denied: Folder is ignored: ignored-by-gitignore
+RESULT: PASS - ignored requested folders are rejected and not cached

@@ -1,0 +1,36 @@
+Code review Round 26 validation-code grep
+## Expected GraphQL boundary cases in new durable E2E
+102:        watcherLeaseCount?: number;
+108:      watcher: fileExplorer?.fileWatcher ?? null,
+109:      leaseCount: fileExplorer?.watcherLeaseCount ?? 0,
+110:      treeJson: fileExplorer?.toJson?.() ?? null,
+114:  it("rejects ignored folder projections before cached tree mutation", async () => {
+126:        folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)
+131:      const data = await execGraphql<{ folderChildren: string }>(folderQuery, {
+135:      const payload = JSON.parse(data.folderChildren) as { error?: string };
+136:      expect(payload.error).toContain("Access denied: Folder is ignored");
+138:        watcher: null,
+139:        leaseCount: 0,
+140:        treeJson: null,
+144:    const rootData = await execGraphql<{ folderChildren: string }>(folderQuery, {
+148:    const rootPayload = JSON.parse(rootData.folderChildren) as {
+157:      watcher: null,
+158:      leaseCount: 0,
+174:        folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)
+177:    const folderData = await execGraphql<{ folderChildren: string }>(folderQuery, {
+181:    const folderPayload = JSON.parse(folderData.folderChildren) as { error?: string };
+182:    expect(folderPayload.error).toContain("Access denied: Path resolves outside the workspace");
+187:        fileContent(workspaceId: $workspaceId, filePath: $filePath)
+190:    const readData = await execGraphql<{ fileContent: string }>(readQuery, {
+194:    const readPayload = JSON.parse(readData.fileContent) as { error?: string };
+195:    expect(readPayload.error).toContain("Access denied: File is outside the workspace");
+196:    expect(readData.fileContent).not.toContain("sibling leak");
+200:        writeFileContent(workspaceId: $workspaceId, filePath: $filePath, content: $content)
+210:      "Access denied: File is outside the workspace",
+216:        renameFileOrFolder(workspaceId: $workspaceId, targetPath: $targetPath, newName: $newName)
+226:      "Invalid new name",
+233:      watcher: null,
+234:      leaseCount: 0,
+
+## Forbidden legacy compatibility markers
+RESULT: PASS - expected boundary cases present and no legacy/compatibility/test-skip marker found.

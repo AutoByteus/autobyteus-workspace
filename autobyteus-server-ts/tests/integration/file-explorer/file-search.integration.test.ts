@@ -6,6 +6,15 @@ import { FileSystemWorkspace } from "../../../src/workspaces/filesystem-workspac
 
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
+const searchWorkspaceFiles = async (workspace: FileSystemWorkspace, query: string): Promise<string[]> => {
+  const lease = await workspace.acquireFileExplorer("integration-search");
+  try {
+    return await lease.fileExplorer.searchFiles(query);
+  } finally {
+    await lease.release();
+  }
+};
+
 const waitForSearchMatch = async (
   workspace: FileSystemWorkspace,
   query: string,
@@ -14,13 +23,13 @@ const waitForSearchMatch = async (
 ): Promise<string[]> => {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    const results = await workspace.searchFiles(query);
+    const results = await searchWorkspaceFiles(workspace, query);
     if (results.some((result) => path.normalize(result) === expectedPath)) {
       return results;
     }
     await sleep(50);
   }
-  return workspace.searchFiles(query);
+  return searchWorkspaceFiles(workspace, query);
 };
 
 describe("FileSystemWorkspace searchFiles integration", () => {

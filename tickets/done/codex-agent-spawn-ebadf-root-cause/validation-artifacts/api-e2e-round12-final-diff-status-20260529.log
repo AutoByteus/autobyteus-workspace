@@ -1,0 +1,33 @@
+# API/E2E Round 12 final diff/status check
+# Date: 2026-05-29T10:17:30+0200
+
+## git diff --check
+git diff --check passed
+
+## new durable E2E non-empty line count
+212 autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
+
+## status
+ M tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/review-report.md
+?? autobyteus-server-ts/tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-backend-build-full-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-diff-size-check-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-embedded-server-high-churn-20260529-server.stderr.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-embedded-server-high-churn-20260529-server.stdout.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-embedded-server-high-churn-20260529.json
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-embedded-server-high-churn-20260529.mjs
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-embedded-server-high-churn-20260529.run.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-expanded-workspace-file-explorer-e2e-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-file-explorer-path-boundary-e2e-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-file-explorer-unit-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-final-diff-status-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-path-boundary-grep-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-terminal-file-explorer-boundary-grep-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round25-cr017-backend-build-full-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round25-cr017-backend-unit-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round25-diff-check-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round25-file-explorer-path-boundary-probes-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round25-path-boundary-grep-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round25-source-size-20260529.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/code-review-round25-terminal-boundary-grep-20260529.log

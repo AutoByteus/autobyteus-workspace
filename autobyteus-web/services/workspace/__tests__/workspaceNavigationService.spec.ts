@@ -1,10 +1,16 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { LocationQuery } from 'vue-router'
 
-const { openAgentRunMock, openTeamRunMock, ensureWorkspaceByRootPathMock } = vi.hoisted(() => ({
+const {
+  openAgentRunMock,
+  openTeamRunMock,
+  ensureWorkspaceByRootPathMock,
+  resolveWorkspaceMetadataByRootPathMock,
+} = vi.hoisted(() => ({
   openAgentRunMock: vi.fn(),
   openTeamRunMock: vi.fn(),
   ensureWorkspaceByRootPathMock: vi.fn(),
+  resolveWorkspaceMetadataByRootPathMock: vi.fn(),
 }))
 
 vi.mock('~/services/runOpen/agentRunOpenCoordinator', () => ({
@@ -17,6 +23,7 @@ vi.mock('~/services/runOpen/teamRunOpenCoordinator', () => ({
 
 vi.mock('~/stores/runHistoryLoadActions', () => ({
   ensureRunHistoryWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
+  resolveRunHistoryWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
 }))
 
 import {
@@ -42,7 +49,7 @@ describe('workspaceNavigationService', () => {
       },
     })
 
-    expect(parseWorkspaceExecutionLinkQuery(route.query as LocationQuery)).toEqual({
+    expect(parseWorkspaceExecutionLinkQuery((route as any).query as LocationQuery)).toEqual({
       kind: 'agent',
       runId: 'agent-run-1',
     })
@@ -56,7 +63,7 @@ describe('workspaceNavigationService', () => {
       memberRouteKey: 'writer',
     })
 
-    expect(parseWorkspaceExecutionLinkQuery(route.query as LocationQuery)).toEqual({
+    expect(parseWorkspaceExecutionLinkQuery((route as any).query as LocationQuery)).toEqual({
       kind: 'team',
       teamRunId: 'team-run-1',
       memberRouteKey: 'writer',
@@ -84,6 +91,7 @@ describe('workspaceNavigationService', () => {
     expect(openAgentRunMock).toHaveBeenCalledWith({
       runId: 'agent-run-1',
       fallbackAgentName: null,
+      resolveWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
       ensureWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
     })
     expect(openTeamRunMock).not.toHaveBeenCalled()
@@ -99,6 +107,7 @@ describe('workspaceNavigationService', () => {
     expect(openTeamRunMock).toHaveBeenCalledWith({
       teamRunId: 'team-run-1',
       memberRouteKey: 'writer',
+      resolveWorkspaceMetadataByRootPath: resolveWorkspaceMetadataByRootPathMock,
       ensureWorkspaceByRootPath: ensureWorkspaceByRootPathMock,
     })
   })

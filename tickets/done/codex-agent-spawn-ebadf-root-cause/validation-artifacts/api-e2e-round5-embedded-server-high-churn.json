@@ -1,0 +1,297 @@
+{
+  "result": "pass",
+  "scenario": "embedded server macOS high-churn file-explorer websocket and codex activation lifecycle",
+  "platform": "darwin/arm64",
+  "node": "v22.21.1",
+  "serverPid": 69799,
+  "port": 52452,
+  "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-hQTQ7z",
+  "workspaceCount": 3,
+  "fileCountPerWorkspace": 123,
+  "websocketCycles": {
+    "sharedConsumers": 2,
+    "repeatedOpenClose": 20,
+    "closeBeforeConnected": 10
+  },
+  "fdSamples": [
+    {
+      "label": "after_server_health",
+      "count": 36,
+      "at": "2026-05-22T18:05:14.349Z"
+    },
+    {
+      "label": "after_workspace_1_create_search_folder_snapshot_no_ws",
+      "count": 37,
+      "at": "2026-05-22T18:05:14.470Z"
+    },
+    {
+      "label": "after_workspace_2_create_search_folder_snapshot_no_ws",
+      "count": 37,
+      "at": "2026-05-22T18:05:14.584Z"
+    },
+    {
+      "label": "after_workspace_3_create_search_folder_snapshot_no_ws",
+      "count": 37,
+      "at": "2026-05-22T18:05:14.693Z"
+    },
+    {
+      "label": "after_all_snapshot_queries_no_websocket",
+      "count": 37,
+      "at": "2026-05-22T18:05:14.778Z"
+    },
+    {
+      "label": "after_first_visible_websocket_open",
+      "count": 160,
+      "at": "2026-05-22T18:05:14.902Z"
+    },
+    {
+      "label": "after_second_visible_websocket_open_same_workspace",
+      "count": 161,
+      "at": "2026-05-22T18:05:14.989Z"
+    },
+    {
+      "label": "after_closing_first_of_two_visible_websockets",
+      "count": 159,
+      "at": "2026-05-22T18:05:16.564Z"
+    },
+    {
+      "label": "after_closing_final_shared_visible_websocket",
+      "count": 33,
+      "at": "2026-05-22T18:05:18.668Z"
+    },
+    {
+      "label": "cycle_1_open",
+      "count": 156,
+      "at": "2026-05-22T18:05:18.777Z"
+    },
+    {
+      "label": "cycle_1_closed",
+      "count": 33,
+      "at": "2026-05-22T18:05:18.969Z"
+    },
+    {
+      "label": "cycle_10_open",
+      "count": 156,
+      "at": "2026-05-22T18:05:20.512Z"
+    },
+    {
+      "label": "cycle_10_closed",
+      "count": 33,
+      "at": "2026-05-22T18:05:21.103Z"
+    },
+    {
+      "label": "cycle_20_open",
+      "count": 156,
+      "at": "2026-05-22T18:05:22.770Z"
+    },
+    {
+      "label": "cycle_20_closed",
+      "count": 33,
+      "at": "2026-05-22T18:05:23.382Z"
+    },
+    {
+      "label": "after_20_open_close_cycles",
+      "count": 33,
+      "at": "2026-05-22T18:05:25.482Z"
+    },
+    {
+      "label": "after_10_close_before_connected_cycles",
+      "count": 33,
+      "at": "2026-05-22T18:05:27.640Z"
+    },
+    {
+      "label": "after_codex_probe_final",
+      "count": 33,
+      "at": "2026-05-22T18:05:27.973Z"
+    }
+  ],
+  "codexVersion": "codex-cli 0.133.0",
+  "codexProviderProbe": {
+    "attempted": true,
+    "ok": true,
+    "providerCount": 13,
+    "modelCount": 6,
+    "error": null
+  },
+  "events": [
+    {
+      "at": "2026-05-22T18:05:11.222Z",
+      "event": "start_server",
+      "serverEntry": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts/dist/app.js",
+      "serverCwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts",
+      "port": 52452,
+      "dataDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-hQTQ7z",
+      "envFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-hQTQ7z/.env",
+      "dbUrl": "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-server-data-hQTQ7z/db/production.db",
+      "prismaEnginePair": {
+        "target": "darwin-arm64",
+        "sourcePath": "/Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64",
+        "query": "/Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine",
+        "schema": "/Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/schema-engine",
+        "mtimeMs": 1779471577068
+      },
+      "node": "v22.21.1",
+      "platform": "darwin/arm64"
+    },
+    {
+      "at": "2026-05-22T18:05:13.249Z",
+      "event": "health_ok",
+      "health": {
+        "status": "ok",
+        "message": "Server is running"
+      }
+    },
+    {
+      "at": "2026-05-22T18:05:14.349Z",
+      "event": "fd_sample",
+      "label": "after_server_health",
+      "count": 36
+    },
+    {
+      "at": "2026-05-22T18:05:14.374Z",
+      "event": "workspace_created",
+      "workspaceIndex": 0,
+      "workspaceId": "agent_ws_6cfb40ad5c6c91b01e8b5ddbef124bf76d87df8febc68774eece3b1faef0a595",
+      "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-0-ovXWwB",
+      "fileExplorerBytes": 569
+    },
+    {
+      "at": "2026-05-22T18:05:14.470Z",
+      "event": "fd_sample",
+      "label": "after_workspace_1_create_search_folder_snapshot_no_ws",
+      "count": 37
+    },
+    {
+      "at": "2026-05-22T18:05:14.492Z",
+      "event": "workspace_created",
+      "workspaceIndex": 1,
+      "workspaceId": "agent_ws_b981e4cf05d3502e64d83813b8ca29336c975d0b62937855743a09956892ecff",
+      "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-1-8z444W",
+      "fileExplorerBytes": 569
+    },
+    {
+      "at": "2026-05-22T18:05:14.584Z",
+      "event": "fd_sample",
+      "label": "after_workspace_2_create_search_folder_snapshot_no_ws",
+      "count": 37
+    },
+    {
+      "at": "2026-05-22T18:05:14.602Z",
+      "event": "workspace_created",
+      "workspaceIndex": 2,
+      "workspaceId": "agent_ws_6e672cbf6f97b0fb61d57ccaa8d5faa1cf465088c9fd79829f6d738eb58d6606",
+      "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-e2e-real-ws-2-H9KaUy",
+      "fileExplorerBytes": 569
+    },
+    {
+      "at": "2026-05-22T18:05:14.693Z",
+      "event": "fd_sample",
+      "label": "after_workspace_3_create_search_folder_snapshot_no_ws",
+      "count": 37
+    },
+    {
+      "at": "2026-05-22T18:05:14.778Z",
+      "event": "fd_sample",
+      "label": "after_all_snapshot_queries_no_websocket",
+      "count": 37
+    },
+    {
+      "at": "2026-05-22T18:05:14.902Z",
+      "event": "fd_sample",
+      "label": "after_first_visible_websocket_open",
+      "count": 160
+    },
+    {
+      "at": "2026-05-22T18:05:14.989Z",
+      "event": "fd_sample",
+      "label": "after_second_visible_websocket_open_same_workspace",
+      "count": 161
+    },
+    {
+      "at": "2026-05-22T18:05:15.462Z",
+      "event": "live_change_received",
+      "type": "FILE_SYSTEM_CHANGE",
+      "changeCount": 1
+    },
+    {
+      "at": "2026-05-22T18:05:16.564Z",
+      "event": "fd_sample",
+      "label": "after_closing_first_of_two_visible_websockets",
+      "count": 159
+    },
+    {
+      "at": "2026-05-22T18:05:18.668Z",
+      "event": "fd_sample",
+      "label": "after_closing_final_shared_visible_websocket",
+      "count": 33
+    },
+    {
+      "at": "2026-05-22T18:05:18.777Z",
+      "event": "fd_sample",
+      "label": "cycle_1_open",
+      "count": 156
+    },
+    {
+      "at": "2026-05-22T18:05:18.969Z",
+      "event": "fd_sample",
+      "label": "cycle_1_closed",
+      "count": 33
+    },
+    {
+      "at": "2026-05-22T18:05:20.512Z",
+      "event": "fd_sample",
+      "label": "cycle_10_open",
+      "count": 156
+    },
+    {
+      "at": "2026-05-22T18:05:21.103Z",
+      "event": "fd_sample",
+      "label": "cycle_10_closed",
+      "count": 33
+    },
+    {
+      "at": "2026-05-22T18:05:22.770Z",
+      "event": "fd_sample",
+      "label": "cycle_20_open",
+      "count": 156
+    },
+    {
+      "at": "2026-05-22T18:05:23.382Z",
+      "event": "fd_sample",
+      "label": "cycle_20_closed",
+      "count": 33
+    },
+    {
+      "at": "2026-05-22T18:05:25.482Z",
+      "event": "fd_sample",
+      "label": "after_20_open_close_cycles",
+      "count": 33
+    },
+    {
+      "at": "2026-05-22T18:05:27.640Z",
+      "event": "fd_sample",
+      "label": "after_10_close_before_connected_cycles",
+      "count": 33
+    },
+    {
+      "at": "2026-05-22T18:05:27.691Z",
+      "event": "codex_cli_version_probe_ok",
+      "codexVersion": "codex-cli 0.133.0"
+    },
+    {
+      "at": "2026-05-22T18:05:27.879Z",
+      "event": "codex_app_server_model_catalog_probe_ok",
+      "attempted": true,
+      "ok": true,
+      "providerCount": 13,
+      "modelCount": 6,
+      "error": null
+    },
+    {
+      "at": "2026-05-22T18:05:27.973Z",
+      "event": "fd_sample",
+      "label": "after_codex_probe_final",
+      "count": 33
+    }
+  ]
+}

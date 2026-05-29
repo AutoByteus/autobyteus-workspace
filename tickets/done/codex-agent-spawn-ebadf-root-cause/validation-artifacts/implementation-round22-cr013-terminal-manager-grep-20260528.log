@@ -1,0 +1,18 @@
+## CR-013 stale terminal naming grep
+# Scope: Terminal manager production source and repository-resident unit test counterparts
+Pass: stale closeAllForWorkspace/ws1/ws2/workspace test wording removed from Terminal manager source and unit tests.
+
+# Expected target-key API references
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:7:  targetKey: string;
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:36:    targetKey: string,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:48:    this.sessions.set(sessionId, { session, targetKey });
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:94:      `Created terminal session ${sessionId} using backend ${backendName} for target ${targetKey}`,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:115:  async closeAllForTargetKey(targetKey: string): Promise<number> {
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:117:      .filter(([, record]) => record.targetKey === targetKey)
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:139:      entries[sessionId] = record.targetKey;
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:147:  it("closes sessions by target key", async () => {
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:154:    const closed = await manager.closeAllForTargetKey("target-1");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:71:    it("closes sessions by target key", async () => {
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:76:        const closed = await manager.closeAllForTargetKey("target-1");
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:48:    targetKey: string,
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:54:      await this.manager.createSession(sessionId, targetKey, cwd, {

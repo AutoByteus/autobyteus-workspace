@@ -17,7 +17,12 @@
       </div>
     </div>
     <div class="file-explorer-content flex-grow overflow-y-auto relative">
-      <div v-if="!hasWorkspaces" class="flex flex-col items-center justify-center h-full text-center text-gray-500 italic p-4">{{ $t('tools.components.fileExplorer.FileExplorer.no_workspaces_available_add_a_workspace') }}</div>
+      <div v-if="isActivatingWorkspace" class="flex flex-col items-center justify-center h-full text-center text-gray-500 italic p-4">Loading workspace…</div>
+      <div v-else-if="activationError" class="flex flex-col items-center justify-center h-full text-center text-red-600 p-4">
+        <p>{{ activationError }}</p>
+        <button class="mt-2 text-sm underline" type="button" @click="activateCurrentWorkspace">Retry</button>
+      </div>
+      <div v-else-if="!hasWorkspaceTarget" class="flex flex-col items-center justify-center h-full text-center text-gray-500 italic p-4">{{ $t('tools.components.fileExplorer.FileExplorer.no_workspaces_available_add_a_workspace') }}</div>
       <div v-else-if="searchLoading" class="text-gray-500 italic">{{ $t('tools.components.fileExplorer.FileExplorer.loading_search_results') }}</div>
       <div v-else-if="displayedFiles.length === 0 && searchQuery" class="text-gray-500 italic">{{ $t('tools.components.fileExplorer.FileExplorer.no_files_match_your_search') }}</div>
       <div v-else class="space-y-2">
@@ -28,36 +33,147 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted, onUnmounted, nextTick, toRef, provide } from 'vue';
+import { ref, watch, computed, onMounted, onUnmounted, nextTick, provide } from 'vue';
 import FileItem from "~/components/fileExplorer/FileItem.vue";
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useWorkspaceFileExplorer } from '~/composables/useWorkspaceFileExplorer';
+import { useFileExplorerStore } from '~/stores/fileExplorer';
 
-const props = defineProps<{
+let fileExplorerConsumerCounter = 0;
+
+const props = withDefaults(defineProps<{
   workspaceId?: string
-}>();
+  active?: boolean
+}>(), {
+  active: true,
+});
 
 const workspaceStore = useWorkspaceStore();
-// Use the new composable scoped to the provided workspace ID
-const explorer = useWorkspaceFileExplorer(toRef(props, 'workspaceId'));
+const fileExplorerStore = useFileExplorerStore();
+const activatedWorkspaceId = ref<string | null>(props.workspaceId || null);
+const isActivatingWorkspace = ref(false);
+const activationError = ref<string | null>(null);
+const explorer = useWorkspaceFileExplorer(activatedWorkspaceId);
+const panelActive = computed(() => props.active);
+const closeContextMenusSignal = ref(0);
+const outsideDragSignal = ref(0);
+const globalDragResetSignal = ref(0);
 
 // Provide the explorer instance to all children (FileItem)
 provide('workspaceFileExplorer', explorer);
+provide('fileExplorerPanelActive', panelActive);
+provide('fileExplorerCloseContextMenusSignal', closeContextMenusSignal);
+provide('fileExplorerOutsideDragSignal', outsideDragSignal);
+provide('fileExplorerGlobalDragResetSignal', globalDragResetSignal);
 
 const searchQuery = ref('');
 const searchInputRef = ref<HTMLInputElement | null>(null);
 
-const hasWorkspaces = computed(() => workspaceStore.allWorkspaceIds.length > 0);
 const searchLoading = computed(() => explorer.isSearchLoading.value);
 
-// Determine the relevant workspace (prop-based or active store-based)
-const currentWorkspace = computed(() => {
+const explicitWorkspace = computed(() =>
+  props.workspaceId ? workspaceStore.workspaces[props.workspaceId] || null : null,
+);
+
+const requestedWorkspaceMetadata = computed(() => {
   if (props.workspaceId) {
-    return workspaceStore.workspaces[props.workspaceId];
+    return workspaceStore.workspaceMetadataById[props.workspaceId] || null;
   }
-  return workspaceStore.activeWorkspace;
+  return workspaceStore.activeWorkspaceMetadata;
+});
+
+// Determine the relevant workspace metadata after explicit metadata registration.
+const currentWorkspace = computed(() => {
+  const workspaceId = activatedWorkspaceId.value || props.workspaceId || '';
+  return workspaceId ? workspaceStore.workspaces[workspaceId] || null : null;
 });
 const activeWorkspace = currentWorkspace; // Alias for template compatibility
+const hasWorkspaceTarget = computed(() =>
+  Boolean(requestedWorkspaceMetadata.value || explicitWorkspace.value || currentWorkspace.value),
+);
+const liveSessionConsumerId = `file-explorer:${++fileExplorerConsumerCounter}`;
+let releaseLiveSession: (() => void) | null = null;
+let activationSequence = 0;
+let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+const releaseCurrentLiveSession = () => {
+  releaseLiveSession?.();
+  releaseLiveSession = null;
+};
+
+const clearPendingSearch = () => {
+  if (searchDebounceTimer) {
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = null;
+  }
+};
+
+const suspendInactiveWork = () => {
+  ++activationSequence;
+  isActivatingWorkspace.value = false;
+  releaseCurrentLiveSession();
+  clearPendingSearch();
+  if (activatedWorkspaceId.value) {
+    fileExplorerStore.abortSearch(activatedWorkspaceId.value);
+  }
+};
+
+const activateCurrentWorkspace = async () => {
+  if (!panelActive.value) {
+    suspendInactiveWork();
+    return;
+  }
+
+  const sequence = ++activationSequence;
+  activationError.value = null;
+
+  if (explicitWorkspace.value) {
+    activatedWorkspaceId.value = explicitWorkspace.value.workspaceId;
+    return;
+  }
+
+  const reference = requestedWorkspaceMetadata.value;
+  if (!reference) {
+    activatedWorkspaceId.value = null;
+    return;
+  }
+
+  isActivatingWorkspace.value = true;
+  try {
+    const workspace = await workspaceStore.ensureWorkspaceMetadata(reference);
+    if (sequence === activationSequence) {
+      activatedWorkspaceId.value = workspace.workspaceId;
+    }
+  } catch (error: any) {
+    if (sequence === activationSequence) {
+      activatedWorkspaceId.value = null;
+      activationError.value = error?.message || 'Failed to load workspace.';
+    }
+  } finally {
+    if (sequence === activationSequence) {
+      isActivatingWorkspace.value = false;
+    }
+  }
+};
+
+watch(
+  () => [requestedWorkspaceMetadata.value?.workspaceId || props.workspaceId || '', panelActive.value] as const,
+  () => {
+    if (panelActive.value) {
+      activateCurrentWorkspace();
+    } else {
+      suspendInactiveWork();
+    }
+  },
+  { immediate: true },
+);
+
+watch(() => [currentWorkspace.value?.workspaceId ?? '', panelActive.value] as const, ([workspaceId, isActive]) => {
+  releaseCurrentLiveSession();
+  if (workspaceId && isActive) {
+    releaseLiveSession = workspaceStore.acquireFileExplorerLiveSession(workspaceId, liveSessionConsumerId);
+  }
+}, { immediate: true });
 
 const displayedFiles = computed(() => {
   if (searchQuery.value) {
@@ -65,24 +181,25 @@ const displayedFiles = computed(() => {
   } else {
     // If we have a specific workspace context, use its tree
     if (currentWorkspace.value) {
-       return currentWorkspace.value.fileExplorer.children || [];
+       return explorer.tree.value?.children || [];
     }
     return [];
   }
 });
 
-// Debounce timer for search
-let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+watch([searchQuery, panelActive], ([newQuery, isActive]) => {
+  clearPendingSearch();
 
-watch(searchQuery, (newQuery) => {
-  // Clear previous timer
-  if (searchDebounceTimer) {
-    clearTimeout(searchDebounceTimer);
+  if (!isActive) {
+    explorer.abortSearch();
+    return;
   }
-  
+
   // Debounce 500ms before triggering search (industry best practice for detecting typing completion)
   searchDebounceTimer = setTimeout(() => {
-    explorer.searchFiles(newQuery);
+    if (panelActive.value) {
+      explorer.searchFiles(newQuery);
+    }
   }, 500);
 });
 
@@ -97,9 +214,8 @@ watch(displayedFiles, () => {
 
 // Cleanup timer on unmount
 onUnmounted(() => {
-  if (searchDebounceTimer) {
-    clearTimeout(searchDebounceTimer);
-  }
+  suspendInactiveWork();
+  detachGlobalFileExplorerListeners();
 });
 
 watch(currentWorkspace, (newWorkspace) => {
@@ -110,10 +226,53 @@ watch(currentWorkspace, (newWorkspace) => {
 
 onMounted(() => {
   // If we have a query (e.g. restored state) and a workspace, trigger search
-  if (searchQuery.value && currentWorkspace.value) {
+  if (panelActive.value && searchQuery.value && currentWorkspace.value) {
     explorer.searchFiles(searchQuery.value);
   }
 });
+
+const onCloseAllContextMenusEvent = () => {
+  closeContextMenusSignal.value += 1;
+};
+
+const onGlobalDragOver = (event: DragEvent) => {
+  const isOverFileExplorer = event.target instanceof Element &&
+    (event.target.closest('.file-item') !== null || event.target.closest('.file-explorer') !== null);
+  if (!isOverFileExplorer) {
+    outsideDragSignal.value += 1;
+  }
+};
+
+const onGlobalDragEnd = () => {
+  globalDragResetSignal.value += 1;
+};
+
+let globalListenersAttached = false;
+const attachGlobalFileExplorerListeners = () => {
+  if (globalListenersAttached) return;
+  document.addEventListener('closeAllFileContextMenus', onCloseAllContextMenusEvent);
+  document.addEventListener('dragover', onGlobalDragOver);
+  document.addEventListener('dragend', onGlobalDragEnd);
+  globalListenersAttached = true;
+};
+
+const detachGlobalFileExplorerListeners = () => {
+  if (!globalListenersAttached) return;
+  document.removeEventListener('closeAllFileContextMenus', onCloseAllContextMenusEvent);
+  document.removeEventListener('dragover', onGlobalDragOver);
+  document.removeEventListener('dragend', onGlobalDragEnd);
+  globalListenersAttached = false;
+};
+
+watch(panelActive, (isActive) => {
+  if (isActive) {
+    attachGlobalFileExplorerListeners();
+    return;
+  }
+
+  detachGlobalFileExplorerListeners();
+  suspendInactiveWork();
+}, { immediate: true });
 </script>
 
 <style scoped>

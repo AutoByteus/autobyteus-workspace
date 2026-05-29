@@ -1,18 +1,13 @@
 import path from 'node:path';
-import type { BaseFileExplorer } from '../file-explorer/base-file-explorer.js';
-import { FileNameIndexer } from '../file-explorer/file-name-indexer.js';
-import { LocalFileExplorer } from '../file-explorer/local-file-explorer.js';
+import {
+  WorkspaceFileExplorer,
+} from '../file-explorer/file-explorer.js';
 import { buildFilesystemWorkspaceId } from './workspace-id-mapping-store.js';
 import type { WorkspaceInput } from './workspace-input.js';
+import type { WorkspaceKind, WorkspaceMetadata } from './workspace-metadata.js';
 import {
   canonicalizeWorkspaceRootPath,
 } from './workspace-path-utils.js';
-import {
-  BaseFileSearchStrategy,
-  CompositeSearchStrategy,
-  FuzzysortSearchStrategy,
-  RipgrepSearchStrategy,
-} from '../file-explorer/search-strategy/index.js';
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -20,14 +15,20 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
+export type WorkspaceFileExplorerConsumerReason = string;
+
+export type WorkspaceFileExplorerLease = {
+  readonly fileExplorer: WorkspaceFileExplorer;
+  release(): Promise<void>;
+};
+
 export class FileSystemWorkspace {
   readonly workspaceId: string;
   readonly config: WorkspaceInput;
   readonly rootPath: string;
-  private fileExplorer: BaseFileExplorer;
-  private searchStrategy: BaseFileSearchStrategy | null = null;
-  private fileNameIndexer: FileNameIndexer | null = null;
-  private backgroundInitTask: Promise<void> | null = null;
+  protected readonly workspaceKind: WorkspaceKind = 'filesystem';
+  private fileExplorer: WorkspaceFileExplorer | null = null;
+  private fileExplorerLeaseCount = 0;
 
   constructor(config: WorkspaceInput) {
     this.config = {
@@ -47,9 +48,19 @@ export class FileSystemWorkspace {
     } else {
       this.workspaceId = buildFilesystemWorkspaceId(this.rootPath);
     }
-    this.fileExplorer = new LocalFileExplorer(this.rootPath);
 
-    logger.info(`Initialized FileSystemWorkspace at ${this.rootPath}. Call initialize() to build file tree.`);
+    logger.info(`Created metadata-only FileSystemWorkspace at ${this.rootPath}.`);
+  }
+
+  get metadata(): WorkspaceMetadata {
+    return {
+      workspaceId: this.workspaceId,
+      name: this.getName(),
+      rootPath: this.rootPath,
+      kind: this.workspaceKind,
+      config: this.config as unknown as Record<string, unknown>,
+      isTemp: false,
+    };
   }
 
   getBasePath(): string {
@@ -76,64 +87,42 @@ export class FileSystemWorkspace {
   }
 
   async initialize(): Promise<void> {
-    await this.fileExplorer.buildWorkspaceDirectoryTree(1);
-
-    this.fileNameIndexer = new FileNameIndexer(this.fileExplorer);
-    this.searchStrategy = this.createSearchStrategy();
-
-    logger.info(`Initialized FileSystemWorkspace at ${this.rootPath} (Shallow). Starting background full scan...`);
-
-    this.backgroundInitTask = this.completeFullInitialization();
+    logger.warn(
+      `FileSystemWorkspace.initialize() is metadata-only for ${this.workspaceId}; file explorer acquisition is explicit.`,
+    );
   }
 
-  private async completeFullInitialization(): Promise<void> {
-    try {
-      await this.fileExplorer.buildWorkspaceDirectoryTree();
-      if (this.fileNameIndexer) {
-        await this.fileNameIndexer.start();
-      }
-      logger.info(`Background full initialization for ${this.rootPath} completed.`);
-    } catch (error) {
-      logger.error(`Background initialization failed for ${this.rootPath}: ${String(error)}`);
-    }
-  }
-
-  private createSearchStrategy(): BaseFileSearchStrategy {
-    if (!this.fileNameIndexer) {
-      this.fileNameIndexer = new FileNameIndexer(this.fileExplorer);
-    }
-    const fuzzysortStrategy = new FuzzysortSearchStrategy(this.fileNameIndexer, 10);
-    const ripgrepStrategy = new RipgrepSearchStrategy(50);
-    return new CompositeSearchStrategy([fuzzysortStrategy, ripgrepStrategy]);
-  }
-
-  async searchFiles(query: string): Promise<string[]> {
-    if (!this.searchStrategy) {
-      this.searchStrategy = this.createSearchStrategy();
+  async acquireFileExplorer(
+    reason: WorkspaceFileExplorerConsumerReason,
+  ): Promise<WorkspaceFileExplorerLease> {
+    if (!this.fileExplorer) {
+      this.fileExplorer = new WorkspaceFileExplorer(this.rootPath);
+      logger.info(`Created WorkspaceFileExplorer for ${this.workspaceId} (${reason}).`);
     }
 
-    return this.searchStrategy.search(this.rootPath, query);
+    this.fileExplorerLeaseCount += 1;
+    let released = false;
+    return {
+      fileExplorer: this.fileExplorer,
+      release: async () => {
+        if (released) {
+          return;
+        }
+        released = true;
+        this.fileExplorerLeaseCount = Math.max(0, this.fileExplorerLeaseCount - 1);
+      },
+    };
   }
 
-  async getFileExplorer(): Promise<BaseFileExplorer> {
-    return this.fileExplorer;
+  hasFileExplorerForDiagnostics(): boolean {
+    return this.fileExplorer !== null;
   }
 
   async close(): Promise<void> {
     logger.info(`Closing FileSystemWorkspace ${this.workspaceId}`);
-
-    if (this.backgroundInitTask) {
-      try {
-        await this.backgroundInitTask;
-      } catch {
-        // ignore
-      }
-    }
-
-    await this.fileExplorer.close();
-
-    if (this.fileNameIndexer) {
-      await this.fileNameIndexer.stop();
-    }
+    this.fileExplorerLeaseCount = 0;
+    const fileExplorer = this.fileExplorer;
+    this.fileExplorer = null;
+    await fileExplorer?.close();
   }
 }

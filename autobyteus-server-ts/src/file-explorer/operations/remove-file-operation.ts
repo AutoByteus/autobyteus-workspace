@@ -18,10 +18,10 @@ export class RemoveFileOperation extends BaseFileOperation {
       throw new Error("The path must be relative to the workspace root.");
     }
 
-    const absolutePath = path.join(this.fileExplorer.workspaceRootPath, normalizedPath);
-    if (!absolutePath.startsWith(this.fileExplorer.workspaceRootPath)) {
-      throw new Error("Access denied: Path is outside the workspace.");
-    }
+    const absolutePath = this.resolveWorkspacePath(
+      normalizedPath,
+      "Access denied: Path is outside the workspace.",
+    );
 
     let stats: Awaited<ReturnType<typeof fs.stat>>;
     try {

@@ -2,10 +2,13 @@ export {
   getDefaultSessionFactory,
   isWindows,
   isAndroid,
+  isDarwin,
   setIsWindowsForTests,
-  setIsAndroidForTests
+  setIsAndroidForTests,
+  setIsDarwinForTests
 } from './session-factory.js';
 export { DirectShellSession } from './direct-shell-session.js';
+export { IsolatedPtySession } from './isolated-pty-session.js';
 export { PtySession } from './pty-session.js';
 export { WslTmuxSession } from './wsl-tmux-session.js';
 export { TerminalSessionManager } from './terminal-session-manager.js';

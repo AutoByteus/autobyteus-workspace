@@ -8,8 +8,25 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { AppConfig } from "../../../src/config/app-config.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { canonicalizeWorkspaceRootPath } from "../../../src/workspaces/workspace-path-utils.js";
 const workspaceManager = getWorkspaceManager();
+
+const getWorkspaceFileExplorerState = async (workspaceId: string) => {
+  const workspace = workspaceManager.getWorkspaceById(workspaceId);
+  if (!workspace) {
+    throw new Error(`Workspace not found in test: ${workspaceId}`);
+  }
+  const fileExplorer = (workspace as unknown as {
+    fileExplorer?: { fileWatcher?: unknown; watcherLeaseCount?: number } | null;
+  }).fileExplorer ?? null;
+  return {
+    hasFileExplorer: workspace.hasFileExplorerForDiagnostics(),
+    watcher: fileExplorer?.fileWatcher ?? null,
+    leaseCount: fileExplorer?.watcherLeaseCount ?? 0,
+  };
+};
 
 describe("Workspaces GraphQL e2e", () => {
   let schema: GraphQLSchema;
@@ -107,45 +124,117 @@ describe("Workspaces GraphQL e2e", () => {
     expect(found?.absolutePath).toBe(rootPath);
   });
 
-  it("returns a shallow file explorer payload from createWorkspace", async () => {
+  it("returns workspace metadata from createWorkspace without acquiring file explorer", async () => {
     const rootPath = path.join(tempRoot, "test_ws_root");
     fs.mkdirSync(path.join(rootPath, "project", "nested"), { recursive: true });
     fs.writeFileSync(path.join(rootPath, "project", "nested", "index.ts"), "export {};\n", "utf-8");
-    fs.writeFileSync(path.join(rootPath, "README.md"), "# test\n", "utf-8");
 
     const createMutation = `
       mutation CreateWorkspace($input: CreateWorkspaceInput!) {
         createWorkspace(input: $input) {
           workspaceId
-          fileExplorer
+          name
+          displayName
+          workspaceRootPath
+          absolutePath
+          kind
+          isTemp
         }
       }
     `;
 
     const created = await execGraphql<{
-      createWorkspace: { workspaceId: string; fileExplorer: string | null };
+      createWorkspace: {
+        workspaceId: string;
+        name: string;
+        displayName: string;
+        workspaceRootPath: string;
+        absolutePath: string | null;
+        kind: string;
+        isTemp: boolean;
+      };
     }>(createMutation, { input: { rootPath } });
 
-    expect(created.createWorkspace.workspaceId).toBeTruthy();
-    expect(created.createWorkspace.fileExplorer).toBeTruthy();
+    expect(created.createWorkspace).toMatchObject({
+      workspaceId: buildFilesystemWorkspaceId(rootPath),
+      name: "test_ws_root",
+      displayName: "test_ws_root",
+      workspaceRootPath: rootPath,
+      absolutePath: rootPath,
+      kind: "filesystem",
+      isTemp: false,
+    });
 
-    const explorerTree = JSON.parse(created.createWorkspace.fileExplorer ?? "null") as {
-      name: string;
-      children: Array<{
-        name: string;
-        children: unknown[];
-        children_loaded?: boolean;
-      }>;
-    };
+    await expect(getWorkspaceFileExplorerState(created.createWorkspace.workspaceId)).resolves.toMatchObject({
+      hasFileExplorer: false,
+      watcher: null,
+      leaseCount: 0,
+    });
+  });
 
-    expect(explorerTree.name).toBe("test_ws_root");
-    const projectNode = explorerTree.children.find((child) => child.name === "project");
-    expect(projectNode).toBeTruthy();
-    expect(projectNode?.children).toEqual([]);
-    expect(projectNode?.children_loaded).toBe(false);
-    expect(
-      explorerTree.children.some((child) => child.name === "README.md"),
-    ).toBe(true);
+  it("resolves deterministic workspace metadata without initializing the workspace", async () => {
+    const rootPath = path.join(tempRoot, "test_ws_root");
+    const rootPathWithTrailingSeparator = `${rootPath}${path.sep}`;
+    const expectedRootPath = canonicalizeWorkspaceRootPath(rootPathWithTrailingSeparator);
+    const expectedWorkspaceId = buildFilesystemWorkspaceId(expectedRootPath);
+
+    const metadataQuery = `
+      query ResolveWorkspaceMetadata($rootPath: String!) {
+        workspaceMetadata(rootPath: $rootPath) {
+          workspaceId
+          workspaceRootPath
+          displayName
+          kind
+        }
+      }
+    `;
+
+    const first = await execGraphql<{
+      workspaceMetadata: {
+        workspaceId: string;
+        workspaceRootPath: string;
+        displayName: string;
+        kind: string;
+      };
+    }>(metadataQuery, { rootPath: rootPathWithTrailingSeparator });
+
+    expect(first.workspaceMetadata).toEqual({
+      workspaceId: expectedWorkspaceId,
+      workspaceRootPath: expectedRootPath,
+      displayName: "test_ws_root",
+      kind: "filesystem",
+    });
+    expect(workspaceManager.getWorkspaceById(expectedWorkspaceId)).toBeUndefined();
+    expect(new Set(workspaceManager.getAllWorkspaces().map((ws) => ws.workspaceId))).toEqual(initialIds);
+
+    const repeated = await execGraphql<{
+      workspaceMetadata: { workspaceId: string; workspaceRootPath: string };
+    }>(metadataQuery, { rootPath });
+
+    expect(repeated.workspaceMetadata.workspaceId).toBe(expectedWorkspaceId);
+    expect(repeated.workspaceMetadata.workspaceRootPath).toBe(expectedRootPath);
+    expect(workspaceManager.getWorkspaceById(expectedWorkspaceId)).toBeUndefined();
+
+    const createMutation = `
+      mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+        createWorkspace(input: $input) {
+          workspaceId
+          absolutePath
+        }
+      }
+    `;
+
+    const created = await execGraphql<{
+      createWorkspace: { workspaceId: string; absolutePath: string | null };
+    }>(createMutation, { input: { rootPath } });
+
+    expect(created.createWorkspace.workspaceId).toBe(expectedWorkspaceId);
+    expect(created.createWorkspace.absolutePath).toBe(expectedRootPath);
+    await expect(getWorkspaceFileExplorerState(expectedWorkspaceId)).resolves.toMatchObject({
+      hasFileExplorer: false,
+      watcher: null,
+      leaseCount: 0,
+    });
   });
 
   it("creates and lists the temp workspace with the backend-selected app-data-relative path", async () => {

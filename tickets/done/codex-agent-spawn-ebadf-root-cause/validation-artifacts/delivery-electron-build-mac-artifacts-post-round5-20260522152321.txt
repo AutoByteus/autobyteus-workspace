@@ -1,0 +1,21 @@
+Electron macOS build artifact summary
+Generated: 2026-05-22T15:23:25+02:00
+Repo: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+HEAD: 717b6719616887bce70a4e0c7158432420bb834c
+origin/personal: fcf435ec1894de13fad54002cd70e62d59dd12b8
+autobyteus-web version: 1.3.26
+Build log: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-post-round5-20260522151835.log
+DMG verify log: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-dmg-verify-post-round5-20260522152321.log
+
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.dmg
+  bytes=379715609
+  sha256=51429def2f97172afb33bc6e15220d25abed709c8accbac5862a8b6306680eff
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.dmg.blockmap
+  bytes=395638
+  sha256=c11dfd91a86aa92dc70f5bc919c40ec75d1b33ef111c6ffecf419a3e086a7c4e
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.zip
+  bytes=377088955
+  sha256=fe316187e3c24ac495d04d3bff0d37e7b3abea658e0e12643b9cd4a4ed60511c
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.26.zip.blockmap
+  bytes=387092
+  sha256=1cb8277780afb110bab9d3f6ce0193bd7d6c67fce472f97320d2f6aca1b68c33

@@ -1,0 +1,10 @@
+ 499 autobyteus-web/components/mobile/MobileFiles.vue
+ 137 autobyteus-web/components/mobile/MobileTools.vue
+ 284 autobyteus-web/components/workspace/tools/Terminal.vue
+ 181 autobyteus-web/composables/useTerminalSession.ts
+  34 autobyteus-web/utils/terminalTarget.ts
+   5 autobyteus-web/types/terminal/TerminalTarget.ts
+ 160 autobyteus-server-ts/src/api/websocket/terminal.ts
+ 146 autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts
+  83 autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts
+All changed implementation source files are <= 500 effective non-empty lines.

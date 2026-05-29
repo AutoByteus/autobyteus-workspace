@@ -1,0 +1,46 @@
+API/E2E round 7 boundary grep audit - removed lazy-workspace/terminal legacy concepts
+Checked at 2026-05-23T12:24:03Z
+
+No-match pattern: WorkspaceReference|workspaceReference|WorkspaceActivation|ensureWorkspaceInitialized|BaseFileExplorer|LocalFileExplorer|getFileExplorer\(|workspace\.searchFiles\(|/ws/terminal/[^?]*\?workspaceId|workspaceId=.*terminal|WorkspaceInfo\.fileExplorer
+PASS: no stale/legacy matches found
+
+Positive terminal/mobile root-path checks:
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:51:  workspaceRootPath: "/Users/normy/project",
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:177:      workspaceRootPath: "/Users/normy/project",
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:517:      "acquireFileExplorerLiveSession",
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:649:      workspaceRootPath: "/Users/normy/project",
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:659:          absolutePath: metadata.workspaceRootPath,
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:660:          workspaceRootPath: metadata.workspaceRootPath,
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:661:          workspaceConfig: { root_path: metadata.workspaceRootPath },
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:671:      workspaceRootPath: "/Users/normy/project",
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:675:    const releaseLiveSession = vi.fn();
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:676:    vi.spyOn(workspaceStore, "acquireFileExplorerLiveSession").mockReturnValue(
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:677:      releaseLiveSession,
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:695:    expect(workspaceStore.acquireFileExplorerLiveSession).toHaveBeenCalledWith(
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:705:    expect(releaseLiveSession).toHaveBeenCalledTimes(1);
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:722:          absolutePath: metadata.workspaceRootPath,
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:723:          workspaceRootPath: metadata.workspaceRootPath,
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:724:          workspaceConfig: { root_path: metadata.workspaceRootPath },
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:735:        workspaceRootPath: workspace.workspaceRootPath,
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:742:    vi.spyOn(workspaceStore, "acquireFileExplorerLiveSession")
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:757:    expect(workspaceStore.acquireFileExplorerLiveSession).toHaveBeenCalledWith(
+autobyteus-web/components/mobile/__tests__/MobileUxRefinement.spec.ts:767:    expect(workspaceStore.acquireFileExplorerLiveSession).toHaveBeenCalledWith(
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:80:        logger.info(`Terminal session startup aborted: ${sessionId}`);
+autobyteus-web/components/mobile/MobileTools.vue:86:import { createTerminalTarget } from "~/utils/terminalTarget";
+autobyteus-web/components/mobile/MobileTools.vue:111:    return createTerminalTarget({
+autobyteus-web/components/mobile/MobileTools.vue:118:    return createTerminalTarget({
+autobyteus-web/components/mobile/MobileTools.vue:119:      rootPath: context.workspaceRootPath,
+autobyteus-web/composables/useTerminalSession.ts:21:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/composables/useTerminalSession.ts:26:  target: MaybeRef<TerminalTarget | null | undefined>;
+autobyteus-web/composables/useTerminalSession.ts:56:  const getTarget = (): TerminalTarget | null => {
+autobyteus-web/composables/useTerminalSession.ts:61:  const buildTerminalWebSocketUrl = (target: TerminalTarget): string => {
+autobyteus-web/components/mobile/MobileFiles.vue:187:import { useWorkspaceFileExplorer } from "~/composables/useWorkspaceFileExplorer";
+autobyteus-web/components/mobile/MobileFiles.vue:230:const workspaceExplorer = useWorkspaceFileExplorer(activeWorkspaceId);
+autobyteus-web/components/mobile/MobileFiles.vue:232:let releaseLiveSession: (() => void) | null = null;
+autobyteus-web/components/mobile/MobileFiles.vue:240:    return normalizeWorkspaceRootPath(props.context.workspaceRootPath);
+autobyteus-web/components/mobile/MobileFiles.vue:255:    activeWorkspaceMetadata.value?.workspaceRootPath ||
+autobyteus-web/components/mobile/MobileFiles.vue:376:  releaseLiveSession?.();
+autobyteus-web/components/mobile/MobileFiles.vue:377:  releaseLiveSession = null;
+autobyteus-web/components/mobile/MobileFiles.vue:390:        workspaceRootPath: rootPath,
+autobyteus-web/components/mobile/MobileFiles.vue:493:    releaseLiveSession = workspaceStore.acquireFileExplorerLiveSession(
+autobyteus-server-ts/src/api/websocket/terminal.ts:80:      const abortController = new AbortController();

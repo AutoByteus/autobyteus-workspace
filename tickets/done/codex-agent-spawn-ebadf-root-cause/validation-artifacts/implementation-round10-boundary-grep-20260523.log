@@ -1,0 +1,11 @@
+Terminal old websocket route grep (expect no matches):
+Terminal component activation grep (expect no matches):
+Mobile Files/Tools legacy workspace store/fileExplorer grep (expect no matches):
+Mobile Files/Tools target boundary positive grep:
+autobyteus-web/components/mobile/MobileTools.vue:        <Terminal class="min-h-0 flex-1" :target="terminalTarget" />
+autobyteus-web/components/mobile/MobileTools.vue:import { createTerminalTarget } from "~/utils/terminalTarget";
+autobyteus-web/components/mobile/MobileTools.vue:    return createTerminalTarget({
+autobyteus-web/components/mobile/MobileTools.vue:    return createTerminalTarget({
+autobyteus-web/components/mobile/MobileFiles.vue:import { useWorkspaceFileExplorer } from "~/composables/useWorkspaceFileExplorer";
+autobyteus-web/components/mobile/MobileFiles.vue:const workspaceExplorer = useWorkspaceFileExplorer(activeWorkspaceId);
+autobyteus-web/components/mobile/MobileFiles.vue:    releaseLiveSession = workspaceStore.acquireFileExplorerLiveSession(

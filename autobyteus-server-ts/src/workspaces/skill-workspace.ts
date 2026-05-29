@@ -7,6 +7,7 @@ const logger = {
 
 export class SkillWorkspace extends FileSystemWorkspace {
   readonly skillName: string;
+  protected readonly workspaceKind = 'skill' as const;
 
   private constructor(skillName: string, config: WorkspaceInput) {
     super(config);

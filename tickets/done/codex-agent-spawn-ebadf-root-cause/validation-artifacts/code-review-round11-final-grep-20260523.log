@@ -1,0 +1,9 @@
+# Reviewer round11 final stale concept grep 2026-05-23T11:22:43Z
+## exact removed concepts in implementation/test source (excluding ticket artifacts and generated js test mirrors where applicable)
+autobyteus-web/components/agentInput/ContextFilePathInputArea.vue:270:    workspaceStore.ensureWorkspaceMetadata(reference)
+autobyteus-web/components/mobile/MobileFiles.vue:416:    const workspace = await workspaceStore.ensureWorkspaceMetadata(metadata);
+autobyteus-web/components/fileExplorer/FileExplorer.vue:107:    const workspace = await workspaceStore.ensureWorkspaceMetadata(reference);
+autobyteus-web/stores/workspace.ts:130:    async ensureWorkspaceMetadata(metadata: WorkspaceMetadata): Promise<WorkspaceInfo> {
+## terminal route source imports workspace manager?
+autobyteus-web/components/mobile/MobileTools.vue:113:      workspaceId: context.workspaceId,
+autobyteus-web/components/workspace/tools/Terminal.vue:264:      `${effectiveTerminalTarget.value?.rootPath || ""}:${effectiveTerminalTarget.value?.workspaceId || ""}`,

@@ -1,0 +1,26 @@
+Electron macOS artifact summary (Round 21 post API/E2E rebuild)
+timestamp=2026-05-28T18:12:25Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+head=7aa47c3ca99e814c82f0231450437640d42999c7
+origin_personal=d1f92730caea25e8b9c39cf4384dc665491e768a
+merge_base=d1f92730caea25e8b9c39cf4384dc665491e768a
+origin_personal_to_head=0	31
+version=1.3.32
+build_log=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round21-post-api-e2e-20260528200742.log
+dmg_verify_log=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round21-post-api-e2e-dmg-verify-20260528200742.log
+
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg
+  size_bytes=379821862
+  sha256=c9e03c7e1d5ca9a0736ec9e657c6bbf7e39d33bbb0ebd89da090ae2342906a7d
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg.blockmap
+  size_bytes=395476
+  sha256=9f85b77c3bb19ab14ddb68ac579ccdc5f953e21d5e8c3a69f4f8a495e2c21d07
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip
+  size_bytes=377154044
+  sha256=7ca0fde48a887f5f464fc9c411a877df90f9e6ba6de7a05c3889c440d29863fb
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap
+  size_bytes=387172
+  sha256=1b1cd0ad36ee646138bb70768ee0c2dad95da25a8eb6bc326da3ccfce72abde3
+/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/latest-mac.yml
+  size_bytes=561
+  sha256=58cec66498a420c85ad3f725ca1d21efee821d653c5a09c6c8ff1ac1a95a16c7

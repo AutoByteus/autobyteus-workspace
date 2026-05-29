@@ -1,12 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { AsyncQueue } from "../../../src/file-explorer/watcher/event-batcher.js";
 import { FileNameIndexer } from "../../../src/file-explorer/file-name-indexer.js";
-import {
-  AddChange,
-  DeleteChange,
-  FileSystemChangeEvent,
-  RenameChange,
-} from "../../../src/file-explorer/file-system-changes.js";
 import { TreeNode } from "../../../src/file-explorer/tree-node.js";
 
 const createNode = (name: string, id: string, isFile = true, basePath = "/root") => {
@@ -16,102 +9,58 @@ const createNode = (name: string, id: string, isFile = true, basePath = "/root")
   return node;
 };
 
+const createRoot = () => {
+  const root = new TreeNode("root", false);
+  root.id = "root_id";
+  root.pathValue = "/root";
+  root.addChild(createNode("existing.txt", "id_exist", true, "/root"));
+  return root;
+};
+
 describe("FileNameIndexer", () => {
-  let eventQueue: AsyncQueue<string | null>;
-  let eventGenerator: AsyncGenerator<string, void, void>;
+  let root: TreeNode;
   let mockExplorer: {
     rootPath: string;
-    ensureWatcherStarted: ReturnType<typeof vi.fn>;
+    acquireWatcherLease: ReturnType<typeof vi.fn>;
     subscribe: ReturnType<typeof vi.fn>;
     getTree: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(() => {
-    eventQueue = new AsyncQueue<string | null>();
-
-    const baseGenerator = (async function* () {
-      while (true) {
-        const item = await eventQueue.pop();
-        if (item === null) {
-          return;
-        }
-        yield item;
-      }
-    })();
-
-    const originalReturn = baseGenerator.return?.bind(baseGenerator);
-    (baseGenerator as AsyncGenerator<string, void, void>).return = async () => {
-      eventQueue.push(null);
-      if (originalReturn) {
-        return originalReturn();
-      }
-      return { done: true, value: undefined } as IteratorResult<string, void>;
-    };
-
-    eventGenerator = baseGenerator;
-
-    const root = new TreeNode("root", false);
-    root.id = "root_id";
-    root.pathValue = "/root";
-
-    const child = createNode("existing.txt", "id_exist", true, "/root");
-    root.addChild(child);
-
+    root = createRoot();
     mockExplorer = {
       rootPath: "/root",
-      ensureWatcherStarted: vi.fn().mockResolvedValue(undefined),
-      subscribe: vi.fn().mockReturnValue(eventGenerator),
-      getTree: vi.fn().mockReturnValue(root),
+      acquireWatcherLease: vi.fn(),
+      subscribe: vi.fn(),
+      getTree: vi.fn(() => root),
     };
   });
 
-  it("builds the initial index on start", async () => {
+  it("builds the snapshot index on refresh", async () => {
     const indexer = new FileNameIndexer(mockExplorer as any);
 
-    await indexer.start();
+    await indexer.refreshSnapshotIndex();
 
     const index = indexer.getIndex();
     expect(index["existing.txt"]).toBe("/root/existing.txt");
     expect((indexer as any).idMap.get("id_exist")).toBe("/root/existing.txt");
   });
 
-  it("processes add events", async () => {
+  it("does not acquire a watcher lease when refreshing the snapshot index", async () => {
     const indexer = new FileNameIndexer(mockExplorer as any);
-    await indexer.start();
 
-    const newNode = createNode("new.txt", "id_new", true, "/root");
-    const event = new FileSystemChangeEvent([new AddChange(newNode, "root_id")]);
+    await indexer.refreshSnapshotIndex();
 
-    eventQueue.push(event.toJson());
-    await new Promise((resolve) => setTimeout(resolve, 20));
-
-    const index = indexer.getIndex();
-    expect(index["new.txt"]).toBe("/root/new.txt");
-    expect((indexer as any).idMap.get("id_new")).toBe("/root/new.txt");
+    expect(mockExplorer.acquireWatcherLease).not.toHaveBeenCalled();
+    expect(mockExplorer.subscribe).not.toHaveBeenCalled();
   });
 
-  it("processes delete events", async () => {
+  it("replaces stale index entries on each refresh", async () => {
     const indexer = new FileNameIndexer(mockExplorer as any);
-    await indexer.start();
+    await indexer.refreshSnapshotIndex();
 
-    const event = new FileSystemChangeEvent([new DeleteChange("id_exist", "root_id")]);
-    eventQueue.push(event.toJson());
-    await new Promise((resolve) => setTimeout(resolve, 20));
-
-    const index = indexer.getIndex();
-    expect(index["existing.txt"]).toBeUndefined();
-    expect((indexer as any).idMap.has("id_exist")).toBe(false);
-  });
-
-  it("processes rename events", async () => {
-    const indexer = new FileNameIndexer(mockExplorer as any);
-    await indexer.start();
-
-    const renamedNode = createNode("renamed.txt", "id_exist", true, "/root");
-    const event = new FileSystemChangeEvent([new RenameChange(renamedNode, "root_id")]);
-
-    eventQueue.push(event.toJson());
-    await new Promise((resolve) => setTimeout(resolve, 20));
+    root.children = [createNode("renamed.txt", "id_exist", true, "/root")];
+    await indexer.refreshSnapshotIndex();
 
     const index = indexer.getIndex();
     expect(index["existing.txt"]).toBeUndefined();
@@ -119,14 +68,12 @@ describe("FileNameIndexer", () => {
     expect((indexer as any).idMap.get("id_exist")).toBe("/root/renamed.txt");
   });
 
-  it("stops monitoring when stopped", async () => {
+  it("uses an empty index when the current tree is unavailable", async () => {
+    mockExplorer.getTree.mockReturnValue(null);
     const indexer = new FileNameIndexer(mockExplorer as any);
-    await indexer.start();
 
-    expect((indexer as any).monitorTask).toBeTruthy();
+    await indexer.refreshSnapshotIndex();
 
-    await indexer.stop();
-
-    expect((indexer as any).monitorTask).toBeNull();
+    expect(indexer.getIndex()).toEqual({});
   });
 });

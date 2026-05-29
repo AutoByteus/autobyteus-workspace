@@ -1,0 +1,22 @@
+
+> autobyteus@1.3.30 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+> cross-env NUXT_TEST=true vitest run components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (15 tests) 119ms
+
+ Test Files  1 passed (1)
+      Tests  15 passed (15)
+   Start at  07:37:09
+   Duration  4.79s (transform 2.60s, setup 3.90s, collect 128ms, tests 119ms, environment 193ms, prepare 154ms)

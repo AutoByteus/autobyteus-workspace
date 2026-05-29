@@ -1,0 +1,27 @@
+AutoByteus macOS Electron build artifact summary
+Created: 2026-05-22T13:19:58.887569+02:00
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+Branch: codex/codex-agent-spawn-ebadf-root-cause
+HEAD: 68468456d822f5d2af74f38591935b4631c6ddbd
+origin/personal: e66d338f42cdbd2e8709a7a78026e35dfdb9a8f0
+HEAD...origin/personal ahead/behind: 2	0
+README consulted: autobyteus-web/README.md desktop macOS build and no-notarization command section
+Build command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG='electron-builder,electron-builder:*,app-builder-lib*,builder-util*' pnpm -C autobyteus-web build:electron:mac
+Build log: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-20260522131407.log
+DMG verify command: hdiutil verify /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.25.dmg
+DMG verify log: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-dmg-verify-20260522131924.log
+Signing/notarization: skipped intentionally for local README no-notarization build (identity null, notarize false).
+
+Artifacts:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.25.dmg
+  size_bytes=379671558
+  sha256=258aa5482498700e75bafa816ebf568fe24f78443a759648c253494e0add3840
+- /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.25.dmg.blockmap
+  size_bytes=395992
+  sha256=91d43c8b8d32864b567d86ca6b4cb613878cad6acb80061b37a4428114932ca3
+- /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.25.zip
+  size_bytes=377083515
+  sha256=6b76013c7be52ec798bf0d6ac6b2a2676156fa12ca6597b5836b2ab23d38722d
+- /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.25.zip.blockmap
+  size_bytes=387005
+  sha256=5142f286e11dd9f142fc6803bf472efddec16f5e512e27e473d1a67696361e44

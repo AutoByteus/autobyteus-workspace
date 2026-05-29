@@ -1,0 +1,17 @@
+# final delivery artifact diff check
+utc_start=2026-05-23T12:58:34Z
+head=5c5cb3dabefbc94115647fd342f59b37844cfa7d
+origin_personal=74218467a2f7786c82f3e97b9190058d2cb83bd2
+## git diff --check (tracked delivery report edits)
+tracked_delivery_report_diff_check=pass
+## git status --short
+ M tickets/codex-agent-spawn-ebadf-root-cause/delivery-blocker-round13-latest-personal-merge-conflicts.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/docs-sync-report.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/handoff-summary.md
+ M tickets/codex-agent-spawn-ebadf-root-cause/release-deployment-report.md
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-artifacts-round13-latest-personal-20260523145444.txt
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-dmg-verify-round13-latest-personal-20260523145444.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-electron-build-mac-round13-latest-personal-20260523144913.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-final-artifact-diff-check-round13-latest-personal-20260523145834.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round13-integrated-docs-and-focused-checks-20260523144738.log
+utc_end=2026-05-23T12:58:34Z

@@ -1,0 +1,2 @@
+Diff whitespace check - 2026-05-29
+PASS: git diff --check

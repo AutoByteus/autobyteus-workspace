@@ -1,0 +1,33 @@
+COMMAND   PID  USER   FD      TYPE             DEVICE  SIZE/OFF                NODE NAME
+node    89432 normy  cwd       DIR               1,16       928           174068519 /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/autobyteus-server-ts
+node    89432 normy  txt       REG               1,16 111670672              525716 /Users/normy/.nvm/versions/node/v22.21.1/bin/node
+node    89432 normy  txt       REG               1,16     73840           165453213 /Library/Preferences/Logging/.plist-cache.nZ8hDtHH
+node    89432 normy  txt       REG               1,16   2299152 1152921500312563341 /usr/lib/dyld
+node    89432 normy  txt       REG               1,16  17251592            10659627 /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64/libquery-engine
+node    89432 normy    0r      CHR                3,2       0t0                 336 /dev/null
+node    89432 normy    1u     unix 0x57de6428a9a9f897       0t0                     ->0x9bf17023f7559eb5
+node    89432 normy    2u     unix 0x16ba3c58e2d793de       0t0                     ->0x8392a614c61e82f8
+node    89432 normy    3u   KQUEUE                                                  count=0, state=0x8
+node    89432 normy    4      PIPE 0xc81f3389d8a75ad2     16384                     ->0x31707e1002b0f006
+node    89432 normy    5      PIPE 0x31707e1002b0f006     16384                     ->0xc81f3389d8a75ad2
+node    89432 normy    6r      DIR               1,16       704                   2 /
+node    89432 normy    7u   KQUEUE                                                  count=0, state=0xa
+node    89432 normy    8r      DIR               1,16       704                   2 /
+node    89432 normy    9u   KQUEUE                                                  count=0, state=0xa
+node    89432 normy   10r      DIR               1,16       704                   2 /
+node    89432 normy   11r      CHR                3,2       0t0                 336 /dev/null
+node    89432 normy   12u   KQUEUE                                                  count=0, state=0xa
+node    89432 normy   13u   KQUEUE                                                  count=0, state=0xa
+node    89432 normy   14u   KQUEUE                                                  count=0, state=0xa
+node    89432 normy   15u     unix 0x1815774966d547b8       0t0                     ->0x6f84adb382bd354b
+node    89432 normy   16u     unix 0x6f84adb382bd354b       0t0                     ->0x1815774966d547b8
+node    89432 normy   17u     unix 0x1815774966d547b8       0t0                     ->0x6f84adb382bd354b
+node    89432 normy   18w      REG               1,16     17061           180969995 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-data-YReVbx/logs/server.log
+node    89432 normy   19u      REG               1,16    196608           180970016 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-terminal-timing-data-YReVbx/db/production.db
+node    89432 normy   20      PIPE 0xe69c630df558fc4c     16384                     ->0xc4f58b6048dcba6b
+node    89432 normy   21      PIPE 0xc4f58b6048dcba6b     16384                     ->0xe69c630df558fc4c
+node    89432 normy   22u     IPv4 0x19b3d0dbe32ed295       0t0                 TCP 127.0.0.1:57600 (LISTEN)
+node    89432 normy   23u    systm 0x228be892b9ce42ed       0t0                     [ctl com.apple.netsrc id 7 unit 73]
+node    89432 normy   24u     unix 0xa7ca1be2cc369fc0       0t0                     ->0x915f6ac095f5d3b7
+node    89432 normy   25   NPOLICY
+node    89432 normy   28u     IPv4 0xc58c87e48d117883       0t0                 TCP 127.0.0.1:57600->127.0.0.1:57616 (ESTABLISHED)

@@ -9,6 +9,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 
 type RunHistorySelectionMode = 'desktop' | 'mobile';
 
@@ -26,6 +27,7 @@ interface RunHistorySelectionStoreLike {
   openTeamMemberRun(teamRunId: string, memberRouteKey: string, options?: RunHistoryOpenOptions): Promise<void>;
   openRun(runId: string, options?: RunHistoryOpenOptions): Promise<void>;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
+  resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
 }
 
 export const openTeamMemberRunFromHistory = async (
@@ -40,6 +42,8 @@ export const openTeamMemberRunFromHistory = async (
     const result = await openTeamRun({
       teamRunId,
       memberRouteKey,
+      resolveWorkspaceMetadataByRootPath: (path: string) =>
+        store.resolveWorkspaceMetadataByRootPath(path),
       ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
       selectionMode: options.selectionMode,
     });

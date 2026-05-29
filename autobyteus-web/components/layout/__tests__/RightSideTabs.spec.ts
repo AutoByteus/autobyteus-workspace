@@ -10,6 +10,8 @@ const visibleTabs = ref([
   { name: 'artifacts', label: 'Artifacts' },
 ]);
 const latestVisibleArtifactSignal = ref<string | null>(null);
+const openFilesForActiveWorkspace = ref<string[]>([]);
+const activeWorkspaceForTabs = ref<{ workspaceId: string } | null>(null);
 
 vi.mock('~/stores/activeContextStore', () => ({
   useActiveContextStore: () => ({
@@ -26,7 +28,7 @@ vi.mock('~/stores/agentTodoStore', () => ({
 
 vi.mock('~/stores/fileExplorer', () => ({
   useFileExplorerStore: () => ({
-    getOpenFiles: () => [],
+    getOpenFiles: () => openFilesForActiveWorkspace.value,
   }),
 }));
 
@@ -58,7 +60,7 @@ vi.mock('~/stores/runFileChangesStore', () => ({
 
 vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => ({
-    activeWorkspace: null,
+    activeWorkspace: activeWorkspaceForTabs.value,
   }),
 }));
 
@@ -68,20 +70,36 @@ describe('RightSideTabs', () => {
   beforeEach(() => {
     setActiveTab.mockReset();
     activeTab.value = 'progress';
+    visibleTabs.value = [
+      { name: 'files', label: 'Files' },
+      { name: 'progress', label: 'Activity' },
+      { name: 'artifacts', label: 'Artifacts' },
+    ];
     latestVisibleArtifactSignal.value = null;
+    openFilesForActiveWorkspace.value = [];
+    activeWorkspaceForTabs.value = null;
   });
 
-  const mountSubject = () => shallowMount(RightSideTabs, {
+  const mountSubject = (props: Record<string, unknown> = {}) => shallowMount(RightSideTabs, {
+    props,
     global: {
       mocks: {
         $t: (key: string) => key,
       },
       stubs: {
-        TabList: { template: '<div class="tab-list-stub" />' },
+        TabList: {
+          name: 'TabList',
+          props: ['tabs', 'selectedTab'],
+          template: '<div class="tab-list-stub" />',
+        },
         TeamOverviewPanel: { template: '<div class="team-overview-stub" />' },
         Terminal: { template: '<div class="terminal-stub" />' },
         VncViewer: { template: '<div class="vnc-stub" />' },
-        FileExplorerLayout: { template: '<div class="file-layout-stub" />' },
+        FileExplorerLayout: {
+          name: 'FileExplorerLayout',
+          props: ['active'],
+          template: '<div class="file-layout-stub" />',
+        },
         ArtifactsTab: { template: '<div class="artifacts-stub" />' },
         BrowserPanel: { template: '<div class="browser-panel-stub" />' },
         ProgressPanel: { template: '<div class="progress-stub" />' },
@@ -119,5 +137,79 @@ describe('RightSideTabs', () => {
     await nextTick();
 
     expect(setActiveTab).not.toHaveBeenCalled();
+  });
+
+  it('filters the Files tab and blocks FileExplorerLayout in mobile tools mode', () => {
+    activeTab.value = 'files';
+
+    const wrapper = mountSubject({ mode: 'mobile-tools' });
+
+    const tabList = wrapper.getComponent({ name: 'TabList' });
+    expect(tabList.props('tabs')).toEqual([
+      { name: 'progress', label: 'Activity' },
+      { name: 'artifacts', label: 'Artifacts' },
+    ]);
+    expect(wrapper.find('.file-layout-stub').exists()).toBe(false);
+  });
+
+  it('keeps Files lazy before first selection even when Terminal is selected first', () => {
+    activeTab.value = 'terminal';
+    visibleTabs.value = [
+      { name: 'files', label: 'Files' },
+      { name: 'terminal', label: 'Terminal' },
+      { name: 'progress', label: 'Activity' },
+    ];
+
+    const wrapper = mountSubject();
+
+    expect(wrapper.find('.terminal-stub').exists()).toBe(true);
+    expect(wrapper.find('.file-layout-stub').exists()).toBe(false);
+  });
+
+  it('caches Files after first use and marks it inactive when switching to Terminal', async () => {
+    activeTab.value = 'files';
+    visibleTabs.value = [
+      { name: 'files', label: 'Files' },
+      { name: 'terminal', label: 'Terminal' },
+      { name: 'progress', label: 'Activity' },
+    ];
+    const wrapper = mountSubject();
+
+    let fileLayout = wrapper.getComponent({ name: 'FileExplorerLayout' });
+    expect(fileLayout.props('active')).toBe(true);
+
+    activeTab.value = 'terminal';
+    await nextTick();
+
+    expect(wrapper.find('.terminal-stub').exists()).toBe(true);
+    fileLayout = wrapper.getComponent({ name: 'FileExplorerLayout' });
+    expect(fileLayout.props('active')).toBe(false);
+    expect(wrapper.find('.file-layout-stub').exists()).toBe(true);
+  });
+
+  it('auto-switches to Files when an open file appears in desktop mode', async () => {
+    activeTab.value = 'progress';
+    activeWorkspaceForTabs.value = { workspaceId: 'ws-1' };
+    const wrapper = mountSubject();
+    setActiveTab.mockClear();
+
+    openFilesForActiveWorkspace.value = ['src/example.ts'];
+    await nextTick();
+
+    expect(setActiveTab).toHaveBeenCalledWith('files');
+    wrapper.unmount();
+  });
+
+  it('does not auto-switch to Files when open files change in mobile tools mode', async () => {
+    activeTab.value = 'progress';
+    activeWorkspaceForTabs.value = { workspaceId: 'ws-1' };
+    const wrapper = mountSubject({ mode: 'mobile-tools' });
+    setActiveTab.mockClear();
+
+    openFilesForActiveWorkspace.value = ['src/example.ts'];
+    await nextTick();
+
+    expect(setActiveTab).not.toHaveBeenCalledWith('files');
+    wrapper.unmount();
   });
 });

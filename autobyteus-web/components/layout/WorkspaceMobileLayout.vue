@@ -18,7 +18,7 @@
     <!-- Mobile Panels -->
     <div class="flex-1 bg-white shadow overflow-hidden relative mt-2"> 
       <!-- File Explorer -->
-      <div v-if="hasActiveWorkspace" v-show="activeMobilePanel === 'explorer'" class="h-full p-0 overflow-auto">
+      <div v-if="hasActiveWorkspace && activeMobilePanel === 'explorer'" class="h-full p-0 overflow-auto">
         <FileExplorer />
       </div>
 
@@ -89,7 +89,6 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import FileExplorer from '~/components/fileExplorer/FileExplorer.vue';
 import FileExplorerTabs from '~/components/fileExplorer/FileExplorerTabs.vue';
 import RunningAgentsPanel from '~/components/workspace/running/RunningAgentsPanel.vue';
@@ -116,7 +115,7 @@ const teamRunConfigStore = useTeamRunConfigStore();
 const { activeMobilePanel } = useMobilePanels();
 const { t } = useLocalization();
 
-const hasActiveWorkspace = computed(() => !!workspaceStore.activeWorkspace);
+const hasActiveWorkspace = computed(() => !!workspaceStore.activeWorkspaceMetadata || !!workspaceStore.activeWorkspace);
 const isCenterLoading = computed(() => runHistoryStore.openingRun);
 
 // --- Mobile Running Tab Logic ---

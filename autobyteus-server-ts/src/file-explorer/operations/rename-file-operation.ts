@@ -7,6 +7,8 @@ import type { FileSystemChangeEvent } from "../file-system-changes.js";
 export class RenameFileOperation extends BaseFileOperation {
   private targetPath: string;
   private newName: string;
+  private static readonly invalidLeafNameMessage =
+    "Invalid new name: The new name must be a file or folder name, not a path.";
 
   constructor(fileExplorer: FileExplorerOperationContext, targetPath: string, newName: string) {
     super(fileExplorer);
@@ -15,22 +17,27 @@ export class RenameFileOperation extends BaseFileOperation {
   }
 
   async execute(): Promise<FileSystemChangeEvent> {
+    const leafName = this.validateLeafName();
     const normalizedTarget = path.normalize(this.targetPath);
     if (path.isAbsolute(normalizedTarget)) {
       throw new Error("The path must be relative to the workspace root.");
     }
 
-    const absoluteTarget = path.join(this.fileExplorer.workspaceRootPath, normalizedTarget);
-    if (!absoluteTarget.startsWith(this.fileExplorer.workspaceRootPath)) {
-      throw new Error("Access denied: Target is outside the workspace.");
-    }
+    const absoluteTarget = this.resolveWorkspacePath(
+      normalizedTarget,
+      "Access denied: Target is outside the workspace.",
+    );
 
     if (!(await this.pathExists(absoluteTarget))) {
       throw new Error(`Target path not found: ${this.targetPath}`);
     }
 
-    const parentDirectory = path.dirname(absoluteTarget);
-    const absoluteDestination = path.join(parentDirectory, this.newName);
+    const targetParentPath = path.dirname(normalizedTarget);
+    const destinationPath = path.join(targetParentPath, leafName);
+    const absoluteDestination = this.resolveWorkspacePath(
+      destinationPath,
+      "Access denied: Destination is outside the workspace.",
+    );
 
     if (await this.pathExists(absoluteDestination)) {
       throw new Error(`A file or folder named '${this.newName}' already exists.`);
@@ -44,13 +51,29 @@ export class RenameFileOperation extends BaseFileOperation {
       throw new Error(`Error renaming ${this.targetPath}: ${String(error)}`);
     }
 
-    const destinationPath = path.join(path.dirname(this.targetPath), this.newName);
     const synchronizer = new MoveNodeSynchronizer(
       this.fileExplorer,
       this.targetPath,
       destinationPath,
     );
     return synchronizer.sync();
+  }
+
+  private validateLeafName(): string {
+    if (!this.newName || this.newName === "." || this.newName === "..") {
+      throw new Error(RenameFileOperation.invalidLeafNameMessage);
+    }
+
+    if (
+      this.newName.includes("/") ||
+      this.newName.includes("\\") ||
+      path.isAbsolute(this.newName) ||
+      path.win32.isAbsolute(this.newName)
+    ) {
+      throw new Error(RenameFileOperation.invalidLeafNameMessage);
+    }
+
+    return this.newName;
   }
 
   private async pathExists(targetPath: string): Promise<boolean> {

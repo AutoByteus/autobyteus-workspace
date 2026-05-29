@@ -1,11 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick } from 'vue';
 
 const {
   fitAddonInstances,
   sessionMock,
+  sessionOptions,
   terminalConstructorSpy,
   terminalInstances,
   workspaceStoreState,
@@ -20,6 +21,7 @@ const {
     sendInput: vi.fn(),
     sendResize: vi.fn(),
   },
+  sessionOptions: [] as any[],
   terminalConstructorSpy: vi.fn(),
   terminalInstances: [] as Array<{
     dispose: ReturnType<typeof vi.fn>;
@@ -32,9 +34,13 @@ const {
     writeln: ReturnType<typeof vi.fn>;
   }>,
   workspaceStoreState: {
-    activeWorkspace: {
+    activeWorkspaceMetadata: {
       workspaceId: 'workspace-1',
-    } as { workspaceId: string } | null,
+      workspaceRootPath: '/tmp/workspace-1',
+      displayName: 'workspace-1',
+      kind: 'filesystem',
+    },
+    ensureWorkspaceMetadata: vi.fn(async () => ({ workspaceId: 'workspace-1' })),
   },
 }));
 
@@ -68,7 +74,10 @@ vi.mock('@xterm/addon-fit', () => ({
 }));
 
 vi.mock('~/composables/useTerminalSession', () => ({
-  useTerminalSession: () => sessionMock,
+  useTerminalSession: (options: unknown) => {
+    sessionOptions.push(options);
+    return sessionMock;
+  },
 }));
 
 vi.mock('~/stores/workspace', () => ({
@@ -83,9 +92,16 @@ describe('Terminal.vue', () => {
     vi.clearAllMocks();
     terminalInstances.length = 0;
     fitAddonInstances.length = 0;
+    sessionOptions.length = 0;
     sessionMock.errorMessage.value = '';
     sessionMock.isConnected.value = false;
-    workspaceStoreState.activeWorkspace = { workspaceId: 'workspace-1' };
+    workspaceStoreState.activeWorkspaceMetadata = {
+      workspaceId: 'workspace-1',
+      workspaceRootPath: '/tmp/workspace-1',
+      displayName: 'workspace-1',
+      kind: 'filesystem',
+    };
+    workspaceStoreState.ensureWorkspaceMetadata.mockResolvedValue({ workspaceId: 'workspace-1' });
 
     setActivePinia(createPinia());
 
@@ -117,7 +133,7 @@ describe('Terminal.vue', () => {
     ({ useAppFontSizeStore } = await import('~/stores/appFontSizeStore'));
   });
 
-  it('initializes xterm with the default app font size and connects the terminal session', async () => {
+  it('initializes xterm with the default app font size and connects from active workspace metadata', async () => {
     const pinia = createPinia();
     setActivePinia(pinia);
 
@@ -130,10 +146,50 @@ describe('Terminal.vue', () => {
 
     await nextTick();
     await nextTick();
+    await flushPromises();
 
     expect(terminalConstructorSpy).toHaveBeenCalledWith(expect.objectContaining({ fontSize: 14 }));
     expect(terminalInstances).toHaveLength(1);
     expect(sessionMock.connect).toHaveBeenCalledTimes(1);
+    expect(sessionOptions[0].target.value).toMatchObject({
+      rootPath: '/tmp/workspace-1',
+      workspaceId: 'workspace-1',
+      displayName: 'workspace-1',
+    });
+    expect(workspaceStoreState.ensureWorkspaceMetadata).not.toHaveBeenCalled();
+
+    wrapper.unmount();
+  });
+
+  it('uses an explicit root-path terminal target without workspace activation', async () => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+
+    const wrapper = mount(TerminalComponent, {
+      props: {
+        target: {
+          rootPath: '/tmp/explicit-terminal-root',
+          workspaceId: 'explicit_ws',
+          displayName: 'Explicit root',
+        },
+      },
+      global: {
+        plugins: [pinia],
+      },
+      attachTo: document.body,
+    });
+
+    await nextTick();
+    await nextTick();
+    await flushPromises();
+
+    expect(sessionOptions[0].target.value).toMatchObject({
+      rootPath: '/tmp/explicit-terminal-root',
+      workspaceId: 'explicit_ws',
+      displayName: 'Explicit root',
+    });
+    expect(sessionMock.connect).toHaveBeenCalledTimes(1);
+    expect(workspaceStoreState.ensureWorkspaceMetadata).not.toHaveBeenCalled();
 
     wrapper.unmount();
   });
@@ -153,6 +209,7 @@ describe('Terminal.vue', () => {
 
     await nextTick();
     await nextTick();
+    await flushPromises();
 
     expect(terminalInstances).toHaveLength(1);
     expect(fitAddonInstances).toHaveLength(1);

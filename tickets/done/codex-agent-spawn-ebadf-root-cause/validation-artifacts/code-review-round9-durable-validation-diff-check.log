@@ -1,0 +1,1 @@
+$ git diff --check -- autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts

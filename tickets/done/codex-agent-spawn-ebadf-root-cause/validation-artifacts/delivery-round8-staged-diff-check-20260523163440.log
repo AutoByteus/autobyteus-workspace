@@ -1,0 +1,51 @@
+Delivery Round 8 staged diff check
+timestamp=2026-05-23T14:34:40Z
+head_before_commit=dd3dcaadee2471b2757348428dc4781c067668a1
+origin_personal=74218467a2f7786c82f3e97b9190058d2cb83bd2
+ahead_behind_before_commit=16	0
+
+staged_name_status=
+M	tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md
+M	tickets/codex-agent-spawn-ebadf-root-cause/docs-sync-report.md
+M	tickets/codex-agent-spawn-ebadf-root-cause/handoff-summary.md
+M	tickets/codex-agent-spawn-ebadf-root-cause/release-deployment-report.md
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-01-agents-list-20260523.png
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-02-run-config-no-files-20260523.png
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-03-files-visible-tree-20260523.png
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-04-readme-open-20260523.png
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-05-search-results-20260523.png
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-06-right-panel-collapsed-20260523.png
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-backend-20260523.log
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-20260523.log
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.json
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.log
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.mjs
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-stack-20260523.json
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-start-stack-20260523.sh
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-report-diff-check-20260523.log
+A	tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round8-post-browser-integrated-state-20260523163019.log
+
+git_diff_cached_check=
+pass
+
+remaining_untracked_or_unstaged_after_staging=
+M  tickets/codex-agent-spawn-ebadf-root-cause/api-e2e-validation-report.md
+M  tickets/codex-agent-spawn-ebadf-root-cause/docs-sync-report.md
+M  tickets/codex-agent-spawn-ebadf-root-cause/handoff-summary.md
+M  tickets/codex-agent-spawn-ebadf-root-cause/release-deployment-report.md
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-01-agents-list-20260523.png
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-02-run-config-no-files-20260523.png
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-03-files-visible-tree-20260523.png
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-04-readme-open-20260523.png
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-05-search-results-20260523.png
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-06-right-panel-collapsed-20260523.png
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-backend-20260523.log
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-20260523.log
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.json
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.log
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-frontend-workspace-file-explorer-20260523.mjs
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-stack-20260523.json
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-browser-start-stack-20260523.sh
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round8-report-diff-check-20260523.log
+A  tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round8-post-browser-integrated-state-20260523163019.log
+?? tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/delivery-round8-staged-diff-check-20260523163440.log

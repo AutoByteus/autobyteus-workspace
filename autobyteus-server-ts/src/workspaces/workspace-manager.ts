@@ -44,7 +44,6 @@ export class WorkspaceManager {
       throw new Error(message);
     }
 
-    await workspace.initialize();
     this.activeWorkspaces.set(workspace.workspaceId, workspace);
     await this.workspaceIdMappingStore.saveWorkspaceIdMapping(
       workspace.workspaceId,
@@ -77,7 +76,6 @@ export class WorkspaceManager {
         logger.info(`Creating on-demand SkillWorkspace for: ${skillName}`);
 
         const skillWorkspace = await SkillWorkspace.create(skillName);
-        await skillWorkspace.initialize();
         this.activeWorkspaces.set(workspaceId, skillWorkspace);
         return skillWorkspace;
       } catch (error) {
@@ -107,8 +105,6 @@ export class WorkspaceManager {
     logger.info(`Creating temp workspace at: ${tempDir}`);
 
     const tempWorkspace = new TempWorkspace(String(tempDir));
-    await tempWorkspace.initialize();
-
     this.activeWorkspaces.set(TempWorkspace.TEMP_WORKSPACE_ID, tempWorkspace);
     logger.info(`Temp workspace created and cached with ID: ${TempWorkspace.TEMP_WORKSPACE_ID}`);
 

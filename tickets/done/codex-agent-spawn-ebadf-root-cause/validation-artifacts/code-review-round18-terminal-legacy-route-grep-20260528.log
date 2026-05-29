@@ -1,0 +1,103 @@
+# Code review round 18 terminal legacy route focused grep
+Thu May 28 18:50:38 CEST 2026
+
+## Source/tests/docs terminal route/prop references only
+autobyteus-web/docs/terminal.md:26:│   └── useTerminalSession.ts     # Terminal WebSocket session
+autobyteus-web/docs/terminal.md:46:    Terminal --> TerminalSession[useTerminalSession.ts]
+autobyteus-web/docs/terminal.md:72:- **Root-path target**: Accepts a `TerminalTarget` with a workspace root path (and optional display metadata) so desktop wrappers can connect without materializing workspace/file-explorer state.
+autobyteus-web/docs/terminal.md:104:    participant Session as useTerminalSession.ts
+autobyteus-web/docs/terminal.md:116:### useTerminalSession.ts (Composable)
+autobyteus-web/docs/terminal.md:138:Tab container that hosts the Terminal alongside other workspace tools.
+autobyteus-web/docs/terminal.md:156:The terminal session connects to `/ws/terminal/{sessionId}?cwd={encodedRootPath}` and communicates via WebSocket using JSON messages:
+autobyteus-web/docs/terminal.md:190:The Terminal is automatically available when a workspace is active:
+autobyteus-web/docs/terminal.md:211:- **[File Explorer](./file_explorer.md)**: Terminal and File Explorer are separate workspace capabilities; Terminal uses cwd/root path while File Explorer owns tree/search/watch state.
+autobyteus-web/stores/serverStore.ts:15:    terminalWs: string
+autobyteus-web/components/conversation/AIMessage.vue:33:            <TerminalCommandSegment
+autobyteus-web/types/terminal/TerminalTarget.ts:1:export interface TerminalTarget {
+autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts:11:import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
+autobyteus-web/types/node.ts:62:  terminalWs: string;
+autobyteus-server-ts/tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts:145:      `${baseUrl}/ws/terminal/${encodeURIComponent(sessionId)}`,
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:3:import { useTerminalSession } from "../useTerminalSession";
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:4:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:9:      terminalWs: "ws://test-host:8000/ws/terminal",
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:31:  overrides: Partial<TerminalTarget> = {},
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:32:): TerminalTarget => ({
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:39:describe("useTerminalSession", () => {
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:60:    const session = useTerminalSession({ target });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:67:    expect(url.pathname).toContain("/ws/terminal/");
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:74:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:85:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:100:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:116:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:134:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:144:    const session = useTerminalSession({ target: terminalTarget() });
+autobyteus-web/composables/__tests__/useTerminalSession.spec.ts:154:    const session = useTerminalSession({ target: null });
+autobyteus-web/utils/serverConfig.ts:46:      terminalWs: `${INTERNAL_SERVER_WS_BASE_URL}/ws/terminal`,
+autobyteus-web/utils/serverConfig.ts:62:    terminalWs: config.public.terminalWsEndpoint,
+autobyteus-web/composables/useTerminalSession.ts:1:// composables/useTerminalSession.ts
+autobyteus-web/composables/useTerminalSession.ts:21:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/composables/useTerminalSession.ts:26:  target: MaybeRef<TerminalTarget | null | undefined>;
+autobyteus-web/composables/useTerminalSession.ts:43:export function useTerminalSession(
+autobyteus-web/composables/useTerminalSession.ts:56:  const getTarget = (): TerminalTarget | null => {
+autobyteus-web/composables/useTerminalSession.ts:61:  const buildTerminalWebSocketUrl = (target: TerminalTarget): string => {
+autobyteus-web/composables/useTerminalSession.ts:63:    const wsBaseUrl = windowNodeContextStore.getBoundEndpoints().terminalWs;
+autobyteus-web/composables/useTerminalSession.ts:74:      console.warn("[useTerminalSession] Already connected or connecting");
+autobyteus-web/composables/useTerminalSession.ts:81:      console.error("[useTerminalSession] No terminal root path");
+autobyteus-web/composables/useTerminalSession.ts:92:      "[useTerminalSession] Connecting to:",
+autobyteus-web/composables/useTerminalSession.ts:102:        console.log("[useTerminalSession] Connected");
+autobyteus-web/composables/useTerminalSession.ts:119:              "[useTerminalSession] Server error:",
+autobyteus-web/composables/useTerminalSession.ts:124:            console.log("[useTerminalSession] Server closed session");
+autobyteus-web/composables/useTerminalSession.ts:128:          console.error("[useTerminalSession] Error parsing message:", err);
+autobyteus-web/composables/useTerminalSession.ts:134:          "[useTerminalSession] Disconnected:",
+autobyteus-web/composables/useTerminalSession.ts:146:        console.error("[useTerminalSession] WebSocket error:", event);
+autobyteus-web/composables/useTerminalSession.ts:150:      console.error("[useTerminalSession] Failed to connect:", err);
+autobyteus-web/composables/useTerminalSession.ts:166:      console.warn("[useTerminalSession] Cannot send: not connected");
+autobyteus-web/utils/terminalTarget.ts:1:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/utils/terminalTarget.ts:8:export const createTerminalTarget = (params: {
+autobyteus-web/utils/terminalTarget.ts:12:}): TerminalTarget | null => {
+autobyteus-web/utils/terminalTarget.ts:27:): TerminalTarget | null => {
+autobyteus-web/utils/terminalTarget.ts:31:  return createTerminalTarget({
+autobyteus-web/utils/nodeEndpoints.ts:76:    terminalWs: `${wsBase}/ws/terminal`,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:39:  ): Promise<TerminalSession> {
+autobyteus-web/utils/__tests__/nodeEndpoints.spec.ts:13:    expect(endpoints.terminalWs).toBe('ws://localhost:29695/ws/terminal');
+autobyteus-web/components/mobile/MobileFiles.vue:130:      :workspace-id="activeWorkspace.workspaceId"
+autobyteus-web/components/fileExplorer/__tests__/FileItem.spec.ts:57:      workspaceId: ref('test-workspace-id'),
+autobyteus-web/components/fileExplorer/__tests__/FileItem.spec.ts:70:        workspaceId: 'test-workspace-id',
+autobyteus-web/components/fileExplorer/__tests__/FileItem.spec.ts:119:      'test-workspace-id',
+autobyteus-server-ts/tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts:54:      workspaceId: "workspace-id",
+autobyteus-ts/src/tools/terminal/command-execution/shell-command-executor.ts:33:  async execute(command: string, cwd: string, options: ShellCommandExecutorOptions = {}): Promise<TerminalResult> {
+autobyteus-ts/src/tools/terminal/command-execution/shell-command-executor.ts:75:    return new Promise<TerminalResult>((resolve) => {
+autobyteus-web/components/workspace/config/TeamRunConfigForm.vue:30:        :workspace-id="config.workspaceId"
+autobyteus-ts/src/tools/terminal/terminal-session-manager.ts:82:  ): Promise<TerminalResult> {
+autobyteus-web/components/workspace/config/AgentRunConfigForm.vue:30:        :workspace-id="config.workspaceId"
+autobyteus-ts/src/tools/terminal/tools/run-bash.ts:20:): Promise<TerminalResult> {
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:76:vi.mock('~/composables/useTerminalSession', () => ({
+autobyteus-web/components/workspace/tools/__tests__/Terminal.spec.ts:77:  useTerminalSession: (options: unknown) => {
+autobyteus-web/components/workspace/tools/Terminal.vue:49:import { useTerminalSession } from "~/composables/useTerminalSession";
+autobyteus-web/components/workspace/tools/Terminal.vue:50:import type { TerminalTarget } from "~/types/terminal/TerminalTarget";
+autobyteus-web/components/workspace/tools/Terminal.vue:55:const terminalInstance = shallowRef<Terminal | null>(null);
+autobyteus-web/components/workspace/tools/Terminal.vue:59:  target?: TerminalTarget | null;
+autobyteus-web/components/workspace/tools/Terminal.vue:68:const effectiveTerminalTarget = computed<TerminalTarget | null>(
+autobyteus-web/components/workspace/tools/Terminal.vue:75:const session = useTerminalSession({
+autobyteus-web/components/workspace/tools/Terminal.vue:76:  target: effectiveTerminalTarget,
+autobyteus-web/components/workspace/tools/Terminal.vue:229:  if (!effectiveTerminalTarget.value?.rootPath) {
+autobyteus-web/components/workspace/tools/Terminal.vue:264:      `${effectiveTerminalTarget.value?.rootPath || ""}:${effectiveTerminalTarget.value?.workspaceId || ""}`,
+autobyteus-web/components/layout/RightSideTabs.vue:32:        <Terminal />
+autobyteus-web/components/layout/RightSideTabs.vue:60:import Terminal from '~/components/workspace/tools/Terminal.vue';
+autobyteus-server-ts/tests/integration/terminal/terminal-websocket-wsl.integration.test.ts:223:      `${baseUrl}/ws/terminal/${encodeURIComponent(sessionId)}`,
+autobyteus-server-ts/tests/integration/terminal/terminal-websocket.integration.test.js:155:        const url = new URL(`${baseUrl}/ws/terminal/${encodeURIComponent(sessionId)}`);
+autobyteus-server-ts/tests/integration/terminal/terminal-websocket-wsl.integration.test.js:179:        const url = new URL(`${baseUrl}/ws/terminal/${encodeURIComponent(sessionId)}`);
+autobyteus-server-ts/tests/integration/terminal/terminal-websocket.integration.test.ts:119:  ): Promise<TerminalSession> {
+autobyteus-server-ts/tests/integration/terminal/terminal-websocket.integration.test.ts:222:      `${baseUrl}/ws/terminal/${encodeURIComponent(sessionId)}`,
+autobyteus-server-ts/src/workspaces/workspace-manager.ts:7:import { WorkspaceIdMappingStore } from './workspace-id-mapping-store.js';
+autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:5:import { buildFilesystemWorkspaceId } from './workspace-id-mapping-store.js';
+autobyteus-server-ts/tests/unit/workspaces/filesystem-workspace-id.test.ts:3:import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
+autobyteus-server-ts/tests/unit/workspaces/workspace-manager.test.ts:9:import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
+autobyteus-server-ts/tests/unit/workspaces/filesystem-workspace-id.test.js:4:import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
+autobyteus-server-ts/src/api/websocket/terminal.ts:59:    "/ws/terminal/:sessionId",
+autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts:15:import { FILESYSTEM_WORKSPACE_ID_PREFIX } from "../../workspaces/workspace-id-mapping-store.js";
+autobyteus-server-ts/src/api/graphql/types/workspace.ts:7:} from "../../../workspaces/workspace-id-mapping-store.js";
+autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts:7:import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts:36:      workspaceId: "workspace-id",
+
+## Old workspace-id terminal route shape only

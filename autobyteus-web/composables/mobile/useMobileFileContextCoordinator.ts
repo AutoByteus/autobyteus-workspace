@@ -3,7 +3,6 @@ import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useFileExplorerStore, type OpenFileState } from '~/stores/fileExplorer';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import type { ContextAttachment } from '~/types/conversation';
 import type { MobileWorkContext } from '~/types/mobileWork';
@@ -12,27 +11,7 @@ import {
   inferContextAttachmentType,
 } from '~/utils/contextFiles/contextAttachmentModel';
 
-export const MOBILE_FILE_PREVIEW_MAX_CHARS = 120_000;
-
-export type MobilePreviewSupport = 'supported' | 'unsupported';
 export type MobileAttachmentTarget = 'active-run' | 'mobile-draft' | 'pending-team-run' | 'none';
-
-const TEXT_PREVIEW_EXTENSIONS = new Set([
-  '.c', '.cc', '.cpp', '.cs', '.css', '.go', '.h', '.hpp', '.html', '.java', '.js', '.json', '.jsx',
-  '.kt', '.less', '.log', '.lua', '.md', '.mjs', '.php', '.py', '.rb', '.rs', '.sass', '.scss',
-  '.sh', '.sql', '.swift', '.toml', '.ts', '.tsx', '.txt', '.vue', '.xml', '.yaml', '.yml',
-]);
-
-const pathExtension = (path: string): string => {
-  const basename = path.split(/[\\/]/).pop() || '';
-  const index = basename.lastIndexOf('.');
-  return index === -1 ? '' : basename.slice(index).toLowerCase();
-};
-
-const isSupportedPreviewPath = (path: string): boolean => {
-  const ext = pathExtension(path);
-  return !ext || TEXT_PREVIEW_EXTENSIONS.has(ext);
-};
 
 const addUniqueAttachment = (
   attachments: ContextAttachment[],
@@ -48,7 +27,6 @@ const addUniqueAttachment = (
 };
 
 export function useMobileFileContextCoordinator() {
-  const fileExplorerStore = useFileExplorerStore();
   const activeContextStore = useActiveContextStore();
   const agentContextsStore = useAgentContextsStore();
   const selectionStore = useAgentSelectionStore();
@@ -98,33 +76,6 @@ export function useMobileFileContextCoordinator() {
   };
 
   const visibleContextAttachments = computed<ContextAttachment[]>(() => getVisibleContextAttachments(mobileWorkStore.currentContext));
-
-  function getPreviewSupport(filePath: string): { support: MobilePreviewSupport; message: string | null } {
-    if (isSupportedPreviewPath(filePath)) {
-      return { support: 'supported', message: null };
-    }
-    return {
-      support: 'unsupported',
-      message: 'Mobile preview supports text, code, and Markdown files. Use desktop for binary, PDF, spreadsheet, image, audio, or video previews.',
-    };
-  }
-
-  async function openPreview(filePath: string, workspaceId: string): Promise<void> {
-    const support = getPreviewSupport(filePath);
-    if (support.support === 'unsupported') {
-      return;
-    }
-    await fileExplorerStore.openFilePreview(filePath, workspaceId);
-  }
-
-  function getPreviewState(filePath: string, workspaceId: string): OpenFileState | null {
-    const active = fileExplorerStore.getActiveFileData(workspaceId);
-    if (active?.path === filePath) {
-      return active;
-    }
-    const wsState = fileExplorerStore._getWorkspaceState(workspaceId);
-    return wsState?.openFiles.find((file) => file.path === filePath) ?? null;
-  }
 
   function removeVisibleContextAttachment(context: MobileWorkContext | null, attachmentId: string): void {
     if (hasPendingTeamRunAttachments(context) && context?.kind === 'team-run') {
@@ -197,9 +148,6 @@ export function useMobileFileContextCoordinator() {
     getVisibleContextAttachments,
     removeVisibleContextAttachment,
     clearVisibleContextAttachments,
-    getPreviewSupport,
-    openPreview,
-    getPreviewState,
     attachWorkspaceFile,
   };
 }

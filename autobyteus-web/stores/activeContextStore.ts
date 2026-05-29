@@ -110,6 +110,9 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       if (field === 'workspaceId' && !editableFields.workspaceRootPath) {
         continue;
       }
+      if (field === 'workspaceMetadata' && !editableFields.workspaceRootPath) {
+        continue;
+      }
       if (field === 'llmModelIdentifier' && !editableFields.llmModelIdentifier) {
         continue;
       }

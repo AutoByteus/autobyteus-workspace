@@ -1,0 +1,11 @@
+# Code review round 20 CR-013 terminal manager grep
+Thu May 28 19:46:51 CEST 2026
+
+## CR-013 stale naming grep in terminal manager source/test scope
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.ts:100:    const session = (await manager.createSession("s1", "ws1", "/tmp")) as MockPtySession;
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.ts:110:    const session = (await manager.createSession("s1", "ws1", "/tmp")) as MockPtySession;
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.ts:129:    const sessionId = await handler.connect(connection, "ws1", "s1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.js:72:        const session = (await manager.createSession("s1", "ws1", "/tmp"));
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.js:79:        const session = (await manager.createSession("s1", "ws1", "/tmp"));
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.js:93:        const sessionId = await handler.connect(connection, "ws1", "s1", "/tmp");
+RESULT: FAIL - stale CR-013 terms found

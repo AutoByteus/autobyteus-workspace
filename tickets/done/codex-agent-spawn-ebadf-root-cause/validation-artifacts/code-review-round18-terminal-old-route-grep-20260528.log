@@ -1,0 +1,5 @@
+# Code review round 18 old workspace-id terminal route grep
+Thu May 28 18:53:36 CEST 2026
+Pattern: /ws/terminal/[^[:space:]"']*(workspaceId|workspace-id)|/ws/terminal/\$\{workspaceId|/ws/terminal/:workspaceId|Terminal[^\n]*workspace-id|<Terminal[^\n]*workspace
+
+RESULT: PASS - no old workspace-id terminal route/prop shape found

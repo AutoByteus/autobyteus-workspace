@@ -1,5 +1,6 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { once } from "node:events";
+import { readdirSync } from "node:fs";
 import type {
   CodexAppServerClientOptions,
   CodexNotificationMessage,
@@ -40,11 +41,17 @@ export class CodexAppServerClient {
       return;
     }
     this.closed = false;
-    this.process = spawn(this.options.command, this.options.args, {
-      cwd: this.options.cwd,
-      env: this.options.env ?? process.env,
-      stdio: ["pipe", "pipe", "pipe"],
-    });
+    try {
+      this.process = spawn(this.options.command, this.options.args, {
+        cwd: this.options.cwd,
+        env: this.options.env ?? process.env,
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+    } catch (error) {
+      const diagnostic = describeCodexAppServerSpawnFailure(this.options, error);
+      console.error(diagnostic);
+      throw new Error(diagnostic);
+    }
 
     this.process.stdout.on("data", (chunk: Buffer) => {
       this.onStdout(chunk.toString("utf-8"));
@@ -53,8 +60,13 @@ export class CodexAppServerClient {
       console.warn(`[CodexAppServerClient] stderr: ${chunk.toString("utf-8").trimEnd()}`);
     });
     this.process.on("error", (error) => {
-      this.failAllPending(new Error(`Codex app server process error: ${String(error)}`));
-      this.emitClose(new Error(`Codex app server process error: ${String(error)}`));
+      const diagnostic = describeCodexAppServerSpawnFailure(this.options, error);
+      const processError = new Error(`Codex app server process error: ${String(error)}. ${diagnostic}`);
+      console.error(diagnostic);
+      this.failAllPending(processError);
+      this.emitClose(processError);
+      this.process = null;
+      this.closed = true;
     });
     this.process.on("close", (code, signal) => {
       if (this.closed) {
@@ -306,4 +318,58 @@ export class CodexAppServerClient {
     }
     return value as Record<string, unknown>;
   }
+}
+
+const DESCRIPTOR_PRESSURE_CODES = new Set(["EBADF", "EMFILE", "ENFILE"]);
+
+export function describeCodexAppServerSpawnFailure(
+  options: Pick<CodexAppServerClientOptions, "command" | "args" | "cwd">,
+  error: unknown,
+): string {
+  const code = getErrorCode(error);
+  const fdCount = getOpenFileDescriptorCount();
+  const resourceUsage = process.resourceUsage();
+  const descriptorHint = code && DESCRIPTOR_PRESSURE_CODES.has(code)
+    ? " Descriptor pressure is likely; inspect active file watchers and leaked descriptors."
+    : "";
+
+  return [
+    `[CodexAppServerClient] Failed to spawn '${options.command}' (${String(error)}).`,
+    "runtime=codex_app_server",
+    `cwd=${formatDiagnosticValue(options.cwd)}`,
+    `command=${formatDiagnosticValue(options.command)}`,
+    `args=${formatDiagnosticArgs(options.args)}`,
+    `code=${code ?? "unknown"}`,
+    `open_fds=${fdCount ?? "unavailable"}`,
+    `fs_read=${resourceUsage.fsRead}`,
+    `fs_write=${resourceUsage.fsWrite}`,
+    descriptorHint.trim(),
+  ].filter(Boolean).join(" ");
+}
+
+function formatDiagnosticValue(value: string): string {
+  return JSON.stringify(value);
+}
+
+function formatDiagnosticArgs(args: readonly string[]): string {
+  return JSON.stringify(args);
+}
+
+function getErrorCode(error: unknown): string | null {
+  if (error && typeof error === "object" && "code" in error) {
+    const code = (error as { code?: unknown }).code;
+    return typeof code === "string" ? code : null;
+  }
+  return null;
+}
+
+function getOpenFileDescriptorCount(): number | null {
+  for (const fdDir of ["/proc/self/fd", "/dev/fd"]) {
+    try {
+      return readdirSync(fdDir).length;
+    } catch {
+      // try next platform-specific fd directory
+    }
+  }
+  return null;
 }

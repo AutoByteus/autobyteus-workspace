@@ -1,3 +1,5 @@
+import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+
 export type SkillAccessMode = 'PRELOADED_ONLY' | 'GLOBAL_DISCOVERY' | 'NONE';
 export type AgentRuntimeKind = string;
 export const DEFAULT_AGENT_RUNTIME_KIND: AgentRuntimeKind = 'autobyteus';
@@ -47,8 +49,11 @@ export interface AgentRunConfig {
   /** Runtime backend used for this run (e.g. local runtime or codex app server). */
   runtimeKind: AgentRuntimeKind;
   
-  /** Workspace ID if a workspace is attached, null otherwise */
+  /** Deterministic workspace metadata ID if a filesystem workspace is attached. */
   workspaceId: string | null;
+
+  /** Workspace root/display metadata companion for workspaceId; does not imply file-explorer acquisition. */
+  workspaceMetadata: WorkspaceMetadata | null;
   
   /** Whether to auto-execute tool calls without user confirmation */
   autoExecuteTools: boolean;

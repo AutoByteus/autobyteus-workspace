@@ -90,6 +90,58 @@ describe('WorkspaceSelector', () => {
     expect(wrapper.emitted('select-existing')?.[0]).toEqual(['temp-ws']);
   });
 
+  it('does not fetch workspaces or auto-select temp workspace in disabled display mode', async () => {
+    workspaceStoreMock.tempWorkspaceId = 'temp-ws';
+    workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
+    workspaceStoreMock.workspaces = {
+      'temp-ws': { workspaceId: 'temp-ws', name: 'Temp Workspace' },
+    };
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'temp-ws', name: 'Temp Workspace', absolutePath: '/tmp/default' },
+    ];
+
+    const wrapper = mount(WorkspaceSelector, {
+      props: {
+        ...defaultProps,
+        workspaceId: 'agent_ws_metadata',
+        initialPath: '/tmp/ProjectA',
+        disabled: true,
+      },
+    });
+
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+
+    expect(workspaceStoreMock.fetchAllWorkspaces).not.toHaveBeenCalled();
+    expect(wrapper.emitted('select-existing')).toBeFalsy();
+    const input = wrapper.find('input[type="text"]');
+    expect(input.exists()).toBe(true);
+    expect((input.element as HTMLInputElement).value).toBe('/tmp/ProjectA');
+    expect(input.attributes('disabled')).toBeDefined();
+    expect(wrapper.text()).toContain('Workspace: /tmp/ProjectA');
+  });
+
+  it('does not fetch workspaces or emit selection in locked display mode', async () => {
+    workspaceStoreMock.tempWorkspaceId = 'temp-ws';
+    workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
+
+    const wrapper = mount(WorkspaceSelector, {
+      props: {
+        ...defaultProps,
+        workspaceId: 'agent_ws_locked_reference',
+        initialPath: '/tmp/LockedProject',
+        workspaceLocked: true,
+      },
+    });
+
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+
+    expect(workspaceStoreMock.fetchAllWorkspaces).not.toHaveBeenCalled();
+    expect(wrapper.emitted('select-existing')).toBeFalsy();
+    expect((wrapper.find('input[type="text"]').element as HTMLInputElement).value).toBe('/tmp/LockedProject');
+  });
+
   it('auto-selects temp workspace again when workspace selection resets to empty', async () => {
     workspaceStoreMock.tempWorkspaceId = 'temp-ws';
     workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };

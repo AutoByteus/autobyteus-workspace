@@ -1,0 +1,9 @@
+## Round 24 changed-source size audit
+138 autobyteus-web/components/layout/RightSideTabs.vue
+57 autobyteus-web/components/fileExplorer/FileExplorerLayout.vue
+265 autobyteus-web/components/fileExplorer/FileExplorer.vue
+375 autobyteus-web/components/fileExplorer/FileExplorerTabs.vue
+490 autobyteus-web/components/fileExplorer/FileItem.vue
+210 autobyteus-web/composables/useWorkspaceFileExplorer.ts
+59 autobyteus-web/stores/fileExplorerSearchActions.ts
+Pass: no changed implementation source file exceeds 500 effective non-empty lines.

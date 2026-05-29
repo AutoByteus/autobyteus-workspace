@@ -1,4 +1,6 @@
 import { FileExplorerSession } from "./file-explorer-session.js";
+import type { WatcherLease } from "../../file-explorer/file-explorer.js";
+import type { WorkspaceFileExplorerLease } from "../../workspaces/filesystem-workspace.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -9,6 +11,8 @@ type SessionConstructor = new (
   sessionId: string,
   workspaceId: string,
   eventStreamFactory: () => AsyncGenerator<string, void, void>,
+  watcherLease?: WatcherLease | null,
+  fileExplorerLease?: WorkspaceFileExplorerLease | null,
 ) => FileExplorerSession;
 
 export class FileExplorerSessionManager {
@@ -24,8 +28,16 @@ export class FileExplorerSessionManager {
     sessionId: string,
     workspaceId: string,
     eventStreamFactory: () => AsyncGenerator<string, void, void>,
+    watcherLease: WatcherLease | null = null,
+    fileExplorerLease: WorkspaceFileExplorerLease | null = null,
   ): Promise<FileExplorerSession> {
-    const session = new this.sessionClass(sessionId, workspaceId, eventStreamFactory);
+    const session = new this.sessionClass(
+      sessionId,
+      workspaceId,
+      eventStreamFactory,
+      watcherLease,
+      fileExplorerLease,
+    );
     this.sessions.set(sessionId, session);
     await session.start();
 
@@ -48,7 +60,7 @@ export class FileExplorerSessionManager {
     }
 
     this.sessions.delete(sessionId);
-    session.close();
+    await session.close();
 
     logger.info(
       `Closed file explorer session ${sessionId}. Active sessions: ${this.sessions.size}`,

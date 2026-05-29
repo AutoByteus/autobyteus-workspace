@@ -5,7 +5,7 @@
       class="flex-shrink-0 flex flex-col border-r border-gray-200 bg-gray-50 h-full overflow-hidden"
       :style="{ width: treeWidth + 'px' }"
     >
-      <FileExplorer />
+      <FileExplorer :active="props.active" />
     </div>
 
     <!-- Drag Handle -->
@@ -19,7 +19,7 @@
 
     <!-- File Content Viewer -->
     <div class="flex-grow min-w-0 h-full overflow-hidden bg-white">
-      <FileExplorerTabs />
+      <FileExplorerTabs :active="props.active" />
     </div>
   </div>
 </template>
@@ -29,11 +29,20 @@ import { ref } from 'vue';
 import FileExplorer from '~/components/fileExplorer/FileExplorer.vue';
 import FileExplorerTabs from '~/components/fileExplorer/FileExplorerTabs.vue';
 
+const props = withDefaults(defineProps<{
+  active?: boolean
+}>(), {
+  active: true,
+});
+
+
 const treeWidth = ref(250); // Default width
 const minWidth = 150;
 const maxWidth = 600;
 
 const startResize = (event: MouseEvent) => {
+  if (!props.active) return;
+
   const startX = event.clientX;
   const startWidth = treeWidth.value;
 

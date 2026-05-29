@@ -14,7 +14,7 @@ export function useWorkspaceFileExplorer(workspaceIdRef?: MaybeRef<string | unde
 
     // Helper to get raw ID safely, falling back to active workspace
     const getWorkspaceId = () => {
-        const id = unref(workspaceIdRef) || workspaceStore.activeWorkspace?.workspaceId;
+        const id = unref(workspaceIdRef) || workspaceStore.activeWorkspaceMetadata?.workspaceId;
         if (!id) return ''; // Return empty string to signal no context (store handles missing ID by returning null state)
         return id;
     };
@@ -42,6 +42,10 @@ export function useWorkspaceFileExplorer(workspaceIdRef?: MaybeRef<string | unde
     const activeFileData = computed(() => {
         const id = getWorkspaceId();
         return id ? store.getActiveFileData(id) : null;
+    });
+    const tree = computed(() => {
+        const id = getWorkspaceId();
+        return id ? store.getWorkspaceTree(id) : null;
     });
     
     // Search State
@@ -138,6 +142,10 @@ export function useWorkspaceFileExplorer(workspaceIdRef?: MaybeRef<string | unde
         const id = getWorkspaceId();
         if (id) store.searchFiles(query, id);
     };
+    const abortSearch = () => {
+        const id = getWorkspaceId();
+        if (id) store.abortSearch(id);
+    };
 
     // File Content & Loading
     const getFileContent = (path: string) => {
@@ -182,6 +190,7 @@ export function useWorkspaceFileExplorer(workspaceIdRef?: MaybeRef<string | unde
         openFiles,
         activeFile,
         activeFileData,
+        tree,
         
         // Search
         searchResults,
@@ -205,6 +214,7 @@ export function useWorkspaceFileExplorer(workspaceIdRef?: MaybeRef<string | unde
         moveFileOrFolder,
         createFileOrFolder,
         searchFiles,
+        abortSearch,
         
         // Content
         getFileContent,

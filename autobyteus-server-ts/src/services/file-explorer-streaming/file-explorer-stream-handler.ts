@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
-import type { BaseFileExplorer } from "../../file-explorer/base-file-explorer.js";
+import type { WatcherLease, WorkspaceFileExplorer } from "../../file-explorer/file-explorer.js";
+import type { WorkspaceFileExplorerLease } from "../../workspaces/filesystem-workspace.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { FileExplorerSessionManager } from "./file-explorer-session-manager.js";
@@ -48,22 +49,38 @@ export class FileExplorerStreamHandler {
       return null;
     }
 
+    let fileExplorerLease: WorkspaceFileExplorerLease;
     try {
-      const fileExplorer = await workspace.getFileExplorer();
-      const eventStreamFactory = await this.ensureWatcher(fileExplorer);
+      fileExplorerLease = await workspace.acquireFileExplorer("file-explorer-websocket");
+    } catch (error) {
+      logger.error(`Failed to acquire file explorer for workspace ${workspaceId}: ${String(error)}`);
+      connection.close(1011);
+      return null;
+    }
 
-      if (!eventStreamFactory) {
-        const errorMsg = createErrorMessage(
-          "WATCHER_UNAVAILABLE",
-          "File watcher is not available for this workspace",
-        );
-        connection.send(errorMsg.toJson());
-        connection.close(4005);
-        return null;
-      }
+    const fileExplorer = fileExplorerLease.fileExplorer;
+    const lease = await this.acquireWatcherLease(fileExplorer, connection, fileExplorerLease);
+    if (!lease) {
+      return null;
+    }
 
-      const sessionId = randomUUID();
-      await this.manager.createSession(sessionId, workspaceId, eventStreamFactory);
+    let sessionId: string | null = null;
+    let sessionRegistered = false;
+    let pendingLease: WatcherLease | null = lease;
+    let pendingFileExplorerLease: WorkspaceFileExplorerLease | null = fileExplorerLease;
+    try {
+      const eventStreamFactory = () => fileExplorer.subscribe();
+      sessionId = randomUUID();
+      await this.manager.createSession(
+        sessionId,
+        workspaceId,
+        eventStreamFactory,
+        pendingLease,
+        pendingFileExplorerLease,
+      );
+      sessionRegistered = true;
+      pendingLease = null;
+      pendingFileExplorerLease = null;
 
       const connectedMsg = createConnectedMessage(workspaceId, sessionId);
       connection.send(connectedMsg.toJson());
@@ -75,6 +92,12 @@ export class FileExplorerStreamHandler {
       return sessionId;
     } catch (error) {
       logger.error(`Failed to set up file explorer session: ${String(error)}`);
+      if (sessionId && sessionRegistered) {
+        await this.manager.closeSession(sessionId);
+      } else {
+        await pendingLease?.release();
+        await pendingFileExplorerLease?.release();
+      }
       const errorMsg = createErrorMessage("SESSION_ERROR", String(error));
       try {
         connection.send(errorMsg.toJson());
@@ -86,14 +109,26 @@ export class FileExplorerStreamHandler {
     }
   }
 
-  private async ensureWatcher(
-    fileExplorer: BaseFileExplorer,
-  ): Promise<(() => AsyncGenerator<string, void, void>) | null> {
+  private async acquireWatcherLease(
+    fileExplorer: WorkspaceFileExplorer,
+    connection: WebSocketConnection,
+    fileExplorerLease: WorkspaceFileExplorerLease,
+  ): Promise<WatcherLease | null> {
     try {
-      await fileExplorer.ensureWatcherStarted();
-      return () => fileExplorer.subscribe();
+      return await fileExplorer.acquireWatcherLease("file-explorer-websocket");
     } catch (error) {
       logger.error(`Failed to start file watcher: ${String(error)}`);
+      const errorMsg = createErrorMessage(
+        "WATCHER_UNAVAILABLE",
+        "File watcher is not available for this workspace",
+      );
+      try {
+        connection.send(errorMsg.toJson());
+      } catch {
+        // ignore
+      }
+      connection.close(4005);
+      await fileExplorerLease.release();
       return null;
     }
   }
@@ -104,6 +139,7 @@ export class FileExplorerStreamHandler {
       return;
     }
 
+    let shouldCloseConnection = false;
     try {
       for await (const eventJson of session.events()) {
         try {
@@ -113,11 +149,27 @@ export class FileExplorerStreamHandler {
           connection.send(msg.toJson());
         } catch (error) {
           logger.error(`Error sending file change event: ${String(error)}`);
+          shouldCloseConnection = true;
           break;
         }
       }
     } catch (error) {
       logger.error(`Stream error for session ${sessionId}: ${String(error)}`);
+      shouldCloseConnection = true;
+    } finally {
+      if (!this.activeTasks.has(sessionId)) {
+        return;
+      }
+      this.activeTasks.delete(sessionId);
+      await this.manager.closeSession(sessionId);
+      if (shouldCloseConnection) {
+        try {
+          connection.close(1011);
+        } catch {
+          // ignore
+        }
+      }
+      logger.info(`File explorer WebSocket stream ended: ${sessionId}`);
     }
   }
 

@@ -1,0 +1,10 @@
+Focused stale unsafe FileExplorer path-boundary grep...
+Checking rename leaf-name validation shape...
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:10:  private static readonly invalidLeafNameMessage =
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:20:    const leafName = this.validateLeafName();
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:26:    const absoluteTarget = this.resolveWorkspacePath(
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:37:    const absoluteDestination = this.resolveWorkspacePath(
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:62:  private validateLeafName(): string {
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:64:      throw new Error(RenameFileOperation.invalidLeafNameMessage);
+autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts:73:      throw new Error(RenameFileOperation.invalidLeafNameMessage);
+RESULT: PASS - focused path-boundary/naming grep completed.

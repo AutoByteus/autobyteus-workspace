@@ -83,6 +83,15 @@ Local runtimes:
 - **Ollama**: `OllamaLLM`, `OllamaModelProvider`
 - **Autobyteus**: `AutobyteusLLM`, `AutobyteusModelProvider`
 
+Autobyteus runtime models are remote RPA-backed LLMs discovered from
+`AUTOBYTEUS_LLM_SERVER_HOSTS`. `AutobyteusLLM` forwards `LLMConfig.extraParams`
+as the chat request `generation_config` for both `/send-message` and
+`/stream-message`, allowing remote Gemini UI/App integrators to receive the same
+kind of model-specific controls used by native providers, such as
+`thinking_level` and `include_thoughts`. `AutobyteusModelProvider` preserves
+server-provided `config_schema` metadata on `LLMModel.configSchema` so UI and
+caller layers can discover those controls through `LLMModel.toModelInfo()`.
+
 Dynamic custom runtime:
 
 - **Custom OpenAI-compatible providers**:
@@ -324,6 +333,16 @@ The payload invariants are:
 - Current-turn media stays attached to the current user message.
 - Historical media is represented textually by the renderer and is not
   re-uploaded in prior transcript entries.
+- Before sending the HTTP request, `AutobyteusClient` keeps small media inline
+  as data URIs but stages larger media through the RPA server's
+  `POST /media/stage` endpoint and replaces the source with the returned
+  `media://...` URI. Default inline thresholds are 10 MiB for images, 50 MiB
+  for audio, and 25 MiB for video. They can be overridden with
+  `AUTOBYTEUS_INLINE_IMAGE_MAX_BYTES`, `AUTOBYTEUS_INLINE_AUDIO_MAX_BYTES`,
+  and `AUTOBYTEUS_INLINE_VIDEO_MAX_BYTES`.
+- Remote HTTP(S) media is staged when its size cannot be proven below the
+  inline threshold, avoiding the older full arraybuffer/base64 path for
+  unknown-size remote media.
 - The older single-field text body shape is not supported by this contract.
 
 On the RPA server, an existing cached session sends only the current user

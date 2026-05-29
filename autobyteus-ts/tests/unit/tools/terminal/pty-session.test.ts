@@ -1,17 +1,32 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('node-pty', () => {
-  const state: { onData?: (data: string) => void; onExit?: () => void } = {};
+  const state: {
+    onData?: (data: string) => void;
+    onExit?: () => void;
+    dataDispose: ReturnType<typeof vi.fn>;
+    exitDispose: ReturnType<typeof vi.fn>;
+  } = {
+    dataDispose: vi.fn(),
+    exitDispose: vi.fn()
+  };
   const mockPty = {
     onData: (cb: (data: string) => void) => {
       state.onData = cb;
+      return {
+        dispose: state.dataDispose
+      };
     },
     onExit: (cb: () => void) => {
       state.onExit = cb;
+      return {
+        dispose: state.exitDispose
+      };
     },
     write: vi.fn(),
     resize: vi.fn(),
-    kill: vi.fn()
+    kill: vi.fn(),
+    destroy: vi.fn()
   };
 
   return {
@@ -24,11 +39,17 @@ vi.mock('node-pty', () => {
 import { PtySession } from '../../../../src/tools/terminal/pty-session.js';
 import * as nodePty from 'node-pty';
 
-const mockState = (nodePty as any).__state as { onData?: (data: string) => void; onExit?: () => void };
+const mockState = (nodePty as any).__state as {
+  onData?: (data: string) => void;
+  onExit?: () => void;
+  dataDispose: ReturnType<typeof vi.fn>;
+  exitDispose: ReturnType<typeof vi.fn>;
+};
 const mockPty = (nodePty as any).__mockPty as {
   write: ReturnType<typeof vi.fn>;
   resize: ReturnType<typeof vi.fn>;
   kill: ReturnType<typeof vi.fn>;
+  destroy: ReturnType<typeof vi.fn>;
 };
 const spawnMock = (nodePty as any).spawn as ReturnType<typeof vi.fn>;
 
@@ -36,10 +57,13 @@ describe('PtySession', () => {
   beforeEach(() => {
     mockState.onData = undefined;
     mockState.onExit = undefined;
+    mockState.dataDispose.mockClear();
+    mockState.exitDispose.mockClear();
     spawnMock.mockClear();
     mockPty.write.mockClear();
     mockPty.resize.mockClear();
     mockPty.kill.mockClear();
+    mockPty.destroy.mockClear();
   });
 
   it('exposes sessionId', async () => {
@@ -81,6 +105,8 @@ describe('PtySession', () => {
 
     await session.close();
     await session.close();
+
+    expect(mockPty.destroy).toHaveBeenCalledTimes(1);
   });
 
   it('read after close returns null', async () => {
@@ -114,6 +140,21 @@ describe('PtySession', () => {
     await session.start('/tmp');
 
     mockState.onExit?.();
+    expect(session.isAlive).toBe(false);
+  });
+
+  it('destroys PTY resources when startup is closed before attach completes', async () => {
+    const session = new PtySession('test');
+    const startPromise = session.start('/tmp');
+
+    await expect.poll(() => spawnMock.mock.calls.length).toBe(1);
+    await session.close();
+
+    await expect(startPromise).rejects.toThrow('Session closed during startup');
+    expect(mockPty.kill).toHaveBeenCalled();
+    expect(mockPty.destroy).toHaveBeenCalledTimes(1);
+    expect(mockState.dataDispose).toHaveBeenCalled();
+    expect(mockState.exitDispose).toHaveBeenCalled();
     expect(session.isAlive).toBe(false);
   });
 });

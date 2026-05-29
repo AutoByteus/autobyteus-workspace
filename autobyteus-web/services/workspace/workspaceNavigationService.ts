@@ -1,7 +1,10 @@
 import type { LocationQuery, LocationQueryRaw, LocationQueryValue, RouteLocationRaw } from 'vue-router'
 import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator'
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator'
-import { ensureRunHistoryWorkspaceByRootPath } from '~/stores/runHistoryLoadActions'
+import {
+  ensureRunHistoryWorkspaceByRootPath,
+  resolveRunHistoryWorkspaceMetadataByRootPath,
+} from '~/stores/runHistoryLoadActions'
 import type { WorkspaceExecutionLink } from '~/types/workspace/WorkspaceExecutionLink'
 
 const EXECUTION_KIND_QUERY_KEY = 'workspaceExecutionKind'
@@ -80,6 +83,7 @@ export const openWorkspaceExecutionLink = async (
     await openAgentRun({
       runId: link.runId,
       fallbackAgentName: null,
+      resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
       ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
     })
     return
@@ -88,6 +92,7 @@ export const openWorkspaceExecutionLink = async (
   await openTeamRun({
     teamRunId: link.teamRunId,
     memberRouteKey: link.memberRouteKey,
+    resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
     ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
   })
 }

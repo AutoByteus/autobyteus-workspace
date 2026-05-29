@@ -1,0 +1,6 @@
+helper=/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+original_mode=755
+forced_mode=644
+isolated_start=ok
+probe_exit=0
+restored_mode=755

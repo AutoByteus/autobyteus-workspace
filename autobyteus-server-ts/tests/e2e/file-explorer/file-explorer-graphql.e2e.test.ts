@@ -11,6 +11,21 @@ const workspaceManager = getWorkspaceManager();
 
 const createTempRoot = (): string => fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-file-explorer-"));
 
+const getWorkspaceFileExplorerState = async (workspaceId: string) => {
+  const workspace = workspaceManager.getWorkspaceById(workspaceId);
+  if (!workspace) {
+    throw new Error(`Workspace not found in test: ${workspaceId}`);
+  }
+  const fileExplorer = (workspace as unknown as {
+    fileExplorer?: { fileWatcher?: unknown; watcherLeaseCount?: number } | null;
+  }).fileExplorer ?? null;
+  return {
+    hasFileExplorer: workspace.hasFileExplorerForDiagnostics(),
+    watcher: fileExplorer?.fileWatcher ?? null,
+    leaseCount: fileExplorer?.watcherLeaseCount ?? 0,
+  };
+};
+
 const closeWithTimeout = async (workspace: { close: () => Promise<void> }) => {
   await Promise.race([
     workspace.close(),
@@ -77,8 +92,6 @@ describe("File explorer GraphQL e2e", () => {
     const workspace = await workspaceManager.createWorkspace(
       { rootPath: tempRoot },
     );
-    const fileExplorer = await workspace.getFileExplorer();
-    await fileExplorer.buildWorkspaceDirectoryTree();
 
     const query = `
       query GetFolderChildren($workspaceId: String!, $folderPath: String!) {
@@ -106,6 +119,64 @@ describe("File explorer GraphQL e2e", () => {
 
     const nestedChild = payload.children.find((child) => child.name === "nested_folder");
     expect(nestedChild?.children).toEqual([]);
+  });
+
+
+  it("keeps GraphQL search and folder snapshots watcher-free when no file explorer stream is visible", async () => {
+    const rootPath = path.join(tempRoot, "graphql_snapshot_ws");
+    fs.mkdirSync(path.join(rootPath, "src"), { recursive: true });
+    fs.writeFileSync(path.join(rootPath, "src", "alpha.ts"), "export const alpha = true;\n", "utf-8");
+
+    const createWorkspaceMutation = `
+      mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+        createWorkspace(input: $input) {
+          workspaceId
+        }
+      }
+    `;
+
+    const created = await execGraphql<{ createWorkspace: { workspaceId: string } }>(
+      createWorkspaceMutation,
+      { input: { rootPath } },
+    );
+    const workspaceId = created.createWorkspace.workspaceId;
+
+    await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
+      watcher: null,
+      leaseCount: 0,
+    });
+
+    fs.writeFileSync(path.join(rootPath, "src", "beta-search-target.ts"), "export const beta = true;\n", "utf-8");
+
+    const folderQuery = `
+      query GetFolderChildren($workspaceId: String!, $folderPath: String!) {
+        folderChildren(workspaceId: $workspaceId, folderPath: $folderPath)
+      }
+    `;
+    const folderData = await execGraphql<{ folderChildren: string }>(folderQuery, {
+      workspaceId,
+      folderPath: "src",
+    });
+    const folderPayload = JSON.parse(folderData.folderChildren) as {
+      children: Array<{ name: string }>;
+    };
+    expect(folderPayload.children.map((child) => child.name)).toContain("beta-search-target.ts");
+
+    const searchQuery = `
+      query SearchFiles($workspaceId: String!, $query: String!) {
+        searchFiles(workspaceId: $workspaceId, query: $query)
+      }
+    `;
+    const searchData = await execGraphql<{ searchFiles: string[] }>(searchQuery, {
+      workspaceId,
+      query: "beta-search-target",
+    });
+    expect(searchData.searchFiles.some((result) => result.endsWith("src/beta-search-target.ts"))).toBe(true);
+
+    await expect(getWorkspaceFileExplorerState(workspaceId)).resolves.toMatchObject({
+      watcher: null,
+      leaseCount: 0,
+    });
   });
 
   it("returns error for invalid workspace", async () => {

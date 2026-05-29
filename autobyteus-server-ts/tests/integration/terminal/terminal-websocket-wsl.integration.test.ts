@@ -6,14 +6,11 @@ import fastify, { type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
 import WebSocket from "ws";
-import { WorkspaceConfig } from "autobyteus-ts";
 import { registerTerminalWebsocket } from "../../../src/api/websocket/terminal.js";
 import {
   PtySessionManager,
   TerminalHandler,
 } from "../../../src/services/terminal-streaming/index.js";
-import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
-const workspaceManager = getWorkspaceManager();
 
 const isWindows = process.platform === "win32";
 
@@ -21,12 +18,17 @@ type WslContext = { wslExe: string; distro: string };
 
 const findWslExecutable = (): string | null => {
   const candidates = ["wsl.exe", "wsl"];
-  const pathEntries = (process.env.PATH ?? "").split(path.delimiter).filter(Boolean);
+  const pathEntries = (process.env.PATH ?? "")
+    .split(path.delimiter)
+    .filter(Boolean);
   for (const entry of pathEntries) {
     for (const candidate of candidates) {
       const full = path.join(entry, candidate);
       try {
-        const result = spawnSync(full, ["-l"], { encoding: "buffer", timeout: 2000 });
+        const result = spawnSync(full, ["-l"], {
+          encoding: "buffer",
+          timeout: 2000,
+        });
         if (result.status === 0) {
           return full;
         }
@@ -39,7 +41,10 @@ const findWslExecutable = (): string | null => {
 };
 
 const listWslDistros = (wslExe: string): string[] => {
-  const result = spawnSync(wslExe, ["-l", "-q"], { encoding: "buffer", timeout: 5000 });
+  const result = spawnSync(wslExe, ["-l", "-q"], {
+    encoding: "buffer",
+    timeout: 5000,
+  });
   if (result.status !== 0) {
     return [];
   }
@@ -51,7 +56,10 @@ const listWslDistros = (wslExe: string): string[] => {
 };
 
 const selectWslDistro = (wslExe: string): string | null => {
-  const result = spawnSync(wslExe, ["-l", "-v"], { encoding: "buffer", timeout: 5000 });
+  const result = spawnSync(wslExe, ["-l", "-v"], {
+    encoding: "buffer",
+    timeout: 5000,
+  });
   if (result.status !== 0) {
     return null;
   }
@@ -104,7 +112,10 @@ const createTempWorkspace = async (): Promise<string> => {
   return fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-terminal-wsl-"));
 };
 
-const waitForMessage = (socket: WebSocket, timeoutMs: number): Promise<string> =>
+const waitForMessage = (
+  socket: WebSocket,
+  timeoutMs: number,
+): Promise<string> =>
   new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       reject(new Error("Timed out waiting for websocket message"));
@@ -142,7 +153,11 @@ const receiveUntilOutputContains = async (
   throw new Error(`Expected output not received: ${needle.toString("utf8")}`);
 };
 
-const waitForSession = async (manager: PtySessionManager, sessionId: string, timeoutMs = 10000) => {
+const waitForSession = async (
+  manager: PtySessionManager,
+  sessionId: string,
+  timeoutMs = 10000,
+) => {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     const session = manager.getSession(sessionId);
@@ -154,7 +169,11 @@ const waitForSession = async (manager: PtySessionManager, sessionId: string, tim
   throw new Error(`Terminal session ${sessionId} was not created in time.`);
 };
 
-const waitForSessionClose = async (manager: PtySessionManager, sessionId: string, timeoutMs = 5000) => {
+const waitForSessionClose = async (
+  manager: PtySessionManager,
+  sessionId: string,
+  timeoutMs = 5000,
+) => {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (!manager.getSession(sessionId)) {
@@ -169,15 +188,10 @@ describeIf("Terminal websocket WSL integration", () => {
   let app: FastifyInstance;
   let baseUrl: string;
   let workspaceRoot: string;
-  let workspaceId: string;
   let manager: PtySessionManager;
 
   beforeEach(async () => {
     workspaceRoot = await createTempWorkspace();
-    const workspace = await workspaceManager.createWorkspace(
-      new WorkspaceConfig({ rootPath: workspaceRoot }),
-    );
-    workspaceId = workspace.workspaceId;
 
     manager = new PtySessionManager();
     const handler = new TerminalHandler(manager);
@@ -187,7 +201,10 @@ describeIf("Terminal websocket WSL integration", () => {
     await registerTerminalWebsocket(app, handler);
     await app.listen({ port: 0, host: "127.0.0.1" });
     const address = app.server.address();
-    const port = typeof address === "string" ? Number(new URL(address).port) : address?.port;
+    const port =
+      typeof address === "string"
+        ? Number(new URL(address).port)
+        : address?.port;
     baseUrl = `ws://127.0.0.1:${port}`;
   });
 
@@ -202,7 +219,11 @@ describeIf("Terminal websocket WSL integration", () => {
     }
 
     const sessionId = "wsl-session-1";
-    const socket = new WebSocket(`${baseUrl}/ws/terminal/${workspaceId}/${sessionId}`);
+    const url = new URL(
+      `${baseUrl}/ws/terminal/${encodeURIComponent(sessionId)}`,
+    );
+    url.searchParams.set("cwd", workspaceRoot);
+    const socket = new WebSocket(url.toString());
 
     await new Promise<void>((resolve, reject) => {
       socket.once("open", () => resolve());
@@ -211,10 +232,16 @@ describeIf("Terminal websocket WSL integration", () => {
 
     await waitForSession(manager, sessionId);
 
-    const payload = Buffer.from("echo autobyteus_ws\n", "utf8").toString("base64");
+    const payload = Buffer.from("echo autobyteus_ws\n", "utf8").toString(
+      "base64",
+    );
     socket.send(JSON.stringify({ type: "input", data: payload }));
 
-    const output = await receiveUntilOutputContains(socket, Buffer.from("autobyteus_ws", "utf8"), 12000);
+    const output = await receiveUntilOutputContains(
+      socket,
+      Buffer.from("autobyteus_ws", "utf8"),
+      12000,
+    );
     expect(output.toString("utf8")).toContain("autobyteus_ws");
 
     socket.close();

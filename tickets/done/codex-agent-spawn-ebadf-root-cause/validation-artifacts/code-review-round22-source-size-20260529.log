@@ -1,0 +1,10 @@
+# Code review round 22 changed source size audit
+Fri May 29 09:20:41 CEST 2026
+
+PASS  191 autobyteus-server-ts/src/api/graphql/types/file-explorer.ts
+PASS  436 autobyteus-server-ts/src/file-explorer/file-explorer.ts
+PASS  257 autobyteus-web/components/fileExplorer/FileExplorer.vue
+PASS   72 autobyteus-web/stores/fileExplorerState.ts
+PASS  141 autobyteus-web/stores/fileExplorerTreeActions.ts
+PASS  401 autobyteus-web/stores/workspace.ts
+PASS  165 autobyteus-web/stores/workspaceFileExplorerLiveActions.ts

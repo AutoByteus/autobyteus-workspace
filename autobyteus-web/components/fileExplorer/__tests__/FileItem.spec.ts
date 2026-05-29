@@ -98,6 +98,7 @@ describe('FileItem - Lazy Loading', () => {
   }
 
   beforeEach(() => {
+    vi.restoreAllMocks()
     vi.clearAllMocks()
   })
 
@@ -179,5 +180,15 @@ describe('FileItem - Lazy Loading', () => {
 
     expect(explorer.openFilePreview).toHaveBeenCalledWith('root/README.md')
     expect(explorer.openFile).not.toHaveBeenCalled()
+  })
+
+  it('does not attach per-node global drag/context listeners on mount', async () => {
+    const addDocumentListener = vi.spyOn(document, 'addEventListener')
+
+    await mountComponent(createMockFile())
+
+    expect(addDocumentListener).not.toHaveBeenCalledWith('closeAllFileContextMenus', expect.any(Function))
+    expect(addDocumentListener).not.toHaveBeenCalledWith('dragover', expect.any(Function))
+    expect(addDocumentListener).not.toHaveBeenCalledWith('dragend', expect.any(Function))
   })
 })

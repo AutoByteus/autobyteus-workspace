@@ -1,0 +1,64 @@
+Round 28 Electron build artifacts
+timestamp: 2026-05-29T10:09:01Z
+repo: /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause
+head: f6870d43e4c859cd8b9978cf987267ba51028b13
+branch: codex/codex-agent-spawn-ebadf-root-cause
+origin_personal: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+merge_base: a01e15f2db534ed13663572bc7a3a948f1e8eb45
+relation_origin_personal...HEAD: 0	42
+version: 1.3.32
+
+FILE autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg
+size_bytes=379712254 mtime=2026-05-29T12:05:44+0200
+14305b5ba8295b395c60a899c76ec2e46c309146e4ad9baf97cf61eca666253f  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg
+
+FILE autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg.blockmap
+size_bytes=395267 mtime=2026-05-29T12:05:46+0200
+67500fec3460b5400971b5d4cb0df0cfb1b39915916e27becbb2c40fc0dfd640  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.dmg.blockmap
+
+FILE autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip
+size_bytes=377162563 mtime=2026-05-29T12:07:06+0200
+abff60a3c8e3afe5f1d58459900c8fc0705018a85bb9922ffd791e7d97c33b3f  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip
+
+FILE autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap
+size_bytes=387139 mtime=2026-05-29T12:07:08+0200
+0ba28c3fa28dd5545a50e233ec24a93a42d0dc1bcc4373f1952adb896d16cfea  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap
+
+FILE autobyteus-web/electron-dist/latest-mac.yml
+size_bytes=561 mtime=2026-05-29T12:07:08+0200
+60995df0fd279e095beabbf570f710ce422d28ca902bd77068bb0bee71b529e8  autobyteus-web/electron-dist/latest-mac.yml
+
+latest-mac.yml:
+version: 1.3.32
+files:
+  - url: AutoByteus_enterprise_macos-arm64-1.3.32.zip
+    sha512: 6ZvACnT2XY3zDThQ1oV8LVv/RhxLCPHvWjfFTk2XGz1zEM+SMJicL1UYUM6mtIrTcXPFYGMQ89AJ2pz6hMqnsA==
+    size: 377162563
+  - url: AutoByteus_enterprise_macos-arm64-1.3.32.dmg
+    sha512: g+FKdu03xk6Tsx7DW/Sk7q+tUGk2qCwnRsAhtih+xOz7dKzWUaYtr/j+F4/5sEeQBjBN1I3bO0dtk4kAZrevYA==
+    size: 379712254
+path: AutoByteus_enterprise_macos-arm64-1.3.32.zip
+sha512: 6ZvACnT2XY3zDThQ1oV8LVv/RhxLCPHvWjfFTk2XGz1zEM+SMJicL1UYUM6mtIrTcXPFYGMQ89AJ2pz6hMqnsA==
+releaseDate: '2026-05-29T10:07:08.527Z'
+
+electron-dist latest files:
+-rw-r--r--@ 1 normy  staff   378K May 23 06:16 AutoByteus_enterprise_macos-arm64-1.3.28.zip.blockmap
+-rw-r--r--@ 1 normy  staff   362M May 23 15:24 AutoByteus_enterprise_macos-arm64-1.3.29.dmg
+-rw-r--r--@ 1 normy  staff   387K May 23 15:24 AutoByteus_enterprise_macos-arm64-1.3.29.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   360M May 23 15:26 AutoByteus_enterprise_macos-arm64-1.3.29.zip
+-rw-r--r--@ 1 normy  staff   378K May 23 15:26 AutoByteus_enterprise_macos-arm64-1.3.29.zip.blockmap
+-rw-r--r--@ 1 normy  staff   362M May 24 08:09 AutoByteus_enterprise_macos-arm64-1.3.30.dmg
+-rw-r--r--@ 1 normy  staff   388K May 24 08:09 AutoByteus_enterprise_macos-arm64-1.3.30.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   360M May 24 08:11 AutoByteus_enterprise_macos-arm64-1.3.30.zip
+-rw-r--r--@ 1 normy  staff   378K May 24 08:11 AutoByteus_enterprise_macos-arm64-1.3.30.zip.blockmap
+-rw-r--r--@ 1 normy  staff   362M May 28 15:07 AutoByteus_enterprise_macos-arm64-1.3.31.dmg
+-rw-r--r--@ 1 normy  staff   387K May 28 15:07 AutoByteus_enterprise_macos-arm64-1.3.31.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   360M May 28 15:08 AutoByteus_enterprise_macos-arm64-1.3.31.zip
+-rw-r--r--@ 1 normy  staff   378K May 28 15:08 AutoByteus_enterprise_macos-arm64-1.3.31.zip.blockmap
+-rw-r--r--@ 1 normy  staff   362M May 29 12:05 AutoByteus_enterprise_macos-arm64-1.3.32.dmg
+-rw-r--r--@ 1 normy  staff   386K May 29 12:05 AutoByteus_enterprise_macos-arm64-1.3.32.dmg.blockmap
+-rw-r--r--@ 1 normy  staff   360M May 29 12:07 AutoByteus_enterprise_macos-arm64-1.3.32.zip
+-rw-r--r--@ 1 normy  staff   378K May 29 12:07 AutoByteus_enterprise_macos-arm64-1.3.32.zip.blockmap
+-rw-r--r--@ 1 normy  staff   813B May 29 12:07 builder-debug.yml
+-rw-r--r--@ 1 normy  staff   561B May 29 12:07 latest-mac.yml
+drwxr-xr-x@ 3 normy  staff    96B May 29 12:04 mac-arm64

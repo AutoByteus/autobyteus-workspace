@@ -1,0 +1,55 @@
+# Code review round 21 CR-014 terminal naming grep
+Thu May 28 19:57:15 CEST 2026
+
+## Stale terminal target naming grep
+RESULT: PASS - no stale target naming found
+
+## Positive targetKey/target fixtures
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:48:    targetKey: string,
+autobyteus-server-ts/src/services/terminal-streaming/terminal-handler.ts:54:      await this.manager.createSession(sessionId, targetKey, cwd, {
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:7:  targetKey: string;
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:36:    targetKey: string,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:48:    this.sessions.set(sessionId, { session, targetKey });
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:94:      `Created terminal session ${sessionId} using backend ${backendName} for target ${targetKey}`,
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:115:  async closeAllForTargetKey(targetKey: string): Promise<number> {
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:117:      .filter(([, record]) => record.targetKey === targetKey)
+autobyteus-server-ts/src/services/terminal-streaming/pty-session-manager.ts:139:      entries[sessionId] = record.targetKey;
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:36:        const session = await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:42:        await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:43:        await expect(manager.createSession("s1", "target-1", "/tmp")).rejects.toThrow("already exists");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:52:        await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:53:        await manager.createSession("s2", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:60:        const session = (await manager.createSession("s1", "target-1", "/tmp"));
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:71:    it("closes sessions by target key", async () => {
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:73:        await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:74:        await manager.createSession("s2", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:75:        await manager.createSession("s3", "target-2", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:76:        const closed = await manager.closeAllForTargetKey("target-1");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:84:        await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:85:        await manager.createSession("s2", "target-2", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:92:        await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:93:        await manager.createSession("s2", "target-2", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.js:94:        expect(manager.listSessions()).toEqual({ s1: "target-1", s2: "target-2" });
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:73:    const session = await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:81:    await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:83:    await expect(manager.createSession("s1", "target-1", "/tmp")).rejects.toThrow(
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:99:    await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:100:    await manager.createSession("s2", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:110:    const session = (await manager.createSession("s1", "target-1", "/tmp")) as MockPtySession;
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:123:    const createPromise = manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:147:  it("closes sessions by target key", async () => {
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:150:    await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:151:    await manager.createSession("s2", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:152:    await manager.createSession("s3", "target-2", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:154:    const closed = await manager.closeAllForTargetKey("target-1");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:165:    await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:166:    await manager.createSession("s2", "target-2", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:177:    await manager.createSession("s1", "target-1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:178:    await manager.createSession("s2", "target-2", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/pty-session-manager.test.ts:180:    expect(manager.listSessions()).toEqual({ s1: "target-1", s2: "target-2" });
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.js:72:        const session = (await manager.createSession("s1", "target-1", "/tmp"));
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.js:79:        const session = (await manager.createSession("s1", "target-1", "/tmp"));
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.js:93:        const sessionId = await handler.connect(connection, "target-1", "s1", "/tmp");
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.ts:100:    const session = (await manager.createSession("s1", "target-1", "/tmp")) as MockPtySession;
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.ts:110:    const session = (await manager.createSession("s1", "target-1", "/tmp")) as MockPtySession;
+autobyteus-server-ts/tests/unit/services/terminal/terminal-handler.test.ts:129:    const sessionId = await handler.connect(connection, "target-1", "s1", "/tmp");
