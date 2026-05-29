@@ -1,0 +1,319 @@
+{
+  "result": "passed",
+  "frontendUrl": "http://127.0.0.1:3000",
+  "finalUrl": "http://127.0.0.1:3000/workspace",
+  "runtime": "codex_app_server",
+  "runtimeLabel": "Codex App Server",
+  "model": "OpenAI / GPT-5.5 (default reasoning: medium)",
+  "workspacePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529",
+  "hasNuxt500": false,
+  "hasTdzError": false,
+  "pageErrors": [],
+  "relevantConsoleErrors": [
+    {
+      "at": "2026-05-29T09:54:46.367Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "networkFailures": [],
+  "finalBodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nDA\nDaily Assistant\n(1)\nNew - Daily Assistant\nnow\nTemp Workspace\nSettings\nDA\nNew - Daily Assistant\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nArtifacts\nVNC Viewer\ndocs\nsearch-target.md\nsrc\nnested\ndeep-note.md\nmain.ts\nREADME.md\nREADME.md\nBrowser Round 14 Workspace\n\nThis README confirms that browser-level FileExplorer validation can open file content after the TDZ fix.",
+  "screenshots": {
+    "agentsList": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-01-agents-list-20260529.png",
+    "initialWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-02-initial-workspace-20260529.png",
+    "runtimeModelWorkspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-03-codex-gpt55-workspace-20260529.png",
+    "filesBeforeRun": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-04-files-before-run-20260529.png",
+    "afterRun": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-05-after-run-20260529.png",
+    "filesAfterRun": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-06-files-after-run-20260529.png"
+  },
+  "events": [
+    {
+      "at": "2026-05-29T09:54:44.572Z",
+      "event": "screenshot",
+      "name": "agentsList",
+      "filePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-01-agents-list-20260529.png"
+    },
+    {
+      "at": "2026-05-29T09:54:44.929Z",
+      "event": "assert_frontend_health",
+      "stage": "agents list",
+      "url": "http://127.0.0.1:3000/agents?view=list",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nTemp Workspace\nSettings\nReload\nCreate Agent\nFeatured agents\nDA\nDaily Assistant\n\nGeneral Agent\n\nTools 19\nrun_bash\nread_url\nsearch_web\n+16\nSkills 1\nshell-first-operating-practice\nRun\nView Details\n→\nIndividual agents\n45 agents\nAU\nAudioGenerator\n\nAn AI agent that converts text scripts into high-quality spoken audio.\n\nTools 1\nGenerateSpeech\nSkills 0\nNone\nRun\nView Details\n→\nAU\nAudioTranscriber\n\nTranscribes aud"
+    },
+    {
+      "at": "2026-05-29T09:54:44.958Z",
+      "event": "click",
+      "label": "Daily Assistant Run"
+    },
+    {
+      "at": "2026-05-29T09:54:46.367Z",
+      "event": "browser_console",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "at": "2026-05-29T09:54:46.821Z",
+      "event": "screenshot",
+      "name": "initialWorkspace",
+      "filePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-02-initial-workspace-20260529.png"
+    },
+    {
+      "at": "2026-05-29T09:54:47.174Z",
+      "event": "assert_frontend_health",
+      "stage": "initial workspace",
+      "url": "http://127.0.0.1:3000/workspace",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nTemp Workspace\nSettings\nAgent Definition\nDaily Assistant\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime backend used for this run.\n\nLLM Model\nSelect a model\n\nSelect a model...\n\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\nAuto approve tools\nSkill Access\nConfigured skills only (Recommended"
+    },
+    {
+      "at": "2026-05-29T09:54:47.945Z",
+      "event": "runtime_selected",
+      "value": "codex_app_server",
+      "text": "Codex App Server"
+    },
+    {
+      "at": "2026-05-29T09:54:47.949Z",
+      "event": "model_dropdown_open_attempt",
+      "clicked": true,
+      "buttonText": "Select a model"
+    },
+    {
+      "at": "2026-05-29T09:54:48.479Z",
+      "event": "model_selected",
+      "optionText": "GPT-5.5 (default reasoning: medium)"
+    },
+    {
+      "at": "2026-05-29T09:54:49.233Z",
+      "event": "model_button_state",
+      "buttonText": "OpenAI / GPT-5.5 (default reasoning: medium)"
+    },
+    {
+      "at": "2026-05-29T09:54:49.586Z",
+      "event": "assert_frontend_health",
+      "stage": "after Codex/GPT-5.5 selection",
+      "url": "http://127.0.0.1:3000/workspace",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nTemp Workspace\nSettings\nAgent Definition\nDaily Assistant\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime backend used for this run.\n\nLLM Model\nOpenAI / GPT-5.5 (default reasoning: medium)\n\nSelect a model...\n\nThinking\nUse setting\nAdvanced\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\nAuto ap"
+    },
+    {
+      "at": "2026-05-29T09:54:49.614Z",
+      "event": "screenshot",
+      "name": "runtimeModelWorkspace",
+      "filePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-03-codex-gpt55-workspace-20260529.png"
+    },
+    {
+      "at": "2026-05-29T09:54:49.635Z",
+      "event": "click",
+      "stage": "workspace selector",
+      "label": "New tab",
+      "tabCount": 1
+    },
+    {
+      "at": "2026-05-29T09:54:49.638Z",
+      "event": "workspace_text_inputs_seen",
+      "inputSnapshot": [
+        {
+          "placeholder": "/absolute/path/to/workspace",
+          "value": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529/temp_workspace",
+          "visible": true
+        },
+        {
+          "placeholder": "Search...",
+          "value": "",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "at": "2026-05-29T09:54:49.663Z",
+      "event": "workspace_load_requested",
+      "workspacePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-workspace-20260529"
+    },
+    {
+      "at": "2026-05-29T09:54:50.167Z",
+      "event": "wait_for_text_passed",
+      "stage": "workspace load",
+      "pattern": "/Workspace loaded:|README\\.md|search-target\\.md|Browser Round 14 Workspace/",
+      "elapsedMs": 504
+    },
+    {
+      "at": "2026-05-29T09:54:50.170Z",
+      "event": "click",
+      "stage": "before run",
+      "label": "Files"
+    },
+    {
+      "at": "2026-05-29T09:54:51.524Z",
+      "event": "assert_frontend_health",
+      "stage": "before run: after Files tab click",
+      "url": "http://127.0.0.1:3000/workspace",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nTemp Workspace\nSettings\nAgent Definition\nDaily Assistant\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime backend used for this run.\n\nLLM Model\nOpenAI / GPT-5.5 (default reasoning: medium)\n\nSelect a model...\n\nThinking\nUse setting\nAdvanced\nWorkspace Directory\nExisting\nNew\nLoad\n\nWorkspace: api-e2e-round14-browser-workspace-20260529\n\nAuto approve tools\nAuto approve tools\nSkill Acces"
+    },
+    {
+      "at": "2026-05-29T09:54:51.527Z",
+      "event": "file_item_click",
+      "stage": "before run: expand docs",
+      "name": "docs",
+      "clicked": true
+    },
+    {
+      "at": "2026-05-29T09:54:52.682Z",
+      "event": "assert_frontend_health",
+      "stage": "before run: after docs expand",
+      "url": "http://127.0.0.1:3000/workspace",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nTemp Workspace\nSettings\nAgent Definition\nDaily Assistant\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime backend used for this run.\n\nLLM Model\nOpenAI / GPT-5.5 (default reasoning: medium)\n\nSelect a model...\n\nThinking\nUse setting\nAdvanced\nWorkspace Directory\nExisting\nNew\nLoad\n\nWorkspace: api-e2e-round14-browser-workspace-20260529\n\nAuto approve tools\nAuto approve tools\nSkill Acces"
+    },
+    {
+      "at": "2026-05-29T09:54:52.685Z",
+      "event": "file_item_click",
+      "stage": "before run: expand src",
+      "name": "src",
+      "clicked": true
+    },
+    {
+      "at": "2026-05-29T09:54:53.839Z",
+      "event": "assert_frontend_health",
+      "stage": "before run: after src expand",
+      "url": "http://127.0.0.1:3000/workspace",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nTemp Workspace\nSettings\nAgent Definition\nDaily Assistant\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime backend used for this run.\n\nLLM Model\nOpenAI / GPT-5.5 (default reasoning: medium)\n\nSelect a model...\n\nThinking\nUse setting\nAdvanced\nWorkspace Directory\nExisting\nNew\nLoad\n\nWorkspace: api-e2e-round14-browser-workspace-20260529\n\nAuto approve tools\nAuto approve tools\nSkill Acces"
+    },
+    {
+      "at": "2026-05-29T09:54:53.842Z",
+      "event": "file_item_click",
+      "stage": "before run: expand nested",
+      "name": "nested",
+      "clicked": true
+    },
+    {
+      "at": "2026-05-29T09:54:54.995Z",
+      "event": "assert_frontend_health",
+      "stage": "before run: after nested expand",
+      "url": "http://127.0.0.1:3000/workspace",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nTemp Workspace\nSettings\nAgent Definition\nDaily Assistant\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime backend used for this run.\n\nLLM Model\nOpenAI / GPT-5.5 (default reasoning: medium)\n\nSelect a model...\n\nThinking\nUse setting\nAdvanced\nWorkspace Directory\nExisting\nNew\nLoad\n\nWorkspace: api-e2e-round14-browser-workspace-20260529\n\nAuto approve tools\nAuto approve tools\nSkill Acces"
+    },
+    {
+      "at": "2026-05-29T09:54:55.000Z",
+      "event": "file_item_click",
+      "stage": "before run: open README",
+      "name": "README.md",
+      "clicked": true
+    },
+    {
+      "at": "2026-05-29T09:54:56.154Z",
+      "event": "assert_frontend_health",
+      "stage": "before run: after README click",
+      "url": "http://127.0.0.1:3000/workspace",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nTemp Workspace\nSettings\nAgent Definition\nDaily Assistant\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\n\nSelects the runtime backend used for this run.\n\nLLM Model\nOpenAI / GPT-5.5 (default reasoning: medium)\n\nSelect a model...\n\nThinking\nUse setting\nAdvanced\nWorkspace Directory\nExisting\nNew\nLoad\n\nWorkspace: api-e2e-round14-browser-workspace-20260529\n\nAuto approve tools\nAuto approve tools\nSkill Acces"
+    },
+    {
+      "at": "2026-05-29T09:54:56.154Z",
+      "event": "files_assertion_passed",
+      "stage": "before run",
+      "expected": [
+        "README.md",
+        "search-target.md",
+        "main.ts",
+        "deep-note.md"
+      ]
+    },
+    {
+      "at": "2026-05-29T09:54:56.183Z",
+      "event": "screenshot",
+      "name": "filesBeforeRun",
+      "filePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-04-files-before-run-20260529.png"
+    },
+    {
+      "at": "2026-05-29T09:54:56.305Z",
+      "event": "click",
+      "label": "Run Agent"
+    },
+    {
+      "at": "2026-05-29T09:55:00.662Z",
+      "event": "assert_frontend_health",
+      "stage": "after Run Agent",
+      "url": "http://127.0.0.1:3000/workspace",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nDA\nDaily Assistant\n(1)\nNew - Daily Assistant\nnow\nTemp Workspace\nSettings\nDA\nNew - Daily Assistant\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nArtifacts\nVNC Viewer\nTo-Do\n0 Tasks\nActivity\n0 Events\nNo activity history yet."
+    },
+    {
+      "at": "2026-05-29T09:55:00.684Z",
+      "event": "screenshot",
+      "name": "afterRun",
+      "filePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-05-after-run-20260529.png"
+    },
+    {
+      "at": "2026-05-29T09:55:00.690Z",
+      "event": "click",
+      "stage": "after run",
+      "label": "Files"
+    },
+    {
+      "at": "2026-05-29T09:55:02.050Z",
+      "event": "assert_frontend_health",
+      "stage": "after run: after Files tab click",
+      "url": "http://127.0.0.1:3000/workspace",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nDA\nDaily Assistant\n(1)\nNew - Daily Assistant\nnow\nTemp Workspace\nSettings\nDA\nNew - Daily Assistant\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nArtifacts\nVNC Viewer\ndocs\nsearch-target.md\nsrc\nnested\ndeep-note.md\nmain.ts\nREADME.md\nREADME.md\nBrowser Round 14 Workspace\n\nThis README confirms that browser-level FileExplorer validation can open file content after the TDZ fix."
+    },
+    {
+      "at": "2026-05-29T09:55:02.051Z",
+      "event": "file_item_click",
+      "stage": "after run: open README",
+      "name": "README.md",
+      "clicked": true
+    },
+    {
+      "at": "2026-05-29T09:55:03.208Z",
+      "event": "assert_frontend_health",
+      "stage": "after run: after README click",
+      "url": "http://127.0.0.1:3000/workspace",
+      "bodyFailures": [],
+      "consoleFailureCount": 0,
+      "pageErrorCount": 0,
+      "bodyExcerpt": "Agents\nAgent Teams\nSkills\nMemory\nMedia\nWorkspaces\napi-e2e-round14-browser-workspace-20260529\nDA\nDaily Assistant\n(1)\nNew - Daily Assistant\nnow\nTemp Workspace\nSettings\nDA\nNew - Daily Assistant\nOffline\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nArtifacts\nVNC Viewer\ndocs\nsearch-target.md\nsrc\nnested\ndeep-note.md\nmain.ts\nREADME.md\nREADME.md\nBrowser Round 14 Workspace\n\nThis README confirms that browser-level FileExplorer validation can open file content after the TDZ fix."
+    },
+    {
+      "at": "2026-05-29T09:55:03.208Z",
+      "event": "files_assertion_passed",
+      "stage": "after run",
+      "expected": [
+        "README.md",
+        "search-target.md",
+        "main.ts",
+        "deep-note.md"
+      ]
+    },
+    {
+      "at": "2026-05-29T09:55:03.238Z",
+      "event": "screenshot",
+      "name": "filesAfterRun",
+      "filePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-06-files-after-run-20260529.png"
+    }
+  ]
+}

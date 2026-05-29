@@ -1,0 +1,10 @@
+Fri May 29 09:56:35 UTC 2026
+Listeners before cleanup:
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    98059 normy   12u  IPv4 0x12db8b60e48ca41b      0t0  TCP 127.0.0.1:3000 (LISTEN)
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    97427 normy   22u  IPv4 0x3e755adb00c2e90b      0t0  TCP 127.0.0.1:8000 (LISTEN)
+Relevant node processes:
+  PID  PPID STAT COMMAND
+97427 97117 S    node dist/app.js --host 127.0.0.1 --port 8000 --data-dir /Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-server-data-20260529
+98059 98057 S    node ./node_modules/.bin/../nuxt/bin/nuxt.mjs dev --host 127.0.0.1 --port 3000

@@ -10,11 +10,11 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/design-review-report.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/implementation-handoff.md`
 - Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/review-report.md`
-- Current Validation Round: `13`
-- Trigger: User-reported browser/Electron Files-tab Error 500 after delivery-built app testing; API/E2E self-started backend/frontend from README and reproduced the failure.
-- Latest Authoritative Round: `13`
-- Overall Result: `Fail`
-- Recommended Recipient: `implementation_engineer`
+- Current Validation Round: `14`
+- Trigger: Code review round 27 pass after the local fix for `E2E-BROWSER-FILES-001`; user requested API/E2E self-start backend/frontend and browser-test the Files tab with Codex App Server + GPT-5.5.
+- Latest Authoritative Round: `14`
+- Overall Result: `Pass`
+- Recommended Recipient: `delivery_engineer`
 
 ## Round History
 
@@ -31,14 +31,15 @@
 | 9 | User requested server-side Terminal E2E/timing validation | Round 7 Terminal pass and Round 8 browser pass | `E2E-TERMFD-002` | Fail | No | Existing server-side Terminal E2E still passed and connect was fast, but a built-backend timing/descriptor probe found normal attached command-output Terminal sessions left PTY-related FDs after close: `37 -> 59` FDs after 8 normal sessions, final child processes `0`, final `lsof` still had `/dev/ptmx`/`(revoked)` entries. |
 | 10 | Code review round 17 pass after `E2E-TERMFD-002` / `CR-012` fix | `E2E-TERMFD-002`, broad Round 7/8/9 matrix | None | Pass | No | Isolated PTY descriptor cleanup passed in API/E2E: built-backend probe baseline `36`, after 8 normal command-output sessions `32`, after early-close `32`, final `32`, child count `0`, final `lsof` had no `/dev/ptmx`, `/dev/ttys`, or `(revoked)` lines. Broader backend, frontend, Electron, build, watcher high-churn, and Codex activation probes passed. |
 | 11 | Code review round 21 pass after `CR-014` and Terminal target-key cleanup | `CR-013`, `CR-014`, `ADV-TERM-002`, `ADV-TABS-001`, `E2E-TERMFD-002` | None | Pass | No | Fresh Terminal manager/handler/integration/E2E suite, target-key stale-name grep, backend `build:full`, built-backend Terminal descriptor/timing probe, frontend Terminal/right-tabs suite, and web-boundary guard passed. Built-backend probe baseline `36`, after normal command-output sessions `32`, after early-close `32`, final `32`, child count `0`, final lsof PTY/revoked count `0`. |
-| 12 | Code review round 25 pass after `CR-017` FileExplorer path-boundary local fix | `CR-015`, `CR-016`, `CR-017`, Terminal/FileExplorer boundary, watcher lifecycle, Codex descriptor-pressure probe | None | Pass | Yes | Added durable backend GraphQL E2E path-boundary coverage for ignored folder projection, same-prefix sibling escape through folder/read/write, and path-like rename rejection before mutation. Expanded workspace/file-explorer E2E passed 5 files / 15 tests; FileExplorer unit passed 1 file / 11 tests; backend build passed; built-backend high-churn FileExplorer + Terminal + Codex probe passed with final FD `33`, child count `0`, Codex `codex-cli 0.134.0`, provider probe OK with `13` providers / `6` models. |
-| 13 | User-reported Files-tab Error 500; API/E2E self-started backend/frontend from README | Browser-level workspace/FileExplorer UI route after Round 12 | `E2E-BROWSER-FILES-001` | Fail | Yes | Fresh backend/frontend from current worktree reproduced Nuxt Error 500 on `/workspace`: `Cannot access 'handleKeydown' before initialization`, localized to `autobyteus-web/components/fileExplorer/FileExplorerTabs.vue` immediate watcher/global-listener ordering. |
+| 12 | Code review round 25 pass after `CR-017` FileExplorer path-boundary local fix | `CR-015`, `CR-016`, `CR-017`, Terminal/FileExplorer boundary, watcher lifecycle, Codex descriptor-pressure probe | None | Pass | No | Added durable backend GraphQL E2E path-boundary coverage for ignored folder projection, same-prefix sibling escape through folder/read/write, and path-like rename rejection before mutation. Expanded workspace/file-explorer E2E passed 5 files / 15 tests; FileExplorer unit passed 1 file / 11 tests; backend build passed; built-backend high-churn FileExplorer + Terminal + Codex probe passed with final FD `33`, child count `0`, Codex `codex-cli 0.134.0`, provider probe OK with `13` providers / `6` models. |
+| 13 | User-reported Files-tab Error 500; API/E2E self-started backend/frontend from README | Browser-level workspace/FileExplorer UI route after Round 12 | `E2E-BROWSER-FILES-001` | Fail | No | Fresh backend/frontend from current worktree reproduced Nuxt Error 500 on `/workspace`: `Cannot access 'handleKeydown' before initialization`, localized to `autobyteus-web/components/fileExplorer/FileExplorerTabs.vue` immediate watcher/global-listener ordering. |
+| 14 | Code review round 27 pass after `E2E-BROWSER-FILES-001` local fix | `E2E-BROWSER-FILES-001` and user-requested real browser Files-tab flow with Codex App Server + GPT-5.5 | None | Pass | Yes | Self-started backend/frontend from README flow; in-app Browser and standalone headless Chrome/Playwright reached `/workspace`, selected `Codex App Server` + `OpenAI / GPT-5.5 (default reasoning: medium)`, loaded a real workspace, opened/expanded Files, read README content, clicked `Run Agent`, returned to Files, and observed no Nuxt Error 500 or TDZ error. |
 
 ## Validation Basis
 
-Round 13 validation is the latest authoritative result and is a **failure**. After the user reported a real Files-tab Error 500, API/E2E read the backend/frontend READMEs, started a fresh backend and frontend from the current worktree, and reproduced the crash in browser-level validation. Round 12 remains the latest full backend/FileExplorer/Terminal/Codex pass, but delivery is paused until `E2E-BROWSER-FILES-001` is fixed and rerun.
+Round 14 validation is the latest authoritative result and is a **pass**. After code review round 27 passed the local fix for `E2E-BROWSER-FILES-001`, API/E2E read/used the project startup flow, built the backend, started a fresh backend and Nuxt frontend from the current worktree, and re-ran the browser-level Files-tab flow. The prior Nuxt Error 500 / TDZ failure did not recur.
 
-Round 13 is now the most recent browser-level frontend/backend validation and failed. I used a self-started backend/frontend from the current worktree, captured an in-app browser error screenshot, and also reproduced the failure with standalone headless Chrome/Playwright against the same local stack. Round 8 remains the most recent passing browser-level workspace/FileExplorer lifecycle flow.
+Round 14 is now the most recent browser-level frontend/backend validation. It used both the in-app Browser and a standalone headless Chrome/Playwright harness against the same local stack. The flow selected `Codex App Server` and `OpenAI / GPT-5.5 (default reasoning: medium)`, loaded a real workspace, opened and expanded Files, read README content, clicked `Run Agent`, returned to Files after the run was created, and confirmed no `Error 500`, no `Cannot access 'handleKeydown' before initialization`, and no minified `Cannot access 'ee' before initialization`.
 
 The validation focus was intentionally broad because the refactor crosses:
 
@@ -74,9 +75,9 @@ Repository-resident durable validation added in Round 12:
 
 Code review round 12 explicitly inspected and accepted the Round 6 API/E2E durable validation additions. Later implementation changes for `E2E-TERMFD-002` / `CR-012` were reviewed and passed in code review round 17. The implementation-owned Terminal unit-test durable validation fixture cleanup for `CR-013` / `CR-014` was reviewed and passed in code review round 21.
 
-API/E2E Round 12 added repository-resident durable validation for the FileExplorer GraphQL path-boundary cases introduced by `CR-015`, `CR-016`, and `CR-017`. Because that durable validation was added after code review round 25, this pass must return through `code_reviewer` before delivery resumes.
+API/E2E Round 12 added repository-resident durable validation for the FileExplorer GraphQL path-boundary cases introduced by `CR-015`, `CR-016`, and `CR-017`; that validation already returned through code review in the later review chain.
 
-Rounds 7 through 11 added/updated only this report and temporary validation artifacts under `tickets/.../validation-artifacts` from the API/E2E side. Round 12 updated this report, added the durable E2E file above, and added temporary validation artifacts under `tickets/.../validation-artifacts`.
+Rounds 7 through 11 added/updated only this report and temporary validation artifacts under `tickets/.../validation-artifacts` from the API/E2E side. Round 12 updated this report, added the durable E2E file above, and added temporary validation artifacts under `tickets/.../validation-artifacts`. Round 14 added/updated only this report and temporary browser-validation artifacts under `tickets/.../validation-artifacts`; it did not add or update repository-resident durable validation code after code review round 27.
 
 ## Coverage Matrix
 
@@ -102,6 +103,7 @@ Rounds 7 through 11 added/updated only this report and temporary validation arti
 | `SCN-018` | FileExplorer GraphQL path-boundary enforcement for ignored requested folders, same-prefix sibling folder/read/write escapes, and path-like rename names before filesystem mutation | New durable backend GraphQL E2E + FileExplorer unit test + source grep | Pass | `api-e2e-round12-file-explorer-path-boundary-e2e-20260529.log`: 1 file / 2 tests passed; `api-e2e-round12-expanded-workspace-file-explorer-e2e-20260529.log`: 5 files / 15 tests passed; `api-e2e-round12-file-explorer-unit-20260529.log`: 1 file / 11 tests passed; `api-e2e-round12-path-boundary-grep-20260529.log`: FileExplorer boundary grep passed. |
 | `SCN-019` | FileExplorer watcher lifecycle and original descriptor-pressure/Codex activation scenario remain stable after path-boundary fixes | Built-backend macOS high-churn harness with real GraphQL, FileExplorer WebSockets, Terminal WebSockets, `lsof`, `codex --version`, and `codex_app_server` model-catalog probe | Pass | `api-e2e-round12-embedded-server-high-churn-20260529.json`: snapshot APIs without WebSocket stayed at `37` FDs, visible watcher open/close returned to `33`, 20 FileExplorer open/close cycles returned to `33`, 10 close-before-connected cycles returned to `33`, Terminal real-cwd and 10 Terminal cycles returned to `33`, child count `0`, Codex `codex-cli 0.134.0`, provider probe OK with `13` providers / `6` models. |
 | `SCN-020` | Terminal remains independent of FileExplorer/tree/search/watch APIs after FileExplorer boundary fixes | Terminal/FileExplorer boundary grep | Pass | `api-e2e-round12-terminal-file-explorer-boundary-grep-20260529.log`: no forbidden Terminal dependency patterns for FileExplorer, folder/search, acquire/get file explorer, or watcher APIs; positive Terminal root-path/cwd evidence remained. |
+| `SCN-021` | Browser-level Files-tab regression after `E2E-BROWSER-FILES-001`: no Nuxt Error 500/TDZ, Codex App Server + GPT-5.5 selection, real workspace load, FileExplorer expansion/read before and after Run Agent | Self-started backend `dist/app.js` + Nuxt dev frontend + in-app Browser + standalone headless Chrome/Playwright | Pass | `api-e2e-round14-browser-codex-gpt55-files-validation-20260529.json`: result `passed`, final `/workspace`, `hasNuxt500=false`, `hasTdzError=false`, page errors `0`; screenshots `api-e2e-round14-playwright-03-codex-gpt55-workspace-20260529.png`, `api-e2e-round14-playwright-04-files-before-run-20260529.png`, and `api-e2e-round14-playwright-06-files-after-run-20260529.png`. |
 
 ## Prior Failure Resolution Check
 
@@ -115,6 +117,7 @@ Rounds 7 through 11 added/updated only this report and temporary validation arti
 | `CR-015` ignored requested folders mutate/expose FileExplorer tree | 22 | Local Fix | Resolved and covered by durable E2E | `api-e2e-round12-file-explorer-path-boundary-e2e-20260529.log`: ignored `.git`, `node_modules`, and `.gitignore` folders return `Access denied`, keep watcher leases at `0`, and leave cached tree JSON `null` until a valid root projection is requested. |
 | `CR-016` same-prefix sibling path escapes through FileExplorer APIs | 23 | Local Fix | Resolved and covered by durable E2E | `api-e2e-round12-file-explorer-path-boundary-e2e-20260529.log`: `folderChildren`, `fileContent`, and `writeFileContent` reject `../ws-sibling` / `../ws-sibling/*`; sibling leak content is not returned and outside write target is not created. |
 | `CR-017` rename destination escape through path-like `newName` | 24 | Local Fix | Resolved and covered by durable E2E | `api-e2e-round12-file-explorer-path-boundary-e2e-20260529.log`: `renameFileOrFolder` rejects `../../ws-sibling/renamed-leak.txt` with `Invalid new name`; sibling leak file is not created and original source remains. |
+| `E2E-BROWSER-FILES-001` Files tab Nuxt Error 500 / TDZ (`handleKeydown` / minified `ee`) | 13 | Local Fix | Resolved | Round 14 in-app Browser and Playwright validation passed after code review round 27: no Error 500, no `handleKeydown` TDZ, no minified `ee` TDZ; Files opened/expanded/read before and after `Run Agent` with Codex App Server + GPT-5.5. Evidence: `api-e2e-round14-browser-codex-gpt55-files-validation-20260529.json`. |
 
 ## Commands / Evidence Summary
 
@@ -314,6 +317,29 @@ Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-a
   - Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round12-diff-size-check-20260529.log`
 
 
+## Round 14 Browser-Level Files Tab Revalidation — 2026-05-29
+
+- **Scenario ID:** `E2E-BROWSER-FILES-001` resolution check / `SCN-021`.
+- **Result:** Pass.
+- **Validation setup:** Self-started backend/frontend from the current worktree.
+  - Backend: `pnpm -C autobyteus-server-ts build:full`, then `node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 8000 --data-dir <isolated data dir>`.
+  - Frontend: `pnpm -C autobyteus-web exec nuxt dev --host 127.0.0.1 --port 3000` with `NUXT_PUBLIC_*`/`BACKEND_NODE_BASE_URL` pointing at `http://127.0.0.1:8000`.
+- **Browser flow:** Opened `/agents?view=list`, clicked Daily Assistant `Run`, selected runtime `Codex App Server`, selected model `OpenAI / GPT-5.5 (default reasoning: medium)`, loaded a real workspace directory, opened Files, expanded `docs`, `src`, and `nested`, opened `README.md`, clicked `Run Agent`, then returned to Files and confirmed the expanded tree/content remained available.
+- **Result checks:** No Nuxt `Error 500`, no `Cannot access 'handleKeydown' before initialization`, no minified `Cannot access 'ee' before initialization`, page errors `0`. One generic browser console 404 was observed by Chrome, with `networkFailures=0`; it was not tied to Files/TDZ behavior and did not fail the validation.
+- **Evidence:**
+  - Backend build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-backend-build-full-20260529.log`
+  - Backend runtime log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-backend-20260529.log`
+  - Frontend runtime log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-frontend-20260529.log`
+  - In-app Browser runtime/model screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-runtime-model-selected-20260529.png`
+  - In-app Browser Files before run screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-files-visible-before-run-20260529.png`
+  - In-app Browser Files after run screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-files-visible-after-run-20260529.png`
+  - Playwright validation script: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-codex-gpt55-files-validation-20260529.mjs`
+  - Playwright JSON summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-codex-gpt55-files-validation-20260529.json`
+  - Playwright run log: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-browser-codex-gpt55-files-validation-20260529.run.log`
+  - Playwright screenshots: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-01-agents-list-20260529.png`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-02-initial-workspace-20260529.png`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-03-codex-gpt55-workspace-20260529.png`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-04-files-before-run-20260529.png`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-05-after-run-20260529.png`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-playwright-06-files-after-run-20260529.png`
+  - Listener cleanup before/after: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-listeners-before-cleanup-20260529.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-listeners-after-cleanup-20260529.log`
+
+
 ## Round 13 Browser-Level Files Tab Regression — 2026-05-29
 
 - **Scenario ID:** `E2E-BROWSER-FILES-001`
@@ -350,10 +376,11 @@ Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-a
 - Round 10 / 11 Terminal runtime: built backend entrypoint with isolated app data, real Terminal WebSockets, isolated PTY backend, `lsof`, and child-process sampling.
 - Browser-level Round 8 runtime: backend `dist/app.js` on `127.0.0.1:8000`, Nuxt dev frontend on `127.0.0.1:3000`, and headless Google Chrome via Playwright.
 - Browser-level Round 13 runtime: backend `dist/app.js` on `127.0.0.1:8000`, Nuxt dev frontend on `127.0.0.1:3000`, in-app browser screenshot capture plus standalone headless Google Chrome/Playwright reproduction.
+- Browser-level Round 14 runtime: backend `dist/app.js` on `127.0.0.1:8000`, Nuxt dev frontend on `127.0.0.1:3000`, in-app Browser and standalone headless Google Chrome/Playwright; UI runtime/model selected as `Codex App Server` and `OpenAI / GPT-5.5 (default reasoning: medium)`.
 
 ## Not Tested / Out Of Scope
 
-- Live model-provider prompt execution with Codex/GPT-5.5 was not submitted. The browser flow verified the run-configuration/runtime/model UI surfaces and workspace/file-explorer behavior, but avoided a paid/side-effectful LLM run because the validation target was watcher/WebSocket/descriptor lifecycle.
+- Live model-provider chat prompt execution with Codex/GPT-5.5 was not submitted. Round 14 selected `Codex App Server` + `OpenAI / GPT-5.5 (default reasoning: medium)` and clicked `Run Agent` to create the run, but did not send a prompt to avoid paid/side-effectful LLM execution because the validation target was browser workspace/FileExplorer behavior.
 - Current-code packaged `.app` launch was not executed by API/E2E. The built backend entrypoint used by the Electron package was executed directly in the macOS descriptor probes; Electron support-code tests also passed.
 - Full frontend/backend typechecks remain baseline-blocked per implementation handoff; the cumulative API/E2E validation used focused tests, production builds, the Electron suite, source grep, runtime probes, and the Round 8 browser-level frontend/backend flow. Round 11 specifically reran the targeted Terminal/right-tabs tests, backend build, target-key grep, and built-backend Terminal descriptor probe relevant to those reviewed changes. Round 12 specifically added and ran durable FileExplorer GraphQL path-boundary E2E, expanded workspace/file-explorer E2E, backend build, boundary greps, and the built-backend high-churn FileExplorer/Terminal/Codex probe relevant to the latest reviewed changes.
 
@@ -367,19 +394,22 @@ Commands were run from `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-a
 - Round 11 built-backend Terminal timing probe stopped its temporary server and removed temporary app data/workspace roots after evidence capture; listener check found no remaining listener on the probe port.
 - Round 12 built-backend high-churn harness stopped its temporary server and removed temporary app data/workspace roots after evidence capture.
 - Round 13 self-started backend/frontend processes were stopped after failure evidence capture; temporary data/workspace directories were removed; cleanup log confirms no remaining listeners on ports 3000/8000: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round13-listeners-after-cleanup-20260529.log`.
+- Round 14 self-started backend/frontend processes were stopped after pass evidence capture; cleanup log confirms no remaining listeners on ports 3000/8000: `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-agent-spawn-ebadf-root-cause/tickets/codex-agent-spawn-ebadf-root-cause/validation-artifacts/api-e2e-round14-listeners-after-cleanup-20260529.log`.
 - The permission-mutating isolated PTY integration test restored the active macOS arm64 `spawn-helper` executable mode; final mode check recorded `755`.
 - No dependency symlinks were created.
 
 ## Final Classification And Handoff
 
-- Latest Result: `Fail`
-- New Failures: `E2E-BROWSER-FILES-001`
+- Latest Result: `Pass`
+- New Failures: `None`
+- Product Failure `E2E-FEWS-001`: `Resolved`
 - Product Failure `E2E-TERMFD-001`: `Resolved`
 - Product Failure `E2E-TERMFD-002`: `Resolved`
 - FileExplorer path-boundary findings `CR-015`, `CR-016`, `CR-017`: `Resolved in runtime validation`
-- Browser-level frontend/backend workspace/FileExplorer validation: `Fail - E2E-BROWSER-FILES-001`
+- Browser-level frontend/backend workspace/FileExplorer validation: `Pass`
+- Browser Files-tab regression `E2E-BROWSER-FILES-001`: `Resolved in Round 14`
 - Server-side Terminal normal attached command-output descriptor lifecycle: `Pass`
-- Repository-resident durable validation edited after Round 25 code review by API/E2E: `Yes - added backend FileExplorer GraphQL path-boundary E2E`
+- Repository-resident durable validation edited after code review round 27 by API/E2E: `No`
 - Terminal target-key / right-tabs advisory cleanup validation: `Pass`
-- Delivery Status: `Paused pending Local Fix for E2E-BROWSER-FILES-001`
-- Recommended Recipient: `implementation_engineer`
+- Delivery Status: `Ready for delivery-phase integrated refresh/docs/finalization`
+- Recommended Recipient: `delivery_engineer`

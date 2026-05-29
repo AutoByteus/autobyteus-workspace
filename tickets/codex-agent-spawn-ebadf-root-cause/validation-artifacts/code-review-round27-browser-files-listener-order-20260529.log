@@ -1,0 +1,7 @@
+Code review Round 27 FileExplorerTabs listener order check
+handleKeydown=336
+attachGlobalListeners=358
+keydown listener attach=359
+syncGlobalListeners=369
+immediate active watch=382
+RESULT: PASS - handleKeydown declaration precedes listener attach/sync/immediate active watcher path
