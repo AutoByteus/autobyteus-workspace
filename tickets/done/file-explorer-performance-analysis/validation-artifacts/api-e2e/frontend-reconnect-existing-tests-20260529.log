@@ -139,4 +139,3 @@ stdout | stores/__tests__/workspaceStore.spec.ts > workspaceStore > file explore
       Tests  30 passed (30)
    Start at  17:32:54
    Duration  5.34s (transform 2.30s, setup 9.43s, collect 71ms, tests 35ms, environment 439ms, prepare 289ms)
-

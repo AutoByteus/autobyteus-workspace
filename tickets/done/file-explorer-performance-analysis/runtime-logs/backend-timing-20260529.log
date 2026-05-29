@@ -101,7 +101,7 @@ migrations/
     └─ migration.sql
   └─ 20260517090000_add_app_data_migration_records/
     └─ migration.sql
-      
+
 All migrations have been successfully applied.
 ┌─────────────────────────────────────────────────────────┐
 │  Update available 5.22.0 -> 7.8.0                       │
@@ -214,7 +214,7 @@ Discovering Autobyteus models from host: https://localhost:51739
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 Discovering Autobyteus models from host: https://localhost:51740
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 Finished Autobyteus discovery. Total models registered: 37
 Successfully fetched 87 models from LLMFactory.
 LLM models cache populated with 87 items.

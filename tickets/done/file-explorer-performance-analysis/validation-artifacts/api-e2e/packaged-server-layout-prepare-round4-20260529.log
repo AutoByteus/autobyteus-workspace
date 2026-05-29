@@ -282,7 +282,7 @@ isElectronBuild false
 ℹ .nuxt/dist/client/_nuxt/CARsT-1X.js                                  918.45 kB │ gzip:   253.51 kB
 ℹ .nuxt/dist/client/_nuxt/D26G1V2N.js                                3,742.90 kB │ gzip: 1,204.74 kB
 
- WARN 
+ WARN
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks

@@ -1,7 +1,7 @@
 # Solution Design Impact Response — VAL-FE-006 Scope Reduction
 
-Date: 2026-05-29  
-Ticket: `file-explorer-performance-analysis`  
+Date: 2026-05-29
+Ticket: `file-explorer-performance-analysis`
 Authoritative workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis`
 
 ## Decision

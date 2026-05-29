@@ -6,7 +6,7 @@
 ●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
 [get-port] Unable to find an available port (tried 29695 on host "0.0.0.0"). Using alternative port 3000.
 
- 
+
               █▀▀▀▀▀▀▀██▀▀▀█▀██▀█▀▀▀▀▀▀▀█
               █ █▀▀▀█ ██▀▀ ▄█▀█▀█ █▀▀▀█ █
               █ █   █ █ █ ▄▀▄ ▄▄█ █   █ █
@@ -21,7 +21,7 @@
               █ █   █ ██▄▀▄ ████▀▄▄█▄▀▄ █
               █ ▀▀▀▀▀ █ ▀▄▀▄█▀  █ ▄▄▀██ █
               ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
- 
+
   ➜ Local:    http://0.0.0.0:3000/
   ➜ Network:  http://192.168.2.158:3000/ [QR code]
 

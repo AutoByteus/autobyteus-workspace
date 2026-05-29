@@ -20,6 +20,8 @@ The frontend opens `/ws/terminal/{sessionId}?cwd={encodedRootPath}` or `/ws/term
 
 Terminal sessions are root-path scoped. They are not tied to file-explorer tree materialization and do not start file-explorer watchers. The `workspaceId` value passed through the streaming service is the resolved root path used to group and close sessions; it is not a request to create or initialize a workspace.
 
+File Explorer watcher physical close is isolated in the File Explorer watcher runtime child process. Releasing the final visible File Explorer watcher lease performs a bounded logical stop in the backend parent and must not serialize Terminal WebSocket route acceptance or PTY startup behind native chokidar close work.
+
 ## WebSocket Lifecycle
 
 1. The route authorizes remote access for the WebSocket request.

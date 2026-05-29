@@ -33,7 +33,7 @@ Number of calls: 0
 
  ❯ stores/__tests__/workspaceStore.reconnect-resync.validation.spec.ts:56:33
      54|     await Promise.resolve();
-     55| 
+     55|
      56|     expect(fetchFolderChildren).toHaveBeenCalledWith(
        |                                 ^
      57|       'ws-1',
@@ -46,4 +46,3 @@ Number of calls: 0
       Tests  1 failed (1)
    Start at  17:33:39
    Duration  3.74s (transform 2.09s, setup 3.28s, collect 23ms, tests 7ms, environment 125ms, prepare 115ms)
-

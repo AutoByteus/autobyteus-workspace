@@ -159,7 +159,7 @@ Discovering Autobyteus models from host: https://localhost:51739
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
 Discovering Autobyteus models from host: https://localhost:51740
 SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
-Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
 Finished Autobyteus discovery. Total models registered: 37
 Successfully fetched 87 models from LLMFactory.
 LLM models cache populated with 87 items.

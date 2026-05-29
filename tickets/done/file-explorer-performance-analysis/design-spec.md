@@ -1,9 +1,9 @@
 # Design Spec
 
-Ticket: `file-explorer-performance-analysis`  
-Authoritative workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis`  
-Date: 2026-05-29  
-Requirements basis: `tickets/in-progress/file-explorer-performance-analysis/requirements.md` (`Refined`, user-approved on 2026-05-29; scope clarified on 2026-05-29)  
+Ticket: `file-explorer-performance-analysis`
+Authoritative workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis`
+Date: 2026-05-29
+Requirements basis: `tickets/in-progress/file-explorer-performance-analysis/requirements.md` (`Refined`, user-approved on 2026-05-29; scope clarified on 2026-05-29)
 Investigation basis: `tickets/in-progress/file-explorer-performance-analysis/investigation-notes.md`
 
 ## Current-State Read

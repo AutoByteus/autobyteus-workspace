@@ -1,7 +1,7 @@
 # Solution Design Impact Response — VAL-FE-006
 
-Date: 2026-05-29  
-Owner: solution_designer  
+Date: 2026-05-29
+Owner: solution_designer
 Trigger: API/E2E round 2 design-impact reroute for backend File Explorer semantic event coalescing/reconciliation.
 
 ## Decision
