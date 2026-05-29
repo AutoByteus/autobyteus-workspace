@@ -1,0 +1,12 @@
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-review-C3EqEA/ws' with max_depth=null
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-path-boundary-review-C3EqEA/ws' completed in 0.0020 seconds.
+PASS loadFolderChildren same-prefix sibling escape: Access denied: Path resolves outside the workspace.
+PASS loadFolderChildren did not rebuild tree on rejection: rebuild calls=0
+PASS loadFolderChildren did not cache tree on rejection: tree=null
+PASS loadFolderChildren root still works: inside.txt,sub
+PASS readFileContent same-prefix sibling escape: Access denied: File is outside the workspace.
+PASS writeFileContent same-prefix sibling escape: Access denied: File is outside the workspace.
+PASS write did not create sibling leak: exists=false
+FAIL renameFileOrFolder newName traversal escape: Destination parent directory not found in tree: ../ws-sibling
+FAIL rename did not create sibling leak: exists=true
+FAIL rename original still exists after rejected escape: exists=false

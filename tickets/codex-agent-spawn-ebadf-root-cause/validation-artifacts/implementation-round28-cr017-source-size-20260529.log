@@ -1,0 +1,3 @@
+PASS autobyteus-server-ts/src/file-explorer/file-explorer.ts: 461 effective non-empty lines
+PASS autobyteus-server-ts/src/file-explorer/operations/base-file-operation.ts: 32 effective non-empty lines
+PASS autobyteus-server-ts/src/file-explorer/operations/rename-file-operation.ts: 73 effective non-empty lines

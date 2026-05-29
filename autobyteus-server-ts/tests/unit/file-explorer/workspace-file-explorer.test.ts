@@ -2,6 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ChangeType } from "../../../src/file-explorer/file-system-changes.js";
 import { WorkspaceFileExplorer } from "../../../src/file-explorer/file-explorer.js";
 
 const watcherState = vi.hoisted(() => ({
@@ -171,6 +172,47 @@ describe("WorkspaceFileExplorer", () => {
 
       expect(rebuildSpy).not.toHaveBeenCalled();
       expect(explorer.getTree()).toBeNull();
+    } finally {
+      fs.rmSync(tempParent, { recursive: true, force: true });
+    }
+  });
+
+  it("renames files with valid leaf names", async () => {
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-rename-leaf-"));
+    try {
+      fs.mkdirSync(path.join(tempRoot, "sub"), { recursive: true });
+      fs.writeFileSync(path.join(tempRoot, "sub", "rename-me.txt"), "content");
+      const explorer = new WorkspaceFileExplorer(tempRoot);
+
+      const event = await explorer.renameFileOrFolder("sub/rename-me.txt", "renamed.txt");
+
+      expect(event.changes[0]?.type).toBe(ChangeType.RENAME);
+      expect(fs.existsSync(path.join(tempRoot, "sub", "rename-me.txt"))).toBe(false);
+      expect(fs.existsSync(path.join(tempRoot, "sub", "renamed.txt"))).toBe(true);
+      expect(explorer.getTree()?.findNodeByPath("sub/renamed.txt")).not.toBeNull();
+    } finally {
+      fs.rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects path-like rename names before filesystem mutation", async () => {
+    const tempParent = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-rename-boundary-"));
+    try {
+      const workspaceRoot = path.join(tempParent, "ws");
+      const siblingRoot = path.join(tempParent, "ws-sibling");
+      fs.mkdirSync(path.join(workspaceRoot, "sub"), { recursive: true });
+      fs.mkdirSync(siblingRoot, { recursive: true });
+      fs.writeFileSync(path.join(workspaceRoot, "sub", "rename-me.txt"), "content");
+      const explorer = new WorkspaceFileExplorer(workspaceRoot);
+
+      await expect(
+        explorer.renameFileOrFolder("sub/rename-me.txt", "../../ws-sibling/renamed-leak.txt"),
+      ).rejects.toThrow("Invalid new name");
+
+      expect(fs.existsSync(path.join(siblingRoot, "renamed-leak.txt"))).toBe(false);
+      expect(fs.existsSync(path.join(workspaceRoot, "sub", "rename-me.txt"))).toBe(true);
+      expect(explorer.getTree()?.findNodeByPath("sub/rename-me.txt")).not.toBeNull();
+      expect(explorer.getTree()?.findNodeByPath("sub/renamed-leak.txt")).toBeNull();
     } finally {
       fs.rmSync(tempParent, { recursive: true, force: true });
     }
