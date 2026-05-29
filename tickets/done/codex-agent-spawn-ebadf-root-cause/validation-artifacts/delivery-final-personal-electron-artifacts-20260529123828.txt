@@ -1,0 +1,42 @@
+Final personal-branch Electron artifacts
+timestamp: 2026-05-29T10:38:33Z
+repo: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+branch: personal
+head: 890f894f622f72f5bfd8adebbec64e6fb364ddba
+origin_personal: 890f894f622f72f5bfd8adebbec64e6fb364ddba
+merge_base: 890f894f622f72f5bfd8adebbec64e6fb364ddba
+relation_origin_personal...HEAD: 0	0
+version: 1.3.32
+
+FILE autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.32.dmg
+size_bytes=379963234 mtime=2026-05-29T12:36:50+0200
+2ff8e5b3e03de47eb509afdd46f10a432f92f275663ae25870e8d4fd679dda38  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.32.dmg
+
+FILE autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.32.dmg.blockmap
+size_bytes=396328 mtime=2026-05-29T12:36:52+0200
+b1c440f879c9f6673635c90bbf4ae3f54179aaf6b28e21d701c30fd675dffc6c  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.32.dmg.blockmap
+
+FILE autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.32.zip
+size_bytes=377384736 mtime=2026-05-29T12:38:04+0200
+ebbcaf7fedd1a97b8bb5c335f4b28baa0308628b2253607c9b8032d4cee28398  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.32.zip
+
+FILE autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.32.zip.blockmap
+size_bytes=387646 mtime=2026-05-29T12:38:06+0200
+eaf781295ba324671801ccc6cbf2d863d5b52edc08d742c01b1a96f3150e6634  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.32.zip.blockmap
+
+FILE autobyteus-web/electron-dist/latest-mac.yml
+size_bytes=555 mtime=2026-05-29T12:38:06+0200
+29f19dc2a483513cde0093f387e48afa883abbd56eb0b9db56432805f55ad364  autobyteus-web/electron-dist/latest-mac.yml
+
+latest-mac.yml:
+version: 1.3.32
+files:
+  - url: AutoByteus_personal_macos-arm64-1.3.32.zip
+    sha512: 7lKdMxi0kqxpbTytW3j+8QDXeSiiW0pWboV2B87MMhgVU6PAwIPwRnyuterDufrqto7sgnhsKtOvLpfoQQYfVg==
+    size: 377384736
+  - url: AutoByteus_personal_macos-arm64-1.3.32.dmg
+    sha512: FC80l9Atp6w+IEdfyxLjKm8/M3wzIHGTj7btJNE+lUOKUujS6s+IVTizlPAOBXi4+B1toYjykJTf+Yovkz4Qfw==
+    size: 379963234
+path: AutoByteus_personal_macos-arm64-1.3.32.zip
+sha512: 7lKdMxi0kqxpbTytW3j+8QDXeSiiW0pWboV2B87MMhgVU6PAwIPwRnyuterDufrqto7sgnhsKtOvLpfoQQYfVg==
+releaseDate: '2026-05-29T10:38:06.200Z'
