@@ -2,13 +2,36 @@ import { describe, it, expect } from 'vitest';
 import { LLMFactory } from '../../../../src/llm/llm-factory.js';
 import { LLMRuntime } from '../../../../src/llm/runtimes.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import type { ModelInfo } from '../../../../src/llm/models.js';
 
 const apiKey = process.env.AUTOBYTEUS_API_KEY;
 const host = process.env.AUTOBYTEUS_LLM_SERVER_HOSTS;
 const forcedTextModelId = process.env.AUTOBYTEUS_LLM_MODEL_ID;
 const forcedImageModelId = process.env.AUTOBYTEUS_LLM_IMAGE_MODEL_ID;
 const runIntegration = apiKey && host ? describe : describe.skip;
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const getSupportedThinkingLevel = (modelInfo: ModelInfo): string | null => {
+  const schema = modelInfo.config_schema;
+  if (!isRecord(schema) || !isRecord(schema.properties)) {
+    return null;
+  }
+
+  const thinkingLevel = schema.properties.thinking_level;
+  if (!isRecord(thinkingLevel)) {
+    return null;
+  }
+
+  const enumValues = Array.isArray(thinkingLevel.enum)
+    ? thinkingLevel.enum.filter((value): value is string => typeof value === 'string')
+    : [];
+
+  return enumValues.find((value) => value === 'minimal') ?? enumValues[0] ?? 'minimal';
+};
 
 const findAutobyteusModel = async (isImageModel = false) => {
   await LLMFactory.ensureInitialized();
@@ -92,6 +115,35 @@ runIntegration('AutobyteusLLM Integration', () => {
 
       expect(fullResponse.length).toBeGreaterThan(10);
       expect(finalChunkReceived).toBe(true);
+    } finally {
+      await llm.cleanup();
+    }
+  }, 120000);
+
+  it('should accept thinking_level generation config when the model exposes it', async () => {
+    const modelInfo = await findAutobyteusModel(false);
+    if (!modelInfo) return;
+
+    const thinkingLevel = getSupportedThinkingLevel(modelInfo);
+    if (!thinkingLevel) return;
+
+    const llm = await LLMFactory.createLLM(
+      modelInfo.model_identifier,
+      new LLMConfig({
+        extraParams: {
+          thinking_level: thinkingLevel
+        }
+      })
+    );
+    try {
+      const response = await llm.sendUserMessage(
+        new LLMUserMessage({ content: "Hello, please respond with 'ready'" }),
+        { logicalConversationId: 'integration-thinking-level-config' }
+      );
+      expect(response).toBeInstanceOf(CompleteResponse);
+      expect(typeof response.content).toBe('string');
+      expect(response.content.length).toBeGreaterThan(0);
+      expect(response.usage).toBeTruthy();
     } finally {
       await llm.cleanup();
     }
