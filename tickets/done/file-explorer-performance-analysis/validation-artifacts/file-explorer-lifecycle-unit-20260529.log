@@ -1,0 +1,267 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > starts watcher when first watcher lease is acquired
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > starts watcher when first watcher lease is acquired
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Acquired file watcher lease for /fake/path (first); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Acquired file watcher lease for /fake/path (second); active leases: 2
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Released file watcher lease for /fake/path (first); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > shares one watcher across multiple leases and stops after the final release
+Released file watcher lease for /fake/path (second); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > makes watcher lease release idempotent
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > makes watcher lease release idempotent
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > returns events from the active watcher
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > returns events from the active watcher
+Released file watcher lease for /fake/path (test); active leases: 0
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > closes active watcher once and clears future subscriptions
+Acquired file watcher lease for /fake/path (test); active leases: 1
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > renames files with valid leaf names
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-rename-leaf-BCuG6F' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > renames files with valid leaf names
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-rename-leaf-BCuG6F' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > rejects path-like rename names before filesystem mutation
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-rename-boundary-aher1i/ws' with max_depth=null
+
+stdout | tests/unit/file-explorer/workspace-file-explorer.test.ts > WorkspaceFileExplorer > rejects path-like rename names before filesystem mutation
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-rename-boundary-aher1i/ws' completed in 0.0000 seconds.
+
+ ✓ tests/unit/file-explorer/workspace-file-explorer.test.ts (11 tests) 31ms
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  write to custom object with { processEnv: myObject }
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts > FileExplorerSession > creates sessions with expected identifiers
+FileExplorerSession created: sess-123 for workspace ws-456
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts > FileExplorerSession > forwards events from the stream into the session
+FileExplorerSession created: sess-1 for workspace ws-1
+Session sess-1: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts > FileExplorerSession > forwards events from the stream into the session
+FileExplorerSession closed: sess-1
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts > FileExplorerSession > stops emitting when closed
+FileExplorerSession created: sess-2 for workspace ws-2
+Session sess-2: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts > FileExplorerSession > stops emitting when closed
+FileExplorerSession closed: sess-2
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts > FileExplorerSession > allows start to be called multiple times
+FileExplorerSession created: sess-3 for workspace ws-3
+Session sess-3: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts > FileExplorerSession > allows start to be called multiple times
+FileExplorerSession closed: sess-3
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts > FileExplorerSession > releases its watcher lease once when closed
+FileExplorerSession created: sess-4 for workspace ws-4
+Session sess-4: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts > FileExplorerSession > releases its watcher lease once when closed
+FileExplorerSession closed: sess-4
+
+ ✓ tests/unit/services/file-explorer-streaming/file-explorer-session.test.ts (5 tests) 6ms
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts
+[dotenv@17.3.1] injecting env (0) from .env.test -- tip: ⚙️  suppress all logs with { quiet: true }
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+FileExplorerSession created: 6e8a890c-252f-49db-8fd5-08f33e0ece01 for workspace ws-123
+Session 6e8a890c-252f-49db-8fd5-08f33e0ece01: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+Created file explorer session 6e8a890c-252f-49db-8fd5-08f33e0ece01 for workspace ws-123. Active sessions: 1
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+File explorer WebSocket connected: 6e8a890c-252f-49db-8fd5-08f33e0ece01 for workspace ws-123
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+FileExplorerSession closed: 6e8a890c-252f-49db-8fd5-08f33e0ece01
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+Closed file explorer session 6e8a890c-252f-49db-8fd5-08f33e0ece01. Active sessions: 0
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > connects and sends a CONNECTED message
+File explorer WebSocket disconnected: 6e8a890c-252f-49db-8fd5-08f33e0ece01
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes with 4004 when workspace is missing
+FileExplorerSessionManager initialized
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes with 4004 when workspace is missing
+File explorer WebSocket connection rejected: workspace missing not found (Error: workspace missing)
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > sends an error when watcher is unavailable
+FileExplorerSessionManager initialized
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > sends an error when watcher is unavailable
+Failed to start file watcher: Error: watcher failed
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+FileExplorerSession created: e7979641-1444-4aff-b2bb-aee5cd688832 for workspace ws-send-fail
+Session e7979641-1444-4aff-b2bb-aee5cd688832: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+Created file explorer session e7979641-1444-4aff-b2bb-aee5cd688832 for workspace ws-send-fail. Active sessions: 1
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+Failed to set up file explorer session: Error: send failed
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+FileExplorerSession closed: e7979641-1444-4aff-b2bb-aee5cd688832
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > releases the watcher and file-explorer leases if CONNECTED send fails after session creation
+Closed file explorer session e7979641-1444-4aff-b2bb-aee5cd688832. Active sessions: 0
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+FileExplorerSession created: 3aff1bf4-f846-46e3-99cf-e318c317e26b for workspace ws-send-loop-fail
+Session 3aff1bf4-f846-46e3-99cf-e318c317e26b: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+Created file explorer session 3aff1bf4-f846-46e3-99cf-e318c317e26b for workspace ws-send-loop-fail. Active sessions: 1
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+File explorer WebSocket connected: 3aff1bf4-f846-46e3-99cf-e318c317e26b for workspace ws-send-loop-fail
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+Error sending file change event: Error: file change send failed
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+FileExplorerSession closed: 3aff1bf4-f846-46e3-99cf-e318c317e26b
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+Closed file explorer session 3aff1bf4-f846-46e3-99cf-e318c317e26b. Active sessions: 0
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > closes the session and releases leases if a connected file change send fails
+File explorer WebSocket stream ended: 3aff1bf4-f846-46e3-99cf-e318c317e26b
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > responds to PING with PONG
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > returns null for unknown message types
+FileExplorerSessionManager initialized
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > returns null for unknown message types
+Unknown message type from client: UNKNOWN
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > returns null for invalid JSON
+FileExplorerSessionManager initialized
+
+stderr | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > returns null for invalid JSON
+Invalid JSON from client: not-json (SyntaxError: Unexpected token 'o', "not-json" is not valid JSON)
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+FileExplorerSession created: dca6b85f-895e-450c-b61f-a2bbd98b708d for workspace ws-2
+Session dca6b85f-895e-450c-b61f-a2bbd98b708d: Started event forwarding task
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+Created file explorer session dca6b85f-895e-450c-b61f-a2bbd98b708d for workspace ws-2. Active sessions: 1
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+File explorer WebSocket connected: dca6b85f-895e-450c-b61f-a2bbd98b708d for workspace ws-2
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+FileExplorerSession closed: dca6b85f-895e-450c-b61f-a2bbd98b708d
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+Closed file explorer session dca6b85f-895e-450c-b61f-a2bbd98b708d. Active sessions: 0
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > disconnects and removes sessions
+File explorer WebSocket disconnected: dca6b85f-895e-450c-b61f-a2bbd98b708d
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > handles disconnecting unknown sessions
+FileExplorerSessionManager initialized
+
+stdout | tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts > FileExplorerStreamHandler > handles disconnecting unknown sessions
+File explorer WebSocket disconnected: missing
+
+ ✓ tests/unit/services/file-explorer-streaming/file-explorer-stream-handler.test.ts (10 tests) 8ms
+
+ Test Files  3 passed (3)
+      Tests  26 passed (26)
+   Start at  14:51:20
+   Duration  873ms (transform 165ms, setup 34ms, import 226ms, tests 45ms, environment 0ms)

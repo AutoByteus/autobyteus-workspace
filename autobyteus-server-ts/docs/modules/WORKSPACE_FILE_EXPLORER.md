@@ -14,3 +14,5 @@ Interaction boundary between workspace lifecycle and file explorer session strea
 ## Notes
 
 Temp workspace creation is startup-initialized and reused via fixed workspace ID.
+
+Workspace/file-explorer acquisition is intentionally lazy. Snapshot GraphQL operations acquire a file explorer lease without starting a native watcher, while live File Explorer WebSocket sessions acquire a separate watcher lease. The final live watcher release logically stops the parent watcher and delegates native chokidar close to the watcher runtime child process so workspace/file-explorer cleanup does not block unrelated backend capabilities.

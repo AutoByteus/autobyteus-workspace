@@ -1,0 +1,26 @@
+FileExplorerSessionManager initialized
+FileExplorerSession created: 7d64c883-d2d7-4038-b41c-623a3b4aee17 for workspace overflow-ws
+Session 7d64c883-d2d7-4038-b41c-623a3b4aee17: Started event forwarding task
+Created file explorer session 7d64c883-d2d7-4038-b41c-623a3b4aee17 for workspace overflow-ws. Active sessions: 1
+File explorer WebSocket connected: 7d64c883-d2d7-4038-b41c-623a3b4aee17 for workspace overflow-ws
+Session 7d64c883-d2d7-4038-b41c-623a3b4aee17: Error forwarding events: File Explorer event batch queue overflow; reconnect required
+Stream error for session 7d64c883-d2d7-4038-b41c-623a3b4aee17: Error: File Explorer event batch queue overflow; reconnect required
+FileExplorerSession closed: 7d64c883-d2d7-4038-b41c-623a3b4aee17
+Closed file explorer session 7d64c883-d2d7-4038-b41c-623a3b4aee17. Active sessions: 0
+File explorer WebSocket stream ended: 7d64c883-d2d7-4038-b41c-623a3b4aee17
+{
+  "startedAt": "2026-05-29T16:52:32.014Z",
+  "sessionId": "7d64c883-d2d7-4038-b41c-623a3b4aee17",
+  "sentTypes": [
+    "CONNECTED"
+  ],
+  "closeCodes": [
+    1011
+  ],
+  "watcherLeaseReleaseCalls": 1,
+  "fileExplorerLeaseReleaseCalls": 1,
+  "activeSessionClosed": true,
+  "connectedBeforeOverflow": true,
+  "pass": true,
+  "finishedAt": "2026-05-29T16:52:32.015Z"
+}

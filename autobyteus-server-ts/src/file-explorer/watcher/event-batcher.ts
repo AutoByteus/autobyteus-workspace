@@ -1,4 +1,4 @@
-type QueueItem = string | null;
+type QueueItem = string | null | Error;
 
 export class AsyncQueue<T> {
   private items: T[] = [];
@@ -26,6 +26,10 @@ export class AsyncQueue<T> {
     return this.items.shift();
   }
 
+  clear(): void {
+    this.items = [];
+  }
+
   get size(): number {
     return this.items.length;
   }
@@ -34,16 +38,25 @@ export class AsyncQueue<T> {
 export class EventBatcher {
   private eventGenerator: AsyncGenerator<string, void, void>;
   private batchWindowMs: number;
+  private maxQueuedEvents: number;
 
-  constructor(eventGenerator: AsyncGenerator<string, void, void>, batchWindowSeconds = 0.25) {
+  constructor(
+    eventGenerator: AsyncGenerator<string, void, void>,
+    batchWindowSeconds = 0.25,
+    maxQueuedEvents = 5000,
+  ) {
     this.eventGenerator = eventGenerator;
     this.batchWindowMs = batchWindowSeconds * 1000;
+    this.maxQueuedEvents = maxQueuedEvents;
   }
 
   getBatchedEvents(): AsyncGenerator<string, void, void> {
     const queue = new AsyncQueue<QueueItem>();
     const collector = this.collect(queue);
-    void collector.catch(() => undefined);
+    void collector.catch((error) => {
+      queue.clear();
+      queue.push(error instanceof Error ? error : new Error(String(error)));
+    });
 
     let closed = false;
     let ended = false;
@@ -82,6 +95,10 @@ export class EventBatcher {
         }
 
         const firstEvent = await queue.pop();
+        if (firstEvent instanceof Error) {
+          close();
+          throw firstEvent;
+        }
         if (firstEvent === null || closed) {
           ended = true;
           close();
@@ -96,6 +113,10 @@ export class EventBatcher {
 
         while (queue.size > 0) {
           const nextItem = queue.tryPop();
+          if (nextItem instanceof Error) {
+            close();
+            throw nextItem;
+          }
           if (nextItem === null) {
             ended = true;
             break;
@@ -147,6 +168,11 @@ export class EventBatcher {
   private async collect(queue: AsyncQueue<QueueItem>): Promise<void> {
     try {
       for await (const event of this.eventGenerator) {
+        if (queue.size >= this.maxQueuedEvents) {
+          queue.clear();
+          queue.push(new Error("File Explorer event batch queue overflow; reconnect required"));
+          return;
+        }
         queue.push(event);
       }
     } finally {

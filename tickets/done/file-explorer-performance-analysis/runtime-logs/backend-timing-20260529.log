@@ -1,0 +1,301 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/.env
+[dotenv@17.3.1] injecting env (2) from tickets/in-progress/file-explorer-performance-analysis/runtime-data/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+(node:22282) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Running Prisma migrations...
+Using Prisma engine overrides from existing-env: process.env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/db/production.db"
+
+SQLite database production.db created at file:/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/db/production.db
+
+13 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+
+All migrations have been successfully applied.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 7.8.0                       │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Initialized server settings service with 16 predefined settings
+Populating agent definition cache for the first time...
+Agent definition cache populated with 46 items.
+AgentRunManager initialized.
+[2026-05-29T13:28:31.301Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+{"level":30,"time":1780061311370,"pid":22282,"hostname":"MacBookPro","msg":"Server listening at http://0.0.0.0:8000"}
+[2026-05-29T13:28:31.371Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+[2026-05-29T13:28:31.372Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:8000
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/runtime-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Scheduling non-critical startup tasks to run in the background...
+Background cache pre-loading process has started.
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'TokenUsagePersistenceProcessor' (class: 'TokenUsagePersistenceProcessor') registered successfully.
+Registered LLM response processor 'TokenUsagePersistenceProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Loading workspace packages to trigger registration...
+Loading agent tool definitions...
+Running MCP tool registration background task...
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Loading and registering all MCP server configurations from file...
+Populating MCP server config cache for the first time...
+Background task 'Agent Customizations' completed successfully.
+Pre-loaded 46 agent definitions into cache.
+[2026-05-29T13:28:31.388Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Loaded tool group: Media Tools
+Successfully loaded workspace packages.
+Background task 'Workspaces' completed successfully.
+Successfully registered tool definition: 'list_available_tools'
+Successfully registered tool definition: 'list_input_processors'
+Successfully registered tool definition: 'list_llm_response_processors'
+Successfully registered tool definition: 'list_lifecycle_processors'
+Successfully registered tool definition: 'list_tool_result_processors'
+Loaded tool group: Tool Management Tools
+Successfully registered tool definition: 'get_available_skills'
+Successfully registered tool definition: 'get_skill_content'
+Successfully registered tool definition: 'create_skill_version'
+Loaded tool group: Skills Tools
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+Background task 'Agent Tools' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=40
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+Finished Autobyteus image model discovery. Total models registered: 6
+[2026-05-29T13:28:31.442Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+Pre-loaded 21 agent team definitions into cache.
+Pre-loaded 0 MCP server configs into cache.
+Populating LLM models cache for the first time...
+Fetching list of available LLM models from LLMFactory...
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Finished LM Studio discovery. Total models registered: 29
+Discovering Autobyteus models from host: https://localhost:51739
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Discovering Autobyteus models from host: https://localhost:51740
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not connect or fetch models from Autobyteus server at https://localhost:51740:
+Finished Autobyteus discovery. Total models registered: 37
+Successfully fetched 87 models from LLMFactory.
+LLM models cache populated with 87 items.
+Pre-loaded 87 LLM models into cache.
+Populating Image models cache for the first time...
+Fetching list of available Image models from ImageClientFactory...
+Awaiting Autobyteus image model discovery before listing models...
+Successfully fetched 12 image models from ImageClientFactory.
+Image models by provider: OPENAI=2, GEMINI=4, AUTOBYTEUS=6
+Image models by runtime: api=6, autobyteus=6
+Image models cache populated with 12 items.
+Pre-loaded 12 image models into cache.
+Populating Audio models cache for the first time...
+Fetching list of available Audio models from AudioClientFactory...
+Awaiting Autobyteus audio model discovery before listing models...
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=21
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+Finished Autobyteus audio model discovery. Total models registered: 4
+Successfully fetched 8 audio models from AudioClientFactory.
+Audio models by provider: AUTOBYTEUS=4, OPENAI=1, GEMINI=3
+Audio models by runtime: autobyteus=4, api=4
+Audio models cache populated with 8 items.
+Pre-loaded 8 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+Created and registered workspace ID: agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+Created WorkspaceFileExplorer for agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c (file-explorer-websocket).
+[TIMING][WorkspaceFileExplorer] watcherLease.acquire.begin {"at":1780061770137,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","reason":"file-explorer-websocket","watcherLeaseCount":1,"hasWatcher":false,"hasWatcherStartPromise":false,"hasWatcherStopPromise":false}
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[TIMING][FileSystemWatcher] start.begin {"at":1780061770143,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo"}
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[TIMING][FileSystemWatcher] start.ready {"at":1780061772483,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","durationMs":2337,"watchedDirectoryCount":1670,"watchedEntryCount":9847}
+[TIMING][WorkspaceFileExplorer] watcherLease.acquire.end {"at":1780061772483,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","reason":"file-explorer-websocket","durationMs":2346,"watcherLeaseCount":1,"hasWatcher":true}
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-workspace-superrepo (file-explorer-websocket); active leases: 1
+FileExplorerSession created: e68e5801-3cb6-46e2-a4f9-2b5d7c2e903c for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+Created file explorer session e68e5801-3cb6-46e2-a4f9-2b5d7c2e903c for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c. Active sessions: 1
+File explorer WebSocket connected: e68e5801-3cb6-46e2-a4f9-2b5d7c2e903c for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+File explorer websocket attached for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+[TIMING][FileExplorerSession] close.begin {"at":1780061774631,"sessionId":"e68e5801-3cb6-46e2-a4f9-2b5d7c2e903c","workspaceId":"agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c","hasWatcherLease":true,"hasFileExplorerLease":true}
+[TIMING][WorkspaceFileExplorer] watcherLease.release.begin {"at":1780061774632,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","reason":"file-explorer-websocket","watcherLeaseCount":1,"hasWatcher":true}
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-workspace-superrepo (file-explorer-websocket); active leases: 0
+[TIMING][WorkspaceFileExplorer] stopWatcherIfUnused.begin {"at":1780061774632,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","watcherLeaseCount":0,"hasWatcher":true,"hasWatcherStartPromise":false,"hasWatcherStopPromise":false}
+[TIMING][FileSystemWatcher] stop.begin {"at":1780061774634,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","subscriberCount":1,"pendingUnlinkTimerCount":0,"watchedDirectoryCount":1670,"watchedEntryCount":9847}
+[TIMING][FileSystemWatcher] stop.end {"at":1780061794810,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","durationMs":20178,"watchedDirectoryCount":1670,"watchedEntryCount":9847}
+Stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[TIMING][WorkspaceFileExplorer] stopWatcherIfUnused.end {"at":1780061794810,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","durationMs":20178,"watcherLeaseCount":0,"hasWatcher":false}
+[TIMING][WorkspaceFileExplorer] watcherLease.release.end {"at":1780061794810,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","reason":"file-explorer-websocket","durationMs":20178,"watcherLeaseCount":0,"hasWatcher":false}
+[TIMING][FileExplorerSession] close.end {"at":1780061794810,"sessionId":"e68e5801-3cb6-46e2-a4f9-2b5d7c2e903c","workspaceId":"agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c","durationMs":20179}
+FileExplorerSession closed: e68e5801-3cb6-46e2-a4f9-2b5d7c2e903c
+Closed file explorer session e68e5801-3cb6-46e2-a4f9-2b5d7c2e903c. Active sessions: 0
+File explorer WebSocket disconnected: e68e5801-3cb6-46e2-a4f9-2b5d7c2e903c
+[TIMING][TerminalRoute] socket.accepted {"at":1780061794814,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","query":{"cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo"}}
+[TIMING][TerminalRoute] auth.complete {"at":1780061794815,"elapsedMs":1}
+[TIMING][TerminalRoute] cwd.resolved {"at":1780061794815,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","elapsedMs":1,"cwdDurationMs":0}
+[TIMING][TerminalRoute] handler.connect.begin {"at":1780061794815,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","elapsedMs":1}
+[TIMING][TerminalHandler] connect.begin {"at":1780061794815,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","targetKey":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo"}
+[TIMING][PtySessionManager] createSession.begin {"at":1780061794816,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","targetKey":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","backendName":"IsolatedPtySession"}
+[TIMING][PtySessionManager] session.start.begin {"at":1780061794816,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","targetKey":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","backendName":"IsolatedPtySession"}
+[TIMING][IsolatedPtySession] start.begin {"at":1780061794816,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo"}
+[TIMING][IsolatedPtySession] spawnHelper.ready {"at":1780061794818,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","durationMs":2,"elapsedMs":2}
+[TIMING][IsolatedPtySession] helper.spawned {"at":1780061794821,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","pid":39071,"spawnReturnMs":3,"elapsedMs":5}
+[TIMING][IsolatedPtySession] helper.readyMessage {"at":1780061795064,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","elapsedMs":248}
+[TIMING][IsolatedPtySession] waitForStartup.end {"at":1780061795064,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","durationMs":243,"elapsedMs":248}
+[TIMING][IsolatedPtySession] start.end {"at":1780061795064,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","durationMs":248}
+[TIMING][PtySessionManager] session.start.end {"at":1780061795064,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","targetKey":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","backendName":"IsolatedPtySession","startDurationMs":248,"elapsedMs":249}
+[TIMING][PtySessionManager] createSession.end {"at":1780061795065,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","targetKey":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","backendName":"IsolatedPtySession","durationMs":250}
+Created terminal session 4580a6b5-2a8d-410f-b289-4af96f5bc6c1 using backend IsolatedPtySession for target /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[TIMING][TerminalHandler] manager.createSession.end {"at":1780061795065,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","durationMs":250,"elapsedMs":250}
+[TIMING][TerminalHandler] readLoop.begin {"at":1780061795065,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1"}
+[TIMING][TerminalHandler] connect.end {"at":1780061795065,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","durationMs":250}
+Terminal WebSocket connected: 4580a6b5-2a8d-410f-b289-4af96f5bc6c1
+[TIMING][TerminalRoute] handler.connect.end {"at":1780061795065,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","elapsedMs":251,"durationMs":250}
+Terminal websocket attached for cwd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[TIMING][IsolatedPtySession] stdout.firstData {"at":1780061795185,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","cwd":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","elapsedMs":369,"bytes":183,"preview":"\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, "}
+[TIMING][TerminalHandler] readLoop.firstOutput {"at":1780061795187,"sessionId":"4580a6b5-2a8d-410f-b289-4af96f5bc6c1","elapsedMs":122,"bytes":183,"preview":"\r\nThe default interactive shell is now zsh.\r\nTo update your account to use zsh, "}
+[2026-05-29T13:45:59.498Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-05-29T13:45:59.521Z] [INFO] [server.runtime] Server closed cleanly.

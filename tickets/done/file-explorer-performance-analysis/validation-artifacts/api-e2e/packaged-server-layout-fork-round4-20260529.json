@@ -1,0 +1,29 @@
+{
+  "entrypointPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-web/resources/server/dist/file-explorer/watcher/runtime/watcher-runtime-process.js",
+  "workspaceRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-packaged-watch-rpenO5",
+  "error": "Error [ERR_IPC_DISCONNECTED]: IPC channel is already disconnected\n    at target.disconnect (node:internal/child_process:903:26)\n    at [stdin]:40:11",
+  "ready": {
+    "type": "ready",
+    "watcherId": "410b1bea-8656-4ada-ba57-7f8e0c920333",
+    "generation": 1,
+    "stats": {
+      "watchedDirectoryCount": 2,
+      "watchedEntryCount": 2
+    },
+    "startDurationMs": 8.4
+  },
+  "stopped": {
+    "type": "stopped",
+    "watcherId": "410b1bea-8656-4ada-ba57-7f8e0c920333",
+    "generation": 1,
+    "reason": "packaged-layout-validation",
+    "stats": {
+      "watchedDirectoryCount": 2,
+      "watchedEntryCount": 2
+    },
+    "closeDurationMs": 0.5
+  },
+  "logs": "",
+  "pass": false,
+  "finishedAt": "2026-05-29T16:56:18.133Z"
+}

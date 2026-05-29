@@ -1,0 +1,28 @@
+{
+  "entrypointPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-web/resources/server/dist/file-explorer/watcher/runtime/watcher-runtime-process.js",
+  "workspaceRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-packaged-watch-qhkT6j",
+  "ready": {
+    "type": "ready",
+    "watcherId": "b0fe5abd-b6ad-4416-94f2-c1c7a99af783",
+    "generation": 1,
+    "stats": {
+      "watchedDirectoryCount": 2,
+      "watchedEntryCount": 2
+    },
+    "startDurationMs": 7.9
+  },
+  "stopped": {
+    "type": "stopped",
+    "watcherId": "b0fe5abd-b6ad-4416-94f2-c1c7a99af783",
+    "generation": 1,
+    "reason": "packaged-layout-validation",
+    "stats": {
+      "watchedDirectoryCount": 2,
+      "watchedEntryCount": 2
+    },
+    "closeDurationMs": 0.3
+  },
+  "pass": true,
+  "logs": "",
+  "finishedAt": "2026-05-29T16:56:44.669Z"
+}

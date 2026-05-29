@@ -2,14 +2,11 @@ import fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
 import path from "node:path";
 import { DirectoryTraversal } from "./directory-traversal.js";
-import { FileNameIndexer } from "./file-name-indexer.js";
 import type { FileSystemChangeEvent } from "./file-system-changes.js";
 import type { FileSystemWatcher } from "./watcher/file-system-watcher.js";
 import { TreeNode } from "./tree-node.js";
 import { DefaultSortStrategy } from "./sort-strategy/default-sort-strategy.js";
 import type { DirectoryEntry } from "./sort-strategy/sort-strategy.js";
-import { GitIgnoreStrategy } from "./traversal-ignore-strategy/git-ignore-strategy.js";
-import { SpecificFolderIgnoreStrategy } from "./traversal-ignore-strategy/specific-folder-ignore-strategy.js";
 import type { TraversalIgnoreStrategy } from "./traversal-ignore-strategy/traversal-ignore-strategy.js";
 import { WorkspaceIgnoreMatcher } from "./traversal-ignore-strategy/workspace-ignore-matcher.js";
 import { AddFileOrFolderOperation } from "./operations/add-file-or-folder-operation.js";
@@ -17,12 +14,8 @@ import { MoveFileOperation } from "./operations/move-file-operation.js";
 import { RemoveFileOperation } from "./operations/remove-file-operation.js";
 import { RenameFileOperation } from "./operations/rename-file-operation.js";
 import { WriteFileOperation } from "./operations/write-file-operation.js";
-import {
-  BaseFileSearchStrategy,
-  CompositeSearchStrategy,
-  FuzzysortSearchStrategy,
-  RipgrepSearchStrategy,
-} from "./search-strategy/index.js";
+import { createWorkspaceIgnoreStrategies } from "./traversal-ignore-strategy/workspace-ignore-strategies.js";
+import { WorkspaceSearchSnapshotController } from "./search-snapshot/workspace-search-snapshot-controller.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -30,6 +23,10 @@ const logger = {
 };
 
 type FolderProjectionOptions = {
+  signal?: AbortSignal;
+};
+
+type DirectoryTreeBuildOptions = {
   signal?: AbortSignal;
 };
 
@@ -46,29 +43,31 @@ export class WorkspaceFileExplorer {
   private watcherStartPromise: Promise<void> | null = null;
   private watcherStopPromise: Promise<void> | null = null;
   private watcherLeaseCount = 0;
-  private searchStrategy: BaseFileSearchStrategy | null = null;
-  private fileNameIndexer: FileNameIndexer | null = null;
-  private searchSnapshotRefreshTask: Promise<void> | null = null;
+  private searchSnapshotController: WorkspaceSearchSnapshotController;
 
   constructor(workspaceRootPath: string) {
     this.workspaceRootPath = path.resolve(workspaceRootPath);
-    this.ignoreStrategies = [
-      new SpecificFolderIgnoreStrategy([".git"]),
-      new GitIgnoreStrategy(this.workspaceRootPath),
-    ];
+    this.ignoreStrategies = createWorkspaceIgnoreStrategies(this.workspaceRootPath);
+    this.searchSnapshotController = new WorkspaceSearchSnapshotController(this);
   }
 
   get rootPath(): string {
     return this.workspaceRootPath;
   }
 
-  async buildWorkspaceDirectoryTree(maxDepth: number | null = null): Promise<TreeNode> {
+  async buildWorkspaceDirectoryTree(
+    maxDepth: number | null = null,
+    options: DirectoryTreeBuildOptions = {},
+  ): Promise<TreeNode> {
     if (!this.workspaceRootPath) {
       throw new Error("Workspace root path is not set");
     }
 
+    this.throwIfAborted(options.signal, "Directory tree build aborted");
     const directoryTraversal = new DirectoryTraversal(this.ignoreStrategies);
-    this.rootNode = await directoryTraversal.buildTree(this.workspaceRootPath, maxDepth);
+    const nextRootNode = await directoryTraversal.buildTree(this.workspaceRootPath, maxDepth, options);
+    this.throwIfAborted(options.signal, "Directory tree build aborted");
+    this.rootNode = nextRootNode;
     return this.rootNode;
   }
 
@@ -245,13 +244,8 @@ export class WorkspaceFileExplorer {
     return paths;
   }
 
-  async searchFiles(query: string): Promise<string[]> {
-    if (!this.searchStrategy) {
-      this.searchStrategy = this.createSearchStrategy();
-    }
-
-    await this.refreshSearchSnapshotIndex();
-    return this.searchStrategy.search(this.workspaceRootPath, query);
+  async searchFiles(query: string, signal?: AbortSignal): Promise<string[]> {
+    return this.searchSnapshotController.search(query, signal);
   }
 
   async acquireWatcherLease(reason: string): Promise<WatcherLease> {
@@ -289,13 +283,7 @@ export class WorkspaceFileExplorer {
 
   async close(): Promise<void> {
     this.watcherLeaseCount = 0;
-    if (this.searchSnapshotRefreshTask) {
-      try {
-        await this.searchSnapshotRefreshTask;
-      } catch {
-        // ignore refresh failure during close
-      }
-    }
+    this.searchSnapshotController.close();
     if (this.watcherStartPromise) {
       try {
         await this.watcherStartPromise;
@@ -311,32 +299,6 @@ export class WorkspaceFileExplorer {
 
   suppressWatcherPaths(paths: string[]): void {
     this.fileWatcher?.suppressPaths(paths);
-  }
-
-  private createSearchStrategy(): BaseFileSearchStrategy {
-    if (!this.fileNameIndexer) {
-      this.fileNameIndexer = new FileNameIndexer(this);
-    }
-    const fuzzysortStrategy = new FuzzysortSearchStrategy(this.fileNameIndexer, 10);
-    const ripgrepStrategy = new RipgrepSearchStrategy(50);
-    return new CompositeSearchStrategy([fuzzysortStrategy, ripgrepStrategy]);
-  }
-
-  private async refreshSearchSnapshotIndex(): Promise<void> {
-    if (!this.fileNameIndexer) {
-      this.fileNameIndexer = new FileNameIndexer(this);
-    }
-
-    if (!this.searchSnapshotRefreshTask) {
-      this.searchSnapshotRefreshTask = (async () => {
-        await this.buildWorkspaceDirectoryTree();
-        await this.fileNameIndexer?.refreshSnapshotIndex();
-      })().finally(() => {
-        this.searchSnapshotRefreshTask = null;
-      });
-    }
-
-    await this.searchSnapshotRefreshTask;
   }
 
   private async ensureTreeSnapshotLoaded(): Promise<void> {
@@ -427,11 +389,11 @@ export class WorkspaceFileExplorer {
     return { isFile: dirent.isFile(), isDirectory: dirent.isDirectory() };
   }
 
-  private throwIfAborted(signal?: AbortSignal): void {
+  private throwIfAborted(signal?: AbortSignal, message = "Folder children projection aborted"): void {
     if (!signal?.aborted) {
       return;
     }
-    const error = new Error("Folder children projection aborted");
+    const error = new Error(message);
     error.name = "AbortError";
     throw error;
   }

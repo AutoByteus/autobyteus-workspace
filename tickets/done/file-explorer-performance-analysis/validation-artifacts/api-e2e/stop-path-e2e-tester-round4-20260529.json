@@ -1,0 +1,246 @@
+{
+  "startedAt": "2026-05-29T16:53:38.933Z",
+  "serverRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts",
+  "scenarios": [
+    {
+      "id": "STOP-E2E-001",
+      "description": "Real WebSocket stop during large-workspace child physical close, with Terminal opened immediately afterward.",
+      "workspace": {
+        "workspaceId": "agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo"
+      },
+      "fileConnectedMs": 2980.8,
+      "processesWhileWatching": [
+        "79951 79891 /Users/normy/.nvm/versions/node/v22.21.1/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js"
+      ],
+      "closeToTerminalOpenStartMs": 0.8,
+      "terminalOpenMs": 5.2,
+      "terminalMarkerMs": 60.8,
+      "fileCloseObserved": {
+        "code": 1000,
+        "reason": "simulate-real-ui-files-tab-stop"
+      },
+      "logicalStopDurationMs": 0,
+      "maxParentEventLoopIntervalGapMs": 51.6,
+      "stopBegin": "[TIMING][FileSystemWatcher] stop.begin {\"at\":1780073623261,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"subscriberCount\":1,\"pendingUnlinkTimerCount\":0,\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1,\"reason\":\"logical-stop\"}",
+      "stopRequest": "[TIMING][WatcherRuntimeClient] stop.request {\"at\":1780073623261,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"reason\":\"logical-stop\",\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1}",
+      "stopEnd": "[TIMING][FileSystemWatcher] stop.end {\"at\":1780073623261,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"durationMs\":0,\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1,\"reason\":\"logical-stop\"}",
+      "childStopped": null,
+      "childKilled": "[TIMING][WatcherRuntimeClient] kill {\"at\":1780073628263,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"reason\":\"stop-timeout:logical-stop\",\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1}",
+      "childExit": "[TIMING][WatcherRuntimeClient] exit {\"at\":1780073628275,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"code\":null,\"signal\":\"SIGKILL\",\"stopRequested\":true,\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1}",
+      "processesAfterCleanup": [],
+      "pass": true
+    },
+    {
+      "id": "STOP-E2E-002",
+      "description": "Stop/reconnect/resync simulation with real WebSocket clients and real watcher events.",
+      "workspaceId": "agent_ws_893408044698503be493e4010be476f9cdff54540835673c7af6fe32213645a6",
+      "eventReceivedAfterReconnect": {
+        "type": "FILE_SYSTEM_CHANGE",
+        "payload": {
+          "changes": [
+            {
+              "type": "add",
+              "node": {
+                "name": "after-reconnect.txt",
+                "path": "after-reconnect.txt",
+                "is_file": true,
+                "id": "f8a8155a-8c8d-5fb8-b01e-aa596b082e44",
+                "children": []
+              },
+              "parent_id": "e828bbeb-45b5-5cb5-be25-4686133df3b4"
+            }
+          ]
+        }
+      },
+      "processesAfterCleanup": [],
+      "pass": true
+    },
+    {
+      "id": "STOP-E2E-003",
+      "description": "Built child runtime exits on parent IPC disconnect.",
+      "entrypointPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js",
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "elapsedMs": 7.5
+      },
+      "childLogs": "",
+      "pass": true
+    }
+  ],
+  "server": {
+    "baseUrl": "http://127.0.0.1:59597",
+    "wsBase": "ws://127.0.0.1:59597",
+    "port": 59597
+  },
+  "finalWatcherProcesses": [],
+  "timingLogTail": [
+    {
+      "at": 1780073620192,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] start.begin {\"at\":1780073620192,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1}"
+    },
+    {
+      "at": 1780073620192,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] start.spawn.begin {\"at\":1780073620192,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"entrypointPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js\",\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1}"
+    },
+    {
+      "at": 1780073623164,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] message.ready {\"at\":1780073623164,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"stats\":{\"watchedDirectoryCount\":1672,\"watchedEntryCount\":9861},\"startDurationMs\":2922.8,\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1}"
+    },
+    {
+      "at": 1780073623164,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] start.ready {\"at\":1780073623164,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"durationMs\":2972,\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1}"
+    },
+    {
+      "at": 1780073623164,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] start.ready {\"at\":1780073623164,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1,\"durationMs\":2973}"
+    },
+    {
+      "at": 1780073623261,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] stop.begin {\"at\":1780073623261,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"subscriberCount\":1,\"pendingUnlinkTimerCount\":0,\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1,\"reason\":\"logical-stop\"}"
+    },
+    {
+      "at": 1780073623261,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] stop.request {\"at\":1780073623261,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"reason\":\"logical-stop\",\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1}"
+    },
+    {
+      "at": 1780073623261,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] stop.end {\"at\":1780073623261,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"durationMs\":0,\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1,\"reason\":\"logical-stop\"}"
+    },
+    {
+      "at": 1780073628263,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] kill {\"at\":1780073628263,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"reason\":\"stop-timeout:logical-stop\",\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1}"
+    },
+    {
+      "at": 1780073628275,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] exit {\"at\":1780073628275,\"workspaceRootPath\":\"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo\",\"code\":null,\"signal\":\"SIGKILL\",\"stopRequested\":true,\"watcherId\":\"1895701f-0244-4b0c-bca0-a348f6b825d2\",\"generation\":1}"
+    },
+    {
+      "at": 1780073629917,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] start.begin {\"at\":1780073629917,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1}"
+    },
+    {
+      "at": 1780073629917,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] start.spawn.begin {\"at\":1780073629917,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"entrypointPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js\",\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1}"
+    },
+    {
+      "at": 1780073629977,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] message.ready {\"at\":1780073629977,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"stats\":{\"watchedDirectoryCount\":2,\"watchedEntryCount\":2},\"startDurationMs\":8.7,\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1}"
+    },
+    {
+      "at": 1780073629977,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] start.ready {\"at\":1780073629977,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"durationMs\":60,\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1}"
+    },
+    {
+      "at": 1780073629977,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] start.ready {\"at\":1780073629977,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1,\"durationMs\":60}"
+    },
+    {
+      "at": 1780073629980,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] stop.begin {\"at\":1780073629980,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"subscriberCount\":1,\"pendingUnlinkTimerCount\":0,\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1,\"reason\":\"logical-stop\"}"
+    },
+    {
+      "at": 1780073629980,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] stop.request {\"at\":1780073629980,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"reason\":\"logical-stop\",\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1}"
+    },
+    {
+      "at": 1780073629980,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] stop.end {\"at\":1780073629980,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"durationMs\":0,\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1,\"reason\":\"logical-stop\"}"
+    },
+    {
+      "at": 1780073629982,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] kill {\"at\":1780073629982,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"reason\":\"replaced-by-new-generation\",\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1}"
+    },
+    {
+      "at": 1780073629982,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] start.begin {\"at\":1780073629982,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1}"
+    },
+    {
+      "at": 1780073629982,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] start.spawn.begin {\"at\":1780073629982,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"entrypointPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js\",\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1}"
+    },
+    {
+      "at": 1780073629983,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] message.stopped {\"at\":1780073629983,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"reason\":\"logical-stop\",\"closeDurationMs\":0.4,\"stats\":{\"watchedDirectoryCount\":2,\"watchedEntryCount\":2},\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1}"
+    },
+    {
+      "at": 1780073629983,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] runtime.stopped {\"at\":1780073629983,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1,\"stats\":{\"watchedDirectoryCount\":2,\"watchedEntryCount\":2}}"
+    },
+    {
+      "at": 1780073629984,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] exit {\"at\":1780073629984,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"code\":0,\"signal\":null,\"stopRequested\":true,\"watcherId\":\"7b675fef-f953-40de-be8e-3fcc99db0aa8\",\"generation\":1}"
+    },
+    {
+      "at": 1780073630040,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] message.ready {\"at\":1780073630040,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"stats\":{\"watchedDirectoryCount\":2,\"watchedEntryCount\":2},\"startDurationMs\":8.2,\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1}"
+    },
+    {
+      "at": 1780073630040,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] start.ready {\"at\":1780073630040,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"durationMs\":58,\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1}"
+    },
+    {
+      "at": 1780073630041,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] start.ready {\"at\":1780073630041,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1,\"durationMs\":58}"
+    },
+    {
+      "at": 1780073630529,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] stop.begin {\"at\":1780073630529,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"subscriberCount\":1,\"pendingUnlinkTimerCount\":0,\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1,\"reason\":\"logical-stop\"}"
+    },
+    {
+      "at": 1780073630530,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] stop.request {\"at\":1780073630530,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"reason\":\"logical-stop\",\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1}"
+    },
+    {
+      "at": 1780073630530,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] stop.end {\"at\":1780073630530,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"durationMs\":1,\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1,\"reason\":\"logical-stop\"}"
+    },
+    {
+      "at": 1780073630530,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] message.stopped {\"at\":1780073630530,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"reason\":\"logical-stop\",\"closeDurationMs\":0.4,\"stats\":{\"watchedDirectoryCount\":2,\"watchedEntryCount\":3},\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1}"
+    },
+    {
+      "at": 1780073630530,
+      "level": "info",
+      "line": "[TIMING][FileSystemWatcher] runtime.stopped {\"at\":1780073630530,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1,\"stats\":{\"watchedDirectoryCount\":2,\"watchedEntryCount\":3}}"
+    },
+    {
+      "at": 1780073630533,
+      "level": "info",
+      "line": "[TIMING][WatcherRuntimeClient] exit {\"at\":1780073630533,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-o3W9Ce\",\"code\":0,\"signal\":null,\"stopRequested\":true,\"watcherId\":\"86462fe3-93a3-4acb-a2ae-dc97c42101d4\",\"generation\":1}"
+    }
+  ],
+  "finishedAt": "2026-05-29T16:53:52.267Z"
+}

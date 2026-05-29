@@ -1,0 +1,144 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-e2e-server-sj61ur
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-e2e-server-sj61ur/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-e2e-server-sj61ur/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-e2e-server-sj61ur/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-e2e-server-sj61ur
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-e2e-server-sj61ur/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-e2e-server-sj61ur/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-e2e-server-sj61ur/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-e2e-server-sj61ur/memory
+============================================================
+AppConfig initialization completed successfully
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'load_skill'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'assign_task_to'
+Successfully registered tool definition: 'create_tasks'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'get_my_tasks'
+Successfully registered tool definition: 'get_task_plan_status'
+Successfully registered tool definition: 'update_task_status'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+AgentTeamFactory (Singleton) initialized.
+(node:14670) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+[2026-05-29T15:31:35.690Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentTeamRunManager initialized.
+{"level":30,"time":1780068695755,"pid":14670,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:56537"}
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
+Created and registered workspace ID: agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+Created WorkspaceFileExplorer for agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c (file-explorer-websocket).
+FileSystemWatcher initialized for '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[TIMING][FileSystemWatcher] start.begin {"at":1780068695779,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","watcherId":"caf6c21b-cc58-4b18-b121-d71a0e7d5bbe","generation":1}
+[TIMING][WatcherRuntimeClient] start.spawn.begin {"at":1780068695779,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","entrypointPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js","watcherId":"caf6c21b-cc58-4b18-b121-d71a0e7d5bbe","generation":1}
+[TIMING][WatcherRuntimeClient] message.ready {"at":1780068698133,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","stats":{"watchedDirectoryCount":1672,"watchedEntryCount":9861},"startDurationMs":2314.9,"watcherId":"caf6c21b-cc58-4b18-b121-d71a0e7d5bbe","generation":1}
+[TIMING][WatcherRuntimeClient] start.ready {"at":1780068698133,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","durationMs":2354,"watcherId":"caf6c21b-cc58-4b18-b121-d71a0e7d5bbe","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1780068698133,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","watcherId":"caf6c21b-cc58-4b18-b121-d71a0e7d5bbe","generation":1,"durationMs":2354}
+Started filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Acquired file watcher lease for /Users/normy/autobyteus_org/autobyteus-workspace-superrepo (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 8e1670e6-1aa9-48b0-8545-9675a12072b0 for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+Created file explorer session 8e1670e6-1aa9-48b0-8545-9675a12072b0 for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c. Active sessions: 1
+File explorer WebSocket connected: 8e1670e6-1aa9-48b0-8545-9675a12072b0 for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+File explorer websocket attached for workspace agent_ws_2168e8191679724a362414b52618be3b82b0ef7fcfacc379b39c269325a4480c
+Released file watcher lease for /Users/normy/autobyteus_org/autobyteus-workspace-superrepo (file-explorer-websocket); active leases: 0
+[TIMING][FileSystemWatcher] stop.begin {"at":1780068698198,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","subscriberCount":1,"pendingUnlinkTimerCount":0,"watcherId":"caf6c21b-cc58-4b18-b121-d71a0e7d5bbe","generation":1,"reason":"logical-stop"}
+[TIMING][WatcherRuntimeClient] stop.request {"at":1780068698198,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","reason":"logical-stop","watcherId":"caf6c21b-cc58-4b18-b121-d71a0e7d5bbe","generation":1}
+Logically stopped filesystem watcher for workspace /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+[TIMING][FileSystemWatcher] stop.end {"at":1780068698198,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","durationMs":0,"watcherId":"caf6c21b-cc58-4b18-b121-d71a0e7d5bbe","generation":1,"reason":"logical-stop"}
+FileExplorerSession closed: 8e1670e6-1aa9-48b0-8545-9675a12072b0
+Closed file explorer session 8e1670e6-1aa9-48b0-8545-9675a12072b0. Active sessions: 0
+File explorer WebSocket disconnected: 8e1670e6-1aa9-48b0-8545-9675a12072b0
+Created terminal session stop-e2e-319c8f51-861d-4cbe-8a7b-1250298a7c32 using backend IsolatedPtySession for target /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Terminal WebSocket connected: stop-e2e-319c8f51-861d-4cbe-8a7b-1250298a7c32
+Terminal websocket attached for cwd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+Closed PTY session stop-e2e-319c8f51-861d-4cbe-8a7b-1250298a7c32
+Terminal WebSocket disconnected: stop-e2e-319c8f51-861d-4cbe-8a7b-1250298a7c32
+Watcher runtime for /Users/normy/autobyteus_org/autobyteus-workspace-superrepo did not stop within 5000ms; killing child
+[TIMING][WatcherRuntimeClient] kill {"at":1780068703199,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","reason":"stop-timeout:logical-stop","watcherId":"caf6c21b-cc58-4b18-b121-d71a0e7d5bbe","generation":1}
+[TIMING][WatcherRuntimeClient] exit {"at":1780068703210,"workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-workspace-superrepo","code":null,"signal":"SIGKILL","stopRequested":true,"watcherId":"caf6c21b-cc58-4b18-b121-d71a0e7d5bbe","generation":1}
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv.
+Created and registered workspace ID: agent_ws_26ea30dece43ba02846c416de5e751cc70f677569d8b2b2b1caaaaa1bf5b5f0e
+Created WorkspaceFileExplorer for agent_ws_26ea30dece43ba02846c416de5e751cc70f677569d8b2b2b1caaaaa1bf5b5f0e (file-explorer-websocket).
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[TIMING][FileSystemWatcher] start.begin {"at":1780068704802,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1}
+[TIMING][WatcherRuntimeClient] start.spawn.begin {"at":1780068704802,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","entrypointPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js","watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1}
+[TIMING][WatcherRuntimeClient] message.ready {"at":1780068704846,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","stats":{"watchedDirectoryCount":2,"watchedEntryCount":2},"startDurationMs":6.1,"watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1}
+[TIMING][WatcherRuntimeClient] start.ready {"at":1780068704846,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","durationMs":44,"watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1780068704846,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1,"durationMs":44}
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv (file-explorer-websocket); active leases: 1
+FileExplorerSession created: ecc7539c-2f97-4d72-b2a2-f0c0620b95ea for workspace agent_ws_26ea30dece43ba02846c416de5e751cc70f677569d8b2b2b1caaaaa1bf5b5f0e
+Created file explorer session ecc7539c-2f97-4d72-b2a2-f0c0620b95ea for workspace agent_ws_26ea30dece43ba02846c416de5e751cc70f677569d8b2b2b1caaaaa1bf5b5f0e. Active sessions: 1
+File explorer WebSocket connected: ecc7539c-2f97-4d72-b2a2-f0c0620b95ea for workspace agent_ws_26ea30dece43ba02846c416de5e751cc70f677569d8b2b2b1caaaaa1bf5b5f0e
+File explorer websocket attached for workspace agent_ws_26ea30dece43ba02846c416de5e751cc70f677569d8b2b2b1caaaaa1bf5b5f0e
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv (file-explorer-websocket); active leases: 0
+[TIMING][FileSystemWatcher] stop.begin {"at":1780068704848,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","subscriberCount":1,"pendingUnlinkTimerCount":0,"watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1,"reason":"logical-stop"}
+[TIMING][WatcherRuntimeClient] stop.request {"at":1780068704848,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","reason":"logical-stop","watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1}
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv
+[TIMING][FileSystemWatcher] stop.end {"at":1780068704848,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","durationMs":0,"watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1,"reason":"logical-stop"}
+FileExplorerSession closed: ecc7539c-2f97-4d72-b2a2-f0c0620b95ea
+Closed file explorer session ecc7539c-2f97-4d72-b2a2-f0c0620b95ea. Active sessions: 0
+File explorer WebSocket disconnected: ecc7539c-2f97-4d72-b2a2-f0c0620b95ea
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Replacing stale watcher runtime client for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv; killing previous child
+[TIMING][WatcherRuntimeClient] kill {"at":1780068704849,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","reason":"replaced-by-new-generation","watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1}
+[TIMING][FileSystemWatcher] start.begin {"at":1780068704849,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1}
+[TIMING][WatcherRuntimeClient] start.spawn.begin {"at":1780068704849,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","entrypointPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-server-ts/dist/file-explorer/watcher/runtime/watcher-runtime-process.js","watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1}
+[TIMING][WatcherRuntimeClient] message.stopped {"at":1780068704850,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","reason":"logical-stop","closeDurationMs":0.3,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":2},"watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1780068704850,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":2}}
+[TIMING][WatcherRuntimeClient] exit {"at":1780068704850,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","code":null,"signal":"SIGKILL","stopRequested":true,"watcherId":"2e3f007e-6c2e-4ce7-a53a-5306a4cc3fdf","generation":1}
+[TIMING][WatcherRuntimeClient] message.ready {"at":1780068704893,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","stats":{"watchedDirectoryCount":2,"watchedEntryCount":2},"startDurationMs":6.2,"watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1}
+[TIMING][WatcherRuntimeClient] start.ready {"at":1780068704893,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","durationMs":44,"watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1}
+[TIMING][FileSystemWatcher] start.ready {"at":1780068704893,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1,"durationMs":44}
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv
+Acquired file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 98d217a8-ae04-46fd-ae5f-6c925dd38462 for workspace agent_ws_26ea30dece43ba02846c416de5e751cc70f677569d8b2b2b1caaaaa1bf5b5f0e
+Created file explorer session 98d217a8-ae04-46fd-ae5f-6c925dd38462 for workspace agent_ws_26ea30dece43ba02846c416de5e751cc70f677569d8b2b2b1caaaaa1bf5b5f0e. Active sessions: 1
+File explorer WebSocket connected: 98d217a8-ae04-46fd-ae5f-6c925dd38462 for workspace agent_ws_26ea30dece43ba02846c416de5e751cc70f677569d8b2b2b1caaaaa1bf5b5f0e
+File explorer websocket attached for workspace agent_ws_26ea30dece43ba02846c416de5e751cc70f677569d8b2b2b1caaaaa1bf5b5f0e
+Watcher detected creation: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv/after-reconnect.txt
+Released file watcher lease for /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv (file-explorer-websocket); active leases: 0
+[TIMING][FileSystemWatcher] stop.begin {"at":1780068705374,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","subscriberCount":1,"pendingUnlinkTimerCount":0,"watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1,"reason":"logical-stop"}
+[TIMING][WatcherRuntimeClient] stop.request {"at":1780068705375,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","reason":"logical-stop","watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1}
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv
+[TIMING][FileSystemWatcher] stop.end {"at":1780068705375,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","durationMs":1,"watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1,"reason":"logical-stop"}
+FileExplorerSession closed: 98d217a8-ae04-46fd-ae5f-6c925dd38462
+Closed file explorer session 98d217a8-ae04-46fd-ae5f-6c925dd38462. Active sessions: 0
+File explorer WebSocket disconnected: 98d217a8-ae04-46fd-ae5f-6c925dd38462
+[TIMING][WatcherRuntimeClient] message.stopped {"at":1780068705377,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","reason":"logical-stop","closeDurationMs":0.4,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":3},"watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1}
+[TIMING][FileSystemWatcher] runtime.stopped {"at":1780068705377,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1,"stats":{"watchedDirectoryCount":2,"watchedEntryCount":3}}
+[TIMING][WatcherRuntimeClient] exit {"at":1780068705379,"workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab-stop-reconnect-ws-tNRifv","code":0,"signal":null,"stopRequested":true,"watcherId":"16058ceb-3ddc-4b7c-93d3-aabcf7d5e3fe","generation":1}
+Wrote /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/tickets/in-progress/file-explorer-performance-analysis/validation-artifacts/api-e2e/stop-path-e2e-tester-20260529.json
