@@ -1,0 +1,9 @@
+{
+  "url": "http://127.0.0.1:32123/settings?section=nodes&nodeTab=dockerGuide",
+  "hasStartDockerNode": true,
+  "hasNormalDockerNodeCopy": true,
+  "hasNewContainer": true,
+  "hasRemovedProfileTerms": false,
+  "checkedRemovedTermsRegex": "--profile|mobile-safe|mobile_safe|MOBILE_SAFE|AUTOBYTEUS_NODE_PROFILE",
+  "visibleExcerpt": "DOCKER NODE\n\nStart Docker node\n\nInstall the Docker launcher once, then create a normal Docker node for local or trusted private-network access.\n\n...\nCreate Docker node\n\nPulls the latest image and creates the next indexed Docker container with the normal launcher configuration.\n\nCopy\nautobyteus-docker new-container"
+}

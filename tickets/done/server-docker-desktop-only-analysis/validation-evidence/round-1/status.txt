@@ -1,0 +1,2 @@
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:57247 (nginx:alpine)

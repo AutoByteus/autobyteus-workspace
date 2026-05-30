@@ -129,7 +129,7 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
     resetAdvertisedVerification();
     const validation = selectedUrlValidation.value;
     if (!validation.isValid || !validation.isHttps || !validation.isAndroidFacing) {
-      return validation.message || 'Enter a private Android-facing HTTPS URL for this remote node.';
+      return validation.message || 'Enter a phone-facing private HTTPS URL for this remote node.';
     }
     try {
       const [managementResponse, advertisedStatus] = await Promise.all([
@@ -142,10 +142,10 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
         return 'Could not verify this URL because one status response does not include a server instance ID.';
       }
       if (managementId !== advertisedId) {
-        return 'The Android-facing URL reaches a different AutoByteUs node. Map the HTTPS URL to this node, then retry.';
+        return 'The phone-facing URL reaches a different AutoByteUs node. Map the HTTPS URL to this node, then retry.';
       }
       advertisedUrlVerified.value = true;
-      advertisedUrlVerificationMessage.value = 'Android-facing URL verified for this node.';
+      advertisedUrlVerificationMessage.value = 'Phone-facing URL verified for this node.';
       return null;
     } catch (verifyError) {
       return `${formatPhoneAccessRequestError(verifyError)} Use a private HTTPS URL mapped to this node, such as Tailscale Serve.`;
@@ -161,7 +161,7 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
     }
     if (!selectedServerBaseUrl.value.trim() || (isRemoteNodeWindow.value && !manualServerBaseUrl.value.trim())) {
       error.value = isRemoteNodeWindow.value
-        ? 'Enter the Android-facing HTTPS URL for this remote node first.'
+        ? 'Enter the phone-facing private HTTPS URL for this remote node first.'
         : 'Choose or enter a server URL first.';
       return;
     }

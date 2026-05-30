@@ -1,0 +1,14 @@
+$ docker run mcr.microsoft.com/powershell:latest parse and profile rejection
+
+An error has occurred that was not properly handled. Additional information is shown below. The PowerShell process will exit.
+Unhandled exception. System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+   at System.Reflection.MethodBaseInvoker.InvokePropertySetter(Object obj, BindingFlags invokeAttr, Binder binder, Object parameter, CultureInfo culture)
+qemu: uncaught target signal 6 (Aborted) - core dumped
+
+Conclusion: host pwsh is unavailable; mcr.microsoft.com/powershell:latest does not advertise linux/arm64 in manifest on this host, and the amd64 emulated container aborted under qemu. PowerShell runtime validation is therefore recorded as not tested in this environment.
+Manifest platforms observed for latest:
+- linux/amd64
+- linux/armv7
+- windows/amd64
+
+Cleanup: removed mcr.microsoft.com/powershell:latest image after failed emulated validation attempt.

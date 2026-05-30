@@ -1,0 +1,373 @@
+[
+    {
+        "Id": "5e2a84637e9df642c0f8966645abb4386b451b38f88a1400387aa7af0fd2095a",
+        "Created": "2026-05-30T05:07:08.247381337Z",
+        "Path": "/docker-entrypoint.sh",
+        "Args": [
+            "nginx",
+            "-g",
+            "daemon off;"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 1080,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-05-30T05:07:08.334923295Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a",
+        "ResolvConfPath": "/var/lib/docker/containers/5e2a84637e9df642c0f8966645abb4386b451b38f88a1400387aa7af0fd2095a/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/5e2a84637e9df642c0f8966645abb4386b451b38f88a1400387aa7af0fd2095a/hostname",
+        "HostsPath": "/var/lib/docker/containers/5e2a84637e9df642c0f8966645abb4386b451b38f88a1400387aa7af0fd2095a/hosts",
+        "LogPath": "/var/lib/docker/containers/5e2a84637e9df642c0f8966645abb4386b451b38f88a1400387aa7af0fd2095a/5e2a84637e9df642c0f8966645abb4386b451b38f88a1400387aa7af0fd2095a-json.log",
+        "Name": "/autobyteus-server-0",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": [
+                "autobyteus-server-0-workspace:/app/autobyteus-server-ts/workspace",
+                "autobyteus-server-0-data:/home/autobyteus/data",
+                "autobyteus-server-0-root-home:/root"
+            ],
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {
+                "5900/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "57368"
+                    }
+                ],
+                "6080/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "57369"
+                    }
+                ],
+                "8000/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "57367"
+                    }
+                ],
+                "9223/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "57370"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "unless-stopped",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": [
+                "CAP_SYS_ADMIN"
+            ],
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": [
+                "seccomp=unconfined"
+            ],
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "bind",
+                    "Source": "/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/nodes/autobyteus-server-0",
+                    "Target": "/home/autobyteus/workspace"
+                },
+                {
+                    "Type": "bind",
+                    "Source": "/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/shared",
+                    "Target": "/home/autobyteus/shared"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/nodes/autobyteus-server-0",
+                "Destination": "/home/autobyteus/workspace",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/shared",
+                "Destination": "/home/autobyteus/shared",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "volume",
+                "Name": "autobyteus-server-0-workspace",
+                "Source": "/var/lib/docker/volumes/autobyteus-server-0-workspace/_data",
+                "Destination": "/app/autobyteus-server-ts/workspace",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "autobyteus-server-0-data",
+                "Source": "/var/lib/docker/volumes/autobyteus-server-0-data/_data",
+                "Destination": "/home/autobyteus/data",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "volume",
+                "Name": "autobyteus-server-0-root-home",
+                "Source": "/var/lib/docker/volumes/autobyteus-server-0-root-home/_data",
+                "Destination": "/root",
+                "Driver": "local",
+                "Mode": "z",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+        "Config": {
+            "Hostname": "5e2a84637e9d",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "5900/tcp": {},
+                "6080/tcp": {},
+                "80/tcp": {},
+                "8000/tcp": {},
+                "9223/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "AUTOBYTEUS_WORKSPACE_ROOT=/app",
+                "AUTOBYTEUS_DATA_DIR=/home/autobyteus/data",
+                "AUTOBYTEUS_BIND_HOST=0.0.0.0",
+                "AUTOBYTEUS_SERVER_PORT=8000",
+                "AUTOBYTEUS_SERVER_HOST=http://localhost:57367",
+                "AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:57369",
+                "DB_TYPE=sqlite",
+                "AUTOBYTEUS_SKIP_SYNC=1",
+                "APP_ENV=production",
+                "LOG_LEVEL=INFO",
+                "AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NGINX_VERSION=1.31.1",
+                "PKG_RELEASE=1",
+                "DYNPKG_RELEASE=1",
+                "NJS_VERSION=0.9.9",
+                "NJS_RELEASE=1",
+                "ACME_VERSION=0.4.1"
+            ],
+            "Cmd": [
+                "nginx",
+                "-g",
+                "daemon off;"
+            ],
+            "Image": "nginx:alpine",
+            "Volumes": null,
+            "WorkingDir": "/",
+            "Entrypoint": [
+                "/docker-entrypoint.sh"
+            ],
+            "Labels": {
+                "com.autobyteus.configHash": "2c266802bc1de236df0b4e0f3a05f4fc65b35a837c6049339bdfd6b4c150a919",
+                "com.autobyteus.launcher": "server-docker",
+                "com.autobyteus.nodeName": "autobyteus-server-0",
+                "maintainer": "NGINX Docker Maintainers <docker-maint@nginx.com>"
+            },
+            "StopSignal": "SIGQUIT"
+        },
+        "NetworkSettings": {
+            "SandboxID": "b5b48aa4b3217046cfbea007507a90ff8bc6c229509633b22809428eac3645f2",
+            "SandboxKey": "/var/run/docker/netns/b5b48aa4b321",
+            "Ports": {
+                "5900/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "57368"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "57368"
+                    }
+                ],
+                "6080/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "57369"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "57369"
+                    }
+                ],
+                "80/tcp": null,
+                "8000/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "57367"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "57367"
+                    }
+                ],
+                "9223/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "57370"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "57370"
+                    }
+                ]
+            },
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "59405f5e586e79ea97bf70d55a33a1408b638c5cdf5611baab48da66e4a4ee5d",
+                    "EndpointID": "83e2207a8922cd644539e1ebc06783e97eaa8cbef832ca645681323999244a2e",
+                    "Gateway": "172.18.0.1",
+                    "IPAddress": "172.18.0.2",
+                    "MacAddress": "c6:e0:e3:41:62:5a",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:6be2079f2181018558b14f5bedd074d5520112f74a60a0732a8c4f8042267c0a",
+            "size": 2497,
+            "annotations": {
+                "com.docker.official-images.bashbrew.arch": "arm64v8",
+                "org.opencontainers.image.base.digest": "sha256:f9cddce40dd0ee1f19ab533cf697894c88b013ef0cb472a010e2169c87e409b0",
+                "org.opencontainers.image.base.name": "nginx:1.31.1-alpine-slim",
+                "org.opencontainers.image.created": "2026-05-22T18:30:34Z",
+                "org.opencontainers.image.revision": "3375edc7170bc7b7da708c1c658706eb5355e099",
+                "org.opencontainers.image.source": "https://github.com/nginx/docker-nginx.git#3375edc7170bc7b7da708c1c658706eb5355e099:mainline/alpine",
+                "org.opencontainers.image.url": "https://hub.docker.com/_/nginx",
+                "org.opencontainers.image.version": "1.31.1-alpine"
+            },
+            "platform": {
+                "architecture": "arm64",
+                "os": "linux",
+                "variant": "v8"
+            }
+        }
+    }
+]

@@ -185,13 +185,6 @@ autobyteus-docker new-container
 
 Repeated `new-container` calls create `autobyteus-server-0`, then `autobyteus-server-1`, then `autobyteus-server-2`, and so on.
 
-For the recommended Android/Phone Access isolation path, create a mobile-safe
-node instead:
-
-```bash
-autobyteus-docker new-container --profile mobile-safe
-```
-
 Use the printed Backend URL in **Settings -> Nodes -> Add Remote Node**, then
 open that Docker node window over a trusted LAN, VPN, tailnet, or equivalent
 private-network path. The default product model does not add a separate owner

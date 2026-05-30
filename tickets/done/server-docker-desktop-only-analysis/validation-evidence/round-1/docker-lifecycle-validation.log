@@ -1,0 +1,314 @@
+
+### Start isolated Docker-in-Docker daemon
+801086f8fa4565dc3f0e2f7b8f635afe34281f541867d309b31c04ae08c7e0bf
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server= os= arch= driver=
+error during connect: Get "http://127.0.0.1:57008/v1.52/info": EOF
+Inner Docker server=29.5.2 os=Alpine Linux v3.23 (containerized) arch=aarch64 driver=overlayfs
+PASS: isolated daemon reachable at tcp://127.0.0.1:57008
+
+### Prime validation images inside isolated daemon
+alpine: Pulling from library/nginx
+42394e2ad482: Pulling fs layer
+a0a8eb1892ac: Pulling fs layer
+d17f077ada11: Pulling fs layer
+58dfa199cc57: Pulling fs layer
+29fd18534678: Pulling fs layer
+8dd0c1727b8e: Pulling fs layer
+79429faec028: Pulling fs layer
+92c8eaa0c5e2: Pulling fs layer
+92c8eaa0c5e2: Download complete
+58dfa199cc57: Download complete
+29fd18534678: Download complete
+8dd0c1727b8e: Download complete
+79429faec028: Download complete
+a0a8eb1892ac: Download complete
+d17f077ada11: Download complete
+821300eaf493: Download complete
+d17f077ada11: Pull complete
+66899d86e0d7: Download complete
+92c8eaa0c5e2: Pull complete
+58dfa199cc57: Pull complete
+29fd18534678: Pull complete
+8dd0c1727b8e: Pull complete
+79429faec028: Pull complete
+a0a8eb1892ac: Pull complete
+42394e2ad482: Download complete
+42394e2ad482: Pull complete
+Digest: sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+Status: Downloaded newer image for nginx:alpine
+docker.io/library/nginx:alpine
+1.27-alpine: Pulling from library/nginx
+6e771e15690e: Pulling fs layer
+9994ea1088e3: Pulling fs layer
+c60e446e49a0: Pulling fs layer
+e6557c42ebea: Pulling fs layer
+d3282d7e6b76: Pulling fs layer
+a4ce1202d746: Pulling fs layer
+1ab010a06338: Pulling fs layer
+37aca2470cda: Pulling fs layer
+37aca2470cda: Download complete
+e6557c42ebea: Download complete
+d3282d7e6b76: Download complete
+a4ce1202d746: Download complete
+1ab010a06338: Download complete
+6e771e15690e: Download complete
+c60e446e49a0: Download complete
+6e771e15690e: Pull complete
+37aca2470cda: Pull complete
+e6557c42ebea: Pull complete
+d3282d7e6b76: Pull complete
+a4ce1202d746: Pull complete
+1ab010a06338: Pull complete
+c60e446e49a0: Pull complete
+5988adaa992c: Download complete
+707735927b67: Download complete
+9994ea1088e3: Download complete
+9994ea1088e3: Pull complete
+Digest: sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+Status: Downloaded newer image for nginx:1.27-alpine
+docker.io/library/nginx:1.27-alpine
+PASS: nginx validation images pulled
+
+### Scenario 1: --profile is rejected and does not create a container
+PASS: profile option rejected before docker run
+
+### Scenario 2: new-container creates normal Docker node
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:57247
+GraphQL: http://localhost:57247/graphql
+noVNC: http://localhost:57249
+VNC: localhost:57248
+Chrome debug: localhost:57250
+Workspace: /home/autobyteus/workspace -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+PASS: new-container: normal Docker run shape verified
+
+### Scenario 3: urls/status/storage/logs expose lifecycle information
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:57247
+GraphQL: http://localhost:57247/graphql
+noVNC: http://localhost:57249
+VNC: localhost:57248
+Chrome debug: localhost:57250
+Workspace: /home/autobyteus/workspace -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+NODE                     CONTAINER                STATUS         BACKEND
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:57247 (nginx:alpine)
+AutoByteus Docker storage: autobyteus-server-0
+Private Docker named volumes (kept during recreate/destroy/reset):
+  autobyteus-server-0-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  autobyteus-server-0-root-home -> /root (Codex/Claude auth and root home settings)
+  autobyteus-server-0-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/nodes/autobyteus-server-0 -> /home/autobyteus/workspace (this node's user workspace and default temp workspace)
+  /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/shared -> /home/autobyteus/shared (shared across launcher-managed Docker nodes)
+Launcher state directory: /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/state
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes /home/autobyteus/workspace after apply.
+2026/05/30 05:06:55 [notice] 1#1: using the "epoll" event method
+2026/05/30 05:06:55 [notice] 1#1: nginx/1.31.1
+2026/05/30 05:06:55 [notice] 1#1: built by gcc 15.2.0 (Alpine 15.2.0)
+2026/05/30 05:06:55 [notice] 1#1: OS: Linux 6.12.54-linuxkit
+2026/05/30 05:06:55 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2026/05/30 05:06:55 [notice] 1#1: start worker processes
+2026/05/30 05:06:55 [notice] 1#1: start worker process 30
+2026/05/30 05:06:55 [notice] 1#1: start worker process 31
+2026/05/30 05:06:55 [notice] 1#1: start worker process 32
+2026/05/30 05:06:55 [notice] 1#1: start worker process 33
+2026/05/30 05:06:55 [notice] 1#1: start worker process 34
+2026/05/30 05:06:55 [notice] 1#1: start worker process 35
+2026/05/30 05:06:55 [notice] 1#1: start worker process 36
+2026/05/30 05:06:55 [notice] 1#1: start worker process 37
+2026/05/30 05:06:55 [notice] 1#1: start worker process 38
+2026/05/30 05:06:55 [notice] 1#1: start worker process 39
+/docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+PASS: urls/status/storage/logs checked
+
+### Scenario 4: workspace apply --all recreates stale config when shared root changes
+[AutoByteus Docker] Applying shared workspace bind mounts to autobyteus-server-0. Named volumes will be kept.
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Launcher config changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:57247
+GraphQL: http://localhost:57247/graphql
+noVNC: http://localhost:57249
+VNC: localhost:57248
+Chrome debug: localhost:57250
+Workspace: /home/autobyteus/workspace -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-b/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-b/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+PASS: workspace apply --all: normal Docker run shape verified
+
+### Scenario 5: upgrade --all recreates node for changed image
+[AutoByteus Docker] Checking image nginx:1.27-alpine
+1.27-alpine: Pulling from library/nginx
+Digest: sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+Status: Image is up to date for nginx:1.27-alpine
+docker.io/library/nginx:1.27-alpine
+[AutoByteus Docker] Image changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:1.27-alpine
+Backend: http://localhost:57247
+GraphQL: http://localhost:57247/graphql
+noVNC: http://localhost:57249
+VNC: localhost:57248
+Chrome debug: localhost:57250
+Workspace: /home/autobyteus/workspace -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-b/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-b/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+[AutoByteus Docker] Removed unused AutoByteus server image sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a.
+PASS: upgrade --all: normal Docker run shape verified
+
+### Scenario 6: reset destroys managed nodes and recreates default normal node
+[AutoByteus Docker] Removed managed container autobyteus-server-0. Named volumes were kept.
+[AutoByteus Docker] Removed unused AutoByteus server image sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10.
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+d17f077ada11: Pulling fs layer
+42394e2ad482: Pulling fs layer
+8dd0c1727b8e: Pulling fs layer
+58dfa199cc57: Pulling fs layer
+a0a8eb1892ac: Pulling fs layer
+29fd18534678: Pulling fs layer
+92c8eaa0c5e2: Pulling fs layer
+79429faec028: Pulling fs layer
+58dfa199cc57: Download complete
+79429faec028: Download complete
+8dd0c1727b8e: Download complete
+29fd18534678: Download complete
+92c8eaa0c5e2: Download complete
+d17f077ada11: Download complete
+a0a8eb1892ac: Download complete
+58dfa199cc57: Pull complete
+79429faec028: Pull complete
+8dd0c1727b8e: Pull complete
+29fd18534678: Pull complete
+92c8eaa0c5e2: Pull complete
+d17f077ada11: Pull complete
+a0a8eb1892ac: Pull complete
+821300eaf493: Download complete
+66899d86e0d7: Download complete
+42394e2ad482: Download complete
+42394e2ad482: Pull complete
+Digest: sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+Status: Downloaded newer image for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:57367
+GraphQL: http://localhost:57367/graphql
+noVNC: http://localhost:57369
+VNC: localhost:57368
+Chrome debug: localhost:57370
+Workspace: /home/autobyteus/workspace -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+PASS: reset: normal Docker run shape verified
+
+### Scenario 7: old v4/profile-managed state/container normalizes on workspace apply --all
+[AutoByteus Docker] Removed managed container autobyteus-server-0. Named volumes were kept.
+[AutoByteus Docker] Removed unused AutoByteus server image sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a.
+[AutoByteus Docker] Applying shared workspace bind mounts to autobyteus-server-0. Named volumes will be kept.
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Launcher config changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:18001
+GraphQL: http://localhost:18001/graphql
+noVNC: http://localhost:16080
+VNC: localhost:15908
+Chrome debug: localhost:19228
+Workspace: /home/autobyteus/workspace -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/migrated-shared-workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/migrated-shared-workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+PASS: old profile normalization: normal Docker run shape verified
+PASS: old v4/profile-managed container/state normalized to v5 normal run shape
+
+### Validation complete
+# Docker Lifecycle Validation Summary
+
+- Run ID: 1780117585-24214
+- Validation time UTC: 2026-05-30T05:07:17Z
+- Isolated Docker daemon: Docker-in-Docker container autobyteus-validation-dind-1780117585-24214
+- Inner Docker host: tcp://127.0.0.1:57008
+- Launcher: /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/scripts/public/docker/autobyteus-docker.sh
+- State dir: /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/state
+- Evidence log: /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/docker-lifecycle-validation.log
+
+## Scenarios
+
+1. Profile option rejection: PASS
+2. New container normal run shape: PASS
+3. URLs/status/storage/logs reporting: PASS
+4. Workspace apply --all recreation with changed shared workspace root: PASS
+5. Upgrade --all image-change lifecycle: PASS
+6. Reset lifecycle: PASS
+7. Old v4/profile-managed state/container normalization: PASS
+
+The Docker-in-Docker daemon and validation containers were removed during cleanup. Inspect JSON and command output files remain in this directory.

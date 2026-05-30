@@ -1,0 +1,39 @@
+$ curl -fsS http://127.0.0.1:29695/rest/health
+{"status":"ok","message":"Server is running"}
+$ curl -fsS http://127.0.0.1:32123/rest/health (Nuxt proxy to Electron-started backend)
+{"status":"ok","message":"Server is running"}
+$ curl -fsS http://127.0.0.1:32123/rest/remote-access/settings
+{
+  "settings": {
+    "phoneAccessEnabled": true,
+    "updatedAt": "2026-05-18T15:41:59.784Z",
+    "updatedBy": "loopback-desktop"
+  }
+}
+$ curl -fsS http://127.0.0.1:32123/rest/remote-access/address-candidates | jq candidate count + first few
+{
+  "count": 16,
+  "first": [
+    {
+      "id": "loopback",
+      "kind": "loopback",
+      "label": "This desktop only",
+      "serverBaseUrl": "http://127.0.0.1:29695",
+      "source": "configured-base-url"
+    },
+    {
+      "id": "lan-fe80::88bb:c6f5:f8c1:98d",
+      "kind": "lan",
+      "label": "Private/LAN address (utun0)",
+      "serverBaseUrl": "http://[fe80::88bb:c6f5:f8c1:98d]:29695",
+      "source": "utun0"
+    },
+    {
+      "id": "lan-fe80::6d2e:2563:c7b0:321b",
+      "kind": "lan",
+      "label": "Private/LAN address (utun1)",
+      "serverBaseUrl": "http://[fe80::6d2e:2563:c7b0:321b]:29695",
+      "source": "utun1"
+    }
+  ]
+}

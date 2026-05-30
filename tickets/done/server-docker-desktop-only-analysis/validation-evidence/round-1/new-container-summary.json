@@ -1,0 +1,73 @@
+{
+  "labels": {
+    "com.autobyteus.configHash": "ca2751f4a66626da267eb7f3576fddb8878cd31064249a1ddd6adf3a02830858",
+    "com.autobyteus.launcher": "server-docker",
+    "com.autobyteus.nodeName": "autobyteus-server-0",
+    "maintainer": "NGINX Docker Maintainers <docker-maint@nginx.com>"
+  },
+  "envProfile": [],
+  "capAdd": [
+    "CAP_SYS_ADMIN"
+  ],
+  "securityOpt": [
+    "seccomp=unconfined"
+  ],
+  "portBindings": {
+    "5900/tcp": [
+      {
+        "HostIp": "",
+        "HostPort": "57248"
+      }
+    ],
+    "6080/tcp": [
+      {
+        "HostIp": "",
+        "HostPort": "57249"
+      }
+    ],
+    "8000/tcp": [
+      {
+        "HostIp": "",
+        "HostPort": "57247"
+      }
+    ],
+    "9223/tcp": [
+      {
+        "HostIp": "",
+        "HostPort": "57250"
+      }
+    ]
+  },
+  "mounts": [
+    {
+      "Type": "volume",
+      "Name": "autobyteus-server-0-workspace",
+      "Source": "/var/lib/docker/volumes/autobyteus-server-0-workspace/_data",
+      "Destination": "/app/autobyteus-server-ts/workspace"
+    },
+    {
+      "Type": "volume",
+      "Name": "autobyteus-server-0-data",
+      "Source": "/var/lib/docker/volumes/autobyteus-server-0-data/_data",
+      "Destination": "/home/autobyteus/data"
+    },
+    {
+      "Type": "volume",
+      "Name": "autobyteus-server-0-root-home",
+      "Source": "/var/lib/docker/volumes/autobyteus-server-0-root-home/_data",
+      "Destination": "/root"
+    },
+    {
+      "Type": "bind",
+      "Name": null,
+      "Source": "/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/nodes/autobyteus-server-0",
+      "Destination": "/home/autobyteus/workspace"
+    },
+    {
+      "Type": "bind",
+      "Name": null,
+      "Source": "/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/shared",
+      "Destination": "/home/autobyteus/shared"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+# Finalization checks before ticket branch commit
+timestamp_utc=2026-05-30T07:10:46Z
+
+## refs
+HEAD=21d05cf9e685b99f08de2b2e02a0b15a9e76a3b7
+origin/personal=21d05cf9e685b99f08de2b2e02a0b15a9e76a3b7
+
+## git diff --cached --check
+git diff --cached --check: PASS
+
+## active stale removed-term scan excluding all ticket folders
+active stale removed-term scan: PASS
+
+## public launcher --profile scan
+public launcher --profile scan: PASS
+
+## bash syntax
+bash -n scripts/public/docker/autobyteus-docker.sh: PASS
+
+## python compile
+python3 -m py_compile scripts/tests/test_public_docker_launcher_shared_workspace.py: PASS
+
+## python unittest
+..s...
+----------------------------------------------------------------------
+Ran 6 tests in 2.311s
+
+OK (skipped=1)
