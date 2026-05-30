@@ -136,6 +136,8 @@ For the first ticket, the cleanest model-facing surface is:
 
 `delegate_tasks` task items should be detailed work-packet envelopes, not name-only records, but the schema should stay simple for reliable model calls. The minimal and intended item is a logical `member_name`, a rich `description`, and optional `reference_files`. Do not add separate model-facing `task_name`, `dependencies`, `completion_criteria`, or `expected_deliverables` fields; the `description` field description should tell the model to include any success conditions, expected outputs, constraints, or context in prose. The server generates internal task identity and may derive a display label from the description when needed.
 
+The tool description should say that each delegated task item is ready-to-run. If one task depends on another, the coordinator should wait for the completion notification and delegate the dependent follow-up task in a later call rather than encoding dependency references in the first call.
+
 Do not expose `get_my_tasks` to activated workers. Do not expose `get_task_plan_status` as a normal coordinator polling tool in the simplified first ticket. The framework should push task work packets to task-agent instances and push terminal task updates back to the coordinator. Global task-plan status can remain an internal/UI/debug API if needed.
 
 ## Tool Inclusion Decision

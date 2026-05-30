@@ -12,7 +12,7 @@
 
 ## What Changed
 
-- Aligned implementation with Architecture Review Round 7.
+- Aligned implementation with Architecture Review Round 7 and re-checked against Architecture Review Round 8. Round 8 was a clarification-only pass; no source implementation delta was required beyond the current schema/parser/lifecycle state.
 - `delegate_tasks.tasks[]` model-facing schema is now exactly:
   - `member_name` — exact logical team member/template name from the current roster.
   - required rich `description`.
@@ -37,6 +37,7 @@
 - Tightened Claude task-delegation MCP schema object generation for nested task items so stale fields are not accepted by the runtime projection layer before service parsing.
 - Carried forward earlier fixes: obsolete legacy `autobyteus-ts` task-tool imports/tests are gone, canonical task-delegation activation/status events are emitted, and pre-activation/unbound status transitions reject without mutation.
 - CR-004 local fix: native AutoByteus standalone/mixed custom data now carries task-agent instance identity (`taskAgentInstanceId`, `taskAgentRunId`, `taskId`, and `logicalMemberRouteKey`) from `MemberTeamContext.taskAgentInstance`; native task-delegation context parsing maps those fields into caller identity so selector-free `update_task_status` cannot fall back to logical member-only identity on Mixed AutoByteus task-agent workers.
+- CR-005 local fix: canonical runtime-exposed `delegate_tasks` manifest and parameter-schema descriptions now state that task items are ready-to-run, dependencies must not be encoded in a task item, and dependent follow-up work should be delegated later after the framework terminal/completion notification.
 
 ## Key Files Or Areas
 
@@ -45,6 +46,7 @@
   - `autobyteus-server-ts/src/agent-team-execution/domain/task-agent-instance.ts`
 - Model-facing task-delegation tools:
   - `autobyteus-server-ts/src/agent-tools/task-delegation/*`
+  - `autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts`
 - Task-agent lifecycle/backend registries:
   - `autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts`
   - `autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts`
@@ -70,6 +72,7 @@
   - `autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts`
   - `autobyteus-server-ts/tests/unit/agent-team-execution/member-run-instruction-composer.test.ts`
   - `autobyteus-server-ts/tests/unit/agent-team-execution/autobyteus-agent-config-builder.test.ts`
+  - `autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts`
   - `autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts`
   - `autobyteus-ts/tests/unit/task-management/tools/task-tools/legacy-task-tools-removed.test.ts`
   - `autobyteus-ts/tests/unit/agent-team/bootstrap-steps/agent-configuration-preparation-step.test.ts`
@@ -79,7 +82,7 @@
 - `member_name` is an exact logical team roster member/template name. Route-key aliases are intentionally not accepted by the model-facing schema.
 - The server generates internal task identity and may derive a display label from `description`; the model never supplies `task_name`.
 - `update_task_status` is valid only from a task-agent instance bound to exactly one delegated task. The model-facing tool takes no selector; internal task-agent context is the selector.
-- Dependency authoring/dependent activation remains deferred out of this first ticket. Multiple submitted tasks are independent and activated according to current task-agent concurrency behavior.
+- Dependency authoring/dependent activation remains deferred out of this first ticket. `delegate_tasks` accepts only ready-to-run work items; dependent follow-up work is coordinator-sequenced by waiting for completion notification and then calling `delegate_tasks` again. Multiple submitted tasks are independent and activated according to current task-agent concurrency behavior.
 - Supported server-managed paths must settle each final task-agent instance after terminal status once the current turn is safe, idle/offline is observed, and no current delegated work remains for that task-agent instance.
 - Native AutoByteus pure-team task delegation remains hidden/gated until native task-agent/per-member settlement is implemented and validated.
 
@@ -97,7 +100,7 @@
 - Reviewed root-cause classification: Boundary/ownership issue, lifecycle invariant, identity split, stale model-facing schema/selectors, and unsupported runtime exposure.
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): Refactor Needed Now.
 - Implementation matched the reviewed assessment (`Yes`/`No`): Yes.
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A; Round 7 architecture review passed before this alignment.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): N/A; Round 8 architecture review passed before this refreshed alignment.
 - Evidence / notes: Runtime adapters call the server-owned task delegation boundary; task-agent lifecycle is explicit; stale schema fields/selectors are rejected; native pure-team exposure is gated until settlement support exists.
 
 ## Legacy / Compatibility Removal Check
@@ -109,6 +112,18 @@
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`.
 
 ## Local Implementation Checks Run
+
+### Round 9 CR-005 Local Fix Checks
+
+- Runtime-exposed source wording check: `rg "ready-to-run|dependent follow-up|terminal/completion notification|do not encode dependencies" autobyteus-server-ts/src/agent-tools/task-delegation autobyteus-server-ts/src/agent-execution/backends/codex/task-delegation autobyteus-server-ts/src/agent-execution/backends/claude/task-delegation autobyteus-server-ts/tests/unit/agent-tools/task-delegation` — passed; wording is present in canonical manifest/schema and covered by tests.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts tests/unit/agent-team-execution/task-delegation-service.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts` — passed: `3` files / `15` tests.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
+
+### Round 8 Clarification Re-checks
+
+- Source contract spot-check: `delegate_tasks.tasks[]` parser/schema exposes only `member_name`, required `description`, and optional `reference_files`; `update_task_status` exposes only `status`, optional `message`, and optional `reference_files`. Both parser objects are strict.
+- Stale field sweep for task-delegation source/tests: `rg "\b(dependencies|task_name|assignee_name|completion_criteria|expected_deliverables|task_id)\b" autobyteus-server-ts/src/agent-tools/task-delegation autobyteus-server-ts/src/agent-team-execution/task-delegation autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-service.test.ts autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts` — source matches are internal event metadata, non-model-facing implementation names, or explicit instructions/rejection tests; no stale model-facing contract fields found.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/task-delegation-service.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts` — passed: `2` files / `12` tests.
 
 ### Round 7 CR-004 Local Fix Checks
 

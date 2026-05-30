@@ -564,6 +564,8 @@ Forbidden:
 
 `delegate_tasks` must not be interpreted as "create a named record for this member." The task item is the worker's work packet source. Keep the tool schema deliberately small so LLMs can call it reliably. There is no model-facing `task_name`; the server generates task identity and may derive a display label from the first line or a short excerpt of `description` when UI/history needs one.
 
+The schema description should also make sequencing explicit: `delegate_tasks` is for ready-to-run work. If task B depends on task A, the coordinator should delegate task A, wait for the framework completion notification, then call `delegate_tasks` for task B. Do not reintroduce a model-facing `dependencies` field in this first-ticket surface.
+
 Canonical first-ticket shape:
 
 ```ts
@@ -573,9 +575,11 @@ type DelegateTasksInput = {
     // The framework creates task-agent instance identity internally.
     member_name: string;
 
-    // Required rich Markdown work packet: objective, context, scope,
+    // Required rich Markdown work packet for ready-to-run work: objective, context, scope,
     // instructions, constraints, relevant files, and any details the
     // task agent needs to begin without calling get_my_tasks.
+    // Do not encode dependency references as separate fields; sequence dependent
+    // work by delegating it later after completion notification.
     // This is where the delegator includes any done criteria,
     // expected output guidance, constraints, and relevant context.
     description: string;

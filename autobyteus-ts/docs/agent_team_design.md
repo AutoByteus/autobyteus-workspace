@@ -162,7 +162,9 @@ The removed legacy model-facing task-plan tools are `assign_task_to`,
 old local task-plan `update_task_status`. Server-managed bounded work uses the
 server-owned `delegate_tasks` / `update_task_status` flow, which pushes concrete
 work packets, emits task-delegation events, notifies coordinators on terminal
-status, and handles safe member settlement outside this package.
+status, and handles safe task-agent settlement on supported server team
+backends. Native AutoByteus pure-team exposure is gated until native
+task-agent/per-member settlement exists.
 
 ---
 

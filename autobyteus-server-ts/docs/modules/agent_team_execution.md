@@ -171,11 +171,17 @@ payloads carry `teamRunId`, internal task identity, member/delegator identity,
 task-agent instance identity, status, optional message/reference files, and
 canonical `source_path` / `source_route_key` metadata from the logical member.
 
-Current settlement support is backend-specific. Codex, Claude, and Mixed team
-managers implement per-member settlement. The native AutoByteus team backend
-still reports `UNSUPPORTED_RUNTIME_COMMAND` for per-member settlement, so native
-runs keep whole-team lifecycle ownership until a native member-settlement
-boundary exists.
+Current settlement support is backend-specific. Codex and Claude team managers
+use the server-managed task-agent registry for task-agent instance start/settle
+operations; Mixed team managers use the mixed member registry for the same
+task-agent lifecycle across Codex, Claude, and AutoByteus member runtimes. The
+native AutoByteus pure-team backend still reports `UNSUPPORTED_RUNTIME_COMMAND`
+for per-member/task-agent settlement, so native pure-team agent configs gate
+`delegate_tasks` / `update_task_status` exposure until that native boundary
+exists. Mixed AutoByteus task-agent runs are supported because the mixed manager
+owns task-agent lifecycle and the AutoByteus adapter preserves
+`taskAgentInstanceId`, `taskAgentRunId`, `taskId`, and
+`logicalMemberRouteKey` in native custom data.
 
 
 ### Task Delegation Validation Notes

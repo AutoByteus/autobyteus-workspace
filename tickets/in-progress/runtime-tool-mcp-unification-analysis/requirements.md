@@ -87,7 +87,7 @@ Large
 - REQ-018: The default activation unit for delegated work is one runnable task -> one task-agent instance. Multiple runnable tasks assigned to the same logical member must not be forced into one shared worker runtime unless an explicit batching/concurrency policy says so.
 - REQ-019: The team runtime must support, or explicitly gate off, multiple concurrent task-agent instances for the same logical member in supported delegation paths. Instance status, tool context, events, settlement, and cleanup must be keyed by task-agent instance identity, not only by logical member route key.
 - REQ-020: `update_task_status` must validate that the calling task-agent instance is bound to the task being updated, so parallel instances of the same logical member cannot accidentally complete each other's tasks.
-- REQ-021: Each `delegate_tasks` task item must keep the model-facing schema intentionally small. The only task-definition fields are `member_name`, required rich `description`, and optional `reference_files`. The server generates internal task identity and may derive any display label from the description; all detailed instructions, done conditions, expected output guidance, constraints, and context belong inside `description`.
+- REQ-021: Each `delegate_tasks` task item must keep the model-facing schema intentionally small. The only task-definition fields are `member_name`, required rich `description`, and optional `reference_files`. Each task item represents ready-to-run work for the target member; dependency/ordering semantics are not accepted in the schema. The server generates internal task identity and may derive any display label from the description; all detailed instructions, done conditions, expected output guidance, constraints, and context belong inside `description`.
 
 ## Acceptance Criteria
 
@@ -112,7 +112,7 @@ Large
 - AC-019: Team/member status and task-delegation events identify both the logical member and the task-agent instance so UI/history/debug output can distinguish parallel workers.
 - AC-020: If a backend cannot support multiple same-member task-agent instances, that backend must expose a clear concurrency limit or gate the parallel task-agent feature rather than silently serializing/merging tasks in a way that violates the task-agent model.
 - AC-021: `delegate_tasks` rejects any task item that lacks a non-empty rich `description`; a task with only `member_name` is invalid. Schemas/projections do not expose superseded fields such as `task_name`, `dependencies`, `completion_criteria`, and `expected_deliverables`, and the parser rejects stale calls that include them.
-- AC-022: The task-agent activation packet preserves the delegated task's rich description and optional reference file details so the worker does not need to query another task plan before starting. Separate `completion_criteria` and `expected_deliverables` fields are not part of the model-facing schema.
+- AC-022: The task-agent activation packet preserves the delegated task's rich description and optional reference file details so the worker does not need to query another task plan before starting. Separate `dependencies`, `completion_criteria`, and `expected_deliverables` fields are not part of the model-facing schema; dependent follow-up work is delegated later after completion notification.
 
 ## Constraints / Dependencies
 

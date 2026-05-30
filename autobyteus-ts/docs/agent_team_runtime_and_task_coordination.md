@@ -64,45 +64,49 @@ removed task-plan tools.
 
 The cross-runtime task workflow lives in `autobyteus-server-ts` and is owned by
 `TaskDelegationService` plus the server tool manifest under
-`src/agent-tools/task-delegation`.
+`src/agent-tools/task-delegation`. Native `autobyteus-ts` teams do not own this
+model-facing workflow. Native AutoByteus pure-team agent configs currently gate
+`delegate_tasks` / `update_task_status` because native task-agent/per-member
+settlement is not available there yet; server-managed Codex, Claude, and Mixed
+team paths own the supported task-agent lifecycle.
 
 ### `delegate_tasks`
 
 A coordinator/delegator creates one or more bounded tasks with a `tasks` array.
-Each task includes:
+Each task item contains:
 
-- `task_name`
-- `assignee_name` (member name or member route key)
-- `description`
-- optional `dependencies` by task name or task id
-- optional `completion_criteria`
-- optional `expected_deliverables`
+- `member_name`: the exact logical team member/template name from the current
+  roster;
+- `description`: the complete work-packet body, including objective, context,
+  scope, constraints, done conditions, and expected output guidance;
+- optional `reference_files`: file or artifact paths the task-agent should
+  inspect.
 
 The service creates internal ledger records, assigns stable ids such as
-`task_0001`, activates only runnable assignees, and returns created task ids plus
-activation results. A one-item `tasks` array is the single-task form; do not use
-`create_task` or `assign_task_to`.
+`task_0001`, and starts one concrete task-agent instance per accepted task. A
+one-item `tasks` array is the single-task form; do not use `create_task` or
+`assign_task_to`.
 
 ### Work packets instead of polling
 
-Activated members receive a system work packet that contains the exact task
-identity, details, dependency ids, expected deliverables, completion criteria,
-and lifecycle instructions. The packet explicitly tells the member not to call
-`get_my_tasks`; all necessary task details are pushed with the activation.
+Activated task-agent instances receive a system work packet that contains the
+task label, logical member identity, task-agent instance/run identity, rich
+description, reference files, and lifecycle instructions. The packet explicitly
+tells the task-agent not to call `get_my_tasks`; all necessary task details are
+pushed with the activation.
 
 ### `update_task_status`
 
-The assignee reports status using the exact `task_id` from the work packet.
-Allowed model-facing statuses are:
+The task-agent reports status for the task bound to its own task-agent instance.
+The model-facing call takes no task selector. Allowed statuses are:
 
 - `in_progress`
 - `completed`
 - `failed`
 
-Terminal updates should include a summary and any deliverables. The service
-validates assignee ownership, records deliverables, emits task-delegation events,
-activates newly unblocked dependent tasks, and sends a framework-generated
-completion notification to the delegator/coordinator.
+Status updates may include a `message` and `reference_files`. Terminal updates
+record result context, emit task-delegation events, and send a
+framework-generated completion/failure notification to the delegator/coordinator.
 
 ---
 
@@ -115,12 +119,14 @@ Server-owned task delegation is event-driven rather than model-polled:
 - terminal completion/failure emits `TASK_DELEGATION_TERMINAL_STATUS` and posts
   a system notification to the delegator plus the coordinator when different.
 
-After terminal status, the framework requests assignee settlement only after the
-current tool call can finish. The settlement coordinator waits for the assignee
-to become idle/offline, rechecks that no queued/in-progress/runnable delegated
-work remains for that assignee, protects the coordinator by default, and calls
-the team-run member-settlement boundary with the member route key and member run
-id as a stale-route guard.
+After terminal status, the framework requests settlement for the concrete
+task-agent instance only after the current tool call can finish. The settlement
+coordinator waits for the bound task-agent run to become idle/offline, rechecks
+that no queued or in-progress delegated work remains for that task-agent
+instance, protects the coordinator by default, and calls the team-run
+`settleTaskAgentInstance(logicalMemberRouteKey, taskAgentRunId, reason)`
+boundary. The task-agent run id is the stale-route guard, so a later replacement
+instance is not accidentally settled.
 
 ---
 
@@ -128,8 +134,8 @@ id as a stale-route guard.
 
 - Use `send_message_to` for free-form conversation and handoff messages.
 - Use `delegate_tasks` / `update_task_status` for bounded server-managed work
-  with ledger state, dependencies, deliverables, events, notifications, and safe
-  settlement.
+  with ledger state, status messages/reference files, events, notifications,
+  and safe task-agent settlement on supported server team backends.
 - Do not reintroduce `create_task`, `create_tasks`, `assign_task_to`,
   `get_my_tasks`, or `get_task_plan_status` as model-facing tools.
 - If a future MCP transport is added, it should call the existing server-owned

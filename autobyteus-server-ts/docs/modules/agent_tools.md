@@ -36,9 +36,12 @@ part of the new delegation workflow.
 
 Runtime projection is explicit and uses the same manifest/service boundary:
 
-- AutoByteus receives thin server-owned local wrappers for the two canonical
-  tools. Mixed AutoByteus standalone members strip legacy task-management tool
-  names while preserving these canonical delegation names when configured.
+- Mixed AutoByteus standalone member/task-agent runs may receive thin
+  server-owned local wrappers for the two canonical tools when configured, and
+  they strip the legacy task-management tool names from mixed team contexts.
+  Native AutoByteus pure-team agent configs deliberately skip
+  `delegate_tasks` / `update_task_status` until native task-agent/per-member
+  settlement exists.
 - Codex receives dynamic tool registrations built from the task-delegation
   manifest.
 - Claude receives first-party MCP tools on the team MCP server, built from the

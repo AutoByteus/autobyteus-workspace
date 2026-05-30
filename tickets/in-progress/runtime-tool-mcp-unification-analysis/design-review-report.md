@@ -5,11 +5,11 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/requirements.md`
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/investigation-notes.md`
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-spec.md`
-- Current Review Round: 7
-- Trigger: Fresh re-review after final schema naming refinement: `delegate_tasks.tasks[].member_name` replaces `assignee_name`, `task_name` stays removed, and `update_task_status` remains selector-free.
-- Prior Review Round Reviewed: Round 6 plus the superseding user/schema update package.
-- Latest Authoritative Round: 7
-- Current-State Evidence Basis: Fresh full reload of architecture-reviewer workflow, canonical design principles, review template, current requirements, investigation notes, design spec, supplemental migration analysis, prior design-review report, and a current source spot-check of task-delegation schemas/parsers to identify implementation alignment risks. This is not a delta-only review.
+- Current Review Round: 8
+- Trigger: Fresh full re-review after dependency clarification: `delegate_tasks` task items are ready-to-run work only, no model-facing `dependencies` field is accepted, and dependent follow-up work is delegated in a later call after framework completion notification.
+- Prior Review Round Reviewed: Round 7 plus the updated requirements/design/supplemental package.
+- Latest Authoritative Round: 8
+- Current-State Evidence Basis: Fresh reload of architecture-reviewer workflow, canonical design principles, review template, current requirements, investigation notes, design spec, supplemental migration analysis, prior design-review report, and a light current-source spot-check of the task-delegation schema/parser/service/tests. This is a fresh review, not a delta-only pass. Source spot-check is architecture-actionability evidence only; full implementation correctness remains owned by implementation/code/API-E2E review.
 
 ## Round History
 
@@ -21,17 +21,19 @@
 | 4 | Rich `delegate_tasks` schema/work-packet clarification | No unresolved architecture findings from Round 3 | None | Pass | No | Design rejected name-only task records and treated `delegate_tasks` input as the work-packet source. |
 | 5 | Simplified minimal `delegate_tasks` model-facing schema after user feedback | No unresolved architecture findings from Round 4 | 3 | Fail | No | The minimal schema direction was sound, but the package still contained dependency/name-update/stale-field contradictions. |
 | 6 | Re-review after Round 5 blocker cleanup | AR-R5-REQ-001, AR-R5-REQ-002, AR-R5-DES-001 | None | Pass | No | Blockers were resolved for the then-current `assignee_name`/exact-task-id schema. |
-| 7 | Final schema naming and selector simplification: `member_name`, no `task_name`, selector-free status update | No unresolved architecture findings from Round 6 | None | Pass | Yes | Latest package is architecturally ready; implementation must align source with the new schema. |
+| 7 | Final schema naming and selector simplification: `member_name`, no `task_name`, selector-free status update | No unresolved architecture findings from Round 6 | None | Pass | No | Design made `member_name` the model-facing target field and kept status updates selector-free. |
+| 8 | Ready-to-run dependency clarification and fresh full package review | No unresolved architecture findings from Round 7 | None | Pass | Yes | Latest package is architecturally ready; no design-spec update is needed for this clarification because it is already captured. |
 
 ## Reviewed Design Spec
 
-The latest design package is internally coherent and follows the shared design principles. The model-facing surface is now intentionally minimal:
+The latest design package is internally coherent and follows the shared design principles. The model-facing surface is intentionally minimal:
 
 - `delegate_tasks.tasks[]` exposes only `member_name`, required rich `description`, and optional `reference_files`.
 - `member_name` names an exact logical team member/template from the current team roster; the server resolves it to internal logical-member identity and rejects missing or ambiguous names.
+- Each `delegate_tasks` item is ready-to-run work. The model-facing schema does not accept `dependencies`, and dependent follow-up work is intentionally sequenced by the coordinator: delegate task A, wait for framework terminal notification, then call `delegate_tasks` again for task B.
 - `delegate_tasks` does not expose `task_name`, `assignee_name`, `dependencies`, `completion_criteria`, or `expected_deliverables`.
 - `update_task_status` exposes only `status`, optional `message`, and optional `reference_files`.
-- `update_task_status` does not expose `task_id`, `task_name`, title, or another selector; the service resolves the task from caller task-agent instance/run context.
+- `update_task_status` does not expose `task_id`, `task_name`, title, dependency selector, or any other model-facing selector; the service resolves the task from caller task-agent instance/run context.
 
 The core architecture remains sound:
 
@@ -42,11 +44,13 @@ The core architecture remains sound:
 - One runnable task -> one task-agent instance remains the default activation unit, so selector-free status updates are valid as long as the invariant “one active delegated task per task-agent instance” is enforced.
 - Terminal task-agent settlement remains mandatory for supported delegation paths and delayed until terminal status, tool result/event/notification delivery, idle, and no-bound-work gates pass.
 
+Light source spot-check found the current source direction appears aligned with the design: task-delegation parameter schemas use `member_name`/`description`/`reference_files`; parsers are strict; status input is `status`/optional `message`/optional `reference_files`; tests reject stale `task_name`, `assignee_name`, `dependencies`, `completion_criteria`, `expected_deliverables`, and update selector fields. This supports actionability but is not a substitute for downstream implementation review and executable validation.
+
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Requirements and design classify the work as feature + behavior change + refactor, with evidence from runtime-local task tools, missing task-agent lifecycle boundary, and route-key identity collapse. | None. |
+| Assessment is present for the current task posture | Pass | Requirements and design classify the work as feature + behavior change + refactor, with evidence from runtime-local task tools, missing task-agent lifecycle boundary, route-key identity collapse, and stale task-plan polling pressure. | None. |
 | Root-cause classification is explicit and evidence-backed | Pass | Package identifies boundary/ownership issue, missing lifecycle invariant, duplicated projection risk, shared identity looseness, and legacy polling pressure. | None. |
 | Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Refactor is required now for service boundary, task-agent lifecycle, instance identity, minimal schema cleanup, and legacy surface removal; general MCP, persistence, dependency authoring, and batching semantics remain deferred. | None. |
 | Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | Data-flow spines, ownership maps, interface mappings, removal plan, migration sequence, examples, and validation strategy support the refactor posture. | None. |
@@ -59,18 +63,19 @@ The core architecture remains sound:
 | 2 | N/A | N/A | N/A | Round 2 had no architecture findings. | N/A |
 | 3 | N/A | N/A | N/A | Round 3 had no architecture findings. | N/A |
 | 4 | N/A | N/A | N/A | Round 4 had no architecture findings. | The richer schema proposal is superseded. |
-| 5 | AR-R5-REQ-001 | High | Resolved | Dependency authoring/dependent activation remains out of scope; UC-006 now means multiple independent task items activated by concurrency policy. | Still resolved. |
-| 5 | AR-R5-REQ-002 | High | Superseded/resolved | Earlier exact-task-id update requirement is replaced by stricter selector-free update. The new package requires task resolution from bound task-agent instance context and rejects selector fields. | No new gap. |
-| 5 | AR-R5-DES-001 | High | Resolved and extended | Removal plan now also includes stale `DelegateTasksInput.task_name` and update selector fields, alongside dependencies/criteria/deliverables. | Still resolved. |
+| 5 | AR-R5-REQ-001 | High | Resolved | Requirements/design now state dependency authoring/dependent activation is out of scope, `delegate_tasks` items are ready-to-run, and dependent follow-up work is delegated later after completion notification. | Still resolved and reinforced in Round 8. |
+| 5 | AR-R5-REQ-002 | High | Superseded/resolved | Earlier exact-task-id update requirement is replaced by stricter selector-free update. The package requires task resolution from bound task-agent instance context and rejects selector fields. | No new gap. |
+| 5 | AR-R5-DES-001 | High | Resolved and extended | Removal plan and validation strategy name stale `DelegateTasksInput.task_name`, `assignee_name`, dependency/criteria/deliverable fields, and update selector fields for rejection/removal. | Still resolved. |
 | 6 | N/A | N/A | N/A | Round 6 had no architecture findings. | Latest schema supersedes that pass result. |
+| 7 | N/A | N/A | N/A | Round 7 had no architecture findings. | Round 8 rechecks the full package after dependency wording clarification. |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? (`Pass`/`Fail`) | Narrative Is Clear? (`Pass`/`Fail`) | Facade Vs Governing Owner Is Clear? (`Pass`/`Fail`/`N/A`) | Main Domain Subject Naming Is Clear? (`Pass`/`Fail`) | Ownership Is Clear? (`Pass`/`Fail`) | Off-Spine Concerns Stay Off Main Line? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Coordinator delegates minimal rich work packet to a logical member/template. | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-001 | Coordinator delegates minimal rich ready-to-run work packet to a logical member/template. | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-002 | Task-agent selector-free terminal status to coordinator/delegator notification. | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Multiple independent task records activate by concurrency policy. | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-003 | Multiple independent ready-to-run task records activate by concurrency policy. | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-004 | Terminal status + task-agent idle event to concrete instance settlement. | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-005 | Runtime bootstrap/projection for task-delegation protocol/tools. | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-006 | Multiple same-logical-member runnable tasks to multiple task-agent instances. | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
@@ -81,7 +86,7 @@ The core architecture remains sound:
 | --- | --- | --- | --- | --- | --- |
 | `agent-tools/task-delegation` | Pass | Pass | Pass | Pass | Correct owner for minimal model-facing schema, strict parser, canonical manifest, and runtime-neutral result serialization. |
 | `agent-team-execution/task-delegation` | Pass | Pass | Pass | Pass | Correct owner for ledger, service, activation, task-agent identity, notification, settlement, and concurrency policy. |
-| `TaskDelegationWorkPacketRenderer` | Pass | Pass | Pass | Pass | Correct prompt-content owner; renders rich `description`, references, lifecycle instructions, and optional derived display label without exposing task selectors. |
+| `TaskDelegationWorkPacketRenderer` | Pass | Pass | Pass | Pass | Correct prompt-content owner; renders rich `description`, references, lifecycle instructions, and optional derived display label without exposing task selectors or dependency fields. |
 | `TeamRun` / backend task-agent lifecycle | Pass | Pass | Pass | Pass | Correct lifecycle owner for starting and settling concrete task-agent instances. |
 | Runtime projections | Pass | Pass | Pass | Pass | Adapter-only; must expose the latest minimal schema exactly and reject stale fields. |
 | Native AutoByteus pure-team exposure gate | Pass | Pass | Pass | Pass | Correct gate-or-implement boundary for unsupported settlement. |
@@ -92,7 +97,7 @@ The core architecture remains sound:
 | --- | --- | --- | --- | --- | --- |
 | `DelegateTasksInput` minimal task envelope | Pass | Pass | Pass | Pass | Tool contract/parser owns user-facing schema; service/ledger owns normalized internal shape. |
 | `UpdateTaskStatusInput` selector-free envelope | Pass | Pass | Pass | Pass | Tool contract/parser owns status/message/reference fields; service resolves task from caller context. |
-| Rich task body/details | Pass | Pass | Pass | Pass | `description` is the single work-body field. |
+| Rich task body/details | Pass | Pass | Pass | Pass | `description` is the single work-body field and carries any context, constraints, success conditions, and expected output guidance. |
 | `reference_files` | Pass | Pass | Pass | Pass | Optional structured references are coherent for delegated work and status updates. |
 | Task-agent identity structures | Pass | Pass | Pass | Pass | Required for selector-free updates and same-member parallelism. |
 | Completion notification payload | Pass | Pass | Pass | Pass | One payload can serve events and coordinator/delegator messages. |
@@ -101,12 +106,12 @@ The core architecture remains sound:
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Pass`/`Fail`) | Redundant Attributes Removed? (`Pass`/`Fail`) | Overlapping Representation Risk Is Controlled? (`Pass`/`Fail`) | Shared Core Vs Specialized Variant / Composition Decision Is Sound? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `member_name` | Pass | Pass | Pass | N/A | Pass | Exact team-roster logical member/template name; not arbitrary assignee text. |
-| `description` | Pass | Pass | Pass | N/A | Pass | Required rich work-packet body with objective, context, constraints, done conditions, and expected output guidance. |
+| `member_name` | Pass | Pass | Pass | N/A | Pass | Exact team-roster logical member/template name; not arbitrary assignee text or route-key alias. |
+| `description` | Pass | Pass | Pass | N/A | Pass | Required rich ready-to-run work-packet body with objective, context, constraints, done conditions, and expected output guidance. |
 | `reference_files` | Pass | Pass | Pass | N/A | Pass | Optional structured file/artifact references. |
 | Removed `assignee_name` field | Pass | Pass | Pass | N/A | Pass | Superseded by clearer `member_name` model-facing name. Internal assignee/member identities may still exist behind the service. |
 | Removed `task_name` field | Pass | Pass | Pass | N/A | Pass | Server-generated internal task identity and optional derived display label replace it. |
-| Removed `dependencies` field | Pass | Pass | Pass | N/A | Pass | Dependency authoring/dependent activation deferred. |
+| Removed `dependencies` field | Pass | Pass | Pass | N/A | Pass | Dependency authoring/dependent activation deferred; dependent work is delegated in a later call after notification. |
 | Removed `completion_criteria` field | Pass | Pass | Pass | N/A | Pass | Success criteria belong in `description`. |
 | Removed `expected_deliverables` / structured deliverables | Pass | Pass | Pass | N/A | Pass | Expected output belongs in `description`; terminal result context is optional `message` and `reference_files`. |
 | `UpdateTaskStatusInput` | Pass | Pass | Pass | N/A | Pass | `status`, optional `message`, optional `reference_files`; no task selector. |
@@ -120,7 +125,7 @@ The core architecture remains sound:
 | Legacy model-facing task tools | Pass | Pass | Pass | Pass | `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, and `assign_task_to` are correctly removed/deferred. |
 | Model-facing `assignee_name` | Pass | Pass | Pass | Pass | Replaced by `member_name` in model-facing schema. |
 | Model-facing `task_name` | Pass | Pass | Pass | Pass | Removed from delegation and status surfaces; server generates identity/display label internally. |
-| Model-facing `dependencies` | Pass | Pass | Pass | Pass | Removed/deferred; stale calls rejected. |
+| Model-facing `dependencies` | Pass | Pass | Pass | Pass | Removed/deferred; stale calls rejected; dependent sequencing belongs to coordinator follow-up calls after completion notification. |
 | Model-facing `completion_criteria` | Pass | Pass | Pass | Pass | Removed; guidance belongs in `description`. |
 | Model-facing `expected_deliverables` / deliverables object | Pass | Pass | Pass | Pass | Removed; use optional status `message` and `reference_files`. |
 | `update_task_status` selector fields | Pass | Pass | Pass | Pass | `task_id`, `task_name`, title/selector fields must be rejected. |
@@ -137,7 +142,7 @@ The core architecture remains sound:
 | `task-delegation-tool-manifest.ts` | Pass | Pass | Pass | Pass | Correct canonical manifest owner. |
 | `task-delegation-tool-service.ts` | Pass | Pass | Pass | Pass | Thin canonical tool adapter; calls `TaskDelegationService`. |
 | `task-delegation-record.ts` | Pass | Pass | Pass | Pass | Correct normalized internal record owner. |
-| `task-agent-instance-identity.ts` | Pass | Pass | Pass | Pass | Correct identity owner. |
+| `task-agent-instance-identity.ts` / team-run domain type | Pass | Pass | Pass | Pass | Correct identity owner. |
 | `task-delegation-ledger.ts` | Pass | Pass | Pass | Pass | Correct state owner. |
 | `task-delegation-activation-coordinator.ts` | Pass | Pass | Pass | Pass | Correct activation/concurrency sequencing owner. |
 | `task-delegation-work-packet-renderer.ts` | Pass | Pass | Pass | Pass | Correct prompt/content owner; should avoid instructing workers to pass selectors. |
@@ -160,7 +165,7 @@ The core architecture remains sound:
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? (`Pass`/`Fail`) | Internal Owned Mechanisms Stay Internal? (`Pass`/`Fail`) | Caller Bypass Risk Is Controlled? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `delegate_tasks` model-facing contract | Pass | Pass | Pass | Pass | Minimal schema and `member_name` semantics are explicit. |
+| `delegate_tasks` model-facing contract | Pass | Pass | Pass | Pass | Minimal schema, `member_name` semantics, ready-to-run scope, and no-dependencies rule are explicit. |
 | `update_task_status` model-facing contract | Pass | Pass | Pass | Pass | Selector-free contract is sound because service owns task resolution from task-agent context. |
 | `TaskDelegationService` | Pass | Pass | Pass | Pass | Authoritative business boundary. |
 | `TaskDelegationWorkPacketRenderer` | Pass | Pass | Pass | Pass | Correct activation-content boundary. |
@@ -206,6 +211,7 @@ The core architecture remains sound:
 | Legacy task-plan tools | No intended retention | Pass | Pass | Correct. |
 | Previous `assignee_name` field | No intended retention | Pass | Pass | Replaced by `member_name`. |
 | Name-only/task-name creation | No intended retention | Pass | Pass | Correct. |
+| Dependency authoring/dependent activation in first ticket | No intended retention | Pass | Pass | Explicitly deferred; dependent work uses later delegation call after notification. |
 | Superseded rich schema fields | No intended retention | Pass | Pass | Must be removed/rejected in implementation. |
 | Status selector fields | No intended retention | Pass | Pass | `task_id`, `task_name`, title selectors rejected at model-facing boundary. |
 | Internal TaskPlan storage reuse | Yes, internal seam | Pass | Pass | Acceptable only behind `TaskDelegationService`. |
@@ -217,6 +223,7 @@ The core architecture remains sound:
 | Add latest minimal `delegate_tasks` schema | Pass | Pass | Pass | Pass |
 | Rename model-facing target field from `assignee_name` to `member_name` | Pass | Pass | Pass | Pass |
 | Remove obsolete `task_name`/dependency/criteria/deliverable fields | Pass | Pass | Pass | Pass |
+| Add ready-to-run sequencing guidance and reject dependency fields | Pass | Pass | Pass | Pass |
 | Add selector-free `update_task_status` schema and context task resolution | Pass | Pass | Pass | Pass |
 | Preserve rich `description` and `reference_files` in ledger/work packet | Pass | Pass | Pass | Pass |
 | Reject stale fields in parser/tool service | Pass | Pass | Pass | Pass |
@@ -228,6 +235,7 @@ The core architecture remains sound:
 | Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Canonical `delegate_tasks` input with `member_name` | Yes | Pass | N/A | Pass | Shows only `member_name`, `description`, and `reference_files`. |
+| Ready-to-run dependency sequencing | Yes | Pass | Pass | Pass | Design states dependent B is delegated later after A's completion notification, not encoded as `dependencies`. |
 | Invalid `delegate_tasks` input | Yes | Pass | Pass | Pass | Shows `member_name` without `description` as invalid. |
 | Selector-free `update_task_status` input | Yes | Pass | Pass | Pass | Shows status/message/reference files and says not to pass task selectors. |
 | Avoided extra model-facing fields | Yes | Pass | Pass | Pass | Removal/decommission plan and validation strategy name stale fields. |
@@ -239,7 +247,7 @@ The core architecture remains sound:
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| Dependency authoring/dependent activation | Avoids reopening stale model-facing fields accidentally. | Deferred to a later intentionally designed feature; do not implement dependency fields in this ticket. | Resolved for this ticket. |
+| Dependency authoring/dependent activation | Avoids reopening stale model-facing fields accidentally. | Deferred to a later intentionally designed feature; do not implement dependency fields in this ticket. Coordinator sequences dependent follow-up by waiting for completion notification and delegating the next ready-to-run task later. | Resolved for this ticket. |
 | Future batching / multiple active tasks in one task-agent instance | Selector-free `update_task_status` only works when a task-agent instance is bound to exactly one active delegated task. | Preserve one-task-per-instance for this ticket. If future batching is introduced, status identity and settlement semantics need a separate design. | Acceptable residual risk. |
 | Initial same-member concurrency limit | Determines default parallelism. | Implementation may choose conservative production default, but must preserve instance identity and test-configurable parallelism. | Acceptable implementation decision. |
 | Native AutoByteus pure-team support | Unsupported per-member settlement would violate mandatory sub-agent lifecycle. | Gate task-delegation exposure off or implement per-instance/per-member settlement before claiming support. | Accepted boundary decision. |
@@ -247,11 +255,11 @@ The core architecture remains sound:
 
 ## Review Decision
 
-`Pass`: the design is ready for implementation.
+`Pass`: the design is ready for implementation/continued implementation.
 
-The `member_name` refinement is architecturally sound because it names the real model-facing subject: an exact logical team member/template from the team roster. The selector-free `update_task_status` design is also sound for the first-ticket one-task-per-task-agent model, provided the service enforces exactly one active delegated task per task-agent instance and rejects calls from unbound or ambiguously bound contexts.
+The ready-to-run dependency clarification is architecturally sound. It keeps the model-facing schema reliable and semantically tight, avoids reintroducing a generic dependency mini-language, and preserves the delegation loop: coordinator delegates concrete ready work, framework notifies terminal completion, coordinator delegates the dependent follow-up task in a later call.
 
-No upstream scope split is required. Implementation should align current source with the latest design, especially removing/rejecting stale `task_name`, `assignee_name`, dependency/criteria/deliverable fields, and status selector fields.
+No upstream design-spec update is required for this clarification because the current requirements, design spec, and supplemental migration analysis already capture it. No upstream scope split is required.
 
 ## Findings
 
@@ -267,10 +275,10 @@ N/A — no blocking architecture findings.
 
 ## Residual Risks
 
-- Current implementation source still exposes older `task_name`/`assignee_name` and `task_id`/deliverables shapes in schema/parser spot-checks; implementation must update those to `member_name` and selector-free status updates.
-- Runtime projections must not weaken the canonical schema or accept stale aliases.
+- Source spot-check indicates the current implementation appears aligned with the latest schema direction, but full implementation correctness remains for implementation handoff, code review, and API/E2E validation.
+- Runtime projections must not weaken the canonical schema or accept stale aliases such as `assignee_name`, `task_name`, or `dependencies`.
 - `update_task_status` must reject unbound contexts, contexts bound to zero tasks, and contexts ambiguously bound to multiple active tasks.
-- Work-packet renderer must preserve rich `description` and optional `reference_files`, and must not instruct workers to pass task selectors.
+- Work-packet renderer must preserve rich `description` and optional `reference_files`, and must not instruct workers to pass task selectors or dependency fields.
 - Same-member parallelism requires backend registries keyed by concrete task-agent run ID, not only logical route key.
 - Supported delegation paths must prove mandatory final task-agent settlement after terminal status and idle; native pure-team delegation must stay gated unless settlement is implemented.
 - Future dependency or batching semantics require a separate intentional design rather than restoring superseded fields/selectors.

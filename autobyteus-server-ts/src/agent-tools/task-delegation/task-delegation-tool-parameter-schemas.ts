@@ -19,7 +19,7 @@ const buildTaskItemSchema = (): ParameterSchema => new ParameterSchema([
   new ParameterDefinition({
     name: "description",
     type: ParameterType.STRING,
-    description: "Required rich work-packet body with objective, context, scope, constraints, done conditions, and expected output guidance. Put all task instructions here.",
+    description: "Required rich ready-to-run work-packet body with objective, context, scope, constraints, done conditions, and expected output guidance. Put task instructions here, but do not encode dependencies; dependent follow-up work should be delegated later after the framework terminal/completion notification.",
     required: true,
   }),
   new ParameterDefinition({
@@ -36,7 +36,7 @@ export const buildDelegateTasksParameterSchema = (): ParameterSchema =>
     new ParameterDefinition({
       name: "tasks",
       type: ParameterType.ARRAY,
-      description: "One or more rich task envelopes to delegate. Each item must include member_name and non-empty description.",
+      description: "One or more ready-to-run rich task envelopes to delegate. Each item must include member_name and non-empty description. Do not encode dependencies; delegate dependent follow-up work later after the framework terminal/completion notification.",
       required: true,
       arrayItemSchema: buildTaskItemSchema(),
     }),

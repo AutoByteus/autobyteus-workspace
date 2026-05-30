@@ -4,18 +4,18 @@
 
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/requirements.md`
-- Current Review Round: 8
-- Trigger: Round 7 CR-004 local-fix re-check after native AutoByteus task-agent identity propagation was added.
-- Prior Review Round Reviewed: Round 7 fresh/deep code review, which failed on CR-004.
-- Latest Authoritative Round: 8
+- Current Review Round: 10
+- Trigger: CR-005 local-fix re-check after runtime-exposed `delegate_tasks` descriptions were updated with ready-to-run/dependent-follow-up guidance.
+- Prior Review Round Reviewed: Round 9 code-review fail and Architecture Review Round 8 clarification.
+- Latest Authoritative Round: 10
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-spec.md`
 - Supplemental Analysis Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/task-management-server-migration-analysis.md`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/design-review-report.md`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/implementation-handoff.md`
 - Validation Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/tickets/in-progress/runtime-tool-mcp-unification-analysis/api-e2e-validation-report.md`
-- API / E2E Validation Started Yet: `Yes` historically; API/E2E must resume after this pass because Round 7 implementation and repository E2E changed after the last API/E2E run.
-- Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes` — the mixed runtime E2E remains in the cumulative package and was updated for the Round 7 schema before this local-fix re-check.
+- API / E2E Validation Started Yet: `Yes` historically; API/E2E must resume now that this code review passes.
+- Repository-Resident Durable Validation Added Or Updated After Prior Review: `Yes` historically — the mixed runtime E2E remains in the cumulative package and should be rerun/updated by API/E2E.
 
 ## Round History
 
@@ -28,28 +28,32 @@
 | 5 | Post-validation live E2E durable-validation re-review | CR-001, CR-002, CR-003 remained resolved | None | Pass | No | Reviewed gated live mixed AutoByteus/Codex E2E; later API/E2E found settlement/gating blockers. |
 | 6 | Round 6 implementation alignment | CR-001, CR-002, CR-003; API/E2E blockers AE2E-F-001 and AE2E-F-002 | None | Pass | No | Source review passed, then Round 7 schema refinement superseded it. |
 | 7 | Round 7 implementation alignment and fresh full review | CR-001, CR-002, CR-003, AE2E-F-001, AE2E-F-002 | CR-004 | Fail | No | Native AutoByteus custom-data context dropped task-agent identity. |
-| 8 | CR-004 local-fix re-check | CR-004 and prior resolved findings | None | Pass | Yes | Native AutoByteus task-agent identity propagation is fixed; route back to API/E2E. |
+| 8 | CR-004 local-fix re-check | CR-004 and prior resolved findings | None | Pass | No | Native AutoByteus task-agent identity propagation fixed; routed back to API/E2E. |
+| 9 | Architecture Round 8 ready-to-run clarification re-check | Prior resolved findings and latest design clarification | CR-005 | Fail | No | Runtime-exposed descriptions omitted ready-to-run/dependent-follow-up guidance. |
+| 10 | CR-005 local-fix re-check | CR-005 and prior resolved findings | None | Pass | Yes | Runtime-exposed descriptions and coverage now include the Round 8 guidance; route to API/E2E. |
 
 ## Review Scope
 
-This round focused first on CR-004, then rechecked enough adjacent behavior to decide whether API/E2E can resume:
+This round rechecked CR-005 and the adjacent runtime-exposed task-delegation contract:
 
-- Native AutoByteus standalone/mixed `customData.teamContext` now carries task-agent identity from `MemberTeamContext.taskAgentInstance`.
-- Native task-delegation context parsing maps `taskAgentInstanceId`, `taskAgentRunId`, `taskId`, and `logicalMemberRouteKey` into `delegationContext.caller`.
-- Mixed AutoByteus task-agent coverage proves the custom-data projection and native parser both preserve the exact task-agent identity.
-- Existing Round 7 schema, selector-free status update, pure native gating, and server-managed task-agent lifecycle regressions were re-run at focused scope.
-- Build/type coverage and default-gated live E2E loading were rerun.
+- Canonical `delegate_tasks` manifest description.
+- Canonical `delegate_tasks.tasks` and task-item `description` parameter descriptions.
+- Codex dynamic tool projection from the manifest/schema.
+- Claude task-delegation tool definition projection from the manifest/schema.
+- Schema shape remains strict/minimal: task items expose only `member_name`, `description`, and optional `reference_files`.
+- Focused unit/integration coverage, TypeScript build config, whitespace checks, and server build.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 / 2 | CR-001 | Blocking | Remains resolved | Deleted legacy task-tool paths/imports remain absent; prior focused `autobyteus-ts` tests remain in the implementation handoff. | No regression in this local fix. |
-| 1 | CR-002 | Blocking | Remains resolved | Task-delegation activation/status/terminal events were not changed by this local fix; focused lifecycle tests passed. | No regression. |
-| 1 | CR-003 | Blocking | Remains resolved | Selector-free update binding and transition enforcement were not weakened; `task-delegation-service.test.ts` and lifecycle integration tests passed. | No regression. |
-| API/E2E Round 3 | AE2E-F-001 | Acceptance-blocking | Source-side fix remains present, pending renewed API/E2E confirmation | Native AutoByteus pure-team config still gates server-owned task-delegation tools; `autobyteus-agent-config-builder.test.ts` passed. | API/E2E should confirm in runtime validation. |
-| API/E2E Round 3 | AE2E-F-002 | Acceptance-blocking | Source-side fix remains present, pending renewed API/E2E confirmation | Mandatory supported-path settlement wording and settlement code remain in place; lifecycle tests passed. | API/E2E should confirm live/runtime behavior. |
-| 7 | CR-004 | Blocking | Resolved | `autobyteus-team-communication-context-builder.ts` now adds `taskAgentInstanceId`, `taskAgentRunId`, `taskId`, and `logicalMemberRouteKey`; `task-delegation-autobyteus-context.ts` maps those fields to caller identity; new unit coverage asserts both projection and parser output. | No open code-review finding remains. |
+| 1 / 2 | CR-001 | Blocking | Remains resolved | No legacy task-plan tool surface was touched by this local fix. | No regression observed. |
+| 1 | CR-002 | Blocking | Remains resolved | Task-delegation event behavior was not changed; focused lifecycle integration tests passed. | No regression observed. |
+| 1 | CR-003 | Blocking | Remains resolved | Selector-free update and stale selector rejection remain covered by focused tests. | No regression observed. |
+| API/E2E Round 3 | AE2E-F-001 | Acceptance-blocking | Source-side fix remains present, pending renewed API/E2E confirmation | Native AutoByteus pure-team gating was not changed. | API/E2E should reconfirm. |
+| API/E2E Round 3 | AE2E-F-002 | Acceptance-blocking | Source-side fix remains present, pending renewed API/E2E confirmation | Mandatory supported-path settlement was not changed. | API/E2E should reconfirm. |
+| 7 | CR-004 | Blocking | Remains resolved | Native AutoByteus task-agent identity propagation source/tests remain present. | No regression observed. |
+| 9 | CR-005 | Blocking | Resolved | `task-delegation-tool-manifest.ts` and `task-delegation-tool-parameter-schemas.ts` now mention ready-to-run work, not encoding dependencies, waiting for framework terminal/completion notification, and calling `delegate_tasks` again for dependent follow-up work. New `task-delegation-runtime-descriptions.test.ts` asserts canonical manifest/schema plus Codex/Claude projections. | No open findings remain. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
@@ -57,116 +61,112 @@ Changed source implementation files only are subject to this audit; tests are ex
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-team-communication-context-builder.ts` | 94 | Pass | Pass | Pass; owns native AutoByteus team custom-data projection and now includes task-agent identity needed by the task-delegation adapter. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts` | 95 | Pass | Pass | Pass; owns native custom-data to canonical `TaskDelegationContext` translation and now preserves exact task-agent identity. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/members/mixed-agent-member-handle.ts` | 362 | Pass | Pressure | Pass; continues passing `taskAgentInstance` into `MemberTeamContext`, and the native AutoByteus projection now consumes it correctly. | Pass | Pass with size pressure | Avoid further growth. |
-| `autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-service.ts` | 170 | Pass | Pass | Pass; remains the authoritative status mutation boundary and exact task-agent binding validator. | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-manager.ts` | 493 | Pass, close to limit | Pressure | Pass; no CR-004 change. | Pass | Pass with size pressure | Avoid further growth. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/claude/claude-team-manager.ts` | 488 | Pass, close to limit | Pressure | Pass; no CR-004 change. | Pass | Pass with size pressure | Avoid further growth. |
-| `autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts` | 493 | Pass, close to limit | Pressure | Pass; no CR-004 change. | Pass | Pass with size pressure | Avoid further growth. |
+| `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-manifest.ts` | 63 | Pass | Pass | Pass; owns canonical model-facing tool descriptions and now carries the ready-to-run/dependent-follow-up rule. | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts` | 75 | Pass | Pass | Pass; owns canonical parameter descriptions and now carries the ready-to-run/no-dependencies guidance at `tasks` and task-item `description`. | Pass | Pass | None. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Handoff still records feature/behavior/refactor posture, boundary/identity/lifecycle root cause, and refactor necessity. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | The task flow remains `delegate_tasks` -> canonical parser/service -> ledger -> task-agent activation -> bound `update_task_status` -> event/notification -> settlement; CR-004 fixes native identity on that spine. | None. |
-| Ownership boundary preservation and clarity | Pass | `TaskDelegationService` remains the authoritative mutation boundary; native AutoByteus code now only adapts custom data to the canonical context instead of weakening identity. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Native context projection serves the runtime-adapter boundary; task-delegation parser serves the tool boundary. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The fix extends existing adapter/projection files and existing unit coverage rather than adding a competing helper. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | The four task-agent identity fields flow from the existing `TaskAgentInstanceIdentity` through `MemberTeamContext`; no duplicate identity model was introduced. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Optional task-agent fields are specific to caller identity and are not exposed in the model-facing tool schema. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Status-binding policy remains centralized in `TaskDelegationService.resolveCallerBoundRecord(...)`. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | The changed adapter methods perform concrete projection/validation-relevant translation. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | CR-004 is fixed in the correct native projection/parser owners; no new mixed-concern source file was added. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Runtime adapters pass context into the canonical tool/service boundary; they do not mutate ledger state directly. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No caller bypass of `TaskDelegationService`/ledger authority or `TeamRun` task-agent lifecycle authority was found. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | AutoByteus native custom-data projection remains under the AutoByteus backend; native parser remains under the task-delegation tool adapter. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The local fix avoids new folders/classes and keeps the existing adapter split readable. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Model-facing schemas remain minimal, while internal caller identity now explicitly includes task-agent instance/run/task fields across native adapters. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Field names match the domain identity names already used by `TaskAgentInstanceIdentity` and `TaskDelegationCallerIdentity`. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No repeated conversion logic beyond the expected projection/type mapping. | None. |
-| Patch-on-patch complexity control | Pass | The fix is small and direct: two source projections plus one focused unit test extension. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No old selector fields or compatibility alias was reintroduced. | None. |
-| Test quality is acceptable for the changed behavior | Pass | New coverage constructs a Mixed AutoByteus task-agent context, asserts native custom data carries all four fields, and asserts the native parser returns them on `delegationContext.caller`. | None. |
-| Test maintainability is acceptable for the changed behavior | Pass | Test uses existing backend-factory helper style and meaningful domain values; setup was tightened with explicit recipient roster/path invariants. | None. |
-| Validation or delivery readiness for the next workflow stage | Pass | Focused tests, typecheck, server build, and default-gated E2E loading passed. API/E2E must now resume live/runtime validation. | None. |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | The fix adds missing internal identity propagation; it does not accept stale model-facing fields or old tools. | None. |
-| No legacy code retention for old behavior | Pass | Legacy task-plan tool surface and stale Round 6/7 fields remain removed/rejected in the reviewed scope. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Handoff and upstream artifacts still record boundary, lifecycle, schema, and deferred dependency decisions. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Main spine remains `delegate_tasks` -> canonical parser/service -> ledger -> task-agent activation -> bound status -> notification/settlement. | None. |
+| Ownership boundary preservation and clarity | Pass | `TaskDelegationService` remains the mutation authority; manifest/schema own model-facing contract language. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Runtime descriptions are in canonical tool manifest/schema; projections consume them without forking semantics. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The fix updates existing `agent-tools/task-delegation` owners rather than adding a parallel doc-only or runtime-specific helper. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | One canonical manifest/schema feeds Codex and Claude projections. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | The schema still exposes only `member_name`, `description`, and optional `reference_files`; no dependency field was added. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Coordinator sequencing guidance is centralized in the model-facing tool contract and projected downstream. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | No new empty layer was introduced. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | CR-005 was fixed in the appropriate canonical description/schema files. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | No new dependencies or boundary bypasses were introduced. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | No ledger/service or lifecycle authority bypass observed in this change. | None. |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Source changes live in `agent-tools/task-delegation`, which owns the runtime-neutral tool contract. | None. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | No unnecessary split was introduced for a bounded description update. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | API shape remains minimal and runtime descriptions now convey ready-to-run/dependent-follow-up semantics. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Names remain clear; added wording uses the architecture terminology directly. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Guidance is placed in canonical manifest/schema and asserted through projections; no runtime-specific semantic copy was added. | None. |
+| Patch-on-patch complexity control | Pass | Local fix is small and bounded. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Stale fields remain rejected; no compatibility alias introduced. | None. |
+| Test quality is acceptable for the changed behavior | Pass | New test asserts canonical manifest/schema guidance, strict item shape, Codex projection, and Claude projection. | None. |
+| Test maintainability is acceptable for the changed behavior | Pass | Tests use focused assertions for specific model-facing contract guidance and shape, not brittle broad snapshots. | None. |
+| Validation or delivery readiness for the next workflow stage | Pass | Focused tests, typecheck, diff check, and server build passed. API/E2E can resume. | None. |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | The fix communicates that dependencies are not encoded; it does not accept them. | None. |
+| No legacy code retention for old behavior | Pass | Legacy task-plan tool surface remains out of the reviewed path. | None. |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.2
-- Overall score (`/100`): 92
-- Score calculation note: simple average across mandatory categories, rounded for summary visibility; pass decision is based on no open findings and all mandatory checks passing.
+- Overall score (`/10`): 9.3
+- Overall score (`/100`): 93
+- Score calculation note: simple average across mandatory categories, rounded for trend visibility. The pass decision is based on no open findings and all mandatory checks passing.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | The source flow from delegation through task-agent update and settlement is clear and CR-004 now preserves native identity on that flow. | Live validation still needs to reconfirm end-to-end runtime behavior. | API/E2E should rerun the live mixed scenario. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.2 | The canonical service boundary owns mutation and binding; adapters only project context. | Some backend manager files are large and near the hard limit. | Avoid adding more lifecycle policy to those manager files. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.3 | Model-facing tools remain minimal and internal identity is explicit. | Native parser trusts custom-data field types after projection. | Future hardening could normalize optional internal identity strings, but not required for this bounded fix. |
-| `4` | `Separation of Concerns and File Placement` | 9.1 | CR-004 was fixed in the right adapter/projection files with no new mixed owner. | Existing runtime manager files have size pressure. | Split only if future changes add new responsibilities. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.2 | The fix reuses `TaskAgentInstanceIdentity` semantics and `TaskDelegationCallerIdentity` fields. | Optional identity fields appear in adapter types because native custom data is inherently optional. | Keep adapter types projection-only; do not promote optional kitchen-sink DTOs. |
-| `6` | `Naming Quality and Local Readability` | 9.3 | Field and test names clearly describe task-agent instance/run/task identity. | Some tests still rely on private `buildAgentConfig` access for factory internals. | Prefer public seam tests if a stable factory test seam emerges. |
-| `7` | `Validation Readiness` | 9.1 | Focused tests, integration lifecycle checks, typecheck, build, and default-gated E2E loading passed. | Live LMStudio/Codex E2E was not run in code review. | API/E2E owns live validation next. |
-| `8` | `Runtime Correctness Under Edge Cases` | 9.1 | Same-member task-agent identity binding is preserved; CR-004 removes the weak native fallback path. | External live runtime behavior still depends on gated API/E2E environment. | Reconfirm task-agent settlement and terminal notification in live E2E. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No stale tool/schema compatibility path was reintroduced. | Old internal task-plan domain code outside this model-facing surface remains out of scope. | Continue not reusing old task-plan types for new server-owned tools. |
-| `10` | `Cleanup Completeness` | 9.1 | CR-004 fixed the only open code-review finding and added regression coverage. | Docs/API-E2E reports still need final integrated-state refresh after validation. | Delivery should handle docs sync after API/E2E passes. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.3 | Runtime and coordinator-sequencing spine are both clear in source contract and upstream design. | Live API/E2E still needs renewed evidence. | API/E2E should rerun live/mixed validation. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.3 | Manifest/schema own model-facing contract; service owns behavior. | None in this local fix. | Preserve this split. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.4 | Minimal field shape remains strict and descriptions now state ready-to-run/no-dependencies/follow-up sequencing. | Further wording can always be tuned by API/E2E evidence. | Keep descriptions concise and canonical. |
+| `4` | `Separation of Concerns and File Placement` | 9.3 | Fix lands in correct canonical task-delegation files and tests projection behavior. | Existing broader manager-file size pressure remains unrelated. | Avoid growing large runtime managers. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | No kitchen-sink fields were added; the model-facing shape remains tight. | Internal event metadata still includes task IDs, as expected. | Keep model-facing/internal identities separate. |
+| `6` | `Naming Quality and Local Readability` | 9.2 | Added wording uses clear architecture terms: ready-to-run, dependencies, dependent follow-up, terminal/completion notification. | Wording is slightly dense due fitting into tool descriptions. | API/E2E can flag if LLM behavior needs phrasing adjustment. |
+| `7` | `Validation Readiness` | 9.3 | Focused tests, tsc, diff check, and server build passed. | Live gated E2E not run by code review. | API/E2E owns live validation next. |
+| `8` | `Runtime Correctness Under Edge Cases` | 9.2 | Strict parser still rejects stale fields; projections now carry correct guidance. | LLM behavior under real mixed runtime still requires validation. | Reconfirm live workflow and stale-field behavior. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.4 | No legacy tool or stale dependency field was restored. | None. | Continue strict rejection. |
+| `10` | `Cleanup Completeness` | 9.2 | CR-005 is resolved with source and test coverage. | API/E2E report/docs still need final integrated refresh later. | API/E2E and delivery should update evidence/docs. |
 
 ## Findings
 
-No open findings in Round 8.
+No open findings in Round 10.
 
 Resolved this round:
 
-- `CR-004` — Native AutoByteus task-agent custom context drops required task-agent identity.
+- `CR-005` — `delegate_tasks` model-facing descriptions omitted ready-to-run/dependent-follow-up clarification.
   - Resolution evidence:
-    - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-team-communication-context-builder.ts` lines 17-20 and 85-89 add/pass `taskAgentInstanceId`, `taskAgentRunId`, `taskId`, and `logicalMemberRouteKey`.
-    - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-autobyteus-context.ts` lines 16-19 and 77-80 parse those fields into `delegationContext.caller`.
-    - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts` lines 372-465 asserts Mixed AutoByteus task-agent custom-data and parser identity propagation.
+    - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-manifest.ts` lines 38-40 now include ready-to-run, do-not-encode-dependencies, terminal/completion notification, and call-`delegate_tasks`-again guidance.
+    - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-parameter-schemas.ts` lines 20-23 and 36-40 carry the same guidance in parameter descriptions.
+    - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-tool-mcp-unification-analysis/autobyteus-server-ts/tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts` asserts canonical manifest/schema guidance, strict task-item shape, Codex projection, and Claude projection.
 
 ## Test Quality And Validation-Readiness Verdict
 
 | Area | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- |
 | Validation Readiness | Ready for the next workflow stage (`API / E2E` or `Delivery`) | Pass | Ready for API/E2E resumption. |
-| Tests | Test quality is acceptable | Pass | CR-004 has focused regression coverage plus adjacent service/integration coverage. |
-| Tests | Test maintainability is acceptable | Pass | The new test uses domain-specific identity names and tightened member/recipient setup. |
-| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open code-review findings; API/E2E should run live/runtime validation. |
+| Tests | Test quality is acceptable | Pass | Contract wording and projection paths are directly covered. |
+| Tests | Test maintainability is acceptable | Pass | Focused assertions avoid broad snapshots. |
+| Tests | Review findings are clear enough for the next owner before API / E2E or delivery resumes | Pass | No open code-review findings remain. |
 
 ### Review-Run Checks
 
-- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-team-execution/task-delegation-service.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/unit/agent-team-execution/autobyteus-agent-config-builder.test.ts` — Pass, 4 files / 18 tests.
+- Runtime-exposed wording source check: `rg "ready-to-run|dependent follow-up|terminal/completion notification|do not encode dependencies" autobyteus-server-ts/src/agent-tools/task-delegation autobyteus-server-ts/src/agent-execution/backends/codex/task-delegation autobyteus-server-ts/src/agent-execution/backends/claude/task-delegation autobyteus-server-ts/tests/unit/agent-tools/task-delegation` — Pass.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts tests/unit/agent-team-execution/task-delegation-service.test.ts tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts` — Pass, 3 files / 15 tests.
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
-- `pnpm -C autobyteus-server-ts build` — Pass, including shared package build/runtime dependency verification, Prisma generation, server build, asset copy, and built-in agents bootstrap smoke check.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism` — Pass, default-gated live test skipped as expected when live flags are absent.
-- CR-004 field occurrence sanity check confirmed the four identity fields are present in the native projection, parser, and focused test.
+- `git diff --check` — Pass.
+- `pnpm -C autobyteus-server-ts build` — Pass, including shared package builds, runtime dependency verification, Prisma generation, server build, asset copy, and built-in agents bootstrap smoke check.
+- Focused stale-field sweep — Pass for model-facing contract shape; matches are intended rejection tests, internal event metadata, tool-service dependency injection naming, or explicit no-dependencies guidance.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result (`Pass`/`Fail`) | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | The fix does not add aliases or dual-path handling for old task tools or stale model-facing fields. |
-| No legacy old-behavior retention in changed scope | Pass | Removed task-plan tool behavior remains absent from the reviewed path. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete fallback introduced by CR-004 fix. |
+| No backward-compatibility mechanisms in changed scope | Pass | No compatibility alias or dual path was introduced. |
+| No legacy old-behavior retention in changed scope | Pass | Old task-plan tools remain out of the new model-facing task-delegation path. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Stale fields remain rejected; dependency authoring remains deferred and not accepted. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
 | Item / Path | Type (`DeadCode`/`ObsoleteFile`/`LegacyBranch`/`CompatWrapper`/`UnusedHelper`/`UnusedTest`/`UnusedFlag`/`ObsoleteAdapter`/`DormantPath`) | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
-| None open in Round 8 | N/A | No stale model-facing task-plan tool or schema compatibility path was found in the CR-004 fix. | N/A | N/A |
+| None open in Round 10 | N/A | No legacy-compatible accepted path was found. | N/A | N/A |
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: The ticket changes durable task-delegation protocol, runtime support matrix, task-agent identity, and settlement behavior. CR-004 itself is internal identity propagation, but the overall ticket still requires delivery-stage docs sync against integrated state.
-- Files or areas likely affected: `autobyteus-server-ts/docs/modules/agent_team_execution.md`, `autobyteus-server-ts/docs/modules/agent_tools.md`, `autobyteus-server-ts/docs/modules/codex_integration.md`, live E2E/operator notes, and any examples mentioning old task-plan tools or old selector fields.
+- Why: The ticket changes durable task-delegation protocol, runtime support matrix, task-agent identity, settlement behavior, and coordinator-sequenced dependent follow-up guidance. Source docs have been touched, but delivery owns final integrated-state docs sync after API/E2E passes.
+- Files or areas likely affected: `autobyteus-server-ts/docs/modules/agent_team_execution.md`, `autobyteus-server-ts/docs/modules/agent_tools.md`, `autobyteus-ts/docs/agent_team_design.md`, `autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md`, live E2E/operator notes.
 
 ## Classification
 
 - Review Decision: Pass
 - Classification: N/A
-- Rationale: No open code-review findings remain. The only Round 7 blocker was an implementation-local adapter/projection gap and is now resolved.
+- Rationale: CR-005 is resolved and no open code-review findings remain.
 
 ## Recommended Recipient
 
@@ -174,9 +174,9 @@ Resolved this round:
 
 ## Residual Risks
 
-- Live mixed AutoByteus/Codex E2E was not run during code review because it requires explicit live flags and external services; API/E2E owns that evidence next.
-- API/E2E validation report contains earlier pass/fail history and must be updated with renewed Round 7/CR-004 validation results.
-- Codex/Claude/Mixed manager files remain close to the 500 effective-non-empty-line hard limit; avoid further growth.
+- Live mixed AutoByteus/Codex E2E still requires API/E2E rerun after this pass.
+- API/E2E validation report contains earlier historical results and must be updated with renewed evidence.
+- Manager files for Codex/Claude/Mixed remain close to the 500 effective-non-empty-line hard limit; avoid further growth.
 - Native AutoByteus pure-team task delegation remains gated until native task-agent/per-member settlement support exists.
 - The delegation ledger remains in-memory per active `TeamRun`; durable restart recovery is out of scope.
 - Delivery still needs base-branch refresh and integrated docs-impact review after API/E2E passes.
@@ -184,5 +184,5 @@ Resolved this round:
 ## Latest Authoritative Result
 
 - Review Decision: Pass
-- Score Summary: 9.2/10 (92/100)
-- Notes: Round 8 resolves CR-004. Native AutoByteus Mixed task-agent custom data now carries task-agent identity into canonical task-delegation caller context, preserving selector-free `update_task_status` binding for the supported Mixed path. Route to `api_e2e_engineer` for API/E2E validation resumption.
+- Score Summary: 9.3/10 (93/100)
+- Notes: Round 10 resolves CR-005. Runtime-exposed task-delegation descriptions now communicate the Architecture Round 8 ready-to-run and dependent-follow-up sequencing rule while preserving strict minimal schema shape. Route to `api_e2e_engineer` for API/E2E validation resumption.

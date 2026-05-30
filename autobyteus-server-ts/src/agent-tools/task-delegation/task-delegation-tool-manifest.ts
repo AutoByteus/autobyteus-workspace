@@ -37,7 +37,7 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
   {
     name: DELEGATE_TASKS_TOOL_NAME,
     description:
-      "Delegate one or more rich task work-packet envelopes to exact logical team members. Every task item requires member_name and a non-empty description with enough work detail for task-agent activation.",
+      "Delegate one or more ready-to-run rich task work-packet envelopes to exact logical team members. Do not encode dependencies in a task item; for dependent follow-up work, wait for the framework terminal/completion notification and then call delegate_tasks again.",
     parameterSchema: buildTaskDelegationToolParameterSchema(DELEGATE_TASKS_TOOL_NAME),
     parseInput: parseDelegateTasksInput,
     execute: (service, context, input) =>
