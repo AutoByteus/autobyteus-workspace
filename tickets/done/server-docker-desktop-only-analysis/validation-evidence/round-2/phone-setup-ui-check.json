@@ -1,0 +1,11 @@
+{
+  "url": "http://127.0.0.1:32123/settings?section=nodes&nodeTab=phoneSetup",
+  "hasPrivateHttpsTitle": true,
+  "hasTailscaleServeCopy": true,
+  "hasMagicDnsGuidance": true,
+  "hasPhoneAccessDescription": true,
+  "hasBackendCandidatesFromExistingServer": true,
+  "hasRemovedProfileTerms": false,
+  "checkedRemovedTermsRegex": "mobile-safe|mobile_safe|MOBILE_SAFE|AUTOBYTEUS_NODE_PROFILE|Docker node profile|Docker profile",
+  "visibleExcerpt": "PHONE SETUP\n\nSet up private HTTPS phone access\n\nUse Tailscale.app on this Mac to Serve AutoByteus at a stable private HTTPS MagicDNS URL before creating a Phone Access QR code.\n\n...\nPhone Access\n\nPair a phone/PWA to this desktop over any private network you already trust.\n\nEnable Phone Access\nTAILSCALE SERVE HTTPS URL\n\nAfter running Serve/status in the guide, copy the HTTPS MagicDNS hostname, append /mobile, and paste it here."
+}

@@ -7,7 +7,7 @@ Phone Access lets a phone browser, PWA, or AutoByteus Android shell connect to t
 - The desktop app exposes **Phone Setup** in **Settings -> Nodes** for the current node window. Embedded and remote-node windows use the trusted private-network product model for desktop/Electron access; paired phones use separate mobile credentials.
 - Phone Setup contains a Tailscale Serve guide plus the **Phone Access** card. The card enables or disables phone access, lists reachable server URL candidates, accepts a manual private-network URL, creates a short-lived pairing QR/link, and separates active paired phones from revoked/history records.
 - New desktop-created pairing QR codes require an `https://` URL. The recommended path is Tailscale Serve HTTPS, for example `https://desktop.tailnet-name.ts.net/mobile`.
-- For the recommended Phase One Android flow, create the QR from the opened mobile-safe Docker node window. Remote Docker QR creation requires a manual Android-facing HTTPS URL and verifies that URL reaches the same `serverInstanceId` as the desktop management URL.
+- For remote-node Phone Access, create the QR from the opened node window. Remote-node QR creation requires a manual phone-facing private HTTPS URL and verifies that URL reaches the same `serverInstanceId` as the desktop management URL.
 - The pairing QR opens `https://<private-node>/mobile?pairing=<payload>` on the phone. The payload contains a short-lived one-time pairing code and the selected canonical server base URL.
 - After pairing, the phone stores a mobile node session locally and uses the same node endpoint model as the desktop web app to derive REST, GraphQL, and WebSocket URLs from the paired base URL.
 - Supported mobile routes run in a phone shell; desktop-only routes redirect back to the mobile shell with an explicit unsupported-feature notice.
@@ -96,27 +96,26 @@ Stored serverBase:  https://gateway.example.com/autobyteus
 QR/mobileUrl:       https://gateway.example.com/autobyteus/mobile?pairing=...
 ```
 
-## Recommended Mobile-Safe Docker Pairing Flow
+## Normal Docker Node Pairing Flow
 
 1. Install the Docker launcher from **Settings -> Nodes -> Docker Guide**.
-2. Create a mobile-safe node:
+2. Create a Docker node:
 
    ```bash
-   autobyteus-docker new-container --profile mobile-safe
+   autobyteus-docker new-container
    ```
 
-   This profile avoids default `SYS_ADMIN`, avoids `seccomp=unconfined`, does not create automatic shared host bind mounts, and binds published ports to localhost.
 3. Add the printed Backend URL as a remote node in **Settings -> Nodes -> Manage Nodes**, then click **Open** on that Docker node.
 4. In the Docker node window, open **Settings -> Nodes -> Phone Setup**. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
-5. Configure a private Android-facing HTTPS URL that maps to the Docker node, for example Tailscale Serve or company-controlled HTTPS ingress.
+5. Configure a phone-facing private HTTPS URL that maps to the Docker node, for example Tailscale Serve or company-controlled HTTPS ingress.
 6. Paste the HTTPS `/mobile` URL in the Docker node Phone Access card. AutoByteus compares `/rest/remote-access/status` from the management URL and advertised URL and requires matching `serverInstanceId` values.
 7. Enable Phone Access, create the QR, and scan it on Android. The pairing exchange and paired-device records belong to the Docker node.
 
-The embedded host desktop node should not mint Docker-node QR codes, and Docker bridge/LAN addresses must not be treated as loopback owner trust.
+The embedded host desktop node should not mint QR codes for a different remote node, and Docker bridge/LAN addresses must not be treated as loopback owner trust.
 
 ## Trusted Remote Node Access vs Phone Credentials
 
-Remote Docker node windows have two separate authority boundaries:
+Remote node windows have two separate authority boundaries:
 
 - **Desktop/Electron remote-node access:** the full backend is intended for trusted private networks such as LANs, company VPNs, or tailnets. The default active flow does not add a user-facing setup secret before desktop/Electron can use a registered remote node. Do not expose the full backend directly to the public internet; strict owner pairing would be a separate future opt-in design.
 - **Phone/mobile credential:** the Phone Access QR pairing exchange returns a separate `mra_...` mobile credential to the phone. Mobile REST and GraphQL use the mobile credential as a bearer token, and WebSocket uses the same credential in the `access_token` query parameter.
@@ -125,7 +124,7 @@ Mobile credentials must not authorize owner-management routes such as settings c
 
 ## Embedded Desktop Pairing Flow
 
-Use this for development or compatibility. For the recommended Phase One security posture, prefer the Docker flow above.
+Use this when the embedded desktop node itself is the node your phone should use. For a separate server Docker node, use the Docker flow above.
 
 1. Start the desktop Electron app so the bundled server is running.
 2. Open **Settings -> Nodes -> Phone Setup**.
@@ -169,7 +168,7 @@ After pairing, the mobile shell:
 - sends bearer credentials on protected REST/GraphQL requests;
 - appends the credential as an `access_token` query parameter for WebSocket connections;
 - uses authorized fetch helpers for media, file, artifact, team-reference, and application setup resources;
-- keeps server-owned agent/team/workspace routes reachable when they are mobile-safe.
+- keeps server-owned agent/team/workspace routes reachable when those routes accept paired mobile credentials.
 
 The local **Unpair this phone** action deletes only the phone's local session and returns the UI to the pairing bootstrap without leaving Home or post-pair checking state active. It does not revoke the server-side device record; use the desktop Phone Access card to revoke credentials on the node. Failed or expired pairing exchanges likewise stay on the pairing bootstrap and must not write a local mobile session.
 
@@ -244,6 +243,6 @@ Installing a new APK does not update the desktop-served `/mobile` bundle. A stal
 - **Credential rejected after pairing:** check whether Phone Access was disabled or the device was revoked; pair again after re-enabling or revocation.
 - **Docker node desktop window cannot reach backend:** confirm the Backend URL printed by `autobyteus-docker` is reachable from the desktop over a trusted LAN, VPN, tailnet, or equivalent private-network path. Do not expose the full backend directly to the public internet.
 - **WebSocket blocked:** confirm the private network/proxy permits WebSocket traffic to the server port.
-- **Docker QR creation says URL mismatch:** the Android-facing HTTPS URL is not reaching the same Docker node as the desktop management URL. Recheck the Tailscale Serve/private ingress mapping to the Docker node Backend.
+- **Remote-node QR creation says URL mismatch:** the phone-facing HTTPS URL is not reaching the same node as the desktop management URL. Recheck the Tailscale Serve/private ingress mapping to the node Backend.
 - **Fresh Docker `/mobile` returns missing assets:** upgrade/recreate from a current server Docker image. Current public launcher, remote-server, and all-in-one image paths package `autobyteus-server-ts/mobile-web` during the image build.
 - **Desktop-only screen on phone:** use the mobile shell link or supported mobile route; unsupported desktop features should render an explanatory mobile notice rather than a desktop shell.

@@ -2,11 +2,11 @@
 
 ## Status
 
-Future / Phase Two. Split from Phase One Android pairing with a mobile-safe Docker node.
+Future / Phase Two. Split from Phase One Android/Phone Access pairing over trusted private-network node URLs.
 
-Phase One focuses on the biggest immediate blast-radius reduction: make Android pair with a mobile-safe Docker node so mobile work runs inside a controlled container instead of the embedded host desktop node.
+Phase One focuses on pairing Android/phone clients with the intended AutoByteus node over a trusted private HTTPS URL while keeping desktop management access on the trusted private-network product model.
 
-Phase Two must harden what a mobile session can do **after** pairing. Docker isolation reduces runtime blast radius, but it does not replace backend authorization, token/session safety, or credential custody.
+Phase Two must harden what a mobile session can do **after** pairing. Runtime isolation can reduce blast radius, but it does not replace backend authorization, token/session safety, or credential custody.
 
 ## Phase Two Goal
 
@@ -40,7 +40,7 @@ Token/session hardening touches many surfaces:
 - Android secure storage / native bridge
 - revoke/session UI and tests
 
-Putting all of that into Phase One would delay the primary first milestone: Android pairing with the mobile-safe Docker node.
+Putting all of that into Phase One would delay the primary first milestone: Android/phone pairing with a trusted private HTTPS node URL.
 
 ## In-Scope Use Cases
 
@@ -81,7 +81,7 @@ Putting all of that into Phase One would delay the primary first milestone: Andr
 ### Token / Session Hardening Requirements
 
 - R-P2-SESSION-001: Replace broad long-lived mobile bearer credentials with explicit mobile session records.
-- R-P2-SESSION-002: Each mobile session must be bound to one node identity/base URL and node kind (`docker-mobile-safe`, `docker-standard`, or `embedded-host` if supported).
+- R-P2-SESSION-002: Each mobile session must be bound to one node identity/base URL and node kind (`docker` or `embedded-host` if supported).
 - R-P2-SESSION-003: Each mobile session must include device ID, session ID, node binding, granted capabilities, created time, last seen time, expiry time, and revoked state.
 - R-P2-SESSION-004: Use short-lived access tokens for normal REST/GraphQL calls.
 - R-P2-SESSION-005: Use refresh-token rotation or equivalent replay-resistant renewal.

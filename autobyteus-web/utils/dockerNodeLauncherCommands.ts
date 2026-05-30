@@ -87,7 +87,7 @@ export function buildDockerNodeLauncherCommands(): DockerLauncherCommand[] {
       platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
       titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.title',
       descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.description',
-      command: buildDirectLauncherCommand(['new-container', '--profile', 'mobile-safe']),
+      command: buildDirectLauncherCommand(['new-container']),
       isPrimary: true,
     },
     {

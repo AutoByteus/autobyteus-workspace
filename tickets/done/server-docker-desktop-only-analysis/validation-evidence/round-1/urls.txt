@@ -1,0 +1,12 @@
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:57247
+GraphQL: http://localhost:57247/graphql
+noVNC: http://localhost:57249
+VNC: localhost:57248
+Chrome debug: localhost:57250
+Workspace: /home/autobyteus/workspace -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.

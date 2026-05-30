@@ -2,14 +2,14 @@
 
 This guide covers the Android app shell that loads the existing AutoByteus `/mobile` web shell from a reachable node.
 
-For Phase One security hardening, the recommended path is to pair Android with a **mobile-safe Docker node**, not the embedded host desktop node. The Docker profile reduces practical blast radius by avoiding default privileged flags, avoiding automatic shared host bind mounts, and keeping management ports localhost-bound by default. Broader backend mobile authorization/token hardening remains a future Phase Two item tracked in `docs/future-tickets/mobile-backend-authorization-hardening.md`.
+For Android and travel use, pair the phone with the current AutoByteus node through a stable private HTTPS `/mobile` URL that the phone can reach. Normal Docker nodes and embedded desktop nodes both use the same Phone Access pairing model: trusted private-network desktop access plus separate paired-phone `mra_...` credentials for mobile clients. Broader backend mobile authorization/token hardening remains a future Phase Two item tracked in `docs/future-tickets/mobile-backend-authorization-hardening.md`.
 
 ## Ownership boundaries
 
 - **Android app:** setup, app-owned QR scanning and camera permission handling, saved node profile, WebView containment, diagnostics, build/package.
 - **Existing `/mobile` shell:** AutoByteus Home, Chat, Runs, Files, Activity, pairing bootstrap, and mobile session restore. Phase One removes the mobile Tools/Terminal/VNC page.
 - **Remote Access backend:** Phone Access status, trusted-network owner routes, pairing sessions, pairing exchange, mobile credentials, revocation.
-- **Mobile-safe Docker launcher:** Docker node creation, safer runtime defaults, localhost-bound management ports, and mobile-web asset packaging through the published image path.
+- **Public Docker launcher:** normal Docker node creation, shared workspace bind mounts, named volumes, and mobile-web asset packaging through the published image path.
 - **Tailscale:** private network reachability only; it is not AutoByteus authorization.
 
 The Android app intentionally does not include a native AutoByteus runtime, duplicate chat/run UI, direct run/chat API client, or native credential bridge.
@@ -26,21 +26,19 @@ That is usually provided by Tailscale Serve HTTPS. New desktop-created Phone Acc
 
 Why this matters: the MVP credential remains in WebView-local `localStorage`, which is origin-scoped. Pairing with a LAN URL and later opening a different Tailscale origin can require re-pairing.
 
-## Recommended Phase One Docker-node setup
+## Normal Docker-node setup
 
 1. Install the Docker launcher from **Settings -> Nodes -> Docker Guide**.
-2. Create the mobile-safe Docker node:
+2. Create the Docker node:
 
    ```bash
-   autobyteus-docker new-container --profile mobile-safe
+   autobyteus-docker new-container
    ```
-
-   The mobile-safe profile does not add `SYS_ADMIN`, does not set `seccomp=unconfined`, does not create automatic shared host bind mounts, and binds published ports to `127.0.0.1`.
 3. Save the printed Backend URL. Add it as a remote node only over a trusted LAN, VPN, tailnet, or equivalent private-network path; do not expose the full backend directly to the public internet.
 4. In the desktop app, add the Docker Backend URL as a remote node in **Settings -> Nodes**, then click **Open** for that Docker node. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
-5. Create or configure an Android-facing private HTTPS URL that maps to the Docker node Backend URL, for example Tailscale Serve/private HTTPS ingress.
-6. Paste that Android-facing HTTPS `/mobile` URL in the Docker node window. AutoByteus verifies that this URL and the desktop management URL reach the same server instance before creating the QR.
-7. Enable Phone Access and create the QR in the Docker node window. Android should pair to the Docker node and mobile-started work should run inside the Docker/container runtime.
+5. Create or configure a phone-facing private HTTPS URL that maps to the Docker node Backend URL, for example Tailscale Serve/private HTTPS ingress.
+6. Paste that private HTTPS `/mobile` URL in the Docker node window. AutoByteus verifies that this URL and the desktop management URL reach the same server instance before creating the QR.
+7. Enable Phone Access and create the QR in the Docker node window. Android should pair to the Docker node and mobile-started work should run inside that node's container runtime.
 
 Do not solve Docker-node Phone Access setup by exposing raw Docker ports broadly or by treating Docker bridge/LAN addresses as loopback/local trust. The full backend is meant for trusted private networks, not direct public internet exposure.
 
@@ -50,11 +48,11 @@ Do not solve Docker-node Phone Access setup by exposing raw Docker ports broadly
 - Paired Android/mobile clients receive separate `mra_...` mobile credentials from the pairing exchange.
 - Mobile credentials authorize protected mobile app calls only where the route class accepts mobile credentials; they do not authorize owner-management routes such as settings changes, pairing-session creation, device listing, or revocation.
 - Pairing payloads contain the one-time pairing code and server base URL; they must not contain desktop/owner authority.
-- Public server Docker images build and package the `/mobile` web shell into `autobyteus-server-ts/mobile-web`, so a fresh `mobile-safe` container should serve `/mobile` without manual file copies.
+- Public server Docker images build and package the `/mobile` web shell into `autobyteus-server-ts/mobile-web`, so a fresh launcher-managed Docker container should serve `/mobile` without manual file copies.
 
 ## Embedded desktop-node setup
 
-The embedded desktop setup remains useful for development and compatibility, but it is not the recommended secure Phase One Android pairing path.
+The embedded desktop setup remains useful when the desktop node itself is the node your phone should use.
 
 1. Start the AutoByteus desktop/server node.
 2. Ensure the desktop is signed into Tailscale and reachable by the stable URL.

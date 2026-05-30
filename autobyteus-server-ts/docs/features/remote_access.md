@@ -54,7 +54,7 @@ Trusted-network owner/protected/WebSocket routes are reachable without an additi
 ## Pairing Model
 
 1. The owner enables Phone Access with `PUT /rest/remote-access/settings` from the current desktop/Electron node window.
-2. The owner creates a pairing session with `POST /rest/remote-access/pairing-sessions` and a selected client-facing `serverBaseUrl`. Remote Docker windows require a manually entered Android-facing HTTPS URL whose status identity matches the management target.
+2. The owner creates a pairing session with `POST /rest/remote-access/pairing-sessions` and a selected client-facing `serverBaseUrl`. Remote-node windows require a manually entered phone-facing private HTTPS URL whose status identity matches the management target.
 3. The service normalizes the selected URL to the canonical server base. Reserved AutoByteus surfaces such as `/mobile`, `/rest`, `/graphql`, and `/ws` are stripped while deployment base paths are preserved.
 4. New desktop-created pairing sessions require `https://` after normalization.
 5. The service creates a five-minute, single-use pairing code and returns a `/mobile?pairing=<payload>` URL suitable for a QR code or copy/paste. The pairing payload stores the canonical server base, while the returned mobile URL appends `/mobile` for the user-facing shell.
@@ -83,9 +83,9 @@ Credential-bearing URLs, pairing payloads, mobile credentials, and authorization
 
 ## Server Instance Identity
 
-`GET /rest/remote-access/status` returns a stable `serverInstanceId` in addition to Phone Access availability metadata. The identity is persisted under the app data directory and is used by the desktop Phone Access UI to prove that a manually entered Android-facing HTTPS URL reaches the same Docker node as the desktop management URL before a QR is created.
+`GET /rest/remote-access/status` returns a stable `serverInstanceId` in addition to Phone Access availability metadata. The identity is persisted under the app data directory and is used by the desktop Phone Access UI to prove that a manually entered phone-facing private HTTPS URL reaches the same node as the desktop management URL before a QR is created.
 
-Display names, hostnames, and user-entered URLs are not node identity. Remote Docker QR creation should fail when the management URL and advertised Android URL cannot both return matching `serverInstanceId` values.
+Display names, hostnames, and user-entered URLs are not node identity. Remote-node QR creation should fail when the management URL and advertised phone-facing URL cannot both return matching `serverInstanceId` values.
 
 ## Client-facing URL Resolution
 
@@ -142,8 +142,8 @@ Validation for this feature should cover:
 - Phone Access enabled state and credential usability after backend restart against the same app data;
 - seeded agent/team visibility through paired mobile GraphQL/routes;
 - Docker image packaging of the `/mobile` web shell for public launcher, remote-server, and all-in-one image paths;
-- status `serverInstanceId` use for Android-facing advertised URL verification.
+- status `serverInstanceId` use for phone-facing advertised URL verification.
 
 ## Phase Two Boundary
 
-Phase One moves the recommended Android path to a mobile-safe Docker node and preserves trusted private-network desktop access to the backend. It does not complete least-privilege mobile backend authorization, mobile token rotation, native secure credential storage, strict owner pairing/admin authorization, or backend hard denial of every high-risk mobile operation. Those items are tracked in `../../../docs/future-tickets/mobile-backend-authorization-hardening.md` from this feature doc.
+Phase One establishes Phone Access pairing over trusted private-network URLs and preserves trusted private-network desktop access to the backend. It does not complete least-privilege mobile backend authorization, mobile token rotation, native secure credential storage, strict owner pairing/admin authorization, or backend hard denial of every high-risk mobile operation. Those items are tracked in `../../../docs/future-tickets/mobile-backend-authorization-hardening.md` from this feature doc.

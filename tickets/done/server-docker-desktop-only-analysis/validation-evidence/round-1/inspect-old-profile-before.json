@@ -1,0 +1,279 @@
+[
+    {
+        "Id": "f02a746d7ccf2a0f25fe21b901d3908c97e9e50c0749648fb1766840b5edceec",
+        "Created": "2026-05-30T05:07:14.177078464Z",
+        "Path": "/docker-entrypoint.sh",
+        "Args": [
+            "nginx",
+            "-g",
+            "daemon off;"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 1343,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-05-30T05:07:14.284230423Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a",
+        "ResolvConfPath": "/var/lib/docker/containers/f02a746d7ccf2a0f25fe21b901d3908c97e9e50c0749648fb1766840b5edceec/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/f02a746d7ccf2a0f25fe21b901d3908c97e9e50c0749648fb1766840b5edceec/hostname",
+        "HostsPath": "/var/lib/docker/containers/f02a746d7ccf2a0f25fe21b901d3908c97e9e50c0749648fb1766840b5edceec/hosts",
+        "LogPath": "/var/lib/docker/containers/f02a746d7ccf2a0f25fe21b901d3908c97e9e50c0749648fb1766840b5edceec/f02a746d7ccf2a0f25fe21b901d3908c97e9e50c0749648fb1766840b5edceec-json.log",
+        "Name": "/autobyteus-server-0",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {
+                "5900/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "15908"
+                    }
+                ],
+                "6080/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "16080"
+                    }
+                ],
+                "80/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "18001"
+                    }
+                ],
+                "9223/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "19228"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [],
+        "Config": {
+            "Hostname": "f02a746d7ccf",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "5900/tcp": {},
+                "6080/tcp": {},
+                "80/tcp": {},
+                "9223/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "AUTOBYTEUS_NODE_PROFILE=mobile-safe",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NGINX_VERSION=1.31.1",
+                "PKG_RELEASE=1",
+                "DYNPKG_RELEASE=1",
+                "NJS_VERSION=0.9.9",
+                "NJS_RELEASE=1",
+                "ACME_VERSION=0.4.1"
+            ],
+            "Cmd": [
+                "nginx",
+                "-g",
+                "daemon off;"
+            ],
+            "Image": "nginx:alpine",
+            "Volumes": null,
+            "WorkingDir": "/",
+            "Entrypoint": [
+                "/docker-entrypoint.sh"
+            ],
+            "Labels": {
+                "com.autobyteus.configHash": "old-v4-profile-hash",
+                "com.autobyteus.launcher": "server-docker",
+                "com.autobyteus.nodeName": "autobyteus-server-0",
+                "com.autobyteus.profile": "mobile-safe",
+                "maintainer": "NGINX Docker Maintainers <docker-maint@nginx.com>"
+            },
+            "StopSignal": "SIGQUIT"
+        },
+        "NetworkSettings": {
+            "SandboxID": "0d4f0235ecc9ffaf05d6d81835f114661882206c99a95827f84c7baec20a0e62",
+            "SandboxKey": "/var/run/docker/netns/0d4f0235ecc9",
+            "Ports": {
+                "5900/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "15908"
+                    }
+                ],
+                "6080/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "16080"
+                    }
+                ],
+                "80/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "18001"
+                    }
+                ],
+                "9223/tcp": [
+                    {
+                        "HostIp": "127.0.0.1",
+                        "HostPort": "19228"
+                    }
+                ]
+            },
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "59405f5e586e79ea97bf70d55a33a1408b638c5cdf5611baab48da66e4a4ee5d",
+                    "EndpointID": "b0b4c1b540505fc0cfec505ab3bf0250555441afa4e2d691e6b3c6ad5e38293c",
+                    "Gateway": "172.18.0.1",
+                    "IPAddress": "172.18.0.2",
+                    "MacAddress": "12:1d:4f:da:91:14",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:6be2079f2181018558b14f5bedd074d5520112f74a60a0732a8c4f8042267c0a",
+            "size": 2497,
+            "annotations": {
+                "com.docker.official-images.bashbrew.arch": "arm64v8",
+                "org.opencontainers.image.base.digest": "sha256:f9cddce40dd0ee1f19ab533cf697894c88b013ef0cb472a010e2169c87e409b0",
+                "org.opencontainers.image.base.name": "nginx:1.31.1-alpine-slim",
+                "org.opencontainers.image.created": "2026-05-22T18:30:34Z",
+                "org.opencontainers.image.revision": "3375edc7170bc7b7da708c1c658706eb5355e099",
+                "org.opencontainers.image.source": "https://github.com/nginx/docker-nginx.git#3375edc7170bc7b7da708c1c658706eb5355e099:mainline/alpine",
+                "org.opencontainers.image.url": "https://hub.docker.com/_/nginx",
+                "org.opencontainers.image.version": "1.31.1-alpine"
+            },
+            "platform": {
+                "architecture": "arm64",
+                "os": "linux",
+                "variant": "v8"
+            }
+        }
+    }
+]

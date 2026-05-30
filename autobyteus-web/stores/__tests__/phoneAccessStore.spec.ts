@@ -204,20 +204,20 @@ describe('phoneAccessStore', () => {
     expect(store.revokedDevices).toHaveLength(1);
   });
 
-  it('requires a manual Android-facing HTTPS URL before remote Docker QR creation', async () => {
+  it('requires a manual phone-facing HTTPS URL before remote-node QR creation', async () => {
     await bindRemoteNodeWindow();
 
     const store = usePhoneAccessStore();
     store.settings.phoneAccessEnabled = true;
-    store.selectedServerBaseUrl = 'https://docker.tailnet.ts.net/mobile';
+    store.selectedServerBaseUrl = 'https://node.tailnet.ts.net/mobile';
 
     await store.createPairingSession();
 
     expect(apiServiceMock.post).not.toHaveBeenCalled();
-    expect(store.error).toContain('Android-facing HTTPS URL');
+    expect(store.error).toContain('phone-facing private HTTPS URL');
   });
 
-  it('rejects loopback or container-local advertised URLs for remote Docker before status verification', async () => {
+  it('rejects loopback or local-only advertised URLs for remote nodes before status verification', async () => {
     await bindRemoteNodeWindow();
     vi.stubGlobal('fetch', vi.fn());
 
@@ -230,10 +230,10 @@ describe('phoneAccessStore', () => {
 
     expect(globalThis.fetch).not.toHaveBeenCalled();
     expect(apiServiceMock.post).not.toHaveBeenCalled();
-    expect(store.error).toContain('Android-facing HTTPS URL');
+    expect(store.error).toContain('phone-facing private HTTPS URL');
   });
 
-  it('fails closed when the remote Docker advertised URL reaches a different server instance', async () => {
+  it('fails closed when the remote-node advertised URL reaches a different server instance', async () => {
     await bindRemoteNodeWindow();
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
@@ -243,18 +243,18 @@ describe('phoneAccessStore', () => {
 
     const store = usePhoneAccessStore();
     store.settings.phoneAccessEnabled = true;
-    store.manualServerBaseUrl = 'https://docker.tailnet.ts.net/mobile';
-    store.selectedServerBaseUrl = 'https://docker.tailnet.ts.net/mobile';
+    store.manualServerBaseUrl = 'https://node.tailnet.ts.net/mobile';
+    store.selectedServerBaseUrl = 'https://node.tailnet.ts.net/mobile';
 
     await store.createPairingSession();
 
-    expect(globalThis.fetch).toHaveBeenCalledWith('https://docker.tailnet.ts.net/rest/remote-access/status', { method: 'GET' });
+    expect(globalThis.fetch).toHaveBeenCalledWith('https://node.tailnet.ts.net/rest/remote-access/status', { method: 'GET' });
     expect(apiServiceMock.post).not.toHaveBeenCalled();
     expect(store.error).toContain('different AutoByteUs node');
     expect(store.advertisedUrlVerified).toBe(false);
   });
 
-  it('verifies remote Docker advertised URL server identity before creating a trusted-network QR', async () => {
+  it('verifies remote-node advertised URL server identity before creating a trusted-network QR', async () => {
     await bindRemoteNodeWindow();
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
@@ -265,26 +265,26 @@ describe('phoneAccessStore', () => {
       data: {
         payload: {
           version: 1,
-          serverBaseUrl: 'https://docker.tailnet.ts.net',
+          serverBaseUrl: 'https://node.tailnet.ts.net',
           pairingCode: 'code',
           expiresAt: '2026-05-22T00:05:00.000Z',
-          serverName: 'AutoByteus Docker Node',
+          serverName: 'AutoByteus Remote Node',
         },
-        qrText: 'https://docker.tailnet.ts.net/mobile?pairing=encoded',
-        mobileUrl: 'https://docker.tailnet.ts.net/mobile?pairing=encoded',
+        qrText: 'https://node.tailnet.ts.net/mobile?pairing=encoded',
+        mobileUrl: 'https://node.tailnet.ts.net/mobile?pairing=encoded',
       },
     });
 
     const store = usePhoneAccessStore();
     store.settings.phoneAccessEnabled = true;
-    store.manualServerBaseUrl = 'https://docker.tailnet.ts.net/mobile';
-    store.selectedServerBaseUrl = 'https://docker.tailnet.ts.net/mobile';
+    store.manualServerBaseUrl = 'https://node.tailnet.ts.net/mobile';
+    store.selectedServerBaseUrl = 'https://node.tailnet.ts.net/mobile';
 
     await store.createPairingSession();
 
-    expect(globalThis.fetch).toHaveBeenCalledWith('https://docker.tailnet.ts.net/rest/remote-access/status', { method: 'GET' });
+    expect(globalThis.fetch).toHaveBeenCalledWith('https://node.tailnet.ts.net/rest/remote-access/status', { method: 'GET' });
     expect(apiServiceMock.post).toHaveBeenCalledWith('/remote-access/pairing-sessions', {
-      serverBaseUrl: 'https://docker.tailnet.ts.net',
+      serverBaseUrl: 'https://node.tailnet.ts.net',
       serverName: 'AutoByteus Remote Node',
     });
     expect(store.advertisedUrlVerified).toBe(true);
@@ -293,5 +293,5 @@ describe('phoneAccessStore', () => {
 
 async function bindRemoteNodeWindow(): Promise<void> {
   const { useWindowNodeContextStore } = await import('../windowNodeContextStore');
-  useWindowNodeContextStore().bindNodeContext('remote-docker-1', 'http://127.0.0.1:8001');
+  useWindowNodeContextStore().bindNodeContext('remote-node-1', 'http://127.0.0.1:8001');
 }

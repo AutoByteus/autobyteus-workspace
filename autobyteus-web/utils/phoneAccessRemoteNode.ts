@@ -41,7 +41,7 @@ export const validatePhoneAccessAdvertisedUrl = (
       isHttps: false,
       isAndroidFacing: false,
       message: requiresAndroidFacing
-        ? 'Enter the Android-facing private HTTPS URL for this remote node.'
+        ? 'Enter the phone-facing private HTTPS URL for this remote node.'
         : 'Choose or enter a server URL first.',
     }
   }
@@ -58,7 +58,7 @@ export const validatePhoneAccessAdvertisedUrl = (
       message: !isHttps
         ? 'Phone Access pairing requires an HTTPS URL. Paste a private HTTPS URL such as https://<node>.<tailnet>.ts.net/mobile.'
         : !isAndroidFacing
-          ? 'Remote-node Phone Access requires an Android-facing HTTPS URL, not localhost, 127.0.0.1, host.docker.internal, or a container-local address.'
+          ? 'Remote-node Phone Access requires a phone-facing private HTTPS URL, not localhost, 127.0.0.1, host.docker.internal, or another local-only address.'
           : null,
     }
   } catch (validationError) {
