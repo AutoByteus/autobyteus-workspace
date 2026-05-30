@@ -72,8 +72,8 @@ team paths own the supported task-agent lifecycle.
 
 ### `delegate_tasks`
 
-A coordinator/delegator creates one or more bounded tasks with a `tasks` array.
-Each task item contains:
+A coordinator/delegator creates one or more bounded ready-to-run tasks with a
+`tasks` array. Each task item contains:
 
 - `member_name`: the exact logical team member/template name from the current
   roster;
@@ -85,7 +85,9 @@ Each task item contains:
 The service creates internal ledger records, assigns stable ids such as
 `task_0001`, and starts one concrete task-agent instance per accepted task. A
 one-item `tasks` array is the single-task form; do not use `create_task` or
-`assign_task_to`.
+`assign_task_to`. Do not encode dependencies in task items; if task B depends on
+task A, the coordinator waits for the framework terminal/completion
+notification for task A and then calls `delegate_tasks` again for task B.
 
 ### Work packets instead of polling
 

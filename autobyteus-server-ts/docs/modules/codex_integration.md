@@ -43,10 +43,13 @@ JSON schemas derived from `src/agent-tools/task-delegation`; handlers call
 `TaskDelegationToolService` with the current `MemberTeamContext`. The Codex
 runtime does not mutate task state directly and must not expose the removed
 legacy task-plan names (`create_task`, `create_tasks`, `assign_task_to`,
-`get_my_tasks`, or `get_task_plan_status`). Activation details are pushed to
-task-agent instances as work packets, and completion/failure is observed through
-framework task-delegation events and coordinator notifications rather than a
-model polling tool.
+`get_my_tasks`, or `get_task_plan_status`). Codex inherits the canonical
+ready-to-run/no-dependencies task guidance from the shared manifest/schema:
+dependent follow-up work should be delegated after the framework
+terminal/completion notification. Activation details are pushed to task-agent
+instances as work packets, and completion/failure is observed through framework
+task-delegation events and coordinator notifications rather than a model polling
+tool.
 
 Codex MCP tool calls exposed by the native runtime follow the same split
 surface contract. A raw `mcpToolCall` start emits a display

@@ -120,9 +120,10 @@ Team task delegation is owned by `TaskDelegationService`, not by runtime-specifi
 handlers, legacy model-facing task-plan tools, or future MCP transport code. The
 only model-facing task-delegation tools are:
 
-- `delegate_tasks`: a coordinator/delegator submits one or more bounded tasks in
-  a `tasks` array. Each item contains `member_name`, rich `description`, and
-  optional `reference_files`.
+- `delegate_tasks`: a coordinator/delegator submits one or more bounded
+  ready-to-run tasks in a `tasks` array. Each item contains `member_name`, rich
+  `description`, and optional `reference_files`; dependency encoding is not part
+  of the task item shape.
 - `update_task_status`: a task-agent instance reports `in_progress`,
   `completed`, or `failed` for its bound task using only `status`, optional
   `message`, and optional `reference_files`. The tool takes no task selector.
@@ -140,7 +141,9 @@ The happy path is push-based:
    `MemberTeamContext` / native team context and calls `TaskDelegationToolService`.
 2. The service resolves the active `TeamRun`, creates ledger records, validates
    exact `member_name` targets against the team roster, and treats the submitted
-   tasks as independent runnable work.
+   tasks as independent ready-to-run work. Dependent follow-up work is sequenced
+   by the coordinator after receiving the framework terminal/completion
+   notification, then calling `delegate_tasks` again for the next task.
 3. `TaskDelegationActivationCoordinator` marks runnable records `queued` and
    starts one concrete task-agent instance per task through
    `TeamRun.startTaskAgentInstance(...)`. The packet includes a derived task
