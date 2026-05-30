@@ -103,11 +103,6 @@ describe('AutobyteusModelProvider', () => {
                 description: 'How deeply the model should reason before responding',
                 default: 'minimal',
                 enum: ['minimal', 'low', 'medium', 'high']
-              },
-              include_thoughts: {
-                type: 'boolean',
-                description: 'Include model thought summaries in responses',
-                default: false
               }
             },
             required: []
@@ -131,10 +126,6 @@ describe('AutobyteusModelProvider', () => {
         thinking_level: expect.objectContaining({
           enum: ['minimal', 'low', 'medium', 'high'],
           default: 'minimal'
-        }),
-        include_thoughts: expect.objectContaining({
-          type: 'boolean',
-          default: false
         })
       }
     });

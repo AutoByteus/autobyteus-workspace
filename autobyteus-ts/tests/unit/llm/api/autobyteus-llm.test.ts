@@ -72,8 +72,7 @@ describe('AutobyteusLLM', () => {
   it('passes extraParams as send-message generationConfig', async () => {
     const llm = new AutobyteusLLM(buildModel(), new LLMConfig({
       extraParams: {
-        thinking_level: 'medium',
-        include_thoughts: true
+        thinking_level: 'medium'
       }
     }));
     const sendMessage = vi.fn().mockResolvedValue({ response: 'ok' });
@@ -91,8 +90,7 @@ describe('AutobyteusLLM', () => {
     expect(sendMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         generationConfig: {
-          thinking_level: 'medium',
-          include_thoughts: true
+          thinking_level: 'medium'
         }
       }),
       { signal: null }
@@ -102,8 +100,7 @@ describe('AutobyteusLLM', () => {
   it('passes extraParams as stream-message generationConfig', async () => {
     const llm = new AutobyteusLLM(buildModel(), new LLMConfig({
       extraParams: {
-        thinking_level: 'high',
-        include_thoughts: false
+        thinking_level: 'high'
       }
     }));
     const streamMessage = vi.fn(async function* () {
@@ -125,8 +122,7 @@ describe('AutobyteusLLM', () => {
     expect(streamMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         generationConfig: {
-          thinking_level: 'high',
-          include_thoughts: false
+          thinking_level: 'high'
         }
       }),
       { signal: null }
