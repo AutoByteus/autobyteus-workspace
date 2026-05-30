@@ -1,0 +1,20 @@
+[AutoByteus Docker] Applying shared workspace bind mounts to autobyteus-server-0. Named volumes will be kept.
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+Digest: sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+Status: Image is up to date for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Launcher config changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:18001
+GraphQL: http://localhost:18001/graphql
+noVNC: http://localhost:16080
+VNC: localhost:15908
+Chrome debug: localhost:19228
+Workspace: /home/autobyteus/workspace -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/migrated-shared-workspace/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/migrated-shared-workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.

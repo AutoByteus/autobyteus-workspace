@@ -1,0 +1,14 @@
+$ git grep stale active-source terms (excluding ticket history and node_modules)
+PASS no stale terms found in active non-ticket source/docs
+$ git grep -- --profile -- scripts/public/docker
+PASS no --profile in public docker launchers
+$ Dockerfile /mobile packaging line check
+-- autobyteus-server-ts/docker/Dockerfile.monorepo
+62:COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+-- docker/Dockerfile.remote-server
+44:COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+-- docker/Dockerfile.allinone
+58:COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+PASS /mobile packaging lines present in all three Dockerfiles
+$ command -v pwsh
+pwsh unavailable: PowerShell runtime parse/rejection not executed in this environment

@@ -1,0 +1,74 @@
+# Delivery integration/docs-sync checks after authoritative validation Round 2
+timestamp_utc=2026-05-30T05:57:07Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis
+
+## git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+
+## refs
+HEAD=21d05cf9e685b99f08de2b2e02a0b15a9e76a3b7
+origin/personal=21d05cf9e685b99f08de2b2e02a0b15a9e76a3b7
+recorded_base=21d05cf9e685b99f08de2b2e02a0b15a9e76a3b7
+
+## commits beyond recorded base on origin/personal
+
+## authoritative validation report markers
+11:- Current Validation Round: `2`
+14:- Latest Authoritative Round: `2`
+63:- Round 2 live frontend: Nuxt `3.21.1` dev server at `http://127.0.0.1:32123`, configured with `BACKEND_NODE_BASE_URL=http://127.0.0.1:29695` / `BACKEND_REST_BASE_URL=http://127.0.0.1:29695/rest` / `BACKEND_GRAPHQL_BASE_URL=http://127.0.0.1:29695/graphql`.
+76:| S-011 | Live Settings > Nodes > Phone Setup page against Electron-started backend | Pass | Round 2 evidence: `phone-setup-page.png`, `phone-setup-ui-check.json`, `electron-backend-proxy-checks.log`. Rendered copy says `Set up private HTTPS phone access`, `Tailscale Serve HTTPS URL`, and `Pair a phone/PWA to this desktop over any private network you already trust`; no removed profile terms observed. Backend data loaded from `127.0.0.1:29695` through Nuxt proxy. |
+77:| S-012 | Live Settings > Nodes > Docker Guide page against same frontend/backend setup | Pass | Round 2 evidence: `docker-guide-page.png`, `docker-guide-ui-check.json`. Rendered guide says `Start Docker node`, `normal Docker node`, and shows `autobyteus-docker new-container`; no `--profile` or removed profile terms observed. |
+107:- Round 2 live frontend/browser checks:
+158:- Round 2 live frontend evidence:
+244:### S-011 — Live Phone Setup page with existing backend
+252:### S-012 — Live Docker Guide page with existing backend
+268:- Round 2 live frontend browser checks passed against the existing Electron-started backend.
+310:## Latest Authoritative Result
+
+## Round 2 browser assertion summaries
+phone-setup-ui-check.json: PASS url=http://127.0.0.1:32123/settings?section=nodes&nodeTab=phoneSetup
+docker-guide-ui-check.json: PASS url=http://127.0.0.1:32123/settings?section=nodes&nodeTab=dockerGuide
+
+## git status --short --branch
+## codex/server-docker-desktop-only-analysis...origin/personal
+ M README.md
+ M autobyteus-server-ts/README.md
+ M autobyteus-server-ts/docker/README.md
+ M autobyteus-server-ts/docs/features/remote_access.md
+ M autobyteus-web/components/mobile/MobileRemoteAccessShell.vue
+ M autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+ M autobyteus-web/docs/remote_access.md
+ M autobyteus-web/docs/settings.md
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M autobyteus-web/stores/__tests__/phoneAccessStore.spec.ts
+ M autobyteus-web/stores/phoneAccessStore.ts
+ M autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts
+ M autobyteus-web/utils/dockerNodeLauncherCommands.ts
+ M autobyteus-web/utils/phoneAccessRemoteNode.ts
+ M autobyteus-web/utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts
+ M docs/android_mobile_access.md
+ M docs/future-tickets/mobile-backend-authorization-hardening.md
+ M scripts/public/docker/autobyteus-docker.ps1
+ M scripts/public/docker/autobyteus-docker.sh
+ M scripts/tests/test_public_docker_launcher_shared_workspace.py
+?? tickets/done/server-docker-desktop-only-analysis/
+
+## git diff --check
+git diff --check: PASS
+
+## active stale removed-term scan excluding all ticket folders
+active stale removed-term scan: PASS (no active matches outside ticket folders)
+
+## public launcher --profile scan
+public launcher --profile scan: PASS (no matches)
+
+## Docker /mobile packaging line check
+docker/Dockerfile.remote-server:28:RUN pnpm -C autobyteus-web build:mobile-web
+docker/Dockerfile.remote-server:44:COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+autobyteus-server-ts/docker/Dockerfile.monorepo:34:RUN pnpm -C autobyteus-web build:mobile-web
+autobyteus-server-ts/docker/Dockerfile.monorepo:62:COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+docker/Dockerfile.allinone:38:RUN pnpm -C autobyteus-web build:mobile-web
+docker/Dockerfile.allinone:58:COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+Docker /mobile packaging line check: PASS

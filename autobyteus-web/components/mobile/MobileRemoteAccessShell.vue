@@ -134,7 +134,7 @@ const routePairingConsumed = ref(false);
 
 const unsupportedFeatureMessages: Partial<Record<MobileFeatureId, string>> = {
   desktopWorkspace: 'The desktop workspace route is replaced by the phone-first mobile work shell. Use Home, Switch work, and Chat/Runs/Files/Artifacts/Activity instead.',
-  desktopSettings: 'Desktop settings are managed from the desktop app. Phone Access exposes only mobile-safe connection controls.',
+  desktopSettings: 'Desktop settings are managed from the desktop app. Phone Access exposes only phone connection controls.',
   desktopUpdates: 'Desktop update controls are not available from the phone client.',
   localFolderPicker: 'Local folder picking is not available from the phone client.',
   applicationIframe: 'Application iframe surfaces are not part of the mobile shell yet.',

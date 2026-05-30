@@ -1,0 +1,57 @@
+# Delivery integration/docs-sync checks
+timestamp_utc=2026-05-30T05:15:27Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis
+
+## git fetch origin personal
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch              personal   -> FETCH_HEAD
+
+## refs
+HEAD=21d05cf9e685b99f08de2b2e02a0b15a9e76a3b7
+origin/personal=21d05cf9e685b99f08de2b2e02a0b15a9e76a3b7
+recorded_base=21d05cf9e685b99f08de2b2e02a0b15a9e76a3b7
+
+## commits beyond recorded base on origin/personal
+
+## git status --short --branch
+## codex/server-docker-desktop-only-analysis...origin/personal
+ M README.md
+ M autobyteus-server-ts/README.md
+ M autobyteus-server-ts/docker/README.md
+ M autobyteus-server-ts/docs/features/remote_access.md
+ M autobyteus-web/components/mobile/MobileRemoteAccessShell.vue
+ M autobyteus-web/components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+ M autobyteus-web/docs/remote_access.md
+ M autobyteus-web/docs/settings.md
+ M autobyteus-web/localization/messages/en/settings.ts
+ M autobyteus-web/localization/messages/zh-CN/settings.ts
+ M autobyteus-web/stores/__tests__/phoneAccessStore.spec.ts
+ M autobyteus-web/stores/phoneAccessStore.ts
+ M autobyteus-web/utils/__tests__/dockerNodeLauncherCommands.spec.ts
+ M autobyteus-web/utils/dockerNodeLauncherCommands.ts
+ M autobyteus-web/utils/phoneAccessRemoteNode.ts
+ M autobyteus-web/utils/remoteAccess/__tests__/mobileSessionBootstrap.spec.ts
+ M docs/android_mobile_access.md
+ M docs/future-tickets/mobile-backend-authorization-hardening.md
+ M scripts/public/docker/autobyteus-docker.ps1
+ M scripts/public/docker/autobyteus-docker.sh
+ M scripts/tests/test_public_docker_launcher_shared_workspace.py
+?? tickets/done/server-docker-desktop-only-analysis/
+
+## git diff --check
+git diff --check: PASS
+
+## active stale removed-term scan excluding all ticket folders
+active stale removed-term scan: PASS (no active matches outside ticket folders)
+
+## public launcher --profile scan
+public launcher --profile scan: PASS (no matches)
+
+## Docker /mobile packaging line check
+docker/Dockerfile.allinone:38:RUN pnpm -C autobyteus-web build:mobile-web
+docker/Dockerfile.allinone:58:COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+autobyteus-server-ts/docker/Dockerfile.monorepo:34:RUN pnpm -C autobyteus-web build:mobile-web
+autobyteus-server-ts/docker/Dockerfile.monorepo:62:COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+docker/Dockerfile.remote-server:28:RUN pnpm -C autobyteus-web build:mobile-web
+docker/Dockerfile.remote-server:44:COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+Docker /mobile packaging line check: PASS

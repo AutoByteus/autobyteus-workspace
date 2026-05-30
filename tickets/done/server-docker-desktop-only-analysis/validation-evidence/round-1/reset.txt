@@ -1,0 +1,46 @@
+[AutoByteus Docker] Removed managed container autobyteus-server-0. Named volumes were kept.
+[AutoByteus Docker] Removed unused AutoByteus server image sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10.
+[AutoByteus Docker] Checking image nginx:alpine
+alpine: Pulling from library/nginx
+d17f077ada11: Pulling fs layer
+42394e2ad482: Pulling fs layer
+8dd0c1727b8e: Pulling fs layer
+58dfa199cc57: Pulling fs layer
+a0a8eb1892ac: Pulling fs layer
+29fd18534678: Pulling fs layer
+92c8eaa0c5e2: Pulling fs layer
+79429faec028: Pulling fs layer
+58dfa199cc57: Download complete
+79429faec028: Download complete
+8dd0c1727b8e: Download complete
+29fd18534678: Download complete
+92c8eaa0c5e2: Download complete
+d17f077ada11: Download complete
+a0a8eb1892ac: Download complete
+58dfa199cc57: Pull complete
+79429faec028: Pull complete
+8dd0c1727b8e: Pull complete
+29fd18534678: Pull complete
+92c8eaa0c5e2: Pull complete
+d17f077ada11: Pull complete
+a0a8eb1892ac: Pull complete
+821300eaf493: Download complete
+66899d86e0d7: Download complete
+42394e2ad482: Download complete
+42394e2ad482: Pull complete
+Digest: sha256:8b1e78743a03dbb2c95171cc58639fef29abc8816598e27fb910ed2e621e589a
+Status: Downloaded newer image for nginx:alpine
+docker.io/library/nginx:alpine
+[AutoByteus Docker] Started autobyteus-server-0.
+AutoByteus Docker node: autobyteus-server-0
+Container: autobyteus-server-0
+Image: nginx:alpine
+Backend: http://localhost:57367
+GraphQL: http://localhost:57367/graphql
+noVNC: http://localhost:57369
+VNC: localhost:57368
+Chrome debug: localhost:57370
+Workspace: /home/autobyteus/workspace -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/nodes/autobyteus-server-0
+Shared folder: /home/autobyteus/shared -> /Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-desktop-only-analysis/tickets/done/server-docker-desktop-only-analysis/validation-evidence/round-1/dind-host-1780117585-24214/shared-workspace-a/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-0-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.

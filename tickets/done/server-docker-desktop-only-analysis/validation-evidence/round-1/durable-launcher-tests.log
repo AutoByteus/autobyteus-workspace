@@ -1,0 +1,12 @@
+$ bash -n scripts/public/docker/autobyteus-docker.sh
+PASS bash syntax
+$ python3 -m py_compile scripts/tests/test_public_docker_launcher_shared_workspace.py
+PASS python compile
+$ git diff --check
+PASS git diff --check
+$ python3 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace
+..s...
+----------------------------------------------------------------------
+Ran 6 tests in 1.964s
+
+OK (skipped=1)

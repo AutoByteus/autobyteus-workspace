@@ -65,23 +65,23 @@ describe('mobile session bootstrap', () => {
     expect(getRemoteAccessAuthHeaders()).toEqual({ Authorization: 'Bearer mra_secret' });
   });
 
-  it('binds mobile transports to the paired Docker node origin instead of the embedded host', () => {
+  it('binds mobile transports to the paired remote node origin instead of the embedded host', () => {
     mobileCredentialStorage.save({
       ...storedSession(),
-      serverBaseUrl: 'https://docker.tailnet.ts.net',
-      credential: 'mra_docker_secret',
+      serverBaseUrl: 'https://node.tailnet.ts.net',
+      credential: 'mra_node_secret',
       device: {
         ...storedSession().device,
-        clientFacingBaseUrl: 'https://docker.tailnet.ts.net',
+        clientFacingBaseUrl: 'https://node.tailnet.ts.net',
       },
     });
 
     expect(bootstrapMobileRemoteAccessSession('/mobile/workspace')).toBe(true);
 
     const windowNodeContextStore = useWindowNodeContextStore();
-    expect(windowNodeContextStore.nodeBaseUrl).toBe('https://docker.tailnet.ts.net');
-    expect(resolveCurrentGraphqlHttpEndpoint()).toBe('https://docker.tailnet.ts.net/graphql');
-    expect(getRemoteAccessAuthHeaders()).toEqual({ Authorization: 'Bearer mra_docker_secret' });
+    expect(windowNodeContextStore.nodeBaseUrl).toBe('https://node.tailnet.ts.net');
+    expect(resolveCurrentGraphqlHttpEndpoint()).toBe('https://node.tailnet.ts.net/graphql');
+    expect(getRemoteAccessAuthHeaders()).toEqual({ Authorization: 'Bearer mra_node_secret' });
   });
 
   it('does not bind stored phone credentials outside mobile runtime paths', () => {
