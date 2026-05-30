@@ -21,11 +21,14 @@ export class FileNameIndexer {
     this.fileExplorer = fileExplorer;
   }
 
-  async refreshSnapshotIndex(): Promise<void> {
+  async refreshSnapshotIndex(signal?: AbortSignal): Promise<void> {
     logger.info("FileNameIndexer refreshing snapshot index...");
-    this.fileNameIndex.clear();
-    this.idMap.clear();
-    await this.buildIndexFromCurrentTree();
+    const nextFileNameIndex = new Map<string, string>();
+    const nextIdMap = new Map<string, string>();
+    await this.buildIndexFromCurrentTree(signal, nextFileNameIndex, nextIdMap);
+    this.throwIfAborted(signal);
+    this.fileNameIndex = nextFileNameIndex;
+    this.idMap = nextIdMap;
     logger.debug(`FileNameIndexer refreshed snapshot index with ${this.fileNameIndex.size} entries`);
   }
 
@@ -33,7 +36,12 @@ export class FileNameIndexer {
     return Object.fromEntries(this.fileNameIndex.entries());
   }
 
-  private async buildIndexFromCurrentTree(): Promise<void> {
+  private async buildIndexFromCurrentTree(
+    signal: AbortSignal | undefined,
+    fileNameIndex: Map<string, string>,
+    idMap: Map<string, string>,
+  ): Promise<void> {
+    this.throwIfAborted(signal);
     const root = this.fileExplorer.getTree();
     if (!root) {
       logger.warn("Tree not available for FileNameIndexer, using empty index.");
@@ -46,10 +54,10 @@ export class FileNameIndexer {
       const node = stack.pop() as TreeNode;
       const nodePath = node.pathValue ?? node.getPath();
       const resolvedPath = this.resolvePath(nodePath);
-      this.idMap.set(node.id, resolvedPath);
+      idMap.set(node.id, resolvedPath);
 
       if (node.isFile) {
-        this.addEntry(resolvedPath);
+        this.addEntry(resolvedPath, fileNameIndex);
       }
 
       for (const child of node.children) {
@@ -59,8 +67,10 @@ export class FileNameIndexer {
       processed += 1;
       if (processed % 1000 === 0) {
         await new Promise<void>((resolve) => setImmediate(resolve));
+        this.throwIfAborted(signal);
       }
     }
+    this.throwIfAborted(signal);
   }
 
   private resolvePath(filePath: string): string {
@@ -70,8 +80,17 @@ export class FileNameIndexer {
     return filePath;
   }
 
-  private addEntry(filePath: string): void {
+  private addEntry(filePath: string, fileNameIndex: Map<string, string>): void {
     const name = path.basename(filePath);
-    this.fileNameIndex.set(name, filePath);
+    fileNameIndex.set(name, filePath);
+  }
+
+  private throwIfAborted(signal?: AbortSignal): void {
+    if (!signal?.aborted) {
+      return;
+    }
+    const error = new Error("File name indexing aborted");
+    error.name = "AbortError";
+    throw error;
   }
 }

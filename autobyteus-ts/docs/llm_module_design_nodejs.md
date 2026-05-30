@@ -88,7 +88,7 @@ Autobyteus runtime models are remote RPA-backed LLMs discovered from
 as the chat request `generation_config` for both `/send-message` and
 `/stream-message`, allowing remote Gemini UI/App integrators to receive the same
 kind of model-specific controls used by native providers, such as
-`thinking_level` and `include_thoughts`. `AutobyteusModelProvider` preserves
+`thinking_level`. `AutobyteusModelProvider` preserves
 server-provided `config_schema` metadata on `LLMModel.configSchema` so UI and
 caller layers can discover those controls through `LLMModel.toModelInfo()`.
 

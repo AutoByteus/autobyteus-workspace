@@ -1,7 +1,8 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import type { FileSystemWorkspace } from "../../../workspaces/filesystem-workspace.js";
 import { serializeChangeEvent } from "../../../file-explorer/file-system-changes.js";
+import type { GraphqlRequestContext } from "../graphql-request-context.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -64,6 +65,7 @@ export class FileExplorerResolver {
   async searchFiles(
     @Arg("workspaceId", () => String) workspaceId: string,
     @Arg("query", () => String) query: string,
+    @Ctx() context?: GraphqlRequestContext,
   ): Promise<string[]> {
     const workspace = await this.resolveWorkspace(workspaceId);
     if (!workspace) {
@@ -72,7 +74,7 @@ export class FileExplorerResolver {
 
     const lease = await workspace.acquireFileExplorer("graphql-search");
     try {
-      return await lease.fileExplorer.searchFiles(query);
+      return await lease.fileExplorer.searchFiles(query, context?.requestAbortSignal);
     } catch (error) {
       logger.error(`Error searching files: ${toMessage(error)}`);
       return [];

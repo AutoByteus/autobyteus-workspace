@@ -1,0 +1,36 @@
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+
+              █▀▀▀▀▀▀▀██▀▀▀█▀██▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▀▀ ▄█▀█▀█ █▀▀▀█ █
+              █ █   █ █ █ ▄▀▄ ▄▄█ █   █ █
+              █ ▀▀▀▀▀ █▀▄ █▀█ █▀█ ▀▀▀▀▀ █
+              █▀▀███▀▀▀█ ▀█ ▀▄ ▀███▀▀████
+              █▄▄▄▀ ▀▀▄█▀▄▀▀▄█ ▄▄▀▀▄ ▄ ▀█
+              ██▄▀▄▀ ▀█▄▀ ▄▀█▀▄ ▀▀█▄▄██ █
+              █ █ ███▀█▀█ █▄ ▄ █▀█▀█▀█ ▀█
+              █ █▄▄ ▀▀  █▀ ▀▀▄█ ▀▀▀ █ █▄█
+              █▀▀▀▀▀▀▀█ ▄   █ ▄ █▀█ ▀▄█▀█
+              █ █▀▀▀█ █▄▄██▄▀▄▀ ▀▀▀ ▀▀███
+              █ █   █ ██▄▀▄ ████▀▄▄█▄▀▄ █
+              █ ▀▀▀▀▀ █ ▀▄▀▄█▀  █ ▄▄▀██ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
+  ➜ Local:    http://0.0.0.0:3000/
+  ➜ Network:  http://192.168.2.158:3000/ [QR code]
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 40ms
+✔ Vite server built in 226ms
+[nitro] ✔ Nuxt Nitro server built in 2215ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: @iconify/vue, @xterm/xterm, @xterm/addon-fit, crypto-js/sha256, @monaco-editor/loader, vue-pdf-embed, xlsx, markdown-it, dompurify, katex, @mdit/plugin-katex, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json
+ℹ ✨ optimized dependencies changed. reloading
+ℹ hmr update /components/workspace/tools/Terminal.vue
+ℹ hmr update /pages/workspace.vue, /components/layout/WorkspaceMobileLayout.vue, /components/layout/WorkspaceDesktopLayout.vue, /components/workspace/config/RunConfigPanel.vue, /components/layout/RightSideTabs.vue, /components/workspace/agent/ArtifactsTab.vue, /components/progress/ProgressPanel.vue, /components/progress/ActivityFeed.vue, /components/agentInput/ContextFilePathInputArea.vue, /components/agentInput/AgentUserInputTextArea.vue, /components/conversation/ToolCallIndicator.vue, /components/workspace/running/RunningAgentsPanel.vue, /components/workspace/team/TeamWorkspaceView.vue, /components/workspace/history/WorkspaceAgentRunsTreePanel.vue, /components/fileExplorer/FileExplorer.vue, /components/fileExplorer/FileExplorerTabs.vue, /components/fileExplorer/FileItem.vue, /components/workspace/tools/Terminal.vue, /components/workspace/config/WorkspaceSelector.vue, /components/fileExplorer/viewers/HtmlPreviewer.vue, /components/conversation/UserMessage.vue, /pages/agents.vue
+ℹ hmr update /components/fileExplorer/FileExplorer.vue, /app.vue?vue&type=style&index=0&lang.css
+ℹ hmr update /components/workspace/tools/Terminal.vue, /app.vue?vue&type=style&index=0&lang.css
+ℹ page reload virtual:nuxt:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Ffile-explorer-performance-analysis%2Fautobyteus-web%2F.nuxt%2Fmiddleware.mjs
+ℹ page reload virtual:nuxt:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Ffile-explorer-performance-analysis%2Fautobyteus-web%2F.nuxt%2Fmiddleware.mjs (x2)

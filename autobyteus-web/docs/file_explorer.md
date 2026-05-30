@@ -507,11 +507,12 @@ const error = fileExplorerStore.getSearchError(workspaceId);
 
 ### Backend Integration
 
-The frontend sends a `SearchFiles` GraphQL query. Search is a request/response snapshot operation and must not start a live watcher. See [autobyteus-server-ts/docs/modules/file_explorer.md](../../autobyteus-server-ts/docs/modules/file_explorer.md) for backend implementation details including:
+The frontend sends a `SearchFiles` GraphQL query. Search is a request/response snapshot operation and must not start a live watcher. Superseded frontend searches are aborted; the backend propagates the GraphQL request abort signal into search snapshot refresh so stale full-tree traversal/index work is cancelled or detached from the caller. See [autobyteus-server-ts/docs/modules/file_explorer.md](../../autobyteus-server-ts/docs/modules/file_explorer.md) for backend implementation details including:
 
 - Search strategy pattern (allowing different search algorithms)
 - Fuzzy matching using `fuzzysort` and optional ripgrep-backed strategies
 - File name index refreshes from snapshot traversal instead of persistent watcher state
+- Request aborts and File Explorer close abort stale search snapshot refresh work
 
 ---
 
@@ -618,9 +619,9 @@ acquireFileExplorerLiveSession(workspaceId: string, consumerId: string): () => v
   consumers.add(consumerId);
   if (!alreadyRegistered && consumers.size === 1) {
     this.connectFileExplorerLiveStream(workspaceId);
+    this.refreshFileExplorerSnapshot(workspaceId);
   }
 
-  this.refreshFileExplorerSnapshot(workspaceId);
   return () => this.releaseFileExplorerLiveSession(workspaceId, consumerId);
 }
 ```
@@ -630,7 +631,8 @@ Important guarantees:
 - Multiple visible explorer surfaces for the same workspace share one frontend `FileExplorerStreamingService` connection.
 - Releasing one consumer does not disconnect the stream while other consumers remain visible.
 - The final consumer release disconnects the WebSocket and clears the workspace's live-consumer set.
-- Every acquisition refreshes the root and currently open folders through GraphQL so an explorer that was hidden catches up without needing a background watcher.
+- The first visible consumer for a workspace refreshes the root and currently open folders through GraphQL so an explorer that was hidden catches up without needing a background watcher.
+- If the live stream disconnects abnormally and reconnects, the next successful connection refreshes the root and currently open folders again before relying on subsequent stream events.
 - Backend binding resets, duplicate workspace replacement, and skill workspace unregister all clear live sessions before removing workspace state.
 
 ### WebSocket Service
@@ -667,13 +669,17 @@ service.disconnect();
 
 The backend WebSocket route resolves the workspace and asks its file explorer for a watcher lease before subscribing to events. `WorkspaceFileExplorer.acquireWatcherLease("file-explorer-websocket")` starts the underlying `FileSystemWatcher` only for the first active lease and returns an idempotent lease release handle. `subscribe()` is valid only after a lease has started the watcher.
 
-Each WebSocket session owns one watcher lease through `FileExplorerSession`. Disconnecting the WebSocket, ending the async event iterator, early-closing before the `CONNECTED` message is observed, or closing the workspace releases the session and lease. When the lease count reaches zero, the backend stops the chokidar watcher.
+Each WebSocket session owns one watcher lease through `FileExplorerSession`. Disconnecting the WebSocket, ending the async event iterator, early-closing before the `CONNECTED` message is observed, or closing the workspace releases the session and lease. When the lease count reaches zero, the backend parent process logically stops the watcher: subscribers and pending timers are closed, the current watcher generation is detached, and a stop command is sent to a child watcher runtime process.
+
+The child watcher runtime owns native chokidar start/close and sends raw events back to the parent over IPC with `{ watcherId, generation }` identity. Physical chokidar close can block or be force-killed without blocking unrelated backend routes such as Terminal. Stale child messages from a previous generation are ignored after close/restart.
+
+Event delivery intentionally stays simple. The backend keeps the existing lightweight batching and bounded queues for `FILE_SYSTEM_CHANGE`. If the runtime fails or an event queue overflows, the stream closes with an error; the frontend reconnect path refreshes a snapshot instead of attempting semantic event reconciliation.
 
 Snapshot operations intentionally bypass this lifecycle:
 
 - `createWorkspace`, `fetchAllWorkspaces`, `folderChildren`, `fileContent`, and `searchFiles` return snapshots without acquiring watcher leases.
 - File mutations return concrete change events that the frontend applies immediately; the later stream echo is filtered if a live stream is open.
-- Search index refresh uses snapshot traversal (`getAllFilePaths`) and does not keep watcher state alive.
+- Search index refresh uses snapshot traversal (`getAllFilePaths`), observes request abort signals, and does not keep watcher state alive.
 
 ### Sequence Diagram
 
@@ -711,7 +717,8 @@ sequenceDiagram
     ExplorerB->>Store: release consumerB
     Store->>WebSocket: disconnect()
     Backend->>Explorer: release watcher lease
-    Explorer->>Watcher: stop() when lease count is zero
+    Explorer->>Watcher: logical stop when lease count is zero
+    Watcher-->>Watcher: child runtime closes/kills chokidar asynchronously
 ```
 
 ### Key Files
@@ -722,6 +729,7 @@ Frontend:
 - `services/fileExplorerStreaming/FileExplorerStreamingService.ts` - low-level WebSocket client, authenticated remote-access WebSocket URL handling, reconnect policy.
 - `services/fileExplorerStreaming/types.ts` - protocol types.
 - `stores/workspace.ts` - metadata-only workspace lifecycle and live-consumer tracking, one stream per workspace.
+- `stores/workspaceFileExplorerLiveActions.ts` - visible-consumer acquisition/release, reconnect snapshot refresh, search abort/generation invalidation on final release.
 - `utils/fileExplorer/openFolderRefresh.ts` - root/open-folder refresh helpers for newly visible explorers.
 - `utils/fileExplorer/stateSync.ts` - structural mutation echo filtering and path remapping helpers.
 
@@ -731,7 +739,9 @@ Backend:
 - `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts` - watcher lease acquisition, session setup, stream loop, disconnect cleanup.
 - `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-session.ts` - session-owned async iterator cancellation and watcher lease release.
 - `autobyteus-server-ts/src/file-explorer/file-explorer.ts` - lazy tree/search/operation/watcher capability boundary and watcher lease counting.
-- `autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts` - chokidar watcher and subscriber fan-out.
+- `autobyteus-server-ts/src/file-explorer/watcher/file-system-watcher.ts` - parent watcher lifecycle, generation identity, subscriber fan-out, and logical stop.
+- `autobyteus-server-ts/src/file-explorer/watcher/runtime/` - child-process watcher runtime; `chokidar-watcher-runtime.ts` is the only production chokidar adapter.
+- `autobyteus-server-ts/src/file-explorer/search-snapshot/workspace-search-snapshot-controller.ts` - abortable search snapshot refresh/indexing.
 
 ### Change Event Types
 

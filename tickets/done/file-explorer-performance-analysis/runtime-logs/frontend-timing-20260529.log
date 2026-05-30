@@ -1,0 +1,34 @@
+
+> autobyteus@1.3.32 dev /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-web
+> nuxt dev --host 0.0.0.0 -- --port 3000
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+[get-port] Unable to find an available port (tried 29695 on host "0.0.0.0"). Using alternative port 3000.
+
+
+              █▀▀▀▀▀▀▀██▀▀▀█▀██▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ ██▀▀ ▄█▀█▀█ █▀▀▀█ █
+              █ █   █ █ █ ▄▀▄ ▄▄█ █   █ █
+              █ ▀▀▀▀▀ █▀▄ █▀█ █▀█ ▀▀▀▀▀ █
+              █▀▀███▀▀▀█ ▀█ ▀▄ ▀███▀▀████
+              █▄▄▄▀ ▀▀▄█▀▄▀▀▄█ ▄▄▀▀▄ ▄ ▀█
+              ██▄▀▄▀ ▀█▄▀ ▄▀█▀▄ ▀▀█▄▄██ █
+              █ █ ███▀█▀█ █▄ ▄ █▀█▀█▀█ ▀█
+              █ █▄▄ ▀▀  █▀ ▀▀▄█ ▀▀▀ █ █▄█
+              █▀▀▀▀▀▀▀█ ▄   █ ▄ █▀█ ▀▄█▀█
+              █ █▀▀▀█ █▄▄██▄▀▄▀ ▀▀▀ ▀▀███
+              █ █   █ ██▄▀▄ ████▀▄▄█▄▀▄ █
+              █ ▀▀▀▀▀ █ ▀▄▀▄█▀  █ ▄▄▀██ █
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
+  ➜ Local:    http://0.0.0.0:3000/
+  ➜ Network:  http://192.168.2.158:3000/ [QR code]
+
+  ➜ DevTools: press Shift + Option + D in the browser (v3.2.1)
+
+✔ Vite client built in 22ms
+✔ Vite server built in 65ms
+[nitro] ✔ Nuxt Nitro server built in 815ms
+ℹ Vite server warmed up in 1ms
+ℹ Vite client warmed up in 1ms

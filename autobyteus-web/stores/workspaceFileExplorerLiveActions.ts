@@ -78,6 +78,7 @@ export const connectFileExplorerLiveStreamForStore = (
   console.log(`[Workspace] Connecting to file system changes for workspace: ${workspaceId}`);
   const windowNodeContextStore = useWindowNodeContextStore();
   const wsEndpoint = windowNodeContextStore.getBoundEndpoints().fileExplorerWs;
+  let refreshSnapshotOnReconnect = false;
 
   const service = new FileExplorerStreamingService(wsEndpoint, {
     onFileSystemChange: (event: FileSystemChangeEvent) => {
@@ -86,9 +87,18 @@ export const connectFileExplorerLiveStreamForStore = (
     },
     onConnect: (sessionId: string) => {
       console.log(`[Workspace] Connected to file system changes: ${sessionId}`);
+      if (!refreshSnapshotOnReconnect) {
+        return;
+      }
+
+      refreshSnapshotOnReconnect = false;
+      if (store.fileExplorerLiveConsumers.has(workspaceId)) {
+        void refreshFileExplorerSnapshotForStore(store, workspaceId);
+      }
     },
     onDisconnect: (reason?: string) => {
       console.log(`[Workspace] Disconnected from file system changes: ${reason}`);
+      refreshSnapshotOnReconnect = true;
     },
     onError: (error: Error) => {
       console.error(`[Workspace] File system WebSocket error for ${workspaceId}:`, error);

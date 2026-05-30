@@ -1,0 +1,34 @@
+```console
+$ cp validation-artifacts/api-e2e/frontend-reconnect-resync.validation.spec.ts autobyteus-web/stores/__tests__/workspaceStore.reconnect-resync.validation.spec.ts
+$ pnpm -C autobyteus-web test:nuxt --run stores/__tests__/workspaceStore.reconnect-resync.validation.spec.ts
+
+> autobyteus@1.3.32 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run stores/__tests__/workspaceStore.reconnect-resync.validation.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/file-explorer-performance-analysis/autobyteus-web
+
+stderr | stores/__tests__/workspaceStore.reconnect-resync.validation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/workspaceStore.reconnect-resync.validation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/workspaceStore.reconnect-resync.validation.spec.ts > validation: File Explorer reconnect resync after stream fail-close > refreshes the File Explorer snapshot when the live stream reconnects after an abnormal close
+[Workspace] Connecting to file system changes for workspace: ws-1
+
+stdout | stores/__tests__/workspaceStore.reconnect-resync.validation.spec.ts > validation: File Explorer reconnect resync after stream fail-close > refreshes the File Explorer snapshot when the live stream reconnects after an abnormal close
+[Workspace] Disconnected from file system changes: File Explorer event queue overflow; reconnect required
+[Workspace] Connected to file system changes: reconnected-session
+
+ ✓ stores/__tests__/workspaceStore.reconnect-resync.validation.spec.ts (1 test) 7ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  18:52:42
+   Duration  4.60s (transform 2.58s, setup 4.03s, collect 27ms, tests 7ms, environment 154ms, prepare 160ms)
+
+```

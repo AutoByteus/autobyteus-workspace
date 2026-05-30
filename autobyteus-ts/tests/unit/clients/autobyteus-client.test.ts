@@ -108,8 +108,7 @@ describe('AutobyteusClient', () => {
       conversationId: 'conversation-1',
       modelName: 'model-1',
       generationConfig: {
-        thinking_level: 'medium',
-        include_thoughts: true
+        thinking_level: 'medium'
       },
       payload: {
         current_message_index: 1,
@@ -138,8 +137,7 @@ describe('AutobyteusClient', () => {
       model_name: 'model-1',
       current_message_index: 1,
       generation_config: {
-        thinking_level: 'medium',
-        include_thoughts: true
+        thinking_level: 'medium'
       }
     });
     expect(payload.messages[0].image_urls).toEqual([]);
@@ -343,8 +341,7 @@ describe('AutobyteusClient', () => {
       conversationId: 'conversation-stream-config',
       modelName: 'model-1',
       generationConfig: {
-        thinking_level: 'low',
-        include_thoughts: false
+        thinking_level: 'low'
       },
       payload: {
         current_message_index: 0,
@@ -363,8 +360,7 @@ describe('AutobyteusClient', () => {
 
     const payload = postMock.mock.calls[0][1];
     expect(payload.generation_config).toEqual({
-      thinking_level: 'low',
-      include_thoughts: false
+      thinking_level: 'low'
     });
   });
 

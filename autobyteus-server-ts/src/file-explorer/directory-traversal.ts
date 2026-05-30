@@ -13,6 +13,16 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
+type DirectoryTraversalOptions = {
+  signal?: AbortSignal;
+};
+
+const createAbortError = (): Error => {
+  const error = new Error("Directory traversal aborted");
+  error.name = "AbortError";
+  return error;
+};
+
 export class DirectoryTraversal {
   private fileIgnoreStrategies: TraversalIgnoreStrategy[];
   private sortStrategy: SortStrategy;
@@ -25,7 +35,12 @@ export class DirectoryTraversal {
     this.sortStrategy = sortStrategy;
   }
 
-  async buildTree(folderPath: string, maxDepth: number | null = null): Promise<TreeNode> {
+  async buildTree(
+    folderPath: string,
+    maxDepth: number | null = null,
+    options: DirectoryTraversalOptions = {},
+  ): Promise<TreeNode> {
+    this.throwIfAborted(options.signal);
     const startTime = Date.now();
     logger.info(`Starting directory traversal for: '${folderPath}' with max_depth=${maxDepth}`);
 
@@ -54,6 +69,7 @@ export class DirectoryTraversal {
 
     let index = 0;
     while (index < queue.length) {
+      this.throwIfAborted(options.signal);
       const { node, currentPath, strategies, depth } = queue[index++];
 
       if (maxDepth !== null && depth >= maxDepth) {
@@ -65,8 +81,10 @@ export class DirectoryTraversal {
       try {
         const dir = await fs.opendir(currentPath);
         for await (const dirent of dir) {
+          this.throwIfAborted(options.signal);
           const entryPath = path.join(currentPath, dirent.name);
           const { isFile, isDirectory } = await this.resolveEntryType(dirent, entryPath);
+          this.throwIfAborted(options.signal);
           entries.push({
             name: dirent.name,
             path: entryPath,
@@ -76,6 +94,9 @@ export class DirectoryTraversal {
         }
         node.childrenLoaded = true;
       } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          throw error;
+        }
         node.childrenLoaded = false;
         logger.warn(`Failed to scan directory '${currentPath}': ${String(error)}`);
         continue;
@@ -89,6 +110,7 @@ export class DirectoryTraversal {
         : strategies;
 
       for (const entry of sortedEntries) {
+        this.throwIfAborted(options.signal);
         const isDir = !entry.isFile();
         if (updatedStrategies.some((strategy) => strategy.shouldIgnore(entry.path, isDir))) {
           continue;
@@ -109,10 +131,12 @@ export class DirectoryTraversal {
 
         if (queue.length % 500 === 0) {
           await this.yieldToEventLoop();
+          this.throwIfAborted(options.signal);
         }
       }
     }
 
+    this.throwIfAborted(options.signal);
     const duration = (Date.now() - startTime) / 1000;
     logger.info(`Directory traversal for '${normalizedPath}' completed in ${duration.toFixed(4)} seconds.`);
 
@@ -147,5 +171,11 @@ export class DirectoryTraversal {
 
   private async yieldToEventLoop(): Promise<void> {
     await new Promise<void>((resolve) => setImmediate(resolve));
+  }
+
+  private throwIfAborted(signal?: AbortSignal): void {
+    if (signal?.aborted) {
+      throw createAbortError();
+    }
   }
 }
