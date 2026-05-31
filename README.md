@@ -62,6 +62,10 @@ Windows PowerShell:
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
 ```
 
+The installer writes the launcher entry and its adjacent support modules into
+the local install directory, so installed `autobyteus-docker` commands do not
+need a repository checkout.
+
 Then use direct local commands. `new-container` checks/pulls the image and creates the next indexed managed container:
 
 ```bash
@@ -80,11 +84,13 @@ and those credentials do not authorize owner-management routes. Current server
 Docker images package the `/mobile` web shell so the QR target is served by the
 container itself.
 
-For managed containers, the public launcher keeps the existing private Docker named volumes unchanged:
+For managed containers, the public launcher keeps private Docker named volumes
+outside the container writable layer:
 `<node>-data` stays mounted at `/home/autobyteus/data`, `<node>-root-home`
-stays mounted at `/root`, and `<node>-workspace` stays mounted at
-`/app/autobyteus-server-ts/workspace`. It also creates a host-visible shared
-workspace root outside the source tree:
+stays mounted at `/root`, `<node>-chromium-profile` stays mounted at
+`/home/vncuser/.config/chromium` for private Chromium browser profile state,
+and `<node>-workspace` stays mounted at `/app/autobyteus-server-ts/workspace`.
+It also creates a host-visible shared workspace root outside the source tree:
 
 - macOS / Linux default: `$HOME/.autobyteus/docker-server/shared-workspace`
 - Windows default: `%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace`
@@ -104,8 +110,9 @@ autobyteus-docker workspace paths
 autobyteus-docker storage
 ```
 
-Existing containers need a one-time safe recreate before they receive the new
-bind mounts. This keeps named volumes and host folders:
+Existing containers need a one-time safe recreate before they receive the
+current launcher volume and bind-mount set. This keeps named volumes and host
+folders:
 
 ```bash
 autobyteus-docker workspace apply --all

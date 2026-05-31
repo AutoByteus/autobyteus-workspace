@@ -70,6 +70,7 @@ services:
       - "127.0.0.1:${AUTOBYTEUS_HOST_CHROME_DEBUG_PORT}:9223"
     volumes:
       - main-allinone-data:/home/autobyteus/data
+      - main-allinone-chromium-profile:/home/vncuser/.config/chromium
       - gateway-memory:/app/memory
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -108,5 +109,6 @@ services:
 
 volumes:
   main-allinone-data:
+  main-allinone-chromium-profile:
   gateway-memory:
   remote-server-logs:

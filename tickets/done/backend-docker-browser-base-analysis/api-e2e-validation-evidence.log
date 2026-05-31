@@ -1,0 +1,438 @@
+
+===== Environment =====
++ git rev-parse --show-toplevel 
+/Users/normy/autobyteus_org/autobyteus-worktrees/backend-docker-browser-base-analysis
++ git branch --show-current 
+codex/backend-docker-browser-base-analysis
++ git status --short 
+ M README.md
+ M autobyteus-server-ts/docker/README.md
+ M autobyteus-server-ts/docker/docker-compose.yml
+ M docker/README.md
+ M docker/compose.personal-test.yml
+ M scripts/public/docker/autobyteus-docker.ps1
+ M scripts/public/docker/autobyteus-docker.sh
+ M scripts/tests/test_public_docker_launcher_shared_workspace.py
+?? scripts/public/docker/autobyteus-docker.d/
+?? tickets/backend-docker-browser-base-analysis/
++ docker --version 
+Docker version 29.0.1, build eedd969
++ docker compose version 
+Docker Compose version v2.40.3-desktop.1
++ docker info --format \{\{.ServerVersion\}\} 
+29.0.1
+pwsh: unavailable on this host
+
+===== Reviewed durable checks rerun =====
++ python3 -m unittest scripts/tests/test_public_docker_launcher_shared_workspace.py 
+....s....
+----------------------------------------------------------------------
+Ran 9 tests in 3.618s
+
+OK (skipped=1)
++ bash -n scripts/public/docker/autobyteus-docker.sh scripts/public/docker/autobyteus-docker.d/bash/commands.sh scripts/public/docker/autobyteus-docker.d/bash/core.sh scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh 
+PowerShell parser/runtime validation skipped: pwsh is not installed.
++ git diff --check 
+
+===== Source size guard =====
+117 scripts/public/docker/autobyteus-docker.sh
+210 scripts/public/docker/autobyteus-docker.d/bash/commands.sh
+114 scripts/public/docker/autobyteus-docker.d/bash/core.sh
+431 scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh
+103 scripts/public/docker/autobyteus-docker.ps1
+182 scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1
+122 scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1
+450 scripts/public/docker/autobyteus-docker.d/powershell/DockerRuntime.ps1
+
+===== Legacy/static scan =====
+No active AUTOBYTEUS_NODE_PROFILE / com.autobyteus.profile / mobile-safe matches outside excluded historical paths.
+
+===== Compose config checks =====
++ docker compose -f autobyteus-server-ts/docker/docker-compose.yml config 
+name: docker
+services:
+  autobyteus-server:
+    build:
+      context: /Users/normy/autobyteus_org/autobyteus-worktrees/backend-docker-browser-base-analysis
+      dockerfile: autobyteus-server-ts/docker/Dockerfile.monorepo
+    cap_add:
+      - SYS_ADMIN
+    environment:
+      APP_ENV: production
+      AUTOBYTEUS_BIND_HOST: 0.0.0.0
+      AUTOBYTEUS_DATA_DIR: /home/autobyteus/data
+      AUTOBYTEUS_GIT_AUTH_MODE: pat
+      AUTOBYTEUS_REF: main
+      AUTOBYTEUS_SERVER_HOST: http://127.0.0.1:29695
+      AUTOBYTEUS_SERVER_PORT: "8000"
+      AUTOBYTEUS_SERVER_REF: main
+      AUTOBYTEUS_SERVER_TS_REPO_URL: ""
+      AUTOBYTEUS_SKIP_SYNC: "1"
+      AUTOBYTEUS_TS_REF: main
+      AUTOBYTEUS_TS_REPO_URL: ""
+      AUTOBYTEUS_VNC_SERVER_HOSTS: localhost:6081,localhost:6082,localhost:6083,localhost:6084,localhost:6080
+      AUTOBYTEUS_WORKSPACE_ROOT: /app
+      DB_TYPE: sqlite
+      GITHUB_EMAIL: ""
+      GITHUB_PAT: ""
+      GITHUB_USERNAME: ""
+      LOG_LEVEL: INFO
+    image: autobyteus-server:latest
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 8000
+        published: "8001"
+        protocol: tcp
+      - mode: ingress
+        target: 5900
+        published: "5908"
+        protocol: tcp
+      - mode: ingress
+        target: 6080
+        published: "6080"
+        protocol: tcp
+      - mode: ingress
+        target: 9223
+        published: "9228"
+        protocol: tcp
+    restart: unless-stopped
+    security_opt:
+      - seccomp=unconfined
+    volumes:
+      - type: volume
+        source: autobyteus-server-workspace
+        target: /app/autobyteus-server-ts/workspace
+        volume: {}
+      - type: volume
+        source: autobyteus-server-data
+        target: /home/autobyteus/data
+        volume: {}
+      - type: volume
+        source: autobyteus-server-root-home
+        target: /root
+        volume: {}
+      - type: volume
+        source: autobyteus-server-chromium-profile
+        target: /home/vncuser/.config/chromium
+        volume: {}
+networks:
+  default:
+    name: docker_default
+volumes:
+  autobyteus-server-chromium-profile:
+    name: docker_autobyteus-server-chromium-profile
+  autobyteus-server-data:
+    name: docker_autobyteus-server-data
+  autobyteus-server-root-home:
+    name: docker_autobyteus-server-root-home
+  autobyteus-server-workspace:
+    name: docker_autobyteus-server-workspace
+name: docker
+services:
+  main-allinone:
+    build:
+      context: /Users/normy/autobyteus_org/autobyteus-worktrees/backend-docker-browser-base-analysis
+      dockerfile: docker/Dockerfile.allinone
+      args:
+        CHROME_VNC_TAG: zh
+    cap_add:
+      - SYS_ADMIN
+    environment:
+      APP_ENV: production
+      AUTOBYTEUS_BIND_HOST: 0.0.0.0
+      AUTOBYTEUS_DATA_DIR: /home/autobyteus/data
+      AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY: "false"
+      AUTOBYTEUS_HTTP_ACCESS_LOG_MODE: errors
+      AUTOBYTEUS_LLM_SERVER_HOSTS: ""
+      AUTOBYTEUS_LOG_DIR: /home/autobyteus/data/logs
+      AUTOBYTEUS_LOG_LEVEL: INFO
+      AUTOBYTEUS_SERVER_HOST: http://127.0.0.1:18001
+      AUTOBYTEUS_SERVER_PORT: "8000"
+      BACKEND_AGENT_WS_ENDPOINT: ws://127.0.0.1:18001/ws/agent
+      BACKEND_FILE_EXPLORER_WS_ENDPOINT: ws://127.0.0.1:18001/ws/file-explorer
+      BACKEND_GRAPHQL_BASE_URL: http://127.0.0.1:18001/graphql
+      BACKEND_GRAPHQL_WS_ENDPOINT: ws://127.0.0.1:18001/graphql
+      BACKEND_NODE_BASE_URL: http://127.0.0.1:18001
+      BACKEND_PROXY_URL: http://127.0.0.1:8000
+      BACKEND_PROXY_WS_URL: ws://127.0.0.1:18001
+      BACKEND_REST_BASE_URL: http://127.0.0.1:18001/rest
+      BACKEND_TEAM_WS_ENDPOINT: ws://127.0.0.1:18001/ws/agent-team
+      BACKEND_TERMINAL_WS_ENDPOINT: ws://127.0.0.1:18001/ws/terminal
+      BACKEND_TRANSCRIPTION_WS_ENDPOINT: ws://127.0.0.1:18001/ws/transcribe
+      CI: "true"
+      DB_TYPE: sqlite
+      GATEWAY_ADMIN_TOKEN: test
+      GATEWAY_DISCORD_ACCOUNT_ID: ""
+      GATEWAY_DISCORD_BOT_TOKEN: ""
+      GATEWAY_DISCORD_ENABLED: "false"
+      GATEWAY_HOST: 0.0.0.0
+      GATEWAY_PORT: "8010"
+      GATEWAY_SERVER_BASE_URL: http://main-allinone:8000
+      GATEWAY_SERVER_SHARED_SECRET: test
+      GATEWAY_TELEGRAM_ACCOUNT_ID: ""
+      GATEWAY_TELEGRAM_BOT_TOKEN: ""
+      GATEWAY_TELEGRAM_ENABLED: "false"
+      GATEWAY_TELEGRAM_POLLING_ENABLED: "true"
+      GATEWAY_TELEGRAM_WEBHOOK_ENABLED: "false"
+      GATEWAY_TELEGRAM_WEBHOOK_SECRET_TOKEN: ""
+      GATEWAY_WECHAT_PERSONAL_ENABLED: "false"
+      GATEWAY_WECHAT_PERSONAL_SIDECAR_SHARED_SECRET: ""
+      GATEWAY_WECHAT_PERSONAL_STATE_ROOT: /app/memory/wechat-personal
+      GATEWAY_WHATSAPP_PERSONAL_AUTH_ROOT: /app/memory/whatsapp-personal
+      GATEWAY_WHATSAPP_PERSONAL_ENABLED: "false"
+      LMSTUDIO_HOSTS: http://host.docker.internal:1234
+      MESSAGE_GATEWAY_ADMIN_TOKEN: test
+      MESSAGE_GATEWAY_BASE_URL: http://127.0.0.1:18010
+      NODE_ENV: development
+      OLLAMA_HOSTS: http://host.docker.internal:11434
+      WEB_PORT: "3000"
+    extra_hosts:
+      - host.docker.internal=host-gateway
+    image: autobyteus-personal-allinone:local
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8000
+        published: "18001"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 3000
+        published: "13000"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8010
+        published: "18010"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5900
+        published: "15908"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 6080
+        published: "16080"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 9223
+        published: "19228"
+        protocol: tcp
+    restart: unless-stopped
+    security_opt:
+      - seccomp=unconfined
+    volumes:
+      - type: volume
+        source: main-allinone-data
+        target: /home/autobyteus/data
+        volume: {}
+      - type: volume
+        source: main-allinone-chromium-profile
+        target: /home/vncuser/.config/chromium
+        volume: {}
+      - type: volume
+        source: gateway-memory
+        target: /app/memory
+        volume: {}
+networks:
+  default:
+    name: docker_default
+volumes:
+  gateway-memory:
+    name: docker_gateway-memory
+  main-allinone-chromium-profile:
+    name: docker_main-allinone-chromium-profile
+  main-allinone-data:
+    name: docker_main-allinone-data
+
+===== Public Bash launcher: real Docker new-container mount =====
+[AutoByteus Docker] Checking image bluenviron/mediamtx:latest
+latest: Pulling from bluenviron/mediamtx
+Digest: sha256:f8628851106cc053f9175b248050bb5f362a6e65abd72297c167a1cb5a9a3be2
+Status: Image is up to date for bluenviron/mediamtx:latest
+docker.io/bluenviron/mediamtx:latest
+[AutoByteus Docker] Started autobyteus-server-1.
+AutoByteus Docker node: autobyteus-server-1
+Container: autobyteus-server-1
+Image: bluenviron/mediamtx:latest
+Backend: http://localhost:50236
+GraphQL: http://localhost:50236/graphql
+noVNC: http://localhost:50238
+VNC: localhost:50237
+Chrome debug: localhost:50239
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/public/shared workspace/nodes/autobyteus-server-1
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/public/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-1-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+public-node=autobyteus-server-1 image=bluenviron/mediamtx:latest state=/tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/public/state/nodes/autobyteus-server-1.env config_hash=f23218a21c27bcd79c2eb8146069e396ce46e1149338b47ffdcc2d548fd6c975
+mount-ok: name=autobyteus-server-1-chromium-profile target=/home/vncuser/.config/chromium source=/var/lib/docker/volumes/autobyteus-server-1-chromium-profile/_data
+volume name=autobyteus-server-1-data src=/var/lib/docker/volumes/autobyteus-server-1-data/_data dst=/home/autobyteus/data
+bind name= src=/tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/public/shared workspace/nodes/autobyteus-server-1 dst=/home/autobyteus/workspace
+bind name= src=/tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/public/shared workspace/shared dst=/home/autobyteus/shared
+volume name=autobyteus-server-1-root-home src=/var/lib/docker/volumes/autobyteus-server-1-root-home/_data dst=/root
+volume name=autobyteus-server-1-chromium-profile src=/var/lib/docker/volumes/autobyteus-server-1-chromium-profile/_data dst=/home/vncuser/.config/chromium
+volume name=autobyteus-server-1-workspace src=/var/lib/docker/volumes/autobyteus-server-1-workspace/_data dst=/app/autobyteus-server-ts/workspace
+AutoByteus Docker storage: autobyteus-server-1
+Private Docker named volumes (kept during recreate/destroy/reset):
+  autobyteus-server-1-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  autobyteus-server-1-root-home -> /root (Codex/Claude auth and root home settings)
+  autobyteus-server-1-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+  autobyteus-server-1-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/public/shared workspace/nodes/autobyteus-server-1 -> /home/autobyteus/workspace (this node's user workspace and default temp workspace)
+  /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/public/shared workspace/shared -> /home/autobyteus/shared (shared across launcher-managed Docker nodes)
+Launcher state directory: /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/public/state
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes /home/autobyteus/workspace after apply.
+  autobyteus-server-1-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+label-absent-ok: autobyteus-server-1 has no com.autobyteus.profile
+
+===== Public Bash launcher: synthetic existing v5-managed container recreation to v6 mount =====
+old-container-id=b2b40cab1eed47569bc04d2045c4c8d3cec8f2ea54e7e2893fc141f23a7e4f55
+[AutoByteus Docker] Applying shared workspace bind mounts to autobyteus-validation-v5-20260530t104854z2633. Named volumes will be kept.
+[AutoByteus Docker] Checking image bluenviron/mediamtx:latest
+latest: Pulling from bluenviron/mediamtx
+Digest: sha256:f8628851106cc053f9175b248050bb5f362a6e65abd72297c167a1cb5a9a3be2
+Status: Image is up to date for bluenviron/mediamtx:latest
+docker.io/bluenviron/mediamtx:latest
+[AutoByteus Docker] Launcher config changed for autobyteus-validation-v5-20260530t104854z2633; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-validation-v5-20260530t104854z2633.
+AutoByteus Docker node: autobyteus-validation-v5-20260530t104854z2633
+Container: autobyteus-validation-v5-20260530t104854z2633
+Image: bluenviron/mediamtx:latest
+Backend: http://localhost:50251
+GraphQL: http://localhost:50251/graphql
+noVNC: http://localhost:50254
+VNC: localhost:50253
+Chrome debug: localhost:50255
+Workspace: /home/autobyteus/workspace -> /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/v5/shared workspace/nodes/autobyteus-validation-v5-20260530t104854z2633
+Shared folder: /home/autobyteus/shared -> /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/v5/shared workspace/shared
+Private app data: /home/autobyteus/data -> autobyteus-validation-v5-20260530t104854z2633-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+[AutoByteus Docker] Launcher config changed for autobyteus-validation-v5-20260530t104854z2633; recreating the managed container while keeping named volumes.
+new-container-id=343a6ac854ef761ba4a389baad93da9ca7391d5315a48f78c5951986a8c11fb5
+mount-ok: name=autobyteus-validation-v5-20260530t104854z2633-chromium-profile target=/home/vncuser/.config/chromium source=/var/lib/docker/volumes/autobyteus-validation-v5-20260530t104854z2633-chromium-profile/_data
+volume name=autobyteus-validation-v5-20260530t104854z2633-workspace src=/var/lib/docker/volumes/autobyteus-validation-v5-20260530t104854z2633-workspace/_data dst=/app/autobyteus-server-ts/workspace
+volume name=autobyteus-validation-v5-20260530t104854z2633-data src=/var/lib/docker/volumes/autobyteus-validation-v5-20260530t104854z2633-data/_data dst=/home/autobyteus/data
+bind name= src=/tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/v5/shared workspace/nodes/autobyteus-validation-v5-20260530t104854z2633 dst=/home/autobyteus/workspace
+bind name= src=/tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/v5/shared workspace/shared dst=/home/autobyteus/shared
+volume name=autobyteus-validation-v5-20260530t104854z2633-root-home src=/var/lib/docker/volumes/autobyteus-validation-v5-20260530t104854z2633-root-home/_data dst=/root
+volume name=autobyteus-validation-v5-20260530t104854z2633-chromium-profile src=/var/lib/docker/volumes/autobyteus-validation-v5-20260530t104854z2633-chromium-profile/_data dst=/home/vncuser/.config/chromium
+label-absent-ok: autobyteus-validation-v5-20260530t104854z2633 has no com.autobyteus.profile
+new-config-hash=3c7b072f7a432a2cc322c97999c40a5e9db88e43ff8c2524a5a4b0fb64955f13
+
+===== Source helper compose: runtime mount evidence with no-build override =====
+ Network abvalsource20260530t104854z2633_default  Creating
+ Network abvalsource20260530t104854z2633_default  Created
+ Volume abvalsource20260530t104854z2633_autobyteus-server-workspace  Creating
+ Volume abvalsource20260530t104854z2633_autobyteus-server-workspace  Created
+ Volume abvalsource20260530t104854z2633_autobyteus-server-data  Creating
+ Volume abvalsource20260530t104854z2633_autobyteus-server-data  Created
+ Volume abvalsource20260530t104854z2633_autobyteus-server-root-home  Creating
+ Volume abvalsource20260530t104854z2633_autobyteus-server-root-home  Created
+ Volume abvalsource20260530t104854z2633_autobyteus-server-chromium-profile  Creating
+ Volume abvalsource20260530t104854z2633_autobyteus-server-chromium-profile  Created
+ Container abvalsource20260530t104854z2633-autobyteus-server-1  Creating
+ Container abvalsource20260530t104854z2633-autobyteus-server-1  Created
+ Container abvalsource20260530t104854z2633-autobyteus-server-1  Starting
+ Container abvalsource20260530t104854z2633-autobyteus-server-1  Started
+source-compose-container=276c11b0e25c3213da4b4fd5ebea70be6341cfcaa758896913d292574bc40568 project=abvalsource20260530t104854z2633
+mount-ok: name=abvalsource20260530t104854z2633_autobyteus-server-chromium-profile target=/home/vncuser/.config/chromium source=/var/lib/docker/volumes/abvalsource20260530t104854z2633_autobyteus-server-chromium-profile/_data
+volume name=abvalsource20260530t104854z2633_autobyteus-server-workspace src=/var/lib/docker/volumes/abvalsource20260530t104854z2633_autobyteus-server-workspace/_data dst=/app/autobyteus-server-ts/workspace
+volume name=abvalsource20260530t104854z2633_autobyteus-server-data src=/var/lib/docker/volumes/abvalsource20260530t104854z2633_autobyteus-server-data/_data dst=/home/autobyteus/data
+volume name=abvalsource20260530t104854z2633_autobyteus-server-root-home src=/var/lib/docker/volumes/abvalsource20260530t104854z2633_autobyteus-server-root-home/_data dst=/root
+volume name=abvalsource20260530t104854z2633_autobyteus-server-chromium-profile src=/var/lib/docker/volumes/abvalsource20260530t104854z2633_autobyteus-server-chromium-profile/_data dst=/home/vncuser/.config/chromium
+ Container abvalsource20260530t104854z2633-autobyteus-server-1  Stopping
+ Container abvalsource20260530t104854z2633-autobyteus-server-1  Stopped
+ Container abvalsource20260530t104854z2633-autobyteus-server-1  Removing
+ Container abvalsource20260530t104854z2633-autobyteus-server-1  Removed
+ Volume abvalsource20260530t104854z2633_autobyteus-server-chromium-profile  Removing
+ Volume abvalsource20260530t104854z2633_autobyteus-server-data  Removing
+ Volume abvalsource20260530t104854z2633_autobyteus-server-root-home  Removing
+ Volume abvalsource20260530t104854z2633_autobyteus-server-workspace  Removing
+ Network abvalsource20260530t104854z2633_default  Removing
+ Volume abvalsource20260530t104854z2633_autobyteus-server-chromium-profile  Removed
+ Volume abvalsource20260530t104854z2633_autobyteus-server-workspace  Removed
+ Volume abvalsource20260530t104854z2633_autobyteus-server-data  Removed
+ Volume abvalsource20260530t104854z2633_autobyteus-server-root-home  Removed
+ Network abvalsource20260530t104854z2633_default  Removed
+
+===== Personal all-in-one compose: runtime mount evidence with no-build override =====
+ Network abvalpersonal20260530t104854z2633_default  Creating
+ Network abvalpersonal20260530t104854z2633_default  Created
+ Volume abvalpersonal20260530t104854z2633_gateway-memory  Creating
+ Volume abvalpersonal20260530t104854z2633_gateway-memory  Created
+ Volume abvalpersonal20260530t104854z2633_main-allinone-data  Creating
+ Volume abvalpersonal20260530t104854z2633_main-allinone-data  Created
+ Volume abvalpersonal20260530t104854z2633_main-allinone-chromium-profile  Creating
+ Volume abvalpersonal20260530t104854z2633_main-allinone-chromium-profile  Created
+ Container abvalpersonal20260530t104854z2633-main-allinone-1  Creating
+ Container abvalpersonal20260530t104854z2633-main-allinone-1  Created
+ Container abvalpersonal20260530t104854z2633-main-allinone-1  Starting
+ Container abvalpersonal20260530t104854z2633-main-allinone-1  Started
+personal-compose-container=528165c77efa87bf4c2abb0993fb258ffe28df6b7dd4d9775c667fab6035379c project=abvalpersonal20260530t104854z2633
+mount-ok: name=abvalpersonal20260530t104854z2633_main-allinone-chromium-profile target=/home/vncuser/.config/chromium source=/var/lib/docker/volumes/abvalpersonal20260530t104854z2633_main-allinone-chromium-profile/_data
+volume name=abvalpersonal20260530t104854z2633_main-allinone-chromium-profile src=/var/lib/docker/volumes/abvalpersonal20260530t104854z2633_main-allinone-chromium-profile/_data dst=/home/vncuser/.config/chromium
+volume name=abvalpersonal20260530t104854z2633_gateway-memory src=/var/lib/docker/volumes/abvalpersonal20260530t104854z2633_gateway-memory/_data dst=/app/memory
+volume name=abvalpersonal20260530t104854z2633_main-allinone-data src=/var/lib/docker/volumes/abvalpersonal20260530t104854z2633_main-allinone-data/_data dst=/home/autobyteus/data
+ Container abvalpersonal20260530t104854z2633-main-allinone-1  Stopping
+ Container abvalpersonal20260530t104854z2633-main-allinone-1  Stopped
+ Container abvalpersonal20260530t104854z2633-main-allinone-1  Removing
+ Container abvalpersonal20260530t104854z2633-main-allinone-1  Removed
+ Network abvalpersonal20260530t104854z2633_default  Removing
+ Volume abvalpersonal20260530t104854z2633_main-allinone-data  Removing
+ Volume abvalpersonal20260530t104854z2633_gateway-memory  Removing
+ Volume abvalpersonal20260530t104854z2633_main-allinone-chromium-profile  Removing
+ Volume abvalpersonal20260530t104854z2633_main-allinone-data  Removed
+ Volume abvalpersonal20260530t104854z2633_gateway-memory  Removed
+ Volume abvalpersonal20260530t104854z2633_main-allinone-chromium-profile  Removed
+ Network abvalpersonal20260530t104854z2633_default  Removed
+
+===== Public Bash no-clone module distribution over HTTP =====
+AutoByteus Docker storage: no-clone-validation
+Private Docker named volumes (kept during recreate/destroy/reset):
+  no-clone-validation-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  no-clone-validation-root-home -> /root (Codex/Claude auth and root home settings)
+  no-clone-validation-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+  no-clone-validation-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/no-clone-state/shared-workspace/nodes/no-clone-validation -> /home/autobyteus/workspace (this node's user workspace and default temp workspace)
+  /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/no-clone-state/shared-workspace/shared -> /home/autobyteus/shared (shared across launcher-managed Docker nodes)
+Launcher state directory: /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/no-clone-state
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes /home/autobyteus/workspace after apply.
+  no-clone-validation-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+[AutoByteus Docker] Installed AutoByteus Docker launcher: /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/install-bin/autobyteus-docker
+Next commands:
+  autobyteus-docker new-container
+  autobyteus-docker workspace paths
+  autobyteus-docker storage
+  autobyteus-docker urls
+PATH guidance:
+  This shell cannot find autobyteus-docker until /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/install-bin is on PATH.
+  Use direct path now: "/tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/install-bin/autobyteus-docker" new-container
+  For this shell session: export PATH="/tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/install-bin:$PATH"
+  To persist, add that export line to your shell profile, then open a new terminal.
+AutoByteus Docker storage: installed-no-clone
+Private Docker named volumes (kept during recreate/destroy/reset):
+  installed-no-clone-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
+  installed-no-clone-root-home -> /root (Codex/Claude auth and root home settings)
+  installed-no-clone-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+  installed-no-clone-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
+Host bind mounts (host-visible user files):
+  /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/installed-state/shared-workspace/nodes/installed-no-clone -> /home/autobyteus/workspace (this node's user workspace and default temp workspace)
+  /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/installed-state/shared-workspace/shared -> /home/autobyteus/shared (shared across launcher-managed Docker nodes)
+Launcher state directory: /tmp/autobyteus-api-e2e-20260530T104854Z-2633.tsCmt8/installed-state
+Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
+Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes /home/autobyteus/workspace after apply.
+  installed-no-clone-chromium-profile -> /home/vncuser/.config/chromium (private Chromium browser profile state: cookies, local storage, preferences)
+
+
+===== Validation complete =====
+Evidence log: /Users/normy/autobyteus_org/autobyteus-worktrees/backend-docker-browser-base-analysis/tickets/backend-docker-browser-base-analysis/api-e2e-validation-evidence.log

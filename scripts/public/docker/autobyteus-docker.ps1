@@ -4,891 +4,116 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$Script:LauncherLabelKey = 'com.autobyteus.launcher'
-$Script:LauncherLabelValue = 'server-docker'
-$Script:NodeLabelKey = 'com.autobyteus.nodeName'
-$Script:ConfigLabelKey = 'com.autobyteus.configHash'
-$Script:ConfigHashVersion = 'v5'
-$Script:NodeNamePrefix = 'autobyteus-server'
-$Script:DefaultNodeName = "$($Script:NodeNamePrefix)-0"
-$Script:DefaultImage = 'autobyteus/autobyteus-server'
-$Script:DefaultTag = 'latest'
-$Script:MaxRunAttempts = 5
-$Script:PublicPowerShellScriptUrl = 'https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1'
-$Script:WorkspaceContainerPath = '/home/autobyteus/workspace'
-$Script:SharedContainerPath = '/home/autobyteus/shared'
-$Script:TempWorkspaceEnvValue = $Script:WorkspaceContainerPath
+$Script:AutoByteusDockerPowerShellModules = @('Core.ps1', 'DockerRuntime.ps1', 'Commands.ps1')
+$Script:AutoByteusDockerPublicSourceBaseDefault = 'https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker'
+$Script:AutoByteusDockerPowerShellEntryName = 'autobyteus-docker.ps1'
 
-function Show-AutoByteusDockerHelp {
-@"
-AutoByteus Docker node launcher
+function Fail-AutoByteusDockerEntry([string]$Message) { throw "error: $Message" }
+function Write-AutoByteusDockerEntryInfo([string]$Message) { Write-Host "[AutoByteus Docker] $Message" }
 
-Usage:
-  autobyteus-docker <command> [options]
-  powershell -NoProfile -ExecutionPolicy Bypass -Command "irm <script-url> | iex; autobyteus-docker install"
-
-Commands:
-  install            Install or replace the local autobyteus-docker CLI
-  new-container      Create a new Docker node with automatic indexed name and ports
-  upgrade --all      Upgrade all managed Docker nodes to the latest image
-  destroy --all      Remove all managed Docker nodes, keeping named volumes
-  reset              Destroy all managed Docker nodes, then create autobyteus-server-0
-  workspace paths    Show host/container paths for node and shared workspaces
-  workspace apply    Recreate node(s) to apply shared workspace bind mounts safely
-  storage            Show named volumes and host bind mounts for node(s)
-  urls | ports       Show Backend, GraphQL, noVNC, VNC, and debug URLs
-  status | ps        Show managed Docker nodes
-  logs               Show Docker logs for a managed node
-  stop [--all]       Stop one or all managed Docker nodes
-  help               Show this help
-
-Advanced temporary use: powershell -NoProfile -ExecutionPolicy Bypass -Command "irm <script-url> | iex; autobyteus-docker <command> [options]"
-
-Options:
-  --name <name>      Friendly node name for status/logs/urls/stop (default: $Script:DefaultNodeName)
-  --tag <tag>        Docker image tag (default: $Script:DefaultTag)
-  --image <image>    Docker image repository or full image ref (default: $Script:DefaultImage)
-  --all              Required for upgrade/destroy; also applies stop/status/workspace/storage to all managed nodes
-  -h, --help         Show this help
-
-State:
-  AUTOBYTEUS_DOCKER_INSTALL_DIR overrides the install directory.
-  Default install directory: %LOCALAPPDATA%\AutoByteus\bin
-  AUTOBYTEUS_DOCKER_STATE_DIR overrides the state directory.
-  Default state directory: %LOCALAPPDATA%\AutoByteus\docker-server
-  AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR overrides the shared workspace root.
-  Default shared workspace: %LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace
-"@
+function Get-AutoByteusDockerEntrySourceBase {
+  if ($env:AUTOBYTEUS_DOCKER_PUBLIC_SOURCE_BASE) { return $env:AUTOBYTEUS_DOCKER_PUBLIC_SOURCE_BASE.TrimEnd('/') }
+  $Script:AutoByteusDockerPublicSourceBaseDefault
 }
 
-function Write-LauncherInfo([string]$Message) { Write-Host "[AutoByteus Docker] $Message" }
-function Fail-Launcher([string]$Message) { throw "error: $Message" }
-function Get-NowUtc { (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ') }
-
-function Get-StateRoot {
-  if ($env:AUTOBYTEUS_DOCKER_STATE_DIR) { return $env:AUTOBYTEUS_DOCKER_STATE_DIR }
-  $localAppData = $env:LOCALAPPDATA
-  if (-not $localAppData) { $localAppData = Join-Path $HOME 'AppData\Local' }
-  Join-Path $localAppData 'AutoByteus\docker-server'
+function Get-AutoByteusDockerEntrySourceUrl {
+  if ($env:AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL) { return $env:AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL }
+  "$(Get-AutoByteusDockerEntrySourceBase)/$Script:AutoByteusDockerPowerShellEntryName"
 }
 
-function Get-StateDir { Join-Path (Get-StateRoot) 'nodes' }
-function Ensure-StateDir { New-Item -ItemType Directory -Force -Path (Get-StateDir) | Out-Null }
-
-function Get-SharedWorkspaceRoot {
-  if ($env:AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR) { return $env:AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR }
-  Join-Path (Get-StateRoot) 'shared-workspace'
+function Get-AutoByteusDockerModuleSourceBase {
+  if ($env:AUTOBYTEUS_DOCKER_MODULE_SOURCE_BASE) { return $env:AUTOBYTEUS_DOCKER_MODULE_SOURCE_BASE.TrimEnd('/') }
+  $sourceUrl = Get-AutoByteusDockerEntrySourceUrl
+  $sourceUrl.Substring(0, $sourceUrl.LastIndexOf('/')) + '/autobyteus-docker.d/powershell'
 }
 
-function Get-NodeWorkspaceHostPath([string]$NodeName) {
-  Join-Path (Join-Path (Get-SharedWorkspaceRoot) 'nodes') (Normalize-NodeName $NodeName)
-}
-
-function Get-SharedWorkspaceHostPath {
-  Join-Path (Get-SharedWorkspaceRoot) 'shared'
-}
-
-function Ensure-SharedWorkspaceDirs([string]$NodeName) {
-  New-Item -ItemType Directory -Force -Path (Get-NodeWorkspaceHostPath $NodeName) | Out-Null
-  New-Item -ItemType Directory -Force -Path (Get-SharedWorkspaceHostPath) | Out-Null
-}
-
-function Get-InstallDir {
+function Get-AutoByteusDockerInstallDir {
   if ($env:AUTOBYTEUS_DOCKER_INSTALL_DIR) { return $env:AUTOBYTEUS_DOCKER_INSTALL_DIR }
   $localAppData = $env:LOCALAPPDATA
   if (-not $localAppData) { $localAppData = Join-Path $HOME 'AppData\Local' }
   Join-Path $localAppData 'AutoByteus\bin'
 }
 
-function Get-InstallSourceUrl {
-  if ($env:AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL) { return $env:AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL }
-  $Script:PublicPowerShellScriptUrl
-}
-
-function Test-DirectoryOnPath([string]$Directory) {
+function Test-AutoByteusDockerDirectoryOnPath([string]$Directory) {
   $separator = [System.IO.Path]::PathSeparator
   $entries = @($env:PATH -split [regex]::Escape([string]$separator)) | Where-Object { $_ }
   $entries | Where-Object { $_.TrimEnd('\') -ieq $Directory.TrimEnd('\') } | Select-Object -First 1
 }
 
-function Install-Launcher {
-  $installDir = Get-InstallDir
+function Save-AutoByteusDockerUrl([string]$Url, [string]$Path) {
+  try {
+    Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $Path
+  } catch {
+    Fail-AutoByteusDockerEntry "failed to download $Url. Check AUTOBYTEUS_DOCKER_INSTALL_SOURCE_URL or AUTOBYTEUS_DOCKER_MODULE_SOURCE_BASE. $($_.Exception.Message)"
+  }
+}
+
+function Install-AutoByteusDockerLauncher {
+  $installDir = Get-AutoByteusDockerInstallDir
   $ps1Path = Join-Path $installDir 'autobyteus-docker.ps1'
   $cmdPath = Join-Path $installDir 'autobyteus-docker.cmd'
-  $sourceUrl = Get-InstallSourceUrl
+  $moduleDir = Join-Path $installDir 'autobyteus-docker.d\powershell'
+  $sourceUrl = Get-AutoByteusDockerEntrySourceUrl
+  $moduleBase = Get-AutoByteusDockerModuleSourceBase
 
   New-Item -ItemType Directory -Force -Path $installDir | Out-Null
-  Invoke-WebRequest -UseBasicParsing -Uri $sourceUrl -OutFile $ps1Path
+  New-Item -ItemType Directory -Force -Path $moduleDir | Out-Null
+  Save-AutoByteusDockerUrl $sourceUrl $ps1Path
+  foreach ($module in $Script:AutoByteusDockerPowerShellModules) {
+    Save-AutoByteusDockerUrl "$moduleBase/$module" (Join-Path $moduleDir $module)
+  }
+
   $shim = "@echo off`r`npowershell -NoProfile -ExecutionPolicy Bypass -File `"%~dp0autobyteus-docker.ps1`" %*`r`n"
   Set-Content -Encoding ASCII -Path $cmdPath -Value $shim
 
-  Write-LauncherInfo "Installed AutoByteus Docker launcher: $ps1Path"
+  Write-AutoByteusDockerEntryInfo "Installed AutoByteus Docker launcher: $ps1Path"
   Write-Host "Command shim: $cmdPath"
   Write-Host "Next commands:`n  autobyteus-docker new-container`n  autobyteus-docker workspace paths`n  autobyteus-docker storage`n  autobyteus-docker urls"
-  if (Test-DirectoryOnPath $installDir) { Write-LauncherInfo 'Install directory is already on PATH.'; return }
+  if (Test-AutoByteusDockerDirectoryOnPath $installDir) { Write-AutoByteusDockerEntryInfo 'Install directory is already on PATH.'; return }
   Write-Host "PATH guidance:`n  This shell cannot find 'autobyteus-docker' until $installDir is on User PATH.`n  Use direct path now:`n    powershell -NoProfile -ExecutionPolicy Bypass -File `"$ps1Path`" new-container`n  To add this directory to your User PATH without admin rights, run:`n    [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'User') + ';$installDir', 'User')`n  Then open a new PowerShell window."
 }
 
-function Normalize-NodeName([string]$Raw) {
-  if ([string]::IsNullOrWhiteSpace($Raw)) { $Raw = $Script:DefaultNodeName }
-  $normalized = $Raw.ToLowerInvariant() -replace '[^a-z0-9]+', '-'
-  $normalized = $normalized.Trim('-')
-  if ([string]::IsNullOrWhiteSpace($normalized)) { return $Script:DefaultNodeName }
-  $normalized
+function Get-AutoByteusDockerLocalModuleDir {
+  if (-not $PSCommandPath) { return $null }
+  Join-Path (Split-Path -Parent $PSCommandPath) 'autobyteus-docker.d\powershell'
 }
 
-function Get-StatePath([string]$NodeName) {
-  Join-Path (Get-StateDir) "$(Normalize-NodeName $NodeName).json"
-}
-
-function Read-NodeState([string]$NodeName) {
-  $path = Get-StatePath $NodeName
-  if (-not (Test-Path $path)) { return $null }
-  Get-Content -Raw -Path $path | ConvertFrom-Json
-}
-
-function Save-NodeState($State) {
-  $path = Get-StatePath $State.nodeName
-  $State.updatedAt = Get-NowUtc
-  [pscustomobject][ordered]@{
-    nodeName = $State.nodeName
-    containerName = $State.containerName
-    backendPort = [int]$State.backendPort
-    vncPort = [int]$State.vncPort
-    noVncPort = [int]$State.noVncPort
-    debugPort = [int]$State.debugPort
-    imageRef = $State.imageRef
-    configHash = $State.configHash
-    createdAt = $State.createdAt
-    updatedAt = $State.updatedAt
-  } | ConvertTo-Json -Depth 4 | Set-Content -Encoding UTF8 -Path $path
-}
-
-function Assert-Docker {
-  $dockerCommand = Get-Command docker -ErrorAction SilentlyContinue
-  if (-not $dockerCommand) { Fail-Launcher 'Docker CLI was not found. Install Docker Desktop/Engine, then rerun this command.' }
-  & docker info *> $null
-  if ($LASTEXITCODE -ne 0) { Fail-Launcher 'Docker is not reachable. Start Docker Desktop/Engine, then rerun this command.' }
-}
-
-function Get-ImageRef([string]$Image, [string]$Tag) {
-  $leaf = Split-Path -Leaf $Image
-  if ($Image.Contains('@') -or $leaf.Contains(':')) { return $Image }
-  "$Image`:$Tag"
-}
-
-function Get-StringSha256([string]$Value) {
-  $sha = [System.Security.Cryptography.SHA256]::Create()
-  try { ($sha.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($Value)) | ForEach-Object { $_.ToString('x2') }) -join '' } finally { $sha.Dispose() }
-}
-
-function Test-ContainerExists([string]$ContainerName) {
-  & docker container inspect $ContainerName *> $null
-  $LASTEXITCODE -eq 0
-}
-
-function Test-ManagedContainer([string]$ContainerName) {
-  $value = & docker inspect --format "{{ index .Config.Labels `"$Script:LauncherLabelKey`" }}" $ContainerName 2>$null
-  $LASTEXITCODE -eq 0 -and $value -eq $Script:LauncherLabelValue
-}
-
-function Get-ImageId([string]$ImageRef) { $value = & docker image inspect --format '{{.Id}}' $ImageRef 2>$null; if ($LASTEXITCODE -ne 0) { return '' }; [string]$value }
-function Get-ContainerImageId([string]$ContainerName) { $value = & docker inspect --format '{{.Image}}' $ContainerName 2>$null; if ($LASTEXITCODE -ne 0) { return '' }; [string]$value }
-function Get-ContainerConfigHash([string]$ContainerName) { $value = & docker inspect --format "{{ index .Config.Labels `"$Script:ConfigLabelKey`" }}" $ContainerName 2>$null; if ($LASTEXITCODE -ne 0 -or $value -eq '<no value>') { return '' }; [string]$value }
-function Test-ContainerRunning([string]$ContainerName) { $value = & docker inspect --format '{{.State.Running}}' $ContainerName 2>$null; $LASTEXITCODE -eq 0 -and $value -eq 'true' }
-
-function Get-ContainerForNode([string]$NodeName) {
-  $containers = & docker ps -a --filter "label=$Script:LauncherLabelKey=$Script:LauncherLabelValue" --filter "label=$Script:NodeLabelKey=$NodeName" --format '{{.Names}}' 2>$null
-  if ($containers) { return @($containers)[0] }
-  $null
-}
-
-function Add-UniqueString($List, $Seen, [string]$Value) {
-  if ([string]::IsNullOrWhiteSpace($Value)) { return }
-  if ($Seen.Add($Value)) { [void]$List.Add($Value) }
-}
-
-function Get-ManagedNodeNames {
-  $names = [System.Collections.Generic.List[string]]::new()
-  $seen = [System.Collections.Generic.HashSet[string]]::new()
-
-  if (Test-Path (Get-StateDir)) {
-    Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | ForEach-Object {
-      try {
-        $state = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
-        $name = if ($state.nodeName) { $state.nodeName } else { [System.IO.Path]::GetFileNameWithoutExtension($_.Name) }
-        Add-UniqueString $names $seen $name
-      } catch { }
+function Assert-AutoByteusDockerLocalModules([string]$ModuleDir) {
+  foreach ($module in $Script:AutoByteusDockerPowerShellModules) {
+    $path = Join-Path $ModuleDir $module
+    if (-not (Test-Path $path)) {
+      Fail-AutoByteusDockerEntry "launcher module missing: $path. Rerun 'autobyteus-docker install' or set AUTOBYTEUS_DOCKER_MODULE_SOURCE_BASE for temporary execution."
     }
-  }
-
-  $containers = & docker ps -a --filter "label=$Script:LauncherLabelKey=$Script:LauncherLabelValue" --format '{{.Names}}' 2>$null
-  foreach ($container in @($containers)) {
-    if (-not $container) { continue }
-    $nodeName = & docker inspect --format "{{ index .Config.Labels `"$Script:NodeLabelKey`" }}" $container 2>$null
-    if ($LASTEXITCODE -ne 0 -or -not $nodeName -or $nodeName -eq '<no value>') { $nodeName = $container }
-    Add-UniqueString $names $seen ([string]$nodeName)
-  }
-
-  $names.ToArray()
-}
-
-function Get-ManagedContainerNames {
-  $names = [System.Collections.Generic.List[string]]::new()
-  $seen = [System.Collections.Generic.HashSet[string]]::new()
-
-  if (Test-Path (Get-StateDir)) {
-    Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | ForEach-Object {
-      try {
-        $state = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
-        $name = if ($state.containerName) { $state.containerName } elseif ($state.nodeName) { $state.nodeName } else { [System.IO.Path]::GetFileNameWithoutExtension($_.Name) }
-        Add-UniqueString $names $seen $name
-      } catch { }
-    }
-  }
-
-  $containers = & docker ps -a --filter "label=$Script:LauncherLabelKey=$Script:LauncherLabelValue" --format '{{.Names}}' 2>$null
-  foreach ($container in @($containers)) { Add-UniqueString $names $seen ([string]$container) }
-
-  $names.ToArray()
-}
-
-function Test-PortAvailable([int]$Port) {
-  $listener = $null
-  try {
-    $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $Port)
-    $listener.Start()
-    return $true
-  } catch {
-    return $false
-  } finally {
-    if ($listener) { $listener.Stop() }
-  }
-}
-
-function Get-RandomOpenPort {
-  $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, 0)
-  try {
-    $listener.Start()
-    return $listener.LocalEndpoint.Port
-  } finally {
-    $listener.Stop()
-  }
-}
-
-function Get-UsedPorts {
-  $ports = [System.Collections.Generic.HashSet[int]]::new()
-  if (Test-Path (Get-StateDir)) {
-    Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | ForEach-Object {
-      try {
-        $state = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
-        foreach ($port in @($state.backendPort, $state.vncPort, $state.noVncPort, $state.debugPort)) {
-          if ($port) { [void]$ports.Add([int]$port) }
-        }
-      } catch { }
-    }
-  }
-  $ports
-}
-
-function Pick-Port($UsedPorts, [Nullable[int]]$Preferred) {
-  if ($Preferred.HasValue -and -not $UsedPorts.Contains($Preferred.Value) -and (Test-PortAvailable $Preferred.Value)) {
-    [void]$UsedPorts.Add($Preferred.Value)
-    return $Preferred.Value
-  }
-  while ($true) {
-    $candidate = Get-RandomOpenPort
-    if (-not $UsedPorts.Contains($candidate) -and (Test-PortAvailable $candidate)) {
-      [void]$UsedPorts.Add($candidate)
-      return $candidate
-    }
-  }
-}
-
-function Select-Ports([bool]$PreferDefaults) {
-  $used = Get-UsedPorts
-  if ($PreferDefaults) {
-    return [ordered]@{
-      backend = Pick-Port $used 8001
-      vnc = Pick-Port $used 5908
-      noVnc = Pick-Port $used 6080
-      debug = Pick-Port $used 9228
-    }
-  }
-  [ordered]@{
-    backend = Pick-Port $used $null
-    vnc = Pick-Port $used $null
-    noVnc = Pick-Port $used $null
-    debug = Pick-Port $used $null
-  }
-}
-
-function Test-NodeNameAvailable([string]$NodeName) {
-  if (Test-Path (Get-StatePath $NodeName)) { return $false }
-  if (Get-ContainerForNode $NodeName) { return $false }
-  if (Test-ContainerExists $NodeName) { return $false }
-  $true
-}
-
-function Get-NextNodeName {
-  $index = 0
-  while ($true) {
-    $candidate = "$Script:NodeNamePrefix-$index"
-    if (Test-NodeNameAvailable $candidate) { return $candidate }
-    $index += 1
-  }
-}
-
-function Print-Urls($State) {
-  $nodeName = [string]$State.nodeName
-@"
-AutoByteus Docker node: $nodeName
-Container: $($State.containerName)
-Image: $($State.imageRef)
-Backend: http://localhost:$($State.backendPort)
-GraphQL: http://localhost:$($State.backendPort)/graphql
-noVNC: http://localhost:$($State.noVncPort)
-VNC: localhost:$($State.vncPort)
-Chrome debug: localhost:$($State.debugPort)
-Workspace: $Script:WorkspaceContainerPath -> $(Get-NodeWorkspaceHostPath $nodeName)
-Shared folder: $Script:SharedContainerPath -> $(Get-SharedWorkspaceHostPath)
-Private app data: /home/autobyteus/data -> $(Normalize-NodeName $nodeName)-data (Docker named volume)
-Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
-"@ | Write-Host
-}
-
-function Write-WorkspacePathsForNode([string]$NodeName) {
-@"
-AutoByteus Docker workspace paths: $NodeName
-Shared workspace host root: $(Get-SharedWorkspaceRoot)
-Node workspace host path: $(Get-NodeWorkspaceHostPath $NodeName)
-Node workspace container path: $Script:WorkspaceContainerPath
-Shared folder host path: $(Get-SharedWorkspaceHostPath)
-Shared folder container path: $Script:SharedContainerPath
-Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue
-"@ | Write-Host
-}
-
-function Write-StorageForNode([string]$NodeName) {
-  $volumePrefix = Normalize-NodeName $NodeName
-@"
-AutoByteus Docker storage: $NodeName
-Private Docker named volumes (kept during recreate/destroy/reset):
-  $volumePrefix-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
-  $volumePrefix-root-home -> /root (Codex/Claude auth and root home settings)
-  $volumePrefix-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
-Host bind mounts (host-visible user files):
-  $(Get-NodeWorkspaceHostPath $NodeName) -> $Script:WorkspaceContainerPath (this node's user workspace and default temp workspace)
-  $(Get-SharedWorkspaceHostPath) -> $Script:SharedContainerPath (shared across launcher-managed Docker nodes)
-Launcher state directory: $(Get-StateRoot)
-Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
-Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes $Script:WorkspaceContainerPath after apply.
-"@ | Write-Host
-}
-
-function Set-StateProperty($State, [string]$Name, $Value) {
-  if ($State.PSObject.Properties[$Name]) { $State.$Name = $Value; return }
-  $State | Add-Member -NotePropertyName $Name -NotePropertyValue $Value
-}
-
-function Get-StateConfigHash($State) {
-  $nodeName = [string]$State.nodeName
-  $volumePrefix = Normalize-NodeName $nodeName
-  $text = @(
-    "version=$Script:ConfigHashVersion",
-    "node=$nodeName",
-    "image=$($State.imageRef)",
-    "backend=$($State.backendPort)",
-    "vnc=$($State.vncPort)",
-    "novnc=$($State.noVncPort)",
-    "debug=$($State.debugPort)",
-    "workspace_volume=$volumePrefix-workspace",
-    "data_volume=$volumePrefix-data",
-    "root_volume=$volumePrefix-root-home",
-    "shared_workspace_root=$(Get-SharedWorkspaceRoot)",
-    "node_workspace_host=$(Get-NodeWorkspaceHostPath $nodeName)",
-    "node_workspace_target=$Script:WorkspaceContainerPath",
-    "shared_workspace_host=$(Get-SharedWorkspaceHostPath)",
-    "shared_workspace_target=$Script:SharedContainerPath",
-    "temp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
-    "server_host=http://localhost:$($State.backendPort)",
-    "vnc_hosts=localhost:$($State.noVncPort)"
-  ) -join "`n"
-  Get-StringSha256 $text
-}
-
-function Test-StateHasPorts($State) { $State -and $State.backendPort -and $State.vncPort -and $State.noVncPort -and $State.debugPort }
-
-function New-NodeState([string]$NodeName, [string]$ContainerName, [string]$ImageRef, $Ports, [string]$CreatedAt) {
-  $state = [pscustomobject]@{ nodeName = $NodeName; containerName = $ContainerName; backendPort = [int]$Ports.backend; vncPort = [int]$Ports.vnc; noVncPort = [int]$Ports.noVnc; debugPort = [int]$Ports.debug; imageRef = $ImageRef; configHash = ''; createdAt = $CreatedAt; updatedAt = Get-NowUtc }
-  $state
-}
-
-function Test-BindFailure([string]$Output) {
-  $Output -match 'port is already allocated|bind: address already in use|Ports are not available|address already in use|Bind for'
-}
-
-function Get-ContainerStartFailure([string]$ContainerName) {
-  $state = $null
-  for ($attempt = 1; $attempt -le 5; $attempt += 1) {
-    $inspectOutput = & docker inspect --format '{{json .State}}' $ContainerName 2>&1
-    if ($LASTEXITCODE -ne 0) {
-      return "docker inspect failed for $ContainerName`: $inspectOutput"
-    }
-
-    try {
-      $state = $inspectOutput | ConvertFrom-Json
-    } catch {
-      return "docker inspect returned invalid state for $ContainerName`: $inspectOutput"
-    }
-
-    if ($state.Running -eq $true) {
-      return ''
-    }
-
-    if ($state.Error -or $state.Status -in @('exited', 'dead')) {
-      break
-    }
-
-    Start-Sleep -Seconds 1
-  }
-
-  if (-not $state) {
-    return "container $ContainerName did not return Docker state"
-  }
-
-  "container $ContainerName did not reach running state (status=$($state.Status) running=$($state.Running) exitCode=$($state.ExitCode) error=$($state.Error))"
-}
-
-function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults) {
-  $existingState = Read-NodeState $NodeName
-  $containerName = if ($existingState) { $existingState.containerName } else { $NodeName }
-  $createdAt = if ($existingState) { $existingState.createdAt } else { Get-NowUtc }
-
-  if ((Test-ContainerExists $containerName) -and -not (Test-ManagedContainer $containerName)) {
-    Fail-Launcher "Container $containerName already exists and is not managed by this launcher. Use --name with another friendly name."
-  }
-
-  Write-LauncherInfo "Checking image $ImageRef"
-  & docker pull $ImageRef
-  if ($LASTEXITCODE -ne 0) { Fail-Launcher "docker pull failed for $ImageRef" }
-  $desiredImageId = Get-ImageId $ImageRef
-  if (-not $desiredImageId) { Fail-Launcher "Could not inspect image $ImageRef after pull." }
-
-  $state = $existingState
-  if ($state) {
-    $state.imageRef = $ImageRef
-    Set-StateProperty $state 'configHash' (Get-StateConfigHash $state)
-  }
-
-  if ((Test-ContainerExists $containerName) -and (Test-StateHasPorts $state)) {
-    $currentImageId = Get-ContainerImageId $containerName
-    $currentConfigHash = Get-ContainerConfigHash $containerName
-
-    if ($currentImageId -eq $desiredImageId -and $currentConfigHash -eq $state.configHash) {
-      if (Test-ContainerRunning $containerName) {
-        Save-NodeState $state
-        Write-LauncherInfo "$NodeName is already running with the current image and launcher config."
-        Print-Urls $state
-        return
-      }
-
-      $startOutput = & docker start $containerName 2>&1
-      if ($LASTEXITCODE -eq 0) {
-        $startFailure = Get-ContainerStartFailure $containerName
-        if (-not $startFailure) {
-          Save-NodeState $state
-          Write-LauncherInfo "Started $NodeName."
-          Print-Urls $state
-          return
-        }
-        $startOutput = "$startOutput`n$startFailure"
-      }
-
-      if (Test-BindFailure ([string]$startOutput)) {
-        Write-LauncherInfo "Saved ports are unavailable; recreating $NodeName with fresh ports."
-        & docker rm -f $containerName *> $null
-        $state = $null
-      } else {
-        Fail-Launcher "docker start failed: $startOutput"
-      }
-    } elseif ($currentImageId -ne $desiredImageId) {
-      Write-LauncherInfo "Image changed for $NodeName; recreating the managed container while keeping named volumes."
-    } elseif (-not $currentConfigHash) {
-      Write-LauncherInfo "Refreshing $NodeName; existing container predates launcher config tracking."
-    } else {
-      Write-LauncherInfo "Launcher config changed for $NodeName; recreating the managed container while keeping named volumes."
-    }
-  }
-
-  for ($attempt = 1; $attempt -le $Script:MaxRunAttempts; $attempt += 1) {
-    if ($attempt -gt 1 -or -not $state) {
-      $ports = Select-Ports $PreferDefaults
-      $PreferDefaults = $false
-      $state = New-NodeState $NodeName $containerName $ImageRef $ports $createdAt
-    } else {
-      $state.imageRef = $ImageRef
-    }
-    Set-StateProperty $state 'configHash' (Get-StateConfigHash $state)
-
-    if (Test-ContainerExists $containerName) { & docker rm -f $containerName *> $null }
-    $stateNodeName = [string]$state.nodeName
-    Ensure-SharedWorkspaceDirs $stateNodeName
-    $nodeWorkspaceHost = Get-NodeWorkspaceHostPath $stateNodeName
-    $sharedWorkspaceHost = Get-SharedWorkspaceHostPath
-    $outputFile = [System.IO.Path]::GetTempFileName()
-    try {
-      $runArgs = @(
-        'run', '-d',
-        '--name', $state.containerName,
-        '--restart', 'unless-stopped',
-        '--label', "$Script:LauncherLabelKey=$Script:LauncherLabelValue",
-        '--label', "$Script:NodeLabelKey=$($state.nodeName)",
-        '--label', "$Script:ConfigLabelKey=$($state.configHash)",
-        '-e', 'AUTOBYTEUS_WORKSPACE_ROOT=/app',
-        '-e', 'AUTOBYTEUS_DATA_DIR=/home/autobyteus/data',
-        '-e', 'AUTOBYTEUS_BIND_HOST=0.0.0.0',
-        '-e', 'AUTOBYTEUS_SERVER_PORT=8000',
-        '-e', "AUTOBYTEUS_SERVER_HOST=http://localhost:$($state.backendPort)",
-        '-e', "AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:$($state.noVncPort)",
-        '-e', 'APP_ENV=production',
-        '-e', 'DB_TYPE=sqlite',
-        '-e', 'LOG_LEVEL=INFO',
-        '-e', 'AUTOBYTEUS_SKIP_SYNC=1',
-        '-e', "AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
-        '-v', "$(Normalize-NodeName $stateNodeName)-workspace:/app/autobyteus-server-ts/workspace",
-        '-v', "$(Normalize-NodeName $stateNodeName)-data:/home/autobyteus/data",
-        '-v', "$(Normalize-NodeName $stateNodeName)-root-home:/root",
-        '--cap-add', 'SYS_ADMIN',
-        '--security-opt', 'seccomp=unconfined',
-        '-p', "$($state.backendPort):8000",
-        '-p', "$($state.vncPort):5900",
-        '-p', "$($state.noVncPort):6080",
-        '-p', "$($state.debugPort):9223",
-        '--mount', "type=bind,source=$nodeWorkspaceHost,target=$Script:WorkspaceContainerPath",
-        '--mount', "type=bind,source=$sharedWorkspaceHost,target=$Script:SharedContainerPath"
-      )
-      $runArgs += $state.imageRef
-      & docker @runArgs *> $outputFile
-      $exitCode = $LASTEXITCODE
-      $output = Get-Content -Raw -Path $outputFile
-    } finally {
-      Remove-Item -Force -ErrorAction SilentlyContinue $outputFile
-    }
-
-    if ($exitCode -eq 0) {
-      $startFailure = Get-ContainerStartFailure $containerName
-      if (-not $startFailure) {
-        Save-NodeState $state
-        Write-LauncherInfo "Started $NodeName."
-        Print-Urls $state
-        return
-      }
-      $output = "$output`n$startFailure"
-    }
-
-    if (Test-ContainerExists $containerName) { & docker rm -f $containerName *> $null }
-    if ((Test-BindFailure $output) -and $attempt -lt $Script:MaxRunAttempts) {
-      Write-LauncherInfo "Port bind failed; retrying with fresh ports (attempt $($attempt + 1)/$Script:MaxRunAttempts)."
-      $state = $null
-      continue
-    }
-    Fail-Launcher "docker run failed: $output"
-  }
-}
-
-function Test-ImageIdInUse([string]$ImageId) {
-  if ([string]::IsNullOrWhiteSpace($ImageId)) { return $false }
-  $containers = & docker ps -a --format '{{.Names}}' 2>$null
-  foreach ($container in @($containers)) {
-    if (-not $container) { continue }
-    if ((Get-ContainerImageId $container) -eq $ImageId) { return $true }
-  }
-  $false
-}
-
-function Remove-UnusedImageIds([string[]]$ImageIds) {
-  $seen = [System.Collections.Generic.HashSet[string]]::new()
-  foreach ($imageId in @($ImageIds)) {
-    if ([string]::IsNullOrWhiteSpace($imageId)) { continue }
-    if (-not $seen.Add($imageId)) { continue }
-    if (Test-ImageIdInUse $imageId) {
-      Write-LauncherInfo "Keeping image $imageId; it is still used by a Docker container."
-      continue
-    }
-    & docker image inspect $imageId *> $null
-    if ($LASTEXITCODE -ne 0) { continue }
-    & docker image rm $imageId *> $null
-    if ($LASTEXITCODE -eq 0) { Write-LauncherInfo "Removed unused AutoByteus server image $imageId." }
-  }
-}
-
-function Get-ManagedContainerImageIds {
-  $ids = [System.Collections.Generic.List[string]]::new()
-  foreach ($container in @(Get-ManagedContainerNames)) {
-    if (-not $container) { continue }
-    if (-not (Test-ContainerExists $container)) { continue }
-    $imageId = Get-ContainerImageId $container
-    if ($imageId) { [void]$ids.Add($imageId) }
-  }
-  $ids.ToArray()
-}
-
-function Remove-AllStateFiles {
-  if (-not (Test-Path (Get-StateDir))) { return }
-  Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | Remove-Item -Force -ErrorAction SilentlyContinue
-}
-
-function Destroy-AllNodes {
-  $imageIds = @(Get-ManagedContainerImageIds)
-  $any = $false
-  foreach ($container in @(Get-ManagedContainerNames)) {
-    if (-not $container) { continue }
-    if (Test-ContainerExists $container) {
-      & docker rm -f $container *> $null
-      Write-LauncherInfo "Removed managed container $container. Named volumes were kept."
-      $any = $true
-    }
-  }
-  Remove-AllStateFiles
-  if (-not $any) { Write-LauncherInfo 'No managed Docker containers were found.' }
-  Remove-UnusedImageIds $imageIds
-}
-
-function Upgrade-AllNodes([string]$ImageRef) {
-  $nodes = @(Get-ManagedNodeNames)
-  if ($nodes.Count -eq 0) { Write-LauncherInfo 'No managed Docker nodes found.'; return }
-  $imageIds = @(Get-ManagedContainerImageIds)
-  foreach ($node in $nodes) {
-    $preferDefaults = $node -eq $Script:DefaultNodeName
-    Start-Node $node $ImageRef $preferDefaults
-  }
-  Remove-UnusedImageIds $imageIds
-}
-
-function New-Container([string]$ImageRef) {
-  $nodeName = Get-NextNodeName
-  $preferDefaults = $nodeName -eq $Script:DefaultNodeName
-  Start-Node $nodeName $ImageRef $preferDefaults
-}
-
-function Reset-Nodes([string]$ImageRef) {
-  Destroy-AllNodes
-  Start-Node $Script:DefaultNodeName $ImageRef $true
-}
-
-function Get-ImageRefForNodeOrDefault([string]$NodeName, [string]$FallbackImageRef) {
-  $state = Read-NodeState $NodeName
-  if ($state -and $state.imageRef) { return $state.imageRef }
-  $FallbackImageRef
-}
-
-function Test-NodeKnownForApply([string]$NodeName) {
-  if (Test-Path (Get-StatePath $NodeName)) { return $true }
-  if (Get-ContainerForNode $NodeName) { return $true }
-  if ((Test-ContainerExists $NodeName) -and (Test-ManagedContainer $NodeName)) { return $true }
-  $false
-}
-
-function Show-WorkspacePaths([string]$FilterName, [bool]$ShowAll) {
-  if ($ShowAll) {
-    $nodes = @(Get-ManagedNodeNames)
-    if ($nodes.Count -eq 0) { Write-LauncherInfo 'No managed Docker nodes found.'; return }
-    $first = $true
-    foreach ($node in $nodes) {
-      if (-not $first) { Write-Host '' }
-      Write-WorkspacePathsForNode $node
-      $first = $false
-    }
-    return
-  }
-  Write-WorkspacePathsForNode $FilterName
-}
-
-function Show-Storage([string]$FilterName, [bool]$ShowAll) {
-  if ($ShowAll) {
-    $nodes = @(Get-ManagedNodeNames)
-    if ($nodes.Count -eq 0) { Write-LauncherInfo 'No managed Docker nodes found.'; return }
-    $first = $true
-    foreach ($node in $nodes) {
-      if (-not $first) { Write-Host '' }
-      Write-StorageForNode $node
-      $first = $false
-    }
-    return
-  }
-  Write-StorageForNode $FilterName
-}
-
-function Apply-WorkspaceToNode([string]$NodeName, [string]$FallbackImageRef) {
-  if (-not (Test-NodeKnownForApply $NodeName)) {
-    Fail-Launcher "No managed Docker node found for $NodeName. Run new-container first, or use workspace apply --all for existing managed nodes."
-  }
-  $nodeImageRef = Get-ImageRefForNodeOrDefault $NodeName $FallbackImageRef
-  $preferDefaults = $NodeName -eq $Script:DefaultNodeName
-  Write-LauncherInfo "Applying shared workspace bind mounts to $NodeName. Named volumes will be kept."
-  Start-Node $NodeName $nodeImageRef $preferDefaults
-}
-
-function Apply-Workspace([string]$FilterName, [bool]$ShowAll, [string]$FallbackImageRef) {
-  if ($ShowAll) {
-    $nodes = @(Get-ManagedNodeNames)
-    if ($nodes.Count -eq 0) { Write-LauncherInfo 'No managed Docker nodes found.'; return }
-    foreach ($node in $nodes) { Apply-WorkspaceToNode $node $FallbackImageRef }
-    return
-  }
-  Apply-WorkspaceToNode $FilterName $FallbackImageRef
-}
-
-function Show-Urls([string]$NodeName) {
-  $state = Read-NodeState $NodeName
-  if (-not $state) { Fail-Launcher "No launcher state found for $NodeName. Run new-container first." }
-  Print-Urls $state
-}
-
-function Show-Status([string]$FilterName) {
-  '{0,-24} {1,-24} {2,-14} {3}' -f 'NODE', 'CONTAINER', 'STATUS', 'BACKEND' | Write-Host
-  $any = $false
-  if (Test-Path (Get-StateDir)) {
-    Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | ForEach-Object {
-      $state = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
-      if ($FilterName -and $state.nodeName -ne $FilterName) { return }
-      $status = 'missing'
-      if (Test-ContainerExists $state.containerName) {
-        $status = & docker inspect --format '{{.State.Status}}' $state.containerName 2>$null
-      }
-      '{0,-24} {1,-24} {2,-14} http://localhost:{3} ({4})' -f $state.nodeName, $state.containerName, $status, $state.backendPort, $state.imageRef | Write-Host
-      $any = $true
-    }
-  }
-  if (-not $any) { Write-LauncherInfo 'No managed Docker nodes found.' }
-}
-
-function Stop-Nodes([string]$FilterName, [bool]$StopAll) {
-  $any = $false
-  if (Test-Path (Get-StateDir)) {
-    Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | ForEach-Object {
-      $state = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
-      if (-not $StopAll -and $state.nodeName -ne $FilterName) { return }
-      if (Test-ContainerExists $state.containerName) {
-        & docker stop $state.containerName | Out-Null
-        Write-LauncherInfo "Stopped $($state.nodeName). Named volumes were kept."
-        $any = $true
-      }
-    }
-  }
-  if (-not $any) { Fail-Launcher 'No matching managed Docker node was found.' }
-}
-
-function Show-Logs([string]$NodeName, [string[]]$ExtraArgs) {
-  $state = Read-NodeState $NodeName
-  if (-not $state) { Fail-Launcher "No launcher state found for $NodeName." }
-  if (-not (Test-ContainerExists $state.containerName)) { Fail-Launcher "Container $($state.containerName) was not found." }
-  if ($ExtraArgs.Count -eq 0) { & docker logs --tail 100 $state.containerName; return }
-  & docker logs @ExtraArgs $state.containerName
-}
-
-function Resolve-TargetName([string]$ExplicitName) {
-  if ($ExplicitName) { return Normalize-NodeName $ExplicitName }
-  $Script:DefaultNodeName
-}
-
-function Invoke-AutoByteusDocker {
-  param([Parameter(ValueFromRemainingArguments = $true)][string[]]$CommandArgs)
-  $cmd = if ($CommandArgs.Count -gt 0) { $CommandArgs[0] } else { 'help' }
-  if ($cmd -in @('help', '-h', '--help')) { Show-AutoByteusDockerHelp; return }
-
-  $stopAll = $false; $nameArg = ''; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $extra = @()
-  for ($i = 1; $i -lt $CommandArgs.Count; $i += 1) {
-    switch ($CommandArgs[$i]) {
-      '--all' { $stopAll = $true }
-      '--name' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--name requires a value' }; $nameArg = $CommandArgs[$i] }
-      '--tag' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--tag requires a value' }; $tag = $CommandArgs[$i] }
-      '--image' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--image requires a value' }; $image = $CommandArgs[$i] }
-      { $_ -in @('-h', '--help') } { Show-AutoByteusDockerHelp; return }
-      default {
-        if (-not $nameArg -and $cmd -in @('urls', 'ports', 'status', 'ps', 'stop', 'logs')) { $nameArg = $CommandArgs[$i] }
-        else { $extra += $CommandArgs[$i] }
-      }
-    }
-  }
-
-  switch ($cmd) {
-    'install' {
-      if ($extra.Count -gt 0) { Fail-Launcher "Unknown $cmd option(s): $($extra -join ' ')" }
-      Install-Launcher
-      return
-    }
-  }
-
-  if ($cmd -notin @('new-container', 'upgrade', 'destroy', 'reset', 'workspace', 'storage', 'urls', 'ports', 'status', 'ps', 'stop', 'logs')) {
-    Show-AutoByteusDockerHelp
-    exit 1
-  }
-
-  if ($cmd -in @('new-container', 'upgrade', 'destroy', 'reset', 'storage') -and $extra.Count -gt 0) {
-    Fail-Launcher "Unknown $cmd option(s): $($extra -join ' ')"
-  }
-
-  Ensure-StateDir
-  Assert-Docker
-  $nodeName = Resolve-TargetName $nameArg
-  $imageRef = Get-ImageRef $image $tag
-
-  switch ($cmd) {
-    'new-container' {
-      if ($extra.Count -gt 0) { Fail-Launcher "Unknown new-container option(s): $($extra -join ' ')" }
-      if ($stopAll) { Fail-Launcher 'new-container creates one node and does not accept --all.' }
-      if ($nameArg) { Fail-Launcher 'new-container always chooses the next indexed name; do not pass --name.' }
-      New-Container $imageRef
-    }
-    'upgrade' {
-      if ($extra.Count -gt 0) { Fail-Launcher "Unknown upgrade option(s): $($extra -join ' ')" }
-      if (-not $stopAll) { Fail-Launcher 'upgrade affects every managed node; rerun with --all.' }
-      if ($nameArg) { Fail-Launcher 'upgrade --all does not accept --name.' }
-      Upgrade-AllNodes $imageRef
-    }
-    'destroy' {
-      if ($extra.Count -gt 0) { Fail-Launcher "Unknown destroy option(s): $($extra -join ' ')" }
-      if (-not $stopAll) { Fail-Launcher 'destroy affects every managed node; rerun with --all.' }
-      if ($nameArg) { Fail-Launcher 'destroy --all does not accept --name.' }
-      Destroy-AllNodes
-    }
-    'reset' {
-      if ($extra.Count -gt 0) { Fail-Launcher "Unknown reset option(s): $($extra -join ' ')" }
-      if ($stopAll) { Fail-Launcher 'reset already applies to all managed nodes and does not accept --all.' }
-      if ($nameArg) { Fail-Launcher "reset always recreates $Script:DefaultNodeName; do not pass --name." }
-      Reset-Nodes $imageRef
-    }
-    'workspace' {
-      $workspaceAction = if ($extra.Count -gt 0) { $extra[0] } else { 'paths' }
-      if ($workspaceAction -notin @('paths', 'apply')) {
-        Fail-Launcher "Unknown workspace subcommand: $workspaceAction. Use 'workspace paths' or 'workspace apply'."
-      }
-      if ($extra.Count -gt 1) { Fail-Launcher "Unknown workspace option(s): $($extra[1..($extra.Count - 1)] -join ' ')" }
-      if ($workspaceAction -eq 'paths') {
-        Show-WorkspacePaths $nodeName $stopAll
-      } else {
-        Apply-Workspace $nodeName $stopAll $imageRef
-      }
-    }
-    'storage' {
-      if ($extra.Count -gt 0) { Fail-Launcher "Unknown storage option(s): $($extra -join ' ')" }
-      Show-Storage $nodeName $stopAll
-    }
-    { $_ -in @('urls', 'ports') } { Show-Urls $nodeName }
-    { $_ -in @('status', 'ps') } { Show-Status $(if ($nameArg) { $nodeName } else { '' }) }
-    'stop' { Stop-Nodes $nodeName $stopAll }
-    'logs' { Show-Logs $nodeName $extra }
-    default { Show-AutoByteusDockerHelp; exit 1 }
   }
 }
 
 function autobyteus-docker {
   param([Parameter(ValueFromRemainingArguments = $true)][string[]]$CommandArgs)
+  $cmd = if ($CommandArgs.Count -gt 0) { $CommandArgs[0] } else { 'help' }
+  if ($cmd -eq 'install') {
+    if ($CommandArgs.Count -gt 1) { Fail-AutoByteusDockerEntry "Unknown install option(s): $($CommandArgs[1..($CommandArgs.Count - 1)] -join ' ')" }
+    Install-AutoByteusDockerLauncher
+    return
+  }
+  $localModuleDir = Get-AutoByteusDockerLocalModuleDir
+  if ($localModuleDir) {
+    Assert-AutoByteusDockerLocalModules $localModuleDir
+    foreach ($module in $Script:AutoByteusDockerPowerShellModules) { . (Join-Path $localModuleDir $module) }
+  } else {
+    $moduleBase = Get-AutoByteusDockerModuleSourceBase
+    foreach ($module in $Script:AutoByteusDockerPowerShellModules) {
+      $url = "$moduleBase/$module"
+      try {
+        $moduleText = Invoke-RestMethod -UseBasicParsing -Uri $url
+      } catch {
+        Fail-AutoByteusDockerEntry "failed to load launcher module $url. Check AUTOBYTEUS_DOCKER_MODULE_SOURCE_BASE. $($_.Exception.Message)"
+      }
+      . ([scriptblock]::Create([string]$moduleText))
+    }
+  }
   Invoke-AutoByteusDocker @CommandArgs
 }
 
 if ($PSCommandPath) {
-  Invoke-AutoByteusDocker @LauncherArgs
+  autobyteus-docker @LauncherArgs
 }

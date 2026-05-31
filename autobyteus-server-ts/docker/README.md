@@ -35,6 +35,10 @@ Windows PowerShell:
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
 ```
 
+The installer writes the public launcher entry plus its adjacent platform
+modules into the local install directory. Normal installed CLI usage therefore
+does not require this repository checkout.
+
 Then use direct local commands. `new-container` checks/pulls the image and creates the next indexed managed container:
 
 ```bash
@@ -52,11 +56,13 @@ and the server Docker image packages the `/mobile` web shell into
 `autobyteus-server-ts/mobile-web` so the QR target is served by a fresh
 container.
 
-Each launcher-managed container keeps the existing private Docker named volumes
-and also gets host-visible user folders:
+Each launcher-managed container keeps private Docker named volumes outside the
+container writable layer and also gets host-visible user folders:
 
 - `/home/autobyteus/data` remains private server app data in `<node>-data`.
 - `/root` remains the private root home/auth volume in `<node>-root-home`.
+- `/home/vncuser/.config/chromium` remains private Chromium browser profile
+  state in `<node>-chromium-profile`.
 - `/home/autobyteus/workspace` is the node's host-backed user workspace.
 - `/home/autobyteus/shared` is one host-backed folder shared by all managed
   Docker nodes.
@@ -160,6 +166,7 @@ docker run -d \
   -v autobyteus-server-workspace:/app/autobyteus-server-ts/workspace \
   -v autobyteus-server-data:/home/autobyteus/data \
   -v autobyteus-server-root-home:/root \
+  -v autobyteus-server-chromium-profile:/home/vncuser/.config/chromium \
   autobyteus/autobyteus-server:latest
 ```
 
@@ -366,6 +373,7 @@ Public launcher named volumes (per friendly node):
 - `<node-name>-workspace`: built artifacts
 - `<node-name>-data`: private server app data at `/home/autobyteus/data` (`.env`, SQLite DB, logs, media, memory, agents, skills, workspaces)
 - `<node-name>-root-home`: in-container root home, including Codex/Claude auth state
+- `<node-name>-chromium-profile`: private Chromium browser profile state at `/home/vncuser/.config/chromium` (cookies, local storage, preferences)
 
 Public launcher host bind mounts (additional, per friendly node unless noted):
 - `$HOME/.autobyteus/docker-server/shared-workspace/nodes/<node-name>` on macOS/Linux, or `%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace\nodes\<node-name>` on Windows, to `/home/autobyteus/workspace`.
@@ -376,6 +384,7 @@ Source helper named volumes (per Compose project):
 - `<project>_autobyteus-server-workspace`: built artifacts
 - `<project>_autobyteus-server-data`: `.env`, SQLite DB, logs, media, memory
 - `<project>_autobyteus-server-root-home`: in-container root home, including Codex/Claude auth state
+- `<project>_autobyteus-server-chromium-profile`: private Chromium browser profile state at `/home/vncuser/.config/chromium`
 
 Server data directory in container: `/home/autobyteus/data`
 

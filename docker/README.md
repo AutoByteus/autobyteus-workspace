@@ -102,3 +102,10 @@ docker exec <main-container> tail -n 200 /home/autobyteus/data/logs/server.log
 Remote server logs are persisted under:
 
 - `/home/autobyteus/logs/server.log`
+
+## Persistent Browser Profile
+
+The main all-in-one container keeps Chromium browser profile state in the
+`main-allinone-chromium-profile` named volume mounted at
+`/home/vncuser/.config/chromium`. This preserves cookies, local storage, and
+browser preferences across normal container recreation.

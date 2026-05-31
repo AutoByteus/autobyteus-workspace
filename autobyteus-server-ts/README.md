@@ -177,6 +177,10 @@ Windows PowerShell:
 powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.ps1 | iex; autobyteus-docker install"
 ```
 
+The installer writes the launcher entry and its adjacent support modules into
+the local install directory, so installed `autobyteus-docker` commands do not
+need a repository checkout.
+
 Then use direct local commands. `new-container` checks/pulls the image and creates the next indexed managed container:
 
 ```bash
@@ -194,13 +198,16 @@ backend directly to the public internet. Paired phones receive only separate
 owner-management routes. Current server Docker images package the `/mobile` web
 shell into the runtime image for QR/mobile startup.
 
-The launcher keeps private server state in existing Docker named volumes:
+The launcher keeps private Docker named volumes outside the container writable
+layer:
 `/home/autobyteus/data` is private app/server data, `/root` stores in-container
-root home/auth settings, and `/app/autobyteus-server-ts/workspace` keeps the
-existing workspace volume. It also creates host-visible user folders under a
-shared workspace root (`$HOME/.autobyteus/docker-server/shared-workspace` on
-macOS/Linux, `%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace` on
-Windows, or `AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR` when set):
+root home/auth settings, `/home/vncuser/.config/chromium` stores private
+Chromium browser profile state in `<node>-chromium-profile`, and
+`/app/autobyteus-server-ts/workspace` keeps the existing workspace volume. It
+also creates host-visible user folders under a shared workspace root
+(`$HOME/.autobyteus/docker-server/shared-workspace` on macOS/Linux,
+`%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace` on Windows, or
+`AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR` when set):
 
 - `/home/autobyteus/workspace` is this node's user workspace.
 - `/home/autobyteus/shared` is shared across launcher-managed Docker nodes.
@@ -213,8 +220,9 @@ autobyteus-docker storage
 autobyteus-docker workspace apply --all
 ```
 
-`workspace apply --all` safely recreates managed containers to add the bind
-mounts while keeping existing named volumes and host folders.
+`workspace apply --all` safely recreates managed containers to apply the current
+launcher volume and bind-mount set while keeping existing named volumes and host
+folders.
 Existing files under `/home/autobyteus/data/temp_workspace` stay preserved in
 the data named volume, but `/home/autobyteus/workspace` becomes the default temp
 workspace after apply. On Linux hosts, files written from the current
