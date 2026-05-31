@@ -3,14 +3,13 @@ import type { RunProjectionActivityEntry } from "../run-projection-types.js";
 
 export const buildRunProjectionActivities = (
   events: HistoricalReplayEvent[],
-): RunProjectionActivityEntry[] =>
-  events.flatMap((event) => {
-    if (event.kind !== "tool") {
-      return [];
-    }
+): RunProjectionActivityEntry[] => {
+  const activities: RunProjectionActivityEntry[] = [];
 
-    return [
-      {
+  for (const event of events) {
+    if (event.kind === "tool") {
+      activities.push({
+        kind: "tool",
         invocationId: event.invocationId,
         toolName: event.toolName,
         type: event.activityType,
@@ -22,6 +21,34 @@ export const buildRunProjectionActivities = (
         error: event.toolError,
         ts: event.ts,
         detailLevel: event.detailLevel,
-      },
-    ];
-  });
+      });
+      continue;
+    }
+
+    if (event.kind === "compaction") {
+      activities.push({
+        kind: "compaction",
+        activityId: event.activityId,
+        phase: event.phase,
+        message: event.message,
+        turnId: event.turnId,
+        compactionOperationId: event.compactionOperationId,
+        requestedTurnId: event.requestedTurnId,
+        executionTurnId: event.executionTurnId,
+        provider: event.provider,
+        sourceSurface: event.sourceSurface,
+        boundaryKey: event.boundaryKey,
+        providerEventId: event.providerEventId,
+        providerSessionId: event.providerSessionId,
+        trigger: event.trigger,
+        preTokens: event.preTokens,
+        rotationEligible: event.rotationEligible,
+        ts: event.ts,
+        updatedTs: event.ts,
+        detailLevel: event.detailLevel,
+      });
+    }
+  }
+
+  return activities;
+};

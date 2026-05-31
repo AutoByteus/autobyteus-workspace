@@ -1,6 +1,6 @@
 import { CompactionPreparationError } from '../../agent/compaction/compaction-preparation-error.js';
 import { CompactionRuntimeReporter } from '../../agent/compaction/compaction-runtime-reporter.js';
-import type { MemoryManager } from '../memory-manager.js';
+import type { MemoryManager, PendingCompactionRequest } from '../memory-manager.js';
 import { CompactionSnapshotBuilder } from '../compaction-snapshot-builder.js';
 import { CompactionRuntimeSettingsResolver } from './compaction-runtime-settings.js';
 import { CompactionWindowPlanner } from './compaction-window-planner.js';
@@ -45,6 +45,8 @@ export class PendingCompactionExecutor {
       return false;
     }
 
+    const pendingCompactionRequest = this.memoryManager.requirePendingCompactionRequest();
+    const lifecycleMetadata = toLifecycleMetadata(pendingCompactionRequest, input.turnId ?? null);
     const runtimeSettings = this.runtimeSettingsResolver.resolve();
     if (!this.memoryManager.compactor) {
       const errorMessage = [
@@ -54,6 +56,7 @@ export class PendingCompactionExecutor {
       this.reporter?.emitStatus({
         phase: 'failed',
         turn_id: input.turnId ?? null,
+        ...lifecycleMetadata,
         selected_block_count: null,
         compacted_block_count: null,
         error_message: errorMessage,
@@ -66,6 +69,7 @@ export class PendingCompactionExecutor {
 
     this.reporter?.logExecutionContext({
       turn_id: input.turnId ?? null,
+      ...lifecycleMetadata,
       pending_compaction: true,
       selected_block_count: plan.selectedBlockCount,
       frontier_block_count: plan.frontierBlocks.length,
@@ -77,6 +81,7 @@ export class PendingCompactionExecutor {
       this.reporter?.emitStatus({
         phase: 'failed',
         turn_id: input.turnId ?? null,
+        ...lifecycleMetadata,
         selected_block_count: 0,
         compacted_block_count: 0,
         error_message: errorMessage,
@@ -87,6 +92,7 @@ export class PendingCompactionExecutor {
     this.reporter?.emitStatus({
       phase: 'started',
       turn_id: input.turnId ?? null,
+      ...lifecycleMetadata,
       selected_block_count: plan.selectedBlockCount,
       compacted_block_count: null,
     });
@@ -103,6 +109,7 @@ export class PendingCompactionExecutor {
       this.reporter?.emitStatus({
         phase: 'completed',
         turn_id: input.turnId ?? null,
+        ...lifecycleMetadata,
         selected_block_count: plan.selectedBlockCount,
         compacted_block_count: outcome?.compactedBlockCount ?? plan.compactedBlockCount,
         raw_trace_count: outcome?.rawTraceCount ?? 0,
@@ -111,6 +118,7 @@ export class PendingCompactionExecutor {
       });
       this.reporter?.logResultSummary({
         turn_id: input.turnId ?? null,
+        ...lifecycleMetadata,
         selected_block_count: plan.selectedBlockCount,
         compacted_block_count: outcome?.compactedBlockCount ?? plan.compactedBlockCount,
         episodic_summary_length: outcome?.result.episodicSummary.length ?? 0,
@@ -127,6 +135,7 @@ export class PendingCompactionExecutor {
       this.reporter?.emitStatus({
         phase: 'failed',
         turn_id: input.turnId ?? null,
+        ...lifecycleMetadata,
         selected_block_count: plan.selectedBlockCount,
         compacted_block_count: null,
         ...toStatusMetadata(this.memoryManager.compactor.getLastCompactionExecutionMetadata()),
@@ -136,6 +145,15 @@ export class PendingCompactionExecutor {
     }
   }
 }
+
+const toLifecycleMetadata = (
+  pendingCompactionRequest: PendingCompactionRequest,
+  executionTurnId: string | null,
+): Record<string, string | null> => ({
+  compaction_operation_id: pendingCompactionRequest.operationId,
+  requested_turn_id: pendingCompactionRequest.requestedTurnId,
+  execution_turn_id: executionTurnId,
+});
 
 const toStatusMetadata = (
   metadata: CompactionAgentExecutionMetadata | null | undefined,

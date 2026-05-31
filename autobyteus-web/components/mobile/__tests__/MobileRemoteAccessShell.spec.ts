@@ -466,7 +466,7 @@ describe("MobileRemoteAccessShell phone-first navigation", () => {
       "MobileActivityDigest.vue",
       "MobileTeamMessages.vue",
       "MobileTeamReferenceViewer.vue",
-      "MobileToolActivityList.vue",
+      "MobileRunActivityList.vue",
     ];
 
     const combined = sourceFiles
@@ -549,7 +549,7 @@ ${mobileWorkspaceFileExplorerSource}`;
     expect(activityDigestSource).toContain("MobileTeamMessages");
     expect(teamMessagesSource).toContain("MobileTeamReferenceViewer");
     expect(teamMessagesSource).toContain("mobile-team-reference-row");
-    expect(activityDigestSource).toContain("MobileToolActivityList");
+    expect(activityDigestSource).toContain("MobileRunActivityList");
     expect(artifactsSource).toContain("ArtifactContentViewer");
     expect(artifactsSource).toContain("useRunFileChangesStore");
     expect(artifactsSource).toContain("toAgentArtifactViewerItem");

@@ -3,7 +3,7 @@
     <AgentEventMonitor
       v-if="selectedAgentContext"
       :conversation="selectedAgentContext.state.conversation"
-      :compaction-status="selectedAgentContext.state.compactionStatus"
+      :run-id="selectedAgentContext.state.runId"
       :agent-name="selectedAgentContext.config.agentDefinitionName"
       :agent-avatar-url="selectedAgentContext.config.agentAvatarUrl"
       class="min-h-0 flex-1 overflow-hidden"

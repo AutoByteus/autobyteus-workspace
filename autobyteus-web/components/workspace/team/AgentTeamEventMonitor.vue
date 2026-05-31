@@ -3,7 +3,7 @@
     <AgentEventMonitor
       v-if="conversationOfFocusedMember"
       :conversation="conversationOfFocusedMember"
-      :compaction-status="focusedMember?.state.compactionStatus ?? null"
+      :run-id="focusedMember?.state.runId"
       :agent-name="focusedMemberDisplayName"
       :agent-avatar-url="focusedMemberAvatarUrl"
       :inter-agent-sender-name-by-id="interAgentSenderNameById"

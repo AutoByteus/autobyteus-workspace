@@ -1,0 +1,75 @@
+62-Applying migration `20260203074245_init`
+63-Applying migration `20260208094000_add_external_channel_tables`
+64:Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+65-Applying migration `20260209213000_remove_agent_conversation_tables`
+66-Applying migration `20260210101500_add_agent_avatar`
+--
+81-  └─ 20260208094000_add_external_channel_tables/
+82-    └─ migration.sql
+83:  └─ 20260209174500_add_channel_message_receipt_turn_id/
+84-    └─ migration.sql
+85-  └─ 20260209213000_remove_agent_conversation_tables/
+--
+286-Agent run 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': UserInputContextBuildingProcessor completed. Final content length: 66
+287-AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+288:compaction_budget_evaluated {
+289-  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+290-  prompt_tokens: 111,
+--
+329-Agent run 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878': UserInputContextBuildingProcessor completed. Final content length: 66
+330-AgentExternalEventNotifier (NotifierID: c512325a-ad1a-44a2-a961-88577486e5b4, AgentID: browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878) emitted agent_status. Kwarg keys for emit: agent_id,payload
+331:compaction_budget_evaluated {
+332-  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+333-  prompt_tokens: 131,
+--
+344-  compaction_required: true
+345-}
+346:compaction_requested {
+347-  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+348:  phase: 'requested',
+349:  turn_id: 'turn_0002',
+350:  compaction_operation_id: 'compaction_operation_mptmpbt5_1',
+351:  requested_turn_id: 'turn_0002',
+352:  execution_turn_id: null,
+353-  selected_block_count: null,
+354-  compacted_block_count: null,
+--
+368-compaction_execution_context {
+369-  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+370:  turn_id: 'turn_0003',
+371:  compaction_operation_id: 'compaction_operation_mptmpbt5_1',
+372:  requested_turn_id: 'turn_0002',
+373:  execution_turn_id: 'turn_0003',
+374-  pending_compaction: true,
+375-  selected_block_count: 2,
+--
+377-  raw_trace_count: 5
+378-}
+379:compaction_started {
+380-  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+381:  phase: 'started',
+382:  turn_id: 'turn_0003',
+383:  compaction_operation_id: 'compaction_operation_mptmpbt5_1',
+384:  requested_turn_id: 'turn_0002',
+385:  execution_turn_id: 'turn_0003',
+386-  selected_block_count: 2,
+387-  compacted_block_count: null
+--
+509-AgentRuntime for 'memory_compactor_memory_compaction_specialist_5145': Context unregistered.
+510-AgentRuntime for 'memory_compactor_memory_compaction_specialist_5145' stop() method completed.
+511:compaction_failed {
+512-  agent_id: 'browser_compaction_test_agent_local_runtime_compaction_validation_assistant_1878',
+513:  phase: 'failed',
+514:  turn_id: 'turn_0003',
+515:  compaction_operation_id: 'compaction_operation_mptmpbt5_1',
+516:  requested_turn_id: 'turn_0002',
+517:  execution_turn_id: 'turn_0003',
+518-  selected_block_count: 2,
+519-  compacted_block_count: null,
+--
+522-  compaction_runtime_kind: 'autobyteus',
+523-  compaction_model_identifier: 'qwen3.6-27b:lmstudio@127.0.0.1:1234',
+524:  compaction_run_id: 'memory_compactor_memory_compaction_specialist_5145',
+525:  compaction_task_id: 'compaction_task_34d45a3893c7414da6064c7fd0a5aff1',
+526-  error_message: "Memory compaction failed before dispatch: Compactor agent run 'memory_compactor_memory_compaction_specialist_5145' timed out after 120000ms before returning final JSON."
+527-}

@@ -110,7 +110,7 @@ const buildContextWithSegment = (
       ],
       updatedAt: '',
     },
-  }) as AgentContext;
+  }) as unknown as AgentContext;
 
 const buildEmptyContext = (): AgentContext =>
   ({
@@ -127,7 +127,7 @@ const buildEmptyContext = (): AgentContext =>
       ],
       updatedAt: '',
     },
-  }) as AgentContext;
+  }) as unknown as AgentContext;
 
 describe('toolLifecycleHandler', () => {
   let mockActivityStore: any;
@@ -136,17 +136,17 @@ describe('toolLifecycleHandler', () => {
     setActivePinia(createPinia());
     const activities: any[] = [];
     mockActivityStore = {
-      getActivities: vi.fn(() => activities),
-      addActivity: vi.fn((_runId: string, activity: any) => {
+      getToolActivities: vi.fn(() => activities),
+      addToolActivity: vi.fn((_runId: string, activity: any) => {
         activities.push(activity);
       }),
-      updateActivityStatus: vi.fn(),
-      updateActivityArguments: vi.fn(),
-      updateActivityApprovalTarget: vi.fn(),
-      updateActivityToolName: vi.fn(),
+      updateToolActivityStatus: vi.fn(),
+      updateToolActivityArguments: vi.fn(),
+      updateToolActivityApprovalTarget: vi.fn(),
+      updateToolActivityToolName: vi.fn(),
       setHighlightedActivity: vi.fn(),
-      addActivityLog: vi.fn(),
-      setActivityResult: vi.fn(),
+      addToolActivityLog: vi.fn(),
+      setToolActivityResult: vi.fn(),
     };
     (useAgentActivityStore as any).mockReturnValue(mockActivityStore);
   });
@@ -172,8 +172,8 @@ describe('toolLifecycleHandler', () => {
     expect(aiMessage.segments[0].command).toBe('ls -la');
     expect(aiMessage.segments[0].status).toBe('executing');
 
-    expect(mockActivityStore.addActivity).toHaveBeenCalled();
-    expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'executing');
+    expect(mockActivityStore.addToolActivity).toHaveBeenCalled();
+    expect(mockActivityStore.updateToolActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'executing');
   });
 
   it('hydrates edit_file on TOOL_APPROVAL_REQUESTED', () => {
@@ -196,10 +196,10 @@ describe('toolLifecycleHandler', () => {
     expect(segment.status).toBe('awaiting-approval');
     expect(segment.path).toBe('/tmp/example.txt');
     expect(segment.originalContent).toBe('--- a\n+++ b\n@@\n+line\n');
-    expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(runId, invocationId, 'edit_file');
-    expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'awaiting-approval');
-    expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(runId, invocationId, payload.arguments);
-    expect(mockActivityStore.updateActivityApprovalTarget).toHaveBeenCalledWith(runId, invocationId, null);
+    expect(mockActivityStore.updateToolActivityToolName).toHaveBeenCalledWith(runId, invocationId, 'edit_file');
+    expect(mockActivityStore.updateToolActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'awaiting-approval');
+    expect(mockActivityStore.updateToolActivityArguments).toHaveBeenCalledWith(runId, invocationId, payload.arguments);
+    expect(mockActivityStore.updateToolActivityApprovalTarget).toHaveBeenCalledWith(runId, invocationId, null);
     expect(mockActivityStore.setHighlightedActivity).not.toHaveBeenCalled();
   });
 
@@ -227,9 +227,9 @@ describe('toolLifecycleHandler', () => {
     handleToolExecutionStarted(startedPayload, context);
     expect(segment.status).toBe('executing');
     expect(segment.command).toBe('npm run dev');
-    expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(runId, invocationId, 'run_bash');
-    expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'approved');
-    expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'executing');
+    expect(mockActivityStore.updateToolActivityToolName).toHaveBeenCalledWith(runId, invocationId, 'run_bash');
+    expect(mockActivityStore.updateToolActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'approved');
+    expect(mockActivityStore.updateToolActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'executing');
     expect(mockActivityStore.setHighlightedActivity).not.toHaveBeenCalled();
   });
 
@@ -254,7 +254,7 @@ describe('toolLifecycleHandler', () => {
 
     expect(segment.toolName).toBe('send_message_to');
     expect(segment.status).toBe('executing');
-    expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(
+    expect(mockActivityStore.updateToolActivityToolName).toHaveBeenCalledWith(
       runId,
       invocationId,
       'send_message_to',
@@ -309,7 +309,7 @@ describe('toolLifecycleHandler', () => {
 
     expect(segment.status).toBe('success');
     expect(segment.result).toEqual({ content: 'ok' });
-    expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'success');
+    expect(mockActivityStore.updateToolActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'success');
   });
 
   it('hydrates arguments from a result-first TOOL_EXECUTION_SUCCEEDED payload', () => {
@@ -331,7 +331,7 @@ describe('toolLifecycleHandler', () => {
     expect(aiMessage.segments[0].command).toBe('pwd');
     expect(aiMessage.segments[0].arguments).toEqual({ command: 'pwd' });
     expect(aiMessage.segments[0].status).toBe('success');
-    expect(mockActivityStore.addActivity).toHaveBeenCalledWith(
+    expect(mockActivityStore.addToolActivity).toHaveBeenCalledWith(
       runId,
       expect.objectContaining({
         invocationId,
@@ -340,7 +340,7 @@ describe('toolLifecycleHandler', () => {
         arguments: { command: 'pwd' },
       }),
     );
-    expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(
+    expect(mockActivityStore.updateToolActivityArguments).toHaveBeenCalledWith(
       runId,
       invocationId,
       { command: 'pwd' },
@@ -362,7 +362,7 @@ describe('toolLifecycleHandler', () => {
     handleToolExecutionFailed(payload, context);
     expect(segment.status).toBe('error');
     expect(segment.error).toBe('file not found');
-    expect(mockActivityStore.setActivityResult).toHaveBeenCalledWith(runId, invocationId, null, 'file not found');
+    expect(mockActivityStore.setToolActivityResult).toHaveBeenCalledWith(runId, invocationId, null, 'file not found');
   });
 
   it('applies denied terminal state when reason or error exists', () => {
@@ -382,8 +382,8 @@ describe('toolLifecycleHandler', () => {
     expect(segment.status).toBe('denied');
     expect(segment.error).toBe('Denied by user');
     expect(segment.arguments).toEqual({ path: '/tmp/important.txt' });
-    expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'denied');
-    expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(
+    expect(mockActivityStore.updateToolActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'denied');
+    expect(mockActivityStore.updateToolActivityArguments).toHaveBeenCalledWith(
       runId,
       invocationId,
       { path: '/tmp/important.txt' },
@@ -406,7 +406,7 @@ describe('toolLifecycleHandler', () => {
     );
 
     expect(segment.status).toBe('parsed');
-    expect(mockActivityStore.updateActivityStatus).not.toHaveBeenCalled();
+    expect(mockActivityStore.updateToolActivityStatus).not.toHaveBeenCalled();
   });
 
   it('appends TOOL_LOG entries without inferring terminal status', () => {
@@ -426,7 +426,7 @@ describe('toolLifecycleHandler', () => {
 
     expect(segment.logs).toContain(payload.log_entry);
     expect(segment.status).toBe('executing');
-    expect(mockActivityStore.addActivityLog).toHaveBeenCalledWith(runId, invocationId, payload.log_entry);
-    expect(mockActivityStore.updateActivityStatus).not.toHaveBeenCalled();
+    expect(mockActivityStore.addToolActivityLog).toHaveBeenCalledWith(runId, invocationId, payload.log_entry);
+    expect(mockActivityStore.updateToolActivityStatus).not.toHaveBeenCalled();
   });
 });

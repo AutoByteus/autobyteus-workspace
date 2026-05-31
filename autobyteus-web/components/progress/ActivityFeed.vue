@@ -36,13 +36,20 @@
       <div v-if="activities.length === 0" class="p-8 text-center text-gray-700 text-sm">{{ $t('workspace.components.progress.ActivityFeed.no_activity_history_yet') }}</div>
       
       <div v-else>
-        <ActivityItem 
-          v-for="activity in activities" 
-          :key="activity.invocationId" 
-          :activity="activity"
-          :isHighlighted="activity.invocationId === highlightedId"
-          :ref="(el) => setItemRef(activity.invocationId, el)"
-        />
+        <template v-for="activity in activities" :key="activity.activityId">
+          <ToolActivityItem
+            v-if="activity.kind === 'tool'"
+            :activity="activity"
+            :isHighlighted="activity.activityId === highlightedId"
+            :ref="(el) => setItemRef(activity.activityId, el)"
+          />
+          <CompactionActivityItem
+            v-else
+            :activity="activity"
+            :isHighlighted="activity.activityId === highlightedId"
+            :ref="(el) => setItemRef(activity.activityId, el)"
+          />
+        </template>
       </div>
     </div>
   </div>
@@ -52,7 +59,8 @@
 import { computed, ref, watch, nextTick } from 'vue';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import ActivityItem from './ActivityItem.vue';
+import ToolActivityItem from './ToolActivityItem.vue';
+import CompactionActivityItem from './CompactionActivityItem.vue';
 
 const props = defineProps<{
   collapsed?: boolean;
