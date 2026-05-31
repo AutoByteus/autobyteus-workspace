@@ -70,6 +70,21 @@ configured/default/private/team-shared sources are product-excluded for this
 ticket, so callers must not rely on duplicate-name collision or
 source-disambiguation behavior.
 
+## Runtime Consumption
+
+Runtime bootstraps consume the resolved `Skill[]` records, not a package-wide
+private skill scan.
+
+- Codex materializes unresolved-by-native-Codex entries as
+  `.codex/skills/<skillName>` directory symlinks whose targets are the exact
+  resolved `Skill.rootPath` package roots.
+- Native AutoByteus passes the exact resolved `Skill.rootPath` values to
+  `AgentConfig.skills`, including colocated private skill roots and
+  `skills/<skillName>` multi-skill roots.
+- GraphQL `skills` / `skill(name)` and the frontend global Skills page remain
+  global-catalog surfaces and do not expose package-private or team-shared
+  package skills as standalone catalog entries.
+
 ## Supported Package Authoring Layouts
 
 Shared/package-owned agents can use a single colocated skill:

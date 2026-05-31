@@ -6,8 +6,8 @@
 - Build purpose: Local macOS Electron build for user verification/testing before repository finalization.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis`
 - Branch: `codex/agent-package-multiple-skills-analysis`
-- Base checked before delivery handoff: `origin/personal@aea805aef8ae7cbb549f21e95f10e78564fed0e8`
-- Build timestamp: `2026-05-31T12:01:14+02:00`
+- Integrated base: `origin/personal@00f7bab40543497c629204e9ce6c1e7d6c71ed6d`
+- Integrated HEAD: `4caaf1d27da870ca789d13cef39bc156cab19460`
 
 ## README Guidance Read
 
@@ -23,22 +23,26 @@ From `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-sk
 NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
 ```
 
-## Result
+## Integrated Build Result
 
-- Status: `Pass`
-- Exit status: `0`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T100114Z.log`
-- Checksum file: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-artifacts.sha256`
+- Status: `Fail`
+- Exit status: `1`
+- Failed build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T113610Z.log`
+- Failure stage: `pnpm audit:localization-literals`, before Electron packaging.
+- Failure message: unresolved product copy in `components/progress/CompactionActivityItem.vue` for `Memory compaction`.
+- Attribution: `git diff origin/personal -- autobyteus-web/components/progress/CompactionActivityItem.vue` is empty; this issue came from the newly integrated base branch, not from the package-skill ticket implementation.
+- Reroute: sent to `implementation_engineer` for local source/localization fix.
 
-## Built Artifacts
+## Existing Pre-Integration Build Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.36.dmg` — 362M — SHA256 `ea8c4cb4ce9660b50fbeebf7cafc453fbcbca0c740004472376124841885fd1e`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.36.zip` — 360M — SHA256 `9dcd0e7349232266801afe220a8530f1aa26d556c6fb9ba609eb6491b36c683c`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.36.dmg.blockmap` — SHA256 `0153312be6d852ee79a20112390aea8d407514ccf2eed8fc1c330c6b0356d2d0`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.36.zip.blockmap` — SHA256 `687daca1a44d33a1060c695cfcac1de848dbe204eedb6f5b22b9c9176397062e`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/autobyteus-web/electron-dist/latest-mac.yml` — SHA256 `7b03b3b77b550ddb02175c037fae0d88f2fb48059b1754b34f6367ba98ddc615`
+A pre-integration local build completed before `origin/personal@00f7bab40543497c629204e9ce6c1e7d6c71ed6d` was merged. These files remain available, but they are **not authoritative for current integrated Round 5 testing**.
 
-## Notable Non-Blocking Warnings
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.36.dmg` — SHA256 `ea8c4cb4ce9660b50fbeebf7cafc453fbcbca0c740004472376124841885fd1e`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.3.36.zip` — SHA256 `9dcd0e7349232266801afe220a8530f1aa26d556c6fb9ba609eb6491b36c683c`
+- Pre-integration build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-20260531T100114Z.log`
+- Pre-integration checksum file: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-package-multiple-skills-analysis/tickets/in-progress/agent-package-multiple-skills-analysis/build-logs/electron-mac-build-artifacts.sha256`
+
+## Notable Non-Blocking Warnings From Pre-Integration Build
 
 - Nuxt/Vite emitted existing chunk-size warnings for large bundles.
 - pnpm emitted existing dependency peer/deprecation/build-script warnings during packaging.
@@ -46,8 +50,8 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=ap
 
 ## Workflow Dispatch Note
 
-While writing this report, a shell quoting mistake accidentally executed the README sample `pnpm release:test --ref personal`, which triggered a build-only GitHub Desktop Release workflow on `personal`. The run was canceled immediately and completed with conclusion `cancelled`: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26709675669. No release publish, tag, commit, push, merge, or repository finalization was performed.
+While writing the first build report, a shell quoting mistake accidentally executed the README sample `pnpm release:test --ref personal`, which triggered a build-only GitHub Desktop Release workflow on `personal`. The run was canceled immediately and completed with conclusion `cancelled`: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26709675669. No release publish, tag, commit, push, merge, or repository finalization was performed.
 
 ## Follow-Up
 
-Use the DMG above for local testing. Repository finalization remains paused until explicit user verification/completion after testing.
+Do not treat the existing DMG as the final integrated verification build. The integrated README build must be rerun after the localization-audit blocker is fixed.

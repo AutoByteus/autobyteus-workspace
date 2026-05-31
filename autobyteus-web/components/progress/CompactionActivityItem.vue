@@ -5,7 +5,7 @@
         <Icon :icon="presentation.icon" class="h-5 w-5 shrink-0" :class="iconColorClass" />
         <div class="min-w-0">
           <div class="flex items-center gap-2">
-            <span class="truncate text-sm font-bold text-gray-800">Memory compaction</span>
+            <span class="truncate text-sm font-bold text-gray-800">{{ $t('workspace.components.progress.CompactionActivityItem.memory_compaction') }}</span>
             <span class="font-mono text-xs text-gray-600">#{{ shortId }}</span>
           </div>
           <p class="mt-0.5 line-clamp-2 text-xs text-gray-600">{{ activity.message }}</p>

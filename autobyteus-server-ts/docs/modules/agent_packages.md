@@ -113,6 +113,12 @@ skill names across configured/default/private/team-shared sources are
 product-excluded for this ticket; package authors should choose unique logical
 skill names instead of relying on collision disambiguation.
 
+Runtime-specific consumers receive resolved paths. Codex materializes imported
+package private roots and multi-skill roots into `.codex/skills/<skillName>`
+symlinks that target the package source directories. Native AutoByteus receives
+the same exact resolved roots through `AgentConfig.skills`. Neither path turns
+package-contained skills into global catalog entries.
+
 ## Failure And Rollback Rules
 
 - Duplicate GitHub imports are rejected with guidance to use the existing row's
