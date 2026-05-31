@@ -23,8 +23,8 @@ or changing provider-specific request-shaping behavior.
 | --- | --- | --- | --- | --- | --- |
 | LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | 2026-04-25 | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
 | LLM | `claude-opus-4.7` | `claude-opus-4-7` | Anthropic | 2026-04-25 | Uses adaptive-thinking schema; see request-shape notes below. |
-| LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter and V4 thinking schema. |
-| LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter and V4 thinking schema. |
+| LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
+| LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `gemini-3.5-flash` | `gemini-3.5-flash` | Gemini | 2026-05-20 | Uses the existing Gemini LLM adapter, shared Gemini thinking schema, explicit API-key/Vertex identity mapping, and docs-backed token-limit metadata. |
 | LLM | `kimi-k2.6` | `kimi-k2.6` | Moonshot / Kimi | 2026-04-25 | Uses the existing Kimi OpenAI-compatible adapter. |
 | Image | `gpt-image-2` | `gpt-image-2` | OpenAI | 2026-04-25 | Supports generation and editing through `OpenAIImageClient`. |
@@ -61,10 +61,20 @@ matching `function_call` items while still using the normalized final
 ### DeepSeek V4
 
 DeepSeek V4 models keep using the DeepSeek OpenAI-compatible Chat Completions
-endpoint. The registered V4 schema exposes:
+endpoint. The registered user-facing V4 schema exposes only flat, renderable
+configuration keys:
 
 - `reasoning_effort: "high" | "max"`.
-- `thinking: { type: "enabled" | "disabled" }`.
+- `thinking_type: "enabled" | "disabled"` with default `enabled`.
+
+The schema must not expose the provider-native top-level `thinking` object to
+UI/catalog consumers. In the frontend, the basic `Thinking` toggle owns visible
+DeepSeek enable/disable state; Advanced renders `reasoning_effort`, not a second
+`Thinking Type` control. `DeepSeekLLM` owns the request-shape conversion: it
+removes the flat `thinking_type` key, drops any stale raw top-level `thinking`
+value, and sends the provider switch as `extra_body.thinking.type`. When
+`thinking_type` is `disabled`, the adapter omits `reasoning_effort` instead of
+sending an OpenAI-style `reasoning_effort: "none"`.
 
 No new DeepSeek transport path is required for these models.
 

@@ -87,19 +87,12 @@ const deepseekV4Schema = new ParameterSchema([
     enumValues: ['high', 'max']
   }),
   new ParameterDefinition({
-    name: 'thinking',
-    type: ParameterType.OBJECT,
-    description: 'DeepSeek V4 thinking mode switch in the provider API shape.',
+    name: 'thinking_type',
+    type: ParameterType.ENUM,
+    description: 'Enable or disable DeepSeek V4 thinking mode.',
     required: false,
-    objectSchema: new ParameterSchema([
-      new ParameterDefinition({
-        name: 'type',
-        type: ParameterType.ENUM,
-        description: 'Enable or disable DeepSeek V4 thinking mode.',
-        required: true,
-        enumValues: ['enabled', 'disabled']
-      })
-    ])
+    defaultValue: 'enabled',
+    enumValues: ['enabled', 'disabled']
   })
 ]);
 
