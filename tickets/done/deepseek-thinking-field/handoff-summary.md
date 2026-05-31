@@ -84,7 +84,7 @@ Docs sync report:
 - Live DeepSeek provider/agent-flow sign-off remains credential-dependent and was not used as required sign-off. Request-capture tests verify the provider request payload shape deterministically.
 - Browser validation used a locally started backend/frontend and did not call the live DeepSeek provider.
 - The frontend intentionally leaves provider-specific request payload construction out of UI code; future UX polish should preserve the current ownership split rather than reintroducing raw provider-object fields or duplicate enable/disable controls.
-- Tag-triggered release workflows were still in progress at final report update time; monitor GitHub Actions for final publication status.
+- Tag-triggered release workflows were partially complete at final report update time: Messaging Gateway and Android APK succeeded; Desktop and Server Docker were still in progress.
 
 ## User Verification
 
@@ -99,7 +99,7 @@ Docs sync report:
 - Release commit: `e2bb3b44608c7372fe5e60fcb6c46a855eea6c1b`.
 - Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/deepseek-thinking-field/release-notes.md`.
 - Release command: `pnpm release 1.3.36 -- --release-notes tickets/done/deepseek-thinking-field/release-notes.md`.
-- GitHub Actions release workflows triggered by the tag were still in progress at final report update time.
+- GitHub Actions release workflows triggered by the tag were partially complete at final report update time: Messaging Gateway and Android APK succeeded; Desktop and Server Docker were still in progress.
 
 ## Finalization Results
 

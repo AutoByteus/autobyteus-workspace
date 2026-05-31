@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report
 
-Finalized and released `deepseek-thinking-field` after explicit user verification on 2026-05-31. The ticket branch was merged into `origin/personal`, release `v1.3.36` was created and pushed, and tag-triggered release workflows were started. At this report update time, the release workflows were still in progress.
+Finalized and released `deepseek-thinking-field` after explicit user verification on 2026-05-31. The ticket branch was merged into `origin/personal`, release `v1.3.36` was created and pushed, and tag-triggered release workflows were started. At final report update time, Messaging Gateway and Android APK release workflows had succeeded; Desktop and Server Docker workflows were still in progress.
 
 ## Release / Publication / Deployment Scope
 
@@ -85,18 +85,18 @@ User requested repository finalization and a new release version for the DeepSee
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `pnpm release 1.3.36 -- --release-notes tickets/done/deepseek-thinking-field/release-notes.md`
-- Release/publication/deployment result: `Completed for release helper/tag push; asynchronous GitHub release workflows triggered and were still in progress at report update time.`
+- Release/publication/deployment result: `Completed for release helper/tag push; asynchronous GitHub release workflows triggered. Messaging Gateway and Android APK succeeded; Desktop and Server Docker were still in progress at final report update time.`
 - Release notes handoff result: `Used` — synced to `.github/release-notes/release-notes.md` by the release helper.
 - Blocker (if applicable): `N/A`
 
-Tag-triggered workflow status at report update time:
+Tag-triggered workflow status at final report update time:
 
 | Workflow | Run ID | Status | URL |
 | --- | --- | --- | --- |
 | Desktop Release | `26706008009` | `in_progress` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26706008009` |
-| Android APK Release | `26706008014` | `in_progress` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26706008014` |
+| Android APK Release | `26706008014` | `completed/success` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26706008014` |
 | Server Docker Release | `26706008018` | `in_progress` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26706008018` |
-| Release Messaging Gateway | `26706008019` | `in_progress` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26706008019` |
+| Release Messaging Gateway | `26706008019` | `completed/success` | `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/26706008019` |
 
 ## Post-Finalization Cleanup
 
@@ -150,4 +150,4 @@ The documented release helper bumped package versions to `1.3.36`, synced curate
 
 ## Final Status
 
-Repository finalization is complete, release `v1.3.36` has been tagged and pushed, release workflows have been triggered, and ticket worktree/branch cleanup is complete. The release workflows were still in progress at this report update time.
+Repository finalization is complete, release `v1.3.36` has been tagged and pushed, release workflows have been triggered, and ticket worktree/branch cleanup is complete. Messaging Gateway and Android APK release workflows succeeded; Desktop and Server Docker were still in progress at final report update time.
