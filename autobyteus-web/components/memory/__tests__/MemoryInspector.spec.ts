@@ -2,51 +2,31 @@ import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import MemoryInspector from '../MemoryInspector.vue';
-import { useAgentMemoryViewStore } from '~/stores/agentMemoryViewStore';
-import { useMemoryScopeStore } from '~/stores/memoryScopeStore';
-import { useTeamMemoryViewStore } from '~/stores/teamMemoryViewStore';
+import { useMemoryInspectorStore } from '~/stores/memoryInspectorStore';
 
 describe('MemoryInspector', () => {
-  const mountComponent = () => {
+  it('renders empty state when no target is selected', () => {
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
-    const wrapper = mount(MemoryInspector, {
-      global: {
-        plugins: [pinia],
-      },
-    });
-    return { wrapper, pinia };
-  };
-
-  it('renders empty state when no selection', () => {
-    const { wrapper } = mountComponent();
+    const wrapper = mount(MemoryInspector, { global: { plugins: [pinia] } });
     expect(wrapper.text()).toContain('Select a memory entry');
   });
 
-  it('calls setIncludeRawTraces when opening raw tab', async () => {
-    const { wrapper } = mountComponent();
-    const viewStore = useAgentMemoryViewStore();
-    viewStore.selectedRunId = 'agent-1';
-    await wrapper.vm.$nextTick();
+  it('calls setActiveTab when opening Raw Traces', async () => {
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
+    const store = useMemoryInspectorStore();
+    store.target = { kind: 'agent_run', runId: 'run-1', agentDisplayName: 'Codex' };
+    const wrapper = mount(MemoryInspector, { global: { plugins: [pinia] } });
 
-    const rawTab = wrapper.findAll('button').find((btn) => btn.text().includes('Raw Traces'));
-    expect(rawTab).toBeTruthy();
-    await rawTab!.trigger('click');
+    await wrapper.findAll('button').find((button) => button.text().includes('Raw Traces'))!.trigger('click');
 
-    expect(viewStore.setIncludeRawTraces).toHaveBeenCalledWith(true);
+    expect(store.setActiveTab).toHaveBeenCalledWith('raw');
   });
 
-  it('renders team context header when team scope selection exists', async () => {
-    const { wrapper } = mountComponent();
-    const scopeStore = useMemoryScopeStore();
-    const teamViewStore = useTeamMemoryViewStore();
-
-    scopeStore.scope = 'team';
-    teamViewStore.selectedTeamRunId = 'team-1';
-    teamViewStore.selectedTeamDefinitionName = 'Alpha Team';
-    teamViewStore.selectedMemberName = 'Coordinator';
-    teamViewStore.selectedMemberRunId = 'member-1';
-
-    await wrapper.vm.$nextTick();
-    expect(wrapper.text()).toContain('Team: Alpha Team / Member: Coordinator / Run: member-1');
+  it('renders team breadcrumb context', () => {
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
+    const store = useMemoryInspectorStore();
+    store.target = { kind: 'team_member_run', teamDefinitionName: 'Alpha Team', teamRunId: 'team-1', memberRunId: 'member-1', memberName: 'Coordinator' };
+    const wrapper = mount(MemoryInspector, { global: { plugins: [pinia] } });
+    expect(wrapper.text()).toContain('Agent Teams / Alpha Team / team-1 / Coordinator');
   });
 });

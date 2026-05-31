@@ -1,6 +1,7 @@
-export interface MemorySnapshotSummary {
-  runId: string;
-  lastUpdatedAt?: string | null;
+export type AgentMemoryAttribution = 'DEFINITION' | 'UNATTRIBUTED';
+
+export interface MemoryAvailabilitySummary {
+  latestMemoryAt?: string | null;
   hasWorkingContext: boolean;
   hasEpisodic: boolean;
   hasSemantic: boolean;
@@ -8,36 +9,64 @@ export interface MemorySnapshotSummary {
   hasRawArchive: boolean;
 }
 
-export interface MemorySnapshotPage {
-  entries: MemorySnapshotSummary[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+export interface AgentWithMemorySelector {
+  attribution: AgentMemoryAttribution;
+  agentDefinitionId?: string | null;
 }
 
-export interface TeamMemberMemorySnapshotSummary {
+export interface AgentWithMemorySummary {
+  attribution: AgentMemoryAttribution;
+  agentDefinitionId?: string | null;
+  displayName: string;
+  stableId: string;
+  runCount: number;
+  latestMemoryAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+}
+
+export interface AgentRunMemorySummary {
+  runId: string;
+  agentDefinitionId?: string | null;
+  agentName?: string | null;
+  summary?: string | null;
+  workspaceRootPath?: string | null;
+  createdAt?: string | null;
+  lastUpdatedAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+}
+
+export interface AgentTeamWithMemorySummary {
+  teamDefinitionId: string;
+  teamDefinitionName: string;
+  teamRunCount: number;
+  memberMemoryCount: number;
+  latestMemoryAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+}
+
+export interface TeamMemberMemoryTargetSummary {
   memberRouteKey: string;
   memberName: string;
   memberRunId: string;
+  agentDefinitionId?: string | null;
   lastUpdatedAt?: string | null;
-  hasWorkingContext: boolean;
-  hasEpisodic: boolean;
-  hasSemantic: boolean;
-  hasRawTraces: boolean;
-  hasRawArchive: boolean;
+  memory: MemoryAvailabilitySummary;
 }
 
-export interface TeamRunMemorySnapshotSummary {
+export interface AgentTeamRunMemorySummary {
   teamRunId: string;
   teamDefinitionId: string;
   teamDefinitionName: string;
+  summary?: string | null;
+  workspaceRootPath?: string | null;
+  createdAt?: string | null;
   lastUpdatedAt?: string | null;
-  members: TeamMemberMemorySnapshotSummary[];
+  memory: MemoryAvailabilitySummary;
+  memberTargets: TeamMemberMemoryTargetSummary[];
 }
 
-export interface TeamRunMemorySnapshotPage {
-  entries: TeamRunMemorySnapshotSummary[];
+export interface MemoryExplorerPage<T> {
+  entries: T[];
   total: number;
   page: number;
   pageSize: number;
@@ -73,3 +102,27 @@ export interface RunMemoryView {
   semantic?: Array<Record<string, unknown>> | null;
   rawTraces?: MemoryTraceEvent[] | null;
 }
+
+export type MemoryInspectorTab = 'working' | 'episodic' | 'semantic' | 'raw';
+
+export type MemoryInspectTarget =
+  | {
+      kind: 'agent_run';
+      runId: string;
+      agentAttribution?: AgentMemoryAttribution;
+      agentDefinitionId?: string | null;
+      agentDisplayName?: string | null;
+      runLabel?: string | null;
+      workspaceRootPath?: string | null;
+      lastUpdatedAt?: string | null;
+    }
+  | {
+      kind: 'team_member_run';
+      teamDefinitionId?: string | null;
+      teamDefinitionName?: string | null;
+      teamRunId: string;
+      memberRunId: string;
+      memberRouteKey?: string | null;
+      memberName?: string | null;
+      lastUpdatedAt?: string | null;
+    };

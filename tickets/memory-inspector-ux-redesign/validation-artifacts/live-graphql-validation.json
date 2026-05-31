@@ -1,0 +1,219 @@
+{
+  "endpoint": "http://127.0.0.1:18180/graphql",
+  "checks": [
+    {
+      "name": "schema exposes new BFF queries and omits legacy flat queries",
+      "elapsedMs": 9.48,
+      "facts": {
+        "newFieldsPresent": true,
+        "legacyFieldsAbsent": true
+      }
+    },
+    {
+      "name": "listAgentsWithMemory filters to Codex E2E memory agent",
+      "elapsedMs": 73.12,
+      "facts": {
+        "entry": {
+          "attribution": "DEFINITION",
+          "agentDefinitionId": "e2e-codex-agent",
+          "displayName": "Codex E2E Agent",
+          "stableId": "e2e-codex-agent",
+          "runCount": 2,
+          "memory": {
+            "hasWorkingContext": true,
+            "hasEpisodic": true,
+            "hasSemantic": true,
+            "hasRawTraces": true,
+            "latestMemoryAt": "2026-05-31T09:00:22Z"
+          }
+        }
+      }
+    },
+    {
+      "name": "listAgentsWithMemory excludes metadata-only/no-memory agent",
+      "elapsedMs": 65.6,
+      "facts": {
+        "total": 0
+      }
+    },
+    {
+      "name": "listAgentRunsWithMemory returns only selected Codex runs",
+      "elapsedMs": 64.87,
+      "facts": {
+        "runIds": [
+          "e2e-codex-run-002",
+          "e2e-codex-run-001"
+        ]
+      }
+    },
+    {
+      "name": "listAgentRunsWithMemory exposes Unattributed runs fallback",
+      "elapsedMs": 77.77,
+      "facts": {
+        "runIds": [
+          "e2e-unattributed-run-001"
+        ]
+      }
+    },
+    {
+      "name": "getAgentRunMemoryView initial payload omits raw traces",
+      "elapsedMs": 4.59,
+      "facts": {
+        "rawTraces": null,
+        "workingContextCount": 2
+      }
+    },
+    {
+      "name": "getAgentRunMemoryView loads raw traces on demand with limit",
+      "elapsedMs": 1.76,
+      "facts": {
+        "rawTraceSeqs": [
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "name": "listAgentTeamsWithMemory filters to Software E2E team",
+      "elapsedMs": 38.37,
+      "facts": {
+        "entry": {
+          "teamDefinitionId": "e2e-software-team",
+          "teamDefinitionName": "Software E2E Team",
+          "teamRunCount": 2,
+          "memberMemoryCount": 3,
+          "memory": {
+            "hasWorkingContext": true,
+            "hasRawTraces": true,
+            "latestMemoryAt": "2026-05-31T09:33:36Z"
+          }
+        }
+      }
+    },
+    {
+      "name": "listAgentTeamsWithMemory excludes metadata-only/no-memory team",
+      "elapsedMs": 26.53,
+      "facts": {
+        "total": 0
+      }
+    },
+    {
+      "name": "listAgentTeamRunsWithMemory returns team runs with inspectable member targets only",
+      "elapsedMs": 27.78,
+      "facts": {
+        "teamRunIds": [
+          "e2e-software-team-run-002",
+          "e2e-software-team-run-001"
+        ],
+        "run1MemberTargets": [
+          "e2e-code-member-run-001",
+          "e2e-solution-member-run-001"
+        ]
+      }
+    },
+    {
+      "name": "getTeamMemberRunMemoryView initial payload omits raw traces",
+      "elapsedMs": 2.25,
+      "facts": {
+        "rawTraces": null,
+        "workingContextCount": 1
+      }
+    },
+    {
+      "name": "getTeamMemberRunMemoryView loads raw traces on demand with limit",
+      "elapsedMs": 0.92,
+      "facts": {
+        "rawTraceSeqs": [
+          2
+        ]
+      }
+    },
+    {
+      "name": "listAgentRunsWithMemory rejects attributed selector without agentDefinitionId",
+      "elapsedMs": 1.66,
+      "facts": {
+        "errorMessage": "agentDefinitionId is required for attributed agent memory."
+      }
+    }
+  ],
+  "profiles": {
+    "profile-listAgentsWithMemory-all": {
+      "samplesMs": [
+        61.57,
+        62.75,
+        63.12,
+        63.48,
+        65.76
+      ],
+      "minMs": 61.57,
+      "medianMs": 63.12,
+      "maxMs": 65.76,
+      "totals": [
+        53,
+        53,
+        53,
+        53,
+        53
+      ]
+    },
+    "profile-listAgentTeamsWithMemory-all": {
+      "samplesMs": [
+        32.14,
+        34.74,
+        34.6,
+        35.97,
+        30.69
+      ],
+      "minMs": 30.69,
+      "medianMs": 34.6,
+      "maxMs": 35.97,
+      "totals": [
+        26,
+        26,
+        26,
+        26,
+        26
+      ]
+    },
+    "profile-listAgentRunsWithMemory-load-agent-00": {
+      "samplesMs": [
+        73.86,
+        59.52,
+        62.24,
+        57.52,
+        60.36
+      ],
+      "minMs": 57.52,
+      "medianMs": 60.36,
+      "maxMs": 73.86,
+      "totals": [
+        10,
+        10,
+        10,
+        10,
+        10
+      ]
+    },
+    "profile-listAgentTeamRunsWithMemory-load-team-00": {
+      "samplesMs": [
+        26.14,
+        26.04,
+        27.06,
+        25.44,
+        26.89
+      ],
+      "minMs": 25.44,
+      "medianMs": 26.14,
+      "maxMs": 27.06,
+      "totals": [
+        8,
+        8,
+        8,
+        8,
+        8
+      ]
+    }
+  },
+  "startedAt": "2026-05-31T11:13:40Z",
+  "completedAt": "2026-05-31T11:13:41Z"
+}

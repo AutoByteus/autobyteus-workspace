@@ -1,34 +1,241 @@
 <template>
-  <div class="h-full bg-white font-sans">
-    <div class="h-full flex flex-col lg:flex-row">
-      <aside class="w-full lg:w-80 flex-shrink-0 border-b border-gray-200 lg:border-b-0 lg:border-r">
-        <MemoryIndexPanel />
-      </aside>
-      <main class="flex-1 min-w-0">
-        <MemoryInspector />
-      </main>
+  <div class="h-full overflow-auto bg-gray-50">
+    <MemoryHome v-if="currentView === 'home'" @change-tab="changeHomeTab" @select-agent="selectAgent" @select-team="selectTeam" />
+    <AgentMemoryDetail
+      v-else-if="currentView === 'agent-detail' && currentAgentSelector"
+      :selector="currentAgentSelector"
+      @back="goHome('agents')"
+      @inspect-run="inspectAgentRun"
+    />
+    <AgentTeamMemoryDetail
+      v-else-if="currentView === 'team-detail' && currentTeamDefinitionId"
+      :team-definition-id="currentTeamDefinitionId"
+      @back="goHome('teams')"
+      @inspect-member="inspectTeamMember"
+    />
+    <MemoryInspector
+      v-else-if="currentView === 'agent-inspector' || currentView === 'team-inspector'"
+      :back-label="inspectorBackLabel"
+      @back="backFromInspector"
+    />
+    <div v-else class="mx-auto mt-6 max-w-3xl rounded-xl border border-gray-200 bg-white p-8">
+      <h2 class="text-xl font-bold text-gray-900">{{ $t('memory.pages.memory.invalid_memory_view') }}</h2>
+      <p class="mt-2 text-gray-600">{{ $t('memory.pages.memory.the_requested_memory_page_is_not_available') }}</p>
+      <button type="button" class="mt-4 text-blue-600 hover:underline" @click="goHome('agents')">{{ $t('memory.pages.memory.go_to_memory') }}</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import MemoryIndexPanel from '~/components/memory/MemoryIndexPanel.vue';
+import { computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import MemoryHome from '~/components/memory/MemoryHome.vue';
+import AgentMemoryDetail from '~/components/memory/AgentMemoryDetail.vue';
+import AgentTeamMemoryDetail from '~/components/memory/AgentTeamMemoryDetail.vue';
 import MemoryInspector from '~/components/memory/MemoryInspector.vue';
-import { useAgentMemoryIndexStore } from '~/stores/agentMemoryIndexStore';
-import { useMemoryScopeStore } from '~/stores/memoryScopeStore';
-import { useTeamMemoryIndexStore } from '~/stores/teamMemoryIndexStore';
+import { useMemoryExplorerStore, type MemoryHomeTab } from '~/stores/memoryExplorerStore';
+import { useMemoryInspectorStore } from '~/stores/memoryInspectorStore';
+import type { AgentRunMemorySummary, AgentTeamRunMemorySummary, AgentTeamWithMemorySummary, AgentWithMemorySelector, AgentWithMemorySummary, MemoryInspectTarget, TeamMemberMemoryTargetSummary } from '~/types/memory';
 
-const scopeStore = useMemoryScopeStore();
-const indexStore = useAgentMemoryIndexStore();
-const teamIndexStore = useTeamMemoryIndexStore();
+const route = useRoute();
+const router = useRouter();
+const explorerStore = useMemoryExplorerStore();
+const inspectorStore = useMemoryInspectorStore();
 
-onMounted(() => {
-  scopeStore.resetToDefault();
-  if (scopeStore.scope === 'team') {
-    teamIndexStore.fetchIndex();
+type MemoryView = 'home' | 'agent-detail' | 'team-detail' | 'agent-inspector' | 'team-inspector';
+
+const queryValue = (key: string): string | undefined => {
+  const value = route.query[key];
+  return Array.isArray(value) ? value[0] ?? undefined : value ?? undefined;
+};
+
+const cleanQuery = (query: Record<string, string | null | undefined>) => Object.fromEntries(
+  Object.entries(query).filter(([, value]) => value !== undefined && value !== null && value !== ''),
+) as Record<string, string>;
+
+const currentView = computed((): MemoryView => {
+  const view = queryValue('view') as MemoryView | undefined;
+  return view && ['home', 'agent-detail', 'team-detail', 'agent-inspector', 'team-inspector'].includes(view) ? view : 'home';
+});
+
+const currentAgentSelector = computed((): AgentWithMemorySelector | null => {
+  const attribution = queryValue('agentAttribution') === 'UNATTRIBUTED' ? 'UNATTRIBUTED' : 'DEFINITION';
+  if (attribution === 'UNATTRIBUTED') return { attribution };
+  const agentDefinitionId = queryValue('agentDefinitionId');
+  return agentDefinitionId ? { attribution, agentDefinitionId } : null;
+});
+
+const currentTeamDefinitionId = computed(() => queryValue('teamDefinitionId') ?? null);
+
+const inspectorBackLabel = computed(() => {
+  const target = inspectorStore.target;
+  if (!target) return 'Back to Memory';
+  if (target.kind === 'agent_run') return `Back to ${target.agentDisplayName || target.agentDefinitionId || 'Agent'} Memory`;
+  return `Back to ${target.teamDefinitionName || target.teamDefinitionId || 'Agent Team'} Memory`;
+});
+
+watch(() => route.fullPath, () => { void syncRouteState(); }, { immediate: true });
+
+async function syncRouteState() {
+  if (currentView.value === 'home') {
+    const tab = queryValue('tab') === 'teams' ? 'teams' : 'agents';
+    explorerStore.setHomeTab(tab);
+    inspectorStore.clear();
+    if (tab === 'agents') await explorerStore.fetchAgents();
+    else await explorerStore.fetchTeams();
     return;
   }
-  indexStore.fetchIndex();
-});
+
+  if (currentView.value === 'agent-detail' && currentAgentSelector.value) {
+    inspectorStore.clear();
+    explorerStore.setSelectedAgentFromRoute(currentAgentSelector.value, queryValue('agentName'));
+    await explorerStore.fetchAgentRuns(currentAgentSelector.value);
+    return;
+  }
+
+  if (currentView.value === 'team-detail' && currentTeamDefinitionId.value) {
+    inspectorStore.clear();
+    explorerStore.setSelectedTeamFromRoute(currentTeamDefinitionId.value, queryValue('teamName'));
+    await explorerStore.fetchTeamRuns(currentTeamDefinitionId.value);
+    return;
+  }
+
+  const target = buildTargetFromRoute();
+  if (target) await inspectorStore.inspect(target);
+}
+
+function buildTargetFromRoute(): MemoryInspectTarget | null {
+  if (currentView.value === 'agent-inspector') {
+    const runId = queryValue('runId');
+    if (!runId) return null;
+    return {
+      kind: 'agent_run',
+      runId,
+      agentAttribution: queryValue('agentAttribution') === 'UNATTRIBUTED' ? 'UNATTRIBUTED' : 'DEFINITION',
+      agentDefinitionId: queryValue('agentDefinitionId') ?? null,
+      agentDisplayName: queryValue('agentName') ?? null,
+      runLabel: queryValue('runLabel') ?? null,
+      workspaceRootPath: queryValue('workspace') ?? null,
+      lastUpdatedAt: queryValue('updatedAt') ?? null,
+    };
+  }
+  if (currentView.value === 'team-inspector') {
+    const teamRunId = queryValue('teamRunId');
+    const memberRunId = queryValue('memberRunId');
+    if (!teamRunId || !memberRunId) return null;
+    return {
+      kind: 'team_member_run',
+      teamDefinitionId: queryValue('teamDefinitionId') ?? null,
+      teamDefinitionName: queryValue('teamName') ?? null,
+      teamRunId,
+      memberRunId,
+      memberRouteKey: queryValue('memberRouteKey') ?? null,
+      memberName: queryValue('memberName') ?? null,
+      lastUpdatedAt: queryValue('updatedAt') ?? null,
+    };
+  }
+  return null;
+}
+
+const pushHome = (tab: MemoryHomeTab = explorerStore.homeTab) => router.push({ path: '/memory', query: { view: 'home', tab } });
+const goHome = pushHome;
+const changeHomeTab = pushHome;
+
+const selectAgent = async (agent: AgentWithMemorySummary) => {
+  await explorerStore.openAgentMemory(agent);
+  router.push({
+    path: '/memory',
+    query: cleanQuery({
+      view: 'agent-detail',
+      agentAttribution: agent.attribution,
+      agentDefinitionId: agent.agentDefinitionId,
+      agentName: agent.displayName,
+    }),
+  });
+};
+
+const selectTeam = async (team: AgentTeamWithMemorySummary) => {
+  await explorerStore.openTeamMemory(team);
+  router.push({ path: '/memory', query: { view: 'team-detail', teamDefinitionId: team.teamDefinitionId, teamName: team.teamDefinitionName } });
+};
+
+const inspectAgentRun = async (run: AgentRunMemorySummary) => {
+  const agent = explorerStore.selectedAgent;
+  const target: MemoryInspectTarget = {
+    kind: 'agent_run',
+    runId: run.runId,
+    agentAttribution: agent?.attribution,
+    agentDefinitionId: agent?.agentDefinitionId ?? run.agentDefinitionId ?? null,
+    agentDisplayName: agent?.displayName ?? run.agentName ?? null,
+    runLabel: run.summary || run.runId,
+    workspaceRootPath: run.workspaceRootPath ?? null,
+    lastUpdatedAt: run.lastUpdatedAt ?? null,
+  };
+  await inspectorStore.inspect(target);
+  router.push({
+    path: '/memory',
+    query: cleanQuery({
+      view: 'agent-inspector',
+      runId: run.runId,
+      agentAttribution: target.agentAttribution,
+      agentDefinitionId: target.agentDefinitionId,
+      agentName: target.agentDisplayName,
+      runLabel: target.runLabel,
+      workspace: target.workspaceRootPath,
+      updatedAt: target.lastUpdatedAt,
+    }),
+  });
+};
+
+const inspectTeamMember = async (run: AgentTeamRunMemorySummary, member: TeamMemberMemoryTargetSummary) => {
+  const target: MemoryInspectTarget = {
+    kind: 'team_member_run',
+    teamDefinitionId: run.teamDefinitionId,
+    teamDefinitionName: run.teamDefinitionName,
+    teamRunId: run.teamRunId,
+    memberRunId: member.memberRunId,
+    memberRouteKey: member.memberRouteKey,
+    memberName: member.memberName,
+    lastUpdatedAt: member.lastUpdatedAt ?? run.lastUpdatedAt ?? null,
+  };
+  await inspectorStore.inspect(target);
+  router.push({
+    path: '/memory',
+    query: cleanQuery({
+      view: 'team-inspector',
+      teamDefinitionId: run.teamDefinitionId,
+      teamName: run.teamDefinitionName,
+      teamRunId: run.teamRunId,
+      memberRunId: member.memberRunId,
+      memberRouteKey: member.memberRouteKey,
+      memberName: member.memberName,
+      updatedAt: target.lastUpdatedAt,
+    }),
+  });
+};
+
+function backFromInspector() {
+  const target = inspectorStore.target;
+  if (!target) return goHome('agents');
+  if (target.kind === 'agent_run') {
+    router.push({
+      path: '/memory',
+      query: cleanQuery({
+        view: 'agent-detail',
+        agentAttribution: target.agentAttribution,
+        agentDefinitionId: target.agentDefinitionId,
+        agentName: target.agentDisplayName,
+      }),
+    });
+    return;
+  }
+  router.push({
+    path: '/memory',
+    query: cleanQuery({
+      view: 'team-detail',
+      teamDefinitionId: target.teamDefinitionId,
+      teamName: target.teamDefinitionName,
+    }),
+  });
+}
 </script>
