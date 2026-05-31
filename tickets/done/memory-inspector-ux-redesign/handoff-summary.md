@@ -4,16 +4,16 @@
 
 - Ticket: `memory-inspector-ux-redesign`
 - Date: `2026-05-31`
-- Current Status: `Finalization in progress; release skipped by request`
-- Dedicated ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign`
-- Ticket branch: `codex/memory-inspector-ux-redesign`
+- Current Status: `Finalized on personal; release skipped by request`
+- Dedicated ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign` (removed after finalization)
+- Ticket branch: `codex/memory-inspector-ux-redesign` (pushed, merged, then deleted locally and remotely)
 - Finalization target: `personal` / `origin/personal` from bootstrap context
 - Current integrated ticket HEAD before delivery docs/report edits: `ca2a44365a861e351fd47a7cb3cbcc6a8d7d1f32`
-- Delivery-owned uncommitted edits: long-lived docs updates, docs sync report, handoff summary, delivery report, and post-integration validation logs.
+- Delivery-owned uncommitted edits: None after final report update commit on `personal`.
 
 ## Delivery Summary
 
-Delivered scope ready for verification:
+Delivered finalized scope:
 
 - Redesigned `/memory` from a flat run-list inspector into a page-based memory browser:
   - Memory Home with `Agents with Memory` and `Agent Teams with Memory` cards.
@@ -70,18 +70,18 @@ Latest authoritative upstream validation from API/E2E:
 
 Delivery post-integration checks after merging latest `origin/personal`:
 
-- `pnpm -C autobyteus-server-ts test --run tests/unit/agent-memory/agent-memory-explorer-service.test.ts tests/unit/agent-memory/team-memory-explorer-service.test.ts tests/unit/api/graphql/types/memory-explorer-types.test.ts tests/e2e/memory/memory-explorer-graphql.e2e.test.ts tests/e2e/memory/memory-view-graphql.e2e.test.ts` — passed, 5 files / 9 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/validation-artifacts/delivery-post-integration-backend-tests.log`.
-- `pnpm -C autobyteus-web test:nuxt --run tests/stores/memoryExplorerStore.test.ts tests/stores/memoryInspectorStore.test.ts components/memory/__tests__/MemoryHome.spec.ts components/memory/__tests__/AgentMemoryDetail.spec.ts components/memory/__tests__/AgentTeamMemoryDetail.spec.ts components/memory/__tests__/MemoryInspector.spec.ts pages/__tests__/memory.spec.ts components/memory/__tests__/WorkingContextTab.spec.ts components/memory/__tests__/EpisodicTab.spec.ts components/memory/__tests__/SemanticTab.spec.ts components/memory/__tests__/RawTracesTab.spec.ts` — passed, 11 files / 20 tests. Log: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/validation-artifacts/delivery-post-integration-frontend-tests.log`.
+- `pnpm -C autobyteus-server-ts test --run tests/unit/agent-memory/agent-memory-explorer-service.test.ts tests/unit/agent-memory/team-memory-explorer-service.test.ts tests/unit/api/graphql/types/memory-explorer-types.test.ts tests/e2e/memory/memory-explorer-graphql.e2e.test.ts tests/e2e/memory/memory-view-graphql.e2e.test.ts` — passed, 5 files / 9 tests. Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/validation-artifacts/delivery-post-integration-backend-tests.log`.
+- `pnpm -C autobyteus-web test:nuxt --run tests/stores/memoryExplorerStore.test.ts tests/stores/memoryInspectorStore.test.ts components/memory/__tests__/MemoryHome.spec.ts components/memory/__tests__/AgentMemoryDetail.spec.ts components/memory/__tests__/AgentTeamMemoryDetail.spec.ts components/memory/__tests__/MemoryInspector.spec.ts pages/__tests__/memory.spec.ts components/memory/__tests__/WorkingContextTab.spec.ts components/memory/__tests__/EpisodicTab.spec.ts components/memory/__tests__/SemanticTab.spec.ts components/memory/__tests__/RawTracesTab.spec.ts` — passed, 11 files / 20 tests. Log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/validation-artifacts/delivery-post-integration-frontend-tests.log`.
 - Delivery diff check including untracked artifacts: `git ls-files --others --exclude-standard -z | xargs -0 git add -N && git diff --check && git reset` — passed.
 
 ## Long-Lived Docs Updated
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/autobyteus-web/docs/memory.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/autobyteus-server-ts/docs/modules/agent_memory.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/memory.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_memory.md`
 
 Docs sync report:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/docs-sync-report.md`
 
 ## Known Validation Limitations / Residual Risks
 
@@ -90,37 +90,38 @@ Docs sync report:
 - Request-time scanning remains intentionally uncached. Large-memory validation passed for the tested fixture, but significantly larger installations may require a future persisted index/cache design.
 - The current frontend raw-trace query does not request every backend-exposed provenance field for display; backend schema still exposes the durable trace provenance contract.
 
-## User Verification Hold
+## User Verification
 
 - Verification received: `Yes` on 2026-05-31.
 - Verification reference: user message on 2026-05-31: “lets finalize the ticket, no need to release a new version”.
-- User verification hold is released. Finalization proceeds with ticket archival, branch commit/push, merge to `personal` / `origin/personal`, and cleanup. Release/publication/deployment is explicitly skipped per user request.
+- Release request: `No`; no version bump, tag, release notes, publication, or deployment was run.
 
-## Finalization Plan After User Verification
+## Finalization Results
 
-1. Refresh `origin/personal` again.
-2. If `origin/personal` advanced, protect delivery edits, merge latest base into the ticket branch again, rerun targeted checks, and request renewed verification if user-facing state materially changes.
-3. Move `tickets/done/memory-inspector-ux-redesign/` to `tickets/done/memory-inspector-ux-redesign/`.
-4. Commit the ticket branch with source, docs, validation artifacts, and archived ticket artifacts.
-5. Push `codex/memory-inspector-ux-redesign`.
-6. Update local `personal` from `origin/personal`, merge the ticket branch, and push `personal` to `origin/personal`.
-7. Run release/publication/deployment steps only if explicitly requested and applicable.
-8. Clean up dedicated ticket worktree and ticket branches only after finalization is safe.
+- Final pre-merge target refresh: `git fetch origin --prune` and `git pull --ff-only origin personal` completed; `origin/personal` was current at `00f7bab40543497c629204e9ce6c1e7d6c71ed6d`.
+- Ticket branch final commit: `585c939af49e5f311e852975e2ddf901f3845b3b` (`docs(delivery): finalize memory inspector ux ticket`).
+- Ticket branch push: completed to `origin/codex/memory-inspector-ux-redesign`.
+- Target merge commit: `7efda4a01c9b80a8e38bf6b53d33ce750530dfa2` (`merge: memory inspector ux redesign`).
+- Target branch push: completed to `origin/personal`.
+- Final report update: committed on `personal` after merge/cleanup to record completed finalization.
+- Dedicated worktree cleanup: completed; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign` was removed and worktrees were pruned.
+- Local ticket branch cleanup: completed.
+- Remote ticket branch cleanup: completed.
 
 ## Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/design-review-report.md`
-- UI prototype: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/ui-prototypes/memory-inspector-ux-redesign/page-text-prototype.md`
-- UX journey/story: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/ui-prototypes/memory-inspector-ux-redesign/experience-story.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/api-e2e-validation-report.md`
-- Validation artifacts directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/validation-artifacts/`
-- Delivery backend test log: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/validation-artifacts/delivery-post-integration-backend-tests.log`
-- Delivery frontend test log: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/validation-artifacts/delivery-post-integration-frontend-tests.log`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/release-deployment-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-inspector-ux-redesign/tickets/done/memory-inspector-ux-redesign/handoff-summary.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/design-review-report.md`
+- UI prototype: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/memory-inspector-ux-redesign/page-text-prototype.md`
+- UX journey/story: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/ui-prototypes/memory-inspector-ux-redesign/experience-story.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/api-e2e-validation-report.md`
+- Validation artifacts directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/validation-artifacts/`
+- Delivery backend test log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/validation-artifacts/delivery-post-integration-backend-tests.log`
+- Delivery frontend test log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/validation-artifacts/delivery-post-integration-frontend-tests.log`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/release-deployment-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-inspector-ux-redesign/handoff-summary.md`
