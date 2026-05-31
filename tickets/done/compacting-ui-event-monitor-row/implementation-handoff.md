@@ -2,13 +2,13 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/design-spec.md`
-- Design-impact resolution: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/design-impact-resolution-compaction-operation-identity.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/design-review-report.md`
-- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/review-report.md`
-- Prior validation report / design-impact evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/validation-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/design-spec.md`
+- Design-impact resolution: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/design-impact-resolution-compaction-operation-identity.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/design-review-report.md`
+- Prior code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/review-report.md`
+- Prior validation report / design-impact evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/validation-report.md`
 
 ## What Changed
 

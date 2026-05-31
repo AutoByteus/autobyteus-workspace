@@ -21,10 +21,10 @@ User reports the compacting UI feels not nice because it is shown at the top of 
 ## Environment Discovery / Bootstrap Context
 
 - Project Type (`Git`/`Non-Git`): Git
-- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row`
+- Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row`
 - Current Branch: `codex/compacting-ui-event-monitor-row`
-- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row`
+- Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin personal` succeeded on 2026-05-31.
 - Task Branch: `codex/compacting-ui-event-monitor-row`, tracking `origin/personal`
@@ -38,7 +38,7 @@ User reports the compacting UI feels not nice because it is shown at the top of 
 | Date | Source Type (`Code`/`Doc`/`Spec`/`Web`/`Repo`/`Issue`/`Command`/`Trace`/`Log`/`Data`/`Setup`/`Other`) | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
 | 2026-05-31 | Command | `pwd; git rev-parse --show-toplevel; git branch --show-current; git status --short; git remote -v; git symbolic-ref refs/remotes/origin/HEAD; git worktree list --porcelain` | Bootstrap environment discovery | Main checkout is `personal`; remote default is `origin/personal`; many existing worktrees; unrelated untracked `blingda.txt` in shared checkout. | No |
-| 2026-05-31 | Command | `git fetch origin personal && git worktree add -b codex/compacting-ui-event-monitor-row /Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row origin/personal` | Create dedicated ticket branch/worktree from fresh tracked base | Dedicated worktree created at commit `209e8915`. | No |
+| 2026-05-31 | Command | `git fetch origin personal && git worktree add -b codex/compacting-ui-event-monitor-row /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal` | Create dedicated ticket branch/worktree from fresh tracked base | Dedicated worktree created at commit `209e8915`. | No |
 | 2026-05-31 | Code | `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/design-principles.md` | Required shared design reference | Design must be spine/ownership-led and avoid duplicate state/boundary bypass. | No |
 | 2026-05-31 | Code | `/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/templates/*.md` | Required artifact structure | Requirements, investigation notes, and design spec structures loaded. | No |
 | 2026-05-31 | Command | `rg -n "compacting\|compaction\|compact(ed\|ion)?\|Compaction\|Compacting" autobyteus-web autobyteus-server-ts autobyteus-ts ...` | Locate compaction code paths | Found frontend `AgentRunState.compactionStatus`, `agentStatusHandler.handleCompactionStatus`, `CompactionStatusBanner`, server `COMPACTION_STATUS`, TS compaction reporter, and provider boundary converters. | No |

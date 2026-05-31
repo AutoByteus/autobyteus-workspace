@@ -4,13 +4,16 @@
 
 - Ticket: `compacting-ui-event-monitor-row`
 - Date: `2026-05-31`
-- Current Status: `User verified; no-release repository finalization in progress`
-- Dedicated ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row`
-- Ticket branch: `codex/compacting-ui-event-monitor-row`
+- Current Status: `Finalized; no release requested`
+- Final repository worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Dedicated ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row` (removed after finalization)
+- Ticket branch: `codex/compacting-ui-event-monitor-row` (pushed, merged, then deleted locally and remotely)
 - Finalization target: `personal` / `origin/personal`
 - Integrated base used for handoff: `origin/personal` at `aea805aef8ae7cbb549f21e95f10e78564fed0e8`
-- Current ticket branch HEAD: `4ef4518e80da2670f3ad697427cc6882139974b7` (local merge commit integrating latest `origin/personal`)
-- Current handoff state: user verified completion and requested finalization with no release; final ticket commit/push/merge are in progress.
+- Ticket branch final commit: `cb4b694b1fc0c98bf1f14a3a6cc8776e71a50573` (`fix(compaction): unify semantic activity identity`)
+- Final target merge commit: `63c17a5fd59b1d495cf257fb2e2ebdb60b171898` (`merge: compacting UI event monitor row`)
+- Release: `Not performed` per user request.
+- Current handoff state: merged to `origin/personal`; ticket branch/worktree cleanup completed; final documentation update is this no-release finalization record.
 
 ## Delivery Summary
 
@@ -65,7 +68,7 @@ Latest authoritative upstream verification:
 - API/E2E validation Round 3 passed and is the latest authoritative validation result.
 - CUI-E2E-009 is resolved: the live LM Studio / AutoByteus native runtime browser scenario now shows one semantic Memory compaction row/card whose state updates over time instead of separate queued and compacting rows.
 - Backend Round 3 evidence shows stable parent `compaction_operation_id: compaction_operation_mptmpbt5_1` across `requested`, `started`, and terminal `failed`; `requested_turn_id` stayed `turn_0002`, `execution_turn_id` was `turn_0003`, and child `compaction_run_id` / `compaction_task_id` stayed metadata only.
-- Frontend Round 3 evidence showed exactly one event-monitor compaction row and exactly one Activity card. Final screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/05-terminal-one-activity-card.png`.
+- Frontend Round 3 evidence showed exactly one event-monitor compaction row and exactly one Activity card. Final screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/05-terminal-one-activity-card.png`.
 - The compactor timed out after 120 seconds during live validation, exercising the terminal failure path; this was not a validation failure because the same semantic row/card updated correctly.
 - API/E2E stopped temporary backend/frontend validation processes and verified ports `3000` and `8000` clear.
 
@@ -86,20 +89,20 @@ Delivery-stage renewed checks:
 
 ## Long-Lived Docs Updated
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/autobyteus-web/docs/agent_execution_architecture.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
   - Changed the `COMPACTION_STATUS` dispatch-table wording from `banner-ready` run state to latest run state plus `kind: 'compaction'` activity rows.
   - Added durable run-level compaction documentation for AutoByteus semantic `compaction_operation_id`, requested/execution turn metadata, child compactor metadata, provider-native identity separation, and durable projection evidence.
 
 Docs sync report:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/docs-sync-report.md`
 
 ## Known Validation Limitations / Residual Risks
 
 - Full web typecheck remains affected by unrelated repo-wide diagnostics; upstream artifacts record focused validation/build coverage instead.
 - Round 3 live browser validation used LM Studio / AutoByteus native runtime and intentionally did not run Codex/GPT provider compaction.
 - Temporary browser validation app-data directories are local validation environment outputs, not part of the durable artifact package intended for final commit; durable evidence is captured in the listed reports, logs, and screenshots.
-- Release/publication/deployment remains out of scope per user direction: “no need to release”. Repository finalization is in progress after explicit verification.
+- Release/publication/deployment remained out of scope per user direction: “no need to release”. Repository finalization and cleanup completed.
 
 ## User Verification
 
@@ -116,32 +119,34 @@ Docs sync report:
 
 ## Finalization Status
 
-User verification has been received and the ticket has been moved to `tickets/done/compacting-ui-event-monitor-row`. The remaining repository finalization actions are in progress:
+Repository finalization is complete.
 
-- final ticket-branch commit containing reviewed/validated source changes, evidence artifacts, and delivery docs/report updates;
-- push ticket branch;
-- refresh and merge into finalization target `personal`;
-- push finalization target;
-- cleanup ticket worktree/local or remote branches.
-
-Release/publication/deployment will not be performed for this ticket because the user explicitly requested no release.
+- Ticket moved to `tickets/done/compacting-ui-event-monitor-row`: `Yes`.
+- Ticket branch final commit: `cb4b694b1fc0c98bf1f14a3a6cc8776e71a50573`.
+- Ticket branch push: `Completed` to `origin/codex/compacting-ui-event-monitor-row`.
+- Merge into `personal`: `Completed` with merge commit `63c17a5fd59b1d495cf257fb2e2ebdb60b171898`.
+- Push `personal`: `Completed`.
+- Dedicated ticket worktree cleanup: `Completed`.
+- Local ticket branch cleanup: `Completed`.
+- Remote ticket branch cleanup: `Completed`.
+- Release/publication/deployment: `Not performed` because the user explicitly requested no release.
 
 ## Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/design-spec.md`
-- Design-impact resolution: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/design-impact-resolution-compaction-operation-identity.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/design-review-report.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/implementation-handoff.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/review-report.md`
-- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/validation-report.md`
-- Round 3 live-browser pass summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/live-browser-resolution-summary.md`
-- Round 3 operation-id evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/compaction-operation-id-log-excerpt.txt`
-- Round 3 backend log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/backend-live.log`
-- Round 3 frontend log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/frontend-live.log`
-- Round 3 final screenshot: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/05-terminal-one-activity-card.png`
-- Prior Round 2 browser finding retained for comparison: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/browser-compaction-finding.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/docs-sync-report.md`
-- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/release-deployment-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/handoff-summary.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/design-spec.md`
+- Design-impact resolution: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/design-impact-resolution-compaction-operation-identity.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/design-review-report.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/implementation-handoff.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/review-report.md`
+- API/E2E validation report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/validation-report.md`
+- Round 3 live-browser pass summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/live-browser-resolution-summary.md`
+- Round 3 operation-id evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/compaction-operation-id-log-excerpt.txt`
+- Round 3 backend log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/backend-live.log`
+- Round 3 frontend log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/frontend-live.log`
+- Round 3 final screenshot: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/05-terminal-one-activity-card.png`
+- Prior Round 2 browser finding retained for comparison: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/browser-compaction-finding.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/docs-sync-report.md`
+- Delivery / release / deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/release-deployment-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/handoff-summary.md`

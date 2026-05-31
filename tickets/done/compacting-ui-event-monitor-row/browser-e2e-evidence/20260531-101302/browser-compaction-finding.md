@@ -27,14 +27,14 @@ This appears to be one deferred semantic compaction lifecycle, not multiple inde
 
 ## Evidence
 
-- Backend log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/backend-live.log`
-- Frontend log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/frontend-live.log`
+- Backend log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/backend-live.log`
+- Frontend log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/frontend-live.log`
 - Screenshots:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/screenshots/04-lowered-compaction-settings.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/screenshots/05-queued-activity-row.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/screenshots/06-compacting-duplicate-row.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/screenshots/07-final-duplicate-failed-rows.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/screenshots/08-user-observed-duplicate-rows.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/screenshots/04-lowered-compaction-settings.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/screenshots/05-queued-activity-row.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/screenshots/06-compacting-duplicate-row.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/screenshots/07-final-duplicate-failed-rows.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/screenshots/08-user-observed-duplicate-rows.png`
 
 ## Classification
 

@@ -8,7 +8,7 @@ Re-ran the live browser/backend/frontend scenario that previously produced dupli
 
 ## Setup
 
-- Backend: `http://127.0.0.1:8000`, isolated data dir: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data`.
+- Backend: `http://127.0.0.1:8000`, isolated data dir: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data`.
 - Frontend: `http://127.0.0.1:3000`.
 - Initial compaction ratio: `0.8` for turn 1.
 - Updated settings before turn 2: `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO=0.01`, `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE=4000`, `AUTOBYTEUS_COMPACTION_DEBUG_LOGS=true`, `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID=autobyteus-memory-compactor`.
@@ -25,12 +25,12 @@ Pass. The prior duplicate-row behavior is resolved in the live browser scenario.
 
 ## Evidence
 
-- Backend log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/backend-live.log`.
-- Frontend log: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/frontend-live.log`.
-- Operation id log excerpt: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/compaction-operation-id-log-excerpt.txt`.
+- Backend log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/backend-live.log`.
+- Frontend log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/frontend-live.log`.
+- Operation id log excerpt: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/compaction-operation-id-log-excerpt.txt`.
 - Screenshots:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/01-agent-list.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/02-run-config-lm-studio.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/03-queued-one-row.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/04-compacting-one-row-dom-state.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/05-terminal-one-activity-card.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/01-agent-list.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/02-run-config-lm-studio.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/03-queued-one-row.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/04-compacting-one-row-dom-state.png`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/05-terminal-one-activity-card.png`

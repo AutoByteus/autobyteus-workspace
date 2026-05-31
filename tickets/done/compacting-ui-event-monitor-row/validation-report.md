@@ -2,13 +2,13 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/design-spec.md`
-- Design-Impact Resolution: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/design-impact-resolution-compaction-operation-identity.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/implementation-handoff.md`
-- Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/review-report.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/design-spec.md`
+- Design-Impact Resolution: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/design-impact-resolution-compaction-operation-identity.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/implementation-handoff.md`
+- Review Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/review-report.md`
 - Current Validation Round: `3`
 - Trigger: Code-review Round 4 pass after design-impact rework for backend-owned `compaction_operation_id`; re-run of the live LM Studio / AutoByteus native runtime deferred compaction scenario that produced CUI-E2E-009.
 - Prior Round Reviewed: `2` (`CUI-E2E-009`, duplicate queued/compacting/failed frontend rows/cards for one deferred compaction lifecycle)
@@ -60,10 +60,10 @@ Implementation handoff `Legacy / Compatibility Removal Check` was reviewed. I di
 
 ## Platform / Runtime Targets
 
-- Local macOS development host in `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row`.
+- Local macOS development host in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 - Browser frontend: `http://127.0.0.1:3000`.
 - Backend API: `http://127.0.0.1:8000`.
-- Isolated validation data dir: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data`.
+- Isolated validation data dir: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/app-data`.
 - LM Studio model: `qwen3.6-27b:lmstudio@127.0.0.1:1234`.
 - Node/pnpm workspace packages as provided in the worktree/superrepo environment.
 - Nuxt/Vitest happy-dom environment for frontend UI validation.
@@ -85,7 +85,7 @@ No installer, updater, restart, or schema migration was in scope. Historical/reo
 | CUI-E2E-006 | AC-CUI-010 | Historical/reopen projection | Server run-history unit/integration tests plus frontend hydration tests | Pass | Server projection suite: `5` files / `33` tests passed; frontend focused suite includes `runProjectionActivityHydration`. |
 | CUI-E2E-007 | AC-CUI-009, REQ-CUI-010 | Tool regression | Tool lifecycle handler/ordering, ToolActivityItem, ActivityFeed highlight, and store tests run after activity-model broadening | Pass | Frontend focused suite: `18` files / `164` tests passed. |
 | CUI-E2E-008 | Build/static hygiene | Runtime/server build and diff hygiene | `pnpm -C autobyteus-ts build`; `pnpm -C autobyteus-server-ts build`; `git diff --check` | Pass | Runtime build pass; server build pass; diff check pass. |
-| CUI-E2E-009 | User-requested live browser compaction flow; activity lifecycle parity with tool rows | Live Nuxt browser + local backend + LM Studio AutoByteus runtime | Started backend/frontend, created isolated native-runtime agent, lowered compaction threshold/context budget, sent turns to trigger deferred compaction, inspected visible feed and Activity row counts plus backend logs for parent operation identity | Pass | Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635`; summary `live-browser-resolution-summary.md`; log excerpt `compaction-operation-id-log-excerpt.txt`; final screenshot `screenshots/05-terminal-one-activity-card.png`. |
+| CUI-E2E-009 | User-requested live browser compaction flow; activity lifecycle parity with tool rows | Live Nuxt browser + local backend + LM Studio AutoByteus runtime | Started backend/frontend, created isolated native-runtime agent, lowered compaction threshold/context budget, sent turns to trigger deferred compaction, inspected visible feed and Activity row counts plus backend logs for parent operation identity | Pass | Evidence directory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635`; summary `live-browser-resolution-summary.md`; log excerpt `compaction-operation-id-log-excerpt.txt`; final screenshot `screenshots/05-terminal-one-activity-card.png`. |
 | CUI-E2E-010 | Backend-owned semantic compaction operation identity | AutoByteus runtime and server event mapping | Runtime integration tests plus server converter/mapper/projection tests verify one parent `compaction_operation_id` across `requested`, `started`, and terminal states while child run/task ids remain metadata | Pass | `autobyteus-ts` runtime compaction suite: `1` file / `2` tests passed; server streaming suite: `4` files / `40` tests passed. |
 
 ## Test Scope
@@ -175,7 +175,7 @@ User correction retained for this round: do not use Codex/GPT for this validatio
 
 Setup and evidence are recorded in:
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635`
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635`
 
 Effective runtime path:
 
@@ -220,16 +220,16 @@ The design-impact rework's repository-resident implementation and validation del
 - Repository-resident durable validation added or updated in Round 1 and already re-reviewed: `Yes`
 - Repository-resident implementation/test rework reviewed before Round 3: `Yes` — latest code review Round 4 passed.
 - If durable validation was added or updated after the latest code review, returned through `code_reviewer` before delivery: N/A
-- Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/review-report.md`
+- Post-validation code review artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/review-report.md`
 
 ## Other Validation Artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/live-browser-resolution-summary.md` — Round 3 live browser pass summary.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/compaction-operation-id-log-excerpt.txt` — backend log excerpt showing stable `compaction_operation_id` across requested/started/failed.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/backend-live.log` — Round 3 backend log.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/frontend-live.log` — Round 3 frontend dev-server log.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/` — Round 3 browser screenshots, including `05-terminal-one-activity-card.png` showing one Activity event/card.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/compacting-ui-event-monitor-row/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/browser-compaction-finding.md` — Round 2 live browser failure finding retained for comparison.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/live-browser-resolution-summary.md` — Round 3 live browser pass summary.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/compaction-operation-id-log-excerpt.txt` — backend log excerpt showing stable `compaction_operation_id` across requested/started/failed.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/backend-live.log` — Round 3 backend log.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/frontend-live.log` — Round 3 frontend dev-server log.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-121635/screenshots/` — Round 3 browser screenshots, including `05-terminal-one-activity-card.png` showing one Activity event/card.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compacting-ui-event-monitor-row/browser-e2e-evidence/20260531-101302/browser-compaction-finding.md` — Round 2 live browser failure finding retained for comparison.
 
 ## Temporary Validation Methods / Scaffolding
 
