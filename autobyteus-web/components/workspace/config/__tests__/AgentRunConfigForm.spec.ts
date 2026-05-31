@@ -224,6 +224,89 @@ describe('AgentRunConfigForm', () => {
     expect(options[0].items[0].selectedLabel).toBe('Internal Gateway / Model A')
   })
 
+  it('renders DeepSeek AutoByteus model selection with constrained thinking controls', async () => {
+    setProviders([
+      buildProviderRow('DEEPSEEK', 'DeepSeek', [
+        {
+          modelIdentifier: 'deepseek-v4-flash',
+          name: 'deepseek-v4-flash',
+          value: 'deepseek-v4-flash',
+          canonicalName: 'deepseek-v4-flash',
+          providerId: 'DEEPSEEK',
+          providerName: 'DeepSeek',
+          providerType: 'DEEPSEEK',
+          runtime: 'autobyteus',
+          configSchema: {
+            type: 'object',
+            properties: {
+              reasoning_effort: {
+                type: 'string',
+                enum: ['high', 'max'],
+                default: 'high',
+              },
+              thinking_type: {
+                type: 'string',
+                enum: ['enabled', 'disabled'],
+                default: 'enabled',
+              },
+            },
+          },
+        },
+      ]),
+    ])
+
+    const localConfig = {
+      ...mockConfig,
+      llmModelIdentifier: '',
+      llmConfig: null,
+      runtimeKind: 'autobyteus',
+    }
+    const wrapper = mount(AgentRunConfigForm, {
+      props: {
+        config: localConfig,
+        agentDefinition: mockAgentDef as any,
+        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+      },
+    })
+
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    const modelSelect = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
+    expect(modelSelect.props('options')[0].items[0].selectedLabel).toBe('DeepSeek / deepseek-v4-flash')
+
+    await modelSelect.vm.$emit('update:modelValue', 'deepseek-v4-flash')
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    expect(localConfig.llmModelIdentifier).toBe('deepseek-v4-flash')
+    expect(localConfig.llmConfig).toBeNull()
+
+    await wrapper.get('[data-testid="advanced-params-toggle"]').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    const advancedLabels = wrapper.findAll('label[for]').map((label) => label.text().trim())
+    const reasoningEffortSelect = wrapper.get('select#agent-run-reasoning_effort')
+
+    expect(wrapper.findAll('input[type="text"]')).toHaveLength(0)
+    expect(advancedLabels).toContain('Reasoning Effort')
+    expect(advancedLabels).not.toContain('Thinking Type')
+    expect(advancedLabels).not.toContain('Thinking')
+    expect(reasoningEffortSelect.text()).toContain('high')
+    expect(reasoningEffortSelect.text()).toContain('max')
+    expect(wrapper.find('select#agent-run-thinking_type').exists()).toBe(false)
+
+    const thinkingToggle = wrapper.getComponent({ name: 'ModelConfigBasic' }).get('button')
+    await thinkingToggle.trigger('click')
+    expect(localConfig.llmConfig).toEqual({ thinking_type: 'disabled' })
+
+    await thinkingToggle.trigger('click')
+    expect(localConfig.llmConfig).toEqual({
+      thinking_type: 'enabled',
+      reasoning_effort: 'high',
+    })
+  })
+
   it('updates config when the runtime and model selection change', async () => {
     setProviders([
       buildProviderRow('OPENAI', 'OpenAI', [
